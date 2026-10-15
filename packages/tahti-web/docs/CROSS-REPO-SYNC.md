@@ -30,7 +30,7 @@ Production documents member governance as `/governance` and `/dashboard/governan
 
 ## Live feature status in this package
 
-Use **`FEATURES.md`** and **`WORKPLAN.md`** for shipped vs partial. **`CONVERSION-QUEUE.md`** is archived — do not treat its admin `missing` rows as current.
+Use **`FEATURES.md`** and **`WORKPLAN.md`** for shipped vs partial.
 
 ## Money-flow UI copy
 

@@ -1,4 +1,9 @@
-import { DateTime } from 'luxon';
+const ISO_DATE = /^\d{4}(-\d{2}(-\d{2})?)?([T ].*)?$/;
+
+const monthName = new Intl.DateTimeFormat(undefined, {
+  month: 'short',
+  timeZone: 'UTC',
+});
 
 /** Formats a track's ISO release date for the table's release-date column
  * -- short, locale-aware, no time component. Returns '' when missing or
@@ -9,9 +14,10 @@ export const formatReleaseDate = (dateIso: string | undefined): string => {
   }
   // Parsed as UTC so the displayed date doesn't shift a day depending on
   // the viewer's timezone -- release dates arrive as bare calendar dates.
-  const dt = DateTime.fromISO(dateIso, { zone: 'utc' });
-  if (!dt.isValid) {
+  const time = ISO_DATE.test(dateIso) ? Date.parse(dateIso) : Number.NaN;
+  if (Number.isNaN(time)) {
     return '';
   }
-  return dt.toFormat('MMM d, yyyy');
+  const date = new Date(time);
+  return `${monthName.format(date)} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
 };

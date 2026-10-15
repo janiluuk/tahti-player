@@ -24,7 +24,7 @@ the expected nav is still mounted before asserting `aria-current` /
 
 Tests use Vitest + React Testing Library. Globals enabled (`describe`, `it`, `expect`, `vi`). Coverage is V8-based across packages and reported in CI. Run tests with `pnpm test` (or a package filter), not a separate IDE test-runner tool.
 
-**"Visual diff" / "screenshot diff" = the CI snapshot digest**, not Storybook. When a PR comment or a report says something like "N mismatch(es) already failing on master" or "Snapshot digest", that's the Vitest DOM-snapshot mismatch system (`scripts/ci/build-snapshot-digest.mjs`, `vitest-snapshot-reporter.mjs`, `publish-visual-snapshot-diffs.mjs`, posted to the PR by `comment-snapshot-digest.mjs`; artifact `snapshot-digest`/`snapshot-digest-coverage`, see `.github/workflows/ci.yml` and `coverage.yml`). It fires from the `Test` step failing, and only lists genuinely new mismatches vs. the base branch — a standing "already failing on master" count is pre-existing breakage, not something this PR caused. A separate Storybook *build* failure (`storybook build` erroring during `pnpm turbo build`) is a different, unrelated CI step — don't conflate the two when triaging a red run.
+**"Visual diff" / "screenshot diff" = the CI snapshot digest**, not Storybook. When a PR comment or a report says something like "N mismatch(es) already failing on master" or "Snapshot digest", that's the Vitest DOM-snapshot mismatch system (`scripts/ci/build-snapshot-digest.mjs`, `vitest-snapshot-reporter.mjs`, `publish-visual-snapshot-diffs.mjs`, posted to the PR by `comment-snapshot-digest.mjs`; artifact `snapshot-digest`, see the `test-core` job in `.github/workflows/ci.yml`). It covers the packages that register `scripts/ci/vitest-ci-reporters.mjs` (ui, player, themes, model, plugin-sdk, hifi; not tahti-web). It fires from that job's `Test` step failing, and only lists genuinely new mismatches vs. the base branch — a standing "already failing on master" count is pre-existing breakage, not something this PR caused. A separate Storybook *build* failure (`storybook build` erroring during `pnpm turbo build`) is a different, unrelated CI step — don't conflate the two when triaging a red run.
 
 - Integration tests over unit tests for user-facing behavior. Render real components and assert on DOM content rather than verifying mock calls.
 - Unit tests for utilities - standalone data structures (RingBuffer, parsers) deserve isolated tests. Use them sparingly.
@@ -119,4 +119,15 @@ it('shows empty state when no playlists', async () => {
   expect(PlaylistsWrapper.emptyState).toBeInTheDocument();
 });
 ```
+
+## CI pipeline (`.github/workflows/ci.yml`)
+
+- **`changes`** decides what runs. A PR that only touches Markdown, `docs/`, `packages/docs/` or images skips everything below; the `CI` gate counts skipped jobs as passed.
+- **`build-player`**: size guard, then the player build (frontend-only, or full Tauri when `src-tauri/` changed). It builds every workspace package, so it is also the "everything builds" check.
+- **`lint`** and **`test-core`** run only the packages a PR affects and their dependents (`turbo --affected` against the PR base); pushes to master run every package.
+- **`test-web`**: tahti-web's Vitest suite in three shards (`--shard=N/3`), straight through Vitest with no build (workspace packages export their sources).
+- **`storybook`**: story plays in four shards; shard 1 also checks `STORYBOOK-SURFACES.md`.
+- **`api-routes`**: tahti-web's API paths against the latest tahti-org OpenAPI export.
+- **Coverage** (`coverage.yml`) runs on master pushes and by hand only.
+- Shared setup (Node 24, pnpm store cache, frozen install, optional turbo cache) is the composite action `.github/actions/setup`.
 

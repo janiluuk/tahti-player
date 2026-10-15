@@ -2,6 +2,7 @@
   "name": "@tahti-player/model",
   "version": "0.0.10",
   "type": "module",
+  "sideEffects": false,
   "main": "./src/index.ts",
   "module": "./src/index.ts",
   "types": "./dist/index.d.ts",
