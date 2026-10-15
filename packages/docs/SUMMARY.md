@@ -31,9 +31,28 @@
 * [Platform-specific notes](misc/platform-specific.md)
 * [Discover](misc/discovery.md)
 
-## Plugins
+## Add-ons
 
-* [How Tahti Player works](plugins/how-nuclear-works.md)
+* [Tahti add-on and plugin authoring](plugins/tahti-web-authoring.md)
+
+## Integrations
+
+* [Discord Rich Presence](integrations/discord.md)
+* [Tahti Jam and HTTP API](integrations/http-api.md)
+* [MCP Server](integrations/mcp-server.md)
+* [MPD Server](integrations/mpd-server.md)
+
+## Development
+
+* [Contributing](development/contributing.md)
+* [Agent instructions](development/agent-instructions.md)
+* [Host pattern](development/host-pattern.md)
+* [Logging](development/logging.md)
+* [MCP Architecture](development/mcp-architecture.md)
+
+## Legacy: Nuclear plugin SDK
+
+* [How Nuclear plugins worked](plugins/how-nuclear-works.md)
 * [Getting started with plugins](plugins/getting-started.md)
 * [Plugin system](plugins/plugin-system.md)
 * [Plugin store](plugins/plugin-store.md)
@@ -53,19 +72,3 @@
 * [HTTP](plugins/http.md)
 * [yt-dlp](plugins/ytdlp.md)
 * [Providers](plugins/providers.md)
-* [Tahti add-on and plugin authoring](plugins/tahti-web-authoring.md)
-
-## Integrations
-
-* [Discord Rich Presence](integrations/discord.md)
-* [Tahti Jam and HTTP API](integrations/http-api.md)
-* [MCP Server](integrations/mcp-server.md)
-* [MPD Server](integrations/mpd-server.md)
-
-## Development
-
-* [Contributing](development/contributing.md)
-* [Agent instructions](development/agent-instructions.md)
-* [Host pattern](development/host-pattern.md)
-* [Logging](development/logging.md)
-* [MCP Architecture](development/mcp-architecture.md)

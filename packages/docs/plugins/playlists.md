@@ -4,6 +4,10 @@ description: Create, modify, and import playlists, or register a provider that f
 
 # Playlists
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 ## Playlists API for Plugins
 
 The Playlists API has two sides. The **consumer API** (`api.Playlists.*`) lets plugins create, read, modify, and import playlists. The **provider type** (`PlaylistProvider`) lets plugins register a handler that fetches playlists from URLs (Spotify links, SoundCloud pages, etc.).

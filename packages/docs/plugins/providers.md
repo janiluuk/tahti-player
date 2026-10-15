@@ -4,6 +4,10 @@ description: Register providers that supply metadata, audio streams, dashboard c
 
 # Providers
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 ## Providers API for Plugins
 
 Providers are modules that fulfill specific data requests from Tahti Player. When the player needs to search for tracks, stream audio, or populate the dashboard, it queries the providers for that kind of request. Different provider kinds serve different purposes, and plugins can register as many providers as they need.
