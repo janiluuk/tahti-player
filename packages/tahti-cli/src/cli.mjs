@@ -25,6 +25,7 @@ import { runLibraryEdit } from './commands/library-edit.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryProcessing } from './commands/library-processing.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
+import { runLogin, runLogout } from './commands/login.mjs';
 import { MAX_MENTIONS_LIMIT, runMentions } from './commands/mentions.mjs';
 import { runMessagesList, runMessagesSend } from './commands/messages.mjs';
 import { runNotificationsList } from './commands/notifications-list.mjs';
@@ -49,6 +50,28 @@ const COMMANDS = [
 membership and channel. --json prints the full API response unchanged.`,
     options: JSON_OPTION,
     run: (config, { values }) => runWhoami(config, { json: values.json }),
+  },
+  {
+    path: ['login'],
+    usage: 'tahti login [--token <token>]',
+    summary: 'Save an API token so you do not have to export it',
+    details: `Reads the token from a prompt, or from stdin when piped
+(\`pass tahti | tahti login\`), checks it with GET /api/auth/me, then saves it to
+$XDG_CONFIG_HOME/tahti/config.json (~/.config/tahti/config.json), readable
+only by you. TAHTI_API_TOKEN still wins when it is set. A TAHTI_API_URL set
+while logging in is saved too.
+  --token <token>   Give the token directly (it ends up in your shell history)`,
+    options: { token: { type: 'string' } },
+    run: (config, { values }) => runLogin(config, { token: values.token }),
+  },
+  {
+    path: ['logout'],
+    usage: 'tahti logout',
+    summary: 'Forget the saved API token',
+    details: `Deletes the file \`tahti login\` wrote. The token keeps working until you
+revoke it at tahti.live → Settings → Account → API tokens.`,
+    options: {},
+    run: () => runLogout(),
   },
   {
     path: ['library', 'list'],
@@ -533,13 +556,15 @@ pause, n/p next/prev, ←/→ seek, / search, a queue, ? help, q quit.`,
 
 const ENVIRONMENT_HELP = `Environment:
   TAHTI_API_TOKEN   Personal API token (tahti.live → Settings → Account → API tokens).
+                    Overrides the token saved by \`tahti login\`.
                     Required by every command except search and
                     channel <slug>. Commands that change something (their
                     --help says so) need a token with the write scope.
                     hearthis download-set only needs read
                     (files are fetched from hearthis.at, not uploaded to Tahti).
                     shell needs a token for library playback.
-  TAHTI_API_URL     API base URL (default: https://api.tahti.live)
+  TAHTI_API_URL     API base URL (default: https://api.tahti.live, or the
+                    one saved by \`tahti login\`)
 
 External tools:
   mpv               Required for \`tahti shell\` playback (install separately).`;
