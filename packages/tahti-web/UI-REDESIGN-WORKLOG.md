@@ -1828,7 +1828,7 @@ brand slot.
 ## 2026-09-01 — Mobile usability audit; Channel Designer preview fix
 
 Phone-width audit of listener/artist surfaces — see
-[MOBILE-USABILITY-AUDIT.md](MOBILE-USABILITY-AUDIT.md) for the full method
+[MOBILE-USABILITY-AUDIT.md](../../docs/ARCHIVE.md) for the full method
 and findings table. No real horizontal-overflow bugs found at 400px across
 Listen, Radio, Discover, a channel page, Library, or Studio home; the
 earlier-flagged `WORKPLAN.md` item about unstyled native controls in
