@@ -4,6 +4,10 @@ description: Structured logging for plugins, routed to Tahti Player's log file a
 
 # Logger
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 The Logger API gives plugins structured, leveled logging. All log output is routed through Tahti Player's logging system, which writes to the app's log file and the developer console.
 
 These logs can also be viewed in the built-in log viewer (Preferences → Logs).

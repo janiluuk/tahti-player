@@ -4,6 +4,10 @@ description: Package, release, and submit your plugin to the Tahti Player plugin
 
 # Publishing
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 Tahti Player's plugin store is backed by a static registry at [github.com/janiluuk/tahti-registry](https://github.com/janiluuk/tahti-registry). The registry lists plugin metadata (name, repo, category, version). The actual plugin code lives in the developer's own GitHub repository. When a user installs a plugin, Tahti Player uses the catalog `downloadUrl`; auto-update compares catalog `version` to the installed copy.
 
 {% hint style="info" %}

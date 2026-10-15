@@ -1,44 +1,15 @@
 ---
-description: Create, import, export, and manage playlists
+description: Create playlists and add tracks to them
 ---
 
 # Playlists
 
-Playlists let you organize tracks into named collections. Open the **Playlists** view from the left sidebar to see all your playlists.
+## Tahti playlists
 
-## Creating a playlist
+Your playlists live in **Library → Collections**. To add a track, use **Add to playlist** in the player bar, or the **+** on a track row. The panel that opens lists your playlists and has **New playlist** at the bottom. A playlist's page plays it in order, shuffles it, or adds it to the queue.
 
-Click the **+** button at the top of the Playlists view. Enter a name in the dialog and confirm. You can also save your current queue as a playlist from the queue header menu.
+Artists use the same Collections page for releases and albums, with the album designer for the cover and track list.
 
-## Adding tracks
+## Playlists of your own files (desktop app)
 
-Use the three-dot menu (&#8942;) on any track and select **Add to playlist**, then pick the target playlist. If you have many playlists, a filter input at the top of the submenu lets you narrow them down.
-
-## Editing a playlist
-
-In the playlist detail view, click the **pencil button** in the top-right corner to enter edit mode. You can change the playlist's name and description, then click **Save** to confirm or **Cancel** to discard changes.
-
-## Playlist detail view
-
-Click a playlist card to open it. The detail view shows the tracklist with the same controls as other track tables (+ button, three-dot menu, favorite toggle). From here you can:
-
-- **Play** all tracks or **Add to queue** via the action buttons at the top
-- **Reorder** tracks by dragging them
-- **Remove** individual tracks with the delete button on each row
-- **Export as JSON** from the three-dot action menu
-- **Delete** the playlist from the three-dot action menu (asks for confirmation)
-
-<figure><img src="../.gitbook/assets/playlist-detail-view.png" alt="A playlist detail view showing tracks and action buttons"><figcaption><p>The playlist detail view</p></figcaption></figure>
-
-## Importing playlists
-
-Click the import button (next to the + button) to see two options:
-
-- **Import from JSON**: opens a file picker. Tahti Player accepts its own JSON export format as well as some legacy formats.
-- **Import from URL**: opens a dialog where you paste a URL. Tahti Player checks all installed playlists providers to find one that can handle it. If a match is found, you're taken to a preview page where you can save the playlist locally.
-
-Playlists imported from a URL are **read-only**. You can play their tracks and add them to the queue, but you can't reorder or remove tracks.
-
-## Persistence
-
-Playlists save to disk automatically and persist across restarts.
+In the desktop app, **Library → Local files** keeps playlists of the music on your computer: create, rename, duplicate and delete them, reorder tracks, import and export M3U/M3U8, and play or shuffle them. **Smart playlists** there fill themselves from rules (genre, rating, BPM, key, date added and more) and update as your library changes.

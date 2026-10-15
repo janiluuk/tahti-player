@@ -4,7 +4,7 @@ description: Agent and contributor guide for extending Tahti add-ons and Tahti P
 
 # Tahti add-on and plugin authoring
 
-This page is the GitHub-hosted contributor guide for extending the Tahti web client. It complements the general [plugin system](plugin-system.md), [settings](settings.md), and [providers](providers.md) references.
+This page is the GitHub-hosted contributor guide for extending the Tahti web client. The older plugin system, settings and providers pages describe Nuclear's plugin SDK, which the current app no longer loads.
 
 {% hint style="warning" %}
 Tahti web has no backend of its own. Before adding a live integration, inspect the sibling `../tahti-org` repository. Its Fastify route, shared DTO, permission check, and persistence behavior are the API contract.

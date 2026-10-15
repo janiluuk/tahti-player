@@ -4,6 +4,10 @@ description: Save and manage user's favorite tracks, albums, and artists.
 
 # Favorites
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 ## Favorites API for Plugins
 
 The Favorites API lets Tahti Player, as well as  plugins, read and modify the user's library of saved tracks, albums, and artists.

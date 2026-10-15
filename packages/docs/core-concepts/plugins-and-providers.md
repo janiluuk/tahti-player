@@ -1,72 +1,28 @@
 ---
-description: What plugins are, what types of providers they offer, and how to manage them
+description: Add-ons, integrations and where they come from
 ---
 
 # Plugins and providers
 
-Plugins are packages that extend Tahti Player with new functionality. Each plugin can register one or more **providers**, which are the actual services Tahti Player uses to search, stream, recommend, and display music.
+Tahti Player plays Tahti's own catalogue out of the box; nothing has to be installed first. Add-ons extend it.
 
-## Provider types
+## Add-ons
 
-### Metadata
+Open **Settings → Add-ons**. The categories are Themes, Visualizers, Import, Multicast, Fingerprinting, Audio tools, Radio, Embed, Discovery, Channel and Playback; artists and the board see a few more for their own tools. Only add-ons that work today are listed, each with a state:
 
-Metadata providers power search. When you type a query in the search box, the active metadata provider returns matching artists, albums, and tracks. It also supplies artist biographies, album tracklists, and related artists when you browse their pages.
+- **Ready:** works end to end.
+- **Importer ready** or **Search ready:** the connect or search half works and the rest (usually a server-side import) is still coming; the row says what is missing.
 
-Metadata providers declare their capabilities to show you what's available:
+**Import** brings music in from other services (for example hearthis.at sets, SoundCloud or Mixcloud). Tracks from hearthis.at, Mixcloud, Spotify and Bandcamp are referenced, not copied: Tahti keeps a link and the provider's own player plays them.
 
-**Search capabilities** determine what kinds of results you get:
-- `artists`, `albums`, `tracks`, `playlists` (individual search types)
-- `unified` (a single search returning all types at once)
+**Discovery** holds Disco-widgets: small sandboxed add-ons you can put on Listen. Artists can put them on their channel and profile pages.
 
-**Artist metadata capabilities** determine what you see on artist pages:
-- `artistBio`, `artistSocialStats`, `artistTopTracks`, `artistAlbums`, `artistPlaylists`, `artistRelatedArtists`
+## Integrations
 
-**Album metadata capabilities**:
-- `albumDetails` (tracklist, release date, artwork)
+**Settings → Integrations** connects outside services: ListenBrainz and Last.fm scrobbling, and in the desktop app the local servers (Tahti Jam, MCP, MPD) and Discord Rich Presence.
 
-If a provider doesn't declare a capability, Tahti Player won't show the corresponding section in the UI. For example, an artist page won't display a biography section if the active metadata provider doesn't support `artistBio`.
+## Where add-ons come from
 
-### Streaming
+The catalogue of add-ons and themes is the public [tahti-registry](https://github.com/janiluuk/tahti-registry) on GitHub. Themes can also be made in Settings → Themes and submitted for review.
 
-Streaming providers deliver audio. When you play a track, the active streaming provider takes the track's title and artist, finds a matching audio stream, and sends it to the playback engine.
-
-### Dashboard
-
-Dashboard providers populate the home screen with content like top tracks, new releases, top artists, and editorial playlists. Multiple dashboard providers can be active at the same time, and each one adds its own sections to the Dashboard.
-
-### Discovery
-
-Discovery providers generate recommendations based on your recent listening. When discovery mode is enabled and you reach the end of your queue, Tahti Player asks the active discovery provider for more tracks and appends them automatically. See [Music discovery](../misc/discovery.md) for details.
-
-### Playlists
-
-Playlists providers let you import playlists from external services by pasting a URL, or by clicking them on the dashboard. Each playlists provider can handle URLs from a specific source. All installed playlists providers are active at the same time.
-
-## The plugin store
-
-Open Settings and go to the **Plugins** tab to manage your plugins. The **Store** sub-tab lists available plugins from the plugin registry. You can filter by category and search by name.
-
-Clicking **Install** downloads the plugin and activates it immediately. Installed plugins appear in the **Installed** sub-tab, where you can remove them.
-
-## Choosing active providers (Sources)
-
-When you have multiple plugins offering the same provider type, the **Sources** view (accessible from the left sidebar) lets you pick which one is active.
-
-Sources are split into two groups:
-
-**Selectable** (you pick one from a dropdown):
-- Metadata
-- Streaming
-- Discovery
-
-**Informational** (all installed providers are active):
-- Dashboard
-- Playlists
-
-### Provider pairing
-
-Some metadata providers are designed to be paired with a specific streaming provider. When you select a paired metadata provider, the streaming dropdown switches to the matching provider and becomes locked. A message explains the pairing.
-
-If the required streaming provider isn't installed, a warning appears on the metadata provider option in the dropdown.
-
-<figure><img src="../.gitbook/assets/sources-view.png" alt="The Sources view showing provider selection dropdowns" width="400"><figcaption><p>The Sources view</p></figcaption></figure>
+Writing an add-on: see [Tahti add-on and plugin authoring](../plugins/tahti-web-authoring.md).
