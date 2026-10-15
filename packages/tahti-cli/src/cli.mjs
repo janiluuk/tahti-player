@@ -25,6 +25,7 @@ import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryProcessing } from './commands/library-processing.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
 import { MAX_MENTIONS_LIMIT, runMentions } from './commands/mentions.mjs';
+import { runMessagesList, runMessagesSend } from './commands/messages.mjs';
 import { runNotificationsList } from './commands/notifications-list.mjs';
 import { runNotificationsRead } from './commands/notifications-read.mjs';
 import { runPurchases } from './commands/purchases.mjs';
@@ -391,6 +392,29 @@ release, newsletter, tracklist, chat) and where.
     options: { ...JSON_OPTION, limit: { type: 'string' } },
     run: (config, { values }) =>
       runMentions(config, { json: values.json, limit: values.limit }),
+  },
+  {
+    path: ['messages', 'list'],
+    usage: 'tahti messages list [--json]',
+    summary: 'List your direct-message conversations',
+    details: `Calls GET /api/me/messages/conversations: who, unread count, last update
+and the start of the last message, plus the unread total. Listing does not
+mark anything read.`,
+    options: JSON_OPTION,
+    run: (config, { values }) => runMessagesList(config, { json: values.json }),
+  },
+  {
+    path: ['messages', 'send'],
+    usage: 'tahti messages send <username> <message...>',
+    summary: 'Send a direct message',
+    details: `Finds or starts your conversation with <username> (POST
+/api/me/messages/conversations), then sends the words after it as one
+message (up to 2000 characters). Quote the message if it contains shell
+characters. Needs a token with the write scope.`,
+    options: {},
+    positionals: Infinity,
+    run: (config, { positionals }) =>
+      runMessagesSend(config, positionals[0], positionals.slice(1)),
   },
   {
     path: ['collections', 'list'],

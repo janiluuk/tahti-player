@@ -40,6 +40,15 @@ describe('describeHttpError', () => {
     );
   });
 
+  it('shows a 403 that is not about the token as the API wrote it', () => {
+    expect(
+      describeHttpError(403, '/x', 'This account is no longer available'),
+    ).toBe('This account is no longer available');
+    expect(
+      describeHttpError(403, '/x', 'This API token does not have write access'),
+    ).toMatch(/^Token invalid or missing scope/);
+  });
+
   it('prefers the API message for 404 and other statuses', () => {
     expect(describeHttpError(404, '/x', 'Sound item not found')).toBe(
       'Sound item not found',
