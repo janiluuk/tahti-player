@@ -2,6 +2,11 @@
 import { parseArgs } from 'node:util';
 
 import { CliError, resolveConfig } from './api-client.mjs';
+import {
+  runBlocksAdd,
+  runBlocksList,
+  runBlocksRemove,
+} from './commands/blocks.mjs';
 import { runChannel } from './commands/channel.mjs';
 import {
   runCollectionsAdd,
@@ -343,6 +348,37 @@ window for the top tracks.
 the tier, the amount in euros and the tracks it unlocked.`,
     options: JSON_OPTION,
     run: (config, { values }) => runPurchases(config, { json: values.json }),
+  },
+  {
+    path: ['blocks', 'list'],
+    usage: 'tahti blocks list [--json]',
+    summary: 'List the accounts you have blocked',
+    details: 'Calls GET /api/me/blocks, newest first (up to 500).',
+    options: JSON_OPTION,
+    run: (config, { values }) => runBlocksList(config, { json: values.json }),
+  },
+  {
+    path: ['blocks', 'add'],
+    usage: 'tahti blocks add <username>',
+    summary: 'Block an account',
+    details: `Calls POST /api/me/blocks. A blocked account cannot message you, mention
+you or comment on your tracks, and the follows, loves, reposts and
+collection subscriptions between you are removed. Blocking twice is fine.
+Needs a token with the write scope.`,
+    options: {},
+    positionals: 1,
+    run: (config, { positionals }) => runBlocksAdd(config, positionals[0]),
+  },
+  {
+    path: ['blocks', 'remove'],
+    usage: 'tahti blocks remove <username>',
+    summary: 'Unblock an account',
+    details: `Calls DELETE /api/me/blocks/:username. What the block removed (follows,
+loves, reposts, subscriptions) does not come back. Needs a token with the
+write scope.`,
+    options: {},
+    positionals: 1,
+    run: (config, { positionals }) => runBlocksRemove(config, positionals[0]),
   },
   {
     path: ['collections', 'list'],
