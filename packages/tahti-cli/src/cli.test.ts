@@ -37,6 +37,7 @@ describe('main', () => {
     expect(help).toContain('tahti notifications list');
     expect(help).toContain('tahti notifications read <id> | --all');
     expect(help).toContain('tahti stats');
+    expect(help).toContain('tahti collections list');
     expect(help).toContain('tahti shell');
   });
 
