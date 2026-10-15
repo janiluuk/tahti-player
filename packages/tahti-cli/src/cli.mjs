@@ -25,6 +25,7 @@ import { runLibraryEdit } from './commands/library-edit.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryProcessing } from './commands/library-processing.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
+import { MAX_LIKES_LIMIT, runLikes } from './commands/likes.mjs';
 import { runLogin, runLogout } from './commands/login.mjs';
 import { MAX_MENTIONS_LIMIT, runMentions } from './commands/mentions.mjs';
 import { runMessagesList, runMessagesSend } from './commands/messages.mjs';
@@ -457,6 +458,18 @@ characters. Needs a token with the write scope.`,
     options: { ...JSON_OPTION, limit: { type: 'string' } },
     run: (config, { values }) =>
       runFeed(config, { json: values.json, limit: values.limit }),
+  },
+  {
+    path: ['likes'],
+    usage: 'tahti likes [--limit <n>] [--json]',
+    summary: 'List the tracks you have loved',
+    details: `Calls GET /api/me/likes, newest first: when you loved it, the artist, the
+title and the track id. Only tracks that are still public (or your own) are
+listed. The table leaves out the signed playback links; --json has them.
+  --limit <n>   How many, 1-${MAX_LIKES_LIMIT} (default: 50)`,
+    options: { ...JSON_OPTION, limit: { type: 'string' } },
+    run: (config, { values }) =>
+      runLikes(config, { json: values.json, limit: values.limit }),
   },
   {
     path: ['stash', 'list'],
