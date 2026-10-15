@@ -276,6 +276,10 @@ export const commands = {
 	 *  is where the damaged file was kept. Returned once, then cleared.
 	 */
 	libraryTakeRecoveryNotice: () => typedError<string | null, string>(__TAURI_INVOKE("library_take_recovery_notice")),
+	/**
+	 *  The current counter, so a view can tell whether what it shows is stale.
+	 */
+	libraryChangeVersion: () => typedError<LibraryChangeVersion, string>(__TAURI_INVOKE("library_change_version")),
 	libraryWatching: () => typedError<boolean, string>(__TAURI_INVOKE("library_watching")),
 	/**  Turns folder watching on or off (persisted); manual rescan always works. */
 	librarySetWatching: (enabled: boolean) => typedError<null, string>(__TAURI_INVOKE("library_set_watching", { enabled })),
@@ -799,6 +803,8 @@ export type ItunesUnresolved = {
 	path: string | null,
 	reason: UnresolvedReason,
 };
+
+export type LibraryChangeVersion = { version: number };
 
 export type LibraryPage = {
 	tracks: LibraryTrack[],

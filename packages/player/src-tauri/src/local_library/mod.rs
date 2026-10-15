@@ -11,6 +11,7 @@ pub mod artwork;
 pub mod artwork_backfill;
 pub mod backup;
 pub mod catalog;
+pub mod changes;
 pub mod import;
 pub mod import_jobs;
 pub mod itunes_import;
@@ -42,6 +43,8 @@ mod analysis_tests;
 mod artwork_tests;
 #[cfg(test)]
 mod catalog_tests;
+#[cfg(test)]
+mod changes_tests;
 #[cfg(test)]
 mod backup_tests;
 #[cfg(test)]
@@ -277,6 +280,7 @@ async fn pool(app: &tauri::AppHandle) -> Result<SqlitePool, String> {
                 *state.recovered_from.lock().unwrap() = Some(moved.to_string_lossy().into_owned());
             }
             artwork::prune_in_background(pool.clone());
+            changes::watch(app.clone(), pool.clone());
             Ok::<_, String>(pool)
         })
         .await?;
