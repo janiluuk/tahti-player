@@ -50,6 +50,7 @@ Every command has `--help`. Most have `--json`, which prints the API's answer un
 | Plays, downloads and top tracks | `tahti stats --range 30` |
 | Notifications | `tahti notifications list --unread`, `tahti notifications read --all` |
 | Mentions, messages and your feed | `tahti mentions`, `tahti messages list`, `tahti messages send <user> <text>`, `tahti feed` |
+| Tracks you loved | `tahti likes` |
 | What you bought | `tahti purchases` |
 | Your private stash | `tahti stash list` |
 | Blocked accounts | `tahti blocks list`, `tahti blocks add <user>`, `tahti blocks remove <user>` |
