@@ -6,12 +6,14 @@ import { Button } from '@tahti-player/ui';
 type Props = {
   chart: string;
   className?: string;
+  /** Names the scrollable diagram for screen readers. */
+  label?: string;
 };
 
 /**
  * Renders a Mermaid chart client-side (lazy-loads the mermaid package).
  */
-export function MermaidDiagram({ chart, className }: Props) {
+export function MermaidDiagram({ chart, className, label = 'Diagram' }: Props) {
   const reactId = useId().replace(/:/g, '');
   const hostRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
@@ -163,7 +165,12 @@ export function MermaidDiagram({ chart, className }: Props) {
           {chart}
         </pre>
       )}
-      <div className="mermaid-host max-h-[75vh] min-h-0 overflow-auto [&:fullscreen]:max-h-none [&:fullscreen]:flex-1">
+      <div
+        className="mermaid-host focus-visible:ring-primary max-h-[75vh] min-h-0 overflow-auto rounded outline-none focus-visible:ring-2 [&:fullscreen]:max-h-none [&:fullscreen]:flex-1"
+        role="region"
+        aria-label={label}
+        tabIndex={0}
+      >
         <div
           ref={hostRef}
           style={{

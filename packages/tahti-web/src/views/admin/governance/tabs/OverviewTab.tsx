@@ -186,9 +186,17 @@ export function OverviewTab() {
           />
         </div>
 
-        <div className="border-border mt-4 overflow-x-auto rounded-lg border">
+        <div
+          className="border-border focus-visible:ring-primary mt-4 overflow-x-auto rounded-lg border outline-none focus-visible:ring-2"
+          role="region"
+          aria-labelledby="governance-voting-activity"
+          tabIndex={0}
+        >
           <div className="border-border border-b px-3 py-2">
-            <h3 className="text-xs font-semibold tracking-wide uppercase">
+            <h3
+              id="governance-voting-activity"
+              className="text-xs font-semibold tracking-wide uppercase"
+            >
               Recent voting activity
             </h3>
           </div>

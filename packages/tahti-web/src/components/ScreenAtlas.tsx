@@ -121,6 +121,7 @@ function ScreenNavigation({ c }: { c: MapCase }) {
         <MermaidDiagram
           key={c.id}
           chart={caseFlowchart(c)}
+          label={`${c.title} navigation flow`}
           className="mt-1.5"
         />
         <MapCommentForm
