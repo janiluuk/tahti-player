@@ -50,9 +50,13 @@ export function PanelHeader({
       <div className="order-1 min-w-0 flex-1">
         <div className="font-display flex items-center gap-2 text-sm font-bold tracking-tight sm:text-base">
           {rotationPlaying ? (
-            <ListMusicIcon size={18} className="text-primary" aria-hidden />
+            <ListMusicIcon
+              size={18}
+              className="text-primary-strong"
+              aria-hidden
+            />
           ) : (
-            <RadioIcon size={18} className="text-primary" aria-hidden />
+            <RadioIcon size={18} className="text-primary-strong" aria-hidden />
           )}
           Stream Manager
         </div>

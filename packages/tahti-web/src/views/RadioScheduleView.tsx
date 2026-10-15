@@ -493,7 +493,7 @@ export function RadioScheduleView() {
                           'border-border inline-block h-8 rounded-none border-r border-b px-1.5 text-left text-[11px] whitespace-normal transition-colors active:scale-100 disabled:opacity-100',
                           booking
                             ? booking.isMine
-                              ? 'bg-primary/20 text-primary hover:bg-primary/30'
+                              ? 'bg-primary/20 text-primary-strong hover:bg-primary/30'
                               : 'bg-background-secondary text-foreground-secondary cursor-default'
                             : isPast
                               ? 'bg-background-secondary/20 cursor-not-allowed'

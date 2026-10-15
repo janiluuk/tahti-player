@@ -30,7 +30,7 @@ export const TitleCell = <T extends Track>({
       <button
         className={cn(
           'block w-full min-w-0 cursor-pointer truncate text-left hover:underline',
-          isCurrent && 'text-primary font-semibold',
+          isCurrent && 'text-primary-strong font-semibold',
         )}
         title={title === undefined ? undefined : String(title)}
         onClick={(e) => {

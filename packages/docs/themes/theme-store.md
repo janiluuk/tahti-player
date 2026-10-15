@@ -1,45 +1,15 @@
 ---
-description: Browse, install, and manage community themes from the built-in theme store.
+description: Community themes, and submitting your own.
 ---
 
-# Theme store
+# Community themes
 
-Tahti Player has a built-in theme store where you can browse and install themes created by the community. Open Preferences from the sidebar, go to Themes, and switch to the **Store** tab.
+**Settings → Themes → Browse** lists the community themes that ship with the app next to the built-in ones. They come from the public theme catalogue, [tahti-registry](https://github.com/janiluuk/tahti-registry) (`themes/`). Click one to apply it.
 
-<figure><img src="../.gitbook/assets/theme-store.png" alt="The theme store, showing available themes"><figcaption></figcaption></figure>
+## Submitting your theme
 
-## Browsing the store
+1. Make a theme in the **Editor** tab, or add one with **Import JSON** (see [Advanced themes](themes-advanced.md)).
+2. Under **Your imported themes**, use **Submit to the community catalog** on it.
+3. The board reviews it. Your submissions and their state (pending review, approved, rejected) are listed in Settings → Themes. A rejected theme can be changed and submitted again.
 
-The Store tab lists themes from the official theme registry at [github.com/janiluuk/tahti-registry](https://github.com/janiluuk/tahti-registry) (`themes/` and generated `themes.json`). Each theme shows a color palette preview (diagonal swatches), its name, description, author, and tags.
-
-The search bar filters by name, description, author, and tags.
-
-## Installing themes
-
-Click Install on any theme. Tahti Player downloads the theme file from the registry and saves it locally. The button shows progress during the download, then switches to "Installed" when done.
-
-Installed themes appear in the My Themes tab under a **Store themes** dropdown.
-
-## Applying installed themes
-
-You can apply an installed store theme in two ways: select it from the Store themes dropdown on the My Themes tab, or click the Apply button on a theme in the Store tab.
-
-Selecting a store theme deselects any basic or advanced theme. Only one theme can be active at a time. The active store theme shows a checkmark in the Store tab.
-
-<figure><img src="../.gitbook/assets/applied-store-theme.png" alt="An installed store theme applied to the player"><figcaption></figcaption></figure>
-
-## Uninstalling themes
-
-Click the trash icon on an installed theme in the Store tab. If the theme was active, Tahti Player resets to the default theme.
-
-## Where store themes are stored
-
-Store themes live in a `themes/store/` subdirectory inside your app data folder, separate from user-created themes in `themes/`:
-
-- Linux: `~/.local/share/live.tahti.player/themes/store/`
-- macOS: `~/Library/Application Support/live.tahti.player/themes/store/`
-- Windows: `%APPDATA%/live.tahti.player/themes/store/`
-
-## Creating themes for the store
-
-Store themes are regular [advanced theme](themes-advanced.md) JSON files with extra metadata fields: author, description, tags, and a color palette for the preview. See [tahti-registry](https://github.com/janiluuk/tahti-registry) (`themes/`) for submission instructions and the required format. New themes must appear there; changed themes must bump their catalog version.
+Approved themes go into the catalogue and ship with a later version of the app.

@@ -13,7 +13,7 @@ export function StatNumber({
   return (
     <span
       className={cn(
-        'font-heading text-primary text-4xl font-bold tabular-nums',
+        'font-heading text-primary-strong text-4xl font-bold tabular-nums',
         className,
       )}
     >

@@ -52,7 +52,7 @@ export function StatsGrid({ state }: { state: StreamManagerState }) {
       <StatChip
         icon={
           signalConnected ? (
-            <WifiIcon size={14} className="text-primary" aria-hidden />
+            <WifiIcon size={14} className="text-primary-strong" aria-hidden />
           ) : (
             <WifiOffIcon size={14} aria-hidden />
           )

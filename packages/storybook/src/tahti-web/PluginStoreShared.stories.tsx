@@ -45,7 +45,7 @@ function ConfigurableCardDemo() {
       </p>
       <button
         type="button"
-        className="text-primary self-start text-sm underline-offset-2 hover:underline"
+        className="text-primary-strong self-start text-sm underline-offset-2 hover:underline"
         onClick={() => setInstalled((v) => !v)}
       >
         Toggle "configured" state

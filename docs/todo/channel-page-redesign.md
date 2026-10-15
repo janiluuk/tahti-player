@@ -11,8 +11,11 @@ The artist channel page (`/channel/:slug`, `packages/tahti-web/src/views/Channel
 - **Phone hero**: Subscribe no longer covers the channel name (#519).
 - A radio-station channel has no Subscribe button (#521).
 
+## Done (2026-10-15)
+
+- Light theme pass: in a light theme the channel's colour scheme made track titles and stat numbers white on white; fixed in #782. `ChannelView` stories now render it in light (Aurora), dark and phone-light modes, with plays that fail if a track title drops under 4.5:1 against its surface (#793).
+
 ## Left
 
 - [ ] Check the four fixes on beta at desktop and phone widths once merged.
 - [ ] The rest of the redesign: the page still reads as stacked blocks (hero, stage, tracks, comments). Decide what "professional" should look like beyond the fixes above, ideally with a reference.
-- [ ] Light theme and Storybook story pass for the channel page.

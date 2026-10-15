@@ -83,7 +83,7 @@ export const SelectableTiles: FC<SelectableTilesProps> = (props) => {
             className={cn(
               'rounded-lg border-(length:--border-width) p-3 text-left text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
               checked
-                ? 'border-primary bg-primary/10 text-primary'
+                ? 'border-primary bg-primary/10 text-primary-strong'
                 : 'border-border text-foreground-secondary hover:text-foreground',
               layout === 'centered'
                 ? 'flex min-h-24 flex-col items-center justify-center gap-2 text-center'

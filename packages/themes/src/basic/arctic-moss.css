@@ -4,6 +4,7 @@
   --secondary: oklch(0.9 0.06 175);
   --secondary-foreground: oklch(0.22 0.06 175);
   --foreground-secondary: oklch(0.42 0.1 175);
+  --primary-strong: oklch(0.52 0.12 175);
 }
 
 :root[data-theme-id='nuclear:arctic-moss'][data-theme='dark'] {
@@ -17,4 +18,5 @@
   --foreground: oklch(0.9 0.006 175);
   --foreground-secondary: oklch(0.78 0.1 175);
   --border: oklch(0.48 0.035 175);
+  --primary-strong: var(--primary);
 }

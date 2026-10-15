@@ -42,7 +42,7 @@ const meta: Meta<typeof DesignerToolbar> = {
         <Link
           to="/channel/$slug"
           params={{ slug: 'northern-lights' }}
-          className="text-primary text-sm font-semibold underline-offset-2 hover:underline"
+          className="text-primary-strong text-sm font-semibold underline-offset-2 hover:underline"
         >
           Open my channel →
         </Link>
