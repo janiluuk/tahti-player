@@ -417,50 +417,98 @@ pub async fn evaluate_ids(pool: &SqlitePool, def: &SmartDefinition) -> Result<Ve
 }
 
 /// Results of evaluated definitions, valid while the library's change
-/// version (see `changes.rs`) and the calendar day stay the same. The day is
-/// part of the key because "within the last N days" moves at midnight with
-/// no write to the catalog.
+/// version (see `changes.rs`) stays the same and no track has crossed the
+/// edge of a "within the last N days" rule since. Those windows move with
+/// the clock, so a track leaves (or joins "not within") with no write to
+/// the catalog; each entry keeps the moment that next happens.
 #[derive(Default)]
 pub struct SmartCache {
-    pages: std::sync::Mutex<std::collections::HashMap<String, LibraryPage>>,
-    ids: std::sync::Mutex<std::collections::HashMap<String, Vec<String>>>,
+    pages: std::sync::Mutex<std::collections::HashMap<String, Cached<LibraryPage>>>,
+    ids: std::sync::Mutex<std::collections::HashMap<String, Cached<Vec<String>>>>,
+}
+
+struct Cached<T> {
+    value: T,
+    /// Unix seconds after which a rolling date rule may match differently.
+    valid_until: Option<i64>,
 }
 
 async fn cache_key(pool: &SqlitePool, def: &SmartDefinition, extra: &str) -> Result<String, String> {
     let version = super::changes::change_version(pool).await?;
-    let today = chrono::Local::now().date_naive();
     let rules = serde_json::to_string(&def.rules).map_err(|e| e.to_string())?;
-    Ok(format!("{version}|{today}|{}|{}|{}|{:?}|{rules}|{extra}", def.match_all, sort_name(def.sort), def.descending, def.limit))
+    Ok(format!("{version}|{}|{}|{}|{:?}|{rules}|{extra}", def.match_all, sort_name(def.sort), def.descending, def.limit))
 }
 
-fn remember<T: Clone>(map: &std::sync::Mutex<std::collections::HashMap<String, T>>, key: String, value: &T) {
+/// The last second at which every "within the last N days" rule still
+/// matches what it matches now: the oldest track inside a window drops out
+/// right after it. `None` when the definition has no such rule, or no track
+/// is inside the window (only a write can bring one in).
+async fn rolling_valid_until(pool: &SqlitePool, def: &SmartDefinition) -> Result<Option<i64>, String> {
+    let mut until: Option<i64> = None;
+    for rule in &def.rules {
+        if !matches!(rule.op, RuleOp::InLastDays | RuleOp::NotInLastDays) {
+            continue;
+        }
+        let column = match rule.field {
+            RuleField::Added => "added_at",
+            RuleField::LastPlayed => "last_played_at",
+            _ => continue,
+        };
+        let ago = days_ago(&rule.value)?;
+        let sql = format!("SELECT CAST(strftime('%s', MIN({column}), ?) AS INTEGER) FROM library_tracks WHERE {column} >= datetime('now', ?)");
+        let edge: Option<i64> = sqlx::query_scalar(&sql)
+            .bind(ago.replacen('-', "+", 1))
+            .bind(&ago)
+            .fetch_one(pool)
+            .await
+            .map_err(|e| e.to_string())?;
+        until = match (until, edge) {
+            (Some(a), Some(b)) => Some(a.min(b)),
+            (a, b) => a.or(b),
+        };
+    }
+    Ok(until)
+}
+
+fn cached<T: Clone>(map: &std::sync::Mutex<std::collections::HashMap<String, Cached<T>>>, key: &str) -> Option<T> {
+    let map = map.lock().unwrap();
+    let entry = map.get(key)?;
+    match entry.valid_until {
+        Some(until) if chrono::Utc::now().timestamp() > until => None,
+        _ => Some(entry.value.clone()),
+    }
+}
+
+fn remember<T: Clone>(map: &std::sync::Mutex<std::collections::HashMap<String, Cached<T>>>, key: String, value: &T, valid_until: Option<i64>) {
     let mut map = map.lock().unwrap();
     if map.len() >= MAX_CACHED {
         map.clear();
     }
-    map.insert(key, value.clone());
+    map.insert(key, Cached { value: value.clone(), valid_until });
 }
 
 impl SmartCache {
     /// `evaluate_page`, served from the cache while nothing changed.
     pub async fn page(&self, pool: &SqlitePool, def: &SmartDefinition, offset: i64) -> Result<LibraryPage, String> {
         let key = cache_key(pool, def, &offset.to_string()).await?;
-        if let Some(page) = self.pages.lock().unwrap().get(&key) {
-            return Ok(page.clone());
+        if let Some(page) = cached(&self.pages, &key) {
+            return Ok(page);
         }
+        let valid_until = rolling_valid_until(pool, def).await?;
         let page = evaluate_page(pool, def, offset).await?;
-        remember(&self.pages, key, &page);
+        remember(&self.pages, key, &page, valid_until);
         Ok(page)
     }
 
     /// `evaluate_ids`, served from the cache while nothing changed.
     pub async fn ids(&self, pool: &SqlitePool, def: &SmartDefinition) -> Result<Vec<String>, String> {
         let key = cache_key(pool, def, "ids").await?;
-        if let Some(ids) = self.ids.lock().unwrap().get(&key) {
-            return Ok(ids.clone());
+        if let Some(ids) = cached(&self.ids, &key) {
+            return Ok(ids);
         }
+        let valid_until = rolling_valid_until(pool, def).await?;
         let ids = evaluate_ids(pool, def).await?;
-        remember(&self.ids, key, &ids);
+        remember(&self.ids, key, &ids, valid_until);
         Ok(ids)
     }
 }
