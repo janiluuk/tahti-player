@@ -39,6 +39,13 @@ export function describeHttpError(status, path, apiMessage) {
   if (status === 401) {
     return `Token invalid or missing scope${suffix}. ${TOKEN_HELP}`;
   }
+  if (
+    status === 403 &&
+    apiMessage &&
+    !/token|scope|^forbidden$/i.test(apiMessage)
+  ) {
+    return apiMessage;
+  }
   if (status === 403) {
     return `Token invalid or missing scope${suffix}: this token is not allowed to access ${path}.`;
   }

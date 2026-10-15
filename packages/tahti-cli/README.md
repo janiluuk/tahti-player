@@ -106,6 +106,8 @@ Every command accepts `--json` (prints the API response unchanged) and
 | `tahti blocks list [--json]` | `GET /api/me/blocks` | Accounts you have blocked (username, name, date) |
 | `tahti blocks add <username>` / `tahti blocks remove <username>` | `POST /api/me/blocks`, `DELETE /api/me/blocks/:username` | Blocks or unblocks; a block also removes follows, loves, reposts and subscriptions between you, and unblocking does not restore them; needs the `write` scope |
 | `tahti mentions [--limit <n>] [--json]` | `GET /api/me/mentions` | Where other artists @mentioned you, newest first (date, who, bio/announcement/release/newsletter/tracklist/chat, title or link); `--limit` is 1-50 |
+| `tahti messages list [--json]` | `GET /api/me/messages/conversations` | Conversations (who, unread, updated, start of the last message) and the unread total; does not mark anything read |
+| `tahti messages send <username> <message...>` | `POST /api/me/messages/conversations`, `POST /api/me/messages/conversations/:id/messages` | Sends one message, starting the conversation if needed; needs the `write` scope |
 | `tahti collections list [--json]`                                                             | `GET /api/me/collections`                                                     | Your collections, newest first (slug, name, type, visibility, item count, created)                                                                                                            |
 | `tahti collections show <slug> [--json]`                                                      | `GET /api/me/collections/:slug`                                               | One collection (name, type, visibility, collaborative, description) and its items (#, title, artist, track or release, length, whether it is still public); no signed audio URLs in the table |
 | `tahti collections add <slug> [<sound-id>...] [--release <id>] [--json]` | `POST /api/me/collections/:slug/items` | One row per item: added, already there, or failed with the reason; exits 1 if any failed; needs the `write` scope |
@@ -160,6 +162,7 @@ which does include the `email` field.
 | `tahti shell` without mpv / non-TTY                  | Install-mpv message, or “needs an interactive terminal”                                       |
 | 401 (revoked, expired or wrong token)                | `Token invalid or missing scope (<API message>) ...`                                          |
 | 403                                                  | `Token invalid or missing scope (<API message>): this token is not allowed to access <path>.` |
+| 403 not about the token (e.g. a blocked or deleted recipient) | The API's message |
 | 404                                                  | The API's message, e.g. `Sound item not found` or `Release not found`                         |
 | Network failure                                      | `Could not reach the Tahti API at <url>: <reason>`                                            |
 | Unknown flag or bad value                            | The problem plus a pointer to `tahti <command> --help`                                        |
