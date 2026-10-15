@@ -89,6 +89,7 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
         local_library::roots::library_rescan_roots,
         local_library::roots::library_relink_root,
         local_library::library_take_recovery_notice,
+        local_library::changes::library_change_version,
         local_library::watcher::library_watching,
         local_library::watcher::library_set_watching,
         local_library::smart_playlists::smart_list,
