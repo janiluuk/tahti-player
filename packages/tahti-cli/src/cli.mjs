@@ -3,6 +3,10 @@ import { parseArgs } from 'node:util';
 
 import { CliError, resolveConfig } from './api-client.mjs';
 import { runChannel } from './commands/channel.mjs';
+import {
+  runCollectionsAdd,
+  runCollectionsRemove,
+} from './commands/collections-edit.mjs';
 import { runCollectionsList } from './commands/collections-list.mjs';
 import { runCollectionsShow } from './commands/collections-show.mjs';
 import { runHearthisDownloadSet } from './commands/hearthis-download-set.mjs';
@@ -353,6 +357,38 @@ Items someone else has since made private are marked "no longer public".
       runCollectionsShow(config, positionals[0], { json: values.json }),
   },
   {
+    path: ['collections', 'add'],
+    usage:
+      'tahti collections add <slug> [<sound-id>...] [--release <id>] [--json]',
+    summary: 'Add tracks or a release to one of your collections',
+    details: `Calls POST /api/me/collections/:slug/items once per item, appending each to
+the end. Your own tracks must have finished processing; other artists'
+tracks must be public; a release must be yours and published. An item that
+is already there is reported, not added twice. Exits with 1 when any item
+fails. Needs a token with the write scope.
+  --release <id>   Also add one of your releases`,
+    options: { ...JSON_OPTION, release: { type: 'string' } },
+    positionals: Infinity,
+    run: (config, { values, positionals }) =>
+      runCollectionsAdd(config, positionals[0], positionals.slice(1), {
+        release: values.release,
+        json: values.json,
+      }),
+  },
+  {
+    path: ['collections', 'remove'],
+    usage: 'tahti collections remove <slug> <#>',
+    summary: 'Remove an item from one of your collections',
+    details: `Removes the item at position <#> as numbered by \`tahti collections show\`
+(DELETE /api/me/collections/:slug/items/:itemId). Removes it from the
+collection only; the track or release itself stays. Needs a token with
+the write scope.`,
+    options: {},
+    positionals: 2,
+    run: (config, { positionals }) =>
+      runCollectionsRemove(config, positionals[0], positionals[1]),
+  },
+  {
     path: ['channel'],
     usage: 'tahti channel [<slug>] [--json]',
     summary: 'Show whether a channel is live and what it plays',
@@ -382,9 +418,9 @@ pause, n/p next/prev, ←/→ seek, / search, a queue, ? help, q quit.`,
 const ENVIRONMENT_HELP = `Environment:
   TAHTI_API_TOKEN   Personal API token (tahti.live → Settings → Account → API tokens).
                     Required by every command except search and
-                    channel <slug>; import, library edit, library delete and
-                    notifications read need
-                    the write scope. hearthis download-set only needs read
+                    channel <slug>. Commands that change something (their
+                    --help says so) need a token with the write scope.
+                    hearthis download-set only needs read
                     (files are fetched from hearthis.at, not uploaded to Tahti).
                     shell needs a token for library playback.
   TAHTI_API_URL     API base URL (default: https://api.tahti.live)
