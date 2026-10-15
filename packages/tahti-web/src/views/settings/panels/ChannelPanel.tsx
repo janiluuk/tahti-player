@@ -28,6 +28,7 @@ import { ChannelModeratorsPanel } from '../../../components/moderation/ChannelMo
 import { ChatAccessPanel } from '../../../components/moderation/ChatAccessPanel';
 import { ChatBansPanel } from '../../../components/moderation/ChatBansPanel';
 import { ChatMessagesPanel } from '../../../components/moderation/ChatMessagesPanel';
+import { StudioPanel } from '../../../components/StudioPanel';
 import {
   formatGenreTags,
   MAX_GENRES,
@@ -131,58 +132,68 @@ export function ChannelPanel() {
           content: !channelProfile ? (
             <SettingsHint>Loading…</SettingsHint>
           ) : (
-            <div className="flex flex-col gap-6">
-              <SettingsToggle
-                label="Show share button on my channel"
-                description="Let listeners copy or share your channel link from your channel page."
-                value={channelProfile.showShareButton ?? true}
-                onChange={(value) =>
-                  saveProfileSwitch(
-                    'showShareButton',
-                    value,
-                    'Share button setting saved.',
-                  )
-                }
-              />
-              <ChannelAutoplayToggle />
-              <label className="flex flex-col gap-2">
-                <span className="text-foreground text-sm font-semibold">
-                  Genres
-                </span>
-                <span className="text-foreground-secondary text-sm select-none">
-                  Up to {MAX_GENRES} — helps listeners find you.
-                </span>
-                <GenrePicker
-                  value={normalizeGenresForPicker(
-                    parseGenreTags(channelProfile.socialLinks?.genres),
-                  )}
-                  onChange={(genres) => {
-                    // socialLinks is replaced wholesale on save, so a profile
-                    // that failed to load must not be written back.
-                    if (!profileLoaded) {
-                      toast.error('Could not load your profile. Try again.');
-                      return;
+            <div className="flex flex-col gap-4">
+              <StudioPanel
+                title="Channel page"
+                description="What listeners can do when they open your channel."
+              >
+                <div className="flex flex-col gap-5">
+                  <SettingsToggle
+                    label="Show share button on my channel"
+                    description="Let listeners copy or share your channel link from your channel page."
+                    value={channelProfile.showShareButton ?? true}
+                    onChange={(value) =>
+                      saveProfileSwitch(
+                        'showShareButton',
+                        value,
+                        'Share button setting saved.',
+                      )
                     }
-                    const previous = channelProfile;
-                    const socialLinks = {
-                      ...(previous.socialLinks ?? {}),
-                      genres: formatGenreTags(genres),
-                    };
-                    setChannelProfile({ ...previous, socialLinks });
-                    void patchMeProfile({ socialLinks }).then((result) => {
-                      if (!result.ok) {
-                        setChannelProfile(previous);
-                        toast.error(result.error);
+                  />
+                  <ChannelAutoplayToggle />
+                </div>
+              </StudioPanel>
+              <StudioPanel
+                title="Genres"
+                description={`Up to ${MAX_GENRES}. They help listeners find you.`}
+              >
+                <label className="flex flex-col gap-2">
+                  <span className="sr-only">Genres</span>
+                  <GenrePicker
+                    value={normalizeGenresForPicker(
+                      parseGenreTags(channelProfile.socialLinks?.genres),
+                    )}
+                    onChange={(genres) => {
+                      // socialLinks is replaced wholesale on save, so a profile
+                      // that failed to load must not be written back.
+                      if (!profileLoaded) {
+                        toast.error('Could not load your profile. Try again.');
                         return;
                       }
-                      setChannelProfile(result.data);
-                    });
-                  }}
-                />
-              </label>
-              <SettingsHint>
-                A channel with public tracks is listed in the Listen directory.
-              </SettingsHint>
+                      const previous = channelProfile;
+                      const socialLinks = {
+                        ...(previous.socialLinks ?? {}),
+                        genres: formatGenreTags(genres),
+                      };
+                      setChannelProfile({ ...previous, socialLinks });
+                      void patchMeProfile({ socialLinks }).then((result) => {
+                        if (!result.ok) {
+                          setChannelProfile(previous);
+                          toast.error(result.error);
+                          return;
+                        }
+                        setChannelProfile(result.data);
+                      });
+                    }}
+                  />
+                </label>
+                <div className="mt-4">
+                  <SettingsHint>
+                    A channel with public tracks is listed in the Listen
+                    directory.
+                  </SettingsHint>
+                </div>
+              </StudioPanel>
             </div>
           ),
         },

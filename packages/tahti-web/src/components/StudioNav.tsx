@@ -403,13 +403,9 @@ export function AudienceSubNav({ current }: { current?: string }) {
   );
 }
 
-export const StudioNav = ({
-  current,
-  global = false,
-}: {
-  current?: string;
-  global?: boolean;
-}) => (global ? <StudioNavigation current={current} /> : null);
+export const StudioNav = ({ current }: { current?: string }) => (
+  <StudioNavigation current={current} />
+);
 
 export function StudioMainNavItems() {
   const { t } = useTranslation('web');
