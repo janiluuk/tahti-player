@@ -245,7 +245,7 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
                   style="scrollbar-width: none;"
                 >
                   <table
-                    class="border-border relative w-full table-fixed border-(length:--border-width)"
+                    class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
                     role="table"
                   >
                     <thead>

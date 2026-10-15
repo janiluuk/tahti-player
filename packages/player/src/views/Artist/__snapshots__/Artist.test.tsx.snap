@@ -856,7 +856,7 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                             style="scrollbar-width: none;"
                           >
                             <table
-                              class="border-border relative w-full table-fixed border-(length:--border-width)"
+                              class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
                               role="table"
                             >
                               <thead>
@@ -2625,7 +2625,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                     class="mt-5 flex flex-wrap gap-3"
                   >
                     <div
-                      class="border-border bg-background shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
+                      class="border-border bg-background text-foreground shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
                     >
                       <span
                         class="shrink-0"
@@ -2671,7 +2671,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                       </span>
                     </div>
                     <div
-                      class="border-border bg-background shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
+                      class="border-border bg-background text-foreground shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
                     >
                       <span
                         class="shrink-0"
@@ -2723,7 +2723,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                       </span>
                     </div>
                     <div
-                      class="border-border bg-background shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
+                      class="border-border bg-background text-foreground shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
                     >
                       <span
                         class="shrink-0"
@@ -2768,7 +2768,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                       </span>
                     </div>
                     <div
-                      class="border-border bg-background shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
+                      class="border-border bg-background text-foreground shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
                     >
                       <span
                         class="shrink-0"
@@ -2903,7 +2903,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                             style="scrollbar-width: none;"
                           >
                             <table
-                              class="border-border relative w-full table-fixed border-(length:--border-width)"
+                              class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
                               role="table"
                             >
                               <thead>

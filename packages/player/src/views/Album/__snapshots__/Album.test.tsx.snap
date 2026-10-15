@@ -732,7 +732,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                       class="flex flex-wrap gap-3"
                     >
                       <div
-                        class="border-border bg-background shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
+                        class="border-border bg-background text-foreground shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
                       >
                         <span
                           class="font-heading text-lg font-extrabold"
@@ -746,7 +746,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                         </span>
                       </div>
                       <div
-                        class="border-border bg-background shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
+                        class="border-border bg-background text-foreground shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
                       >
                         <span
                           class="font-heading text-lg font-extrabold"
@@ -760,7 +760,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                         </span>
                       </div>
                       <div
-                        class="border-border bg-background shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
+                        class="border-border bg-background text-foreground shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
                       >
                         <span
                           class="font-heading text-lg font-extrabold"
@@ -852,7 +852,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                         style="scrollbar-width: none;"
                       >
                         <table
-                          class="border-border relative w-full table-fixed border-(length:--border-width)"
+                          class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
                           role="table"
                         >
                           <thead>

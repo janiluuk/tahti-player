@@ -60,7 +60,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
         style="scrollbar-width: none;"
       >
         <table
-          class="border-border relative w-full table-fixed border-(length:--border-width)"
+          class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
           role="table"
         >
           <thead>
@@ -485,7 +485,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
         style="scrollbar-width: none;"
       >
         <table
-          class="border-border relative w-full table-fixed border-(length:--border-width)"
+          class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
           role="table"
         >
           <thead>
@@ -1092,7 +1092,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
         style="scrollbar-width: none;"
       >
         <table
-          class="border-border relative w-full table-fixed border-(length:--border-width)"
+          class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
           role="table"
         >
           <thead>
@@ -1660,7 +1660,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
           style="scrollbar-width: none;"
         >
           <table
-            class="border-border relative w-full table-fixed border-(length:--border-width)"
+            class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
             role="table"
           >
             <thead>
@@ -3341,7 +3341,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
         style="scrollbar-width: none;"
       >
         <table
-          class="border-border relative w-full table-fixed border-(length:--border-width)"
+          class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
           role="table"
         >
           <thead>
