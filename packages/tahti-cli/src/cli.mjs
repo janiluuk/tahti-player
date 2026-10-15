@@ -21,6 +21,7 @@ import { runLibraryProcessing } from './commands/library-processing.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
 import { runNotificationsList } from './commands/notifications-list.mjs';
 import { runNotificationsRead } from './commands/notifications-read.mjs';
+import { runPurchases } from './commands/purchases.mjs';
 import { runReleasesList } from './commands/releases-list.mjs';
 import { runReleasesShow } from './commands/releases-show.mjs';
 import { runSearch, SEARCH_PAGE_SIZE } from './commands/search.mjs';
@@ -333,6 +334,15 @@ window for the top tracks.
     options: { ...JSON_OPTION, range: { type: 'string' } },
     run: (config, { values }) =>
       runStats(config, { json: values.json, range: values.range }),
+  },
+  {
+    path: ['purchases'],
+    usage: 'tahti purchases [--json]',
+    summary: 'List the music you have bought on Tahti',
+    details: `Calls GET /api/me/purchases: paid purchases, newest first, with the artist,
+the tier, the amount in euros and the tracks it unlocked.`,
+    options: JSON_OPTION,
+    run: (config, { values }) => runPurchases(config, { json: values.json }),
   },
   {
     path: ['collections', 'list'],
