@@ -34,6 +34,7 @@ describe('main', () => {
     expect(help).toContain('tahti hearthis sets');
     expect(help).toContain('tahti hearthis set <permalink-or-url>');
     expect(help).toContain('tahti hearthis download-set');
+    expect(help).toContain('tahti notifications list');
     expect(help).toContain('tahti shell');
   });
 
@@ -221,6 +222,29 @@ describe('main', () => {
       { headers: { Accept: 'application/json' } },
     );
     expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Night Drive'));
+  });
+
+  it('runs notifications list with --unread', async () => {
+    const fetchMock = mockFetchJson({
+      notifications: [
+        {
+          id: 'n_1',
+          type: 'NEW_FOLLOWER',
+          title: 'nightowl followed you',
+          readAt: null,
+          createdAt: '2026-10-14T09:00:00.000Z',
+          actor: { username: 'nightowl', displayName: 'Night Owl' },
+        },
+      ],
+      unreadCount: 1,
+      hasMore: false,
+    });
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    expect(await main(['notifications', 'list', '--unread'])).toBe(0);
+    expect(fetchMock.mock.calls[0][0]).toBe(
+      'https://api.example.test/api/me/notifications',
+    );
+    expect(String(logSpy.mock.calls[0][0])).toContain('nightowl followed you');
   });
 
   it('surfaces a 401 as a token error', async () => {
