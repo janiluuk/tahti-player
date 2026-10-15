@@ -9,6 +9,7 @@ export * from './CardsRow';
 export * from './HorizontalScroll';
 export * from './NewsWidget';
 export * from './Combobox';
+export * from './ClampedText';
 export * from './CopyButton';
 export * from './ExternalLink';
 export * from './Dialog';

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 import {
   ButtonLink,
+  ClampedText,
   MediaArtwork,
   SectionShell,
   Tabs,
@@ -201,9 +202,9 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
         }
         description={
           show.artist.bio ? (
-            <p className="line-clamp-2 whitespace-pre-wrap">
+            <ClampedText className="whitespace-pre-wrap">
               {show.artist.bio}
-            </p>
+            </ClampedText>
           ) : null
         }
         backdropUrl={show.artist.coverUrl}

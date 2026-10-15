@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Alert, Button } from '@tahti-player/ui';
+import { Alert, Button, ClampedText } from '@tahti-player/ui';
 
 import {
   fetchFanTiers,
@@ -127,9 +127,9 @@ export function SubscribeView({
         subtitle={`@${data.artist.username}`}
         description={
           data.artist.bio ? (
-            <p className="line-clamp-2 whitespace-pre-wrap">
+            <ClampedText className="whitespace-pre-wrap">
               {data.artist.bio}
-            </p>
+            </ClampedText>
           ) : (
             <p>Subscribe to support this artist on Tahti.</p>
           )
