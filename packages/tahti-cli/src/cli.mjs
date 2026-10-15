@@ -13,6 +13,7 @@ import { runLibraryDelete } from './commands/library-delete.mjs';
 import { runLibraryDownload } from './commands/library-download.mjs';
 import { runLibraryEdit } from './commands/library-edit.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
+import { runLibraryProcessing } from './commands/library-processing.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
 import { runNotificationsList } from './commands/notifications-list.mjs';
 import { runNotificationsRead } from './commands/notifications-read.mjs';
@@ -123,6 +124,27 @@ is saved under the name the API gives, made safe for the file system.
         outDir: values.out || '.',
         force: values.force,
         url: values.url,
+      }),
+  },
+  {
+    path: ['library', 'processing'],
+    usage: 'tahti library processing [--wait] [--timeout <s>] [--json]',
+    summary: 'List the sounds Tahti is still processing',
+    details: `Calls GET /api/me/sound/processing (up to 50, newest first). Handy after
+\`tahti import\`: uploads stay PENDING or PROCESSING for a while.
+  --wait          Check every 5 s until nothing is processing
+  --timeout <s>   Give up waiting after this many seconds (default: 600);
+                  exits with 1 if something is still processing`,
+    options: {
+      ...JSON_OPTION,
+      wait: { type: 'boolean', default: false },
+      timeout: { type: 'string' },
+    },
+    run: (config, { values }) =>
+      runLibraryProcessing(config, {
+        json: values.json,
+        wait: values.wait,
+        timeout: values.timeout,
       }),
   },
   {
