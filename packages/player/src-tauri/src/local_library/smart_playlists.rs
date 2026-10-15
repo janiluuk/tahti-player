@@ -64,6 +64,10 @@ pub enum RuleOp {
     InLastDays,
     /// Dates: not within the last `value` days (never-played included).
     NotInLastDays,
+    /// Dates: before the day `value` (`YYYY-MM-DD`).
+    Before,
+    /// Dates: after the day `value` (`YYYY-MM-DD`).
+    After,
     IsSet,
     IsNotSet,
 }
@@ -187,10 +191,30 @@ fn rule_sql(rule: &SmartRule) -> Result<(String, Vec<Bind>), String> {
         (RuleField::LastPlayed, RuleOp::IsNotSet) => ("last_played_at IS NULL".into(), vec![]),
         (RuleField::Added, RuleOp::InLastDays) => ("added_at >= datetime('now', ?)".into(), vec![Bind::Text(days_ago(&rule.value)?)]),
         (RuleField::Added, RuleOp::NotInLastDays) => ("added_at < datetime('now', ?)".into(), vec![Bind::Text(days_ago(&rule.value)?)]),
+        (RuleField::LastPlayed | RuleField::Added, RuleOp::Before | RuleOp::After | RuleOp::Between) => {
+            let column = if rule.field == RuleField::Added { "added_at" } else { "last_played_at" };
+            match rule.op {
+                RuleOp::Before => (format!("{column} < date(?)"), vec![Bind::Text(day(&rule.value)?)]),
+                RuleOp::After => (format!("{column} >= date(?, '+1 day')"), vec![Bind::Text(day(&rule.value)?)]),
+                _ => {
+                    let (a, b) = (day(&rule.value)?, day(&rule.value2)?);
+                    let (from, to) = if a <= b { (a, b) } else { (b, a) };
+                    (format!("{column} >= date(?) AND {column} < date(?, '+1 day')"), vec![Bind::Text(from), Bind::Text(to)])
+                }
+            }
+        }
         (RuleField::Analyzed, RuleOp::IsSet) => ("analyzed = 1".into(), vec![]),
         (RuleField::Analyzed, RuleOp::IsNotSet) => ("analyzed = 0".into(), vec![]),
         _ => return Err(bad()),
     })
+}
+
+/// A calendar day as `YYYY-MM-DD`.
+fn day(value: &str) -> Result<String, String> {
+    let value = value.trim();
+    chrono::NaiveDate::parse_from_str(value, "%Y-%m-%d")
+        .map(|date| date.format("%Y-%m-%d").to_string())
+        .map_err(|_| format!("Not a date (YYYY-MM-DD): {value}"))
 }
 
 fn days_ago(value: &str) -> Result<String, String> {

@@ -334,6 +334,33 @@ async fn smart_rules_compare_strictly_and_match_a_text_start() {
 }
 
 #[tokio::test]
+async fn smart_rules_match_dates_before_after_and_between_days() {
+    let (pool, _dir) = library().await;
+    let house = id_of(&pool, "house.wav").await;
+    let slow = id_of(&pool, "slow.wav").await;
+    sqlx::query("UPDATE library_tracks SET added_at = '2026-01-10 12:00:00' WHERE id = ?").bind(&house).execute(&pool).await.unwrap();
+    sqlx::query("UPDATE library_tracks SET added_at = '2026-03-05 08:00:00', last_played_at = '2026-03-06 21:00:00' WHERE id = ?")
+        .bind(&slow)
+        .execute(&pool)
+        .await
+        .unwrap();
+
+    let added = |op, a: &str, b: &str| definition(vec![rule(RuleField::Added, op, a, b)], true);
+    assert_eq!(evaluate_ids(&pool, &added(RuleOp::Before, "2026-02-01", "")).await.unwrap(), vec![house.clone()]);
+    assert_eq!(evaluate_ids(&pool, &added(RuleOp::After, "2026-01-10", "")).await.unwrap(), vec![slow.clone()], "after the whole day");
+    assert_eq!(evaluate_ids(&pool, &added(RuleOp::Between, "2026-03-05", "2026-01-10")).await.unwrap().len(), 2, "both ends included, either order");
+    assert!(evaluate_ids(&pool, &added(RuleOp::Between, "2026-01-11", "2026-03-04")).await.unwrap().is_empty());
+
+    let played = definition(vec![rule(RuleField::LastPlayed, RuleOp::Before, "2026-12-31", "")], true);
+    assert_eq!(evaluate_ids(&pool, &played).await.unwrap(), vec![slow.clone()], "never played is not before a date");
+
+    for bad in ["2026-13-40", "yesterday", ""] {
+        assert!(save_smart(&pool, None, &added(RuleOp::Before, bad, "")).await.is_err(), "{bad}");
+    }
+    assert!(save_smart(&pool, None, &definition(vec![rule(RuleField::Bpm, RuleOp::Before, "2026-01-01", "")], true)).await.is_err());
+}
+
+#[tokio::test]
 async fn invalid_smart_rules_are_rejected_when_saved() {
     let (pool, _dir) = library().await;
     for bad in [

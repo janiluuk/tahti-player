@@ -89,6 +89,8 @@ export type NativeRuleOp =
   | 'between'
   | 'inLastDays'
   | 'notInLastDays'
+  | 'before'
+  | 'after'
   | 'isSet'
   | 'isNotSet';
 

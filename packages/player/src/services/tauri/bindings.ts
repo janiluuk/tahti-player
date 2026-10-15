@@ -1174,7 +1174,11 @@ export type RuleOp = "is" | "isNot" | "contains" | "notContains" | "atLeast" | "
 /**  Dates: within the last `value` days. */
 "inLastDays" | 
 /**  Dates: not within the last `value` days (never-played included). */
-"notInLastDays" | "isSet" | "isNotSet";
+"notInLastDays" | 
+/**  Dates: before the day `value` (`YYYY-MM-DD`). */
+"before" | 
+/**  Dates: after the day `value` (`YYYY-MM-DD`). */
+"after" | "isSet" | "isNotSet";
 
 export type SmartDefinition = {
 	name: string,
