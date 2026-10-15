@@ -4,6 +4,10 @@ description: Build metadata providers that power search, artist pages, and album
 
 # Metadata
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 ## Metadata Providers
 
 Metadata providers supply Tahti Player with information about artists, albums, and tracks. When a user searches for music or opens an artist page, Tahti Player delegates to whatever metadata provider is active. Without one, there's nothing to search and nothing to display.

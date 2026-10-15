@@ -9,16 +9,15 @@ Found in the 2026-10-15 docs audit. The GitBook user manual in `packages/docs` w
 - Favorites, Playlists, The queue, Listening history and Listening stats rewritten against tahti-web (#789).
 - Getting started, How Tahti Player works and Plugins and providers rewritten (#790).
 - Themes (all four pages) and Discover rewritten; the stale sitemap page removed (#791).
+- `plugins/*.md`: nothing loads `@tahti-player/plugin-sdk` plugins any more, so the 20 SDK pages carry a legacy warning and sit under "Legacy: Nuclear plugin SDK" in `SUMMARY.md`; `tahti-web-authoring.md` is the Add-ons section.
 
 ## Pages to rewrite against tahti-web
 
 | Page | What is stale |
 | --- | --- |
 | `user-manual/installation.md` | Mostly current (releases, platforms); check Nuclear names and the Snap/Flatpak notes |
-| `plugins/*.md` (21 pages) | Nuclear plugin SDK reference; keep only if the desktop app still loads SDK plugins, otherwise point to `tahti-web-authoring.md` |
 
 ## Plan
 
-1. Decide whether `plugins/*.md` stays (does anything still load `@tahti-player/plugin-sdk` plugins?).
-2. Rewrite the user manual and core concepts from the mock app, with fresh screenshots (`scripts/capture-readme-guide.mjs` captures the views).
-3. Update `SUMMARY.md` and remove pages that no longer apply.
+1. Rewrite the user manual and core concepts from the mock app, with fresh screenshots (`scripts/capture-readme-guide.mjs` captures the views).
+2. Update `SUMMARY.md` and remove pages that no longer apply.
