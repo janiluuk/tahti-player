@@ -32,7 +32,7 @@ export function NewsletterStatusView({ status }: { status: NewsletterStatus }) {
 
   return (
     <div className="mx-auto flex max-w-md flex-col gap-6 py-10">
-      <Box className="flex flex-col gap-3 p-6">
+      <Box variant="tertiary" className="flex flex-col gap-3 p-6">
         {status.kind === 'confirmed' ? (
           <>
             <h1 className="font-display text-2xl font-bold">
