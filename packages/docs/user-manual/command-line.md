@@ -70,4 +70,4 @@ Every command has `--help`. Most have `--json`, which prints the API's answer un
 
 ## The terminal player
 
-`tahti shell` opens a full-screen player with your library, search, Tahti Radio and internet radio stations, and a queue. Press `?` inside it for the keys: `Tab` moves between panes, `Enter` plays, `Space` pauses, `n`/`p` skip, `/` searches and `q` quits.
+`tahti shell` opens a full-screen player with your library, search, the tracks you loved, Tahti Radio and internet radio stations, and a queue. Press `?` inside it for the keys: `Tab` moves between panes, `Enter` plays, `Space` pauses, `n`/`p` skip, `/` searches and `q` quits.
