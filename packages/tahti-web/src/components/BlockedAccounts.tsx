@@ -52,8 +52,12 @@ export function BlockedAccounts() {
         Blocked accounts
       </h2>
       <p className="text-foreground-secondary text-sm">
-        People you blocked can&apos;t send you direct messages, and you
-        can&apos;t message them. Block someone from a conversation in Messages.
+        You and the people you block can&apos;t message each other, comment on,
+        love or repost each other&apos;s tracks, @mention each other, or join
+        each other&apos;s jams and collaborative playlists, and they can&apos;t
+        post or react in your channel&apos;s chat. Following stops both ways.
+        They aren&apos;t told. Block someone from their artist page or from a
+        conversation in Messages.
       </p>
       {blocked === null ? (
         <p className="text-foreground-secondary text-sm">Loading…</p>
