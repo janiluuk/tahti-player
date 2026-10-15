@@ -72,6 +72,12 @@ describe('SupportTab', () => {
     expect(needsReplyBadges()).toHaveLength(1);
   });
 
+  it('shows a cut-off subject in full on hover', async () => {
+    const subject = 'Cannot connect OBS to the multistream target since Monday';
+    await renderTab([ticket({ id: 't1', subject })]);
+    expect(screen.getByTitle(subject)).toHaveTextContent(subject);
+  });
+
   it('clears the mark once the board replies', async () => {
     const detail: AdminSupportTicketDetail = {
       ...ticket({ awaitingReply: true }),

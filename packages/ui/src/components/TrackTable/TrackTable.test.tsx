@@ -171,6 +171,27 @@ describe('TrackTable', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  it('gives cut-off titles, artists and albums their full text on hover', async () => {
+    const tracks = makeTracks(1);
+    tracks[0] = { ...tracks[0], title: 'A very long title that will not fit' };
+    render(
+      <TrackTable
+        tracks={tracks}
+        labels={labels}
+        display={{ displayArtist: true, displayAlbum: true }}
+      />,
+    );
+    const title = await screen.findByRole('button', {
+      name: 'A very long title that will not fit',
+    });
+    expect(title).toHaveAttribute(
+      'title',
+      'A very long title that will not fit',
+    );
+    expect(screen.getAllByTitle('Frank Zappa').length).toBeGreaterThan(0);
+    expect(screen.getByTitle('Album')).toHaveTextContent('Album');
+  });
+
   it('shows queued feedback and disables repeated queue clicks', async () => {
     const track = makeTracks(1)[0]!;
     const QueueHarness: FC = () => {
