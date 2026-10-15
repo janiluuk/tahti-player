@@ -97,13 +97,14 @@ export function requireToken(config) {
   }
 }
 
-/** JSON POST for write commands. Needs a token with the `write` scope. */
-export async function apiPost(path, body, config) {
+/** JSON write request (POST, PATCH, PUT) that answers with a JSON body.
+ * Needs a token with the `write` scope. */
+export async function apiSendJson(method, path, body, config) {
   requireToken(config);
   let res;
   try {
     res = await fetch(`${config.apiUrl}${path}`, {
-      method: 'POST',
+      method,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -122,6 +123,10 @@ export async function apiPost(path, body, config) {
     );
   }
   return res.json();
+}
+
+export function apiPost(path, body, config) {
+  return apiSendJson('POST', path, body, config);
 }
 
 /** Write request whose success answer has no body (204), e.g. PATCH or a

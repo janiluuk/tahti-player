@@ -9,6 +9,7 @@ import { runHearthisDownloadSet } from './commands/hearthis-download-set.mjs';
 import { runHearthisSet } from './commands/hearthis-set.mjs';
 import { runHearthisSets } from './commands/hearthis-sets.mjs';
 import { runImport } from './commands/import.mjs';
+import { runLibraryEdit } from './commands/library-edit.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
 import { runNotificationsList } from './commands/notifications-list.mjs';
@@ -51,6 +52,36 @@ membership and channel. --json prints the full API response unchanged.`,
     positionals: 1,
     run: (config, { values, positionals }) =>
       runLibraryShow(config, positionals[0], { json: values.json }),
+  },
+  {
+    path: ['library', 'edit'],
+    usage: 'tahti library edit <id> <field flags> [--json]',
+    summary: 'Change the metadata of one of your library sounds',
+    details: `Calls PATCH /api/me/sound/:id with only the fields you give and prints the
+sound as saved. Needs a token with the write scope.
+  --title <t>          New title (1-200 characters)
+  --description <t>    New description; "" clears it
+  --genre <g>          Main genre; "" clears it
+  --tags <a,b>         Replaces the tags (comma-separated, at most 20)
+  --bpm <n>            40-300, or "none" to clear it
+  --key <k>            Musical key, e.g. Am; "" clears it
+  --public, --private  Show or hide the sound on your profile
+  --downloads on|off   Allow or block downloads (streaming is unaffected)`,
+    options: {
+      ...JSON_OPTION,
+      title: { type: 'string' },
+      description: { type: 'string' },
+      genre: { type: 'string' },
+      tags: { type: 'string' },
+      bpm: { type: 'string' },
+      key: { type: 'string' },
+      public: { type: 'boolean', default: false },
+      private: { type: 'boolean', default: false },
+      downloads: { type: 'string' },
+    },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runLibraryEdit(config, positionals[0], values),
   },
   {
     path: ['releases', 'list'],
@@ -287,7 +318,7 @@ pause, n/p next/prev, ←/→ seek, / search, a queue, ? help, q quit.`,
 const ENVIRONMENT_HELP = `Environment:
   TAHTI_API_TOKEN   Personal API token (tahti.live → Settings → Account → API tokens).
                     Required by every command except search and
-                    channel <slug>; import and notifications read need
+                    channel <slug>; import, library edit and notifications read need
                     the write scope. hearthis download-set only needs read
                     (files are fetched from hearthis.at, not uploaded to Tahti).
                     shell needs a token for library playback.
