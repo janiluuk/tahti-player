@@ -40,6 +40,22 @@ const albums: TopListEntry[] = [
 ];
 
 describe('TopList', () => {
+  it('titles the list with an h3 unless told another level', () => {
+    const { getByRole, rerender } = render(
+      <TopList title="Artists" entries={artists} formatValue={String} />,
+    );
+    expect(getByRole('heading', { level: 3, name: 'Artists' })).toBeTruthy();
+    rerender(
+      <TopList
+        title="Artists"
+        headingLevel={2}
+        entries={artists}
+        formatValue={String}
+      />,
+    );
+    expect(getByRole('heading', { level: 2, name: 'Artists' })).toBeTruthy();
+  });
+
   it('(Snapshot) renders a list of artists', () => {
     const { container } = render(
       <TopList

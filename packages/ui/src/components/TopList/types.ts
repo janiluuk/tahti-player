@@ -12,6 +12,8 @@ export type TopListEntry = {
 
 export type TopListProps = ComponentProps<'div'> & {
   title?: string;
+  /** Heading level of the title, to fit the page's outline. Defaults to 3. */
+  headingLevel?: 2 | 3 | 4;
   entries: TopListEntry[];
   formatValue: (value: number) => string;
 };
