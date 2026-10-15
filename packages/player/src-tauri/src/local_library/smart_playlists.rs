@@ -14,10 +14,13 @@ use sqlx::{Row, SqlitePool};
 
 use super::analysis_dsp::normalize_key;
 use super::playlists::{add_tracks, create_playlist, PlaylistSummary};
-use super::{order_clause, pool, Bind, LibraryPage, LibraryTrack, SortColumn, TrackSort};
+use super::{order_clause, pool, Bind, LibraryPage, LibraryState, LibraryTrack, SortColumn, TrackSort};
+use tauri::Manager;
 
 const MAX_RESULT: i64 = 20_000;
 const MAX_RULES: usize = 30;
+/// Past this many cached results the cache starts over.
+const MAX_CACHED: usize = 500;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
@@ -413,6 +416,55 @@ pub async fn evaluate_ids(pool: &SqlitePool, def: &SmartDefinition) -> Result<Ve
     Ok(rows)
 }
 
+/// Results of evaluated definitions, valid while the library's change
+/// version (see `changes.rs`) and the calendar day stay the same. The day is
+/// part of the key because "within the last N days" moves at midnight with
+/// no write to the catalog.
+#[derive(Default)]
+pub struct SmartCache {
+    pages: std::sync::Mutex<std::collections::HashMap<String, LibraryPage>>,
+    ids: std::sync::Mutex<std::collections::HashMap<String, Vec<String>>>,
+}
+
+async fn cache_key(pool: &SqlitePool, def: &SmartDefinition, extra: &str) -> Result<String, String> {
+    let version = super::changes::change_version(pool).await?;
+    let today = chrono::Local::now().date_naive();
+    let rules = serde_json::to_string(&def.rules).map_err(|e| e.to_string())?;
+    Ok(format!("{version}|{today}|{}|{}|{}|{:?}|{rules}|{extra}", def.match_all, sort_name(def.sort), def.descending, def.limit))
+}
+
+fn remember<T: Clone>(map: &std::sync::Mutex<std::collections::HashMap<String, T>>, key: String, value: &T) {
+    let mut map = map.lock().unwrap();
+    if map.len() >= MAX_CACHED {
+        map.clear();
+    }
+    map.insert(key, value.clone());
+}
+
+impl SmartCache {
+    /// `evaluate_page`, served from the cache while nothing changed.
+    pub async fn page(&self, pool: &SqlitePool, def: &SmartDefinition, offset: i64) -> Result<LibraryPage, String> {
+        let key = cache_key(pool, def, &offset.to_string()).await?;
+        if let Some(page) = self.pages.lock().unwrap().get(&key) {
+            return Ok(page.clone());
+        }
+        let page = evaluate_page(pool, def, offset).await?;
+        remember(&self.pages, key, &page);
+        Ok(page)
+    }
+
+    /// `evaluate_ids`, served from the cache while nothing changed.
+    pub async fn ids(&self, pool: &SqlitePool, def: &SmartDefinition) -> Result<Vec<String>, String> {
+        let key = cache_key(pool, def, "ids").await?;
+        if let Some(ids) = self.ids.lock().unwrap().get(&key) {
+            return Ok(ids.clone());
+        }
+        let ids = evaluate_ids(pool, def).await?;
+        remember(&self.ids, key, &ids);
+        Ok(ids)
+    }
+}
+
 /// Saves the current result as an ordinary playlist that no longer changes.
 pub async fn snapshot(pool: &SqlitePool, id: &str, name: &str) -> Result<PlaylistSummary, String> {
     let def = get_smart(pool, id).await?.definition;
@@ -457,14 +509,15 @@ pub async fn smart_evaluate(
         Some(def) => def,
         None => get_smart(&pool, &id.ok_or("Missing smart playlist id")?).await?.definition,
     };
-    evaluate_page(&pool, &def, i64::from(offset)).await
+    app.state::<LibraryState>().smart_cache.page(&pool, &def, i64::from(offset)).await
 }
 
 #[tauri::command]
 #[specta::specta]
 pub async fn smart_track_ids(app: tauri::AppHandle, id: String) -> Result<Vec<String>, String> {
     let pool = pool(&app).await?;
-    evaluate_ids(&pool, &get_smart(&pool, &id).await?.definition).await
+    let def = get_smart(&pool, &id).await?.definition;
+    app.state::<LibraryState>().smart_cache.ids(&pool, &def).await
 }
 
 #[tauri::command]
