@@ -3,6 +3,7 @@ import { parseArgs } from 'node:util';
 
 import { CliError, resolveConfig } from './api-client.mjs';
 import { runCollectionsList } from './commands/collections-list.mjs';
+import { runCollectionsShow } from './commands/collections-show.mjs';
 import { runHearthisDownloadSet } from './commands/hearthis-download-set.mjs';
 import { runHearthisSet } from './commands/hearthis-set.mjs';
 import { runHearthisSets } from './commands/hearthis-sets.mjs';
@@ -242,6 +243,18 @@ and item count. Use the slug with \`tahti collections show\`.`,
     options: JSON_OPTION,
     run: (config, { values }) =>
       runCollectionsList(config, { json: values.json }),
+  },
+  {
+    path: ['collections', 'show'],
+    usage: 'tahti collections show <slug> [--json]',
+    summary: 'Show one of your collections with its items',
+    details: `Calls GET /api/me/collections/:slug. Get slugs from \`tahti collections list\`.
+Items someone else has since made private are marked "no longer public".
+--json includes the API's short-lived signed audio URLs; the table never does.`,
+    options: JSON_OPTION,
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runCollectionsShow(config, positionals[0], { json: values.json }),
   },
   {
     path: ['shell'],
