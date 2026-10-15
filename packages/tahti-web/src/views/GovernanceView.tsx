@@ -272,7 +272,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                 ? '1 open motion still needs your vote.'
                 : `${openMotionsCount} open motions still need your vote.`}
             </p>
-            <p className="text-xs opacity-70">
+            <p className="text-xs">
               {openMotionsTotal} open motion
               {openMotionsTotal === 1 ? '' : 's'} · {openTopicsCount} topic
               {openTopicsCount === 1 ? '' : 's'} you have not voted on
