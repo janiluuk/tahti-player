@@ -323,19 +323,39 @@ export async function testRadioStream(
  * can't work from a browser — callers should treat a null result as normal,
  * not an error, and fall back to static station info.
  */
+const unreadableIcyStreams = new Set<string>();
+
+/** Forgets which streams turned out to have no readable ICY metadata. */
+export function clearUnreadableIcyStreams() {
+  unreadableIcyStreams.clear();
+}
+
 export async function readIcyStreamTitle(
   streamUrl: string,
   timeoutMs = 4000,
 ): Promise<string | null> {
+  if (unreadableIcyStreams.has(streamUrl)) {
+    return null;
+  }
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetch(streamUrl, {
-      headers: { 'Icy-MetaData': '1' },
-      signal: controller.signal,
-    });
+    let res: Response;
+    try {
+      res = await fetch(streamUrl, {
+        headers: { 'Icy-MetaData': '1' },
+        signal: controller.signal,
+      });
+    } catch (error) {
+      if (!controller.signal.aborted) {
+        unreadableIcyStreams.add(streamUrl);
+      }
+      throw error;
+    }
     const metaint = Number(res.headers.get('icy-metaint'));
     if (!res.body || !Number.isFinite(metaint) || metaint <= 0) {
+      unreadableIcyStreams.add(streamUrl);
+      void res.body?.cancel().catch(() => {});
       return null;
     }
     const reader = res.body.getReader();
