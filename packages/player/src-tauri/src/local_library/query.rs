@@ -73,7 +73,7 @@ pub(super) fn order_clause(sort: Option<&TrackSort>) -> String {
     format!("ORDER BY {primary}, {TIE_BREAK}")
 }
 
-#[derive(Serialize, specta::Type)]
+#[derive(Clone, Serialize, specta::Type)]
 pub struct LibraryPage {
     pub tracks: Vec<LibraryTrack>,
     #[specta(type = Number<i64>)]

@@ -190,6 +190,8 @@ pub struct LibraryState {
     watch: watcher::WatchControl,
     /// Where an unreadable catalog file was set aside at startup, if it was.
     recovered_from: std::sync::Mutex<Option<String>>,
+    /// Smart playlist results, valid until the library changes.
+    smart_cache: smart_playlists::SmartCache,
 }
 
 /// Migration and backup policy (desktop-pro-library.md Phase 0):
