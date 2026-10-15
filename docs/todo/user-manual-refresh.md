@@ -4,6 +4,10 @@
 
 Found in the 2026-10-15 docs audit. The GitBook user manual in `packages/docs` was written for Nuclear's player UI. Since 2026-09-01 the desktop app renders tahti-web, so most pages describe screens and settings that no longer exist. The audit updated `user-manual/remote-control.md` (Tahti Jam pairing, #743) and `misc/keyboard-shortcuts.md` (tahti-web's real shortcuts); the integrations pages (MCP, MPD, Discord, Jam HTTP API) were rewritten with #737-#743.
 
+## Done
+
+- Favorites, Playlists, The queue, Listening history and Listening stats rewritten against tahti-web (#789).
+
 ## Pages to rewrite against tahti-web
 
 | Page | What is stale |
@@ -12,9 +16,6 @@ Found in the 2026-10-15 docs audit. The GitBook user manual in `packages/docs` w
 | `user-manual/installation.md` | Mostly current (releases, platforms); check Nuclear names and the Snap/Flatpak notes |
 | `core-concepts/how-nuclear-works.md` | Provider/plugin framework as the core idea; tahti-web is a Tahti client with a desktop library |
 | `core-concepts/plugins-and-providers.md` | Nuclear metadata/streaming providers; tahti-web has add-ons (`src/plugins/`, Settings → Add-ons) |
-| `core-concepts/favorites.md` | Three sidebar views (tracks, albums, artists); tahti-web has one Favorites page |
-| `core-concepts/playlists.md`, `the-queue.md` | Nuclear sidebar and queue panel; check against Library → Playlists and the queue rail |
-| `core-concepts/listening-history.md`, `listening-stats.md` | Check against Listen → History and its stats |
 | `core-concepts/tahti-sitemap-and-journeys.md` | 2026-08-28 route map; superseded by `packages/tahti-web/NAVIGATION-SITEMAP.md` (2026-10-03). Replace with a short user-facing tour or drop it |
 | `misc/discovery.md` | Nuclear's auto-queue discovery; tahti-web has the Discover page |
 | `themes/*.md` | `Preferences → Themes`; now Settings → Themes, with Nuclear Green as the default |
