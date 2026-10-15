@@ -1,5 +1,4 @@
 import { arc } from 'd3-shape';
-import { DateTime } from 'luxon';
 import { FC } from 'react';
 
 import { hourToRadians } from './geometry';
@@ -24,7 +23,7 @@ export const HourLabels: FC = () => (
           textAnchor="middle"
           dominantBaseline="central"
         >
-          {DateTime.fromObject({ hour }).toFormat('HH')}
+          {String(hour).padStart(2, '0')}
         </text>
       );
     })}

@@ -126,7 +126,6 @@ export function PortInventoryPanel() {
         <p className="text-foreground-secondary max-w-2xl text-sm">
           Living inventory of what is wired vs mock / missing in this Nuclear
           client. Source of truth:{' '}
-          <code className="text-foreground">TAHTI-PORT-CHECKLIST.md</code>,{' '}
           <code className="text-foreground">FEATURES.md</code>,{' '}
           <code className="text-foreground">MOCKS.md</code>.
         </p>

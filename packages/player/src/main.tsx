@@ -23,6 +23,7 @@ import {
   initDesktopMpd,
   installDesktopMcp,
 } from './desktopMcp';
+import { initDesktopUpdates, installDesktopUpdater } from './desktopUpdater';
 import { commands } from './services/tauri/bindings';
 import { unwrapResult } from './services/tauri/results';
 
@@ -585,8 +586,10 @@ if (!rootElement) {
 }
 
 await installDesktopMcp();
+installDesktopUpdater();
 await mountTahtiApp(rootElement);
 void initDesktopMcp();
 void initDesktopMpd();
 void initDesktopDiscord();
 void initDesktopJam();
+initDesktopUpdates();
