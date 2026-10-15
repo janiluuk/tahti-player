@@ -1,29 +1,15 @@
 ---
-description: Save tracks, albums, and artists to your favorites
+description: Save channels and tracks to your favorites
 ---
 
 # Favorites
 
-You can favorite three types of items: tracks, albums, and artists. Each has its own view in the left sidebar.
+Press the heart on a track or a channel to keep it in **Favorites** (in the sidebar, or the bottom bar on a phone). The page has three parts:
 
-## Adding favorites
+- **Channels** you favorited, with who is live right now.
+- **Tracks** you favorited, ready to play or add to the queue.
+- **Liked on Tahti**: tracks you liked while signed in, from your Tahti account. It only shows when you have some.
 
-- **Tracks**: click the heart icon in the track table, use the heart button in the player bar for the currently playing track, or use the three-dot menu (&#8942;) on any track
-- **Albums**: click the heart button on an album's page
-- **Artists**: click the heart button on an artist's page
+Favorited channels and tracks are kept for your account in this browser (or the desktop app). Following an artist is separate: it is on their profile, and their new releases and posts reach your **Feed**.
 
-Click the same button again to remove the item from your favorites.
-
-## Browsing favorites
-
-The left sidebar has three favorites views:
-
-- **Favorite albums** shows a card grid of your saved albums. Click one to open its detail page.
-- **Favorite tracks** shows a track table with filtering, sorting, and the same playback controls as search results (Play all, Add all to queue, per-track + button and three-dot menu).
-- **Favorite artists** shows a card grid of your saved artists. Click one to open their page.
-
-All favorites are sorted by when they were added, newest first.
-
-## Persistence
-
-Favorites save to disk automatically and persist across restarts.
+Signed out, the heart asks you to sign in.

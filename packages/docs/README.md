@@ -25,8 +25,8 @@ Tahti Player is built on the Nuclear player project. The GitHub org and Mastodon
 New to Tahti Player? Start here:
 
 - [Getting started](user-manual/getting-started.md) - install Tahti Player and play your first song
-- [How Tahti Player works](core-concepts/how-nuclear-works.md) - understand the plugin model and how playback works
-- [Plugins and providers](core-concepts/plugins-and-providers.md) - what plugins do and how to manage your sources
+- [How Tahti Player works](core-concepts/how-nuclear-works.md) - what the app is made of and where the music comes from
+- [Plugins and providers](core-concepts/plugins-and-providers.md) - add-ons, integrations and where they come from
 - [Installation](user-manual/installation.md) - platform-specific download and install instructions
 - [Themes](themes/themes.md) - customize Tahti Player's appearance with built-in, custom, or community themes
 
@@ -34,10 +34,11 @@ New to Tahti Player? Start here:
 
 This is a pnpm/turbo monorepo with these major packages:
 
-- @tahti-player/player - Main Tauri app (React + Rust)
+- @tahti-player/tahti-web - The app: beta.tahti.live and the desktop window
+- @tahti-player/player - Desktop shell (Tauri, Rust)
 - @tahti-player/ui - Shared UI components
 - @tahti-player/themes - Theming system and utilities
-- @tahti-player/plugin-sdk - Plugin framework and helpers
+- @tahti-player/plugin-sdk - Nuclear's plugin SDK (legacy; the app no longer loads these plugins)
 - @tahti-player/model - Shared data model
 - @tahti-player/hifi - Advanced HTML5 audio engine
 - @tahti-player/i18n - Internationalization

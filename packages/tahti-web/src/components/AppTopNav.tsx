@@ -6,10 +6,11 @@ import {
   SearchIcon,
   XIcon,
 } from 'lucide-react';
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 
-import { Button, Dialog } from '@tahti-player/ui';
+import { Button, CenteredLoader, Dialog } from '@tahti-player/ui';
 
+import { useOpenedOnce } from '../hooks/useOpenedOnce';
 import { cn } from '../lib/cn';
 import { BroadcastControls } from './app-top-nav/BroadcastControls';
 import { MessagesPopover } from './app-top-nav/MessagesPopover';
@@ -19,10 +20,23 @@ import { iconBtnClass } from './app-top-nav/shared';
 import { UserMenu } from './app-top-nav/UserMenu';
 import { useTopNavState } from './app-top-nav/useTopNavState';
 import { GlobalSearch } from './GlobalSearch';
-import { RadioBookingCalendar } from './RadioBookingCalendar';
-import { StreamManagerPanel } from './StreamManagerPanel';
 import { TahtiLogoLink } from './TahtiLogo';
-import { UploadTrackDialog } from './UploadTrackDialog';
+
+const UploadTrackDialog = lazy(() =>
+  import('./UploadTrackDialog').then((m) => ({
+    default: m.UploadTrackDialog,
+  })),
+);
+const RadioBookingCalendar = lazy(() =>
+  import('./RadioBookingCalendar').then((m) => ({
+    default: m.RadioBookingCalendar,
+  })),
+);
+const StreamManagerPanel = lazy(() =>
+  import('./StreamManagerPanel').then((m) => ({
+    default: m.StreamManagerPanel,
+  })),
+);
 
 type AppTopNavProps = {
   /** Show hamburger for mobile left drawer. */
@@ -53,6 +67,9 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
     processingItems,
   } = nav;
   const [phoneSearchOpen, setPhoneSearchOpen] = useState(false);
+  const uploadOpened = useOpenedOnce(uploadOpen);
+  const bookingCalendarOpened = useOpenedOnce(bookingCalendarOpen);
+  const streamManagerOpened = useOpenedOnce(streamManagerOpen);
 
   return (
     <header className="border-border bg-background-secondary sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between gap-2 border-b px-2 sm:px-3 md:px-6">
@@ -169,15 +186,23 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
           </Button>
         </div>
       ) : null}
-      <UploadTrackDialog
-        isOpen={uploadOpen}
-        onClose={() => setUploadOpen(false)}
-      />
-      <RadioBookingCalendar
-        isOpen={bookingCalendarOpen}
-        onClose={() => setBookingCalendarOpen(false)}
-      />
-      {user && hasChannel && user.channel ? (
+      {uploadOpened ? (
+        <Suspense fallback={null}>
+          <UploadTrackDialog
+            isOpen={uploadOpen}
+            onClose={() => setUploadOpen(false)}
+          />
+        </Suspense>
+      ) : null}
+      {bookingCalendarOpened ? (
+        <Suspense fallback={null}>
+          <RadioBookingCalendar
+            isOpen={bookingCalendarOpen}
+            onClose={() => setBookingCalendarOpen(false)}
+          />
+        </Suspense>
+      ) : null}
+      {streamManagerOpened && user && hasChannel && user.channel ? (
         <Dialog.Root
           isOpen={streamManagerOpen}
           onClose={() => setStreamManagerOpen(false)}
@@ -185,11 +210,13 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
         >
           <Dialog.Title>Stream Manager</Dialog.Title>
           <div className="mt-4">
-            <StreamManagerPanel
-              slug={user.channel.slug}
-              channelState={user.channel.state}
-              defaultExpanded
-            />
+            <Suspense fallback={<CenteredLoader />}>
+              <StreamManagerPanel
+                slug={user.channel.slug}
+                channelState={user.channel.state}
+                defaultExpanded
+              />
+            </Suspense>
           </div>
         </Dialog.Root>
       ) : null}

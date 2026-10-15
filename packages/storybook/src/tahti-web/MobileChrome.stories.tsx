@@ -178,13 +178,11 @@ export const Drawer: StoryObj = {
   },
 };
 
-/** The panel's X button; the full-screen backdrop is also labelled Close
- * and comes first in the DOM. */
+/** The panel's X button (the backdrop is hidden from the accessibility tree). */
 function panelCloseButton(body: ReturnType<typeof within>) {
-  const buttons = within(body.getByRole('dialog')).getAllByRole('button', {
+  return within(body.getByRole('dialog')).getByRole('button', {
     name: 'Close',
   });
-  return buttons[buttons.length - 1]!;
 }
 
 export const DrawerNoTitle: StoryObj = {

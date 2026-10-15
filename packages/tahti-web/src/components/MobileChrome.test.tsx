@@ -35,6 +35,18 @@ describe('MobileDrawer', () => {
     );
   });
 
+  it('closes when the backdrop is tapped, which screen readers and Tab skip', () => {
+    const onClose = renderDrawer();
+    const scrim = screen.getByTestId('mobile-drawer-scrim');
+
+    expect(scrim).toHaveAttribute('aria-hidden', 'true');
+    expect(scrim).toHaveAttribute('tabindex', '-1');
+    expect(screen.getAllByRole('button', { name: 'Close' })).toHaveLength(1);
+    fireEvent.click(scrim);
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   it('closes on Escape', () => {
     const onClose = renderDrawer();
 

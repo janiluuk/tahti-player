@@ -4,6 +4,10 @@ description: How plugins define, read, and update persisted settings in Tahti Pl
 
 # Settings
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 ## Settings API for Plugins
 
 Persist user preferences, secrets, and configuration with a single API. This guide shows how to define settings, read/write values, and react to changes.
