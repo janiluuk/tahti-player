@@ -10,14 +10,9 @@ Found in the 2026-10-15 docs audit. The GitBook user manual in `packages/docs` w
 - Getting started, How Tahti Player works and Plugins and providers rewritten (#790).
 - Themes (all four pages) and Discover rewritten; the stale sitemap page removed (#791).
 - `plugins/*.md`: nothing loads `@tahti-player/plugin-sdk` plugins any more, so the 20 SDK pages carry a legacy warning and sit under "Legacy: Nuclear plugin SDK" in `SUMMARY.md`; `tahti-web-authoring.md` is the Add-ons section.
-
-## Pages to rewrite against tahti-web
-
-| Page | What is stale |
-| --- | --- |
-| `user-manual/installation.md` | Mostly current (releases, platforms); check Nuclear names and the Snap/Flatpak notes |
+- Installation rewritten from the real release files (no MSI, DMG, RPM, Flatpak or AUR; the snap installs from the file); it says the desktop app doesn't update itself.
 
 ## Plan
 
-1. Rewrite the user manual and core concepts from the mock app, with fresh screenshots (`scripts/capture-readme-guide.mjs` captures the views).
-2. Update `SUMMARY.md` and remove pages that no longer apply.
+1. Fresh screenshots for the rewritten pages from the mock app (`scripts/capture-readme-guide.mjs` captures the views).
+2. Once the desktop app updates itself again, change the Updating section of `user-manual/installation.md`.
