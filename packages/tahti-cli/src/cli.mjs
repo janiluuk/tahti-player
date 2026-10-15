@@ -2,6 +2,7 @@
 import { parseArgs } from 'node:util';
 
 import { CliError, resolveConfig } from './api-client.mjs';
+import { runChannel } from './commands/channel.mjs';
 import { runCollectionsList } from './commands/collections-list.mjs';
 import { runCollectionsShow } from './commands/collections-show.mjs';
 import { runHearthisDownloadSet } from './commands/hearthis-download-set.mjs';
@@ -257,6 +258,19 @@ Items someone else has since made private are marked "no longer public".
       runCollectionsShow(config, positionals[0], { json: values.json }),
   },
   {
+    path: ['channel'],
+    usage: 'tahti channel [<slug>] [--json]',
+    summary: 'Show whether a channel is live and what it plays',
+    details: `Calls GET /api/channels/:slug (public; the token is not sent). With no slug,
+first looks up your own channel with GET /api/auth/me. Prints the state
+(and whether audio is coming in while live), now playing, up next, the
+next scheduled broadcast, whether chat is on and the HLS stream URL.`,
+    options: JSON_OPTION,
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runChannel(config, positionals[0], { json: values.json }),
+  },
+  {
     path: ['shell'],
     usage: 'tahti shell',
     summary: 'Interactive TUI: library, search, radio, queue (needs mpv)',
@@ -272,7 +286,8 @@ pause, n/p next/prev, ←/→ seek, / search, a queue, ? help, q quit.`,
 
 const ENVIRONMENT_HELP = `Environment:
   TAHTI_API_TOKEN   Personal API token (tahti.live → Settings → Account → API tokens).
-                    Required by every command except search; import needs
+                    Required by every command except search and
+                    channel <slug>; import and notifications read need
                     the write scope. hearthis download-set only needs read
                     (files are fetched from hearthis.at, not uploaded to Tahti).
                     shell needs a token for library playback.

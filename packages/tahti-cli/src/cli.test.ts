@@ -39,6 +39,7 @@ describe('main', () => {
     expect(help).toContain('tahti stats');
     expect(help).toContain('tahti collections list');
     expect(help).toContain('tahti collections show <slug>');
+    expect(help).toContain('tahti channel [<slug>]');
     expect(help).toContain('tahti shell');
   });
 
