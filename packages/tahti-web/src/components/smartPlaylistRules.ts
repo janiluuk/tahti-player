@@ -40,6 +40,9 @@ const OP_LABELS: Record<NativeRuleOp, string> = {
   notContains: 'does not contain',
   atLeast: 'is at least',
   atMost: 'is at most',
+  above: 'is more than',
+  below: 'is less than',
+  startsWith: 'starts with',
   between: 'is between',
   inLastDays: 'is within the last … days',
   notInLastDays: 'is not within the last … days',
@@ -48,8 +51,26 @@ const OP_LABELS: Record<NativeRuleOp, string> = {
 };
 
 const OPS_BY_KIND: Record<FieldKind, NativeRuleOp[]> = {
-  text: ['is', 'isNot', 'contains', 'notContains', 'isSet', 'isNotSet'],
-  number: ['is', 'isNot', 'atLeast', 'atMost', 'between', 'isSet', 'isNotSet'],
+  text: [
+    'is',
+    'isNot',
+    'contains',
+    'notContains',
+    'startsWith',
+    'isSet',
+    'isNotSet',
+  ],
+  number: [
+    'is',
+    'isNot',
+    'above',
+    'atLeast',
+    'below',
+    'atMost',
+    'between',
+    'isSet',
+    'isNotSet',
+  ],
   days: ['inLastDays', 'notInLastDays', 'isSet', 'isNotSet'],
   tag: ['is', 'isNot', 'isSet', 'isNotSet'],
   key: ['is', 'isNot', 'isSet', 'isNotSet'],

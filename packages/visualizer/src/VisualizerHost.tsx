@@ -3,10 +3,7 @@ import { lazy, Suspense, useId, useState, type ReactNode } from 'react';
 import { getMasterGain } from '@tahti-player/audio-core';
 import { CenteredLoader, cn, Select } from '@tahti-player/ui';
 
-import {
-  AdvancedVisualizer,
-  type AdvancedMode,
-} from './advanced/AdvancedVisualizer';
+import type { AdvancedMode } from './advanced/AdvancedVisualizer';
 import {
   ALL_VISUALIZER_MODES,
   isCymaticsMode,
@@ -14,6 +11,12 @@ import {
   type CymaticsMode,
   type VisualizerMode,
 } from './modes';
+
+const LazyAdvanced = lazy(() =>
+  import('./advanced/AdvancedVisualizer').then((m) => ({
+    default: m.AdvancedVisualizer,
+  })),
+);
 
 const LazyCymatics = lazy(() =>
   import('./cymatics/CymaticsVisualizer').then((m) => ({
@@ -90,13 +93,15 @@ export function VisualizerHost({
             />
           </Suspense>
         ) : (
-          <AdvancedVisualizer
-            mode={mode as AdvancedMode}
-            onModeChange={(m) => setMode(m)}
-            suspended={suspended}
-            showModeButtons={showModeButtons ?? !showModePicker}
-            showStatusBar={showStatusBar}
-          />
+          <Suspense fallback={fallback ?? <CenteredLoader />}>
+            <LazyAdvanced
+              mode={mode as AdvancedMode}
+              onModeChange={(m) => setMode(m)}
+              suspended={suspended}
+              showModeButtons={showModeButtons ?? !showModePicker}
+              showStatusBar={showStatusBar}
+            />
+          </Suspense>
         )}
       </div>
     </div>

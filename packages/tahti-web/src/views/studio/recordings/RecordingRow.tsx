@@ -55,7 +55,7 @@ export function RecordingRow({
         ) : (
           <span className="block truncate font-semibold">{title}</span>
         )}
-        <p className="text-foreground-secondary truncate text-xs">
+        <p className="text-foreground-secondary text-xs break-words">
           {formatDate(show.startedAt)}
           {show.durationSec ? ` · ${formatDuration(show.durationSec)}` : ''}
           {show.source

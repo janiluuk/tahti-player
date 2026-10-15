@@ -141,6 +141,7 @@ Demock waves 0-6 and the first product priorities (album designer, add to playli
 | MPD server | Tauri player | same Rust server | **rebuilt** | Answered from tahti-web's player (`src/lib/mpd/`); switch in Settings → Integrations in the desktop app |
 | Discord Rich Presence | Tauri player | same Rust commands | **rebuilt** | Set from tahti-web's player (`src/lib/discord/`); switch in Settings → Integrations in the desktop app |
 | Tahti Jam (phone remote + HTTP API) | Tauri player | same Rust server, pairing code added | **rebuilt** | Remote page `src/remote/` served at `/remote`; answered from tahti-web's player (`src/lib/jam/`); switch with pairing QR in Settings → Integrations in the desktop app |
+| App updates | Tauri player `updaterStore` | same Tauri updater, release feed `latest.json` | **rebuilt** | Checked 10 s after start and every 6 h from tahti-web (`src/lib/updates/`), offered in a toast; Check now / Install / Restart and an off switch in Settings → Integrations in the desktop app |
 
 Web cutover (`beta.tahti.live`) does **not** host Nuclear MCP — localhost player control plane. Do not strip `packages/player/src-tauri/src/mcp/` when packaging desktop.
 
