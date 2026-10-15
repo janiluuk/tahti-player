@@ -4,6 +4,7 @@ import { CliError, requireToken } from '../api-client.mjs';
 import {
   listLabel,
   loadLibraryItems,
+  loadLikedItems,
   loadRadioItems,
   loadSearchItems,
   resolveLibraryPlayUrl,
@@ -133,6 +134,7 @@ export async function runShell(config) {
     const labels = {
       library: ' Library ',
       search: state.searchQuery ? ` Search: ${state.searchQuery} ` : ' Search ',
+      likes: ' Likes ',
       radio: ' Radio ',
       queue: ' Queue ',
     };
@@ -146,6 +148,7 @@ export async function runShell(config) {
       const empty = {
         library: 'No library items.',
         search: state.searchQuery ? 'No tracks found.' : 'Press / to search.',
+        likes: 'No loved tracks yet.',
         radio: 'No radio stations.',
         queue: 'Queue is empty.',
       };
@@ -179,6 +182,25 @@ export async function runShell(config) {
         library,
         loading: false,
         status: `Loaded ${library.length} library items.`,
+      });
+    } catch (error) {
+      setState({
+        ...state,
+        loading: false,
+        status: error?.message ?? String(error),
+      });
+    }
+  }
+
+  async function refreshLikes() {
+    setState({ ...state, loading: true, status: 'Loading likes…' });
+    try {
+      const likes = await loadLikedItems(config);
+      setState({
+        ...state,
+        likes,
+        loading: false,
+        status: `Loaded ${likes.length} loved tracks.`,
       });
     } catch (error) {
       setState({
@@ -264,6 +286,12 @@ export async function runShell(config) {
         ...state,
         status:
           'Search results have no stream URL — open the track on tahti.live, or play from Library.',
+      });
+      return;
+    } else if (item.source === 'likes' && !url) {
+      setState({
+        ...state,
+        status: 'This track has no stream here — open it on tahti.live.',
       });
       return;
     } else if (item.source === 'radio' && !url) {
@@ -501,6 +529,9 @@ export async function runShell(config) {
     const id = currentNavId(state);
     if (id === 'library' && state.library.length === 0 && !state.loading) {
       await refreshLibrary();
+    }
+    if (id === 'likes' && state.likes.length === 0 && !state.loading) {
+      await refreshLikes();
     }
     if (id === 'radio' && state.radioItems.length === 0 && !state.loading) {
       await refreshRadio();

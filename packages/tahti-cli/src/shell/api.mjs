@@ -1,6 +1,8 @@
 import { apiGet, CliError } from '../api-client.mjs';
 import { fetchLibrarySounds } from '../commands/library-list.mjs';
+import { fetchLikes } from '../commands/likes.mjs';
 import { searchTracks } from '../commands/search.mjs';
+import { safeName } from '../format.mjs';
 
 export function toLibraryPlayItem(sound) {
   return {
@@ -26,6 +28,18 @@ export function toSearchPlayItem(track) {
   };
 }
 
+export function toLikedPlayItem(track) {
+  return {
+    id: track.id,
+    title: track.title ?? 'Untitled',
+    artist: safeName(track.artistDisplayName, track.artistUsername),
+    durationSec: null,
+    kind: 'track',
+    source: 'likes',
+    url: track.audioUrl ?? null,
+  };
+}
+
 export function toRadioPlayItem({ id, title, artist, url }) {
   return {
     id,
@@ -41,6 +55,11 @@ export function toRadioPlayItem({ id, title, artist, url }) {
 export async function loadLibraryItems(config) {
   const sounds = await fetchLibrarySounds(config, { sort: 'newest' });
   return sounds.map(toLibraryPlayItem);
+}
+
+export async function loadLikedItems(config) {
+  const { items } = await fetchLikes(config, { limit: 100 });
+  return items.map(toLikedPlayItem);
 }
 
 export async function loadSearchItems(config, query) {

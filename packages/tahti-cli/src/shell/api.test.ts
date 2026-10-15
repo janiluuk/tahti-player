@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mockFetchJson, TEST_CONFIG } from '../test-helpers';
 import {
   loadLibraryItems,
+  loadLikedItems,
   loadRadioItems,
   loadSearchItems,
   resolveLibraryPlayUrl,
@@ -36,6 +37,34 @@ describe('shell api helpers', () => {
       url: null,
       artist: 'A',
     });
+  });
+
+  it('loads loved tracks with their playback link and a safe artist name', async () => {
+    const fetchMock = mockFetchJson({
+      items: [
+        {
+          id: 's_9',
+          title: 'Night Drive',
+          audioUrl: 'https://cdn.example.test/night-drive.m3u8',
+          artistUsername: 'aurora',
+          artistDisplayName: 'aurora@example.com',
+        },
+      ],
+    });
+    expect(await loadLikedItems(TEST_CONFIG)).toEqual([
+      {
+        id: 's_9',
+        title: 'Night Drive',
+        artist: 'aurora',
+        durationSec: null,
+        kind: 'track',
+        source: 'likes',
+        url: 'https://cdn.example.test/night-drive.m3u8',
+      },
+    ]);
+    expect(String(fetchMock.mock.calls[0][0])).toContain(
+      '/api/me/likes?limit=100',
+    );
   });
 
   it('loads library items via GET /api/me/sound', async () => {

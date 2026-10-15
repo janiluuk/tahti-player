@@ -15,11 +15,15 @@ export function formatLikesTable(items) {
   );
 }
 
-export async function runLikes(config, { json = false, limit } = {}) {
+export async function fetchLikes(config, { limit } = {}) {
   const query = buildQuery({
     limit: parsePositiveInt('--limit', limit, MAX_LIKES_LIMIT),
   });
-  const result = await apiGet(`/api/me/likes${query}`, config);
+  return apiGet(`/api/me/likes${query}`, config);
+}
+
+export async function runLikes(config, { json = false, limit } = {}) {
+  const result = await fetchLikes(config, { limit });
   if (json) {
     return JSON.stringify(result, null, 2);
   }

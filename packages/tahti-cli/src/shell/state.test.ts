@@ -24,6 +24,7 @@ describe('shell state', () => {
     expect(NAV_ITEMS.map((item) => item.id)).toEqual([
       'library',
       'search',
+      'likes',
       'radio',
       'queue',
     ]);
@@ -141,9 +142,12 @@ describe('shell state', () => {
   it('exposes the current list for each nav pane', () => {
     const state = {
       ...createInitialState(),
-      navIndex: 3,
+      navIndex: 4,
       queue: [{ id: 'q', title: 'Q' }],
     };
     expect(currentList(state)).toHaveLength(1);
+    expect(
+      currentList({ ...state, navIndex: 2, likes: [{ id: 'l' }, { id: 'm' }] }),
+    ).toHaveLength(2);
   });
 });

@@ -1,6 +1,7 @@
 export const NAV_ITEMS = [
   { id: 'library', label: 'Library' },
   { id: 'search', label: 'Search' },
+  { id: 'likes', label: 'Likes' },
   { id: 'radio', label: 'Radio' },
   { id: 'queue', label: 'Queue' },
 ];
@@ -12,6 +13,7 @@ export function createInitialState() {
     library: [],
     searchQuery: '',
     searchResults: [],
+    likes: [],
     radioItems: [],
     queue: [],
     listIndex: 0,
@@ -35,6 +37,8 @@ export function currentList(state) {
       return state.library;
     case 'search':
       return state.searchResults;
+    case 'likes':
+      return state.likes;
     case 'radio':
       return state.radioItems;
     case 'queue':
