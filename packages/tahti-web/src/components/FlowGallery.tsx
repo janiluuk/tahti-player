@@ -150,7 +150,11 @@ export function FlowGallery() {
                 </div>
               </div>
               <Box variant="tertiary" className="h-auto rounded-lg p-3">
-                <MermaidDiagram key={selected.id} chart={selected.mermaid} />
+                <MermaidDiagram
+                  key={selected.id}
+                  chart={selected.mermaid}
+                  label={`${selected.title} diagram`}
+                />
               </Box>
               <MapCommentForm
                 kind="flow"
