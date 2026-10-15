@@ -10,6 +10,7 @@ import {
   restorePersistedQueue,
   startQueuePersistence,
 } from './lib/queuePersistence';
+import { startTruncatedTextTitles } from './lib/truncatedTextTitles';
 import { useThemeStore } from './plugins/themes';
 import { router } from './router';
 import { usePlayerStore } from './stores/playerStore';
@@ -31,6 +32,7 @@ export async function mountTahtiApp(rootElement: HTMLElement) {
   startPlayerPrefsPersistence();
   startClientLogEvents();
   startLocalPlayCounting();
+  startTruncatedTextTitles();
   createRoot(rootElement).render(
     <StrictMode>
       <TahtiApp />

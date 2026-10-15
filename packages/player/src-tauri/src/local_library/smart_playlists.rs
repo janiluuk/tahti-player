@@ -53,6 +53,12 @@ pub enum RuleOp {
     NotContains,
     AtLeast,
     AtMost,
+    /// Numbers: strictly greater than `value`.
+    Above,
+    /// Numbers: strictly less than `value`.
+    Below,
+    /// Text: begins with `value` (case-insensitive).
+    StartsWith,
     Between,
     /// Dates: within the last `value` days.
     InLastDays,
@@ -135,6 +141,8 @@ fn rule_sql(rule: &SmartRule) -> Result<(String, Vec<Bind>), String> {
             RuleOp::IsNot => (format!("({column} IS NULL OR {column} <> ?)"), vec![Bind::Real(number(&rule.value)?)]),
             RuleOp::AtLeast => (format!("{column} >= ?"), vec![Bind::Real(number(&rule.value)?)]),
             RuleOp::AtMost => (format!("{column} <= ?"), vec![Bind::Real(number(&rule.value)?)]),
+            RuleOp::Above => (format!("{column} > ?"), vec![Bind::Real(number(&rule.value)?)]),
+            RuleOp::Below => (format!("{column} < ?"), vec![Bind::Real(number(&rule.value)?)]),
             RuleOp::Between => {
                 let (a, b) = (number(&rule.value)?, number(&rule.value2)?);
                 (format!("{column} BETWEEN ? AND ?"), vec![Bind::Real(a.min(b)), Bind::Real(a.max(b))])
@@ -151,12 +159,14 @@ fn rule_sql(rule: &SmartRule) -> Result<(String, Vec<Bind>), String> {
         } else {
             rule.value.trim().to_owned()
         };
-        let like = format!("%{}%", value.replace('\\', "\\\\").replace('%', "\\%").replace('_', "\\_"));
+        let escaped = value.replace('\\', "\\\\").replace('%', "\\%").replace('_', "\\_");
+        let like = format!("%{escaped}%");
         return Ok(match rule.op {
             RuleOp::Is => (format!("{column} = ? COLLATE NOCASE"), vec![Bind::Text(value)]),
             RuleOp::IsNot => (format!("COALESCE({column}, '') <> ? COLLATE NOCASE"), vec![Bind::Text(value)]),
             RuleOp::Contains => (format!("{column} LIKE ? ESCAPE '\\'"), vec![Bind::Text(like)]),
             RuleOp::NotContains => (format!("COALESCE({column}, '') NOT LIKE ? ESCAPE '\\'"), vec![Bind::Text(like)]),
+            RuleOp::StartsWith => (format!("{column} LIKE ? ESCAPE '\\'"), vec![Bind::Text(format!("{escaped}%"))]),
             RuleOp::IsSet => (format!("COALESCE({column}, '') <> ''"), vec![]),
             RuleOp::IsNotSet => (format!("COALESCE({column}, '') = ''"), vec![]),
             _ => return Err(bad()),

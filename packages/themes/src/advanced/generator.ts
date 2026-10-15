@@ -1,5 +1,5 @@
 import type { AdvancedTheme } from './schema';
-import { parseAdvancedTheme } from './schema';
+import { parseAdvancedTheme } from './validate';
 
 const escapeValue = (v: string) => v.replace(/\n/g, ' ').trim();
 

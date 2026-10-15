@@ -69,8 +69,12 @@ flowchart TB
   (`VITE_TAHTI_API_URL`, CORS). `VITE_FORCE_MOCK=1` short-circuits every
   fetcher to fixture data — no network calls, no API needed.
 - **Desktop player** is Tauri (Rust + React): local library, unsandboxed
-  plugins, and a built-in MCP server (localhost only, `127.0.0.1:8800/mcp`)
-  that lets an AI agent drive playback/queue/favorites. It fetches the
+  plugins, and local servers answered by tahti-web's player: MCP for AI
+  agents (`127.0.0.1:8800/mcp`) and MPD (`127.0.0.1:6600`), both this
+  computer only, and the
+  Tahti Jam phone remote (LAN, ports 4120+, paired devices only); plus
+  Discord Rich Presence. Since 2026-09-01 the desktop window renders
+  tahti-web, not Nuclear's UI. It fetches the
   plugin/theme marketplace catalog directly from `tahti-registry` on GitHub —
   that path never touches the Tahti API.
 

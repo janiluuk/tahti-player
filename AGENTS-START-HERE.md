@@ -28,6 +28,9 @@ Do not invent sibling API shapes. Inspect `../tahti-org` routes/DTOs first. Do n
 | Storybook surface lookup | [`packages/tahti-web/STORYBOOK-SURFACES.md`](packages/tahti-web/STORYBOOK-SURFACES.md) | Matching row |
 | View catalog / Storybook coverage | [`docs/VIEW-CATALOG.md`](docs/VIEW-CATALOG.md) | Cross-check after adding/removing views, stories, or nav items |
 | Fork / API relationship | [`TAHTI.md`](TAHTI.md) | Path + ownership split |
+| Accessibility / responsive layout rules | [`docs/agent/CODE-STYLE.md`](docs/agent/CODE-STYLE.md) → Accessibility, Layout | The matching bullet |
+| User-facing docs site (GitBook) | [`packages/docs/SUMMARY.md`](packages/docs/SUMMARY.md) | Matching page; see `docs/todo/user-manual-refresh.md` for which pages are stale |
+| A doc that used to exist | [`docs/ARCHIVE.md`](docs/ARCHIVE.md) | Its replacement, or the `git show` path |
 | Ship loop (bump / deploy) | Skill `tahti-web-ship-loop` | Checklist |
 
 ## Do not scan (unless the user names them)
@@ -62,6 +65,7 @@ Status values: `open` | `blocked` | `partial` | (file deleted when done — neve
 | `docs/VIEW-CATALOG.md` | View index with Storybook coverage and unification candidates |
 | `docs/ARCHITECTURE.md` | System overview: repos, infra, diagram |
 | `docs/DATA-FLOW.md` | Same system, traced through 3 concrete request flows |
+| `docs/ARCHIVE.md` | Docs removed as finished or superseded, and where their content went |
 
 ## Always-on rules (pointers)
 
