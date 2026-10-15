@@ -36,7 +36,9 @@ editor. See root `AGENTS.md` → Persistent chrome visibility.
 | Everyone | Discover | Desktop sidebar, mobile bottom | `/discover` |
 | Everyone | Favorites | Desktop sidebar, mobile More drawer | `/favorites` |
 | Everyone | Library | Desktop sidebar, mobile More drawer | `/library` |
-| Everyone | Studio | Desktop sidebar; mobile bottom for artist / board accounts, More drawer otherwise | `/studio` (StudioGate sign-in prompt when signed out) |
+| Artists / board | Studio | Desktop sidebar; mobile bottom bar | `/studio` |
+| Signed-in listener | Become an artist | Desktop sidebar (More drawer on phones) | `/studio` (create-your-channel prompt) |
+| Signed out | (no Studio entry) | — | `/studio` still answers with the StudioGate sign-in prompt |
 | Everyone | Help center | Desktop sidebar footer, mobile More drawer | `/help` |
 | Everyone | Settings | Desktop sidebar footer, mobile More drawer (opens modal) | `ConnectedSettingsModal`; bookmarkable `/settings/$section` |
 | Signed in | Notifications, Messages | Top bar popovers | Notification links go through `/dashboard/*` redirects; messages open `/messages/$id` |
