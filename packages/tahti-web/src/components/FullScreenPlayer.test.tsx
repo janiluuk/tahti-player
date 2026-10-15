@@ -14,6 +14,12 @@ import { useLayoutStore } from '../stores/layoutStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { FullScreenPlayer } from './FullScreenPlayer';
 
+const stationNowPlaying = vi.hoisted(() => ({
+  value: null as { title: string; artist: string } | null,
+}));
+vi.mock('../hooks/useStationNowPlaying', () => ({
+  usePlayerStationNowPlaying: () => stationNowPlaying.value,
+}));
 vi.mock('./AddToPlaylistButton', () => ({ AddToPlaylistButton: () => null }));
 vi.mock('./ChannelVisualizer', () => ({
   ChannelVisualizer: ({
@@ -162,5 +168,96 @@ describe('FullScreenPlayer visualizer menu', () => {
       screen.getByTestId('visualizer-mode-trigger').getAttribute('aria-label'),
     ).toBe('Visualizer: Orb');
     expect(localStorage.getItem('tahti.viz.channel.abc')).toBe('orb');
+  });
+});
+
+describe('FullScreenPlayer radio programme', () => {
+  afterEach(() => {
+    cleanup();
+    stationNowPlaying.value = null;
+    useLayoutStore.setState({ fullScreenPlayerOpen: false });
+    usePlayerStore.getState().clearQueue();
+  });
+
+  it('shows what the station says is on, with the station name second', async () => {
+    stationNowPlaying.value = {
+      title: 'Aamulähetys · Juontaja',
+      artist: 'YleX',
+    };
+    await open('playing');
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(
+      'Aamulähetys · Juontaja',
+    );
+    expect(screen.getByText('YleX')).toBeTruthy();
+  });
+});
+
+describe('FullScreenPlayer full screen button', () => {
+  const requestFullscreen = vi.fn();
+  const exitFullscreen = vi.fn();
+  let fullscreenElement: Element | null = null;
+
+  beforeEach(() => {
+    fullscreenElement = null;
+    requestFullscreen.mockImplementation(() => {
+      fullscreenElement = document.documentElement;
+      document.dispatchEvent(new Event('fullscreenchange'));
+      return Promise.resolve();
+    });
+    exitFullscreen.mockImplementation(() => {
+      fullscreenElement = null;
+      document.dispatchEvent(new Event('fullscreenchange'));
+      return Promise.resolve();
+    });
+    Object.defineProperty(document, 'fullscreenEnabled', {
+      configurable: true,
+      get: () => true,
+    });
+    Object.defineProperty(document, 'fullscreenElement', {
+      configurable: true,
+      get: () => fullscreenElement,
+    });
+    document.exitFullscreen = exitFullscreen;
+    document.documentElement.requestFullscreen = requestFullscreen;
+  });
+
+  afterEach(() => {
+    cleanup();
+    useLayoutStore.setState({ fullScreenPlayerOpen: false });
+    usePlayerStore.getState().clearQueue();
+    Reflect.deleteProperty(document, 'fullscreenEnabled');
+    Reflect.deleteProperty(document, 'fullscreenElement');
+  });
+
+  it('fills the screen and goes back', async () => {
+    await open('playing');
+    fireEvent.click(screen.getByRole('button', { name: 'Full screen' }));
+    expect(requestFullscreen).toHaveBeenCalled();
+
+    const exit = await screen.findByRole('button', {
+      name: 'Exit full screen',
+    });
+    expect(exit.getAttribute('aria-pressed')).toBe('true');
+    fireEvent.click(exit);
+    expect(exitFullscreen).toHaveBeenCalled();
+    expect(
+      await screen.findByRole('button', { name: 'Full screen' }),
+    ).toBeTruthy();
+  });
+
+  it('leaves full screen when the player is minimized', async () => {
+    await open('playing');
+    fireEvent.click(screen.getByRole('button', { name: 'Full screen' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Minimize player' }));
+    expect(exitFullscreen).toHaveBeenCalled();
+  });
+
+  it('has no button where the browser cannot go full screen', async () => {
+    Object.defineProperty(document, 'fullscreenEnabled', {
+      configurable: true,
+      get: () => false,
+    });
+    await open('playing');
+    expect(screen.queryByRole('button', { name: 'Full screen' })).toBeNull();
   });
 });

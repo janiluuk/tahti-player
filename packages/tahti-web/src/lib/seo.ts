@@ -186,10 +186,11 @@ function setMeta(property: string, content: string): void {
 }
 
 let lastApplied: (RouteMetadata & { pathname: string }) | null = null;
+let playbackTitle: string | null = null;
 
 function applyMetadata(pathname: string, metadata: RouteMetadata): void {
   const canonicalUrl = new URL(pathname, window.location.origin).toString();
-  document.title = metadata.title;
+  document.title = playbackTitle ?? metadata.title;
   document.head
     .querySelector<HTMLMetaElement>('meta[name="description"]')
     ?.setAttribute('content', metadata.description);
@@ -221,21 +222,23 @@ export function syncDocumentMetadata(
 }
 
 /**
- * Re-applies whatever metadata was last synced for this pathname (guess or
- * real-data override) rather than recomputing the slug guess — used when
- * something else (the scrolling now-playing title) temporarily took over
- * document.title and needs to hand it back without discarding an override.
+ * Shows `title` in the tab and window title in place of the page's own
+ * until called with null, which puts the page's last synced title back.
+ * Page metadata synced in between keeps its share and Open Graph tags.
  */
-export function reapplyLastMetadata(pathname: string): void {
-  if (lastApplied && lastApplied.pathname === pathname) {
-    applyMetadata(pathname, lastApplied);
-  } else {
-    syncDocumentMetadata(pathname);
-  }
+export function setPlaybackDocumentTitle(title: string | null): void {
+  playbackTitle = title;
+  document.title = title ?? lastApplied?.title ?? document.title;
 }
 
-export function scrollingPlaybackTitle(title: string, offset: number): string {
-  const marquee = `${title}   `;
-  const position = offset % marquee.length;
-  return `${marquee.slice(position)}${marquee.slice(0, position)}`;
+/** The tab and window title while something plays: what is on, then who
+ * plays it, without repeating a name that is both. */
+export function playbackDocumentTitle(title: string, artist: string): string {
+  const what = title.trim();
+  const who = artist.trim();
+  const line =
+    who && who.toLowerCase() !== what.toLowerCase()
+      ? `${what} — ${who}`
+      : what || who;
+  return `▶ ${line} · Tahti`;
 }

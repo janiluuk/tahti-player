@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import {
   metadataForPath,
-  reapplyLastMetadata,
-  scrollingPlaybackTitle,
+  playbackDocumentTitle,
+  setPlaybackDocumentTitle,
   syncDocumentMetadata,
 } from './seo';
 
@@ -61,15 +61,19 @@ describe('metadataForPath', () => {
   });
 });
 
-describe('scrollingPlaybackTitle', () => {
-  it('rotates the playing track through the browser tab title', () => {
-    expect(scrollingPlaybackTitle('Track — Artist · Tahti Radio', 6)).toBe(
-      '— Artist · Tahti Radio   Track ',
+describe('playbackDocumentTitle', () => {
+  it('names what is on and who plays it', () => {
+    expect(playbackDocumentTitle('Aamulähetys · Juontaja', 'YleX')).toBe(
+      '▶ Aamulähetys · Juontaja — YleX · Tahti',
     );
+  });
+
+  it('says a station name once when nothing more is known', () => {
+    expect(playbackDocumentTitle('YleX', 'YleX')).toBe('▶ YleX · Tahti');
   });
 });
 
-describe('syncDocumentMetadata / reapplyLastMetadata', () => {
+describe('syncDocumentMetadata / setPlaybackDocumentTitle', () => {
   beforeEach(() => {
     document.head.innerHTML = `
       <meta name="description" content="" />
@@ -110,22 +114,15 @@ describe('syncDocumentMetadata / reapplyLastMetadata', () => {
     expect(ogImage()).toBe('https://cdn.tahti.live/avatar.jpg');
   });
 
-  it('re-applies the last-synced metadata for the same path instead of re-guessing', () => {
+  it('keeps the playback title while a page syncs its own metadata', () => {
+    setPlaybackDocumentTitle('▶ Aamu — YleX · Tahti');
     syncDocumentMetadata('/channel/night-radio', {
       title: 'Real Channel Name live on Tahti',
       image: 'https://cdn.tahti.live/avatar.jpg',
     });
-    document.title = 'Something else entirely';
-    reapplyLastMetadata('/channel/night-radio');
-    expect(document.title).toBe('Real Channel Name live on Tahti');
+    expect(document.title).toBe('▶ Aamu — YleX · Tahti');
     expect(ogImage()).toBe('https://cdn.tahti.live/avatar.jpg');
-  });
-
-  it('falls back to a fresh guess when re-applying for a different path', () => {
-    syncDocumentMetadata('/channel/night-radio', {
-      title: 'Real Channel Name live on Tahti',
-    });
-    reapplyLastMetadata('/u/mart-saar');
-    expect(document.title).toBe('Mart Saar on Tahti');
+    setPlaybackDocumentTitle(null);
+    expect(document.title).toBe('Real Channel Name live on Tahti');
   });
 });

@@ -4667,3 +4667,10 @@ Asked for as "wrap up the next 20 slices from the project todo, add prs and merg
 - **Standalone CLI repo:** tahti-cli#4 merged; tahti-cli#5 syncs #828-#846.
 - **Checks:** CLI tests per PR (175 → 243) and lint; the tag reader on four real MP3/FLAC files; Settings tests, `tsc`, eslint and mock-app screenshots for #843/#844; `StudioNav` tests for #845. Not tried: any new CLI command against the live API, `tahti shell` in a real terminal with mpv, Settings on a phone.
 
+## 2026-10-15 - Full-screen player: full screen button, radio programme, playback title
+
+Asked for as "the full screen player should have fullscreen button … the full screen one does not [show the current program] … make the page title to reflect this".
+
+- The full-screen player's top bar has a Full screen / Exit full screen button, styled like its other round buttons, where the browser allows it (`document.fullscreenEnabled`). It fills the screen with the whole page, so dialogs that portal to the body still show, and it leaves full screen when the player is minimized.
+- It shows what a catalog radio station says is on, with the station name second, like the player bar (`usePlayerStationNowPlaying`).
+- The tab and window title while radio or live plays is `▶ programme — station · Tahti`. It says a name only once when the title and the station are the same, and it no longer scrolls. `setPlaybackDocumentTitle` in `lib/seo.ts` holds it over a page's own title, so pages that sync their metadata after loading don't replace it.
