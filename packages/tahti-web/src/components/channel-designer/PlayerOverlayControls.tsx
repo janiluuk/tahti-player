@@ -143,7 +143,7 @@ export function PlayerOverlayControls({
                     {active ? (
                       <CheckIcon
                         size={14}
-                        className="text-primary"
+                        className="text-primary-strong"
                         aria-hidden
                       />
                     ) : null}

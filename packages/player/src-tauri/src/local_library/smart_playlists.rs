@@ -14,10 +14,13 @@ use sqlx::{Row, SqlitePool};
 
 use super::analysis_dsp::normalize_key;
 use super::playlists::{add_tracks, create_playlist, PlaylistSummary};
-use super::{order_clause, pool, Bind, LibraryPage, LibraryTrack, SortColumn, TrackSort};
+use super::{order_clause, pool, Bind, LibraryPage, LibraryState, LibraryTrack, SortColumn, TrackSort};
+use tauri::Manager;
 
 const MAX_RESULT: i64 = 20_000;
 const MAX_RULES: usize = 30;
+/// Past this many cached results the cache starts over.
+const MAX_CACHED: usize = 500;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
@@ -53,11 +56,21 @@ pub enum RuleOp {
     NotContains,
     AtLeast,
     AtMost,
+    /// Numbers: strictly greater than `value`.
+    Above,
+    /// Numbers: strictly less than `value`.
+    Below,
+    /// Text: begins with `value` (case-insensitive).
+    StartsWith,
     Between,
     /// Dates: within the last `value` days.
     InLastDays,
     /// Dates: not within the last `value` days (never-played included).
     NotInLastDays,
+    /// Dates: before the day `value` (`YYYY-MM-DD`).
+    Before,
+    /// Dates: after the day `value` (`YYYY-MM-DD`).
+    After,
     IsSet,
     IsNotSet,
 }
@@ -135,6 +148,8 @@ fn rule_sql(rule: &SmartRule) -> Result<(String, Vec<Bind>), String> {
             RuleOp::IsNot => (format!("({column} IS NULL OR {column} <> ?)"), vec![Bind::Real(number(&rule.value)?)]),
             RuleOp::AtLeast => (format!("{column} >= ?"), vec![Bind::Real(number(&rule.value)?)]),
             RuleOp::AtMost => (format!("{column} <= ?"), vec![Bind::Real(number(&rule.value)?)]),
+            RuleOp::Above => (format!("{column} > ?"), vec![Bind::Real(number(&rule.value)?)]),
+            RuleOp::Below => (format!("{column} < ?"), vec![Bind::Real(number(&rule.value)?)]),
             RuleOp::Between => {
                 let (a, b) = (number(&rule.value)?, number(&rule.value2)?);
                 (format!("{column} BETWEEN ? AND ?"), vec![Bind::Real(a.min(b)), Bind::Real(a.max(b))])
@@ -151,12 +166,14 @@ fn rule_sql(rule: &SmartRule) -> Result<(String, Vec<Bind>), String> {
         } else {
             rule.value.trim().to_owned()
         };
-        let like = format!("%{}%", value.replace('\\', "\\\\").replace('%', "\\%").replace('_', "\\_"));
+        let escaped = value.replace('\\', "\\\\").replace('%', "\\%").replace('_', "\\_");
+        let like = format!("%{escaped}%");
         return Ok(match rule.op {
             RuleOp::Is => (format!("{column} = ? COLLATE NOCASE"), vec![Bind::Text(value)]),
             RuleOp::IsNot => (format!("COALESCE({column}, '') <> ? COLLATE NOCASE"), vec![Bind::Text(value)]),
             RuleOp::Contains => (format!("{column} LIKE ? ESCAPE '\\'"), vec![Bind::Text(like)]),
             RuleOp::NotContains => (format!("COALESCE({column}, '') NOT LIKE ? ESCAPE '\\'"), vec![Bind::Text(like)]),
+            RuleOp::StartsWith => (format!("{column} LIKE ? ESCAPE '\\'"), vec![Bind::Text(format!("{escaped}%"))]),
             RuleOp::IsSet => (format!("COALESCE({column}, '') <> ''"), vec![]),
             RuleOp::IsNotSet => (format!("COALESCE({column}, '') = ''"), vec![]),
             _ => return Err(bad()),
@@ -177,10 +194,30 @@ fn rule_sql(rule: &SmartRule) -> Result<(String, Vec<Bind>), String> {
         (RuleField::LastPlayed, RuleOp::IsNotSet) => ("last_played_at IS NULL".into(), vec![]),
         (RuleField::Added, RuleOp::InLastDays) => ("added_at >= datetime('now', ?)".into(), vec![Bind::Text(days_ago(&rule.value)?)]),
         (RuleField::Added, RuleOp::NotInLastDays) => ("added_at < datetime('now', ?)".into(), vec![Bind::Text(days_ago(&rule.value)?)]),
+        (RuleField::LastPlayed | RuleField::Added, RuleOp::Before | RuleOp::After | RuleOp::Between) => {
+            let column = if rule.field == RuleField::Added { "added_at" } else { "last_played_at" };
+            match rule.op {
+                RuleOp::Before => (format!("{column} < date(?)"), vec![Bind::Text(day(&rule.value)?)]),
+                RuleOp::After => (format!("{column} >= date(?, '+1 day')"), vec![Bind::Text(day(&rule.value)?)]),
+                _ => {
+                    let (a, b) = (day(&rule.value)?, day(&rule.value2)?);
+                    let (from, to) = if a <= b { (a, b) } else { (b, a) };
+                    (format!("{column} >= date(?) AND {column} < date(?, '+1 day')"), vec![Bind::Text(from), Bind::Text(to)])
+                }
+            }
+        }
         (RuleField::Analyzed, RuleOp::IsSet) => ("analyzed = 1".into(), vec![]),
         (RuleField::Analyzed, RuleOp::IsNotSet) => ("analyzed = 0".into(), vec![]),
         _ => return Err(bad()),
     })
+}
+
+/// A calendar day as `YYYY-MM-DD`.
+fn day(value: &str) -> Result<String, String> {
+    let value = value.trim();
+    chrono::NaiveDate::parse_from_str(value, "%Y-%m-%d")
+        .map(|date| date.format("%Y-%m-%d").to_string())
+        .map_err(|_| format!("Not a date (YYYY-MM-DD): {value}"))
 }
 
 fn days_ago(value: &str) -> Result<String, String> {
@@ -379,6 +416,103 @@ pub async fn evaluate_ids(pool: &SqlitePool, def: &SmartDefinition) -> Result<Ve
     Ok(rows)
 }
 
+/// Results of evaluated definitions, valid while the library's change
+/// version (see `changes.rs`) stays the same and no track has crossed the
+/// edge of a "within the last N days" rule since. Those windows move with
+/// the clock, so a track leaves (or joins "not within") with no write to
+/// the catalog; each entry keeps the moment that next happens.
+#[derive(Default)]
+pub struct SmartCache {
+    pages: std::sync::Mutex<std::collections::HashMap<String, Cached<LibraryPage>>>,
+    ids: std::sync::Mutex<std::collections::HashMap<String, Cached<Vec<String>>>>,
+}
+
+struct Cached<T> {
+    value: T,
+    /// Unix seconds after which a rolling date rule may match differently.
+    valid_until: Option<i64>,
+}
+
+async fn cache_key(pool: &SqlitePool, def: &SmartDefinition, extra: &str) -> Result<String, String> {
+    let version = super::changes::change_version(pool).await?;
+    let rules = serde_json::to_string(&def.rules).map_err(|e| e.to_string())?;
+    Ok(format!("{version}|{}|{}|{}|{:?}|{rules}|{extra}", def.match_all, sort_name(def.sort), def.descending, def.limit))
+}
+
+/// The last second at which every "within the last N days" rule still
+/// matches what it matches now: the oldest track inside a window drops out
+/// right after it. `None` when the definition has no such rule, or no track
+/// is inside the window (only a write can bring one in).
+async fn rolling_valid_until(pool: &SqlitePool, def: &SmartDefinition) -> Result<Option<i64>, String> {
+    let mut until: Option<i64> = None;
+    for rule in &def.rules {
+        if !matches!(rule.op, RuleOp::InLastDays | RuleOp::NotInLastDays) {
+            continue;
+        }
+        let column = match rule.field {
+            RuleField::Added => "added_at",
+            RuleField::LastPlayed => "last_played_at",
+            _ => continue,
+        };
+        let ago = days_ago(&rule.value)?;
+        let sql = format!("SELECT CAST(strftime('%s', MIN({column}), ?) AS INTEGER) FROM library_tracks WHERE {column} >= datetime('now', ?)");
+        let edge: Option<i64> = sqlx::query_scalar(&sql)
+            .bind(ago.replacen('-', "+", 1))
+            .bind(&ago)
+            .fetch_one(pool)
+            .await
+            .map_err(|e| e.to_string())?;
+        until = match (until, edge) {
+            (Some(a), Some(b)) => Some(a.min(b)),
+            (a, b) => a.or(b),
+        };
+    }
+    Ok(until)
+}
+
+fn cached<T: Clone>(map: &std::sync::Mutex<std::collections::HashMap<String, Cached<T>>>, key: &str) -> Option<T> {
+    let map = map.lock().unwrap();
+    let entry = map.get(key)?;
+    match entry.valid_until {
+        Some(until) if chrono::Utc::now().timestamp() > until => None,
+        _ => Some(entry.value.clone()),
+    }
+}
+
+fn remember<T: Clone>(map: &std::sync::Mutex<std::collections::HashMap<String, Cached<T>>>, key: String, value: &T, valid_until: Option<i64>) {
+    let mut map = map.lock().unwrap();
+    if map.len() >= MAX_CACHED {
+        map.clear();
+    }
+    map.insert(key, Cached { value: value.clone(), valid_until });
+}
+
+impl SmartCache {
+    /// `evaluate_page`, served from the cache while nothing changed.
+    pub async fn page(&self, pool: &SqlitePool, def: &SmartDefinition, offset: i64) -> Result<LibraryPage, String> {
+        let key = cache_key(pool, def, &offset.to_string()).await?;
+        if let Some(page) = cached(&self.pages, &key) {
+            return Ok(page);
+        }
+        let valid_until = rolling_valid_until(pool, def).await?;
+        let page = evaluate_page(pool, def, offset).await?;
+        remember(&self.pages, key, &page, valid_until);
+        Ok(page)
+    }
+
+    /// `evaluate_ids`, served from the cache while nothing changed.
+    pub async fn ids(&self, pool: &SqlitePool, def: &SmartDefinition) -> Result<Vec<String>, String> {
+        let key = cache_key(pool, def, "ids").await?;
+        if let Some(ids) = cached(&self.ids, &key) {
+            return Ok(ids);
+        }
+        let valid_until = rolling_valid_until(pool, def).await?;
+        let ids = evaluate_ids(pool, def).await?;
+        remember(&self.ids, key, &ids, valid_until);
+        Ok(ids)
+    }
+}
+
 /// Saves the current result as an ordinary playlist that no longer changes.
 pub async fn snapshot(pool: &SqlitePool, id: &str, name: &str) -> Result<PlaylistSummary, String> {
     let def = get_smart(pool, id).await?.definition;
@@ -423,14 +557,15 @@ pub async fn smart_evaluate(
         Some(def) => def,
         None => get_smart(&pool, &id.ok_or("Missing smart playlist id")?).await?.definition,
     };
-    evaluate_page(&pool, &def, i64::from(offset)).await
+    app.state::<LibraryState>().smart_cache.page(&pool, &def, i64::from(offset)).await
 }
 
 #[tauri::command]
 #[specta::specta]
 pub async fn smart_track_ids(app: tauri::AppHandle, id: String) -> Result<Vec<String>, String> {
     let pool = pool(&app).await?;
-    evaluate_ids(&pool, &get_smart(&pool, &id).await?.definition).await
+    let def = get_smart(&pool, &id).await?.definition;
+    app.state::<LibraryState>().smart_cache.ids(&pool, &def).await
 }
 
 #[tauri::command]

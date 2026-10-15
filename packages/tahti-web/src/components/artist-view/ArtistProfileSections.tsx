@@ -380,7 +380,7 @@ export function ArtistTaggedIn({
             <div className="min-w-0 flex-1 basis-40 break-words">
               <Link
                 to={mentionSourcePath(mention) as never}
-                className="text-primary truncate text-sm font-semibold hover:underline"
+                className="text-primary-strong truncate text-sm font-semibold hover:underline"
               >
                 {mentionSourceTitle(mention)}
               </Link>

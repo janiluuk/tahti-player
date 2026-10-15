@@ -8,7 +8,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Tooltip } from '@tahti-player/ui';
+import { Button, ClampedText, Dialog, Tooltip } from '@tahti-player/ui';
 
 import {
   BRAND_ACCENTS,
@@ -660,9 +660,9 @@ export function ChannelView({ slug }: { slug: string }) {
               }
               description={
                 channel.user.bio ? (
-                  <p className="line-clamp-2 whitespace-pre-wrap">
+                  <ClampedText className="whitespace-pre-wrap">
                     {channel.user.bio}
-                  </p>
+                  </ClampedText>
                 ) : null
               }
               backdropUrl={

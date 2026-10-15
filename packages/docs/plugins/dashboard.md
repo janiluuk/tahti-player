@@ -4,6 +4,10 @@ description: "Supply dashboard content: top tracks, trending artists, curated pl
 
 # Dashboard
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 ## Dashboard Providers
 
 Dashboard providers supply Tahti Player's home screen with content like charts, trending artists, new releases, and curated playlists. When you open the player, Tahti Player calls each registered dashboard provider and assembles the results into an overview. Without a dashboard provider, the dashboard shows an empty state prompting the user to enable a plugin.

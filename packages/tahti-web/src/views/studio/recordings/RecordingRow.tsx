@@ -55,7 +55,7 @@ export function RecordingRow({
         ) : (
           <span className="block truncate font-semibold">{title}</span>
         )}
-        <p className="text-foreground-secondary truncate text-xs">
+        <p className="text-foreground-secondary text-xs break-words">
           {formatDate(show.startedAt)}
           {show.durationSec ? ` · ${formatDuration(show.durationSec)}` : ''}
           {show.source
@@ -64,7 +64,7 @@ export function RecordingRow({
         </p>
         <span
           className={`mt-1 inline-flex items-center gap-1 text-[10px] font-semibold tracking-wide uppercase ${
-            published ? 'text-accent-green-strong' : 'text-primary'
+            published ? 'text-accent-green-strong' : 'text-primary-strong'
           }`}
         >
           {published && <CheckIcon size={11} aria-hidden />}

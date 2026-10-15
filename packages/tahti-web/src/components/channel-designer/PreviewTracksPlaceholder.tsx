@@ -22,7 +22,7 @@ export function PreviewTracksPlaceholder({ displayName, bio }: Props) {
         <div className="border-border divide-border divide-y overflow-hidden rounded-lg border">
           {PLACEHOLDER_TRACK_TITLES.map((title, index) => (
             <div key={title} className="flex items-center gap-3 px-3 py-3">
-              <span className="bg-primary/15 text-primary flex size-8 shrink-0 items-center justify-center rounded-md text-xs font-bold">
+              <span className="bg-primary/15 text-primary-strong flex size-8 shrink-0 items-center justify-center rounded-md text-xs font-bold">
                 {index + 1}
               </span>
               <div className="min-w-0 flex-1">

@@ -50,7 +50,10 @@ export function SegmentedControl<T extends string>({
             aria-label={iconOnly ? option.label : undefined}
             size={iconOnly ? 'icon-sm' : 'xs'}
             variant="text"
-            className={cn('gap-1.5', checked && 'bg-primary/15 text-primary')}
+            className={cn(
+              'gap-1.5',
+              checked && 'bg-primary/15 text-primary-strong',
+            )}
             onClick={() => onChange(option.id)}
           >
             {option.icon}

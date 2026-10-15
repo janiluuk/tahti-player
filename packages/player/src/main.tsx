@@ -23,6 +23,7 @@ import {
   initDesktopMpd,
   installDesktopMcp,
 } from './desktopMcp';
+import { initDesktopUpdates, installDesktopUpdater } from './desktopUpdater';
 import { commands } from './services/tauri/bindings';
 import { unwrapResult } from './services/tauri/results';
 
@@ -547,6 +548,23 @@ const baseNativeLibrary: TahtiNativeLibrary = {
       unlisten?.();
     };
   },
+  onLibraryChanged(listener) {
+    let unlisten: (() => void) | undefined;
+    let disposed = false;
+    void listen<{ version: number }>('library://changed', (event) =>
+      listener(event.payload.version),
+    ).then((dispose) => {
+      if (disposed) {
+        dispose();
+      } else {
+        unlisten = dispose;
+      }
+    });
+    return () => {
+      disposed = true;
+      unlisten?.();
+    };
+  },
   onFilesDropped(listener) {
     let unlisten: (() => void) | undefined;
     let disposed = false;
@@ -585,8 +603,10 @@ if (!rootElement) {
 }
 
 await installDesktopMcp();
+installDesktopUpdater();
 await mountTahtiApp(rootElement);
 void initDesktopMcp();
 void initDesktopMpd();
 void initDesktopDiscord();
 void initDesktopJam();
+initDesktopUpdates();

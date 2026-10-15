@@ -83,9 +83,14 @@ export type NativeRuleOp =
   | 'notContains'
   | 'atLeast'
   | 'atMost'
+  | 'above'
+  | 'below'
+  | 'startsWith'
   | 'between'
   | 'inLastDays'
   | 'notInLastDays'
+  | 'before'
+  | 'after'
   | 'isSet'
   | 'isNotSet';
 

@@ -146,7 +146,7 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                     />
                     <Link
                       to="/venues/register"
-                      className="text-primary text-xs hover:underline"
+                      className="text-primary-strong text-xs hover:underline"
                     >
                       Register a new venue
                     </Link>

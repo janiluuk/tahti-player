@@ -18,7 +18,9 @@ export function StarRating({
           key={i}
           size={16}
           aria-hidden
-          className={i < stars ? 'fill-primary text-primary' : 'text-border'}
+          className={
+            i < stars ? 'fill-primary text-primary-strong' : 'text-border'
+          }
         />
       ))}
     </div>

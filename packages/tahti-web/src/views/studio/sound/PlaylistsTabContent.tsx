@@ -30,7 +30,7 @@ export function PlaylistsTabContent({
       <div className="flex items-start gap-3">
         <ListMusicIcon
           size={28}
-          className="text-primary shrink-0"
+          className="text-primary-strong shrink-0"
           aria-hidden
         />
         <div>

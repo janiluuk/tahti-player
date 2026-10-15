@@ -40,17 +40,48 @@ const OP_LABELS: Record<NativeRuleOp, string> = {
   notContains: 'does not contain',
   atLeast: 'is at least',
   atMost: 'is at most',
+  above: 'is more than',
+  below: 'is less than',
+  startsWith: 'starts with',
   between: 'is between',
   inLastDays: 'is within the last … days',
   notInLastDays: 'is not within the last … days',
+  before: 'is before',
+  after: 'is after',
   isSet: 'has a value',
   isNotSet: 'has no value',
 };
 
 const OPS_BY_KIND: Record<FieldKind, NativeRuleOp[]> = {
-  text: ['is', 'isNot', 'contains', 'notContains', 'isSet', 'isNotSet'],
-  number: ['is', 'isNot', 'atLeast', 'atMost', 'between', 'isSet', 'isNotSet'],
-  days: ['inLastDays', 'notInLastDays', 'isSet', 'isNotSet'],
+  text: [
+    'is',
+    'isNot',
+    'contains',
+    'notContains',
+    'startsWith',
+    'isSet',
+    'isNotSet',
+  ],
+  number: [
+    'is',
+    'isNot',
+    'above',
+    'atLeast',
+    'below',
+    'atMost',
+    'between',
+    'isSet',
+    'isNotSet',
+  ],
+  days: [
+    'inLastDays',
+    'notInLastDays',
+    'before',
+    'after',
+    'between',
+    'isSet',
+    'isNotSet',
+  ],
   tag: ['is', 'isNot', 'isSet', 'isNotSet'],
   key: ['is', 'isNot', 'isSet', 'isNotSet'],
   flag: ['isSet', 'isNotSet'],
@@ -84,9 +115,25 @@ export function fieldKind(field: NativeRuleField): FieldKind {
   return fieldOf(field).kind;
 }
 
+/** The value a picker-only field starts with, so the rule is valid as shown. */
+function defaultValue(field: NativeRuleField): string {
+  if (field === 'rating') {
+    return '4';
+  }
+  if (field === 'key') {
+    return 'C';
+  }
+  return '';
+}
+
 /** A rule with sensible defaults for `field`. */
 export function newRule(field: NativeRuleField = 'genre'): NativeSmartRule {
-  return { field, op: opsFor(field)[0]!.id, value: '', value2: '' };
+  return {
+    field,
+    op: opsFor(field)[0]!.id,
+    value: defaultValue(field),
+    value2: '',
+  };
 }
 
 /** Keeps a rule valid when its field changes (operators differ per field). */
@@ -95,10 +142,14 @@ export function withField(
   field: NativeRuleField,
 ): NativeSmartRule {
   const allowed = opsFor(field).map((op) => op.id);
+  if (rule.field === field) {
+    return rule;
+  }
   return {
-    ...rule,
     field,
     op: allowed.includes(rule.op) ? rule.op : allowed[0]!,
+    value: defaultValue(field),
+    value2: '',
   };
 }
 

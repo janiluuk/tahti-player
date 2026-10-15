@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 
 import {
   ButtonAnchor,
+  ClampedText,
   CopyButton,
   EmptyState,
   ExternalLink,
@@ -126,9 +127,9 @@ export function VenueDetailView({ slug }: { slug: string }) {
         location={placeLabel || null}
         description={
           venue.description ? (
-            <p className="line-clamp-3 whitespace-pre-line">
+            <ClampedText lines={3} className="whitespace-pre-line">
               {venue.description}
-            </p>
+            </ClampedText>
           ) : (
             <p className="text-foreground-secondary">
               This venue hasn&apos;t added a description yet.

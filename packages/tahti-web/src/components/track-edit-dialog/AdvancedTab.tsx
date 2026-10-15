@@ -66,7 +66,7 @@ export function AdvancedTab({
         <div className="border-border flex items-center gap-4 rounded-xl border p-4">
           <ListMusicIcon
             size={28}
-            className="text-primary shrink-0"
+            className="text-primary-strong shrink-0"
             aria-hidden
           />
           <div className="min-w-0 flex-1">

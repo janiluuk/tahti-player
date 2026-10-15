@@ -31,52 +31,37 @@ env:
   DO_NOT_TRACK: 1
 
 jobs:
-  build-upstream:
-    name: Build upstream packages
+  # What the change touches. A docs-only PR (Markdown, docs/, packages/docs/,
+  # images) skips every job below except the CI gate. Pushes to master and
+  # manual runs always run everything.
+  changes:
+    name: Changes
     runs-on: ubuntu-latest
-
+    outputs:
+      code: ${{ github.event_name != 'pull_request' || steps.filter.outputs.code == 'true' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
+      - name: Filter paths
+        id: filter
+        uses: dorny/paths-filter@v3
         with:
-          node-version: '24'
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v5
-
-      - name: Get PNPM store directory
-        shell: bash
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup PNPM cache
-        uses: actions/cache@v6
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Cache turbo build outputs
-        uses: actions/cache@v6
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build upstream packages
-        run: pnpm turbo build --filter='!@tahti-player/player'
+          predicate-quantifier: every
+          filters: |
+            code:
+              - '**'
+              - '!**/*.md'
+              - '!docs/**'
+              - '!packages/docs/**'
+              - '!**/*.png'
+              - '!**/*.jpg'
 
   build-player:
     name: Build player + size guard
     runs-on: ubuntu-latest
-    needs: build-upstream
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
 
     steps:
       - name: Checkout code
@@ -91,36 +76,6 @@ jobs:
               - 'packages/player/src-tauri/**'
               - '**/Cargo.lock'
               - '**/Cargo.toml'
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: '24'
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v5
-
-      - name: Get PNPM store directory
-        shell: bash
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup PNPM cache
-        uses: actions/cache@v6
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      # build-upstream just saved this exact key, so the player's upstream
-      # dependencies replay from turbo instead of rebuilding.
-      - name: Cache turbo build outputs
-        uses: actions/cache@v6
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
 
       - name: Setup Rust
         if: steps.rust-changes.outputs.rust == 'true'
@@ -138,9 +93,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          turbo-cache: 'true'
 
+      - name: File size guard
+        run: pnpm check:file-size
+
+      # Builds every workspace package the player depends on (which is all of
+      # them), so this job is also the "everything builds" check.
       - name: Build player (frontend-only)
         if: steps.rust-changes.outputs.rust != 'true'
         run: pnpm turbo build:frontend --filter=@tahti-player/player
@@ -152,92 +114,85 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
 
-      - name: File size guard
-        run: pnpm check:file-size
-
+  # On pull requests only the packages the change affects (and their
+  # dependents) are linted; master runs every package.
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
         with:
-          node-version: '24'
+          fetch-depth: 0
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v5
-
-      - name: Get PNPM store directory
-        shell: bash
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup PNPM cache
-        uses: actions/cache@v6
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Lint
-        run: pnpm turbo lint
+        run: pnpm turbo lint ${{ github.event_name == 'pull_request' && '--affected' || '' }}
+        env:
+          TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || '' }}
 
-  test:
-    name: Test (tahti-web) + snapshot digest
+  # tahti-web's Vitest suite is the slowest step in CI, so it runs in three
+  # shards. Workspace packages export their sources, so no build is needed.
+  test-web:
+    name: Test (tahti-web ${{ matrix.shard }}/3)
     runs-on: ubuntu-latest
-    needs: build-upstream
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Test
+        run: pnpm --filter @tahti-player/tahti-web exec vitest run --exclude 'e2e/**' --shard=${{ matrix.shard }}/3
+
+  # Every package except tahti-web and storybook. On pull requests only the
+  # affected packages run. These packages write snapshot mismatches
+  # (scripts/ci/vitest-snapshot-reporter.mjs), and a failure posts the visual
+  # snapshot digest to the PR.
+  test-core:
+    name: Test (core packages) + snapshot digest
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
         with:
-          node-version: '24'
+          fetch-depth: 0
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v5
-
-      - name: Get PNPM store directory
-        shell: bash
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup PNPM cache
-        uses: actions/cache@v6
+      - name: Setup
+        uses: ./.github/actions/setup
         with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      # build-upstream just saved this exact key, so the upstream builds this
-      # shard depends on replay from turbo instead of rebuilding.
-      - name: Cache turbo build outputs
-        uses: actions/cache@v6
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build tahti-web (w/ replayed upstream deps)
-        run: pnpm turbo build --filter=@tahti-player/tahti-web
+          turbo-cache: 'true'
 
       - name: Test
         id: test
         continue-on-error: true
-        run: pnpm turbo test --filter=@tahti-player/tahti-web --continue
+        run: pnpm turbo test --filter='!@tahti-player/tahti-web' --filter='!@tahti-player/storybook' --continue ${{ github.event_name == 'pull_request' && '--affected' || '' }}
+        env:
+          TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || '' }}
+
+      # The digest renders mismatches with the built app CSS.
+      - name: Build app bundles for snapshot digest CSS
+        if: steps.test.outcome == 'failure'
+        continue-on-error: true
+        run: |
+          pnpm turbo build:frontend --filter=@tahti-player/player
+          pnpm turbo build --filter=@tahti-player/tahti-web
 
       - name: Get installed Playwright version
         if: steps.test.outcome == 'failure'
@@ -274,10 +229,6 @@ jobs:
         continue-on-error: true
         run: node scripts/ci/build-snapshot-digest.mjs
         env:
-          # Where this run's PNGs will live once published below, so the
-          # digest can embed real ![]() image links instead of bare
-          # filenames. Only meaningful for pull_request (no PR to publish
-          # under otherwise) -- the publish step itself also skips then.
           SNAPSHOT_DIFF_PUBLIC_BASE_URL: >-
             ${{ github.event_name == 'pull_request' &&
             format('https://raw.githubusercontent.com/{0}/visual-snapshot-diffs/pr-{1}', github.repository, github.event.pull_request.number) || '' }}
@@ -336,67 +287,10 @@ jobs:
             );
             await mod.default({ github, context, core });
 
-      - name: Fail job if tests failed (non-snapshot)
-        if: steps.test.outcome == 'failure'
-        run: |
-          if [ -f snapshot-digest/digest.json ] && node -e "const d=require('./snapshot-digest/digest.json'); process.exit(d.count > 0 ? 0 : 1)"; then
-            echo "Snapshot mismatches detected — see snapshot digest artifact / PR comment. Not failing CI."
-          else
-            echo "Tests failed (non-snapshot). See test logs above."
-            exit 1
-          fi
-
-  test-core:
-    name: Test (core packages)
-    runs-on: ubuntu-latest
-    needs: build-upstream
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: '24'
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v5
-
-      - name: Get PNPM store directory
-        shell: bash
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup PNPM cache
-        uses: actions/cache@v6
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      # build-upstream just saved this exact key, so the upstream builds this
-      # shard depends on replay from turbo instead of rebuilding.
-      - name: Cache turbo build outputs
-        uses: actions/cache@v6
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Test
-        id: test
-        continue-on-error: true
-        run: pnpm turbo test --filter='!@tahti-player/tahti-web' --filter='!@tahti-player/storybook' --continue
-
       - name: Fail job if tests failed
         if: steps.test.outcome == 'failure'
         run: |
-          echo "Tests failed (core packages). See test logs above."
+          echo "Tests failed (core packages). See the test logs and the snapshot digest above."
           exit 1
 
   # Fails when tahti-web calls an API path the API does not serve. The spec is
@@ -406,6 +300,8 @@ jobs:
   api-routes:
     name: API routes exist
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
 
     steps:
       - name: Checkout code
@@ -429,45 +325,26 @@ jobs:
           TAHTI_OPENAPI: ${{ runner.temp }}/openapi.json
 
   # Storybook stories as browser tests (render smoke + `play` assertions)
-  # via @storybook/addon-vitest. Its own job so a story failure is clearly
-  # attributable; shares the Playwright browser cache key with `test`.
+  # via @storybook/addon-vitest.
   storybook:
-    name: Storybook (plays ${{ matrix.shard }}/4)
+    name: Storybook (plays ${{ matrix.shard }}/6)
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     strategy:
       fail-fast: false
       matrix:
-        # Four shards, not two: one Chromium page serves a whole shard, and
-        # past roughly 110 story files its renderer was killed ("Browser
-        # connection was closed") on about half the runs.
-        shard: [1, 2, 3, 4]
+        # One Chromium page serves a whole shard, and past roughly 100 story
+        # files its renderer gets killed ("Browser connection was closed").
+        # Six shards keep each near 65 of the ~400 files.
+        shard: [1, 2, 3, 4, 5, 6]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: '24'
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v5
-
-      - name: Get PNPM store directory
-        shell: bash
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup PNPM cache
-        uses: actions/cache@v6
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Get installed Playwright version
         id: playwright-version
@@ -493,7 +370,7 @@ jobs:
         run: node scripts/generate-storybook-surfaces.mjs --check
 
       - name: Run stories as tests
-        run: pnpm --filter @tahti-player/storybook test --shard=${{ matrix.shard }}/4
+        run: pnpm --filter @tahti-player/storybook test --shard=${{ matrix.shard }}/6
 
   # Manual-only e2e run: dispatch the workflow with run_e2e=true. Runs the
   # Playwright suite against the deployed site (beta.tahti.live by default).
@@ -506,16 +383,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: '24'
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v5
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Install Playwright Chromium
         run: pnpm --filter @tahti-player/tahti-web exec playwright install chromium --with-deps
@@ -559,29 +428,28 @@ jobs:
           echo "E2E suite failed. See the playwright-report / playwright-test-results artifacts."
           exit 1
 
-  # Aggregate gate (keeps the historical required `ci` check name working and
-  # gives a single pass/fail node). The e2e job is manual-only and excluded.
+  # Aggregate gate (keeps the historical required `CI` check name working and
+  # gives a single pass/fail node). A job skipped because the change is
+  # docs-only counts as passed. The e2e job is manual-only and excluded.
   ci:
     name: CI
     runs-on: ubuntu-latest
     needs:
-      [
-        build-upstream,
-        build-player,
-        lint,
-        test,
-        test-core,
-        storybook,
-        api-routes,
-      ]
+      [changes, build-player, lint, test-web, test-core, storybook, api-routes]
     if: always()
     steps:
       - name: Check required jobs
-        if: needs.build-upstream.result != 'success' || needs.build-player.result != 'success' || needs.lint.result != 'success' || needs.test.result != 'success' || needs.test-core.result != 'success' || needs.storybook.result != 'success' || needs.api-routes.result != 'success'
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
         run: |
-          echo "::error::build-upstream=${{ needs.build-upstream.result }} build-player=${{ needs.build-player.result }} lint=${{ needs.lint.result }} test=${{ needs.test.result }} test-core=${{ needs.test-core.result }} storybook=${{ needs.storybook.result }} api-routes=${{ needs.api-routes.result }}"
-          exit 1
-
-      - name: Required jobs passed
-        if: needs.build-upstream.result == 'success' && needs.build-player.result == 'success' && needs.lint.result == 'success' && needs.test.result == 'success' && needs.test-core.result == 'success' && needs.storybook.result == 'success' && needs.api-routes.result == 'success'
-        run: echo "build-upstream, build-player, lint, test, test-core, storybook, api-routes all succeeded"
+          echo "changes=${{ needs.changes.result }} build-player=${{ needs.build-player.result }} lint=${{ needs.lint.result }} test-web=${{ needs.test-web.result }} test-core=${{ needs.test-core.result }} storybook=${{ needs.storybook.result }} api-routes=${{ needs.api-routes.result }}"
+          for result in $RESULTS; do
+            if [ "$result" != success ] && [ "$result" != skipped ]; then
+              echo "::error::A required job ended as $result"
+              exit 1
+            fi
+          done
+          if [ "${{ needs.changes.result }}" != success ]; then
+            echo "::error::The change filter did not run"
+            exit 1
+          fi

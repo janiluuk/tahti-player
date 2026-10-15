@@ -46,7 +46,11 @@ export function ScheduledTimes({
     <section className="border-border bg-background-secondary/40 overflow-hidden rounded-xl border shadow-sm">
       <header className="border-border flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
         <div className="flex items-center gap-2">
-          <CalendarDaysIcon size={18} className="text-primary" aria-hidden />
+          <CalendarDaysIcon
+            size={18}
+            className="text-primary-strong"
+            aria-hidden
+          />
           <h2 className="font-display font-bold">Your next broadcasts</h2>
         </div>
         <div className="flex items-center gap-2">
@@ -106,13 +110,13 @@ export function ScheduledTimes({
                 <div className={viewMode === 'list' ? 'p-3' : 'p-4'}>
                   <div className="mb-1 flex items-center justify-between gap-2">
                     <div className="flex min-w-0 items-center gap-2">
-                      <span className="text-primary shrink-0 text-xs font-bold tracking-wide uppercase">
+                      <span className="text-primary-strong shrink-0 text-xs font-bold tracking-wide uppercase">
                         {index === 0 ? 'Next' : `Upcoming ${index + 1}`}
                       </span>
                       <Button
                         type="button"
                         variant="text"
-                        className="text-primary h-auto min-w-0 justify-start truncate p-0 text-left text-sm font-semibold"
+                        className="text-primary-strong h-auto min-w-0 justify-start truncate p-0 text-left text-sm font-semibold"
                         onClick={() => setSelectedShow(item)}
                       >
                         {item.title}

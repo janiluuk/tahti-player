@@ -117,7 +117,7 @@ export const SummaryStat: FC<SummaryStatProps> = ({
     className="border-border bg-background-secondary/35 hover:bg-background-secondary group flex min-w-0 flex-col gap-2 rounded-xl border p-4 shadow-sm transition-transform hover:-translate-y-0.5"
   >
     <span className="text-foreground-secondary flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
-      <Icon size={15} aria-hidden className="text-primary" />
+      <Icon size={15} aria-hidden className="text-primary-strong" />
       {label}
     </span>
     <span className="font-display text-2xl font-extrabold tabular-nums">

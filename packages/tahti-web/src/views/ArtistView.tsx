@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Dialog, TabLabel, Tabs, Tooltip } from '@tahti-player/ui';
+import { ClampedText, Dialog, TabLabel, Tabs, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchMyPressKitImages,
@@ -69,7 +69,7 @@ import {
 } from '../components/ReleaseTracklistDialog';
 import { StreamManagerPanel } from '../components/StreamManagerPanel';
 import { TrackEditDialog } from '../components/TrackEditDialog';
-import { hasAccountRole } from '../lib/accountRoles';
+import { hasAccountRole, hasStudioAccess } from '../lib/accountRoles';
 import {
   artistHeaderSubtitle,
   artistProfileEmbed,
@@ -100,6 +100,7 @@ export function ArtistView({ username }: { username: string }) {
 
 function ArtistProfilePage({ username }: { username: string }) {
   const me = useAuthStore((s) => s.user);
+  const profileLoaded = useAuthStore((s) => s.profileLoaded);
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>('stage');
@@ -169,7 +170,8 @@ function ArtistProfilePage({ username }: { username: string }) {
     playAlbum(playables);
   };
 
-  const isOwner = Boolean(me && me.username === username);
+  const isOwner =
+    me?.username === username && (hasStudioAccess(me) || !profileLoaded);
   const isAdministrator = hasAccountRole(me, 'BOARD');
   const hasGallery =
     galleryImages.length > 0 && lookVisibility.gallery !== false;
@@ -441,7 +443,9 @@ function ArtistProfilePage({ username }: { username: string }) {
         subtitle={artistHeaderSubtitle(artist)}
         description={
           artist.bio ? (
-            <p className="line-clamp-2 whitespace-pre-wrap">{artist.bio}</p>
+            <ClampedText className="whitespace-pre-wrap">
+              {artist.bio}
+            </ClampedText>
           ) : null
         }
         backdropUrl={artistBackdropUrl}

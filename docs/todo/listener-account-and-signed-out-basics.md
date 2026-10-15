@@ -31,13 +31,17 @@ User ask (2026-10-04): add a separate listener user who is registered but has no
 
 - The capture script takes `MAP_ACCOUNT=listener` and `audit-signed-out.mjs` checks 17 listener pages for owner tools, sign-in prompts, errors and the email address (#625).
 
+## Done (2026-10-15)
+
+- Sidebar: signed-out visitors don't see Studio; a signed-in listener sees **Become an artist** (to the create-your-channel page) and no Studio submenu. Artists and the board see Studio as before (#784). My call; the phone bar already worked this way.
+- A listener's Library tabs leave out Upload, Recordings, Embeds and Smart links; Overview, Tracks, Collections, Media, Stash and Local files stay (#785). My call.
+- `ArtistView` showed owner tools (Edit design, full bio, studio settings, broadcast, track edit pencils) whenever the signed-in username matched the page. It now also needs Studio access (artist or board), so a listener's own `/u/listener` has none (#786). The mock still builds a made-up artist profile for any username.
+
 ## Plan
 
-- [ ] 1. Decide what a listener sees where Studio is in the sidebar. It still shows Studio to everyone, signed out included.
-- [ ] 2. Library as a listener still lists artist tools (Recordings, Embeds, Smart links, upload). Decide which a listener keeps.
-- [ ] 3. `/u/listener` shows artist owner tools (Edit design, Add full bio, Full studio settings, a broadcast button, track edit pencils) and a made-up channel in the mock app. The mock builds an artist profile for any username, but `ArtistView` sets `isOwner` from the username alone, so check it against the real API (found by the listener pass, #625).
+All three plan items are done; only the open questions below remain.
 
 ## Open questions for the user
 
-- Should a listener see a "Become an artist" entry where Studio would be, or nothing?
+- Should a listener see a "Become an artist" entry where Studio would be, or nothing? (#784 chose "Become an artist"; confirm or change.)
 - Which signed-out actions should work with no account at all (for example likes or history kept in the browser)?

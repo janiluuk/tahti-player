@@ -23,6 +23,7 @@
 
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-strong: var(--primary-strong);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
 
@@ -98,6 +99,11 @@
      assumed; overridden per-theme below and in packages/themes where a
      variant's own --primary needs the other extreme to pass. */
   --primary-foreground: oklch(0.28 0.12 260);
+  /* --primary used as text (links, labels, eyebrows). A pastel primary
+     reads on a fill but not as text on a light page, so light themes use a
+     darker one (4.5:1 or better on their backgrounds). Dark modes, and
+     advanced themes (see generateAdvancedThemeCSS), use --primary itself. */
+  --primary-strong: oklch(0.58 0.15 20);
   --secondary: oklch(0.917 0.036 7.16);
   --secondary-foreground: oklch(0.28 0.12 260);
 
@@ -198,8 +204,9 @@
   --foreground-secondary: oklch(0.78 0.1 5);
   --foreground-input: oklch(0.93 0 0);
 
-  --primary: oklch(0.5 0.1 5);
-  --primary-foreground: oklch(1 0 0);
+  --primary: oklch(0.66 0.1 5);
+  --primary-foreground: oklch(0.22 0.03 5);
+  --primary-strong: var(--primary);
   --secondary: oklch(0.32 0.06 5);
   --secondary-foreground: oklch(0.95 0.01 5);
 

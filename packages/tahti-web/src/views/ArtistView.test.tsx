@@ -189,6 +189,24 @@ describe('ArtistView', () => {
         '[data-testid="artist-favorite-button"]',
       );
 
+    it('shows a listener no artist owner tools on their own profile', async () => {
+      useAuthStore.setState({ profileLoaded: true });
+      const { container } = await renderArtist('listener');
+      await vi.waitFor(() =>
+        expect(
+          container.querySelector('[data-testid="artist-social-header"]'),
+        ).not.toBeNull(),
+      );
+      expect(container.textContent).not.toContain('Edit design');
+
+      useAuthStore.setState({
+        user: { ...useAuthStore.getState().user!, role: 'ARTIST' },
+      });
+      await vi.waitFor(() =>
+        expect(container.textContent).toContain('Edit design'),
+      );
+    });
+
     it('shows a follow made elsewhere, from the server', async () => {
       vi.spyOn(follows, 'fetchFollowStatus').mockResolvedValue({
         following: true,
