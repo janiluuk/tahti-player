@@ -1068,6 +1068,7 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                                   >
                                     <div
                                       class="truncate"
+                                      title="Test Artist"
                                     >
                                       Test Artist
                                     </div>
@@ -1077,11 +1078,13 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                                   >
                                     <button
                                       class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                                      title="Smells Like Cheap Spirit"
                                     >
                                       Smells Like Cheap Spirit
                                     </button>
                                     <div
                                       class="text-foreground-secondary truncate text-xs @md:hidden"
+                                      title="Test Artist"
                                     >
                                       Test Artist
                                     </div>
@@ -3115,6 +3118,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                                   >
                                     <div
                                       class="truncate"
+                                      title="Deadmau5"
                                     >
                                       Deadmau5
                                     </div>
@@ -3124,11 +3128,13 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                                   >
                                     <button
                                       class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                                      title="Strobe"
                                     >
                                       Strobe
                                     </button>
                                     <div
                                       class="text-foreground-secondary truncate text-xs @md:hidden"
+                                      title="Deadmau5"
                                     >
                                       Deadmau5
                                     </div>
