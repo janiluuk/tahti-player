@@ -91,4 +91,15 @@ describe('getPageTourSteps', () => {
     expect(ids('/radio')).toEqual(['page-purpose']);
     expect(ids('/studio/upload')).toEqual(['page-purpose']);
   });
+
+  it('explains Disco-widgets on the pages that can show them', () => {
+    for (const path of ['/', '/listen', '/u/dj-moonlight', '/channel/demo']) {
+      expect(getPageTourSteps(path).map((step) => step.id)).toContain(
+        'disco-widgets',
+      );
+    }
+    expect(getPageTourSteps('/studio').map((step) => step.id)).not.toContain(
+      'disco-widgets',
+    );
+  });
 });

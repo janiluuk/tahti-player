@@ -4614,6 +4614,16 @@ Asked for as "do the sweep leftovers and make pr's". Two items had been listed a
 - **Desktop player check:** closed without code. The desktop app has mounted tahti-web since 2026-09-01, so the changed player snapshots are Nuclear's old views, which no longer run; the mock-app checks cover what the desktop shows.
 - **Checks:** per PR the ui, player and tahti-web suites, the touched Storybook plays and mock-app measurements; tahti-org `src/routes/admin` (217) on a fresh database. Not tried on a phone, in the desktop app, or on the other themes.
 
+## 2026-10-15 - Docs audit: the last ~110 PRs documented, finished docs archived
+
+Asked for as "audit the project docs and make sure all the last 100 pr(ish) features are clearly documented in structured way amongst with others, look for stale docs or other clutter that could be consolidated". Covered #661-#771: about 90 of them are layout and accessibility fixes from the sweep batches; the features are governance motion drafts (#714-#721), the rebuilt desktop integrations (#737-#743), keyboard and screen-reader support (#746-#771) and the venue submitter (#770).
+
+- **`FEATURES.md`:** governance split into Governance and Motion drafts rows; venue submitter; the Board admin row matches the 40 admin routes (it still said there were no Users or Support pages); a new section 8, Accessibility and layout. The finished demock-wave and product-priority checklists, the duplicate shipped list and the `[x]` lines of the 2026-08 sweeps are gone; their seven open items are one list, also linked from `FEATURES-REMAINING.md`.
+- **`docs/agent/CODE-STYLE.md`:** Accessibility and Layout sections with the rules the batch 52-59 sweeps settled (focus rings, popover `tooltip` prop, names and roles, headings, `HorizontalScroll`, contrast, container queries).
+- **Stale text:** the root README called the MCP server byte-identical to Nuclear's with favourites/playlists/providers tools; README and `ARCHITECTURE.md` now describe the rebuilt MCP, MPD, Discord and Jam. The user manual's Remote control page described Nuclear's unpaired Jam; Keyboard shortcuts listed Nuclear's bindings and a customisation screen that doesn't exist.
+- **Removed (listed in `docs/ARCHIVE.md` with where the content went):** `CONVERSION-QUEUE.md`, `TAHTI-PORT-CHECKLIST.md`, `STUDIO-ADMIN-UX-SWEEP*.md`, `TAHTI-DARK-THEME-WORKLOG.md`, `MOBILE-USABILITY-AUDIT.md` (its one open finding, native checkboxes, no longer exists), `docs/port-inventory-thedaw-editor-viz.md` (folded into its todo) and `docs/todo/desktop-integrations.md` (shipped, had no INDEX row).
+- **Left:** most of the GitBook user manual still describes Nuclear's UI; `docs/todo/user-manual-refresh.md` lists it page by page.
+
 ## 2026-10-15 - Library buttons everywhere in tahti-web (todo closed)
 
 `library-buttons-migration.md` started 2026-10-08 with 70 raw `<button>` elements in tahti-web. The listener pages (#563), a `plain` Button variant and 55 more (#582-#586, #594), and `ButtonLink` for buttons nested in links (#593) left two items. The three tooltip-wrapped links in `AudioTab.tsx` and `PurchaseAccessSection.tsx` had already become `ButtonLink`s, and #780 made the phone drawer's backdrop a library `Button` hidden from screen readers and Tab. No raw `<button>` remains in `packages/tahti-web/src` outside tests and stories.
