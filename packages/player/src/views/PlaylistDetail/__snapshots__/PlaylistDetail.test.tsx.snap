@@ -245,7 +245,7 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
                   style="scrollbar-width: none;"
                 >
                   <table
-                    class="border-border relative w-full table-fixed border-(length:--border-width)"
+                    class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
                     role="table"
                   >
                     <thead>
@@ -542,6 +542,7 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
                         >
                           <div
                             class="truncate"
+                            title="Test Artist"
                           >
                             Test Artist
                           </div>
@@ -551,11 +552,13 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
                         >
                           <button
                             class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                            title="Giant Steps"
                           >
                             Giant Steps
                           </button>
                           <div
                             class="text-foreground-secondary truncate text-xs @md:hidden"
+                            title="Test Artist"
                           >
                             Test Artist
                           </div>
@@ -565,6 +568,7 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
                         >
                           <div
                             class="truncate"
+                            title="3:00"
                           >
                             3:00
                           </div>
@@ -828,6 +832,7 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
                         >
                           <div
                             class="truncate"
+                            title="Test Artist"
                           >
                             Test Artist
                           </div>
@@ -837,11 +842,13 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
                         >
                           <button
                             class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                            title="So What"
                           >
                             So What
                           </button>
                           <div
                             class="text-foreground-secondary truncate text-xs @md:hidden"
+                            title="Test Artist"
                           >
                             Test Artist
                           </div>
@@ -851,6 +858,7 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
                         >
                           <div
                             class="truncate"
+                            title="3:00"
                           >
                             3:00
                           </div>

@@ -21,7 +21,10 @@ export function DiscoWidgetsSection({
   }
 
   return (
-    <section className="flex w-full flex-col gap-3">
+    <section
+      data-tour-id="disco-widgets"
+      className="flex w-full flex-col gap-3"
+    >
       {widgets.map((widget) => (
         <DiscoWidgetFrame
           key={widget.installId}
