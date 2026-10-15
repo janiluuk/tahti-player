@@ -11,7 +11,6 @@ import type {
 } from '../lib/nativeLibrary';
 import {
   EMPTY_SMART,
-  fieldKind,
   needsSecondValue,
   needsValue,
   newRule,
@@ -20,6 +19,7 @@ import {
   SMART_SORTS,
   withField,
 } from './smartPlaylistRules';
+import { SmartRuleValueInput } from './SmartRuleValueInput';
 
 type Props = {
   library: TahtiNativeLibrary;
@@ -157,28 +157,19 @@ export function SmartPlaylistDialog({
                 options={opsFor(rule.field)}
               />
               {needsValue(rule.op) ? (
-                <Input
-                  label={fieldKind(rule.field) === 'days' ? 'Days' : 'Value'}
-                  type={
-                    fieldKind(rule.field) === 'number' ||
-                    fieldKind(rule.field) === 'days'
-                      ? 'number'
-                      : 'text'
-                  }
-                  value={rule.value ?? ''}
-                  onChange={(event) =>
-                    setRule(index, { ...rule, value: event.target.value })
-                  }
+                <SmartRuleValueInput
+                  rule={rule}
+                  which="value"
+                  label="Value"
+                  onChange={(value) => setRule(index, { ...rule, value })}
                 />
               ) : null}
               {needsSecondValue(rule.op) ? (
-                <Input
+                <SmartRuleValueInput
+                  rule={rule}
+                  which="value2"
                   label="and"
-                  type="number"
-                  value={rule.value2 ?? ''}
-                  onChange={(event) =>
-                    setRule(index, { ...rule, value2: event.target.value })
-                  }
+                  onChange={(value2) => setRule(index, { ...rule, value2 })}
                 />
               ) : null}
               <Button
