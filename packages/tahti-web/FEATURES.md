@@ -16,41 +16,9 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | `link-out` | Deep-links to production `tahti.live` |
 | `out-of-scope` | Explicitly not rebuilding (marketing `website/`, desktop-only MCP, etc.) |
 
-**Demock wave** — next items to harden against live `api.tahti.live` / beta:
+Demock waves 0-6 and the first product priorities (album designer, add to playlist, visualizers, broadcast wizard, email verify, fan tiers) are done; production builds never fall back to mock data silently (`api/mode.ts`, [`MOCKS.md`](MOCKS.md)).
 
-- [x] Wave 0: mock session (auth/follow/subscribe/sources) for offline demo — [MOCKS.md](MOCKS.md)
-- [x] Wave 1: stop silent mock fallback in **production** builds (`api/mode.ts`); chat WS defaults to `wss://chat.tahti.live`
-- [x] Wave 2: Go Live / broadcast — prod builds no silent mock for stream-settings / signal / RTMP (`broadcast.ts`)
-- [x] Wave 3: Upload + archive — prod builds no silent mock archive seed; upload still prepare→PUT→complete on live API (`studio.ts`)
-- [x] Wave 4: Fan subscribe Stripe checkout + Connect portal/onboard (`client.ts` subscribe, `revenue.ts`)
-- [x] Wave 5: DMs + governance — prod builds no silent mock inbox; vote/comments already live (`messages.ts`, governance in `client.ts`)
-- [x] Wave 6: Channel WebGL visualizer parity (POC canvas/WebGL on ChannelView; full Three.js presets still optional)
-
-**Product priority** (shipped):
-
-1. [x] Album-based designer — `/studio/collections` create + cover/style/tracklist designer
-2. [x] Add-to-playlist — player bar + archive + track tables → `/api/me/collections`
-3. [x] Visualizations — ChannelView WebGL/canvas visualizer + shared analyser
-4. [x] Broadcasting wizard — Connect → Live → Multistream step chrome
-5. [x] Email verify route — `/verify` (+ join deep-link)
-6. [x] Fan-sub tier editor — Settings → Money → Fan tiers (`/api/me/fan-tiers`)
-
-## Checklist — shipped vs remaining
-
-**Shipped (beta)**
-
-- [x] Listen directory, channel HLS, archive, radio, profile, collections, smart links
-- [x] Auth login / TOTP / register / logout
-- [x] Email verify page (`/verify`)
-- [x] Follows, favorites/history (local), fan subscribe checkout, DMs, governance
-- [x] Add to playlist
-- [x] Studio: Go Live dashboard, upload, releases, collections/album designer; all music lives first in My Library
-- [x] Studio: Broadcast (`/studio/schedule`, nav label Broadcast) with 24/7 programme on the page, stats summary, channel design, updates, revenue/Connect
-- [x] Channel visualizer POC + analyser
-- [x] Fan tier create / activate-deactivate
-- [x] Settings shell (Nuclear sections), Sources hub (partial OAuth UX)
-- [x] Embeds
-- [x] Artist Branding workspace: profile picture, channel outlook, gallery visibility, fullscreen slideshow, and 10-image press kit selection
+## Remaining
 
 **Remaining / partial** — short copy: [`FEATURES-REMAINING.md`](FEATURES-REMAINING.md) (open only; shipped rows in HISTORY)
 
@@ -71,7 +39,7 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Collection | `/u/:user/c/:slug` | `/u/$username/c/$slug` | `live-api` | |
 | Smart link | `/r/:slug` | `/r/$slug` | `live-api` | |
 | Venues list | `/venues` | `/venues` | `partial` | list only |
-| Venue register | `/venues/register` | `/venues/register` | `live-api` | `POST /api/v1/venues`; board verifies |
+| Venue register | `/venues/register` | `/venues/register` | `live-api` | `POST /api/v1/venues`; board verifies; Admin → Venues names and links the submitter (#770, needs tahti-org#834) |
 | Transparency | `/transparency` | `/transparency` | `live-api` | |
 | Help | `/help/*` | `/help` | `live-api` | static articles including disco-widgets; support form posts to API |
 | Disco-widgets | discovery settings + listen/profile | Settings → Add-ons + Listen/channel | `live-api` | sandboxed iframe; admin catalog stays Next |
@@ -106,7 +74,8 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Fan subscribe | `/u/:user/subscribe` | `/subscribe/$username` | `live-api` | demock wave 4; mock activates only under FORCE_MOCK |
 | My subscriptions | account | `/settings/account` (Your subs) | `live-api` | |
 | Membership status | account | `/settings/account` | `live-api` | |
-| Governance list/vote | `/governance` | `/governance` | `live-api` | demock wave 5; 401/403 → forbidden empty |
+| Governance | `/governance` | `/governance`, `/governance/meetings/$id`, `/governance/members`, `/governance/history`, `/governance/feature-requests` | `live-api` | motions, votes and comments, meetings, member register, decision history, feature requests; members only (401/403 → forbidden empty state). Board side: `/admin/governance`, `/admin/agm` |
+| Motion drafts | `/governance` | `/governance/motions/$id` | `live-api` | members second or withdraw a second (`secondCount`, "Seconded by" list); the proposer edits (a text change clears seconds) or withdraws their own draft; members remove their own comments while a motion is open, the board any comment; "Taken up at <meeting>" links the meeting (#714-#721) |
 | DMs | `/dashboard/messages` | `/messages` | `live-api` | demock wave 5 |
 | Listener-only dashboard | `/dashboard` | `/dashboard` → `/library` | `live-api` | non-artists no longer hit the Studio "create a channel" wall; channel and broadcast settings are hidden without a channel |
 | Block an account | — | artist page, DM thread, Settings → Account → Privacy & data | `live-api` | `/api/me/blocks`; blocks DMs, comments, follows, mentions and search results both ways |
@@ -160,7 +129,7 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Screen atlas | e2e screenshots | `/more` (Screen atlas) | `mock-ok` | curated prod PNGs under `public/map/` + Nuclear routes |
 | Content reports queue | `/admin/moderation` | `/admin/moderation` → Content reports | `live-api` | link and excerpt of what was reported, filter by status and by target type, delete a reported comment |
 | Support queue | `/admin/support` | `/admin/moderation` → Support | `live-api` | reply threads, waiting-on-board count and filter |
-| Board admin | `/admin/*` (~35 pages Next) | `/admin/*` (22 pages) | `partial` | Gated on `user.isBoard`; wired to real admin API endpoints (`api/admin.ts`). Deliberately scope-trimmed: no Users/Support/Announcement-clip detail pages, no bulk file ops (Files), no per-subscriber payout retry / legacy-member migration (Financial), no grant run/preview flow (Grants) — see UI-REDESIGN-WORKLOG.md admin entries A3/A9/A11–A13/A15/A18 |
+| Board admin | `/admin/*` (~35 pages Next) | `/admin/*` (40 routes) | `live-api` | Gated on `user.isBoard`. Users, moderation (content reports, support, themes), financial (fan-sub payouts with retry), grants and grant cycles, governance and AGM, storage per user, radio, Selects, top lists, venues, disco-widgets, add-ons, logs and status. Still reduced vs Next: announcement detail, bulk file operations, legacy-member migration (see the open list below) |
 | WebGL visualizer | channel page | ChannelView Live | `live-api` | full ten-preset Three.js catalog; analyser-reactive and lazy-loaded |
 
 ## 7. Desktop Nuclear integrations (not web SPA)
@@ -172,10 +141,27 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | MPD server | Tauri player | same Rust server | **rebuilt** | Answered from tahti-web's player (`src/lib/mpd/`); switch in Settings → Integrations in the desktop app |
 | Discord Rich Presence | Tauri player | same Rust commands | **rebuilt** | Set from tahti-web's player (`src/lib/discord/`); switch in Settings → Integrations in the desktop app |
 | Tahti Jam (phone remote + HTTP API) | Tauri player | same Rust server, pairing code added | **rebuilt** | Remote page `src/remote/` served at `/remote`; answered from tahti-web's player (`src/lib/jam/`); switch with pairing QR in Settings → Integrations in the desktop app |
+| App updates | Tauri player `updaterStore` | same Tauri updater, release feed `latest.json` | **rebuilt** | Checked 10 s after start and every 6 h from tahti-web (`src/lib/updates/`), offered in a toast; Check now / Install / Restart and an off switch in Settings → Integrations in the desktop app |
 
 Web cutover (`beta.tahti.live`) does **not** host Nuclear MCP — localhost player control plane. Do not strip `packages/player/src-tauri/src/mcp/` when packaging desktop.
 
 ---
+
+## 8. Accessibility and layout (all surfaces)
+
+Conventions behind these rows are in [`docs/agent/CODE-STYLE.md`](../../docs/agent/CODE-STYLE.md) (Accessibility, Layout).
+
+| Feature | Where | Status | Notes |
+|---------|-------|--------|-------|
+| Keyboard focus | every library `Button`, `ButtonLink`, tab panel, selectable row | `mock-ok` | `focus-visible` ring in `--primary` (#746, #754, #759) |
+| Skip to content | first Tab stop on every page | `mock-ok` | focuses `#main-content` on desktop and phone (#763) |
+| Landmarks | app shell | `mock-ok` | top bar `header`, sidebar `nav` "Main", queue rail `aside` "Queue", `main` on phones too (#757, #760, #762) |
+| Names and roles | dialogs, popovers, meters, ratings, tables | `mock-ok` | Settings dialog and lightbox named; popover state on the trigger button; track and catalog tables name icon columns; card grids carry no fake `grid` role (#747-#753, #765, #769) |
+| Headings | every page | `mock-ok` | one `h1`; `EmptyState` titles are `h2` (#758) |
+| Wide tables on phones | stats, revenue, transparency, schedule, help | `mock-ok` | `HorizontalScroll`: a named, focusable region only when it overflows (#756) |
+| Text contrast | default theme | `mock-ok` | Nuclear Green meets WCAG AA (teal `#3a9a83`, dark text on primary); links in text are underlined (#755, #761, #771). Other built-in themes not re-measured |
+| Phone and tablet layouts | every route | `mock-ok` | swept at 320, 360, 390, 768, 1024 and 1280 px (batches 52-59); narrow track tables fold Add to queue into the track menu (#768) |
+| Touch targets | Radio lists | `mock-ok` | 24 px minimum (#764) |
 
 ## How to verify live (not mock)
 
@@ -194,46 +180,17 @@ pnpm deploy:tahti-beta
 
 Update this file when a row moves from `partial` → `live-api` or a demock wave completes.
 
-## 2026-08-23 route and capability sweep
+## Open from the 2026-08 route sweeps
 
-Compared the current `apps/web/src/app/**/page.tsx` tree in the Tahti repository with the Nuclear SPA router and the implemented views. Existing capabilities with broken legacy navigation were fixed in `prodPathRedirects.ts`: Distribution, Events, Embeds, Recordings, artist Venues, Posts, broadcast recordings, archive editor deep links, track Insights, collection creation, and the matching Artist/Broadcast/Connections/Moderation settings destinations now resolve to their in-app surfaces.
+The 2026-08-23 and 2026-08-25 comparisons against `tahti-org` `apps/web` are done except:
 
-### Missing user-facing surfaces
-
-- [x] Public venue detail (`/v/:slug`) — `VenueDetailView` built from the existing venue directory list; `VenuesView` links each card to it in-app instead of out to `tahti.live`.
-- [x] Transparency methodology (`/transparency/methodology`) — `TransparencyMethodologyView` ports prod's static methodology copy (categories, grant formula, data pipeline, public API); linked from the dashboard header.
-- [x] Public/member feature requests (`/governance/feature-requests`) — `FeatureRequestsView` against the real member-gated `GET/POST /api/v1/governance/feature-requests` (+ vote/comment sub-routes); propose, upvote, discuss, same member gate as `/governance` motions. Distinct from the pre-existing admin-only `/admin/feature-requests` review queue.
-- [ ] Upload job detail (`/dashboard/upload/:uploadId`) — upload works, but processing state has no durable detail route after navigation or refresh.
-- [ ] Signup profile and broadcaster-intake step parity (`/signup/profile`, `/signup/broadcast`) — join and membership checkout exist, but these guided steps are consolidated rather than preserved as addressable routes.
-
-### Partial functionality
-
-- [x] Support (`/help/support`) — `SupportContactForm` posts to the real `POST /api/support/contact` (auth-optional, category enum, prod's own rate-limited endpoint); category/subject/message match prod's form exactly.
-- [x] ~~Public venue governance (`/governance/venues`)~~ — not actually a gap. Checked prod (`apps/web/src/app/governance/venues/page.tsx`): it's board-only ("Venue verification"), same as this POC's `/studio/venues`/admin tooling. Prod has no member-facing venue governance route to port.
-- [x] Direct-message thread URLs — new `/messages/$id` route; opening a conversation now navigates there so refresh/share preserves it.
-- [ ] Admin detail operations remain intentionally reduced: user/support/announcement detail, bulk file operations, per-subscriber payout retry, legacy-member migration, grant preview/run, and governance report/resolution/audit tools.
-- [ ] Multitrack + viz (theDAW port) is available beside trim mode; server-side multitrack render still open. Was: Pro editor remains shallower than Tahti's full ffmpeg/multitrack workflow; a true multitrack timeline still needs a rendering and persistence design.
-- [x] Dynamic SEO/OG parity for artist, channel, and release pages — client-side sync on real data resolve (`src/lib/seo.ts`) plus a bot-facing `/api/og/*` proxy (see SEO-OG-NOTES.md). Collection and venue pages now sync client-side metadata after fetch; they still have no dedicated bot OG routes.
-
-## 2026-08-25 tahti-org sweep
-
-Compared `tahti-org` (apps/web + recent API) with this SPA. Ported in this pass:
-
-- [x] Disco-widgets (listener + artist store, sandboxed iframe, Listen/channel/profile render). Admin catalog stays on Next `/admin/disco-widgets`.
-- [x] Sticky must-dismiss notifications (theme review lifecycle).
-- [x] Listen artist directory: `isActive` badges, Active-now filter, active-first sort.
-- [x] Join form: Solo / Collective toggle and “Collective name” label (kind is applied at onboarding).
-- [x] Collection and venue client-side SEO sync.
-
-Still not ported (do not block cutover unless noted):
-
-- [x] Integrations marketplace credentials (`/api/me/integrations`) — ListenBrainz + Last.fm **SCROBBLE** are live (Settings → Integrations; Add-ons → Scrobbling links there). Sources OAuth and fingerprint plugins remain separate. Chart dashboards / OmniSource are out of scope — see `src/plugins/scrobble/README.md`'s "Out of scope" note.
-- [ ] Theme editor public-submit / GitHub PR pipeline — submit and board approval exist; the API worker opens the pull request in `tahti-registry`, but its GitHub token is not provisioned yet, so no theme has been published this way.
-- [x] Internet Radio personal library (`/api/me/internet-radio`) — Settings → Playback keeps your own stations on the account.
-- [x] Hearthis export push — a track can be pushed to your own hearthis.at account from Studio.
-- [ ] Help spotlight tours covering disco-widgets specifically (generic `?` tours exist).
-- [ ] Admin Disco-widgets / Internet Radio / Themes board tools (Next admin remains canonical).
-- [ ] Collection/venue bot OG endpoints (no `/api/og/collection` or `/api/og/venue` in tahti-org yet).
+- [ ] Upload job detail (`/dashboard/upload/:uploadId`): processing state has no durable route after navigation or refresh.
+- [ ] Signup profile and broadcaster-intake steps (`/signup/profile`, `/signup/broadcast`) are consolidated into join and checkout rather than kept as guided steps.
+- [ ] Admin: announcement detail, bulk file operations and legacy-member migration.
+- [ ] Multitrack + viz (theDAW port) runs beside trim mode; server-side multitrack render is still open.
+- [ ] Theme submit → `tahti-registry` pull request: the API worker's GitHub token is not provisioned, so approved themes don't open a PR yet.
+- [ ] Help spotlight tour for disco-widgets (generic `?` tours exist).
+- [ ] Bot OG endpoints for collections and venues (no `/api/og/collection` or `/api/og/venue` in tahti-org).
 
 ### Intentionally consolidated, not missing
 

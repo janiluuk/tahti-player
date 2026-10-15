@@ -81,9 +81,10 @@ Full prod-parity status per item lives in [`packages/tahti-web/FEATURES.md`](./p
 
 ### Desktop player (Tauri)
 
-- Full Nuclear-based desktop app: search, local library, add-ons, themes, remote control
+- The tahti-web app in a Tauri shell, plus what only a desktop app can do: a local music library, local servers for other devices and tools, and native file access
 - Local library: recursive folder import, iTunes / Music.app XML import, hearthis.at and SoundCloud set import, embedded artwork, BPM/key/ReplayGain and composer tags, smart playlists, opt-in volume normalization
-- Built-in MCP server for AI-agent control (playback, queue, favorites, playlists, providers) — see [MCP](#mcp-desktop-player) below
+- Built-in MCP server for AI-agent control (playback, queue, desktop library, radio, Tahti search; localhost only) — see [MCP](#mcp-desktop-player) below
+- MPD server for MPD clients (`mpc`, ncmpcpp), Discord Rich Presence, and Tahti Jam: a phone remote that only paired devices can use (Settings → Integrations)
 
 ### Command line (`tahti`)
 
@@ -277,10 +278,10 @@ Publishes the Tahti web build for `beta.tahti.live` (vimage / Pi proxy). See [`p
 
 ## MCP (desktop player)
 
-Tahti Player ships with a built-in [MCP](https://modelcontextprotocol.io/) server, preserved byte-identical from upstream Nuclear — it lets an AI agent control playback, queue, favorites, playlists, and providers.
+Tahti Player ships with a built-in [MCP](https://modelcontextprotocol.io/) server. It lets an AI agent control playback, the queue, the desktop library, radio and Tahti search, and only answers requests from this computer. It was rebuilt on tahti-web's player in 2026-10 after the switch away from Nuclear's UI.
 
 1. Run the desktop player: `pnpm dev`
-2. Settings → Integrations → **Enable MCP Server** (binds `http://127.0.0.1:8800/mcp`, localhost only)
+2. Settings → Integrations → **MCP server** (binds `http://127.0.0.1:8800/mcp`, localhost only)
 3. Point your tool at it with **Streamable HTTP**:
 
 ```bash
@@ -291,7 +292,7 @@ claude mcp add tahti-player --transport http http://127.0.0.1:8800/mcp
 codex mcp add tahti-player --url http://127.0.0.1:8800/mcp
 ```
 
-Full docs: [`packages/docs/integrations/mcp-server.md`](./packages/docs/integrations/mcp-server.md) (tool reference, OpenCode/Cursor/Windsurf/MCP Inspector setup, agent skill download). This is a **desktop-only** capability — the Vite SPA (`@tahti-player/tahti-web`) can't host the localhost control-plane bridge a CDN-served multi-user app would need; see [`packages/tahti-web/docs/MCP.md`](./packages/tahti-web/docs/MCP.md) for why.
+Full docs: [`packages/docs/integrations/mcp-server.md`](./packages/docs/integrations/mcp-server.md) (tool reference, OpenCode/Cursor/Windsurf/MCP Inspector setup, agent skill download). This is a **desktop-only** capability: a browser tab can't host a local server. On the web, the Tahti API has its own MCP endpoint for personal API tokens (Settings → Account → API tokens shows the URL). See [`packages/tahti-web/docs/MCP.md`](./packages/tahti-web/docs/MCP.md).
 
 ## Relation to Tahti
 

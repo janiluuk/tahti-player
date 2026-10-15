@@ -40,7 +40,10 @@ function TopUsersChart({ users }: { users: AdminStorageUserRow[] }) {
       {top.map((u) => (
         <div key={u.userId} className="text-sm">
           <div className="flex items-baseline justify-between gap-2">
-            <span className="min-w-0 truncate font-medium">
+            <span
+              className="min-w-0 truncate font-medium"
+              title={`${u.displayName} @${u.username}`}
+            >
               {u.displayName}{' '}
               <span className="text-foreground-secondary font-normal">
                 @{u.username}

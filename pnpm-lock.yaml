@@ -1221,9 +1221,6 @@ importers:
       lucide-react:
         specifier: ^0.542.0
         version: 0.542.0(react@18.3.1)
-      luxon:
-        specifier: ^3.7.1
-        version: 3.7.2
       motion:
         specifier: ^12.23.12
         version: 12.43.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1264,9 +1261,6 @@ importers:
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
-      '@types/luxon':
-        specifier: ^3.7.1
-        version: 3.7.5
       '@types/node':
         specifier: ^25.4.0
         version: 25.9.8
