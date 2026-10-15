@@ -9,6 +9,7 @@ import { runHearthisDownloadSet } from './commands/hearthis-download-set.mjs';
 import { runHearthisSet } from './commands/hearthis-set.mjs';
 import { runHearthisSets } from './commands/hearthis-sets.mjs';
 import { runImport } from './commands/import.mjs';
+import { runLibraryDelete } from './commands/library-delete.mjs';
 import { runLibraryEdit } from './commands/library-edit.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
@@ -82,6 +83,20 @@ sound as saved. Needs a token with the write scope.
     positionals: 1,
     run: (config, { values, positionals }) =>
       runLibraryEdit(config, positionals[0], values),
+  },
+  {
+    path: ['library', 'delete'],
+    usage: 'tahti library delete <id> --yes',
+    summary: 'Delete one of your library sounds',
+    details: `Looks the sound up with GET /api/me/sound/:id, then calls DELETE
+/api/me/sound/:id. Without --yes it only names the sound and stops. Deleting
+removes every version and its place in your rotation, and cannot be undone.
+Needs a token with the write scope.
+  --yes   Really delete it`,
+    options: { yes: { type: 'boolean', default: false } },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runLibraryDelete(config, positionals[0], { yes: values.yes }),
   },
   {
     path: ['releases', 'list'],
@@ -318,7 +333,8 @@ pause, n/p next/prev, ←/→ seek, / search, a queue, ? help, q quit.`,
 const ENVIRONMENT_HELP = `Environment:
   TAHTI_API_TOKEN   Personal API token (tahti.live → Settings → Account → API tokens).
                     Required by every command except search and
-                    channel <slug>; import, library edit and notifications read need
+                    channel <slug>; import, library edit, library delete and
+                    notifications read need
                     the write scope. hearthis download-set only needs read
                     (files are fetched from hearthis.at, not uploaded to Tahti).
                     shell needs a token for library playback.
