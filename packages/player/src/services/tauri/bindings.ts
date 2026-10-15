@@ -1164,7 +1164,13 @@ export type RuleField = "title" | "artist" | "album" | "genre" | "composer" | "f
 /**  Whether analysis has run (`isSet` / `isNotSet`). */
 "analyzed";
 
-export type RuleOp = "is" | "isNot" | "contains" | "notContains" | "atLeast" | "atMost" | "between" | 
+export type RuleOp = "is" | "isNot" | "contains" | "notContains" | "atLeast" | "atMost" | 
+/**  Numbers: strictly greater than `value`. */
+"above" | 
+/**  Numbers: strictly less than `value`. */
+"below" | 
+/**  Text: begins with `value` (case-insensitive). */
+"startsWith" | "between" | 
 /**  Dates: within the last `value` days. */
 "inLastDays" | 
 /**  Dates: not within the last `value` days (never-played included). */
