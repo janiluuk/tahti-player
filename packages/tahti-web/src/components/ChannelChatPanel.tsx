@@ -554,7 +554,17 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         )}
       </div>
 
-      <ChatReactionBar slug={slug} onError={(m) => showError(m)} />
+      {!chatOff && (
+        <ChatReactionBar
+          slug={slug}
+          onError={(m) =>
+            showChatError(
+              m,
+              'Your reaction was not sent. Try again in a moment.',
+            )
+          }
+        />
+      )}
 
       {error ? (
         <ChatNotice
