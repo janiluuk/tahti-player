@@ -2,7 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChannelView } from '@tahti-web/views/ChannelView';
 import { expect, within } from 'storybook/test';
 
+import { storyChannel } from './_fixtures/channel';
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
+import { mockData } from './_lib/mock-data';
 
 const meta: Meta<typeof ChannelView> = {
   title: 'Tahti/Channel/ChannelView',
@@ -107,4 +109,33 @@ export const PhoneLightTheme: Story = {
   parameters: { viewport: { defaultViewport: 'mobile1' } },
   decorators: [withMockAuth(MOCK_USERS.listener)],
   play: async ({ canvasElement }) => expectReadableTrackTitles(canvasElement),
+};
+
+/** Offline channel at phone width: Off air stage + readable archive tracklist. */
+export const OfflinePhone: Story = {
+  parameters: {
+    viewport: { defaultViewport: 'mobile1' },
+    mockData: mockData({
+      channel: storyChannel({
+        state: 'OFFLINE',
+        hlsUrl: null,
+        signalConnected: false,
+        nowPlaying: null,
+        nowPlayingNext: null,
+      }),
+    }),
+  },
+  decorators: [
+    withMockAuth(MOCK_USERS.listener),
+    (Story) => (
+      <div className="w-[390px] max-w-full overflow-hidden">
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByText('Off air')).toBeVisible();
+    await expectReadableTrackTitles(canvasElement);
+  },
 };

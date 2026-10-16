@@ -20,7 +20,7 @@ Source: Storybook `Missing states:`, `MOCKS.md` thin spots, and leftover visual-
 | 8 | Richer mock studio archive seed (covers, visibility mix, second embed) | `MOCKS.md` | |
 | 9 | StudioCollectionsView Storybook: populated, filtered-empty, quick-create at 390 px | Storybook gap | |
 | 10 | Channel playlist: “no playable tracks” uses shared `EmptyState` (cards + table) | channel polish | |
-| 11 | ChannelView offline @ 390 px Storybook (Off air stage + readable archive) | `channel-page-redesign.md` | |
+| 11 | ChannelView offline @ 390 px Storybook (Off air stage + readable archive) | `channel-page-redesign.md` | (this PR) |
 | 12 | ThemeEditor: empty-name validation + discard draft (Missing states) | Storybook `Missing states:` | |
 | 13 | ImageLightbox: empty gallery uses `EmptyState` instead of `null` | Storybook `Missing states:` | |
 | 14 | WaveformSeekbar: live / no-duration story (+ Live badge UI if needed) | Storybook `Missing states:` | |
