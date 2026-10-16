@@ -48,10 +48,12 @@ type Artist = PublicProfile['artist'];
 export function ArtistHeaderActions({
   profile,
   isOwner,
+  isSelf,
   onEditLook,
 }: {
   profile: PublicProfile;
   isOwner: boolean;
+  isSelf: boolean;
   onEditLook: () => void;
 }) {
   const { artist, channel, fanTiers } = profile;
@@ -63,14 +65,14 @@ export function ArtistHeaderActions({
         artistName={artist.displayName}
         className={headerButtonClass}
       />
-      {!isOwner && subscriptionsOn ? (
+      {!isSelf && subscriptionsOn ? (
         <NewsletterSubscribeToggle
           artistUsername={artist.username}
           artistDisplayName={artist.displayName}
           iconOnly
         />
       ) : null}
-      {!isOwner && subscriptionsOn && fanTiers.length > 0 ? (
+      {!isSelf && subscriptionsOn && fanTiers.length > 0 ? (
         <Tooltip
           content={`Subscribe to ${artist.displayName}'s fan tiers`}
           side="top"
@@ -87,7 +89,7 @@ export function ArtistHeaderActions({
           </ButtonLink>
         </Tooltip>
       ) : null}
-      {!isOwner && profile.links.presskit ? (
+      {!isSelf && profile.links.presskit ? (
         <Tooltip content="Download press kit" side="top">
           <ButtonAnchor
             href={publicPressKitUrl(artist.username)}
@@ -108,20 +110,20 @@ export function ArtistHeaderActions({
           className={headerButtonClass}
         />
       ) : null}
-      {channel?.slug && !isOwner ? (
+      {channel?.slug && !isSelf ? (
         <EmbedButton
           target={{ kind: 'channel', slug: channel.slug }}
           iconOnly
         />
       ) : null}
-      {channel?.slug && !isOwner ? (
+      {channel?.slug && !isSelf ? (
         <ReportButton
           targetType="CHANNEL"
           targetId={channel.slug}
           label={artist.displayName}
         />
       ) : null}
-      {!isOwner ? (
+      {!isSelf ? (
         <ArtistBlockButton
           username={artist.username}
           displayName={artist.displayName}

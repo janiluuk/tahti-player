@@ -207,6 +207,20 @@ describe('ArtistView', () => {
       );
     });
 
+    it('does not offer a listener to follow, report or block themself', async () => {
+      useAuthStore.setState({ profileLoaded: true });
+      const { container } = await renderArtist('listener');
+      await vi.waitFor(() =>
+        expect(
+          container.querySelector('[data-testid="artist-social-header"]'),
+        ).not.toBeNull(),
+      );
+      expect(button(container)).toBeNull();
+      expect(container.querySelector('[aria-label^="Report"]')).toBeNull();
+      expect(container.querySelector('[aria-label^="Block"]')).toBeNull();
+      expect(container.querySelector('[aria-label^="Subscribe"]')).toBeNull();
+    });
+
     it('shows a follow made elsewhere, from the server', async () => {
       vi.spyOn(follows, 'fetchFollowStatus').mockResolvedValue({
         following: true,
