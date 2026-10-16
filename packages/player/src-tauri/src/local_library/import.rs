@@ -95,6 +95,30 @@ pub(super) fn collect_audio_paths_with_skipped(root: &Path) -> Result<(Vec<PathB
     Ok((paths, skipped))
 }
 
+/// The path the catalog would store for `path`: imports store canonical
+/// paths, so a path that goes through a symlink (macOS `/var` ->
+/// `/private/var`, a symlinked music folder) would never equal the stored
+/// one. A file that does not exist yet keeps its name under its nearest
+/// existing folder's canonical path, so it still matches once imported.
+pub(super) fn catalog_path(path: &Path) -> PathBuf {
+    if let Ok(canonical) = path.canonicalize() {
+        return canonical;
+    }
+    let mut tail = Vec::new();
+    let mut current = path;
+    while let (Some(parent), Some(name)) = (current.parent(), current.file_name()) {
+        tail.push(name.to_os_string());
+        if let Ok(mut base) = parent.canonicalize() {
+            for part in tail.iter().rev() {
+                base.push(part);
+            }
+            return base;
+        }
+        current = parent;
+    }
+    path.to_path_buf()
+}
+
 #[cfg(test)]
 pub(super) fn collect_audio_paths(root: &Path) -> Result<Vec<PathBuf>, String> {
     collect_audio_paths_with_skipped(root).map(|(paths, _skipped)| paths)

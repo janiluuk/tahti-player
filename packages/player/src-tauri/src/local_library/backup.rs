@@ -415,6 +415,7 @@ pub async fn restore_backup(pool: &SqlitePool, path: &Path, mappings: &[RootMapp
             result.tracks_missing += 1;
             continue;
         }
+        let mapped = super::import::catalog_path(&mapped);
         let key = mapped.to_string_lossy().into_owned();
         let root_id = roots
             .iter()
@@ -560,7 +561,9 @@ pub async fn restore_backup(pool: &SqlitePool, path: &Path, mappings: &[RootMapp
             .await
             .map_err(|e| e.to_string())?;
         for (position, entry) in playlist.entries.iter().enumerate() {
-            let mapped = map_path(&entry.path, mappings);
+            let mapped = super::import::catalog_path(Path::new(&map_path(&entry.path, mappings)))
+                .to_string_lossy()
+                .into_owned();
             let track_id: Option<String> = sqlx::query_scalar("SELECT id FROM library_tracks WHERE path = ?")
                 .bind(&mapped)
                 .fetch_optional(&mut *tx)

@@ -54,7 +54,10 @@ async fn backup_restores_into_a_fresh_profile_with_remapped_roots() {
     for i in 0..3 {
         std::fs::copy(old_dir.path().join(format!("{i}.wav")), new_dir.path().join(format!("{i}.wav"))).unwrap();
     }
-    let maps = mapping(old_dir.path(), new_dir.path());
+    // The dialog maps from the folder as the backup stored it (canonical),
+    // while the chosen destination may still go through a symlink (the
+    // macOS temp dir lives behind `/var` -> `/private/var`).
+    let maps = mapping(&old_dir.path().canonicalize().unwrap(), new_dir.path());
 
     let unmapped = restore_preview(&backup, &[]).unwrap();
     assert_eq!(unmapped.files_found, 3, "the old folder still exists on this machine");
@@ -128,6 +131,37 @@ async fn restore_reports_missing_files_and_never_overwrites_a_playlist_name() {
     assert!(restore_preview(&dir.path().join("nope"), &[]).is_err());
     std::fs::write(dir.path().join("junk.tahti-backup"), b"{\"hello\":1}").unwrap();
     assert_eq!(restore_preview(&dir.path().join("junk.tahti-backup"), &[]).unwrap_err(), "This is not a Tahti library backup.");
+}
+
+#[cfg(unix)]
+#[tokio::test]
+async fn restoring_into_a_symlinked_folder_keeps_user_data_and_the_watched_folder() {
+    let old_dir = tempfile::tempdir().unwrap();
+    make_music(old_dir.path());
+    let source = pool().await;
+    add_root(&source, old_dir.path()).await.unwrap();
+    import_paths(&source, (0..3).map(|i| old_dir.path().join(format!("{i}.wav"))).collect()).await;
+    let ids: Vec<String> = tracks(&source).await.into_iter().map(|t| t.id).collect();
+    set_rating(&source, &ids, 5).await.unwrap();
+    let backup = tempfile::tempdir().unwrap().keep().join("lib.tahti-backup");
+    export_backup(&source, &backup).await.unwrap();
+
+    let real = tempfile::tempdir().unwrap();
+    for i in 0..3 {
+        std::fs::copy(old_dir.path().join(format!("{i}.wav")), real.path().join(format!("{i}.wav"))).unwrap();
+    }
+    let links = tempfile::tempdir().unwrap();
+    let linked = links.path().join("Music link");
+    std::os::unix::fs::symlink(real.path(), &linked).unwrap();
+    let maps = mapping(&old_dir.path().canonicalize().unwrap(), &linked);
+
+    let fresh = pool().await;
+    let result = restore_backup(&fresh, &backup, &maps).await.unwrap();
+    assert_eq!((result.tracks_restored, result.tracks_failed, result.roots_added), (3, 0, 1));
+    let restored = tracks(&fresh).await;
+    assert!(restored.iter().all(|t| t.rating == 5), "ratings survive the symlinked destination");
+    let rooted: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM library_tracks WHERE root_id IS NOT NULL").fetch_one(&fresh).await.unwrap();
+    assert_eq!(rooted, 3, "the files join the restored watched folder");
 }
 
 #[test]
