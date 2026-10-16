@@ -45,6 +45,14 @@ describe('shell state', () => {
     ]);
   });
 
+  it('starts with a saved history, so p goes back to the last session', () => {
+    const state = createInitialState({ history: [TWO, ONE] });
+    expect(state.history).toEqual([TWO, ONE]);
+    const previous = goToPrevious(state);
+    expect(previous.nowPlaying).toBe(TWO);
+    expect(previous.history).toEqual([ONE]);
+  });
+
   it('moves nav and resets list index', () => {
     let state = {
       ...createInitialState(),

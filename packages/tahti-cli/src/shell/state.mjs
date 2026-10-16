@@ -10,7 +10,7 @@ export const NAV_ITEMS = [
 export const HISTORY_LIMIT = 100;
 export const RESTART_AFTER_SECONDS = 3;
 
-export function createInitialState() {
+export function createInitialState({ history = [] } = {}) {
   return {
     navIndex: 0,
     focus: 'list', // 'nav' | 'list' | 'search'
@@ -20,7 +20,7 @@ export function createInitialState() {
     likes: [],
     radioItems: [],
     queue: [],
-    history: [],
+    history,
     listIndex: 0,
     nowPlaying: null, // { id, title, artist, kind: 'track'|'live', url }
     paused: true,

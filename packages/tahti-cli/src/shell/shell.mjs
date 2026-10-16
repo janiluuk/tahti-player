@@ -9,6 +9,7 @@ import {
   loadSearchItems,
   resolveLibraryPlayUrl,
 } from './api.mjs';
+import { readShellHistory, writeShellHistory } from './history-file.mjs';
 import { HELP_TEXT, resolveKeyAction } from './keys.mjs';
 import { MpvController } from './mpv.mjs';
 import {
@@ -24,6 +25,7 @@ import {
   moveNav,
   NAV_ITEMS,
   nowPlayingLine,
+  rememberPlayed,
   selectedItem,
   setFocus,
   setNowPlaying,
@@ -43,7 +45,9 @@ export async function runShell(config) {
   assertTty();
   requireToken(config);
 
-  let state = createInitialState();
+  let state = createInitialState({
+    history: readShellHistory(config.apiUrl),
+  });
   let searchInput = null;
   let pollTimer = null;
   let closed = false;
@@ -124,7 +128,11 @@ export async function runShell(config) {
   });
 
   function setState(next) {
+    const previousHistory = state.history;
     state = clampListIndex(next);
+    if (state.history !== previousHistory) {
+      writeShellHistory(config.apiUrl, state.history);
+    }
     render();
   }
 
@@ -559,6 +567,7 @@ export async function runShell(config) {
     }
     closed = true;
     exitCode = code;
+    writeShellHistory(config.apiUrl, rememberPlayed(state, null));
     if (pollTimer) {
       clearInterval(pollTimer);
       pollTimer = null;
