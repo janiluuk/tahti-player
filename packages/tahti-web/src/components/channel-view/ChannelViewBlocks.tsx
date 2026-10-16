@@ -126,17 +126,17 @@ export function renderChannelBlock(
             <div className="text-sm font-bold tracking-tight">Live chat</div>
             <p className="text-foreground-secondary text-xs">
               {ctx.chatOn
-                ? 'Shown in the right sidebar Chat tab — not duplicated on this page.'
+                ? 'Open the live chat page to talk with the artist and other fans.'
                 : 'Chat is disabled for this channel.'}
             </p>
           </div>
           {ctx.chatOn ? (
-            <Tooltip content="Open chat in sidebar" side="top">
+            <Tooltip content="Open live chat" side="top">
               <Button
                 size="icon-sm"
                 variant="secondary"
                 onClick={ctx.onOpenChat}
-                aria-label="Open chat in sidebar"
+                aria-label="Open live chat"
               >
                 <MessageCircle size={16} aria-hidden />
               </Button>
