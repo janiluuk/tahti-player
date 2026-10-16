@@ -364,6 +364,29 @@ function checkPageHeading(who, path, seen) {
       problems.push(`phone: ${path} scrolls sideways by ${overflow} px`);
     }
   }
+  {
+    // The artist page's email subscribe form must fit its header. The header
+    // clips its overflow, so a cut-off control never shows up as sideways
+    // scroll.
+    await visit(page, '/u/liis-kask');
+    const header = page.getByTestId('artist-social-header');
+    const clipped = await page
+      .getByRole('button', { name: 'Subscribe to liis-kask' })
+      .click({ timeout: 4000 })
+      .then(async () => {
+        const box = await header.boundingBox();
+        const submit = await header
+          .getByRole('button', { name: 'Subscribe', exact: true })
+          .boundingBox();
+        return submit.x + submit.width > box.x + box.width;
+      })
+      .catch(() => null);
+    if (clipped === null) {
+      problems.push('phone: the artist page has no email subscribe form');
+    } else if (clipped) {
+      problems.push('phone: the artist email subscribe button is cut off');
+    }
+  }
   await visit(page, '/');
   const found = await page
     .getByRole('button', { name: 'Search', exact: true })

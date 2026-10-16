@@ -27,6 +27,7 @@ User ask (2026-10-04): add a separate listener user who is registered but has no
 - Search on phones: the phone top bar has a search button that opens a search row across the bar (#567). Before, a phone had no search.
 - `scripts/audit-signed-out.mjs` opens the public pages at 390 px, fails on sideways scroll and checks the phone search (#573).
 - Found on the way, at 390 px: the menu drawer opened with a "Close" tooltip over its first item (#566), the rail filter box shrank to one letter (#568), a venue with no photo showed an empty box (#569), Messages showed an empty thread box (#572).
+- Follow-up (2026-10-16): at 390 px, the signed-out email subscribe form on an artist header pushed its Subscribe button past the header's right edge, where it was cut off. The form now takes its own row on phones, and `audit-signed-out.mjs` checks that it fits.
 
 ## Done (2026-10-10)
 

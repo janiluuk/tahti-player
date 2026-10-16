@@ -120,7 +120,7 @@ function AnonymousForm({
 
   return (
     <form
-      className="flex items-center gap-2"
+      className="flex w-full basis-full items-center gap-2 sm:w-auto sm:basis-auto"
       onSubmit={(e) => {
         e.preventDefault();
         setBusy(true);
@@ -144,10 +144,15 @@ function AnonymousForm({
         onChange={(e) => setEmail(e.target.value)}
         placeholder="you@example.com"
         aria-label="Email address"
-        className="w-48"
+        className="min-w-0 sm:w-48"
         autoFocus
       />
-      <Button size="sm" type="submit" disabled={busy || !email.trim()}>
+      <Button
+        size="sm"
+        type="submit"
+        className="shrink-0"
+        disabled={busy || !email.trim()}
+      >
         {busy ? 'Sending…' : 'Subscribe'}
       </Button>
     </form>
