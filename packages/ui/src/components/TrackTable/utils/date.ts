@@ -1,13 +1,15 @@
 const ISO_DATE = /^\d{4}(-\d{2}(-\d{2})?)?([T ].*)?$/;
 
-const monthName = new Intl.DateTimeFormat(undefined, {
+const releaseDateFormat = new Intl.DateTimeFormat('en-US', {
   month: 'short',
+  day: 'numeric',
+  year: 'numeric',
   timeZone: 'UTC',
 });
 
 /** Formats a track's ISO release date for the table's release-date column
- * -- short, locale-aware, no time component. Returns '' when missing or
- * unparsable so the cell just renders blank rather than "Invalid DateTime". */
+ * -- short, no time component. Returns '' when missing or unparsable so the
+ * cell just renders blank rather than "Invalid DateTime". */
 export const formatReleaseDate = (dateIso: string | undefined): string => {
   if (!dateIso) {
     return '';
@@ -18,6 +20,5 @@ export const formatReleaseDate = (dateIso: string | undefined): string => {
   if (Number.isNaN(time)) {
     return '';
   }
-  const date = new Date(time);
-  return `${monthName.format(date)} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
+  return releaseDateFormat.format(new Date(time));
 };
