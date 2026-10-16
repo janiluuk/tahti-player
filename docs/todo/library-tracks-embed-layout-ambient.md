@@ -16,6 +16,7 @@
 ## Left
 
 - Visual check on beta / mock with a real hearthis cover (`bannerUrl` present).
+- Mock sounds now always get a picsum `bannerUrl` when fixtures omit art; Storybook `StudioSoundsView/AmbientCovers` asserts the row wash (batch 66 #3).
 
 ## Done when
 

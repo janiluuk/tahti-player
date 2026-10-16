@@ -671,7 +671,9 @@ function buildMockSoundItems(slug: string): ChannelSoundItem[] {
     title,
     artistName: artist,
     durationSec: durations[i % durations.length],
-    bannerUrl: content.trackArtwork?.[i] ?? null,
+    bannerUrl:
+      content.trackArtwork?.[i] ??
+      '/mock/northern-lights/cover-first-light.svg',
     audioUrl: i === durations.length - 1 && i % 2 === 0 ? DEMO_HLS : DEMO_MP3,
     genre: primaryGenre,
     createdAt: dates[i % dates.length],

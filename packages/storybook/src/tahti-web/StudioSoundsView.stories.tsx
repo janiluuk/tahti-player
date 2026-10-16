@@ -36,6 +36,22 @@ type Story = StoryObj<typeof meta>;
 
 export const Tracks: Story = {};
 
+/** Rows with cover art get a dominant-color ambient wash (library Tracks polish). */
+export const AmbientCovers: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const link = await canvas.findByRole('link', {
+      name: 'Northern Lights — Live Set',
+    });
+    const li = link.closest('li');
+    await expect(li).toBeTruthy();
+    await waitFor(() => {
+      const bg = li!.getAttribute('style') ?? '';
+      expect(bg).toMatch(/linear-gradient|radial-gradient|background/i);
+    });
+  },
+};
+
 export const Clips: Story = {
   parameters: { query: { folder: 'clips' } },
 };
