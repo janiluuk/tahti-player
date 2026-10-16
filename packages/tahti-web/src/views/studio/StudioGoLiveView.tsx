@@ -102,7 +102,7 @@ export function StudioGoLiveView() {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6">
-        <ViewShell title="Broadcast" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell title="Go live" classes={{ root: 'px-0 pt-0' }}>
           <div className="mb-4 flex flex-wrap items-center gap-2">
             {slug && (
               <ChannelShareButton
@@ -178,14 +178,24 @@ export function StudioGoLiveView() {
                       <div className="flex items-center justify-between gap-3">
                         <div>
                           <p className="text-foreground-secondary text-xs font-semibold tracking-[0.16em] uppercase">
-                            Before you start
+                            {isBroadcastLive ? 'On air' : 'Before you start'}
                           </p>
                           {showInfoConfirmed && <ShowInfoConfirmed />}
                         </div>
                       </div>
+                      {isBroadcastLive ? (
+                        <p
+                          className="border-border bg-accent-green/10 text-foreground rounded-lg border px-3 py-3 text-sm"
+                          role="status"
+                        >
+                          You’re live. Encoder and show title stay as set for
+                          this session — end the broadcast when you’re done.
+                        </p>
+                      ) : null}
                       <ul
                         className="border-border bg-background-secondary/40 flex flex-col gap-2 rounded-lg border px-3 py-3 text-sm"
                         aria-label="Prep checklist"
+                        hidden={isBroadcastLive || undefined}
                       >
                         <li className="flex flex-wrap items-center justify-between gap-2">
                           <span>
