@@ -4686,3 +4686,16 @@ Asked for as "pull latest main, and do 15 todo slices and add pr. then merge all
 - **Accessibility, signed in (#866, #867, #870):** channel designer preview is a region with h2 headings; `SegmentedControl`'s chosen option is readable (this changes every SegmentedControl); Draft and Pinned row labels pass contrast. Found with an axe crawl of about 85 routes at 390 and 1366 px.
 - **Listener and signed out (#869, #871, #873):** no Follow/Subscribe/Report/Block on your own profile; Studio and Admin gates have one `h1`; the artist subscribe form fits at 390 px. The audit script checks all three.
 - **Found, not fixed:** a listener's Library Stash tab opens "Studio is for artists" (needs a decision, in the listener todo); the `@handle` on `/subscribe/<user>` is about 1.3:1 on teal; the channel designer's "Edit backdrop design" button contains the bio's "Show more" button at 390 px.
+
+## 2026-10-16 - Batch 65 UX / UI (tahti-player #881–#886, #889, #891–#896)
+
+Asked for as "implement the next 20 slices of todo, try concentrate on making the UX and UI experience better".
+
+- **Batch 63 leftovers landed (#881–#884):** quieter channel track headers; Offline/Share/RSS/Report in the hero; upcoming-shows empty line; native `title` on truncated player metadata (player snapshots refreshed for #881 and #884).
+- **Contrast and phone (#886, #889, #882):** subscribe `@handle` uses primary-foreground on the teal header; designer identity click no longer wraps bio “Show more”; phone More menu landed with the hero actions PR (#890 closed as duplicate).
+- **Channel composition (#891, #893):** tighter block rhythm, muted Pinned/Catalog eyebrows; comment Post sits beside the field from `sm` up.
+- **Listen / Discover / queue (#892, #894–#896):** solid “Now” label and “Off air” on streamless cards; Discover widgets clear the sticky nav; empty queue offers Discover/Radio; quiet Queue rail eyebrow.
+- **Already on master (no new PR):** Favorites/Feed Discover CTAs, Library listener empty, Moderators chat-only copy, profile self Report/Block gate, player truncate.
+- **Checks:** per-PR type-check / eslint / Prettier / touched tests; snapshot updates for player TrackTable and now-playing titles. Not tried on a real phone or against the live API.
+- **Left open:** listener Library Stash tab (product decision); full channel art-direction redesign (needs a reference). Polish still open after this fold: #897 (`Now` → accent green + extracted `StationCardSubtitle` test) and #898 (unify remaining “Temporarily offline” copy to “Off air” on `/radio`).
+
