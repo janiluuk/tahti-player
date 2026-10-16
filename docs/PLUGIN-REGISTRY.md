@@ -206,8 +206,7 @@ must pass it.
 | Removal | loaded and orphan entries, refuses delete outside the managed plugins dir | `pluginStore.test.ts`, `pluginRegistryHost.test.ts`, `pluginDir.test.ts` |
 | Discovery | `installedAt` order, paths outside managed dir skipped, providers resolve after hydrate, per-plugin timings | `App.hydration.test.tsx`, `pluginRegistryHost.test.ts` |
 
-Known: `App.hydration.test.tsx` had 6 failures on `master` when the package was
-extracted, independent of that change.
+All 84 tests across these suites pass on `master` (checked 2026-10-16).
 
 ## Rollback
 

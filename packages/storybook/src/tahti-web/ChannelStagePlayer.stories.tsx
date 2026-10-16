@@ -161,8 +161,13 @@ export const Offline: Story = {
     }),
   },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).queryAllByRole('button')).toHaveLength(
-      0,
-    );
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('Off air')).toBeVisible();
+    await expect(
+      canvas.getByRole('button', { name: 'Browse tracks' }),
+    ).toBeVisible();
+    await expect(
+      canvas.queryByRole('button', { name: 'Play stream' }),
+    ).toBeNull();
   },
 };

@@ -112,6 +112,35 @@ fn two_copies_of_one_recording_are_never_paired_by_their_audio() {
 }
 
 #[tokio::test]
+async fn a_renamed_and_re_tagged_file_shows_its_new_tags_and_keeps_user_edits() {
+    use super::analysis_tests::write_kick_wav;
+    use super::catalog::{apply_edits, EditField, FieldEdit};
+    let dir = tempfile::tempdir().unwrap();
+    let old = dir.path().join("a.wav");
+    write_kick_wav(&old, 120.0, 3.0, "House");
+    let pool = pool().await;
+    let root = add_root(&pool, dir.path()).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    import_into_root(&pool, &root.id, fresh).await;
+    super::reconcile::refresh_changed(&pool, &root).await.unwrap();
+    let id = list(&pool, "", 0).await.unwrap().tracks[0].id.clone();
+    let title = FieldEdit { field: EditField::Title, value: Some("My Title".into()) };
+    apply_edits(&pool, &[id.clone()], &[title]).await.unwrap();
+
+    std::fs::remove_file(&old).unwrap();
+    write_kick_wav(&dir.path().join("01 - Renamed.wav"), 120.0, 3.0, "Deep House Classics");
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    let (moved, _) = super::reconcile::relink_moved(&pool, &root, fresh).await.unwrap();
+    assert_eq!(moved, 1);
+
+    let track = list(&pool, "", 0).await.unwrap().tracks.remove(0);
+    assert_eq!(track.id, id);
+    assert_eq!(track.genre, "Deep House Classics", "the new tags are read, not the old ones kept");
+    assert_eq!(track.title, "My Title", "the user's edit still wins over the file");
+    assert_eq!(super::reconcile::refresh_changed(&pool, &root).await.unwrap(), 0, "not read a second time");
+}
+
+#[tokio::test]
 async fn a_tag_edit_between_import_and_the_first_scan_is_read() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("a.wav");

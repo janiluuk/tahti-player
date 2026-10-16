@@ -45,6 +45,8 @@ Every command has `--help`. Most have `--json`, which prints the API's answer un
 | Upload a folder of tracks | `tahti import ~/Music/new-ep` |
 | Wait until uploads are processed | `tahti library processing --wait` |
 | Releases | `tahti releases list`, `tahti releases show <id>` |
+| Start a new release from library tracks | `tahti releases create "Night Drive EP" --type ep --sound <id> --sound <id>` |
+| Publish a release or set its store links | `tahti releases edit <id> --state published`, `tahti releases edit <id> --link spotify=https://…` |
 | Collections | `tahti collections list`, `show <slug>`, `add <slug> <id>…`, `remove <slug> <#>` |
 | Your channel, or anyone's | `tahti channel`, `tahti channel <slug>` |
 | Plays, downloads and top tracks | `tahti stats --range 30` |
