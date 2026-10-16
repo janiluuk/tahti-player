@@ -11,6 +11,8 @@ import { Button, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../../api/studio-types';
 import { AddToPlaylistButton } from '../../../components/AddToPlaylistButton';
+import { useHearthisEmbedClaim } from '../../../components/HearthisEmbedHost';
+import { HearthisEmbedSurface } from '../../../components/HearthisEmbedSurface';
 import { StudioSoundRowMenu } from '../../../components/StudioSoundRowMenu';
 import {
   canRetrySoundProcessing,
@@ -23,6 +25,7 @@ import {
 } from '../../../lib/embedSrc';
 import { isPinned } from '../../../lib/pinnedTracks';
 import { useDominantColor } from '../../../lib/useDominantColor';
+import { usePlayerStore } from '../../../stores/playerStore';
 import type { StudioSoundsState } from './useStudioSoundsState';
 
 function formatUploadDate(value: string | undefined): string | null {
@@ -82,11 +85,23 @@ export function SoundRow({
   );
   const failed = item.status === 'ERROR';
   const rgb = useDominantColor(item.bannerUrl);
+  const currentId = usePlayerStore((s) => s.currentId);
+  const playerStatus = usePlayerStore((s) => s.status);
+  const hearthisActive =
+    item.embedProvider === 'HEARTHIS' &&
+    Boolean(item.embedUri) &&
+    currentId === `sound:${item.id}`;
+  const hearthisPlaying =
+    hearthisActive &&
+    (playerStatus === 'playing' || playerStatus === 'loading');
+  useHearthisEmbedClaim(hearthisActive);
 
   const embedSrc =
     item.embedProvider && item.embedUri
       ? embedSrcFor(item.embedProvider, item.embedUri)
       : null;
+  const inlineProviderEmbed =
+    embedSrc && embedOpenId === item.id && item.embedProvider !== 'HEARTHIS';
 
   return (
     <li
@@ -138,34 +153,49 @@ export function SoundRow({
           Retry
         </Button>
       ) : null}
-      <Tooltip
-        content={
-          embedSrc
-            ? `Play on ${EMBED_PROVIDER_LABEL[item.embedProvider!]} · Shift+click to queue`
-            : 'Play · Shift+click to queue'
-        }
-        side="top"
-      >
-        <Button
-          size="icon-sm"
-          disabled={busyId === item.id}
-          onClick={(event) => {
-            const queue = event.shiftKey;
-            if (embedSrc) {
-              void playEmbedItem(item, { queue });
-              return;
-            }
-            void playItem(item.id, item.title, { queue });
-          }}
-          aria-label={
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
+        <Tooltip
+          content={
             embedSrc
-              ? `Play ${item.title} on ${EMBED_PROVIDER_LABEL[item.embedProvider!]}`
-              : `Play ${item.title}`
+              ? `Play on ${EMBED_PROVIDER_LABEL[item.embedProvider!]} · Shift+click to queue`
+              : 'Play · Shift+click to queue'
           }
+          side="top"
         >
-          <PlayIcon size={16} aria-hidden />
-        </Button>
-      </Tooltip>
+          <Button
+            size="icon-sm"
+            disabled={busyId === item.id}
+            onClick={(event) => {
+              const queue = event.shiftKey;
+              if (embedSrc) {
+                void playEmbedItem(item, { queue });
+                return;
+              }
+              void playItem(item.id, item.title, { queue });
+            }}
+            aria-label={
+              embedSrc
+                ? `Play ${item.title} on ${EMBED_PROVIDER_LABEL[item.embedProvider!]}`
+                : `Play ${item.title}`
+            }
+          >
+            <PlayIcon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
+        {hearthisActive && item.embedUri ? (
+          <div
+            className="border-border max-h-28 w-full max-w-md min-w-0 overflow-hidden rounded-lg border sm:w-[min(100%,28rem)]"
+            data-testid="hearthis-row-embed"
+          >
+            <HearthisEmbedSurface
+              embedUri={item.embedUri}
+              title={item.title}
+              autoplay={hearthisPlaying}
+              compact
+            />
+          </div>
+        ) : null}
+      </div>
       {!item.embedProvider ? (
         <Tooltip content="Download original" side="top">
           <Button
@@ -207,7 +237,7 @@ export function SoundRow({
         onTogglePin={() => void togglePin(item)}
         onDelete={() => setPendingDeleteItem(item)}
       />
-      {embedSrc && embedOpenId === item.id ? (
+      {inlineProviderEmbed ? (
         <div className="w-full basis-full">
           <iframe
             title={item.title}
