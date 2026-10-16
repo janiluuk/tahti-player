@@ -36,6 +36,14 @@ export const ThumbnailCell = <T extends Track>({
                 }
               : undefined
           }
+          onQueue={
+            actions.onAddToQueue
+              ? () => {
+                  actions.onAddToQueue?.(track);
+                }
+              : undefined
+          }
+          queueLabel={`${labels.addToQueue} ${track.title}`}
           playLabel={`${labels.play} ${track.title}`}
           pauseLabel={`${labels.pause} ${track.title}`}
           isPlaying={isPlaying}

@@ -35,13 +35,14 @@ export type MediaArtworkProps = {
   /** CSS `background` for the no-image state, e.g. an artist's avatar
    * theme (`#22D3EE` or a `linear-gradient(...)`). */
   fallbackBackground?: string | null;
-  /** Centered circular play control. */
+  /** Centered circular play control. Shift+click queues instead when
+   * `onQueue` is set (same shortcut on every MediaArtwork play control). */
   onPlay?: () => void;
   playLabel?: string;
   pauseLabel?: string;
   isPlaying?: boolean;
   playDisabled?: boolean;
-  /** Convenience queue action (top-right overlay). */
+  /** Convenience queue action (top-right overlay). Also used by Shift+play. */
   onQueue?: () => void;
   queueLabel?: string;
   queueDisabled?: boolean;
@@ -174,9 +175,23 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
     e.stopPropagation();
   };
 
+  const handlePlayClick = (e: MouseEvent) => {
+    stop(e);
+    if (e.shiftKey && onQueue && !queueDisabled) {
+      onQueue();
+      return;
+    }
+    onPlay?.();
+  };
+
   const hasPlay = Boolean(onPlay);
   const hasSecondary = secondary.length > 0;
   const interactive = hasPlay || hasSecondary || Boolean(onArtworkClick);
+  const playTooltip = isPlaying
+    ? pauseLabel
+    : onQueue
+      ? `${playLabel} · Shift+click to queue`
+      : playLabel;
 
   return (
     <div
@@ -272,23 +287,20 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
         (hasPlay || hasSecondary) && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-0.5">
             {hasPlay && (
-              <Tooltip content={isPlaying ? pauseLabel : playLabel} side="top">
+              <Tooltip content={playTooltip} side="top">
                 <Button
                   type="button"
                   size="icon-sm"
                   variant="default"
                   disabled={playDisabled}
-                  aria-label={isPlaying ? pauseLabel : playLabel}
+                  aria-label={playTooltip}
                   aria-pressed={isPlaying || undefined}
                   data-testid="media-artwork-play"
                   className={cn(
                     'pointer-events-auto size-6 rounded-full shadow-md',
                     isPlaying ? 'opacity-100' : overlayReveal,
                   )}
-                  onClick={(e) => {
-                    stop(e);
-                    onPlay?.();
-                  }}
+                  onClick={handlePlayClick}
                 >
                   {isPlaying ? (
                     <Pause size={iconPx} className="fill-current" />
@@ -331,13 +343,13 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
         <>
           {hasPlay && (
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <Tooltip content={isPlaying ? pauseLabel : playLabel} side="top">
+              <Tooltip content={playTooltip} side="top">
                 <Button
                   type="button"
                   size="icon-sm"
                   variant={size === 'thumb' ? 'text' : 'default'}
                   disabled={playDisabled}
-                  aria-label={isPlaying ? pauseLabel : playLabel}
+                  aria-label={playTooltip}
                   aria-pressed={isPlaying || undefined}
                   data-testid="media-artwork-play"
                   className={cn(
@@ -347,10 +359,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                       ? 'text-white'
                       : ['shadow-md', size === 'md' ? 'size-9' : 'size-11'],
                   )}
-                  onClick={(e) => {
-                    stop(e);
-                    onPlay?.();
-                  }}
+                  onClick={handlePlayClick}
                 >
                   {isPlaying ? (
                     <Pause size={iconPx} className="fill-current" />
