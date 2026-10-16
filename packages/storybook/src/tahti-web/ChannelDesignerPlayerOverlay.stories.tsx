@@ -5,14 +5,13 @@ import {
   type NowPlayingOverlayPresetId,
 } from '@tahti-web/content/nowPlayingOverlayPresets';
 import { useState } from 'react';
+import { expect, within } from 'storybook/test';
 
 /**
  * Player → Overlay: stage text layer (Storybook `ChannelTextOverlayEditor` /
  * `ChannelTextOverlayView`) plus the now-playing layout preset picker.
  * "Configure text" opens `NowPlayingOverlayConfigDialog`, which stays in
  * ChannelDesigner.
- *
- * Missing states: an artwork-less preset tile.
  */
 const meta: Meta<typeof PlayerOverlayControls> = {
   title: 'Tahti/Channel/Designer/PlayerOverlayControls',
@@ -24,14 +23,20 @@ const meta: Meta<typeof PlayerOverlayControls> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-function Demo() {
+function Demo({
+  avatarUrl = null,
+  initialPreset = 'minimal' as NowPlayingOverlayPresetId,
+}: {
+  avatarUrl?: string | null;
+  initialPreset?: NowPlayingOverlayPresetId;
+}) {
   const [playerOverlay, setPlayerOverlay] = useState({
     mode: 'NONE' as string,
     text: '',
     align: 'CENTER' as string,
   });
   const [nowPlayingStyle, setNowPlayingStyle] =
-    useState<NowPlayingOverlayPresetId>('minimal');
+    useState<NowPlayingOverlayPresetId>(initialPreset);
 
   return (
     <div className="max-w-lg">
@@ -47,7 +52,7 @@ function Demo() {
         onNowPlayingStyleChange={setNowPlayingStyle}
         overlaySettings={DEFAULT_NOW_PLAYING_OVERLAY_SETTINGS}
         displayName="Demo Artist"
-        avatarUrl={null}
+        avatarUrl={avatarUrl}
         onConfigureText={() => undefined}
       />
     </div>
@@ -55,5 +60,18 @@ function Demo() {
 }
 
 export const Default: Story = {
-  render: () => <Demo />,
+  render: () => (
+    <Demo avatarUrl="/mock/northern-lights/cover-first-light.svg" />
+  ),
+};
+
+export const ArtworkLessPresetTile: Story = {
+  name: 'Artwork-less preset tile',
+  render: () => <Demo avatarUrl={null} initialPreset="minimal" />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const minimal = await canvas.findByRole('button', { name: /Minimal/ });
+    await expect(minimal).toHaveAttribute('aria-pressed', 'true');
+    await expect(minimal).toBeVisible();
+  },
 };
