@@ -116,4 +116,4 @@ this environment) — the token-required path is covered by tests mocking
 
 ## 2026-10-16: release write commands, shell history
 
-- **History and previous in `tahti shell` (PRNUM):** a History pane lists the tracks played this session, newest first (at most 100, live streams left out, in memory only); `p` restarts the current track once it is past 3 s, otherwise plays the previous history entry and puts the current track at the front of the queue so `n` returns to it. State logic is unit tested; not tried in a real terminal with mpv.
+- **History and previous in `tahti shell` (#864):** a History pane lists the tracks played this session, newest first (at most 100, live streams left out, in memory only); `p` restarts the current track once it is past 3 s, otherwise plays the previous history entry and puts the current track at the front of the queue so `n` returns to it. State logic is unit tested; not tried in a real terminal with mpv.
