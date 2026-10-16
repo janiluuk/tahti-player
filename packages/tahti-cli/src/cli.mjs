@@ -37,6 +37,11 @@ import {
   RELEASE_TYPES,
   runReleasesCreate,
 } from './commands/releases-create.mjs';
+import {
+  RELEASE_STATES,
+  runReleasesEdit,
+  SMART_LINK_SERVICES,
+} from './commands/releases-edit.mjs';
 import { runReleasesList } from './commands/releases-list.mjs';
 import { runReleasesShow } from './commands/releases-show.mjs';
 import { runSearch, SEARCH_PAGE_SIZE } from './commands/search.mjs';
@@ -245,6 +250,36 @@ the sound. Needs a token with the write scope.
     positionals: 1,
     run: (config, { values, positionals }) =>
       runReleasesCreate(config, positionals[0], values),
+  },
+  {
+    path: ['releases', 'edit'],
+    usage: 'tahti releases edit <id> <field flags> [--json]',
+    summary: 'Change, publish or archive one of your releases',
+    details: `Calls PATCH /api/me/releases/:id with only the fields you give and prints the
+release as saved. Publishing needs at least one track, and tells your
+followers when your channel is in Tahti Radio. Needs a token with the write
+scope.
+  --state <s>            One of: ${RELEASE_STATES.join(', ')}
+  --description <t>      New description; "" clears it
+  --date <YYYY-MM-DD>    New release date
+  --pin, --unpin         Pin or unpin it at the top of your profile Stage
+  --footer on|off        Show "Powered by Tahti" on the smart link page
+  --link <service>=<url> Set a store link on the smart link page; an empty
+                         URL removes it; repeat for more. Services:
+                         ${SMART_LINK_SERVICES.join(', ')}`,
+    options: {
+      ...JSON_OPTION,
+      state: { type: 'string' },
+      description: { type: 'string' },
+      date: { type: 'string' },
+      pin: { type: 'boolean', default: false },
+      unpin: { type: 'boolean', default: false },
+      footer: { type: 'string' },
+      link: { type: 'string', multiple: true },
+    },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runReleasesEdit(config, positionals[0], values),
   },
   {
     path: ['search'],

@@ -19,6 +19,7 @@ const RELEASE = {
   labelImprint: 'Self-released',
   smartLinkSlug: 'artist-first-ep',
   smartLinkViewCount: 12,
+  smartLinkTargets: { spotify: '', bandcamp: 'https://artist.bandcamp.com' },
   artistName: 'artist@example.test',
   tracks: [
     {
@@ -55,6 +56,7 @@ describe('formatReleaseDetails', () => {
     expect(output).toContain('RELEASE DATE  2026-05-01');
     expect(output).toContain('UPC           -');
     expect(output).toContain('LINK VIEWS    12');
+    expect(output).toContain('STORE LINKS   bandcamp');
     expect(output).toContain(
       'CHECKLIST     1/3 done (open: UPC / ISRC, Published)',
     );

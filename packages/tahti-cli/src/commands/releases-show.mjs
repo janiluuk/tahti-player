@@ -23,6 +23,13 @@ function formatChecklist(checklist) {
   return open.length > 0 ? `${summary} (open: ${open.join(', ')})` : summary;
 }
 
+function formatStoreLinks(targets) {
+  return Object.entries(targets ?? {})
+    .filter(([, url]) => url)
+    .map(([service]) => service)
+    .join(', ');
+}
+
 export function formatReleaseDetails(release) {
   const tracks = release.tracks ?? [];
   return formatDetails([
@@ -36,6 +43,7 @@ export function formatReleaseDetails(release) {
     ['LABEL', release.labelImprint],
     ['SMART LINK', release.smartLinkSlug],
     ['LINK VIEWS', release.smartLinkViewCount],
+    ['STORE LINKS', formatStoreLinks(release.smartLinkTargets)],
     ['CHECKLIST', formatChecklist(release.checklist)],
     ['TRACKS', release._count?.tracks ?? tracks.length],
   ]);
