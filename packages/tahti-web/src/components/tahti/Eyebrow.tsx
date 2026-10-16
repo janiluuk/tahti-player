@@ -5,6 +5,7 @@ const TONE_CLASS = {
   green: 'text-accent-green-strong',
   blue: 'text-accent-blue-strong',
   red: 'text-accent-red-strong',
+  muted: 'text-foreground-secondary',
 } as const;
 
 /** Mono, uppercase, wide-tracked label — section labels and technical

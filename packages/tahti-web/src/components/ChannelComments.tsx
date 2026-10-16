@@ -80,7 +80,7 @@ export function ChannelComments({
   };
 
   return (
-    <section className="mt-8 flex flex-col gap-4" aria-label="Channel comments">
+    <section className="flex flex-col gap-3" aria-label="Channel comments">
       <h2 className="text-sm font-semibold tracking-wide uppercase">
         Comments
       </h2>

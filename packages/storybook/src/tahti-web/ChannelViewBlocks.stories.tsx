@@ -44,8 +44,12 @@ export const Tracks: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole('heading', { name: 'Tracks' })).toBeVisible();
-    await expect(canvas.getByText('Pinned')).toBeVisible();
-    await expect(canvas.getByText('Catalog')).toBeVisible();
+    const pinned = canvas.getByText('Pinned');
+    await expect(pinned).toBeVisible();
+    await expect(pinned).toHaveClass('text-foreground-secondary');
+    const catalog = canvas.getByText('Catalog');
+    await expect(catalog).toBeVisible();
+    await expect(catalog).toHaveClass('text-foreground-secondary');
     await expect(canvas.getByText('Polar Static')).toBeVisible();
     await expect(canvas.getByText('Snowline')).toBeVisible();
   },
