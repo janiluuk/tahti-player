@@ -96,9 +96,11 @@ pub fn pair_retagged(vanished: &[(String, AudioKey)], fresh: &[(PathBuf, AudioKe
         .collect()
 }
 
-/// Re-points root tracks whose file vanished at a new file that appeared in
-/// the same scan (a rename or move). Returns the moved count and the fresh
-/// paths that were *not* consumed as moves.
+/// Re-points tracks whose file vanished at a new file that appeared in this
+/// root's scan (a rename or move), adopting them into the root. Candidates
+/// come from the whole catalog, so a file moved here from another watched
+/// folder or from an ad hoc import keeps its ID. Returns the moved count and
+/// the fresh paths that were *not* consumed as moves.
 pub async fn relink_moved(
     pool: &SqlitePool,
     root: &LibraryRoot,
@@ -107,13 +109,25 @@ pub async fn relink_moved(
     if fresh.is_empty() {
         return Ok((0, fresh));
     }
-    let rows = sqlx::query_as::<_, (String, String, i64, Option<i64>, String, i64, f64)>(
-        "SELECT id, path, size_bytes, mtime, format, sample_rate, duration FROM library_tracks WHERE root_id = ?",
+    // Tracks of a root whose folder is gone (an unplugged drive) only look
+    // vanished; letting them pair would move them off a drive that returns.
+    let offline_roots: std::collections::HashSet<String> = super::list_roots(pool)
+        .await?
+        .into_iter()
+        .filter(|r| !r.available)
+        .map(|r| r.id)
+        .collect();
+    let rows = sqlx::query_as::<_, (String, String, i64, Option<i64>, String, i64, f64, Option<String>)>(
+        "SELECT id, path, size_bytes, mtime, format, sample_rate, duration, root_id FROM library_tracks",
     )
-    .bind(&root.id)
     .fetch_all(pool)
     .await
     .map_err(|err| err.to_string())?;
+    let rows: Vec<(String, String, i64, Option<i64>, String, i64, f64)> = rows
+        .into_iter()
+        .filter(|row| !row.7.as_ref().is_some_and(|id| offline_roots.contains(id)))
+        .map(|(id, path, size, mtime, format, rate, duration, _)| (id, path, size, mtime, format, rate, duration))
+        .collect();
     let (pairs, fresh) = tauri::async_runtime::spawn_blocking(move || {
         let audio: HashMap<String, Option<AudioKey>> = rows
             .iter()
@@ -174,10 +188,11 @@ pub async fn relink_moved(
     for (id, path) in pairs {
         let text = path.to_string_lossy().into_owned();
         let done = sqlx::query(
-            "UPDATE library_tracks SET path=?, folder=?, available=1, unavailable_since=NULL, mtime=NULL WHERE id=?",
+            "UPDATE library_tracks SET path=?, folder=?, root_id=?, available=1, unavailable_since=NULL, mtime=NULL WHERE id=?",
         )
         .bind(&text)
         .bind(folder_of(&text))
+        .bind(&root.id)
         .bind(&id)
         .execute(pool)
         .await;
