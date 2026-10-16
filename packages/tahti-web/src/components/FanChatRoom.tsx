@@ -3,7 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Button, EmptyState, Input } from '@tahti-player/ui';
 
-import { fetchFanChatHistory, requestFanChatToken } from '../api/fan-chat';
+import {
+  fetchFanChatHistory,
+  MOCK_FAN_CHAT_TOKEN,
+  requestFanChatToken,
+} from '../api/fan-chat';
 import { centrifugoWsUrl } from '../lib/centrifugoWsUrl';
 import { chatErrorFor } from '../lib/chatErrors';
 import { ChatAvatar } from './ChatAvatar';
@@ -28,6 +32,7 @@ export function FanChatRoom({
   const [connected, setConnected] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
   const roomRef = useRef<{ channel: string; handle: string } | null>(null);
+  const localEchoRef = useRef(false);
   const nextIdRef = useRef(1);
   const publishIdsRef = useRef(new Set<number>());
 
@@ -60,10 +65,17 @@ export function FanChatRoom({
           setError(result.error);
           return;
         }
+        const { token, channel, handle } = result.data;
+        if (token === MOCK_FAN_CHAT_TOKEN) {
+          roomRef.current = { channel, handle };
+          localEchoRef.current = true;
+          setError(null);
+          setConnected(true);
+          return;
+        }
         if (!url) {
           return;
         }
-        const { token, channel, handle } = result.data;
         roomRef.current = { channel, handle };
         const ws = new WebSocket(url);
         wsRef.current = ws;
@@ -163,7 +175,24 @@ export function FanChatRoom({
   function send() {
     const text = input.trim().slice(0, 500);
     const room = roomRef.current;
-    if (!text || !room || !wsRef.current || !connected) {
+    if (!text || !room || !connected) {
+      return;
+    }
+    if (localEchoRef.current) {
+      setMessages((prev) =>
+        [
+          ...prev,
+          {
+            id: `local-${Date.now()}-${prev.length}`,
+            handle: room.handle,
+            text,
+          },
+        ].slice(-100),
+      );
+      setInput('');
+      return;
+    }
+    if (!wsRef.current) {
       return;
     }
     const publishId = nextIdRef.current++;

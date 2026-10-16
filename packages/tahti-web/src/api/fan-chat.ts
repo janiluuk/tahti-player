@@ -5,12 +5,21 @@ import { requestJson } from './request-json';
 
 export type FanChatToken = { token: string; handle: string; channel: string };
 
+export const MOCK_FAN_CHAT_TOKEN = 'mock-token';
+
 /** Connection token for the artist's fan-only room (`POST /api/chat/:slug/fan-token`). */
 export async function requestFanChatToken(
   slug: string,
 ): Promise<{ ok: true; data: FanChatToken } | { ok: false; error: string }> {
   if (isForceMock()) {
-    return { ok: false, error: 'The fan room needs the live API.' };
+    return {
+      ok: true,
+      data: {
+        token: MOCK_FAN_CHAT_TOKEN,
+        handle: 'You',
+        channel: `channel:${slug}:fans`,
+      },
+    };
   }
   try {
     const { data } = await requestJson<FanChatToken>(
