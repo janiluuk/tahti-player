@@ -80,9 +80,11 @@ export const ChatPointer: Story = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText(/right sidebar Chat tab/)).toBeVisible();
+    await expect(
+      canvas.getByText(/Open the live chat page to talk/),
+    ).toBeVisible();
     await userEvent.click(
-      canvas.getByRole('button', { name: 'Open chat in sidebar' }),
+      canvas.getByRole('button', { name: 'Open live chat' }),
     );
     await expect(args.ctx.onOpenChat).toHaveBeenCalledOnce();
   },

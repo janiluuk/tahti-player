@@ -7,7 +7,6 @@ Status values: `open` | `blocked` | `partial`.
 
 | Status  | File                                                                                                     | One-line                                                                                                                                                                                                                                                       |
 | ------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| open    | [fix-shift-play-ci.md](fix-shift-play-ci.md) | Master red after #903: refresh player snapshots + fix clickRowPlay for Shift+click aria-label |
 | partial | [library-tracks-embed-layout-ambient.md](library-tracks-embed-layout-ambient.md) | Library Tracks embed layout + ambient rows coded; left: visual check with a real cover |
 | partial | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live CTA + mock Send shipped (#914/#916/#934/#939); left: real Centrifugo Send on new channels |
 | partial | [artist-lifecycle-p2-ux.md](artist-lifecycle-p2-ux.md) | P2 leftovers: nested Broadcast chrome on go-live (Setup default + series/checklist shipped) |
