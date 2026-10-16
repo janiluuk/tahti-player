@@ -310,6 +310,49 @@ describe('ChannelChatPanel', () => {
     ).toBeTruthy();
   });
 
+  describe('in the offline mock app', () => {
+    beforeEach(() => {
+      vi.mocked(requestChatToken).mockResolvedValue({
+        data: { token: 'mock-token', handle: 'nightowl' },
+        meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+      });
+    });
+
+    it('joins without a socket and appends a sent message', async () => {
+      await renderPanel();
+      await join();
+
+      expect(FakeSocket.last).toBeNull();
+      const input = screen.getByPlaceholderText('Message as nightowl');
+      expect(screen.getByRole('button', { name: 'Send' })).toBeDisabled();
+
+      fireEvent.change(input, { target: { value: 'hello mock room' } });
+      fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+
+      const log = screen.getByRole('log', { name: 'Chat messages' });
+      expect(log.textContent).toContain('nightowl');
+      expect(log.textContent).toContain('hello mock room');
+      expect((input as HTMLInputElement).value).toBe('');
+      expect(screen.queryByText('No messages yet')).toBe(null);
+    });
+
+    it('sends on Enter and keeps earlier messages in order', async () => {
+      await renderPanel();
+      await join();
+
+      const input = screen.getByPlaceholderText('Message as nightowl');
+      fireEvent.change(input, { target: { value: 'first' } });
+      fireEvent.keyDown(input, { key: 'Enter' });
+      fireEvent.change(input, { target: { value: 'second' } });
+      fireEvent.keyDown(input, { key: 'Enter' });
+
+      const log = screen.getByRole('log', { name: 'Chat messages' });
+      const text = log.textContent ?? '';
+      expect(text.indexOf('first')).toBeGreaterThanOrEqual(0);
+      expect(text.indexOf('second')).toBeGreaterThan(text.indexOf('first'));
+    });
+  });
+
   describe('when the connection drops', () => {
     async function joinAndDrop(next: 'second-token' | Error) {
       const tokens = vi.mocked(requestChatToken).mockResolvedValueOnce({
