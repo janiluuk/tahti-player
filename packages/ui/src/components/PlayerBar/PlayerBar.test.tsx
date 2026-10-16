@@ -63,7 +63,7 @@ describe('PlayerBar', () => {
       'An Incredibly, Ridiculously Long Song Title That Should Truncate Nicely';
     const longArtist =
       'A Very Long Artist Name Featuring Another Long Artist With Even More Characters';
-    const { asFragment } = render(
+    const { asFragment, getByTestId } = render(
       <div style={{ width: 420 }}>
         <PlayerBar
           left={
@@ -77,6 +77,14 @@ describe('PlayerBar', () => {
           right={<PlayerBar.Volume defaultValue={50} />}
         />
       </div>,
+    );
+    expect(getByTestId('now-playing-title')).toHaveAttribute(
+      'title',
+      longTitle,
+    );
+    expect(getByTestId('player-now-playing-artist')).toHaveAttribute(
+      'title',
+      longArtist,
     );
     expect(asFragment()).toMatchSnapshot();
   });

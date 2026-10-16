@@ -30,12 +30,14 @@ exports[`PlayerBar > (Snapshot) active states render 1`] = `
             <div
               class="text-foreground truncate text-sm font-semibold tracking-tight"
               data-testid="now-playing-title"
+              title="Crystalized"
             >
               Crystalized
             </div>
             <div
               class="text-foreground-secondary truncate text-xs"
               data-testid="player-now-playing-artist"
+              title="XX"
             >
               XX
             </div>
@@ -357,12 +359,14 @@ exports[`PlayerBar > (Snapshot) default render 1`] = `
             <div
               class="text-foreground truncate text-sm font-semibold tracking-tight"
               data-testid="now-playing-title"
+              title="Song Title"
             >
               Song Title
             </div>
             <div
               class="text-foreground-secondary truncate text-xs"
               data-testid="player-now-playing-artist"
+              title="Artist Name"
             >
               Artist Name
             </div>
@@ -676,12 +680,14 @@ exports[`PlayerBar > (Snapshot) long metadata truncation 1`] = `
               <div
                 class="text-foreground truncate text-sm font-semibold tracking-tight"
                 data-testid="now-playing-title"
+                title="An Incredibly, Ridiculously Long Song Title That Should Truncate Nicely"
               >
                 An Incredibly, Ridiculously Long Song Title That Should Truncate Nicely
               </div>
               <div
                 class="text-foreground-secondary truncate text-xs"
                 data-testid="player-now-playing-artist"
+                title="A Very Long Artist Name Featuring Another Long Artist With Even More Characters"
               >
                 A Very Long Artist Name Featuring Another Long Artist With Even More Characters
               </div>
@@ -1014,12 +1020,14 @@ exports[`PlayerBar > (Snapshot) no artwork fallback 1`] = `
             <div
               class="text-foreground truncate text-sm font-semibold tracking-tight"
               data-testid="now-playing-title"
+              title="Untitled Track"
             >
               Untitled Track
             </div>
             <div
               class="text-foreground-secondary truncate text-xs"
               data-testid="player-now-playing-artist"
+              title="Unknown Artist"
             >
               Unknown Artist
             </div>

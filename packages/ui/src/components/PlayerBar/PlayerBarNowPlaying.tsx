@@ -46,6 +46,7 @@ export const PlayerBarNowPlaying: FC<PlayerBarNowPlayingProps> = ({
           type="button"
           className="text-foreground block w-full truncate text-left text-sm font-semibold tracking-tight hover:underline"
           data-testid="now-playing-title"
+          title={title}
           onClick={onTitleClick}
         >
           {title}
@@ -54,6 +55,7 @@ export const PlayerBarNowPlaying: FC<PlayerBarNowPlayingProps> = ({
         <div
           className="text-foreground truncate text-sm font-semibold tracking-tight"
           data-testid="now-playing-title"
+          title={title}
         >
           {title}
         </div>
@@ -63,6 +65,7 @@ export const PlayerBarNowPlaying: FC<PlayerBarNowPlayingProps> = ({
           type="button"
           className="text-foreground-secondary block w-full truncate text-left text-xs hover:underline"
           data-testid="player-now-playing-artist"
+          title={artist}
           onClick={onArtistClick}
         >
           {artist}
@@ -71,6 +74,7 @@ export const PlayerBarNowPlaying: FC<PlayerBarNowPlayingProps> = ({
         <div
           className="text-foreground-secondary truncate text-xs"
           data-testid="player-now-playing-artist"
+          title={artist}
         >
           {artist}
         </div>
