@@ -10,50 +10,65 @@ import { requestJson } from './studio-request';
 
 // ── Collections ─────────────────────────────────────────────────────────────
 
+const MOCK_COLLECTION_SEED: StudioCollection[] = [
+  {
+    id: 'mock-collection-favorites-mix',
+    slug: 'favorites-mix',
+    name: 'Favorites mix',
+    description: 'Tracks saved for later listening.',
+    style: 'PLAYLIST',
+    isPublic: true,
+    itemCount: 2,
+  },
+  {
+    id: 'mock-collection-midnight-archive',
+    slug: 'midnight-archive',
+    name: 'Midnight Archive',
+    description: 'A full-length collection of late-night sessions.',
+    style: 'ALBUM',
+    isPublic: true,
+    itemCount: 2,
+  },
+  {
+    id: 'mock-collection-short-signals',
+    slug: 'short-signals',
+    name: 'Short Signals',
+    description: 'Four connected pieces from the same session.',
+    style: 'EP',
+    isPublic: true,
+    itemCount: 2,
+  },
+  {
+    id: 'mock-collection-northern-lights-set',
+    slug: 'northern-lights-set',
+    name: 'Northern Lights DJ set',
+    description: 'A continuous club mix arranged for radio.',
+    style: 'DJ_SET_SERIES',
+    isPublic: false,
+    itemCount: 2,
+  },
+];
+
+/** Mutable mock list so create/Design matches the collection just made. */
+let mockCollectionStore: StudioCollection[] | null = null;
+
+function getMockCollectionStore(): StudioCollection[] {
+  if (!mockCollectionStore) {
+    mockCollectionStore = mockFixture(
+      'studioCollections',
+      MOCK_COLLECTION_SEED,
+    ).map((row) => ({ ...row }));
+  }
+  return mockCollectionStore;
+}
+
 export async function fetchStudioCollections(): Promise<{
   data: StudioCollection[];
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
     return {
-      data: mockFixture('studioCollections', [
-        {
-          id: 'mock-collection-favorites-mix',
-          slug: 'favorites-mix',
-          name: 'Favorites mix',
-          description: 'Tracks saved for later listening.',
-          style: 'PLAYLIST',
-          isPublic: true,
-          itemCount: 2,
-        },
-        {
-          id: 'mock-collection-midnight-archive',
-          slug: 'midnight-archive',
-          name: 'Midnight Archive',
-          description: 'A full-length collection of late-night sessions.',
-          style: 'ALBUM',
-          isPublic: true,
-          itemCount: 2,
-        },
-        {
-          id: 'mock-collection-short-signals',
-          slug: 'short-signals',
-          name: 'Short Signals',
-          description: 'Four connected pieces from the same session.',
-          style: 'EP',
-          isPublic: true,
-          itemCount: 2,
-        },
-        {
-          id: 'mock-collection-northern-lights-set',
-          slug: 'northern-lights-set',
-          name: 'Northern Lights DJ set',
-          description: 'A continuous club mix arranged for radio.',
-          style: 'DJ_SET_SERIES',
-          isPublic: false,
-          itemCount: 2,
-        },
-      ]),
+      data: getMockCollectionStore().map((row) => ({ ...row })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -263,24 +278,23 @@ export async function createStudioCollection(input: {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '')
         .slice(0, 48) || `mix-${Date.now()}`;
-    return {
-      ok: true,
-      data: {
-        id: `mock-collection-${slug}`,
-        slug,
-        name: input.name,
-        description: input.description ?? null,
-        style: input.style ?? 'PLAYLIST',
-        isPublic: input.isPublic ?? true,
-        visibility:
-          input.visibility ?? (input.isPublic === false ? 'PRIVATE' : 'PUBLIC'),
-        releaseDate: input.releaseDate ?? null,
-        genres: input.genres ?? [],
-        collaborative: Boolean(input.collaborative && (input.isPublic ?? true)),
-        items: [],
-        itemCount: 0,
-      },
+    const created: StudioCollection = {
+      id: `mock-collection-${slug}`,
+      slug,
+      name: input.name,
+      description: input.description ?? null,
+      style: input.style ?? 'PLAYLIST',
+      isPublic: input.isPublic ?? true,
+      visibility:
+        input.visibility ?? (input.isPublic === false ? 'PRIVATE' : 'PUBLIC'),
+      releaseDate: input.releaseDate ?? null,
+      genres: input.genres ?? [],
+      collaborative: Boolean(input.collaborative && (input.isPublic ?? true)),
+      items: [],
+      itemCount: 0,
     };
+    getMockCollectionStore().unshift(created);
+    return { ok: true, data: created };
   }
   try {
     const visibility = toServerVisibility(
