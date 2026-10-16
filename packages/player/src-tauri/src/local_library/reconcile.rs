@@ -10,7 +10,7 @@ use sqlx::SqlitePool;
 
 use super::{folder_of, import_batch, ImportResult, LibraryRoot};
 
-fn mtime_secs(path: &Path) -> Option<i64> {
+pub(super) fn mtime_secs(path: &Path) -> Option<i64> {
     let modified = std::fs::metadata(path).ok()?.modified().ok()?;
     Some(modified.duration_since(UNIX_EPOCH).ok()?.as_secs() as i64)
 }

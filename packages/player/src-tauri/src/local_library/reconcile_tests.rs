@@ -110,3 +110,26 @@ fn two_copies_of_one_recording_are_never_paired_by_their_audio() {
     assert_eq!(pair_retagged(&vanished[..1], &fresh).len(), 1);
     assert!(audio_key("wav", 44_100, 0.4).is_none(), "very short clips are too easy to confuse");
 }
+
+#[tokio::test]
+async fn a_tag_edit_between_import_and_the_first_scan_is_read() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("a.wav");
+    write_wav(&path, "Old", "Artist");
+    let pool = pool().await;
+    let root = add_root(&pool, dir.path()).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    import_into_root(&pool, &root.id, fresh).await;
+    let stored: Option<i64> = sqlx::query_scalar("SELECT mtime FROM library_tracks").fetch_one(&pool).await.unwrap();
+    assert!(stored.is_some(), "the import records the file's mtime");
+
+    let size_before = std::fs::metadata(&path).unwrap().len();
+    write_wav(&path, "New", "Artist");
+    assert_eq!(std::fs::metadata(&path).unwrap().len(), size_before, "same size, only the mtime tells");
+    let later = std::time::SystemTime::now() + std::time::Duration::from_secs(10);
+    std::fs::File::options().write(true).open(&path).unwrap().set_modified(later).unwrap();
+
+    assert_eq!(super::reconcile::refresh_changed(&pool, &root).await.unwrap(), 1);
+    assert_eq!(list(&pool, "", 0).await.unwrap().tracks[0].title, "New");
+    assert_eq!(super::reconcile::refresh_changed(&pool, &root).await.unwrap(), 0);
+}

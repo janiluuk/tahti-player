@@ -111,16 +111,17 @@ pub(super) async fn insert_track(
     conn: &mut sqlx::SqliteConnection,
     track: &LibraryTrack,
     root_id: Option<&str>,
+    mtime: Option<i64>,
 ) -> Result<(), sqlx::Error> {
     // A successful (re)import proves the file exists right now -- clear
     // any stale missing state a prior resolve/re-scan had persisted,
     // same self-heal `resolve_path` does on a direct resolve. Re-importing
     // an ad hoc track under a root adopts it into that root; an existing
     // root membership is never stolen.
-    sqlx::query("INSERT INTO library_tracks (id,path,title,artist,album,format,duration,sample_rate,channels,bits_per_sample,size_bytes,root_id,album_artist,track_no,disc_no,year,genre,comment,bitrate_kbps,folder,artwork_key,tag_bpm,tag_key,replaygain_track_gain,replaygain_track_peak,replaygain_album_gain,replaygain_album_peak,composer) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(path) DO UPDATE SET artwork_key=excluded.artwork_key, title=excluded.title, artist=excluded.artist, album=excluded.album, album_artist=excluded.album_artist, track_no=excluded.track_no, disc_no=excluded.disc_no, year=excluded.year, genre=excluded.genre, comment=excluded.comment, bitrate_kbps=excluded.bitrate_kbps, folder=excluded.folder, format=excluded.format, duration=excluded.duration, sample_rate=excluded.sample_rate, channels=excluded.channels, bits_per_sample=excluded.bits_per_sample, size_bytes=excluded.size_bytes, tag_bpm=excluded.tag_bpm, tag_key=excluded.tag_key, replaygain_track_gain=excluded.replaygain_track_gain, replaygain_track_peak=excluded.replaygain_track_peak, replaygain_album_gain=excluded.replaygain_album_gain, replaygain_album_peak=excluded.replaygain_album_peak, composer=excluded.composer, available=1, unavailable_since=NULL, root_id=COALESCE(library_tracks.root_id, excluded.root_id)")
+    sqlx::query("INSERT INTO library_tracks (id,path,title,artist,album,format,duration,sample_rate,channels,bits_per_sample,size_bytes,root_id,album_artist,track_no,disc_no,year,genre,comment,bitrate_kbps,folder,artwork_key,tag_bpm,tag_key,replaygain_track_gain,replaygain_track_peak,replaygain_album_gain,replaygain_album_peak,composer,mtime) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(path) DO UPDATE SET artwork_key=excluded.artwork_key, title=excluded.title, artist=excluded.artist, album=excluded.album, album_artist=excluded.album_artist, track_no=excluded.track_no, disc_no=excluded.disc_no, year=excluded.year, genre=excluded.genre, comment=excluded.comment, bitrate_kbps=excluded.bitrate_kbps, folder=excluded.folder, format=excluded.format, duration=excluded.duration, sample_rate=excluded.sample_rate, channels=excluded.channels, bits_per_sample=excluded.bits_per_sample, size_bytes=excluded.size_bytes, tag_bpm=excluded.tag_bpm, tag_key=excluded.tag_key, replaygain_track_gain=excluded.replaygain_track_gain, replaygain_track_peak=excluded.replaygain_track_peak, replaygain_album_gain=excluded.replaygain_album_gain, replaygain_album_peak=excluded.replaygain_album_peak, composer=excluded.composer, mtime=excluded.mtime, available=1, unavailable_since=NULL, root_id=COALESCE(library_tracks.root_id, excluded.root_id)")
         .bind(&track.id).bind(&track.path).bind(&track.title).bind(&track.artist).bind(&track.album).bind(&track.format).bind(track.duration).bind(track.sample_rate).bind(track.channels).bind(track.bits_per_sample).bind(track.size_bytes).bind(root_id)
         .bind(&track.album_artist).bind(track.track_no).bind(track.disc_no).bind(track.year).bind(&track.genre).bind(&track.comment).bind(track.bitrate_kbps).bind(folder_of(&track.path)).bind(&track.artwork_key)
-        .bind(track.file_tags.bpm).bind(&track.file_tags.key).bind(track.file_tags.replaygain_track_gain).bind(track.file_tags.replaygain_track_peak).bind(track.file_tags.replaygain_album_gain).bind(track.file_tags.replaygain_album_peak).bind(&track.composer)
+        .bind(track.file_tags.bpm).bind(&track.file_tags.key).bind(track.file_tags.replaygain_track_gain).bind(track.file_tags.replaygain_track_peak).bind(track.file_tags.replaygain_album_gain).bind(track.file_tags.replaygain_album_peak).bind(&track.composer).bind(mtime)
         .execute(&mut *conn).await?;
     sqlx::query(&format!("UPDATE library_tracks SET {} WHERE path = ?", super::analysis::EFFECTIVE_SET))
         .bind(&track.path)
@@ -156,10 +157,15 @@ pub(super) async fn import_batch_in_job(
     let reads = futures::future::join_all(paths.into_iter().map(|path| async move {
         let key = path.to_string_lossy().into_owned();
         let read = match READ_SLOTS.acquire().await {
-            Ok(_slot) => tauri::async_runtime::spawn_blocking(move || metadata::read(&path))
-                .await
-                .map_err(|err| err.to_string())
-                .and_then(|track| track),
+            // The mtime is taken before the read, so an edit landing during
+            // the read leaves a newer mtime and is picked up by the next scan.
+            Ok(_slot) => tauri::async_runtime::spawn_blocking(move || {
+                let mtime = reconcile::mtime_secs(&path);
+                metadata::read(&path).map(|track| (track, mtime))
+            })
+            .await
+            .map_err(|err| err.to_string())
+            .and_then(|read| read),
             Err(err) => Err(err.to_string()),
         };
         (key, read)
@@ -181,7 +187,7 @@ pub(super) async fn import_batch_in_job(
         Ok(tx) => tx,
         Err(error) => {
             result.errors.extend(failed);
-            for (_, track) in tracks {
+            for (_, (track, _)) in tracks {
                 result.errors.push(ImportFailure {
                     path: track.path,
                     error: error.to_string(),
@@ -195,8 +201,8 @@ pub(super) async fn import_batch_in_job(
         .map(|failure| (failure.path.clone(), import_jobs::PATH_FAILED))
         .collect();
     let mut written = 0usize;
-    for (key, track) in &tracks {
-        match insert_track(&mut tx, track, root_id).await {
+    for (key, (track, mtime)) in &tracks {
+        match insert_track(&mut tx, track, root_id, *mtime).await {
             Ok(()) => {
                 written += 1;
                 marks.push((key.clone(), import_jobs::PATH_IMPORTED));
@@ -219,7 +225,7 @@ pub(super) async fn import_batch_in_job(
     match tx.commit().await {
         Ok(()) => result.imported += written,
         Err(error) => result.errors.push(ImportFailure {
-            path: tracks.first().map(|(_, t)| t.path.clone()).unwrap_or_default(),
+            path: tracks.first().map(|(_, (t, _))| t.path.clone()).unwrap_or_default(),
             error: format!("Could not save {written} tracks: {error}"),
         }),
     }
