@@ -1,10 +1,14 @@
+import { useCallback, useEffect, useState } from 'react';
+
 import { Badge, SectionShell } from '@tahti-player/ui';
 
+import { fetchMeIntegrations } from '../../../api/integrations';
 import { DesktopUpdatesRow } from '../../../components/DesktopUpdatesRow';
 import { DiscordIntegrationRow } from '../../../components/DiscordIntegrationRow';
 import { JamIntegrationRow } from '../../../components/JamIntegrationRow';
 import { McpIntegrationRow } from '../../../components/McpIntegrationRow';
 import { MpdIntegrationRow } from '../../../components/MpdIntegrationRow';
+import { PageError } from '../../../components/PageStates';
 import { getNativeDiscord } from '../../../lib/discord/presence';
 import { getNativeJam } from '../../../lib/jam/desktop';
 import { getNativeMcp } from '../../../lib/mcp/desktop';
@@ -42,6 +46,20 @@ const DESKTOP_ONLY_INTEGRATIONS = [
 ] as const;
 
 export function IntegrationsPanel() {
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const reloadIntegrations = useCallback(() => {
+    setLoadError(null);
+    void fetchMeIntegrations().catch((err) => {
+      setLoadError(
+        err instanceof Error ? err.message : 'Could not load integrations.',
+      );
+    });
+  }, []);
+
+  useEffect(() => {
+    reloadIntegrations();
+  }, [reloadIntegrations]);
+
   const nativeMcp = getNativeMcp() !== null;
   const nativeMpd = getNativeMpd() !== null;
   const nativeDiscord = getNativeDiscord() !== null;
@@ -61,6 +79,13 @@ export function IntegrationsPanel() {
     >
       <SectionShell title="Scrobbling">
         <div className="flex flex-col gap-6">
+          {loadError ? (
+            <PageError
+              title="Couldn't load integrations"
+              description={loadError}
+              onRetry={reloadIntegrations}
+            />
+          ) : null}
           <ListenBrainzIntegrationRow />
           <LastFmIntegrationRow />
         </div>

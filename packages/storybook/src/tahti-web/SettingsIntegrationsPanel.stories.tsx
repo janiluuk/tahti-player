@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import * as integrationsApi from '@tahti-web/api/integrations';
 import { useDesktopDiscordStore } from '@tahti-web/lib/discord/presence';
 import { useDesktopJamStore } from '@tahti-web/lib/jam/desktop';
 import { useDesktopMcpStore } from '@tahti-web/lib/mcp/desktop';
 import { useDesktopMpdStore } from '@tahti-web/lib/mpd/desktop';
 import { IntegrationsPanel } from '@tahti-web/views/settings/panels/IntegrationsPanel';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, spyOn, userEvent, within } from 'storybook/test';
 
 import { withMockAuth, withPageSurface } from './_lib/decorators';
 
@@ -16,7 +17,7 @@ const meta: Meta<typeof IntegrationsPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Integrations: ListenBrainz and Last.fm scrobble toggles (mock integrations API in Storybook), plus Jam, MCP, MPD and Discord Rich Presence listed as desktop-app only. In the desktop app Tahti Jam, MCP, MPD and Discord are working switches; the servers show their address, and Jam a pairing QR code. Missing states: integrations API error.',
+          'Settings → Integrations: ListenBrainz and Last.fm scrobble toggles (mock integrations API in Storybook), plus Jam, MCP, MPD and Discord Rich Presence listed as desktop-app only. In the desktop app Tahti Jam, MCP, MPD and Discord are working switches; the servers show their address, and Jam a pairing QR code.',
       },
     },
   },
@@ -27,6 +28,25 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const IntegrationsApiError: Story = {
+  beforeEach: () => {
+    const fetch = spyOn(
+      integrationsApi,
+      'fetchMeIntegrations',
+    ).mockRejectedValue(new Error('Service unavailable'));
+    return () => {
+      fetch.mockRestore();
+    };
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByText("Couldn't load integrations"),
+    ).toBeVisible();
+    await expect(canvas.getByText('Service unavailable')).toBeVisible();
+  },
+};
 
 const off = { enabled: false, url: null, error: null };
 
