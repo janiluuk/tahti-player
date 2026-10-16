@@ -11,6 +11,7 @@ Found in the 2026-10-15 docs audit. The GitBook user manual in `packages/docs` w
 - Themes (all four pages) and Discover rewritten; the stale sitemap page removed (#791).
 - `plugins/*.md`: nothing loads `@tahti-player/plugin-sdk` plugins any more, so the 20 SDK pages carry a legacy warning and sit under "Legacy: Nuclear plugin SDK" in `SUMMARY.md`; `tahti-web-authoring.md` is the Add-ons section.
 - Installation rewritten from the real release files (no MSI, DMG, RPM, Flatpak or AUR; the snap installs from the file). Its Updating section describes the in-app updater from #805 (the startup notice, Settings → Integrations → Desktop app, and that the snap does not update itself).
+- The documentation home page (`README.md`) rewritten: Tahti links instead of Nuclear's Mastodon and Discord, the current package list and dev commands (batch 64).
 
 ## Plan
 
