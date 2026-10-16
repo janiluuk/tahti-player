@@ -51,6 +51,22 @@ vi.mock('../../api/broadcast', async (importOriginal) => {
       data: preflightState.current,
       meta: { source: 'mock' as const },
     }),
+    patchBroadcastPreflight: async (patch: Partial<BroadcastPreflight>) => {
+      preflightState.current = {
+        ...(preflightState.current ?? {
+          title: null,
+          visibility: 'PUBLIC' as const,
+          autoPublish: true,
+          showType: 'LIVE_SET' as const,
+          episodeNumber: null,
+          tagline: null,
+          plannedRadioShow: null,
+          plannedLiveShow: null,
+        }),
+        ...patch,
+      };
+      return { data: preflightState.current };
+    },
     fetchSignalStatus: async () => ({
       data: {
         connected: true,
@@ -194,6 +210,45 @@ describe('StudioGoLiveView with a planned series episode', () => {
         'You’re live. The rotation has handed over to your broadcast.',
       ),
     ).toBeInTheDocument();
+  });
+});
+
+describe('StudioGoLiveView show title checklist', () => {
+  beforeEach(() => {
+    preflightState.current = {
+      title: null,
+      visibility: 'PUBLIC',
+      autoPublish: true,
+      showType: 'LIVE_SET',
+      episodeNumber: null,
+      tagline: null,
+      plannedRadioShow: null,
+      plannedLiveShow: null,
+    };
+  });
+
+  it('marks Show title ready after saving a show name', async () => {
+    await renderView();
+
+    expect(
+      screen.getByRole('list', { name: 'Prep checklist' }).textContent,
+    ).toContain('○ Show title ready');
+
+    const title = screen.getByLabelText('Show name') as HTMLInputElement;
+    await act(async () => {
+      fireEvent.change(title, { target: { value: 'Friday Frequency' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Save show info' }));
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(
+      screen.getByRole('list', { name: 'Prep checklist' }).textContent,
+    ).toContain('✓ Show title ready');
   });
 });
 
