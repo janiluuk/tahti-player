@@ -15,7 +15,7 @@
 | 8 | Mutable mock collection store | #906 |
 | 9 | Navigate to new collection Design after create | #907 |
 | 10 | Collection create tests for new slug | open |
-| 11 | LIVE channel surfaces chat over comments | open |
+| 11 | LIVE channel surfaces chat over comments | #916 |
 | 12 | Chat block copy → live chat page | #914 |
 | 13 | Inline chat while live (optional) | deferred |
 | 14 | `/studio/channel` defaults to Setup | #908 |
