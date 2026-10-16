@@ -114,6 +114,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     Record<string, string>
   >({});
   const play = usePlayerStore((s) => s.play);
+  const playFromList = usePlayerStore((s) => s.playFromList);
   const currentId = usePlayerStore((s) => s.currentId);
   const playbackStatus = usePlayerStore((s) => s.status);
   const setPlaybackStatus = usePlayerStore((s) => s.setStatus);
@@ -253,6 +254,43 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     ];
   }, [radioPresets, enabledStationIds, stationOverrides]);
 
+  const radioRowPlayables = useMemo(() => {
+    const playables: TahtiPlayable[] = [];
+    for (const item of radioItems) {
+      if (item.kind === 'preset') {
+        const streamUrl = item.preset.streamUrl;
+        if (!streamUrl) {
+          continue;
+        }
+        playables.push({
+          id: item.id,
+          kind: 'radio',
+          title: presetNowPlaying[item.preset.id] ?? item.preset.name,
+          artist: item.preset.name,
+          coverUrl: item.preset.iconUrl ?? undefined,
+          streamUrl,
+          protocol: 'https',
+          sourceProvider: 'internet-radio',
+        });
+        continue;
+      }
+      const streamUrl = item.station.streamUrl;
+      if (!streamUrl) {
+        continue;
+      }
+      playables.push(radioStationPlayable({ ...item.station, streamUrl }));
+    }
+    return playables;
+  }, [radioItems, presetNowPlaying]);
+
+  const playRadioRowStation = (playableId: string) => {
+    const index = radioRowPlayables.findIndex((row) => row.id === playableId);
+    if (index < 0) {
+      return;
+    }
+    playFromList(radioRowPlayables, index);
+  };
+
   const onAirItems = useMemo<OnAirRowItem[]>(
     () =>
       sections.onAir.data.map((channel) => ({
@@ -320,22 +358,10 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
             isPlaying={isActive(item.id)}
             playDisabled={!preset.streamUrl}
             onPlay={() => {
-              const streamUrl = preset.streamUrl;
-              if (!streamUrl) {
+              if (!preset.streamUrl) {
                 return;
               }
-              togglePlayback(item.id, () =>
-                play({
-                  id: item.id,
-                  kind: 'radio',
-                  title: presetNowPlaying[preset.id] ?? preset.name,
-                  artist: preset.name,
-                  coverUrl: preset.iconUrl ?? undefined,
-                  streamUrl,
-                  protocol: 'https',
-                  sourceProvider: 'internet-radio',
-                }),
-              );
+              togglePlayback(item.id, () => playRadioRowStation(item.id));
             }}
           />
         </div>
@@ -391,9 +417,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           onPlay={
             streamUrl
               ? () =>
-                  togglePlayback(item.id, () =>
-                    play(radioStationPlayable({ ...station, streamUrl })),
-                  )
+                  togglePlayback(item.id, () => playRadioRowStation(item.id))
               : undefined
           }
         />
