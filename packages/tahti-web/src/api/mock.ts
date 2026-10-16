@@ -16,6 +16,7 @@ import {
   getMockVisualPreset,
   getMockVisualSettingsJson,
 } from './channel-design';
+import { isMockChannelLive } from './mock-live-session';
 import { mockFixture } from './mock-overrides';
 import { getMockFreeSubscriptionsEnabled } from './mock-profile-preferences';
 import type {
@@ -459,7 +460,9 @@ function buildMockChannel(slug: string): PublicChannel {
   const isRadio = slug === TAHTI_RADIO_SLUG;
   const contentKey = isRadio ? 'northern-lights' : slug;
   const content = stationContent(contentKey);
-  const live = LIVE_SLUGS.has(slug);
+  // Catalog radio + northern-lights stay live; artist go-live also lights
+  // the session slug persisted in mock-live-session (survives reload).
+  const live = LIVE_SLUGS.has(slug) || isMockChannelLive(slug);
   const usesOwnDesign = !isRadio && !isCuratedStation(contentKey);
   const ownColorScheme = getMockChannelColorScheme();
   return {
