@@ -1,0 +1,448 @@
+{
+  "artist": "lifecycleartist2150312136",
+  "email": "lifecycleartist2150312136@tahti.live",
+  "steps": [
+    {
+      "ok": true,
+      "label": "shot 01-join.png (join form)"
+    },
+    {
+      "ok": true,
+      "label": "shot 01-join-filled.png (join filled)"
+    },
+    {
+      "ok": true,
+      "label": "shot 01-join-after.png (after create account)"
+    },
+    {
+      "ok": true,
+      "label": "signed in as new artist"
+    },
+    {
+      "ok": true,
+      "label": "shot 02-studio-home.png (studio after register)"
+    },
+    {
+      "ok": true,
+      "label": "shot 03-channel-designer.png (channel designer)"
+    },
+    {
+      "ok": true,
+      "label": "shot 03-channel-promo.png (after promo)"
+    },
+    {
+      "ok": true,
+      "label": "shot 03-channel-tab-radio.png (channel tab Radio)"
+    },
+    {
+      "ok": true,
+      "label": "shot 04-before-uploads.png (before uploads)"
+    },
+    {
+      "ok": false,
+      "label": "upload lifecycle-album-01.wav",
+      "err": "page.waitForURL: Timeout 20000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+    },
+    {
+      "ok": true,
+      "label": "shot fail-upload-lifecycle-album-01.wav.png"
+    },
+    {
+      "ok": true,
+      "label": "shot 04-uploaded-lifecycle-album-01.png (lifecycle-album-01.wav)"
+    },
+    {
+      "ok": false,
+      "label": "upload lifecycle-album-02.wav",
+      "err": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for getByText(/Upload complete|processing/i) to be visible\n"
+    },
+    {
+      "ok": true,
+      "label": "shot fail-upload-lifecycle-album-02.wav.png"
+    },
+    {
+      "ok": true,
+      "label": "shot 04-uploaded-lifecycle-album-02.png (lifecycle-album-02.wav)"
+    },
+    {
+      "ok": false,
+      "label": "upload lifecycle-album-03.wav",
+      "err": "page.waitForURL: Timeout 20000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+    },
+    {
+      "ok": true,
+      "label": "shot fail-upload-lifecycle-album-03.wav.png"
+    },
+    {
+      "ok": true,
+      "label": "shot 04-uploaded-lifecycle-album-03.png (lifecycle-album-03.wav)"
+    },
+    {
+      "ok": false,
+      "label": "upload lifecycle-ep1-01.wav",
+      "err": "page.waitForURL: Timeout 20000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+    },
+    {
+      "ok": true,
+      "label": "shot fail-upload-lifecycle-ep1-01.wav.png"
+    },
+    {
+      "ok": true,
+      "label": "shot 04-uploaded-lifecycle-ep1-01.png (lifecycle-ep1-01.wav)"
+    },
+    {
+      "ok": false,
+      "label": "upload lifecycle-ep1-02.wav",
+      "err": "page.waitForURL: Timeout 20000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+    },
+    {
+      "ok": true,
+      "label": "shot fail-upload-lifecycle-ep1-02.wav.png"
+    },
+    {
+      "ok": true,
+      "label": "shot 04-uploaded-lifecycle-ep1-02.png (lifecycle-ep1-02.wav)"
+    },
+    {
+      "ok": false,
+      "label": "upload lifecycle-ep2-01.wav",
+      "err": "page.waitForURL: Timeout 20000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+    },
+    {
+      "ok": true,
+      "label": "shot fail-upload-lifecycle-ep2-01.wav.png"
+    },
+    {
+      "ok": true,
+      "label": "shot 04-uploaded-lifecycle-ep2-01.png (lifecycle-ep2-01.wav)"
+    },
+    {
+      "ok": false,
+      "label": "upload lifecycle-ep2-02.wav",
+      "err": "page.waitForURL: Timeout 20000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+    },
+    {
+      "ok": true,
+      "label": "shot fail-upload-lifecycle-ep2-02.wav.png"
+    },
+    {
+      "ok": true,
+      "label": "shot 04-uploaded-lifecycle-ep2-02.png (lifecycle-ep2-02.wav)"
+    },
+    {
+      "ok": false,
+      "label": "upload lifecycle-djset-01.wav",
+      "err": "page.waitForURL: Timeout 20000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+    },
+    {
+      "ok": true,
+      "label": "shot fail-upload-lifecycle-djset-01.wav.png"
+    },
+    {
+      "ok": true,
+      "label": "shot 04-uploaded-lifecycle-djset-01.png (lifecycle-djset-01.wav)"
+    },
+    {
+      "ok": true,
+      "label": "shot 05-create-album-dialog.png (Polar Nights (1792150312136))"
+    },
+    {
+      "ok": true,
+      "label": "created Album: Created Polar Nights (1792150312136) — open designer to add tracks."
+    },
+    {
+      "ok": true,
+      "label": "shot 05-created-album.png (Polar Nights (1792150312136))"
+    },
+    {
+      "ok": true,
+      "label": "shot 05-create-ep-dialog.png (Ice Out EP (1792150312136))"
+    },
+    {
+      "ok": true,
+      "label": "created EP: Created Ice Out EP (1792150312136) — open designer to add tracks."
+    },
+    {
+      "ok": true,
+      "label": "shot 05-created-ep.png (Ice Out EP (1792150312136))"
+    },
+    {
+      "ok": true,
+      "label": "shot 05-create-ep-dialog.png (Signal Decay EP (1792150312136))"
+    },
+    {
+      "ok": true,
+      "label": "created EP: Created Signal Decay EP (1792150312136) — open designer to add tracks."
+    },
+    {
+      "ok": true,
+      "label": "shot 05-created-ep.png (Signal Decay EP (1792150312136))"
+    },
+    {
+      "ok": true,
+      "label": "shot 05-create-dj-set-dialog.png (Night Bus DJ Set (1792150312136))"
+    },
+    {
+      "ok": true,
+      "label": "created DJ set: Created Night Bus DJ Set (1792150312136) — open designer to add tracks."
+    },
+    {
+      "ok": true,
+      "label": "shot 05-created-dj-set.png (Night Bus DJ Set (1792150312136))"
+    },
+    {
+      "ok": true,
+      "label": "shot 05-album-designer.png (album designer)"
+    },
+    {
+      "ok": true,
+      "label": "shot 05-album-designer-after.png"
+    },
+    {
+      "ok": true,
+      "label": "fan signed in"
+    },
+    {
+      "ok": true,
+      "label": "shot 06-fan-subscribe.png (/subscribe/lifecycleartist2150312136)"
+    },
+    {
+      "ok": true,
+      "label": "shot 06-fan-subscribe-clicked.png (after Subscribe)"
+    },
+    {
+      "ok": true,
+      "label": "clicked Subscribe"
+    },
+    {
+      "ok": true,
+      "label": "shot 07-channel-as-fan.png (channel as fan)"
+    },
+    {
+      "ok": true,
+      "label": "shot 07-chat-compose.png (/chat/lifecycleartist2150312136)"
+    },
+    {
+      "ok": true,
+      "label": "shot 07-chat-compose.png (/channel/lifecycleartist2150312136?chat=1)"
+    },
+    {
+      "ok": true,
+      "label": "shot 07-chat-compose.png (/channel/demo)"
+    },
+    {
+      "ok": true,
+      "label": "shot 07-chat-missing.png (chat not found)"
+    },
+    {
+      "ok": true,
+      "label": "shot 08-shows.png (shows list)"
+    },
+    {
+      "ok": true,
+      "label": "shot 08-show-create-dialog.png"
+    },
+    {
+      "ok": true,
+      "label": "shot 08-show-created.png"
+    },
+    {
+      "ok": true,
+      "label": "created recurring show"
+    },
+    {
+      "ok": true,
+      "label": "shot 09-go-live.png (go live landing)"
+    },
+    {
+      "ok": true,
+      "label": "Test connection (mock signal)"
+    },
+    {
+      "ok": true,
+      "label": "shot 09-signal-ready.png (after test connection)"
+    },
+    {
+      "ok": true,
+      "label": "shot 09-show-info-modal.png"
+    },
+    {
+      "ok": true,
+      "label": "went live"
+    },
+    {
+      "ok": true,
+      "label": "shot 09-live-0m.png (live t=0)"
+    },
+    {
+      "ok": true,
+      "label": "shot 09-public-channel-live.png (public channel)"
+    },
+    {
+      "ok": true,
+      "label": "shot 09-live-5m.png (live t=5m)"
+    },
+    {
+      "ok": true,
+      "label": "shot 09-live-10m.png (live t=10m)"
+    },
+    {
+      "ok": true,
+      "label": "shot 09-live-15m.png (live t=15m)"
+    },
+    {
+      "ok": true,
+      "label": "shot 09-live-20m.png (live t=20m)"
+    },
+    {
+      "ok": true,
+      "label": "held live for 20 minutes"
+    },
+    {
+      "ok": true,
+      "label": "shot 10-fan-watching-live.png (fan on channel after stream)"
+    }
+  ],
+  "issues": [
+    {
+      "severity": "ux",
+      "step": "register",
+      "detail": "Join form has no Username field; slug comes from Artist name. Existing e2e real-user-journeys still fills Username."
+    },
+    {
+      "severity": "ux",
+      "step": "channel promo",
+      "detail": "No obvious top-bar / promo text field on Channel designer default tab"
+    },
+    {
+      "severity": "ux",
+      "step": "channel save",
+      "detail": "No Save button found after promo edit"
+    },
+    {
+      "severity": "blocker",
+      "step": "upload lifecycle-album-01.wav",
+      "detail": "page.waitForURL: Timeout 20000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+    },
+    {
+      "severity": "blocker",
+      "step": "upload lifecycle-album-02.wav",
+      "detail": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for getByText(/Upload complete|processing/i) to be visible\n"
+    },
+    {
+      "severity": "blocker",
+      "step": "upload lifecycle-album-03.wav",
+      "detail": "page.waitForURL: Timeout 20000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+    },
+    {
+      "severity": "blocker",
+      "step": "upload lifecycle-ep1-01.wav",
+      "detail": "page.waitForURL: Timeout 20000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+    },
+    {
+      "severity": "blocker",
+      "step": "upload lifecycle-ep1-02.wav",
+      "detail": "page.waitForURL: Timeout 20000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+    },
+    {
+      "severity": "blocker",
+      "step": "upload lifecycle-ep2-01.wav",
+      "detail": "page.waitForURL: Timeout 20000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+    },
+    {
+      "severity": "blocker",
+      "step": "upload lifecycle-ep2-02.wav",
+      "detail": "page.waitForURL: Timeout 20000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+    },
+    {
+      "severity": "blocker",
+      "step": "upload lifecycle-djset-01.wav",
+      "detail": "page.waitForURL: Timeout 20000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+    },
+    {
+      "severity": "ux",
+      "step": "album designer",
+      "detail": "No Add track(s) control on collection designer after create"
+    },
+    {
+      "severity": "ux",
+      "step": "chat",
+      "detail": "Composer on /chat/lifecycleartist2150312136 but no Send button"
+    },
+    {
+      "severity": "ux",
+      "step": "chat",
+      "detail": "Composer on /channel/lifecycleartist2150312136?chat=1 but no Send button"
+    },
+    {
+      "severity": "ux",
+      "step": "chat",
+      "detail": "Composer on /channel/demo but no Send button"
+    },
+    {
+      "severity": "ux",
+      "step": "chat",
+      "detail": "Could not find a working channel chat composer as the fan"
+    },
+    {
+      "severity": "ux",
+      "step": "live 5m",
+      "detail": "On-air copy not visible on Go Live after wait — session may have dropped"
+    },
+    {
+      "severity": "ux",
+      "step": "live 10m",
+      "detail": "On-air copy not visible on Go Live after wait — session may have dropped"
+    },
+    {
+      "severity": "ux",
+      "step": "live 15m",
+      "detail": "On-air copy not visible on Go Live after wait — session may have dropped"
+    },
+    {
+      "severity": "ux",
+      "step": "live 20m",
+      "detail": "On-air copy not visible on Go Live after wait — session may have dropped"
+    },
+    {
+      "severity": "note",
+      "step": "console",
+      "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'http://127.0.0.1:5190' has been blocked by CORS policy: Response to preflight request doesn't"
+    },
+    {
+      "severity": "note",
+      "step": "console",
+      "detail": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "severity": "note",
+      "step": "console",
+      "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'http://127.0.0.1:5190' has been blocked by CORS policy: Response to preflight req"
+    },
+    {
+      "severity": "note",
+      "step": "console",
+      "detail": "Access to fetch at 'https://icecast.live.yle.fi/radio/YleX/icecast.audio' from origin 'http://127.0.0.1:5190' has been blocked by CORS policy: Request header field icy-metadata is not allowed by Access-Control-Allow-Headers in preflight res"
+    },
+    {
+      "severity": "note",
+      "step": "console",
+      "detail": "Access to fetch at 'https://stream.radiohelsinki.fi/stream' from origin 'http://127.0.0.1:5190' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is pre"
+    },
+    {
+      "severity": "note",
+      "step": "console",
+      "detail": "Access to fetch at 'https://aud-stream-suomipop.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'http://127.0.0.1:5190' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Con"
+    },
+    {
+      "severity": "note",
+      "step": "console",
+      "detail": "Access to fetch at 'https://aud-stream-radiorock.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'http://127.0.0.1:5190' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Co"
+    },
+    {
+      "severity": "note",
+      "step": "console",
+      "detail": "Access to audio at 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' from origin 'http://127.0.0.1:5190' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+    }
+  ]
+}

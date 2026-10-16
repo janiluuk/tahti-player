@@ -2,6 +2,21 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-10-16 — Shift+Play adds to queue
+
+Folded from `shift-play-queue.md`. `MediaArtwork` play control queues on
+Shift+click when `onQueue` is set (tooltip hints it). TrackTable thumbnails,
+Discover `WidgetTrackRow`, Library `SoundRow`, and `MyDiscographyView` wire
+enqueue on that shortcut.
+
+## 2026-10-16 — AmbientCard (glass cover-ambient Card)
+
+Folded from `ambient-card-storybook.md`. New `@tahti-player/ui` `AmbientCard`
+mirrors `Card` props with blurred cover + dominant-color wash and a frosted
+glass label (light/dark from cover luminance). Storybook
+`Components/AmbientCard` shows six tint examples plus play overlay, long
+labels, and no-cover. Snapshot + labelTone tests in `AmbientCard.test.tsx`.
+
 ## 2026-10-16 — User manual screenshots from tahti-web captures
 
 Folded from `user-manual-refresh.md`. Manual and core-concept pages were

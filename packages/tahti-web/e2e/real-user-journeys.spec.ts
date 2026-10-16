@@ -52,7 +52,6 @@ test('a new account can complete registration and immediately log in with it', a
   await page.goto('/join');
   await expect(page.getByLabel('Artist name')).toBeVisible();
   await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Username').fill(`newartist${Date.now()}`);
   await page.getByLabel('Artist name').fill('New Test Artist');
   await page.getByLabel('Password', { exact: true }).fill('secure-password');
   await page.getByLabel('Confirm password').fill('secure-password');
