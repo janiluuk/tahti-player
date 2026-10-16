@@ -16,6 +16,7 @@ import {
   Toggle,
   Tooltip,
   TrackTable,
+  type SelectOption,
 } from '@tahti-player/ui';
 
 import {
@@ -30,6 +31,7 @@ import {
   uploadCollectionCover,
 } from '../../../api/studio';
 import type {
+  CollectionTrackSortMode,
   StudioCollection,
   StudioRelease,
   StudioSound,
@@ -52,6 +54,12 @@ import { usePlayerStore } from '../../../stores/playerStore';
 import { LibrarySectionTabs } from '../../LibraryView';
 import { useStudioContributions } from '../useStudioContributions';
 
+const TRACK_ORDER_OPTIONS: SelectOption[] = [
+  { id: 'MANUAL', label: 'Manual (tracklist order)' },
+  { id: 'TIME', label: 'Oldest first' },
+  { id: 'NAME', label: 'Title (A-Z)' },
+];
+
 export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const [col, setCol] = useState<StudioCollection | null>(null);
   const [sounds, setSounds] = useState<StudioSound[]>([]);
@@ -60,6 +68,8 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const [description, setDescription] = useState('');
   const [isPublic, setIsPublic] = useState(true);
   const [collaborative, setCollaborative] = useState(false);
+  const [trackSortMode, setTrackSortMode] =
+    useState<CollectionTrackSortMode>('MANUAL');
   const [coverUrl, setCoverUrl] = useState<string | null>(null);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -92,6 +102,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
         setDescription(c.data.description ?? '');
         setIsPublic(c.data.isPublic !== false);
         setCollaborative(Boolean(c.data.collaborative));
+        setTrackSortMode(c.data.trackSortMode ?? 'MANUAL');
         setCoverUrl(c.data.coverUrl ?? null);
         setSounds(a.data);
         setReleases(r.data.releases);
@@ -165,6 +176,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
         isPublic,
         collaborative: !isDjSet && isPublic && collaborative,
         style: isDjSet ? 'DJ_SET_SERIES' : 'PLAYLIST',
+        trackSortMode,
       });
       if (!r.ok) {
         toast.error(r.error);
@@ -391,6 +403,15 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                     />
                   </div>
                 ) : null}
+                <Select
+                  label="Track order"
+                  description="How tracks are ordered on the public page."
+                  value={trackSortMode}
+                  onValueChange={(value) =>
+                    setTrackSortMode(value as CollectionTrackSortMode)
+                  }
+                  options={TRACK_ORDER_OPTIONS}
+                />
               </div>
             </StudioPanel>
 
