@@ -14,9 +14,17 @@ set -euo pipefail
 workflow="${1:?workflow file, e.g. ci.yml}"
 artifact="${2:?artifact name, e.g. snapshot-digest}"
 
+# Prefer the latest *successful* master run so a red master CI with an old
+# digest does not become the baseline for every open PR. Fall back to the
+# latest finished run (success or failure) when there is no green run yet.
 run_id=$(gh run list --workflow "$workflow" --branch master --limit 20 \
   --json databaseId,status,conclusion \
-  --jq '[.[] | select(.status == "completed" and (.conclusion == "success" or .conclusion == "failure"))][0].databaseId // empty')
+  --jq '[.[] | select(.status == "completed" and .conclusion == "success")][0].databaseId // empty')
+if [ -z "$run_id" ]; then
+  run_id=$(gh run list --workflow "$workflow" --branch master --limit 20 \
+    --json databaseId,status,conclusion \
+    --jq '[.[] | select(.status == "completed" and (.conclusion == "success" or .conclusion == "failure"))][0].databaseId // empty')
+fi
 
 if [ -z "$run_id" ]; then
   echo "No finished master run of $workflow found; listing every mismatch as new."
