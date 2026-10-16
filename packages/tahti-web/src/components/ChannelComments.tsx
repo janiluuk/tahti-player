@@ -142,7 +142,7 @@ export function ChannelComments({
             value={body}
             maxLength={MAX_COMMENT_LENGTH}
             onChange={(event) => setBody(event.target.value)}
-            className="min-w-0 w-full flex-1"
+            className="w-full min-w-0 flex-1"
           />
           <Button
             type="submit"
