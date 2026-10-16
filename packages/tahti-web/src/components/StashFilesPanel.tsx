@@ -142,7 +142,7 @@ export const StashFilesPanel = ({
     await reload();
   };
 
-  const revokeShare = async (fileId: string, shareId: string) => {
+  const revokeShare = async (_fileId: string, shareId: string) => {
     setBusy(true);
     setMessage(null);
     const result = await revokeStashShare(shareId);
