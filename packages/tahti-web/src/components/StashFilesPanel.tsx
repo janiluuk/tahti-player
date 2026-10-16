@@ -121,26 +121,17 @@ export const StashFilesPanel = () => {
     setBusy(false);
     if (!result.ok) {
       setMessage(result.error);
+      toast.error(result.error);
       return;
     }
-    setFiles((current) =>
-      current.map((candidate) =>
-        candidate.id === file.id
-          ? {
-              ...candidate,
-              shareCount: candidate.shareCount + 1,
-              shares: [...candidate.shares, result.data],
-            }
-          : candidate,
-      ),
-    );
     setSharingFileId(null);
     setGranteeUsername('');
-    setMessage(
-      username
-        ? `Shared ${file.filename} with @${username}.`
-        : `Created access for ${file.filename}.`,
-    );
+    const okMessage = username
+      ? `Shared ${file.filename} with @${username}.`
+      : `Created access for ${file.filename}.`;
+    setMessage(okMessage);
+    toast.success(okMessage);
+    await reload();
   };
 
   const revokeShare = async (fileId: string, shareId: string) => {
@@ -150,20 +141,12 @@ export const StashFilesPanel = () => {
     setBusy(false);
     if (!result.ok) {
       setMessage(result.error);
+      toast.error(result.error);
       return;
     }
-    setFiles((current) =>
-      current.map((file) =>
-        file.id === fileId
-          ? {
-              ...file,
-              shareCount: Math.max(0, file.shareCount - 1),
-              shares: file.shares.filter((share) => share.id !== shareId),
-            }
-          : file,
-      ),
-    );
     setMessage('Share access revoked.');
+    toast.success('Share access revoked.');
+    await reload();
   };
 
   const uploadFile = (file: File) => {
