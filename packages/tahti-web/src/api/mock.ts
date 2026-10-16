@@ -994,6 +994,25 @@ function buildMockCollection(
   slug: string,
   username = slug.match(/^(.+)-favorites-vault$/)?.[1] ?? 'northern-lights',
 ): PublicCollection {
+  if (slug === 'empty-vault' || slug.endsWith('-empty-vault')) {
+    const owner = slug.endsWith('-empty-vault')
+      ? slug.slice(0, -'-empty-vault'.length)
+      : username;
+    return {
+      slug,
+      name: 'Empty vault',
+      description: 'A playlist with no tracks yet.',
+      coverUrl: null,
+      isPublic: true,
+      collaborative: false,
+      user: {
+        username: owner,
+        displayName: mockChannel(owner).user.displayName,
+      },
+      items: [],
+      itemCount: 0,
+    };
+  }
   const archive = mockSoundItems(username);
   return {
     slug,

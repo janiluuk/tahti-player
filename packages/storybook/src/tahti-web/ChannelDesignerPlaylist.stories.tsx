@@ -20,8 +20,7 @@ export default meta;
 type Story = StoryObj;
 
 /**
- * Channel page playlist widget. Missing states: empty playlist, private /
- * 404 load failure (use a bad slug), long titles wrapping under Cards.
+ * Channel page playlist widget. Empty playlist covered by Block — Empty. Still missing: private / 404 load failure (use a bad slug), long titles wrapping under Cards.
  */
 export const BlockTracklist: Story = {
   name: 'Block — Tracklist',
@@ -33,6 +32,21 @@ export const BlockTracklist: Story = {
       />
     </div>
   ),
+};
+
+export const BlockEmpty: Story = {
+  name: 'Block — Empty',
+  render: () => (
+    <div className="max-w-3xl">
+      <ChannelPlaylistBlock playlistSlug="empty-vault" display="tracklist" />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByText('This playlist has no playable tracks yet.'),
+    ).toBeVisible();
+  },
 };
 
 export const BlockCards: Story = {
