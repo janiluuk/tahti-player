@@ -8,6 +8,7 @@ import {
   requestChatToken,
   requestChatViewerToken,
 } from '../api/client';
+import { appendMockChatMessage } from '../api/mock-chat-store';
 import type { ChatMessage } from '../api/types';
 import { centrifugoWsUrl } from '../lib/centrifugoWsUrl';
 import {
@@ -487,18 +488,13 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
       return;
     }
 
-    setMessages((prev) =>
-      [
-        ...prev,
-        {
-          id: `local-${Date.now()}`,
-          handle,
-          text,
-          ts: Date.now(),
-          system: false,
-        },
-      ].slice(-100),
-    );
+    const saved = appendMockChatMessage(slug, {
+      handle,
+      text,
+      ts: Date.now(),
+      system: false,
+    });
+    setMessages((prev) => [...prev, saved].slice(-100));
     setInput('');
   }
 

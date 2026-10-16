@@ -31,7 +31,7 @@ Production / beta builds (`import.meta.env.PROD`) **do not** fall back to fixtur
 
 ## Still thin / next mock polish
 
-- [ ] Chat: persist mock sends into shared history store (reload-safe)
+- [x] Chat: persist mock sends into shared history store (reload-safe) (batch 66 #5)
 - [ ] Seed richer archive / releases / collections for Studio browse
 - [ ] Newsletter send confirmation + DM search users fixture expansion
 - [ ] Press-kit gallery upload mock (currently link-out)
