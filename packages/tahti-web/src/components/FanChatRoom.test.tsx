@@ -11,6 +11,7 @@ import { fetchFanChatHistory, requestFanChatToken } from '../api/fan-chat';
 import { FanChatRoom } from './FanChatRoom';
 
 vi.mock('../api/fan-chat', () => ({
+  MOCK_FAN_CHAT_TOKEN: 'mock-token',
   fetchFanChatHistory: vi.fn(),
   requestFanChatToken: vi.fn(),
 }));
@@ -99,6 +100,26 @@ describe('FanChatRoom', () => {
     expect(ws.sent[2]).toMatchObject({
       publish: { channel: room, data: { handle: 'Aino', text: 'thanks all' } },
     });
+  });
+
+  it('echoes a sent message locally without a socket on the mock token', async () => {
+    vi.mocked(requestFanChatToken).mockResolvedValue({
+      ok: true,
+      data: { token: 'mock-token', handle: 'You', channel: room },
+    });
+    await act(async () => {
+      render(<FanChatRoom slug="night-drive" onLeave={vi.fn()} />);
+    });
+    expect(FakeSocket.last).toBeNull();
+    expect(screen.getByText('Subscribers only')).toBeInTheDocument();
+
+    const input = screen.getByLabelText('Message the fan room');
+    fireEvent.change(input, { target: { value: 'hello fans' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+
+    expect(screen.getByText('hello fans')).toBeInTheDocument();
+    expect(screen.getByText('You')).toBeInTheDocument();
+    expect((input as HTMLInputElement).value).toBe('');
   });
 
   it('explains when the API refuses the room', async () => {

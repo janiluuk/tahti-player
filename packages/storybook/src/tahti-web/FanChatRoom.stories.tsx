@@ -1,15 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FanChatRoom } from '@tahti-web/components/FanChatRoom';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { FAN_ROOM_HISTORY } from './_fixtures/chat';
 import { mockData } from './_lib/mock-data';
 
-/**
- * The fan-room token needs the live API, so in force-mock mode the room
- * shows its history (from the `fanChatHistory` override) with the token
- * error line and the composer stays disabled.
- */
 const meta: Meta<typeof FanChatRoom> = {
   title: 'Tahti/Channel/FanChatRoom',
   component: FanChatRoom,
@@ -31,11 +26,14 @@ export const WithHistory: Story = {
     await expect(
       await within(log).findByText('Pre-saved already!'),
     ).toBeVisible();
+    const textbox = canvas.getByRole('textbox', {
+      name: 'Message the fan room',
+    });
+    await waitFor(() => expect(textbox).toBeEnabled());
+    await userEvent.type(textbox, 'Hello from the mock');
+    await userEvent.click(canvas.getByRole('button', { name: 'Send' }));
     await expect(
-      canvas.getByRole('textbox', { name: 'Message the fan room' }),
-    ).toBeDisabled();
-    await expect(
-      await canvas.findByText('The fan room needs the live API.'),
+      await within(log).findByText('Hello from the mock'),
     ).toBeVisible();
     await userEvent.click(
       canvas.getByRole('button', { name: 'Back to the public chat' }),
