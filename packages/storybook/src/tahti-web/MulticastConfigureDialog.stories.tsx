@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { MulticastConfigureDialog } from '@tahti-web/components/MulticastConfigureDialog';
 import { useState } from 'react';
+import { expect, userEvent } from 'storybook/test';
+
+import { findDialog } from './_lib/play';
 
 /**
  * Add or edit one multistream RTMP destination — shared between
@@ -8,8 +11,7 @@ import { useState } from 'react';
  * destination" (both used to have their own separate form; Go Live's
  * dropdown-based one is retired in favor of this one).
  *
- * Missing states: the real save/error network round-trip (mocked here
- * via onSaved/onClose only).
+ * SaveFailure story exercises the mock ingest rejection (stream key "fail").
  */
 const meta: Meta<typeof MulticastConfigureDialog> = {
   title: 'Tahti/Broadcast/MulticastConfigureDialog',
@@ -69,4 +71,21 @@ export const EditExisting: Story = {
       }}
     />
   ),
+};
+
+/** Mock create fails when stream key is `fail`. */
+export const SaveFailure: Story = {
+  name: 'Save failure',
+  render: () => <Demo configuring={{ provider: 'TWITCH', existing: null }} />,
+  play: async ({ canvasElement }) => {
+    const dialog = await findDialog(canvasElement, /Configure Twitch/i);
+    const key = await dialog.findByLabelText(/stream key/i);
+    await userEvent.type(key, 'fail');
+    await userEvent.click(
+      dialog.getByRole('button', { name: /save destination/i }),
+    );
+    await expect(
+      await dialog.findByText('Ingest rejected the stream key.'),
+    ).toBeVisible();
+  },
 };
