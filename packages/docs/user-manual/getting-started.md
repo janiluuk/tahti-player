@@ -19,6 +19,8 @@ You don't need an account to listen. The window has:
 - **Right panel:** the queue.
 - **Player bar:** appears at the bottom once a track is loaded.
 
+<figure><img src="../.gitbook/assets/app-layout-overview.png" alt="Tahti Player Listen home with sidebar, main content, and player bar"><figcaption><p>Listen home — sidebar, main view, and player bar</p></figcaption></figure>
+
 On a phone the sidebar becomes a bar at the bottom, and the rest is in the menu.
 
 Press **H** on any page for a short guided tour of it.

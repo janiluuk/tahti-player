@@ -6,6 +6,8 @@ description: Community themes, and submitting your own.
 
 **Settings → Themes → Browse** lists the community themes that ship with the app next to the built-in ones. They come from the public theme catalogue, [tahti-registry](https://github.com/janiluuk/tahti-registry) (`themes/`). Click one to apply it.
 
+<figure><img src="../.gitbook/assets/theme-store.png" alt="Settings Themes Browse with built-in and community themes"><figcaption><p>Browse — built-in and community themes</p></figcaption></figure>
+
 ## Submitting your theme
 
 1. Make a theme in the **Editor** tab, or add one with **Import JSON** (see [Advanced themes](themes-advanced.md)).

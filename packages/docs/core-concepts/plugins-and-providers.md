@@ -10,6 +10,8 @@ Tahti Player plays Tahti's own catalogue out of the box; nothing has to be insta
 
 Open **Settings → Add-ons**. The categories are Themes, Visualizers, Import, Multicast, Fingerprinting, Audio tools, Radio, Embed, Discovery, Channel and Playback; artists and the board see a few more for their own tools. Only add-ons that work today are listed, each with a state:
 
+<figure><img src="../.gitbook/assets/addons.png" alt="Settings Add-ons listing categories and ready add-ons"><figcaption><p>Settings → Add-ons</p></figcaption></figure>
+
 - **Ready:** works end to end.
 - **Importer ready** or **Search ready:** the connect or search half works and the rest (usually a server-side import) is still coming; the row says what is missing.
 

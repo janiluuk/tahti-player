@@ -1,7 +1,7 @@
 {
   "surface": "nuclear",
-  "capturedAt": "2026-10-04",
-  "baseUrl": "http://127.0.0.1:5180",
+  "capturedAt": "2026-10-16",
+  "baseUrl": "http://127.0.0.1:5190",
   "images": [
     {
       "file": "about--light.png",
@@ -2228,6 +2228,10 @@
       "url": "/map/nuclear/archive-item--1-stats.png"
     },
     {
+      "file": "archive-item--1-tracks.png",
+      "url": "/map/nuclear/archive-item--1-tracks.png"
+    },
+    {
       "file": "archive-item--10-events--light.png",
       "url": "/map/nuclear/archive-item--10-events--light.png"
     },
@@ -2242,6 +2246,14 @@
     {
       "file": "archive-item--11-tab.png",
       "url": "/map/nuclear/archive-item--11-tab.png"
+    },
+    {
+      "file": "archive-item--12-tab.png",
+      "url": "/map/nuclear/archive-item--12-tab.png"
+    },
+    {
+      "file": "archive-item--2-collections.png",
+      "url": "/map/nuclear/archive-item--2-collections.png"
     },
     {
       "file": "archive-item--2-governance--light.png",
@@ -2272,6 +2284,10 @@
       "url": "/map/nuclear/archive-item--3-posts.png"
     },
     {
+      "file": "archive-item--3-upload.png",
+      "url": "/map/nuclear/archive-item--3-upload.png"
+    },
+    {
       "file": "archive-item--4-audience--light.png",
       "url": "/map/nuclear/archive-item--4-audience--light.png"
     },
@@ -2284,8 +2300,16 @@
       "url": "/map/nuclear/archive-item--4-posts.png"
     },
     {
+      "file": "archive-item--4-recordings.png",
+      "url": "/map/nuclear/archive-item--4-recordings.png"
+    },
+    {
       "file": "archive-item--5-audience.png",
       "url": "/map/nuclear/archive-item--5-audience.png"
+    },
+    {
+      "file": "archive-item--5-media.png",
+      "url": "/map/nuclear/archive-item--5-media.png"
     },
     {
       "file": "archive-item--5-releases--light.png",
@@ -2304,6 +2328,10 @@
       "url": "/map/nuclear/archive-item--6-editor.png"
     },
     {
+      "file": "archive-item--6-stash.png",
+      "url": "/map/nuclear/archive-item--6-stash.png"
+    },
+    {
       "file": "archive-item--6-stripe.png",
       "url": "/map/nuclear/archive-item--6-stripe.png"
     },
@@ -2314,6 +2342,10 @@
     {
       "file": "archive-item--7-broadcast.png",
       "url": "/map/nuclear/archive-item--7-broadcast.png"
+    },
+    {
+      "file": "archive-item--7-embeds.png",
+      "url": "/map/nuclear/archive-item--7-embeds.png"
     },
     {
       "file": "archive-item--7-releases.png",
@@ -2330,6 +2362,14 @@
     {
       "file": "archive-item--8-editor.png",
       "url": "/map/nuclear/archive-item--8-editor.png"
+    },
+    {
+      "file": "archive-item--8-smart-links.png",
+      "url": "/map/nuclear/archive-item--8-smart-links.png"
+    },
+    {
+      "file": "archive-item--9-local-files.png",
+      "url": "/map/nuclear/archive-item--9-local-files.png"
     },
     {
       "file": "archive-item--9-schedule--light.png",
@@ -3224,6 +3264,10 @@
       "url": "/map/nuclear/library--3-tab.png"
     },
     {
+      "file": "library--3-upload.png",
+      "url": "/map/nuclear/library--3-upload.png"
+    },
+    {
       "file": "library--4-media--light.png",
       "url": "/map/nuclear/library--4-media--light.png"
     },
@@ -3232,8 +3276,16 @@
       "url": "/map/nuclear/library--4-media.png"
     },
     {
+      "file": "library--4-recordings.png",
+      "url": "/map/nuclear/library--4-recordings.png"
+    },
+    {
       "file": "library--4-tab.png",
       "url": "/map/nuclear/library--4-tab.png"
+    },
+    {
+      "file": "library--5-media.png",
+      "url": "/map/nuclear/library--5-media.png"
     },
     {
       "file": "library--5-stash--light.png",
@@ -3252,6 +3304,14 @@
       "url": "/map/nuclear/library--6-embeds.png"
     },
     {
+      "file": "library--6-stash.png",
+      "url": "/map/nuclear/library--6-stash.png"
+    },
+    {
+      "file": "library--7-embeds.png",
+      "url": "/map/nuclear/library--7-embeds.png"
+    },
+    {
       "file": "library--7-smart-links--light.png",
       "url": "/map/nuclear/library--7-smart-links--light.png"
     },
@@ -3266,6 +3326,14 @@
     {
       "file": "library--8-local-files.png",
       "url": "/map/nuclear/library--8-local-files.png"
+    },
+    {
+      "file": "library--8-smart-links.png",
+      "url": "/map/nuclear/library--8-smart-links.png"
+    },
+    {
+      "file": "library--9-local-files.png",
+      "url": "/map/nuclear/library--9-local-files.png"
     },
     {
       "file": "library--light.png",
@@ -3308,6 +3376,34 @@
       "url": "/map/nuclear/library-collections--1-what-s-new.png"
     },
     {
+      "file": "library-collections--10-tab.png",
+      "url": "/map/nuclear/library-collections--10-tab.png"
+    },
+    {
+      "file": "library-collections--11-tab.png",
+      "url": "/map/nuclear/library-collections--11-tab.png"
+    },
+    {
+      "file": "library-collections--12-tab.png",
+      "url": "/map/nuclear/library-collections--12-tab.png"
+    },
+    {
+      "file": "library-collections--13-tab.png",
+      "url": "/map/nuclear/library-collections--13-tab.png"
+    },
+    {
+      "file": "library-collections--14-tab.png",
+      "url": "/map/nuclear/library-collections--14-tab.png"
+    },
+    {
+      "file": "library-collections--15-tab.png",
+      "url": "/map/nuclear/library-collections--15-tab.png"
+    },
+    {
+      "file": "library-collections--16-tab.png",
+      "url": "/map/nuclear/library-collections--16-tab.png"
+    },
+    {
       "file": "library-collections--2-collections--light.png",
       "url": "/map/nuclear/library-collections--2-collections--light.png"
     },
@@ -3340,12 +3436,20 @@
       "url": "/map/nuclear/library-collections--3-tab.png"
     },
     {
+      "file": "library-collections--3-upload.png",
+      "url": "/map/nuclear/library-collections--3-upload.png"
+    },
+    {
       "file": "library-collections--4-media--light.png",
       "url": "/map/nuclear/library-collections--4-media--light.png"
     },
     {
       "file": "library-collections--4-media.png",
       "url": "/map/nuclear/library-collections--4-media.png"
+    },
+    {
+      "file": "library-collections--4-recordings.png",
+      "url": "/map/nuclear/library-collections--4-recordings.png"
     },
     {
       "file": "library-collections--4-stash.png",
@@ -3358,6 +3462,10 @@
     {
       "file": "library-collections--5-embeds.png",
       "url": "/map/nuclear/library-collections--5-embeds.png"
+    },
+    {
+      "file": "library-collections--5-media.png",
+      "url": "/map/nuclear/library-collections--5-media.png"
     },
     {
       "file": "library-collections--5-stash--light.png",
@@ -3376,6 +3484,14 @@
       "url": "/map/nuclear/library-collections--6-embeds.png"
     },
     {
+      "file": "library-collections--6-stash.png",
+      "url": "/map/nuclear/library-collections--6-stash.png"
+    },
+    {
+      "file": "library-collections--7-embeds.png",
+      "url": "/map/nuclear/library-collections--7-embeds.png"
+    },
+    {
       "file": "library-collections--7-smart-links--light.png",
       "url": "/map/nuclear/library-collections--7-smart-links--light.png"
     },
@@ -3390,6 +3506,14 @@
     {
       "file": "library-collections--8-local-files.png",
       "url": "/map/nuclear/library-collections--8-local-files.png"
+    },
+    {
+      "file": "library-collections--8-smart-links.png",
+      "url": "/map/nuclear/library-collections--8-smart-links.png"
+    },
+    {
+      "file": "library-collections--9-local-files.png",
+      "url": "/map/nuclear/library-collections--9-local-files.png"
     },
     {
       "file": "library-collections--light.png",
@@ -3644,6 +3768,18 @@
       "url": "/map/nuclear/library-sounds--1-what-s-new.png"
     },
     {
+      "file": "library-sounds--10-tab.png",
+      "url": "/map/nuclear/library-sounds--10-tab.png"
+    },
+    {
+      "file": "library-sounds--11-tab.png",
+      "url": "/map/nuclear/library-sounds--11-tab.png"
+    },
+    {
+      "file": "library-sounds--12-tab.png",
+      "url": "/map/nuclear/library-sounds--12-tab.png"
+    },
+    {
       "file": "library-sounds--2-collections--light.png",
       "url": "/map/nuclear/library-sounds--2-collections--light.png"
     },
@@ -3676,12 +3812,20 @@
       "url": "/map/nuclear/library-sounds--3-tab.png"
     },
     {
+      "file": "library-sounds--3-upload.png",
+      "url": "/map/nuclear/library-sounds--3-upload.png"
+    },
+    {
       "file": "library-sounds--4-media--light.png",
       "url": "/map/nuclear/library-sounds--4-media--light.png"
     },
     {
       "file": "library-sounds--4-media.png",
       "url": "/map/nuclear/library-sounds--4-media.png"
+    },
+    {
+      "file": "library-sounds--4-recordings.png",
+      "url": "/map/nuclear/library-sounds--4-recordings.png"
     },
     {
       "file": "library-sounds--4-stash.png",
@@ -3694,6 +3838,10 @@
     {
       "file": "library-sounds--5-embeds.png",
       "url": "/map/nuclear/library-sounds--5-embeds.png"
+    },
+    {
+      "file": "library-sounds--5-media.png",
+      "url": "/map/nuclear/library-sounds--5-media.png"
     },
     {
       "file": "library-sounds--5-stash--light.png",
@@ -3712,6 +3860,14 @@
       "url": "/map/nuclear/library-sounds--6-embeds.png"
     },
     {
+      "file": "library-sounds--6-stash.png",
+      "url": "/map/nuclear/library-sounds--6-stash.png"
+    },
+    {
+      "file": "library-sounds--7-embeds.png",
+      "url": "/map/nuclear/library-sounds--7-embeds.png"
+    },
+    {
       "file": "library-sounds--7-smart-links--light.png",
       "url": "/map/nuclear/library-sounds--7-smart-links--light.png"
     },
@@ -3726,6 +3882,14 @@
     {
       "file": "library-sounds--8-local-files.png",
       "url": "/map/nuclear/library-sounds--8-local-files.png"
+    },
+    {
+      "file": "library-sounds--8-smart-links.png",
+      "url": "/map/nuclear/library-sounds--8-smart-links.png"
+    },
+    {
+      "file": "library-sounds--9-local-files.png",
+      "url": "/map/nuclear/library-sounds--9-local-files.png"
     },
     {
       "file": "library-sounds--light.png",
@@ -4624,12 +4788,20 @@
       "url": "/map/nuclear/settings--0-session.png"
     },
     {
+      "file": "settings--0-sign-in-security.png",
+      "url": "/map/nuclear/settings--0-sign-in-security.png"
+    },
+    {
       "file": "settings--0-themes.png",
       "url": "/map/nuclear/settings--0-themes.png"
     },
     {
       "file": "settings--1-artist.png",
       "url": "/map/nuclear/settings--1-artist.png"
+    },
+    {
+      "file": "settings--1-membership-billing.png",
+      "url": "/map/nuclear/settings--1-membership-billing.png"
     },
     {
       "file": "settings--1-security--light.png",
@@ -4680,6 +4852,10 @@
       "url": "/map/nuclear/settings--2-membership.png"
     },
     {
+      "file": "settings--2-notifications.png",
+      "url": "/map/nuclear/settings--2-notifications.png"
+    },
+    {
       "file": "settings--2-tab.png",
       "url": "/map/nuclear/settings--2-tab.png"
     },
@@ -4696,12 +4872,20 @@
       "url": "/map/nuclear/settings--3-governance.png"
     },
     {
+      "file": "settings--3-privacy-data.png",
+      "url": "/map/nuclear/settings--3-privacy-data.png"
+    },
+    {
       "file": "settings--3-tab.png",
       "url": "/map/nuclear/settings--3-tab.png"
     },
     {
       "file": "settings--4-audience.png",
       "url": "/map/nuclear/settings--4-audience.png"
+    },
+    {
+      "file": "settings--4-privacy-data.png",
+      "url": "/map/nuclear/settings--4-privacy-data.png"
     },
     {
       "file": "settings--4-storage--light.png",
@@ -4724,6 +4908,10 @@
       "url": "/map/nuclear/settings--5-notifications-visibility.png"
     },
     {
+      "file": "settings--5-storage.png",
+      "url": "/map/nuclear/settings--5-storage.png"
+    },
+    {
       "file": "settings--5-themes.png",
       "url": "/map/nuclear/settings--5-themes.png"
     },
@@ -4738,6 +4926,10 @@
     {
       "file": "settings--6-mentions.png",
       "url": "/map/nuclear/settings--6-mentions.png"
+    },
+    {
+      "file": "settings--6-tab.png",
+      "url": "/map/nuclear/settings--6-tab.png"
     },
     {
       "file": "settings--6-your-subs--light.png",
@@ -4820,8 +5012,16 @@
       "url": "/map/nuclear/settings-account--0-session.png"
     },
     {
+      "file": "settings-account--0-sign-in-security.png",
+      "url": "/map/nuclear/settings-account--0-sign-in-security.png"
+    },
+    {
       "file": "settings-account--1-artist.png",
       "url": "/map/nuclear/settings-account--1-artist.png"
+    },
+    {
+      "file": "settings-account--1-membership-billing.png",
+      "url": "/map/nuclear/settings-account--1-membership-billing.png"
     },
     {
       "file": "settings-account--1-security--light.png",
@@ -4868,6 +5068,10 @@
       "url": "/map/nuclear/settings-account--2-membership.png"
     },
     {
+      "file": "settings-account--2-notifications.png",
+      "url": "/map/nuclear/settings-account--2-notifications.png"
+    },
+    {
       "file": "settings-account--3-broadcast.png",
       "url": "/map/nuclear/settings-account--3-broadcast.png"
     },
@@ -4880,8 +5084,16 @@
       "url": "/map/nuclear/settings-account--3-governance.png"
     },
     {
+      "file": "settings-account--3-privacy-data.png",
+      "url": "/map/nuclear/settings-account--3-privacy-data.png"
+    },
+    {
       "file": "settings-account--4-audience.png",
       "url": "/map/nuclear/settings-account--4-audience.png"
+    },
+    {
+      "file": "settings-account--4-privacy-data.png",
+      "url": "/map/nuclear/settings-account--4-privacy-data.png"
     },
     {
       "file": "settings-account--4-storage--light.png",
@@ -4900,6 +5112,10 @@
       "url": "/map/nuclear/settings-account--5-notifications-visibility.png"
     },
     {
+      "file": "settings-account--5-storage.png",
+      "url": "/map/nuclear/settings-account--5-storage.png"
+    },
+    {
       "file": "settings-account--5-themes.png",
       "url": "/map/nuclear/settings-account--5-themes.png"
     },
@@ -4914,6 +5130,10 @@
     {
       "file": "settings-account--6-mentions.png",
       "url": "/map/nuclear/settings-account--6-mentions.png"
+    },
+    {
+      "file": "settings-account--6-tab.png",
+      "url": "/map/nuclear/settings-account--6-tab.png"
     },
     {
       "file": "settings-account--6-your-subs--light.png",
@@ -5132,6 +5352,14 @@
       "url": "/map/nuclear/settings-artist-connections--0-identity.png"
     },
     {
+      "file": "settings-artist-connections--0-profile.png",
+      "url": "/map/nuclear/settings-artist-connections--0-profile.png"
+    },
+    {
+      "file": "settings-artist-connections--1-links-press.png",
+      "url": "/map/nuclear/settings-artist-connections--1-links-press.png"
+    },
+    {
       "file": "settings-artist-connections--1-story--light.png",
       "url": "/map/nuclear/settings-artist-connections--1-story--light.png"
     },
@@ -5146,6 +5374,10 @@
     {
       "file": "settings-artist-connections--2-connections.png",
       "url": "/map/nuclear/settings-artist-connections--2-connections.png"
+    },
+    {
+      "file": "settings-artist-connections--2-visuals.png",
+      "url": "/map/nuclear/settings-artist-connections--2-visuals.png"
     },
     {
       "file": "settings-artist-connections--3-branding--light.png",
@@ -5220,6 +5452,14 @@
       "url": "/map/nuclear/settings-notifications--0-session.png"
     },
     {
+      "file": "settings-notifications--0-sign-in-security.png",
+      "url": "/map/nuclear/settings-notifications--0-sign-in-security.png"
+    },
+    {
+      "file": "settings-notifications--1-membership-billing.png",
+      "url": "/map/nuclear/settings-notifications--1-membership-billing.png"
+    },
+    {
       "file": "settings-notifications--1-security--light.png",
       "url": "/map/nuclear/settings-notifications--1-security--light.png"
     },
@@ -5236,12 +5476,24 @@
       "url": "/map/nuclear/settings-notifications--2-membership.png"
     },
     {
+      "file": "settings-notifications--2-notifications.png",
+      "url": "/map/nuclear/settings-notifications--2-notifications.png"
+    },
+    {
       "file": "settings-notifications--3-governance--light.png",
       "url": "/map/nuclear/settings-notifications--3-governance--light.png"
     },
     {
       "file": "settings-notifications--3-governance.png",
       "url": "/map/nuclear/settings-notifications--3-governance.png"
+    },
+    {
+      "file": "settings-notifications--3-privacy-data.png",
+      "url": "/map/nuclear/settings-notifications--3-privacy-data.png"
+    },
+    {
+      "file": "settings-notifications--4-privacy-data.png",
+      "url": "/map/nuclear/settings-notifications--4-privacy-data.png"
     },
     {
       "file": "settings-notifications--4-storage--light.png",
@@ -5258,6 +5510,10 @@
     {
       "file": "settings-notifications--5-notifications-visibility.png",
       "url": "/map/nuclear/settings-notifications--5-notifications-visibility.png"
+    },
+    {
+      "file": "settings-notifications--5-storage.png",
+      "url": "/map/nuclear/settings-notifications--5-storage.png"
     },
     {
       "file": "settings-notifications--6-mentions--light.png",
@@ -5340,12 +5596,20 @@
       "url": "/map/nuclear/settings-section--0-identity.png"
     },
     {
+      "file": "settings-section--0-profile.png",
+      "url": "/map/nuclear/settings-section--0-profile.png"
+    },
+    {
       "file": "settings-section--0-themes.png",
       "url": "/map/nuclear/settings-section--0-themes.png"
     },
     {
       "file": "settings-section--1-artist.png",
       "url": "/map/nuclear/settings-section--1-artist.png"
+    },
+    {
+      "file": "settings-section--1-links-press.png",
+      "url": "/map/nuclear/settings-section--1-links-press.png"
     },
     {
       "file": "settings-section--1-story--light.png",
@@ -5386,6 +5650,10 @@
     {
       "file": "settings-section--2-tab.png",
       "url": "/map/nuclear/settings-section--2-tab.png"
+    },
+    {
+      "file": "settings-section--2-visuals.png",
+      "url": "/map/nuclear/settings-section--2-visuals.png"
     },
     {
       "file": "settings-section--3-branding--light.png",
@@ -7431,5 +7699,6 @@
       "file": "whats-new.png",
       "url": "/map/nuclear/whats-new.png"
     }
-  ]
+  ],
+  "note": "Partial refresh 2026-10-16; admin-moderation tab-walk stopped early"
 }

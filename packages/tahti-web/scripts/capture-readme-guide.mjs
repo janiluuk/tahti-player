@@ -610,7 +610,7 @@ const routes = [
 const VIEWPORT = { width: 1680, height: 1050 };
 
 let browser = await chromium.launch({
-  executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium',
+  executablePath: process.env.CHROMIUM_PATH || undefined,
   args: ['--no-sandbox', '--disable-dev-shm-usage'],
 });
 let page = await browser.newPage({ viewport: VIEWPORT });
@@ -642,7 +642,7 @@ async function seedSession() {
 async function recreatePage() {
   if (!browser.isConnected()) {
     browser = await chromium.launch({
-      executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium',
+      executablePath: process.env.CHROMIUM_PATH || undefined,
       args: ['--no-sandbox', '--disable-dev-shm-usage'],
     });
   }

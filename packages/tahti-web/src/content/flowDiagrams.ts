@@ -144,7 +144,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Login["/login · /join · /verify · password reset"] --> Session["Signed in"]
   Session --> Feed["/listen/feed · /feed"]
   Session --> History["/listen/history"]
-  Session --> Library["/library · Tracks · Collections · Recordings · Media · Stash · Embeds · Smart links · Local files"]
+  Session --> Library["/library · Tracks · Collections · Upload · Recordings · Media · Stash · Embeds · Smart links · Local files"]
   Session --> Messages["/messages · /messages/$id"]
   Session --> Onboarding["/onboarding"]
   Session --> Settings["Settings modal · /settings/$section"]
@@ -207,10 +207,10 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     id: 'nuclear-navigation-stable-2026-08',
     pack: 'nuclear',
     source:
-      'AppShell · StudioNav · AdminNav · LibraryView · settingsNav (2026-10-03)',
+      'AppShell · StudioNav · AdminNav · LibraryView · settingsNav (2026-10-16)',
     title: 'Current navigation - stable sections',
     blurb:
-      'The persistent app shell stays fixed while each section changes only its submenu and page content. Broadcast and Audience have their own nested tab strips; Admin Governance and Moderation fold their old pages into tabs.',
+      'The persistent app shell stays fixed while each section changes only its submenu and page content. Broadcast and Audience have their own nested tab strips; Admin Governance and Moderation fold their old pages into tabs. Settings uses Channel & chat (Designer · Discovery · Username · Chat · Moderators).',
     mermaid: `flowchart TB
   Shell["Persistent app shell"] --> Listener["Listen · Radio · Discover · Favorites"]
   Shell --> Library["Library · signed in"]
@@ -219,7 +219,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Shell --> Admin["Admin · board role + diagnostics"]
 
   subgraph libraryTabs["Library tabs"]
-    Library --> LibraryMenu["Overview · Tracks · Collections · Recordings · Media · Stash · Embeds · Smart links · Local files"]
+    Library --> LibraryMenu["Overview · Tracks · Collections · Upload · Recordings · Media · Stash · Embeds · Smart links · Local files"]
   end
 
   subgraph studio["Studio sections"]
@@ -229,7 +229,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   end
 
   subgraph settings["Settings modal sections"]
-    HelpSettings --> SettingsMenu["Settings: Account · Artist · Channel and design · Broadcast · Playback · Integrations"]
+    HelpSettings --> SettingsMenu["Settings: Account · Artist · Channel and chat · Broadcast · Playback · Integrations"]
     HelpSettings --> AppMenu["App: Themes · Add-ons · Logs · What's new"]
   end
 
@@ -266,7 +266,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Studio --> Catalog["Catalog: Releases · Editor · Tracks /studio/sounds · Collections"]
   Library["/library: Tracks · Collections · Recordings · Stash · Upload"] --> Catalog
   Studio --> Grow["Grow: Stats · Governance · Audience (Overview · Tiers · Stripe) · Posts"]
-  Studio --> Settings["Settings: Account · Artist · Channel and design · Broadcast"]
+  Studio --> Settings["Settings: Account · Artist · Channel and chat · Broadcast"]
   Role -->|Board| Admin["/admin"]
   Admin --> Overview["Overview: needs action and streams"]
   Admin --> Content["Content: catalog and top lists"]
@@ -423,7 +423,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     mermaid: `flowchart TB
   Modal["Settings modal · /settings/:section"] --> Account["account"]
   Modal --> ArtistS["artist"]
-  Modal --> ChannelS["channel · Channel and design"]
+  Modal --> ChannelS["channel · Channel and chat"]
   Modal --> Bc["broadcast"]
   Modal --> App["playback · integrations · themes · plugin-store · logs · whats-new"]
   Account --> AccTabs["Session · Security · Membership · Governance · Storage · Notifications and visibility · Mentions · Your subs"]
@@ -967,7 +967,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   end
 
   subgraph library["Library · own sidebar item"]
-    LIB["/library · Tracks · Collections · Recordings · Media · Stash · Embeds · Smart links · Local files"]
+    LIB["/library · Tracks · Collections · Upload · Recordings · Media · Stash · Embeds · Smart links · Local files"]
   end
 
   subgraph studio["Studio routes"]
@@ -978,7 +978,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   end
 
   subgraph settings["Settings modal"]
-    SET["Account · Artist · Channel and design · Broadcast · Playback · Integrations · Themes · Add-ons · Logs · What's new"]
+    SET["Account · Artist · Channel and chat · Broadcast · Playback · Integrations · Themes · Add-ons · Logs · What's new"]
     Foot["Footer: GitHub · Discord · API docs · no About"]
   end
 
