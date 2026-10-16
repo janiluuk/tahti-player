@@ -7,7 +7,7 @@ import {
   RssIcon,
 } from 'lucide-react';
 
-import { Button, StatChip, Tooltip } from '@tahti-player/ui';
+import { Button, EmptyState, StatChip, Tooltip } from '@tahti-player/ui';
 
 import type { ChannelLink } from '../../api/channel-design';
 import type { PublicRadioShow } from '../../api/shows';
@@ -81,6 +81,15 @@ export function renderChannelBlock(
             />
           ) : null}
           {ctx.sectionStatus.sounds === 'ready' &&
+          ctx.pinnedPlayables.length === 0 &&
+          ctx.catalogPlayables.length === 0 ? (
+            <EmptyState
+              size="sm"
+              title="No public tracks yet"
+              description="When this channel publishes tracks, they show up here. Offline listening still works from Discover and Radio."
+            />
+          ) : null}
+          {ctx.sectionStatus.sounds === 'ready' &&
             ctx.pinnedPlayables.length > 0 && (
               <div className="flex flex-col gap-2">
                 <Eyebrow tone="muted">Pinned</Eyebrow>
@@ -94,22 +103,24 @@ export function renderChannelBlock(
                 />
               </div>
             )}
-          {ctx.sectionStatus.sounds === 'ready' && (
-            <div className="flex flex-col gap-2">
-              {ctx.pinnedPlayables.length > 0 && (
-                <Eyebrow tone="muted">Catalog</Eyebrow>
-              )}
-              <PlayableTrackTable
-                items={ctx.catalogPlayables}
-                emptyMessage={
-                  ctx.pinnedPlayables.length > 0
-                    ? 'No other public tracks.'
-                    : 'No public tracks for this channel yet.'
-                }
-                quietHeader
-              />
-            </div>
-          )}
+          {ctx.sectionStatus.sounds === 'ready' &&
+            (ctx.pinnedPlayables.length > 0 ||
+              ctx.catalogPlayables.length > 0) && (
+              <div className="flex flex-col gap-2">
+                {ctx.pinnedPlayables.length > 0 && (
+                  <Eyebrow tone="muted">Catalog</Eyebrow>
+                )}
+                <PlayableTrackTable
+                  items={ctx.catalogPlayables}
+                  emptyMessage={
+                    ctx.pinnedPlayables.length > 0
+                      ? 'No other public tracks.'
+                      : 'No public tracks for this channel yet.'
+                  }
+                  quietHeader
+                />
+              </div>
+            )}
         </section>
       );
     case 'chat':
