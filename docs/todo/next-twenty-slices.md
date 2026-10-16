@@ -10,7 +10,7 @@ Source: Storybook `Missing states:`, `MOCKS.md` thin spots, and leftover visual-
 
 | # | Slice | Source todo / note | PR |
 | - | ----- | ------------------ | -- |
-| 1 | Hearthis embed: Storybook play on Library Tracks asserts compact iframe in the row action box (no full-width PlayerBar strip) | `hearthis-embed-in-play-container.md` | |
+| 1 | Hearthis embed: Storybook play on Library Tracks asserts compact iframe in the row action box (no full-width PlayerBar strip) | `hearthis-embed-in-play-container.md` | (this PR) |
 | 2 | Fold hearthis + library ambient todos after slice 1 (Storybook covers visual check) | `hearthis-embed-in-play-container.md`, `library-tracks-embed-layout-ambient.md` | |
 | 3 | Fold batch 66 plan leftovers + `artist-lifecycle-p2-ux.md` (go-live chrome shipped #948); this plan file is batch 67 | docs fold | this PR |
 | 4 | Fold `snapshot-digest-shows-history.md` (soft-pass unit + docs shipped #944/#966) | `snapshot-digest-shows-history.md` | |

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { usePlayerStore } from '@tahti-web/stores/playerStore';
 import { StudioSoundsView } from '@tahti-web/views/studio/StudioSoundsView';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
@@ -49,6 +50,39 @@ export const AmbientCovers: Story = {
       const bg = li!.getAttribute('style') ?? '';
       expect(bg).toMatch(/linear-gradient|radial-gradient|background/i);
     });
+  },
+};
+
+/** Hearthis embed hosts in the row action box (compact), not a full-width PlayerBar strip. */
+export const HearthisRowEmbed: Story = {
+  beforeEach: () => {
+    usePlayerStore.setState({ currentId: null, status: 'idle', queue: [] });
+    return () => {
+      usePlayerStore.setState({ currentId: null, status: 'idle', queue: [] });
+    };
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const link = await canvas.findByRole('link', {
+      name: 'Imported from hearthis.at',
+    });
+    const li = link.closest('li');
+    await expect(li).toBeTruthy();
+    const actions = within(li!).getByTestId('sound-row-actions');
+    await userEvent.click(
+      within(actions).getByRole('button', {
+        name: 'Play Imported from hearthis.at on hearthis.at',
+      }),
+    );
+    const embed = await within(actions).findByTestId('hearthis-row-embed');
+    await expect(embed).toBeVisible();
+    await expect(embed.className).toMatch(/max-h-28/);
+    await expect(actions.contains(embed)).toBe(true);
+    await expect(
+      canvasElement.querySelector(
+        '[data-testid="connected-player-bar"] [data-testid="hearthis-row-embed"]',
+      ),
+    ).toBeNull();
   },
 };
 
