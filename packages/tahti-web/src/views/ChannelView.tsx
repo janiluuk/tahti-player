@@ -574,7 +574,7 @@ export function ChannelView({ slug }: { slug: string }) {
         />
       )}
 
-      <div className="relative z-10 flex w-full flex-col gap-2 px-4 py-5 sm:px-6">
+      <div className="relative z-10 flex w-full flex-col gap-1.5 px-4 py-3 sm:px-6 sm:py-4">
         {!heroVisible && <ChannelTopBar text={channel.topBarText} />}
         <div className="flex flex-wrap items-center justify-between gap-2">
           {!editing ? (
