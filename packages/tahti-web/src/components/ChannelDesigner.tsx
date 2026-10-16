@@ -51,13 +51,14 @@ import {
   type PlayerDesignTab,
 } from './channel-designer';
 import { ChannelPagePreview } from './channel-designer/ChannelPagePreview';
+import { designerBoot } from './channel-designer/designerBoot';
 import { SlideshowControls } from './channel-designer/SlideshowControls';
 import { useChannelLook } from './channel-designer/useChannelLook';
 import { useDockedControlsRail } from './channel-designer/useDockedControlsRail';
 import { useLookVisibility } from './channel-designer/useLookVisibility';
+import { usePreviewHighlight } from './channel-designer/usePreviewHighlight';
 import { ChannelElementEditor } from './ChannelElementEditor';
 import { ChannelTextOverlayEditor } from './ChannelTextOverlayEditor';
-import { PageError, PageLoading } from './PageStates';
 
 type TabId = 'visualizer' | 'color-scheme' | 'header';
 type LookSection =
@@ -271,45 +272,17 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       }
     }, [lookOpenSection]);
 
-    // One timer for the transient highlight, so an earlier click's timeout
-    // cannot clear a newer highlight, and none fires after unmount.
-    const highlightTimerRef = useRef<number | undefined>(undefined);
-    useEffect(() => () => window.clearTimeout(highlightTimerRef.current), []);
-    const flashHighlight = (section: 'header' | 'visualizer' | null) => {
-      window.clearTimeout(highlightTimerRef.current);
-      setHighlightSection(section);
-      if (section) {
-        highlightTimerRef.current = window.setTimeout(
-          () => setHighlightSection(null),
-          1600,
-        );
-      }
-    };
+    const { flashHighlight, focusPreviewSection } = usePreviewHighlight(
+      setHighlightSection,
+      setActiveTab,
+    );
 
-    const focusPreviewSection = (
-      tab: 'header' | 'visualizer',
-      elementId: string,
-    ) => {
-      setActiveTab(tab);
-      flashHighlight(tab);
-      document
-        .getElementById(elementId)
-        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    };
-
-    if (loadFailed) {
-      return (
-        <PageError
-          title="Could not load the channel designer"
-          description="Check your connection and try again."
-          onRetry={retryLoad}
-        />
-      );
-    }
-
-    if (!visual) {
-      return <PageLoading label="Loading designer…" />;
-    }
+    const boot = designerBoot({
+      loadFailed,
+      onRetry: retryLoad,
+      ready: Boolean(visual),
+    });
+    if (boot) return boot;
 
     // VIDEO_LOOP without a playable clip or image isn't a state worth saving —
     // the header would just render empty on the real channel page.
