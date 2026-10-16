@@ -1,10 +1,5 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
-import {
-  ArrowLeftIcon,
-  ListMusicIcon,
-  PencilIcon,
-  UsersIcon,
-} from 'lucide-react';
+import { ArrowLeftIcon, ListMusicIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -41,18 +36,16 @@ import {
   usePresetLookDraft,
 } from '../components/channel-view';
 import { ChannelAirBadge } from '../components/channel-view/ChannelAirBadge';
+import { ChannelPageActions } from '../components/channel-view/ChannelPageActions';
 import { ChannelVizPackLabel } from '../components/channel-view/ChannelVizPackLabel';
 import { ChannelComments } from '../components/ChannelComments';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
-import { ChannelShareButton } from '../components/ChannelShareButton';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
 import { PageLoading } from '../components/PageStates';
-import { ReportButton } from '../components/ReportButton';
-import { RssFeedButton } from '../components/RssFeedButton';
 import { StreamManagerPanel } from '../components/StreamManagerPanel';
 import { listenerWidgetType } from '../content/listenerWidgets';
 import { useChannelAutoplay } from '../hooks/useChannelAutoplay';
@@ -67,7 +60,6 @@ import {
   type ChannelPageItem,
   type ChannelPageItemType,
 } from '../lib/channelPageLayout';
-import { channelRssFeedUrl } from '../lib/channelRssFeed';
 import { cn } from '../lib/cn';
 import { colorSchemeCssVars, normalizeColorScheme } from '../lib/colorScheme';
 import { isPinned } from '../lib/pinnedTracks';
@@ -587,14 +579,6 @@ export function ChannelView({ slug }: { slug: string }) {
           <div className="flex flex-wrap items-center gap-2">
             <ChannelAirBadge channel={channel} />
             {!editing && <ChannelVizPackLabel channel={channel} />}
-            {isOwner && !editing && (
-              <Button size="sm" variant="secondary" onClick={startEdit}>
-                <span className="inline-flex items-center gap-1.5">
-                  <PencilIcon size={14} />
-                  Edit design
-                </span>
-              </Button>
-            )}
             {(isOwner || isAdministrator) && !editing && (
               <Tooltip content="Open Stream Manager" side="top">
                 <Button
@@ -607,24 +591,12 @@ export function ChannelView({ slug }: { slug: string }) {
                 </Button>
               </Tooltip>
             )}
-            {!editing && channel.user.showShareButton !== false && (
-              <ChannelShareButton
-                channelSlug={slug}
-                displayName={channel.user.displayName}
-                iconOnly={false}
-              />
-            )}
             {!editing && (
-              <RssFeedButton
-                href={channelRssFeedUrl(slug)}
-                label={`RSS feed of ${channel.user.displayName}'s channel`}
-              />
-            )}
-            {!editing && !isOwner && (
-              <ReportButton
-                targetType="CHANNEL"
-                targetId={slug}
-                label={channel.user.displayName}
+              <ChannelPageActions
+                channel={channel}
+                slug={slug}
+                isOwner={isOwner}
+                onEditDesign={isOwner ? startEdit : undefined}
               />
             )}
           </div>

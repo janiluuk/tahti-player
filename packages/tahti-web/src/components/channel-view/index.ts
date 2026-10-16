@@ -2,6 +2,7 @@ export {
   renderChannelBlock,
   type ChannelBlockRenderContext,
 } from './ChannelViewBlocks';
+export { ChannelPageActions } from './ChannelPageActions';
 export {
   ChannelHeroBlock,
   type ChannelHeroBlockProps,
