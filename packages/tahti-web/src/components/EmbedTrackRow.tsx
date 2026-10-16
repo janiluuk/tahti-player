@@ -73,7 +73,7 @@ export function EmbedTrackRow({ title, provider, embedUri, className }: Props) {
     >
       {provider === 'HEARTHIS' && isCurrent ? (
         <div
-          className="max-h-36 overflow-hidden"
+          className="relative max-h-28 overflow-hidden contain-paint"
           data-testid="hearthis-row-embed"
         >
           <HearthisEmbedSurface

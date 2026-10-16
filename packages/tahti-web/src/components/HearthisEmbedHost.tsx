@@ -2,7 +2,7 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
+  useLayoutEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -37,14 +37,16 @@ export function HearthisEmbedHostProvider({
   );
 }
 
+/** Register before paint so ConnectedPlayerBar never mounts a bottom fallback. */
 export function useHearthisEmbedClaim(active: boolean) {
   const ctx = useContext(HearthisEmbedHostContext);
-  useEffect(() => {
-    if (!active || !ctx) {
+  const claim = ctx?.claim;
+  useLayoutEffect(() => {
+    if (!active || !claim) {
       return;
     }
-    return ctx.claim();
-  }, [active, ctx]);
+    return claim();
+  }, [active, claim]);
 }
 
 export function useHearthisEmbedClaimed() {

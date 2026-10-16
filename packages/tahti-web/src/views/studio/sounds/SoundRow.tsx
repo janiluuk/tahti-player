@@ -153,7 +153,10 @@ export function SoundRow({
           Retry
         </Button>
       ) : null}
-      <div className="flex min-w-0 flex-wrap items-center gap-2">
+      <div
+        className="relative flex max-w-full min-w-0 flex-wrap items-center gap-2"
+        data-testid="sound-row-actions"
+      >
         <Tooltip
           content={
             embedSrc
@@ -184,7 +187,7 @@ export function SoundRow({
         </Tooltip>
         {hearthisActive && item.embedUri ? (
           <div
-            className="border-border max-h-28 w-full max-w-md min-w-0 overflow-hidden rounded-lg border sm:w-[min(100%,28rem)]"
+            className="border-border relative max-h-28 w-[min(100%,18rem)] shrink overflow-hidden rounded-lg border contain-paint"
             data-testid="hearthis-row-embed"
           >
             <HearthisEmbedSurface
@@ -195,48 +198,48 @@ export function SoundRow({
             />
           </div>
         ) : null}
-      </div>
-      {!item.embedProvider ? (
-        <Tooltip content="Download original" side="top">
+        {!item.embedProvider ? (
+          <Tooltip content="Download original" side="top">
+            <Button
+              size="icon-sm"
+              variant="text"
+              disabled={busyId === item.id}
+              onClick={() => void downloadItem(item)}
+              aria-label={`Download ${item.title}`}
+            >
+              <DownloadIcon size={16} aria-hidden />
+            </Button>
+          </Tooltip>
+        ) : null}
+        <Tooltip content="Edit track" side="top">
+          <Button
+            size="icon-sm"
+            variant="secondary"
+            aria-label={`Edit ${item.title}`}
+            onClick={() => setEditingId(item.id)}
+          >
+            <PencilIcon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
+        <Tooltip content="Stats" side="top">
           <Button
             size="icon-sm"
             variant="text"
-            disabled={busyId === item.id}
-            onClick={() => void downloadItem(item)}
-            aria-label={`Download ${item.title}`}
+            onClick={() => setStatsItem(item)}
+            aria-label={`Show stats for ${item.title}`}
           >
-            <DownloadIcon size={16} aria-hidden />
+            <BarChart3Icon size={16} aria-hidden />
           </Button>
         </Tooltip>
-      ) : null}
-      <Tooltip content="Edit track" side="top">
-        <Button
-          size="icon-sm"
-          variant="secondary"
-          aria-label={`Edit ${item.title}`}
-          onClick={() => setEditingId(item.id)}
-        >
-          <PencilIcon size={16} aria-hidden />
-        </Button>
-      </Tooltip>
-      <Tooltip content="Stats" side="top">
-        <Button
-          size="icon-sm"
-          variant="text"
-          onClick={() => setStatsItem(item)}
-          aria-label={`Show stats for ${item.title}`}
-        >
-          <BarChart3Icon size={16} aria-hidden />
-        </Button>
-      </Tooltip>
-      <AddToPlaylistButton soundId={item.id} trackTitle={item.title} />
-      <StudioSoundRowMenu
-        item={item}
-        busy={busyId === item.id}
-        hasEmbed={Boolean(embedSrc)}
-        onTogglePin={() => void togglePin(item)}
-        onDelete={() => setPendingDeleteItem(item)}
-      />
+        <AddToPlaylistButton soundId={item.id} trackTitle={item.title} />
+        <StudioSoundRowMenu
+          item={item}
+          busy={busyId === item.id}
+          hasEmbed={Boolean(embedSrc)}
+          onTogglePin={() => void togglePin(item)}
+          onDelete={() => setPendingDeleteItem(item)}
+        />
+      </div>
       {inlineProviderEmbed ? (
         <div className="w-full basis-full">
           <iframe

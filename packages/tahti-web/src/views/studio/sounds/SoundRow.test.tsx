@@ -132,15 +132,22 @@ describe('SoundRow', () => {
     ).toBeNull();
   });
 
-  it('hosts the hearthis widget next to the play control when that track is current', () => {
+  it('hosts the hearthis widget inside the row action box when that track is current', () => {
     renderRow({
       embedProvider: 'HEARTHIS',
       embedUri: 'demo-track',
       bannerUrl: 'https://example.com/cover.jpg',
     });
-    expect(screen.getByTestId('hearthis-row-embed')).toBeTruthy();
+    const actions = screen.getByTestId('sound-row-actions');
+    const embed = screen.getByTestId('hearthis-row-embed');
+    expect(actions.contains(embed)).toBe(true);
     expect(screen.getByTestId('hearthis-row-embed-surface').textContent).toBe(
       'Night Drive',
     );
+    expect(
+      screen.getByRole('button', {
+        name: 'Play Night Drive on hearthis.at',
+      }),
+    ).toBeTruthy();
   });
 });

@@ -5814,3 +5814,11 @@ button (`SoundRow`) or inside an `EmbedTrackRow` card; a
 `HearthisEmbedHost` claim keeps a single iframe. When no row hosts it,
 a contained fallback sits in the PlayerBar left cluster. Bumped
 `packages/tahti-web/package.json` to `0.0.149`.
+
+## 2026-10-16 — hearthis embed stays in the row action box (0.0.150)
+
+Library Tracks mounts the hearthis widget inside `sound-row-actions` (play
+and the other row controls), with a capped width and paint containment so
+it cannot expand into a full-width band. Claim registration uses
+`useLayoutEffect` so the PlayerBar fallback never paints first. Bumped
+`packages/tahti-web/package.json` to `0.0.150`.
