@@ -181,3 +181,55 @@ export const SignedOut: Story = {
     await expect(canvas.getByRole('button', { name: 'Log in' })).toBeVisible();
   },
 };
+
+/** Multi-hit DM user search fills the first matching username into Compose. */
+export const SearchMultiHit: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const field = canvas.getByLabelText('Message @');
+    await userEvent.clear(field);
+    await userEvent.type(field, 'listen');
+    await userEvent.click(canvas.getByRole('button', { name: 'Search' }));
+    await waitFor(() => expect(field).toHaveValue('listener'));
+  },
+};
+
+/** Empty DM user search shows a not-found status. */
+export const SearchEmpty: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const field = canvas.getByLabelText('Message @');
+    await userEvent.clear(field);
+    await userEvent.type(field, 'zzzz-no-such-user');
+    await userEvent.click(canvas.getByRole('button', { name: 'Search' }));
+    await expect(await canvas.findByRole('status')).toHaveTextContent(
+      'No account found for "zzzz-no-such-user".',
+    );
+  },
+};
+
+/** Search fills the first of several mock username hits. */
+export const SearchMultiHit: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const field = canvas.getByLabelText('Message @');
+    await userEvent.clear(field);
+    await userEvent.type(field, 'listener');
+    await userEvent.click(canvas.getByRole('button', { name: 'Search' }));
+    await waitFor(() => expect(field).toHaveValue('listener'));
+  },
+};
+
+/** Search with no directory match shows the empty notice. */
+export const SearchEmpty: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const field = canvas.getByLabelText('Message @');
+    await userEvent.clear(field);
+    await userEvent.type(field, 'zzz-nobody');
+    await userEvent.click(canvas.getByRole('button', { name: 'Search' }));
+    await expect(
+      await canvas.findByText('No account found for "zzz-nobody".'),
+    ).toBeVisible();
+  },
+};
