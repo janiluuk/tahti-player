@@ -39,7 +39,7 @@ export const ShareRoundTrip: Story = {
       canvas.getByRole('button', { name: 'Share stems-kick.wav' }),
     );
     await userEvent.click(canvas.getByRole('button', { name: 'Grant access' }));
-    await findToast(canvasElement, 'Created access for stems-kick.wav');
+    await findToast(canvasElement, 'Created access for stems-kick.wav.');
     await waitFor(() => expect(canvas.getByText('Link access')).toBeVisible());
     await userEvent.click(
       canvas.getByRole('button', { name: 'Revoke access for link' }),
