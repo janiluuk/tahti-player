@@ -97,7 +97,7 @@ export const SUBMENUS = {
 export const BROADCAST_SUBNAV_ITEMS = [
   {
     to: '/studio/go-live',
-    labelKey: 'studio.goLive' as const,
+    labelKey: 'studio.onAir' as const,
     icon: <RadioTowerIcon size={16} />,
   },
   {
