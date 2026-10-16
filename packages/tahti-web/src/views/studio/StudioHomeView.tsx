@@ -111,7 +111,12 @@ export function StudioHomeView() {
                     size="sm"
                     className="border-border rounded-xl border"
                     title="No broadcasts yet"
-                    description="Completed recordings will appear here."
+                    description="Go live when you are ready — finished shows land here as recordings."
+                    action={
+                      <ButtonLink to="/studio/go-live" size="sm">
+                        Go live
+                      </ButtonLink>
+                    }
                   />
                 ) : (
                   <div className="border-border overflow-hidden rounded-xl border">
