@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { act } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { MobileDrawer } from './MobileChrome';
@@ -53,5 +54,28 @@ describe('MobileDrawer', () => {
     fireEvent.keyDown(document, { key: 'Escape' });
 
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not show a Close tooltip over the first item right after open', () => {
+    renderDrawer();
+
+    expect(screen.queryByRole('tooltip')).toBeNull();
+    expect(screen.getByRole('link', { name: 'Listen' })).toBeVisible();
+  });
+
+  it('arms the Close tooltip after the open grace period', () => {
+    vi.useFakeTimers();
+    renderDrawer();
+    expect(screen.queryByRole('tooltip')).toBeNull();
+
+    act(() => {
+      vi.advanceTimersByTime(400);
+    });
+
+    fireEvent.mouseEnter(
+      screen.getByRole('button', { name: 'Close' }).parentElement!,
+    );
+    expect(screen.getByRole('tooltip')).toHaveTextContent('Close');
+    vi.useRealTimers();
   });
 });

@@ -167,12 +167,14 @@ export const Drawer: StoryObj = {
     const panel =
       panelCloseButton(body).closest<HTMLElement>('[tabindex="-1"]');
     await waitFor(() => expect(panel).toHaveFocus());
+    await expect(body.queryByRole('tooltip')).toBeNull();
 
     await userEvent.keyboard('{Escape}');
     await waitFor(() => expect(body.queryByRole('dialog')).toBeNull());
 
     await userEvent.click(body.getByRole('button', { name: 'Open drawer' }));
     await expect(await body.findByRole('dialog')).toBeVisible();
+    await expect(body.queryByRole('tooltip')).toBeNull();
     await userEvent.click(panelCloseButton(body));
     await waitFor(() => expect(body.queryByRole('dialog')).toBeNull());
   },

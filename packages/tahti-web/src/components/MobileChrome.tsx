@@ -7,7 +7,7 @@ import {
   RadioIcon,
   XIcon,
 } from 'lucide-react';
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 import { Button, Tooltip } from '@tahti-player/ui';
 
@@ -131,6 +131,8 @@ type MobileDrawerProps = {
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+const CLOSE_TOOLTIP_ARM_MS = 400;
+
 export function MobileDrawer({
   open,
   title,
@@ -140,11 +142,18 @@ export function MobileDrawer({
   fullScreen = false,
 }: MobileDrawerProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const [closeTooltipArmed, setCloseTooltipArmed] = useState(false);
 
   useEffect(() => {
     if (!open) {
+      setCloseTooltipArmed(false);
       return;
     }
+    setCloseTooltipArmed(false);
+    const arm = window.setTimeout(
+      () => setCloseTooltipArmed(true),
+      CLOSE_TOOLTIP_ARM_MS,
+    );
     const previouslyFocused = document.activeElement as HTMLElement | null;
     const panel = panelRef.current;
     const focusables = () =>
@@ -180,6 +189,7 @@ export function MobileDrawer({
     };
     document.addEventListener('keydown', onKeyDown);
     return () => {
+      window.clearTimeout(arm);
       document.removeEventListener('keydown', onKeyDown);
       previouslyFocused?.focus();
     };
@@ -223,7 +233,7 @@ export function MobileDrawer({
           ) : (
             <span />
           )}
-          <Tooltip content="Close" side="top">
+          <Tooltip content="Close" side="top" disabled={!closeTooltipArmed}>
             <Button
               size="icon-sm"
               variant="text"
