@@ -32,6 +32,7 @@ import { fetchStationNowPlaying } from '../api/radio-now-playing';
 import type { TahtiPlayable } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import { ListenSection } from '../components/listen-view/ListenSection';
+import { StationCardSubtitle } from '../components/listen-view/StationCardSubtitle';
 import { useListenSections } from '../components/listen-view/useListenSections';
 import { ListenerWidgetsSection } from '../components/ListenerWidgetsSection';
 import { ListenWidgetStoreDialog } from '../components/ListenWidgetStoreDialog';
@@ -49,7 +50,6 @@ import {
   type RadioStation,
 } from '../content/radioStations';
 import { usePolling } from '../hooks/usePolling';
-import { useStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { resolveLocalPlayableForReplay } from '../lib/nativeLibrary';
 import { activeListenTab } from '../lib/navigationActive';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
@@ -57,34 +57,6 @@ import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
-
-/** A catalog station card's second line: what the station is playing, or
- * its language and bitrate until that is known. */
-function StationCardSubtitle({
-  source,
-  fallback,
-}: {
-  source: ReturnType<typeof stationNowPlayingSource>;
-  fallback: string;
-}) {
-  const nowPlaying = useStationNowPlaying(
-    source?.programmingUrl,
-    source?.streamUrl,
-  );
-  if (nowPlaying) {
-    return (
-      <span className="flex flex-col gap-0.5">
-        <span className="text-foreground text-[0.65rem] font-bold tracking-wide uppercase sm:hidden">
-          Now
-        </span>
-        <span className="text-foreground-secondary line-clamp-2 sm:line-clamp-1">
-          {nowPlaying}
-        </span>
-      </span>
-    );
-  }
-  return <span className="text-foreground-secondary">{fallback}</span>;
-}
 
 export type ListenTab = 'listen' | 'feed' | 'history';
 
