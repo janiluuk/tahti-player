@@ -4,7 +4,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withToaster } from './_fixtures/track-release';
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
-import { findToast, selectTab } from './_lib/play';
+import { findDialog, findToast, selectTab } from './_lib/play';
 
 const meta: Meta<typeof StudioUpdatesView> = {
   title: 'Tahti/Studio/StudioUpdatesView',
@@ -38,8 +38,9 @@ export const NewsletterSendConfirmation: Story = {
     await selectTab(canvas, 'Newsletter');
     const send = await canvas.findByRole('button', { name: /^Send\b/ });
     await userEvent.click(send);
+    const dialog = await findDialog(canvasElement, /Send/);
     await userEvent.click(
-      canvas.getByRole('button', { name: 'Send newsletter' }),
+      dialog.getByRole('button', { name: 'Send newsletter' }),
     );
     await findToast(canvasElement, /Queued send to \d+ subscribers/);
     await waitFor(() =>
