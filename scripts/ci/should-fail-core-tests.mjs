@@ -9,10 +9,16 @@
  * Usage: node scripts/ci/should-fail-core-tests.mjs
  * Expects snapshot-digest/digest.json and each package's
  * snapshot-digest/run-summary.json under the repo root.
+ *
+ * Confirm path (standing-only debt): see docs/agent/TESTING.md and
+ * docs/todo/snapshot-digest-shows-history.md — a PR whose digest has
+ * newCount: 0 with standingCount > 0 and no otherFailures should soft-pass.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { classifyCoreTestGate } from './should-fail-core-tests.lib.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -69,33 +75,17 @@ if (existsSync(digestPath)) {
   }
 }
 
-if (otherFailures > 0) {
-  console.error(
-    `Hard fail: ${otherFailures} non-snapshot test failure(s) across packages.`,
-  );
-  process.exit(1);
-}
+const result = classifyCoreTestGate({
+  newCount,
+  standingCount,
+  snapshotFailures,
+  otherFailures,
+});
 
-if (snapshotFailures === 0 && newCount === null) {
-  console.error(
-    'Hard fail: Test step failed but no snapshot digest / run summaries were collected.',
-  );
-  process.exit(1);
-}
-
-if (newCount === 0 && (standingCount > 0 || snapshotFailures > 0)) {
-  console.log(
-    `Soft pass: ${standingCount || snapshotFailures} snapshot mismatch(es) already on master (newCount=0); no other failures.`,
-  );
+if (result.softPass) {
+  console.log(result.message);
   process.exit(0);
 }
 
-if (newCount != null && newCount > 0) {
-  console.error(
-    `Hard fail: ${newCount} new snapshot mismatch(es) in this PR (see digest).`,
-  );
-  process.exit(1);
-}
-
-console.error('Hard fail: Test step failed without a standing-only snapshot case.');
+console.error(result.message);
 process.exit(1);
