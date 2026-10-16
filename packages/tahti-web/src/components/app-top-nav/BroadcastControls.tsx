@@ -1,3 +1,4 @@
+import { useNavigate } from '@tanstack/react-router';
 import {
   CalendarIcon,
   ListMusicIcon,
@@ -12,9 +13,9 @@ import { iconBtnClass } from './shared';
 import { type TopNavState } from './useTopNavState';
 
 export function BroadcastControls({ nav }: { nav: TopNavState }) {
+  const navigate = useNavigate();
   const {
     pathname,
-    setUploadOpen,
     broadcastOpen,
     setBroadcastOpen,
     setStreamManagerOpen,
@@ -108,7 +109,9 @@ export function BroadcastControls({ nav }: { nav: TopNavState }) {
         aria-label="Open upload"
         title="Open upload"
         data-tour-id="topbar-upload"
-        onClick={() => setUploadOpen(true)}
+        onClick={() => {
+          void navigate({ to: '/library/upload' });
+        }}
       >
         <UploadIcon size={16} />
       </Button>
