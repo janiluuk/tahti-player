@@ -861,7 +861,7 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                             >
                               <thead>
                                 <tr
-                                  class="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+                                  class="border-border border-b-(length:--border-width) bg-primary text-primary-foreground"
                                   role="row"
                                 >
                                   <th
@@ -2911,7 +2911,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                             >
                               <thead>
                                 <tr
-                                  class="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+                                  class="border-border border-b-(length:--border-width) bg-primary text-primary-foreground"
                                   role="row"
                                 >
                                   <th

@@ -240,7 +240,7 @@ exports[`FavoriteTracks view > (Snapshot) renders with tracks 1`] = `
                   >
                     <thead>
                       <tr
-                        class="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+                        class="border-border border-b-(length:--border-width) bg-primary text-primary-foreground"
                         role="row"
                       >
                         <th
