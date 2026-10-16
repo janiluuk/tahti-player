@@ -46,7 +46,7 @@ listing still lives in `tahti-registry`.
 ### Runtime registry invariants
 
 The runtime registry lives in `@tahti-player/plugin-registry`
-(`packages/plugin-registry`); the player's `pluginRegistry*.ts` files are
+(own repo, [janiluuk/tahti-plugin-registry](https://github.com/janiluuk/tahti-plugin-registry), pinned by tag); the player's `pluginRegistry*.ts` files are
 re-export shims and `PluginRegistryHost` stays in the player. Ownership split
 and rollback plan are in [`docs/PLUGIN-REGISTRY.md`](../PLUGIN-REGISTRY.md).
 Do not change registry keys, storage location, discovery semantics, or

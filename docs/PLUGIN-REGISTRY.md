@@ -2,7 +2,7 @@
 
 How Tahti Player remembers which plugins are installed, and how that differs
 from the marketplace catalog. Implementation lives in
-[`packages/plugin-registry`](../packages/plugin-registry/README.md) (persistence)
+[janiluuk/tahti-plugin-registry](https://github.com/janiluuk/tahti-plugin-registry) (persistence, `@tahti-player/plugin-registry`)
 and `packages/player/src/services/plugins/` (lifecycle).
 
 ## Three things called "registry"
@@ -73,7 +73,7 @@ Test fixtures: `packages/player/src/test/builders/PluginRegistryEntryBuilder.ts`
 ## Package layout and boundaries
 
 ```
-@tahti-player/plugin-registry        packages/player/src/services/plugins/
+janiluuk/tahti-plugin-registry       packages/player/src/services/plugins/
   contract.ts   types + constants      pluginRegistry*.ts   re-export shims (+ Logger wiring)
   registry.ts   LazyStore CRUD         pluginRegistryHost.ts PluginRegistryHost façade
   adapter.ts    PluginRegistryStore    pluginBootstrap / pluginAutoUpdate / pluginDir / PluginLoader
@@ -210,24 +210,28 @@ All 84 tests across these suites pass on `master` (checked 2026-10-16).
 
 ## Rollback
 
-The extraction is a pure move behind re-export shims. To roll back, point the
-shims in `packages/player/src/services/plugins/pluginRegistry*.ts` back at an
-in-repo implementation with the same storage keys; no data migration is needed.
+The package lives in its own repo and the player pins a tag
+(`github:janiluuk/tahti-plugin-registry#vX.Y.Z` in `packages/player/package.json`).
+To roll back a release, point that dependency at the previous tag and run
+`pnpm install`. To bring the code back in-repo, restore `packages/plugin-registry`
+from git history (removed after `v0.1.0`) and switch the dependency to
+`workspace:*`. Storage keys never change, so no data migration is needed.
 Do not add dependency injection for the store until an alternative
 implementation actually exists.
 
 ## Known risks
 
 1. **Dual `plugins.json` names** — the biggest source of confusion.
-2. **No runtime schema version** — any extraction to another repo should add read
-   validation behind the adapter without changing on-disk keys.
+2. **No runtime schema version** — reads are validated instead (since `v0.1.0`):
+   a row without a string `id`/`version`/`path` and boolean `enabled` is skipped
+   with a warning, so it no longer reaches the loader or the Installed list.
 3. **`useInstallPlugin` upserts twice** — once for the store entry, then
    `loadPluginFromPath` upserts again (path/version can change after the managed
    copy). Tests should lock the intended final entry shape.
 4. **Hydrate is not awaited before render.**
 
-## Future
+## Releasing
 
-Moving `@tahti-player/plugin-registry` to its own repo is optional and not
-planned. If done, `PluginRegistryHost` stays in the player, and the package
-must keep the same `PluginRegistryStore` contract and pass the suite above.
+Change the package in `janiluuk/tahti-plugin-registry`, tag a release (see its
+README), then bump the tag in `packages/player/package.json`. The player's
+contract suite above must pass on that bump.
