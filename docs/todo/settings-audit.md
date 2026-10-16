@@ -35,7 +35,7 @@ User ask (2026-10-04): audit Settings thoroughly. Make sure it uses the standard
 
 - Done 2026-10-05: Artist's eight tabs are three groups (#530), and the section descriptions that repeated the tab names are gone (#532).
 
-## Needs a decision
+## Decisions (2026-10-16)
 
-- "Moderators who can manage the channel": the API only delegates chat moderation (remove messages, ban from chat). There is no role that can edit the channel. If that is wanted, it needs tahti-org work first.
-- The section is named "Channel & chat" because "Channel & moderation" does not fit the settings sidebar without being cut off. Say if another name is preferred.
+- **Moderators stay chat-only.** The API only delegates chat moderation (remove messages, ban from chat). A role that can edit the channel needs tahti-org work first; do not imply otherwise in Settings copy.
+- **Keep the section name “Channel & chat”.** It fits the sidebar; “Channel & moderation” is too long and over-emphasises chat bans.

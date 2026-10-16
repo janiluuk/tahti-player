@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { Button, Loader, Tooltip } from '@tahti-player/ui';
+import { Button, EmptyState, Loader, Tooltip } from '@tahti-player/ui';
 
 import { fetchChannel } from '../../api/client';
 import type { PublicChannel } from '../../api/types';
@@ -101,12 +101,33 @@ export function ChannelStagePlayer({
   };
 
   return !live && !nowPlaying ? (
-    <div className="bg-background-secondary flex items-center justify-center py-12">
-      <WifiOffIcon
-        size={56}
-        strokeWidth={1.5}
-        className="text-foreground-secondary/40"
-        aria-hidden
+    <div className="bg-background-secondary px-4 py-6 sm:px-6">
+      <EmptyState
+        size="sm"
+        className="gap-3 p-4 sm:p-6"
+        icon={
+          <WifiOffIcon
+            size={28}
+            strokeWidth={1.75}
+            className="text-foreground-secondary"
+            aria-hidden
+          />
+        }
+        title="Off air"
+        description="This channel is not broadcasting right now. Browse the tracks below, or check back later."
+        action={
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => {
+              document
+                .getElementById('channel-block-sound')
+                ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }}
+          >
+            Browse tracks
+          </Button>
+        }
       />
     </div>
   ) : (

@@ -73,9 +73,25 @@ describe('ChannelUpcomingShows', () => {
     );
   });
 
-  it('renders nothing when there are no upcoming shows', async () => {
+  it('renders nothing when there are no shows and no series', async () => {
     const { container } = await renderShows({ shows: [], series: [] });
     expect(container).toBeEmptyDOMElement();
+  });
+
+  it('says so when a series exists but nothing is booked', async () => {
+    await renderShows({
+      shows: [],
+      series: [
+        {
+          id: 'series-1',
+          name: 'Friday Night Set',
+          scheduleNote: 'Fridays 22:00 EET',
+        },
+      ],
+    });
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'No upcoming shows booked.',
+    );
   });
 });
 

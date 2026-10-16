@@ -204,6 +204,42 @@ describe('main', () => {
     expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Opener'));
   });
 
+  it('runs releases create with the title and flags', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    const fetchMock = mockFetchJson({
+      id: 'rel_2',
+      title: 'Second EP',
+      state: 'DRAFT',
+      tracks: [],
+    });
+
+    const code = await main([
+      'releases',
+      'create',
+      'Second EP',
+      '--type',
+      'ep',
+      '--date',
+      '2026-12-01',
+    ]);
+
+    expect(code).toBe(0);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.test/api/me/releases',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({
+          title: 'Second EP',
+          type: 'EP',
+          releaseDate: '2026-12-01',
+        }),
+      }),
+    );
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Created "Second EP" (rel_2) as a draft.'),
+    );
+  });
+
   it('runs search without TAHTI_API_TOKEN and joins the query words', async () => {
     vi.stubEnv('TAHTI_API_TOKEN', '');
     const fetchMock = mockFetchJson({
