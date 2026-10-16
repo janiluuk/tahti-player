@@ -149,7 +149,7 @@ export function StudioChannelView() {
   const user = useAuthStore((s) => s.user);
   const openChannelSetup = useChannelSetupModalStore((s) => s.open);
   const channel = user?.channel;
-  const [tab, setTab] = useState<Tab>(channel ? 'green-room' : 'setup');
+  const [tab, setTab] = useState<Tab>(channel ? 'setup' : 'setup');
   const [radioTab, setRadioTab] = useState<RadioTab>('stream');
 
   useEffect(() => {
@@ -165,8 +165,9 @@ export function StudioChannelView() {
       }
     } else if (!channel) {
       setTab('setup');
-    } else {
-      setTab('green-room');
+    } else if (!search.tab) {
+      // Default to Setup (look / promo), not Green room — lifecycle e2e P2.
+      setTab('setup');
     }
   }, [channel, search.tab]);
 
