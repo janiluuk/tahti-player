@@ -3,7 +3,7 @@ import { ArrowLeftIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { ClampedText, Dialog, Tooltip } from '@tahti-player/ui';
+import { Button, ClampedText, Dialog, Tooltip } from '@tahti-player/ui';
 
 import {
   BRAND_ACCENTS,
