@@ -389,7 +389,8 @@ function buildMockDirectory(): ChannelDirectoryResponse {
 
 /** Offline stand-in for GET /api/v1/search — matches artists from the mock
  * directory, tracks from each archive, and each artist's Favorites vault
- * playlist when the query hits the collection name/slug or the owner. */
+ * when the query hits the collection name/slug (not the owner — owner
+ * matches stay under Artists). */
 function buildMockSearch(
   q: string,
   type: 'all' | 'tracks' | 'artists' | 'collections' = 'all',
@@ -431,15 +432,7 @@ function buildMockSearch(
       : MOCK_DIRECTORY.items.flatMap((item) => {
           const slug = mockFavoritesSlug(item.username);
           const name = 'Favorites vault';
-          const haystack = [
-            name,
-            slug,
-            item.displayName,
-            item.username,
-            'playlist',
-            'favorites',
-            'vault',
-          ]
+          const haystack = [name, slug, 'playlist', 'favorites', 'vault']
             .join(' ')
             .toLowerCase();
           if (!haystack.includes(needle)) {
