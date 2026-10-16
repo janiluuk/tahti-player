@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { MulticastConfigureDialog } from '@tahti-web/components/MulticastConfigureDialog';
 import { useState } from 'react';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent } from 'storybook/test';
+
+import { findDialog } from './_lib/play';
 
 /**
  * Add or edit one multistream RTMP destination — shared between
@@ -76,14 +78,14 @@ export const SaveFailure: Story = {
   name: 'Save failure',
   render: () => <Demo configuring={{ provider: 'TWITCH', existing: null }} />,
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const key = await canvas.findByLabelText(/stream key/i);
+    const dialog = await findDialog(canvasElement, /Configure Twitch/i);
+    const key = await dialog.findByLabelText(/stream key/i);
     await userEvent.type(key, 'fail');
     await userEvent.click(
-      canvas.getByRole('button', { name: /save destination/i }),
+      dialog.getByRole('button', { name: /save destination/i }),
     );
     await expect(
-      await canvas.findByText('Ingest rejected the stream key.'),
+      await dialog.findByText('Ingest rejected the stream key.'),
     ).toBeVisible();
   },
 };
