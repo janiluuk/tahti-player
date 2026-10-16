@@ -3,6 +3,7 @@ import {
   AudioLinesIcon,
   ChevronDownIcon,
   ImageIcon,
+  ListPlusIcon,
   PauseIcon,
   PencilIcon,
   PinIcon,
@@ -22,6 +23,7 @@ import {
   Input,
   Popover,
   Tooltip,
+  useShiftHeld,
 } from '@tahti-player/ui';
 
 import {
@@ -87,6 +89,7 @@ export const MyDiscographyView: FC = () => {
   const status = usePlayerStore((state) => state.status);
   const currentTime = usePlayerStore((state) => state.currentTime);
   const duration = usePlayerStore((state) => state.duration);
+  const shiftHeld = useShiftHeld();
   const [items, setItems] = useState<StudioSound[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -417,7 +420,9 @@ export const MyDiscographyView: FC = () => {
                       content={
                         isPlayingItem(item)
                           ? `Pause ${item.title}`
-                          : `Play ${item.title} · Shift+click to queue`
+                          : shiftHeld
+                            ? `Add ${item.title} to queue`
+                            : `Play ${item.title} · Shift+click to queue`
                       }
                       side="top"
                     >
@@ -428,7 +433,9 @@ export const MyDiscographyView: FC = () => {
                         aria-label={
                           isPlayingItem(item)
                             ? `Pause ${item.title}`
-                            : `Play ${item.title}`
+                            : shiftHeld
+                              ? `Add ${item.title} to queue`
+                              : `Play ${item.title}`
                         }
                         onClick={(event) =>
                           void playItem(item, { queue: event.shiftKey })
@@ -436,6 +443,8 @@ export const MyDiscographyView: FC = () => {
                       >
                         {isPlayingItem(item) ? (
                           <PauseIcon size={16} aria-hidden />
+                        ) : shiftHeld ? (
+                          <ListPlusIcon size={16} aria-hidden />
                         ) : (
                           <PlayIcon size={16} aria-hidden />
                         )}
