@@ -33,7 +33,7 @@ export const Playing: Story = {
 
 export const Offline: Story = {
   args: {
-    subtitle: 'Temporarily offline',
+    subtitle: 'Off air',
     disabled: true,
   },
 };

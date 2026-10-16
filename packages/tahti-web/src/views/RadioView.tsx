@@ -290,7 +290,7 @@ export function RadioView() {
           {!online ? (
             <PageEmpty
               icon="radio"
-              title="Tahti Radio is temporarily offline"
+              title="Off air"
               description="Browse live channels or check back soon."
               action={
                 <div className="flex flex-wrap gap-2">
