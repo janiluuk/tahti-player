@@ -170,8 +170,8 @@ function ArtistProfilePage({ username }: { username: string }) {
     playAlbum(playables);
   };
 
-  const isOwner =
-    me?.username === username && (hasStudioAccess(me) || !profileLoaded);
+  const isSelf = me?.username === username;
+  const isOwner = isSelf && (hasStudioAccess(me) || !profileLoaded);
   const isAdministrator = hasAccountRole(me, 'BOARD');
   const hasGallery =
     galleryImages.length > 0 && lookVisibility.gallery !== false;
@@ -277,7 +277,7 @@ function ArtistProfilePage({ username }: { username: string }) {
           avatarUrl: profile.artist.avatarUrl,
         }
       : null;
-  const follow = useArtistFollow(followChannel, Boolean(me && !isOwner));
+  const follow = useArtistFollow(followChannel, Boolean(me && !isSelf));
   const [followList, setFollowList] = useState<FollowListDirection | null>(
     null,
   );
@@ -464,9 +464,10 @@ function ArtistProfilePage({ username }: { username: string }) {
             <ArtistHeaderActions
               profile={profile}
               isOwner={isOwner}
+              isSelf={isSelf}
               onEditLook={() => setTab('design')}
             />
-            {!isOwner && followChannel ? (
+            {!isSelf && followChannel ? (
               <ArtistFollowButton
                 displayName={artist.displayName}
                 following={follow.following}

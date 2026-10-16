@@ -7,8 +7,9 @@
 //      without sign-in, page errors, owner tools or the account's email;
 //      Studio pages offer "Create your channel" with no Studio tab bar;
 //      /admin says Board access is required; Settings has no channel
-//      sections. The Studio menu entry, Library's artist tabs and the
-//      listener's own profile are listed under "To look at".
+//      sections; their own profile offers no follow, report, block or
+//      subscribe aimed at themself. The Studio menu entry, Library's artist
+//      tabs and owner tools on their own profile are listed under "To look at".
 //   3. Signed out on a phone (390 px): no public page scrolls sideways, and
 //      the top bar's search button finds and opens a result.
 // Exits 1 when something is wrong. Run against the mock app:
@@ -88,6 +89,9 @@ const STUDIO_PATHS = [
 // Owner tools on a channel or artist page.
 const ARTIST_ONLY_CONTROL =
   /^(\+ )?(Edit design|Add full bio|Full studio settings|Go live|Edit channel)$/;
+// Visitor actions that make no sense aimed at your own profile.
+const SELF_ACTION =
+  /^(Follow|Report|Block|Subscribe to|Embed artist channel|Download press kit)\b/;
 const LIBRARY_ARTIST_TABS = [
   'Upload',
   'Recordings',
@@ -314,12 +318,21 @@ const notes = [];
   }
   // The mock app builds an artist profile for any username, so this may be a
   // fixture effect rather than what the API returns for a listener.
-  const ownProfile = artistControls(
-    await visit(page, `/u/${LISTENER.username}`),
-  );
+  const ownProfileSeen = await visit(page, `/u/${LISTENER.username}`);
+  const ownProfile = artistControls(ownProfileSeen);
   if (ownProfile.length > 0) {
     notes.push(
       `listener: their own /u/${LISTENER.username} shows artist tools: ${ownProfile.join(', ')}`,
+    );
+  }
+  const selfActions = [
+    ...new Set(
+      ownProfileSeen.controls.filter((label) => SELF_ACTION.test(label)),
+    ),
+  ];
+  if (selfActions.length > 0) {
+    problems.push(
+      `listener: their own /u/${LISTENER.username} offers: ${selfActions.join(', ')}`,
     );
   }
   for (const error of new Set(errors)) {

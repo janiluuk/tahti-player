@@ -36,6 +36,7 @@ User ask (2026-10-04): add a separate listener user who is registered but has no
 - Sidebar: signed-out visitors don't see Studio; a signed-in listener sees **Become an artist** (to the create-your-channel page) and no Studio submenu. Artists and the board see Studio as before (#784). My call; the phone bar already worked this way.
 - A listener's Library tabs leave out Upload, Recordings, Embeds and Smart links; Overview, Tracks, Collections, Media, Stash and Local files stay (#785). My call.
 - `ArtistView` showed owner tools (Edit design, full bio, studio settings, broadcast, track edit pencils) whenever the signed-in username matched the page. It now also needs Studio access (artist or board), so a listener's own `/u/listener` has none (#786). The mock still builds a made-up artist profile for any username.
+- Follow-up (2026-10-16): re-checked, `/u/listener` no longer shows owner tools. It did still offer the visitor actions aimed at the listener themself (follow, fan tiers, press kit, embed, report, block); those now hide on your own profile, and `audit-signed-out.mjs` fails if they come back.
 
 ## Plan
 

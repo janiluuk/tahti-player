@@ -45,6 +45,7 @@ describe('ArtistHeaderActions RSS feed', () => {
       <ArtistHeaderActions
         profile={profile('https://api.tahti.live/api/v1/u/selector/rss.xml')}
         isOwner
+        isSelf
         onEditLook={() => undefined}
       />,
     );
@@ -65,6 +66,7 @@ describe('ArtistHeaderActions RSS feed', () => {
       <ArtistHeaderActions
         profile={profile(null)}
         isOwner
+        isSelf
         onEditLook={() => undefined}
       />,
     );
@@ -88,6 +90,7 @@ describe('ArtistHeaderActions report', () => {
       <ArtistHeaderActions
         profile={profile(null, { slug: 'selector' })}
         isOwner={false}
+        isSelf={false}
         onEditLook={() => undefined}
       />,
     );
@@ -101,6 +104,7 @@ describe('ArtistHeaderActions report', () => {
       <ArtistHeaderActions
         profile={profile(null, { slug: 'selector' })}
         isOwner
+        isSelf
         onEditLook={() => undefined}
       />,
     );
@@ -112,9 +116,28 @@ describe('ArtistHeaderActions report', () => {
       <ArtistHeaderActions
         profile={profile(null)}
         isOwner={false}
+        isSelf={false}
         onEditLook={() => undefined}
       />,
     );
     expect(screen.queryByRole('button', { name: /^Report/ })).toBeNull();
+  });
+
+  it('hides visitor actions from a listener on their own profile', async () => {
+    await renderInRouter(
+      <ArtistHeaderActions
+        profile={profile(null, { slug: 'selector' })}
+        isOwner={false}
+        isSelf
+        onEditLook={() => undefined}
+      />,
+    );
+    expect(screen.queryByRole('button', { name: /^Report/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /^Subscribe/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /^Block/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /^Embed/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Edit look' })).toBeNull();
+    expect(screen.queryByRole('link', { name: 'Edit design' })).toBeNull();
+    expect(screen.getByRole('link', { name: 'Open channel' })).toBeTruthy();
   });
 });
