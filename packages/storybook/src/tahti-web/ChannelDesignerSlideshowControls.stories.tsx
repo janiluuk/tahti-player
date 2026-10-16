@@ -22,7 +22,13 @@ const swatch = (hue: number) =>
     `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90"><rect width="160" height="90" fill="hsl(${hue} 60% 45%)"/></svg>`,
   )}`;
 
-function Demo({ initial }: { initial: string[] }) {
+function Demo({
+  initial,
+  busy = false,
+}: {
+  initial: string[];
+  busy?: boolean;
+}) {
   const [images, setImages] = useState(initial);
   const [previewIndex, setPreviewIndex] = useState(0);
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -37,7 +43,7 @@ function Demo({ initial }: { initial: string[] }) {
         images={images}
         previewIndex={previewIndex}
         onPreviewIndexChange={setPreviewIndex}
-        busy={false}
+        busy={busy}
         onReorder={(from, to) =>
           setImages((current) => {
             const next = [...current];
@@ -78,4 +84,27 @@ export const Slideshow: Story = {
   render: () => (
     <Demo initial={[swatch(10), swatch(90), swatch(200), swatch(290)]} />
   ),
+};
+
+/** Long thumbnail strip — eight frames to exercise overflow / wrap. */
+export const LongSlideshowStrip: Story = {
+  render: () => (
+    <Demo
+      initial={[
+        swatch(10),
+        swatch(40),
+        swatch(70),
+        swatch(100),
+        swatch(140),
+        swatch(180),
+        swatch(220),
+        swatch(280),
+      ]}
+    />
+  ),
+};
+
+/** Upload in progress disables add/remove and shows status. */
+export const UploadProgress: Story = {
+  render: () => <Demo initial={[swatch(10), swatch(90), swatch(200)]} busy />,
 };

@@ -153,6 +153,11 @@ export function SlideshowControls({
             Upload images to build the slideshow behind your channel.
           </p>
         )}
+        {busy ? (
+          <p className="text-foreground-secondary text-xs" role="status">
+            Uploading images…
+          </p>
+        ) : null}
       </div>
       <Dialog.Root
         isOpen={pickerOpen}

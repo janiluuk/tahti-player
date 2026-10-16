@@ -8,7 +8,8 @@ import { useState } from 'react';
  * Full Look → Background panel with exclusive header-style bodies.
  * Video/Slideshow slots are mocked here; live ChannelDesigner owns uploads.
  *
- * Missing states: long slideshow strip, upload progress, YouTube embed preview.
+ * Missing states: YouTube embed preview. Long slideshow strip + upload
+ * progress live on `ChannelDesignerSlideshowControls`.
  */
 const meta: Meta<typeof BackdropPanel> = {
   title: 'Tahti/Channel/Designer/BackdropPanel',
