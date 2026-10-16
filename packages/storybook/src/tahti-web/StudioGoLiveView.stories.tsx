@@ -3,7 +3,7 @@ import { StudioGoLiveView } from '@tahti-web/views/studio/StudioGoLiveView';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withToaster } from './_fixtures/track-release';
-import { withMockAuth, withTahtiRouter } from './_lib/decorators';
+import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 
 const meta: Meta<typeof StudioGoLiveView> = {
   title: 'Tahti/Studio/StudioGoLiveView',
@@ -20,7 +20,7 @@ const meta: Meta<typeof StudioGoLiveView> = {
   decorators: [
     withToaster(),
     withTahtiRouter('/studio/go-live'),
-    withMockAuth(),
+    withMockAuth(MOCK_USERS.artist),
   ],
 };
 
