@@ -84,6 +84,20 @@ function nonEmpty(values: Record<string, string>): Record<string, string> {
   );
 }
 
+type ThemeDraftSnapshot = {
+  name: string;
+  lightValues: Record<string, string>;
+  darkValues: Record<string, string>;
+};
+
+function draftsEqual(a: ThemeDraftSnapshot, b: ThemeDraftSnapshot): boolean {
+  return (
+    a.name === b.name &&
+    JSON.stringify(a.lightValues) === JSON.stringify(b.lightValues) &&
+    JSON.stringify(a.darkValues) === JSON.stringify(b.darkValues)
+  );
+}
+
 function colorToHex(value: string): string {
   const trimmed = value.trim();
   if (/^#[0-9a-f]{6}$/i.test(trimmed)) {
@@ -307,6 +321,12 @@ export function ThemeEditor() {
   const [name, setName] = useState('My theme');
   const [lightValues, setLightValues] = useState<Record<string, string>>({});
   const [darkValues, setDarkValues] = useState<Record<string, string>>({});
+  const [savedDraft, setSavedDraft] = useState<ThemeDraftSnapshot>(() => ({
+    name: 'My theme',
+    lightValues: {},
+    darkValues: {},
+  }));
+  const [nameError, setNameError] = useState<string | undefined>();
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [importOpen, setImportOpen] = useState(false);
@@ -336,9 +356,40 @@ export function ThemeEditor() {
     setExpandedKey(null);
   }, [dark]);
 
+  const currentDraft = useMemo<ThemeDraftSnapshot>(
+    () => ({ name, lightValues, darkValues }),
+    [name, lightValues, darkValues],
+  );
+  const hasUnsavedChanges = !draftsEqual(currentDraft, savedDraft);
+
   const save = () => {
-    const result = importCustomTheme(draft);
-    setSaveMsg(result.ok ? 'Saved and applied.' : result.error);
+    const trimmed = name.trim();
+    if (!trimmed) {
+      setNameError('Theme name is required.');
+      setSaveMsg(null);
+      return;
+    }
+    setNameError(undefined);
+    const result = importCustomTheme({ ...draft, name: trimmed });
+    if (!result.ok) {
+      setSaveMsg(result.error);
+      return;
+    }
+    setSaveMsg('Saved and applied.');
+    setSavedDraft({
+      name: trimmed,
+      lightValues: { ...lightValues },
+      darkValues: { ...darkValues },
+    });
+  };
+
+  const discard = () => {
+    setName(savedDraft.name);
+    setLightValues({ ...savedDraft.lightValues });
+    setDarkValues({ ...savedDraft.darkValues });
+    setNameError(undefined);
+    setSaveMsg(null);
+    setExpandedKey(null);
   };
 
   const importTheme = () => {
@@ -369,9 +420,20 @@ export function ThemeEditor() {
           <Input
             label="Name"
             value={name}
-            onChange={(event) => setName(event.target.value)}
+            error={nameError}
+            onChange={(event) => {
+              setName(event.target.value);
+              if (nameError && event.target.value.trim()) {
+                setNameError(undefined);
+              }
+            }}
           />
         </div>
+        {hasUnsavedChanges ? (
+          <Button size="sm" variant="secondary" onClick={discard}>
+            Discard
+          </Button>
+        ) : null}
         <Button size="sm" onClick={save}>
           Save
         </Button>
