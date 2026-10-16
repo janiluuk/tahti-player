@@ -1,13 +1,13 @@
 # Fan live chat vs channel comments
 
-**Status:** open  
+**Status:** partial  
 **Source:** Artist lifecycle e2e (`…/artist-lifecycle/ISSUES.md` P1)
 
-## Problem
+## Done
 
-`/chat/$slug` and channel `?chat=1` did not expose a Send control for a new artist channel. Fans only get a **Comments** composer (“Post comment”). Live chat during a show is not discoverable (or missing) from those entry points.
+- LIVE channel surfaces chat above comments (#916); Live chat block points at `/chat/$slug` (#914).
+- Mock fan room token + local echo Send under `VITE_FORCE_MOCK` (#934); ChannelView live CTA test (#939).
 
-## Done when
+## Left
 
-- Live channel chat is available/discoverable for fans when the artist is on air, or
-- Copy/UI makes clear that comments are not live show chat.
+- Real Centrifugo Send for brand-new channels against the live API (not mock).

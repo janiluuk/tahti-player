@@ -1,10 +1,13 @@
 # Artist lifecycle P2 UX follow-ups
 
-**Status:** open  
+**Status:** partial  
 **Source:** Artist lifecycle e2e (`…/artist-lifecycle/ISSUES.md` P2)
 
-## Items
+## Done
 
-1. `/studio/channel` defaults to **Green room**; promo / look fields are easy to miss — default to Design/Look.
-2. Broadcast Prep sits under Studio → Broadcast → Broadcast → Prep (three tab rows) — reduce nesting for go-live.
-3. Go-live checklist vs live state: “Show title ready” stays unchecked while live; series episode stays “One-off” after creating a recurring show — wire checklist / series to the show just created.
+1. `/studio/channel` defaults to Setup (#908) and writes `?tab=setup` (#932).
+3. Go-live checklist / series episode wiring in mock (#913, #923, #926).
+
+## Left
+
+2. Broadcast Prep still sits under Studio → Broadcast → Go live (nested chrome) — reduce nesting for the critical go-live path.
