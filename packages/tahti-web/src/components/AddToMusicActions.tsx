@@ -1,10 +1,13 @@
 import { BlocksIcon, UploadIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, Tooltip } from '@tahti-player/ui';
 
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { UploadTrackDialog } from './UploadTrackDialog';
+
+const UPLOAD_HINT =
+  'Quick upload in a dialog. For the full journey, use Library → Upload.';
 
 type Props = {
   size?: 'sm' | 'default';
@@ -27,15 +30,16 @@ export function AddToMusicActions({
       <div
         className={`flex flex-wrap gap-2 ${align === 'center' ? 'justify-center' : ''}`}
       >
-        <Button
-          size={size}
-          onClick={() => setUploadOpen(true)}
-          aria-label="Upload"
-          title="Upload"
-        >
-          <UploadIcon size={16} aria-hidden className="mr-1.5" />
-          Upload
-        </Button>
+        <Tooltip content={UPLOAD_HINT} side="top">
+          <Button
+            size={size}
+            onClick={() => setUploadOpen(true)}
+            aria-label="Upload"
+          >
+            <UploadIcon size={16} aria-hidden className="mr-1.5" />
+            Upload
+          </Button>
+        </Tooltip>
         <Button
           size={size}
           variant="secondary"
