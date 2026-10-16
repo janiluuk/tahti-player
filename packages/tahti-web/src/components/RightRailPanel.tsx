@@ -44,7 +44,7 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
         data-right-rail-override={railOverride.title}
       >
         <div className="border-border shrink-0 border-b px-2 py-2">
-          <p className="text-xs font-bold tracking-wide uppercase">
+          <p className="text-foreground-secondary text-xs font-bold tracking-wide uppercase">
             {railOverride.title}
           </p>
         </div>
@@ -62,7 +62,14 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
       data-testid="right-rail"
       data-right-rail-view="queue"
     >
-      <SidebarQueuePanel toolbar={false} />
+      <div className="border-border shrink-0 border-b px-2 py-2">
+        <p className="text-foreground-secondary text-xs font-bold tracking-wide uppercase">
+          Queue
+        </p>
+      </div>
+      <div className="min-h-0 flex-1">
+        <SidebarQueuePanel toolbar={false} />
+      </div>
     </aside>
   );
 }
