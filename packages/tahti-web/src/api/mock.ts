@@ -670,7 +670,9 @@ function buildMockSoundItems(slug: string): ChannelSoundItem[] {
     title,
     artistName: artist,
     durationSec: durations[i % durations.length],
-    bannerUrl: content.trackArtwork?.[i] ?? null,
+    bannerUrl:
+      content.trackArtwork?.[i] ??
+      `https://picsum.photos/seed/tahti-sound-${i}/200`,
     audioUrl: i === durations.length - 1 && i % 2 === 0 ? DEMO_HLS : DEMO_MP3,
     genre: primaryGenre,
     createdAt: dates[i % dates.length],
