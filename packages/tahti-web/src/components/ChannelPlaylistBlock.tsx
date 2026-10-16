@@ -1,7 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Card, CardGrid } from '@tahti-player/ui';
+import { Card, CardGrid, EmptyState } from '@tahti-player/ui';
 
 import { fetchCollection } from '../api/client';
 import type { PublicCollection, TahtiPlayable } from '../api/types';
@@ -35,6 +35,14 @@ function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
   }
   return out;
 }
+
+const NO_PLAYABLE_TRACKS = (
+  <EmptyState
+    size="sm"
+    title="No playable tracks yet"
+    description="This playlist has no playable tracks yet."
+  />
+);
 
 type Props = {
   playlistSlug: string;
@@ -137,56 +145,49 @@ export function ChannelPlaylistBlock({
           Open playlist →
         </Link>
       </div>
-      {display === 'cards' ? (
-        playables.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">
-            This playlist has no playable tracks yet.
-          </p>
-        ) : (
-          <CardGrid className="grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-4">
-            {playables.map((item) => {
-              const soundId = soundIdFromPlayableId(item.id);
-              const isCurrent = currentId === item.id;
-              const isPlaying =
-                isCurrent && (status === 'playing' || status === 'loading');
-              return (
-                <Card
-                  key={item.id}
-                  src={item.coverUrl ?? undefined}
-                  title={item.title}
-                  subtitle={item.artist}
-                  isPlaying={isPlaying}
-                  playLabel={`Play ${item.title}`}
-                  pauseLabel={`Pause ${item.title}`}
-                  onPlay={() => {
-                    if (isCurrent) {
-                      setStatus(isPlaying ? 'paused' : 'playing');
-                      return;
-                    }
-                    play(item);
-                  }}
-                  onQueue={() => enqueue(item)}
-                  queueLabel={`Queue ${item.title}`}
-                  onTitleClick={
-                    soundId
-                      ? () => {
-                          void navigate({
-                            to: '/t/$id',
-                            params: { id: soundId },
-                          });
-                        }
-                      : undefined
+      {playables.length === 0 ? (
+        NO_PLAYABLE_TRACKS
+      ) : display === 'cards' ? (
+        <CardGrid className="grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-4">
+          {playables.map((item) => {
+            const soundId = soundIdFromPlayableId(item.id);
+            const isCurrent = currentId === item.id;
+            const isPlaying =
+              isCurrent && (status === 'playing' || status === 'loading');
+            return (
+              <Card
+                key={item.id}
+                src={item.coverUrl ?? undefined}
+                title={item.title}
+                subtitle={item.artist}
+                isPlaying={isPlaying}
+                playLabel={`Play ${item.title}`}
+                pauseLabel={`Pause ${item.title}`}
+                onPlay={() => {
+                  if (isCurrent) {
+                    setStatus(isPlaying ? 'paused' : 'playing');
+                    return;
                   }
-                />
-              );
-            })}
-          </CardGrid>
-        )
+                  play(item);
+                }}
+                onQueue={() => enqueue(item)}
+                queueLabel={`Queue ${item.title}`}
+                onTitleClick={
+                  soundId
+                    ? () => {
+                        void navigate({
+                          to: '/t/$id',
+                          params: { id: soundId },
+                        });
+                      }
+                    : undefined
+                }
+              />
+            );
+          })}
+        </CardGrid>
       ) : (
-        <PlayableTrackTable
-          items={playables}
-          emptyMessage="This playlist has no playable tracks yet."
-        />
+        <PlayableTrackTable items={playables} />
       )}
     </section>
   );
