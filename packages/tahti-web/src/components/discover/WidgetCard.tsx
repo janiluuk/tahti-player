@@ -68,7 +68,10 @@ export function WidgetCard({
   const [configureOpen, setConfigureOpen] = useState(false);
 
   return (
-    <section className="group border-border bg-background-secondary flex min-h-[240px] flex-col gap-2 rounded-md border-(length:--border-width) p-3 sm:min-h-[280px] sm:gap-3 sm:p-4">
+    <section
+      id={id}
+      className="group border-border bg-background-secondary flex min-h-[240px] scroll-mt-20 flex-col gap-2 rounded-md border-(length:--border-width) p-3 sm:min-h-[280px] sm:gap-3 sm:p-4"
+    >
       <header className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <h2 className="truncate text-sm leading-tight font-semibold">
