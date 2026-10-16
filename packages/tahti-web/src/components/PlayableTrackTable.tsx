@@ -22,6 +22,7 @@ type Props = {
   /** Off for a secondary table on the same page (e.g. channel Pinned above Catalog). */
   filterable?: boolean;
   addAllToQueue?: boolean;
+  quietHeader?: boolean;
   compactActions?: boolean;
   /** Present only when the caller has already decided the viewer can
    * edit these tracks (e.g. their own catalog) -- omit entirely to keep
@@ -50,6 +51,7 @@ export function PlayableTrackTable({
   playAll = true,
   filterable = true,
   addAllToQueue: showAddAllToQueue = true,
+  quietHeader = false,
   compactActions = false,
   onEdit,
   onRemove,
@@ -146,6 +148,13 @@ export function PlayableTrackTable({
           tracks={tracks}
           labels={trackTableLabels}
           rowHeight={hasAnnotations ? ANNOTATED_ROW_HEIGHT : undefined}
+          classes={
+            quietHeader
+              ? {
+                  header: 'bg-foreground/10 text-inherit border-border/50',
+                }
+              : undefined
+          }
           features={{
             header: true,
             filterable,
