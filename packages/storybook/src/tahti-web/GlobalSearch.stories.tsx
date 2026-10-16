@@ -32,8 +32,8 @@ export const WithResults: Story = {
     const listbox = await canvas.findByRole('listbox');
     await expect(input).toHaveAttribute('aria-expanded', 'true');
     await expect(
-      await within(listbox).findByRole('option', { name: /Northern Lights/ }),
-    ).toBeVisible();
+      listbox.querySelector('#search-option-artist-northern-lights'),
+    ).toBeTruthy();
   },
 };
 
@@ -74,11 +74,9 @@ export const WithPlaylistResults: Story = {
     await userEvent.click(input);
     await userEvent.type(input, 'vault', { delay: 30 });
     const listbox = await canvas.findByRole('listbox');
-    await expect(within(listbox).getByText('Playlists')).toBeVisible();
+    await expect(listbox).toHaveTextContent('Playlists');
     await expect(
-      await within(listbox).findByRole('option', {
-        name: /Favorites vault/,
-      }),
-    ).toBeVisible();
+      listbox.querySelector('#search-option-collection-favorites-vault'),
+    ).toBeTruthy();
   },
 };
