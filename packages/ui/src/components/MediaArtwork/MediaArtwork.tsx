@@ -2,6 +2,7 @@ import { CassetteTape, Heart, ListPlus, Pause, Play } from 'lucide-react';
 import { FC, ReactNode, useState, type MouseEvent } from 'react';
 
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { useShiftHeld } from '../../hooks/useShiftHeld';
 import { cn } from '../../utils';
 import { Button } from '../Button';
 import { ImageReveal } from '../ImageReveal';
@@ -113,6 +114,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   onArtworkClick,
 }) => {
   const reducedMotion = usePrefersReducedMotion();
+  const shiftHeld = useShiftHeld();
   const [animating, setAnimating] = useState(false);
   const still = posterSrc && src && (reducedMotion || !(animate || animating));
   const resolvedSrc = (still ? posterSrc : src) ?? undefined;
@@ -187,11 +189,15 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   const hasPlay = Boolean(onPlay);
   const hasSecondary = secondary.length > 0;
   const interactive = hasPlay || hasSecondary || Boolean(onArtworkClick);
+  const queueOnShift = Boolean(onQueue) && !queueDisabled && !isPlaying;
+  const showQueueIcon = queueOnShift && shiftHeld;
   const playTooltip = isPlaying
     ? pauseLabel
-    : onQueue
-      ? `${playLabel} · Shift+click to queue`
-      : playLabel;
+    : showQueueIcon
+      ? queueLabel
+      : onQueue
+        ? `${playLabel} · Shift+click to queue`
+        : playLabel;
 
   return (
     <div
@@ -304,6 +310,8 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                 >
                   {isPlaying ? (
                     <Pause size={iconPx} className="fill-current" />
+                  ) : showQueueIcon ? (
+                    <ListPlus size={iconPx} />
                   ) : (
                     <Play
                       size={iconPx}
@@ -363,6 +371,8 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                 >
                   {isPlaying ? (
                     <Pause size={iconPx} className="fill-current" />
+                  ) : showQueueIcon ? (
+                    <ListPlus size={iconPx} />
                   ) : (
                     <Play
                       size={iconPx}
