@@ -784,19 +784,3 @@ export async function fetchRecentBroadcasts(
     return { data: [], meta: apiErrorMeta(err) };
   }
 }
-
-export function formatUsageMinutes(usage: BroadcastUsage): string {
-  if (usage.unlimited) {
-    return 'Unlimited this week';
-  }
-  const used = Math.floor(usage.secondsUsed / 60);
-  const rem =
-    usage.secondsRemaining == null
-      ? null
-      : Math.floor(usage.secondsRemaining / 60);
-  const cap = Math.floor(usage.weeklyCapSeconds / 60);
-  if (rem == null) {
-    return `${used} / ${cap} min used`;
-  }
-  return `${used} min used, ${rem} min left (cap ${cap})`;
-}
