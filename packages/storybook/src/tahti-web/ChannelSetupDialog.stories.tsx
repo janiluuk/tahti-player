@@ -65,7 +65,7 @@ export const CreateThenDesign: Story = {
 
     const design = await findDialog(canvasElement, 'Design your channel');
     await expect(
-      await design.findByRole('main', { name: 'Channel page preview' }),
+      await design.findByRole('region', { name: 'Channel page preview' }),
     ).toBeVisible();
     await expect(
       design.getByRole('button', { name: 'More options' }),

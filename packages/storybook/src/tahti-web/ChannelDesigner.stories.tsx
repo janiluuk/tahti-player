@@ -119,7 +119,7 @@ const fullArgs: Partial<DesignerProps> = {
 async function findPreview(canvasElement: HTMLElement) {
   const canvas = within(canvasElement);
   const preview = await canvas.findByRole(
-    'main',
+    'region',
     { name: 'Channel page preview' },
     { timeout: 5000 },
   );
@@ -443,7 +443,7 @@ export const LookOnlyShell: Story = {
     const canvas = within(canvasElement);
     await fadedIn(await canvas.findByTestId('channel-backdrop-panel'));
     await expect(
-      canvas.queryByRole('main', { name: 'Channel page preview' }),
+      canvas.queryByRole('region', { name: 'Channel page preview' }),
     ).toBeNull();
 
     await userEvent.click(canvas.getByRole('button', { name: 'Section' }));

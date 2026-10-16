@@ -70,7 +70,7 @@ export function ChannelPagePreview({
   onEditPlayer,
 }: Props) {
   return (
-    <main
+    <section
       aria-label="Channel page preview"
       className="border-border bg-background min-w-0 overflow-x-hidden overflow-y-auto rounded-xl border shadow-lg lg:max-h-[calc(100vh-7rem)]"
     >
@@ -193,6 +193,6 @@ export function ChannelPagePreview({
       </nav>
 
       <PreviewTracksPlaceholder displayName={displayName} bio={bio} />
-    </main>
+    </section>
   );
 }
