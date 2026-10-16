@@ -1,11 +1,11 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import {
   CompassIcon,
-  GaugeIcon,
   HeartIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
   LibraryIcon,
+  ListMusicIcon,
   RadioIcon,
   SettingsIcon,
   ShieldIcon,
@@ -140,7 +140,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
           <div data-tour-id="nav-listen">
             <SidebarNavigationItem
               to="/"
-              icon={<GaugeIcon size={16} />}
+              icon={<ListMusicIcon size={16} />}
               label="Listen"
               isSelected={sidebarActive === 'listen'}
             />

@@ -1,5 +1,7 @@
 import { useRouterState } from '@tanstack/react-router';
 import {
+  CalendarDaysIcon,
+  CalendarIcon,
   CastIcon,
   CreditCardIcon,
   Disc3Icon,
@@ -10,6 +12,7 @@ import {
   LayoutGridIcon,
   ListMusicIcon,
   MicIcon,
+  NewspaperIcon,
   RadioIcon,
   RadioTowerIcon,
   Settings2Icon,
@@ -77,7 +80,7 @@ export const SUBMENUS = {
     {
       to: '/studio/updates',
       labelKey: 'studio.posts',
-      icon: <TrendingUpIcon size={16} />,
+      icon: <NewspaperIcon size={16} />,
     },
     {
       to: '/studio/audience',
@@ -115,17 +118,17 @@ export const BROADCAST_SUBNAV_ITEMS = [
   {
     to: '/studio/schedule',
     labelKey: 'studio.schedule' as const,
-    icon: <RadioIcon size={16} />,
+    icon: <CalendarDaysIcon size={16} />,
   },
   {
     to: '/studio/events',
     labelKey: 'studio.events' as const,
-    icon: <RadioIcon size={16} />,
+    icon: <CalendarIcon size={16} />,
   },
   {
     to: '/studio/shows',
     labelKey: 'studio.shows' as const,
-    icon: <RadioIcon size={16} />,
+    icon: <MicIcon size={16} />,
   },
   {
     to: '/studio/channel',
