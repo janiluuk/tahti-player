@@ -5797,3 +5797,7 @@ The right rail now follows the Nuclear desktop queue bar: collapse button, Chat 
 ## 2026-09-25 — Full-screen player "More options" sheet
 
 The full-screen player has a "More options" button in the top-right. It opens an action sheet: a bottom sheet on mobile and a centered panel on desktop. The sheet lists Go to channel, Share, favorites, Add to playlist and Open in Pro Editor, each shown only when it applies to the current item. New `ActionSheet` component in `@tahti-player/ui`. The add-to-playlist dialog now opens above the full-screen player instead of behind it.
+
+## 2026-10-16 — Batch 63 remaining channel / player polish (#881–#884)
+
+Quieter channel track-table headers on branded colour schemes (#881). Channel Offline / Share / RSS / Report move into the hero identity row, with a phone More menu (#882). Empty upcoming-shows line always shows when nothing is booked (#883). Truncated player-bar programme/artist lines expose a native `title` tooltip (#884). Earlier batch-63 empty-state / Studio / density slices already shipped in #850–#856.
