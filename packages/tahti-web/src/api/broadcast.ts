@@ -2,6 +2,7 @@ import type { MulticastProviderId } from '../plugins/multicast';
 import type { StoredVisualPreset } from './channel-design/presets';
 import type { FetchMeta } from './client';
 import { DEMO_MP3 } from './mock';
+import { applyMockPreflightPatch } from './mock-broadcast-preflight';
 import {
   getMockSignalConnected,
   getMockChannelState as readMockChannelState,
@@ -85,8 +86,11 @@ export async function patchBroadcastPreflight(
   patch: Partial<BroadcastPreflight> & { seriesId?: string },
 ): Promise<{ data: BroadcastPreflight } | { error: string }> {
   if (isForceMock()) {
-    mockPreflight = { ...mockPreflight, ...patch };
-    return { data: mockPreflight };
+    const result = applyMockPreflightPatch(mockPreflight, patch);
+    if ('data' in result) {
+      mockPreflight = result.data;
+    }
+    return result;
   }
   try {
     const { data } = await requestJson<BroadcastPreflight>(
