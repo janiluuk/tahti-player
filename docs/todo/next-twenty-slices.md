@@ -25,7 +25,7 @@ Source: Storybook `Missing states:`, `MOCKS.md` thin spots, and leftover visual-
 | 13 | ImageLightbox: empty gallery uses `EmptyState` instead of `null` | Storybook `Missing states:` | |
 | 14 | WaveformSeekbar: live / no-duration story (+ Live badge UI if needed) | Storybook `Missing states:` | |
 | 15 | Settings Integrations: API error banner story | Storybook `Missing states:` | |
-| 16 | ChannelDesigner backdrop: long slideshow strip + upload-progress story | Storybook `Missing states:` | |
+| 16 | ChannelDesigner backdrop: long slideshow strip + upload-progress story | Storybook `Missing states:` | (this PR) |
 | 17 | ChannelDesigner player overlay: artwork-less preset tile story | Storybook `Missing states:` | |
 | 18 | Press-kit GallerySection Storybook (mock upload/reorder); tick MOCKS.md | `MOCKS.md` | |
 | 19 | MulticastConfigureDialog: save-failure story | Storybook `Missing states:` | |
