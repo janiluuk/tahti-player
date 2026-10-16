@@ -50,7 +50,12 @@ const formatExpiry = (expiresAt: string | null) => {
   return `${remainingDays} day${remainingDays === 1 ? '' : 's'} left`;
 };
 
-export const StashFilesPanel = () => {
+export const StashFilesPanel = ({
+  filesOnly = false,
+}: {
+  /** Listener Library Stash: upload/share files only, no catalog move. */
+  filesOnly?: boolean;
+} = {}) => {
   const play = usePlayerStore((state) => state.play);
   const [files, setFiles] = useState<StashFile[]>([]);
   const [busy, setBusy] = useState(false);
@@ -70,13 +75,16 @@ export const StashFilesPanel = () => {
 
   useEffect(() => {
     void reload();
+    if (filesOnly) {
+      return;
+    }
     void Promise.all([fetchStudioSounds(), fetchStudioCollections()]).then(
       ([soundResult, collectionResult]) => {
         setSoundItems(soundResult.data);
         setCollections(collectionResult.data);
       },
     );
-  }, []);
+  }, [filesOnly]);
 
   const moveTrackToStash = async (item: StudioSound) => {
     setBusy(true);
@@ -205,64 +213,66 @@ export const StashFilesPanel = () => {
         </p>
       ) : null}
 
-      <StudioPanel
-        title="Add from your library"
-        description="Move tracks and collections into your private stash. Private items are removed from public listings."
-      >
-        {soundItems.length === 0 && collections.length === 0 ? (
-          <EmptyState
-            size="sm"
-            title="Nothing to move"
-            description="Everything in your library is already private or there is nothing to move."
-          />
-        ) : (
-          <div className="flex flex-col gap-2">
-            {soundItems
-              .filter(
-                (item) =>
-                  item.visibility !== 'PRIVATE' && item.isPublic !== false,
-              )
-              .map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between gap-2 text-sm"
-                >
-                  <span className="min-w-0 truncate">{item.title}</span>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    disabled={busy}
-                    onClick={() => void moveTrackToStash(item)}
+      {!filesOnly ? (
+        <StudioPanel
+          title="Add from your library"
+          description="Move tracks and collections into your private stash. Private items are removed from public listings."
+        >
+          {soundItems.length === 0 && collections.length === 0 ? (
+            <EmptyState
+              size="sm"
+              title="Nothing to move"
+              description="Everything in your library is already private or there is nothing to move."
+            />
+          ) : (
+            <div className="flex flex-col gap-2">
+              {soundItems
+                .filter(
+                  (item) =>
+                    item.visibility !== 'PRIVATE' && item.isPublic !== false,
+                )
+                .map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between gap-2 text-sm"
                   >
-                    Move track
-                  </Button>
-                </div>
-              ))}
-            {collections
-              .filter(
-                (collection) =>
-                  collection.visibility !== 'PRIVATE' &&
-                  collection.isPublic !== false,
-              )
-              .map((collection) => (
-                <div
-                  key={collection.slug}
-                  className="flex items-center justify-between gap-2 text-sm"
-                >
-                  <span className="min-w-0 truncate">{collection.name}</span>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    disabled={busy}
-                    onClick={() => void moveCollectionToStash(collection)}
+                    <span className="min-w-0 truncate">{item.title}</span>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={busy}
+                      onClick={() => void moveTrackToStash(item)}
+                    >
+                      Move track
+                    </Button>
+                  </div>
+                ))}
+              {collections
+                .filter(
+                  (collection) =>
+                    collection.visibility !== 'PRIVATE' &&
+                    collection.isPublic !== false,
+                )
+                .map((collection) => (
+                  <div
+                    key={collection.slug}
+                    className="flex items-center justify-between gap-2 text-sm"
                   >
-                    Move collection
-                  </Button>
-                </div>
-              ))}
-          </div>
-        )}
-      </StudioPanel>
+                    <span className="min-w-0 truncate">{collection.name}</span>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={busy}
+                      onClick={() => void moveCollectionToStash(collection)}
+                    >
+                      Move collection
+                    </Button>
+                  </div>
+                ))}
+            </div>
+          )}
+        </StudioPanel>
+      ) : null}
 
       <StudioPanel>
         {files.length === 0 ? (

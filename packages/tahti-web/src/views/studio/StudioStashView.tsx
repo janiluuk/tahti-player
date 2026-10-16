@@ -1,4 +1,4 @@
-import { ArchiveIcon, FolderInputIcon, PencilIcon } from 'lucide-react';
+import { ArchiveIcon, FolderInputIcon, Lock, PencilIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
@@ -12,18 +12,54 @@ import {
 
 import { fetchStudioSounds } from '../../api/studio';
 import type { StudioSound } from '../../api/studio-types';
+import { PageGate, PageLoading } from '../../components/PageStates';
 import { StashFilesPanel } from '../../components/StashFilesPanel';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { TrackEditDialog } from '../../components/TrackEditDialog';
+import { hasStudioAccess } from '../../lib/accountRoles';
+import { useAuthModalStore } from '../../stores/authModalStore';
+import { useAuthStore } from '../../stores/authStore';
 import { LibrarySectionTabs } from '../LibraryView';
 
+function ListenerStash({ embedded }: { embedded: boolean }) {
+  return (
+    <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
+      {!embedded ? <LibrarySectionTabs active="stash" /> : null}
+      {!embedded ? (
+        <ViewShell title="Stash" classes={{ root: 'px-0 pt-0' }}>
+          <StudioPanel
+            title="Your files"
+            description="Private uploads you can share by link. Publishing tracks needs an artist channel."
+          >
+            <StashFilesPanel filesOnly />
+          </StudioPanel>
+        </ViewShell>
+      ) : (
+        <StudioPanel
+          title="Your files"
+          description="Private uploads you can share by link. Publishing tracks needs an artist channel."
+        >
+          <StashFilesPanel filesOnly />
+        </StudioPanel>
+      )}
+    </div>
+  );
+}
+
 export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
+  const user = useAuthStore((s) => s.user);
+  const hydrated = useAuthStore((s) => s.hydrated);
+  const profileLoaded = useAuthStore((s) => s.profileLoaded);
+  const openAuth = useAuthModalStore((s) => s.open);
   const [tab, setTab] = useState<'all' | 'files'>('all');
   const [items, setItems] = useState<StudioSound[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!hasStudioAccess(user)) {
+      return;
+    }
     void fetchStudioSounds().then((result) => {
       setItems(
         result.data.filter(
@@ -35,7 +71,31 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
         ),
       );
     });
-  }, []);
+  }, [user]);
+
+  if (!hydrated) {
+    return <PageLoading label="Loading session…" />;
+  }
+
+  if (!user) {
+    return (
+      <PageGate
+        page={embedded ? null : 'Stash'}
+        icon={<Lock size={40} className="opacity-40" />}
+        title="Stash"
+        description="Sign in to upload private files and share them by link."
+        action={<Button onClick={() => openAuth('login')}>Log in</Button>}
+      />
+    );
+  }
+
+  if (!profileLoaded) {
+    return <PageLoading label="Loading your account…" />;
+  }
+
+  if (!hasStudioAccess(user)) {
+    return <ListenerStash embedded={embedded} />;
+  }
 
   const tabs = (
     <Tabs.Root
