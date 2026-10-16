@@ -7,7 +7,7 @@ import { expect, userEvent, waitFor } from 'storybook/test';
  * so it is found by its aria-label attribute instead.
  */
 export async function clickRowPlay(container: HTMLElement, title: string) {
-  const selector = `button[aria-label="Play ${CSS.escape(title)}"]`;
+  const selector = `button[aria-label^="Play ${CSS.escape(title)}"]`;
   await waitFor(() => expect(container.querySelector(selector)).not.toBeNull());
   await userEvent.click(container.querySelector(selector)!);
 }
