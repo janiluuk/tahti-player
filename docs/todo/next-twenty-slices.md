@@ -18,7 +18,7 @@ Source: Storybook `Missing states:`, `MOCKS.md` thin spots, and leftover visual-
 | 6 | GlobalSearch: Storybook play asserts Collections group when query matches a mock collection | Storybook / search | |
 | 7 | DM `searchUsers` fixture expansion + Messages stories (multi-hit + empty) | `MOCKS.md` | |
 | 8 | Richer mock studio archive seed (covers, visibility mix, second embed) | `MOCKS.md` | |
-| 9 | StudioCollectionsView Storybook: populated, filtered-empty, quick-create at 390 px | Storybook gap | |
+| 9 | StudioCollectionsView Storybook: populated, filtered-empty, quick-create at 390 px | Storybook gap | (this PR) |
 | 10 | Channel playlist: “no playable tracks” uses shared `EmptyState` (cards + table) | channel polish | |
 | 11 | ChannelView offline @ 390 px Storybook (Off air stage + readable archive) | `channel-page-redesign.md` | |
 | 12 | ThemeEditor: empty-name validation + discard draft (Missing states) | Storybook `Missing states:` | |
