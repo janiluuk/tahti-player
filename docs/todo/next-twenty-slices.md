@@ -29,7 +29,7 @@ Source: Storybook `Missing states:`, `MOCKS.md` thin spots, and leftover visual-
 | 17 | ChannelDesigner player overlay: artwork-less preset tile story | Storybook `Missing states:` | |
 | 18 | Press-kit GallerySection Storybook (mock upload/reorder); tick MOCKS.md | `MOCKS.md` | |
 | 19 | MulticastConfigureDialog: save-failure story | Storybook `Missing states:` | |
-| 20 | FeedView mobile Storybook: populated + signed-out empty at 390 px | Storybook gap | |
+| 20 | FeedView mobile Storybook: populated + signed-out empty at 390 px | Storybook gap | (this PR) |
 
 ## Rules
 
