@@ -5,6 +5,7 @@ import { expect, userEvent, waitFor } from 'storybook/test';
  * `visibility: hidden` until CSS :hover, which synthetic events can't
  * trigger, and hidden elements have no accessible name for role queries,
  * so it is found by its aria-label attribute instead.
+ * Labels may append " · Shift+click to queue" when MediaArtwork has onQueue.
  */
 export async function clickRowPlay(container: HTMLElement, title: string) {
   const selector = `button[aria-label^="Play ${CSS.escape(title)}"]`;
