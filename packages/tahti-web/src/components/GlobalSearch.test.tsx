@@ -1,7 +1,8 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as client from '../api/client';
+import { renderWithRouter } from '../test/renderWithRouter';
 import { GlobalSearch } from './GlobalSearch';
 
 const navigate = vi.fn();
@@ -55,7 +56,7 @@ describe('GlobalSearch', () => {
   });
 
   it('opens the top result on Enter when nothing is highlighted', async () => {
-    render(<GlobalSearch />);
+    await renderWithRouter(<GlobalSearch />);
     const input = await search('north');
 
     fireEvent.keyDown(input, { key: 'Enter' });
@@ -67,7 +68,7 @@ describe('GlobalSearch', () => {
   });
 
   it('opens the highlighted result on Enter', async () => {
-    render(<GlobalSearch />);
+    await renderWithRouter(<GlobalSearch />);
     const input = await search('north');
 
     fireEvent.keyDown(input, { key: 'ArrowDown' });
@@ -78,5 +79,24 @@ describe('GlobalSearch', () => {
       to: '/t/$id',
       params: { id: 'track-1' },
     });
+  });
+
+  it('offers Discover and Radio when nothing matches', async () => {
+    vi.mocked(client.fetchSearch).mockResolvedValue({
+      data: { artists: [], tracks: [], collections: [] },
+      mock: false,
+    } as Awaited<ReturnType<typeof client.fetchSearch>>);
+    await renderWithRouter(<GlobalSearch />);
+    const input = screen.getByRole('combobox');
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: 'zzz' } });
+
+    expect(
+      await screen.findByRole('link', { name: 'Discover' }),
+    ).toHaveAttribute('href', '/discover');
+    expect(screen.getByRole('link', { name: 'Radio' })).toHaveAttribute(
+      'href',
+      '/radio',
+    );
   });
 });

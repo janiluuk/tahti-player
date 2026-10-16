@@ -32,6 +32,16 @@ import { runMessagesList, runMessagesSend } from './commands/messages.mjs';
 import { runNotificationsList } from './commands/notifications-list.mjs';
 import { runNotificationsRead } from './commands/notifications-read.mjs';
 import { runPurchases } from './commands/purchases.mjs';
+import {
+  MAX_RELEASE_TRACKS,
+  RELEASE_TYPES,
+  runReleasesCreate,
+} from './commands/releases-create.mjs';
+import {
+  RELEASE_STATES,
+  runReleasesEdit,
+  SMART_LINK_SERVICES,
+} from './commands/releases-edit.mjs';
 import { runReleasesList } from './commands/releases-list.mjs';
 import { runReleasesShow } from './commands/releases-show.mjs';
 import { runSearch, SEARCH_PAGE_SIZE } from './commands/search.mjs';
@@ -213,6 +223,63 @@ is saved under the name the API gives, made safe for the file system.
     positionals: 1,
     run: (config, { values, positionals }) =>
       runReleasesShow(config, positionals[0], { json: values.json }),
+  },
+  {
+    path: ['releases', 'create'],
+    usage:
+      'tahti releases create <title> [--type <t>] [--date <YYYY-MM-DD>] [--sound <id>...] [--json]',
+    summary: 'Create a draft release, optionally with library sounds as tracks',
+    details: `Calls POST /api/me/releases. The release starts as a draft; publish it in
+Studio once the tracks and artwork are in. Each --sound is looked up with
+GET /api/me/sound/:id and becomes a track, in the order given, titled after
+the sound. Needs a token with the write scope.
+  --type <t>          One of: ${RELEASE_TYPES.map((type) => type.toLowerCase()).join(', ')} (default: single)
+  --date <YYYY-MM-DD> Release date (default: today)
+  --description <t>   Description
+  --genre <g>         Main genre
+  --sound <id>        A library sound to add as a track; repeat for more
+                      (at most ${MAX_RELEASE_TRACKS})`,
+    options: {
+      ...JSON_OPTION,
+      type: { type: 'string' },
+      date: { type: 'string' },
+      description: { type: 'string' },
+      genre: { type: 'string' },
+      sound: { type: 'string', multiple: true },
+    },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runReleasesCreate(config, positionals[0], values),
+  },
+  {
+    path: ['releases', 'edit'],
+    usage: 'tahti releases edit <id> <field flags> [--json]',
+    summary: 'Change, publish or archive one of your releases',
+    details: `Calls PATCH /api/me/releases/:id with only the fields you give and prints the
+release as saved. Publishing needs at least one track, and tells your
+followers when your channel is in Tahti Radio. Needs a token with the write
+scope.
+  --state <s>            One of: ${RELEASE_STATES.join(', ')}
+  --description <t>      New description; "" clears it
+  --date <YYYY-MM-DD>    New release date
+  --pin, --unpin         Pin or unpin it at the top of your profile Stage
+  --footer on|off        Show "Powered by Tahti" on the smart link page
+  --link <service>=<url> Set a store link on the smart link page; an empty
+                         URL removes it; repeat for more. Services:
+                         ${SMART_LINK_SERVICES.join(', ')}`,
+    options: {
+      ...JSON_OPTION,
+      state: { type: 'string' },
+      description: { type: 'string' },
+      date: { type: 'string' },
+      pin: { type: 'boolean', default: false },
+      unpin: { type: 'boolean', default: false },
+      footer: { type: 'string' },
+      link: { type: 'string', multiple: true },
+    },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runReleasesEdit(config, positionals[0], values),
   },
   {
     path: ['search'],

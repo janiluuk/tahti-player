@@ -36,6 +36,23 @@ describe('SegmentedControl', () => {
     expect(onChange).toHaveBeenCalledWith('list');
   });
 
+  it('draws the chosen option in the body text colour so it stays readable on its primary tint', () => {
+    render(
+      <SegmentedControl
+        aria-label="Channel type"
+        options={[
+          { id: 'ARTIST', label: 'Artist' },
+          { id: 'RADIO', label: 'Radio' },
+        ]}
+        value="ARTIST"
+        onChange={() => {}}
+      />,
+    );
+    const chosen = screen.getByRole('radio', { name: 'Artist' });
+    expect(chosen).toHaveClass('text-foreground', 'inset-ring');
+    expect(chosen).not.toHaveClass('text-primary-strong');
+  });
+
   it('shows labels as text when not icon-only', () => {
     render(
       <SegmentedControl

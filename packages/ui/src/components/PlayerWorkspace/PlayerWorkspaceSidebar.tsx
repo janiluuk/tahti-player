@@ -72,10 +72,10 @@ export const PlayerWorkspaceSidebar: FC<PlayerWorkspaceSidebarProps> = ({
       }
     >
       <span
-        className={cn('flex flex-row items-center', {
+        className={cn('flex shrink-0 flex-row items-center', {
           'mb-1 justify-center px-0.5 pt-1': isCollapsed,
-          'mb-2 justify-end': !isCollapsed && side === 'left',
-          'mb-2 justify-start': !isCollapsed && side === 'right',
+          'mb-3 justify-end': !isCollapsed && side === 'left',
+          'mb-3 justify-start': !isCollapsed && side === 'right',
         })}
       >
         <Tooltip
@@ -109,7 +109,12 @@ export const PlayerWorkspaceSidebar: FC<PlayerWorkspaceSidebarProps> = ({
           </span>
         )}
       </span>
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div
+        className={cn(
+          'flex min-h-0 flex-1 flex-col overflow-hidden',
+          !isCollapsed && 'pt-1',
+        )}
+      >
         {children}
         {!isCollapsed && footer && (
           <div className="mt-auto flex justify-center">{footer}</div>
