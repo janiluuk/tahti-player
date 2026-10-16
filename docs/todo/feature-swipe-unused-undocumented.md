@@ -55,6 +55,6 @@ once that PR merges — leave a one-liner in HISTORY when folding.
 
 ## Done this swipe (link PRs when merged)
 
-- [ ] Todo + INDEX (this file)
-- [ ] Tab icons PR
-- [ ] Radio → `/schedule` + Jam Help + GitBook web stub PR
+- [x] Todo + INDEX — https://github.com/janiluuk/tahti-player/pull/994
+- [ ] Tab icons — https://github.com/janiluuk/tahti-player/pull/995
+- [ ] Radio → `/schedule` + Jam Help + GitBook web stub — https://github.com/janiluuk/tahti-player/pull/996
