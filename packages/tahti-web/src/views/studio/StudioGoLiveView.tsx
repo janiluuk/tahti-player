@@ -7,7 +7,7 @@ import {
   RadioTowerIcon,
 } from 'lucide-react';
 
-import { Badge, Dialog, Tabs, ViewShell } from '@tahti-player/ui';
+import { Badge, ButtonLink, Dialog, Tabs, ViewShell } from '@tahti-player/ui';
 
 import {
   BroadcastPreflightPanel,
@@ -86,6 +86,9 @@ export function StudioGoLiveView() {
     setConfirmGoLive,
     onGoLive,
     targets,
+    settings,
+    signalOk,
+    showInfoReady,
   } = state;
 
   const setTab = (tab: GoLiveTabId) => {
@@ -180,6 +183,42 @@ export function StudioGoLiveView() {
                           {showInfoConfirmed && <ShowInfoConfirmed />}
                         </div>
                       </div>
+                      <ul
+                        className="border-border bg-background-secondary/40 flex flex-col gap-2 rounded-lg border px-3 py-3 text-sm"
+                        aria-label="Prep checklist"
+                      >
+                        <li className="flex flex-wrap items-center justify-between gap-2">
+                          <span>
+                            {showInfoReady ? '✓' : '○'} Show title ready
+                          </span>
+                          {!showInfoReady ? (
+                            <span className="text-foreground-secondary text-xs">
+                              Fill it in below
+                            </span>
+                          ) : null}
+                        </li>
+                        <li className="flex flex-wrap items-center justify-between gap-2">
+                          <span>{settings ? '✓' : '○'} Stream credentials</span>
+                          {!settings ? (
+                            <ButtonLink
+                              to="/studio/go-live"
+                              search={{ tab: 'credentials' }}
+                              size="sm"
+                              variant="secondary"
+                            >
+                              Open Credentials
+                            </ButtonLink>
+                          ) : null}
+                        </li>
+                        <li className="flex flex-wrap items-center justify-between gap-2">
+                          <span>{signalOk ? '✓' : '○'} Encoder signal</span>
+                          {!signalOk ? (
+                            <span className="text-foreground-secondary text-xs">
+                              Connect OBS or another app, then check Signal
+                            </span>
+                          ) : null}
+                        </li>
+                      </ul>
                       <BroadcastPreflightPanel
                         onSaved={() => {
                           setShowInfoConfirmed(true);
