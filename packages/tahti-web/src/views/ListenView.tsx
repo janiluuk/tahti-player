@@ -67,12 +67,21 @@ function StationCardSubtitle({
   source: ReturnType<typeof stationNowPlayingSource>;
   fallback: string;
 }) {
-  return (
-    <>
-      {useStationNowPlaying(source?.programmingUrl, source?.streamUrl) ??
-        fallback}
-    </>
+  const nowPlaying = useStationNowPlaying(
+    source?.programmingUrl,
+    source?.streamUrl,
   );
+  if (nowPlaying) {
+    return (
+      <span className="flex flex-col gap-0.5">
+        <span className="text-[0.65rem] font-semibold tracking-wide uppercase opacity-80 sm:hidden">
+          Now
+        </span>
+        <span className="line-clamp-2 sm:line-clamp-1">{nowPlaying}</span>
+      </span>
+    );
+  }
+  return <span className="opacity-80">{fallback}</span>;
 }
 
 export type ListenTab = 'listen' | 'feed' | 'history';

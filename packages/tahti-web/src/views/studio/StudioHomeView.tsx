@@ -1,7 +1,13 @@
 import { Link } from '@tanstack/react-router';
 import { CalendarIcon, RadioIcon } from 'lucide-react';
 
-import { Badge, Button, EmptyState, ViewShell } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  ButtonLink,
+  EmptyState,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { StudioGate } from '../../components/StudioGate';
 import { useStripeConfigured } from '../../hooks/useStripeConfigured';
@@ -57,6 +63,28 @@ export function StudioHomeView() {
 
           {!channel ? null : (
             <div className="flex flex-col gap-8">
+              <div
+                role="group"
+                aria-label="Next steps"
+                className="flex flex-wrap gap-2"
+              >
+                <ButtonLink to="/library/upload" size="sm">
+                  Upload
+                </ButtonLink>
+                <ButtonLink to="/studio/go-live" size="sm" variant="secondary">
+                  Go Live
+                </ButtonLink>
+                <ButtonLink
+                  to="/channel/$slug"
+                  params={{ slug: channel.slug }}
+                  search={{ edit: true }}
+                  size="sm"
+                  variant="secondary"
+                >
+                  Edit channel
+                </ButtonLink>
+              </div>
+
               <SummaryStatsSection state={state} />
 
               <Group title="Broadcast">

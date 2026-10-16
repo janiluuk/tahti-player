@@ -184,11 +184,28 @@ export function JamView({ code }: { code: string }) {
     );
   }
 
+  const backToListen = (
+    <Button
+      size="sm"
+      variant="secondary"
+      onClick={() => void navigate({ to: '/' })}
+    >
+      Back to Listen
+    </Button>
+  );
+
   if (joinError) {
     return (
       <TahtiJam>
-        <TahtiJam.Error
-          labels={{ title: 'Jam not found', subtitle: joinError }}
+        <EmptyState
+          icon={<XIcon size={48} />}
+          title="Jam not found"
+          description={
+            joinError ||
+            'That code is not an open Jam. Check the link, or go back to Listen.'
+          }
+          action={backToListen}
+          className="flex-1"
         />
       </TahtiJam>
     );
@@ -201,6 +218,7 @@ export function JamView({ code }: { code: string }) {
           icon={<XIcon size={48} />}
           title="This Jam has ended"
           description="The host closed the session."
+          action={backToListen}
           className="flex-1"
         />
       </TahtiJam>
@@ -214,6 +232,7 @@ export function JamView({ code }: { code: string }) {
           icon={<XIcon size={48} />}
           title="You are no longer in this Jam"
           description="The host removed you from the session."
+          action={backToListen}
           className="flex-1"
         />
       </TahtiJam>

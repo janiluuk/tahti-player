@@ -114,7 +114,7 @@ pub async fn relink_moved(
     .fetch_all(pool)
     .await
     .map_err(|err| err.to_string())?;
-    let (pairs, fresh) = tauri::async_runtime::spawn_blocking(move || {
+    let (pairs, retagged, fresh) = tauri::async_runtime::spawn_blocking(move || {
         let audio: HashMap<String, Option<AudioKey>> = rows
             .iter()
             .map(|(id, _, _, _, format, rate, duration)| (id.clone(), audio_key(format, *rate, *duration)))
@@ -154,6 +154,7 @@ pub async fn relink_moved(
             .filter(|(id, ..)| !claimed.contains(id))
             .filter_map(|(id, ..)| Some((id.clone(), audio.get(id)?.clone()?)))
             .collect();
+        let mut retagged_paths = std::collections::HashSet::new();
         if !retag_old.is_empty() {
             let retag_new: Vec<(PathBuf, AudioKey)> = sized
                 .iter()
@@ -163,9 +164,11 @@ pub async fn relink_moved(
                     Some((p.clone(), audio_key(&track.format, track.sample_rate, track.duration)?))
                 })
                 .collect();
-            pairs.extend(pair_retagged(&retag_old, &retag_new));
+            let retagged = pair_retagged(&retag_old, &retag_new);
+            retagged_paths.extend(retagged.iter().map(|(_, p)| p.clone()));
+            pairs.extend(retagged);
         }
-        (pairs, fresh)
+        (pairs, retagged_paths, fresh)
     })
     .await
     .map_err(|err| err.to_string())?;
@@ -174,7 +177,7 @@ pub async fn relink_moved(
     for (id, path) in pairs {
         let text = path.to_string_lossy().into_owned();
         let done = sqlx::query(
-            "UPDATE library_tracks SET path=?, folder=?, available=1, unavailable_since=NULL, mtime=NULL WHERE id=?",
+            "UPDATE library_tracks SET path=?, folder=?, available=1, unavailable_since=NULL WHERE id=?",
         )
         .bind(&text)
         .bind(folder_of(&text))
@@ -185,6 +188,10 @@ pub async fn relink_moved(
             moved += 1;
             consumed.insert(path);
         }
+    }
+    let reread: Vec<PathBuf> = retagged.into_iter().filter(|p| consumed.contains(p)).collect();
+    if !reread.is_empty() {
+        reread_and_stamp(pool, &root.id, reread).await?;
     }
     Ok((moved, fresh.into_iter().filter(|p| !consumed.contains(p)).collect()))
 }
@@ -232,16 +239,21 @@ pub async fn refresh_changed(pool: &SqlitePool, root: &LibraryRoot) -> Result<us
         }
         tx.commit().await.map_err(|err| err.to_string())?;
     }
-    let count = changed.len();
-    if count == 0 {
+    if changed.is_empty() {
         return Ok(0);
     }
+    reread_and_stamp(pool, &root.id, changed).await
+}
+
+/// Re-reads catalog files in place (same rows, user overrides reapplied) and
+/// records their current mtime so the next scan does not read them again.
+/// Returns how many were read without error.
+async fn reread_and_stamp(pool: &SqlitePool, root_id: &str, paths: Vec<PathBuf>) -> Result<usize, String> {
+    let count = paths.len();
     let mut result = ImportResult::default();
-    for batch in changed.chunks(50) {
-        import_batch(pool, batch.to_vec(), Some(&root.id), &mut result).await;
+    for batch in paths.chunks(50) {
+        import_batch(pool, batch.to_vec(), Some(root_id), &mut result).await;
     }
-    // Stamp the re-read files so they are not re-read again next scan.
-    let paths: Vec<PathBuf> = changed;
     let stamped = tauri::async_runtime::spawn_blocking(move || {
         paths
             .into_iter()

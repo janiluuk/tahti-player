@@ -33,6 +33,11 @@ import { runNotificationsList } from './commands/notifications-list.mjs';
 import { runNotificationsRead } from './commands/notifications-read.mjs';
 import { runPurchases } from './commands/purchases.mjs';
 import {
+  MAX_RELEASE_TRACKS,
+  RELEASE_TYPES,
+  runReleasesCreate,
+} from './commands/releases-create.mjs';
+import {
   RELEASE_STATES,
   runReleasesEdit,
   SMART_LINK_SERVICES,
@@ -218,6 +223,33 @@ is saved under the name the API gives, made safe for the file system.
     positionals: 1,
     run: (config, { values, positionals }) =>
       runReleasesShow(config, positionals[0], { json: values.json }),
+  },
+  {
+    path: ['releases', 'create'],
+    usage:
+      'tahti releases create <title> [--type <t>] [--date <YYYY-MM-DD>] [--sound <id>...] [--json]',
+    summary: 'Create a draft release, optionally with library sounds as tracks',
+    details: `Calls POST /api/me/releases. The release starts as a draft; publish it in
+Studio once the tracks and artwork are in. Each --sound is looked up with
+GET /api/me/sound/:id and becomes a track, in the order given, titled after
+the sound. Needs a token with the write scope.
+  --type <t>          One of: ${RELEASE_TYPES.map((type) => type.toLowerCase()).join(', ')} (default: single)
+  --date <YYYY-MM-DD> Release date (default: today)
+  --description <t>   Description
+  --genre <g>         Main genre
+  --sound <id>        A library sound to add as a track; repeat for more
+                      (at most ${MAX_RELEASE_TRACKS})`,
+    options: {
+      ...JSON_OPTION,
+      type: { type: 'string' },
+      date: { type: 'string' },
+      description: { type: 'string' },
+      genre: { type: 'string' },
+      sound: { type: 'string', multiple: true },
+    },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runReleasesCreate(config, positionals[0], values),
   },
   {
     path: ['releases', 'edit'],
