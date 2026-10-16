@@ -1,6 +1,6 @@
 # The collapse-panel button covers the first queue item
 
-**Status:** open
+**Status:** partial
 
 User ask (2026-10-04): the collapse panel button sits over the queue item and cuts out its top corner. Fix it.
 
@@ -13,8 +13,13 @@ User ask (2026-10-04): the collapse panel button sits over the queue item and cu
 ## Plan
 
 - [ ] 1. Reproduce with a queue of several items in the mock app, expanded and collapsed, and capture it.
-- [ ] 2. Give the toggle its own space in the panel header (or pad the scroll area under it) so it never overlaps content. Check the left sidebar and the collapsed rail too.
-- [ ] 3. Update the `PlayerWorkspace` story and snapshots.
+- [x] 2. Give the toggle its own space in the panel header (or pad the scroll area under it) so it never overlaps content. Check the left sidebar and the collapsed rail too.
+- [x] 3. Update the `PlayerWorkspace` story and snapshots.
+
+## Landed (layout)
+
+- Shared `PlayerWorkspaceSidebar`: header row is `shrink-0` with `mb-3` when expanded; content flex child gets `min-h-0` + `pt-1` so the toggle row cannot sit on queue/nav items (left and right).
+- Still **partial** until visually verified on a queue with several items (hard to reproduce on web alone — see Tried).
 
 ## Tried (2026-10-05)
 
