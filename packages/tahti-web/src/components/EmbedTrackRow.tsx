@@ -11,6 +11,8 @@ import {
   type EmbedProvider,
 } from '../lib/embedSrc';
 import { usePlayerStore } from '../stores/playerStore';
+import { useHearthisEmbedClaim } from './HearthisEmbedHost';
+import { HearthisEmbedSurface } from './HearthisEmbedSurface';
 
 type Props = {
   title: string;
@@ -38,6 +40,7 @@ export function EmbedTrackRow({ title, provider, embedUri, className }: Props) {
   const playerId = `hearthis:${embedUri}`;
   const isCurrent = currentId === playerId;
   const isPlaying = isCurrent && (status === 'playing' || status === 'loading');
+  useHearthisEmbedClaim(provider === 'HEARTHIS' && isCurrent);
 
   if (!src) {
     return null;
@@ -68,7 +71,19 @@ export function EmbedTrackRow({ title, provider, embedUri, className }: Props) {
     <li
       className={`border-border overflow-hidden rounded-lg border ${className ?? ''}`}
     >
-      {embedOpen ? (
+      {provider === 'HEARTHIS' && isCurrent ? (
+        <div
+          className="relative max-h-28 overflow-hidden contain-paint"
+          data-testid="hearthis-row-embed"
+        >
+          <HearthisEmbedSurface
+            embedUri={embedUri}
+            title={title}
+            autoplay={isPlaying}
+            compact
+          />
+        </div>
+      ) : embedOpen ? (
         <iframe
           title={title}
           src={src}
@@ -93,7 +108,7 @@ export function EmbedTrackRow({ title, provider, embedUri, className }: Props) {
           <span className="min-w-0 flex-1">
             <span className="block truncate text-sm font-medium">{title}</span>
             <span className="text-foreground-secondary block truncate text-xs">
-              {isPlaying ? 'Playing in Tahti player' : `Listen on ${label}`}
+              {`Listen on ${label}`}
             </span>
           </span>
           <span className="text-foreground-secondary shrink-0 font-mono text-[10px] tracking-wide uppercase">

@@ -27,6 +27,7 @@ import { useAuthStore } from '../stores/authStore';
 import { useLayoutStore } from '../stores/layoutStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
+import { useHearthisEmbedClaimed } from './HearthisEmbedHost';
 import { HearthisEmbedSurface } from './HearthisEmbedSurface';
 import { PlayerLiveBadge } from './PlayerSeekBar';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
@@ -87,6 +88,7 @@ export function ConnectedPlayerBar() {
   const isPlaying = status === 'playing' || status === 'loading';
   const isLoading = status === 'loading';
   const hearthisEmbed = playable?.embed;
+  const hearthisHostedInRow = useHearthisEmbedClaimed();
 
   useEffect(() => {
     if (!signedOutPopoverOpen) {
@@ -286,12 +288,12 @@ export function ConnectedPlayerBar() {
       </div>
     );
 
-  const hearthisPanel = hearthisEmbed ? (
-    <div
-      className="border-border max-h-36 shrink-0 overflow-hidden border-t px-3 py-1.5"
-      data-testid="hearthis-player-embed"
-    >
-      <div className="mx-auto max-w-3xl">
+  const hearthisFallback =
+    hearthisEmbed && !hearthisHostedInRow ? (
+      <div
+        className="border-border max-h-28 w-[min(100%,20rem)] shrink-0 overflow-hidden rounded-lg border"
+        data-testid="hearthis-player-embed"
+      >
         <HearthisEmbedSurface
           embedUri={hearthisEmbed.embedUri}
           title={title}
@@ -299,18 +301,14 @@ export function ConnectedPlayerBar() {
           compact
         />
       </div>
-      <p className="text-foreground-secondary mt-1 text-center text-[11px]">
-        Playback is controlled by the hearthis.at widget.
-      </p>
-    </div>
-  ) : null;
+    ) : null;
 
   if (isMobile) {
     return (
       <div className="flex w-full shrink-0 flex-col">
         {waveform}
-        {hearthisPanel}
         <div className="flex w-full items-center gap-3 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+          {hearthisFallback}
           <Button
             variant="text"
             size="flexible"
@@ -320,7 +318,7 @@ export function ConnectedPlayerBar() {
             aria-label="Open full-screen player"
             data-testid="expand-full-screen-player"
           >
-            {coverUrl ? (
+            {!hearthisFallback && coverUrl ? (
               <MediaArtwork src={coverUrl} size="sm" className="shrink-0" />
             ) : null}
             <span className="min-w-0">
@@ -349,42 +347,62 @@ export function ConnectedPlayerBar() {
   return (
     <div className="flex w-full shrink-0 flex-col">
       {waveform}
-      {hearthisPanel}
       <PlayerBar
         left={
           <div className="flex min-w-0 items-center gap-2">
-            <PlayerBar.NowPlaying
-              title={title}
-              artist={artist}
-              coverUrl={coverUrl}
-              action={isRealLive ? <PlayerLiveBadge /> : undefined}
-              onTitleClick={
-                openRadioStation ??
-                (isLive
-                  ? undefined
-                  : () => setWaveformExpanded((expanded) => !expanded))
-              }
-              onArtistClick={
-                openRadioStation ??
-                (playable?.kind === 'radio'
-                  ? artistSlug === TAHTI_RADIO_SLUG
-                    ? () => {
-                        void navigate({
-                          to: '/channel/$slug',
-                          params: { slug: artistSlug },
-                        });
-                      }
-                    : undefined
-                  : artistSlug
-                    ? () => {
-                        void navigate({
-                          to: '/u/$username',
-                          params: { username: artistSlug },
-                        });
-                      }
-                    : undefined)
-              }
-            />
+            {hearthisFallback ? (
+              <div className="flex min-w-0 items-center gap-2">
+                {hearthisFallback}
+                <div className="min-w-0">
+                  <div
+                    className="truncate text-sm font-semibold tracking-tight"
+                    title={title}
+                  >
+                    {title}
+                  </div>
+                  <div
+                    className="text-foreground-secondary truncate text-xs"
+                    title={artist}
+                  >
+                    {artist}
+                  </div>
+                </div>
+                {isRealLive ? <PlayerLiveBadge /> : null}
+              </div>
+            ) : (
+              <PlayerBar.NowPlaying
+                title={title}
+                artist={artist}
+                coverUrl={coverUrl}
+                action={isRealLive ? <PlayerLiveBadge /> : undefined}
+                onTitleClick={
+                  openRadioStation ??
+                  (isLive
+                    ? undefined
+                    : () => setWaveformExpanded((expanded) => !expanded))
+                }
+                onArtistClick={
+                  openRadioStation ??
+                  (playable?.kind === 'radio'
+                    ? artistSlug === TAHTI_RADIO_SLUG
+                      ? () => {
+                          void navigate({
+                            to: '/channel/$slug',
+                            params: { slug: artistSlug },
+                          });
+                        }
+                      : undefined
+                    : artistSlug
+                      ? () => {
+                          void navigate({
+                            to: '/u/$username',
+                            params: { username: artistSlug },
+                          });
+                        }
+                      : undefined)
+                }
+              />
+            )}
             {soundId && playable && (
               <AddToPlaylistButton
                 soundId={soundId}

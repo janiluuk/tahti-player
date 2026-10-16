@@ -5805,3 +5805,20 @@ In Channel Designer, the identity pad no longer wraps bio ClampedText as role=bu
 ## 2026-10-16 — Channel block rhythm and quiet Pinned eyebrow
 
 Channel page column and track-block gaps are slightly tighter (`gap-2` / `gap-4`), and comments no longer add an extra `mt-8`, so stage, tracks, upcoming and comments read as one scroll. Pinned and Catalog use a new muted `Eyebrow` tone (`text-foreground-secondary`). Bumped `packages/tahti-web/package.json` to `0.0.147`.
+
+## 2026-10-16 — hearthis embed in the track play-control box (0.0.149)
+
+Playing a hearthis.at track no longer mounts a full-width strip above the
+bottom player bar. The compact widget lives next to the Library row play
+button (`SoundRow`) or inside an `EmbedTrackRow` card; a
+`HearthisEmbedHost` claim keeps a single iframe. When no row hosts it,
+a contained fallback sits in the PlayerBar left cluster. Bumped
+`packages/tahti-web/package.json` to `0.0.149`.
+
+## 2026-10-16 — hearthis embed stays in the row action box (0.0.150)
+
+Library Tracks mounts the hearthis widget inside `sound-row-actions` (play
+and the other row controls), with a capped width and paint containment so
+it cannot expand into a full-width band. Claim registration uses
+`useLayoutEffect` so the PlayerBar fallback never paints first. Bumped
+`packages/tahti-web/package.json` to `0.0.150`.

@@ -27,6 +27,18 @@ vi.mock('../../../components/StudioSoundRowMenu', () => ({
   StudioSoundRowMenu: () => null,
 }));
 
+vi.mock('../../../components/HearthisEmbedSurface', () => ({
+  HearthisEmbedSurface: ({ title }: { title: string }) => (
+    <div data-testid="hearthis-row-embed-surface">{title}</div>
+  ),
+}));
+
+vi.mock('../../../stores/playerStore', () => ({
+  usePlayerStore: (
+    select: (s: { currentId: string | null; status: string }) => unknown,
+  ) => select({ currentId: 'sound:s1', status: 'playing' }),
+}));
+
 const { retrySoundProcessing } = vi.hoisted(() => ({
   retrySoundProcessing: vi.fn(),
 }));
@@ -118,5 +130,24 @@ describe('SoundRow', () => {
     expect(
       screen.queryByRole('button', { name: 'Download Night Drive' }),
     ).toBeNull();
+  });
+
+  it('hosts the hearthis widget inside the row action box when that track is current', () => {
+    renderRow({
+      embedProvider: 'HEARTHIS',
+      embedUri: 'demo-track',
+      bannerUrl: 'https://example.com/cover.jpg',
+    });
+    const actions = screen.getByTestId('sound-row-actions');
+    const embed = screen.getByTestId('hearthis-row-embed');
+    expect(actions.contains(embed)).toBe(true);
+    expect(screen.getByTestId('hearthis-row-embed-surface').textContent).toBe(
+      'Night Drive',
+    );
+    expect(
+      screen.getByRole('button', {
+        name: 'Play Night Drive on hearthis.at',
+      }),
+    ).toBeTruthy();
   });
 });

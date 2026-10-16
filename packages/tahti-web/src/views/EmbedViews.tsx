@@ -15,6 +15,7 @@ import type {
 } from '../api/types';
 import { AudioEngine } from '../components/AudioEngine';
 import { ConnectedPlayerBar } from '../components/ConnectedPlayerBar';
+import { HearthisEmbedHostProvider } from '../components/HearthisEmbedHost';
 import { ListenHeartbeat } from '../components/ListenHeartbeat';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { useThemeStore } from '../plugins/themes';
@@ -26,12 +27,14 @@ function EmbedChrome({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className="bg-background text-foreground flex min-h-screen flex-col">
-      <AudioEngine />
-      <ListenHeartbeat />
-      <div className="flex-1 p-3">{children}</div>
-      <ConnectedPlayerBar />
-    </div>
+    <HearthisEmbedHostProvider>
+      <div className="bg-background text-foreground flex min-h-screen flex-col">
+        <AudioEngine />
+        <ListenHeartbeat />
+        <div className="flex-1 p-3">{children}</div>
+        <ConnectedPlayerBar />
+      </div>
+    </HearthisEmbedHostProvider>
   );
 }
 

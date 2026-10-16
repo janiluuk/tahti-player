@@ -63,6 +63,7 @@ import { AuthDialog } from './AuthDialog';
 import { ConnectedPlayerBar } from './ConnectedPlayerBar';
 import { ConnectedStatusBar } from './ConnectedStatusBar';
 import { FullScreenPlayer } from './FullScreenPlayer';
+import { HearthisEmbedHostProvider } from './HearthisEmbedHost';
 import { ListenHeartbeat } from './ListenHeartbeat';
 import { MobileBottomNav, MobileDrawer } from './MobileChrome';
 import { NotificationToasts } from './NotificationToasts';
@@ -508,76 +509,29 @@ export function AppShell() {
   ]);
 
   return (
-    <PlayerShell className={isMobile ? 'tahti-mobile-shell' : undefined}>
-      <SkipToContent />
-      {!fullScreenPlayerOpen && (
-        <AppTopNav
-          showMenuButton={isMobile}
-          onOpenMenu={() => setMobileNavOpen(true)}
-        />
-      )}
-      <AmbientBackground />
-      <NotificationToasts />
+    <HearthisEmbedHostProvider>
+      <PlayerShell className={isMobile ? 'tahti-mobile-shell' : undefined}>
+        <SkipToContent />
+        {!fullScreenPlayerOpen && (
+          <AppTopNav
+            showMenuButton={isMobile}
+            onOpenMenu={() => setMobileNavOpen(true)}
+          />
+        )}
+        <AmbientBackground />
+        <NotificationToasts />
 
-      <AudioEngine />
-      <ListenHeartbeat />
+        <AudioEngine />
+        <ListenHeartbeat />
 
-      {isMobile ? (
-        <div className="tahti-ambient-surface bg-background relative flex min-h-0 flex-1 flex-col overflow-hidden">
-          <main
-            id={MAIN_CONTENT_ID}
-            tabIndex={-1}
-            className={cn(
-              'min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto outline-none',
-              MAIN_CONTENT_PADDING,
-            )}
-            data-studio-shell
-          >
-            {studioAccess && getStudioPrimaryRoute(pathname) ? (
-              <StudioNav current={navigationLocation} />
-            ) : null}
-            <RouteContent>
-              <RouteTransition
-                key={userId ?? 'anonymous'}
-                fast={fastNavigationRoute}
-              />
-            </RouteContent>
-          </main>
-          {!fullScreenPlayerOpen && <ConnectedPlayerBar />}
-          {!mobileNavHidden && (
-            <MobileBottomNav
-              onOpenMore={() => setMobileNavOpen(true)}
-              moreOpen={mobileNavOpen}
-            />
-          )}
-        </div>
-      ) : (
-        <PlayerWorkspace className="tahti-ambient-surface">
-          <PlayerWorkspace.LeftSidebar
-            width={leftWidth}
-            isCollapsed={leftCollapsed}
-            onWidthChange={setLeftWidth}
-            onToggle={toggleLeft}
-          >
-            <SidebarNavItems compact={leftCollapsed} />
-          </PlayerWorkspace.LeftSidebar>
-
-          {/*
-            Padding lives on Main (outside the scrollport) so titles keep
-            breathing room from the pane edge while content scrolls.
-          */}
-          <PlayerWorkspace.Main
-            className={cn(
-              'tahti-ambient-surface min-h-0 min-w-0 overflow-hidden',
-              !fullBleedRoute && MAIN_CONTENT_PADDING,
-            )}
-          >
-            <div
+        {isMobile ? (
+          <div className="tahti-ambient-surface bg-background relative flex min-h-0 flex-1 flex-col overflow-hidden">
+            <main
               id={MAIN_CONTENT_ID}
               tabIndex={-1}
               className={cn(
-                'h-full min-w-0 overflow-x-hidden overflow-y-auto outline-none',
-                fullBleedRoute && MAIN_CONTENT_PADDING,
+                'min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto outline-none',
+                MAIN_CONTENT_PADDING,
               )}
               data-studio-shell
             >
@@ -590,59 +544,108 @@ export function AppShell() {
                   fast={fastNavigationRoute}
                 />
               </RouteContent>
-            </div>
-          </PlayerWorkspace.Main>
-
-          {userId && (
-            <PlayerWorkspace.RightSidebar
-              width={rightWidth}
-              isCollapsed={rightCollapsed}
-              onWidthChange={setRightWidth}
-              onToggle={toggleRight}
-              headerActions={<RightRailHeaderActions />}
+            </main>
+            {!fullScreenPlayerOpen && <ConnectedPlayerBar />}
+            {!mobileNavHidden && (
+              <MobileBottomNav
+                onOpenMore={() => setMobileNavOpen(true)}
+                moreOpen={mobileNavOpen}
+              />
+            )}
+          </div>
+        ) : (
+          <PlayerWorkspace className="tahti-ambient-surface">
+            <PlayerWorkspace.LeftSidebar
+              width={leftWidth}
+              isCollapsed={leftCollapsed}
+              onWidthChange={setLeftWidth}
+              onToggle={toggleLeft}
             >
-              <RightRailPanel isCollapsed={rightCollapsed} />
-            </PlayerWorkspace.RightSidebar>
-          )}
-        </PlayerWorkspace>
-      )}
+              <SidebarNavItems compact={leftCollapsed} />
+            </PlayerWorkspace.LeftSidebar>
 
-      {!isMobile && !fullScreenPlayerOpen && <ConnectedPlayerBar />}
-      {!isMobile && <ConnectedStatusBar />}
-      <FullScreenPlayer />
-      <AuthDialog />
-      <DeferredDialogs />
-      <PageTourSpotlight />
-      <Toaster position="bottom-right" richColors closeButton />
+            {/*
+            Padding lives on Main (outside the scrollport) so titles keep
+            breathing room from the pane edge while content scrolls.
+          */}
+            <PlayerWorkspace.Main
+              className={cn(
+                'tahti-ambient-surface min-h-0 min-w-0 overflow-hidden',
+                !fullBleedRoute && MAIN_CONTENT_PADDING,
+              )}
+            >
+              <div
+                id={MAIN_CONTENT_ID}
+                tabIndex={-1}
+                className={cn(
+                  'h-full min-w-0 overflow-x-hidden overflow-y-auto outline-none',
+                  fullBleedRoute && MAIN_CONTENT_PADDING,
+                )}
+                data-studio-shell
+              >
+                {studioAccess && getStudioPrimaryRoute(pathname) ? (
+                  <StudioNav current={navigationLocation} />
+                ) : null}
+                <RouteContent>
+                  <RouteTransition
+                    key={userId ?? 'anonymous'}
+                    fast={fastNavigationRoute}
+                  />
+                </RouteContent>
+              </div>
+            </PlayerWorkspace.Main>
 
-      <MobileDrawer
-        open={mobileNavOpen}
-        title="Navigate"
-        side="left"
-        onClose={() => setMobileNavOpen(false)}
-      >
-        <div
-          className="flex flex-col gap-1"
-          onClick={() => setMobileNavOpen(false)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              setMobileNavOpen(false);
-            }
-          }}
-          role="presentation"
+            {userId && (
+              <PlayerWorkspace.RightSidebar
+                width={rightWidth}
+                isCollapsed={rightCollapsed}
+                onWidthChange={setRightWidth}
+                onToggle={toggleRight}
+                headerActions={<RightRailHeaderActions />}
+              >
+                <RightRailPanel isCollapsed={rightCollapsed} />
+              </PlayerWorkspace.RightSidebar>
+            )}
+          </PlayerWorkspace>
+        )}
+
+        {!isMobile && !fullScreenPlayerOpen && <ConnectedPlayerBar />}
+        {!isMobile && <ConnectedStatusBar />}
+        <FullScreenPlayer />
+        <AuthDialog />
+        <DeferredDialogs />
+        <PageTourSpotlight />
+        <Toaster position="bottom-right" richColors closeButton />
+
+        <MobileDrawer
+          open={mobileNavOpen}
+          title="Navigate"
+          side="left"
+          onClose={() => setMobileNavOpen(false)}
         >
-          <SidebarNavItems compact={false} />
-        </div>
-      </MobileDrawer>
+          <div
+            className="flex flex-col gap-1"
+            onClick={() => setMobileNavOpen(false)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                setMobileNavOpen(false);
+              }
+            }}
+            role="presentation"
+          >
+            <SidebarNavItems compact={false} />
+          </div>
+        </MobileDrawer>
 
-      <MobileDrawer
-        open={bottomQueueOpen}
-        title="Queue"
-        fullScreen
-        onClose={() => setBottomQueueOpen(false)}
-      >
-        <SidebarQueuePanel />
-      </MobileDrawer>
-    </PlayerShell>
+        <MobileDrawer
+          open={bottomQueueOpen}
+          title="Queue"
+          fullScreen
+          onClose={() => setBottomQueueOpen(false)}
+        >
+          <SidebarQueuePanel />
+        </MobileDrawer>
+      </PlayerShell>
+    </HearthisEmbedHostProvider>
   );
 }

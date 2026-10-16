@@ -9,9 +9,9 @@
 
 ## Done in code
 
-1. `ConnectedPlayerBar`: skip waveform when embed-only; `shrink-0` + `max-h-36 overflow-hidden` hearthis strip; no full-bleed secondary fill.
-2. `HearthisEmbedSurface` / `hearthisEmbedSrc({ compact })`: style-1 + forced iframe max height for the bar.
-3. `SoundRow`: `useDominantColor(bannerUrl)` ambient wash, `MediaArtwork` thumb, inline iframe wrapped with `basis-full w-full`.
+1. `ConnectedPlayerBar`: skip waveform when embed-only (strip removed — see `hearthis-embed-in-play-container.md`).
+2. `HearthisEmbedSurface` / `hearthisEmbedSrc({ compact })`: style-1 + forced iframe max height.
+3. `SoundRow`: `useDominantColor(bannerUrl)` ambient wash, `MediaArtwork` thumb; hearthis widget hosts in the play-control box when current.
 
 ## Left
 
