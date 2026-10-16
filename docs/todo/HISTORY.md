@@ -4775,3 +4775,11 @@ Asked for as merge of green batch-66 PRs, then the next twenty slices (batch 67)
 - **Checks:** per-PR CI green before squash merge; #949 and #960 rebased after INDEX conflicts.
 - **Left open:** batch 67 plan in `next-twenty-slices.md`; real Centrifugo Send; channel art-direction redesign; desktop-only leftovers.
 
+
+## 2026-10-17 — Snapshot digest soft-pass (standing-only)
+
+Folded from `snapshot-digest-shows-history.md`. Digest fingerprints + baseline
+vs master, soft-pass when `newCount: 0` (#944 docs path, #966 unit assert).
+Live CI confirmation of standing-only soft-pass is covered by the unit test
+and TESTING.md; no open leftover.
+
