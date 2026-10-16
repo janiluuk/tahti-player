@@ -108,3 +108,19 @@ export const PhoneLightTheme: Story = {
   decorators: [withMockAuth(MOCK_USERS.listener)],
   play: async ({ canvasElement }) => expectReadableTrackTitles(canvasElement),
 };
+
+/** Offline artist channel on a phone in light mode — stage empty, archive still readable. */
+export const OfflinePhoneLight: Story = {
+  args: { slug: 'midnight-cartography' },
+  globals: { themeId: 'nuclear:aurora', themeMode: 'light' },
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  decorators: [
+    withTahtiRouter('/channel/midnight-cartography'),
+    withMockAuth(MOCK_USERS.listener),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByText('Off air')).toBeVisible();
+    await expectReadableTrackTitles(canvasElement);
+  },
+};
