@@ -4736,3 +4736,7 @@ Asked for as "after these do 20 more slices and add pr, merge all".
 - **Batch 2 merged (#919–#940):** aligned upload formats; modal navigate + full-page link; AddToMusic upload hint; removed dead top-nav upload modal; upload/collections/channel/nav/go-live/chat tests; channel `?tab=setup` + radio inner tabs in URL; mock series episode preflight + postGoLive episode; fan chat force-mock Send; tracker docs.
 - **Folded:** `e2e-lifecycle-20-slices.md`, `e2e-lifecycle-batch-2.md`, `mock-live-session-survives-reload.md`, `collections-design-opens-created.md`, `upload-dual-ui-unify.md`, `artist-lifecycle-e2e-journey.md` (journey ran; fixes above).
 - **Left open:** `fan-live-chat-discoverable.md` (CTA/mock Send shipped; real Centrifugo still API), `artist-lifecycle-p2-ux.md` item 2 (nested Broadcast chrome). Item 1 default Setup and item 3 series/checklist covered by #908/#913/#923/#926.
+
+## 2026-10-16 - Fix Shift+click Play CI
+
+Folded `fix-shift-play-ci.md`. clickRowPlay uses aria-label prefix (#929); player snapshots updated with Shift+click queue labels (#918). Master CI follow-ups (fi onAir, chat story, mock collection re-seed) in the same fix PR.

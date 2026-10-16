@@ -164,13 +164,31 @@ export type MockOverrides = {
 
 let active: MockOverrides = {};
 
+const overrideResetListeners = new Set<() => void>();
+
+/** Mutable mock stores (e.g. collections) re-seed when Storybook swaps overrides. */
+export function onMockOverridesReset(listener: () => void): () => void {
+  overrideResetListeners.add(listener);
+  return () => {
+    overrideResetListeners.delete(listener);
+  };
+}
+
+function notifyMockOverridesReset() {
+  for (const listener of overrideResetListeners) {
+    listener();
+  }
+}
+
 /** Replaces the whole registry; pass `{}` to clear it. */
 export function setMockOverrides(overrides: MockOverrides): void {
   active = overrides;
+  notifyMockOverridesReset();
 }
 
 export function resetMockOverrides(): void {
   active = {};
+  notifyMockOverridesReset();
 }
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {

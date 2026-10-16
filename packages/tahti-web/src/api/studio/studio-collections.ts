@@ -1,5 +1,5 @@
 import type { FetchMeta } from '../client';
-import { mockFixture } from '../mock-overrides';
+import { mockFixture, onMockOverridesReset } from '../mock-overrides';
 import { apiErrorMeta, isForceMock } from '../mode';
 import type {
   CollectionTrackSortMode,
@@ -51,6 +51,10 @@ const MOCK_COLLECTION_SEED: StudioCollection[] = [
 
 /** Mutable mock list so create/Design matches the collection just made. */
 let mockCollectionStore: StudioCollection[] | null = null;
+
+onMockOverridesReset(() => {
+  mockCollectionStore = null;
+});
 
 function getMockCollectionStore(): StudioCollection[] {
   if (!mockCollectionStore) {
