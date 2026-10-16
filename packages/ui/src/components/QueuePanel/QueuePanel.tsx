@@ -15,6 +15,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type ReactNode,
 } from 'react';
 
 import type { QueueItem as QueueItemType } from '@tahti-player/model';
@@ -123,6 +124,7 @@ export type QueuePanelProps = {
     noCandidates?: string;
     candidateFailed?: string;
   };
+  emptyAction?: ReactNode;
   classes?: {
     root?: string;
     list?: string;
@@ -144,6 +146,7 @@ const QueuePanelView: FC<QueuePanelProps> = ({
   isLiked,
   onToggleLike,
   labels,
+  emptyAction,
   classes,
 }) => {
   const itemIds = useMemo(() => items.map((item) => item.id), [items]);
@@ -306,6 +309,7 @@ const QueuePanelView: FC<QueuePanelProps> = ({
             )}
           </div>
         )}
+        {emptyAction}
       </div>
     );
   }

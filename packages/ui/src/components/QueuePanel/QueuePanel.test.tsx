@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { QueueItem as QueueItemType } from '@tahti-player/model';
@@ -77,6 +77,22 @@ describe('QueuePanel', () => {
       />,
     );
     expect(container.firstChild).toMatchSnapshot();
+  });
+
+  it('renders emptyAction under the empty labels', () => {
+    render(
+      <QueuePanel
+        items={[]}
+        labels={mockLabels}
+        emptyAction={<button type="button">Browse Discover</button>}
+      />,
+    );
+    expect(screen.getByTestId('queue-empty-state').textContent).toContain(
+      'Browse Discover',
+    );
+    expect(
+      screen.getByRole('button', { name: 'Browse Discover' }),
+    ).toBeTruthy();
   });
 
   it('(Snapshot) renders collapsed empty state', () => {
