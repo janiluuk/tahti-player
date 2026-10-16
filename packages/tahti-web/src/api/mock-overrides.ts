@@ -11,6 +11,7 @@ import type { PublicPressKitImage } from './artist-settings/press-kit-images';
 import type { ChannelVisual, ChannelVisualPreset } from './channel-design';
 import type { PublicChannelSchedule } from './channel-schedule';
 import type { ArtistEvent } from './events';
+import type { IntegrationView } from './integrations';
 import type { LikedTrack } from './likes';
 import type { LiveTracklistEntry } from './live-tracklist';
 import type { MessageContact } from './message-contacts';
@@ -80,6 +81,8 @@ export interface MockFixtures {
     data: PublicCollection;
     args: [slug: string, username: string];
   };
+  /** A function override that throws surfaces the Settings integrations error. */
+  meIntegrations: { data: IntegrationView[]; args: [] };
   conversation: { data: ConversationDetail | null; args: [id: string] };
   conversations: { data: ConversationSummary[]; args: [] };
   directory: { data: ChannelDirectoryResponse; args: [] };

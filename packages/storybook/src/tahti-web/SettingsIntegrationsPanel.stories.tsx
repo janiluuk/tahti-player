@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import * as integrationsApi from '@tahti-web/api/integrations';
 import { useDesktopDiscordStore } from '@tahti-web/lib/discord/presence';
 import { useDesktopJamStore } from '@tahti-web/lib/jam/desktop';
 import { useDesktopMcpStore } from '@tahti-web/lib/mcp/desktop';
 import { useDesktopMpdStore } from '@tahti-web/lib/mpd/desktop';
 import { IntegrationsPanel } from '@tahti-web/views/settings/panels/IntegrationsPanel';
-import { expect, spyOn, userEvent, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { withMockAuth, withPageSurface } from './_lib/decorators';
+import { mockData } from './_lib/mock-data';
 
 const meta: Meta<typeof IntegrationsPanel> = {
   title: 'Tahti/Settings/IntegrationsPanel',
@@ -29,15 +29,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
+/** Mock fetchMeIntegrations throws via meIntegrations override (no ESM spyOn). */
 export const IntegrationsApiError: Story = {
-  beforeEach: () => {
-    const fetch = spyOn(
-      integrationsApi,
-      'fetchMeIntegrations',
-    ).mockRejectedValue(new Error('Service unavailable'));
-    return () => {
-      fetch.mockRestore();
-    };
+  parameters: {
+    mockData: mockData({
+      meIntegrations: () => {
+        throw new Error('Service unavailable');
+      },
+    }),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

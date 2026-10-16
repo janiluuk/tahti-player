@@ -1,4 +1,5 @@
 import { apiBase } from './http';
+import { mockFixture } from './mock-overrides';
 import { isForceMock } from './mode';
 
 async function requestJson<T>(
@@ -57,7 +58,7 @@ export async function fetchMeIntegrations(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: [
+      data: mockFixture('meIntegrations', [
         {
           slug: 'listenbrainz',
           name: 'ListenBrainz',
@@ -78,7 +79,7 @@ export async function fetchMeIntegrations(): Promise<{
           installed: false,
           connected: mockInstalled.has('lastfm'),
         },
-      ],
+      ]),
       source: 'mock',
     };
   }
