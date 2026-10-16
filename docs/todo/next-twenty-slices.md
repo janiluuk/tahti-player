@@ -13,7 +13,7 @@ Source: Storybook `Missing states:`, `MOCKS.md` thin spots, and leftover visual-
 | 1 | Hearthis embed: Storybook play on Library Tracks asserts compact iframe in the row action box (no full-width PlayerBar strip) | `hearthis-embed-in-play-container.md` | |
 | 2 | Fold hearthis + library ambient todos after slice 1 (Storybook covers visual check) | `hearthis-embed-in-play-container.md`, `library-tracks-embed-layout-ambient.md` | |
 | 3 | Fold batch 66 plan leftovers + `artist-lifecycle-p2-ux.md` (go-live chrome shipped #948); this plan file is batch 67 | docs fold | this PR |
-| 4 | Fold `snapshot-digest-shows-history.md` (soft-pass unit + docs shipped #944/#966) | `snapshot-digest-shows-history.md` | |
+| 4 | Fold `snapshot-digest-shows-history.md` (soft-pass unit + docs shipped #944/#966) | `snapshot-digest-shows-history.md` | (this PR) |
 | 5 | Mock search: `buildMockSearch` returns collection hits from fixtures (today `collections: []`) | `MOCKS.md` | |
 | 6 | GlobalSearch: Storybook play asserts Collections group when query matches a mock collection | Storybook / search | |
 | 7 | DM `searchUsers` fixture expansion + Messages stories (multi-hit + empty) | `MOCKS.md` | |
