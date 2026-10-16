@@ -14,7 +14,13 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { TabLabel, Tabs, TopList, ViewShell } from '@tahti-player/ui';
+import {
+  ButtonLink,
+  TabLabel,
+  Tabs,
+  TopList,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchStudioSounds } from '../api/studio';
 import {
@@ -24,6 +30,7 @@ import {
   type StorageUsage,
 } from '../api/studio-extras';
 import { DesktopLibraryPanel } from '../components/DesktopLibraryPanel';
+import { PageEmpty } from '../components/PageStates';
 import {
   PHONE_SCROLL_TAB_LIST,
   useSelectedTabInView,
@@ -253,6 +260,8 @@ function formatBytes(bytes: number): string {
 
 function LibraryStats() {
   const navigate = useNavigate();
+  const user = useAuthStore((s) => s.user);
+  const canUpload = hasStudioAccess(user);
   const [topTracks, setTopTracks] = useState<StatsTopTrack[]>([]);
   const [storage, setStorage] = useState<StorageUsage | null>(null);
   const [soundCount, setSoundCount] = useState(0);
@@ -340,6 +349,33 @@ function LibraryStats() {
                 });
               },
             }))}
+          />
+        </div>
+      ) : soundCount === 0 ? (
+        <div className="mt-4">
+          <PageEmpty
+            title="Your catalog is empty"
+            description={
+              canUpload
+                ? 'Upload a track to start filling Library, or browse Discover for inspiration.'
+                : 'Browse Discover to find music, or become an artist to upload your own.'
+            }
+            action={
+              <div className="flex flex-wrap gap-2">
+                {canUpload ? (
+                  <ButtonLink to="/library/upload" size="sm">
+                    Upload
+                  </ButtonLink>
+                ) : null}
+                <ButtonLink
+                  to="/discover"
+                  size="sm"
+                  variant={canUpload ? 'secondary' : undefined}
+                >
+                  Discover
+                </ButtonLink>
+              </div>
+            }
           />
         </div>
       ) : null}
