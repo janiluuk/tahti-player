@@ -1,4 +1,4 @@
-# Next twenty slices — batch 63 (UX / UI)
+# Next twenty slices — batch 65 (UX / UI)
 
 **Status:** open
 
@@ -6,69 +6,81 @@ Plan date: 2026-10-16. One pull request per slice unless a stack note says
 otherwise. Prefer mock-app checks at 1366 and 390 px, plus the usual
 type-check / eslint / Prettier / touched tests.
 
-The batch 50 leftovers (region inpaint, reference audio, Chimera, live bus FX)
-stay deferred — they need generation / broadcast wiring. Phone drawer scrim
-already shipped as a library `Button` (#780). This batch concentrates on
-listener-facing polish found on the channel page and empty / chrome surfaces.
+Batch 63 (channel offline stage, track toolbar, empties, queue pad, radio /
+Discover density, Studio home / Go Live, Settings naming) largely shipped in
+the sixty-fourth HISTORY fold (#849–#873). Leftover PRs from that batch
+(#881–#884) land first below, then fresh polish from HISTORY leftovers and
+listen / channel chrome.
 
-## Channel page (redesign leftovers)
+## Land batch-63 leftovers
 
-1. [ ] **Offline stage is content, not a void** — When a channel is offline and
-    has no now-playing, replace the large dim `WifiOff` block with a short
-    EmptyState (“Off air” + one line) and a “Browse tracks” jump to `#channel-block-sound`.
-2. [ ] **One track toolbar on the channel** — Pinned + catalog each render a
-    full Filter / Play-all bar. Keep the toolbar on catalog only; pinned rows
-    stay a plain table (`filterable`/`playAll`/`addAllToQueue` off).
-3. [ ] **Quieter track table headers on channel colour schemes** — Channel
-    track headers should not fight the brand banner (softer header surface /
-    contrast) while keeping sortable columns readable.
-4. [ ] **Status row sits with the channel** — Move Offline / Share / RSS /
-    Report into the hero identity row so they are not a floating strip above
-    the banner.
-5. [ ] **Phone channel actions overflow** — At ≤640 px, fold Share / RSS /
-    Report (and owner Edit when present) into one “More” menu so the hero
-    stays one composition.
-6. [ ] **Channel comments quieter empty** — Empty comments use `EmptyState`
-    with a clear “Be the first” prompt (signed-out → sign-in).
-7. [ ] **Upcoming shows empty** — Off-air channels with no booked shows get a
-    short empty line, not a blank gap.
+1. [ ] **Quieter track table headers** — Soften channel TrackTable header
+    surface so it does not fight the brand banner (#881).
+2. [ ] **Channel hero status row** — Offline / Share / RSS / Report sit in the
+    hero identity row, not a floating strip (#882).
+3. [ ] **Upcoming shows empty** — Off-air channels with no booked shows get a
+    short empty line (#883).
+4. [ ] **Player programme titles** — Native `title` on truncated now-playing
+    title / artist so hover reveals the full programme (#884).
 
-## Empty states and findability
+## Contrast and phone collisions
 
-8. [ ] **Search empty → somewhere useful** — “No results” offers Discover and
-    Radio links (and clears the query).
-9. [ ] **Favorites empty CTA** — Point to Discover when the list is empty.
-10. [ ] **Feed empty CTA** — Point to Discover / artists to follow.
-11. [ ] **Messages empty CTA** — Point to start a conversation or Discover.
-12. [ ] **Library overview empty** — When tracks/collections are empty, one
-    clear next step (Upload for artists, Discover for listeners).
-13. [ ] **Jam join empty / error copy** — Friendlier empty and bad-code states
-    on `/jam`.
+5. [ ] **Subscribe @handle contrast** — On `/subscribe/<user>` the `@handle`
+    is ~1.3:1 on teal; bump to ≥4.5:1 without losing the brand wash.
+6. [ ] **Channel designer Show more overlap** — At 390 px the designer’s
+    “Edit backdrop design” control must not contain the bio “Show more”
+    button (pointer / nesting).
+7. [ ] **Phone channel More menu** — At ≤640 px fold Share / RSS / Report
+    (and owner Edit when present) into one overflow so the hero stays one
+    composition (batch 63 item 5, still open).
 
-## Player chrome and listen surfaces
+## Channel page composition
 
-14. [ ] **Queue collapse overlap** — Pad the queue scroll area under the
-    shared “Collapse panel” control in `PlayerWorkspaceSidebar` so the first
-    row never sits under the button (covers desktop + web rails).
-15. [ ] **Bottom player radio programme** — Ensure the secondary programme
-    line truncates with a `title` and does not shove transport controls.
-16. [ ] **Radio directory cards** — Clearer now-playing / offline hierarchy on
-    `/radio` cards at phone width.
-17. [ ] **Discover phone density** — Slightly tighter card gaps and one-line
-    titles on 390 px so more of the page is music, not chrome.
+8. [ ] **Channel blocks breathing room** — Tighten vertical rhythm between
+    stage, tracks, comments and upcoming so the page reads as one scroll,
+    not stacked cards with equal gaps.
+9. [ ] **Channel comments composer focus** — Signed-in empty comments: primary
+    field focus ring and “Post” sit on one row; signed-out keeps the single
+    sign-in CTA from #851.
+10. [ ] **Pinned block label** — When pinned tracks exist, show a quiet
+    “Pinned” eyebrow above the table so catalog and pinned are distinct
+    without a second toolbar.
 
-## Studio / settings polish
+## Listen / Discover / Radio
 
-18. [ ] **Studio home next actions** — First viewport: one primary CTA group
-    (Upload / Go Live / Edit channel) instead of equal-weight tiles.
-19. [ ] **Go Live prep checklist** — Prep tab shows a short ready/not-ready
-    list with links into the missing steps.
-20. [ ] **Settings naming call** — Keep “Channel & chat”; document that
-    moderators remain chat-only until tahti-org adds a channel-edit role.
-    Close the two open questions in `settings-audit.md`.
+11. [ ] **Listen “Now” badge contrast** — StationCardSubtitle “Now” on live
+    cards must meet 4.5:1 on the card surface at both themes.
+12. [ ] **Radio directory offline copy** — Offline station cards use one short
+    line (“Off air”) instead of a blank now-playing slot.
+13. [ ] **Discover section jump** — Keep section anchors; ensure the first
+    in-page jump target clears the sticky top nav (scroll-margin).
+14. [ ] **Favorites / Feed empty already shipped** — Verify links; if a surface
+    still has a bare EmptyState with no CTA, add Discover.
+
+## Library and account chrome
+
+15. [ ] **Library overview listener empty** — Listeners with no tracks see
+    Discover (not Upload); artists keep Upload (#852 pattern).
+16. [ ] **Settings Channel & chat copy** — One sentence on Moderators tab that
+    moderators are chat-only until a channel-edit role exists (closes
+    settings-audit decisions in UI).
+17. [ ] **Profile self-view quiet chrome** — Own profile already hides
+    Follow/Subscribe (#869); drop any leftover Report/Block affordance in the
+    overflow if still present.
+
+## Player chrome
+
+18. [ ] **Queue empty CTA** — Empty queue offers Discover / Radio, matching
+    search empties.
+19. [ ] **Player bar metadata clamp** — Title + artist + programme never push
+    transport; single-line clamp with `title` already from #884.
+20. [ ] **Workspace sidebar section labels** — Queue / History / Likes headers
+    use the same quiet eyebrow weight so the rail is one language.
 
 ## Out of scope
 
-- Generation / inpaint / Chimera / live bus FX (batch 50 leftovers).
-- Full channel visual redesign with a new art direction (needs a reference).
+- Generation / inpaint / Chimera / live bus FX.
+- Full channel art-direction redesign (needs a reference).
+- Listener Stash tab decision (needs product call).
 - Finnish radio scrapers (API / ops).
+- CLI / desktop slices already open as #875–#880.
