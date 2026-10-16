@@ -553,7 +553,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                   subtitle={`${
                     radio.hlsUrl
                       ? (radio.nowPlaying?.title ?? '24/7 community stream')
-                      : 'Temporarily offline'
+                      : 'Off air'
                   }${
                     radio.nowPlaying?.artistName
                       ? ` · ${radio.nowPlaying.artistName}`

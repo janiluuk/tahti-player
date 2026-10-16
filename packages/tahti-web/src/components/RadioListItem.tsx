@@ -10,7 +10,7 @@ export type RadioListItemProps = {
   name: string;
   coverUrl?: string | null;
   /** Already-resolved status line — now-playing title/artist, "24/7
-   * community stream", or "Temporarily offline". */
+   * community stream", or "Off air". */
   subtitle: string;
   isPlaying: boolean;
   /** True when there's no live stream to play (e.g. no hlsUrl yet). */

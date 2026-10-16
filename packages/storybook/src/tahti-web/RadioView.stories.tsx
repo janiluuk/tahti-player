@@ -109,9 +109,7 @@ export const Offline: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('Tahti Radio is temporarily offline'),
-    ).toBeVisible();
+    await expect(await canvas.findByText('Off air')).toBeVisible();
     await expect(canvas.queryByText(/member relay/)).toBeNull();
   },
 };
