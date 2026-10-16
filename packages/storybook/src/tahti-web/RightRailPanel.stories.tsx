@@ -2,6 +2,7 @@ import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
 import { RightRailHeaderActions } from '@tahti-web/components/RightRailHeaderActions';
 import { RightRailPanel } from '@tahti-web/components/RightRailPanel';
 import { usePlayerStore } from '@tahti-web/stores/playerStore';
+import { expect, within } from 'storybook/test';
 
 import type { QueueItem } from '@tahti-player/model';
 import { PlayerWorkspace } from '@tahti-player/ui';
@@ -128,4 +129,28 @@ export const CollapsedEmpty: Story = {
   name: 'Collapsed, queue empty',
   decorators: [withRailState({ queue: [] })],
   args: { isCollapsed: true },
+};
+
+export const NoToggleOverlap: Story = {
+  name: 'Queue — collapse toggle clears first row',
+  decorators: [withRailState()],
+  render: () => <QueueBar isCollapsed={false} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const toggle = canvas.getByRole('button', { name: /Collapse panel/i });
+    const firstTitle = await canvas.findByText("I Can't Sleep");
+    const row =
+      firstTitle.closest('li') ??
+      firstTitle.closest('[role="listitem"]') ??
+      firstTitle.parentElement;
+    await expect(row).toBeTruthy();
+    const tBox = toggle.getBoundingClientRect();
+    const rBox = row!.getBoundingClientRect();
+    const overlaps =
+      tBox.left < rBox.right &&
+      tBox.right > rBox.left &&
+      tBox.top < rBox.bottom &&
+      tBox.bottom > rBox.top;
+    await expect(overlaps).toBe(false);
+  },
 };
