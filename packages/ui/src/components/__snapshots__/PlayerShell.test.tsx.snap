@@ -18,7 +18,7 @@ exports[`PlayerShell > matches snapshot with complete layout 1`] = `
         transition="[object Object]"
       >
         <span
-          class="flex flex-row items-center mb-2 justify-end"
+          class="flex shrink-0 flex-row items-center mb-3 justify-end"
         >
           <div>
             <button
@@ -57,7 +57,7 @@ exports[`PlayerShell > matches snapshot with complete layout 1`] = `
           </div>
         </span>
         <div
-          class="flex flex-1 flex-col overflow-hidden"
+          class="flex min-h-0 flex-1 flex-col overflow-hidden pt-1"
         />
         <div
           class="absolute top-0 bottom-0 w-1 cursor-col-resize transition-colors right-0"
@@ -73,7 +73,7 @@ exports[`PlayerShell > matches snapshot with complete layout 1`] = `
         transition="[object Object]"
       >
         <span
-          class="flex flex-row items-center mb-2 justify-start"
+          class="flex shrink-0 flex-row items-center mb-3 justify-start"
         >
           <div>
             <button
@@ -112,7 +112,7 @@ exports[`PlayerShell > matches snapshot with complete layout 1`] = `
           </div>
         </span>
         <div
-          class="flex flex-1 flex-col overflow-hidden"
+          class="flex min-h-0 flex-1 flex-col overflow-hidden pt-1"
         />
         <div
           class="absolute top-0 bottom-0 w-1 cursor-col-resize transition-colors left-0"
