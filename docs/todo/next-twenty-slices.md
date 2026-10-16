@@ -15,7 +15,7 @@ Source: Storybook `Missing states:`, `MOCKS.md` thin spots, and leftover visual-
 | 3 | Fold batch 66 plan leftovers + `artist-lifecycle-p2-ux.md` (go-live chrome shipped #948); this plan file is batch 67 | docs fold | this PR |
 | 4 | Fold `snapshot-digest-shows-history.md` (soft-pass unit + docs shipped #944/#966) | `snapshot-digest-shows-history.md` | (this PR) |
 | 5 | Mock search: `buildMockSearch` returns collection hits from fixtures (today `collections: []`) | `MOCKS.md` | |
-| 6 | GlobalSearch: Storybook play asserts Collections group when query matches a mock collection | Storybook / search | |
+| 6 | GlobalSearch: Storybook play asserts Collections group when query matches a mock collection | Storybook / search | (this PR) |
 | 7 | DM `searchUsers` fixture expansion + Messages stories (multi-hit + empty) | `MOCKS.md` | |
 | 8 | Richer mock studio archive seed (covers, visibility mix, second embed) | `MOCKS.md` | |
 | 9 | StudioCollectionsView Storybook: populated, filtered-empty, quick-create at 390 px | Storybook gap | |
