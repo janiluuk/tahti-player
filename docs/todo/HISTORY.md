@@ -4776,10 +4776,11 @@ Asked for as merge of green batch-66 PRs, then the next twenty slices (batch 67)
 - **Left open:** batch 67 plan in `next-twenty-slices.md`; real Centrifugo Send; channel art-direction redesign; desktop-only leftovers.
 
 
-## 2026-10-17 — Snapshot digest soft-pass (standing-only)
+## 2026-10-17 — Hearthis row embed + Library Tracks ambient (visual check folded)
 
-Folded from `snapshot-digest-shows-history.md`. Digest fingerprints + baseline
-vs master, soft-pass when `newCount: 0` (#944 docs path, #966 unit assert).
-Live CI confirmation of standing-only soft-pass is covered by the unit test
-and TESTING.md; no open leftover.
+Folded from `hearthis-embed-in-play-container.md` and
+`library-tracks-embed-layout-ambient.md`. Code shipped in #949 (row action-box
+host + layout claim) and #959 (mock ambient covers). Batch 67 #1 Storybook
+`StudioSoundsView/HearthisRowEmbed` (#969) covers the remaining visual check
+(compact iframe in `sound-row-actions`, not a PlayerBar strip).
 
