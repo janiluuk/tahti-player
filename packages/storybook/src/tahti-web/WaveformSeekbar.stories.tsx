@@ -10,7 +10,7 @@ const meta: Meta<typeof WaveformSeekbar> = {
     docs: {
       description: {
         component:
-          'Scrubbable waveform progress for the compact player bar (planned swap from PlayerBar.SeekBar). Production: Discover inline player today; ConnectedPlayerBar after the queue→right-rail work. Missing states: live/no-duration (use Live badge instead).',
+          'Scrubbable waveform progress for the compact player bar (planned swap from PlayerBar.SeekBar). Production: Discover inline player today; ConnectedPlayerBar after the queue→right-rail work.',
       },
     },
   },
@@ -72,4 +72,13 @@ export const WithPeaks: Story = {
       </div>
     );
   },
+};
+
+export const LiveNoDuration: Story = {
+  name: 'LiveWithoutDuration',
+  render: () => (
+    <div className="w-full max-w-xl">
+      <WaveformSeekbar trackId="story-live" progress={0} live className="h-8" />
+    </div>
+  ),
 };

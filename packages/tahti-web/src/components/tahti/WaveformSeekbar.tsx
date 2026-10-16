@@ -2,6 +2,7 @@ import { MessageCircleIcon } from 'lucide-react';
 import { useRef } from 'react';
 
 import { cn } from '../../lib/cn';
+import { PlayerLiveIndicator } from '../PlayerSeekBar';
 
 /** Flat dim bars for tracks with no decoded peaks — reads as "no waveform
  * data" instead of fabricated PRNG noise that looked like real audio. */
@@ -47,6 +48,7 @@ export function WaveformSeekbar({
   bars = BAR_COUNT,
   markers,
   onSeek,
+  live = false,
   playedColor,
   unplayedColor,
   className,
@@ -60,6 +62,8 @@ export function WaveformSeekbar({
   bars?: number;
   markers?: Array<{ fraction: number }>;
   onSeek?: (fraction: number) => void;
+  /** Live streams have no seekable duration — flat bars, Live badge, no scrub. */
+  live?: boolean;
   playedColor?: string;
   unplayedColor?: string;
   className?: string;
@@ -69,11 +73,12 @@ export function WaveformSeekbar({
   const heights = hasPeaks
     ? heightsFromPeaks(resamplePeaks(peaks!, bars))
     : emptyHeights(bars);
-  const clamped = Math.min(1, Math.max(0, progress));
-  const filledCount = Math.round(clamped * bars);
+  const clamped = live ? 0 : Math.min(1, Math.max(0, progress));
+  const filledCount = live ? 0 : Math.round(clamped * bars);
+  const seekEnabled = Boolean(onSeek) && !live;
 
   const seekAt = (clientX: number) => {
-    if (!onSeek || !ref.current) {
+    if (!seekEnabled || !ref.current) {
       return;
     }
     const rect = ref.current.getBoundingClientRect();
@@ -84,23 +89,23 @@ export function WaveformSeekbar({
     onSeek(fraction);
   };
 
-  return (
+  const waveform = (
     <div
       ref={ref}
-      role={onSeek ? 'slider' : undefined}
-      aria-label={onSeek ? 'Seek' : undefined}
-      aria-valuemin={onSeek ? 0 : undefined}
-      aria-valuemax={onSeek ? 100 : undefined}
-      aria-valuenow={onSeek ? Math.round(clamped * 100) : undefined}
-      data-waveform={hasPeaks ? 'peaks' : 'empty'}
+      role={seekEnabled ? 'slider' : undefined}
+      aria-label={seekEnabled ? 'Seek' : undefined}
+      aria-valuemin={seekEnabled ? 0 : undefined}
+      aria-valuemax={seekEnabled ? 100 : undefined}
+      aria-valuenow={seekEnabled ? Math.round(clamped * 100) : undefined}
+      data-waveform={live ? 'live' : hasPeaks ? 'peaks' : 'empty'}
       data-track-id={trackId}
       className={cn(
         'relative',
-        onSeek && 'cursor-pointer',
-        !hasPeaks && 'opacity-60',
-        className,
+        seekEnabled && 'cursor-pointer',
+        (!hasPeaks || live) && 'opacity-60',
+        live ? undefined : className,
       )}
-      onClick={onSeek ? (e) => seekAt(e.clientX) : undefined}
+      onClick={seekEnabled ? (e) => seekAt(e.clientX) : undefined}
     >
       <div className="flex h-full items-end gap-px">
         {heights.map((h, i) => (
@@ -126,6 +131,12 @@ export function WaveformSeekbar({
           />
         ))}
       </div>
+      {live ? (
+        <div
+          className="bg-stripes-diagonal pointer-events-none absolute inset-0 opacity-70"
+          aria-hidden
+        />
+      ) : null}
       {markers?.map((marker, index) => (
         <span
           key={`marker-${index}`}
@@ -139,4 +150,18 @@ export function WaveformSeekbar({
       ))}
     </div>
   );
+
+  if (live) {
+    return (
+      <div
+        className={cn('flex w-full flex-col gap-1', className)}
+        data-testid="waveform-seekbar-live"
+      >
+        <PlayerLiveIndicator />
+        {waveform}
+      </div>
+    );
+  }
+
+  return waveform;
 }
