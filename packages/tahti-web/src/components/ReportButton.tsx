@@ -27,6 +27,9 @@ export function ReportButton({
   label,
   defaultReason = 'COPYRIGHT',
   variant = 'secondary',
+  open: openProp,
+  onOpenChange,
+  showTrigger = true,
 }: {
   targetType: ContentReportTarget;
   targetId: string;
@@ -34,8 +37,13 @@ export function ReportButton({
   label: string;
   defaultReason?: ContentReportReason;
   variant?: 'secondary' | 'text';
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  showTrigger?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const open = openProp ?? uncontrolledOpen;
+  const setOpen = onOpenChange ?? setUncontrolledOpen;
   const [reason, setReason] = useState<ContentReportReason>(defaultReason);
   const [details, setDetails] = useState('');
   const [sending, setSending] = useState(false);
@@ -65,16 +73,18 @@ export function ReportButton({
 
   return (
     <>
-      <Tooltip content="Report" side="top">
-        <Button
-          size="icon-sm"
-          variant={variant}
-          aria-label={`Report ${label}`}
-          onClick={() => setOpen(true)}
-        >
-          <FlagIcon size={14} aria-hidden />
-        </Button>
-      </Tooltip>
+      {showTrigger ? (
+        <Tooltip content="Report" side="top">
+          <Button
+            size="icon-sm"
+            variant={variant}
+            aria-label={`Report ${label}`}
+            onClick={() => setOpen(true)}
+          >
+            <FlagIcon size={14} aria-hidden />
+          </Button>
+        </Tooltip>
+      ) : null}
       <Dialog.Root isOpen={open} onClose={close} className="max-w-md">
         <Dialog.Title>Report {label}</Dialog.Title>
         <Dialog.Description>

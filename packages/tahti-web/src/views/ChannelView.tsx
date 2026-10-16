@@ -1,14 +1,9 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
-import {
-  ArrowLeftIcon,
-  ListMusicIcon,
-  PencilIcon,
-  UsersIcon,
-} from 'lucide-react';
+import { ArrowLeftIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, ClampedText, Dialog, Tooltip } from '@tahti-player/ui';
+import { ClampedText, Dialog, Tooltip } from '@tahti-player/ui';
 
 import {
   BRAND_ACCENTS,
@@ -40,19 +35,15 @@ import {
   useEditRail,
   usePresetLookDraft,
 } from '../components/channel-view';
-import { ChannelAirBadge } from '../components/channel-view/ChannelAirBadge';
-import { ChannelVizPackLabel } from '../components/channel-view/ChannelVizPackLabel';
+import { ChannelPageActions } from '../components/channel-view/ChannelPageActions';
 import { ChannelComments } from '../components/ChannelComments';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
-import { ChannelShareButton } from '../components/ChannelShareButton';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
 import { PageLoading } from '../components/PageStates';
-import { ReportButton } from '../components/ReportButton';
-import { RssFeedButton } from '../components/RssFeedButton';
 import { StreamManagerPanel } from '../components/StreamManagerPanel';
 import { listenerWidgetType } from '../content/listenerWidgets';
 import { useChannelAutoplay } from '../hooks/useChannelAutoplay';
@@ -67,7 +58,6 @@ import {
   type ChannelPageItem,
   type ChannelPageItemType,
 } from '../lib/channelPageLayout';
-import { channelRssFeedUrl } from '../lib/channelRssFeed';
 import { cn } from '../lib/cn';
 import { colorSchemeCssVars, normalizeColorScheme } from '../lib/colorScheme';
 import { isPinned } from '../lib/pinnedTracks';
@@ -402,6 +392,21 @@ export function ChannelView({ slug }: { slug: string }) {
     </>
   );
 
+  const pageActions = !editing ? (
+    <ChannelPageActions
+      channel={channel}
+      slug={slug}
+      isOwner={isOwner}
+      isAdministrator={isAdministrator}
+      onEditDesign={isOwner ? startEdit : undefined}
+      onOpenStreamManager={
+        isOwner || isAdministrator
+          ? () => setStreamManagerOpen(true)
+          : undefined
+      }
+    />
+  ) : null;
+
   const renderBlock = (item: ChannelPageItem) => {
     switch (item.type) {
       case 'hero':
@@ -434,6 +439,7 @@ export function ChannelView({ slug }: { slug: string }) {
             bioVisible={bioVisible}
             subscribeVisible={subscribeVisible}
             stagePlayer={stagePlayer}
+            identityActions={pageActions}
           />
         );
       default:
@@ -584,50 +590,7 @@ export function ChannelView({ slug }: { slug: string }) {
           ) : (
             <span />
           )}
-          <div className="flex flex-wrap items-center gap-2">
-            <ChannelAirBadge channel={channel} />
-            {!editing && <ChannelVizPackLabel channel={channel} />}
-            {isOwner && !editing && (
-              <Button size="sm" variant="secondary" onClick={startEdit}>
-                <span className="inline-flex items-center gap-1.5">
-                  <PencilIcon size={14} />
-                  Edit design
-                </span>
-              </Button>
-            )}
-            {(isOwner || isAdministrator) && !editing && (
-              <Tooltip content="Open Stream Manager" side="top">
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  onClick={() => setStreamManagerOpen(true)}
-                  aria-label="Open Stream Manager"
-                >
-                  <ListMusicIcon size={16} aria-hidden />
-                </Button>
-              </Tooltip>
-            )}
-            {!editing && channel.user.showShareButton !== false && (
-              <ChannelShareButton
-                channelSlug={slug}
-                displayName={channel.user.displayName}
-                iconOnly={false}
-              />
-            )}
-            {!editing && (
-              <RssFeedButton
-                href={channelRssFeedUrl(slug)}
-                label={`RSS feed of ${channel.user.displayName}'s channel`}
-              />
-            )}
-            {!editing && !isOwner && (
-              <ReportButton
-                targetType="CHANNEL"
-                targetId={slug}
-                label={channel.user.displayName}
-              />
-            )}
-          </div>
+          {!heroVisible ? pageActions : null}
         </div>
 
         {!heroVisible && (editing || channel.user.showPageHero !== false) && (

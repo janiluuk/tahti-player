@@ -87,6 +87,7 @@ export type ChannelBackdropCardProps = {
   visualSettingsJson?: string | null;
 
   badge?: ReactNode;
+  identityActions?: ReactNode;
   navItems?: ChannelBackdropNavItem[];
   quickAdd?: ChannelBackdropQuickAdd[];
   onEditIdentity?: () => void;
@@ -154,6 +155,7 @@ export function ChannelBackdropCard({
   visualizerSettings,
   visualSettingsJson,
   badge,
+  identityActions,
   navItems = DEFAULT_NAV_ITEMS,
   quickAdd,
   onEditIdentity,
@@ -344,6 +346,15 @@ export function ChannelBackdropCard({
               </ClampedText>
             ) : null}
           </div>
+          {identityActions ? (
+            <div
+              className="flex min-w-0 flex-wrap items-center gap-2"
+              data-testid="channel-backdrop-identity-actions"
+              onClick={(event) => event.stopPropagation()}
+            >
+              {identityActions}
+            </div>
+          ) : null}
           {subscribeVisible ? (
             <ButtonLink
               to="/subscribe/$username"
