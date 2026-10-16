@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { mockSmartLink, soundItemToPlayable } from './mock';
+import { mockSearch, mockSmartLink, soundItemToPlayable } from './mock';
 import type { ChannelSoundItem } from './types';
 
 function baseItem(overrides: Partial<ChannelSoundItem> = {}): ChannelSoundItem {
@@ -72,5 +72,19 @@ describe('mockSmartLink', () => {
     expect(mockSmartLink('northern-lights-release-2').release.title).toBe(
       'Polar Static',
     );
+  });
+});
+
+describe('mockSearch', () => {
+  it('returns Favorites vault collection hits', () => {
+    const { collections } = mockSearch('vault');
+    expect(collections.length).toBeGreaterThan(0);
+    expect(collections.some((c) => c.name === 'Favorites vault')).toBe(true);
+    expect(
+      collections.some(
+        (c) =>
+          c.slug === 'favorites-vault' && c.ownerUsername === 'northern-lights',
+      ),
+    ).toBe(true);
   });
 });
