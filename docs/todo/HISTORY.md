@@ -4784,3 +4784,11 @@ host + layout claim) and #959 (mock ambient covers). Batch 67 #1 Storybook
 `StudioSoundsView/HearthisRowEmbed` (#969) covers the remaining visual check
 (compact iframe in `sound-row-actions`, not a PlayerBar strip).
 
+## 2026-10-17 — Batch 67 UX / UI (#969–#991)
+
+Folded `next-twenty-slices.md` after squash-merging the open batch-67 PRs.
+
+- **Storybook / mock (#969, #972–#976, #978–#981, #983–#987, #989, #991):** hearthis row-embed play; mock collection search + GlobalSearch playlists; DM user search stories; richer studio archive; StudioCollections empty/mobile; channel playlist EmptyState; ChannelView offline @390; ThemeEditor validation/discard; ImageLightbox empty; WaveformSeekbar live; Integrations API error via `meIntegrations` mock; long slideshow + upload progress; ChannelDesigner overlay without artwork; press-kit GallerySection; MulticastConfigureDialog save-failure; FeedView mobile.
+- **Docs folds (#970, #971):** hearthis + library ambient visual-check leftovers; snapshot-digest soft-pass leftover.
+- **Checks:** conflicting branches rebased onto master (shared mock typecheck / empty-vault `links` / package bumps) before merge. Gaps in the number sequence (#977, #982, #988, #990) were never opened.
+
