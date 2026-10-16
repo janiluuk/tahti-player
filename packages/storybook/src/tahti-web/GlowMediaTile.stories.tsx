@@ -4,7 +4,15 @@ import { GlowMediaTile } from '@tahti-web/components/GlowMediaTile';
 const meta: Meta<typeof GlowMediaTile> = {
   title: 'Tahti/Media/GlowMediaTile',
   component: GlowMediaTile,
-  parameters: { layout: 'padded' },
+  parameters: {
+    layout: 'padded',
+    docs: {
+      description: {
+        component:
+          'Grid tile over MediaArtwork. With `onQueue`, hold Shift on the play control to queue (same Shift+click / Shift-held icon behavior as Components/MediaArtwork).',
+      },
+    },
+  },
   tags: ['autodocs'],
   args: {
     title: 'Northern Lights',

@@ -1,6 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import {
+  expect,
+  fireEvent,
+  fn,
+  userEvent,
+  waitFor,
+  within,
+} from 'storybook/test';
 
 import { Track } from '@tahti-player/model';
 import {
@@ -372,6 +379,67 @@ export const ToolbarButtons: Story = {
     },
   },
   render: (args) => <TrackTable {...(args as TrackTableProps)} />,
+};
+
+const shiftPlayNow = fn();
+const shiftAddToQueue = fn();
+
+/** Thumbnail play wires MediaArtwork `onQueue` from `onAddToQueue`: Shift
+ * swaps the icon, Shift+click queues, plain click plays. */
+export const ShiftClickQueuesFromThumbnail: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'When both `onPlayNow` and `onAddToQueue` are set, the thumbnail play control shows “Play … · Shift+click to queue”. Holding Shift shows the queue icon; Shift+click calls `onAddToQueue`.',
+      },
+    },
+  },
+  args: {
+    tracks: tracks.slice(0, 1),
+    labels,
+    display: {
+      displayThumbnail: true,
+      displayArtist: true,
+      displayDuration: true,
+    },
+    actions: {
+      onPlayNow: shiftPlayNow,
+      onAddToQueue: shiftAddToQueue,
+    },
+  },
+  render: (args) => <TrackTable {...(args as TrackTableProps)} />,
+  play: async ({ canvasElement }) => {
+    shiftPlayNow.mockClear();
+    shiftAddToQueue.mockClear();
+    const canvas = within(canvasElement);
+    const art = canvas.getByTestId('media-artwork');
+    await userEvent.hover(art);
+    const play = await canvas.findByTestId('media-artwork-play');
+    const title = tracks[0]!.title;
+    await expect(play).toHaveAttribute(
+      'aria-label',
+      `Play ${title} · Shift+click to queue`,
+    );
+
+    fireEvent.keyDown(window, { key: 'Shift', shiftKey: true });
+    await waitFor(() =>
+      expect(play).toHaveAttribute('aria-label', `Add to queue ${title}`),
+    );
+    fireEvent.click(play, { shiftKey: true });
+    await expect(shiftAddToQueue).toHaveBeenCalledOnce();
+    await expect(shiftPlayNow).not.toHaveBeenCalled();
+
+    fireEvent.keyUp(window, { key: 'Shift', shiftKey: false });
+    await waitFor(() =>
+      expect(play).toHaveAttribute(
+        'aria-label',
+        `Play ${title} · Shift+click to queue`,
+      ),
+    );
+    fireEvent.click(play);
+    await expect(shiftPlayNow).toHaveBeenCalledOnce();
+  },
 };
 
 const ResponsiveTable = ({
