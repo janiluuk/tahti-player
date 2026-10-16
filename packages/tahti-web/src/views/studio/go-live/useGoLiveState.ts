@@ -11,6 +11,7 @@ import {
   liveChannelPlayable,
   patchBroadcastPreflight,
   postGoLive,
+  setMockLiveSlug,
   type BroadcastPreflight,
   type BroadcastUsage,
   type RtmpTarget,
@@ -160,6 +161,10 @@ export function useGoLiveState() {
   const onGoLive = async () => {
     setBusy(true);
     setMessage(null);
+    const channelSlug = user?.channel?.slug;
+    if (channelSlug) {
+      setMockLiveSlug(channelSlug);
+    }
     let result: Awaited<ReturnType<typeof postGoLive>>;
     try {
       result = await postGoLive();
