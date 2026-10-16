@@ -14,6 +14,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -21,6 +22,7 @@ import * as client from '../api/client';
 import * as discoWidgets from '../api/disco-widgets';
 import * as follows from '../api/follows';
 import * as shows from '../api/shows';
+import type { PublicChannel } from '../api/types';
 import { useAuthStore } from '../stores/authStore';
 import { rehydrateLibraryForUser } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -78,8 +80,13 @@ function createRouterFor(initialEntry: string) {
       return <ChannelView slug={slug} />;
     },
   });
+  const chatRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/chat/$slug',
+    component: () => <p>Chat page</p>,
+  });
   return createRouter({
-    routeTree: rootRoute.addChildren([channelRoute]),
+    routeTree: rootRoute.addChildren([channelRoute, chatRoute]),
     history: createMemoryHistory({ initialEntries: [initialEntry] }),
   });
 }
@@ -108,6 +115,14 @@ async function renderChannel(initialEntry: string) {
     await new Promise((resolve) => setTimeout(resolve, 0));
   });
   return router;
+}
+
+function mockChannelState(overrides: Partial<PublicChannel>) {
+  const realFetchChannel = client.fetchChannel;
+  vi.spyOn(client, 'fetchChannel').mockImplementation(async (slug) => {
+    const result = await realFetchChannel(slug);
+    return { ...result, data: { ...result.data, ...overrides } };
+  });
 }
 
 describe('ChannelView', () => {
@@ -286,5 +301,45 @@ describe('ChannelView', () => {
     await waitFor(() =>
       expect(screen.queryByText('Loading tracks…')).toBeNull(),
     );
+  });
+
+  describe('live chat surfaces', () => {
+    const LIVE = {
+      state: 'LIVE',
+      hlsUrl: 'https://example.test/live.m3u8',
+    };
+
+    it('offers the live chat while the channel is live and opens the chat page', async () => {
+      mockChannelState({ ...LIVE, chatEnabled: true });
+      const router = await renderChannel('/channel/northern-lights');
+
+      const heading = await screen.findByText('Live chat is open');
+      const card = heading.parentElement!.parentElement!;
+      expect(card.textContent).toContain('Comments below are for the archive');
+
+      await act(async () => {
+        fireEvent.click(
+          within(card).getByRole('button', { name: 'Open live chat' }),
+        );
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      expect(router.state.location.pathname).toBe('/chat/northern-lights');
+    });
+
+    it('does not offer the live chat when the artist turned chat off', async () => {
+      mockChannelState({ ...LIVE, chatEnabled: false });
+      await renderChannel('/channel/northern-lights');
+
+      await screen.findByTestId('channel-backdrop-card-name');
+      expect(screen.queryByText('Live chat is open')).toBeNull();
+    });
+
+    it('does not offer the live chat while the channel is offline', async () => {
+      mockChannelState({ state: 'OFFLINE', chatEnabled: true });
+      await renderChannel('/channel/northern-lights');
+
+      await screen.findByTestId('channel-backdrop-card-name');
+      expect(screen.queryByText('Live chat is open')).toBeNull();
+    });
   });
 });
