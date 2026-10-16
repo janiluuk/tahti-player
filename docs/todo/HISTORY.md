@@ -4726,3 +4726,13 @@ Asked for as "implement the next 20 slices of todo, try concentrate on making th
 - **Checks:** per-PR type-check / eslint / Prettier / touched tests; snapshot updates for player TrackTable and now-playing titles. Not tried on a real phone or against the live API.
 - **Left open:** listener Library Stash tab (product decision); full channel art-direction redesign (needs a reference). Polish still open after this fold: #897 (`Now` → accent green + extracted `StationCardSubtitle` test) and #898 (unify remaining “Temporarily offline” copy to “Off air” on `/radio`).
 
+
+## 2026-10-16 - Artist lifecycle e2e batches 1–2 (#905–#940)
+
+Asked for as "after these do 20 more slices and add pr, merge all".
+
+- **Batch 1 merged (#905–#916, #904):** mock live session persistence; public channel LIVE slug; go-live slug; mutable mock collections + navigate to designer; top-nav Upload → `/library/upload`; channel defaults to Setup; Broadcast subnav “Go live”; go-live title/checklist; chat block copy; live chat above comments; journey docs + screenshots.
+- **Also:** AmbientCard (#901), Shift+click queue (#903), Shift-held queue icon (#918) + CI snapshots (#929).
+- **Batch 2 merged (#919–#940):** aligned upload formats; modal navigate + full-page link; AddToMusic upload hint; removed dead top-nav upload modal; upload/collections/channel/nav/go-live/chat tests; channel `?tab=setup` + radio inner tabs in URL; mock series episode preflight + postGoLive episode; fan chat force-mock Send; tracker docs.
+- **Folded:** `e2e-lifecycle-20-slices.md`, `e2e-lifecycle-batch-2.md`, `mock-live-session-survives-reload.md`, `collections-design-opens-created.md`, `upload-dual-ui-unify.md`, `artist-lifecycle-e2e-journey.md` (journey ran; fixes above).
+- **Left open:** `fan-live-chat-discoverable.md` (CTA/mock Send shipped; real Centrifugo still API), `artist-lifecycle-p2-ux.md` item 2 (nested Broadcast chrome). Item 1 default Setup and item 3 series/checklist covered by #908/#913/#923/#926.
