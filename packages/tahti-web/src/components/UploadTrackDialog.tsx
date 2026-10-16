@@ -5,6 +5,10 @@ import { useState } from 'react';
 import { Button, Dialog, FilePicker, Input } from '@tahti-player/ui';
 
 import { uploadSoundFile } from '../api/studio';
+import {
+  UPLOAD_AUDIO_ACCEPT,
+  UPLOAD_AUDIO_FORMATS_LABEL,
+} from '../lib/uploadAudioFormats';
 
 type Props = {
   isOpen: boolean;
@@ -68,7 +72,7 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
           </span>
         </Dialog.Title>
         <Dialog.Description>
-          Add audio to your Music archive. MP3, WAV, FLAC, or AIFF.
+          Add audio to your Music archive.
         </Dialog.Description>
         <div className="mt-4 flex flex-col gap-3">
           <Input
@@ -81,10 +85,10 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
           <FilePicker
             labels={{
               title: 'Audio file',
-              description: 'MP3, WAV, FLAC, or AIFF',
+              description: UPLOAD_AUDIO_FORMATS_LABEL,
               browse: file ? 'Choose another file' : 'Choose audio',
             }}
-            accept="audio/*,.flac,.wav,.mp3,.aiff"
+            accept={UPLOAD_AUDIO_ACCEPT}
             selectedFiles={file ? [file] : []}
             onFiles={(files) => setFile(files[0] ?? null)}
           />

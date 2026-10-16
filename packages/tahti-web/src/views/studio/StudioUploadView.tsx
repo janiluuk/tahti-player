@@ -36,6 +36,10 @@ import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
 import { WaveformSeekbar } from '../../components/tahti/WaveformSeekbar';
 import {
+  UPLOAD_AUDIO_ACCEPT,
+  UPLOAD_AUDIO_FORMATS_LABEL,
+} from '../../lib/uploadAudioFormats';
+import {
   importSourcePlugins,
   type ImportSourcePlugin,
 } from '../../plugins/import-sources';
@@ -422,10 +426,10 @@ export function StudioUploadView() {
               <FilePicker
                 labels={{
                   title: 'Choose audio file',
-                  description: 'FLAC · WAV · AIFF · MP3 · M4A · OGG · max 4 GB',
+                  description: UPLOAD_AUDIO_FORMATS_LABEL,
                   browse: file ? 'Choose another file' : 'Choose audio',
                 }}
-                accept="audio/*,.flac,.wav,.mp3,.aiff"
+                accept={UPLOAD_AUDIO_ACCEPT}
                 selectedFiles={file ? [file] : []}
                 onFiles={(files) => setFile(files[0] ?? null)}
               />
