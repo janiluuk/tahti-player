@@ -34,7 +34,7 @@ export function ListenerWidgetsSection() {
   const removeSavedBrowserStation = useListenerWidgetsStore(
     (s) => s.removeSavedBrowserStation,
   );
-  const play = usePlayerStore((s) => s.play);
+  const playFromList = usePlayerStore((s) => s.playFromList);
   const openSettings = useSettingsModalStore((s) => s.open);
   const [pendingRemoval, setPendingRemoval] = useState<PendingRemoval | null>(
     null,
@@ -111,18 +111,27 @@ export function ListenerWidgetsSection() {
                 title={station.name}
                 subtitle={station.country ?? 'Internet radio'}
                 playLabel="Play"
-                onPlay={() =>
-                  play({
-                    id: `radio:${station.id}`,
-                    kind: 'radio',
-                    title: station.name,
-                    artist: station.country ?? 'Internet radio',
-                    coverUrl: station.favicon,
-                    streamUrl: station.streamUrl,
-                    protocol: 'https',
-                    sourceProvider: 'radio',
-                  })
-                }
+                onPlay={() => {
+                  const playables = savedBrowserStations
+                    .filter((row) => Boolean(row.streamUrl))
+                    .map((row) => ({
+                      id: `radio:${row.id}`,
+                      kind: 'radio' as const,
+                      title: row.name,
+                      artist: row.country ?? 'Internet radio',
+                      coverUrl: row.favicon,
+                      streamUrl: row.streamUrl,
+                      protocol: 'https' as const,
+                      sourceProvider: 'radio',
+                    }));
+                  const index = playables.findIndex(
+                    (row) => row.id === `radio:${station.id}`,
+                  );
+                  if (index < 0) {
+                    return;
+                  }
+                  playFromList(playables, index);
+                }}
               />
             </div>
           ))}

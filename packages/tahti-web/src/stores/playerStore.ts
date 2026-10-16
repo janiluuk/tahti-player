@@ -66,6 +66,9 @@ type PlayerState = {
   /** Cache waveform peaks for a playable id; updates currentPeaks when that id is playing. */
   cachePeaks: (id: string, peaks: number[]) => void;
   play: (item: TahtiPlayable, opts?: { enqueueRest?: TahtiPlayable[] }) => void;
+  /** Plays `items[index]` with the full ordered list as the queue so
+   * previous/next walk neighbors (e.g. Listen Radio row stations). */
+  playFromList: (items: TahtiPlayable[], index: number) => void;
   /** Starts a channel nobody pressed play on: muted, because browsers refuse
    * sound without a gesture, until `unmuteAutoplay`. */
   autoplayMuted: (item: TahtiPlayable) => void;
@@ -227,6 +230,37 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       seekTarget: null,
       currentPeaks: peaks,
       peaksById: rememberPeaks(s.peaksById, head.id, peaks),
+      isLive: isRadioOrLive,
+      isRealLive: isRadioOrLive && Boolean(item.isRealLive),
+      hasPlayed: true,
+      lastRadioPlayable: isRadioOrLive ? item : s.lastRadioPlayable,
+      playerBarVisible: true,
+      ...(s.autoplayRestoreMuted === null
+        ? {}
+        : { muted: s.autoplayRestoreMuted, autoplayRestoreMuted: null }),
+    }));
+  },
+
+  playFromList: (items, index) => {
+    if (items.length === 0) {
+      return;
+    }
+    const clamped = Math.max(0, Math.min(index, items.length - 1));
+    const item = items[clamped]!;
+    const queue = items.map(toQueueItem);
+    const isRadioOrLive = item.kind === 'live' || item.kind === 'radio';
+    const peaks = item.peaks?.length ? item.peaks : null;
+    recordHistory(item);
+    set((s) => ({
+      queue,
+      currentId: item.id,
+      status: item.embed ? 'playing' : 'loading',
+      error: null,
+      currentTime: 0,
+      duration: 0,
+      seekTarget: null,
+      currentPeaks: peaks,
+      peaksById: rememberPeaks(s.peaksById, item.id, peaks),
       isLive: isRadioOrLive,
       isRealLive: isRadioOrLive && Boolean(item.isRealLive),
       hasPlayed: true,
