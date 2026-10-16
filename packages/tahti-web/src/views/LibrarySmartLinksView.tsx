@@ -45,7 +45,7 @@ export function LibrarySmartLinksView() {
   }, []);
 
   return (
-    <StudioGate requireChannel={false}>
+    <StudioGate requireChannel={false} embedded>
       <div className="mt-2 flex flex-col gap-4">
         <ButtonLink className="w-fit" to="/studio/releases" size="sm">
           New release

@@ -1,12 +1,12 @@
 import { ShieldAlertIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button, ButtonLink, EmptyState } from '@tahti-player/ui';
+import { Button, ButtonLink } from '@tahti-player/ui';
 
 import { hasAccountRole } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
-import { PageLoading } from './PageStates';
+import { PageGate, PageLoading } from './PageStates';
 
 export function AdminGate({ children }: { children: ReactNode }) {
   const user = useAuthStore((s) => s.user);
@@ -19,7 +19,8 @@ export function AdminGate({ children }: { children: ReactNode }) {
 
   if (!user) {
     return (
-      <EmptyState
+      <PageGate
+        page="Board admin"
         icon={<ShieldAlertIcon size={40} className="opacity-40" />}
         title="Board admin"
         description="Sign in with a board member account to continue."
@@ -30,7 +31,8 @@ export function AdminGate({ children }: { children: ReactNode }) {
 
   if (!hasAccountRole(user, 'BOARD')) {
     return (
-      <EmptyState
+      <PageGate
+        page="Board admin"
         icon={<ShieldAlertIcon size={40} className="opacity-40" />}
         title="Board access required"
         description={`Signed in as @${user.username}, but this account doesn't have the Board role.`}

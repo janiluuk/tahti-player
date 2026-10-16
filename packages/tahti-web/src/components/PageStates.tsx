@@ -12,6 +12,32 @@ export function PageLoading({ label }: { label?: string }) {
   );
 }
 
+export function PageGate({
+  page,
+  icon,
+  title,
+  description,
+  action,
+}: {
+  page: string | null;
+  icon: ReactNode;
+  title: string;
+  description: string;
+  action: ReactNode;
+}) {
+  return (
+    <>
+      {page ? <h1 className="sr-only">{page}</h1> : null}
+      <EmptyState
+        icon={icon}
+        title={title}
+        description={description}
+        action={action}
+      />
+    </>
+  );
+}
+
 export function PageEmpty({
   title,
   description,

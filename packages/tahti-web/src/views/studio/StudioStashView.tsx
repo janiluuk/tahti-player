@@ -100,7 +100,7 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
     );
 
   return (
-    <StudioGate requireChannel={false}>
+    <StudioGate requireChannel={false} embedded={embedded}>
       <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
         {!embedded ? <LibrarySectionTabs active="stash" /> : null}
         {!embedded ? (
