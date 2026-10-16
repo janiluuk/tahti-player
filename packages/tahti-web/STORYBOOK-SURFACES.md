@@ -270,6 +270,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Player/StemMixer` | `tahti-web/StemMixer.stories.tsx` |
 | `Tahti/Studio/StreamManagerPanel` | `tahti-web/StreamManagerPanel.stories.tsx` |
 | `Tahti/Studio/StudioBrandingView` | `tahti-web/StudioBrandingView.stories.tsx` |
+| `Tahti/Studio/StudioCollectionsView` | `tahti-web/StudioCollectionsView.stories.tsx` |
 | `Tahti/Studio/StudioDistributionView` | `tahti-web/StudioDistributionView.stories.tsx` |
 | `Tahti/Studio/StudioEventCreateView` | `tahti-web/StudioEventCreateView.stories.tsx` |
 | `Tahti/Studio/StudioEventsView` | `tahti-web/StudioEventsView.stories.tsx` |
