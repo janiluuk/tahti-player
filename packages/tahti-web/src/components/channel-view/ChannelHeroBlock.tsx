@@ -58,9 +58,7 @@ export type ChannelHeroBlockProps = {
    * controls) -- built once in `ChannelView.tsx` and reused verbatim here
    * and in that file's hidden-hero fallback. */
   stagePlayer: ReactNode;
-  /** `live`/`channelIsPlaying`/etc. only drive the play button in
-   * `stagePlayer`, already baked in there -- nothing else in this block
-   * needs them. */
+  identityActions?: ReactNode;
 };
 
 export function ChannelHeroBlock({
@@ -91,6 +89,7 @@ export function ChannelHeroBlock({
   bioVisible,
   subscribeVisible,
   stagePlayer,
+  identityActions,
 }: ChannelHeroBlockProps) {
   // Opt-in: no bar at all until the artist adds a Navigation block with 2+
   // tabs (see showNavTabs/navTabs above) -- what shows here while editing is
@@ -184,6 +183,7 @@ export function ChannelHeroBlock({
         identitySelected={selectedId === 'header'}
         backgroundSelected={selectedId === itemId}
         editable={editing}
+        identityActions={!editing ? identityActions : undefined}
       />
       <div
         className={
