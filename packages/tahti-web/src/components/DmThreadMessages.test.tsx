@@ -77,4 +77,16 @@ describe('DmThreadMessages', () => {
       screen.getAllByText(/^message m/).map((n) => n.lastChild?.textContent),
     ).toEqual(['message m1', 'message m2', 'message m3']);
   });
+
+  it('shows an empty state when the thread has no messages', () => {
+    render(
+      <DmThreadMessages
+        messages={[]}
+        hasMore={false}
+        loadingOlder={false}
+        onLoadOlder={() => undefined}
+      />,
+    );
+    expect(screen.getByText('No messages yet')).toBeInTheDocument();
+  });
 });

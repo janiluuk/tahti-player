@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, EmptyState } from '@tahti-player/ui';
 
 import type { ChatDm } from '../api/messages';
 import { DmRoleBadge } from './DmRoleBadge';
@@ -57,22 +57,31 @@ export function DmThreadMessages({
           </Button>
         </div>
       )}
-      {messages.map((m) => (
-        <div
-          key={m.id}
-          className={`max-w-[85%] rounded-lg px-3 py-2 ${
-            m.isMine
-              ? 'bg-primary text-primary-foreground ml-auto'
-              : 'border-accent-purple/30 bg-accent-purple/15'
-          }`}
-        >
-          <div className="flex items-center gap-1 text-[10px]">
-            <span className="opacity-70">{m.senderDisplayName}</span>
-            {m.isMine ? null : <DmRoleBadge role={m.senderChannelRole} />}
+      {messages.length === 0 ? (
+        <EmptyState
+          size="sm"
+          className="items-start py-8 text-left"
+          title="No messages yet"
+          description="Say hello — your first message starts the thread."
+        />
+      ) : (
+        messages.map((m) => (
+          <div
+            key={m.id}
+            className={`max-w-[85%] rounded-lg px-3 py-2 ${
+              m.isMine
+                ? 'bg-primary text-primary-foreground ml-auto'
+                : 'border-accent-purple/30 bg-accent-purple/15'
+            }`}
+          >
+            <div className="flex items-center gap-1 text-[10px]">
+              <span className="opacity-70">{m.senderDisplayName}</span>
+              {m.isMine ? null : <DmRoleBadge role={m.senderChannelRole} />}
+            </div>
+            {m.body}
           </div>
-          {m.body}
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }
