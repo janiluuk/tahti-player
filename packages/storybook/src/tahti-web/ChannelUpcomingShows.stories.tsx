@@ -15,7 +15,7 @@ const meta: Meta<typeof ChannelUpcomingShows> = {
     docs: {
       description: {
         component:
-          "A channel's next public live shows (up to ten) with each series' schedule note. Hidden when nothing is booked.",
+          "A channel's next public live shows (up to ten) with each series' schedule note. Shows a short empty line when nothing is booked.",
       },
     },
   },
@@ -101,9 +101,12 @@ export const NothingBooked: Story = {
   },
   play: async ({ canvasElement }) => {
     await waitFor(() =>
-      expect(
-        within(canvasElement).queryByRole('region', { name: 'Upcoming shows' }),
-      ).toBeNull(),
+      expect(within(canvasElement).getByRole('status')).toHaveTextContent(
+        'No upcoming shows booked.',
+      ),
     );
+    expect(
+      within(canvasElement).queryByRole('region', { name: 'Upcoming shows' }),
+    ).toBeNull();
   },
 };
