@@ -2,9 +2,19 @@ import type { MulticastProviderId } from '../plugins/multicast';
 import type { StoredVisualPreset } from './channel-design/presets';
 import type { FetchMeta } from './client';
 import { DEMO_MP3 } from './mock';
+import {
+  getMockSignalConnected,
+  getMockChannelState as readMockChannelState,
+  setMockChannelLive,
+  setMockChannelOffline,
+  setMockLiveSlug,
+  mockSimulateSignal as writeMockSimulateSignal,
+} from './mock-live-session';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 import { requestJson } from './request-json';
 import type { TahtiPlayable } from './types';
+
+export { setMockLiveSlug };
 
 export type StreamSettings = {
   rtmp: { server: string; streamKey: string; fallbackServers?: string[] };
@@ -40,22 +50,24 @@ export type BroadcastPreflight = {
   plannedLiveShow: { seriesId: string; episodeNumber: number | null } | null;
 };
 
+let mockPreflight: BroadcastPreflight = {
+  title: null,
+  visibility: 'PUBLIC',
+  autoPublish: true,
+  showType: 'LIVE_SET',
+  episodeNumber: null,
+  tagline: null,
+  plannedRadioShow: null,
+  plannedLiveShow: null,
+};
+
 export async function fetchBroadcastPreflight(): Promise<{
   data: BroadcastPreflight | null;
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
     return {
-      data: {
-        title: null,
-        visibility: 'PUBLIC',
-        autoPublish: true,
-        showType: 'LIVE_SET',
-        episodeNumber: null,
-        tagline: null,
-        plannedRadioShow: null,
-        plannedLiveShow: null,
-      },
+      data: mockPreflight,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -72,6 +84,10 @@ export async function fetchBroadcastPreflight(): Promise<{
 export async function patchBroadcastPreflight(
   patch: Partial<BroadcastPreflight> & { seriesId?: string },
 ): Promise<{ data: BroadcastPreflight } | { error: string }> {
+  if (isForceMock()) {
+    mockPreflight = { ...mockPreflight, ...patch };
+    return { data: mockPreflight };
+  }
   try {
     const { data } = await requestJson<BroadcastPreflight>(
       '/api/me/channel/preflight',
@@ -146,10 +162,8 @@ export type RtmpTarget = {
 
 export type LiveChannelState = 'OFFLINE' | 'PREVIEW' | 'LIVE' | string;
 
-// ── Mock session state ──────────────────────────────────────────────────────
+// ── Mock session state (persisted — see mock-live-session.ts) ───────────────
 
-let mockSignalConnected = false;
-let mockChannelState: LiveChannelState = 'OFFLINE';
 const MOCK_RECORDING_STORAGE_KEY = 'tahti-web-auto-record-broadcast';
 let mockTargets: RtmpTarget[] = [
   {
@@ -164,14 +178,11 @@ let mockTargets: RtmpTarget[] = [
 ];
 
 export function mockSimulateSignal(connected = true) {
-  mockSignalConnected = connected;
-  if (connected && mockChannelState === 'OFFLINE') {
-    mockChannelState = 'PREVIEW';
-  }
+  writeMockSimulateSignal(connected);
 }
 
 export function getMockChannelState(): LiveChannelState {
-  return mockChannelState;
+  return readMockChannelState();
 }
 
 const MOCK_SETTINGS: StreamSettings = {
@@ -267,10 +278,10 @@ export async function fetchSignalStatus(): Promise<{
   if (isForceMock()) {
     return {
       data: {
-        connected: mockSignalConnected,
-        codec: mockSignalConnected ? 'aac' : null,
-        bitrateKbps: mockSignalConnected ? 160 : null,
-        listeners: mockSignalConnected ? 1 : null,
+        connected: getMockSignalConnected(),
+        codec: getMockSignalConnected() ? 'aac' : null,
+        bitrateKbps: getMockSignalConnected() ? 160 : null,
+        listeners: getMockSignalConnected() ? 1 : null,
       },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
@@ -299,11 +310,11 @@ export async function fetchChannelManageStats(
   if (isForceMock()) {
     return {
       data: {
-        audioBitrateKbps: mockSignalConnected ? 160 : 192,
-        signalConnected: mockSignalConnected,
-        listeners: mockSignalConnected ? 1 : 0,
+        audioBitrateKbps: getMockSignalConnected() ? 160 : 192,
+        signalConnected: getMockSignalConnected(),
+        listeners: getMockSignalConnected() ? 1 : 0,
         listenerPeak: 37,
-        liveDurationSec: mockChannelState === 'LIVE' ? 12 * 60 : null,
+        liveDurationSec: readMockChannelState() === 'LIVE' ? 12 * 60 : null,
         rotationTrackCount: 3,
       },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -391,11 +402,7 @@ export async function postGoLive(): Promise<
   { ok: true } | { ok: false; error: string }
 > {
   if (isForceMock()) {
-    if (!mockSignalConnected && mockChannelState === 'OFFLINE') {
-      mockSignalConnected = true;
-      mockChannelState = 'PREVIEW';
-    }
-    mockChannelState = 'LIVE';
+    setMockChannelLive();
     return { ok: true };
   }
   try {
@@ -415,8 +422,7 @@ export async function postEndBroadcast(): Promise<
   { ok: true } | { ok: false; error: string }
 > {
   if (isForceMock()) {
-    mockChannelState = 'OFFLINE';
-    mockSignalConnected = false;
+    setMockChannelOffline();
     return { ok: true };
   }
   try {
@@ -777,20 +783,4 @@ export async function fetchRecentBroadcasts(
     }
     return { data: [], meta: apiErrorMeta(err) };
   }
-}
-
-export function formatUsageMinutes(usage: BroadcastUsage): string {
-  if (usage.unlimited) {
-    return 'Unlimited this week';
-  }
-  const used = Math.floor(usage.secondsUsed / 60);
-  const rem =
-    usage.secondsRemaining == null
-      ? null
-      : Math.floor(usage.secondsRemaining / 60);
-  const cap = Math.floor(usage.weeklyCapSeconds / 60);
-  if (rem == null) {
-    return `${used} / ${cap} min used`;
-  }
-  return `${used} min used, ${rem} min left (cap ${cap})`;
 }
