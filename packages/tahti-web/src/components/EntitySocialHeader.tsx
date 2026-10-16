@@ -197,7 +197,7 @@ export function EntitySocialHeader({
     <div
       className={cn(
         'border-border shadow-shadow relative isolate flex flex-col gap-5 overflow-hidden rounded-md border-(length:--border-width) p-6',
-        !scheme && !hasDesignedBackdrop && 'bg-primary',
+        !scheme && !hasDesignedBackdrop && 'bg-primary text-primary-foreground',
         className,
       )}
       style={schemeStyle}
@@ -425,8 +425,15 @@ export function EntitySocialHeader({
           ) : null}
           {subtitle ? (
             <div
-              className={cn('text-sm', !scheme && 'text-foreground-secondary')}
+              className={cn(
+                'text-sm',
+                !scheme &&
+                  (hasDesignedBackdrop
+                    ? 'text-foreground-secondary'
+                    : 'text-primary-foreground'),
+              )}
               style={scheme ? { color: readableMuted(scheme) } : undefined}
+              data-testid="entity-social-header-subtitle"
             >
               {subtitle}
             </div>
