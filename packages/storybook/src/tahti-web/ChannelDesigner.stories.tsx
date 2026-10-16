@@ -24,6 +24,7 @@ import {
   restoreChannelDesignState,
 } from './_fixtures/channel-design';
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
+import { mockData } from './_lib/mock-data';
 import { expectNoDialog, findDialog, selectTab, withinBody } from './_lib/play';
 
 /**
@@ -41,7 +42,7 @@ import { expectNoDialog, findDialog, selectTab, withinBody } from './_lib/play';
  *
  * Correction tracker: `docs/todo/storybook-parity-and-atlas-refresh.md`.
  *
- * Missing states: empty/error visual load, slideshow with many frames,
+ * Missing states: slideshow with many frames,
  * video-loop upload progress, player tab with every visualizer preset.
  */
 const meta: Meta<typeof ChannelDesigner> = {
@@ -495,4 +496,59 @@ export const PlayerDesignAlias: Story = {
 export const TextOverlayAlias: Story = {
   name: 'Player (legacy text-overlay section id)',
   args: { lookOnly: true, lookOpenSection: 'text-overlay' },
+};
+
+export const LoadError: Story = {
+  name: 'Load error',
+  parameters: {
+    mockData: mockData({
+      channelVisual: () => {
+        throw new Error('offline');
+      },
+    }),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByRole('heading', {
+        name: 'Could not load the channel designer',
+      }),
+    ).toBeVisible();
+    await expect(canvas.getByRole('button', { name: 'Retry' })).toBeVisible();
+  },
+};
+
+export const EmptyLook: Story = {
+  name: 'Empty look (minimal visual)',
+  parameters: {
+    mockData: mockData({
+      channelVisual: {
+        visualPreset: 'MINIMAL',
+        colorSchemeJson: null,
+        headerStyle: 'GRADIENT',
+        videoBackgroundUrl: null,
+        brandAccentPreset: null,
+        slideshowPreset: 'FADE',
+        slideshowIntervalSeconds: 8,
+        slideshowTransitionMs: 600,
+        slideshowAutoplay: true,
+        nowPlayingOverlayStyle: 'classic',
+        nowPlayingOverlaySettingsJson: null,
+        usePlayerGradient: false,
+        playerColorSchemeJson: null,
+        backgroundVisualPreset: null,
+        useBackgroundGradient: false,
+        backgroundColorSchemeJson: null,
+        channelLinks: [],
+        textOverlayMode: 'NONE',
+        textOverlayText: '',
+      },
+    }),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByRole('button', { name: /Save/i }),
+    ).toBeVisible();
+  },
 };

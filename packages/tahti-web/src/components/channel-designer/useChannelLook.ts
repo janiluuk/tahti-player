@@ -58,6 +58,7 @@ export function useChannelLook({
   onDirtyChange,
 }: Options) {
   const [visual, setVisual] = useState<ChannelVisual | null>(null);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [scheme, setScheme] = useState<ColorScheme>({});
   const [playerScheme, setPlayerScheme] = useState<ColorScheme>({});
   const [backgroundScheme, setBackgroundScheme] = useState<ColorScheme>({});
@@ -134,6 +135,7 @@ export function useChannelLook({
   const loadRequestRef = useRef(0);
   const loadFromServer = (): Promise<boolean> => {
     const request = ++loadRequestRef.current;
+    setLoadFailed(false);
     return Promise.all([fetchChannelVisual(), fetchChannelGallery()])
       .then(([visualResult, galleryResult]) => {
         // A newer load (or unmount) superseded this one: drop the response
@@ -150,14 +152,21 @@ export function useChannelLook({
         setDirty(loaded.presetNeedsCorrection);
         setPreviousSave(null);
         setBaselineSnapshot(loaded.snapshot);
+        setLoadFailed(false);
         return true;
       })
       .catch(() => {
         if (request === loadRequestRef.current) {
+          setLoadFailed(true);
+          setVisual(null);
           toast.error('Could not load the channel designer. Try again.');
         }
         return false;
       });
+  };
+
+  const retryLoad = () => {
+    void loadFromServer();
   };
 
   useEffect(() => {
@@ -703,6 +712,8 @@ export function useChannelLook({
     slideshowPreset,
     slideshowTransition,
     videoBackgroundUrl,
+    loadFailed,
+    retryLoad,
     visual,
     visualSettings,
     visualSettingsJson,
