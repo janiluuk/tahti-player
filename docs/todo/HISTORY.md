@@ -2,6 +2,18 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-10-16 — User manual screenshots from tahti-web captures
+
+Folded from `user-manual-refresh.md`. Manual and core-concept pages were
+already rewritten against tahti-web (#789–#791, #803, #804, #857, #859,
+#860). This pass replaced Nuclear-era GitBook assets with fresh mock
+captures (`docs/readme-shots/` + queue/stats shots) and added figures on
+Getting started, How it works, Queue, Favorites, Playlists, History,
+Stats, Themes, Theme store, Discover, Plugins and providers, and the
+docs home banner. Root README / VIEW-GUIDE / redesign-shots refreshed in
+the same atlas docs PR.
+
+
 ## 2026-09-21 — Listen widget: hearthis.at config UX + broken set-embed add (all 3 asks shipped)
 
 Folded from `listen-widget-hearthis-config-and-set-embed-bug.md`. The

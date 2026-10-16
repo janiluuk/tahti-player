@@ -8,6 +8,8 @@ Tahti Player is the app for [tahti.live](https://tahti.live), a nonprofit broadc
 
 This documentation is for both users and developers.
 
+<figure><img src=".gitbook/assets/readme-banner.png" alt="Tahti Player Listen home"><figcaption><p>Tahti Player — Listen home</p></figcaption></figure>
+
 {% hint style="info" %}
 Tahti Player started as a fork of [Nuclear](https://github.com/nukeop/nuclear). The desktop app now shows the same interface as the web app; the old Nuclear plugin pages are kept under "Legacy: Nuclear plugin SDK".
 {% endhint %}

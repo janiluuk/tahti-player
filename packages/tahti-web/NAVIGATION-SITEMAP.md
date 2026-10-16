@@ -1,6 +1,6 @@
 # Tahti Player navigation sitemap
 
-Updated 2026-10-03 from `src/router/routes-*.tsx`, `AppShell.tsx`,
+Updated 2026-10-16 from `src/router/routes-*.tsx`, `AppShell.tsx`,
 `StudioNav.tsx`, `AdminNav.tsx`, `MobileChrome.tsx`, `LibraryView.tsx`,
 `views/settings/settingsNav.ts` and `lib/prodPathRedirects.ts`. This is the
 navigation audit source of truth for the Nuclear client. Persistent chrome
@@ -9,7 +9,13 @@ contextually, so an orphan is not mistaken for a missing feature. The
 `/more` atlas mirrors this file in `src/content/flowDiagrams.ts` (Nuclear
 pack) and `src/content/mapScreens.ts`.
 
-**2026-10-03 changes:** Studio's submenu is now Overview · Stats ·
+**2026-10-16 changes:** Settings section is **Channel & chat** (not
+"Channel & design"), with tabs Channel Designer · Discovery · Username &
+domain · Chat · Moderators. Library's horizontal tabs include **Upload**.
+Batch 63/65 UX polish landed on channel, empty states, queue and Studio
+home; navigation structure is unchanged from 2026-10-03.
+
+**2026-10-03 changes:** Studio's submenu is Overview · Stats ·
 Governance · Posts · Audience · Releases · Editor · Broadcast. "Perform" is
 gone: its pages sit under the **Broadcast** item (label `studio.goLive`)
 with a nested `BroadcastSubNav` (Go Live · Schedule · Events · Shows ·
@@ -53,13 +59,14 @@ Governance, Posts, Audience, Releases, Editor, Broadcast.
 - Audience tabs (`AUDIENCE_SUBNAV_ITEMS`): Overview, Tiers, Stripe (only when
   Stripe is configured).
 
-Library tabs (`LibraryView`): Overview, Tracks, Collections, Recordings,
-Media, Stash, Embeds, Smart links, Local files. Upload is `/library/upload`.
+Library tabs (`LibraryView`): Overview, Tracks, Collections, Upload,
+Recordings, Media, Stash, Embeds, Smart links, Local files. Upload lands on
+`/library/upload`.
 
-Settings modal sections (`SETTINGS_NAV`): Account, Artist, Channel &
-design, Broadcast, Playback, Integrations (group "Settings"); Themes,
-Add-ons, Logs, What's new (group "App"). Signed out, only Playback, Themes,
-Add-ons, Logs and What's new show. An unknown `$section` opens Account.
+Settings modal sections (`SETTINGS_NAV`): Account, Artist, Channel & chat,
+Broadcast, Playback, Integrations (group "Settings"); Themes, Add-ons,
+Logs, What's new (group "App"). Signed out, only Playback, Themes, Add-ons,
+Logs and What's new show. An unknown `$section` opens Account.
 
 - Account tabs: Session, Security, Membership, Governance, Storage,
   Notifications & visibility (grant report name toggle, show liked tracks,
@@ -68,8 +75,8 @@ Add-ons, Logs and What's new show. An unknown `$section` opens Account.
   feed, X and Instagram auto-post), Branding (profile picture incl. GIF,
   avatar colour, backdrop, logo - same panel as `/studio/branding`),
   Gallery, Press kit, Releases.
-- Channel & design tabs: Channel Designer, Discovery, Username & domain,
-  Moderation.
+- Channel & chat tabs: Channel Designer, Discovery, Username & domain,
+  Chat, Moderators.
 
 Admin sections (`ADMIN_SECTIONS`):
 

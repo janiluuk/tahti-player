@@ -10,4 +10,6 @@ description: Finding new music, artists and venues
 - **Artists:** the artist directory, with search and filters.
 - **Venues:** clubs and places that stream on Tahti.
 
+<figure><img src="../.gitbook/assets/discovery.png" alt="Discover page with widgets and filters"><figcaption><p>Discover</p></figcaption></figure>
+
 Listen also shows Disco-widgets you installed from Settings → Add-ons → Discovery.
