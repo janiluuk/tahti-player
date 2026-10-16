@@ -260,35 +260,45 @@ export function ConnectedPlayerBar() {
     </div>
   );
 
-  const waveform = isLive ? null : (
-    <div className="px-4 pt-1">
-      <WaveformSeekbar
-        trackId={playable?.id ?? currentId ?? 'none'}
-        progress={progress}
-        peaks={currentPeaks}
-        bars={currentPeaks?.length || 64}
-        onSeek={(fraction) => {
-          if (duration <= 0) {
-            return;
-          }
-          seekTo(fraction * duration);
-        }}
-        className={cn(
-          'w-full transition-[height] duration-200',
-          waveformExpanded ? WAVEFORM_EXPANDED : WAVEFORM_COMPACT,
-        )}
-      />
-    </div>
-  );
+  // Embed-only hearthis tracks have no seekable stream — the provider
+  // widget is the transport. Skip the Tahti waveform so the bottom chrome
+  // stays a slim strip instead of waveform + full widget stacking into the
+  // workspace.
+  const waveform =
+    isLive || hearthisEmbed ? null : (
+      <div className="px-4 pt-1">
+        <WaveformSeekbar
+          trackId={playable?.id ?? currentId ?? 'none'}
+          progress={progress}
+          peaks={currentPeaks}
+          bars={currentPeaks?.length || 64}
+          onSeek={(fraction) => {
+            if (duration <= 0) {
+              return;
+            }
+            seekTo(fraction * duration);
+          }}
+          className={cn(
+            'w-full transition-[height] duration-200',
+            waveformExpanded ? WAVEFORM_EXPANDED : WAVEFORM_COMPACT,
+          )}
+        />
+      </div>
+    );
 
   const hearthisPanel = hearthisEmbed ? (
-    <div className="bg-background-secondary px-4 py-2">
-      <HearthisEmbedSurface
-        embedUri={hearthisEmbed.embedUri}
-        title={title}
-        autoplay={isPlaying}
-        compact
-      />
+    <div
+      className="border-border max-h-36 shrink-0 overflow-hidden border-t px-3 py-1.5"
+      data-testid="hearthis-player-embed"
+    >
+      <div className="mx-auto max-w-3xl">
+        <HearthisEmbedSurface
+          embedUri={hearthisEmbed.embedUri}
+          title={title}
+          autoplay={isPlaying}
+          compact
+        />
+      </div>
       <p className="text-foreground-secondary mt-1 text-center text-[11px]">
         Playback is controlled by the hearthis.at widget.
       </p>
@@ -297,7 +307,7 @@ export function ConnectedPlayerBar() {
 
   if (isMobile) {
     return (
-      <div className="flex w-full flex-col">
+      <div className="flex w-full shrink-0 flex-col">
         {waveform}
         {hearthisPanel}
         <div className="flex w-full items-center gap-3 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
@@ -337,7 +347,7 @@ export function ConnectedPlayerBar() {
   }
 
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex w-full shrink-0 flex-col">
       {waveform}
       {hearthisPanel}
       <PlayerBar
