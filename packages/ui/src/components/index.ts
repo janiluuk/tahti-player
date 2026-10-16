@@ -5,6 +5,7 @@ export * from './BottomBar';
 export * from './Box';
 export * from './Button';
 export * from './Card';
+export * from './AmbientCard';
 export * from './CardsRow';
 export * from './HorizontalScroll';
 export * from './NewsWidget';

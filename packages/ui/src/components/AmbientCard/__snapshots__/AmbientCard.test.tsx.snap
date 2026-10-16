@@ -1,0 +1,106 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AmbientCard > (Snapshot) renders with a forced ambient tint 1`] = `
+<div>
+  <div
+    class="border-border shadow-shadow relative flex w-46 flex-col items-stretch gap-2 overflow-hidden rounded-md border-(length:--border-width) p-2 text-left transition-all"
+    data-testid="ambient-card"
+    style="background-color: rgb(40, 90, 140);"
+  >
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 -z-0"
+    >
+      <img
+        alt=""
+        class="absolute inset-0 size-full scale-125 object-cover opacity-70 blur-2xl saturate-150"
+        src="https://picsum.photos/id/1015/300"
+      />
+      <div
+        class="absolute inset-0"
+        style="background-image: radial-gradient(circle at 30% 20%, rgba(40, 90, 140, 0.85), transparent 55%), radial-gradient(circle at 80% 90%, rgba(140, 40, 90, 0.55), transparent 50%);"
+      />
+      <div
+        class="absolute inset-0 bg-black/15"
+      />
+    </div>
+    <div
+      class="flex h-full rounded-md bg-primary text-primary-foreground border-border/40 relative z-10 aspect-square w-full items-center justify-center overflow-hidden border p-0 shadow-sm"
+    >
+      <div
+        class="group overflow-hidden absolute inset-0 size-full"
+        data-testid="media-artwork"
+      >
+        <div
+          class="overflow-hidden absolute inset-0"
+        >
+          <img
+            alt="Glass Mesa"
+            class="h-full w-full object-cover"
+            decoding="async"
+            loading="lazy"
+            src="https://picsum.photos/id/1015/300"
+          />
+          <div
+            class="pointer-events-none absolute inset-0 flex items-center justify-center"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-cassette-tape opacity-20"
+              fill="none"
+              height="96"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="0.5"
+              viewBox="0 0 24 24"
+              width="96"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="16"
+                rx="2"
+                width="20"
+                x="2"
+                y="4"
+              />
+              <circle
+                cx="8"
+                cy="10"
+                r="2"
+              />
+              <path
+                d="M8 12h8"
+              />
+              <circle
+                cx="16"
+                cy="10"
+                r="2"
+              />
+              <path
+                d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="relative z-10 min-w-0 rounded-md border px-2 py-1.5 backdrop-blur-xl backdrop-saturate-150 border-white/20 bg-black/45 text-white"
+      data-testid="ambient-card-label"
+    >
+      <div
+        class="truncate text-sm font-bold"
+        data-testid="ambient-card-title"
+      >
+        Glass Mesa
+      </div>
+      <div
+        class="truncate text-xs text-white/85"
+      >
+        Northern Lights
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -5,6 +5,7 @@ import {
   EMBED_PROVIDER_HEIGHT,
   EMBED_PROVIDER_LABEL,
   embedSrcFor,
+  hearthisEmbedSrc,
   spotifyEmbedSrc,
   type EmbedProvider,
 } from './embedSrc';
@@ -35,6 +36,19 @@ describe('bandcampEmbedSrc', () => {
 
   it('passes through an already-qualified track= or album= spec', () => {
     expect(bandcampEmbedSrc('album=123')).toContain('album=123');
+  });
+});
+
+describe('hearthisEmbedSrc', () => {
+  it('uses the tall style-2 chrome by default', () => {
+    expect(hearthisEmbedSrc('demo')).toContain('style=2');
+  });
+
+  it('uses the short style-1 chrome when compact', () => {
+    expect(hearthisEmbedSrc('demo', { compact: true })).toContain('style=1');
+    expect(embedSrcFor('HEARTHIS', 'demo', { compact: true })).toContain(
+      'style=1',
+    );
   });
 });
 

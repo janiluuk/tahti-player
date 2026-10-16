@@ -34,6 +34,7 @@ export function WidgetTrackRow({
   onSelect?: (item: DiscoverTrackItem) => void;
 }) {
   const play = usePlayerStore((state) => state.play);
+  const enqueue = usePlayerStore((state) => state.enqueue);
   const setStatus = usePlayerStore((state) => state.setStatus);
   const currentId = usePlayerStore((state) => state.currentId);
   const status = usePlayerStore((state) => state.status);
@@ -42,33 +43,48 @@ export function WidgetTrackRow({
   const isCurrent = matchesCurrentTrack(currentId, item.id);
   const isPlaying = isCurrent && status === 'playing';
 
-  const handlePlay = async () => {
-    if (isCurrent) {
-      setStatus(isPlaying ? 'paused' : 'playing');
-      return;
-    }
+  const resolvePlayable = async () => {
     if (playable) {
-      play(playable);
-      return;
+      return playable;
     }
     setLoading(true);
     const result = await fetchTrackDetail(item.id.replace(/^sound:/, ''));
     setLoading(false);
     const detail = result.data;
     if (!detail?.audioUrl) {
-      return;
+      return null;
     }
-    play({
+    return {
       id: item.id,
-      kind: 'sound',
+      kind: 'sound' as const,
       title: detail.title,
       artist: detail.artistName,
       coverUrl: detail.bannerUrl ?? undefined,
       streamUrl: detail.audioUrl,
-      protocol: detail.audioUrl.includes('.m3u8') ? 'hls' : 'https',
+      protocol: detail.audioUrl.includes('.m3u8')
+        ? ('hls' as const)
+        : ('https' as const),
       channelSlug: detail.channelSlug,
       durationSec: detail.durationSec,
-    });
+    };
+  };
+
+  const handlePlay = async () => {
+    if (isCurrent) {
+      setStatus(isPlaying ? 'paused' : 'playing');
+      return;
+    }
+    const next = await resolvePlayable();
+    if (next) {
+      play(next);
+    }
+  };
+
+  const handleQueue = async () => {
+    const next = await resolvePlayable();
+    if (next) {
+      enqueue(next);
+    }
   };
 
   return (
@@ -104,6 +120,10 @@ export function WidgetTrackRow({
         onPlay={() => {
           void handlePlay();
         }}
+        onQueue={() => {
+          void handleQueue();
+        }}
+        queueLabel={`Add ${item.title} to queue`}
         playLabel={`Play ${item.title}`}
         pauseLabel={`Pause ${item.title}`}
         placeholder={

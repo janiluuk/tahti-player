@@ -1,6 +1,46 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import { MediaArtwork } from './MediaArtwork';
+
+describe('MediaArtwork play / queue', () => {
+  it('plays on click and queues on Shift+click when onQueue is set', () => {
+    const onPlay = vi.fn();
+    const onQueue = vi.fn();
+    render(
+      <MediaArtwork
+        src="https://media.example/a.jpg"
+        imageReveal={false}
+        size="md"
+        onPlay={onPlay}
+        onQueue={onQueue}
+      />,
+    );
+    const play = screen.getByTestId('media-artwork-play');
+    fireEvent.click(play);
+    expect(onPlay).toHaveBeenCalledTimes(1);
+    expect(onQueue).not.toHaveBeenCalled();
+
+    fireEvent.click(play, { shiftKey: true });
+    expect(onQueue).toHaveBeenCalledTimes(1);
+    expect(onPlay).toHaveBeenCalledTimes(1);
+  });
+
+  it('still plays on Shift+click when there is no onQueue', () => {
+    const onPlay = vi.fn();
+    render(
+      <MediaArtwork
+        src="https://media.example/a.jpg"
+        imageReveal={false}
+        size="md"
+        onPlay={onPlay}
+      />,
+    );
+    fireEvent.click(screen.getByTestId('media-artwork-play'), {
+      shiftKey: true,
+    });
+    expect(onPlay).toHaveBeenCalledTimes(1);
+  });
+});
 
 describe('MediaArtwork fallback', () => {
   it('paints the fallback background when there is no image', () => {

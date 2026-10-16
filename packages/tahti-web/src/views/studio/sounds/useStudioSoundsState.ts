@@ -75,6 +75,7 @@ export function useStudioSoundsState() {
   const [pendingDeleteItem, setPendingDeleteItem] =
     useState<StudioSound | null>(null);
   const play = usePlayerStore((s) => s.play);
+  const enqueue = usePlayerStore((s) => s.enqueue);
 
   const reload = () => {
     setLoading(true);
@@ -158,25 +159,43 @@ export function useStudioSoundsState() {
 
   const pinnedCount = countPinnedTracks(items);
 
-  const playItem = async (id: string, title: string) => {
+  const playItem = async (
+    id: string,
+    title: string,
+    opts?: { queue?: boolean },
+  ) => {
     setBusyId(id);
     const { data } = await fetchEditorSource(id);
-    play({
+    const playable = {
       id: `sound:${id}`,
-      kind: 'sound',
+      kind: 'sound' as const,
       title: data.title || title,
       artist: 'You',
       streamUrl: data.url,
-      protocol: data.url.includes('.m3u8') ? 'hls' : 'https',
-    });
+      protocol: data.url.includes('.m3u8')
+        ? ('hls' as const)
+        : ('https' as const),
+    };
+    if (opts?.queue) {
+      enqueue(playable);
+    } else {
+      play(playable);
+    }
     setBusyId(null);
   };
 
-  const playEmbedItem = (item: StudioSound) => {
+  const playEmbedItem = (item: StudioSound, opts?: { queue?: boolean }) => {
     const hearthis = playableFromStudioHearthis(item);
     if (hearthis) {
-      play(hearthis);
-      setEmbedOpenId(null);
+      if (opts?.queue) {
+        enqueue(hearthis);
+      } else {
+        play(hearthis);
+        setEmbedOpenId(null);
+      }
+      return;
+    }
+    if (opts?.queue) {
       return;
     }
     setEmbedOpenId((id) => (id === item.id ? null : item.id));
