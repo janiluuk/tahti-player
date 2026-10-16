@@ -132,8 +132,9 @@ export function ChannelComments({
         ) : null
       ) : user ? (
         <form
-          className="flex flex-col gap-2"
+          className="flex flex-col gap-2 sm:flex-row sm:items-end"
           onSubmit={(event) => void submit(event)}
+          data-testid="channel-comments-composer"
         >
           <Textarea
             aria-label="Write a comment"
@@ -141,11 +142,12 @@ export function ChannelComments({
             value={body}
             maxLength={MAX_COMMENT_LENGTH}
             onChange={(event) => setBody(event.target.value)}
+            className="min-w-0 flex-1"
           />
           <Button
             type="submit"
             size="sm"
-            className="self-end"
+            className="shrink-0 self-end sm:self-auto"
             disabled={posting || !body.trim()}
           >
             {posting ? 'Posting…' : 'Post comment'}
