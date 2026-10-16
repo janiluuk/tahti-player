@@ -74,14 +74,16 @@ function StationCardSubtitle({
   if (nowPlaying) {
     return (
       <span className="flex flex-col gap-0.5">
-        <span className="text-[0.65rem] font-semibold tracking-wide uppercase opacity-80 sm:hidden">
+        <span className="text-foreground text-[0.65rem] font-bold tracking-wide uppercase sm:hidden">
           Now
         </span>
-        <span className="line-clamp-2 sm:line-clamp-1">{nowPlaying}</span>
+        <span className="text-foreground-secondary line-clamp-2 sm:line-clamp-1">
+          {nowPlaying}
+        </span>
       </span>
     );
   }
-  return <span className="opacity-80">{fallback}</span>;
+  return <span className="text-foreground-secondary">{fallback}</span>;
 }
 
 export type ListenTab = 'listen' | 'feed' | 'history';
@@ -336,7 +338,11 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               )
             }
             subtitle={
-              presetNowPlaying[preset.id] ?? preset.genre ?? 'Internet radio'
+              !preset.streamUrl
+                ? 'Off air'
+                : (presetNowPlaying[preset.id] ??
+                  preset.genre ??
+                  'Internet radio')
             }
             src={preset.iconUrl ?? placeholderArtworkUrl(item.id)}
             isPlaying={isActive(item.id)}
@@ -399,7 +405,11 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           subtitle={
             <StationCardSubtitle
               source={stationNowPlayingSource(station)}
-              fallback={`${station.language} · ${station.bitrateKbps}kbps`}
+              fallback={
+                streamUrl
+                  ? `${station.language} · ${station.bitrateKbps}kbps`
+                  : 'Off air'
+              }
             />
           }
           src={station.logoUrl}
