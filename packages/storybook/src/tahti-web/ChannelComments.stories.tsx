@@ -146,3 +146,31 @@ export const HiddenWhenOffAndEmpty: Story = {
     );
   },
 };
+
+export const PhoneComposer: Story = {
+  name: 'Composer fits at 390 px',
+  decorators: [withMockAuth(MOCK_USERS.listener)],
+  parameters: {
+    viewport: { defaultViewport: 'mobile1' },
+    layout: 'padded',
+  },
+  render: (args) => (
+    <div className="w-[390px] max-w-full overflow-hidden">
+      <ChannelComments {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const composer = await canvas.findByTestId('channel-comments-composer');
+    await expect(composer).toBeVisible();
+    const box = composer.getBoundingClientRect();
+    await expect(box.width).toBeLessThanOrEqual(390);
+    await expect(composer.scrollWidth).toBeLessThanOrEqual(
+      composer.clientWidth + 1,
+    );
+    const post = canvas.getByRole('button', { name: 'Post comment' });
+    await expect(post.getBoundingClientRect().right).toBeLessThanOrEqual(
+      box.right + 1,
+    );
+  },
+};
