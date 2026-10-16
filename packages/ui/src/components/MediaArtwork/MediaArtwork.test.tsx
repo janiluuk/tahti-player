@@ -40,6 +40,29 @@ describe('MediaArtwork play / queue', () => {
     });
     expect(onPlay).toHaveBeenCalledTimes(1);
   });
+
+  it('swaps the play icon for the queue icon while Shift is held', () => {
+    render(
+      <MediaArtwork
+        src="https://media.example/a.jpg"
+        imageReveal={false}
+        size="md"
+        onPlay={vi.fn()}
+        onQueue={vi.fn()}
+        queueLabel="Add to queue"
+      />,
+    );
+    const play = screen.getByTestId('media-artwork-play');
+    expect(play).toHaveAttribute('aria-label', 'Play · Shift+click to queue');
+
+    fireEvent.keyDown(window, { key: 'Shift', shiftKey: true });
+    expect(play).toHaveAttribute('aria-label', 'Add to queue');
+    expect(play.querySelector('svg.lucide-list-plus')).not.toBeNull();
+
+    fireEvent.keyUp(window, { key: 'Shift', shiftKey: false });
+    expect(play).toHaveAttribute('aria-label', 'Play · Shift+click to queue');
+    expect(play.querySelector('svg.lucide-play')).not.toBeNull();
+  });
 });
 
 describe('MediaArtwork fallback', () => {
