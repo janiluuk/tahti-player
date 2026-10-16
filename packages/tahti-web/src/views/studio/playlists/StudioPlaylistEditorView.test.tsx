@@ -36,6 +36,7 @@ vi.mock('@tanstack/react-virtual', () => ({
 
 let collection: StudioCollection;
 const removeStudioCollectionItem = vi.fn();
+const patchStudioCollection = vi.fn();
 
 vi.mock('../../../api/studio', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../../api/studio')>();
@@ -55,6 +56,8 @@ vi.mock('../../../api/studio', async (importOriginal) => {
     }),
     removeStudioCollectionItem: (...args: unknown[]) =>
       removeStudioCollectionItem(...args),
+    patchStudioCollection: (...args: unknown[]) =>
+      patchStudioCollection(...args),
   };
 });
 
@@ -79,10 +82,21 @@ let root: Root;
 beforeEach(() => {
   vi.stubEnv('VITE_FORCE_MOCK', '1');
   removeStudioCollectionItem.mockResolvedValue({ ok: true });
+  patchStudioCollection.mockResolvedValue({
+    ok: true,
+    data: {
+      slug: 'my-list',
+      name: 'My List',
+      isPublic: true,
+      trackSortMode: 'NAME',
+      items: [],
+    },
+  });
   collection = {
     slug: 'my-list',
     name: 'My List',
     isPublic: true,
+    trackSortMode: 'MANUAL',
     items: [
       {
         id: 'item-1',
@@ -207,5 +221,28 @@ describe('StudioPlaylistEditorView contributions', () => {
 
     expect(screen.getByText('First Track')).toBeInTheDocument();
     expect(screen.queryByTestId('collection-contribution')).toBeNull();
+  });
+});
+
+describe('StudioPlaylistEditorView track order', () => {
+  it('saves the chosen public track order with the playlist settings', async () => {
+    await renderEditor();
+
+    const trackOrder = screen.getByRole('button', { name: /Track order/i });
+    await act(async () => {
+      fireEvent.click(trackOrder);
+    });
+    const option = await screen.findByRole('option', { name: 'Title (A-Z)' });
+    await act(async () => {
+      fireEvent.click(option);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Save/i }));
+    });
+
+    expect(patchStudioCollection).toHaveBeenCalledWith(
+      'my-list',
+      expect.objectContaining({ trackSortMode: 'NAME' }),
+    );
   });
 });
