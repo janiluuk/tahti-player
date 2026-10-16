@@ -4756,3 +4756,7 @@ Folded `shift-play-storybook.md`. MediaArtwork docs + `ShiftClickQueues` play; T
 
 Folded `settings-audit.md`. Channel & chat (Chat + Moderators), share toggle, Broadcast save errors, rename confirm, placeholder switches removed, Account/Artist tab groups, Visibility/Discovery cards, Playback SectionShell, and the 2026-10-16 decisions (moderators stay chat-only; keep “Channel & chat” name) are all shipped. No open product questions left in that todo.
 
+## 2026-10-16 - Queue collapse overlap fold (batch 66 #8)
+
+Folded `queue-collapse-button-overlap.md`. Layout pad shipped in #850; Storybook `RightRailPanel/NoToggleOverlap` asserts the collapse toggle does not intersect the first queue row on web. Desktop-player-only reports remain welcome if they return.
+
