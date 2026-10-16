@@ -33,7 +33,8 @@ Production / beta builds (`import.meta.env.PROD`) **do not** fall back to fixtur
 
 - [x] Chat: persist mock sends into shared history store (reload-safe) (batch 66 #5)
 - [ ] Seed richer archive / releases / collections for Studio browse
-- [ ] Newsletter send confirmation + DM search users fixture expansion
+- [x] Newsletter send confirmation (success toast + list refresh under mock)
+- [ ] DM search users fixture expansion
 - [ ] Press-kit gallery upload mock (currently link-out)
 - [ ] Member invite mock (currently link-out)
 - [x] Stash upload / delete mock store (wave 7)

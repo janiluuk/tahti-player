@@ -15,6 +15,11 @@ import type { ArtistPost } from '../../api/studio-extras';
 import { useAuthStore } from '../../stores/authStore';
 import { StudioUpdatesView } from './StudioUpdatesView';
 
+const { toast } = vi.hoisted(() => ({
+  toast: { success: vi.fn(), error: vi.fn() },
+}));
+vi.mock('sonner', () => ({ toast, Toaster: () => null }));
+
 const sendNewsletterDraft = vi.fn();
 let artistPosts: ArtistPost[] = [];
 
@@ -72,6 +77,8 @@ let root: Root;
 beforeEach(() => {
   vi.stubEnv('VITE_FORCE_MOCK', '1');
   sendNewsletterDraft.mockResolvedValue({ ok: true, queued: 42 });
+  toast.success.mockClear();
+  toast.error.mockClear();
   container = document.createElement('div');
   document.body.appendChild(container);
   root = createRoot(container);
@@ -127,6 +134,9 @@ describe('StudioUpdatesView newsletter send confirmation', () => {
     );
 
     expect(sendNewsletterDraft).toHaveBeenCalledWith('draft-1', 'all');
+    expect(toast.success).toHaveBeenCalledWith(
+      'Queued send to 42 subscribers.',
+    );
   });
 
   it('sends nothing when the confirmation is cancelled', async () => {
