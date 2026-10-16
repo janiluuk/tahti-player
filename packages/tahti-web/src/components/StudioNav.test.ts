@@ -3,6 +3,12 @@ import { describe, expect, it } from 'vitest';
 import { i18n } from '@tahti-player/i18n';
 
 import {
+  GO_LIVE_TABS,
+  goLiveTabPath,
+  isGoLiveSessionRoute,
+  isGoLiveSessionTabActive,
+} from '../views/studio/go-live/goLiveTabs';
+import {
   AUDIENCE_SUBNAV_ITEMS,
   BROADCAST_SUBNAV_ITEMS,
   getStudioPrimaryRoute,
@@ -119,7 +125,32 @@ describe('StudioNav section coverage', () => {
         '/studio/go-live',
       ]);
       expect(isStudioBroadcastGroup(location), location).toBe(true);
+      expect(isGoLiveSessionRoute(location), location).toBe(true);
     }
+  });
+
+  it('on go-live session chrome, lights exactly one Prep tab from the URL', () => {
+    expect(isGoLiveSessionTabActive('/studio/go-live', 'prep')).toBe(true);
+    expect(
+      isGoLiveSessionTabActive(
+        '/studio/go-live?tab=credentials',
+        'credentials',
+      ),
+    ).toBe(true);
+    expect(
+      isGoLiveSessionTabActive('/studio/go-live?tab=green-room', 'green-room'),
+    ).toBe(true);
+    expect(
+      isGoLiveSessionTabActive('/studio/go-live?tab=credentials', 'prep'),
+    ).toBe(false);
+    expect(isGoLiveSessionRoute('/studio/schedule')).toBe(false);
+    expect(GO_LIVE_TABS.map(goLiveTabPath)).toEqual([
+      '/studio/go-live',
+      '/studio/go-live?tab=credentials',
+      '/studio/go-live?tab=recording',
+      '/studio/go-live?tab=destinations',
+      '/studio/go-live?tab=green-room',
+    ]);
   });
 
   it('keeps Go live unlit on the Channel green-room tab', () => {

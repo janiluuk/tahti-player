@@ -10,4 +10,4 @@
 
 ## Left
 
-2. Broadcast Prep still sits under Studio → Broadcast → Go live (nested chrome) — reduce nesting for the critical go-live path.
+2. ~~Broadcast Prep nested chrome~~ — batch 66 slice 1: on `/studio/go-live`, Prep tabs live in the nested Studio nav with Schedule/Events/Shows/Channel/Radio as siblings (no third in-page tab row).

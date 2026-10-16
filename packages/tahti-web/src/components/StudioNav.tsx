@@ -1,11 +1,15 @@
 import { useRouterState } from '@tanstack/react-router';
 import {
+  CastIcon,
   CreditCardIcon,
+  Disc3Icon,
   HeartIcon,
+  KeyRoundIcon,
   LandmarkIcon,
   LayersIcon,
   LayoutGridIcon,
   ListMusicIcon,
+  MicIcon,
   RadioIcon,
   RadioTowerIcon,
   Settings2Icon,
@@ -20,6 +24,14 @@ import { SidebarNavigationItem } from '@tahti-player/ui';
 import { useStripeConfigured } from '../hooks/useStripeConfigured';
 import type { TourStep } from '../lib/pageTour';
 import { matchesSectionRoute } from '../lib/sectionNavigation';
+import {
+  GO_LIVE_TAB_LABELS,
+  GO_LIVE_TABS,
+  goLiveTabPath,
+  isGoLiveSessionRoute,
+  isGoLiveSessionTabActive,
+  type GoLiveTabId,
+} from '../views/studio/go-live/goLiveTabs';
 import { SectionTabs } from './SectionTabs';
 
 type StudioSubmenuLabelKey =
@@ -355,6 +367,45 @@ export function BroadcastSubNav({ current }: { current?: string }) {
   );
 }
 
+const GO_LIVE_SESSION_ICONS: Record<GoLiveTabId, ReactNode> = {
+  prep: <RadioTowerIcon size={16} />,
+  credentials: <KeyRoundIcon size={16} />,
+  recording: <Disc3Icon size={16} />,
+  destinations: <CastIcon size={16} />,
+  'green-room': <MicIcon size={16} />,
+};
+
+/**
+ * On `/studio/go-live`, replace BroadcastSubNav with Prep session tabs plus
+ * Schedule/Events/Shows/Channel/Radio as siblings — one nested strip instead
+ * of Broadcast pages + in-page Prep tabs (artist-lifecycle P2).
+ */
+export function GoLiveSessionSubNav({ current }: { current?: string }) {
+  const { t } = useTranslation('web');
+  const sessionItems = GO_LIVE_TABS.map((tab) => ({
+    id: goLiveTabPath(tab),
+    to: goLiveTabPath(tab),
+    label: GO_LIVE_TAB_LABELS[tab],
+    icon: GO_LIVE_SESSION_ICONS[tab],
+    active: isGoLiveSessionTabActive(current, tab),
+  }));
+  const siblingItems = BROADCAST_SUBNAV_ITEMS.filter(
+    (item) => item.to !== '/studio/go-live',
+  ).map((item) => ({
+    id: item.to,
+    to: item.to,
+    label: t(item.labelKey),
+    icon: item.icon,
+    active: isBroadcastSubnavActive(current, item.to),
+  }));
+  return (
+    <SectionTabs
+      aria-label="Go live session"
+      items={[...sessionItems, ...siblingItems]}
+    />
+  );
+}
+
 export const isAudienceSubnavActive = (
   current: string | undefined,
   to: string,
@@ -448,6 +499,7 @@ function StudioNavigation({ current }: { current?: string }) {
   }
 
   const showBroadcast = isStudioBroadcastGroup(current);
+  const showGoLiveSession = isGoLiveSessionRoute(current);
   const showAudience = isStudioAudienceGroup(current);
 
   return (
@@ -465,7 +517,11 @@ function StudioNavigation({ current }: { current?: string }) {
         />
       </div>
       <div className={STUDIO_NESTED_NAV_SLOT} data-studio-nested-nav>
-        {showBroadcast ? <BroadcastSubNav current={current} /> : null}
+        {showGoLiveSession ? (
+          <GoLiveSessionSubNav current={current} />
+        ) : showBroadcast ? (
+          <BroadcastSubNav current={current} />
+        ) : null}
         {showAudience ? <AudienceSubNav current={current} /> : null}
       </div>
     </div>

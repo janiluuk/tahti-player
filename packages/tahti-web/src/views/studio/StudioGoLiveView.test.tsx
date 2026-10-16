@@ -241,9 +241,8 @@ describe('StudioGoLiveView signal announcement', () => {
     expect(
       screen.getByRole('button', { name: /Show info/ }).textContent,
     ).toMatch(/not confirmed yet/);
-    expect(screen.getByRole('tab', { name: /Prep/i })).toBeInTheDocument();
     expect(
-      screen.getByRole('tab', { name: /Credentials/i }),
+      screen.getByRole('list', { name: 'Prep checklist' }),
     ).toBeInTheDocument();
   });
 
