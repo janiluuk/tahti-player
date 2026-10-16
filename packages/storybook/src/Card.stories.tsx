@@ -74,7 +74,7 @@ export const WithAmbientGlow: Story = {
   args: {
     src: cover,
     title: 'Ambient wash (grid technique)',
-    subtitle: 'See Discover Artists for the live grid wash',
+    subtitle: 'See AmbientCard for per-card glass',
   },
   decorators: [
     (Story) => (
@@ -102,7 +102,7 @@ export const WithAmbientGlow: Story = {
     docs: {
       description: {
         story:
-          'Opaque Card chrome cannot host a per-card blur bleed. DirectoryArtistCardGrid paints a soft avatar collage behind the whole grid with a wider gap instead.',
+          'Opaque Card chrome cannot host a per-card blur bleed. Use `AmbientCard` for glass + cover-ambient chrome; DirectoryArtistCardGrid still paints a soft collage behind the whole grid.',
       },
     },
   },
