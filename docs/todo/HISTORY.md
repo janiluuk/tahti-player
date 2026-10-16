@@ -4760,3 +4760,18 @@ Folded `settings-audit.md`. Channel & chat (Chat + Moderators), share toggle, Br
 
 Folded `queue-collapse-button-overlap.md`. Layout pad shipped in #850; Storybook `RightRailPanel/NoToggleOverlap` asserts the collapse toggle does not intersect the first queue row on web. Desktop-player-only reports remain welcome if they return.
 
+
+## 2026-10-16 - Batch 66 UX / UI (tahti-player #948–#967, #949)
+
+Asked for as merge of green batch-66 PRs, then the next twenty slices (batch 67).
+
+- **Go live / lifecycle (#948, #965):** Prep tabs live in the nested Studio nav with Schedule/Events/Shows/Channel/Radio as siblings; Show title ready checks after save in mock. Folded `artist-lifecycle-p2-ux.md` (only leftover was nested Broadcast chrome).
+- **Listener stash (#950):** Library Stash shows files without Studio gate; artist “All stash” stays behind Studio access.
+- **Library tracks (#949, #959):** hearthis embed hosts in the SoundRow play-control box; mock ambient covers + Storybook. Visual-check leftovers tracked for batch 67 Storybook plays.
+- **Mock polish (#958, #961, #962):** channel chat persists across reload; stash share create/revoke toasts; newsletter send confirmation.
+- **Channel (#955, #956, #963):** tighter hero→blocks rhythm; tracklist EmptyState; comments composer fits at 390 px.
+- **Messages / Studio home (#952, #953):** empty DM thread EmptyState; empty broadcasts CTA to Go live.
+- **Storybook / CI (#951, #954, #957, #960, #964, #966, #967):** fold settings-audit; Combobox states; playlist empty; queue collapse no-overlap play; designer load states; soft-pass unit; phone More Close tooltip delay.
+- **Checks:** per-PR CI green before squash merge; #949 and #960 rebased after INDEX conflicts.
+- **Left open:** batch 67 plan in `next-twenty-slices.md`; real Centrifugo Send; channel art-direction redesign; desktop-only leftovers.
+
