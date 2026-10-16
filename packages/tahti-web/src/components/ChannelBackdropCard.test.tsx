@@ -58,6 +58,7 @@ describe('ChannelBackdropCard backdrop', () => {
   afterEach(() => {
     document.body.replaceChildren();
     vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
   it('shows the Tahti ry member badge beside the name only for members', () => {
@@ -151,6 +152,24 @@ describe('ChannelBackdropCard backdrop', () => {
         slideshowImages: ['https://x.test/1.jpg'],
       }).querySelector('[data-testid="slideshow"]'),
     ).toBeNull();
+  });
+
+  it('keeps bio Show more outside the Edit backdrop design control', () => {
+    vi.spyOn(HTMLElement.prototype, 'scrollHeight', 'get').mockReturnValue(120);
+    vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(40);
+    const el = render({
+      bio: 'A long channel bio that needs expanding on a narrow phone.',
+      onEditIdentity: () => {},
+    });
+    const edit = el.querySelector(
+      '[role="button"][aria-label="Edit backdrop design"]',
+    );
+    expect(edit).not.toBeNull();
+    const showMore = [...el.querySelectorAll('button')].find(
+      (button) => button.textContent === 'Show more',
+    );
+    expect(showMore).toBeDefined();
+    expect(edit?.contains(showMore!)).toBe(false);
   });
 
   // KNOWN GAP: the WebGL gallery styles offered in the designer's "Gallery

@@ -267,34 +267,11 @@ export function ChannelBackdropCard({
       ) : null}
 
       <div
-        role={onEditIdentity ? 'button' : undefined}
-        tabIndex={onEditIdentity ? 0 : undefined}
-        aria-label={onEditIdentity ? 'Edit backdrop design' : undefined}
-        title={onEditIdentity ? 'Edit backdrop design' : undefined}
-        onClick={
-          onEditIdentity
-            ? (event) => {
-                event.stopPropagation();
-                onEditIdentity();
-              }
-            : undefined
-        }
-        onKeyDown={
-          onEditIdentity
-            ? (event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  onEditIdentity();
-                }
-              }
-            : undefined
-        }
         className={`relative z-[1] p-4 outline-none sm:p-6 sm:pr-40 ${
           editable ? 'pr-12' : ''
-        } ${onEditIdentity ? 'cursor-pointer' : ''} ${
+        } ${
           editable
-            ? `rounded-lg transition-shadow hover:ring-2 hover:ring-white/40 focus-visible:ring-2 focus-visible:ring-white/70 ${
+            ? `rounded-lg transition-shadow hover:ring-2 hover:ring-white/40 ${
                 identitySelected ? 'ring-primary ring-2' : ''
               }`
             : ''
@@ -319,21 +296,52 @@ export function ChannelBackdropCard({
             </div>
           ) : null}
           <div className="min-w-36 flex-1">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-              <NameTag
-                data-testid="channel-backdrop-card-name"
-                className="font-display text-2xl font-extrabold tracking-tight break-words sm:text-3xl"
-              >
-                {displayName}
-              </NameTag>
-              <TahtiMemberBadge isMember={isMember} />
-            </div>
             <div
-              data-testid="channel-backdrop-card-handle"
-              className="text-sm opacity-80"
+              role={onEditIdentity ? 'button' : undefined}
+              tabIndex={onEditIdentity ? 0 : undefined}
+              aria-label={onEditIdentity ? 'Edit backdrop design' : undefined}
+              title={onEditIdentity ? 'Edit backdrop design' : undefined}
+              onClick={
+                onEditIdentity
+                  ? (event) => {
+                      event.stopPropagation();
+                      onEditIdentity();
+                    }
+                  : undefined
+              }
+              onKeyDown={
+                onEditIdentity
+                  ? (event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        onEditIdentity();
+                      }
+                    }
+                  : undefined
+              }
+              className={`outline-none ${
+                onEditIdentity
+                  ? 'cursor-pointer rounded-sm focus-visible:ring-2 focus-visible:ring-white/70'
+                  : ''
+              }`}
             >
-              @{username}
-              {channelSlug ? ` · /${channelSlug}` : ''}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <NameTag
+                  data-testid="channel-backdrop-card-name"
+                  className="font-display text-2xl font-extrabold tracking-tight break-words sm:text-3xl"
+                >
+                  {displayName}
+                </NameTag>
+                <TahtiMemberBadge isMember={isMember} />
+              </div>
+              <div
+                data-testid="channel-backdrop-card-handle"
+                className="text-sm opacity-80"
+              >
+                @{username}
+                {channelSlug ? ` · /${channelSlug}` : ''}
+              </div>
             </div>
             {bioVisible && bio ? (
               <ClampedText
