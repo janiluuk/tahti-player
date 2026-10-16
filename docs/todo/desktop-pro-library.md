@@ -191,6 +191,8 @@ Depends on: phases 1–5; profiling and bounded design apply from phase 0 onward
 
 **Exit demo:** add/change/move files externally and see incremental reconciliation; 10k-track real workflow and 100k-row stress fixture meet recorded budgets without playback regressions. Publish before/after traces and known limitations.
 
+**2026-10-16 symlinked paths (macOS run):** the full `cargo test --lib local_library` suite now passes on macOS too. The two tests that failed there exposed a real bug for any folder reached through a symlink (macOS `/var` -> `/private/var`, or a symlinked music folder on any OS): a backup restored into such a folder imported the files but lost their ratings, edits and watched folder, its playlist entries stayed unlinked, and an M3U entry for a file that did not exist yet never re-linked when the file arrived. Restore and M3U import now use the same canonical path the catalog stores (for a missing file, its nearest existing folder's canonical path plus the rest). New symlink tests also run on Linux.
+
 ## Phase 7 — Optional acquisition and cloud connections
 
 Depends on: stable core phases 1–6. These do not gate personal library use.

@@ -168,6 +168,28 @@ async fn import_keeps_unresolved_entries_and_relinks_them_when_the_file_arrives(
     assert!(!page.entries[3].unavailable, "relinked by path");
 }
 
+#[cfg(unix)]
+#[tokio::test]
+async fn a_missing_entry_listed_through_a_symlink_relinks_when_the_file_arrives() {
+    let real = tempfile::tempdir().unwrap();
+    let links = tempfile::tempdir().unwrap();
+    let linked = links.path().join("Musiikki");
+    std::os::unix::fs::symlink(real.path(), &linked).unwrap();
+    let pool = pool().await;
+    let list_file = links.path().join("later.m3u");
+    std::fs::write(&list_file, format!("{}\n", linked.join("Äänet/tulossa.wav").display())).unwrap();
+
+    let outcome = commit_import(&pool, &list_file, "Later", false, None).await.unwrap();
+    assert_eq!((outcome.linked, outcome.unresolved), (0, 1));
+
+    let arrived = real.path().join("Äänet/tulossa.wav");
+    std::fs::create_dir_all(arrived.parent().unwrap()).unwrap();
+    write_wav(&arrived, "Tulossa", "Artist");
+    import_paths(&pool, vec![arrived]).await;
+    let page = entries_page(&pool, &outcome.playlist.id, 0).await.unwrap();
+    assert!(!page.entries[0].unavailable, "relinked although the list names the file through a symlink");
+}
+
 #[tokio::test]
 async fn import_rejects_a_taken_name_before_importing_anything() {
     let (dir, pool, _, _) = m3u_library().await;

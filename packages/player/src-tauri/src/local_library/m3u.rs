@@ -434,10 +434,10 @@ async fn resolve_entries(
                     }
                 }
                 let exists = !entry.remote && path.is_file();
-                let canonical = if exists {
-                    path.canonicalize().unwrap_or_else(|_| path.clone())
-                } else {
+                let canonical = if entry.remote {
                     path.clone()
+                } else {
+                    super::import::catalog_path(&path)
                 };
                 (entry, canonical, exists)
             })
