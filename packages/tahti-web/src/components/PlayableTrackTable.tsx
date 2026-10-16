@@ -19,6 +19,9 @@ type Props = {
   items: TahtiPlayable[];
   emptyMessage?: string;
   playAll?: boolean;
+  /** Off for a secondary table on the same page (e.g. channel Pinned above Catalog). */
+  filterable?: boolean;
+  addAllToQueue?: boolean;
   compactActions?: boolean;
   /** Present only when the caller has already decided the viewer can
    * edit these tracks (e.g. their own catalog) -- omit entirely to keep
@@ -45,6 +48,8 @@ export function PlayableTrackTable({
   items,
   emptyMessage = 'No tracks yet.',
   playAll = true,
+  filterable = true,
+  addAllToQueue = true,
   compactActions = false,
   onEdit,
   onRemove,
@@ -143,11 +148,11 @@ export function PlayableTrackTable({
           rowHeight={hasAnnotations ? ANNOTATED_ROW_HEIGHT : undefined}
           features={{
             header: true,
-            filterable: true,
+            filterable,
             sortable: true,
             favorites: true,
             playAll,
-            addAllToQueue: true,
+            addAllToQueue,
             reorderable: false,
             contextMenu: true,
             selectable,

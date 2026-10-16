@@ -87,6 +87,9 @@ export function renderChannelBlock(
                 <PlayableTrackTable
                   items={ctx.pinnedPlayables}
                   emptyMessage="No pinned tracks."
+                  playAll={false}
+                  filterable={false}
+                  addAllToQueue={false}
                 />
               </div>
             )}
