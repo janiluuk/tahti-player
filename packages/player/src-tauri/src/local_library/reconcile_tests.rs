@@ -162,3 +162,57 @@ async fn a_tag_edit_between_import_and_the_first_scan_is_read() {
     assert_eq!(list(&pool, "", 0).await.unwrap().tracks[0].title, "New");
     assert_eq!(super::reconcile::refresh_changed(&pool, &root).await.unwrap(), 0);
 }
+
+async fn root_of(pool: &sqlx::SqlitePool, id: &str) -> Option<String> {
+    sqlx::query_scalar("SELECT root_id FROM library_tracks WHERE id = ?").bind(id).fetch_one(pool).await.unwrap()
+}
+
+#[tokio::test]
+async fn a_file_moved_to_another_watched_folder_keeps_its_catalog_id() {
+    let a = tempfile::tempdir().unwrap();
+    let b = tempfile::tempdir().unwrap();
+    let old = a.path().join("song.wav");
+    write_wav(&old, "Song", "Artist");
+    let pool = pool().await;
+    let root_a = add_root(&pool, a.path()).await.unwrap();
+    let root_b = add_root(&pool, b.path()).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root_a).await.unwrap();
+    import_into_root(&pool, &root_a.id, fresh).await;
+    let id = list(&pool, "", 0).await.unwrap().tracks[0].id.clone();
+
+    std::fs::copy(&old, b.path().join("song.wav")).unwrap();
+    std::fs::remove_file(&old).unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root_b).await.unwrap();
+    let (moved, rest) = super::reconcile::relink_moved(&pool, &root_b, fresh).await.unwrap();
+    assert_eq!(moved, 1);
+    assert!(rest.is_empty(), "not imported a second time");
+    let page = list(&pool, "", 0).await.unwrap();
+    assert_eq!(page.total, 1);
+    assert_eq!(page.tracks[0].id, id, "same catalog id, so playlists and ratings stay");
+    assert!(page.tracks[0].available);
+    assert_eq!(root_of(&pool, &id).await, Some(root_b.id.clone()), "now belongs to the folder it moved to");
+    assert_eq!(super::refresh_root_availability(&pool, &root_a.id).await.unwrap(), (0, 0), "the old folder has nothing missing");
+}
+
+#[tokio::test]
+async fn tracks_on_a_disconnected_watched_folder_are_never_moved_away() {
+    let drive = tempfile::tempdir().unwrap();
+    let a = drive.path().join("music");
+    std::fs::create_dir_all(&a).unwrap();
+    let b = tempfile::tempdir().unwrap();
+    write_wav(&a.join("song.wav"), "Song", "Artist");
+    let pool = pool().await;
+    let root_a = add_root(&pool, &a).await.unwrap();
+    let root_b = add_root(&pool, b.path()).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root_a).await.unwrap();
+    import_into_root(&pool, &root_a.id, fresh).await;
+    let id = list(&pool, "", 0).await.unwrap().tracks[0].id.clone();
+
+    std::fs::copy(a.join("song.wav"), b.path().join("song.wav")).unwrap();
+    std::fs::rename(&a, drive.path().join("unplugged")).unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root_b).await.unwrap();
+    let (moved, rest) = super::reconcile::relink_moved(&pool, &root_b, fresh).await.unwrap();
+    assert_eq!(moved, 0);
+    assert_eq!(rest.len(), 1, "the copy is a new file");
+    assert_eq!(root_of(&pool, &id).await, Some(root_a.id.clone()));
+}
