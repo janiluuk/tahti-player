@@ -112,4 +112,8 @@ this environment) — the token-required path is covered by tests mocking
 - **Auth (the open item above):** `tahti login` checks the token with `GET /api/auth/me` and saves it to `$XDG_CONFIG_HOME/tahti/config.json` (mode 600); `TAHTI_API_TOKEN` still wins. No device-code flow, since the API has none.
 - **Import:** uploads are public by default and auto-join the rotation when that channel setting is on (`uploads/complete.ts` on tahti-org `main`), which the manual page now says. `import --collection` was not added: the items route accepts only READY sounds; `library processing --wait` then `collections add` covers it.
 - **Standalone repo:** tahti-cli#4 merged (identical to tahti-player master); tahti-cli#5 copies `src/` from #846 and updates its README. `@tahti/api-client` is still not on npm, so tahti-cli#1 stays a draft.
-- **Left:** the SDK publish and port (needs `NPM_TOKEN`), release write commands, history and "previous" in the shell, album/artwork tags, OGG/M4A tags. None of the new commands was run against the live API.
+- **Left:** the SDK publish and port (needs `NPM_TOKEN`), release write commands beyond `create` (edit/publish, adding tracks to an existing release), history and "previous" in the shell, album/artwork tags, OGG/M4A tags. None of the new commands was run against the live API.
+
+## 2026-10-16: release write commands, shell history
+
+- **`tahti releases create <title>` (PRNUM):** `POST /api/me/releases` with `--type`, `--date` (default today), `--description`, `--genre` and repeatable `--sound <id>`; each sound is looked up with `GET /api/me/sound/:id` and becomes a track titled after it. Creates a draft. Mocked `fetch` only, not run against the live API.
