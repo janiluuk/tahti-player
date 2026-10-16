@@ -169,6 +169,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Listen/FollowListDialog` | `tahti-web/FollowListDialog.stories.tsx` |
 | `Tahti/Auth/ForgotPasswordView` | `tahti-web/ForgotPasswordView.stories.tsx` |
 | `Tahti/Player/FullScreenPlayer` | `tahti-web/FullScreenPlayer.stories.tsx` |
+| `Tahti/Studio/Branding/GallerySection` | `tahti-web/GallerySection.stories.tsx` |
 | `Tahti/Studio/GenrePicker` | `tahti-web/GenrePicker.stories.tsx` |
 | `Tahti/Widgets/GlobalSearch` | `tahti-web/GlobalSearch.stories.tsx` |
 | `Tahti/Media/GlowMediaTile` | `tahti-web/GlowMediaTile.stories.tsx` |
