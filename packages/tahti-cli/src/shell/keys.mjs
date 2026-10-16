@@ -105,7 +105,7 @@ export const HELP_TEXT = `tahti shell — keys
   a             Add to queue (tracks only)
   c             Clear queue
   Space         Play / pause
-  n / p         Next / previous (queue)
+  n / p         Next in queue / previous (p restarts a track after 3 s)
   ← / →         Seek ±5s
   /             Search (on Search view)
   ?             This help

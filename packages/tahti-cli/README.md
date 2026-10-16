@@ -18,7 +18,7 @@ registry discovery from scripts.
 
 ### Interactive shell (`tahti shell`)
 
-Opens a blessed TUI: Library · Search · Likes · Radio · Queue. Playback is delegated
+Opens a blessed TUI: Library · Search · Likes · Radio · Queue · History (this session, newest first). Playback is delegated
 to an external **mpv** process (must be on `PATH`). Needs a TTY and
 `TAHTI_API_TOKEN` for library audio (`GET /api/me/sound/:id/editor/source`).
 
@@ -27,7 +27,7 @@ to an external **mpv** process (must be on `PATH`). Needs a TTY and
 pnpm --filter @tahti-player/tahti-cli exec tahti shell
 ```
 
-Keys: `Tab` focus nav/list, `Enter` play, `Space` pause, `n`/`p` next/prev,
+Keys: `Tab` focus nav/list, `Enter` play, `Space` pause, `n`/`p` next/prev (`p` restarts after 3 s),
 `←`/`→` seek ±5s, `/` search, `a` add to queue, `c` clear queue, `?` help,
 `q` quit. Radio loads Tahti Radio HLS plus public internet-radio presets.
 Search results list titles but usually have no stream URL — play those from
@@ -188,5 +188,5 @@ All errors exit with status 1.
 - The move to [janiluuk/tahti-cli](https://github.com/janiluuk/tahti-cli) on the
   published `@tahti/api-client` SDK waits for the first npm publish; until then
   that repo copies `src/` from here.
-- Shell: listening history, studio commands, "previous" in the queue.
+- Shell: studio commands; the History view is for this session only, nothing is saved.
 - Adding tracks to an existing release.

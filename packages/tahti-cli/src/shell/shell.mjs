@@ -19,6 +19,7 @@ import {
   createInitialState,
   currentList,
   currentNavId,
+  goToPrevious,
   moveList,
   moveNav,
   NAV_ITEMS,
@@ -26,6 +27,7 @@ import {
   selectedItem,
   setFocus,
   setNowPlaying,
+  shouldRestart,
   toggleFocus,
 } from './state.mjs';
 
@@ -137,6 +139,7 @@ export async function runShell(config) {
       likes: ' Likes ',
       radio: ' Radio ',
       queue: ' Queue ',
+      history: ' History ',
     };
     listBox.setLabel(labels[navId] ?? ' List ');
     listBox.style.border.fg = state.focus === 'list' ? 'cyan' : 'gray';
@@ -151,6 +154,7 @@ export async function runShell(config) {
         likes: 'No loved tracks yet.',
         radio: 'No radio stations.',
         queue: 'Queue is empty.',
+        history: 'Nothing played yet.',
       };
       listBox.setItems([empty[navId] ?? 'Empty.']);
     } else {
@@ -490,12 +494,23 @@ export async function runShell(config) {
         }
         return;
       }
-      case 'prev':
-        setState({
-          ...state,
-          status: 'Previous track is not available in v1 (restart from list).',
-        });
+      case 'prev': {
+        if (shouldRestart(state) && mpv.running) {
+          try {
+            await mpv.seekTo(0);
+            setState({ ...state, timePos: 0, status: 'Restarted.' });
+          } catch (error) {
+            setState({ ...state, status: error?.message ?? String(error) });
+          }
+          return;
+        }
+        const hasPrevious = state.history.length > 0;
+        setState(goToPrevious(state));
+        if (hasPrevious) {
+          await playItem(state.nowPlaying);
+        }
         return;
+      }
       case 'seekBack':
         try {
           if (mpv.running) {

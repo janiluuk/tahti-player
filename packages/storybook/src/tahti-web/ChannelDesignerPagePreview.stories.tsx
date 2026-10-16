@@ -58,7 +58,9 @@ export const Gradient: Story = {
   name: 'Gradient header + top bar',
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    const preview = canvas.getByRole('main', { name: 'Channel page preview' });
+    const preview = canvas.getByRole('region', {
+      name: 'Channel page preview',
+    });
     await expect(
       within(preview).getByTestId('channel-backdrop-top-bar'),
     ).toHaveTextContent('New album "Polar Drift" out Friday');

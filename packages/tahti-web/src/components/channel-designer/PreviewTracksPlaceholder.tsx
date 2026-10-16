@@ -17,7 +17,7 @@ export function PreviewTracksPlaceholder({ displayName, bio }: Props) {
     <div className="flex flex-col gap-5 p-4 sm:p-6">
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-lg font-bold">Tracks</h3>
+          <h2 className="text-lg font-bold">Tracks</h2>
         </div>
         <div className="border-border divide-border divide-y overflow-hidden rounded-lg border">
           {PLACEHOLDER_TRACK_TITLES.map((title, index) => (
@@ -37,7 +37,7 @@ export function PreviewTracksPlaceholder({ displayName, bio }: Props) {
         </div>
       </section>
       <section className="border-border rounded-lg border p-4">
-        <h3 className="text-sm font-bold">About {displayName}</h3>
+        <h2 className="text-sm font-bold">About {displayName}</h2>
         <p className="text-foreground-secondary mt-1 line-clamp-2 text-sm">
           {bio || 'Your artist bio will appear here for visitors.'}
         </p>

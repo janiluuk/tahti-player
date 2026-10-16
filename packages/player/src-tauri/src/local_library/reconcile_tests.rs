@@ -140,6 +140,29 @@ async fn a_renamed_and_re_tagged_file_shows_its_new_tags_and_keeps_user_edits() 
     assert_eq!(super::reconcile::refresh_changed(&pool, &root).await.unwrap(), 0, "not read a second time");
 }
 
+#[tokio::test]
+async fn a_tag_edit_between_import_and_the_first_scan_is_read() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("a.wav");
+    write_wav(&path, "Old", "Artist");
+    let pool = pool().await;
+    let root = add_root(&pool, dir.path()).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    import_into_root(&pool, &root.id, fresh).await;
+    let stored: Option<i64> = sqlx::query_scalar("SELECT mtime FROM library_tracks").fetch_one(&pool).await.unwrap();
+    assert!(stored.is_some(), "the import records the file's mtime");
+
+    let size_before = std::fs::metadata(&path).unwrap().len();
+    write_wav(&path, "New", "Artist");
+    assert_eq!(std::fs::metadata(&path).unwrap().len(), size_before, "same size, only the mtime tells");
+    let later = std::time::SystemTime::now() + std::time::Duration::from_secs(10);
+    std::fs::File::options().write(true).open(&path).unwrap().set_modified(later).unwrap();
+
+    assert_eq!(super::reconcile::refresh_changed(&pool, &root).await.unwrap(), 1);
+    assert_eq!(list(&pool, "", 0).await.unwrap().tracks[0].title, "New");
+    assert_eq!(super::reconcile::refresh_changed(&pool, &root).await.unwrap(), 0);
+}
+
 async fn root_of(pool: &sqlx::SqlitePool, id: &str) -> Option<String> {
     sqlx::query_scalar("SELECT root_id FROM library_tracks WHERE id = ?").bind(id).fetch_one(pool).await.unwrap()
 }

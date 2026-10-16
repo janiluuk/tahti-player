@@ -8,13 +8,27 @@ import {
   currentList,
   currentNavId,
   formatTime,
+  goToPrevious,
+  HISTORY_LIMIT,
   moveList,
   moveNav,
   NAV_ITEMS,
   nowPlayingLine,
   setNowPlaying,
+  shouldRestart,
   toggleFocus,
 } from './state.mjs';
+
+const ONE = { id: '1', title: 'One', kind: 'track', source: 'library' };
+const TWO = { id: '2', title: 'Two', kind: 'track', source: 'search' };
+const THREE = { id: '3', title: 'Three', kind: 'track', source: 'likes' };
+const RADIO = {
+  id: 'radio',
+  title: 'Tahti Radio',
+  kind: 'live',
+  source: 'radio',
+  url: 'https://example.com/live.m3u8',
+};
 
 describe('shell state', () => {
   it('starts on library with list focus', () => {
@@ -27,6 +41,7 @@ describe('shell state', () => {
       'likes',
       'radio',
       'queue',
+      'history',
     ]);
   });
 
@@ -149,5 +164,70 @@ describe('shell state', () => {
     expect(
       currentList({ ...state, navIndex: 2, likes: [{ id: 'l' }, { id: 'm' }] }),
     ).toHaveLength(2);
+  });
+
+  it('keeps the tracks played before, newest first, without live streams', () => {
+    let state = setNowPlaying(createInitialState(), ONE);
+    expect(state.history).toEqual([]);
+    state = setNowPlaying(state, TWO);
+    state = setNowPlaying(state, TWO);
+    state = setNowPlaying(state, RADIO);
+    state = setNowPlaying(state, THREE);
+    expect(state.history.map((item) => item.id)).toEqual(['2', '1']);
+    expect(currentList({ ...state, navIndex: 5 })).toBe(state.history);
+  });
+
+  it('records the track that ends or is skipped', () => {
+    let state = { ...setNowPlaying(createInitialState(), ONE), queue: [TWO] };
+    state = advanceQueue(state);
+    expect(state.history.map((item) => item.id)).toEqual(['1']);
+    state = advanceQueue(state);
+    expect(state.nowPlaying).toBeNull();
+    expect(state.history.map((item) => item.id)).toEqual(['2', '1']);
+  });
+
+  it('caps the history', () => {
+    let state = createInitialState();
+    for (let i = 0; i < HISTORY_LIMIT + 5; i += 1) {
+      state = setNowPlaying(state, { ...ONE, id: String(i) });
+    }
+    expect(state.history).toHaveLength(HISTORY_LIMIT);
+    expect(state.history[0].id).toBe(String(HISTORY_LIMIT + 3));
+  });
+
+  it('goes back through the history and lets next return', () => {
+    let state = setNowPlaying(createInitialState(), ONE);
+    state = setNowPlaying(state, TWO);
+    state = { ...setNowPlaying(state, THREE), queue: [ONE] };
+
+    state = goToPrevious(state);
+    expect(state.nowPlaying).toBe(TWO);
+    expect(state.queue.map((item) => item.id)).toEqual(['3', '1']);
+    state = goToPrevious(state);
+    expect(state.nowPlaying).toBe(ONE);
+    expect(state.history).toEqual([]);
+    expect(goToPrevious(state).status).toBe('Nothing played before this.');
+
+    state = advanceQueue(state);
+    expect(state.nowPlaying).toBe(TWO);
+    expect(state.history).toEqual([ONE]);
+  });
+
+  it('does not queue a live stream when going back from it', () => {
+    let state = setNowPlaying(createInitialState(), ONE);
+    state = setNowPlaying(state, RADIO, { clearQueueForLive: true });
+    state = goToPrevious(state);
+    expect(state.nowPlaying).toBe(ONE);
+    expect(state.queue).toEqual([]);
+  });
+
+  it('restarts a track only after the first seconds', () => {
+    const playing = setNowPlaying(createInitialState(), ONE);
+    expect(shouldRestart({ ...playing, timePos: 2 })).toBe(false);
+    expect(shouldRestart({ ...playing, timePos: 12 })).toBe(true);
+    expect(
+      shouldRestart({ ...setNowPlaying(playing, RADIO), timePos: 12 }),
+    ).toBe(false);
+    expect(shouldRestart({ ...createInitialState(), timePos: 12 })).toBe(false);
   });
 });
