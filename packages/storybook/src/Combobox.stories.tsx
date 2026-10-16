@@ -116,9 +116,10 @@ export const EmptyOptions: Story = {
     const input = canvas.getByRole('combobox', { name: 'Tag' });
     await userEvent.click(input);
     await userEvent.type(input, 'a');
-    await expect(
-      await body.findByRole('option', { name: 'Add "a"' }),
-    ).toBeVisible();
+    const listbox = within(await body.findByRole('listbox'));
+    await waitFor(() =>
+      expect(listbox.getByRole('option', { name: 'Add "a"' })).toBeVisible(),
+    );
   },
 };
 
