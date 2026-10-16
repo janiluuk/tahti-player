@@ -388,8 +388,8 @@ function buildMockDirectory(): ChannelDirectoryResponse {
 }
 
 /** Offline stand-in for GET /api/v1/search — matches artists from the mock
- * directory and tracks from each of their mock archives. No mock collection
- * fixture list exists yet, so collections always come back empty offline. */
+ * directory, tracks from each archive, and each artist's Favorites vault
+ * playlist when the query hits the collection name/slug or the owner. */
 function buildMockSearch(
   q: string,
   type: 'all' | 'tracks' | 'artists' | 'collections' = 'all',
@@ -425,7 +425,37 @@ function buildMockSearch(
               coverUrl: track.bannerUrl ?? null,
             })),
         );
-  return { tracks, artists, collections: [] };
+  const collections =
+    type === 'tracks' || type === 'artists'
+      ? []
+      : MOCK_DIRECTORY.items.flatMap((item) => {
+          const slug = mockFavoritesSlug(item.username);
+          const name = 'Favorites vault';
+          const haystack = [
+            name,
+            slug,
+            item.displayName,
+            item.username,
+            'playlist',
+            'favorites',
+            'vault',
+          ]
+            .join(' ')
+            .toLowerCase();
+          if (!haystack.includes(needle)) {
+            return [];
+          }
+          return [
+            {
+              slug,
+              name,
+              coverUrl: null as string | null,
+              ownerUsername: item.username,
+              ownerDisplayName: item.displayName,
+            },
+          ];
+        });
+  return { tracks, artists, collections };
 }
 
 function stationContent(slug: string): StationContent {
