@@ -52,7 +52,8 @@ export function SegmentedControl<T extends string>({
             variant="text"
             className={cn(
               'gap-1.5',
-              checked && 'bg-primary/15 text-primary-strong',
+              checked &&
+                'bg-primary/15 text-foreground inset-ring-primary font-semibold inset-ring',
             )}
             onClick={() => onChange(option.id)}
           >
