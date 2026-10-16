@@ -11,11 +11,15 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { BroadcastPreflight } from '../../api/broadcast';
 import { useAuthStore } from '../../stores/authStore';
 import { signalAnnouncement } from './go-live/SignalPanel';
 import { StudioGoLiveView } from './StudioGoLiveView';
 
 const postGoLive = vi.fn();
+const preflightState = vi.hoisted(() => ({
+  current: null as BroadcastPreflight | null,
+}));
 
 vi.mock('../../api/broadcast', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../api/broadcast')>();
@@ -44,7 +48,7 @@ vi.mock('../../api/broadcast', async (importOriginal) => {
       meta: { source: 'mock' as const },
     }),
     fetchBroadcastPreflight: async () => ({
-      data: null,
+      data: preflightState.current,
       meta: { source: 'mock' as const },
     }),
     fetchSignalStatus: async () => ({
@@ -78,6 +82,7 @@ let root: Root;
 
 beforeEach(() => {
   vi.stubEnv('VITE_FORCE_MOCK', '1');
+  preflightState.current = null;
   postGoLive.mockResolvedValue({ ok: true });
   container = document.createElement('div');
   document.body.appendChild(container);
@@ -142,6 +147,53 @@ describe('StudioGoLiveView go-live confirmation', () => {
     );
 
     expect(postGoLive).not.toHaveBeenCalled();
+  });
+});
+
+describe('StudioGoLiveView with a planned series episode', () => {
+  beforeEach(() => {
+    preflightState.current = {
+      title: 'Friday Frequency — Episode 4',
+      visibility: 'PUBLIC',
+      autoPublish: true,
+      showType: 'LIVE_SET',
+      episodeNumber: 4,
+      tagline: null,
+      plannedRadioShow: null,
+      plannedLiveShow: { seriesId: 'show-series-demo', episodeNumber: 4 },
+    };
+  });
+
+  it('shows the planned episode and the title as ready on the prep tab', async () => {
+    await renderView();
+
+    expect(
+      screen.getByRole('list', { name: 'Prep checklist' }).textContent,
+    ).toContain('✓ Show title ready');
+    expect((screen.getByLabelText('Episode') as HTMLInputElement).value).toBe(
+      '4',
+    );
+    expect(
+      screen.getByRole('button', { name: 'Series episode' }),
+    ).toBeDisabled();
+  });
+
+  it('goes live once the planned episode is confirmed', async () => {
+    await renderView();
+
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: /Go Live/ })),
+    );
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Go live' })),
+    );
+
+    expect(postGoLive).toHaveBeenCalledTimes(1);
+    expect(
+      screen.getByText(
+        'You’re live. The rotation has handed over to your broadcast.',
+      ),
+    ).toBeInTheDocument();
   });
 });
 
