@@ -204,6 +204,78 @@ describe('main', () => {
     expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Opener'));
   });
 
+  it('runs releases create with the title and flags', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    const fetchMock = mockFetchJson({
+      id: 'rel_2',
+      title: 'Second EP',
+      state: 'DRAFT',
+      tracks: [],
+    });
+
+    const code = await main([
+      'releases',
+      'create',
+      'Second EP',
+      '--type',
+      'ep',
+      '--date',
+      '2026-12-01',
+    ]);
+
+    expect(code).toBe(0);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.test/api/me/releases',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({
+          title: 'Second EP',
+          type: 'EP',
+          releaseDate: '2026-12-01',
+        }),
+      }),
+    );
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Created "Second EP" (rel_2) as a draft.'),
+    );
+  });
+
+  it('runs releases edit with repeated --link flags', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    const fetchMock = mockFetchJson({
+      id: 'rel_1',
+      title: 'First EP',
+      state: 'DRAFT',
+      smartLinkTargets: {},
+      tracks: [],
+    });
+
+    const code = await main([
+      'releases',
+      'edit',
+      'rel_1',
+      '--link',
+      'tidal=https://tidal.com/album/1',
+      '--link',
+      'apple=https://music.apple.com/album/1',
+    ]);
+
+    expect(code).toBe(0);
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'https://api.example.test/api/me/releases/rel_1',
+      expect.objectContaining({
+        method: 'PATCH',
+        body: JSON.stringify({
+          smartLinkTargets: {
+            tidal: 'https://tidal.com/album/1',
+            apple: 'https://music.apple.com/album/1',
+          },
+        }),
+      }),
+    );
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('STORE LINKS'));
+  });
+
   it('runs search without TAHTI_API_TOKEN and joins the query words', async () => {
     vi.stubEnv('TAHTI_API_TOKEN', '');
     const fetchMock = mockFetchJson({

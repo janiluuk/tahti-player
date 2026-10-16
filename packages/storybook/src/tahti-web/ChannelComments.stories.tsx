@@ -123,7 +123,7 @@ export const NoCommentsYet: Story = {
   },
   play: async ({ canvasElement }) => {
     await expect(
-      await within(canvasElement).findByText('No comments yet.'),
+      await within(canvasElement).findByText('No comments yet'),
     ).toBeVisible();
   },
 };

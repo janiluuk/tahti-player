@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import {
   Button,
+  ButtonLink,
   cn,
   EmptyState,
   ImageReveal,
@@ -294,7 +295,31 @@ export function GlobalSearch({
               <p className="text-foreground-secondary text-sm">Searching…</p>
             </div>
           ) : !hasResults ? (
-            <EmptyState size="sm" title={`No results for “${trimmed}”.`} />
+            <EmptyState
+              size="sm"
+              title={`No results for “${trimmed}”.`}
+              description="Try another spelling, or browse Discover and Radio."
+              action={
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <ButtonLink
+                    to="/discover"
+                    size="sm"
+                    variant="secondary"
+                    onClick={close}
+                  >
+                    Discover
+                  </ButtonLink>
+                  <ButtonLink
+                    to="/radio"
+                    size="sm"
+                    variant="secondary"
+                    onClick={close}
+                  >
+                    Radio
+                  </ButtonLink>
+                </div>
+              }
+            />
           ) : (
             <div className="flex flex-col gap-2">
               {results.artists.length > 0 && (

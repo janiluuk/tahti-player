@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Textarea } from '@tahti-player/ui';
+import { Button, EmptyState, Textarea } from '@tahti-player/ui';
 
 import {
   fetchChannelComments,
@@ -85,7 +85,29 @@ export function ChannelComments({
         Comments
       </h2>
       {comments.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">No comments yet.</p>
+        <EmptyState
+          size="sm"
+          className="items-start p-0 text-left"
+          title="No comments yet"
+          description={
+            enabled
+              ? user
+                ? 'Be the first to leave a note for this channel.'
+                : 'Log in to be the first to leave a note.'
+              : 'Comments are off for this channel.'
+          }
+          action={
+            !user && enabled ? (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => openAuth('login')}
+              >
+                Log in to comment
+              </Button>
+            ) : undefined
+          }
+        />
       ) : (
         <ul className="flex flex-col gap-4" data-testid="channel-comments">
           {comments.map((comment) => (
@@ -103,9 +125,11 @@ export function ChannelComments({
         </ul>
       )}
       {!enabled ? (
-        <p className="text-foreground-secondary text-sm">
-          Comments are off for this channel.
-        </p>
+        comments.length > 0 ? (
+          <p className="text-foreground-secondary text-sm">
+            Comments are off for this channel.
+          </p>
+        ) : null
       ) : user ? (
         <form
           className="flex flex-col gap-2"
@@ -127,7 +151,7 @@ export function ChannelComments({
             {posting ? 'Posting…' : 'Post comment'}
           </Button>
         </form>
-      ) : (
+      ) : comments.length > 0 ? (
         <Button
           variant="secondary"
           size="sm"
@@ -136,7 +160,7 @@ export function ChannelComments({
         >
           Log in to comment
         </Button>
-      )}
+      ) : null}
     </section>
   );
 }

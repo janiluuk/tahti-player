@@ -85,8 +85,26 @@ There are no Flatpak, RPM or AUR packages. Fedora, openSUSE and Arch users can u
 
 ## Updating
 
-The desktop app checks for a new release about ten seconds after it starts and again every six hours. When one is out, a notice says "Tahti Player <version> is available" with an **Install** button. After the download, **Restart** finishes the update. Your library, settings and sign-in are kept.
+The desktop app updates itself. The browser version at [beta.tahti.live](https://beta.tahti.live) is always the latest, so there is nothing to update there.
 
-You can also update from **Settings → Integrations → Desktop app**: it shows the version you have, **Check now**, and the release notes of a new version before you install it. Turn off **Check for updates** there to stop the automatic checks; **Check now** still works.
+### The update notice
 
-This works for the Windows installer, the macOS app, the AppImage and the `.deb` package. The snap installs from a file, so it does not update itself: download the new `.snap` and install it the same way as the first time.
+About ten seconds after the app starts, and then every six hours while it runs, Tahti Player checks GitHub Releases for a newer version. When there is one, a notice says "Tahti Player <version> is available" and stays on screen.
+
+1. Choose **Install** on the notice. The update downloads and installs in the background.
+2. When it is done, the notice changes to "Update installed". Choose **Restart** to start the new version.
+
+If the install fails, the notice says "Could not install the update" and why. You can try again from Settings.
+
+### Settings → Integrations → Desktop app
+
+This section only appears in the desktop app.
+
+- **Check for updates** shows the version you have. Turn it off to stop the automatic checks and the notice.
+- **Check now** checks right away, even with **Check for updates** off. It says "You have the latest version." when there is nothing new.
+- When a new version is found, you see its release notes and an **Install <version>** button. A progress bar shows the download.
+- After the install, choose **Restart to finish**.
+
+### Which installs update themselves
+
+The Windows installer, the macOS app, the AppImage and the `.deb` package update from inside the app. The snap is installed from a file, so the app can't replace it: download the new `.snap` from [GitHub Releases](https://github.com/janiluuk/tahti-player/releases/latest) and install it the same way as the first time.
