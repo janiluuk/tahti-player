@@ -1,6 +1,10 @@
 import { open } from 'node:fs/promises';
 
 const MAX_TAG_BYTES = 4 * 1024 * 1024;
+const OGG_PAGE_HEADER_BYTES = 27;
+const MP4_BOX_HEADER_BYTES = 8;
+const MP4_LARGE_BOX_HEADER_BYTES = 16;
+const MP4_UTF8_DATA = 1;
 
 const ID3_FRAMES = {
   TIT2: 'title',
@@ -11,6 +15,13 @@ const ID3_FRAMES = {
   TCO: 'genre',
   TBPM: 'bpm',
   TBP: 'bpm',
+};
+
+const MP4_ITEMS = {
+  '\u00a9nam': 'title',
+  '\u00a9ART': 'artist',
+  '\u00a9gen': 'genre',
+  tmpo: 'bpm',
 };
 
 const VORBIS_FIELDS = {
@@ -152,6 +163,189 @@ async function readFlacTags(handle) {
   return {};
 }
 
+/** The second packet of the first logical stream: the comment header in Ogg
+ * Vorbis and Ogg Opus. A packet can span pages, so pages are joined until it
+ * ends; one cut short by the size limit is returned as far as it was read. */
+async function readOggCommentPacket(handle) {
+  const packets = [];
+  let pending = [];
+  let pendingBytes = 0;
+  let serial = null;
+  let position = 0;
+  while (packets.length < 2 && pendingBytes < MAX_TAG_BYTES) {
+    const header = await readBytes(handle, position, OGG_PAGE_HEADER_BYTES);
+    if (
+      header.length < OGG_PAGE_HEADER_BYTES ||
+      header.toString('latin1', 0, 4) !== 'OggS'
+    ) {
+      break;
+    }
+    const lacing = await readBytes(
+      handle,
+      position + OGG_PAGE_HEADER_BYTES,
+      header[26],
+    );
+    const bodyStart = position + OGG_PAGE_HEADER_BYTES + lacing.length;
+    const bodyLength = lacing.reduce((sum, size) => sum + size, 0);
+    position = bodyStart + bodyLength;
+    const pageSerial = header.readUInt32LE(14);
+    serial ??= pageSerial;
+    if (pageSerial !== serial) {
+      continue;
+    }
+    const body = await readBytes(handle, bodyStart, bodyLength);
+    let offset = 0;
+    for (const size of lacing) {
+      pending.push(body.subarray(offset, offset + size));
+      pendingBytes += size;
+      offset += size;
+      if (size < 255) {
+        packets.push(Buffer.concat(pending));
+        pending = [];
+        pendingBytes = 0;
+      }
+    }
+  }
+  if (packets.length > 1) {
+    return packets[1];
+  }
+  return packets.length === 1 && pending.length > 0
+    ? Buffer.concat(pending)
+    : null;
+}
+
+async function readOggTags(handle) {
+  const packet = await readOggCommentPacket(handle);
+  if (packet?.toString('latin1', 0, 7) === '\u0003vorbis') {
+    return parseVorbisComments(packet.subarray(7));
+  }
+  if (packet?.toString('latin1', 0, 8) === 'OpusTags') {
+    return parseVorbisComments(packet.subarray(8));
+  }
+  return {};
+}
+
+async function findMp4Box(handle, start, end, type) {
+  let position = start;
+  while (position + MP4_BOX_HEADER_BYTES <= end) {
+    const header = await readBytes(
+      handle,
+      position,
+      MP4_LARGE_BOX_HEADER_BYTES,
+    );
+    if (header.length < MP4_BOX_HEADER_BYTES) {
+      return null;
+    }
+    let size = header.readUInt32BE(0);
+    let headerSize = MP4_BOX_HEADER_BYTES;
+    if (size === 1 && header.length === MP4_LARGE_BOX_HEADER_BYTES) {
+      size = Number(header.readBigUInt64BE(8));
+      headerSize = MP4_LARGE_BOX_HEADER_BYTES;
+    } else if (size === 0) {
+      size = end - position;
+    }
+    if (size < headerSize) {
+      return null;
+    }
+    if (header.toString('latin1', 4, 8) === type) {
+      return {
+        bodyStart: position + headerSize,
+        end: Math.min(position + size, end),
+      };
+    }
+    position += size;
+  }
+  return null;
+}
+
+function mp4Children(buffer, start, end) {
+  const children = [];
+  let position = start;
+  while (position + MP4_BOX_HEADER_BYTES <= end) {
+    const size = buffer.readUInt32BE(position);
+    if (size < MP4_BOX_HEADER_BYTES) {
+      break;
+    }
+    children.push({
+      type: buffer.toString('latin1', position + 4, position + 8),
+      bodyStart: position + MP4_BOX_HEADER_BYTES,
+      end: Math.min(position + size, end),
+    });
+    position += size;
+  }
+  return children;
+}
+
+/** iTunes-style items (moov/udta/meta/ilst) from the body of an MP4 `udta`
+ * box. */
+function parseMp4Udta(udta) {
+  const meta = mp4Children(udta, 0, udta.length).find(
+    (box) => box.type === 'meta',
+  );
+  if (!meta) {
+    return {};
+  }
+  // MP4's meta box starts with 4 bytes of version and flags; QuickTime's
+  // has none and goes straight to its first child box.
+  const metaChildren =
+    udta.readUInt32BE(meta.bodyStart) === 0
+      ? meta.bodyStart + 4
+      : meta.bodyStart;
+  const ilst = mp4Children(udta, metaChildren, meta.end).find(
+    (box) => box.type === 'ilst',
+  );
+  if (!ilst) {
+    return {};
+  }
+  const tags = {};
+  for (const item of mp4Children(udta, ilst.bodyStart, ilst.end)) {
+    const field = MP4_ITEMS[item.type];
+    const data =
+      field &&
+      !tags[field] &&
+      mp4Children(udta, item.bodyStart, item.end).find(
+        (box) => box.type === 'data',
+      );
+    if (!data || data.end - data.bodyStart <= 8) {
+      continue;
+    }
+    const payload = udta.subarray(data.bodyStart + 8, data.end);
+    let value = '';
+    if (field === 'bpm') {
+      value =
+        payload.length <= 4
+          ? String(payload.readUIntBE(0, payload.length))
+          : '';
+    } else if (
+      (udta.readUInt32BE(data.bodyStart) & 0xffffff) ===
+      MP4_UTF8_DATA
+    ) {
+      value = payload.toString('utf8').trim();
+    }
+    if (value) {
+      tags[field] = value;
+    }
+  }
+  return tags;
+}
+
+async function readMp4Tags(handle) {
+  const { size } = await handle.stat();
+  const moov = await findMp4Box(handle, 0, size, 'moov');
+  const udta =
+    moov && (await findMp4Box(handle, moov.bodyStart, moov.end, 'udta'));
+  if (!udta) {
+    return {};
+  }
+  return parseMp4Udta(
+    await readBytes(
+      handle,
+      udta.bodyStart,
+      Math.min(udta.end - udta.bodyStart, MAX_TAG_BYTES),
+    ),
+  );
+}
+
 function cleanTags(tags) {
   const clean = {};
   if (tags.title) {
@@ -170,8 +364,9 @@ function cleanTags(tags) {
   return clean;
 }
 
-/** Title, artist, genre and BPM from an MP3's ID3v2 tag or a FLAC file's
- * Vorbis comments. Other formats, and unreadable tags, give `{}`. */
+/** Title, artist, genre and BPM from an MP3's ID3v2 tag, the Vorbis comments
+ * of a FLAC, Ogg Vorbis or Opus file, or an M4A file's iTunes items. Other
+ * formats, and unreadable tags, give `{}`. */
 export async function readAudioTags(path) {
   let handle;
   try {
@@ -183,6 +378,12 @@ export async function readAudioTags(path) {
     }
     if (head.toString('latin1', 0, 4) === 'fLaC') {
       return cleanTags(await readFlacTags(handle));
+    }
+    if (head.toString('latin1', 0, 4) === 'OggS') {
+      return cleanTags(await readOggTags(handle));
+    }
+    if (head.toString('latin1', 4, 8) === 'ftyp') {
+      return cleanTags(await readMp4Tags(handle));
     }
     return {};
   } catch {

@@ -65,7 +65,7 @@ Every command has `--help`. Most have `--json`, which prints the API's answer un
 
 `tahti import <folder>` uploads every audio file in the folder (MP3, FLAC, WAV, AIFF, M4A, AAC, OGG, Opus) as a new track:
 
-* The title, artist, genre and BPM come from the file's tags (MP3 and FLAC). Without tags, the file name becomes the title. `--ignore-tags` always uses the file name.
+* The title, artist, genre and BPM come from the file's tags (MP3, FLAC, OGG, Opus and M4A). Without tags, the file name becomes the title. `--ignore-tags` always uses the file name.
 * A file whose title is already in your library is skipped, so you can run the same import again after adding files. `--force` uploads it anyway.
 * `--dry-run` shows what would be uploaded. `--recursive` includes subfolders.
 * New tracks are public, like an upload on tahti.live, and join your channel's 24/7 rotation if you have that turned on. Use `--dry-run` first, and `tahti library edit <id> --private` to hide one.
