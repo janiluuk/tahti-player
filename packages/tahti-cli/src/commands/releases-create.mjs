@@ -49,7 +49,9 @@ export function buildReleaseCreate(title, options = {}, now = new Date()) {
   return body;
 }
 
-async function tracksFromSounds(config, soundIds) {
+/** Looks up each library sound and turns it into a release track body,
+ * titled after the sound, in the order given. */
+export async function tracksFromSounds(config, soundIds) {
   if (soundIds.length > MAX_RELEASE_TRACKS) {
     throw new CliError(
       `Too many --sound values: a release holds at most ${MAX_RELEASE_TRACKS} tracks.`,

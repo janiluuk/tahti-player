@@ -1,4 +1,5 @@
 import { apiSendJson, CliError } from '../api-client.mjs';
+import { parseReleaseDate } from './releases-create.mjs';
 import {
   fetchRelease,
   formatReleaseDetails,
@@ -18,16 +19,6 @@ export const SMART_LINK_SERVICES = [
   'amazon',
   'mixcloud',
 ];
-
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-
-function parseDate(value) {
-  const date = new Date(`${value}T00:00:00.000Z`);
-  if (!DATE_PATTERN.test(value) || Number.isNaN(date.getTime())) {
-    throw new CliError(`Invalid --date "${value}". Expected YYYY-MM-DD.`);
-  }
-  return value;
-}
 
 function parseOnOff(flag, value) {
   if (value !== 'on' && value !== 'off') {
@@ -77,7 +68,7 @@ export function buildReleasePatch(options) {
     patch.description = options.description;
   }
   if (options.date !== undefined) {
-    patch.releaseDate = parseDate(options.date);
+    patch.releaseDate = parseReleaseDate(options.date);
   }
   if (options.pin) {
     patch.pinned = true;
