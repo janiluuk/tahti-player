@@ -314,10 +314,16 @@ export function ConnectedPlayerBar() {
               <MediaArtwork src={coverUrl} size="sm" className="shrink-0" />
             ) : null}
             <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold">
+              <span
+                className="block truncate text-sm font-semibold"
+                title={title}
+              >
                 {title}
               </span>
-              <span className="text-foreground-secondary block truncate text-xs">
+              <span
+                className="text-foreground-secondary block truncate text-xs"
+                title={artist}
+              >
                 {artist}
               </span>
             </span>
