@@ -1,8 +1,9 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
   createStudioCollection,
   fetchStudioCollection,
+  fetchStudioCollections,
 } from './studio-collections';
 
 const json = (body: unknown, status = 201) =>
@@ -96,5 +97,45 @@ describe('fetchStudioCollection', () => {
       audioUrl: 'https://cdn.example.com/signed.mp3',
       artist: { displayName: 'Selector' },
     });
+  });
+});
+
+describe('createStudioCollection under mock', () => {
+  beforeEach(() => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it('derives a slug from the name that fetchStudioCollection resolves', async () => {
+    const result = await createStudioCollection({
+      name: 'Night Drive!',
+      style: 'ALBUM',
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      return;
+    }
+    expect(result.data.slug).toBe('night-drive');
+
+    const { data, meta } = await fetchStudioCollection(result.data.slug);
+    expect(meta.source).toBe('mock');
+    expect(data.slug).toBe('night-drive');
+    expect(data.id).toBe(result.data.id);
+  });
+
+  it('lists the new collection first', async () => {
+    const result = await createStudioCollection({ name: 'Warmup Mix' });
+    expect(result.ok && result.data.slug).toBe('warmup-mix');
+
+    const { data } = await fetchStudioCollections();
+    expect(data[0]?.slug).toBe('warmup-mix');
+  });
+
+  it('falls back to a generated slug when the name has no letters or digits', async () => {
+    const result = await createStudioCollection({ name: '!!!' });
+    expect(result.ok && result.data.slug).toMatch(/^mix-\d+$/);
   });
 });
