@@ -78,7 +78,7 @@ export function WaveformSeekbar({
   const seekEnabled = Boolean(onSeek) && !live;
 
   const seekAt = (clientX: number) => {
-    if (!seekEnabled || !ref.current) {
+    if (!seekEnabled || !onSeek || !ref.current) {
       return;
     }
     const rect = ref.current.getBoundingClientRect();
