@@ -29,6 +29,9 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement, 'Upload track');
     await expect(dialog.getByRole('button', { name: 'Upload' })).toBeDisabled();
+    await expect(
+      dialog.getByRole('link', { name: 'Open full upload page' }),
+    ).toHaveAttribute('href', '/library/upload');
   },
 };
 
