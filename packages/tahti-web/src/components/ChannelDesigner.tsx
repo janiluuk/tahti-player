@@ -286,7 +286,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       return boot;
     }
     if (!visual) {
-      return <PageLoading label="Loading designer…" />;
+      return null;
     }
 
     // VIDEO_LOOP without a playable clip or image isn't a state worth saving —
