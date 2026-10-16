@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { StudioUpdatesView } from '@tahti-web/views/studio/StudioUpdatesView';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { withToaster } from './_fixtures/track-release';
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
-import { findDialog, findToast, selectTab } from './_lib/play';
+import { expectNoDialog, findToast, selectTab, withinBody } from './_lib/play';
 
 const meta: Meta<typeof StudioUpdatesView> = {
   title: 'Tahti/Studio/StudioUpdatesView',
@@ -34,17 +34,16 @@ export const NewsletterSendConfirmation: Story = {
   name: 'Newsletter send confirmation (mock toast)',
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await canvas.findByRole('tab', { name: 'Newsletter' });
     await selectTab(canvas, 'Newsletter');
-    const send = await canvas.findByRole('button', { name: /^Send\b/ });
+    const send = await canvas.findByRole('button', { name: /^Send$/ });
     await userEvent.click(send);
-    const dialog = await findDialog(canvasElement, /Send/);
-    await userEvent.click(
-      dialog.getByRole('button', { name: 'Send newsletter' }),
-    );
+    const body = withinBody(canvasElement);
+    const confirm = await body.findByRole('button', {
+      name: 'Send newsletter',
+    });
+    await expect(confirm).toBeVisible();
+    await userEvent.click(confirm);
     await findToast(canvasElement, /Queued send to \d+ subscribers/);
-    await waitFor(() =>
-      expect(canvas.queryByText('Send newsletter')).toBeNull(),
-    );
+    await expectNoDialog(canvasElement);
   },
 };
