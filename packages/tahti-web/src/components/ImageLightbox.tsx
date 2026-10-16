@@ -6,7 +6,13 @@ import {
 } from 'lucide-react';
 import { FC, useEffect, useRef } from 'react';
 
-import { Button, Dialog, ImageReveal, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  EmptyState,
+  ImageReveal,
+  Tooltip,
+} from '@tahti-player/ui';
 
 export type LightboxImage = {
   imageUrl: string;
@@ -47,7 +53,39 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
   }, [index]);
 
   if (!image) {
-    return null;
+    return (
+      <Dialog.Root
+        isOpen
+        onClose={onClose}
+        showCloseButton={false}
+        aria-label={label}
+        className="max-w-md border-transparent bg-transparent p-0 shadow-none"
+      >
+        <div
+          ref={panelRef}
+          tabIndex={-1}
+          className="relative px-6 pt-8 pb-4 outline-none"
+        >
+          <div className="absolute top-0 right-0 z-10 flex gap-1">
+            <Tooltip content="Close" side="top">
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                aria-label="Close image viewer"
+                onClick={onClose}
+              >
+                <XIcon size={18} aria-hidden />
+              </Button>
+            </Tooltip>
+          </div>
+          <EmptyState
+            size="sm"
+            title="No photos to show"
+            description="This gallery is empty."
+          />
+        </div>
+      </Dialog.Root>
+    );
   }
 
   return (

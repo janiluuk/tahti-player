@@ -22,7 +22,7 @@ const meta: Meta<typeof ImageLightbox> = {
     docs: {
       description: {
         component:
-          'Full-screen gallery viewer on Dialog. Missing states: empty `images` array (the component returns null — flagged, not rendered). Untitled captions are covered in MultipleImages.',
+          'Full-screen gallery viewer on Dialog. Untitled captions are covered in MultipleImages.',
       },
     },
   },
@@ -60,11 +60,11 @@ export const MultipleImages: Story = {
   },
 };
 
-/** Missing state: empty `images` returns null — no empty-state UI yet. */
 export const EmptyGallery: Story = {
-  render: () => (
-    <p className="text-foreground-secondary p-6 text-sm">
-      Missing state: an empty images array returns null (no empty-state UI).
-    </p>
-  ),
+  args: {
+    images: [],
+    index: 0,
+    label: 'Photo viewer',
+    onClose: () => {},
+  },
 };
