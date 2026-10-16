@@ -6,6 +6,8 @@ import type { PressKitState } from '@tahti-web/views/studio/branding/usePressKit
 import { useMemo, useState } from 'react';
 import { expect, userEvent, within } from 'storybook/test';
 
+import { findDialog } from './_lib/play';
+
 const INITIAL_IMAGES: PressKitImageItem[] = [
   {
     id: 'gallery-1',
@@ -126,16 +128,13 @@ export const UploadDialog: Story = {
   name: 'Upload dialog (mock API)',
   render: () => <GalleryDemo uploadOpen />,
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+    const dialog = await findDialog(canvasElement, 'Upload gallery images');
     await expect(
-      await canvas.findByRole('heading', { name: 'Upload gallery images' }),
+      dialog.getByRole('radiogroup', { name: 'Gallery upload mode' }),
     ).toBeVisible();
+    await userEvent.click(dialog.getByRole('radio', { name: 'Replace' }));
     await expect(
-      canvas.getByRole('radiogroup', { name: 'Gallery upload mode' }),
-    ).toBeVisible();
-    await userEvent.click(canvas.getByRole('radio', { name: 'Replace' }));
-    await expect(
-      canvas.getByRole('radio', { name: 'Replace' }),
+      dialog.getByRole('radio', { name: 'Replace' }),
     ).toHaveAttribute('aria-checked', 'true');
   },
 };
