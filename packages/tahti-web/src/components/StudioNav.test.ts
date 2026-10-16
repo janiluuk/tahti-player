@@ -104,6 +104,30 @@ describe('StudioNav section coverage', () => {
     }
   });
 
+  it('lights Go live, and only Go live, on the green-room tab of /studio/go-live', () => {
+    for (const location of [
+      '/studio/go-live?tab=green-room',
+      '/studio/go-live?tab=prep',
+    ]) {
+      const lit = BROADCAST_SUBNAV_ITEMS.filter((item) =>
+        isBroadcastSubnavActive(location, item.to),
+      ).map((item) => item.to);
+      expect(lit, location).toEqual(['/studio/go-live']);
+      expect(litStudioSubmenuDestinations(location), location).toEqual([
+        '/studio/go-live',
+      ]);
+      expect(isStudioBroadcastGroup(location), location).toBe(true);
+    }
+  });
+
+  it('keeps Go live unlit on the Channel green-room tab', () => {
+    const location = '/studio/channel?tab=green-room';
+    const lit = BROADCAST_SUBNAV_ITEMS.filter((item) =>
+      isBroadcastSubnavActive(location, item.to),
+    ).map((item) => item.to);
+    expect(lit).toEqual(['/studio/channel']);
+  });
+
   it('lights the right Audience sub-tab for overview, tiers, and Stripe', () => {
     const covered: [string, string][] = [
       ['/studio/audience', '/studio/audience'],
