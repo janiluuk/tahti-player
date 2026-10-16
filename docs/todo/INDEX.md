@@ -9,6 +9,7 @@ Status values: `open` | `blocked` | `partial`.
 | ------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | open    | [fix-shift-play-ci.md](fix-shift-play-ci.md) | Master red after #903: refresh player snapshots + fix clickRowPlay for Shift+click aria-label |
 | partial | [e2e-lifecycle-20-slices.md](e2e-lifecycle-20-slices.md) | Lifecycle e2e fix slices tracker (#905–#914); left: upload copy, collection tests, live chat vs comments, tab URL, nav tests |
+| partial | [e2e-lifecycle-batch-2.md](e2e-lifecycle-batch-2.md) | Lifecycle e2e batch 2: 20 slices (#919–#939) for upload, collections, channel tab URL, nav labels, series go-live mocks and live chat tests |
 | partial | [library-tracks-embed-layout-ambient.md](library-tracks-embed-layout-ambient.md) | Library Tracks embed layout + ambient rows coded; left: visual check with a real cover |
 | open    | [mock-live-session-survives-reload.md](mock-live-session-survives-reload.md) | P0 from lifecycle e2e: mock live drops after reload/nav; fan ends Off air |
 | open    | [upload-dual-ui-unify.md](upload-dual-ui-unify.md) | P1: Library/Studio upload has competing page staging + empty modal |
