@@ -538,6 +538,9 @@ export async function createRtmpTarget(
   scope: RtmpTargetScope = 'me',
 ): Promise<{ ok: true; target: RtmpTarget } | { ok: false; error: string }> {
   if (isForceMock()) {
+    if (input.streamKey.trim() === 'fail') {
+      return { ok: false, error: 'Ingest rejected the stream key.' };
+    }
     const target: RtmpTarget = {
       id: `rtmp-mock-${Date.now()}`,
       provider: input.provider,
