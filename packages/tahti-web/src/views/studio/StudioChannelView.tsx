@@ -73,6 +73,8 @@ const isTab = (value: string | undefined): value is Tab =>
 
 const DEEP_LINKED_RADIO_TABS = [
   'rotation',
+  'announcements',
+  'pinned',
   'multicast',
   'tahti-radio',
 ] as const;
@@ -238,20 +240,12 @@ export function StudioChannelView() {
                 return;
               }
               setRadioTab(next.id);
-              // Keep the URL in step with a deep-linked radio tab so following
-              // the same link again (e.g. the empty-rotation warning) still
-              // changes the search and switches back to it.
-              if (
-                isDeepLinkedRadioTab(next.id) ||
-                isDeepLinkedRadioTab(search.tab)
-              ) {
-                void navigate({
-                  to: '/studio/channel',
-                  search: {
-                    tab: isDeepLinkedRadioTab(next.id) ? next.id : 'radio',
-                  },
-                });
-              }
+              void navigate({
+                to: '/studio/channel',
+                search: {
+                  tab: isDeepLinkedRadioTab(next.id) ? next.id : 'radio',
+                },
+              });
             }}
           >
             <Tabs.List className="w-fit flex-wrap">
