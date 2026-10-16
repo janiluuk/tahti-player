@@ -527,8 +527,8 @@ importers:
         specifier: workspace:*
         version: link:../model
       '@tahti-player/plugin-registry':
-        specifier: workspace:*
-        version: link:../plugin-registry
+        specifier: github:janiluuk/tahti-plugin-registry#v0.1.0
+        version: https://codeload.github.com/janiluuk/tahti-plugin-registry/tar.gz/449495f0fb321a85241429da3c755ba92a77557b
       '@tahti-player/plugin-sdk':
         specifier: workspace:*
         version: link:../plugin-sdk
@@ -719,19 +719,6 @@ importers:
       vitest:
         specifier: ^4.0.0
         version: 4.1.11(@types/node@25.9.8)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(jsdom@26.1.0(supports-color@8.1.1))(vite@7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))
-
-  packages/plugin-registry:
-    dependencies:
-      '@tauri-apps/plugin-store':
-        specifier: ~2.4.0
-        version: 2.4.5
-    devDependencies:
-      '@tahti-player/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.3
 
   packages/plugin-sdk:
     dependencies:
@@ -3578,6 +3565,11 @@ packages:
 
   '@swc/helpers@0.5.23':
     resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
+
+  '@tahti-player/plugin-registry@https://codeload.github.com/janiluuk/tahti-plugin-registry/tar.gz/449495f0fb321a85241429da3c755ba92a77557b':
+    resolution: {gitHosted: true, integrity: sha512-2gwWJI7JfLSMG20jhnsw/mstqnw2sRuj2/ryy67mEYNxvXyExpHIduEXJYU+bJZvOa7T41Nmbo1bACRzoqaTuw==, tarball: https://codeload.github.com/janiluuk/tahti-plugin-registry/tar.gz/449495f0fb321a85241429da3c755ba92a77557b}
+    version: 0.1.0
+    engines: {node: '>=24'}
 
   '@tailwindcss/node@4.3.3':
     resolution: {integrity: sha512-/T8IKEsf9VTU6tLjgC7+sv2mOPtQxzE2jMw7u4Tt40Tx+QSZxpzh95/H6cMKoja9XuW7iMdLJYBB0o9G1CaAgg==}
@@ -10278,6 +10270,10 @@ snapshots:
   '@swc/helpers@0.5.23':
     dependencies:
       tslib: 2.8.1
+
+  '@tahti-player/plugin-registry@https://codeload.github.com/janiluuk/tahti-plugin-registry/tar.gz/449495f0fb321a85241429da3c755ba92a77557b':
+    dependencies:
+      '@tauri-apps/plugin-store': 2.4.5
 
   '@tailwindcss/node@4.3.3':
     dependencies:
