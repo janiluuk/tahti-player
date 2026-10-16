@@ -216,3 +216,34 @@ async fn tracks_on_a_disconnected_watched_folder_are_never_moved_away() {
     assert_eq!(rest.len(), 1, "the copy is a new file");
     assert_eq!(root_of(&pool, &id).await, Some(root_a.id.clone()));
 }
+
+#[tokio::test]
+async fn a_renamed_album_folder_keeps_ids_for_same_named_files_on_each_disc() {
+    let dir = tempfile::tempdir().unwrap();
+    let album = dir.path().join("Albumi");
+    for disc in ["CD1", "CD2"] {
+        std::fs::create_dir_all(album.join(disc)).unwrap();
+        write_wav(&album.join(disc).join("01.wav"), disc, "Artist");
+    }
+    let pool = pool().await;
+    let root = add_root(&pool, dir.path()).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    import_into_root(&pool, &root.id, fresh).await;
+    let id_of = |tracks: &[super::LibraryTrack], disc: &str| {
+        tracks.iter().find(|t| t.path.ends_with(&format!("{disc}/01.wav"))).unwrap().id.clone()
+    };
+    let before = list(&pool, "", 0).await.unwrap().tracks;
+    assert_eq!(before[0].size_bytes, before[1].size_bytes, "same name and size on both discs");
+
+    std::fs::rename(&album, dir.path().join("Albumi (1999)")).unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    let (moved, rest) = super::reconcile::relink_moved(&pool, &root, fresh).await.unwrap();
+    assert_eq!(moved, 2);
+    assert!(rest.is_empty(), "nothing is imported a second time");
+    let after = list(&pool, "", 0).await.unwrap().tracks;
+    assert_eq!(after.len(), 2);
+    for disc in ["CD1", "CD2"] {
+        assert_eq!(id_of(&after, disc), id_of(&before, disc), "{disc} keeps its own catalog id");
+    }
+    assert!(after.iter().all(|t| t.path.contains("Albumi (1999)")));
+}
