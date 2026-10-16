@@ -4697,5 +4697,5 @@ Asked for as "implement the next 20 slices of todo, try concentrate on making th
 - **Listen / Discover / queue (#892, #894–#896):** solid “Now” label and “Off air” on streamless cards; Discover widgets clear the sticky nav; empty queue offers Discover/Radio; quiet Queue rail eyebrow.
 - **Already on master (no new PR):** Favorites/Feed Discover CTAs, Library listener empty, Moderators chat-only copy, profile self Report/Block gate, player truncate.
 - **Checks:** per-PR type-check / eslint / Prettier / touched tests; snapshot updates for player TrackTable and now-playing titles. Not tried on a real phone or against the live API.
-- **Left open:** listener Library Stash tab (product decision); full channel art-direction redesign (needs a reference).
+- **Left open:** listener Library Stash tab (product decision); full channel art-direction redesign (needs a reference). Polish still open after this fold: #897 (`Now` → accent green + extracted `StationCardSubtitle` test) and #898 (unify remaining “Temporarily offline” copy to “Off air” on `/radio`).
 
