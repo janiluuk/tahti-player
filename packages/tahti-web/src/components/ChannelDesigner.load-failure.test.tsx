@@ -5,6 +5,7 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
+import { screen } from '@testing-library/react';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -73,5 +74,11 @@ describe('ChannelDesigner load failure', () => {
     expect(toast.error).toHaveBeenCalledWith(
       'Could not load the channel designer. Try again.',
     );
+    expect(
+      screen.getByRole('heading', {
+        name: 'Could not load the channel designer',
+      }),
+    ).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeTruthy();
   });
 });

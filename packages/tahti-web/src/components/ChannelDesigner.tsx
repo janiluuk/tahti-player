@@ -57,7 +57,7 @@ import { useDockedControlsRail } from './channel-designer/useDockedControlsRail'
 import { useLookVisibility } from './channel-designer/useLookVisibility';
 import { ChannelElementEditor } from './ChannelElementEditor';
 import { ChannelTextOverlayEditor } from './ChannelTextOverlayEditor';
-import { PageLoading } from './PageStates';
+import { PageError, PageLoading } from './PageStates';
 
 type TabId = 'visualizer' | 'color-scheme' | 'header';
 type LookSection =
@@ -194,6 +194,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       slideshowPreset,
       slideshowTransition,
       videoBackgroundUrl,
+      loadFailed,
+      retryLoad,
       visual,
       visualSettings,
       visualSettingsJson,
@@ -294,6 +296,16 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         .getElementById(elementId)
         ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
+
+    if (loadFailed) {
+      return (
+        <PageError
+          title="Could not load the channel designer"
+          description="Check your connection and try again."
+          onRetry={retryLoad}
+        />
+      );
+    }
 
     if (!visual) {
       return <PageLoading label="Loading designer…" />;
