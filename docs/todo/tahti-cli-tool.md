@@ -116,4 +116,4 @@ this environment) — the token-required path is covered by tests mocking
 
 ## 2026-10-16: release write commands, shell history
 
-- **`tahti releases create <title>` (PRNUM):** `POST /api/me/releases` with `--type`, `--date` (default today), `--description`, `--genre` and repeatable `--sound <id>`; each sound is looked up with `GET /api/me/sound/:id` and becomes a track titled after it. Creates a draft. Mocked `fetch` only, not run against the live API.
+- **`tahti releases create <title>` (#858):** `POST /api/me/releases` with `--type`, `--date` (default today), `--description`, `--genre` and repeatable `--sound <id>`; each sound is looked up with `GET /api/me/sound/:id` and becomes a track titled after it. Creates a draft. Mocked `fetch` only, not run against the live API.
