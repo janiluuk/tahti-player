@@ -56,6 +56,6 @@ Dev plugins are never auto-updated. To update a dev plugin, edit the source and 
 
 ## Where plugins are stored
 
-Tahti Player copies all plugins (both store and dev) into a managed directory inside your [app data folder](../misc/platform-specific.md#appdata) at `plugins/{id}/{version}/`. The running code always comes from this managed copy.
+Tahti Player copies all plugins (both store and dev) into a managed directory inside your [app data folder](../misc/platform-specific.md#app-data) at `plugins/{id}/{version}/`. The running code always comes from this managed copy.
 
 For dev plugins, the original source folder is preserved and used when you click reload.
