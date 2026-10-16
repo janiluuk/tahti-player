@@ -7,7 +7,7 @@ import {
   RotateCcwIcon,
 } from 'lucide-react';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../../api/studio-types';
 import { AddToPlaylistButton } from '../../../components/AddToPlaylistButton';
@@ -22,6 +22,7 @@ import {
   embedSrcFor,
 } from '../../../lib/embedSrc';
 import { isPinned } from '../../../lib/pinnedTracks';
+import { useDominantColor } from '../../../lib/useDominantColor';
 import type { StudioSoundsState } from './useStudioSoundsState';
 
 function formatUploadDate(value: string | undefined): string | null {
@@ -37,6 +38,18 @@ function formatUploadDate(value: string | undefined): string | null {
     month: 'short',
     day: 'numeric',
   }).format(date);
+}
+
+function ambientStyle(
+  rgb: [number, number, number] | null,
+): { backgroundImage: string } | undefined {
+  if (!rgb) {
+    return undefined;
+  }
+  const [r, g, b] = rgb;
+  return {
+    backgroundImage: `linear-gradient(90deg, rgba(${r}, ${g}, ${b}, 0.42), rgba(${r}, ${g}, ${b}, 0.12) 45%, transparent 85%)`,
+  };
 }
 
 export function SoundRow({
@@ -68,6 +81,7 @@ export function SoundRow({
     ),
   );
   const failed = item.status === 'ERROR';
+  const rgb = useDominantColor(item.bannerUrl);
 
   const embedSrc =
     item.embedProvider && item.embedUri
@@ -75,7 +89,15 @@ export function SoundRow({
       : null;
 
   return (
-    <li className="flex flex-wrap items-center gap-2 py-3 text-sm first:pt-0 last:pb-0">
+    <li
+      className="flex flex-wrap items-center gap-2 py-3 text-sm first:pt-0 last:pb-0"
+      style={ambientStyle(rgb)}
+    >
+      <MediaArtwork
+        src={item.bannerUrl ?? undefined}
+        size="sm"
+        className="shrink-0"
+      />
       <div className="min-w-44 flex-1">
         <Link
           to="/t/$id"
@@ -119,19 +141,22 @@ export function SoundRow({
       <Tooltip
         content={
           embedSrc
-            ? `Play on ${EMBED_PROVIDER_LABEL[item.embedProvider!]}`
-            : 'Play'
+            ? `Play on ${EMBED_PROVIDER_LABEL[item.embedProvider!]} · Shift+click to queue`
+            : 'Play · Shift+click to queue'
         }
         side="top"
       >
         <Button
           size="icon-sm"
           disabled={busyId === item.id}
-          onClick={() =>
-            embedSrc
-              ? void playEmbedItem(item)
-              : void playItem(item.id, item.title)
-          }
+          onClick={(event) => {
+            const queue = event.shiftKey;
+            if (embedSrc) {
+              void playEmbedItem(item, { queue });
+              return;
+            }
+            void playItem(item.id, item.title, { queue });
+          }}
           aria-label={
             embedSrc
               ? `Play ${item.title} on ${EMBED_PROVIDER_LABEL[item.embedProvider!]}`
@@ -182,17 +207,19 @@ export function SoundRow({
         onTogglePin={() => void togglePin(item)}
         onDelete={() => setPendingDeleteItem(item)}
       />
-      {embedSrc && embedOpenId === item.id && (
-        <iframe
-          title={item.title}
-          src={embedSrc}
-          width="100%"
-          height={EMBED_PROVIDER_HEIGHT[item.embedProvider!]}
-          style={{ border: 0, display: 'block' }}
-          allow="autoplay; encrypted-media"
-          loading="lazy"
-        />
-      )}
+      {embedSrc && embedOpenId === item.id ? (
+        <div className="w-full basis-full">
+          <iframe
+            title={item.title}
+            src={embedSrc}
+            width="100%"
+            height={EMBED_PROVIDER_HEIGHT[item.embedProvider!]}
+            style={{ border: 0, display: 'block' }}
+            allow="autoplay; encrypted-media"
+            loading="lazy"
+          />
+        </div>
+      ) : null}
     </li>
   );
 }

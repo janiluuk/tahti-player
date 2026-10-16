@@ -5,12 +5,18 @@ export type EmbedProvider = 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP';
 
 /** Mirrors hearthisEmbedSrc in the main tahti repo (packages/shared).
  * waveform/cover stay on: the widget hides its play control until that
- * UI initializes, so turning both off leaves nothing clickable. */
-export function hearthisEmbedSrc(trackId: string): string {
+ * UI initializes, so turning both off leaves nothing clickable.
+ * `compact` drops the tall style-2 chrome so the player-bar strip stays
+ * short enough that Library Tracks still shows its list. */
+export function hearthisEmbedSrc(
+  trackId: string,
+  options?: { compact?: boolean },
+): string {
+  const compact = options?.compact === true;
   const params = new URLSearchParams({
     hcolor: '55acee',
     color: '',
-    style: '2',
+    style: compact ? '1' : '2',
     block_size: '2',
     block_space: '2',
     background: '1',
@@ -47,10 +53,11 @@ export function bandcampEmbedSrc(uri: string): string {
 export function embedSrcFor(
   provider: EmbedProvider,
   uri: string,
+  options?: { compact?: boolean },
 ): string | null {
   switch (provider) {
     case 'HEARTHIS':
-      return hearthisEmbedSrc(uri);
+      return hearthisEmbedSrc(uri, options);
     case 'MIXCLOUD':
       return mixcloudEmbedSrc(uri);
     case 'SPOTIFY':
