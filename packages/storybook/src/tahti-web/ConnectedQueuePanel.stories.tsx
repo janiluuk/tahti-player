@@ -5,6 +5,8 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import type { QueueItem } from '@tahti-player/model';
 
+import { withTahtiRouter } from './_lib/decorators';
+
 function mockQueueItem(
   id: string,
   title: string,
@@ -68,7 +70,7 @@ const meta: Meta<typeof ConnectedQueuePanel> = {
   component: ConnectedQueuePanel,
   parameters: { layout: 'padded' },
   tags: ['autodocs'],
-  decorators: [withSeededQueue()],
+  decorators: [withSeededQueue(), withTahtiRouter('/')],
 };
 
 export default meta;
@@ -107,5 +109,7 @@ export const EmptyQueue: Story = {
     await expect(
       canvas.getByText('Play a channel or radio to start listening'),
     ).toBeVisible();
+    await expect(canvas.getByRole('link', { name: 'Discover' })).toBeVisible();
+    await expect(canvas.getByRole('link', { name: 'Radio' })).toBeVisible();
   },
 };

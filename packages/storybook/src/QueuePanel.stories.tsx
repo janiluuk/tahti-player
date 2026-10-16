@@ -93,6 +93,26 @@ export const EmptyCustomLabels: Story = {
   },
 };
 
+export const EmptyWithAction: Story = {
+  args: {
+    items: [],
+    labels: {
+      emptyTitle: 'Queue empty',
+      emptySubtitle: 'Play a channel or radio to start listening',
+    },
+    emptyAction: (
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <button type="button" className="text-sm underline">
+          Discover
+        </button>
+        <button type="button" className="text-sm underline">
+          Radio
+        </button>
+      </div>
+    ),
+  },
+};
+
 export const WithError: Story = {
   args: {
     items: mockItemsWithError,

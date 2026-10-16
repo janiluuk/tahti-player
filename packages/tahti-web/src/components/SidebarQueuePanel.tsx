@@ -2,7 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { Trash2Icon } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 
-import { Button, QueuePanel, Tooltip } from '@tahti-player/ui';
+import { Button, ButtonLink, QueuePanel, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 import { queueWithPlaybackStatus } from '../lib/queueItemStatus';
@@ -109,6 +109,16 @@ export function SidebarQueuePanel({
           isLiked={isLiked}
           onToggleLike={handleToggleLike}
           labels={QUEUE_LABELS}
+          emptyAction={
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <ButtonLink to="/discover" size="sm" variant="secondary">
+                Discover
+              </ButtonLink>
+              <ButtonLink to="/radio" size="sm" variant="secondary">
+                Radio
+              </ButtonLink>
+            </div>
+          }
         />
       </div>
 
