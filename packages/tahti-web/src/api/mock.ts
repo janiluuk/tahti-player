@@ -16,6 +16,7 @@ import {
   getMockVisualPreset,
   getMockVisualSettingsJson,
 } from './channel-design';
+import { mockChatStoreMessages } from './mock-chat-store';
 import { isMockChannelLive } from './mock-live-session';
 import { mockFixture } from './mock-overrides';
 import { getMockFreeSubscriptionsEnabled } from './mock-profile-preferences';
@@ -1560,7 +1561,12 @@ export function mockVenueProfile(slug: string): VenueProfile | null {
 }
 
 export function mockChatHistory(slug: string): ChatMessage[] {
-  return mockFixture('chatHistory', buildMockChatHistory(slug), slug);
+  const base = mockFixture('chatHistory', buildMockChatHistory(slug), slug);
+  const extras = mockChatStoreMessages(slug);
+  if (extras.length === 0) {
+    return base;
+  }
+  return [...base, ...extras].slice(-100);
 }
 
 export function mockFanTiers(username: string): FanTiersResponse {
