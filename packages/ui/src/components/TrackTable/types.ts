@@ -38,6 +38,7 @@ export type TrackTableLabels = {
 
 export type TrackTableClasses = {
   root?: string;
+  header?: string;
 };
 
 export type TrackTableActions<T extends Track = Track> = {

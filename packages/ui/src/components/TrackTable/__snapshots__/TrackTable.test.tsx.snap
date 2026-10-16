@@ -65,7 +65,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
         >
           <thead>
             <tr
-              class="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+              class="border-border border-b-(length:--border-width) bg-primary text-primary-foreground"
               role="row"
             >
               <th
@@ -505,7 +505,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
         >
           <thead>
             <tr
-              class="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+              class="border-border border-b-(length:--border-width) bg-primary text-primary-foreground"
               role="row"
             >
               <th
@@ -1137,7 +1137,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
         >
           <thead>
             <tr
-              class="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+              class="border-border border-b-(length:--border-width) bg-primary text-primary-foreground"
               role="row"
             >
               <th
@@ -1730,7 +1730,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
           >
             <thead>
               <tr
-                class="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+                class="border-border border-b-(length:--border-width) bg-primary text-primary-foreground"
                 role="row"
               >
                 <th
@@ -3511,7 +3511,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
         >
           <thead>
             <tr
-              class="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+              class="border-border border-b-(length:--border-width) bg-primary text-primary-foreground"
               role="row"
             >
               <th

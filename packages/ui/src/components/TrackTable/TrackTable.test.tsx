@@ -417,4 +417,19 @@ describe('TrackTable', () => {
     expect(annotations).toHaveLength(1);
     expect(annotations[0]).toHaveTextContent('Added by @mira');
   });
+
+  it('applies a custom header class when classes.header is set', async () => {
+    render(
+      <TrackTable
+        tracks={makeTracks(1)}
+        labels={labels}
+        classes={{ header: 'bg-foreground/10 text-inherit' }}
+        display={{ displayThumbnail: false }}
+      />,
+    );
+    await screen.findByText('Track 1');
+    const headerRow = screen.getByRole('row', { name: /Title/i });
+    expect(headerRow.className).toContain('bg-foreground/10');
+    expect(headerRow.className).not.toContain('bg-primary');
+  });
 });

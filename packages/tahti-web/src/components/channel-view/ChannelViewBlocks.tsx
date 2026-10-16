@@ -90,6 +90,7 @@ export function renderChannelBlock(
                   playAll={false}
                   filterable={false}
                   addAllToQueue={false}
+                  quietHeader
                 />
               </div>
             )}
@@ -103,6 +104,7 @@ export function renderChannelBlock(
                     ? 'No other public tracks.'
                     : 'No public tracks for this channel yet.'
                 }
+                quietHeader
               />
             </div>
           )}
