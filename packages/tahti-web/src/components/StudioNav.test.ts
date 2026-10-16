@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   AUDIENCE_SUBNAV_ITEMS,
   BROADCAST_SUBNAV_ITEMS,
@@ -176,5 +178,39 @@ describe('StudioNav section coverage', () => {
     ]) {
       expect(getStudioPrimaryRoute(location), location).toBeNull();
     }
+  });
+});
+
+describe('StudioNav Broadcast labels', () => {
+  const studioLabel = (to: string) => {
+    const item = SUBMENUS['/studio'].find((entry) => entry.to === to);
+    return item ? i18n.t(`web:${item.labelKey}`) : undefined;
+  };
+  const subnavLabel = (to: string) => {
+    const item = BROADCAST_SUBNAV_ITEMS.find((entry) => entry.to === to);
+    return item ? i18n.t(`web:${item.labelKey}`) : undefined;
+  };
+
+  it('calls the Studio submenu entry for /studio/go-live "Broadcast"', () => {
+    expect(studioLabel('/studio/go-live')).toBe('Broadcast');
+  });
+
+  it('calls the first Broadcast subnav entry for /studio/go-live "Go live"', () => {
+    expect(BROADCAST_SUBNAV_ITEMS[0]?.to).toBe('/studio/go-live');
+    expect(subnavLabel('/studio/go-live')).toBe('Go live');
+  });
+
+  it('keeps the two labels distinct so the nested strip does not repeat its parent tab', () => {
+    expect(studioLabel('/studio/go-live')).not.toBe(
+      subnavLabel('/studio/go-live'),
+    );
+  });
+
+  it('never shows "Go live" as a Studio submenu label', () => {
+    const labels = SUBMENUS['/studio'].map((item) =>
+      i18n.t(`web:${item.labelKey}`),
+    );
+    expect(labels).toContain('Broadcast');
+    expect(labels).not.toContain('Go live');
   });
 });
