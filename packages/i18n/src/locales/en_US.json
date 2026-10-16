@@ -646,6 +646,7 @@
       "upload": "Upload",
       "editor": "Editor",
       "goLive": "Broadcast",
+      "onAir": "Go live",
       "schedule": "Schedule",
       "events": "Events",
       "shows": "Shows",
