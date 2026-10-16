@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import {
   Disc3Icon,
   DiscAlbumIcon,
@@ -85,6 +85,7 @@ const editorRouteFor = (collection: StudioCollection) =>
     : '/studio/collections/$slug';
 
 export function StudioCollectionsView() {
+  const navigate = useNavigate();
   const [rows, setRows] = useState<StudioCollection[]>([]);
   const [loading, setLoading] = useState(true);
   const [createOpen, setCreateOpen] = useState(false);
@@ -149,9 +150,13 @@ export function StudioCollectionsView() {
           setMsg(r.error);
           return;
         }
-        setMsg(`Created ${r.data.name} — open designer to add tracks.`);
+        setMsg(`Created ${r.data.name} — opening designer…`);
         closeCreate();
         reload();
+        void navigate({
+          to: editorRouteFor(r.data),
+          params: { slug: r.data.slug },
+        });
       })
       .catch(() => {
         setBusy(false);
