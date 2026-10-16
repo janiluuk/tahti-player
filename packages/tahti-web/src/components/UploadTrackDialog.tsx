@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { UploadIcon } from 'lucide-react';
 import { useState } from 'react';
 
@@ -17,20 +17,17 @@ type Props = {
 };
 
 export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [note, setNote] = useState<string | null>(null);
-  const [itemId, setItemId] = useState<string | null>(null);
 
   const reset = () => {
     setTitle('');
     setFile(null);
     setBusy(false);
     setError(null);
-    setNote(null);
-    setItemId(null);
   };
 
   const handleClose = () => {
@@ -45,16 +42,15 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
     }
     setBusy(true);
     setError(null);
-    setNote(null);
     const result = await uploadSoundFile({ file, title: title || file.name });
     setBusy(false);
     if (!result.ok) {
       setError(result.error);
       return;
     }
-    setItemId(result.itemId);
     onUploaded?.(result.itemId);
-    setNote('Upload complete — processing may take a minute.');
+    handleClose();
+    void navigate({ to: '/studio/sounds/$id', params: { id: result.itemId } });
   };
 
   return (
@@ -96,21 +92,6 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
             <p className="text-accent-red-strong text-sm" role="alert">
               {error}
             </p>
-          )}
-          {note && (
-            <p className="text-foreground-secondary text-sm" role="status">
-              {note}
-            </p>
-          )}
-          {itemId && (
-            <Link
-              to="/studio/sounds/$id"
-              params={{ id: itemId }}
-              className="text-sm underline"
-              onClick={handleClose}
-            >
-              Open in Music
-            </Link>
           )}
         </div>
         <Dialog.Actions>

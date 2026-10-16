@@ -32,8 +32,8 @@ export const Default: Story = {
   },
 };
 
-// Pick a file, name it and upload: the dialog confirms and links to the
-// new sound in Studio.
+// Pick a file, name it and upload: the dialog reports the new sound, closes
+// and navigates to it in Studio.
 export const UploadFile: Story = {
   play: async ({ canvasElement, args }) => {
     const dialog = await findDialog(canvasElement, 'Upload track');
@@ -44,19 +44,11 @@ export const UploadFile: Story = {
     await userEvent.upload(dialog.getByLabelText('Audio file'), audioFile());
     await expect(dialog.getByText('Choose another file')).toBeVisible();
     await userEvent.click(dialog.getByRole('button', { name: 'Upload' }));
-    await expect(await dialog.findByRole('status')).toHaveTextContent(
-      'Upload complete',
-    );
     await waitFor(() =>
       expect(args.onUploaded).toHaveBeenCalledWith(
         expect.stringMatching(/^arch-mock-/),
       ),
     );
-    await expect(
-      dialog.getByRole('link', { name: 'Open in Music' }),
-    ).toHaveAttribute(
-      'href',
-      expect.stringMatching(/^\/studio\/sounds\/arch-mock-/),
-    );
+    await waitFor(() => expect(args.onClose).toHaveBeenCalled());
   },
 };
