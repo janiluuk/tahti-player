@@ -4751,3 +4751,8 @@ Folded `fix-shift-play-ci.md`. clickRowPlay uses aria-label prefix (#929); playe
 ## 2026-10-16 - Shift+play Storybook coverage
 
 Folded `shift-play-storybook.md`. MediaArtwork docs + `ShiftClickQueues` play; TrackTable `ShiftClickQueuesFromThumbnail`; GlowMediaTile autodocs note (#946).
+
+## 2026-10-16 - Settings audit fold (batch 66 #12)
+
+Folded `settings-audit.md`. Channel & chat (Chat + Moderators), share toggle, Broadcast save errors, rename confirm, placeholder switches removed, Account/Artist tab groups, Visibility/Discovery cards, Playback SectionShell, and the 2026-10-16 decisions (moderators stay chat-only; keep “Channel & chat” name) are all shipped. No open product questions left in that todo.
+
