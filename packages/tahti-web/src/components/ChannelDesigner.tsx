@@ -282,7 +282,12 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       onRetry: retryLoad,
       ready: Boolean(visual),
     });
-    if (boot) return boot;
+    if (boot) {
+      return boot;
+    }
+    if (!visual) {
+      return <PageLoading label="Loading designer…" />;
+    }
 
     // VIDEO_LOOP without a playable clip or image isn't a state worth saving —
     // the header would just render empty on the real channel page.
