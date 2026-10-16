@@ -32,10 +32,10 @@ Production / beta builds (`import.meta.env.PROD`) **do not** fall back to fixtur
 ## Still thin / next mock polish
 
 - [x] Chat: persist mock sends into shared history store (reload-safe) (batch 66 #5)
-- [x] Seed richer archive / releases / collections for Studio browse (batch 67 #8 archive seed)
+- [ ] Seed richer archive / releases / collections for Studio browse
 - [x] Newsletter send confirmation (success toast + list refresh under mock)
-- [ ] DM search users fixture expansion
-- [x] Press-kit gallery upload mock (currently link-out)
+- [x] DM search users fixture expansion (batch 67 #7)
+- [ ] Press-kit gallery upload mock (currently link-out)
 - [ ] Member invite mock (currently link-out)
 - [x] Stash upload / delete mock store (wave 7)
 - [x] Venue register mock success path

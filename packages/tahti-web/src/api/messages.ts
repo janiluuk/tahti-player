@@ -302,6 +302,41 @@ export async function startConversation(
   }
 }
 
+const MOCK_DM_USER_DIRECTORY = [
+  {
+    username: 'listener',
+    displayName: 'Listener One',
+    avatarUrl: null as string | null,
+  },
+  {
+    username: 'listener-liina',
+    displayName: 'Liina',
+    avatarUrl: null as string | null,
+  },
+  {
+    username: 'dj-moonlight',
+    displayName: 'DJ Moonlight',
+    avatarUrl: null as string | null,
+  },
+  {
+    username: 'northern-lights',
+    displayName: 'Northern Lights',
+    avatarUrl: null as string | null,
+  },
+] as const;
+
+function mockSearchUsers(q: string) {
+  const needle = q.trim().toLowerCase();
+  if (!needle) {
+    return [];
+  }
+  return MOCK_DM_USER_DIRECTORY.filter(
+    (user) =>
+      user.username.toLowerCase().includes(needle) ||
+      user.displayName.toLowerCase().includes(needle),
+  ).map((user) => ({ ...user }));
+}
+
 export async function searchUsers(q: string): Promise<{
   data: Array<{
     username: string;
@@ -312,15 +347,7 @@ export async function searchUsers(q: string): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: q
-        ? [
-            {
-              username: 'listener',
-              displayName: 'Listener One',
-              avatarUrl: null,
-            },
-          ]
-        : [],
+      data: mockSearchUsers(q),
       meta: { source: 'mock' },
     };
   }
@@ -332,15 +359,7 @@ export async function searchUsers(q: string): Promise<{
   } catch (err) {
     if (allowMockFallback()) {
       return {
-        data: q
-          ? [
-              {
-                username: 'listener',
-                displayName: 'Listener One',
-                avatarUrl: null,
-              },
-            ]
-          : [],
+        data: mockSearchUsers(q),
         meta: failMeta(err),
       };
     }
