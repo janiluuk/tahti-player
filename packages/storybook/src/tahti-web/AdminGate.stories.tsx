@@ -23,7 +23,9 @@ export const SignedOut: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText('Board admin')).toBeVisible();
+    await expect(
+      canvas.getByRole('heading', { level: 2, name: 'Board admin' }),
+    ).toBeVisible();
     await expect(canvas.queryByText(/gated content/)).toBeNull();
     useAuthModalStore.setState({ isOpen: false });
     await userEvent.click(canvas.getByRole('button', { name: 'Log in' }));
