@@ -1,5 +1,8 @@
 import type { BroadcastPreflight } from './broadcast';
+import { createEpisode, patchEpisode } from './shows/episodes';
 import { seedSeries } from './shows/mock';
+
+let liveEpisodeId: string | null = null;
 
 export function applyMockPreflightPatch(
   current: BroadcastPreflight,
@@ -26,4 +29,33 @@ export function applyMockPreflightPatch(
       plannedLiveShow: { seriesId, episodeNumber },
     },
   };
+}
+
+export async function startMockLiveEpisode(
+  preflight: BroadcastPreflight,
+): Promise<void> {
+  const planned = preflight.plannedLiveShow;
+  if (!planned || liveEpisodeId) {
+    return;
+  }
+  const created = await createEpisode({
+    showId: planned.seriesId,
+    source: 'broadcast',
+    title: preflight.title ?? undefined,
+  });
+  if (!created.ok) {
+    return;
+  }
+  await patchEpisode(created.data.id, { status: 'LIVE' });
+  liveEpisodeId = created.data.id;
+}
+
+export async function endMockLiveEpisode(
+  preflight: BroadcastPreflight,
+): Promise<BroadcastPreflight> {
+  if (liveEpisodeId) {
+    await patchEpisode(liveEpisodeId, { status: 'PENDING_APPROVAL' });
+    liveEpisodeId = null;
+  }
+  return { ...preflight, plannedLiveShow: null, episodeNumber: null };
 }
