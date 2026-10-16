@@ -11,7 +11,7 @@ type Props = {
 export function TopBarTextField({ value, onChange }: Props) {
   return (
     <section className="border-border flex flex-col gap-3 rounded-lg border p-3">
-      <h3 className="text-xs font-semibold tracking-wide uppercase">Top bar</h3>
+      <h2 className="text-xs font-semibold tracking-wide uppercase">Top bar</h2>
       <Input
         label="Top bar text"
         value={value}

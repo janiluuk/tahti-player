@@ -5,6 +5,7 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
+import { within } from '@testing-library/react';
 import { act, type ComponentProps } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -121,5 +122,22 @@ describe('ChannelDesigner', () => {
       lookOpenSection: 'backdrop',
     });
     expect(container.textContent).not.toBe('');
+  });
+
+  it('keeps the page preview out of the main landmark list and its headings one level below the page title', async () => {
+    const { container } = await renderDesigner();
+    const view = within(container);
+    expect(view.queryByRole('main')).not.toBeInTheDocument();
+    const preview = view.getByRole('region', { name: 'Channel page preview' });
+    expect(
+      within(preview).getByRole('heading', { level: 2, name: 'Tracks' }),
+    ).toBeInTheDocument();
+    expect(
+      within(preview).getByRole('heading', {
+        level: 2,
+        name: 'About Northern Lights',
+      }),
+    ).toBeInTheDocument();
+    expect(view.queryAllByRole('heading', { level: 3 })).toHaveLength(0);
   });
 });
