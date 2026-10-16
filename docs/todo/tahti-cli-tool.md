@@ -116,4 +116,4 @@ this environment) — the token-required path is covered by tests mocking
 
 ## 2026-10-16: release write commands, shell history
 
-- **`tahti releases edit <id>` (PRNUM):** `PATCH /api/me/releases/:id` with `--state draft|published|archived`, `--description`, `--date`, `--pin`/`--unpin`, `--footer on|off` and repeatable `--link <service>=<url>`. The API replaces all smart links at once, so `--link` first reads the release and merges (an empty URL removes a service). `releases show` now lists the services that have a store link. Mocked `fetch` only, not run against the live API.
+- **`tahti releases edit <id>` (#862):** `PATCH /api/me/releases/:id` with `--state draft|published|archived`, `--description`, `--date`, `--pin`/`--unpin`, `--footer on|off` and repeatable `--link <service>=<url>`. The API replaces all smart links at once, so `--link` first reads the release and merges (an empty URL removes a service). `releases show` now lists the services that have a store link. Mocked `fetch` only, not run against the live API.
