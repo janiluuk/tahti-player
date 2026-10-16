@@ -171,6 +171,16 @@ export function StudioChannelView() {
     }
   }, [channel, search.tab]);
 
+  useEffect(() => {
+    if (!search.tab) {
+      void navigate({
+        to: '/studio/channel',
+        search: { tab: 'setup' },
+        replace: true,
+      });
+    }
+  }, [navigate, search.tab]);
+
   if (DESIGNER_TABS.has(search.tab ?? '')) {
     return (
       <Navigate
