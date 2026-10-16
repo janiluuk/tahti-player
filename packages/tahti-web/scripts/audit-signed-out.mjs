@@ -12,6 +12,7 @@
 //      tabs and owner tools on their own profile are listed under "To look at".
 //   3. Signed out on a phone (390 px): no public page scrolls sideways, and
 //      the top bar's search button finds and opens a result.
+// Every public, listener, Studio and Admin page checked has exactly one h1.
 // Exits 1 when something is wrong. Run against the mock app:
 //   VITE_FORCE_MOCK=1 pnpm dev:tahti
 //   BASE=http://127.0.0.1:5173 node packages/tahti-web/scripts/audit-signed-out.mjs
@@ -179,6 +180,7 @@ async function visit(page, path) {
       sideControls: [...document.querySelectorAll('button, a[href]')]
         .filter((el) => !el.closest('main') && visible(el))
         .map(label),
+      pageHeadings: document.querySelectorAll('h1').length,
       text: document.body.innerText,
     };
   });
@@ -193,12 +195,19 @@ function artistControls(seen) {
 const problems = [];
 const notes = [];
 
+function checkPageHeading(who, path, seen) {
+  if (seen.pageHeadings !== 1) {
+    problems.push(`${who}: ${path} has ${seen.pageHeadings} h1 headings`);
+  }
+}
+
 {
   const { context, page } = await openAs(null);
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message.slice(0, 120)));
   for (const path of PUBLIC_PATHS) {
     const seen = await visit(page, path);
+    checkPageHeading('signed out', path, seen);
     if (seen.signInDialog) {
       problems.push(`signed out: ${path} opens the sign-in dialog`);
       await page.keyboard.press('Escape');
@@ -265,6 +274,7 @@ const notes = [];
   page.on('pageerror', (error) => errors.push(error.message.slice(0, 120)));
   for (const path of LISTENER_PATHS) {
     const seen = await visit(page, path);
+    checkPageHeading('listener', path, seen);
     if (seen.signInDialog) {
       problems.push(`listener: ${path} opens the sign-in dialog`);
       await page.keyboard.press('Escape');
@@ -281,6 +291,7 @@ const notes = [];
   }
   for (const path of STUDIO_PATHS) {
     const seen = await visit(page, path);
+    checkPageHeading('listener', path, seen);
     if (seen.tabs.some((tab) => /^(Stats|Releases|Broadcast)$/.test(tab))) {
       problems.push(`listener: ${path} shows the Studio tab bar`);
     }
@@ -292,6 +303,7 @@ const notes = [];
     }
   }
   const admin = await visit(page, '/admin');
+  checkPageHeading('listener', '/admin', admin);
   if (!admin.text.includes('Board access required')) {
     problems.push('listener: /admin does not say Board access is required');
   }

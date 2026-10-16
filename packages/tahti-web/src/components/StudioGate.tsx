@@ -1,21 +1,27 @@
 import { LayoutDashboard, Lock } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button, EmptyState } from '@tahti-player/ui';
+import { Button } from '@tahti-player/ui';
 
 import { hasStudioAccess } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useChannelSetupModalStore } from '../stores/channelSetupModalStore';
-import { PageLoading } from './PageStates';
+import { PageGate, PageLoading } from './PageStates';
 
 type Props = {
   children: ReactNode;
   /** When true, require an artist channel (archive/upload). */
   requireChannel?: boolean;
+  /** Inside a page that already has its own `h1`, such as a Library tab. */
+  embedded?: boolean;
 };
 
-export function StudioGate({ children, requireChannel = true }: Props) {
+export function StudioGate({
+  children,
+  requireChannel = true,
+  embedded = false,
+}: Props) {
   const user = useAuthStore((s) => s.user);
   const hydrated = useAuthStore((s) => s.hydrated);
   const profileLoaded = useAuthStore((s) => s.profileLoaded);
@@ -28,7 +34,8 @@ export function StudioGate({ children, requireChannel = true }: Props) {
 
   if (!user) {
     return (
-      <EmptyState
+      <PageGate
+        page={embedded ? null : 'Studio'}
         icon={<Lock size={40} className="opacity-40" />}
         title="Studio"
         description="Sign in to manage your catalog, uploads, and audio editor."
@@ -43,7 +50,8 @@ export function StudioGate({ children, requireChannel = true }: Props) {
 
   if (!hasStudioAccess(user)) {
     return (
-      <EmptyState
+      <PageGate
+        page={embedded ? null : 'Studio'}
         icon={<LayoutDashboard size={40} className="opacity-40" />}
         title="Studio is for artists"
         description={`@${user.username} is a listener account. Create your channel to upload, release and broadcast. Listening needs none of it.`}
@@ -67,7 +75,8 @@ export function StudioGate({ children, requireChannel = true }: Props) {
 
   if (requireChannel && !user.channel) {
     return (
-      <EmptyState
+      <PageGate
+        page={embedded ? null : 'Studio'}
         icon={<LayoutDashboard size={40} className="opacity-40" />}
         title="Artist channel required"
         description={`Signed in as @${user.username}, but this account has no channel yet.`}

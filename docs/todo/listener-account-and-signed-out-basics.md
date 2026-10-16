@@ -20,6 +20,7 @@ User ask (2026-10-04): add a separate listener user who is registered but has no
 - Second pass (search, Help, channel comments, artist follow): the artist page offers Follow to a signed-out visitor and opens sign-in (#535); the top search has one clear button and Enter opens the first result (#537, #538). Help and channel comments needed no change.
 - Found on the way: the artist header buttons wrap on phones (#536), feed cards say "an album" (#539), Favorites has an empty state for tracks (#540), the Messages start form is spaced and starts on Enter (#543).
 - `scripts/audit-signed-out.mjs` clicks Follow, Add, a reaction and Comment and checks the search (#544).
+- Follow-up (2026-10-16): the Studio and Admin gates (signed out, or a listener) showed their title as an `h2` with no `h1` on the page. They now carry a page `h1` ("Studio", "Board admin"), left out when the gate sits inside a Library tab that has its own. `audit-signed-out.mjs` fails on a checked page without exactly one `h1`.
 
 ## Done (2026-10-08)
 
@@ -46,3 +47,4 @@ All three plan items are done; only the open questions below remain.
 
 - Should a listener see a "Become an artist" entry where Studio would be, or nothing? (#784 chose "Become an artist"; confirm or change.)
 - Which signed-out actions should work with no account at all (for example likes or history kept in the browser)?
+- A listener's Library keeps the **Stash** tab (#785), but the tab opens "Studio is for artists": `StudioStashView` sits behind `StudioGate`, and its "All stash" list reads Studio sounds. `/api/me/stash` (the files) only needs an account. Should a listener's Stash show just their stash files, or should the tab go? Hiding the tab means changing `LibraryView.tsx`. (Found 2026-10-16.)
