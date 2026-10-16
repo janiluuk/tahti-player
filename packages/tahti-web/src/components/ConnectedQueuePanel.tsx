@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { QueuePanel } from '@tahti-player/ui';
+import { ButtonLink, QueuePanel } from '@tahti-player/ui';
 
 import { queueWithPlaybackStatus } from '../lib/queueItemStatus';
 import { usePlayerStore } from '../stores/playerStore';
@@ -35,6 +35,16 @@ export function ConnectedQueuePanel({ isCollapsed }: { isCollapsed: boolean }) {
       onSelectItem={playQueueIndex}
       onRemoveItem={removeFromQueue}
       labels={QUEUE_LABELS}
+      emptyAction={
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <ButtonLink to="/discover" size="sm" variant="secondary">
+            Discover
+          </ButtonLink>
+          <ButtonLink to="/radio" size="sm" variant="secondary">
+            Radio
+          </ButtonLink>
+        </div>
+      }
     />
   );
 }
