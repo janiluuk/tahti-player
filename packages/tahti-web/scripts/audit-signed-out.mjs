@@ -9,9 +9,8 @@
 //      /admin says Board access is required; Settings has no channel
 //      sections. The Studio menu entry, Library's artist tabs and the
 //      listener's own profile are listed under "To look at".
-//   3. Signed out on a phone (390 px): no public page scrolls sideways, the
-//      artist page's email subscribe form fits its header, and the top bar's
-//      search button finds and opens a result.
+//   3. Signed out on a phone (390 px): no public page scrolls sideways, and
+//      the top bar's search button finds and opens a result.
 // Exits 1 when something is wrong. Run against the mock app:
 //   VITE_FORCE_MOCK=1 pnpm dev:tahti
 //   BASE=http://127.0.0.1:5173 node packages/tahti-web/scripts/audit-signed-out.mjs
@@ -341,8 +340,9 @@ const notes = [];
     }
   }
   {
-    // The artist header clips its overflow, so a cut-off control never
-    // shows up as sideways scroll.
+    // The artist page's email subscribe form must fit its header. The header
+    // clips its overflow, so a cut-off control never shows up as sideways
+    // scroll.
     await visit(page, '/u/liis-kask');
     const header = page.getByTestId('artist-social-header');
     const clipped = await page
