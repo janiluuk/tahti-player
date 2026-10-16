@@ -97,8 +97,9 @@ export const Default: Story = {
     await expect(
       banner.getByRole('button', { name: 'Signed in as Jani (Board)' }),
     ).toBeVisible();
+    const nav = within(canvas.getByRole('navigation', { name: 'Main' }));
     for (const name of ['Listen', 'Discover', 'Library', 'Studio', 'Admin']) {
-      await expect(canvas.getByRole('link', { name })).toBeVisible();
+      await expect(nav.getByRole('link', { name })).toBeVisible();
     }
   },
 };
