@@ -1013,7 +1013,10 @@ function buildMockCollection(
         displayName: mockChannel(owner).user.displayName,
       },
       items: [],
-      itemCount: 0,
+      links: {
+        page: `https://tahti.live/u/${owner}/c/${slug}`,
+        rss: `/api/v1/collections/${slug}/rss.xml`,
+      },
     };
   }
   const archive = mockSoundItems(username);
