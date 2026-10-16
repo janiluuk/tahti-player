@@ -32,6 +32,7 @@ import { runMessagesList, runMessagesSend } from './commands/messages.mjs';
 import { runNotificationsList } from './commands/notifications-list.mjs';
 import { runNotificationsRead } from './commands/notifications-read.mjs';
 import { runPurchases } from './commands/purchases.mjs';
+import { runReleasesAddTracks } from './commands/releases-add-tracks.mjs';
 import {
   MAX_RELEASE_TRACKS,
   RELEASE_TYPES,
@@ -280,6 +281,23 @@ scope.
     positionals: 1,
     run: (config, { values, positionals }) =>
       runReleasesEdit(config, positionals[0], values),
+  },
+  {
+    path: ['releases', 'add-tracks'],
+    usage: 'tahti releases add-tracks <id> --sound <id>... [--json]',
+    summary: 'Add library sounds as tracks to one of your releases',
+    details: `Looks up each --sound with GET /api/me/sound/:id and adds it with
+POST /api/me/releases/:id/tracks, after the existing tracks and in the order
+given, titled after the sound. Prints the release with its new tracklist;
+--json prints the added tracks. Needs a token with the write scope.
+  --sound <id>     A library sound to add; repeat for more`,
+    options: {
+      ...JSON_OPTION,
+      sound: { type: 'string', multiple: true },
+    },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runReleasesAddTracks(config, positionals[0], values),
   },
   {
     path: ['search'],

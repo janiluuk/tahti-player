@@ -74,6 +74,7 @@ describe('main', () => {
       ['releases', 'show', '--help'],
       'Usage: tahti releases show <id> [--json]',
     ],
+    [['releases', 'add-tracks', '--help'], 'POST /api/me/releases/:id/tracks'],
     [['search', '--help'], 'works without'],
     [['hearthis', 'sets', '--help'], 'hearthis.at Sets'],
     [['hearthis', 'set', '--help'], 'tracks in one hearthis.at Set'],
