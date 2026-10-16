@@ -22,11 +22,6 @@ import { useTopNavState } from './app-top-nav/useTopNavState';
 import { GlobalSearch } from './GlobalSearch';
 import { TahtiLogoLink } from './TahtiLogo';
 
-const UploadTrackDialog = lazy(() =>
-  import('./UploadTrackDialog').then((m) => ({
-    default: m.UploadTrackDialog,
-  })),
-);
 const RadioBookingCalendar = lazy(() =>
   import('./RadioBookingCalendar').then((m) => ({
     default: m.RadioBookingCalendar,
@@ -56,8 +51,6 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
     canGoForward,
     user,
     openAuth,
-    uploadOpen,
-    setUploadOpen,
     streamManagerOpen,
     setStreamManagerOpen,
     bookingCalendarOpen,
@@ -67,7 +60,6 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
     processingItems,
   } = nav;
   const [phoneSearchOpen, setPhoneSearchOpen] = useState(false);
-  const uploadOpened = useOpenedOnce(uploadOpen);
   const bookingCalendarOpened = useOpenedOnce(bookingCalendarOpen);
   const streamManagerOpened = useOpenedOnce(streamManagerOpen);
 
@@ -185,14 +177,6 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
             <XIcon size={16} />
           </Button>
         </div>
-      ) : null}
-      {uploadOpened ? (
-        <Suspense fallback={null}>
-          <UploadTrackDialog
-            isOpen={uploadOpen}
-            onClose={() => setUploadOpen(false)}
-          />
-        </Suspense>
       ) : null}
       {bookingCalendarOpened ? (
         <Suspense fallback={null}>

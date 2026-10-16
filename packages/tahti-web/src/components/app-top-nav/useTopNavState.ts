@@ -35,7 +35,6 @@ export function useTopNavState() {
   const openAuth = useAuthModalStore((s) => s.open);
   const openSettings = useSettingsModalStore((s) => s.open);
   const [open, setOpen] = useState(false);
-  const [uploadOpen, setUploadOpen] = useState(false);
   const [broadcastOpen, setBroadcastOpen] = useState(false);
   const [streamManagerOpen, setStreamManagerOpen] = useState(false);
   const [bookingCalendarOpen, setBookingCalendarOpen] = useState(false);
@@ -215,8 +214,6 @@ export function useTopNavState() {
     openSettings,
     open,
     setOpen,
-    uploadOpen,
-    setUploadOpen,
     broadcastOpen,
     setBroadcastOpen,
     streamManagerOpen,
