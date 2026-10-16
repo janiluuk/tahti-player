@@ -14,68 +14,63 @@ listen / channel chrome.
 
 ## Land batch-63 leftovers
 
-1. [ ] **Quieter track table headers** — Soften channel TrackTable header
+1. [x] **Quieter track table headers** — Soften channel TrackTable header
     surface so it does not fight the brand banner (#881).
-2. [ ] **Channel hero status row** — Offline / Share / RSS / Report sit in the
+2. [x] **Channel hero status row** — Offline / Share / RSS / Report sit in the
     hero identity row, not a floating strip (#882).
-3. [ ] **Upcoming shows empty** — Off-air channels with no booked shows get a
+3. [x] **Upcoming shows empty** — Off-air channels with no booked shows get a
     short empty line (#883).
-4. [ ] **Player programme titles** — Native `title` on truncated now-playing
+4. [x] **Player programme titles** — Native `title` on truncated now-playing
     title / artist so hover reveals the full programme (#884).
 
 ## Contrast and phone collisions
 
-5. [ ] **Subscribe @handle contrast** — On `/subscribe/<user>` the `@handle`
-    is ~1.3:1 on teal; bump to ≥4.5:1 without losing the brand wash.
-6. [ ] **Channel designer Show more overlap** — At 390 px the designer’s
+5. [x] **Subscribe @handle contrast** — On `/subscribe/<user>` the `@handle`
+    is ~1.3:1 on teal; bump to ≥4.5:1 without losing the brand wash (#886).
+6. [x] **Channel designer Show more overlap** — At 390 px the designer’s
     “Edit backdrop design” control must not contain the bio “Show more”
-    button (pointer / nesting).
-7. [ ] **Phone channel More menu** — At ≤640 px fold Share / RSS / Report
+    button (pointer / nesting) (#889).
+7. [x] **Phone channel More menu** — At ≤640 px fold Share / RSS / Report
     (and owner Edit when present) into one overflow so the hero stays one
-    composition (batch 63 item 5, still open).
+    composition (#890).
 
 ## Channel page composition
 
-8. [ ] **Channel blocks breathing room** — Tighten vertical rhythm between
-    stage, tracks, comments and upcoming so the page reads as one scroll,
-    not stacked cards with equal gaps.
-9. [ ] **Channel comments composer focus** — Signed-in empty comments: primary
-    field focus ring and “Post” sit on one row; signed-out keeps the single
-    sign-in CTA from #851.
-10. [ ] **Pinned block label** — When pinned tracks exist, show a quiet
-    “Pinned” eyebrow above the table so catalog and pinned are distinct
-    without a second toolbar.
+8. [x] **Channel blocks breathing room** — Tighten vertical rhythm between
+    stage, tracks, comments and upcoming so the page reads as one scroll
+    (#891).
+9. [x] **Channel comments composer focus** — Signed-in empty comments: primary
+    field and “Post” sit on one row from `sm` up (#893).
+10. [x] **Pinned block label** — Quiet “Pinned” / “Catalog” eyebrows above the
+    tables (#891).
 
 ## Listen / Discover / Radio
 
-11. [ ] **Listen “Now” badge contrast** — StationCardSubtitle “Now” on live
-    cards must meet 4.5:1 on the card surface at both themes.
-12. [ ] **Radio directory offline copy** — Offline station cards use one short
-    line (“Off air”) instead of a blank now-playing slot.
-13. [ ] **Discover section jump** — Keep section anchors; ensure the first
-    in-page jump target clears the sticky top nav (scroll-margin).
-14. [ ] **Favorites / Feed empty already shipped** — Verify links; if a surface
-    still has a bare EmptyState with no CTA, add Discover.
+11. [x] **Listen “Now” badge contrast** — Solid foreground weight, no opacity
+    trick (#892).
+12. [x] **Radio directory offline copy** — Offline station / preset cards use
+    “Off air” (#892).
+13. [x] **Discover section jump** — Widget cards get `id` + `scroll-mt-20`
+    under the sticky top nav (#894).
+14. [x] **Favorites / Feed empty** — Already ship Discover CTAs on master
+    (batch 63 empties); verified, no new PR.
 
 ## Library and account chrome
 
-15. [ ] **Library overview listener empty** — Listeners with no tracks see
-    Discover (not Upload); artists keep Upload (#852 pattern).
-16. [ ] **Settings Channel & chat copy** — One sentence on Moderators tab that
-    moderators are chat-only until a channel-edit role exists (closes
-    settings-audit decisions in UI).
-17. [ ] **Profile self-view quiet chrome** — Own profile already hides
-    Follow/Subscribe (#869); drop any leftover Report/Block affordance in the
-    overflow if still present.
+15. [x] **Library overview listener empty** — Already points listeners at
+    Discover (not Upload) on master; no new PR.
+16. [x] **Settings Channel & chat copy** — Moderators panel already states
+    chat-only / cannot change channel; no new PR.
+17. [x] **Profile self-view quiet chrome** — Report/Block already gated by
+    `!isSelf` in ArtistProfileSections; no new PR.
 
 ## Player chrome
 
-18. [ ] **Queue empty CTA** — Empty queue offers Discover / Radio, matching
-    search empties.
-19. [ ] **Player bar metadata clamp** — Title + artist + programme never push
-    transport; single-line clamp with `title` already from #884.
-20. [ ] **Workspace sidebar section labels** — Queue / History / Likes headers
-    use the same quiet eyebrow weight so the rail is one language.
+18. [x] **Queue empty CTA** — Empty queue offers Discover / Radio (#895).
+19. [x] **Player bar metadata clamp / titles** — Truncation on master;
+    native `title` tooltips in #884.
+20. [x] **Workspace sidebar section labels** — Quiet Queue / override eyebrows
+    (#896).
 
 ## Out of scope
 
