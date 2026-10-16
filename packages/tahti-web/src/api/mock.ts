@@ -1013,7 +1013,6 @@ function buildMockCollection(
         displayName: mockChannel(owner).user.displayName,
       },
       items: [],
-      itemCount: 0,
     };
   }
   const archive = mockSoundItems(username);
