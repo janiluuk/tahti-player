@@ -328,7 +328,8 @@ TAHTI_API_TOKEN and never sends it. Words after "search" form one query.
     summary: 'Upload the audio files in a folder to your library',
     details: `Uploads each audio file (mp3, flac, wav, aiff, m4a, aac, ogg, opus) as a new
 sound. The title, artist, genre and BPM come from the file's tags (ID3v2 in
-MP3, Vorbis comments in FLAC); without a title tag the file name is used.
+MP3, Vorbis comments in FLAC, OGG and Opus, iTunes items in M4A); without a
+title tag the file name is used.
 Files whose title is already in your library are skipped, so running it again
 only sends what is new. Needs a token with the write scope. Exits with 1 when
 any file fails.

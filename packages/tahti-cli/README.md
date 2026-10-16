@@ -137,10 +137,11 @@ token with the `write` scope. `shell` needs a token for library playback and
 `import` uploads each audio file in the folder (mp3, flac, wav, aiff, m4a, aac,
 ogg, opus) as a new sound, one file at a time:
 
-- MP3 files' ID3v2 tags and FLAC files' Vorbis comments give the title, the
-  artist credit, the genre and the BPM (40-300). Without a title tag, or with
-  `--ignore-tags`, the title is the file name. Other formats are titled after
-  the file name; album and artwork are not read.
+- Tags give the title, the artist credit, the genre and the BPM (40-300):
+  ID3v2 in MP3, Vorbis comments in FLAC, Ogg Vorbis and Opus, and iTunes items
+  in M4A. Without a title tag, or with `--ignore-tags`, the title is the file
+  name. WAV, AIFF and AAC files are titled after the file name. Album and
+  artwork are not read, since the upload API has no field for them.
 
 - Hidden files, empty files and files over 2 GB are skipped; subfolders are
   only read with `--recursive`.
