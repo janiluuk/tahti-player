@@ -437,6 +437,5 @@ activity-feed/audit-topic and container-logs sections remain in
 
 ## Related open leaves (do not duplicate)
 
-- `plugin-registry-extraction.md` — contracts/player side; UI panel split here is complementary.
 - `channel-designer-*` — product/behavior; structural extract here should not block those.
 - `waveform-detail-accuracy.md` / admin activity work — avoid conflicting files until quiet.
