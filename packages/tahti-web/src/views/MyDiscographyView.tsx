@@ -80,6 +80,7 @@ const sortItems = (items: StudioSound[], sort: SortKey) =>
 export const MyDiscographyView: FC = () => {
   const user = useAuthStore((state) => state.user);
   const play = usePlayerStore((state) => state.play);
+  const enqueue = usePlayerStore((state) => state.enqueue);
   const setStatus = usePlayerStore((state) => state.setStatus);
   const seekTo = usePlayerStore((state) => state.seekTo);
   const currentId = usePlayerStore((state) => state.currentId);
@@ -158,27 +159,38 @@ export const MyDiscographyView: FC = () => {
   const isPlayingItem = (item: StudioSound) =>
     isCurrentItem(item) && status === 'playing';
 
-  const playItem = async (item: StudioSound) => {
-    if (isCurrentItem(item)) {
+  const playItem = async (item: StudioSound, opts?: { queue?: boolean }) => {
+    if (!opts?.queue && isCurrentItem(item)) {
       setStatus(status === 'playing' ? 'paused' : 'playing');
       return;
     }
     const hearthis = playableFromStudioHearthis(item);
     if (hearthis) {
-      play(hearthis);
+      if (opts?.queue) {
+        enqueue(hearthis);
+      } else {
+        play(hearthis);
+      }
       return;
     }
     setLoadingId(item.id);
     const { data } = await fetchEditorSource(item.id);
-    play({
+    const next = {
       id: playableId(item),
-      kind: 'sound',
+      kind: 'sound' as const,
       title: item.title,
       artist: item.artistName || user?.displayName || 'You',
       coverUrl: item.bannerUrl ?? undefined,
       streamUrl: data.url,
-      protocol: data.url.includes('.m3u8') ? 'hls' : 'https',
-    });
+      protocol: data.url.includes('.m3u8')
+        ? ('hls' as const)
+        : ('https' as const),
+    };
+    if (opts?.queue) {
+      enqueue(next);
+    } else {
+      play(next);
+    }
     setLoadingId(null);
   };
 
@@ -405,7 +417,7 @@ export const MyDiscographyView: FC = () => {
                       content={
                         isPlayingItem(item)
                           ? `Pause ${item.title}`
-                          : `Play ${item.title}`
+                          : `Play ${item.title} · Shift+click to queue`
                       }
                       side="top"
                     >
@@ -418,7 +430,9 @@ export const MyDiscographyView: FC = () => {
                             ? `Pause ${item.title}`
                             : `Play ${item.title}`
                         }
-                        onClick={() => void playItem(item)}
+                        onClick={(event) =>
+                          void playItem(item, { queue: event.shiftKey })
+                        }
                       >
                         {isPlayingItem(item) ? (
                           <PauseIcon size={16} aria-hidden />
