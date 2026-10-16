@@ -941,12 +941,14 @@ exports[`Search view > (Snapshot) renders the search view 1`] = `
               <div
                 class="text-foreground truncate text-sm font-semibold tracking-tight"
                 data-testid="now-playing-title"
+                title="No track playing"
               >
                 No track playing
               </div>
               <div
                 class="text-foreground-secondary truncate text-xs"
                 data-testid="player-now-playing-artist"
+                title=""
               />
             </div>
           </div>

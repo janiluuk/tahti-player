@@ -1550,12 +1550,14 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
               <div
                 class="text-foreground truncate text-sm font-semibold tracking-tight"
                 data-testid="now-playing-title"
+                title="No track playing"
               >
                 No track playing
               </div>
               <div
                 class="text-foreground-secondary truncate text-xs"
                 data-testid="player-now-playing-artist"
+                title=""
               />
             </div>
           </div>
@@ -3576,12 +3578,14 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
               <div
                 class="text-foreground truncate text-sm font-semibold tracking-tight"
                 data-testid="now-playing-title"
+                title="No track playing"
               >
                 No track playing
               </div>
               <div
                 class="text-foreground-secondary truncate text-xs"
                 data-testid="player-now-playing-artist"
+                title=""
               />
             </div>
           </div>
