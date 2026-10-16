@@ -574,7 +574,7 @@ export function ChannelView({ slug }: { slug: string }) {
         />
       )}
 
-      <div className="relative z-10 flex w-full flex-col gap-3 px-4 py-6 sm:px-6">
+      <div className="relative z-10 flex w-full flex-col gap-2 px-4 py-5 sm:px-6">
         {!heroVisible && <ChannelTopBar text={channel.topBarText} />}
         <div className="flex flex-wrap items-center justify-between gap-2">
           {!editing ? (
@@ -657,7 +657,7 @@ export function ChannelView({ slug }: { slug: string }) {
           key={activeNavTab?.id ?? 'no-tabs'}
           className={
             !editing && showNavTabs
-              ? `flex flex-col gap-3 transition-opacity duration-200 ${navTabContentVisible ? 'opacity-100' : 'opacity-0'}`
+              ? `flex flex-col gap-2 transition-opacity duration-200 ${navTabContentVisible ? 'opacity-100' : 'opacity-0'}`
               : 'contents'
           }
         >

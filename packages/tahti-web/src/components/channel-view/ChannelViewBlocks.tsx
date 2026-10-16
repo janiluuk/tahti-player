@@ -67,7 +67,7 @@ export function renderChannelBlock(
       return null;
     case 'sound':
       return (
-        <section id="channel-block-sound" className="flex flex-col gap-6">
+        <section id="channel-block-sound" className="flex flex-col gap-4">
           {!editing && (
             <h2 className="text-xl font-bold tracking-tight">Tracks</h2>
           )}
@@ -82,8 +82,8 @@ export function renderChannelBlock(
           ) : null}
           {ctx.sectionStatus.sounds === 'ready' &&
             ctx.pinnedPlayables.length > 0 && (
-              <div className="flex flex-col gap-3">
-                <Eyebrow>Pinned</Eyebrow>
+              <div className="flex flex-col gap-2">
+                <Eyebrow tone="muted">Pinned</Eyebrow>
                 <PlayableTrackTable
                   items={ctx.pinnedPlayables}
                   emptyMessage="No pinned tracks."
@@ -95,8 +95,10 @@ export function renderChannelBlock(
               </div>
             )}
           {ctx.sectionStatus.sounds === 'ready' && (
-            <div className="flex flex-col gap-3">
-              {ctx.pinnedPlayables.length > 0 && <Eyebrow>Catalog</Eyebrow>}
+            <div className="flex flex-col gap-2">
+              {ctx.pinnedPlayables.length > 0 && (
+                <Eyebrow tone="muted">Catalog</Eyebrow>
+              )}
               <PlayableTrackTable
                 items={ctx.catalogPlayables}
                 emptyMessage={

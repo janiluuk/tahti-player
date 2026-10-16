@@ -5801,3 +5801,7 @@ The full-screen player has a "More options" button in the top-right. It opens an
 ## 2026-10-16 — Channel designer Show more not nested under Edit backdrop (0.0.147)
 
 In Channel Designer, the identity pad no longer wraps bio ClampedText as role=button. Only the name/handle area is the "Edit backdrop design" control, so "Show more" is not a nested interactive. Bumped `packages/tahti-web/package.json` to `0.0.147`.
+
+## 2026-10-16 — Channel block rhythm and quiet Pinned eyebrow
+
+Channel page column and track-block gaps are slightly tighter (`gap-2` / `gap-4`), and comments no longer add an extra `mt-8`, so stage, tracks, upcoming and comments read as one scroll. Pinned and Catalog use a new muted `Eyebrow` tone (`text-foreground-secondary`). Bumped `packages/tahti-web/package.json` to `0.0.147`.
