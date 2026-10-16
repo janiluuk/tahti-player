@@ -652,9 +652,10 @@ next scheduled broadcast, whether chat is on and the HLS stream URL.`,
       'Interactive TUI: library, search, likes, radio, queue, history (needs mpv)',
     details: `Opens a blessed terminal UI. Browse your library, search public tracks,
 play the tracks you loved, tune Tahti Radio / internet-radio presets, and
-manage a simple queue. History lists the tracks played this session, newest
-first; p goes back to the previous one, or restarts the current track once it
-is past 3 seconds.
+manage a simple queue. History lists the tracks you played, newest first, and
+is kept between sessions (shell-history.json next to the saved login); p goes
+back to the previous one, or restarts the current track once it is past 3
+seconds.
 Playback uses an external mpv process (must be on PATH) over JSON IPC.
 Requires a TTY and TAHTI_API_TOKEN. Keys: Tab focus, Enter play, Space
 pause, n/p next/prev, ←/→ seek, / search, a queue, ? help, q quit.`,
