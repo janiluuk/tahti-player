@@ -235,6 +235,10 @@ export class MpvController {
     await this.command(['seek', seconds, 'relative']);
   }
 
+  async seekTo(seconds) {
+    await this.command(['seek', seconds, 'absolute']);
+  }
+
   async getTimePos() {
     try {
       return await this.command(['get_property', 'time-pos']);
