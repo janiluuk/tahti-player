@@ -62,6 +62,21 @@ node scripts/journeys/artist-journey.mjs
 node scripts/journeys/admin-journey.mjs
 ```
 
+## Artist lifecycle (register → catalog → fans → live)
+
+Longer path with a single theme and issue report (not part of the four
+category runners):
+
+```bash
+JOURNEY_BASE_URL=http://127.0.0.1:5195 JOURNEY_STREAM_MINUTES=20 \
+  node scripts/journeys/artist-lifecycle-journey.mjs
+```
+
+Screenshots + findings: [`docs/e2e-journeys/artist-lifecycle/`](./e2e-journeys/artist-lifecycle/)
+(`ISSUES.md`). Covers Join, channel designer, WAV uploads, Album + 2 EPs +
+DJ set create, fan Subscribe, comments/chat attempt, recurring show, Go Live
+with interval shots for the configured stream duration.
+
 ## What each journey covers
 
 - **Anonymous** (`anonymous-journey.mjs`) — home/listen, radio, a public
@@ -72,6 +87,7 @@ node scripts/journeys/admin-journey.mjs
   signed in, and the fan-tier subscribe page — the **buy side** of paid
   content. 8 steps × 2 themes.
 - **Artist** (`artist-journey.mjs`) — the deep one:
+
   1. Studio dashboard.
   2. A **real file upload** (`input[type=file]` + the actual Upload button)
      that auto-navigates to the uploaded track's view/editor page — the
