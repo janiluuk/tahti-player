@@ -40,7 +40,9 @@ export const Tracks: Story = {};
 export const AmbientCovers: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const link = await canvas.findByRole('link', { name: /.+/ });
+    const link = await canvas.findByRole('link', {
+      name: 'Northern Lights — Live Set',
+    });
     const li = link.closest('li');
     await expect(li).toBeTruthy();
     await waitFor(() => {
