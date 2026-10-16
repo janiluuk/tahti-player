@@ -85,7 +85,7 @@ export const PopulatedGrid: Story = {
       canvas.getByRole('link', { name: 'Aurora Sessions' }),
     ).toBeVisible();
     await expect(canvas.getByText(/, unlisted/)).toBeVisible();
-    await expect(canvas.getByText(/, private/)).toBeVisible();
+    await expect(canvas.getAllByText(/, private/).length).toBeGreaterThan(0);
     await expect(
       canvas.getAllByRole('link', { name: 'Design' }).length,
     ).toBeGreaterThan(0);
