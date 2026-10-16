@@ -695,6 +695,20 @@ export function ChannelView({ slug }: { slug: string }) {
             onRetry={() => retrySection('widgets')}
           />
         ) : null}
+        {!editing && live && chatOn ? (
+          <div className="border-border bg-background-secondary/50 mt-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-3">
+            <div>
+              <p className="text-sm font-semibold">Live chat is open</p>
+              <p className="text-foreground-secondary text-xs">
+                Talk with the artist and other listeners while the show is on
+                air. Comments below are for the archive, not the live room.
+              </p>
+            </div>
+            <Button size="sm" onClick={openChat} aria-label="Open live chat">
+              Open live chat
+            </Button>
+          </div>
+        ) : null}
         {!editing ? <ChannelComments slug={slug} isOwner={isOwner} /> : null}
       </div>
     </div>
