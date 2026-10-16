@@ -48,4 +48,4 @@ All three plan items are done; only the open questions below remain.
 
 - Should a listener see a "Become an artist" entry where Studio would be, or nothing? (#784 chose "Become an artist"; confirm or change.)
 - Which signed-out actions should work with no account at all (for example likes or history kept in the browser)?
-- A listener's Library keeps the **Stash** tab (#785), but the tab opens "Studio is for artists": `StudioStashView` sits behind `StudioGate`, and its "All stash" list reads Studio sounds. `/api/me/stash` (the files) only needs an account. Should a listener's Stash show just their stash files, or should the tab go? Hiding the tab means changing `LibraryView.tsx`. (Found 2026-10-16.)
+- ~~A listener's Library Stash tab~~ — batch 66 slice 2: listeners get stash **files** only (`StashFilesPanel filesOnly`), not the Studio gate or "All stash" tracks.
