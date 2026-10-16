@@ -24,6 +24,7 @@ import {
   restoreChannelDesignState,
 } from './_fixtures/channel-design';
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
+import { mockData } from './_lib/mock-data';
 import { expectNoDialog, findDialog, selectTab, withinBody } from './_lib/play';
 
 /**
