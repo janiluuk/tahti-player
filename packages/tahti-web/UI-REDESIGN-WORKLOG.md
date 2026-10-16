@@ -5797,3 +5797,7 @@ The right rail now follows the Nuclear desktop queue bar: collapse button, Chat 
 ## 2026-09-25 — Full-screen player "More options" sheet
 
 The full-screen player has a "More options" button in the top-right. It opens an action sheet: a bottom sheet on mobile and a centered panel on desktop. The sheet lists Go to channel, Share, favorites, Add to playlist and Open in Pro Editor, each shown only when it applies to the current item. New `ActionSheet` component in `@tahti-player/ui`. The add-to-playlist dialog now opens above the full-screen player instead of behind it.
+
+## 2026-10-16 — Channel designer Show more not nested under Edit backdrop (0.0.147)
+
+In Channel Designer, the identity pad no longer wraps bio ClampedText as role=button. Only the name/handle area is the "Edit backdrop design" control, so "Show more" is not a nested interactive. Bumped `packages/tahti-web/package.json` to `0.0.147`.
