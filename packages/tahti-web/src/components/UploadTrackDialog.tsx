@@ -2,7 +2,13 @@ import { Link } from '@tanstack/react-router';
 import { UploadIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Dialog, FilePicker, Input } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  Dialog,
+  FilePicker,
+  Input,
+} from '@tahti-player/ui';
 
 import { uploadSoundFile } from '../api/studio';
 
@@ -110,6 +116,15 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
           )}
         </div>
         <Dialog.Actions>
+          <ButtonLink
+            to="/library/upload"
+            variant="text"
+            size="sm"
+            className="mr-auto"
+            onClick={handleClose}
+          >
+            Open full upload page
+          </ButtonLink>
           <Dialog.Close>Cancel</Dialog.Close>
           <Button type="submit" disabled={busy || !file}>
             <UploadIcon size={16} aria-hidden className="mr-1.5" />
