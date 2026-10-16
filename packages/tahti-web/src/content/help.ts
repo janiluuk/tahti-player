@@ -73,7 +73,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Browse who’s on air from Listen, or open a channel at /channel/$slug.',
           'When an artist is offline, their channel still plays archive items.',
-          'Tahti Radio (/radio) is a fair-rotation stream across the community.',
+          'Tahti Radio (/radio) is a fair-rotation stream across the community. Open the calendar on Radio for the full programme schedule (/schedule), or book a slot when you are signed in.',
           'Discover has widgets, artists, and venues. Open Discover → Venues to browse verified venues, or Discover → Artists for the directory.',
           'Signed-in listeners can install Disco-widgets on Listen from Settings → Add-ons → Discovery.',
         ],
@@ -90,6 +90,13 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Chat is open on live channels. Anonymous joining may require hCaptcha.',
           'Moderators can mute or remove disruptive messages.',
+        ],
+      },
+      {
+        heading: 'Listen together',
+        body: [
+          'On a public playlist or collection page, choose Start a Jam to open a shared listening session and invite others with the link.',
+          'This is different from the desktop Tahti Jam remote (Settings → Integrations), which controls the desktop player from your phone.',
         ],
       },
     ],
@@ -151,6 +158,29 @@ export const HELP_ARTICLES: HelpArticle[] = [
           'Open a full track view and pause or seek to the moment you want to discuss. The reaction row below the timeline shows emoticons and the comment action.',
           'Choose an emoticon to react at that timestamp. Choose the comment icon to open the comment field; your comment is prefixed with the current time so others know exactly where to listen.',
           'You must be signed in to post. Artists can disable comments on an individual track from its Studio settings.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'shared-jam',
+    title: 'Shared listening (Jam)',
+    description:
+      'Start a Jam from a playlist so guests hear the same queue in sync.',
+    productionPath: '/help/shared-jam',
+    sections: [
+      {
+        heading: 'Start a Jam',
+        body: [
+          'Open a public playlist or collection (Library → Collections, or someone else’s public collection page). Choose Start a Jam.',
+          'Share the /jam/$code link. Guests join in the browser; the host keeps control of play, pause, and the queue unless co-control is enabled for a guest.',
+          'When the Jam ends, everyone returns to Listen. Invalid or ended codes show a clear error on the Jam page.',
+        ],
+      },
+      {
+        heading: 'Not the desktop remote',
+        body: [
+          'Desktop Tahti Jam (Settings → Integrations → Tahti Jam) is a phone remote for the desktop player on your LAN. Shared listening Jams are separate web sessions on beta.tahti.live / tahti.live.',
         ],
       },
     ],

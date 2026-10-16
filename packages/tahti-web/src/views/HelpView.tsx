@@ -66,6 +66,7 @@ const GUIDE_GROUPS: Array<{
     slugs: [
       'favorites-playlists',
       'comments-and-timeline',
+      'shared-jam',
       'notifications',
       'embed-and-share',
     ],
