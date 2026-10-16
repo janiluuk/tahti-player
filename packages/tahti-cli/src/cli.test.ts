@@ -204,6 +204,42 @@ describe('main', () => {
     expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Opener'));
   });
 
+  it('runs releases edit with repeated --link flags', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    const fetchMock = mockFetchJson({
+      id: 'rel_1',
+      title: 'First EP',
+      state: 'DRAFT',
+      smartLinkTargets: {},
+      tracks: [],
+    });
+
+    const code = await main([
+      'releases',
+      'edit',
+      'rel_1',
+      '--link',
+      'tidal=https://tidal.com/album/1',
+      '--link',
+      'apple=https://music.apple.com/album/1',
+    ]);
+
+    expect(code).toBe(0);
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'https://api.example.test/api/me/releases/rel_1',
+      expect.objectContaining({
+        method: 'PATCH',
+        body: JSON.stringify({
+          smartLinkTargets: {
+            tidal: 'https://tidal.com/album/1',
+            apple: 'https://music.apple.com/album/1',
+          },
+        }),
+      }),
+    );
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('STORE LINKS'));
+  });
+
   it('runs search without TAHTI_API_TOKEN and joins the query words', async () => {
     vi.stubEnv('TAHTI_API_TOKEN', '');
     const fetchMock = mockFetchJson({

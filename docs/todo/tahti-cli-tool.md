@@ -112,4 +112,8 @@ this environment) — the token-required path is covered by tests mocking
 - **Auth (the open item above):** `tahti login` checks the token with `GET /api/auth/me` and saves it to `$XDG_CONFIG_HOME/tahti/config.json` (mode 600); `TAHTI_API_TOKEN` still wins. No device-code flow, since the API has none.
 - **Import:** uploads are public by default and auto-join the rotation when that channel setting is on (`uploads/complete.ts` on tahti-org `main`), which the manual page now says. `import --collection` was not added: the items route accepts only READY sounds; `library processing --wait` then `collections add` covers it.
 - **Standalone repo:** tahti-cli#4 merged (identical to tahti-player master); tahti-cli#5 copies `src/` from #846 and updates its README. `@tahti/api-client` is still not on npm, so tahti-cli#1 stays a draft.
-- **Left:** the SDK publish and port (needs `NPM_TOKEN`), release write commands, history and "previous" in the shell, album/artwork tags, OGG/M4A tags. None of the new commands was run against the live API.
+- **Left:** the SDK publish and port (needs `NPM_TOKEN`), release write commands other than `edit` (create, adding tracks), history and "previous" in the shell, album/artwork tags, OGG/M4A tags. None of the new commands was run against the live API.
+
+## 2026-10-16: release write commands, shell history
+
+- **`tahti releases edit <id>` (PRNUM):** `PATCH /api/me/releases/:id` with `--state draft|published|archived`, `--description`, `--date`, `--pin`/`--unpin`, `--footer on|off` and repeatable `--link <service>=<url>`. The API replaces all smart links at once, so `--link` first reads the release and merges (an empty URL removes a service). `releases show` now lists the services that have a store link. Mocked `fetch` only, not run against the live API.
