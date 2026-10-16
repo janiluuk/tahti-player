@@ -1,7 +1,13 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 
-import { Button, Input, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  EmptyState,
+  Input,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchBlockedUsers } from '../api/blocks';
 import {
@@ -246,8 +252,23 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
         <div className="grid gap-4 md:grid-cols-[240px_1fr]">
           <ul className="border-border divide-border max-h-96 divide-y overflow-y-auto rounded-lg border">
             {inbox.length === 0 ? (
-              <li className="text-foreground-secondary p-3 text-sm">
-                No conversations.
+              <li className="p-3">
+                <EmptyState
+                  size="sm"
+                  className="items-start p-0 text-left"
+                  title="No conversations yet"
+                  description="Search for someone above, or find artists on Discover."
+                  action={
+                    <ButtonLink
+                      to="/discover"
+                      search={{ tab: 'artists' }}
+                      size="sm"
+                      variant="secondary"
+                    >
+                      Browse artists
+                    </ButtonLink>
+                  }
+                />
               </li>
             ) : (
               inbox.map((c) => (

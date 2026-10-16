@@ -43,6 +43,13 @@ export function ChannelUpcomingShows({ slug }: { slug: string }) {
   }, [slug]);
 
   if (!schedule || schedule.shows.length === 0) {
+    if (schedule && schedule.series.length > 0) {
+      return (
+        <p className="text-foreground-secondary text-sm" role="status">
+          No upcoming shows booked.
+        </p>
+      );
+    }
     return null;
   }
 
