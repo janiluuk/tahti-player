@@ -40,8 +40,8 @@ describe('MotionMeetingNote', () => {
     ).toBe('/governance/meetings/meet-1');
   });
 
-  it('names the agenda item when the board chose one', async () => {
-    await renderWithRouter(
+  it('names the agenda item when the board chose one', () => {
+    render(
       <MotionMeetingNote
         meeting={{
           id: 'meeting-1',
@@ -50,11 +50,8 @@ describe('MotionMeetingNote', () => {
         }}
         agendaItem={{ id: 'a2', position: 2, title: 'Annual report 2025' }}
       />,
-      { paths: ['/governance/meetings/$id'] },
     );
-    expect(
-      screen.getByText(/agenda item 2: Annual report 2025/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/agenda item 2: Annual report 2025/)).toBeTruthy();
   });
 
   it('shows nothing for a motion with no meeting', () => {
