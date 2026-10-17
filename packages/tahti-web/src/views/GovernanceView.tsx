@@ -43,6 +43,7 @@ import type {
   GovernanceQuarterlyReport,
 } from '../api/types';
 import { CurrentBoardPanel } from '../components/governance/CurrentBoardPanel';
+import { ElectionsPanel } from '../components/governance/ElectionsPanel';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
 import { MotionCard } from '../components/governance/MotionCard';
 import { PageLoading } from '../components/PageStates';
@@ -482,6 +483,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             </Link>
           </GovernancePanel>
           <CurrentBoardPanel />
+          <ElectionsPanel />
         </div>
       )}
 
