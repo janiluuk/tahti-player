@@ -133,7 +133,7 @@ export const ValidationError: Story = {
         value=""
         onValueChange={() => undefined}
       />
-      <p className="text-accent-red mt-2 text-xs" role="alert">
+      <p className="text-accent-red-strong mt-2 text-xs" role="alert">
         Genre is required.
       </p>
     </div>
