@@ -157,3 +157,27 @@ export async function approveAnnualReport(
     'Could not approve the report',
   );
 }
+
+/** Makes an approved report readable by members. */
+export async function publishAnnualReport(
+  year: number,
+): Promise<AnnualReportResult> {
+  if (isForceMock()) {
+    const report = mockAnnualReport(year);
+    if (!report?.approvedAt) {
+      return { ok: false, error: 'Only an approved report can be published' };
+    }
+    if (report.publishedAt) {
+      return { ok: false, error: 'This report is already published' };
+    }
+    updateMockAnnualReport(year, { publishedAt: new Date().toISOString() });
+    return { ok: true };
+  }
+  return reportAction(
+    year,
+    '/publish',
+    'POST',
+    undefined,
+    'Could not publish the report',
+  );
+}
