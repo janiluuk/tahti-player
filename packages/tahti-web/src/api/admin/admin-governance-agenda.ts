@@ -167,3 +167,46 @@ export async function deleteAdminAgendaItem(
     return { ok: false, error: errorText(err, 'Could not remove the item') };
   }
 }
+
+/** Saves a new order: every item of the meeting, each once. */
+export async function reorderAdminAgendaItems(
+  meetingId: string,
+  ids: string[],
+): Promise<AgendaResult> {
+  if (isForceMock()) {
+    const byId = new Map(mockAgendaItems(meetingId).map((i) => [i.id, i]));
+    setMockAgendaItems(
+      meetingId,
+      ids.flatMap((id) => {
+        const item = byId.get(id);
+        return item ? [item] : [];
+      }),
+    );
+    return { ok: true };
+  }
+  try {
+    await sendJson(
+      `/api/admin/governance/meetings/${encodeURIComponent(meetingId)}/agenda-items/order`,
+      'PUT',
+      { ids },
+    );
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: errorText(err, 'Could not reorder the agenda') };
+  }
+}
+
+/** The ids with the item at `index` moved one place up (-1) or down (+1). */
+export function movedAgendaIds(
+  items: GovernanceAgendaItem[],
+  index: number,
+  step: -1 | 1,
+): string[] | null {
+  const target = index + step;
+  if (target < 0 || target >= items.length) {
+    return null;
+  }
+  const ids = items.map((item) => item.id);
+  [ids[index], ids[target]] = [ids[target]!, ids[index]!];
+  return ids;
+}

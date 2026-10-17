@@ -1,3 +1,4 @@
+import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button, Input } from '@tahti-player/ui';
@@ -14,9 +15,13 @@ import { ConfirmDialog } from '../../../../components/ConfirmDialog';
 export function AgendaItemRow({
   item,
   onChanged,
+  onMoveUp,
+  onMoveDown,
 }: {
   item: GovernanceAgendaItem;
   onChanged: () => void;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(item.title);
@@ -108,6 +113,26 @@ export function AgendaItemRow({
         ) : null}
       </div>
       <div className="flex shrink-0 gap-1.5">
+        {onMoveUp ? (
+          <Button
+            size="sm"
+            variant="secondary"
+            aria-label={`Move up: ${item.title}`}
+            onClick={onMoveUp}
+          >
+            <ArrowUpIcon size={14} aria-hidden />
+          </Button>
+        ) : null}
+        {onMoveDown ? (
+          <Button
+            size="sm"
+            variant="secondary"
+            aria-label={`Move down: ${item.title}`}
+            onClick={onMoveDown}
+          >
+            <ArrowDownIcon size={14} aria-hidden />
+          </Button>
+        ) : null}
         <Button
           size="sm"
           variant="secondary"
