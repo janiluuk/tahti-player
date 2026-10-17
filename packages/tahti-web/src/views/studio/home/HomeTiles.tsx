@@ -21,6 +21,19 @@ export function Group({
   );
 }
 
+/** Theme accent tokens as Tailwind bg classes — inline `var(--accent-*)`
+ * fills broke in e2e journey screenshots when a theme injection omitted
+ * the bare aliases; these map through `@theme` / global.css. */
+export type StudioTileAccent =
+  | 'bg-accent-purple'
+  | 'bg-accent-orange'
+  | 'bg-accent-green'
+  | 'bg-accent-yellow'
+  | 'bg-accent-blue'
+  | 'bg-accent-cyan'
+  | 'bg-accent-red'
+  | 'bg-primary';
+
 /** Colour-coded, icon-first nav tile — the label sits in a translucent
  * strip over the icon (opacity layer) so it stays legible regardless of
  * the tile's background colour, instead of plain text below an artwork
@@ -36,13 +49,12 @@ export function StudioActionTile({
   icon: LucideIcon;
   label: string;
   subtitle?: string;
-  color: string;
+  color: StudioTileAccent;
 }) {
   return (
     <Link
       to={to}
-      className="group border-border relative flex aspect-[4/3] flex-col overflow-hidden rounded-xl border shadow-sm transition-transform hover:-translate-y-0.5"
-      style={{ background: color }}
+      className={`group border-border relative flex aspect-[4/3] flex-col overflow-hidden rounded-xl border shadow-sm transition-transform hover:-translate-y-0.5 ${color}`}
     >
       <div className="relative z-10 bg-black/45 px-3 py-2 backdrop-blur-sm">
         <div className="truncate text-sm font-bold text-white">{label}</div>
@@ -68,7 +80,7 @@ export type CompactBroadcastTileProps = {
   icon: LucideIcon;
   label: string;
   subtitle: string;
-  color: string;
+  color: StudioTileAccent;
 };
 
 export const CompactBroadcastTile: FC<CompactBroadcastTileProps> = ({
@@ -84,8 +96,7 @@ export const CompactBroadcastTile: FC<CompactBroadcastTileProps> = ({
     className="border-border bg-background-secondary/40 hover:bg-background-secondary group flex min-h-20 items-center gap-3 rounded-xl border px-4 py-3 shadow-sm transition-transform hover:-translate-y-0.5"
   >
     <span
-      className="flex size-11 shrink-0 items-center justify-center rounded-lg text-white"
-      style={{ background: color }}
+      className={`flex size-11 shrink-0 items-center justify-center rounded-lg text-white ${color}`}
     >
       <Icon size={22} aria-hidden />
     </span>

@@ -34,7 +34,7 @@ export function MusicAudienceGrids({
             icon={MicIcon}
             label="Shows"
             subtitle="Episodes & slots"
-            color="var(--accent-purple)"
+            color="bg-accent-purple"
           />
           <StudioActionTile
             to="/studio/sounds"
@@ -43,14 +43,14 @@ export function MusicAudienceGrids({
             subtitle={
               counts.sounds ? `${counts.sounds} items` : 'Tracks & files'
             }
-            color="var(--accent-orange)"
+            color="bg-accent-orange"
           />
           <StudioActionTile
             to="/library/upload"
             icon={UploadCloudIcon}
             label="Upload"
             subtitle="Add audio"
-            color="var(--accent-green)"
+            color="bg-accent-green"
           />
           <StudioActionTile
             to="/studio/collections"
@@ -61,7 +61,7 @@ export function MusicAudienceGrids({
                 ? `${counts.collections} collections`
                 : 'Albums, EPs, DJ sets & playlists'
             }
-            color="var(--accent-yellow)"
+            color="bg-accent-yellow"
           />
           <StudioActionTile
             to="/studio/releases"
@@ -70,7 +70,7 @@ export function MusicAudienceGrids({
             subtitle={
               counts.releases ? `${counts.releases} releases` : 'Share releases'
             }
-            color="var(--primary)"
+            color="bg-primary"
           />
         </CardGrid>
       </Group>
@@ -81,21 +81,21 @@ export function MusicAudienceGrids({
             icon={NewspaperIcon}
             label="Updates"
             subtitle="Posts & newsletter"
-            color="var(--accent-blue)"
+            color="bg-accent-blue"
           />
           <StudioActionTile
             to="/studio/stats"
             icon={BarChart3Icon}
             label="Stats"
             subtitle="Plays & downloads"
-            color="var(--accent-cyan)"
+            color="bg-accent-cyan"
           />
           <StudioActionTile
             to="/studio/audience"
             icon={WalletIcon}
             label="Revenue"
             subtitle="Orders & grants"
-            color="var(--accent-green)"
+            color="bg-accent-green"
           />
           {stripeConfigured ? (
             <StudioActionTile
@@ -103,7 +103,7 @@ export function MusicAudienceGrids({
               icon={CreditCardIcon}
               label="Stripe"
               subtitle="Payout account"
-              color="var(--accent-yellow)"
+              color="bg-accent-yellow"
             />
           ) : null}
           <StudioActionTile
@@ -111,7 +111,7 @@ export function MusicAudienceGrids({
             icon={LayoutTemplateIcon}
             label="Channel look"
             subtitle="Design & domain"
-            color="var(--accent-purple)"
+            color="bg-accent-purple"
           />
         </CardGrid>
       </Group>
