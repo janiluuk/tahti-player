@@ -166,13 +166,20 @@ export function StudioCollectionsView() {
 
   const filteredRows = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    return rows.filter(
-      (collection) =>
-        (filter === 'ALL' || collectionStyle(collection) === filter) &&
-        (!normalizedQuery ||
-          collection.name.toLowerCase().includes(normalizedQuery) ||
-          collection.description?.toLowerCase().includes(normalizedQuery)),
-    );
+    const collectionTime = (collection: StudioCollection) => {
+      const raw = collection.createdAt ?? collection.releaseDate ?? '';
+      const ms = Date.parse(raw);
+      return Number.isFinite(ms) ? ms : 0;
+    };
+    return rows
+      .filter(
+        (collection) =>
+          (filter === 'ALL' || collectionStyle(collection) === filter) &&
+          (!normalizedQuery ||
+            collection.name.toLowerCase().includes(normalizedQuery) ||
+            collection.description?.toLowerCase().includes(normalizedQuery)),
+      )
+      .sort((a, b) => collectionTime(b) - collectionTime(a));
   }, [filter, query, rows]);
 
   const counts = useMemo(

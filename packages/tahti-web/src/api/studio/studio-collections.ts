@@ -19,6 +19,7 @@ const MOCK_COLLECTION_SEED: StudioCollection[] = [
     style: 'PLAYLIST',
     isPublic: true,
     itemCount: 2,
+    createdAt: '2026-05-01T12:00:00.000Z',
   },
   {
     id: 'mock-collection-midnight-archive',
@@ -28,6 +29,7 @@ const MOCK_COLLECTION_SEED: StudioCollection[] = [
     style: 'ALBUM',
     isPublic: true,
     itemCount: 2,
+    createdAt: '2026-07-15T12:00:00.000Z',
   },
   {
     id: 'mock-collection-short-signals',
@@ -37,6 +39,7 @@ const MOCK_COLLECTION_SEED: StudioCollection[] = [
     style: 'EP',
     isPublic: true,
     itemCount: 2,
+    createdAt: '2026-08-01T12:00:00.000Z',
   },
   {
     id: 'mock-collection-northern-lights-set',
@@ -46,6 +49,7 @@ const MOCK_COLLECTION_SEED: StudioCollection[] = [
     style: 'DJ_SET_SERIES',
     isPublic: false,
     itemCount: 2,
+    createdAt: '2026-06-10T12:00:00.000Z',
   },
 ];
 
