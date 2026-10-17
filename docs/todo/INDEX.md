@@ -7,6 +7,7 @@ Status values: `open` | `blocked` | `partial`.
 
 | Status  | File                                                                                                     | One-line                                                                                                                                                                                                                                                       |
 | ------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| partial | [batch-68-cross-repo.md](batch-68-cross-repo.md) | Batch 68: 5 tahti-org + 15 web slices (member governance panels, My venues, venue API fixes); PRs open, fold after merge |
 | open | [feature-swipe-unused-undocumented.md](feature-swipe-unused-undocumented.md) | Audit: routes/views reachable vs chrome vs GitBook/Help; flag orphans; easy Radio schedule + Jam help + GitBook web stub in focused PRs |
 | partial | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live CTA + mock Send shipped (#914/#916/#934/#939); left: real Centrifugo Send on new channels |
 | partial | [sweep-leftovers.md](sweep-leftovers.md) | Batch 52-59 sweep leftovers: all fixed (#767-#771, #781-#783, tahti-org#834). Left: deploy tahti-org#834 |
