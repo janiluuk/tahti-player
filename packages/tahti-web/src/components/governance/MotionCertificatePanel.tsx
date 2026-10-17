@@ -1,5 +1,5 @@
 import { ShieldCheckIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Badge } from '@tahti-player/ui';
 
@@ -9,6 +9,7 @@ import {
   type MotionTally,
 } from '../../api/governance-motion-certificate';
 import { GovernancePanel } from './GovernancePanel';
+import { MotionResultCorrectionForm } from './MotionResultCorrectionForm';
 
 function tallyText(tally: MotionTally): string {
   return `${tally.YES} yes · ${tally.NO} no · ${tally.ABSTAIN} abstain`;
@@ -24,22 +25,25 @@ function formatDay(iso: string): string {
 
 /** The closed motion's result certificate: the count fixed at closing, a
  * check that the record still produces it, and any board corrections. */
-export function MotionCertificatePanel({ motionId }: { motionId: string }) {
+export function MotionCertificatePanel({
+  motionId,
+  isBoard = false,
+}: {
+  motionId: string;
+  isBoard?: boolean;
+}) {
   const [certificate, setCertificate] = useState<MotionCertificate | null>(
     null,
   );
 
-  useEffect(() => {
-    let cancelled = false;
-    void fetchMotionCertificate(motionId).then((result) => {
-      if (!cancelled) {
-        setCertificate(result.data);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
+  const load = useCallback(async () => {
+    const result = await fetchMotionCertificate(motionId);
+    setCertificate(result.data);
   }, [motionId]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   if (!certificate) {
     return null;
@@ -89,6 +93,13 @@ export function MotionCertificatePanel({ motionId }: { motionId: string }) {
             </li>
           ))}
         </ul>
+      ) : null}
+      {isBoard ? (
+        <MotionResultCorrectionForm
+          motionId={motionId}
+          current={certificate.correctedTally ?? certificate.tally}
+          onCorrected={() => void load()}
+        />
       ) : null}
     </GovernancePanel>
   );
