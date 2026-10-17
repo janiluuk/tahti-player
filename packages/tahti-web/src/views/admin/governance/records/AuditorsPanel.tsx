@@ -4,6 +4,7 @@ import { Badge, Button, Input, Select, Toggle } from '@tahti-player/ui';
 
 import {
   createAdminAuditor,
+  endAdminAuditorTerm,
   fetchAdminAuditors,
 } from '../../../../api/admin/admin-governance-auditors';
 import type { GovernanceAuditor } from '../../../../api/governance-association';
@@ -154,6 +155,77 @@ function AddAuditorForm({ onAdded }: { onAdded: () => void }) {
   );
 }
 
+function EndAuditorTerm({
+  auditor,
+  onEnded,
+}: {
+  auditor: GovernanceAuditor;
+  onEnded: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [termEnd, setTermEnd] = useState(new Date().toISOString().slice(0, 10));
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  if (!open) {
+    return (
+      <Button
+        size="sm"
+        variant="secondary"
+        className="w-fit"
+        aria-label={`End term: ${auditor.name}`}
+        onClick={() => setOpen(true)}
+      >
+        End term
+      </Button>
+    );
+  }
+
+  return (
+    <form
+      className="flex flex-wrap items-end gap-2"
+      onSubmit={(e) => {
+        e.preventDefault();
+        setBusy(true);
+        setError(null);
+        void endAdminAuditorTerm(auditor.id, termEnd).then((result) => {
+          setBusy(false);
+          if (!result.ok) {
+            setError(result.error);
+            return;
+          }
+          setOpen(false);
+          onEnded();
+        });
+      }}
+    >
+      <Input
+        label="Term ends on"
+        type="date"
+        value={termEnd}
+        onChange={(e) => setTermEnd(e.target.value)}
+      />
+      <Button type="submit" size="sm" disabled={busy || !termEnd}>
+        Save end
+      </Button>
+      <Button
+        type="button"
+        size="sm"
+        variant="secondary"
+        disabled={busy}
+        onClick={() => setOpen(false)}
+      >
+        Cancel
+      </Button>
+      {error ? (
+        <p role="alert" className="text-accent-red-strong w-full text-xs">
+          {error}
+        </p>
+      ) : null}
+    </form>
+  );
+}
+
 /** Auditors and operations inspectors elected by the general meeting. */
 export function AuditorsPanel() {
   const [auditors, setAuditors] = useState<GovernanceAuditor[] | null>(null);
@@ -200,6 +272,9 @@ export function AuditorsPanel() {
                 {formatDay(auditor.termStart)} –{' '}
                 {auditor.termEnd ? formatDay(auditor.termEnd) : 'open-ended'}
               </p>
+              {auditorServing(auditor) ? (
+                <EndAuditorTerm auditor={auditor} onEnded={() => void load()} />
+              ) : null}
             </li>
           ))}
         </ul>

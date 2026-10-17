@@ -62,4 +62,26 @@ describe('AuditorsPanel', () => {
     });
     await waitFor(() => expect(fetchAll).toHaveBeenCalledTimes(2));
   });
+
+  it("ends a serving auditor's term", async () => {
+    const fetchAll = vi
+      .spyOn(auditors, 'fetchAdminAuditors')
+      .mockResolvedValue({
+        data: auditors.mockAdminAuditors(),
+        meta: { source: 'api' },
+      });
+    const end = vi
+      .spyOn(auditors, 'endAdminAuditorTerm')
+      .mockResolvedValue({ ok: true });
+    render(<AuditorsPanel />);
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'End term: Anna Virtanen' }),
+    );
+    fireEvent.change(screen.getByLabelText('Term ends on'), {
+      target: { value: '2026-12-31' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Save end' }));
+    expect(end).toHaveBeenCalledWith('aud-1', '2026-12-31');
+    await waitFor(() => expect(fetchAll).toHaveBeenCalledTimes(2));
+  });
 });
