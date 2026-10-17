@@ -131,6 +131,17 @@ export function mockDeclareGovernanceConflict(
   return { ok: true as const, data: declaration };
 }
 
+export function mockRemoveGovernanceConflict(id: string) {
+  for (const list of Object.values(CONFLICTS)) {
+    const index = list.findIndex((record) => record.id === id);
+    if (index >= 0) {
+      list.splice(index, 1);
+      return { ok: true as const };
+    }
+  }
+  return { ok: false as const, error: 'Conflict declaration not found' };
+}
+
 export function mockGovernanceNoticeDeliveries(meetingId: string) {
   return { ok: true as const, data: [...(NOTICE_DELIVERIES[meetingId] ?? [])] };
 }
