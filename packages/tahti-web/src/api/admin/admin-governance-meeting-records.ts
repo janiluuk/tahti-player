@@ -4,6 +4,7 @@ import {
   mockDeclareGovernanceConflict,
   mockGovernanceConflicts,
   mockGovernanceNoticeDeliveries,
+  mockRemoveGovernanceConflict,
 } from './admin-governance-records.mock';
 
 export type GovernanceConflictDeclaration = {
@@ -76,6 +77,28 @@ export async function declareAdminGovernanceConflict(
     return {
       ok: false,
       error: err instanceof Error ? err.message : 'Could not record it',
+    };
+  }
+}
+
+/** Removes a declaration recorded by mistake, until the minutes are approved;
+ * the audit log keeps what it said. */
+export async function removeAdminGovernanceConflict(
+  id: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    return mockRemoveGovernanceConflict(id);
+  }
+  try {
+    await sendJson(
+      `/api/admin/governance/conflicts/${encodeURIComponent(id)}`,
+      'DELETE',
+    );
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not remove it',
     };
   }
 }

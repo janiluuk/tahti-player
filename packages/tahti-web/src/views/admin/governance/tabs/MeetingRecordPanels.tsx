@@ -7,6 +7,7 @@ import {
   declareAdminGovernanceConflict,
   fetchAdminGovernanceConflicts,
   fetchAdminGovernanceNoticeDeliveries,
+  removeAdminGovernanceConflict,
   type GovernanceConflictDeclaration,
   type GovernanceNoticeDelivery,
 } from '../../../../api/admin';
@@ -90,12 +91,35 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
             <li key={record.id} className="flex flex-col gap-0.5 py-1.5">
               <div className="flex items-center justify-between gap-2">
                 <span className="font-medium">{record.displayName}</span>
-                <Badge
-                  variant="pill"
-                  color={record.recused ? 'yellow' : 'secondary'}
-                >
-                  {record.recused ? 'Recused' : 'Took part'}
-                </Badge>
+                <div className="flex items-center gap-1.5">
+                  <Badge
+                    variant="pill"
+                    color={record.recused ? 'yellow' : 'secondary'}
+                  >
+                    {record.recused ? 'Recused' : 'Took part'}
+                  </Badge>
+                  <Button
+                    size="xs"
+                    variant="secondary"
+                    aria-label={`Remove declaration: ${record.displayName}`}
+                    onClick={() => {
+                      setError(null);
+                      void removeAdminGovernanceConflict(record.id).then(
+                        (result) => {
+                          if (!result.ok) {
+                            setError(result.error);
+                            return;
+                          }
+                          setRecords((current) =>
+                            (current ?? []).filter((r) => r.id !== record.id),
+                          );
+                        },
+                      );
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </div>
               </div>
               <p className="text-foreground-secondary text-xs">
                 {record.matter}

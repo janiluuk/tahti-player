@@ -78,6 +78,73 @@ describe('ConflictsPanel', () => {
   });
 });
 
+describe('ConflictsPanel removal', () => {
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+  });
+
+  const declaration = {
+    id: 'c1',
+    memberId: null,
+    displayName: 'Aino Virtanen',
+    matter: 'Grant application from her label',
+    recused: true,
+    declaredAt: '2026-09-29T10:00:00.000Z',
+  };
+
+  it('removes a declaration recorded by mistake', async () => {
+    vi.spyOn(admin, 'fetchAdminGovernanceConflicts').mockResolvedValue({
+      ok: true,
+      data: [declaration],
+    });
+    const remove = vi
+      .spyOn(admin, 'removeAdminGovernanceConflict')
+      .mockResolvedValue({ ok: true });
+    render(<ConflictsPanel meetingId="m1" />);
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: /Conflicts of interest/ }),
+      );
+    });
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', {
+          name: 'Remove declaration: Aino Virtanen',
+        }),
+      );
+    });
+    expect(remove).toHaveBeenCalledWith('c1');
+    expect(screen.queryByText('Grant application from her label')).toBeNull();
+  });
+
+  it('keeps a declaration that is part of the approved minutes', async () => {
+    vi.spyOn(admin, 'fetchAdminGovernanceConflicts').mockResolvedValue({
+      ok: true,
+      data: [declaration],
+    });
+    vi.spyOn(admin, 'removeAdminGovernanceConflict').mockResolvedValue({
+      ok: false,
+      error: 'The declaration is part of the approved minutes',
+    });
+    render(<ConflictsPanel meetingId="m1" />);
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: /Conflicts of interest/ }),
+      );
+    });
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', {
+          name: 'Remove declaration: Aino Virtanen',
+        }),
+      );
+    });
+    expect(screen.getByRole('alert').textContent).toContain('approved minutes');
+    expect(screen.getByText('Grant application from her label')).toBeTruthy();
+  });
+});
+
 describe('NoticeDeliveriesPanel', () => {
   afterEach(() => {
     cleanup();
