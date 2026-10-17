@@ -133,13 +133,16 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
         ) : (
           filteredItems.map((item) =>
             renderItem ? (
-              <div key={item.id} className="flex-shrink-0">
+              <div
+                key={item.id}
+                className="flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+              >
                 {renderItem(item)}
               </div>
             ) : (
               <Card
                 key={item.id}
-                className="flex-shrink-0"
+                className="flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
                 src={item.imageUrl}
                 title={item.title}
                 subtitle={item.subtitle}
