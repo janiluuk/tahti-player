@@ -81,6 +81,30 @@ describe('VenueDetailView', () => {
     ).toMatch(/\/api\/v1\/venues\/kaiku\/calendar\.ics$/);
   });
 
+  it('marks a show that is on now', async () => {
+    vi.spyOn(client, 'fetchVenueProfile').mockResolvedValue({
+      data: {
+        ...VENUE,
+        broadcasts: [
+          {
+            id: 'live',
+            startAt: '2026-10-17T18:00:00.000Z',
+            endAt: null,
+            description: 'House night',
+            state: 'LIVE',
+          },
+          { ...VENUE.broadcasts[0]!, state: 'SCHEDULED' },
+        ],
+      },
+      meta: { source: 'api' },
+    });
+
+    await renderVenue();
+
+    expect(screen.getAllByText('Live now')).toHaveLength(1);
+    expect(screen.getByText('House night')).toBeTruthy();
+  });
+
   it('lists tracks recorded here, linking to each track page', async () => {
     vi.spyOn(client, 'fetchVenueProfile').mockResolvedValue({
       data: {

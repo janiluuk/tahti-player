@@ -307,6 +307,7 @@ export type VenueUpcomingBroadcast = {
   startAt: string;
   endAt: string | null;
   description: string | null;
+  state?: 'SCHEDULED' | 'LIVE' | 'COMPLETED' | 'CANCELED';
 };
 
 export type VenueRecording = {
