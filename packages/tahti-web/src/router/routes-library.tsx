@@ -21,6 +21,7 @@ import {
   MessagesView,
   ModerateChannelView,
   MoreView,
+  MyVenuesView,
   NewsView,
   SmartLinkView,
   StudioCollectionEditView,
@@ -225,6 +226,12 @@ export const venuesRegisterRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/venues/register',
   component: VenueRegisterView,
+});
+
+export const myVenuesRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/venues/mine',
+  component: MyVenuesView,
 });
 
 export const venueDetailRoute = createRoute({

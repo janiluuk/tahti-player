@@ -336,6 +336,10 @@ export const TrackDetailView = lazyRouteComponent(
   () => import('../views/TrackDetailView'),
   'TrackDetailView',
 );
+export const MyVenuesView = lazyRouteComponent(
+  () => import('../views/MyVenuesView'),
+  'MyVenuesView',
+);
 export const VenueDetailView = lazyRouteComponent(
   () => import('../views/VenueDetailView'),
   'VenueDetailView',

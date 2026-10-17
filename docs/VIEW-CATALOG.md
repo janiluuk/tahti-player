@@ -233,6 +233,7 @@ pro-editor `MasteringPanel`/`StemsPanel`/`PluginControls`.
 | --------------------------------- | ------------------ | --------------------------------- | --------- | ------------------------- |
 | [Venue Register](#venue-register) | `/venues/register` | `src/views/VenueRegisterView.tsx` | No Story  | Form, Input               |
 | [Venue Detail](#venue-detail)     | `/v/$slug`         | `src/views/VenueDetailView.tsx`   | No Story  | PageHeader, ImageLightbox |
+| [My Venues](#my-venues)           | `/venues/mine`     | `src/views/MyVenuesView.tsx`      | Story     | Box, Badge, EmptyState    |
 
 ### Embed Views (no app chrome)
 
@@ -290,7 +291,7 @@ pro-editor `MasteringPanel`/`StemsPanel`/`PluginControls`.
 | `packages/tahti-web` governance                                          | 10                                          | 0         | 10       | 2 (Tabs, Card layout)                                                                 |
 | `packages/tahti-web` help/legal                                          | 9                                           | 1         | 8        | 2 (LegalDocShell)                                                                     |
 | `packages/tahti-web` utility/alias                                       | 4                                           | 0         | 4        | — (redirects and thin aliases, not real pages)                                        |
-| `packages/tahti-web` venues                                              | 2                                           | 0         | 2        | 1 (Form)                                                                              |
+| `packages/tahti-web` venues                                              | 3                                           | 1         | 2        | 1 (Form)                                                                              |
 | `packages/tahti-web` embeds                                              | 3                                           | 0         | 3        | 2 (ConnectedPlayerBar, PlayableTrackTable)                                            |
 | `packages/tahti-web` admin                                               | 29                                          | 22        | 7        | 5 (Table, StatChip)                                                                   |
 

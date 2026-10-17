@@ -208,6 +208,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/GoLive/MultistreamPanel` | `tahti-web/MultistreamPanel.stories.tsx` |
 | `Tahti/Studio/MultitrackTimeline` | `tahti-web/MultitrackTimeline.stories.tsx` |
 | `Tahti/Misc/MySupportTickets` | `tahti-web/MySupportTickets.stories.tsx` |
+| `Tahti/Discover/MyVenuesView` | `tahti-web/MyVenuesView.stories.tsx` |
 | `Tahti/Studio/Updates/NewDraftDialog` | `tahti-web/NewDraftDialog.stories.tsx` |
 | `Tahti/Misc/NewsletterSubscribeToggle` | `tahti-web/NewsletterSubscribeToggle.stories.tsx` |
 | `Tahti/Misc/NotificationToasts` | `tahti-web/NotificationToasts.stories.tsx` |
