@@ -116,3 +116,78 @@ export async function createAdminElection(
     return { ok: false, error: errorText(err, 'Could not call the election') };
   }
 }
+
+export type ElectionChange = {
+  title?: string;
+  seats?: number;
+  nominationsCloseAt?: string | null;
+};
+
+/** Changes an election until its result is recorded (PATCH …/elections/:id). */
+export async function updateAdminElection(
+  id: string,
+  change: ElectionChange,
+): Promise<BoardActionResult> {
+  if (isForceMock()) {
+    const current = mockElections.find((e) => e.id === id);
+    if (!current) {
+      return { ok: false, error: 'Election not found' };
+    }
+    if (current.decidedAt || current.cancelledAt) {
+      return { ok: false, error: 'This election no longer takes changes' };
+    }
+    if (current.role === 'CHAIR' && change.seats && change.seats !== 1) {
+      return { ok: false, error: 'There is one chair' };
+    }
+    updateMockAdminElection(id, {
+      ...(change.title !== undefined ? { title: change.title.trim() } : {}),
+      ...(change.seats !== undefined ? { seats: change.seats } : {}),
+      ...(change.nominationsCloseAt !== undefined
+        ? {
+            nominationsCloseAt: change.nominationsCloseAt
+              ? new Date(change.nominationsCloseAt).toISOString()
+              : null,
+          }
+        : {}),
+    });
+    return { ok: true };
+  }
+  try {
+    await sendJson(
+      `/api/admin/governance/elections/${encodeURIComponent(id)}`,
+      'PATCH',
+      change,
+    );
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: errorText(err, 'Could not save the election') };
+  }
+}
+
+/** Calls an election off, with the reason members will see. */
+export async function cancelAdminElection(
+  id: string,
+  reason: string,
+): Promise<BoardActionResult> {
+  const trimmed = reason.trim();
+  if (isForceMock()) {
+    updateMockAdminElection(id, {
+      cancelledAt: new Date().toISOString(),
+      cancelReason: trimmed,
+    });
+    return { ok: true };
+  }
+  try {
+    await sendJson(
+      `/api/admin/governance/elections/${encodeURIComponent(id)}/cancel`,
+      'POST',
+      { reason: trimmed },
+    );
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: errorText(err, 'Could not cancel the election'),
+    };
+  }
+}

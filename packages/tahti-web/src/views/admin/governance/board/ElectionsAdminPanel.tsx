@@ -14,6 +14,7 @@ import {
 import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { BOARD_ROLE_OPTIONS } from './AddBoardTermForm';
+import { ElectionActions } from './ElectionActions';
 
 function formatDay(iso: string): string {
   return new Date(iso).toLocaleDateString(undefined, {
@@ -191,6 +192,10 @@ export function ElectionsAdminPanel() {
                     : ''}
                   {election.cancelReason ? ` · ${election.cancelReason}` : ''}
                 </p>
+                <ElectionActions
+                  election={election}
+                  onChanged={() => void load()}
+                />
               </li>
             );
           })}
