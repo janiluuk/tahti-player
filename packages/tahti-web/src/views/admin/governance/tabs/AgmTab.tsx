@@ -31,6 +31,7 @@ import type {
   GovernanceMeeting,
 } from '../../../../api/types';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { LegalHoldControl } from '../records/LegalHoldControl';
 import {
   CollapsibleRecord,
   ConflictsPanel,
@@ -512,6 +513,13 @@ export function AgmTab() {
                 <AttendancePanel meeting={meeting} />
                 <ConflictsPanel meetingId={meeting.id} />
                 <NoticeDeliveriesPanel meetingId={meeting.id} />
+                <LegalHoldControl
+                  kind="meeting"
+                  id={meeting.id}
+                  title={meeting.title}
+                  legalHoldAt={meeting.legalHoldAt}
+                  legalHoldReason={meeting.legalHoldReason}
+                />
               </li>
             ))}
           </ul>
