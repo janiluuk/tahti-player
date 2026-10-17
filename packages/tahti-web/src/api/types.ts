@@ -623,6 +623,9 @@ export type GovernanceDocument = {
   meetingId: string | null;
   downloadUrl: string | null;
   externalUrl: string | null;
+  archivedAt?: string | null;
+  legalHoldAt?: string | null;
+  legalHoldReason?: string | null;
   createdAt: string;
   updatedAt: string;
 };

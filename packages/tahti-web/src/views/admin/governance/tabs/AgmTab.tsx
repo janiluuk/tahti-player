@@ -31,6 +31,7 @@ import type {
   GovernanceMeeting,
 } from '../../../../api/types';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { GovernanceDocumentRow } from '../records/GovernanceDocumentRow';
 import { LegalHoldControl } from '../records/LegalHoldControl';
 import { AgendaItemsPanel } from './AgendaItemsPanel';
 import {
@@ -689,26 +690,7 @@ export function AgmTab() {
           ) : (
             <ul className="mt-2 space-y-1 text-xs">
               {documents.map((document) => (
-                <li key={document.id}>
-                  {document.downloadUrl || document.externalUrl ? (
-                    <a
-                      href={
-                        document.downloadUrl ??
-                        document.externalUrl ??
-                        undefined
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline-offset-2 hover:underline"
-                    >
-                      {document.title}
-                    </a>
-                  ) : (
-                    document.title
-                  )}{' '}
-                  · v{document.version} ·{' '}
-                  {document.publishedAt ? 'Published' : 'Draft'}
-                </li>
+                <GovernanceDocumentRow key={document.id} document={document} />
               ))}
             </ul>
           )}
