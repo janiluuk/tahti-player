@@ -109,4 +109,30 @@ describe('VenueShowsSection', () => {
     );
     expect(create).not.toHaveBeenCalled();
   });
+
+  it('cancels a scheduled show after confirming', async () => {
+    const cancel = vi
+      .spyOn(venuesManage, 'cancelVenueBroadcast')
+      .mockResolvedValue({ ok: true });
+    const onChanged = vi.fn();
+    render(<VenueShowsSection venue={venue} onChanged={onChanged} />);
+    expect(
+      screen.getAllByRole('button', { name: /^Cancel show on/ }),
+    ).toHaveLength(1);
+    fireEvent.click(screen.getByRole('button', { name: /^Cancel show on/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel show' }));
+    expect(cancel).toHaveBeenCalledWith('kuudes-linja', 's1');
+    await waitFor(() => expect(onChanged).toHaveBeenCalled());
+  });
+
+  it('shows why a show could not be cancelled', async () => {
+    vi.spyOn(venuesManage, 'cancelVenueBroadcast').mockResolvedValue({
+      ok: false,
+      error: 'Forbidden',
+    });
+    render(<VenueShowsSection venue={venue} onChanged={vi.fn()} />);
+    fireEvent.click(screen.getByRole('button', { name: /^Cancel show on/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel show' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Forbidden');
+  });
 });

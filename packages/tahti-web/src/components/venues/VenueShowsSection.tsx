@@ -3,10 +3,12 @@ import { useId, useState } from 'react';
 import { Button, Input } from '@tahti-player/ui';
 
 import {
+  cancelVenueBroadcast,
   createVenueBroadcast,
   type MyVenue,
   type VenueBroadcast,
 } from '../../api/venues-manage';
+import { ConfirmDialog } from '../ConfirmDialog';
 
 function formatShow(show: VenueBroadcast): string {
   const start = new Date(show.startAt);
@@ -53,6 +55,8 @@ export function VenueShowsSection({
   const [description, setDescription] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cancelling, setCancelling] = useState<VenueBroadcast | null>(null);
+  const [cancelError, setCancelError] = useState<string | null>(null);
   const shows = venue.broadcasts.filter(
     (show) => show.state === 'SCHEDULED' || show.state === 'LIVE',
   );
@@ -88,6 +92,18 @@ export function VenueShowsSection({
     });
   };
 
+  const cancelShow = (show: VenueBroadcast) => {
+    setCancelling(null);
+    setCancelError(null);
+    void cancelVenueBroadcast(venue.slug, show.id).then((result) => {
+      if (!result.ok) {
+        setCancelError(result.error);
+        return;
+      }
+      onChanged();
+    });
+  };
+
   return (
     <section aria-labelledby={headingId} className="flex flex-col gap-2">
       <h3 id={headingId} className="text-sm font-semibold">
@@ -100,20 +116,57 @@ export function VenueShowsSection({
       ) : (
         <ul className="divide-border divide-y">
           {shows.map((show) => (
-            <li key={show.id} className="flex flex-col py-1.5 text-sm">
-              <span className="font-medium">
-                {formatShow(show)}
-                {show.state === 'LIVE' ? ' · Live now' : ''}
-              </span>
-              {show.description ? (
-                <span className="text-foreground-secondary text-xs">
-                  {show.description}
+            <li
+              key={show.id}
+              className="flex items-start justify-between gap-2 py-1.5 text-sm"
+            >
+              <div className="flex flex-col">
+                <span className="font-medium">
+                  {formatShow(show)}
+                  {show.state === 'LIVE' ? ' · Live now' : ''}
                 </span>
+                {show.description ? (
+                  <span className="text-foreground-secondary text-xs">
+                    {show.description}
+                  </span>
+                ) : null}
+              </div>
+              {show.state === 'SCHEDULED' ? (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  aria-label={`Cancel show on ${formatShow(show)}`}
+                  onClick={() => setCancelling(show)}
+                >
+                  Cancel show
+                </Button>
               ) : null}
             </li>
           ))}
         </ul>
       )}
+      {cancelError ? (
+        <p role="alert" className="text-accent-red-strong text-sm">
+          {cancelError}
+        </p>
+      ) : null}
+      <ConfirmDialog
+        isOpen={cancelling !== null}
+        title="Cancel this show?"
+        description={
+          cancelling
+            ? `${formatShow(cancelling)} will be taken off the venue page and its calendar feed.`
+            : ''
+        }
+        confirmLabel="Cancel show"
+        cancelLabel="Keep it"
+        onCancel={() => setCancelling(null)}
+        onConfirm={() => {
+          if (cancelling) {
+            cancelShow(cancelling);
+          }
+        }}
+      />
       {booking ? (
         <form
           className="flex flex-col gap-2"
