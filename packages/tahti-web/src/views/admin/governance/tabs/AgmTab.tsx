@@ -690,7 +690,17 @@ export function AgmTab() {
           ) : (
             <ul className="mt-2 space-y-1 text-xs">
               {documents.map((document) => (
-                <GovernanceDocumentRow key={document.id} document={document} />
+                <GovernanceDocumentRow
+                  key={document.id}
+                  document={document}
+                  onChanged={(next) =>
+                    setDocuments((current) =>
+                      current.map((item) =>
+                        item.id === next.id ? next : item,
+                      ),
+                    )
+                  }
+                />
               ))}
             </ul>
           )}
