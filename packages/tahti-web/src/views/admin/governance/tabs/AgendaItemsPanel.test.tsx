@@ -70,4 +70,28 @@ describe('AgendaItemsPanel', () => {
     });
     await waitFor(() => expect(fetchItems).toHaveBeenCalledTimes(2));
   });
+
+  it('moves an item down and saves the new order', async () => {
+    vi.spyOn(agenda, 'fetchAdminAgendaItems').mockResolvedValue({
+      ok: true,
+      data: agenda.mockAgendaItems('meeting-mock-1'),
+    });
+    const reorder = vi
+      .spyOn(agenda, 'reorderAdminAgendaItems')
+      .mockResolvedValue({ ok: true });
+    render(<AgendaItemsPanel meetingId="meeting-mock-1" />);
+    fireEvent.click(screen.getByRole('button', { name: /Agenda items/ }));
+    fireEvent.click(
+      await screen.findByRole('button', {
+        name: 'Move down: Opening of the meeting',
+      }),
+    );
+    expect(reorder).toHaveBeenCalledWith('meeting-mock-1', [
+      'agenda-2',
+      'agenda-1',
+    ]);
+    expect(
+      screen.queryByRole('button', { name: 'Move up: Opening of the meeting' }),
+    ).toBeNull();
+  });
 });

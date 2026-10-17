@@ -5,6 +5,8 @@ import { Button, Input } from '@tahti-player/ui';
 import {
   createAdminAgendaItem,
   fetchAdminAgendaItems,
+  movedAgendaIds,
+  reorderAdminAgendaItems,
   type GovernanceAgendaItem,
 } from '../../../../api/admin/admin-governance-agenda';
 import { AgendaItemRow } from './AgendaItemRow';
@@ -31,6 +33,24 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
     setItems(result.data);
   }, [meetingId]);
 
+  const move = (index: number, step: -1 | 1) => {
+    if (!items) {
+      return;
+    }
+    const ids = movedAgendaIds(items, index, step);
+    if (!ids) {
+      return;
+    }
+    setError(null);
+    void reorderAdminAgendaItems(meetingId, ids).then((result) => {
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      void load();
+    });
+  };
+
   useEffect(() => {
     if (open) {
       setItems(null);
@@ -52,11 +72,15 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
         </p>
       ) : (
         <ol className="flex flex-col gap-2 text-sm">
-          {items.map((item) => (
+          {items.map((item, index) => (
             <AgendaItemRow
               key={item.id}
               item={item}
               onChanged={() => void load()}
+              onMoveUp={index > 0 ? () => move(index, -1) : undefined}
+              onMoveDown={
+                index < items.length - 1 ? () => move(index, 1) : undefined
+              }
             />
           ))}
         </ol>
