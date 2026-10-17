@@ -553,6 +553,8 @@ export type GovernanceMeeting = {
   minutesKey: string | null;
   minutesUrl?: string | null;
   minutesApprovedAt: string | null;
+  legalHoldAt?: string | null;
+  legalHoldReason?: string | null;
   eligibleMemberCount: number | null;
   quorumRequired: number | null;
   attendanceCount: number;
@@ -621,6 +623,9 @@ export type GovernanceDocument = {
   meetingId: string | null;
   downloadUrl: string | null;
   externalUrl: string | null;
+  archivedAt?: string | null;
+  legalHoldAt?: string | null;
+  legalHoldReason?: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -637,6 +642,8 @@ export type BoardResolution = {
   publishedAt?: string | null;
   createdAt?: string;
   createdByDisplayName?: string | null;
+  legalHoldAt?: string | null;
+  legalHoldReason?: string | null;
 };
 
 export type FeatureRequestStatus =
