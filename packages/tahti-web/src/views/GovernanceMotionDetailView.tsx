@@ -147,7 +147,12 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
         !loading &&
         !forbidden &&
         motion?.state === 'DRAFT' &&
-        isBoard && <MotionCirculateControl motionId={motion.id} />}
+        isBoard && (
+          <MotionCirculateControl
+            motionId={motion.id}
+            circulatedAt={motion.circulatedAt}
+          />
+        )}
 
       {user && !loading && !forbidden && motion && (
         <MotionSeconders motionId={motion.id} refreshKey={motion} />

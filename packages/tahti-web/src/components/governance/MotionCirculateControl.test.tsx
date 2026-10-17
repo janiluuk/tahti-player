@@ -41,4 +41,19 @@ describe('MotionCirculateControl', () => {
       'already been circulated',
     );
   });
+
+  it('says when a draft was already circulated instead of offering it', () => {
+    render(
+      <MotionCirculateControl
+        motionId="m1"
+        circulatedAt="2026-10-10T12:00:00.000Z"
+      />,
+    );
+    expect(
+      screen.getByText(/Circulated to members for seconds on/),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Circulate for seconds' }),
+    ).toBeNull();
+  });
 });
