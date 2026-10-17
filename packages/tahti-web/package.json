@@ -1,6 +1,6 @@
 {
   "name": "@tahti-player/tahti-web",
-  "version": "0.0.174",
+  "version": "0.0.175",
   "private": true,
   "type": "module",
   "description": "Tahti listening, artist, and governance web client",
@@ -43,7 +43,8 @@
     "@tahti-player/audio-core": "workspace:*",
     "@tahti-player/audio-rack": "workspace:*",
     "@tahti-player/audio-editor": "workspace:*",
-    "@tahti-player/visualizer": "workspace:*"
+    "@tahti-player/visualizer": "workspace:*",
+    "@tanstack/react-virtual": "^3.13.12"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",

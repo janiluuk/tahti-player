@@ -9,8 +9,8 @@ import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { LibrarySectionTabs } from '../LibraryView';
 import { SoundFilters } from './sounds/SoundFilters';
-import { SoundRow } from './sounds/SoundRow';
 import { SoundsDialogs } from './sounds/SoundsDialogs';
+import { SoundsList } from './sounds/SoundsList';
 import { TrackOrderButton } from './sounds/TrackOrderButton';
 import { FOLDERS, useStudioSoundsState } from './sounds/useStudioSoundsState';
 
@@ -67,11 +67,7 @@ export function StudioSoundsView() {
                   }
                 />
               ) : (
-                <ul className="divide-border divide-y">
-                  {filtered.map((item) => (
-                    <SoundRow key={item.id} item={item} state={state} />
-                  ))}
-                </ul>
+                <SoundsList items={filtered} state={state} />
               )}
             </StudioPanel>
           )}
