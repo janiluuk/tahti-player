@@ -3,21 +3,21 @@ import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { AppErrorFallback } from './AppErrorFallback';
 
 type Props = { children: ReactNode };
-type State = { error: Error | null };
+type State = { error: unknown };
 
 export class AppErrorBoundary extends Component<Props, State> {
   state: State = { error: null };
 
-  static getDerivedStateFromError(error: Error): State {
+  static getDerivedStateFromError(error: unknown): State {
     return { error };
   }
 
-  componentDidCatch(error: Error, info: ErrorInfo) {
+  componentDidCatch(error: unknown, info: ErrorInfo) {
     console.error('TahtiApp error boundary', error, info.componentStack);
   }
 
   render() {
-    if (this.state.error) {
+    if (this.state.error != null) {
       return (
         <AppErrorFallback
           error={this.state.error}

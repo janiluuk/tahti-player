@@ -4,14 +4,19 @@ import { Button, EmptyState } from '@tahti-player/ui';
 
 import { logClientEvent } from '../lib/clientLogs';
 
+function asError(error: unknown): Error {
+  return error instanceof Error ? error : new Error(String(error));
+}
+
 export function AppErrorFallback({
   error,
   reset,
 }: {
-  error: Error;
+  error: unknown;
   reset?: () => void;
 }) {
-  logClientEvent('error', 'app', error.message || 'Unhandled render error');
+  const err = asError(error);
+  logClientEvent('error', 'app', err.message || 'Unhandled render error');
 
   return (
     <div className="bg-background text-foreground flex min-h-[50vh] items-center justify-center p-6">
