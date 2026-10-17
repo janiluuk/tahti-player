@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { AuthUser } from '../api/types';
@@ -98,5 +98,17 @@ describe('MyVenuesView', () => {
       screen.getByText('Sign in to manage your venues'),
     ).toBeInTheDocument();
     expect(fetchMine).not.toHaveBeenCalled();
+  });
+
+  it('opens the details editor for a venue', async () => {
+    vi.spyOn(venuesManage, 'fetchMyVenues').mockResolvedValue({
+      data: [venue],
+      meta: { source: 'api' },
+    });
+    await renderWithRouter(<MyVenuesView />);
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Edit details' }),
+    );
+    expect(screen.getByLabelText('Street address')).toHaveValue('Hämeentie 13');
   });
 });

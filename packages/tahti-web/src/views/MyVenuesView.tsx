@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   Badge,
   Box,
+  Button,
   ButtonLink,
   EmptyState,
   ViewShell,
@@ -12,10 +13,18 @@ import {
 
 import { fetchMyVenues, type MyVenue } from '../api/venues-manage';
 import { PageLoading } from '../components/PageStates';
+import { VenueDetailsForm } from '../components/venues/VenueDetailsForm';
 import { useAuthStore } from '../stores/authStore';
 
-function VenueCard({ venue }: { venue: MyVenue }) {
+function VenueCard({
+  venue,
+  onChanged,
+}: {
+  venue: MyVenue;
+  onChanged: () => void;
+}) {
   const verified = Boolean(venue.verifiedAt);
+  const [editing, setEditing] = useState(false);
   return (
     <Box variant="tertiary" className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center gap-2">
@@ -40,6 +49,25 @@ function VenueCard({ venue }: { venue: MyVenue }) {
         <p className="text-foreground-secondary text-xs">
           It appears in the venue directory once the board has verified it.
         </p>
+      )}
+      {editing ? (
+        <VenueDetailsForm
+          venue={venue}
+          onCancel={() => setEditing(false)}
+          onSaved={() => {
+            setEditing(false);
+            onChanged();
+          }}
+        />
+      ) : (
+        <Button
+          size="sm"
+          variant="secondary"
+          className="w-fit"
+          onClick={() => setEditing(true)}
+        >
+          Edit details
+        </Button>
       )}
     </Box>
   );
@@ -104,7 +132,11 @@ export function MyVenuesView() {
       ) : (
         <>
           {venues.map((venue) => (
-            <VenueCard key={venue.id} venue={venue} />
+            <VenueCard
+              key={venue.id}
+              venue={venue}
+              onChanged={() => void load()}
+            />
           ))}
           {registerLink}
         </>
