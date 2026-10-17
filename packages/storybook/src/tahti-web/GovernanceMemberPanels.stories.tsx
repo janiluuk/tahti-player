@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CurrentBoardPanel } from '@tahti-web/components/governance/CurrentBoardPanel';
+import { ElectionsPanel } from '@tahti-web/components/governance/ElectionsPanel';
 import { expect, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
@@ -30,5 +31,17 @@ export const CurrentBoard: Story = {
     ).toBeVisible();
     await expect(await canvas.findByText('Mart Saar')).toBeVisible();
     await expect(canvas.getByText(/^Chair · since/)).toBeVisible();
+  },
+};
+
+export const Elections: Story = {
+  render: () => <ElectionsPanel />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByText('Board members for 2027'),
+    ).toBeVisible();
+    await expect(canvas.getByText(/Nominations open until/)).toBeVisible();
+    await expect(canvas.getByText('Elected')).toBeVisible();
   },
 };
