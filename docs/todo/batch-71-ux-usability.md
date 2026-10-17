@@ -12,7 +12,7 @@ and Studio go-live / Library phone gaps. Usability first; no new API inventing.
 | 2 | Dashboard redirects: discovery → Channel Discovery; internet-radio → Add-ons Radio | XS | this PR |
 | 3 | Collapse upload / moderators redirect hops to final routes | XS | this PR |
 | 4 | Channel design/profile deep links land on Channel Designer (not Artist default) | S | this PR |
-| 5 | Studio home quick-link tiles use theme-safe accent colours (e2e fill leftover) | S | |
+| 5 | Studio home quick-link tiles use theme-safe accent colours (e2e fill leftover) | S | #1055 |
 | 6 | Track editor hero / waveform uses theme tokens (e2e track-view leftover) | S | |
 | 7 | Music archive empty Upload opens `/library/upload` (not a second modal) | S | |
 | 8 | After creating a Series show, Go Live preselects that series | S | |
