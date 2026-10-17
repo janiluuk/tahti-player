@@ -8,6 +8,7 @@ import { fetchGovernanceMeetings } from '../api/client';
 import { parseMeetingAgenda } from '../api/governanceMocks';
 import type { GovernanceMeeting } from '../api/types';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
+import { MeetingAgendaItems } from '../components/governance/MeetingAgendaItems';
 import { PageLoading } from '../components/PageStates';
 import { useAuthStore } from '../stores/authStore';
 
@@ -155,24 +156,29 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
           </GovernancePanel>
 
           <GovernancePanel title="Agenda" icon={ScrollTextIcon}>
-            {agenda.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No agenda published yet.
-              </p>
-            ) : (
-              <ul className="flex flex-col gap-3">
-                {agenda.map((item) => (
-                  <li key={item.title}>
-                    <p className="text-sm font-semibold">{item.title}</p>
-                    {item.description ? (
-                      <p className="text-foreground-secondary mt-1 text-sm">
-                        {item.description}
-                      </p>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-            )}
+            <MeetingAgendaItems
+              meetingId={meeting.id}
+              fallback={
+                agenda.length === 0 ? (
+                  <p className="text-foreground-secondary text-sm">
+                    No agenda published yet.
+                  </p>
+                ) : (
+                  <ul className="flex flex-col gap-3">
+                    {agenda.map((item) => (
+                      <li key={item.title}>
+                        <p className="text-sm font-semibold">{item.title}</p>
+                        {item.description ? (
+                          <p className="text-foreground-secondary mt-1 text-sm">
+                            {item.description}
+                          </p>
+                        ) : null}
+                      </li>
+                    ))}
+                  </ul>
+                )
+              }
+            />
           </GovernancePanel>
         </>
       )}
