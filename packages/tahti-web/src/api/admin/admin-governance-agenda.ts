@@ -144,3 +144,26 @@ export async function updateAdminAgendaItem(
     return { ok: false, error: errorText(err, 'Could not save the item') };
   }
 }
+
+/** Removes an item; the ones after it move up a place. Refused while records
+ * point at it, once the minutes are approved, or while the meeting is held. */
+export async function deleteAdminAgendaItem(
+  item: Pick<GovernanceAgendaItem, 'id' | 'meetingId'>,
+): Promise<AgendaResult> {
+  if (isForceMock()) {
+    setMockAgendaItems(
+      item.meetingId,
+      mockAgendaItems(item.meetingId).filter((c) => c.id !== item.id),
+    );
+    return { ok: true };
+  }
+  try {
+    await sendJson(
+      `/api/admin/governance/agenda-items/${encodeURIComponent(item.id)}`,
+      'DELETE',
+    );
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: errorText(err, 'Could not remove the item') };
+  }
+}
