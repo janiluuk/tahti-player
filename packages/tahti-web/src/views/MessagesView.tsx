@@ -307,9 +307,30 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
             }`}
           >
             {!activeId ? (
-              <p className="text-foreground-secondary p-4 text-sm">
-                Select a conversation.
-              </p>
+              <div className="p-4">
+                <EmptyState
+                  size="sm"
+                  className="items-start p-0 text-left"
+                  title="Select a conversation"
+                  description={
+                    inbox.length === 0
+                      ? 'Search for someone above, or find artists on Discover.'
+                      : 'Pick a thread from the list to read and reply.'
+                  }
+                  action={
+                    inbox.length === 0 ? (
+                      <ButtonLink
+                        to="/discover"
+                        search={{ tab: 'artists' }}
+                        size="sm"
+                        variant="secondary"
+                      >
+                        Browse artists
+                      </ButtonLink>
+                    ) : undefined
+                  }
+                />
+              </div>
             ) : (
               <>
                 <div className="border-border flex items-center gap-1.5 border-b px-3 py-2 text-sm font-medium">

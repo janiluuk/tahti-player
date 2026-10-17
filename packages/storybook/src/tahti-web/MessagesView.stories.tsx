@@ -58,7 +58,7 @@ export const Inbox: Story = {
         await inboxButton(canvasElement, /^Former listener/),
       ).toHaveTextContent('No messages yet');
       await expect(
-        canvas.getByText('Select a conversation.'),
+        canvas.getByText('Select a conversation'),
       ).toBeInTheDocument();
       const contacts = within(
         canvas.getByRole('region', { name: 'Your contacts' }),
