@@ -22,7 +22,7 @@ and Studio go-live / Library phone gaps. Usability first; no new API inventing.
 | 12 | Onboarding toast uses a short duration (not sticky forever) | XS | |
 | 13 | Sticky notification Acknowledge stays dismissed in mock | S | |
 | 14 | Messages empty thread pane uses EmptyState + Discover CTA | XS | #1059 |
-| 15 | Studio home Distribution tile when the artist has releases | S | |
+| 15 | Studio home Distribution tile when the artist has releases | S | #1071 |
 | 16 | Collections list newest-first | XS | #1060 |
 | 17 | Listener e2e journey signs in as `listener@` (not localStorage-only) | S | |
 | 18 | Stable mock Jam code + clear invalid/ended empty states | S | |

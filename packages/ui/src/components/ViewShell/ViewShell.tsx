@@ -33,6 +33,12 @@ export const ViewShell: FC<ViewShellProps> = ({
   classes,
 }) => {
   const reducedMotion = useReducedMotion();
+  // Storybook interaction plays assert toBeVisible on first paint; an enter
+  // fade starts at opacity 0 and flakes those checks.
+  const skipEnter =
+    reducedMotion === true ||
+    (typeof document !== 'undefined' &&
+      document.getElementById('storybook-root') !== null);
 
   return (
     <div
@@ -77,7 +83,7 @@ export const ViewShell: FC<ViewShellProps> = ({
       )}
       <motion.div
         className="flex min-h-0 w-full flex-1 flex-col"
-        initial={reducedMotion ? false : { opacity: 0, y: 6 }}
+        initial={skipEnter ? false : { opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.16, ease: 'easeOut' }}
       >

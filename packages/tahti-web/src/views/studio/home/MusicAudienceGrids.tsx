@@ -7,6 +7,7 @@ import {
   MicIcon,
   NewspaperIcon,
   RocketIcon,
+  Share2Icon,
   UploadCloudIcon,
   WalletIcon,
 } from 'lucide-react';
@@ -72,6 +73,15 @@ export function MusicAudienceGrids({
             }
             color="bg-primary"
           />
+          {counts.releases > 0 ? (
+            <StudioActionTile
+              to="/studio/distribution"
+              icon={Share2Icon}
+              label="Distribution"
+              subtitle="Delivery status & royalties"
+              color="bg-accent-cyan"
+            />
+          ) : null}
         </CardGrid>
       </Group>
       <Group title="Audience & channel">

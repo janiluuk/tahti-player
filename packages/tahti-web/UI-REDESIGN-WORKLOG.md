@@ -1,3 +1,9 @@
+## 2026-10-17 — Distribution discoverability + chat docs
+
+Studio home shows a Distribution tile when the artist has releases; Releases
+header links to `/studio/distribution`. Help + GitBook clarify channel chat
+vs Messages (no chrome Chat hub). Batch 71 slice 15.
+
 ## 2026-09-18 — Root README screenshots refreshed to dark/amber theme
 
 `scripts/capture-tahti-dark-refresh.mjs` (previously not actually setting

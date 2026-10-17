@@ -71,12 +71,13 @@ now lists chrome separately from routes it does not actually own.
    Broadcast page (Perform submenu; nav label Broadcast since 2026-09-03) —
    a different page from public `/schedule`.
 
-3. **Library submenu does not include Smart links or Distribution as
-   first-class items.** `/library/smartlinks` is a real `LibraryView` tab
-   with zero production inbound links. `/studio/distribution` is a
-   Releases-row + export-add-on deep link. (Stash has its own
-   `LIBRARY_SECTION_TABS` entry, `/library/stash` — `/studio/stash` is
-   just a redirect to it, not a separate discoverability gap.)
+3. **Library submenu / Distribution.** `/library/smartlinks` is a Library
+   tab (resolved). `/studio/distribution` is reachable from Studio home
+   (when the artist has releases), the Releases header, release-row More
+   menu, and export add-ons — still not a StudioNav sibling (product call).
+   (Stash has its own `LIBRARY_SECTION_TABS` entry, `/library/stash` —
+   `/studio/stash` is just a redirect to it, not a separate discoverability
+   gap.)
 
 ### Still open (production orphans)
 
@@ -87,7 +88,7 @@ Rows marked resolved were re-checked 2026-10-03 (see above).
 | ~~`/venues` not in Listen/mobile chrome~~ | Resolved: redirects to the Discover Venues tab. |
 | ~~`/schedule` not linked from Radio~~ | Resolved: Radio header links to `/schedule` (full programme); booking calendar stays a separate signed-in control. |
 | ~~`/library/smartlinks` unlinked~~ | Resolved: Library tab. |
-| `/studio/distribution` Releases-only | Artists who are not on the releases list have no StudioNav path to delivery status. |
+| ~~`/studio/distribution` Releases-only~~ | Resolved for discoverability: Studio home shows a Distribution tile when the artist has releases; Releases header links to delivery status. Still not a StudioNav sibling (product call). |
 | ~~`/jam/$code` unlinked~~ | Resolved: "Start a Jam" on a collection page. |
 
 ### Checked this pass, not orphans
