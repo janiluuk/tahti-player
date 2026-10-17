@@ -29,7 +29,7 @@ import { useNotificationInboxStore } from '../stores/notificationInboxStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { useProcessingJobsStore } from '../stores/processingJobsStore';
 
-const POLL_MS = 5000;
+const POLL_MS = 15_000;
 
 function formatStorageBytes(bytes: number): string {
   if (bytes < 1024) {
