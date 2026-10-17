@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { MyVenuesView } from '@tahti-web/views/MyVenuesView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -74,5 +74,22 @@ export const BookShow: Story = {
       canvas.getByRole('button', { name: 'Book the show' }),
     );
     await expect(await canvas.findByText('Winter club night')).toBeVisible();
+  },
+};
+
+export const CancelShow: Story = {
+  decorators: [withMockAuth(MOCK_USERS.artist)],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByText('Album release show')).toBeVisible();
+    const [first] = canvas.getAllByRole('button', { name: /^Cancel show on/ });
+    await userEvent.click(first!);
+    const dialog = within(
+      await within(canvasElement.ownerDocument.body).findByRole('dialog'),
+    );
+    await userEvent.click(dialog.getByRole('button', { name: 'Cancel show' }));
+    await waitFor(() =>
+      expect(canvas.queryByText('Album release show')).toBeNull(),
+    );
   },
 };
