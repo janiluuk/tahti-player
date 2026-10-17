@@ -95,3 +95,34 @@ export async function createAdminAuditor(
     return { ok: false, error: errorText(err, 'Could not add the auditor') };
   }
 }
+
+/** Ends (or shortens) an auditor's term (PATCH /api/admin/governance/auditors/:id). */
+export async function endAdminAuditorTerm(
+  id: string,
+  termEnd: string,
+): Promise<AuditorActionResult> {
+  if (isForceMock()) {
+    const auditor = mockAuditors.find((a) => a.id === id);
+    if (!auditor) {
+      return { ok: false, error: 'Auditor not found' };
+    }
+    const end = new Date(termEnd).toISOString();
+    if (end <= auditor.termStart) {
+      return { ok: false, error: 'The term must end after it starts' };
+    }
+    mockAuditors = mockAuditors.map((a) =>
+      a.id === id ? { ...a, termEnd: end } : a,
+    );
+    return { ok: true };
+  }
+  try {
+    await sendJson(
+      `/api/admin/governance/auditors/${encodeURIComponent(id)}`,
+      'PATCH',
+      { termEnd },
+    );
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: errorText(err, 'Could not end the term') };
+  }
+}
