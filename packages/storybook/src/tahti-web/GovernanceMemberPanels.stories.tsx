@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AnnualReportsPanel } from '@tahti-web/components/governance/AnnualReportsPanel';
+import { AssociationPanel } from '@tahti-web/components/governance/AssociationPanel';
 import { CurrentBoardPanel } from '@tahti-web/components/governance/CurrentBoardPanel';
 import { ElectionsPanel } from '@tahti-web/components/governance/ElectionsPanel';
 import { expect, userEvent, within } from 'storybook/test';
@@ -84,5 +85,14 @@ export const AnnualReports: Story = {
       await canvas.findByRole('link', { name: 'Annual report 2025' }),
     ).toBeVisible();
     await expect(canvas.getByText(/filed with the register/)).toBeVisible();
+  },
+};
+
+export const Association: Story = {
+  render: () => <AssociationPanel />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByText('1234567-8')).toBeVisible();
+    await expect(canvas.getByText('Anna Virtanen')).toBeVisible();
   },
 };

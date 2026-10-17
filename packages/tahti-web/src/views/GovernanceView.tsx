@@ -43,6 +43,7 @@ import type {
   GovernanceQuarterlyReport,
 } from '../api/types';
 import { AnnualReportsPanel } from '../components/governance/AnnualReportsPanel';
+import { AssociationPanel } from '../components/governance/AssociationPanel';
 import { CurrentBoardPanel } from '../components/governance/CurrentBoardPanel';
 import { ElectionsPanel } from '../components/governance/ElectionsPanel';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
@@ -486,6 +487,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
           <CurrentBoardPanel />
           <ElectionsPanel />
           <AnnualReportsPanel />
+          <AssociationPanel />
         </div>
       )}
 
