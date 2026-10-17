@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as agenda from '../../../../api/admin/admin-governance-agenda';
@@ -48,5 +48,26 @@ describe('AgendaItemsPanel', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'Meeting not found',
     );
+  });
+
+  it('adds an item at the end and reloads', async () => {
+    const fetchItems = vi
+      .spyOn(agenda, 'fetchAdminAgendaItems')
+      .mockResolvedValue({ ok: true, data: [] });
+    const create = vi
+      .spyOn(agenda, 'createAdminAgendaItem')
+      .mockResolvedValue({ ok: true });
+    render(<AgendaItemsPanel meetingId="m1" />);
+    fireEvent.click(screen.getByRole('button', { name: /Agenda items/ }));
+    await screen.findByText('No agenda items yet.');
+    fireEvent.change(screen.getByLabelText('New item'), {
+      target: { value: 'Membership fee 2027' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Add to the agenda' }));
+    expect(create).toHaveBeenCalledWith('m1', {
+      title: 'Membership fee 2027',
+      description: '',
+    });
+    await waitFor(() => expect(fetchItems).toHaveBeenCalledTimes(2));
   });
 });
