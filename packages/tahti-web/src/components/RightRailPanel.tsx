@@ -1,6 +1,7 @@
 import { ListMusicIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
 
-import { Button, QueuePanel, Tooltip } from '@tahti-player/ui';
+import { Button, cn, QueuePanel, Tooltip } from '@tahti-player/ui';
 
 import { useLayoutStore } from '../stores/layoutStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -11,6 +12,28 @@ const COLLAPSED_LABELS = {
   removeButton: 'Remove from queue',
   playbackError: 'Could not play',
 };
+
+function RightRailPanelFade({
+  panelKey,
+  children,
+  className,
+}: {
+  panelKey: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      key={panelKey}
+      className={cn(
+        'tahti-rail-panel-enter motion-reduce:animate-none',
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}
 
 export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
   const railOverride = useRightRailOverrideStore((s) => s.override);
@@ -37,47 +60,53 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
 
   if (railOverride) {
     return (
-      <aside
-        aria-label={railOverride.title}
+      <RightRailPanelFade
+        panelKey={`override-${railOverride.title}`}
         className="flex h-full min-h-0 flex-col"
-        data-testid="right-rail"
-        data-right-rail-override={railOverride.title}
       >
-        <div className="border-border shrink-0 border-b px-2 py-2">
-          <p className="text-foreground-secondary text-xs font-bold tracking-wide uppercase">
-            {railOverride.title}
-          </p>
-        </div>
-        <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-y-auto p-2">
-          {railOverride.content}
-        </div>
-      </aside>
+        <aside
+          aria-label={railOverride.title}
+          className="flex h-full min-h-0 flex-col"
+          data-testid="right-rail"
+          data-right-rail-override={railOverride.title}
+        >
+          <div className="border-border shrink-0 border-b px-2 py-2">
+            <p className="text-foreground-secondary text-xs font-bold tracking-wide uppercase">
+              {railOverride.title}
+            </p>
+          </div>
+          <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-y-auto p-2">
+            {railOverride.content}
+          </div>
+        </aside>
+      </RightRailPanelFade>
     );
   }
 
   return (
-    <aside
-      aria-label="Queue"
+    <RightRailPanelFade
+      panelKey="queue"
       className="flex h-full min-h-0 flex-col"
-      data-testid="right-rail"
-      data-right-rail-view="queue"
     >
-      <div className="border-border shrink-0 border-b px-2 py-2">
-        <p className="text-foreground-secondary text-xs font-bold tracking-wide uppercase">
-          Queue
-        </p>
-      </div>
-      <div className="min-h-0 flex-1">
-        <SidebarQueuePanel toolbar={false} />
-      </div>
-    </aside>
+      <aside
+        aria-label="Queue"
+        className="flex h-full min-h-0 flex-col"
+        data-testid="right-rail"
+        data-right-rail-view="queue"
+      >
+        <div className="border-border shrink-0 border-b px-2 py-2">
+          <p className="text-foreground-secondary text-xs font-bold tracking-wide uppercase">
+            Queue
+          </p>
+        </div>
+        <div className="min-h-0 flex-1">
+          <SidebarQueuePanel toolbar={false} />
+        </div>
+      </aside>
+    </RightRailPanelFade>
   );
 }
 
-/**
- * Nuclear's collapsed rail: queue artwork only. Chat and notifications live
- * in the top bar, never in the rail (docs/DECISIONS.md, 2026-09-28).
- */
 function CollapsedQueueBar() {
   const queue = usePlayerStore((s) => s.queue);
   const currentId = usePlayerStore((s) => s.currentId);
