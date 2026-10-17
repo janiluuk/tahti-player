@@ -5,9 +5,11 @@ import { Button, Input } from '@tahti-player/ui';
 
 import {
   fetchAdminAnnualReports,
+  fetchAdminGovernanceMeetings,
   generateAdminAnnualReport,
   type AdminAnnualReport,
 } from '../../../../api/admin';
+import type { GovernanceMeeting } from '../../../../api/types';
 import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { AnnualReportRow } from './AnnualReportRow';
@@ -18,6 +20,7 @@ export function ReportsTab() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [meetings, setMeetings] = useState<GovernanceMeeting[]>([]);
 
   const load = useCallback(async () => {
     const result = await fetchAdminAnnualReports();
@@ -27,6 +30,9 @@ export function ReportsTab() {
 
   useEffect(() => {
     void load();
+    void fetchAdminGovernanceMeetings().then((result) =>
+      setMeetings(result.data),
+    );
   }, [load]);
 
   return (
@@ -84,7 +90,12 @@ export function ReportsTab() {
         ) : (
           <ul className="divide-border divide-y">
             {reports.map((report) => (
-              <AnnualReportRow key={report.id} report={report} />
+              <AnnualReportRow
+                key={report.id}
+                report={report}
+                meetings={meetings}
+                onChanged={() => void load()}
+              />
             ))}
           </ul>
         )}
