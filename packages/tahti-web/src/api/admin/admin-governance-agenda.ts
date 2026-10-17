@@ -1,4 +1,4 @@
-import { getJson } from '../http';
+import { getJson, sendJson } from '../http';
 import { isForceMock } from '../mode';
 
 /** One item on a meeting's agenda, in agenda order (`position`). */
@@ -70,5 +70,42 @@ export async function fetchAdminAgendaItems(
     return { ok: true, data };
   } catch (err) {
     return { ok: false, error: errorText(err, 'Could not load the agenda') };
+  }
+}
+
+/** Adds an item at the end of the agenda. */
+export async function createAdminAgendaItem(
+  meetingId: string,
+  input: { title: string; description?: string },
+): Promise<AgendaResult> {
+  const title = input.title.trim();
+  const description = input.description?.trim() || undefined;
+  if (!title) {
+    return { ok: false, error: 'Give the item a title' };
+  }
+  if (isForceMock()) {
+    const items = mockAgendaItems(meetingId);
+    setMockAgendaItems(meetingId, [
+      ...items,
+      {
+        id: `agenda-${Date.now()}`,
+        meetingId,
+        position: items.length + 1,
+        title,
+        description: description ?? null,
+        outcome: null,
+      },
+    ]);
+    return { ok: true };
+  }
+  try {
+    await sendJson(
+      `/api/admin/governance/meetings/${encodeURIComponent(meetingId)}/agenda-items`,
+      'POST',
+      { title, ...(description ? { description } : {}) },
+    );
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: errorText(err, 'Could not add the item') };
   }
 }

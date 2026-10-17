@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { Button, Input } from '@tahti-player/ui';
+
 import {
+  createAdminAgendaItem,
   fetchAdminAgendaItems,
   type GovernanceAgendaItem,
 } from '../../../../api/admin/admin-governance-agenda';
@@ -12,6 +15,9 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<GovernanceAgendaItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
     const result = await fetchAdminAgendaItems(meetingId);
@@ -62,6 +68,44 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
           ))}
         </ol>
       )}
+      <form
+        className="mt-3 flex flex-col gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setSaving(true);
+          setError(null);
+          void createAdminAgendaItem(meetingId, { title, description }).then(
+            (result) => {
+              setSaving(false);
+              if (!result.ok) {
+                setError(result.error);
+                return;
+              }
+              setTitle('');
+              setDescription('');
+              void load();
+            },
+          );
+        }}
+      >
+        <Input
+          label="New item"
+          value={title}
+          maxLength={300}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <Input
+          label="Description (optional)"
+          value={description}
+          maxLength={5000}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <div>
+          <Button type="submit" size="sm" disabled={saving || !title.trim()}>
+            {saving ? 'Adding…' : 'Add to the agenda'}
+          </Button>
+        </div>
+      </form>
       {error ? (
         <p className="text-accent-red-strong mt-2 text-xs" role="alert">
           {error}
