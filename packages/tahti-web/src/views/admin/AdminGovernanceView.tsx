@@ -1,5 +1,11 @@
 import { useNavigate } from '@tanstack/react-router';
-import { BanknoteIcon, FileTextIcon, FlagIcon, UsersIcon } from 'lucide-react';
+import {
+  BanknoteIcon,
+  FileTextIcon,
+  FlagIcon,
+  ShieldCheckIcon,
+  UsersIcon,
+} from 'lucide-react';
 
 import { ViewShell } from '@tahti-player/ui';
 
@@ -12,6 +18,7 @@ import {
   type AdminGovernanceTabId,
 } from './governance/governanceNav';
 import { AgmTab } from './governance/tabs/AgmTab';
+import { BoardTab } from './governance/tabs/BoardTab';
 import { GrantsTab } from './governance/tabs/GrantsTab';
 import { OverviewTab } from './governance/tabs/OverviewTab';
 import { ReportsTab } from './governance/tabs/ReportsTab';
@@ -30,6 +37,8 @@ function tabContent(id: AdminGovernanceTabId) {
       return <GrantsTab />;
     case 'agm':
       return <AgmTab />;
+    case 'board':
+      return <BoardTab />;
   }
 }
 
@@ -38,6 +47,7 @@ const GOVERNANCE_TAB_ICONS: Record<AdminGovernanceTabId, typeof FlagIcon> = {
   reports: FileTextIcon,
   grants: BanknoteIcon,
   agm: UsersIcon,
+  board: ShieldCheckIcon,
 };
 
 const GOVERNANCE_TAB_ITEMS: ModerationTabItem[] = ADMIN_GOVERNANCE_TABS.map(

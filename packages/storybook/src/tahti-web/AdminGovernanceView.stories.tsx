@@ -32,7 +32,7 @@ async function expectSection(canvasElement: HTMLElement, label: string) {
   const sections = within(
     canvas.getByRole('tablist', { name: 'Governance sections' }),
   );
-  await expect(sections.getAllByRole('tab')).toHaveLength(4);
+  await expect(sections.getAllByRole('tab')).toHaveLength(5);
   await expect(sections.getByRole('tab', { name: label })).toHaveAttribute(
     'aria-selected',
     'true',
@@ -112,5 +112,14 @@ export const AgmTab: Story = {
     await expect(
       canvas.getByRole('switch', { name: 'Publish immediately to members' }),
     ).toBeVisible();
+  },
+};
+
+export const BoardTab: Story = {
+  render: renderTab('board'),
+  play: async ({ canvasElement }) => {
+    const canvas = await expectSection(canvasElement, 'Board');
+    await expect(await canvas.findByText('Mart Saar')).toBeVisible();
+    await expect(canvas.getByText('Serving')).toBeVisible();
   },
 };
