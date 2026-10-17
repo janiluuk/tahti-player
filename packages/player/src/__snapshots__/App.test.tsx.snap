@@ -658,85 +658,91 @@ exports[`App > should render snapshot 1`] = `
                 Dashboard
               </h1>
               <div
-                class="relative h-full flex min-h-0 w-full flex-1 flex-col"
+                animate="[object Object]"
+                class="flex min-h-0 w-full flex-1 flex-col"
+                transition="[object Object]"
               >
                 <div
-                  class="scrollbar-hide flex h-full w-full flex-col overflow-auto"
-                  style="scrollbar-width: none;"
+                  class="relative h-full flex min-h-0 w-full flex-1 flex-col"
                 >
                   <div
-                    class="flex flex-col items-center justify-center text-center gap-4 p-8 flex-1"
-                    data-testid="dashboard-empty-state"
+                    class="scrollbar-hide flex h-full w-full flex-col overflow-auto"
+                    style="scrollbar-width: none;"
                   >
                     <div
-                      class="text-foreground"
+                      class="flex flex-col items-center justify-center text-center gap-4 p-8 flex-1"
+                      data-testid="dashboard-empty-state"
                     >
-                      <svg
-                        aria-hidden="true"
-                        class="lucide lucide-layout-dashboard"
-                        fill="none"
-                        height="48"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                        width="48"
-                        xmlns="http://www.w3.org/2000/svg"
+                      <div
+                        class="text-foreground"
                       >
-                        <rect
-                          height="9"
-                          rx="1"
-                          width="7"
-                          x="3"
-                          y="3"
-                        />
-                        <rect
-                          height="5"
-                          rx="1"
-                          width="7"
-                          x="14"
-                          y="3"
-                        />
-                        <rect
-                          height="9"
-                          rx="1"
-                          width="7"
-                          x="14"
-                          y="12"
-                        />
-                        <rect
-                          height="5"
-                          rx="1"
-                          width="7"
-                          x="3"
-                          y="16"
-                        />
-                      </svg>
-                    </div>
-                    <div
-                      class="flex flex-col gap-1"
-                    >
-                      <h2
-                        class="text-foreground text-lg font-bold"
+                        <svg
+                          aria-hidden="true"
+                          class="lucide lucide-layout-dashboard"
+                          fill="none"
+                          height="48"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                          width="48"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <rect
+                            height="9"
+                            rx="1"
+                            width="7"
+                            x="3"
+                            y="3"
+                          />
+                          <rect
+                            height="5"
+                            rx="1"
+                            width="7"
+                            x="14"
+                            y="3"
+                          />
+                          <rect
+                            height="9"
+                            rx="1"
+                            width="7"
+                            x="14"
+                            y="12"
+                          />
+                          <rect
+                            height="5"
+                            rx="1"
+                            width="7"
+                            x="3"
+                            y="16"
+                          />
+                        </svg>
+                      </div>
+                      <div
+                        class="flex flex-col gap-1"
                       >
-                        Welcome to Tahti Player
-                      </h2>
-                      <p
-                        class="text-foreground text-sm opacity-60"
-                      >
-                        Install an add-on to see top tracks, new releases, and recommendations here.
-                      </p>
-                    </div>
-                    <div>
-                      <button
-                        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2"
-                        data-headlessui-state=""
-                        data-testid="dashboard-empty-state-action"
-                        type="button"
-                      >
-                        Browse add-ons
-                      </button>
+                        <h2
+                          class="text-foreground text-lg font-bold"
+                        >
+                          Welcome to Tahti Player
+                        </h2>
+                        <p
+                          class="text-foreground text-sm opacity-60"
+                        >
+                          Install an add-on to see top tracks, new releases, and recommendations here.
+                        </p>
+                      </div>
+                      <div>
+                        <button
+                          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2"
+                          data-headlessui-state=""
+                          data-testid="dashboard-empty-state-action"
+                          type="button"
+                        >
+                          Browse add-ons
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
