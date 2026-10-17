@@ -63,4 +63,49 @@ describe('AnnualReportActions', () => {
       screen.queryByRole('button', { name: 'Approve report 2025' }),
     ).toBeNull();
   });
+
+  it('publishes an approved report after confirming', async () => {
+    const publish = vi
+      .spyOn(reports, 'publishAnnualReport')
+      .mockResolvedValue({ ok: true });
+    const onChanged = vi.fn();
+    render(
+      <AnnualReportActions
+        report={{ ...draftReport, approvedAt: '2026-04-01T00:00:00.000Z' }}
+        meetings={[]}
+        onChanged={onChanged}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Publish to members' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Publish' }));
+    expect(publish).toHaveBeenCalledWith(2025);
+    await waitFor(() => expect(onChanged).toHaveBeenCalled());
+  });
+
+  it('offers no publish for a draft or a published report', () => {
+    const { rerender } = render(
+      <AnnualReportActions
+        report={draftReport}
+        meetings={[]}
+        onChanged={vi.fn()}
+      />,
+    );
+    expect(
+      screen.queryByRole('button', { name: 'Publish to members' }),
+    ).toBeNull();
+    rerender(
+      <AnnualReportActions
+        report={{
+          ...draftReport,
+          approvedAt: '2026-04-01T00:00:00.000Z',
+          publishedAt: '2026-04-02T00:00:00.000Z',
+        }}
+        meetings={[]}
+        onChanged={vi.fn()}
+      />,
+    );
+    expect(
+      screen.queryByRole('button', { name: 'Publish to members' }),
+    ).toBeNull();
+  });
 });

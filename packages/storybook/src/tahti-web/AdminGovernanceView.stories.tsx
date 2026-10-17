@@ -76,8 +76,8 @@ export const ReportsTab: Story = {
   },
 };
 
-/** Approve the mock 2025 draft (mock state; Storybook only). */
-export const ApproveAnnualReport: Story = {
+/** Approve, then publish, the mock 2025 draft (mock state). */
+export const ApproveAndPublishAnnualReport: Story = {
   render: renderTab('reports'),
   play: async ({ canvasElement }) => {
     const canvas = await expectSection(canvasElement, 'Annual reports');
@@ -91,6 +91,14 @@ export const ApproveAnnualReport: Story = {
     await expect(
       await canvas.findByText('Approved, not published'),
     ).toBeVisible();
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Publish to members' }),
+    );
+    const dialog = within(
+      await within(canvasElement.ownerDocument.body).findByRole('dialog'),
+    );
+    await userEvent.click(dialog.getByRole('button', { name: 'Publish' }));
+    await expect(await canvas.findByText('Published')).toBeVisible();
   },
 };
 

@@ -4,10 +4,15 @@ import { Button, Select } from '@tahti-player/ui';
 
 import {
   approveAnnualReport,
+  publishAnnualReport,
   type AdminAnnualReport,
   type AnnualReportResult,
 } from '../../../../api/admin/admin-annual-reports';
 import type { GovernanceMeeting } from '../../../../api/types';
+import { ConfirmDialog } from '../../../../components/ConfirmDialog';
+import { AnnualReportCorrection } from './AnnualReportCorrection';
+import { AnnualReportFilingForm } from './AnnualReportFilingForm';
+import { AnnualReportLegalHold } from './AnnualReportLegalHold';
 
 const NO_MEETING = '';
 
@@ -22,6 +27,7 @@ export function AnnualReportActions({
   onChanged: () => void;
 }) {
   const [approving, setApproving] = useState(false);
+  const [confirmPublish, setConfirmPublish] = useState(false);
   const [meetingId, setMeetingId] = useState(NO_MEETING);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -88,6 +94,30 @@ export function AnnualReportActions({
           </Button>
         )
       ) : null}
+      {report.approvedAt && !report.publishedAt ? (
+        <Button
+          size="sm"
+          className="w-fit"
+          disabled={busy}
+          onClick={() => setConfirmPublish(true)}
+        >
+          Publish to members
+        </Button>
+      ) : null}
+      <AnnualReportFilingForm report={report} onChanged={onChanged} />
+      <AnnualReportCorrection report={report} onChanged={onChanged} />
+      <AnnualReportLegalHold report={report} onChanged={onChanged} />
+      <ConfirmDialog
+        isOpen={confirmPublish}
+        title={`Publish annual report ${report.year}?`}
+        description="Members will be able to read and download it from Governance."
+        confirmLabel="Publish"
+        onCancel={() => setConfirmPublish(false)}
+        onConfirm={() => {
+          setConfirmPublish(false);
+          run(() => publishAnnualReport(report.year));
+        }}
+      />
       {error ? (
         <p role="alert" className="text-accent-red-strong text-xs">
           {error}

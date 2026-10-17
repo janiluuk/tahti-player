@@ -157,3 +157,166 @@ export async function approveAnnualReport(
     'Could not approve the report',
   );
 }
+
+/** Makes an approved report readable by members. */
+export async function publishAnnualReport(
+  year: number,
+): Promise<AnnualReportResult> {
+  if (isForceMock()) {
+    const report = mockAnnualReport(year);
+    if (!report?.approvedAt) {
+      return { ok: false, error: 'Only an approved report can be published' };
+    }
+    if (report.publishedAt) {
+      return { ok: false, error: 'This report is already published' };
+    }
+    updateMockAnnualReport(year, { publishedAt: new Date().toISOString() });
+    return { ok: true };
+  }
+  return reportAction(
+    year,
+    '/publish',
+    'POST',
+    undefined,
+    'Could not publish the report',
+  );
+}
+
+/** Records (or with `filedAt: null` clears) when the approved report was
+ * filed with the register, and the register's reference. */
+export async function setAnnualReportFiling(
+  year: number,
+  filing: { filedAt: string | null; filingReference?: string | null },
+): Promise<AnnualReportResult> {
+  if (isForceMock()) {
+    const report = mockAnnualReport(year);
+    if (!report?.approvedAt) {
+      return { ok: false, error: 'Only an approved report can be filed' };
+    }
+    if (filing.filedAt && filing.filedAt < report.approvedAt.slice(0, 10)) {
+      return {
+        ok: false,
+        error: 'A report cannot be filed before it was approved',
+      };
+    }
+    updateMockAnnualReport(year, {
+      filedAt: filing.filedAt,
+      filingReference: filing.filedAt ? (filing.filingReference ?? null) : null,
+    });
+    return { ok: true };
+  }
+  return reportAction(
+    year,
+    '/filing',
+    'PUT',
+    filing,
+    'Could not save the filing',
+  );
+}
+
+export type AnnualReportRevision = {
+  id: string;
+  generatedAt: string;
+  replacedAt: string;
+  note: string;
+  downloadUrl: string | null;
+};
+
+const mockRevisions = new Map<number, AnnualReportRevision[]>();
+
+/** Regenerates an approved report from today's records, keeping the replaced
+ * version with the board's note on what changed. */
+export async function correctAnnualReport(
+  year: number,
+  note: string,
+): Promise<AnnualReportResult> {
+  const trimmed = note.trim();
+  if (isForceMock()) {
+    const report = mockAnnualReport(year);
+    if (!report?.approvedAt) {
+      return {
+        ok: false,
+        error:
+          'A report that is not approved yet is regenerated, not corrected',
+      };
+    }
+    if (report.legalHoldAt) {
+      return { ok: false, error: 'This report is on legal hold' };
+    }
+    const now = new Date().toISOString();
+    mockRevisions.set(year, [
+      {
+        id: `rev-${Date.now()}`,
+        generatedAt: report.generatedAt,
+        replacedAt: now,
+        note: trimmed,
+        downloadUrl: null,
+      },
+      ...(mockRevisions.get(year) ?? []),
+    ]);
+    updateMockAnnualReport(year, { generatedAt: now, correctedAt: now });
+    return { ok: true };
+  }
+  return reportAction(
+    year,
+    '/correct',
+    'POST',
+    { note: trimmed },
+    'Could not correct the report',
+  );
+}
+
+/** Versions a correction replaced, newest first. */
+export async function fetchAnnualReportRevisions(
+  year: number,
+): Promise<{ data: AnnualReportRevision[]; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return { data: mockRevisions.get(year) ?? [], meta: MOCK_META };
+  }
+  try {
+    const data = await getJson<AnnualReportRevision[]>(
+      `/api/admin/reports/annual/${year}/revisions`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
+
+/** Holds a report (or with `reason: null` releases it): while held it is not
+ * regenerated, corrected or archived. */
+export async function setAnnualReportLegalHold(
+  year: number,
+  reason: string | null,
+): Promise<AnnualReportResult> {
+  if (isForceMock()) {
+    if (!mockAnnualReport(year)) {
+      return { ok: false, error: 'No report has been generated for that year' };
+    }
+    updateMockAnnualReport(
+      year,
+      reason
+        ? {
+            legalHoldAt: new Date().toISOString(),
+            legalHoldReason: reason.trim(),
+          }
+        : { legalHoldAt: null, legalHoldReason: null },
+    );
+    return { ok: true };
+  }
+  return reason
+    ? reportAction(
+        year,
+        '/legal-hold',
+        'PUT',
+        { reason: reason.trim() },
+        'Could not hold the report',
+      )
+    : reportAction(
+        year,
+        '/legal-hold',
+        'DELETE',
+        undefined,
+        'Could not release the hold',
+      );
+}
