@@ -50,6 +50,7 @@ import {
   type RadioStation,
 } from '../content/radioStations';
 import { usePolling } from '../hooks/usePolling';
+import { scheduleIdleRoutePrefetch } from '../lib/idleRoutePrefetch';
 import { resolveLocalPlayableForReplay } from '../lib/nativeLibrary';
 import { activeListenTab } from '../lib/navigationActive';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
@@ -166,6 +167,8 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   useEffect(() => {
     void refreshPresetNowPlaying();
   }, [refreshPresetNowPlaying]);
+
+  useEffect(() => scheduleIdleRoutePrefetch(), []);
 
   usePolling(
     () => void refreshPresetNowPlaying(),
