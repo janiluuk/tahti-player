@@ -33,6 +33,7 @@ import type {
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { GovernanceDocumentRow } from '../records/GovernanceDocumentRow';
 import { LegalHoldControl } from '../records/LegalHoldControl';
+import { MemberRegisterPanel } from '../records/MemberRegisterPanel';
 import { AgendaItemsPanel } from './AgendaItemsPanel';
 import {
   CollapsibleRecord,
@@ -604,6 +605,7 @@ export function AgmTab() {
             Open audit log
           </ButtonAnchor>
         </div>
+        <MemberRegisterPanel />
         <div className="border-border mt-4 border-t pt-3">
           <h3 className="text-sm font-semibold">Published documents</h3>
           <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_minmax(12rem,auto)]">
