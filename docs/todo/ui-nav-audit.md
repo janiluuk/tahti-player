@@ -1,6 +1,8 @@
 # Tahti Player — UI & navigation audit
 
-**Status:** partial  
+**Status:** blocked
+
+**Blocker:** Phases 1–5 + 7–10 shipped; blocked on channel visual redesign (product/design), same train as channel-page-redesign.
 **Audited:** 2026-10-05  
 **Scope:** `packages/tahti-web` navigation chrome and crowded studio/settings
 surfaces. tahti-org excluded. Canvas:

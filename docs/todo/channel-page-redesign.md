@@ -1,6 +1,8 @@
 # Artist channel page redesign
 
-**Status:** partial
+**Status:** blocked
+
+**Blocker:** P0 fixes shipped (#518–#521); blocked on beta visual check + product go-ahead for wider redesign.
 
 The artist channel page (`/channel/:slug`, `packages/tahti-web/src/views/ChannelView.tsx` plus `src/components/channel-view/`) still doesn't look professional. Example: https://beta.tahti.live/channel/tahti-selects
 

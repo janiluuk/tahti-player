@@ -1,6 +1,8 @@
 # Release Player workflow (`release-player.yml`) is broken — 0 jobs on every run
 
-**Status:** partial
+**Status:** blocked
+
+**Blocker:** CI wiring shipped; blocked on user-held store secrets (`NPM_TOKEN`, `SNAPCRAFT_STORE_CREDENTIALS`, etc.) and first real release run.
 
 ## Update 2026-09-25 — second root cause: tags from GITHUB_TOKEN never trigger
 

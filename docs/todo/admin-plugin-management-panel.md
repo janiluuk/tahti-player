@@ -1,6 +1,8 @@
 # Admin plugin management panel (all Add-ons categories)
 
-**Status:** partial
+**Status:** blocked
+
+**Blocker:** Multi-phase project (13 categories, schema + submission surfaces) not started — too large for incidental closeout; needs dedicated kickoff.
 
 ## Audience taxonomy decision (user, 2026-09-18)
 

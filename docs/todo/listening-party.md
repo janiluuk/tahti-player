@@ -1,6 +1,8 @@
 # Listening Party
 
-**Status:** open
+**Status:** blocked
+
+**Blocker:** Needs user go-ahead before tahti-org schema/API work (`ScheduledLiveShow` proposal).
 
 Logged 2026-09-19 from a user request. Feature backlog; implementation not yet scoped.
 

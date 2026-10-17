@@ -1,6 +1,8 @@
 # Fan live chat vs channel comments
 
-**Status:** partial  
+**Status:** blocked
+
+**Blocker:** Discoverability + mock Send shipped; remaining is live-API verify of Centrifugo Send on brand-new channels (needs running stack / human).
 **Source:** Artist lifecycle e2e (`…/artist-lifecycle/ISSUES.md` P1)
 
 ## Done

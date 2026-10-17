@@ -1,6 +1,8 @@
 # track-visualizer-video-editor.md
 
-**Status:** open
+**Status:** blocked
+
+**Blocker:** Blocked on PulseForge licence/port decision (README claims MIT but no LICENSE file).
 
 ## What
 

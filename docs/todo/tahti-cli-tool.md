@@ -1,6 +1,8 @@
 # tahti-cli — CLI tool using the tahti-api client
 
-**Status:** partial
+**Status:** blocked
+
+**Blocker:** CLI features largely shipped; blocked on `@tahti/api-client` npm publish (`NPM_TOKEN`) for the standalone repo.
 
 Roadmap item (2026-09-07). Inspiration: [antiwork/gumroad-cli](https://github.com/antiwork/gumroad-cli)
 — a thin CLI wrapping a product's API client for scriptable, terminal-first

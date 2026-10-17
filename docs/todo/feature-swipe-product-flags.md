@@ -1,6 +1,8 @@
 # Feature swipe — remaining product flags
 
-**Status:** open
+**Status:** blocked
+
+**Blocker:** Product call required for Distribution StudioNav sibling, `/chat` chrome entry, and mobile More vs primary bar — do not invent chrome.
 
 Easy reachability/docs from the 2026-10-17 feature swipe (#994–#996) shipped
 and were folded in HISTORY. These leftovers still need a product call (do not

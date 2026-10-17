@@ -1,6 +1,8 @@
 # Batch 71 — UX / usability (20 slices)
 
-**Status:** open
+**Status:** partial
+
+**In progress:** Slices 1–5, 10, 14–16 shipped (#1054–#1060, #1071). Remaining without PR: 6–9, 11–13, 17–20 — keep shipping as small PRs then fold.
 
 Sources: e2e journey leftovers (`E2E-JOURNEYS.md` colour fills + listener journey),
 `NAVIGATION-GAPS.md` redirects, `MOCKS.md` thin spots, feature-swipe leftovers,
