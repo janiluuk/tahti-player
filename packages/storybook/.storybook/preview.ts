@@ -1,4 +1,5 @@
 import type { Decorator, Preview } from '@storybook/react-vite';
+import { MotionConfig } from 'motion/react';
 import { createElement } from 'react';
 
 import '@fontsource/dm-sans/400.css';
@@ -22,6 +23,12 @@ import {
   storyRouterSettled,
 } from '../src/tahti-web/_lib/decorators';
 
+const withReducedMotion: Decorator = (Story) =>
+  createElement(
+    MotionConfig,
+    { reducedMotion: 'always' },
+    createElement(Story),
+  );
 // Every real basic theme (Default/Aurora/Ember/Lagoon/Moss/Tahti), read
 // from the same source the live app's theme picker uses — see
 // packages/themes/src/index.ts's listBasicThemes(). Keeps this toolbar in
@@ -58,7 +65,7 @@ const withTahtiTheme: Decorator = (Story, context) => {
 };
 
 const preview: Preview = {
-  decorators: [withTahtiTheme],
+  decorators: [withReducedMotion, withTahtiTheme],
   // Seeds tahti-web's mock fixture overrides from `parameters.mockData`
   // before each story renders, and clears them afterwards so one story's
   // data never leaks into the next. See src/tahti-web/_lib/README.md.
