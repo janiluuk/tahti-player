@@ -32,7 +32,7 @@ function isArtistSettingsSection(
 function isAccountSettingsSection(
   value: string | null,
 ): value is AccountSettingsSection {
-  return value === 'subscriptions';
+  return value === 'subscriptions' || value === 'api-tokens';
 }
 
 /** Deep link `/settings` → Nuclear SettingsPanel modal. Also the landing

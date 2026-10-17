@@ -13,7 +13,7 @@ export type ArtistSettingsSection =
   | 'press-kit'
   | 'release-visuals';
 
-export type AccountSettingsSection = 'subscriptions';
+export type AccountSettingsSection = 'subscriptions' | 'api-tokens';
 
 type SettingsModalState = {
   isOpen: boolean;
