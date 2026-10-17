@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CurrentBoardPanel } from '@tahti-web/components/governance/CurrentBoardPanel';
 import { ElectionsPanel } from '@tahti-web/components/governance/ElectionsPanel';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 
@@ -43,5 +43,34 @@ export const Elections: Story = {
     ).toBeVisible();
     await expect(canvas.getByText(/Nominations open until/)).toBeVisible();
     await expect(canvas.getByText('Elected')).toBeVisible();
+  },
+};
+
+export const StandForElection: Story = {
+  render: () => <ElectionsPanel />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      await canvas.findByRole('button', { name: 'Stand for election' }),
+    );
+    await userEvent.type(
+      canvas.getByLabelText('Why you are standing (optional)'),
+      'Open books',
+    );
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Stand in this election' }),
+    );
+    await expect(await canvas.findByText('You are standing')).toBeVisible();
+    await expect(canvas.getByText('Open books')).toBeVisible();
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Withdraw my candidacy' }),
+    );
+    const dialog = within(
+      await within(canvasElement.ownerDocument.body).findByRole('dialog'),
+    );
+    await userEvent.click(dialog.getByRole('button', { name: 'Withdraw' }));
+    await expect(
+      await canvas.findByRole('button', { name: 'Stand for election' }),
+    ).toBeVisible();
   },
 };

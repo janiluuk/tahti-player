@@ -8,6 +8,7 @@ import {
   fetchGovernanceElections,
   type GovernanceElection,
 } from '../../api/governance-elections';
+import { CandidacyControl } from './CandidacyControl';
 import { GovernancePanel } from './GovernancePanel';
 
 function formatDay(iso: string): string {
@@ -35,7 +36,13 @@ function electionStatus(election: GovernanceElection): string {
   return 'Nominations closed, waiting for the meeting';
 }
 
-function ElectionItem({ election }: { election: GovernanceElection }) {
+function ElectionItem({
+  election,
+  onChanged,
+}: {
+  election: GovernanceElection;
+  onChanged: () => void;
+}) {
   const seats = election.seats === 1 ? '1 seat' : `${election.seats} seats`;
   return (
     <li className="flex flex-col gap-1.5 py-3 text-sm first:pt-0 last:pb-0">
@@ -83,6 +90,7 @@ function ElectionItem({ election }: { election: GovernanceElection }) {
           ))}
         </ul>
       )}
+      <CandidacyControl election={election} onChanged={onChanged} />
     </li>
   );
 }
@@ -118,7 +126,11 @@ export function ElectionsPanel() {
       ) : (
         <ul className="divide-border divide-y">
           {elections.map((election) => (
-            <ElectionItem key={election.id} election={election} />
+            <ElectionItem
+              key={election.id}
+              election={election}
+              onChanged={() => void load()}
+            />
           ))}
         </ul>
       )}
