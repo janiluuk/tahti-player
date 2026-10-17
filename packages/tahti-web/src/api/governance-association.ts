@@ -24,39 +24,42 @@ export type AssociationProfile = {
   auditors: GovernanceAuditor[];
 };
 
+const MOCK_PROFILE: AssociationProfile = {
+  name: 'Tahti ry',
+  businessId: '1234567-8',
+  registerNumber: '123.456',
+  domicile: 'Helsinki',
+  contactEmail: 'hallitus@tahti.live',
+  postalAddress: 'PL 1, 00100 Helsinki',
+  website: 'https://tahti.live',
+  updatedAt: '2026-09-01T00:00:00.000Z',
+  auditors: [
+    {
+      id: 'aud-1',
+      kind: 'OPERATIONS_INSPECTOR',
+      deputy: false,
+      name: 'Anna Virtanen',
+      firm: null,
+      termStart: '2026-01-01T00:00:00.000Z',
+      termEnd: null,
+      meetingId: null,
+    },
+    {
+      id: 'aud-2',
+      kind: 'OPERATIONS_INSPECTOR',
+      deputy: true,
+      name: 'Pekka Laine',
+      firm: null,
+      termStart: '2026-01-01T00:00:00.000Z',
+      termEnd: null,
+      meetingId: null,
+    },
+  ],
+};
+
+/** The mock profile; the board side edits this same object. */
 export function mockAssociationProfile(): AssociationProfile {
-  return {
-    name: 'Tahti ry',
-    businessId: '1234567-8',
-    registerNumber: '123.456',
-    domicile: 'Helsinki',
-    contactEmail: 'hallitus@tahti.live',
-    postalAddress: 'PL 1, 00100 Helsinki',
-    website: 'https://tahti.live',
-    updatedAt: '2026-09-01T00:00:00.000Z',
-    auditors: [
-      {
-        id: 'aud-1',
-        kind: 'OPERATIONS_INSPECTOR',
-        deputy: false,
-        name: 'Anna Virtanen',
-        firm: null,
-        termStart: '2026-01-01T00:00:00.000Z',
-        termEnd: null,
-        meetingId: null,
-      },
-      {
-        id: 'aud-2',
-        kind: 'OPERATIONS_INSPECTOR',
-        deputy: true,
-        name: 'Pekka Laine',
-        firm: null,
-        termStart: '2026-01-01T00:00:00.000Z',
-        termEnd: null,
-        meetingId: null,
-      },
-    ],
-  };
+  return MOCK_PROFILE;
 }
 
 export async function fetchAssociationProfile(): Promise<{
