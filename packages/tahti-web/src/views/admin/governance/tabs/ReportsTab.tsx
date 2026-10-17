@@ -1,5 +1,5 @@
 import { FileTextIcon, LoaderCircleIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Button, Input } from '@tahti-player/ui';
 
@@ -10,19 +10,24 @@ import {
 } from '../../../../api/admin';
 import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { AnnualReportRow } from './AnnualReportRow';
 
 export function ReportsTab() {
   const [reports, setReports] = useState<AdminAnnualReport[]>([]);
   const [year, setYear] = useState(String(new Date().getUTCFullYear() - 1));
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    const result = await fetchAdminAnnualReports();
+    setReports(result.data);
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
-    void fetchAdminAnnualReports().then((result) => {
-      setReports(result.data);
-      setLoading(false);
-    });
-  }, []);
+    void load();
+  }, [load]);
 
   return (
     <>
@@ -42,16 +47,14 @@ export function ReportsTab() {
             disabled={busy || !/^20\d{2}$/.test(year)}
             onClick={() => {
               setBusy(true);
+              setError(null);
               void generateAdminAnnualReport(Number(year)).then((result) => {
                 setBusy(false);
-                if (result.data) {
-                  setReports((current) => [
-                    result.data!,
-                    ...current.filter(
-                      (item) => item.year !== result.data!.year,
-                    ),
-                  ]);
+                if (!result.ok) {
+                  setError(result.error);
+                  return;
                 }
+                void load();
               });
             }}
           >
@@ -67,6 +70,11 @@ export function ReportsTab() {
             {busy ? 'Generating…' : 'Generate report'}
           </Button>
         </div>
+        {error ? (
+          <p role="alert" className="text-accent-red-strong mt-2 text-sm">
+            {error}
+          </p>
+        ) : null}
       </StudioPanel>
       <StudioPanel title="Generated reports">
         {loading ? (
@@ -76,29 +84,7 @@ export function ReportsTab() {
         ) : (
           <ul className="divide-border divide-y">
             {reports.map((report) => (
-              <li
-                key={report.id}
-                className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm first:pt-0 last:pb-0"
-              >
-                <span>
-                  <span className="font-medium">
-                    Annual report {report.year}
-                  </span>
-                  <span className="text-foreground-secondary ml-2 text-xs">
-                    {new Date(report.generatedAt).toLocaleDateString()}
-                  </span>
-                </span>
-                {report.downloadUrl && (
-                  <a
-                    href={report.downloadUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-xs underline-offset-2 hover:underline"
-                  >
-                    Download
-                  </a>
-                )}
-              </li>
+              <AnnualReportRow key={report.id} report={report} />
             ))}
           </ul>
         )}

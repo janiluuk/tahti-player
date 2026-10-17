@@ -3,7 +3,6 @@ import type {
   GovernanceDocument,
   GovernanceMeeting,
 } from '../types';
-import type { AdminAnnualReport } from './admin-governance';
 
 export const MOCK_GOVERNANCE_MEETINGS: GovernanceMeeting[] = [
   {
@@ -108,17 +107,6 @@ export const MOCK_BOARD_RESOLUTIONS: BoardResolution[] = [
   },
 ];
 
-export const MOCK_ANNUAL_REPORTS: AdminAnnualReport[] = [
-  {
-    id: 'report-mock-2025',
-    year: 2025,
-    storageKey: 'reports/annual-2025.pdf',
-    generatedAt: '2026-02-12T10:00:00.000Z',
-    generatedByDisplayName: 'Rautatie',
-    downloadUrl: null,
-  },
-];
-
 const MOCK_META = { source: 'mock', reason: 'VITE_FORCE_MOCK' } as const;
 
 function replaceIn<T extends { id: string }>(
@@ -196,22 +184,4 @@ export function mockPatchResolution(
     data: replaceIn(MOCK_BOARD_RESOLUTIONS, id, change),
     meta: MOCK_META,
   };
-}
-
-export function mockGenerateAnnualReport(year: number) {
-  const report: AdminAnnualReport = {
-    id: `report-mock-${year}`,
-    year,
-    storageKey: `reports/annual-${year}.pdf`,
-    generatedAt: new Date().toISOString(),
-    generatedByDisplayName: 'Demo Artist',
-    downloadUrl: null,
-  };
-  const index = MOCK_ANNUAL_REPORTS.findIndex((item) => item.year === year);
-  if (index >= 0) {
-    MOCK_ANNUAL_REPORTS[index] = report;
-  } else {
-    MOCK_ANNUAL_REPORTS.unshift(report);
-  }
-  return { data: report, meta: MOCK_META };
 }
