@@ -62,7 +62,6 @@ import { AudioEngine } from './AudioEngine';
 import { AuthDialog } from './AuthDialog';
 import { ConnectedPlayerBar } from './ConnectedPlayerBar';
 import { ConnectedStatusBar } from './ConnectedStatusBar';
-import { FullScreenPlayer } from './FullScreenPlayer';
 import { HearthisEmbedHostProvider } from './HearthisEmbedHost';
 import { ListenHeartbeat } from './ListenHeartbeat';
 import { MobileBottomNav, MobileDrawer } from './MobileChrome';
@@ -90,6 +89,11 @@ const ConnectedSettingsModal = lazy(() =>
     default: m.ConnectedSettingsModal,
   })),
 );
+const FullScreenPlayer = lazy(() =>
+  import('./FullScreenPlayer').then((m) => ({
+    default: m.FullScreenPlayer,
+  })),
+);
 
 /** Both dialogs pull large editors (channel designer, every settings panel),
  * so they load on first open rather than with the shell. */
@@ -113,6 +117,20 @@ function DeferredDialogs() {
         </Suspense>
       )}
     </>
+  );
+}
+
+/** Now-playing takeover (visualizer + large artwork) — stay mounted after the
+ * first open so the close animation can finish, same as DeferredDialogs. */
+function DeferredFullScreenPlayer({ open }: { open: boolean }) {
+  const opened = useOpenedOnce(open);
+  if (!opened) {
+    return null;
+  }
+  return (
+    <Suspense fallback={null}>
+      <FullScreenPlayer />
+    </Suspense>
   );
 }
 
@@ -611,7 +629,7 @@ export function AppShell() {
 
         {!isMobile && !fullScreenPlayerOpen && <ConnectedPlayerBar />}
         {!isMobile && <ConnectedStatusBar />}
-        <FullScreenPlayer />
+        <DeferredFullScreenPlayer open={fullScreenPlayerOpen} />
         <AuthDialog />
         <DeferredDialogs />
         <PageTourSpotlight />
