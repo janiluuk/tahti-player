@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import {
+  CalendarDaysIcon,
   CalendarIcon,
   HeartIcon,
   HistoryIcon,
@@ -243,6 +244,16 @@ export function RadioView() {
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
+              <Tooltip content="Full programme schedule" side="top">
+                <ButtonLink
+                  to="/schedule"
+                  size="icon-sm"
+                  variant="secondary"
+                  aria-label="Open programme schedule"
+                >
+                  <CalendarDaysIcon size={16} aria-hidden />
+                </ButtonLink>
+              </Tooltip>
               <Tooltip content="Open Tahti Radio channel" side="top">
                 <ButtonLink
                   to="/channel/$slug"

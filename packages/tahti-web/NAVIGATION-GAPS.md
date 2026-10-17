@@ -85,7 +85,7 @@ Rows marked resolved were re-checked 2026-10-03 (see above).
 | Gap | Why it matters |
 | --- | --- |
 | ~~`/venues` not in Listen/mobile chrome~~ | Resolved: redirects to the Discover Venues tab. |
-| `/schedule` not linked from Radio | Listeners on Radio cannot see the programme; it is linked from the channel page programme block and the booking calendar. |
+| ~~`/schedule` not linked from Radio~~ | Resolved: Radio header links to `/schedule` (full programme); booking calendar stays a separate signed-in control. |
 | ~~`/library/smartlinks` unlinked~~ | Resolved: Library tab. |
 | `/studio/distribution` Releases-only | Artists who are not on the releases list have no StudioNav path to delivery status. |
 | ~~`/jam/$code` unlinked~~ | Resolved: "Start a Jam" on a collection page. |

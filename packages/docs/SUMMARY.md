@@ -6,6 +6,7 @@
 
 * [Getting started](user-manual/getting-started.md)
 * [Installation](user-manual/installation.md)
+* [Tahti Live (web)](user-manual/tahti-live-web.md)
 * [Remote control](user-manual/remote-control.md)
 * [Command line (tahti-cli)](user-manual/command-line.md)
 

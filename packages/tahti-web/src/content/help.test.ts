@@ -35,6 +35,23 @@ describe('artist gallery help', () => {
   });
 });
 
+describe('shared jam help', () => {
+  it('documents Start a Jam and distinguishes the desktop remote', () => {
+    const article = getHelpArticle('shared-jam');
+    expect(article?.title).toBe('Shared listening (Jam)');
+    const start = article?.sections.find(
+      (section) => section.heading === 'Start a Jam',
+    );
+    expect(start?.body.some((line) => line.includes('Start a Jam'))).toBe(true);
+    const remote = article?.sections.find(
+      (section) => section.heading === 'Not the desktop remote',
+    );
+    expect(
+      remote?.body.some((line) => line.includes('Settings → Integrations')),
+    ).toBe(true);
+  });
+});
+
 describe('earnings help', () => {
   it('explains the fan-sub order split and points at Studio Audience', () => {
     const article = getHelpArticle('earnings');
