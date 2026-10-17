@@ -110,23 +110,28 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
         (item): item is Extract<FeedItem, { kind: 'track' }> =>
           item.kind === 'track' && !item.audioUrl,
       );
+      const trackUsernames = [
+        ...new Set(tracks.map((item) => item.artist.username)),
+      ];
+      // One playables fetch per artist, then map each track — avoids N+1.
       void Promise.all(
-        tracks.map(async (item) => {
-          const result = await fetchArtistPlayables(item.artist.username);
-          const playable =
-            result.data.find(
-              (candidate) => candidate.id === `sound:${item.id}`,
-            ) ??
-            result.data.find((candidate) => candidate.title === item.title);
-          return playable ? ([item.id, playable] as const) : null;
+        trackUsernames.map(async (username) => {
+          const result = await fetchArtistPlayables(username);
+          return [username, result.data] as const;
         }),
-      ).then((resolved) => {
+      ).then((entries) => {
+        const byUsername = new Map(entries);
         setFeedPlayables(
           Object.fromEntries(
-            resolved.filter(
-              (entry): entry is readonly [string, TahtiPlayable] =>
-                entry !== null,
-            ),
+            tracks.flatMap((item) => {
+              const catalog = byUsername.get(item.artist.username) ?? [];
+              const playable =
+                catalog.find(
+                  (candidate) => candidate.id === `sound:${item.id}`,
+                ) ??
+                catalog.find((candidate) => candidate.title === item.title);
+              return playable ? [[item.id, playable]] : [];
+            }),
           ),
         );
       });
