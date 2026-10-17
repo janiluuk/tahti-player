@@ -32,6 +32,7 @@ import {
 import type { BoardResolution } from '../../../../api/types';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import type { AdminGovernanceTabId } from '../governanceNav';
+import { LegalHoldControl } from '../records/LegalHoldControl';
 
 type ResolutionOutcome = 'PASSED' | 'FAILED' | 'DEFERRED';
 
@@ -360,6 +361,15 @@ export function OverviewTab() {
                   Publish
                 </Button>
               )}
+              <div className="w-full">
+                <LegalHoldControl
+                  kind="resolution"
+                  id={resolution.id}
+                  title={resolution.title}
+                  legalHoldAt={resolution.legalHoldAt}
+                  legalHoldReason={resolution.legalHoldReason}
+                />
+              </div>
             </li>
           ))}
         </ul>

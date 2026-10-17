@@ -640,6 +640,8 @@ export type BoardResolution = {
   publishedAt?: string | null;
   createdAt?: string;
   createdByDisplayName?: string | null;
+  legalHoldAt?: string | null;
+  legalHoldReason?: string | null;
 };
 
 export type FeatureRequestStatus =
