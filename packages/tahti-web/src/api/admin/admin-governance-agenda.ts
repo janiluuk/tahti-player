@@ -109,3 +109,38 @@ export async function createAdminAgendaItem(
     return { ok: false, error: errorText(err, 'Could not add the item') };
   }
 }
+
+export type AgendaItemChange = {
+  title?: string;
+  description?: string | null;
+  outcome?: string | null;
+};
+
+/** Edits an item; null clears the description or the outcome. */
+export async function updateAdminAgendaItem(
+  item: Pick<GovernanceAgendaItem, 'id' | 'meetingId'>,
+  change: AgendaItemChange,
+): Promise<AgendaResult> {
+  if (change.title !== undefined && !change.title.trim()) {
+    return { ok: false, error: 'Give the item a title' };
+  }
+  if (isForceMock()) {
+    setMockAgendaItems(
+      item.meetingId,
+      mockAgendaItems(item.meetingId).map((current) =>
+        current.id === item.id ? { ...current, ...change } : current,
+      ),
+    );
+    return { ok: true };
+  }
+  try {
+    await sendJson(
+      `/api/admin/governance/agenda-items/${encodeURIComponent(item.id)}`,
+      'PATCH',
+      change,
+    );
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: errorText(err, 'Could not save the item') };
+  }
+}

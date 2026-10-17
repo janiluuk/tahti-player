@@ -7,6 +7,7 @@ import {
   fetchAdminAgendaItems,
   type GovernanceAgendaItem,
 } from '../../../../api/admin/admin-governance-agenda';
+import { AgendaItemRow } from './AgendaItemRow';
 import { CollapsibleRecord } from './MeetingRecordPanels';
 
 /** A meeting's agenda as numbered items the minutes can record an outcome
@@ -52,19 +53,11 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
       ) : (
         <ol className="flex flex-col gap-2 text-sm">
           {items.map((item) => (
-            <li key={item.id} className="flex flex-col gap-0.5">
-              <span className="font-medium">
-                {item.position}. {item.title}
-              </span>
-              {item.description ? (
-                <span className="text-foreground-secondary text-xs">
-                  {item.description}
-                </span>
-              ) : null}
-              {item.outcome ? (
-                <span className="text-xs">Decided: {item.outcome}</span>
-              ) : null}
-            </li>
+            <AgendaItemRow
+              key={item.id}
+              item={item}
+              onChanged={() => void load()}
+            />
           ))}
         </ol>
       )}
