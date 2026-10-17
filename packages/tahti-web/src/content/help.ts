@@ -599,6 +599,8 @@ export const HELP_ARTICLES: HelpArticle[] = [
           'Governance → Annual reports takes a yearly report from draft to approved, published to members and filed with the register; an approved report is corrected (earlier versions are kept), and any report can be put on legal hold.',
           'Governance → Board records board terms (add one, end one early) and runs board elections: call one, edit or cancel it, see and nominate candidates, and record the result, which gives each elected member a board term.',
           'Governance → Records holds members’ correction requests (answer each with a note the member reads), the association’s registered details and auditors, and one list of everything on legal hold.',
+          'Governance → AGM keeps each meeting’s agenda as numbered items (add, edit, reorder, remove, and record what was decided), conflicts of interest, legal holds on meetings and documents, document archiving, and a searchable member register.',
+          'On a motion’s page the board can circulate a draft for seconds, put the motion on a meeting and one of its agenda items, and append a correction to a closed motion’s result certificate.',
           'Orphan pages (/admin/orphan-pages) gathers real admin pages that shipped without a menu entry of their own — each is its own tab there rather than lost at an unlinked URL.',
         ],
       },

@@ -109,3 +109,19 @@ describe('admin governance help', () => {
     ).toBe(true);
   });
 });
+
+describe('admin meeting records help', () => {
+  it('names agenda items and motion actions', () => {
+    const areas = getHelpArticle('admin-guide')?.sections.find(
+      (section) => section.heading === 'Admin areas',
+    );
+    expect(
+      areas?.body.some((line) => line.includes('agenda as numbered items')),
+    ).toBe(true);
+    expect(
+      areas?.body.some((line) =>
+        line.includes('circulate a draft for seconds'),
+      ),
+    ).toBe(true);
+  });
+});
