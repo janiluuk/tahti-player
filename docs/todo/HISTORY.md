@@ -4811,3 +4811,13 @@ Asked for as "next 15 slices of cross repo todo", then "rebase to latest master 
 - **Venues (#1005-#1010):** My venues at `/venues/mine` (verification state, edit details, book and cancel shows), "Live now" on the venue page, links from Discover and after registering; `/studio/venues` goes to My venues instead of the board-only admin list.
 - **Docs (#1011, #1012):** sweep leftovers folded; Help text for the member and venue features; tahti-web 0.0.164.
 - **Checked and left alone:** tahti-org `fansubs/payouts` CSV and `/api/me/channel-funnel-stats`: checked, already covered in the web (CSV export link; funnel data served by the gate and live routes). `/api/v1/custom-domain/resolve`, `/api/smartlink/click`, OAuth callbacks and `og/*` have no tahti-web caller on purpose (server or nginx side). Board side of elections, board terms, auditors and annual reports still has no admin UI in tahti-web (`/api/admin/governance/elections`, `board-terms`, `auditors`, `/api/admin/reports/annual`). Next candidate batch.
+
+## 2026-10-17 — Batch 69: the board side of governance (tahti-player #1013-#1033)
+
+Asked for as "do the next 20 slices and open pr". Web only; every slice wires a tahti-org admin route that had no tahti-web caller. All merged on 2026-10-17.
+
+- **Annual reports (#1013-#1018):** the list shows each report's stage and no longer shows "Invalid Date" after generating (the generate answer is not a list row); approve (optionally at a meeting), publish to members, record the filing with the register, correct an approved report with earlier versions kept, legal hold.
+- **Board tab (#1019-#1025):** every board term, add one (member search that never shows emails), end one early; elections: call, edit or cancel, candidates and nominations, record the result.
+- **Records tab (#1026-#1031):** members' correction requests and the board's answer, the association's registered details, auditors (add, end a term), one list of records on legal hold.
+- **#1032:** batch 68 folded, admin Help text, tahti-web 0.0.165. **#1033:** Combobox story used `text-accent-red`, which failed the themes contrast test for every core-package PR.
+
