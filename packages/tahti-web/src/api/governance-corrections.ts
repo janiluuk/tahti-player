@@ -106,3 +106,35 @@ export async function requestCorrection(input: {
     };
   }
 }
+
+/** Takes back a request still waiting for the board; it stays, withdrawn. */
+export async function withdrawCorrection(
+  id: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    const row = mockCorrections.find((c) => c.id === id);
+    if (!row || row.state !== 'OPEN') {
+      return {
+        ok: false,
+        error: 'This request is no longer waiting for an answer',
+      };
+    }
+    mockCorrections = mockCorrections.map((c) =>
+      c.id === id ? { ...c, state: 'WITHDRAWN' } : c,
+    );
+    return { ok: true };
+  }
+  try {
+    await requestJson(
+      `/api/v1/governance/corrections/${encodeURIComponent(id)}`,
+      { method: 'DELETE' },
+    );
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not withdraw the request',
+    };
+  }
+}

@@ -9,10 +9,12 @@ import {
   CORRECTION_SUBJECT_LABELS,
   fetchMyCorrections,
   requestCorrection,
+  withdrawCorrection,
   type CorrectionState,
   type CorrectionSubject,
   type GovernanceCorrection,
 } from '../../api/governance-corrections';
+import { ConfirmDialog } from '../ConfirmDialog';
 import { GovernancePanel } from './GovernancePanel';
 
 const STATE_LABELS: Record<
@@ -33,8 +35,32 @@ function formatDay(iso: string): string {
   });
 }
 
-function CorrectionItem({ correction }: { correction: GovernanceCorrection }) {
+function CorrectionItem({
+  correction,
+  onChanged,
+}: {
+  correction: GovernanceCorrection;
+  onChanged: () => void;
+}) {
   const state = STATE_LABELS[correction.state];
+  const [confirming, setConfirming] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const withdraw = () => {
+    setConfirming(false);
+    setBusy(true);
+    setError(null);
+    void withdrawCorrection(correction.id).then((result) => {
+      setBusy(false);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      onChanged();
+    });
+  };
+
   return (
     <li className="flex flex-col gap-1 py-2 text-sm first:pt-0 last:pb-0">
       <div className="flex flex-wrap items-center gap-2">
@@ -54,6 +80,30 @@ function CorrectionItem({ correction }: { correction: GovernanceCorrection }) {
           Board's answer: {correction.resolutionNote}
         </p>
       ) : null}
+      {correction.state === 'OPEN' ? (
+        <Button
+          size="sm"
+          variant="secondary"
+          className="w-fit"
+          disabled={busy}
+          onClick={() => setConfirming(true)}
+        >
+          Withdraw request
+        </Button>
+      ) : null}
+      {error ? (
+        <p role="alert" className="text-accent-red-strong text-xs">
+          {error}
+        </p>
+      ) : null}
+      <ConfirmDialog
+        isOpen={confirming}
+        title="Withdraw this request?"
+        description="The board will not answer it. It stays in your list as withdrawn."
+        confirmLabel="Withdraw"
+        onCancel={() => setConfirming(false)}
+        onConfirm={withdraw}
+      />
     </li>
   );
 }
@@ -149,7 +199,11 @@ export function CorrectionsPanel() {
           <h3 className="text-sm font-semibold">Your requests</h3>
           <ul className="divide-border divide-y">
             {corrections.map((correction) => (
-              <CorrectionItem key={correction.id} correction={correction} />
+              <CorrectionItem
+                key={correction.id}
+                correction={correction}
+                onChanged={() => void load()}
+              />
             ))}
           </ul>
         </div>

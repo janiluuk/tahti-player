@@ -114,5 +114,13 @@ export const RequestCorrection: Story = {
     await expect(
       await canvas.findByText('The minutes list the wrong meeting date.'),
     ).toBeVisible();
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Withdraw request' }),
+    );
+    const dialog = within(
+      await within(canvasElement.ownerDocument.body).findByRole('dialog'),
+    );
+    await userEvent.click(dialog.getByRole('button', { name: 'Withdraw' }));
+    await expect(await canvas.findByText('Withdrawn')).toBeVisible();
   },
 };

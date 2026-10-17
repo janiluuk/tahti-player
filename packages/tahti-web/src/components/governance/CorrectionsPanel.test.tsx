@@ -82,4 +82,37 @@ describe('CorrectionsPanel', () => {
       'You already have 5 correction requests',
     );
   });
+
+  it('withdraws a waiting request after confirming', async () => {
+    const fetchMine = vi
+      .spyOn(corrections, 'fetchMyCorrections')
+      .mockResolvedValue({
+        data: [
+          { ...answered, id: 'waiting', state: 'OPEN', resolutionNote: null },
+        ],
+        meta: { source: 'api' },
+      });
+    const withdraw = vi
+      .spyOn(corrections, 'withdrawCorrection')
+      .mockResolvedValue({ ok: true });
+    render(<CorrectionsPanel />);
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Withdraw request' }),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Withdraw' }));
+    expect(withdraw).toHaveBeenCalledWith('waiting');
+    await waitFor(() => expect(fetchMine).toHaveBeenCalledTimes(2));
+  });
+
+  it('offers no withdraw once the board has answered', async () => {
+    vi.spyOn(corrections, 'fetchMyCorrections').mockResolvedValue({
+      data: [answered],
+      meta: { source: 'api' },
+    });
+    render(<CorrectionsPanel />);
+    await screen.findByText('Accepted');
+    expect(
+      screen.queryByRole('button', { name: 'Withdraw request' }),
+    ).toBeNull();
+  });
 });
