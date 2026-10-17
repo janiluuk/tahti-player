@@ -2,6 +2,22 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-10-17 — Batch 70 meeting records (merged #1034–#1053)
+
+Folded from `batch-70-meeting-records.md`. Twenty web slices for meeting
+agenda CRUD/reorder, member meeting agenda and conflicts, motion result
+certificate/correction/circulation/meeting links, legal holds on meetings
+documents and resolutions, document archive restore/rename, circulated-draft
+badge, and the AGM searchable member register. Shipped as #1034–#1053
+(all merged).
+
+## 2026-10-17 — Feature swipe unused/undocumented (merged #994–#996)
+
+Folded from `feature-swipe-unused-undocumented.md`. Audit of reachable vs
+chrome vs GitBook/Help; easy fixes shipped: todo+INDEX (#994), distinct
+chrome tab icons (#995), Radio → `/schedule` plus Jam Help and GitBook web
+stub (#996). Larger/unclear nav product calls left for later work.
+
 ## 2026-10-16 — Shift+Play adds to queue
 
 Folded from `shift-play-queue.md`. `MediaArtwork` play control queues on
