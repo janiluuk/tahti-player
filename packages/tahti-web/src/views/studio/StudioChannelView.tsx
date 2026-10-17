@@ -185,11 +185,7 @@ export function StudioChannelView() {
 
   if (DESIGNER_TABS.has(search.tab ?? '')) {
     return (
-      <Navigate
-        to="/settings/$section"
-        params={{ section: 'artist' }}
-        search={{ tab: 'channel-designer' }}
-      />
+      <Navigate to="/studio/branding" search={{ tab: 'channel-designer' }} />
     );
   }
 

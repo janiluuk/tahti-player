@@ -34,4 +34,21 @@ describe('SettingsView', () => {
     render(<SettingsView sectionId="account" />);
     expect(useSettingsModalStore.getState().accountSection).toBeNull();
   });
+
+  it('opens Account on API tokens from a dashboard bookmark', () => {
+    window.history.replaceState(null, '', '/settings/account?tab=api-tokens');
+    render(<SettingsView sectionId="account" />);
+    const state = useSettingsModalStore.getState();
+    expect(state.isOpen).toBe(true);
+    expect(state.accountSection).toBe('api-tokens');
+  });
+
+  it('opens Artist Connections from a dashboard bookmark', () => {
+    window.history.replaceState(null, '', '/settings/artist?tab=connections');
+    render(<SettingsView sectionId="artist" />);
+    const state = useSettingsModalStore.getState();
+    expect(state.isOpen).toBe(true);
+    expect(state.activeTab).toBe('artist');
+    expect(state.artistSection).toBe('connections');
+  });
 });
