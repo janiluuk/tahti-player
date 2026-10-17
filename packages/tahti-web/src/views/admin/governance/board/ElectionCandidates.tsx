@@ -8,6 +8,7 @@ import {
   type AdminElection,
   type AdminElectionCandidate,
 } from '../../../../api/admin/admin-governance-elections';
+import { ElectionResultForm } from './ElectionResultForm';
 import { MemberPicker, type PickedMember } from './MemberPicker';
 
 function CandidateLine({ candidate }: { candidate: AdminElectionCandidate }) {
@@ -42,9 +43,11 @@ function CandidateLine({ candidate }: { candidate: AdminElectionCandidate }) {
 export function ElectionCandidates({
   election,
   onCandidates,
+  onDecided,
 }: {
   election: AdminElection;
   onCandidates?: (candidates: AdminElectionCandidate[]) => void;
+  onDecided?: () => void;
 }) {
   const [candidates, setCandidates] = useState<AdminElectionCandidate[] | null>(
     null,
@@ -158,6 +161,14 @@ export function ElectionCandidates({
           {error}
         </p>
       ) : null}
+      <ElectionResultForm
+        election={election}
+        candidates={candidates}
+        onRecorded={() => {
+          void load();
+          onDecided?.();
+        }}
+      />
     </div>
   );
 }
