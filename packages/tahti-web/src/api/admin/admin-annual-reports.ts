@@ -181,3 +181,35 @@ export async function publishAnnualReport(
     'Could not publish the report',
   );
 }
+
+/** Records (or with `filedAt: null` clears) when the approved report was
+ * filed with the register, and the register's reference. */
+export async function setAnnualReportFiling(
+  year: number,
+  filing: { filedAt: string | null; filingReference?: string | null },
+): Promise<AnnualReportResult> {
+  if (isForceMock()) {
+    const report = mockAnnualReport(year);
+    if (!report?.approvedAt) {
+      return { ok: false, error: 'Only an approved report can be filed' };
+    }
+    if (filing.filedAt && filing.filedAt < report.approvedAt.slice(0, 10)) {
+      return {
+        ok: false,
+        error: 'A report cannot be filed before it was approved',
+      };
+    }
+    updateMockAnnualReport(year, {
+      filedAt: filing.filedAt,
+      filingReference: filing.filedAt ? (filing.filingReference ?? null) : null,
+    });
+    return { ok: true };
+  }
+  return reportAction(
+    year,
+    '/filing',
+    'PUT',
+    filing,
+    'Could not save the filing',
+  );
+}

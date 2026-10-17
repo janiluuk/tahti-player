@@ -10,6 +10,7 @@ import {
 } from '../../../../api/admin/admin-annual-reports';
 import type { GovernanceMeeting } from '../../../../api/types';
 import { ConfirmDialog } from '../../../../components/ConfirmDialog';
+import { AnnualReportFilingForm } from './AnnualReportFilingForm';
 
 const NO_MEETING = '';
 
@@ -101,6 +102,7 @@ export function AnnualReportActions({
           Publish to members
         </Button>
       ) : null}
+      <AnnualReportFilingForm report={report} onChanged={onChanged} />
       <ConfirmDialog
         isOpen={confirmPublish}
         title={`Publish annual report ${report.year}?`}
