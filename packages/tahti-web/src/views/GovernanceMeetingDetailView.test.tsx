@@ -26,8 +26,17 @@ function createMeetingRouter(id: string) {
     path: '/governance',
     component: () => null,
   });
+  const motionRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/governance/motions/$id',
+    component: () => null,
+  });
   return createRouter({
-    routeTree: rootRoute.addChildren([detailRoute, governanceRoute]),
+    routeTree: rootRoute.addChildren([
+      detailRoute,
+      governanceRoute,
+      motionRoute,
+    ]),
     history: createMemoryHistory({
       initialEntries: [`/governance/meetings/${id}`],
     }),
@@ -114,6 +123,42 @@ describe('GovernanceMeetingDetailView', () => {
     expect(downloadLink?.getAttribute('href')).toContain(
       'minutes/2026-06-board.pdf',
     );
+  });
+
+  it('lists agenda items with the outcome and the records filed under them', async () => {
+    const router = createMeetingRouter('meeting-board-2026-06');
+    await act(async () => {
+      root.render(<RouterProvider router={router} />);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    expect(container.textContent).toContain('2. Annual report 2025');
+    expect(container.textContent).toContain('Decided: Approved unanimously.');
+    const motionLink = Array.from(container.querySelectorAll('a')).find(
+      (a) => a.textContent === 'Approve the annual report',
+    );
+    expect(motionLink?.getAttribute('href')).toBe(
+      '/governance/motions/motion-1',
+    );
+  });
+
+  it('lists conflicts of interest from the published minutes', async () => {
+    const router = createMeetingRouter('meeting-board-2026-06');
+    await act(async () => {
+      root.render(<RouterProvider router={router} />);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    expect(container.textContent).toContain('Conflicts of interest');
+    expect(container.textContent).toContain('Grant application from her label');
+    expect(container.textContent).toContain('Stepped out of the decision');
+  });
+
+  it('leaves conflicts out when none are recorded', async () => {
+    const router = createMeetingRouter('meeting-agm-2026');
+    await act(async () => {
+      root.render(<RouterProvider router={router} />);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    expect(container.textContent).not.toContain('Conflicts of interest');
   });
 
   it('shows a not-found message for an unknown meeting id', async () => {
