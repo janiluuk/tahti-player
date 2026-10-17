@@ -213,3 +213,72 @@ export async function setAnnualReportFiling(
     'Could not save the filing',
   );
 }
+
+export type AnnualReportRevision = {
+  id: string;
+  generatedAt: string;
+  replacedAt: string;
+  note: string;
+  downloadUrl: string | null;
+};
+
+const mockRevisions = new Map<number, AnnualReportRevision[]>();
+
+/** Regenerates an approved report from today's records, keeping the replaced
+ * version with the board's note on what changed. */
+export async function correctAnnualReport(
+  year: number,
+  note: string,
+): Promise<AnnualReportResult> {
+  const trimmed = note.trim();
+  if (isForceMock()) {
+    const report = mockAnnualReport(year);
+    if (!report?.approvedAt) {
+      return {
+        ok: false,
+        error:
+          'A report that is not approved yet is regenerated, not corrected',
+      };
+    }
+    if (report.legalHoldAt) {
+      return { ok: false, error: 'This report is on legal hold' };
+    }
+    const now = new Date().toISOString();
+    mockRevisions.set(year, [
+      {
+        id: `rev-${Date.now()}`,
+        generatedAt: report.generatedAt,
+        replacedAt: now,
+        note: trimmed,
+        downloadUrl: null,
+      },
+      ...(mockRevisions.get(year) ?? []),
+    ]);
+    updateMockAnnualReport(year, { generatedAt: now, correctedAt: now });
+    return { ok: true };
+  }
+  return reportAction(
+    year,
+    '/correct',
+    'POST',
+    { note: trimmed },
+    'Could not correct the report',
+  );
+}
+
+/** Versions a correction replaced, newest first. */
+export async function fetchAnnualReportRevisions(
+  year: number,
+): Promise<{ data: AnnualReportRevision[]; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return { data: mockRevisions.get(year) ?? [], meta: MOCK_META };
+  }
+  try {
+    const data = await getJson<AnnualReportRevision[]>(
+      `/api/admin/reports/annual/${year}/revisions`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
