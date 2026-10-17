@@ -35,6 +35,9 @@ export type MyVenue = {
   broadcasts: VenueBroadcast[];
 };
 
+const HOUR = 60 * 60 * 1000;
+const DAY = 24 * HOUR;
+
 const mockVenue: MyVenue = {
   id: 'venue-mock-1',
   slug: 'northern-lights-hall',
@@ -52,8 +55,8 @@ const mockVenue: MyVenue = {
   broadcasts: [
     {
       id: 'vb-mock-1',
-      startAt: '2026-09-05T18:00:00.000Z',
-      endAt: '2026-09-05T21:00:00.000Z',
+      startAt: new Date(Date.now() + 10 * DAY).toISOString(),
+      endAt: new Date(Date.now() + 10 * DAY + 3 * HOUR).toISOString(),
       description: 'Album release show',
       channelId: null,
       state: 'SCHEDULED',
