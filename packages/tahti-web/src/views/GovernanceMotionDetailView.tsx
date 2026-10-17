@@ -7,6 +7,7 @@ import { fetchGovernanceMembers, fetchGovernanceMotion } from '../api/client';
 import type { GovernanceMember, GovernanceMotionDetail } from '../api/types';
 import { MotionCard } from '../components/governance/MotionCard';
 import { MotionCertificatePanel } from '../components/governance/MotionCertificatePanel';
+import { MotionCirculateControl } from '../components/governance/MotionCirculateControl';
 import { MotionMeetingNote } from '../components/governance/MotionMeetingNote';
 import { MotionSeconders } from '../components/governance/MotionSeconders';
 import { PageLoading } from '../components/PageStates';
@@ -128,6 +129,12 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
       {user && !loading && !forbidden && motion && (
         <MotionMeetingNote meeting={motion.meeting} />
       )}
+
+      {user &&
+        !loading &&
+        !forbidden &&
+        motion?.state === 'DRAFT' &&
+        isBoard && <MotionCirculateControl motionId={motion.id} />}
 
       {user && !loading && !forbidden && motion && (
         <MotionSeconders motionId={motion.id} refreshKey={motion} />
