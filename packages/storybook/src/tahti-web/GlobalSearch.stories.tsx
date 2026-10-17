@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { GlobalSearch } from '@tahti-web/components/GlobalSearch';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 
@@ -30,8 +30,10 @@ export const WithResults: Story = {
     await userEvent.type(input, 'Northern', { delay: 30 });
     const listbox = await canvas.findByRole('listbox');
     await expect(input).toHaveAttribute('aria-expanded', 'true');
-    await expect(
-      listbox.querySelector('#search-option-artist-northern-lights'),
-    ).toBeTruthy();
+    await waitFor(() =>
+      expect(
+        listbox.querySelector('#search-option-artist-northern-lights'),
+      ).toBeTruthy(),
+    );
   },
 };
