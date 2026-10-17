@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AnnualReportsPanel } from '@tahti-web/components/governance/AnnualReportsPanel';
 import { AssociationPanel } from '@tahti-web/components/governance/AssociationPanel';
+import { CorrectionsPanel } from '@tahti-web/components/governance/CorrectionsPanel';
 import { CurrentBoardPanel } from '@tahti-web/components/governance/CurrentBoardPanel';
 import { ElectionsPanel } from '@tahti-web/components/governance/ElectionsPanel';
 import { expect, userEvent, within } from 'storybook/test';
@@ -94,5 +95,24 @@ export const Association: Story = {
     const canvas = within(canvasElement);
     await expect(await canvas.findByText('1234567-8')).toBeVisible();
     await expect(canvas.getByText('Anna Virtanen')).toBeVisible();
+  },
+};
+
+export const RequestCorrection: Story = {
+  render: () => <CorrectionsPanel />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByText('Accepted')).toBeVisible();
+    await userEvent.type(
+      canvas.getByLabelText('What is wrong, and what should it be?'),
+      'The minutes list the wrong meeting date.',
+    );
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Send to the board' }),
+    );
+    await expect(await canvas.findByRole('status')).toHaveTextContent('Sent.');
+    await expect(
+      await canvas.findByText('The minutes list the wrong meeting date.'),
+    ).toBeVisible();
   },
 };
