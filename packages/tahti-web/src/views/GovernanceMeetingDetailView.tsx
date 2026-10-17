@@ -9,6 +9,7 @@ import { parseMeetingAgenda } from '../api/governanceMocks';
 import type { GovernanceMeeting } from '../api/types';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
 import { MeetingAgendaItems } from '../components/governance/MeetingAgendaItems';
+import { MeetingConflicts } from '../components/governance/MeetingConflicts';
 import { PageLoading } from '../components/PageStates';
 import { useAuthStore } from '../stores/authStore';
 
@@ -180,6 +181,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
               }
             />
           </GovernancePanel>
+          <MeetingConflicts meetingId={meeting.id} />
         </>
       )}
     </ViewShell>
