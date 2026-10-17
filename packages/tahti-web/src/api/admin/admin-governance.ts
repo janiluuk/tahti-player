@@ -20,13 +20,11 @@ import {
   mockUpsertGovernanceAttendance,
 } from './admin-governance-records.mock';
 import {
-  MOCK_ANNUAL_REPORTS,
   MOCK_BOARD_RESOLUTIONS,
   MOCK_GOVERNANCE_DOCUMENTS,
   MOCK_GOVERNANCE_MEETINGS,
   mockCreateGovernanceMeeting,
   mockCreateResolution,
-  mockGenerateAnnualReport,
   mockPatchGovernanceMeeting,
   mockPatchResolution,
 } from './admin-governance.mock';
@@ -737,51 +735,6 @@ export async function patchAdminResolution(
       `/api/admin/resolutions/${encodeURIComponent(id)}`,
       'PATCH',
       input,
-    );
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    return { data: null, meta: failMeta(err) };
-  }
-}
-
-export type AdminAnnualReport = {
-  id: string;
-  year: number;
-  storageKey: string;
-  generatedAt: string;
-  generatedByDisplayName: string | null;
-  downloadUrl: string | null;
-};
-
-export async function fetchAdminAnnualReports(): Promise<{
-  data: AdminAnnualReport[];
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return {
-      data: MOCK_ANNUAL_REPORTS,
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<AdminAnnualReport[]>('/api/admin/reports');
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    return { data: [], meta: failMeta(err) };
-  }
-}
-
-export async function generateAdminAnnualReport(year: number): Promise<{
-  data: AdminAnnualReport | null;
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return mockGenerateAnnualReport(year);
-  }
-  try {
-    const data = await sendJson<AdminAnnualReport>(
-      `/api/admin/reports/annual/${year}`,
-      'POST',
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
