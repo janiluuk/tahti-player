@@ -149,3 +149,27 @@ export const BoardTab: Story = {
     await expect(canvas.getByText('Serving')).toBeVisible();
   },
 };
+
+/** Open the mock election's candidates and record Liis Kask as elected. */
+export const RecordElectionResult: Story = {
+  render: renderTab('board'),
+  play: async ({ canvasElement }) => {
+    const canvas = await expectSection(canvasElement, 'Board');
+    await userEvent.click(
+      await canvas.findByRole('button', {
+        name: 'Candidates: Board members for 2027',
+      }),
+    );
+    await userEvent.click(
+      await canvas.findByRole('button', { name: 'Record the result' }),
+    );
+    await userEvent.click(
+      canvas.getByRole('switch', { name: 'Elected: Liis Kask' }),
+    );
+    await userEvent.type(canvas.getByLabelText('Terms start'), '2027-01-01');
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Record result' }),
+    );
+    await expect(await canvas.findByText('Decided')).toBeVisible();
+  },
+};

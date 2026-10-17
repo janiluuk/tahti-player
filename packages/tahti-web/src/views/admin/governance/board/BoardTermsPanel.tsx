@@ -9,6 +9,8 @@ import {
 import { BOARD_ROLE_LABELS } from '../../../../api/governance-board';
 import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { AddBoardTermForm } from './AddBoardTermForm';
+import { EndBoardTermForm } from './EndBoardTermForm';
 
 function formatDay(iso: string): string {
   return new Date(iso).toLocaleDateString(undefined, {
@@ -61,6 +63,7 @@ export function BoardTermsPanel() {
 
   return (
     <StudioPanel title="Board terms">
+      <AddBoardTermForm onAdded={() => void load()} />
       {sorted === null ? (
         <PageLoading label="Loading board terms…" />
       ) : sorted.length === 0 ? (
@@ -88,6 +91,9 @@ export function BoardTermsPanel() {
                   {term.termEnd ? formatDay(term.termEnd) : 'open-ended'}
                   {term.endReason ? ` · ${term.endReason}` : ''}
                 </p>
+                {status.label !== 'Ended' ? (
+                  <EndBoardTermForm term={term} onEnded={() => void load()} />
+                ) : null}
               </li>
             );
           })}

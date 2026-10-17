@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import type { GovernanceBoardRole } from '../governance-board';
-import { getJson } from '../http';
+import { getJson, sendJson } from '../http';
 import { failMeta, isForceMock } from '../mode';
 
 /** A board term as the board sees it (GET /api/admin/governance/board-terms):
@@ -69,5 +69,86 @@ export async function fetchAdminBoardTerms(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     return { data: [], meta: failMeta(err) };
+  }
+}
+
+export type NewBoardTerm = {
+  userId: string;
+  displayName: string;
+  role: GovernanceBoardRole;
+  termStart: string;
+  termEnd?: string;
+};
+
+/** Records a member's board term (POST /api/admin/governance/board-terms). */
+export async function createAdminBoardTerm(
+  term: NewBoardTerm,
+): Promise<BoardActionResult> {
+  if (term.termEnd && term.termEnd <= term.termStart) {
+    return { ok: false, error: 'The term must end after it starts' };
+  }
+  if (isForceMock()) {
+    mockTerms = [
+      {
+        id: `term-${Date.now()}`,
+        userId: term.userId,
+        displayName: term.displayName,
+        role: term.role,
+        termStart: new Date(term.termStart).toISOString(),
+        termEnd: term.termEnd ? new Date(term.termEnd).toISOString() : null,
+        endReason: null,
+        meetingId: null,
+      },
+      ...mockTerms,
+    ];
+    return { ok: true };
+  }
+  try {
+    await sendJson('/api/admin/governance/board-terms', 'POST', {
+      userId: term.userId,
+      role: term.role,
+      termStart: term.termStart,
+      ...(term.termEnd ? { termEnd: term.termEnd } : {}),
+    });
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: errorText(err, 'Could not add the term') };
+  }
+}
+
+/** Ends a term early or shortens it (PATCH /api/admin/governance/board-terms/:id);
+ * a term is never extended, a longer one is a new election. */
+export async function endAdminBoardTerm(
+  id: string,
+  termEnd: string,
+  endReason?: string,
+): Promise<BoardActionResult> {
+  const reason = endReason?.trim() || undefined;
+  if (isForceMock()) {
+    const term = mockTerms.find((t) => t.id === id);
+    if (!term) {
+      return { ok: false, error: 'Board term not found' };
+    }
+    const end = new Date(termEnd).toISOString();
+    if (end <= term.termStart) {
+      return { ok: false, error: 'The term must end after it starts' };
+    }
+    if (term.termEnd && end > term.termEnd) {
+      return { ok: false, error: 'A term can be shortened, not extended' };
+    }
+    mockTerms = mockTerms.map((t) =>
+      t.id === id ? { ...t, termEnd: end, endReason: reason ?? null } : t,
+    );
+    return { ok: true };
+  }
+  try {
+    await sendJson(
+      `/api/admin/governance/board-terms/${encodeURIComponent(id)}`,
+      'PATCH',
+      { termEnd, ...(reason ? { endReason: reason } : {}) },
+    );
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: errorText(err, 'Could not end the term') };
   }
 }
