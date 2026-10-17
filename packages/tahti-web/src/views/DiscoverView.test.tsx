@@ -11,7 +11,9 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { AuthUser } from '../api/types';
 import { parseDiscoverSearch } from '../lib/discoverTabs';
+import { useAuthStore } from '../stores/authStore';
 import { DEFAULT_WIDGETS, useDiscoverStore } from '../stores/discoverStore';
 import { DiscoverView } from './DiscoverView';
 
@@ -30,6 +32,11 @@ function createDiscoverRouter(initialEntry: string) {
     path: '/venues/register',
     component: () => null,
   });
+  const myVenuesRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/venues/mine',
+    component: () => null,
+  });
   const venueRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/v/$slug',
@@ -45,6 +52,7 @@ function createDiscoverRouter(initialEntry: string) {
     routeTree: rootRoute.addChildren([
       discoverRoute,
       registerRoute,
+      myVenuesRoute,
       venueRoute,
       artistRoute,
     ]),
@@ -137,6 +145,24 @@ describe('DiscoverView', () => {
     ).toBeNull();
     expect(container.textContent).toContain('Kuudes Linja');
     expect(container.textContent).toContain('Register a venue');
+  });
+
+  it('links a signed-in visitor to their own venues', async () => {
+    const { container } = await renderDiscover('/discover?tab=venues');
+    expect(container.textContent).not.toContain('My venues');
+
+    act(() => {
+      useAuthStore.setState({
+        user: { id: 'u1', username: 'venue-owner' } as AuthUser,
+      });
+    });
+    const link = Array.from(container.querySelectorAll('a')).find(
+      (a) => a.textContent === 'My venues',
+    );
+    expect(link?.getAttribute('href')).toBe('/venues/mine');
+    act(() => {
+      useAuthStore.setState({ user: null });
+    });
   });
 
   it('keeps filters on artists browse and hides widget add control', async () => {
