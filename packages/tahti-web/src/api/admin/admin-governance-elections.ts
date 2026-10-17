@@ -191,3 +191,130 @@ export async function cancelAdminElection(
     };
   }
 }
+
+export type AdminElectionCandidate = {
+  id: string;
+  userId: string | null;
+  displayName: string;
+  statement: string | null;
+  selfNominated: boolean;
+  withdrawnAt: string | null;
+  elected: boolean;
+  createdAt: string;
+};
+
+const mockCandidates = new Map<string, AdminElectionCandidate[]>([
+  [
+    'election-board-2027',
+    [
+      {
+        id: 'cand-liis',
+        userId: 'u2',
+        displayName: 'Liis Kask',
+        statement: 'I want the grant round to open twice a year.',
+        selfNominated: true,
+        withdrawnAt: null,
+        elected: false,
+        createdAt: '2026-10-02T00:00:00.000Z',
+      },
+    ],
+  ],
+]);
+
+/** Everyone nominated, withdrawn ones included (GET …/elections/:id/candidates). */
+export async function fetchAdminElectionCandidates(
+  id: string,
+): Promise<{ data: AdminElectionCandidate[]; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return { data: [...(mockCandidates.get(id) ?? [])], meta: MOCK_META };
+  }
+  try {
+    const data = await getJson<AdminElectionCandidate[]>(
+      `/api/admin/governance/elections/${encodeURIComponent(id)}/candidates`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
+
+/** The board puts a member forward (POST …/elections/:id/candidates). */
+export async function nominateElectionCandidate(
+  id: string,
+  member: { userId: string; displayName: string },
+  statement?: string,
+): Promise<BoardActionResult> {
+  const trimmed = statement?.trim() || undefined;
+  if (isForceMock()) {
+    const list = mockCandidates.get(id) ?? [];
+    mockCandidates.set(id, [
+      ...list.filter((c) => c.userId !== member.userId),
+      {
+        id: `cand-${Date.now()}`,
+        userId: member.userId,
+        displayName: member.displayName,
+        statement: trimmed ?? null,
+        selfNominated: false,
+        withdrawnAt: null,
+        elected: false,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+    return { ok: true };
+  }
+  try {
+    await sendJson(
+      `/api/admin/governance/elections/${encodeURIComponent(id)}/candidates`,
+      'POST',
+      { userId: member.userId, ...(trimmed ? { statement: trimmed } : {}) },
+    );
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: errorText(err, 'Could not nominate the member'),
+    };
+  }
+}
+
+export type ElectionResult = {
+  electedUserIds: string[];
+  termStart: string;
+  termEnd?: string;
+};
+
+/** Records who the meeting elected; each gets a board term in the
+ * election's role and the election closes (POST …/elections/:id/result). */
+export async function recordElectionResult(
+  id: string,
+  result: ElectionResult,
+): Promise<BoardActionResult> {
+  if (result.electedUserIds.length === 0) {
+    return { ok: false, error: 'Choose who was elected' };
+  }
+  if (result.termEnd && result.termEnd <= result.termStart) {
+    return { ok: false, error: 'The term must end after it starts' };
+  }
+  if (isForceMock()) {
+    const list = mockCandidates.get(id) ?? [];
+    mockCandidates.set(
+      id,
+      list.map((c) => ({
+        ...c,
+        elected: Boolean(c.userId && result.electedUserIds.includes(c.userId)),
+      })),
+    );
+    updateMockAdminElection(id, { decidedAt: new Date().toISOString() });
+    return { ok: true };
+  }
+  try {
+    await sendJson(
+      `/api/admin/governance/elections/${encodeURIComponent(id)}/result`,
+      'POST',
+      result,
+    );
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: errorText(err, 'Could not record the result') };
+  }
+}
