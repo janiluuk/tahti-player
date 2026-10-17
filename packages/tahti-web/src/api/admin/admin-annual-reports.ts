@@ -282,3 +282,41 @@ export async function fetchAnnualReportRevisions(
     return { data: [], meta: failMeta(err) };
   }
 }
+
+/** Holds a report (or with `reason: null` releases it): while held it is not
+ * regenerated, corrected or archived. */
+export async function setAnnualReportLegalHold(
+  year: number,
+  reason: string | null,
+): Promise<AnnualReportResult> {
+  if (isForceMock()) {
+    if (!mockAnnualReport(year)) {
+      return { ok: false, error: 'No report has been generated for that year' };
+    }
+    updateMockAnnualReport(
+      year,
+      reason
+        ? {
+            legalHoldAt: new Date().toISOString(),
+            legalHoldReason: reason.trim(),
+          }
+        : { legalHoldAt: null, legalHoldReason: null },
+    );
+    return { ok: true };
+  }
+  return reason
+    ? reportAction(
+        year,
+        '/legal-hold',
+        'PUT',
+        { reason: reason.trim() },
+        'Could not hold the report',
+      )
+    : reportAction(
+        year,
+        '/legal-hold',
+        'DELETE',
+        undefined,
+        'Could not release the hold',
+      );
+}
