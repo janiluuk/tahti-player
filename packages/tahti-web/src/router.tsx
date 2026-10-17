@@ -389,7 +389,13 @@ const routeTree = rootRoute.addChildren([
   embedUserColRoute,
 ]);
 
-export const router = createRouter({ routeTree });
+export const router = createRouter({
+  routeTree,
+  /** Warm lazy route chunks when the user hovers or focuses a link — feels
+   * like an installed app instead of waiting on every first click. */
+  defaultPreload: 'intent',
+  defaultPreloadDelay: 50,
+});
 
 declare module '@tanstack/react-router' {
   interface Register {

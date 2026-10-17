@@ -78,7 +78,9 @@ import {
   StudioNav,
 } from './StudioNav';
 
-const LOADING_BAR_DELAY_MS = 1000;
+/** Show the top progress strip sooner than a full second so slow lazy chunks
+ * feel acknowledged; still delayed so fast navigations stay clean. */
+const LOADING_BAR_DELAY_MS = 180;
 
 const ChannelSetupDialog = lazy(() =>
   import('./ChannelSetupDialog').then((m) => ({
@@ -252,7 +254,7 @@ function RouteContent({ children }: { children: React.ReactNode }) {
       <div className="h-full">{children}</div>
       {showLoadingBar ? (
         <div
-          className="bg-primary pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 opacity-70"
+          className="tahti-route-loading-bar pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5"
           role="progressbar"
           aria-label="Loading page content"
         />

@@ -36,8 +36,9 @@ body,
   overflow-y: auto;
 }
 
-:root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,
-:root[data-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
+/* Soft chrome transitions on every theme so the SPA feels closer to the
+   desktop shell (previously only tahti-dark / tahti-blue got them). */
+.tahti-ambient-surface {
   background-color: var(--background);
   transition:
     background-color 240ms ease,
@@ -45,8 +46,7 @@ body,
     box-shadow 180ms ease;
 }
 
-:root[data-theme-id='nuclear:tahti-dark']
-  :is(button, a, [role='button'], [role='tab'], summary) {
+:is(button, a, [role='button'], [role='tab'], summary) {
   transition:
     color 140ms ease,
     background-color 140ms ease,
@@ -57,17 +57,44 @@ body,
     filter 140ms ease;
 }
 
-:root[data-theme-id='nuclear:tahti-dark']
-  :is(button, a, [role='button']):not(:disabled):hover {
+:is(button, a, [role='button']):not(:disabled):hover {
   filter: brightness(1.06);
 }
 
+@keyframes tahti-route-loading-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+.tahti-route-loading-bar {
+  overflow: hidden;
+  background: color-mix(in oklab, var(--primary) 35%, transparent);
+}
+
+.tahti-route-loading-bar::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 40%;
+  background: var(--primary);
+  opacity: 0.9;
+  animation: tahti-route-loading-shimmer 0.9s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  :root[data-theme-id='nuclear:tahti-dark']
-    :is(button, a, [role='button'], [role='tab'], summary),
-  :root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,
-  :root[data-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
+  :is(button, a, [role='button'], [role='tab'], summary),
+  .tahti-ambient-surface {
     transition-duration: 0.01ms;
+  }
+
+  .tahti-route-loading-bar::after {
+    animation: none;
+    width: 100%;
+    opacity: 0.7;
   }
 }
 
