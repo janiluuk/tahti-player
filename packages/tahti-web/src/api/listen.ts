@@ -1,5 +1,11 @@
 import { requestJson } from './client-request';
-import { mockDirectory, mockFeed, mockSearch, TAHTI_RADIO_SLUG } from './mock';
+import {
+  mockDirectory,
+  mockFeed,
+  mockLatestTracks,
+  mockSearch,
+  TAHTI_RADIO_SLUG,
+} from './mock';
 import { mockFixture } from './mock-overrides';
 import {
   apiErrorMeta,
@@ -13,6 +19,34 @@ import type {
   SearchResponse,
   SearchTrackResult,
 } from './types';
+
+/** Offline tag search: latest-track genres plus title hits from mock search. */
+function mockTracksMatchingTag(tag: string): SearchTrackResult[] {
+  const needle = tag.trim().toLowerCase();
+  const byId = new Map<string, SearchTrackResult>();
+
+  for (const track of mockLatestTracks()) {
+    const genre = track.genre?.trim().toLowerCase() ?? '';
+    const title = track.title.toLowerCase();
+    if (genre !== needle && !title.includes(needle)) {
+      continue;
+    }
+    byId.set(track.id, {
+      id: track.id,
+      title: track.title,
+      artistName: track.artist,
+      channelSlug: track.channelSlug,
+      durationSec: track.durationSec ?? null,
+      coverUrl: track.coverUrl ?? null,
+    });
+  }
+
+  for (const track of mockSearch(tag, 'tracks').tracks) {
+    byId.set(track.id, track);
+  }
+
+  return [...byId.values()];
+}
 
 export type OnAirChannel = {
   slug: string;
@@ -102,7 +136,10 @@ export async function fetchTracksByTag(
     return { ok: true, tracks: [] };
   }
   if (isForceMock()) {
-    return { ok: true, tracks: mockFixture('tagTracks', [], trimmed) };
+    return {
+      ok: true,
+      tracks: mockFixture('tagTracks', mockTracksMatchingTag(trimmed), trimmed),
+    };
   }
   try {
     const data = await getJson<SearchResponse>(

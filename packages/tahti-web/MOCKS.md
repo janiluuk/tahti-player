@@ -35,6 +35,7 @@ Production / beta builds (`import.meta.env.PROD`) **do not** fall back to fixtur
 - [ ] Seed richer archive / releases / collections for Studio browse
 - [x] Newsletter send confirmation (success toast + list refresh under mock)
 - [x] DM search users fixture expansion (batch 67 #7)
+- [x] Tag search (`fetchTracksByTag`) — offline tracks from mock latest genres + search title hits
 - [ ] Press-kit gallery upload mock (currently link-out)
 - [ ] Member invite mock (currently link-out)
 - [x] Stash upload / delete mock store (wave 7)
