@@ -276,3 +276,45 @@ export async function nominateElectionCandidate(
     };
   }
 }
+
+export type ElectionResult = {
+  electedUserIds: string[];
+  termStart: string;
+  termEnd?: string;
+};
+
+/** Records who the meeting elected; each gets a board term in the
+ * election's role and the election closes (POST …/elections/:id/result). */
+export async function recordElectionResult(
+  id: string,
+  result: ElectionResult,
+): Promise<BoardActionResult> {
+  if (result.electedUserIds.length === 0) {
+    return { ok: false, error: 'Choose who was elected' };
+  }
+  if (result.termEnd && result.termEnd <= result.termStart) {
+    return { ok: false, error: 'The term must end after it starts' };
+  }
+  if (isForceMock()) {
+    const list = mockCandidates.get(id) ?? [];
+    mockCandidates.set(
+      id,
+      list.map((c) => ({
+        ...c,
+        elected: Boolean(c.userId && result.electedUserIds.includes(c.userId)),
+      })),
+    );
+    updateMockAdminElection(id, { decidedAt: new Date().toISOString() });
+    return { ok: true };
+  }
+  try {
+    await sendJson(
+      `/api/admin/governance/elections/${encodeURIComponent(id)}/result`,
+      'POST',
+      result,
+    );
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: errorText(err, 'Could not record the result') };
+  }
+}

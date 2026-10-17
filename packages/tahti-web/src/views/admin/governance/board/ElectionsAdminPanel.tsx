@@ -193,7 +193,10 @@ export function ElectionsAdminPanel() {
                     : ''}
                   {election.cancelReason ? ` · ${election.cancelReason}` : ''}
                 </p>
-                <ElectionCandidates election={election} />
+                <ElectionCandidates
+                  election={election}
+                  onDecided={() => void load()}
+                />
                 <ElectionActions
                   election={election}
                   onChanged={() => void load()}
