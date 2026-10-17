@@ -21,7 +21,7 @@ and Studio go-live / Library phone gaps. Usability first; no new API inventing.
 | 9 | Go Live session subnav overflows Prep siblings under ~640px | S | |
 | 10 | Mock `fetchTracksByTag` returns fixture tracks so tag chips work offline | XS | #1058 |
 | 11 | Richer mock archive/releases/collections for a fresh artist | S | |
-| 12 | Onboarding toast uses a short duration (not sticky forever) | XS | |
+| 12 | Onboarding toast uses a short duration (not sticky forever) | XS | #1084 |
 | 13 | Sticky notification Acknowledge stays dismissed in mock | S | |
 | 14 | Messages empty thread pane uses EmptyState + Discover CTA | XS | #1059 |
 | 15 | Studio home Distribution tile when the artist has releases | S | #1071 |

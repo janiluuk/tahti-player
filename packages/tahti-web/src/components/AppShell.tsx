@@ -418,6 +418,7 @@ export function AppShell() {
     deferOnboardingPrompt(userId);
     toast('Finish setting up your profile?', {
       description: 'A few quick steps to personalize your channel.',
+      duration: 8_000,
       action: {
         label: 'Set up profile',
         onClick: () => void navigate({ to: '/onboarding' }),
