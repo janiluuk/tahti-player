@@ -131,5 +131,9 @@ export const RecordsTab: Story = {
     await expect(
       await canvas.findByText('My home municipality is Espoo, not Helsinki.'),
     ).toBeVisible();
+    await expect(
+      await canvas.findByText('Disputed minutes', { exact: false }),
+    ).toBeVisible();
+    await expect(await canvas.findByText('Anna Virtanen')).toBeVisible();
   },
 };
