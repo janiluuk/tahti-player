@@ -3,7 +3,7 @@ import type {
   CorrectionState,
   GovernanceCorrection,
 } from '../governance-corrections';
-import { getJson } from '../http';
+import { getJson, sendJson } from '../http';
 import { failMeta, isForceMock } from '../mode';
 
 /** A member's correction request as the board sees it, with who asked. */
@@ -63,5 +63,55 @@ export async function fetchAdminCorrections(
     return { data, meta: { source: 'api' } };
   } catch (err) {
     return { data: [], meta: failMeta(err) };
+  }
+}
+
+export type CorrectionAnswer = {
+  state: 'ACCEPTED' | 'REJECTED';
+  resolutionNote: string;
+};
+
+/** The board's answer to a waiting request. It changes no record itself: the
+ * board makes the correction where it belongs and says here what it did. */
+export async function answerAdminCorrection(
+  id: string,
+  answer: CorrectionAnswer,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const resolutionNote = answer.resolutionNote.trim();
+  if (!resolutionNote) {
+    return { ok: false, error: 'Tell the member what was decided' };
+  }
+  if (isForceMock()) {
+    const row = mockQueue.find((r) => r.id === id);
+    if (!row) {
+      return { ok: false, error: 'Correction request not found' };
+    }
+    if (row.state !== 'OPEN') {
+      return { ok: false, error: 'This request was already answered' };
+    }
+    mockQueue = mockQueue.map((r) =>
+      r.id === id
+        ? {
+            ...r,
+            state: answer.state,
+            resolutionNote,
+            resolvedAt: new Date().toISOString(),
+          }
+        : r,
+    );
+    return { ok: true };
+  }
+  try {
+    await sendJson(
+      `/api/admin/governance/corrections/${encodeURIComponent(id)}`,
+      'PATCH',
+      { state: answer.state, resolutionNote },
+    );
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not save the answer',
+    };
   }
 }

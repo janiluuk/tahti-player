@@ -9,6 +9,7 @@ import {
 import { CORRECTION_SUBJECT_LABELS } from '../../../../api/governance-corrections';
 import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { AnswerCorrectionForm } from './AnswerCorrectionForm';
 
 const SUBJECT_FOR_BOARD = {
   MEMBER_REGISTER: 'Member register details',
@@ -102,6 +103,12 @@ export function CorrectionsQueuePanel() {
                   <p className="text-foreground-secondary text-xs">
                     Answer: {row.resolutionNote}
                   </p>
+                ) : null}
+                {row.state === 'OPEN' ? (
+                  <AnswerCorrectionForm
+                    id={row.id}
+                    onAnswered={() => void load()}
+                  />
                 ) : null}
               </li>
             );
