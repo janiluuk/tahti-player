@@ -16,6 +16,7 @@ import {
   FEED_FILTER_OPTIONS,
   type ChannelPageItem,
 } from '../../lib/channelPageLayout';
+import { isSafeChannelLinkUrl } from '../../lib/safeHref';
 import type { ListenerWidgetInstance } from '../../stores/listenerWidgetsStore';
 import { ChannelPlaylistBlock } from '../ChannelPlaylistBlock';
 import { ListenerWidgetEmbed } from '../ListenerWidgetEmbed';
@@ -206,6 +207,7 @@ export function renderChannelBlock(
                   (link) =>
                     link.label.trim() &&
                     link.url.trim() &&
+                    isSafeChannelLinkUrl(link.url) &&
                     (editing || !link.hidden),
                 )
                 .map((link) => (

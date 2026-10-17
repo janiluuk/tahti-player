@@ -11,6 +11,7 @@ import { GovernancePanel } from '../components/governance/GovernancePanel';
 import { MeetingAgendaItems } from '../components/governance/MeetingAgendaItems';
 import { MeetingConflicts } from '../components/governance/MeetingConflicts';
 import { PageLoading } from '../components/PageStates';
+import { isSafeHref } from '../lib/safeHref';
 import { useAuthStore } from '../stores/authStore';
 
 const TYPE_LABEL: Record<GovernanceMeeting['type'], string> = {
@@ -89,7 +90,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
               <dt className="text-foreground-secondary">Location</dt>
               <dd>
                 {meeting.location ?? 'Not listed'}
-                {meeting.remoteUrl && (
+                {meeting.remoteUrl && isSafeHref(meeting.remoteUrl) && (
                   <>
                     {' · '}
                     <a
@@ -116,7 +117,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
                   : meeting.minutesKey
                     ? 'Uploaded, pending approval'
                     : 'Not yet uploaded'}
-                {meeting.minutesUrl && (
+                {meeting.minutesUrl && isSafeHref(meeting.minutesUrl) && (
                   <>
                     {' · '}
                     <a
