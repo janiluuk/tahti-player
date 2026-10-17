@@ -303,7 +303,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   aria-pressed={isPlaying || undefined}
                   data-testid="media-artwork-play"
                   className={cn(
-                    'pointer-events-auto size-6 rounded-full shadow-md',
+                    'pointer-events-auto size-6 rounded-full shadow-md active:scale-[0.96] motion-reduce:active:scale-100',
                     isPlaying ? 'opacity-100' : overlayReveal,
                   )}
                   onClick={handlePlayClick}
@@ -361,7 +361,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   aria-pressed={isPlaying || undefined}
                   data-testid="media-artwork-play"
                   className={cn(
-                    'pointer-events-auto rounded-full',
+                    'pointer-events-auto rounded-full active:scale-[0.96] motion-reduce:active:scale-100',
                     isPlaying ? 'opacity-100' : overlayReveal,
                     size === 'thumb'
                       ? 'text-white'
