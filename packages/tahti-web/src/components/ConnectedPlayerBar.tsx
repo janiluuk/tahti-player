@@ -73,6 +73,8 @@ export function ConnectedPlayerBar() {
   const [waveformExpanded, setWaveformExpanded] = useState(false);
   const [signedOutPopoverOpen, setSignedOutPopoverOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const playerBarEnterPlayedRef = useRef(false);
+  const [playerBarEnterClass, setPlayerBarEnterClass] = useState('');
 
   const canUseRightRail = Boolean(userId) && !isMobile;
   const queueRailActive =
@@ -89,6 +91,17 @@ export function ConnectedPlayerBar() {
   const isLoading = status === 'loading';
   const hearthisEmbed = playable?.embed;
   const hearthisHostedInRow = useHearthisEmbedClaimed();
+
+  useEffect(() => {
+    if (playerBarEnterPlayedRef.current || queue.length === 0) {
+      return;
+    }
+    if (!playerBarVisible || !playable) {
+      return;
+    }
+    playerBarEnterPlayedRef.current = true;
+    setPlayerBarEnterClass('tahti-player-bar-enter motion-reduce:animate-none');
+  }, [playerBarVisible, playable, queue.length]);
 
   useEffect(() => {
     if (!signedOutPopoverOpen) {
@@ -303,9 +316,14 @@ export function ConnectedPlayerBar() {
       </div>
     ) : null;
 
+  const barShellClass = cn(
+    'flex w-full shrink-0 flex-col',
+    playerBarEnterClass,
+  );
+
   if (isMobile) {
     return (
-      <div className="flex w-full shrink-0 flex-col">
+      <div className={barShellClass}>
         {waveform}
         <div className="flex w-full items-center gap-3 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
           {hearthisFallback}
@@ -345,7 +363,7 @@ export function ConnectedPlayerBar() {
   }
 
   return (
-    <div className="flex w-full shrink-0 flex-col">
+    <div className={barShellClass}>
       {waveform}
       <PlayerBar
         left={
