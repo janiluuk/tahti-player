@@ -32,7 +32,7 @@ async function expectSection(canvasElement: HTMLElement, label: string) {
   const sections = within(
     canvas.getByRole('tablist', { name: 'Governance sections' }),
   );
-  await expect(sections.getAllByRole('tab')).toHaveLength(5);
+  await expect(sections.getAllByRole('tab')).toHaveLength(6);
   await expect(sections.getByRole('tab', { name: label })).toHaveAttribute(
     'aria-selected',
     'true',
@@ -171,5 +171,15 @@ export const RecordElectionResult: Story = {
       canvas.getByRole('button', { name: 'Record result' }),
     );
     await expect(await canvas.findByText('Decided')).toBeVisible();
+  },
+};
+
+export const RecordsTab: Story = {
+  render: renderTab('records'),
+  play: async ({ canvasElement }) => {
+    const canvas = await expectSection(canvasElement, 'Records');
+    await expect(
+      await canvas.findByText('My home municipality is Espoo, not Helsinki.'),
+    ).toBeVisible();
   },
 };

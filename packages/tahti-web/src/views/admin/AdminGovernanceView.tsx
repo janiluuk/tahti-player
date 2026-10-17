@@ -3,6 +3,7 @@ import {
   BanknoteIcon,
   FileTextIcon,
   FlagIcon,
+  FolderOpenIcon,
   ShieldCheckIcon,
   UsersIcon,
 } from 'lucide-react';
@@ -21,6 +22,7 @@ import { AgmTab } from './governance/tabs/AgmTab';
 import { BoardTab } from './governance/tabs/BoardTab';
 import { GrantsTab } from './governance/tabs/GrantsTab';
 import { OverviewTab } from './governance/tabs/OverviewTab';
+import { RecordsTab } from './governance/tabs/RecordsTab';
 import { ReportsTab } from './governance/tabs/ReportsTab';
 import {
   ModerationTabs,
@@ -39,6 +41,8 @@ function tabContent(id: AdminGovernanceTabId) {
       return <AgmTab />;
     case 'board':
       return <BoardTab />;
+    case 'records':
+      return <RecordsTab />;
   }
 }
 
@@ -48,6 +52,7 @@ const GOVERNANCE_TAB_ICONS: Record<AdminGovernanceTabId, typeof FlagIcon> = {
   grants: BanknoteIcon,
   agm: UsersIcon,
   board: ShieldCheckIcon,
+  records: FolderOpenIcon,
 };
 
 const GOVERNANCE_TAB_ITEMS: ModerationTabItem[] = ADMIN_GOVERNANCE_TABS.map(
