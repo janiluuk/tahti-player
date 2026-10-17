@@ -5,6 +5,7 @@ import { Box, Button, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMembers, fetchGovernanceMotion } from '../api/client';
 import type { GovernanceMember, GovernanceMotionDetail } from '../api/types';
+import { MotionAgendaItemControl } from '../components/governance/MotionAgendaItemControl';
 import { MotionCard } from '../components/governance/MotionCard';
 import { MotionCertificatePanel } from '../components/governance/MotionCertificatePanel';
 import { MotionCirculateControl } from '../components/governance/MotionCirculateControl';
@@ -128,11 +129,18 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
       )}
 
       {user && !loading && !forbidden && motion && (
-        <MotionMeetingNote meeting={motion.meeting} />
+        <MotionMeetingNote
+          meeting={motion.meeting}
+          agendaItem={motion.agendaItem}
+        />
       )}
 
       {user && !loading && !forbidden && motion && isBoard && (
         <MotionMeetingLinkControl motion={motion} onChanged={reload} />
+      )}
+
+      {user && !loading && !forbidden && motion && isBoard && (
+        <MotionAgendaItemControl motion={motion} onChanged={reload} />
       )}
 
       {user &&

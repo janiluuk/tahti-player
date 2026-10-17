@@ -524,6 +524,7 @@ export type GovernanceMotionDraft = {
 export type GovernanceMotionDetail = GovernanceMotion & {
   description: string;
   meeting?: { id: string; title: string; scheduledAt: string | null } | null;
+  agendaItem?: { id: string; position: number; title: string } | null;
 };
 
 export type PublicGovernanceMotion = {

@@ -5,8 +5,10 @@ import type { GovernanceMotionDetail } from '../../api/types';
 
 export function MotionMeetingNote({
   meeting,
+  agendaItem,
 }: {
   meeting: GovernanceMotionDetail['meeting'];
+  agendaItem?: GovernanceMotionDetail['agendaItem'];
 }) {
   if (!meeting) {
     return null;
@@ -25,6 +27,9 @@ export function MotionMeetingNote({
         </Link>
         {meeting.scheduledAt
           ? `, ${new Date(meeting.scheduledAt).toLocaleDateString()}`
+          : ''}
+        {agendaItem
+          ? `, agenda item ${agendaItem.position}: ${agendaItem.title}`
           : ''}
       </span>
     </p>
