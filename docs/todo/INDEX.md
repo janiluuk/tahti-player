@@ -7,6 +7,8 @@ Status values: `open` | `blocked` | `partial`.
 
 | Status  | File                                                                                                     | One-line                                                                                                                                                                                                                                                       |
 | ------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| open | [final-season-hardening.md](final-season-hardening.md) | Final cutover season: security/perf/ops fix list (SSRF, same-origin proxy, CSP, CDN CORS, feed N+1, session suspend, …) — P0 before DNS flip |
+| open | [first-100-users-infra.md](first-100-users-infra.md) | Small-prod (~100 users) infra/app readiness: pools, rate-limit fail-closed, polling, backup verify, list caps |
 | open | [feature-swipe-product-flags.md](feature-swipe-product-flags.md) | Leftover product calls from feature swipe: Distribution StudioNav sibling, /chat chrome entry, mobile More vs primary bar |
 | open | [batch-71-ux-usability.md](batch-71-ux-usability.md) | Batch 71: 20 UX/usability slices from e2e leftovers, navigation redirects, Studio home tiles, mock tag search, Go Live phone chrome |
 | partial | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live CTA + mock Send shipped (#914/#916/#934/#939); left: real Centrifugo Send on new channels |
