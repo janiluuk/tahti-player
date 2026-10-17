@@ -1,5 +1,6 @@
 import { createRouter } from '@tanstack/react-router';
 
+import { AppErrorFallback } from './components/AppErrorFallback';
 import { appLayoutRoute, rootRoute } from './router/router-core';
 import {
   adminActivityRoute,
@@ -395,6 +396,9 @@ export const router = createRouter({
    * like an installed app instead of waiting on every first click. */
   defaultPreload: 'intent',
   defaultPreloadDelay: 50,
+  defaultErrorComponent: ({ error, reset }) => (
+    <AppErrorFallback error={error} reset={reset} />
+  ),
 });
 
 declare module '@tanstack/react-router' {

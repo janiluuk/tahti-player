@@ -2,6 +2,7 @@ import { RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { AppErrorBoundary } from './components/AppErrorBoundary';
 import { startClientLogEvents } from './lib/clientLogEvents';
 import { installClientLogCapture, logClientEvent } from './lib/clientLogs';
 import { startLocalPlayCounting } from './lib/playCounting';
@@ -16,7 +17,11 @@ import { router } from './router';
 import { usePlayerStore } from './stores/playerStore';
 
 export function TahtiApp() {
-  return <RouterProvider router={router} />;
+  return (
+    <AppErrorBoundary>
+      <RouterProvider router={router} />
+    </AppErrorBoundary>
+  );
 }
 
 export async function mountTahtiApp(rootElement: HTMLElement) {
