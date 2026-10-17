@@ -57,6 +57,7 @@ import {
   YORHA_THEME,
   YORHA_THEME_ID,
 } from './presets';
+import { withThemeVisualTransition } from './themeCrossfade';
 
 const CUSTOM_THEME_PREFIX = 'custom:';
 
@@ -175,15 +176,13 @@ function resolveThemeId(
   return DEFAULT_THEME_ID;
 }
 
-function applyToDocument(
+function applyThemeToDocument(
   themeId: string,
   dark: boolean,
   customThemes: Record<string, AdvancedTheme>,
 ) {
   const custom = customThemes[themeId] ?? PRESET_CUSTOM_THEMES[themeId];
   if (custom) {
-    // Basic theme underneath supplies structural fallbacks; the advanced
-    // theme's CSS vars layer on top as an override.
     setBasicTheme(BASE_THEME_ID);
     applyAdvancedTheme(custom);
   } else {
@@ -195,13 +194,26 @@ function applyToDocument(
   } else {
     document.documentElement.removeAttribute('data-theme');
   }
-  // Keep legacy keys in sync for the early index.html bootstrap.
   try {
     localStorage.setItem(THEME_KEY, themeId);
     localStorage.setItem(DARK_KEY, dark ? '1' : '0');
   } catch {
     // ignore quota / private mode
   }
+}
+
+function applyToDocument(
+  themeId: string,
+  dark: boolean,
+  customThemes: Record<string, AdvancedTheme>,
+  opts?: { animate?: boolean },
+) {
+  const apply = () => applyThemeToDocument(themeId, dark, customThemes);
+  if (opts?.animate === false) {
+    apply();
+    return;
+  }
+  withThemeVisualTransition(apply);
 }
 
 type ThemeState = {
@@ -257,7 +269,7 @@ export const useThemeStore = create<ThemeState>()(
         const customThemes = withPresetCustomThemes(get().customThemes);
         const id = resolveThemeId(themeId, customThemes);
         const dark = resolveDarkForMode(colorMode);
-        applyToDocument(id, dark, customThemes);
+        applyToDocument(id, dark, customThemes, { animate: false });
         set({ customThemes, themeId: id, dark, hydrated: true });
 
         if (typeof window !== 'undefined' && !dynamicModeInterval) {
@@ -373,7 +385,7 @@ export const useThemeStore = create<ThemeState>()(
         }
         const id = resolveThemeId(state.themeId, state.customThemes);
         const dark = resolveDarkForMode(state.colorMode);
-        applyToDocument(id, dark, state.customThemes);
+        applyToDocument(id, dark, state.customThemes, { animate: false });
         state.themeId = id;
         state.dark = dark;
         state.hydrated = true;
