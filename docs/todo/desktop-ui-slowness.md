@@ -1,6 +1,8 @@
 # Desktop app UI feels slow (scrolling, menu navigation)
 
-**Status:** partial
+**Status:** blocked
+
+**Blocker:** 30 fps/no-rebuild fix shipped but unmeasured — waiting on user manual test on NVIDIA + always-on background.
 **Reported:** 2026-09-21 by the user after running `pnpm dev` (debug build) on Linux/NVIDIA (Wayland session). Radio thumbnails were also missing — fixed separately (`e0914956e`, `packages/player/vite.config.ts` now serves/bundles `tahti-web/public/{radio-logos,artwork-presets,mock,assets}`).
 
 ## What is known

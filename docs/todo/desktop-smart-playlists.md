@@ -1,6 +1,8 @@
 # Smart playlists for the desktop library
 
-**Status:** partial
+**Status:** blocked
+
+**Blocker:** Code shipped (#774–#779); blocked on manual check against a real 10k+ desktop library.
 
 User request (2026-10-15): "smart playlists where you can set easily conditions using between, bigger / equal than, etc - those should live update, use cache though". Then: "this is for desktop application, perhaps web can have it as well but main purpose is local file management".
 

@@ -1,6 +1,8 @@
 # Import a provider playlist/set into the native library
 
-**Status:** partial
+**Status:** blocked
+
+**Blocker:** hearthis.at + SoundCloud download-into-library shipped; blocked on manual desktop-app run against real accounts.
 **Added:** 2026-09-18
 **Goal:** Let a desktop user choose a playlist or set from an import provider such as hearthis.at or SoundCloud, download every eligible track, and add each completed download as a durable native-library track.
 

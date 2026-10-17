@@ -2,7 +2,7 @@
 
 **Status:** blocked
 
-**Blocker:** Ops must verify backup cron/`backup.sh status`, MinIO disk, and deploy Swarm env (`RATE_LIMIT_REDIS_FAIL_OPEN=false`) on the manager — not agent-automatable without host access.
+**Blocker:** Ops host access: verify backup cron/`backup.sh status`, MinIO disk/DR alias, deploy Swarm `RATE_LIMIT_REDIS_FAIL_OPEN=false`.
 
 Small-production hardening for ~100 concurrent/registered users on the
 existing Swarm / Caddy / Postgres / Redis / MinIO / Centrifugo stack. Not

@@ -2,7 +2,7 @@
 
 **Status:** blocked
 
-**Blocker:** Cutover L ops remain — same-origin `/tahti-api` proxy on prod edge, runbook rehearsal, vend SPA into tahti-org image. Code Batch A/B mostly merged; #1072/#1075 pending Storybook. Do not DNS-flip without explicit ops confirmation.
+**Blocker:** Cutover L ops: same-origin `/tahti-api` proxy, runbook rehearsal, vend SPA — needs explicit ops confirmation (no DNS flip).
 
 Batch A org (#866–#871) and Batch B (#1073–#1074, #1076–#1078) are on `master`. Left open: #1072 (href sanitize), #1075 (error boundary) — Storybook flake; first-100 PRs #872/#873/#1079.
 

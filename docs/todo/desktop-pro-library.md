@@ -1,6 +1,8 @@
 # Pro desktop music player — phased implementation workplan
 
-**Status:** partial
+**Status:** blocked
+
+**Blocker:** Phases 0–5 largely shipped; blocked on real-music accuracy validation and untouched Phases 6–7 (watcher depth / remaining Phase 1 bits).
 **Updated:** 2026-09-21
 **Goal:** Import a personal music collection once, then catalog, sort, filter, search, analyze, play and build playlists offline as in a desktop music manager.
 

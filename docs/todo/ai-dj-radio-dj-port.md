@@ -1,6 +1,8 @@
 # AI DJ (POC): port radio-dj's talking-DJ features into Tahti's 24/7 rotation
 
-**Status:** open
+**Status:** blocked
+
+**Blocker:** POC/beta only, not committed; kill-switched — do not ship to production without explicit go-ahead.
 
 ## What
 

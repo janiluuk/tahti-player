@@ -2,6 +2,33 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+
+## 2026-10-18 — Todo INDEX cleanup (fold shipped / intentional deferrals)
+
+### theDAW editor/viz UX fixlist
+
+Folded from `thedaw-editor-viz-ux-fixlist.md`. P0/P1 and section C shipped in #598/#613 (audio graph, empty doc, bounce UX, editor stream, ChannelVisualizer suspend, a11y, stems→lanes, bounce upload). No open code checkboxes remain.
+
+### Codebase refactor hotspots
+
+Folded from `codebase-refactor-hotspots.md`. All P0/P1 god-module splits shipped (PluginStorePanel through StreamManagerPanel/AdminStorageView). Remaining P2/P3 deliberately deferred — split only if pain appears.
+
+### Atlas navigation structure widget
+
+Folded from `atlas-navigation-structure-widget.md`. Draft widget supports persisted reorder/add/remove; runtime wiring intentionally deferred by design. Not an active engineering backlog item.
+
+### Player performance optimizations (code slices)
+
+Folded from `player-performance-optimizations.md`. Lazy routes/dialogs, queue virtualization, visualizer suspend, Listen cache, i18n lazy, hls prefetch, initial JS cuts (#186–#210, #806–#810) shipped. Device CPU/native profiling never started — track as future ops/manual if needed, not an open todo.
+
+### God-module restructure
+
+Folded from `god-module-restructure.md`. Non-data app modules split and audited; DesktopLibraryPanel extraction; Rust local_library test split; ButtonLink nesting fix. Remaining visual checks need a running signed-in stack — ops/manual, not an open engineering todo.
+
+### Listener account and signed-out basics
+
+Folded from `listener-account-and-signed-out-basics.md`. Listener mock role, Studio/channel gates, signed-out CTAs, audit scripts, phone search/subscribe, Stash path (#498–#873, #950) shipped. Leftover product call (Studio in sidebar / artist tools in Library for listeners) lives under feature-swipe product flags if revisited.
+
 ## 2026-10-17 — Batch 70 meeting records (merged #1034–#1053)
 
 Folded from `batch-70-meeting-records.md`. Twenty web slices for meeting
