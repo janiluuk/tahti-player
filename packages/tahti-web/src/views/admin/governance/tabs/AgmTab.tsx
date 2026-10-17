@@ -31,6 +31,7 @@ import type {
   GovernanceMeeting,
 } from '../../../../api/types';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { AgendaItemsPanel } from './AgendaItemsPanel';
 import {
   CollapsibleRecord,
   ConflictsPanel,
@@ -509,6 +510,7 @@ export function AgmTab() {
                     {minutesError.message}
                   </p>
                 )}
+                <AgendaItemsPanel meetingId={meeting.id} />
                 <AttendancePanel meeting={meeting} />
                 <ConflictsPanel meetingId={meeting.id} />
                 <NoticeDeliveriesPanel meetingId={meeting.id} />
