@@ -94,14 +94,14 @@ export function StudioHomeView() {
                     icon={RadioIcon}
                     label="Broadcast"
                     subtitle="Keys, signal, on-air"
-                    color="var(--accent-red)"
+                    color="bg-accent-red"
                   />
                   <CompactBroadcastTile
                     to="/studio/schedule"
                     icon={CalendarIcon}
                     label="Schedule"
                     subtitle="Next show & programme"
-                    color="var(--accent-blue)"
+                    color="bg-accent-blue"
                   />
                 </div>
               </Group>
