@@ -14,6 +14,7 @@ import {
 import { fetchMyVenues, type MyVenue } from '../api/venues-manage';
 import { PageLoading } from '../components/PageStates';
 import { VenueDetailsForm } from '../components/venues/VenueDetailsForm';
+import { VenueShowsSection } from '../components/venues/VenueShowsSection';
 import { useAuthStore } from '../stores/authStore';
 
 function VenueCard({
@@ -69,6 +70,7 @@ function VenueCard({
           Edit details
         </Button>
       )}
+      <VenueShowsSection venue={venue} onChanged={onChanged} />
     </Box>
   );
 }
