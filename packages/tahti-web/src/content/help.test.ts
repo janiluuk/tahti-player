@@ -95,3 +95,17 @@ describe('member governance and venue help', () => {
     expect(find?.body.some((line) => line.includes('/venues/mine'))).toBe(true);
   });
 });
+
+describe('admin governance help', () => {
+  it('names the Board and Records tabs', () => {
+    const areas = getHelpArticle('admin-guide')?.sections.find(
+      (section) => section.heading === 'Admin areas',
+    );
+    expect(
+      areas?.body.some((line) => line.includes('Governance → Board')),
+    ).toBe(true);
+    expect(
+      areas?.body.some((line) => line.includes('Governance → Records')),
+    ).toBe(true);
+  });
+});
