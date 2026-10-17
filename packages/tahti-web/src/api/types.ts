@@ -513,6 +513,7 @@ export type GovernanceMotion = {
   eligibleMemberCount?: number | null;
   secondCount?: number;
   youSeconded?: boolean;
+  circulatedAt?: string | null;
   tally?: { YES: number; NO: number; ABSTAIN: number };
 };
 
@@ -524,6 +525,7 @@ export type GovernanceMotionDraft = {
 export type GovernanceMotionDetail = GovernanceMotion & {
   description: string;
   meeting?: { id: string; title: string; scheduledAt: string | null } | null;
+  agendaItem?: { id: string; position: number; title: string } | null;
 };
 
 export type PublicGovernanceMotion = {

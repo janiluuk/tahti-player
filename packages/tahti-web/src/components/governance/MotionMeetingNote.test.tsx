@@ -40,6 +40,20 @@ describe('MotionMeetingNote', () => {
     ).toBe('/governance/meetings/meet-1');
   });
 
+  it('names the agenda item when the board chose one', () => {
+    render(
+      <MotionMeetingNote
+        meeting={{
+          id: 'meeting-1',
+          title: 'Annual meeting 2026',
+          scheduledAt: '2026-04-25T12:00:00.000Z',
+        }}
+        agendaItem={{ id: 'a2', position: 2, title: 'Annual report 2025' }}
+      />,
+    );
+    expect(screen.getByText(/agenda item 2: Annual report 2025/)).toBeTruthy();
+  });
+
   it('shows nothing for a motion with no meeting', () => {
     const { container } = render(<MotionMeetingNote meeting={null} />);
 

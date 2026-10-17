@@ -6,11 +6,26 @@ import { circulateMotion } from '../../api/governance-motion-circulate';
 import { ConfirmDialog } from '../ConfirmDialog';
 
 /** Board only, on a draft: send members a notice asking for seconds. */
-export function MotionCirculateControl({ motionId }: { motionId: string }) {
+export function MotionCirculateControl({
+  motionId,
+  circulatedAt,
+}: {
+  motionId: string;
+  circulatedAt?: string | null;
+}) {
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  if (circulatedAt && message === null) {
+    return (
+      <p className="text-foreground-secondary text-xs">
+        Circulated to members for seconds on{' '}
+        {new Date(circulatedAt).toLocaleDateString()}.
+      </p>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-1">
