@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { MyVenuesView } from '@tahti-web/views/MyVenuesView';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -38,6 +38,23 @@ export const SignedOut: Story = {
   play: async ({ canvasElement }) => {
     await expect(
       await within(canvasElement).findByText('Sign in to manage your venues'),
+    ).toBeVisible();
+  },
+};
+
+export const EditDetails: Story = {
+  decorators: [withMockAuth(MOCK_USERS.artist)],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      await canvas.findByRole('button', { name: 'Edit details' }),
+    );
+    const capacity = canvas.getByLabelText('Capacity');
+    await userEvent.clear(capacity);
+    await userEvent.type(capacity, '150');
+    await userEvent.click(canvas.getByRole('button', { name: 'Save details' }));
+    await expect(
+      await canvas.findByRole('button', { name: 'Edit details' }),
     ).toBeVisible();
   },
 };
