@@ -81,3 +81,66 @@ export async function fetchMotionCertificate(
     return { data: null, meta: apiErrorMeta(err) };
   }
 }
+
+/** The board appends a correction to a closed motion's result; the
+ * certificate itself is never rewritten. Without a tally it is a note only. */
+export async function correctMotionResult(
+  motionId: string,
+  input: { note: string; tally?: MotionTally },
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const note = input.note.trim();
+  if (!note) {
+    return { ok: false, error: 'Say what the correction is about' };
+  }
+  if (isForceMock()) {
+    const current = mockMotionCertificate(motionId);
+    const total = input.tally
+      ? input.tally.YES + input.tally.NO + input.tally.ABSTAIN
+      : 0;
+    if (
+      input.tally &&
+      current.eligibleMemberCount !== null &&
+      total > current.eligibleMemberCount
+    ) {
+      return {
+        ok: false,
+        error: 'The corrected tally has more votes than eligible members',
+      };
+    }
+    setMockMotionCertificate({
+      ...current,
+      corrections: [
+        ...current.corrections,
+        {
+          id: `correction-${Date.now()}`,
+          note,
+          tally: input.tally ?? null,
+          createdAt: new Date().toISOString(),
+          digest: 'mock',
+          matchesRecord: true,
+        },
+      ],
+      correctedTally: input.tally ?? current.correctedTally,
+    });
+    return { ok: true };
+  }
+  try {
+    await requestJson(
+      `/api/admin/governance/motions/${encodeURIComponent(motionId)}/result-corrections`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          note,
+          ...(input.tally ? { tally: input.tally } : {}),
+        }),
+      },
+    );
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not save the correction',
+    };
+  }
+}

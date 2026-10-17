@@ -134,7 +134,7 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
       )}
 
       {user && !loading && !forbidden && motion?.state === 'CLOSED' && (
-        <MotionCertificatePanel motionId={motion.id} />
+        <MotionCertificatePanel motionId={motion.id} isBoard={isBoard} />
       )}
     </ViewShell>
   );
