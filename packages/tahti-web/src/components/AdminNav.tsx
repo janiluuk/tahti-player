@@ -2,19 +2,23 @@ import { useNavigate } from '@tanstack/react-router';
 import {
   ActivityIcon,
   BanknoteIcon,
+  BlocksIcon,
+  Building2Icon,
+  Disc3Icon,
   FileTextIcon,
-  FlagIcon,
   GaugeIcon,
+  HardDriveIcon,
   ImageIcon,
+  LandmarkIcon,
   LanguagesIcon,
   LibraryIcon,
   MapIcon,
   MapPinIcon,
   MegaphoneIcon,
+  NewspaperIcon,
   PuzzleIcon,
   RadioIcon,
-  ServerIcon,
-  SettingsIcon,
+  RadioTowerIcon,
   ShieldCheckIcon,
   TrophyIcon,
   UsersIcon,
@@ -71,13 +75,13 @@ export const PRIMARY = [
   {
     to: '/admin/news',
     label: 'News',
-    icon: <FileTextIcon size={16} aria-hidden />,
+    icon: <NewspaperIcon size={16} aria-hidden />,
     description: 'Publish platform-wide news posts.',
   },
   {
     to: '/admin/streams',
     label: 'Streams',
-    icon: <ServerIcon size={16} aria-hidden />,
+    icon: <RadioTowerIcon size={16} aria-hidden />,
     description: 'Monitor live ingest and stream health across channels.',
   },
   {
@@ -101,7 +105,7 @@ export const PRIMARY = [
   {
     to: '/admin/storage',
     label: 'Storage',
-    icon: <ServerIcon size={16} aria-hidden />,
+    icon: <HardDriveIcon size={16} aria-hidden />,
     description:
       'Disk/object storage space, quotas, and every uploaded file across the platform.',
   },
@@ -121,14 +125,14 @@ export const PRIMARY = [
   {
     to: '/admin/governance',
     label: 'Governance',
-    icon: <FlagIcon size={16} aria-hidden />,
+    icon: <LandmarkIcon size={16} aria-hidden />,
     description:
       'Member votes, annual reports, grants, and AGM — one tabbed hub.',
   },
   {
     to: '/admin/addons',
     label: 'Add-ons',
-    icon: <SettingsIcon size={16} aria-hidden />,
+    icon: <BlocksIcon size={16} aria-hidden />,
     description:
       'Register and manage available listener, artist, and admin add-ons.',
   },
@@ -141,7 +145,7 @@ export const PRIMARY = [
   {
     to: '/admin/vendors',
     label: 'Vendors',
-    icon: <SettingsIcon size={16} aria-hidden />,
+    icon: <Building2Icon size={16} aria-hidden />,
     description: 'Track vendors, integrations, launch checks, and DPAs.',
   },
   {
@@ -153,7 +157,7 @@ export const PRIMARY = [
   {
     to: '/admin/tahti-selects',
     label: 'Tahti Selects',
-    icon: <RadioIcon size={16} aria-hidden />,
+    icon: <Disc3Icon size={16} aria-hidden />,
     description: 'Manage the Tahti Selects editorial stream and rotation.',
   },
   {

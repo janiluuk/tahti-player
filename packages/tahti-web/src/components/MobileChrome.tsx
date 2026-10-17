@@ -2,8 +2,8 @@ import { Link, useRouterState } from '@tanstack/react-router';
 import {
   CompassIcon,
   EllipsisIcon,
-  GaugeIcon,
   LayoutDashboardIcon,
+  ListMusicIcon,
   RadioIcon,
   XIcon,
 } from 'lucide-react';
@@ -25,7 +25,7 @@ const PRIMARY = [
     to: '/',
     id: 'listen' as const satisfies MobileItemId,
     label: 'Listen',
-    icon: GaugeIcon,
+    icon: ListMusicIcon,
   },
   {
     to: '/discover',
