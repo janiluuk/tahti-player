@@ -105,3 +105,83 @@ export async function fetchGovernanceElections(): Promise<{
     return { data: [], meta: apiErrorMeta(err) };
   }
 }
+
+export type CandidacyResult = { ok: true } | { ok: false; error: string };
+
+const MOCK_SELF = { displayName: 'Demo Member', username: 'demo' };
+
+function candidacyPath(id: string): string {
+  return `/api/v1/governance/elections/${encodeURIComponent(id)}/candidacy`;
+}
+
+function mockCandidacy(
+  id: string,
+  standing: boolean,
+  statement?: string,
+): CandidacyResult {
+  const election = mockElections.find((e) => e.id === id);
+  if (!election) {
+    return { ok: false, error: 'Election not found' };
+  }
+  if (standing && !election.nominationsOpen) {
+    return { ok: false, error: 'Nominations for this election are closed' };
+  }
+  updateMockElection(id, (e) => {
+    const others = e.candidates.filter(
+      (c) => c.username !== MOCK_SELF.username,
+    );
+    return {
+      ...e,
+      youAreCandidate: standing,
+      candidates: standing
+        ? [
+            ...others,
+            { ...MOCK_SELF, statement: statement ?? null, elected: false },
+          ]
+        : others,
+    };
+  });
+  return { ok: true };
+}
+
+/** A member stands while nominations are open; the statement is optional. */
+export async function standForElection(
+  id: string,
+  statement?: string,
+): Promise<CandidacyResult> {
+  const trimmed = statement?.trim() || undefined;
+  if (isForceMock()) {
+    return mockCandidacy(id, true, trimmed);
+  }
+  try {
+    await requestJson(candidacyPath(id), {
+      method: 'POST',
+      body: JSON.stringify(trimmed ? { statement: trimmed } : {}),
+    });
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not put you forward',
+    };
+  }
+}
+
+/** A candidate withdraws, until the result is recorded. */
+export async function withdrawCandidacy(id: string): Promise<CandidacyResult> {
+  if (isForceMock()) {
+    return mockCandidacy(id, false);
+  }
+  try {
+    await requestJson(candidacyPath(id), { method: 'DELETE' });
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error
+          ? err.message
+          : 'Could not withdraw your candidacy',
+    };
+  }
+}
