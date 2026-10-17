@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploy @tahti-player/tahti-web beta to vimage next to production Tahti.
+# Deploy @tahti-player/tahti-web to vimage next to production Tahti.
 #
 # Layout on the host:
 #   /srv/tahti          production stack (untouched)
@@ -11,11 +11,18 @@
 #   # or
 #   ./packages/tahti-web/deploy/deploy-vimage.sh
 #
+# Profiles:
+#   TAHTI_WEB_DEPLOY_PROFILE=beta (default) — enables VITE_ENABLE_DIAGNOSTICS=1
+#   TAHTI_WEB_DEPLOY_PROFILE=prod — omits diagnostics (cutover / prod-shaped build)
+#
 # Env overrides:
-#   DEPLOY_HOST      SSH host (default: vimage)
-#   REMOTE_PATH      remote dir (default: /srv/tahti-beta)
-#   HOST_PORT        published host port (default: 15180)
-#   VITE_CENTRIFUGO_WS  chat websocket (default: wss://chat.tahti.live/...)
+#   DEPLOY_HOST            SSH host (default: vimage)
+#   REMOTE_PATH            remote dir (default: /srv/tahti-beta)
+#   HOST_PORT              published host port (default: 15180)
+#   VITE_CENTRIFUGO_WS     chat websocket (default: wss://chat.tahti.live/...)
+#   VITE_HCAPTCHA_SITEKEY  optional; passed through to the Vite build when set
+#                          (required for chat join when the API has HCAPTCHA_SECRET)
+#   TAHTI_WEB_DEPLOY_PROFILE  beta|prod (default: beta)
 set -euo pipefail
 
 HOST="${DEPLOY_HOST:-vimage}"
@@ -26,6 +33,7 @@ REPO_ROOT="$(cd "$ROOT/../.." && pwd)"
 IMAGE="${DEPLOY_IMAGE:-tahti-beta-web:local}"
 CENTRIFUGO_WS="${VITE_CENTRIFUGO_WS:-wss://chat.tahti.live/connection/websocket}"
 DEPLOY_VERSION="$(date -u +%Y%m%d%H%M%S%3N)"
+PROFILE="${TAHTI_WEB_DEPLOY_PROFILE:-beta}"
 
 need() {
   command -v "$1" >/dev/null 2>&1 || {
@@ -38,6 +46,11 @@ need ssh
 need rsync
 need pnpm
 
+if [[ "${PROFILE}" != "beta" && "${PROFILE}" != "prod" ]]; then
+  echo "error: TAHTI_WEB_DEPLOY_PROFILE must be beta or prod (got: ${PROFILE})" >&2
+  exit 1
+fi
+
 export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 # shellcheck disable=SC1091
 if [[ -s "$NVM_DIR/nvm.sh" ]]; then
@@ -45,18 +58,38 @@ if [[ -s "$NVM_DIR/nvm.sh" ]]; then
   nvm use 22 >/dev/null 2>&1 || nvm use 24 >/dev/null 2>&1 || true
 fi
 
-echo "==> Building @tahti-player/tahti-web"
+echo "==> Building @tahti-player/tahti-web (${PROFILE})"
 echo "    API: same-origin /tahti-api (proxied to https://api.tahti.live)"
 echo "    Chat WS: ${CENTRIFUGO_WS}"
 echo "    Deploy version: ${DEPLOY_VERSION}"
+if [[ -n "${VITE_HCAPTCHA_SITEKEY:-}" ]]; then
+  echo "    hCaptcha sitekey: set"
+else
+  echo "    hCaptcha sitekey: unset (chat join fails closed if API has HCAPTCHA_SECRET)"
+fi
 cd "$REPO_ROOT"
-# Leave VITE_TAHTI_API_URL unset so the client uses /tahti-api.
-# Unset mock so production data is used.
-env -u VITE_TAHTI_API_URL -u VITE_FORCE_MOCK -u VITE_ALLOW_MOCK_FALLBACK \
-  VITE_CENTRIFUGO_WS="${CENTRIFUGO_WS}" \
-  VITE_DEPLOY_VERSION="${DEPLOY_VERSION}" \
-  VITE_ENABLE_DIAGNOSTICS=1 \
-  pnpm --filter @tahti-player/tahti-web build
+
+BUILD_ENV=(
+  env
+  -u VITE_TAHTI_API_URL
+  -u VITE_FORCE_MOCK
+  -u VITE_ALLOW_MOCK_FALLBACK
+  "VITE_CENTRIFUGO_WS=${CENTRIFUGO_WS}"
+  "VITE_DEPLOY_VERSION=${DEPLOY_VERSION}"
+)
+
+if [[ "${PROFILE}" == "beta" ]]; then
+  BUILD_ENV+=("VITE_ENABLE_DIAGNOSTICS=1")
+else
+  # Prod-shaped build: leave diagnostics unset so /more and Screen atlas stay gated.
+  BUILD_ENV+=(-u VITE_ENABLE_DIAGNOSTICS)
+fi
+
+if [[ -n "${VITE_HCAPTCHA_SITEKEY:-}" ]]; then
+  BUILD_ENV+=("VITE_HCAPTCHA_SITEKEY=${VITE_HCAPTCHA_SITEKEY}")
+fi
+
+"${BUILD_ENV[@]}" pnpm --filter @tahti-player/tahti-web build
 
 if [[ ! -f "$ROOT/dist/index.html" ]]; then
   echo "error: build did not produce dist/index.html" >&2
@@ -93,7 +126,7 @@ ssh "$HOST" "set -e
   test \"\${code}\" = '200'
 "
 
-echo "==> Deployed"
+echo "==> Deployed (${PROFILE})"
 echo "    Local upstream:  http://192.168.2.100:${HOST_PORT}"
 echo "    Public (DNS+NPM): https://beta.tahti.live"
 echo "    See packages/tahti-web/deploy/README.md for Nginx Proxy Manager steps."
