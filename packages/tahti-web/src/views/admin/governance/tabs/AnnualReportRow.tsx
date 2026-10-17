@@ -1,6 +1,8 @@
 import { Badge } from '@tahti-player/ui';
 
 import type { AdminAnnualReport } from '../../../../api/admin';
+import type { GovernanceMeeting } from '../../../../api/types';
+import { AnnualReportActions } from './AnnualReportActions';
 
 function formatDay(iso: string): string {
   return new Date(iso).toLocaleDateString(undefined, {
@@ -43,7 +45,15 @@ function reportTimeline(report: AdminAnnualReport): string {
   return parts.join(' · ');
 }
 
-export function AnnualReportRow({ report }: { report: AdminAnnualReport }) {
+export function AnnualReportRow({
+  report,
+  meetings,
+  onChanged,
+}: {
+  report: AdminAnnualReport;
+  meetings: GovernanceMeeting[];
+  onChanged: () => void;
+}) {
   const stage = annualReportStage(report);
   return (
     <li className="flex flex-col gap-1.5 py-3 text-sm first:pt-0 last:pb-0">
@@ -71,6 +81,11 @@ export function AnnualReportRow({ report }: { report: AdminAnnualReport }) {
       <p className="text-foreground-secondary text-xs">
         {reportTimeline(report)}
       </p>
+      <AnnualReportActions
+        report={report}
+        meetings={meetings}
+        onChanged={onChanged}
+      />
     </li>
   );
 }

@@ -114,3 +114,46 @@ export async function generateAdminAnnualReport(
     };
   }
 }
+
+async function reportAction(
+  year: number,
+  path: string,
+  method: 'POST' | 'PUT' | 'DELETE',
+  body: unknown,
+  fallback: string,
+): Promise<AnnualReportResult> {
+  try {
+    await sendJson(`/api/admin/reports/annual/${year}${path}`, method, body);
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: errorText(err, fallback) };
+  }
+}
+
+/** Records the board's approval, optionally naming the approving meeting. */
+export async function approveAnnualReport(
+  year: number,
+  meetingId?: string,
+): Promise<AnnualReportResult> {
+  if (isForceMock()) {
+    const report = mockAnnualReport(year);
+    if (!report) {
+      return { ok: false, error: 'No report has been generated for that year' };
+    }
+    if (report.approvedAt) {
+      return { ok: false, error: 'This report is already approved' };
+    }
+    updateMockAnnualReport(year, {
+      approvedAt: new Date().toISOString(),
+      approvalMeetingId: meetingId ?? null,
+    });
+    return { ok: true };
+  }
+  return reportAction(
+    year,
+    '/approve',
+    'POST',
+    meetingId ? { meetingId } : {},
+    'Could not approve the report',
+  );
+}

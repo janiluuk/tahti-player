@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminGovernanceView } from '@tahti-web/views/admin/AdminGovernanceView';
 import type { AdminGovernanceTabId } from '@tahti-web/views/admin/governance/governanceNav';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -72,6 +72,24 @@ export const ReportsTab: Story = {
     await expect(canvas.getByRole('textbox', { name: 'Year' })).toBeVisible();
     await expect(
       canvas.getByRole('button', { name: 'Generate report' }),
+    ).toBeVisible();
+  },
+};
+
+/** Approve the mock 2025 draft (mock state; Storybook only). */
+export const ApproveAnnualReport: Story = {
+  render: renderTab('reports'),
+  play: async ({ canvasElement }) => {
+    const canvas = await expectSection(canvasElement, 'Annual reports');
+    const approve = await canvas.findByRole('button', {
+      name: 'Approve report 2025',
+    });
+    await userEvent.click(approve);
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Record approval' }),
+    );
+    await expect(
+      await canvas.findByText('Approved, not published'),
     ).toBeVisible();
   },
 };
