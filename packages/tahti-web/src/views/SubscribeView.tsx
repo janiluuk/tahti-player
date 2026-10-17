@@ -17,6 +17,7 @@ import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import type { FanCheckoutReturn } from '../lib/fanCheckoutReturn';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { syncDocumentMetadata } from '../lib/seo';
+import { assignStripeRedirectUrl } from '../lib/stripeRedirect';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
@@ -232,8 +233,11 @@ export function SubscribeView({
                           return;
                         }
                         if ('checkoutUrl' in res) {
+                          if (!assignStripeRedirectUrl(res.checkoutUrl)) {
+                            setNote('Checkout URL was not from Stripe');
+                            return;
+                          }
                           setNote('Taking you to checkout…');
-                          window.location.assign(res.checkoutUrl);
                           return;
                         }
                         setNote(res.message);

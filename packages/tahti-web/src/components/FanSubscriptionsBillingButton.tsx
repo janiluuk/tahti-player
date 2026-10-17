@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { Button } from '@tahti-player/ui';
 
 import { startFanSubscriptionsPortal } from '../api/membership';
+import { assignStripeRedirectUrl } from '../lib/stripeRedirect';
 
 export function FanSubscriptionsBillingButton() {
   const [busy, setBusy] = useState(false);
@@ -17,7 +18,10 @@ export function FanSubscriptionsBillingButton() {
       toast.error(result.error);
       return;
     }
-    window.location.assign(result.portalUrl);
+    if (!assignStripeRedirectUrl(result.portalUrl)) {
+      setBusy(false);
+      toast.error('Billing portal URL was not from Stripe');
+    }
   };
 
   return (

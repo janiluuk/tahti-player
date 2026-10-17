@@ -12,6 +12,7 @@ import { normalizeColorScheme } from '../../lib/colorScheme';
 import { EMBED_PROVIDER_LABEL, embedSrcFor } from '../../lib/embedSrc';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
+import { assignStripeRedirectUrl } from '../../lib/stripeRedirect';
 import {
   formatTimedCommentBody,
   parseTimedComment,
@@ -274,7 +275,9 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
       return;
     }
     if ('checkoutUrl' in result) {
-      window.location.assign(result.checkoutUrl);
+      if (!assignStripeRedirectUrl(result.checkoutUrl)) {
+        toast.error('Checkout URL was not from Stripe');
+      }
       return;
     }
     setPurchaseBump((value) => value + 1);
