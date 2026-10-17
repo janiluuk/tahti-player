@@ -79,7 +79,7 @@ Files: `infra/docker-stack.yml`, `infra/pgbouncer/README.md`, `ops/BACKUP.md`,
 
 | Item | PR |
 | --- | --- |
-| Rate-limit fail-closed in Swarm | [tahti-org#872](https://github.com/janiluuk/tahti-org/pull/872) |
-| Channel fallback `take` 500 | [tahti-org#873](https://github.com/janiluuk/tahti-org/pull/873) |
-| Status bar poll 15s | [tahti-player#1079](https://github.com/janiluuk/tahti-player/pull/1079) |
+| Rate-limit fail-closed in Swarm | [tahti-org#872](https://github.com/janiluuk/tahti-org/pull/872) (merged) |
+| Channel fallback `take` 500 | [tahti-org#873](https://github.com/janiluuk/tahti-org/pull/873) (merged) |
+| Status bar poll 15s | [tahti-player#1079](https://github.com/janiluuk/tahti-player/pull/1079) (merged) |
 | Todo docs landed | [tahti-player#1080](https://github.com/janiluuk/tahti-player/pull/1080) |
