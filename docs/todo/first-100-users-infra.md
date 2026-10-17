@@ -1,6 +1,8 @@
 # First ~100 users — infra + app readiness
 
-**Status:** open
+**Status:** blocked
+
+**Blocker:** Ops must verify backup cron/`backup.sh status`, MinIO disk, and deploy Swarm env (`RATE_LIMIT_REDIS_FAIL_OPEN=false`) on the manager — not agent-automatable without host access.
 
 Small-production hardening for ~100 concurrent/registered users on the
 existing Swarm / Caddy / Postgres / Redis / MinIO / Centrifugo stack. Not
@@ -77,6 +79,7 @@ Files: `infra/docker-stack.yml`, `infra/pgbouncer/README.md`, `ops/BACKUP.md`,
 
 | Item | PR |
 | --- | --- |
-| _(shipping)_ Rate-limit fail-closed in Swarm | |
-| _(shipping)_ Channel fallback `take` | |
-| _(shipping)_ Status bar poll soften | |
+| Rate-limit fail-closed in Swarm | [tahti-org#872](https://github.com/janiluuk/tahti-org/pull/872) |
+| Channel fallback `take` 500 | [tahti-org#873](https://github.com/janiluuk/tahti-org/pull/873) |
+| Status bar poll 15s | [tahti-player#1079](https://github.com/janiluuk/tahti-player/pull/1079) |
+| Todo docs landed | [tahti-player#1080](https://github.com/janiluuk/tahti-player/pull/1080) |
