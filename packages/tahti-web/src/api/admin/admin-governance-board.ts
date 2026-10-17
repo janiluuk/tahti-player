@@ -115,3 +115,40 @@ export async function createAdminBoardTerm(
     return { ok: false, error: errorText(err, 'Could not add the term') };
   }
 }
+
+/** Ends a term early or shortens it (PATCH /api/admin/governance/board-terms/:id);
+ * a term is never extended, a longer one is a new election. */
+export async function endAdminBoardTerm(
+  id: string,
+  termEnd: string,
+  endReason?: string,
+): Promise<BoardActionResult> {
+  const reason = endReason?.trim() || undefined;
+  if (isForceMock()) {
+    const term = mockTerms.find((t) => t.id === id);
+    if (!term) {
+      return { ok: false, error: 'Board term not found' };
+    }
+    const end = new Date(termEnd).toISOString();
+    if (end <= term.termStart) {
+      return { ok: false, error: 'The term must end after it starts' };
+    }
+    if (term.termEnd && end > term.termEnd) {
+      return { ok: false, error: 'A term can be shortened, not extended' };
+    }
+    mockTerms = mockTerms.map((t) =>
+      t.id === id ? { ...t, termEnd: end, endReason: reason ?? null } : t,
+    );
+    return { ok: true };
+  }
+  try {
+    await sendJson(
+      `/api/admin/governance/board-terms/${encodeURIComponent(id)}`,
+      'PATCH',
+      { termEnd, ...(reason ? { endReason: reason } : {}) },
+    );
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: errorText(err, 'Could not end the term') };
+  }
+}
