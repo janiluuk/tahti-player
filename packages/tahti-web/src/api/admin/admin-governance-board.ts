@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import type { GovernanceBoardRole } from '../governance-board';
-import { getJson } from '../http';
+import { getJson, sendJson } from '../http';
 import { failMeta, isForceMock } from '../mode';
 
 /** A board term as the board sees it (GET /api/admin/governance/board-terms):
@@ -69,5 +69,49 @@ export async function fetchAdminBoardTerms(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     return { data: [], meta: failMeta(err) };
+  }
+}
+
+export type NewBoardTerm = {
+  userId: string;
+  displayName: string;
+  role: GovernanceBoardRole;
+  termStart: string;
+  termEnd?: string;
+};
+
+/** Records a member's board term (POST /api/admin/governance/board-terms). */
+export async function createAdminBoardTerm(
+  term: NewBoardTerm,
+): Promise<BoardActionResult> {
+  if (term.termEnd && term.termEnd <= term.termStart) {
+    return { ok: false, error: 'The term must end after it starts' };
+  }
+  if (isForceMock()) {
+    mockTerms = [
+      {
+        id: `term-${Date.now()}`,
+        userId: term.userId,
+        displayName: term.displayName,
+        role: term.role,
+        termStart: new Date(term.termStart).toISOString(),
+        termEnd: term.termEnd ? new Date(term.termEnd).toISOString() : null,
+        endReason: null,
+        meetingId: null,
+      },
+      ...mockTerms,
+    ];
+    return { ok: true };
+  }
+  try {
+    await sendJson('/api/admin/governance/board-terms', 'POST', {
+      userId: term.userId,
+      role: term.role,
+      termStart: term.termStart,
+      ...(term.termEnd ? { termEnd: term.termEnd } : {}),
+    });
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: errorText(err, 'Could not add the term') };
   }
 }
