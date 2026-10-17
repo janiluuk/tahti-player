@@ -48,6 +48,13 @@ function richVenue(base: VenueProfile | null): VenueProfile | null {
     ],
     broadcasts: [
       {
+        id: 'venue-show-live',
+        startAt: '2026-01-01T19:00:00.000Z',
+        endAt: null,
+        description: 'Kuudes Linja house night, on now',
+        state: 'LIVE',
+      },
+      {
         id: 'venue-show-1',
         startAt: '2099-02-14T19:30:00.000Z',
         endAt: '2099-02-14T23:00:00.000Z',

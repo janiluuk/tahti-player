@@ -8,6 +8,7 @@ import {
 import { useEffect, useState } from 'react';
 
 import {
+  Badge,
   ButtonAnchor,
   ClampedText,
   CopyButton,
@@ -224,9 +225,16 @@ function VenueUpcomingShows({
         <ul className="divide-border mt-2 divide-y">
           {broadcasts.map((show) => (
             <li key={show.id} className="flex flex-col gap-0.5 py-2 text-sm">
-              <time dateTime={show.startAt} className="font-medium">
-                {formatShowTime(show)}
-              </time>
+              <span className="flex flex-wrap items-center gap-2">
+                <time dateTime={show.startAt} className="font-medium">
+                  {formatShowTime(show)}
+                </time>
+                {show.state === 'LIVE' ? (
+                  <Badge variant="pill" color="red">
+                    Live now
+                  </Badge>
+                ) : null}
+              </span>
               {show.description ? (
                 <span className="text-foreground-secondary">
                   {show.description}

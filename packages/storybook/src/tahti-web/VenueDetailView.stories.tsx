@@ -46,6 +46,7 @@ export const Default: Story = {
       await expect(
         shows.getByText('Northern Lights - Polar Static live'),
       ).toBeVisible();
+      await expect(shows.getByText('Live now')).toBeVisible();
       await expect(
         shows.getByRole('link', { name: /Add to calendar/ }),
       ).toHaveAttribute('download');
