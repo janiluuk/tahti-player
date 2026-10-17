@@ -75,6 +75,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
           'When an artist is offline, their channel still plays archive items.',
           'Tahti Radio (/radio) is a fair-rotation stream across the community. Open the calendar on Radio for the full programme schedule (/schedule), or book a slot when you are signed in.',
           'Discover has widgets, artists, and venues. Open Discover → Venues to browse verified venues, or Discover → Artists for the directory.',
+          'Run a venue? Register it from Discover → Venues. My venues (/venues/mine) shows whether the board has verified it, and lets you edit its details and book or cancel shows there.',
           'Signed-in listeners can install Disco-widgets on Listen from Settings → Add-ons → Discovery.',
         ],
       },
@@ -441,6 +442,8 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Unlimited live time and cooperative support (€40/year membership).',
           'Membership is support for the org, not a consumer “plan”.',
+          'Members see more on Governance (/governance): the current board, board elections (stand for election or withdraw while nominations are open), the published annual reports, and the association’s registered details and auditors.',
+          'Something wrong in your member details or a published record? Use Request a correction on Governance; the board’s answer appears there, and you can withdraw a request while it waits.',
         ],
       },
     ],

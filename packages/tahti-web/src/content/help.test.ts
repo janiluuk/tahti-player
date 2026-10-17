@@ -74,3 +74,24 @@ describe('earnings help', () => {
     );
   });
 });
+
+describe('member governance and venue help', () => {
+  it('names the member governance panels', () => {
+    const member = getHelpArticle('tier-limits')?.sections.find(
+      (section) => section.heading === 'Tahti ry member',
+    );
+    expect(member?.body.some((line) => line.includes('board elections'))).toBe(
+      true,
+    );
+    expect(
+      member?.body.some((line) => line.includes('Request a correction')),
+    ).toBe(true);
+  });
+
+  it('points venue owners at My venues', () => {
+    const find = getHelpArticle('for-listeners')?.sections.find(
+      (section) => section.heading === 'Find something to listen to',
+    );
+    expect(find?.body.some((line) => line.includes('/venues/mine'))).toBe(true);
+  });
+});
