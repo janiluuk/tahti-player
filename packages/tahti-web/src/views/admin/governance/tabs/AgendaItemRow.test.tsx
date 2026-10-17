@@ -57,4 +57,24 @@ describe('AgendaItemRow', () => {
       'Give the item a title',
     );
   });
+
+  it('removes an item after confirming, or says why it cannot', async () => {
+    const remove = vi.spyOn(agenda, 'deleteAdminAgendaItem').mockResolvedValue({
+      ok: false,
+      error: 'Records still point at this agenda item: unlink them first',
+    });
+    render(
+      <ul>
+        <AgendaItemRow item={item} onChanged={vi.fn()} />
+      </ul>,
+    );
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Remove item 2: Annual report 2025' }),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Remove' }));
+    expect(remove).toHaveBeenCalledWith(item);
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'unlink them first',
+    );
+  });
 });
