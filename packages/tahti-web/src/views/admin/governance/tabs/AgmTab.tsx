@@ -31,6 +31,7 @@ import type {
   GovernanceMeeting,
 } from '../../../../api/types';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { isSafeHref } from '../../../../lib/safeHref';
 import { GovernanceDocumentRow } from '../records/GovernanceDocumentRow';
 import { LegalHoldControl } from '../records/LegalHoldControl';
 import { MemberRegisterPanel } from '../records/MemberRegisterPanel';
@@ -433,7 +434,7 @@ export function AgmTab() {
                         ? 'Uploaded, pending approval'
                         : 'Not uploaded'}
                   </span>
-                  {meeting.minutesUrl && (
+                  {meeting.minutesUrl && isSafeHref(meeting.minutesUrl) && (
                     <a
                       href={meeting.minutesUrl}
                       target="_blank"

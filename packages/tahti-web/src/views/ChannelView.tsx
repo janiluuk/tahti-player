@@ -62,6 +62,7 @@ import { cn } from '../lib/cn';
 import { colorSchemeCssVars, normalizeColorScheme } from '../lib/colorScheme';
 import { isPinned } from '../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
+import { isSafeChannelLinkUrl } from '../lib/safeHref';
 import { useArtistFollow } from '../lib/useArtistFollow';
 import { useAuthStore } from '../stores/authStore';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
@@ -316,6 +317,13 @@ export function ChannelView({ slug }: { slug: string }) {
         setLookTick((n) => n + 1);
       }
       if (linksDirty) {
+        const invalid = channelLinksDraft.find(
+          (link) => link.url.trim() && !isSafeChannelLinkUrl(link.url),
+        );
+        if (invalid) {
+          toast.error('Links must be http(s) or mailto: URLs');
+          return;
+        }
         const result = await patchChannelVisual({
           channelLinks: channelLinksDraft,
         });
