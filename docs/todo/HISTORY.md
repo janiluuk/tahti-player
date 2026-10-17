@@ -4792,3 +4792,12 @@ Folded `next-twenty-slices.md` after squash-merging the open batch-67 PRs.
 - **Docs folds (#970, #971):** hearthis + library ambient visual-check leftovers; snapshot-digest soft-pass leftover.
 - **Checks:** conflicting branches rebased onto master (shared mock typecheck / empty-vault `links` / package bumps) before merge. Gaps in the number sequence (#977, #982, #988, #990) were never opened.
 
+## 2026-10-17 — Sweep leftovers folded (batches 52-59)
+
+Folded `sweep-leftovers.md`. Its last open item, deploying janiluuk/tahti-org#834 (submitter on `GET /api/admin/venues`), is done: #834 merged 2026-10-14 and the production deploy from `main` succeeded on 2026-10-16, so Admin → Venues names who submitted each venue (tahti-web #770 reads both shapes). Everything else on the list was fixed in #767-#771, #781-#783 and batches 56/58.
+
+What the sweeps checked and kept as intended, for the next sweep:
+
+Checked and not a bug: channel and track pages measure 24-32 px wider than their column because the full-bleed banner uses `-m-8` against the scroll frame's `p-8` and the frame clips at its own edge; the Feed cards' extra 12 px is the blurred glow behind each card; the 768 px voting-activity list on Admin → Governance scrolls sideways on purpose (#647); the phone avatar's unread badge sits outside the 24 px avatar on purpose (#666); the stem editor's 1 px "level" rows are screen-reader-only labels; the hidden file inputs flagged as unlabeled are `aria-hidden` with `tabindex="-1"` (#639); the crawler counted no `h1` on `/account`, but it measured during the redirect; `/settings/account` has one ("Account") in the Settings dialog. Settings → Themes' preview stripes overhang their card on purpose (skewed, clipped by the card); the admin second-level nav scrolls sideways on a phone on purpose. The schedule week grid and the Feed card carousels run past the edge inside their own sideways scroll on purpose; the Add-ons card author beside its title is #675.
+
+Batch 59 axe artifacts, not bugs: `landmark-one-main` and `page-has-heading-one` on desktop pages, and `aria-dialog-name` on the login dialog, came from the crawler running axe before the route or Headless UI's title had rendered (the pages have their `main`, `h1` and `aria-labelledby`). At 390 px the missing `main` was real (#757). The axe crawl followed download links (`*.csv`, `press-kit.zip`), which have no `<title>` or `lang`.
