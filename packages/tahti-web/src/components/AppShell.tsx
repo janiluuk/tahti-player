@@ -27,6 +27,7 @@ import { useAutoHideNavWhilePlaying } from '../hooks/useAutoHideNavWhilePlaying'
 import { useIsCompactDesktop, useIsMobile } from '../hooks/useIsMobile';
 import { useOpenedOnce } from '../hooks/useOpenedOnce';
 import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
+import { useStudioShellScrollRestore } from '../hooks/useStudioShellScrollRestore';
 import { useWarnBeforeLeavingWhilePlaying } from '../hooks/useWarnBeforeLeavingWhilePlaying';
 import { isAnonymousRouteAllowed } from '../layout/anonymousRoutes';
 import {
@@ -356,6 +357,8 @@ export function AppShell() {
   useEffect(() => {
     syncDocumentMetadata(pathname);
   }, [pathname]);
+
+  useStudioShellScrollRestore(pathname);
 
   useEffect(() => {
     if (isAudioEditorRoute) {
