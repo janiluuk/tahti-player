@@ -371,6 +371,14 @@ export function DiscoverView() {
             >
               Register a venue
             </Link>
+            {user ? (
+              <Link
+                to="/venues/mine"
+                className="text-sm font-medium underline-offset-2 hover:underline"
+              >
+                My venues
+              </Link>
+            ) : null}
           </header>
         ) : null}
 

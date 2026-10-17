@@ -412,7 +412,7 @@ export const studioVenuesRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/venues',
   beforeLoad: () => {
-    throw redirect({ to: '/admin/venues' });
+    throw redirect({ to: '/venues/mine' });
   },
 });
 
