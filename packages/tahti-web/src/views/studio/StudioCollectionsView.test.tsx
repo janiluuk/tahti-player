@@ -16,13 +16,21 @@ import { StudioCollectionsView } from './StudioCollectionsView';
 
 const createStudioCollection = vi.fn();
 
+const fetchStudioCollections = vi.fn(async () => ({
+  data: [] as Array<{
+    slug: string;
+    name: string;
+    style: string;
+    createdAt?: string;
+  }>,
+  meta: { source: 'mock' as const },
+}));
+
 vi.mock('../../api/studio', () => ({
   createStudioCollection: (...args: unknown[]) =>
     createStudioCollection(...args),
-  fetchStudioCollections: async () => ({
-    data: [],
-    meta: { source: 'mock' as const },
-  }),
+  fetchStudioCollections: (...args: unknown[]) =>
+    fetchStudioCollections(...args),
 }));
 
 vi.mock('../../components/library/SubscribedCollections', () => ({
@@ -168,5 +176,33 @@ describe('StudioCollectionsView create', () => {
 
     expect(await screen.findByText('Nope')).toBeInTheDocument();
     expect(router.state.location.pathname).toBe('/studio/collections');
+  });
+});
+
+describe('StudioCollectionsView list order', () => {
+  it('lists collections newest-first by createdAt', async () => {
+    fetchStudioCollections.mockResolvedValue({
+      data: [
+        {
+          slug: 'older',
+          name: 'Older mix',
+          style: 'PLAYLIST',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        {
+          slug: 'newer',
+          name: 'Newer mix',
+          style: 'PLAYLIST',
+          createdAt: '2026-08-01T00:00:00.000Z',
+        },
+      ],
+      meta: { source: 'mock' as const },
+    });
+    await renderCollections();
+    const newer = await screen.findByText('Newer mix');
+    const older = screen.getByText('Older mix');
+    expect(
+      newer.compareDocumentPosition(older) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
   });
 });
