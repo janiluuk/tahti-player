@@ -8,6 +8,7 @@ import {
   checkoutPurchaseTier,
   type PublicStoreTier,
 } from '../../api/purchase-tiers';
+import { assignStripeRedirectUrl } from '../../lib/stripeRedirect';
 import { useAuthStore } from '../../stores/authStore';
 import { Eyebrow } from '../tahti/Eyebrow';
 
@@ -52,7 +53,9 @@ function StoreTierRow({
       return;
     }
     if ('checkoutUrl' in result) {
-      window.location.assign(result.checkoutUrl);
+      if (!assignStripeRedirectUrl(result.checkoutUrl)) {
+        toast.error('Checkout URL was not from Stripe');
+      }
       return;
     }
     toast.success(`Bought ${tier.name}`);

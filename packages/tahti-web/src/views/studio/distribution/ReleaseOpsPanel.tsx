@@ -32,6 +32,7 @@ import type {
 } from '../../../api/studio-types';
 import { PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { assignStripeRedirectUrl } from '../../../lib/stripeRedirect';
 import { CreditsEditor } from './CreditsEditor';
 import { DeliveryTab } from './DeliveryTab';
 import {
@@ -179,7 +180,9 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         return;
       }
       if ('checkoutUrl' in r) {
-        window.location.href = r.checkoutUrl;
+        if (!assignStripeRedirectUrl(r.checkoutUrl)) {
+          toast.error('Checkout URL was not from Stripe');
+        }
         return;
       }
       toast.success('Submitted to Revelator.');
