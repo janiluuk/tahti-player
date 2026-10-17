@@ -36,30 +36,38 @@ body,
   overflow-y: auto;
 }
 
-:root {
-  transition:
-    color 180ms ease,
-    background-color 180ms ease;
+@keyframes tahti-player-bar-enter {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.tahti-ambient-surface,
-.tahti-theme-chrome {
+.tahti-player-bar-enter {
+  animation: tahti-player-bar-enter 0.22s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tahti-player-bar-enter {
+    animation: none;
+  }
+}
+
+:root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,
+:root[data-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
   background-color: var(--background);
   transition:
-    background-color 220ms ease,
+    background-color 240ms ease,
     border-color 180ms ease,
-    box-shadow 180ms ease,
-    opacity 160ms ease,
-    filter 160ms ease;
+    box-shadow 180ms ease;
 }
 
-html.tahti-theme-crossfade-active
-  :is(.tahti-ambient-surface, .tahti-theme-chrome) {
-  opacity: 0.88;
-  filter: brightness(0.96);
-}
-
-:is(button, a, [role='button'], [role='tab'], summary) {
+:root[data-theme-id='nuclear:tahti-dark']
+  :is(button, a, [role='button'], [role='tab'], summary) {
   transition:
     color 140ms ease,
     background-color 140ms ease,
@@ -70,22 +78,17 @@ html.tahti-theme-crossfade-active
     filter 140ms ease;
 }
 
-:is(button, a, [role='button']):not(:disabled):hover {
+:root[data-theme-id='nuclear:tahti-dark']
+  :is(button, a, [role='button']):not(:disabled):hover {
   filter: brightness(1.06);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :root,
-  :is(button, a, [role='button'], [role='tab'], summary),
-  .tahti-ambient-surface,
-  .tahti-theme-chrome {
+  :root[data-theme-id='nuclear:tahti-dark']
+    :is(button, a, [role='button'], [role='tab'], summary),
+  :root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,
+  :root[data-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
     transition-duration: 0.01ms;
-  }
-
-  html.tahti-theme-crossfade-active
-    :is(.tahti-ambient-surface, .tahti-theme-chrome) {
-    opacity: 1;
-    filter: none;
   }
 }
 
