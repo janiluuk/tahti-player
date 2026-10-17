@@ -174,6 +174,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/GenrePicker` | `tahti-web/GenrePicker.stories.tsx` |
 | `Tahti/Widgets/GlobalSearch` | `tahti-web/GlobalSearch.stories.tsx` |
 | `Tahti/Media/GlowMediaTile` | `tahti-web/GlowMediaTile.stories.tsx` |
+| `Tahti/Governance/Member panels` | `tahti-web/GovernanceMemberPanels.stories.tsx` |
 | `Tahti/Studio/Distribution/GuideDetail` | `tahti-web/GuideDetail.stories.tsx` |
 | `Tahti/Reference/Help center` | `tahti-web/HelpView.stories.tsx` |
 | `Tahti/History/HistoryListSection` | `tahti-web/HistoryListSection.stories.tsx` |
