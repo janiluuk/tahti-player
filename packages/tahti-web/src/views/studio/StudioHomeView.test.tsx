@@ -129,4 +129,29 @@ describe('StudioHomeView empty-discography CTAs', () => {
       'Nothing in your discography yet',
     );
   });
+
+  it('hides the Distribution tile when there are no releases', async () => {
+    mockSoundsCount = 1;
+    mockReleasesCount = 0;
+    await renderAsArtist();
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    });
+    expect(container.textContent).not.toContain('Distribution');
+  });
+
+  it('shows a Distribution tile when the artist has releases', async () => {
+    mockSoundsCount = 0;
+    mockReleasesCount = 2;
+    await renderAsArtist();
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    });
+    expect(container.textContent).toContain('Distribution');
+    expect(
+      Array.from(container.querySelectorAll('a')).some((a) =>
+        (a.getAttribute('href') ?? '').includes('/studio/distribution'),
+      ),
+    ).toBe(true);
+  });
 });

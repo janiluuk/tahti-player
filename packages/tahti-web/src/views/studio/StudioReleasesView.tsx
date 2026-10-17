@@ -126,6 +126,16 @@ export function StudioReleasesView() {
           classes={{ root: 'px-0 pt-0' }}
           actions={
             <div className="flex items-center gap-2">
+              <Tooltip content="Distribution" side="top">
+                <ButtonLink
+                  to="/studio/distribution"
+                  size="icon-sm"
+                  variant="text"
+                  aria-label="Distribution"
+                >
+                  <Share2Icon size={16} aria-hidden />
+                </ButtonLink>
+              </Tooltip>
               <ReleaseCsvImportButton onImported={reload} />
               <Tooltip content="New release" side="top">
                 <Button

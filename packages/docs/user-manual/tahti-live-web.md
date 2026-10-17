@@ -26,6 +26,11 @@ On phones, Listen / Discover / Radio (and Studio when you are an artist) sit in 
 
 Open **Help center** in the web app for listener, artist, broadcast, releasing, and admin articles. That guide stays in sync with the product. This GitBook page is only a map of the chrome.
 
+## Chat vs Messages
+
+- **Channel chat** — On a channel page (or `/chat/$slug` for that channel) while the artist is live or chat is enabled. Not a top-level chrome item.
+- **Messages** — Private DMs between accounts (sidebar / More). Separate from channel chat.
+
 ## Shared listening vs desktop remote
 
 - **Shared Jam** — Start a Jam on a public playlist/collection; guests join via `/jam/$code`. See Help → Shared listening (Jam).
