@@ -163,8 +163,18 @@ export function StudioUpdatesView() {
                 <EmptyState
                   size="sm"
                   title="No posts yet"
+                  description={
+                    isEmpty
+                      ? 'Share news, show notes, or tour dates with your followers.'
+                      : undefined
+                  }
                   action={
-                    !isEmpty ? (
+                    isEmpty ? (
+                      <Button size="sm" onClick={() => setPostEditor({})}>
+                        <PlusIcon size={16} aria-hidden className="mr-1.5" />
+                        Write a post
+                      </Button>
+                    ) : (
                       <Tooltip content="New post" side="top">
                         <Button
                           size="icon-sm"
@@ -174,7 +184,7 @@ export function StudioUpdatesView() {
                           <PlusIcon size={16} aria-hidden />
                         </Button>
                       </Tooltip>
-                    ) : undefined
+                    )
                   }
                 />
               ) : (
@@ -270,8 +280,18 @@ export function StudioUpdatesView() {
                 <EmptyState
                   size="sm"
                   title="No drafts yet"
+                  description={
+                    isEmpty
+                      ? 'Draft a newsletter or post when you are ready to publish.'
+                      : undefined
+                  }
                   action={
-                    !isEmpty ? (
+                    isEmpty ? (
+                      <Button size="sm" onClick={() => setDraftOpen(true)}>
+                        <PlusIcon size={16} aria-hidden className="mr-1.5" />
+                        New draft
+                      </Button>
+                    ) : (
                       <Tooltip content="New draft" side="top">
                         <Button
                           size="icon-sm"
@@ -281,7 +301,7 @@ export function StudioUpdatesView() {
                           <PlusIcon size={16} aria-hidden />
                         </Button>
                       </Tooltip>
-                    ) : undefined
+                    )
                   }
                 />
               ) : (
