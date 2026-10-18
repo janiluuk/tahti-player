@@ -27,8 +27,8 @@ import { useAuthStore } from '../stores/authStore';
 import { useLayoutStore } from '../stores/layoutStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
+import { EmbedSurface } from './EmbedSurface';
 import { useHearthisEmbedClaimed } from './HearthisEmbedHost';
-import { HearthisEmbedSurface } from './HearthisEmbedSurface';
 import { PlayerLiveBadge } from './PlayerSeekBar';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
 import { WaveformSeekbar } from './tahti/WaveformSeekbar';
@@ -89,7 +89,7 @@ export function ConnectedPlayerBar() {
   const playable = current ? playableFromQueueItem(current) : null;
   const isPlaying = status === 'playing' || status === 'loading';
   const isLoading = status === 'loading';
-  const hearthisEmbed = playable?.embed;
+  const embed = playable?.embed;
   const hearthisHostedInRow = useHearthisEmbedClaimed();
 
   useEffect(() => {
@@ -275,12 +275,11 @@ export function ConnectedPlayerBar() {
     </div>
   );
 
-  // Embed-only hearthis tracks have no seekable stream — the provider
-  // widget is the transport. Skip the Tahti waveform so the bottom chrome
-  // stays a slim strip instead of waveform + full widget stacking into the
-  // workspace.
+  // Embed-only tracks have no seekable stream — the provider widget is the
+  // transport. Skip the Tahti waveform so the bottom chrome stays a slim
+  // strip instead of waveform + full widget stacking into the workspace.
   const waveform =
-    isLive || hearthisEmbed ? null : (
+    isLive || embed ? null : (
       <div className="px-4 pt-1">
         <WaveformSeekbar
           trackId={playable?.id ?? currentId ?? 'none'}
@@ -301,14 +300,17 @@ export function ConnectedPlayerBar() {
       </div>
     );
 
-  const hearthisFallback =
-    hearthisEmbed && !hearthisHostedInRow ? (
+  const embedHostedInRow =
+    embed?.provider === 'hearthis' && hearthisHostedInRow;
+  const embedPanel =
+    embed && !embedHostedInRow ? (
       <div
         className="border-border max-h-28 w-[min(100%,20rem)] shrink-0 overflow-hidden rounded-lg border"
         data-testid="hearthis-player-embed"
       >
-        <HearthisEmbedSurface
-          embedUri={hearthisEmbed.embedUri}
+        <EmbedSurface
+          provider={embed.provider}
+          embedUri={embed.embedUri}
           title={title}
           autoplay={isPlaying}
           compact
@@ -326,7 +328,7 @@ export function ConnectedPlayerBar() {
       <div className={barShellClass}>
         {waveform}
         <div className="flex w-full items-center gap-3 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-          {hearthisFallback}
+          {embedPanel}
           <Button
             variant="text"
             size="flexible"
@@ -336,7 +338,7 @@ export function ConnectedPlayerBar() {
             aria-label="Open full-screen player"
             data-testid="expand-full-screen-player"
           >
-            {!hearthisFallback && coverUrl ? (
+            {!embedPanel && coverUrl ? (
               <MediaArtwork src={coverUrl} size="sm" className="shrink-0" />
             ) : null}
             <span className="min-w-0">
@@ -368,9 +370,9 @@ export function ConnectedPlayerBar() {
       <PlayerBar
         left={
           <div className="flex min-w-0 items-center gap-2">
-            {hearthisFallback ? (
+            {embedPanel ? (
               <div className="flex min-w-0 items-center gap-2">
-                {hearthisFallback}
+                {embedPanel}
                 <div className="min-w-0">
                   <div
                     className="truncate text-sm font-semibold tracking-tight"

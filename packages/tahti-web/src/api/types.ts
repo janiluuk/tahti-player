@@ -329,6 +329,12 @@ export type VenueProfile = VenueDirectoryItem & {
   recordings?: VenueRecording[];
 };
 
+/** Provider whose own widget plays an EMBED_ONLY track through the shared
+ * player (lowercase, matching `TahtiPlayable.sourceProvider`); mirrors the
+ * uppercase `EmbedProvider` in lib/embedSrc that the API surfaces carry. */
+export type EmbedPlaybackProvider =
+  'hearthis' | 'mixcloud' | 'spotify' | 'bandcamp';
+
 /** Playable item in the Tahti listen client (live channel, radio, or archive URL). */
 export type TahtiPlayable = {
   id: string;
@@ -339,7 +345,7 @@ export type TahtiPlayable = {
   streamUrl: string;
   protocol: 'hls' | 'https';
   embed?: {
-    provider: 'hearthis';
+    provider: EmbedPlaybackProvider;
     embedUri: string;
   };
   channelSlug?: string;

@@ -1,3 +1,4 @@
+import { toEmbedPlaybackProvider } from '../lib/embedSrc';
 import {
   getMockBackgroundColorSchemeJson,
   getMockBackgroundVisualPreset,
@@ -1270,14 +1271,11 @@ export function soundItemToPlayable(
   channelSlug?: string,
 ): TahtiPlayable | null {
   if (!item.audioUrl) {
-    // EMBED_ONLY items (never hosted here) have no audioUrl at all — only
-    // hearthis.at has a shared-player-wide embed widget (the bottom bar
-    // special-cases `embed.provider: 'hearthis'`, see playableFromHearthis/
-    // TrackDetailView's playableFromDetail); Mixcloud/Spotify/Bandcamp only
-    // ever play through a page's own inline widget, which this generic
-    // channel-listing table doesn't have, so those still fall through to
-    // "not playable here" below.
-    if (item.embedProvider === 'HEARTHIS' && item.embedUri) {
+    // EMBED_ONLY items (never hosted here) have no audioUrl — the provider's
+    // own widget supplies the audio; every supported provider yields a
+    // playable row in the unified listen surface, played through the shared
+    // player bar like any other track.
+    if (item.embedProvider && item.embedUri) {
       return {
         id: `sound:${item.id}`,
         kind: 'sound',
@@ -1287,10 +1285,13 @@ export function soundItemToPlayable(
         streamUrl: '',
         protocol: 'https',
         channelSlug,
-        sourceProvider: 'hearthis',
+        sourceProvider: toEmbedPlaybackProvider(item.embedProvider),
         durationSec: item.durationSec,
         releaseDate: item.createdAt ?? null,
-        embed: { provider: 'hearthis', embedUri: item.embedUri },
+        embed: {
+          provider: toEmbedPlaybackProvider(item.embedProvider),
+          embedUri: item.embedUri,
+        },
       };
     }
     return null;

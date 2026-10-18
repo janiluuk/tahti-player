@@ -22,7 +22,7 @@ const meta: Meta<typeof CollectionView> = {
     docs: {
       description: {
         component:
-          'The public playlist page at `/u/$username/c/$slug`: header (play, queue all, embed, RSS, Jam, favorite, subscribe, report), track table with "Added by" + note lines on collaborative playlists, embed-only rows under "Elsewhere", linked releases and the add-a-track panel for collaborative public playlists. Fixtures live in `_fixtures/collection.ts`.',
+          'The public playlist page at `/u/$username/c/$slug`: header (play, queue all, embed, RSS, Jam, favorite, subscribe, report), track table with "Added by" + note lines on collaborative playlists (embed-only tracks sit in the same table), linked releases and the add-a-track panel for collaborative public playlists. Fixtures live in `_fixtures/collection.ts`.',
       },
     },
   },
@@ -97,7 +97,9 @@ export const CollaborativeVisitor: Story = {
     });
 
     await step('embed-only rows, linked releases and add panel', async () => {
-      await expect(canvas.getByText('Elsewhere')).toBeVisible();
+      await expect(
+        canvas.getByText('Deep Space Transmission (hearthis.at)'),
+      ).toBeVisible();
       await expect(
         canvas.getByRole('link', { name: 'Polar Static' }),
       ).toHaveAttribute('href', '/r/northern-lights-release-2');

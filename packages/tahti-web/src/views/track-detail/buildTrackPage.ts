@@ -81,12 +81,6 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
   const embedSrc =
     embedProvider && embedUri ? embedSrcFor(embedProvider, embedUri) : null;
   const embedLabel = embedProvider ? EMBED_PROVIDER_LABEL[embedProvider] : null;
-  // Only hearthis.at tracks stay playable once favorited (see
-  // `playableFromDetail`'s `embed` field) — Mixcloud/Spotify/Bandcamp have
-  // no shared-player-wide widget, so favoriting one would save a dead
-  // entry that silently does nothing from Favorites/History.
-  const favoritingUnsupported =
-    Boolean(embedSrc) && embedProvider !== 'HEARTHIS';
   const clock = formatDuration(elapsed) || '0:00';
   const cover = playable.coverUrl ?? placeholderArtworkUrl(playable.id);
   const visualScheme = channel?.colorScheme
@@ -308,7 +302,6 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     embedUri,
     embedSrc,
     embedLabel,
-    favoritingUnsupported,
     clock,
     cover,
     visualScheme,

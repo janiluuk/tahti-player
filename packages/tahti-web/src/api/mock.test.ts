@@ -53,7 +53,7 @@ describe('soundItemToPlayable', () => {
     });
   });
 
-  it('returns null for a non-hearthis embed provider with no audioUrl (no inline widget here)', () => {
+  it('builds an embed-aware playable for non-hearthis EMBED_ONLY items (unified player)', () => {
     const playable = soundItemToPlayable(
       baseItem({
         audioUrl: null,
@@ -62,7 +62,15 @@ describe('soundItemToPlayable', () => {
       }),
       'my-channel',
     );
-    expect(playable).toBeNull();
+    expect(playable).not.toBeNull();
+    expect(playable).toMatchObject({
+      sourceProvider: 'bandcamp',
+      streamUrl: '',
+      embed: {
+        provider: 'bandcamp',
+        embedUri: 'abc',
+      },
+    });
   });
 
   it('returns null when there is neither audioUrl nor embed data', () => {

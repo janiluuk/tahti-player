@@ -64,7 +64,6 @@ export function TrackHero({ page }: { page: TrackPage }) {
     embedProvider,
     embedSrc,
     embedLabel,
-    favoritingUnsupported,
     clock,
     cover,
     visualScheme,
@@ -422,26 +421,13 @@ export function TrackHero({ page }: { page: TrackPage }) {
               </Button>
             ) : null}
             <Tooltip
-              content={
-                favorited
-                  ? 'Remove from favorites'
-                  : favoritingUnsupported
-                    ? `Favoriting isn't supported yet for ${embedLabel} tracks`
-                    : 'Favorite'
-              }
+              content={favorited ? 'Remove from favorites' : 'Favorite'}
               side="top"
             >
               <Button
                 size="icon-sm"
                 variant="secondary"
-                disabled={!favorited && favoritingUnsupported}
-                aria-label={
-                  favorited
-                    ? 'Remove from favorites'
-                    : favoritingUnsupported
-                      ? `Favoriting isn't supported yet for ${embedLabel} tracks`
-                      : 'Favorite'
-                }
+                aria-label={favorited ? 'Remove from favorites' : 'Favorite'}
                 onClick={() => {
                   toggleFavoriteTrack(playable);
                   if (user) {

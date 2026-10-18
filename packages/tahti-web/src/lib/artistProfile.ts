@@ -1,6 +1,6 @@
 import { apiBase } from '../api/client';
 import type { PublicProfile, TahtiPlayable } from '../api/types';
-import { playableFromStudioHearthis } from './embedPlayback';
+import { playableFromStudioEmbed } from './embedPlayback';
 
 export const publicPressKitUrl = (username: string): string => {
   return `${apiBase()}/api/v1/u/${encodeURIComponent(username)}/press-kit.zip`;
@@ -160,7 +160,7 @@ export function profileTrackToPlayable(
   channelSlug?: string,
 ): TahtiPlayable | null {
   if (!track.playUrl) {
-    const embed = playableFromStudioHearthis({
+    const embed = playableFromStudioEmbed({
       ...track,
       artistName: track.artistName ?? artist,
     });

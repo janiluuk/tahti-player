@@ -5836,3 +5836,7 @@ and the other row controls), with a capped width and paint containment so
 it cannot expand into a full-width band. Claim registration uses
 `useLayoutEffect` so the PlayerBar fallback never paints first. Bumped
 `packages/tahti-web/package.json` to `0.0.150`.
+
+## 2026-10-18 — Embedded tracks play like native tracks everywhere
+
+Spotify, Mixcloud, Bandcamp and hearthis.at embeds now behave the same as Tahti-hosted tracks: they show in the same track tables (playlists and artist profiles no longer push them into a separate "Elsewhere" section), they play in the shared player bar and the full-screen player the exact same way (a new provider-agnostic `EmbedSurface` widget stands in for the hearthis-only one in the bar and full-screen player, while rows keep their inline hearthis widget and single-iframe claim), and you can favorite any of them — favorited or queued embedded tracks replay from Favorites, History and the queue bar instead of silently doing nothing (mixcloud/spotify/bandcamp ones were previously dead entries once favorited). The track detail page keeps its own inline provider player as before. Embeds stay out of the 24/7 radio fallback rotation, where they can't play unattended. Bumped `packages/tahti-web/package.json` to `0.0.211`.

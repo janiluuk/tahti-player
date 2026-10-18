@@ -1,7 +1,17 @@
+import type { EmbedPlaybackProvider } from '../api/types';
+
 /** Providers whose tracks are referenced, never re-hosted: the backend
  * stores only an embedUri and marks the archive item EMBED_ONLY, so the
  * audio and artwork have to come from the provider's own widget. */
 export type EmbedProvider = 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP';
+
+/** Lowercase playback key used on `TahtiPlayable.embed.provider`; the
+ * lowercase of the API's `EmbedProvider` is itself the playback form. */
+export function toEmbedPlaybackProvider(
+  p: EmbedProvider,
+): EmbedPlaybackProvider {
+  return p.toLowerCase() as EmbedPlaybackProvider;
+}
 
 /** Mirrors hearthisEmbedSrc in the main tahti repo (packages/shared).
  * waveform/cover stay on: the widget hides its play control until that
@@ -82,4 +92,17 @@ export const EMBED_PROVIDER_HEIGHT: Record<EmbedProvider, number> = {
   MIXCLOUD: 120,
   SPOTIFY: 152,
   BANDCAMP: 120,
+};
+
+/** Display name keyed by the lowercase playback form found on
+ * `TahtiPlayable.embed.provider`; derived from the uppercase map so the two
+ * never drift. */
+export const EMBED_PLAYBACK_PROVIDER_LABEL: Record<
+  EmbedPlaybackProvider,
+  string
+> = {
+  hearthis: EMBED_PROVIDER_LABEL.HEARTHIS,
+  mixcloud: EMBED_PROVIDER_LABEL.MIXCLOUD,
+  spotify: EMBED_PROVIDER_LABEL.SPOTIFY,
+  bandcamp: EMBED_PROVIDER_LABEL.BANDCAMP,
 };
