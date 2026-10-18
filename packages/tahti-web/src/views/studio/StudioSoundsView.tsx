@@ -63,7 +63,10 @@ export function StudioSoundsView() {
                   title="No tracks yet"
                   description="Upload a file or import from Sources."
                   action={
-                    <AddToMusicActions align="center" onUploaded={reload} />
+                    <AddToMusicActions
+                      align="center"
+                      uploadTo="/library/upload"
+                    />
                   }
                 />
               ) : (
