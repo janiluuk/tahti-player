@@ -208,13 +208,21 @@ export const AuthDialog: FC = () => {
                 autoComplete="email"
               />
             </div>
-            <SegmentedControl
-              aria-label="Account type"
-              options={ARTIST_KIND_OPTIONS}
-              value={artistKind}
-              onChange={setArtistKind}
-              className="self-start"
-            />
+            <div className="flex flex-col gap-2">
+              <span
+                className="text-foreground text-sm font-semibold"
+                aria-hidden
+              >
+                Account type
+              </span>
+              <SegmentedControl
+                aria-label="Account type"
+                options={ARTIST_KIND_OPTIONS}
+                value={artistKind}
+                onChange={setArtistKind}
+                className="self-start"
+              />
+            </div>
             <div className="flex flex-col gap-1">
               <Input
                 label={
