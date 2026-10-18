@@ -198,9 +198,19 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
         title="Sign in to see your feed"
         description="Follow artists to build a personal timeline of what they share."
         action={
-          <Button onClick={() => useAuthModalStore.getState().open('login')}>
-            Log in
-          </Button>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <Button onClick={() => useAuthModalStore.getState().open('login')}>
+              Log in
+            </Button>
+            <ButtonLink
+              to="/discover"
+              search={{ tab: 'artists' }}
+              size="sm"
+              variant="secondary"
+            >
+              Discover artists
+            </ButtonLink>
+          </div>
         }
       />,
     );
