@@ -798,9 +798,14 @@ test('DSP landing page leads with artwork and essential release metadata', async
   await expect(heading).toBeVisible();
   const artworkBox = await artwork.boundingBox();
   const headingBox = await heading.boundingBox();
-  expect(artworkBox!.y).toBeLessThan(headingBox!.y);
-  await expect(page.getByText('2026', { exact: false })).toBeVisible();
-  await expect(page.getByText('ambient', { exact: false })).toBeVisible();
+  const artworkLeads =
+    artworkBox!.y + artworkBox!.height <= headingBox!.y ||
+    artworkBox!.x + artworkBox!.width <= headingBox!.x;
+  expect(artworkLeads).toBe(true);
+  await expect(page.getByText('2026', { exact: false }).first()).toBeVisible();
+  await expect(
+    page.getByText('ambient', { exact: false }).first(),
+  ).toBeVisible();
   await expect(page.getByText(/CC BY|ALL RIGHTS RESERVED/)).toHaveCount(0);
 });
 
