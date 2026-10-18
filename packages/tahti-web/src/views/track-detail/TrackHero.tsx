@@ -29,12 +29,7 @@ import { formatDuration } from '../../lib/playableToTrack';
 import { useAuthModalStore } from '../../stores/authModalStore';
 import { AiGeneratedBadge } from './AiGeneratedBadge';
 import { type TrackPage } from './buildTrackPage';
-import {
-  formatReleasedOn,
-  PLAYED_WAVE_COLOR,
-  UNPLAYED_WAVE_COLOR,
-  WAVEFORM_BARS,
-} from './helpers';
+import { formatReleasedOn, WAVEFORM_BARS } from './helpers';
 import { TrackAccessGate } from './TrackAccessGate';
 import { mixVersionLabel } from './trackDetails';
 
@@ -245,8 +240,6 @@ export function TrackHero({ page }: { page: TrackPage }) {
                     bars={detail?.peaks?.length || WAVEFORM_BARS}
                     markers={commentMarkers}
                     className="h-28"
-                    playedColor={PLAYED_WAVE_COLOR}
-                    unplayedColor={UNPLAYED_WAVE_COLOR}
                     onSeek={seekFraction}
                   />
                   <TimelineReactionBar
