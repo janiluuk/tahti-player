@@ -8,31 +8,42 @@ import {
   removeJamParticipant,
   setJamParticipantControl,
 } from './jam';
-import { setMockJamEnabled } from './jam.mock';
+import {
+  MOCK_JAM_DEMO_CODE,
+  resetMockJamSessions,
+  setMockJamEnabled,
+} from './jam.mock';
 
 describe('jam in the offline mock app', () => {
   afterEach(() => {
+    resetMockJamSessions();
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
   });
 
-  it('joins a jam hosted by another artist without the network', async () => {
+  it('joins the stable demo jam hosted by another artist without the network', async () => {
     vi.stubEnv('VITE_FORCE_MOCK', '1');
     const fetchSpy = vi.spyOn(globalThis, 'fetch');
 
-    const session = await joinJam('ABC123');
+    const session = await joinJam(MOCK_JAM_DEMO_CODE);
 
-    expect(session.code).toBe('ABC123');
+    expect(session.code).toBe(MOCK_JAM_DEMO_CODE);
     expect(session.participants.map((p) => p.role)).toEqual(['HOST', 'GUEST']);
     expect(session.hostUserId).not.toBe('mock-1');
     expect(await fetchJam(session.id)).toEqual(session);
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
+  it('rejects unknown jam codes in mock mode', async () => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+    await expect(joinJam('NOT-A-JAM')).rejects.toThrow('Jam not found');
+  });
+
   it('hosts a created jam and keeps host changes', async () => {
     vi.stubEnv('VITE_FORCE_MOCK', '1');
 
     const created = await createJam('demo-collection');
+    expect(created.code).toBe(MOCK_JAM_DEMO_CODE);
     expect(created.hostUserId).toBe('mock-1');
     expect(await joinJam(created.code)).toEqual(created);
 
@@ -44,15 +55,16 @@ describe('jam in the offline mock app', () => {
     expect(paused.isPlaying).toBe(false);
     expect(paused.positionSec).toBe(10);
 
-    const guest = (await joinJam('GUEST1')).participants[1]!;
-    const granted = await setJamParticipantControl(
-      'GUEST1',
-      guest.userId,
-      true,
+    const demo = await joinJam(MOCK_JAM_DEMO_CODE);
+    const guest = demo.participants.find((p) => p.role === 'GUEST')!;
+    const granted = await setJamParticipantControl(demo.id, guest.userId, true);
+    expect(
+      granted?.participants.find((p) => p.userId === guest.userId)?.canControl,
+    ).toBe(true);
+    const removed = await removeJamParticipant(demo.id, guest.userId);
+    expect(removed?.participants.some((p) => p.userId === guest.userId)).toBe(
+      false,
     );
-    expect(granted?.participants[1]?.canControl).toBe(true);
-    const removed = await removeJamParticipant('GUEST1', guest.userId);
-    expect(removed?.participants).toHaveLength(1);
   });
 
   it('uses the API again while a story stands in for it', async () => {
