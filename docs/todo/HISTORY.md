@@ -2,6 +2,13 @@
 
 
 
+## 2026-10-18 — CSP unblock external radio on beta
+
+Folded `csp-radio-media-src.md`. #1078's starter CSP limited `media-src` /
+`connect-src` to Tahti CDN/stream hosts, so Finnish curated and other HTTPS
+radio could not play on beta. #1131 widened both to `https:` (tahti-radio
+still allowed); beta redeployed. #1132 unblocked deploy type-check.
+
 ## 2026-10-18 — theDAW editor + viz port (v1 complete)
 
 Folded `thedaw-editor-viz-v1.md`. Packages `@tahti-player/{audio-core,audio-rack,audio-editor,visualizer}`, MultitrackEditor, FX rack, Advanced/Cymatics via `VisualizerHost`, and Studio Pro / ChannelVisualizer / FullScreenPlayer host wiring shipped (#598/#613). Bounce → sound versions prepare/complete done. Follow-ups left elsewhere: PulseForge video editor (`track-visualizer-video-editor.md`), VST3/FFmpeg/.gan sidecar — product/licence go-ahead, not an open v1 checklist.
