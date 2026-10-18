@@ -51,6 +51,7 @@ import {
 } from '../content/radioStations';
 import { usePolling } from '../hooks/usePolling';
 import { scheduleIdleRoutePrefetch } from '../lib/idleRoutePrefetch';
+import { prefetchListenCardIntent } from '../lib/intentRoutePrefetch';
 import { resolveLocalPlayableForReplay } from '../lib/nativeLibrary';
 import { activeListenTab } from '../lib/navigationActive';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
@@ -315,13 +316,18 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   );
 
   const renderRadioItem = (item: RadioRowItem) => {
+    const warmRadioRoute = () => prefetchListenCardIntent('radio');
     if (item.kind === 'preset') {
       const { preset } = item;
       const catalogId = RADIO_STATIONS.find(
         (station) => station.name === preset.name,
       )?.id;
       return (
-        <div className="group relative w-fit">
+        <div
+          className="group relative w-fit"
+          onPointerEnter={catalogId ? warmRadioRoute : undefined}
+          onFocus={catalogId ? warmRadioRoute : undefined}
+        >
           <RadioStationCoverEditButton
             label={preset.name}
             stationName={preset.name}
@@ -373,7 +379,11 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     const { station } = item;
     const streamUrl = station.streamUrl;
     return (
-      <div className="group relative w-fit">
+      <div
+        className="group relative w-fit"
+        onPointerEnter={warmRadioRoute}
+        onFocus={warmRadioRoute}
+      >
         <RadioStationCoverEditButton
           label={station.name}
           stationName={station.name}
@@ -431,38 +441,41 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const renderOnAirItem = ({ channel }: OnAirRowItem) => {
     const playableId = `live:${channel.slug}`;
     const playing = isActive(playableId);
+    const warmChannelRoute = () => prefetchListenCardIntent('channel');
     return (
-      <Card
-        title={
-          <Link
-            to="/channel/$slug"
-            params={{ slug: channel.slug }}
-            className="hover:underline"
-          >
-            {channel.user.displayName}
-          </Link>
-        }
-        subtitle={
-          <span className="font-semibold">
-            {playing
-              ? 'Playing now'
-              : channel.state === 'LIVE'
-                ? 'Live now'
-                : 'Replay'}
-          </span>
-        }
-        src={channel.user.avatarUrl ?? placeholderArtworkUrl(channel.slug)}
-        isPlaying={playing}
-        onPlay={() =>
-          togglePlayback(playableId, () => void playNow(channel.slug))
-        }
-        onClick={() => {
-          void navigate({
-            to: '/channel/$slug',
-            params: { slug: channel.slug },
-          });
-        }}
-      />
+      <div onPointerEnter={warmChannelRoute} onFocus={warmChannelRoute}>
+        <Card
+          title={
+            <Link
+              to="/channel/$slug"
+              params={{ slug: channel.slug }}
+              className="hover:underline"
+            >
+              {channel.user.displayName}
+            </Link>
+          }
+          subtitle={
+            <span className="font-semibold">
+              {playing
+                ? 'Playing now'
+                : channel.state === 'LIVE'
+                  ? 'Live now'
+                  : 'Replay'}
+            </span>
+          }
+          src={channel.user.avatarUrl ?? placeholderArtworkUrl(channel.slug)}
+          isPlaying={playing}
+          onPlay={() =>
+            togglePlayback(playableId, () => void playNow(channel.slug))
+          }
+          onClick={() => {
+            void navigate({
+              to: '/channel/$slug',
+              params: { slug: channel.slug },
+            });
+          }}
+        />
+      </div>
     );
   };
 
