@@ -70,7 +70,7 @@ export function WidgetCard({
   return (
     <section
       id={id}
-      className="group border-border bg-background-secondary flex min-h-[240px] scroll-mt-20 flex-col gap-2 rounded-md border-(length:--border-width) p-3 sm:min-h-[280px] sm:gap-3 sm:p-4"
+      className="group border-border bg-background-secondary flex min-h-[240px] scroll-mt-20 flex-col gap-2 rounded-md border-(length:--border-width) p-3 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] sm:min-h-[280px] sm:gap-3 sm:p-4"
     >
       <header className="flex items-start justify-between gap-2">
         <div className="min-w-0">
