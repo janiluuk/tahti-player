@@ -51,6 +51,13 @@ export const libraryRoute = createRoute({
 export const librarySoundsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/sounds',
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { contentType?: string; folder?: string } => ({
+    contentType:
+      typeof search.contentType === 'string' ? search.contentType : undefined,
+    folder: typeof search.folder === 'string' ? search.folder : undefined,
+  }),
   component: StudioSoundsView,
 });
 
