@@ -7,6 +7,7 @@ import {
   RadioIcon,
   XIcon,
 } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 import { Button, Tooltip } from '@tahti-player/ui';
@@ -20,6 +21,8 @@ import {
 } from '../lib/navigationActive';
 import { navigationPathname } from '../lib/navigationPathname';
 import { useAuthStore } from '../stores/authStore';
+
+const DRAWER_SPRING = { type: 'spring', stiffness: 420, damping: 40 } as const;
 
 const PRIMARY = [
   {
@@ -144,6 +147,8 @@ export function MobileDrawer({
 }: MobileDrawerProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const [closeTooltipArmed, setCloseTooltipArmed] = useState(false);
+  const reducedMotion = useReducedMotion();
+  const offScreenX = side === 'left' ? '-100%' : '100%';
 
   useEffect(() => {
     if (!open) {
@@ -196,59 +201,81 @@ export function MobileDrawer({
     };
   }, [open, onClose]);
 
-  if (!open) {
-    return null;
-  }
-
   return (
-    <div
-      className="fixed inset-0 z-50 md:hidden"
-      role="dialog"
-      aria-modal
-      aria-label={title}
-    >
-      <Button
-        variant="plain"
-        size="flexible"
-        tabIndex={-1}
-        aria-hidden
-        data-testid="mobile-drawer-scrim"
-        className="absolute inset-0 rounded-none bg-black/50 active:scale-100"
-        onClick={onClose}
-      />
-      <div
-        ref={panelRef}
-        tabIndex={-1}
-        className={cn(
-          'border-border bg-background absolute inset-y-0 flex flex-col border shadow-lg outline-none',
-          fullScreen
-            ? 'inset-x-0 w-full'
-            : cn('w-[min(100%,20rem)]', side === 'left' ? 'left-0' : 'right-0'),
-        )}
-      >
-        <div className="border-border flex items-center justify-between border-b px-3 py-2">
-          {title ? (
-            <h2 className="font-display text-sm font-bold tracking-tight">
-              {title}
-            </h2>
-          ) : (
-            <span />
-          )}
-          <Tooltip content="Close" side="top" disabled={!closeTooltipArmed}>
+    <AnimatePresence>
+      {open ? (
+        <div
+          key="mobile-drawer"
+          className="fixed inset-0 z-50 md:hidden"
+          role="dialog"
+          aria-modal
+          aria-label={title}
+        >
+          <motion.div
+            className="absolute inset-0"
+            initial={{ opacity: reducedMotion ? 1 : 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: reducedMotion ? 1 : 0 }}
+            transition={
+              reducedMotion
+                ? { duration: 0 }
+                : { duration: 0.18, ease: 'easeOut' }
+            }
+          >
             <Button
-              size="icon-sm"
-              variant="text"
+              variant="plain"
+              size="flexible"
+              tabIndex={-1}
+              aria-hidden
+              data-testid="mobile-drawer-scrim"
+              className="absolute inset-0 rounded-none bg-black/50 active:scale-100"
               onClick={onClose}
-              aria-label="Close"
-            >
-              <XIcon size={16} />
-            </Button>
-          </Tooltip>
+            />
+          </motion.div>
+          <motion.div
+            ref={panelRef}
+            tabIndex={-1}
+            className={cn(
+              'border-border bg-background absolute inset-y-0 flex flex-col border shadow-lg outline-none',
+              fullScreen
+                ? 'inset-x-0 w-full'
+                : cn(
+                    'w-[min(100%,20rem)]',
+                    side === 'left' ? 'left-0' : 'right-0',
+                  ),
+            )}
+            initial={reducedMotion ? false : { x: offScreenX, opacity: 0.98 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={
+              reducedMotion ? { opacity: 0 } : { x: offScreenX, opacity: 0.98 }
+            }
+            transition={reducedMotion ? { duration: 0 } : DRAWER_SPRING}
+          >
+            <div className="border-border flex items-center justify-between border-b px-3 py-2">
+              {title ? (
+                <h2 className="font-display text-sm font-bold tracking-tight">
+                  {title}
+                </h2>
+              ) : (
+                <span />
+              )}
+              <Tooltip content="Close" side="top" disabled={!closeTooltipArmed}>
+                <Button
+                  size="icon-sm"
+                  variant="text"
+                  onClick={onClose}
+                  aria-label="Close"
+                >
+                  <XIcon size={16} />
+                </Button>
+              </Tooltip>
+            </div>
+            <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-auto p-3">
+              {children}
+            </div>
+          </motion.div>
         </div>
-        <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-auto p-3">
-          {children}
-        </div>
-      </div>
-    </div>
+      ) : null}
+    </AnimatePresence>
   );
 }
