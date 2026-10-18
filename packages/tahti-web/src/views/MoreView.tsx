@@ -1,5 +1,6 @@
 import { ButtonAnchor, ViewShell } from '@tahti-player/ui';
 
+import { E2eRunGallery } from '../components/E2eRunGallery';
 import { FlowGallery } from '../components/FlowGallery';
 import { PortInventoryPanel } from '../components/PortInventoryPanel';
 import { ScreenAtlas } from '../components/ScreenAtlas';
@@ -13,6 +14,19 @@ import { SavedMapComments } from './more/SavedMapComments';
  * locally alongside this app. */
 const STORYBOOK_URL = 'http://localhost:6006';
 
+const JUMP_LINKS = [
+  { href: '#cases-anonymous', label: 'Anonymous' },
+  { href: '#cases-auth', label: 'Auth' },
+  { href: '#cases-listener', label: 'Listener' },
+  { href: '#cases-artist', label: 'Artist' },
+  { href: '#cases-edge', label: 'Edge' },
+  { href: '#flow-gallery', label: 'Flows' },
+  { href: '#e2e-runs', label: 'E2E' },
+  { href: '#design-system', label: 'Design' },
+  { href: '#feature-matrix', label: 'Features' },
+  { href: '#saved-comments', label: 'Comments' },
+] as const;
+
 export function MoreView() {
   const gapCount = FEATURES.filter((r) => featureParity(r) !== 'both').length;
 
@@ -24,66 +38,24 @@ export function MoreView() {
         content: 'gap-8',
       }}
     >
-      <nav aria-label="Jump to cases" className="flex flex-wrap gap-2 text-xs">
-        <a
-          href="#cases-anonymous"
-          className="border-border hover:text-foreground text-foreground-secondary rounded-md border px-2 py-1"
-        >
-          Anonymous
-        </a>
-        <a
-          href="#cases-auth"
-          className="border-border hover:text-foreground text-foreground-secondary rounded-md border px-2 py-1"
-        >
-          Auth
-        </a>
-        <a
-          href="#cases-listener"
-          className="border-border hover:text-foreground text-foreground-secondary rounded-md border px-2 py-1"
-        >
-          Listener
-        </a>
-        <a
-          href="#cases-artist"
-          className="border-border hover:text-foreground text-foreground-secondary rounded-md border px-2 py-1"
-        >
-          Artist
-        </a>
-        <a
-          href="#cases-edge"
-          className="border-border hover:text-foreground text-foreground-secondary rounded-md border px-2 py-1"
-        >
-          Edge
-        </a>
-        <a
-          href="#flow-gallery"
-          className="border-border hover:text-foreground text-foreground-secondary rounded-md border px-2 py-1"
-        >
-          Flows
-        </a>
-        <a
-          href="#design-system"
-          className="border-border hover:text-foreground text-foreground-secondary rounded-md border px-2 py-1"
-        >
-          Design
-        </a>
-        <a
-          href="#feature-matrix"
-          className="border-border hover:text-foreground text-foreground-secondary rounded-md border px-2 py-1"
-        >
-          Features
-        </a>
-        <a
-          href="#saved-comments"
-          className="border-border hover:text-foreground text-foreground-secondary rounded-md border px-2 py-1"
-        >
-          Comments
-        </a>
+      <nav aria-label="Jump to cases" className="flex flex-wrap gap-2">
+        {JUMP_LINKS.map((link) => (
+          <ButtonAnchor
+            key={link.href}
+            href={link.href}
+            variant="tertiary"
+            size="xs"
+          >
+            {link.label}
+          </ButtonAnchor>
+        ))}
       </nav>
 
       <ScreenAtlas />
 
       <FlowGallery />
+
+      <E2eRunGallery />
 
       <PortInventoryPanel />
 

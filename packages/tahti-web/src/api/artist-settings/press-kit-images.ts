@@ -2,8 +2,25 @@ import type { FetchMeta } from '.././client';
 import { mockFixture } from '.././mock-overrides';
 import { failMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
+import { apiBase } from '../http';
+import { getMockSessionUser } from '../mock-session';
 import { mockPress, setMockPress } from './mock';
 import { notifyPressKitGalleryReload } from './press-kit-gallery-sync';
+
+export function syncMockPressKitMeta(): void {
+  const username = getMockSessionUser()?.username ?? 'demo';
+  const zipReady =
+    mockGalleryImages.some((image) => image.includeInZip) &&
+    mockPress.bioShort.trim().length > 0;
+  setMockPress({
+    ...mockPress,
+    photoCount: mockGalleryImages.filter((image) => image.includeInZip).length,
+    hasZip: zipReady,
+    downloadPath: zipReady
+      ? `${apiBase()}/api/v1/u/${encodeURIComponent(username)}/press-kit.zip`
+      : null,
+  });
+}
 
 export type PublicPressKitImage = {
   id: string;
@@ -127,7 +144,7 @@ export async function uploadPressKitImage(
       includeInZip: true,
     };
     mockGalleryImages = [...mockGalleryImages, image];
-    setMockPress({ ...mockPress, photoCount: mockGalleryImages.length });
+    syncMockPressKitMeta();
     notifyPressKitGalleryReload();
     return { ok: true, image };
   }
@@ -198,6 +215,7 @@ export async function updatePressKitImage(
       return { ok: false, error: 'Image not found' };
     }
     Object.assign(current, patch);
+    syncMockPressKitMeta();
     return { ok: true, data: { ...current } };
   }
   try {
@@ -219,7 +237,7 @@ export async function deletePressKitImage(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (isForceMock()) {
     mockGalleryImages = mockGalleryImages.filter((i) => i.id !== id);
-    setMockPress({ ...mockPress, photoCount: mockGalleryImages.length });
+    syncMockPressKitMeta();
     notifyPressKitGalleryReload();
     return { ok: true };
   }

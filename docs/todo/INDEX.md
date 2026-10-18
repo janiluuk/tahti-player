@@ -26,6 +26,7 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 | blocked | [track-visualizer-video-editor.md](track-visualizer-video-editor.md) | PulseForge licence / port decision |
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
 | blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
+| open    | [e2e-run-findings.md](e2e-run-findings.md)                                           | 2026-10-19 e2e run: app bugs, confusing views, unwired bits, homebaked styles, stale specs        |
 
 ## Fold rule (copy into CLAUDE / chat)
 
