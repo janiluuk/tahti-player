@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Bell, ListMusicIcon, MessageCircle, ShuffleIcon } from 'lucide-react';
-import { fn } from 'storybook/test';
+import { expect, fn } from 'storybook/test';
 
 import { QueueHeaderActions } from '@tahti-player/ui';
 
@@ -12,7 +12,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Nuclear queue bar header: optional view toggles on the left, clear-queue and a "more" menu on the right. Used as `headerActions` of `PlayerWorkspace.RightSidebar` on desktop (clear + save as playlist) and in tahti-web (chat/notifications toggles, clear, save/randomize menu). Missing states: loading (no async actions today).',
+          'Nuclear queue bar header: optional view toggles on the left; full-screen player, clear-queue, and a "more" menu on the right. Used as `headerActions` of `PlayerWorkspace.RightSidebar` on desktop and in tahti-web. Missing states: loading (no async actions today).',
       },
     },
   },
@@ -25,6 +25,7 @@ const meta = {
     ),
   ],
   args: {
+    onOpenFullScreen: fn(),
     onClearQueue: fn(),
     menuItems: [
       {
@@ -97,6 +98,7 @@ export const EmptyQueue: Story = {
   name: 'Empty queue (clear disabled)',
   args: {
     clearDisabled: true,
+    fullScreenDisabled: true,
     menuItems: [
       {
         id: 'save-as-playlist',
@@ -106,5 +108,18 @@ export const EmptyQueue: Story = {
         onClick: fn(),
       },
     ],
+  },
+};
+
+export const FullScreenOnly: Story = {
+  name: 'Full screen from queue',
+  args: {
+    onClearQueue: undefined,
+    menuItems: [],
+    onOpenFullScreen: fn(),
+  },
+  play: async ({ canvas, userEvent, args }) => {
+    await userEvent.click(canvas.getByTestId('queue-fullscreen-button'));
+    await expect(args.onOpenFullScreen).toHaveBeenCalled();
   },
 };

@@ -1,4 +1,4 @@
-import { EllipsisIcon, Trash2Icon } from 'lucide-react';
+import { EllipsisIcon, Maximize2Icon, Trash2Icon } from 'lucide-react';
 import { FC, ReactNode } from 'react';
 
 import { cn } from '../../utils';
@@ -29,10 +29,14 @@ export type QueueHeaderActionsProps = {
   views?: QueueHeaderView[];
   onClearQueue?: () => void;
   clearDisabled?: boolean;
+  /** Opens the full-screen / now-playing player from the queue chrome. */
+  onOpenFullScreen?: () => void;
+  fullScreenDisabled?: boolean;
   menuItems?: QueueHeaderMenuItem[];
   labels?: {
     clearQueue?: string;
     more?: string;
+    fullScreen?: string;
   };
   className?: string;
 };
@@ -41,12 +45,15 @@ export const QueueHeaderActions: FC<QueueHeaderActionsProps> = ({
   views = [],
   onClearQueue,
   clearDisabled = false,
+  onOpenFullScreen,
+  fullScreenDisabled = false,
   menuItems = [],
   labels,
   className,
 }) => {
   const clearLabel = labels?.clearQueue ?? 'Clear queue';
   const moreLabel = labels?.more ?? 'More queue actions';
+  const fullScreenLabel = labels?.fullScreen ?? 'Full screen';
 
   return (
     <span
@@ -79,6 +86,21 @@ export const QueueHeaderActions: FC<QueueHeaderActionsProps> = ({
       ))}
 
       <span className="flex-1" />
+
+      {onOpenFullScreen ? (
+        <Tooltip content={fullScreenLabel} side="bottom">
+          <Button
+            data-testid="queue-fullscreen-button"
+            size="icon"
+            variant="text"
+            aria-label={fullScreenLabel}
+            disabled={fullScreenDisabled}
+            onClick={onOpenFullScreen}
+          >
+            <Maximize2Icon />
+          </Button>
+        </Tooltip>
+      ) : null}
 
       {onClearQueue ? (
         <Tooltip content={clearLabel} side="bottom">
