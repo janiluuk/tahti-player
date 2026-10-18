@@ -1,9 +1,48 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  playableFromEmbed,
   playableFromHearthisEmbed,
+  playableFromStudioEmbed,
   playableFromStudioHearthis,
 } from './embedPlayback';
+
+describe('playableFromEmbed', () => {
+  it('builds an embed-only playable keyed by the given provider', () => {
+    const playable = playableFromEmbed('mixcloud', {
+      playerId: 'sound:mix-1',
+      title: 'Set',
+      artist: 'Artist',
+      embedUri: 'feed-abc',
+      durationSec: 120,
+    });
+    expect(playable).toMatchObject({
+      id: 'sound:mix-1',
+      streamUrl: '',
+      sourceProvider: 'mixcloud',
+      embed: { provider: 'mixcloud', embedUri: 'feed-abc' },
+    });
+  });
+
+  it('supports the spotify and bandcamp providers too', () => {
+    expect(
+      playableFromEmbed('spotify', {
+        playerId: 'sound:sp',
+        title: 'T',
+        artist: 'A',
+        embedUri: 'spotify:track:1',
+      }).embed,
+    ).toEqual({ provider: 'spotify', embedUri: 'spotify:track:1' });
+    expect(
+      playableFromEmbed('bandcamp', {
+        playerId: 'sound:bc',
+        title: 'T',
+        artist: 'A',
+        embedUri: 'track=1',
+      }).embed,
+    ).toEqual({ provider: 'bandcamp', embedUri: 'track=1' });
+  });
+});
 
 describe('playableFromHearthisEmbed', () => {
   it('builds an embed-only playable with empty streamUrl', () => {
@@ -49,6 +88,53 @@ describe('playableFromStudioHearthis', () => {
         title: 'Other',
         embedProvider: 'BANDCAMP',
         embedUri: 'x',
+      }),
+    ).toBeNull();
+  });
+});
+
+describe('playableFromStudioEmbed', () => {
+  it('maps hearthis and every other provider onto a shared-player embed', () => {
+    const bc = playableFromStudioEmbed({
+      id: 'snd-bc',
+      title: 'Bc',
+      artistName: 'You',
+      embedProvider: 'BANDCAMP',
+      embedUri: 'track=1',
+    });
+    expect(bc).toMatchObject({
+      sourceProvider: 'bandcamp',
+      embed: { provider: 'bandcamp', embedUri: 'track=1' },
+    });
+
+    const sp = playableFromStudioEmbed({
+      id: 'snd-sp',
+      title: 'Sp',
+      embedProvider: 'SPOTIFY',
+      embedUri: 'spotify:track:1',
+    });
+    expect(sp).toMatchObject({
+      sourceProvider: 'spotify',
+      embed: { provider: 'spotify', embedUri: 'spotify:track:1' },
+      artist: 'Unknown',
+    });
+  });
+
+  it('falls back to the native path when there is no embed', () => {
+    expect(
+      playableFromStudioEmbed({
+        id: 'snd-3',
+        title: 'Other',
+        embedProvider: null,
+        embedUri: null,
+      }),
+    ).toBeNull();
+    expect(
+      playableFromStudioEmbed({
+        id: 'snd-4',
+        title: 'NoUri',
+        embedProvider: 'MIXCLOUD',
+        embedUri: null,
       }),
     ).toBeNull();
   });

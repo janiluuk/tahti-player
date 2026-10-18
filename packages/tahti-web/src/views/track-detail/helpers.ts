@@ -1,4 +1,5 @@
 import { type PublicTrackDetail, type TahtiPlayable } from '../../api/types';
+import { toEmbedPlaybackProvider } from '../../lib/embedSrc';
 
 /** Fallback bar count for the synthetic (no-peaks) waveform only. Real peaks
  * render at their native resolution instead of being downsampled to this. */
@@ -16,16 +17,16 @@ export function playableFromDetail(
     coverUrl: detail.bannerUrl ?? undefined,
     streamUrl: detail.audioUrl ?? '',
     protocol: detail.audioUrl?.includes('.m3u8') ? 'hls' : 'https',
-    // Only hearthis.at has a shared-player-wide embed widget (the bottom
-    // bar and fullscreen player special-case `embed.provider: 'hearthis'`);
-    // Mixcloud/Spotify/Bandcamp only ever play through this page's own
-    // inline widget below, same as everywhere else those three appear.
     embed:
-      detail.embedProvider === 'HEARTHIS' && detail.embedUri
-        ? { provider: 'hearthis', embedUri: detail.embedUri }
+      detail.embedProvider && detail.embedUri
+        ? {
+            provider: toEmbedPlaybackProvider(detail.embedProvider),
+            embedUri: detail.embedUri,
+          }
         : undefined,
-    sourceProvider:
-      detail.embedProvider === 'HEARTHIS' ? 'hearthis' : undefined,
+    sourceProvider: detail.embedProvider
+      ? toEmbedPlaybackProvider(detail.embedProvider)
+      : undefined,
     channelSlug: detail.channelSlug,
     durationSec: detail.durationSec ?? undefined,
     peaks: detail.peaks,

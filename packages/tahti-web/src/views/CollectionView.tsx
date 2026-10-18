@@ -27,7 +27,7 @@ import {
 import type { CollectionTextLayer } from '../api/collection-text-layer';
 import { createJam } from '../api/jam';
 import type {
-  CollectionSound,
+  EmbedPlaybackProvider,
   PublicCollection,
   TahtiPlayable,
 } from '../api/types';
@@ -35,7 +35,6 @@ import { ChannelTextOverlayView } from '../components/ChannelTextOverlayView';
 import { CollaborativePlaylistAdd } from '../components/CollaborativePlaylistAdd';
 import { CollectionContribution } from '../components/CollectionContribution';
 import { EmbedButton } from '../components/EmbedButton';
-import { EmbedTrackRow } from '../components/EmbedTrackRow';
 import {
   EntitySocialHeader,
   type EntitySocialStat,
@@ -47,34 +46,66 @@ import { ReportButton } from '../components/ReportButton';
 import { RssFeedButton } from '../components/RssFeedButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
-import type { EmbedProvider } from '../lib/embedSrc';
+import { toEmbedPlaybackProvider } from '../lib/embedSrc';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { syncDocumentMetadata } from '../lib/seo';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 
-function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
-  const out: TahtiPlayable[] = [];
-  for (const item of col.items) {
-    const sound = item.sound;
-    if (!sound?.audioUrl) {
-      continue;
-    }
-    const isHls = sound.audioUrl.includes('.m3u8');
-    out.push({
+function collectionSoundToPlayable(
+  sound: NonNullable<PublicCollection['items'][number]['sound']>,
+  col: PublicCollection,
+): TahtiPlayable | null {
+  const coverUrl =
+    sound.bannerUrl ??
+    col.coverUrl ??
+    placeholderArtworkUrl(`${col.slug}:${sound.id}`);
+  if (sound.audioUrl) {
+    return {
       id: `sound:${sound.id}`,
       kind: 'sound',
       title: sound.title,
       artist: col.user.displayName,
-      coverUrl:
-        sound.bannerUrl ??
-        col.coverUrl ??
-        placeholderArtworkUrl(`${col.slug}:${sound.id}`),
+      coverUrl,
       streamUrl: sound.audioUrl,
-      protocol: isHls ? 'hls' : 'https',
+      protocol: sound.audioUrl.includes('.m3u8') ? 'hls' : 'https',
       channelSlug: sound.channel?.slug,
-    });
+    };
+  }
+  if (sound.embedProvider && sound.embedUri) {
+    const provider: EmbedPlaybackProvider = toEmbedPlaybackProvider(
+      sound.embedProvider,
+    );
+    return {
+      id: `sound:${sound.id}`,
+      kind: 'sound',
+      title: sound.title,
+      artist: col.user.displayName,
+      coverUrl,
+      streamUrl: '',
+      protocol: 'https',
+      channelSlug: sound.channel?.slug,
+      sourceProvider: provider,
+      embed: { provider, embedUri: sound.embedUri },
+    };
+  }
+  return null;
+}
+
+/** Every playable in a collection — both Tahti-hosted tracks and the
+ * provider's-own-widget (hearthis.at / Mixcloud / Spotify / Bandcamp)
+ * embeds — in original item order, so listeners see one list. */
+function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
+  const out: TahtiPlayable[] = [];
+  for (const item of col.items) {
+    if (!item.sound) {
+      continue;
+    }
+    const playable = collectionSoundToPlayable(item.sound, col);
+    if (playable) {
+      out.push(playable);
+    }
   }
   return out;
 }
@@ -161,22 +192,6 @@ export function CollectionView({ slug }: { slug: string }) {
         : new Map<string, ContributionLine>(),
     [collection],
   );
-
-  // Items Tahti references but never hosts — only the provider's own
-  // widget can play them, so they can't go through the track table.
-  const embedItems = useMemo(() => {
-    if (!collection) {
-      return [];
-    }
-    const out: { sound: CollectionSound; provider: EmbedProvider }[] = [];
-    for (const item of collection.items) {
-      const sound = item.sound;
-      if (sound && !sound.audioUrl && sound.embedProvider && sound.embedUri) {
-        out.push({ sound, provider: sound.embedProvider });
-      }
-    }
-    return out;
-  }, [collection]);
 
   if (loading) {
     return <PageLoading label="Loading collection…" />;
@@ -433,25 +448,7 @@ export function CollectionView({ slug }: { slug: string }) {
         />
       )}
 
-      {embedItems.length > 0 && (
-        <section className="flex flex-col gap-2">
-          <h2>
-            <Eyebrow>Elsewhere</Eyebrow>
-          </h2>
-          <ul className="flex flex-col gap-2">
-            {embedItems.map(({ sound, provider }) => (
-              <EmbedTrackRow
-                key={sound.id}
-                title={sound.title}
-                provider={provider}
-                embedUri={sound.embedUri!}
-              />
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {playables.length === 0 && embedItems.length === 0 && (
+      {playables.length === 0 && (
         <EmptyState
           icon={<ListMusicIcon size={40} className="opacity-40" />}
           title="No tracks in this playlist"

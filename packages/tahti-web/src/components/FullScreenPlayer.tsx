@@ -22,7 +22,7 @@ import { useLayoutStore } from '../stores/layoutStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
 import { ChannelVisualizer } from './ChannelVisualizer';
-import { HearthisEmbedSurface } from './HearthisEmbedSurface';
+import { EmbedSurface } from './EmbedSurface';
 import { NowPlayingActionSheet } from './NowPlayingActionSheet';
 import { ConnectedSeekBar, PlayerLiveIndicator } from './PlayerSeekBar';
 import { VisualizerModeMenu } from './VisualizerModeMenu';
@@ -152,7 +152,7 @@ export function FullScreenPlayer() {
   );
   const isPlaying = status === 'playing' || status === 'loading';
   const isLoading = status === 'loading';
-  const hearthisEmbed = playable?.embed;
+  const embed = playable?.embed;
 
   const rgb = useDominantColor(coverUrl);
 
@@ -294,9 +294,10 @@ export function FullScreenPlayer() {
         </div>
 
         <div className="flex w-full max-w-md flex-col items-center gap-2">
-          {hearthisEmbed ? (
-            <HearthisEmbedSurface
-              embedUri={hearthisEmbed.embedUri}
+          {embed ? (
+            <EmbedSurface
+              provider={embed.provider}
+              embedUri={embed.embedUri}
               title={title}
               autoplay={isPlaying}
             />

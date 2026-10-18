@@ -3,7 +3,7 @@ import { create } from 'zustand';
 
 import type { QueueItem, RepeatMode } from '@tahti-player/model';
 
-import type { TahtiPlayable } from '../api/types';
+import type { EmbedPlaybackProvider, TahtiPlayable } from '../api/types';
 import { isInternetRadioPlayableId } from '../content/radioStations';
 import { FADE_IN_MS, FADE_OUT_MS, rampLevel } from '../lib/audioFade';
 import { playableToTrack } from '../lib/playableToTrack';
@@ -137,10 +137,21 @@ export function streamUrlFromQueueItem(qi: QueueItem): string | null {
   );
 }
 
+/** Providers whose queue items carry no stream URL — they play through the
+ * shared player bar's own widget instead, keyed off `track.source.provider`. */
+function isEmbedProvider(provider: string): provider is EmbedPlaybackProvider {
+  return (
+    provider === 'hearthis' ||
+    provider === 'mixcloud' ||
+    provider === 'spotify' ||
+    provider === 'bandcamp'
+  );
+}
+
 export function playableFromQueueItem(qi: QueueItem): TahtiPlayable | null {
   const url = streamUrlFromQueueItem(qi);
   const provider = qi.track.source.provider;
-  if (!url && provider !== 'hearthis') {
+  if (!url && !isEmbedProvider(provider)) {
     return null;
   }
   const protocol = url
@@ -149,8 +160,8 @@ export function playableFromQueueItem(qi: QueueItem): TahtiPlayable | null {
       : 'https'
     : 'https';
   const embed =
-    provider === 'hearthis' && !url
-      ? { provider: 'hearthis' as const, embedUri: qi.track.source.id }
+    !url && isEmbedProvider(provider)
+      ? { provider, embedUri: qi.track.source.id }
       : undefined;
   const internetRadio = isInternetRadioPlayableId(qi.id);
   return {

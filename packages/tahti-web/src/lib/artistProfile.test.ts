@@ -72,7 +72,7 @@ describe('profileTrackToPlayable', () => {
     expect(hls?.artist).toBe('A');
   });
 
-  it('carries duration and plays hearthis embed-only tracks via the widget', () => {
+  it('carries duration and plays embed-only tracks via the widget', () => {
     const upload = profileTrackToPlayable(
       { id: 't1', title: 'T', playUrl: 'https://x/y.mp3', durationSec: 90 },
       'A',
@@ -95,6 +95,24 @@ describe('profileTrackToPlayable', () => {
       durationSec: 365,
       channelSlug: 'chan',
       embed: { provider: 'hearthis', embedUri: 'https://hearthis.at/a/b/' },
+    });
+  });
+
+  it('maps non-hearthis embed-only tracks onto the unified player too', () => {
+    const mix = profileTrackToPlayable(
+      {
+        id: 't9',
+        title: 'Set',
+        embedProvider: 'MIXCLOUD',
+        embedUri: 'feed-x',
+      },
+      'A',
+    );
+    expect(mix).toMatchObject({
+      id: 'sound:t9',
+      streamUrl: '',
+      sourceProvider: 'mixcloud',
+      embed: { provider: 'mixcloud', embedUri: 'feed-x' },
     });
   });
 });

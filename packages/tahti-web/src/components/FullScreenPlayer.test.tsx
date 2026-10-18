@@ -37,7 +37,7 @@ vi.mock('./ChannelVisualizer', () => ({
     </div>
   ),
 }));
-vi.mock('./HearthisEmbedSurface', () => ({ HearthisEmbedSurface: () => null }));
+vi.mock('./EmbedSurface', () => ({ EmbedSurface: () => null }));
 vi.mock('./NowPlayingActionSheet', () => ({
   NowPlayingActionSheet: () => null,
 }));
