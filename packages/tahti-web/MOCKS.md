@@ -8,6 +8,7 @@ Offline demo state lives in [`src/api/mock-session.ts`](src/api/mock-session.ts)
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | Login / TOTP / logout              | Session via `setMockSessionUser`; `/me` returns it; persist rehydrates session                                |
 | Listen / Radio / Channel / Archive | Directory + HLS/MP3 fixtures                                                                                  |
+| Gated track page (`/t/$id`)        | `northern-lights-archive-6` (fan subs) · `northern-lights-archive-7` (purchase)                               |
 | Favorites / Follow                 | Mutable following set                                                                                         |
 | Fan subscribe                      | Activates in-session; Account / Settings Money lists it                                                       |
 | Studio upload (FORCE_MOCK)         | `mock-uploads.ts` keeps the original file; public `/t/:id` and download use it once visibility is not PRIVATE |
