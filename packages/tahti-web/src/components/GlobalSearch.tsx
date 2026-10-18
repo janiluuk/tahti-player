@@ -6,7 +6,7 @@ import {
   UserIcon,
   XIcon,
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useDeferredValue, useEffect, useRef, useState } from 'react';
 
 import {
   Button,
@@ -190,24 +190,25 @@ export function GlobalSearch({
 
   const trimmed = query.trim();
   const hasQuery = trimmed.length >= MIN_QUERY_LENGTH;
+  const deferredResults = useDeferredValue(results);
   const hasResults =
-    results.artists.length > 0 ||
-    results.tracks.length > 0 ||
-    results.collections.length > 0;
+    deferredResults.artists.length > 0 ||
+    deferredResults.tracks.length > 0 ||
+    deferredResults.collections.length > 0;
 
   // Flat, render-order list so arrow keys can rove across the three
   // grouped sections as one sequence, matching how a screen reader's
   // combobox/listbox pattern is expected to behave.
   const flatOptions: { id: string; select: () => void }[] = [
-    ...results.artists.map((a) => ({
+    ...deferredResults.artists.map((a) => ({
       id: `search-option-artist-${a.username}`,
       select: () => goToArtist(a),
     })),
-    ...results.tracks.map((t) => ({
+    ...deferredResults.tracks.map((t) => ({
       id: `search-option-track-${t.id}`,
       select: () => goToTrack(t),
     })),
-    ...results.collections.map((c) => ({
+    ...deferredResults.collections.map((c) => ({
       id: `search-option-collection-${c.slug}`,
       select: () => goToCollection(c),
     })),
@@ -322,12 +323,12 @@ export function GlobalSearch({
             />
           ) : (
             <div className="flex flex-col gap-2">
-              {results.artists.length > 0 && (
+              {deferredResults.artists.length > 0 && (
                 <div>
                   <p className="text-foreground-secondary flex items-center gap-1.5 px-2 py-1 text-xs font-semibold uppercase">
                     <UserIcon size={12} aria-hidden /> Artists
                   </p>
-                  {results.artists.map((artist, i) => (
+                  {deferredResults.artists.map((artist, i) => (
                     <ResultRow
                       key={artist.username}
                       id={`search-option-artist-${artist.username}`}
@@ -345,16 +346,18 @@ export function GlobalSearch({
                   ))}
                 </div>
               )}
-              {results.tracks.length > 0 && (
+              {deferredResults.tracks.length > 0 && (
                 <div>
                   <p className="text-foreground-secondary flex items-center gap-1.5 px-2 py-1 text-xs font-semibold uppercase">
                     <DiscIcon size={12} aria-hidden /> Tracks
                   </p>
-                  {results.tracks.map((track, i) => (
+                  {deferredResults.tracks.map((track, i) => (
                     <ResultRow
                       key={track.id}
                       id={`search-option-track-${track.id}`}
-                      active={activeIndex === results.artists.length + i}
+                      active={
+                        activeIndex === deferredResults.artists.length + i
+                      }
                       thumbnail={
                         <Thumbnail src={track.coverUrl} seed={track.id} />
                       }
@@ -369,18 +372,20 @@ export function GlobalSearch({
                   ))}
                 </div>
               )}
-              {results.collections.length > 0 && (
+              {deferredResults.collections.length > 0 && (
                 <div>
                   <p className="text-foreground-secondary flex items-center gap-1.5 px-2 py-1 text-xs font-semibold uppercase">
                     <ListMusicIcon size={12} aria-hidden /> Playlists
                   </p>
-                  {results.collections.map((collection, i) => (
+                  {deferredResults.collections.map((collection, i) => (
                     <ResultRow
                       key={collection.slug}
                       id={`search-option-collection-${collection.slug}`}
                       active={
                         activeIndex ===
-                        results.artists.length + results.tracks.length + i
+                        deferredResults.artists.length +
+                          deferredResults.tracks.length +
+                          i
                       }
                       thumbnail={
                         <Thumbnail
