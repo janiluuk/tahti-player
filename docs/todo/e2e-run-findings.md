@@ -1,6 +1,6 @@
 # E2E run findings (2026-10-19)
 
-**Status:** open
+**Status:** partial
 
 **Source:** full Playwright suite (`packages/tahti-web/e2e`, 67 tests) run twice on
 2026-10-19 from branch `feat/queue-fullscreen-player`:
@@ -18,18 +18,16 @@ note from `MOCK_TRIAGE` / `BETA_TRIAGE`.
 
 ## App bugs
 
-- [ ] **Duplicate "Full screen" buttons.** The new queue-toolbar button
-      (`SidebarQueuePanel.tsx`, `data-testid="queue-fullscreen-button"`) and the
-      player bar (`ConnectedPlayerBar.tsx`) share the accessible name "Full screen".
-      Give the queue one a distinct name (e.g. "Open full-screen player") or scope
-      the spec; `fullscreen-player-minimize.spec.ts` fails on strict mode.
+- [x] **Duplicate "Full screen" buttons.** Queue + player bar both use
+      "Open full-screen player"; fullscreen minimize spec uses the player-bar
+      test id.
 - [ ] **CSP violation on `/radio` (beta).** Inline script blocked by
       `script-src 'self' https://js.hcaptcha.com …`, plus three 401s for a
       signed-out visitor (`plugin-store.spec.ts:139`).
 - [ ] **Join on beta fails with a bare "Validation error".** No field is
       highlighted; surface the API's field error (`real-user-journeys.spec.ts:47`).
-- [ ] **DSP landing cover has no accessible name.** No `img` named
-      "First Light EP cover" on mock (`cutover-vital.spec.ts:806`).
+- [x] **DSP landing cover has no accessible name.** `SmartLinkView` passes
+      `imageAlt="{title} cover"` into `EntitySocialHeader`.
 
 ## Not usable / confusing / illogical views
 
@@ -57,15 +55,16 @@ note from `MOCK_TRIAGE` / `BETA_TRIAGE`.
       widgets picker, with an orphaned "Uninstall" text button.
 - [ ] **SoundCloud `?sc=connected` callback** lands on Settings › Add-ons with
       no confirmation that the connection worked.
-- [ ] **Join form:** the Artist / Band · Collective toggle has no label and sits
-      misaligned next to "Artist name".
+- [x] **Join form:** Account type has a visible label on its own row above
+      Artist name (handle still auto-derived; no Username field).
 - [ ] **Subscribe page** has no "Subscribe to …" heading; "Log in" / "Join" are
       bare inline text, not buttons.
 - [ ] **Advisory motion draft:** after "Motion draft submitted for board review"
       the new motion shows no DRAFT state.
 - [ ] **Keyboard path to Radio** stays on `/` in both runs
       (`cutover-vital.spec.ts:823`).
-- [ ] **`/more` opens the Log in dialog** over the map for signed-out visitors.
+- [x] **`/more` opens the Log in dialog** over the map for signed-out visitors
+      — `/more` and `/admin/map` are on the anonymous allowlist.
 - [ ] **Beta public data hygiene:** governance history shows "sjsj" /
       "jddkkfk"; On air lists a channel named "0fpmbnvefhfgrqd6fdp".
 
@@ -84,17 +83,14 @@ note from `MOCK_TRIAGE` / `BETA_TRIAGE`.
       "dd/mm/yyy"; no library date picker.
 - [ ] **Sound editor labels:** "DESCRIPTION" uses a different label style
       (uppercase micro) from Title / Content type.
-- [ ] **`ScreenAtlas` `ShotPane`** renders a raw `<img>` (use `ImageReveal` like
-      `E2eRunGallery`).
-- [x] **`/more` jump nav:** hand-rolled `<a>` chips migrated to `ButtonAnchor`
-      in this change.
+- [x] **`ScreenAtlas` `ShotPane`** uses `ImageReveal` (light→dark fallback kept).
+- [x] **`/more` jump nav:** hand-rolled `<a>` chips migrated to `ButtonAnchor`.
 
 ## Stale specs (fix the tests, not the app)
 
-- [ ] Login helpers hard-code `artist@tahti.live`; read `TAHTI_E2E_EMAIL` like
-      `listener-purchase-flow.spec.ts` so beta runs can use a real account.
-- [ ] Registration specs wait for the removed Username field
-      (`cutover-vital.spec.ts:37`, `real-user-journeys.spec.ts:73`).
+- [x] Login helpers read `TAHTI_E2E_EMAIL` / `TAHTI_E2E_PASSWORD` via
+      `e2e/helpers/auth.ts` (shared `signIn` + constants).
+- [x] Registration specs no longer wait for the removed Username field.
 - [ ] `layout-stability.spec.ts`: `[data-studio-section-menu]`,
       `.admin-page-layout`, `[data-admin-section-*]` selectors are gone.
 - [ ] Channel-designer / radio-cover specs expect Studio pages that are now the

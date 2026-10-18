@@ -1,6 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
-import { Badge, Button, SegmentedControl } from '@tahti-player/ui';
+import { Badge, Button, ImageReveal, SegmentedControl } from '@tahti-player/ui';
 
 import {
   caseFlowchart,
@@ -384,6 +384,10 @@ function ShotPane({
 }) {
   const shotTheme = useContext(ShotThemeContext);
   const image = shot.image ? themedShotImage(shot.image, shotTheme) : undefined;
+  const [displaySrc, setDisplaySrc] = useState(image);
+  useEffect(() => {
+    setDisplaySrc(image);
+  }, [image]);
   const pending = !absent && !image;
   const screenshotUrl = image
     ? image.startsWith('http')
@@ -438,17 +442,17 @@ function ShotPane({
             <span className="text-xs opacity-80">{viewName}</span>
           </div>
         ) : (
-          <img
-            src={image}
-            onError={(event) => {
-              // Older shots may have no light capture yet: show the dark one.
-              if (shot.image && image !== shot.image) {
-                event.currentTarget.src = shot.image;
+          <ImageReveal
+            src={displaySrc}
+            onError={() => {
+              if (shot.image && displaySrc !== shot.image) {
+                setDisplaySrc(shot.image);
               }
             }}
             alt={`${label}: ${viewName}`}
             loading="lazy"
-            className="h-full min-h-[14rem] w-full object-cover object-top sm:min-h-[18rem] lg:min-h-[22rem]"
+            className="h-full min-h-[14rem] w-full sm:min-h-[18rem] lg:min-h-[22rem]"
+            imgClassName="h-full min-h-[14rem] w-full object-cover object-top sm:min-h-[18rem] lg:min-h-[22rem]"
           />
         )}
       </div>

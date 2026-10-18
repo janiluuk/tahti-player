@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { E2E_EMAIL, E2E_PASSWORD, signIn } from './helpers/auth';
+
 // Covers the real, UI-complete journeys behind the "signup + governance
 // voting + stats" request: full registration -> login, governance voting
 // mechanics (including the closed-motion history/decision log, which is
@@ -11,32 +13,12 @@ import { expect, test } from '@playwright/test';
 // artist (followArtist/unfollowArtist/fetchFollowing exist in api/client.ts
 // but are not called from any view -- no Follow button exists anywhere).
 
-async function signIn(
-  page: import('@playwright/test').Page,
-  email = 'artist@tahti.live',
-): Promise<void> {
-  await page.goto('/login');
-  await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password').fill('demo-password');
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await expect(
-    page.getByRole('button', { name: /^Signed in as/ }),
-  ).toBeVisible();
-  await page.evaluate(() => {
-    const raw = localStorage.getItem('tahti-web-auth');
-    const userId = raw ? JSON.parse(raw)?.state?.user?.id : null;
-    if (typeof userId === 'string') {
-      localStorage.setItem(`tahti-web-onboarded:${userId}`, '1');
-    }
-  });
-}
-
 test('login form submits on pressing Enter, not just clicking Sign in', async ({
   page,
 }) => {
   await page.goto('/login');
-  await page.getByLabel('Email').fill('artist@tahti.live');
-  await page.getByLabel('Password').fill('demo-password');
+  await page.getByLabel('Email').fill(E2E_EMAIL);
+  await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByLabel('Password').press('Enter');
 
   await expect(
@@ -75,7 +57,6 @@ test('registration edge case: an empty artist name keeps the submit button disab
 }) => {
   await page.goto('/join');
   await page.getByLabel('Email').fill('edge-case@example.com');
-  await page.getByLabel('Username').fill('edgecase');
   await page.getByLabel('Password', { exact: true }).fill('secure-password');
   await page.getByLabel('Confirm password').fill('secure-password');
 

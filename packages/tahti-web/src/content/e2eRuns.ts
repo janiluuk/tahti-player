@@ -70,10 +70,6 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
     kind: 'ux',
     note: 'The SoundCloud ?sc=connected callback lands on Settings › Add-ons with no "SoundCloud connected." confirmation — the user gets no feedback that the connection worked.',
   },
-  'cutover-vital-spec-registration-asks-for-an-artist-name-and-matching-p': {
-    kind: 'ux',
-    note: 'The Join form no longer has a Username field (spec is stale). The Artist / Band · Collective toggle has no label and sits misaligned beside "Artist name".',
-  },
   'cutover-vital-spec-artist-can-sign-in-and-reach-broadcast-and-upload-t': {
     kind: 'ux',
     note: '"Record broadcast" is no longer on by default. Go live stacks 8 Studio tabs over 10 Broadcast sub-tabs that wrap ("Channel", "Radio" orphaned on a second row).',
@@ -126,10 +122,6 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
     kind: 'ux',
     note: 'The subscribe page has no "Subscribe to …" heading — only the artist name — and "Log in" / "Join" are bare inline text, not buttons.',
   },
-  'cutover-vital-spec-dsp-landing-page-leads-with-artwork-and-essential-r': {
-    kind: 'app-bug',
-    note: 'The release cover is not exposed as an image named "First Light EP cover" (missing or different alt text) on both mock and beta.',
-  },
   'cutover-vital-spec-keyboard-navigation-and-review-map-work-in-the-beta': {
     kind: 'ux',
     note: 'The keyboard path to Radio stays on / in both runs — keyboard activation no longer reaches /radio.',
@@ -137,10 +129,6 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
   'fan-sub-and-track-purchase-spec-subscriber-and-track-purchase-both-get': {
     kind: 'blocked',
     note: 'Needs TAHTI_E2E_RIFF_WAV plus fan-sub and fan-buy accounts; times out at 180 s without them.',
-  },
-  'fullscreen-player-minimize-spec-full-player-view-back-arrow-actually-m': {
-    kind: 'app-bug',
-    note: 'Two buttons are named "Full screen" (the new queue toolbar button and the player bar), so the label is ambiguous for screen readers and for the spec.',
   },
   'layout-stability-spec-studio-shell-stays-full-width-and-keeps-navigati': {
     kind: 'stale-spec',
@@ -197,10 +185,6 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
   'radio-cover-spec-non-admins-do-not-see-the-radio-cover-edit-control': {
     kind: 'stale-spec',
     note: SETTINGS_MODAL_NOTE,
-  },
-  'real-user-journeys-spec-registration-edge-case-an-empty-artist-name-ke': {
-    kind: 'stale-spec',
-    note: 'Waits for the removed Username field.',
   },
   'real-user-journeys-spec-library-is-a-studio-tab-and-keeps-library-rout': {
     kind: 'stale-spec',
