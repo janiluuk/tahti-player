@@ -3,8 +3,6 @@ import { type PublicTrackDetail, type TahtiPlayable } from '../../api/types';
 /** Fallback bar count for the synthetic (no-peaks) waveform only. Real peaks
  * render at their native resolution instead of being downsampled to this. */
 export const WAVEFORM_BARS = 180;
-export const PLAYED_WAVE_COLOR = '#6CFF6B';
-export const UNPLAYED_WAVE_COLOR = 'rgba(255,255,255,0.78)';
 
 export function playableFromDetail(
   id: string,
