@@ -26,5 +26,5 @@ spots, `NAVIGATION-GAPS.md`, empty-state consistency, phone layout.
 | 16 | Skip-to-content target focus ring visible on all themes | XS | #1113 |
 | 17 | Settings deep-link scrolls active section into view | S | #1113 |
 | 18 | Mock gated track page fixture (subscriber / purchase) for capture | S | #1119 |
-| 19 | Tag search empty (no fixture match) uses EmptyState, not blank | XS | |
+| 19 | Tag search empty (no fixture match) uses EmptyState, not blank | XS | #1121 |
 | 20 | Plan + INDEX; fold when open PRs merge | XS | this PR |

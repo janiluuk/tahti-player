@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 
-import { MediaArtwork, ViewShell } from '@tahti-player/ui';
+import { ButtonLink, MediaArtwork, ViewShell } from '@tahti-player/ui';
 
 import { fetchTracksByTag } from '../api/listen';
 import type { SearchTrackResult } from '../api/types';
@@ -63,7 +63,20 @@ export function TagSearchView({ tag }: { tag?: string }) {
           onRetry={() => load()}
         />
       ) : state.tracks.length === 0 ? (
-        <PageEmpty title="No public tracks have this tag yet" />
+        <PageEmpty
+          title={`No tracks tagged “${trimmed}” in mock fixtures`}
+          description="Try a tag from a track page, or browse Discover and Radio."
+          action={
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <ButtonLink to="/discover" size="sm" variant="secondary">
+                Discover
+              </ButtonLink>
+              <ButtonLink to="/radio" size="sm" variant="secondary">
+                Radio
+              </ButtonLink>
+            </div>
+          }
+        />
       ) : (
         <ul className="flex w-full flex-col gap-1 pb-8">
           {state.tracks.map((track) => (
