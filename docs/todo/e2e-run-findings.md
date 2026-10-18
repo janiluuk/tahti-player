@@ -57,8 +57,8 @@ note from `MOCK_TRIAGE` / `BETA_TRIAGE`.
       no confirmation that the connection worked.
 - [x] **Join form:** Account type has a visible label on its own row above
       Artist name (handle still auto-derived; no Username field).
-- [ ] **Subscribe page** has no "Subscribe to …" heading; "Log in" / "Join" are
-      bare inline text, not buttons.
+- [x] **Subscribe page:** "Subscribe to <artist>" heading; Log in / Join are
+      real buttons beside the prompt (#1142).
 - [ ] **Advisory motion draft:** after "Motion draft submitted for board review"
       the new motion shows no DRAFT state.
 - [ ] **Keyboard path to Radio** stays on `/` in both runs
@@ -79,14 +79,17 @@ note from `MOCK_TRIAGE` / `BETA_TRIAGE`.
 
 ## Homebaked styles / non-library primitives
 
-- [ ] **Release date** on the sound editor is a native date input clipped to
-      "dd/mm/yyy"; no library date picker.
-- [ ] **Sound editor labels:** "DESCRIPTION" uses a different label style
-      (uppercase micro) from Title / Content type.
+- [x] **Release date** on the sound editor no longer clips ("dd/mm/yyy");
+      column widened (#1146). Still a native date input — no library date
+      picker exists yet.
+- [x] **Sound editor labels:** Description uses the shared label style (#1146).
 - [x] **`ScreenAtlas` `ShotPane`** uses `ImageReveal` (light→dark fallback kept).
 - [x] **`/more` jump nav:** hand-rolled `<a>` chips migrated to `ButtonAnchor`.
 
 ## Stale specs (fix the tests, not the app)
+
+- [x] DSP landing spec accepts artwork beside the heading and first-matches
+      the year / genre (#1143).
 
 - [x] Login helpers read `TAHTI_E2E_EMAIL` / `TAHTI_E2E_PASSWORD` via
       `e2e/helpers/auth.ts` (shared `signIn` + constants).
@@ -110,9 +113,13 @@ note from `MOCK_TRIAGE` / `BETA_TRIAGE`.
 
 ## Blocked
 
-- [ ] Beta run needs `TAHTI_E2E_PASSWORD` (and the specs reading
-      `TAHTI_E2E_EMAIL`) to get past sign-in — rerun and refresh
-      `src/content/e2e/beta.json` once available.
+- [ ] Beta rerun with a real account (`TAHTI_E2E_EMAIL` / `TAHTI_E2E_PASSWORD`)
+      gets past sign-in, then beta answers "Too many requests": the API counted
+      logins in the same per-IP bucket as all other traffic. Fix + ops script
+      are on tahti-org branches `fix/auth-rate-limit-own-bucket` and
+      `feat/stack-env-script` (not pushed yet). Loosen with
+      `scripts/stack-env.sh preset ratelimit-loose --apply`, rerun, refresh
+      `src/content/e2e/beta.json`, then `preset ratelimit-default --apply`.
 - [ ] `fan-sub-and-track-purchase.spec.ts` needs `TAHTI_E2E_RIFF_WAV` and fan
       accounts.
 
