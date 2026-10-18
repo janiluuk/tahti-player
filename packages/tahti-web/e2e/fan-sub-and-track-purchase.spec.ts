@@ -4,6 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 
+import { E2E_EMAIL, E2E_PASSWORD } from './helpers/credentials';
 import { grantBoardView, installStripeMock } from './helpers/mockStripe';
 
 const RIFF_CANDIDATES = [
@@ -159,8 +160,8 @@ test('subscriber and track purchase both get the original WAV; artist sees both 
   const original = wavIdentity(fs.readFileSync(riffPath));
   expect(original.looksLikeWav).toBe(true);
 
-  const artistEmail = process.env.TAHTI_E2E_EMAIL ?? 'artist@tahti.live';
-  const artistPassword = process.env.TAHTI_E2E_PASSWORD ?? 'demo-password';
+  const artistEmail = E2E_EMAIL;
+  const artistPassword = E2E_PASSWORD;
   const fanPassword = process.env.TAHTI_E2E_FAN_PASSWORD ?? 'e2e-fan-password';
   const stamp = Date.now();
   const fanSubEmail =

@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { E2E_EMAIL, E2E_PASSWORD } from './helpers/credentials';
+
 // Covers the real, UI-complete journeys behind the "signup + governance
 // voting + stats" request: full registration -> login, governance voting
 // mechanics (including the closed-motion history/decision log, which is
@@ -13,11 +15,11 @@ import { expect, test } from '@playwright/test';
 
 async function signIn(
   page: import('@playwright/test').Page,
-  email = 'artist@tahti.live',
+  email = E2E_EMAIL,
 ): Promise<void> {
   await page.goto('/login');
   await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password').fill('demo-password');
+  await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign in' }).click();
   await expect(
     page.getByRole('button', { name: /^Signed in as/ }),
@@ -35,8 +37,8 @@ test('login form submits on pressing Enter, not just clicking Sign in', async ({
   page,
 }) => {
   await page.goto('/login');
-  await page.getByLabel('Email').fill('artist@tahti.live');
-  await page.getByLabel('Password').fill('demo-password');
+  await page.getByLabel('Email').fill(E2E_EMAIL);
+  await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByLabel('Password').press('Enter');
 
   await expect(

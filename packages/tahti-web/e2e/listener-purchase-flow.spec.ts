@@ -2,6 +2,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
 
+import { E2E_EMAIL, E2E_PASSWORD } from './helpers/credentials';
 import { installStripeMock } from './helpers/mockStripe';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -139,8 +140,8 @@ test('listener buys a track, sees it in Purchases, artist sees the order', async
   const stripeState = { fanSubs: [], trackOrders: [] };
   await installStripeMock(page, stripeState);
 
-  const artistEmail = process.env.TAHTI_E2E_EMAIL ?? 'artist@tahti.live';
-  const artistPassword = process.env.TAHTI_E2E_PASSWORD ?? 'demo-password';
+  const artistEmail = E2E_EMAIL;
+  const artistPassword = E2E_PASSWORD;
   const fanPassword =
     process.env.TAHTI_E2E_FAN_BUY_PASSWORD ?? 'e2e-buy-password';
   const stamp = Date.now();
@@ -204,8 +205,8 @@ test('listener subscribes, sees it in Your subs, cancels it', async ({
   const stripeState = { fanSubs: [], trackOrders: [] };
   await installStripeMock(page, stripeState);
 
-  const artistEmail = process.env.TAHTI_E2E_EMAIL ?? 'artist@tahti.live';
-  const artistPassword = process.env.TAHTI_E2E_PASSWORD ?? 'demo-password';
+  const artistEmail = E2E_EMAIL;
+  const artistPassword = E2E_PASSWORD;
   const fanPassword =
     process.env.TAHTI_E2E_FAN_SUB_PASSWORD ?? 'e2e-sub-password';
   const stamp = Date.now();

@@ -1,9 +1,11 @@
 import { expect, test } from '@playwright/test';
 
+import { E2E_EMAIL, E2E_PASSWORD } from './helpers/credentials';
+
 async function signIn(page: import('@playwright/test').Page) {
   await page.goto('/login');
-  await page.getByLabel('Email').fill('artist@tahti.live');
-  await page.getByLabel('Password').fill('demo-password');
+  await page.getByLabel('Email').fill(E2E_EMAIL);
+  await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign in' }).click();
   await expect(
     page.getByRole('button', { name: /^Signed in as/ }),

@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { E2E_EMAIL, E2E_PASSWORD } from './helpers/credentials';
+
 const studioRoutes = [
   '/studio',
   '/library',
@@ -48,8 +50,8 @@ async function signIn(
   board = false,
 ): Promise<void> {
   await page.goto('/login');
-  await page.getByLabel('Email').fill('artist@tahti.live');
-  await page.getByLabel('Password').fill('demo-password');
+  await page.getByLabel('Email').fill(E2E_EMAIL);
+  await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign in' }).click();
   await page.evaluate((shouldSetBoard) => {
     const raw = localStorage.getItem('tahti-web-auth');

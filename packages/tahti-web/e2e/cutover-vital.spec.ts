@@ -1,9 +1,11 @@
 import { expect, test } from '@playwright/test';
 
+import { E2E_EMAIL, E2E_PASSWORD } from './helpers/credentials';
+
 async function signIn(
   page: import('@playwright/test').Page,
-  email = 'artist@tahti.live',
-  password = process.env.TAHTI_E2E_PASSWORD ?? 'demo-password',
+  email = E2E_EMAIL,
+  password = E2E_PASSWORD,
 ): Promise<void> {
   await page.goto('/login');
   await page.getByLabel('Email').fill(email);
@@ -719,9 +721,7 @@ test('artist creates a four-image promotion kit and another user can download th
   await signIn(
     otherUser,
     process.env.TAHTI_E2E_LISTENER_EMAIL ?? 'listener@example.com',
-    process.env.TAHTI_E2E_LISTENER_PASSWORD ??
-      process.env.TAHTI_E2E_PASSWORD ??
-      'demo-password',
+    process.env.TAHTI_E2E_LISTENER_PASSWORD ?? E2E_PASSWORD,
   );
   await otherUser.goto('/u/artist');
   await otherUser.getByRole('tab', { name: 'Gallery' }).click();

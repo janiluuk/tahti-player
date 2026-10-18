@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
+import { E2E_EMAIL, E2E_PASSWORD } from './helpers/credentials';
+
 /** Mock-mode recurring "finish your profile" toasts float over the header
  * and reappear across navigations -- unrelated to what this test covers. */
 async function clearToasts(page: Page): Promise<void> {
@@ -24,8 +26,8 @@ test('full player view: back arrow actually minimizes the player', async ({
   page,
 }) => {
   await page.goto('/login');
-  await page.getByLabel('Email').fill('artist@tahti.live');
-  await page.getByLabel('Password').fill('demo-password');
+  await page.getByLabel('Email').fill(E2E_EMAIL);
+  await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign in' }).click();
   await expect(
     page.getByRole('button', { name: /^Signed in as/ }),

@@ -2,6 +2,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test } from '@playwright/test';
 
+import { E2E_EMAIL, E2E_PASSWORD } from './helpers/credentials';
+
 // Covers the "stash / private link / subscriber-only content" request, using
 // the real visibility model (AudienceVisibilitySection, TrackEditDialog's
 // "Sharing" tab). A Sound only stores `isPublic`, so the Audience select
@@ -35,11 +37,11 @@ const FIXTURE_AUDIO = path.join(
 
 async function signIn(
   page: import('@playwright/test').Page,
-  email = 'artist@tahti.live',
+  email = E2E_EMAIL,
 ): Promise<void> {
   await page.goto('/login');
   await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password').fill('demo-password');
+  await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign in' }).click();
   await expect(
     page.getByRole('button', { name: /^Signed in as/ }),

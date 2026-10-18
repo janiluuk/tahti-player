@@ -1,9 +1,11 @@
 import { expect, test } from '@playwright/test';
 
+import { E2E_EMAIL, E2E_PASSWORD } from './helpers/credentials';
+
 async function signIn(
   page: import('@playwright/test').Page,
-  email = 'artist@tahti.live',
-  password = process.env.TAHTI_E2E_PASSWORD ?? 'demo-password',
+  email = E2E_EMAIL,
+  password = E2E_PASSWORD,
 ): Promise<void> {
   await page.goto('/login');
   await page.getByLabel('Email').fill(email);
