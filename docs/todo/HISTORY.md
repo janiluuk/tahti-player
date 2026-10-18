@@ -1,5 +1,32 @@
 # docs/todo history
 
+
+## 2026-10-18 — Batch 72: smooth desktop-app feel (20 slices)
+
+Lazy chunks, intent/idle prefetch, purposeful motion (honours
+`prefers-reduced-motion`), scroll restore, and press/ambient polish so
+tahti-web feels closer to the desktop player.
+
+| Slices | PRs |
+| --- | --- |
+| Intent preload, shimmer loading bar, chrome motion | #1056 |
+| Lazy FullScreenPlayer | #1057 |
+| Idle Studio/Library/Radio prefetch | #1063 |
+| ViewShell enter fade | #1064 |
+| Scroll restore per pathname | #1065 |
+| Theme cross-fade | #1066 |
+| Player bar enter | #1067 |
+| Right-rail panel fade | #1068 |
+| MediaArtwork play press scale | #1069 |
+| Ambient pause when hidden / reduced-motion | #1070 |
+| Deferred GlobalSearch results | #1086 |
+| Optimistic sidebar `aria-current` | #1087 |
+| Studio home tile stagger | #1088 |
+| Mobile drawer spring exit | #1089 |
+| Lazy-route Suspense skeleton | #1090 |
+| Listen card hover prefetch (Channel/Radio) | #1091 |
+| CardsRow / Discover `content-visibility` | #1092 |
+
 Completed task notes folded here so `docs/todo/` stays current.
 
 
