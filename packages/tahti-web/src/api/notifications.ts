@@ -70,17 +70,30 @@ function mockNotifications(includeInboxExtras: boolean): TahtiNotification[] {
   );
 }
 
+const MOCK_STICKY_NOTIFICATION_ID = 'notification-mock-sticky-policy';
+
 function buildMockNotifications(
   includeInboxExtras: boolean,
 ): TahtiNotification[] {
-  // No sticky fixture: the real API type exists in ../tahti-org, but
-  // mock-only sticky toasts re-appeared every session and got confused
-  // with real notifications. (See Storybook for a sticky example.)
+  const dismissed = readMockDismissedIds();
   const items: TahtiNotification[] = [];
+  const sticky: TahtiNotification = {
+    id: MOCK_STICKY_NOTIFICATION_ID,
+    type: 'POLICY',
+    actor: null,
+    title: 'Review the updated community guidelines',
+    body: 'Acknowledge once you have read the summary — it stays out of the way after that.',
+    url: '/help/community',
+    readAt: null,
+    sticky: true,
+    createdAt: new Date(Date.now() - 86400_000).toISOString(),
+  };
+  if (!dismissed.has(sticky.id)) {
+    items.push(sticky);
+  }
   if (!includeInboxExtras) {
     return items;
   }
-  const dismissed = readMockDismissedIds();
   const extras: TahtiNotification[] = [
     {
       id: 'notification-mock-1',
