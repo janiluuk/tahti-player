@@ -26,6 +26,18 @@ const slugifyUsername = (value: string) =>
     .replace(/-+/g, '-')
     .replace(/^-+|-+$/g, '');
 
+function AuthDialogError({ message }: { message: string }) {
+  return (
+    <p
+      className="text-accent-red-strong text-sm"
+      role="alert"
+      aria-live="polite"
+    >
+      {message}
+    </p>
+  );
+}
+
 export const AuthDialog: FC = () => {
   const isOpen = useAuthModalStore((s) => s.isOpen);
   const mode = useAuthModalStore((s) => s.mode);
@@ -121,15 +133,7 @@ export const AuthDialog: FC = () => {
             autoComplete="one-time-code"
             inputMode="numeric"
           />
-          {error ? (
-            <p
-              className="text-accent-red-strong text-sm"
-              role="alert"
-              aria-live="polite"
-            >
-              {error}
-            </p>
-          ) : null}
+          {error ? <AuthDialogError message={error} /> : null}
           <Dialog.Actions>
             <Button variant="text" size="sm" onClick={() => cancelTotp()}>
               Back
@@ -176,15 +180,7 @@ export const AuthDialog: FC = () => {
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
           />
-          {error ? (
-            <p
-              className="text-accent-red-strong text-sm"
-              role="alert"
-              aria-live="polite"
-            >
-              {error}
-            </p>
-          ) : null}
+          {error ? <AuthDialogError message={error} /> : null}
           <Link
             to="/forgot-password"
             onClick={handleClose}
@@ -254,19 +250,9 @@ export const AuthDialog: FC = () => {
             />
           </div>
           {passwordsDoNotMatch ? (
-            <p className="text-accent-red-strong text-sm">
-              Passwords do not match.
-            </p>
+            <AuthDialogError message="Passwords do not match." />
           ) : null}
-          {error ? (
-            <p
-              className="text-accent-red-strong text-sm"
-              role="alert"
-              aria-live="polite"
-            >
-              {error}
-            </p>
-          ) : null}
+          {error ? <AuthDialogError message={error} /> : null}
           {message ? (
             <p className="text-foreground-secondary text-sm">{message}</p>
           ) : null}

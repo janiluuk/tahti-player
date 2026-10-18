@@ -22,9 +22,9 @@ spots, `NAVIGATION-GAPS.md`, empty-state consistency, phone layout.
 | 12 | Discover tab empty section EmptyState | XS | |
 | 13 | Channel offline / empty tracklist EmptyState consistency | S | |
 | 14 | Studio Stash empty EmptyState + Upload CTA | XS | |
-| 15 | AuthDialog field errors exposed to `aria-live` | S | this PR |
-| 16 | Skip-to-content target focus ring visible on all themes | XS | this PR |
-| 17 | Settings deep-link scrolls active section into view | S | this PR |
+| 15 | AuthDialog field errors exposed to `aria-live` | S | #1113 / #1120 |
+| 16 | Skip-to-content target focus ring visible on all themes | XS | #1113 |
+| 17 | Settings deep-link scrolls active section into view | S | #1113 |
 | 18 | Mock gated track page fixture (subscriber / purchase) for capture | S | #1119 |
 | 19 | Tag search empty (no fixture match) uses EmptyState, not blank | XS | |
 | 20 | Plan + INDEX; fold when open PRs merge | XS | this PR |
