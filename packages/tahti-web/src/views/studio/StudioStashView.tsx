@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import {
   Button,
+  ButtonLink,
   EmptyState,
   TabLabel,
   Tabs,
@@ -127,7 +128,13 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
           <EmptyState
             size="sm"
             title="No tracks in your stash yet"
+            description="Upload a private track, then move it here when you are ready to edit or share by link."
             className="mt-4"
+            action={
+              <ButtonLink to="/studio/upload" size="sm" variant="secondary">
+                Upload a track
+              </ButtonLink>
+            }
           />
         ) : (
           <ul className="mt-4 flex flex-col gap-2">
