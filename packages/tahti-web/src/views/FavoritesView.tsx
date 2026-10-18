@@ -64,7 +64,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
   if (hydrated && !user) {
     const signedOut = (
       <PageEmpty
-        icon="heart"
+        icon="inbox"
         title="Sign in to see favorites"
         description="Heart channels and tracks while you listen, then find them here."
         action={
