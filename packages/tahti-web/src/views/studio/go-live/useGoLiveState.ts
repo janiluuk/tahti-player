@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  fetchAutoRecordEnabled,
   fetchBroadcastPreflight,
   fetchBroadcastUsage,
   fetchRtmpTargets,
@@ -9,7 +10,7 @@ import {
   fetchStreamSettings,
   getMockChannelState,
   liveChannelPlayable,
-  patchBroadcastPreflight,
+  patchAutoRecordEnabled,
   postGoLive,
   setMockLiveSlug,
   type BroadcastPreflight,
@@ -86,18 +87,24 @@ export function useGoLiveState() {
   }, []);
 
   const reload = useCallback(async () => {
-    const [settingsResult, usageResult, targetResult, preflightResult] =
-      await Promise.all([
-        fetchStreamSettings(),
-        fetchBroadcastUsage(),
-        fetchRtmpTargets(),
-        fetchBroadcastPreflight(),
-      ]);
+    const [
+      settingsResult,
+      usageResult,
+      targetResult,
+      preflightResult,
+      recordingResult,
+    ] = await Promise.all([
+      fetchStreamSettings(),
+      fetchBroadcastUsage(),
+      fetchRtmpTargets(),
+      fetchBroadcastPreflight(),
+      fetchAutoRecordEnabled(),
+    ]);
     setSettings(settingsResult.data);
     setUsage(usageResult.data);
     setTargets(targetResult.data);
     setPreflight(preflightResult.data);
-    setRecordEnabled(preflightResult.data?.autoPublish ?? true);
+    setRecordEnabled(recordingResult.data);
     if (
       !settingsResult.data &&
       settingsResult.meta.source === 'api' &&
@@ -196,9 +203,9 @@ export function useGoLiveState() {
     setRecordEnabled(next);
     setRecordBusy(true);
     setMessage(null);
-    const result = await patchBroadcastPreflight({ autoPublish: next });
+    const result = await patchAutoRecordEnabled(next);
     setRecordBusy(false);
-    if ('error' in result) {
+    if (!result.ok) {
       setRecordEnabled(!next);
       toast.error(result.error);
       return;

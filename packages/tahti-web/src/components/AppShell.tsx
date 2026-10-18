@@ -468,7 +468,7 @@ export function AppShell() {
       }
 
       if (event.altKey && !event.ctrlKey && !event.metaKey) {
-        const destinations: Record<
+        const byCode: Record<
           string,
           '/' | '/radio' | '/feed' | '/library' | '/studio'
         > = {
@@ -477,8 +477,23 @@ export function AppShell() {
           Digit3: '/feed',
           Digit4: '/library',
           Digit5: '/studio',
+          Numpad1: '/',
+          Numpad2: '/radio',
+          Numpad3: '/feed',
+          Numpad4: '/library',
+          Numpad5: '/studio',
         };
-        const destination = destinations[event.code];
+        const byKey: Record<
+          string,
+          '/' | '/radio' | '/feed' | '/library' | '/studio'
+        > = {
+          '1': '/',
+          '2': '/radio',
+          '3': '/feed',
+          '4': '/library',
+          '5': '/studio',
+        };
+        const destination = byCode[event.code] ?? byKey[event.key];
         if (destination) {
           event.preventDefault();
           void navigate({ to: destination });

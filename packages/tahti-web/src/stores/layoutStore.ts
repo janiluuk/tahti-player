@@ -39,7 +39,7 @@ export const useLayoutStore = create<LayoutState>()(
   persist(
     (set) => ({
       leftCollapsed: false,
-      rightCollapsed: false,
+      rightCollapsed: true,
       leftWidth: 220,
       rightWidth: 340,
       bottomQueueOpen: false,
@@ -63,16 +63,22 @@ export const useLayoutStore = create<LayoutState>()(
     }),
     {
       name: 'tahti-web-layout',
-      version: 7,
-      migrate: (persisted) => {
+      version: 8,
+      migrate: (persisted, fromVersion) => {
         const p = { ...((persisted ?? {}) as Record<string, unknown>) };
         delete p.rightRailMode;
         // v7: the rail is the queue only; chat state is gone.
+        // v8: start with the empty queue collapsed so Studio/Library keep width.
+        const rightCollapsed =
+          fromVersion < 8
+            ? true
+            : typeof p.rightCollapsed === 'boolean'
+              ? p.rightCollapsed
+              : true;
         return {
           leftCollapsed:
             typeof p.leftCollapsed === 'boolean' ? p.leftCollapsed : false,
-          rightCollapsed:
-            typeof p.rightCollapsed === 'boolean' ? p.rightCollapsed : false,
+          rightCollapsed,
           bottomQueueOpen:
             typeof p.bottomQueueOpen === 'boolean' ? p.bottomQueueOpen : false,
           rightRailTab: 'queue' as const,

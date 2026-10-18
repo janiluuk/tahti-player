@@ -1,4 +1,4 @@
-import { PowerIcon, SettingsIcon } from 'lucide-react';
+import { SettingsIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import {
@@ -89,19 +89,6 @@ export function AudioPluginToggleRow({
       isInstalled={enabled}
       onInstall={onToggle}
       labels={{ install: 'Activate', installed: 'Active' }}
-      accessory={
-        <Tooltip content={enabled ? `Deactivate ${name}` : `Activate ${name}`}>
-          <Button
-            size="icon-sm"
-            variant={enabled ? 'default' : 'secondary'}
-            onClick={() => onToggle()}
-            aria-label={enabled ? `Deactivate ${name}` : `Activate ${name}`}
-            aria-pressed={enabled}
-          >
-            <PowerIcon size={16} aria-hidden />
-          </Button>
-        </Tooltip>
-      }
     />
   );
 }

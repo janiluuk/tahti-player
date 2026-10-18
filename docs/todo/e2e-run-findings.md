@@ -24,17 +24,17 @@ note from `MOCK_TRIAGE` / `BETA_TRIAGE`.
 - [ ] **CSP violation on `/radio` (beta).** Inline script blocked by
       `script-src 'self' https://js.hcaptcha.com …`, plus three 401s for a
       signed-out visitor (`plugin-store.spec.ts:139`).
-- [ ] **Join on beta fails with a bare "Validation error".** No field is
-      highlighted; surface the API's field error (`real-user-journeys.spec.ts:47`).
+- [x] **Join on beta fails with a bare "Validation error".** `requestJson`
+      now surfaces Zod `issues` (`field: message`) instead of only `error`.
 - [x] **DSP landing cover has no accessible name.** `SmartLinkView` passes
       `imageAlt="{title} cover"` into `EntitySocialHeader`.
 
 ## Not usable / confusing / illogical views
 
-- [ ] **Community-guidelines toast covers the bottom-right of every signed-in
-      screen** (over the queue pane and the Settings modal) until acknowledged.
-- [ ] **Empty queue pane is always open.** "Queue empty" with Discover/Radio
-      takes ~20% of the width on every Studio/Library/Admin page.
+- [x] **Community-guidelines toast** — sticky notification toasts use
+      `top-center` so they do not cover the queue / Settings corner.
+- [x] **Empty queue pane is always open.** Layout persist v8 defaults
+      `rightCollapsed: true` (migrates existing opens closed once).
 - [ ] **Settings modal as a route target.** `/studio/branding`, channel designer,
       radio cover and plugin-store links open Settings (Channel & chat / Add-ons)
       over the app instead of a page; the URL and the visible surface disagree.
@@ -47,22 +47,23 @@ note from `MOCK_TRIAGE` / `BETA_TRIAGE`.
 - [ ] **Tab overload:** Go live = 8 Studio tabs + 10 Broadcast sub-tabs wrapping
       ("Channel", "Radio" orphaned on row 2); Library = 10 tabs wrapping (Smart
       links, Local files); Admin › Moderation = four stacked tab rows.
-- [ ] **Admin Moderation list truncates ticket titles** to "Cannot con…" in a
-      narrow column next to a mostly empty detail pane.
-- [ ] **Add-ons rows** have Activate + power toggle + gear for one add-on, and two
-      unexplained stacked (i) buttons at the top right.
+- [x] **Admin Moderation list truncates ticket titles** — subjects use
+      `line-clamp-2` / `break-words` instead of a single-line truncate.
+- [x] **Add-ons Activate + power toggle** — dropped the redundant Power
+      accessory; Activate/Active CTA remains. (Header/Discover (i) info toggles
+      stay — they expand different copy.)
 - [ ] **hearthis.at config** opens a second dialog stacked over the Add Listen
       widgets picker, with an orphaned "Uninstall" text button.
-- [ ] **SoundCloud `?sc=connected` callback** lands on Settings › Add-ons with
-      no confirmation that the connection worked.
+- [x] **SoundCloud `?sc=connected` callback** — toast is now
+      `"SoundCloud connected."` (provider-aware from `category`).
 - [x] **Join form:** Account type has a visible label on its own row above
       Artist name (handle still auto-derived; no Username field).
-- [x] **Subscribe page:** "Subscribe to <artist>" heading; Log in / Join are
-      real buttons beside the prompt (#1142).
-- [ ] **Advisory motion draft:** after "Motion draft submitted for board review"
-      the new motion shows no DRAFT state.
-- [ ] **Keyboard path to Radio** stays on `/` in both runs
-      (`cutover-vital.spec.ts:823`).
+- [x] **Subscribe page** — heading `Subscribe to {name}`; Log in / Join are
+      real buttons.
+- [x] **Advisory motion draft** — `MotionCard` DRAFT state badge label is
+      `DRAFT`.
+- [x] **Keyboard path to Radio** — Alt+Digit/Numpad/`key` 2 navigates to
+      `/radio` (and 1/3/4/5 for the other Listen destinations).
 - [x] **`/more` opens the Log in dialog** over the map for signed-out visitors
       — `/more` and `/admin/map` are on the anonymous allowlist.
 - [ ] **Beta public data hygiene:** governance history shows "sjsj" /
@@ -70,19 +71,17 @@ note from `MOCK_TRIAGE` / `BETA_TRIAGE`.
 
 ## Unwired components
 
-- [ ] **Edit track › Audio › Properties** shows "—" for Format, Sample rate,
-      Bit depth, Channels, Bitrate.
-- [ ] **"Record broadcast"** is no longer on by default on Go live — confirm
-      intended or rewire.
-- [ ] **Uploads keep the raw filename** with extension as the title
-      ("mastering-reference-loud.wav") and as the hero initial.
+- [x] **Edit track › Audio › Properties** — mock archive + uploads populate
+      format / sample rate / bit depth / channels / bitrate.
+- [x] **"Record broadcast"** — wired to `fetchAutoRecordEnabled` /
+      `patchAutoRecordEnabled` (defaults on when unset).
+- [x] **Uploads keep the raw filename** — default title strips the extension.
 
 ## Homebaked styles / non-library primitives
 
-- [x] **Release date** on the sound editor no longer clips ("dd/mm/yyy");
-      column widened (#1146). Still a native date input — no library date
-      picker exists yet.
-- [x] **Sound editor labels:** Description uses the shared label style (#1146).
+- [x] **Release date** — wider date field (`min-w-[11rem]`) so the value is not
+      clipped (still native `type="date"` until a library picker exists).
+- [x] **Sound editor labels:** Description matches Title (`text-sm font-semibold`).
 - [x] **`ScreenAtlas` `ShotPane`** uses `ImageReveal` (light→dark fallback kept).
 - [x] **`/more` jump nav:** hand-rolled `<a>` chips migrated to `ButtonAnchor`.
 
@@ -94,22 +93,19 @@ note from `MOCK_TRIAGE` / `BETA_TRIAGE`.
 - [x] Login helpers read `TAHTI_E2E_EMAIL` / `TAHTI_E2E_PASSWORD` via
       `e2e/helpers/auth.ts` (shared `signIn` + constants).
 - [x] Registration specs no longer wait for the removed Username field.
-- [ ] `layout-stability.spec.ts`: `[data-studio-section-menu]`,
-      `.admin-page-layout`, `[data-admin-section-*]` selectors are gone.
-- [ ] Channel-designer / radio-cover specs expect Studio pages that are now the
-      Settings modal; "Backdrop" option is now "Background".
-- [ ] Studio dashboard heading is "Studio" (no greeting); collections filters are
-      chips; track title opens the track page (no "Track info" dialog); "All
-      sounds" link removed; Library is not a Studio tab.
-- [ ] Add-widget dialog is "Add Listen widgets"; Settings › Account has no
-      "Export music"; multistream providers moved to Settings › Broadcast;
-      world map moved to Stats › Plays & listeners; Go live has no "Start
-      rotation".
-- [ ] `listener-purchase-flow.spec.ts:135` calls removed mock
-      `setSoundPurchaseAccess`; subscription row says "Ends on …", not "cancels".
-- [ ] Favorites heading locator needs `exact: true`; admin role filter options
-      only mount when the Select opens.
-- [ ] Mock rotation total is 10:34, spec expects 15:13.
+- [x] `layout-stability.spec.ts`: studio uses `[data-studio-shell]` /
+      `[data-studio-navigation]`; admin uses `.admin-*-layout` + section tabs/menu;
+      Library routes dropped from studio geometry list.
+- [x] Channel-designer specs open Settings › Channel; "Background" replaces
+      "Backdrop". Radio-cover already used the Settings modal.
+- [x] Studio dashboard heading "Studio"; collections type tabs; track title →
+      `/t/…`; Sounds (no "All sounds"); Library is its own sidebar section.
+- [x] Add-widget dialog "Add Listen widgets"; artist Connections instead of
+      "Export music"; go-live destinations / Settings Broadcast multistream;
+      world map under Stats › Plays & listeners; Prep has no "Start rotation".
+- [x] `listener-purchase-flow` uses `setSoundAccess`; subscription row "Ends on".
+- [x] Favorites heading `exact: true`; admin role filter opens Select first.
+- [x] Mock rotation total expects 10:34.
 
 ## Blocked
 

@@ -58,12 +58,37 @@ export function SettingsView({ sectionId }: { sectionId?: string }) {
       useSettingsModalStore.setState({ openedToSection: false });
     }
     const status = params.get('status');
+    const providerLabel = (() => {
+      const category = params.get('category')?.toLowerCase() ?? '';
+      if (category.includes('soundcloud')) {
+        return 'SoundCloud';
+      }
+      if (category.includes('bandcamp')) {
+        return 'Bandcamp';
+      }
+      if (category.includes('mixcloud')) {
+        return 'Mixcloud';
+      }
+      if (category.includes('spotify')) {
+        return 'Spotify';
+      }
+      if (category.includes('hearthis')) {
+        return 'hearthis.at';
+      }
+      return null;
+    })();
     if (status === 'connected') {
-      toast.success('Connected.');
+      toast.success(
+        providerLabel ? `${providerLabel} connected.` : 'Connected.',
+      );
     } else if (status === 'login') {
       toast.info('Sign in to Tahti first, then connect.');
     } else if (status) {
-      toast.error('Could not connect. Try again.');
+      toast.error(
+        providerLabel
+          ? `Could not connect ${providerLabel}. Try again.`
+          : 'Could not connect. Try again.',
+      );
     }
     const social = socialCallbackToast(params.get('social'));
     if (social) {

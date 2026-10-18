@@ -105,7 +105,7 @@ export function BasicsTab({
               normalize={capitalizeGenre}
             />
           </div>
-          <div className="w-full sm:w-36">
+          <div className="w-full min-w-0 sm:w-44">
             <Input
               type="date"
               label="Release date"
@@ -113,6 +113,7 @@ export function BasicsTab({
               onChange={(event) =>
                 setForm({ ...form, releaseDate: event.target.value })
               }
+              className="w-full min-w-[11rem]"
             />
           </div>
         </div>

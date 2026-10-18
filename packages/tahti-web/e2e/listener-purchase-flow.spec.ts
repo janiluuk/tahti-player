@@ -121,7 +121,10 @@ async function uploadPublicPurchasableTrack(
     if (!created.ok) {
       return { ok: false as const, error: created.error };
     }
-    const access = await mod.setSoundPurchaseAccess(id, created.data.id);
+    const access = await mod.setSoundAccess(id, {
+      accessMode: 'PURCHASE',
+      purchaseTierId: created.data.id,
+    });
     if (!access.ok) {
       return { ok: false as const, error: access.error };
     }
@@ -253,7 +256,7 @@ test('listener subscribes, sees it in Your subs, cancels it', async ({
   ).toBeVisible();
   await page.getByRole('button', { name: 'Cancel subscription' }).click();
 
-  await expect(subscriptionRow.getByText(/cancels/i)).toBeVisible({
+  await expect(subscriptionRow.getByText(/Ends on/i)).toBeVisible({
     timeout: 10_000,
   });
   await expect(

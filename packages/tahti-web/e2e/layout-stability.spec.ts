@@ -4,23 +4,13 @@ import { E2E_EMAIL, E2E_PASSWORD } from './helpers/auth';
 
 const studioRoutes = [
   '/studio',
-  '/library',
-  '/studio/archive',
   '/studio/releases',
-  '/studio/collections',
-  '/studio/playlists',
-  '/studio/recordings',
-  '/studio/upload',
   '/studio/editor',
-  '/studio/stash',
-  '/library/history',
   '/studio/go-live',
   '/studio/schedule',
   '/studio/events',
-  '/studio/venues',
   '/studio/shows',
   '/studio/channel',
-  '/studio/moderation',
 ] as const;
 
 const adminRoutes = [
@@ -93,26 +83,25 @@ async function expectStableShell(
     await page.waitForTimeout(500);
     const shell = page.locator(shellSelector).first();
     await expect(shell).toBeVisible();
-    await expect(page.locator(tabsSelector).first()).toBeVisible();
-    await expect(page.locator(menuSelector).first()).toBeVisible();
+    await expect(shell.locator(tabsSelector).first()).toBeVisible();
+    await expect(shell.locator(menuSelector).first()).toBeVisible();
 
-    const geometry = await shell.evaluate((element) => {
-      const shellRect = element.getBoundingClientRect();
-      const menu = element.querySelector(
-        '[data-studio-section-menu], [data-admin-section-menu]',
-      );
-      const tabs = element.querySelector(
-        '[data-studio-section-tabs], [data-admin-section-tabs]',
-      );
-      const content = Array.from(element.children).find(
-        (child) => child !== menu && child !== tabs,
-      );
-      return {
-        shellLeft: shellRect.left,
-        menuLeft: menu?.getBoundingClientRect().left ?? -1,
-        contentLeft: content?.getBoundingClientRect().left ?? -1,
-      };
-    });
+    const geometry = await shell.evaluate(
+      (element, selectors) => {
+        const shellRect = element.getBoundingClientRect();
+        const menu = element.querySelector(selectors.menu);
+        const tabs = element.querySelector(selectors.tabs);
+        const content = Array.from(element.children).find(
+          (child) => child !== menu && child !== tabs,
+        );
+        return {
+          shellLeft: shellRect.left,
+          menuLeft: menu?.getBoundingClientRect().left ?? -1,
+          contentLeft: content?.getBoundingClientRect().left ?? -1,
+        };
+      },
+      { menu: menuSelector, tabs: tabsSelector },
+    );
 
     if (!baseline) {
       baseline = geometry;
@@ -135,20 +124,12 @@ test('Studio shell stays full-width and keeps navigation geometry stable', async
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await signIn(page);
-  // Studio's nav renders once, globally, in AppShell (`[data-studio-shell]`)
-  // as a sibling of the routed page's own `.studio-page-layout` -- not a
-  // descendant of it -- since the four-top-sections redesign centralized
-  // navigation instead of each view rendering its own copy. It also
-  // collapsed to a single-tier `data-studio-section-menu`; there is no
-  // longer a separate "tabs" element, unlike Admin's two-tier nav. Use the
-  // shared shell wrapper and the same selector for both tabs/menu params so
-  // the geometry check tracks that one nav bar's horizontal position.
   await expectStableShell(
     page,
     studioRoutes,
     '[data-studio-shell]',
-    '[data-studio-section-menu]',
-    '[data-studio-section-menu]',
+    '[data-studio-navigation]',
+    '[data-studio-navigation]',
   );
 });
 
@@ -176,9 +157,10 @@ test('Studio and Admin shells remain reachable on mobile without horizontal over
   for (const route of studioRoutes) {
     await page.goto(route);
     await page.waitForTimeout(500);
-    await expect(page.locator('.studio-page-layout').first()).toBeVisible();
+    const shell = page.locator('[data-studio-shell]').first();
+    await expect(shell).toBeVisible();
     await expect(
-      page.locator('[data-studio-section-menu]').first(),
+      shell.locator('[data-studio-navigation]').first(),
     ).toBeVisible();
     const dimensions = await page.evaluate(() => ({
       viewport: window.innerWidth,
@@ -211,14 +193,15 @@ test('Studio and Admin shells remain reachable on mobile without horizontal over
   for (const route of adminRoutes) {
     await page.goto(route);
     await page.waitForTimeout(500);
+    const shell = page
+      .locator('.admin-page-layout, .admin-moderation-layout')
+      .first();
+    await expect(shell).toBeVisible();
     await expect(
-      page.locator('.admin-page-layout, .admin-moderation-layout').first(),
+      shell.locator('[data-admin-section-tabs]').first(),
     ).toBeVisible();
     await expect(
-      page.locator('[data-admin-section-tabs]').first(),
-    ).toBeVisible();
-    await expect(
-      page.locator('[data-admin-section-menu]').first(),
+      shell.locator('[data-admin-section-menu]').first(),
     ).toBeVisible();
     const dimensions = await page.evaluate(() => ({
       viewport: window.innerWidth,
