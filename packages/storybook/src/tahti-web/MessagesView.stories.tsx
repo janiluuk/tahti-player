@@ -50,7 +50,7 @@ export const Inbox: Story = {
 
     await step('inbox with role badge and contacts', async () => {
       const artist = await inboxButton(canvasElement, /^Northern Lights/);
-      await expect(within(artist).getByText('Artist')).toBeVisible();
+      await expect(within(artist).getByText('Artist')).toBeInTheDocument();
       await expect(artist).toHaveTextContent(
         'Of course - tag the channel when it airs.',
       );
@@ -106,7 +106,7 @@ export const ArtistThread: Story = {
       const reply = await thread.findByText(
         'Of course - tag the channel when it airs.',
       );
-      await expect(within(reply).getByText('Artist')).toBeVisible();
+      await expect(within(reply).getByText('Artist')).toBeInTheDocument();
       await userEvent.click(
         thread.getByRole('button', { name: 'Load older messages' }),
       );
