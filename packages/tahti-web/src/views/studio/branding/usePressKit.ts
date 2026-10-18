@@ -15,6 +15,7 @@ import {
   type PressKitImageItem,
   type PressKitMeta,
 } from '../../../api/artist-settings';
+import { subscribePressKitGalleryReload } from '../../../api/artist-settings/press-kit-gallery-sync';
 import { fetchMeProfile, type ProfileFields } from '../../../api/studio-extras';
 import { useAuthStore } from '../../../stores/authStore';
 
@@ -67,6 +68,8 @@ export function usePressKit() {
   useEffect(() => {
     reload().catch(() => toast.error('Could not load your branding details.'));
   }, []);
+
+  useEffect(() => subscribePressKitGalleryReload(() => void reload()), []);
 
   const setVisibility = async (nextPublic: boolean) => {
     const previous = galleryPublic;

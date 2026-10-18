@@ -3,6 +3,7 @@ import { mockFixture } from '.././mock-overrides';
 import { failMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import { mockPress, setMockPress } from './mock';
+import { notifyPressKitGalleryReload } from './press-kit-gallery-sync';
 
 export type PublicPressKitImage = {
   id: string;
@@ -127,6 +128,7 @@ export async function uploadPressKitImage(
     };
     mockGalleryImages = [...mockGalleryImages, image];
     setMockPress({ ...mockPress, photoCount: mockGalleryImages.length });
+    notifyPressKitGalleryReload();
     return { ok: true, image };
   }
   try {
@@ -152,6 +154,7 @@ export async function uploadPressKitImage(
         body: JSON.stringify({ uploadKey: prep.uploadKey }),
       },
     );
+    notifyPressKitGalleryReload();
     return { ok: true, image };
   } catch (err) {
     return {
@@ -217,6 +220,7 @@ export async function deletePressKitImage(
   if (isForceMock()) {
     mockGalleryImages = mockGalleryImages.filter((i) => i.id !== id);
     setMockPress({ ...mockPress, photoCount: mockGalleryImages.length });
+    notifyPressKitGalleryReload();
     return { ok: true };
   }
   try {
