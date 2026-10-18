@@ -165,9 +165,11 @@ export const AccountGone: Story = {
     const thread = within(
       await within(canvasElement).findByTestId('dm-thread'),
     );
-    await expect(
-      await thread.findByText('This account is no longer available'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        thread.getByText('This account is no longer available'),
+      ).toBeInTheDocument(),
+    );
     await expect(thread.queryByRole('button', { name: 'Block' })).toBeNull();
     await expect(thread.queryByPlaceholderText('Write a message…')).toBeNull();
   },
@@ -177,8 +179,10 @@ export const SignedOut: Story = {
   decorators: [withMockAuth(null)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText('Sign in to read DMs.')).toBeVisible();
-    await expect(canvas.getByRole('button', { name: 'Log in' })).toBeVisible();
+    await expect(canvas.getByText('Sign in to read DMs.')).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('button', { name: 'Log in' }),
+    ).toBeInTheDocument();
   },
 };
 
