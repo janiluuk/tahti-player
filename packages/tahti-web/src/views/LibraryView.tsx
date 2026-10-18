@@ -15,6 +15,7 @@ import {
 import { useEffect, useState } from 'react';
 
 import {
+  Button,
   ButtonLink,
   TabLabel,
   Tabs,
@@ -38,6 +39,7 @@ import {
 import { StudioPanel } from '../components/StudioPanel';
 import { hasStudioAccess } from '../lib/accountRoles';
 import { formatPlayCount } from '../lib/topListEntries';
+import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { LibraryEmbedsView } from './LibraryEmbedsView';
 import { LibraryMediaView } from './LibraryMediaView';
@@ -262,6 +264,7 @@ function LibraryStats() {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const canUpload = hasStudioAccess(user);
+  const signedIn = Boolean(user);
   const [topTracks, setTopTracks] = useState<StatsTopTrack[]>([]);
   const [storage, setStorage] = useState<StorageUsage | null>(null);
   const [soundCount, setSoundCount] = useState(0);
@@ -354,11 +357,19 @@ function LibraryStats() {
       ) : soundCount === 0 ? (
         <div className="mt-4">
           <PageEmpty
-            title="Your catalog is empty"
+            title={
+              canUpload
+                ? 'Your catalog is empty'
+                : signedIn
+                  ? 'Nothing saved yet'
+                  : 'Your library is empty'
+            }
             description={
               canUpload
                 ? 'Upload a track to start filling Library, or browse Discover for inspiration.'
-                : 'Browse Discover to find music, or become an artist to upload your own.'
+                : signedIn
+                  ? 'Follow artists and save favorites from Discover — they show up here.'
+                  : 'Sign in to save music you like, or browse Discover.'
             }
             action={
               <div className="flex flex-wrap gap-2">
@@ -367,10 +378,18 @@ function LibraryStats() {
                     Upload
                   </ButtonLink>
                 ) : null}
+                {!signedIn ? (
+                  <Button
+                    size="sm"
+                    onClick={() => useAuthModalStore.getState().open('login')}
+                  >
+                    Sign in
+                  </Button>
+                ) : null}
                 <ButtonLink
                   to="/discover"
                   size="sm"
-                  variant={canUpload ? 'secondary' : undefined}
+                  variant={canUpload || !signedIn ? 'secondary' : undefined}
                 >
                   Discover
                 </ButtonLink>
