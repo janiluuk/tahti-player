@@ -1,20 +1,9 @@
-import { render, screen } from '@testing-library/react';
-import type { ReactNode } from 'react';
+import { screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { fetchTracksByTag } from '../api/listen';
+import { renderWithRouter } from '../test/renderWithRouter';
 import { TagSearchView } from './TagSearchView';
-
-vi.mock('@tanstack/react-router', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@tanstack/react-router')>()),
-  Link: ({
-    children,
-    params,
-  }: {
-    children: ReactNode;
-    params: { id: string };
-  }) => <a href={`/t/${params.id}`}>{children}</a>,
-}));
 
 vi.mock('../api/listen', () => ({
   fetchTracksByTag: vi.fn(),
@@ -42,7 +31,7 @@ describe('TagSearchView', () => {
       ],
     });
 
-    render(<TagSearchView tag="late night" />);
+    await renderWithRouter(<TagSearchView tag="late night" />);
 
     expect(screen.getByText('#late night')).toBeInTheDocument();
     const link = await screen.findByRole('link', { name: /Midnight Drone/ });
@@ -53,22 +42,23 @@ describe('TagSearchView', () => {
 
   it('says so when no tracks have the tag', async () => {
     fetchMock.mockResolvedValue({ ok: true, tracks: [] });
-    render(<TagSearchView tag="drone" />);
+    await renderWithRouter(<TagSearchView tag="drone" />);
     expect(
-      await screen.findByText('No public tracks have this tag yet'),
+      await screen.findByText(/No tracks tagged “drone” in mock fixtures/),
     ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Discover' })).toBeInTheDocument();
   });
 
   it('shows an error when the API cannot filter by tag', async () => {
     fetchMock.mockResolvedValue({ ok: false, error: 'Required' });
-    render(<TagSearchView tag="drone" />);
+    await renderWithRouter(<TagSearchView tag="drone" />);
     expect(
       await screen.findByText("Couldn't load tracks for this tag"),
     ).toBeInTheDocument();
   });
 
-  it('does not search without a tag', () => {
-    render(<TagSearchView />);
+  it('does not search without a tag', async () => {
+    await renderWithRouter(<TagSearchView />);
     expect(screen.getByText('No tag chosen')).toBeInTheDocument();
     expect(fetchMock).not.toHaveBeenCalled();
   });
