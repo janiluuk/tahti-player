@@ -9,7 +9,6 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 
 | Status  | File                                                                                                     | One-line                                                                                                                                                                                                                                                       |
 | ------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| open | [batch-73-ux-mock-polish.md](batch-73-ux-mock-polish.md) | Batch 73: 20 UX/mock polish slices — Radio→Schedule, press-kit/invite mocks, EmptyStates, a11y, gated-track fixture |
 | blocked | [final-season-hardening.md](final-season-hardening.md) | Cutover L ops (proxy, runbook, vend SPA); Batch A/B code merged |
 | blocked | [first-100-users-infra.md](first-100-users-infra.md) | Ops verify backups/disk + deploy Swarm fail-closed (#872/#873/#1079 merged); host access required |
 | blocked | [feature-swipe-product-flags.md](feature-swipe-product-flags.md) | Product call: Distribution StudioNav, /chat chrome, mobile More |
