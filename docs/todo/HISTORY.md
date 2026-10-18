@@ -2,6 +2,10 @@
 
 
 
+## 2026-10-18 — theDAW editor + viz port (v1 complete)
+
+Folded `thedaw-editor-viz-v1.md`. Packages `@tahti-player/{audio-core,audio-rack,audio-editor,visualizer}`, MultitrackEditor, FX rack, Advanced/Cymatics via `VisualizerHost`, and Studio Pro / ChannelVisualizer / FullScreenPlayer host wiring shipped (#598/#613). Bounce → sound versions prepare/complete done. Follow-ups left elsewhere: PulseForge video editor (`track-visualizer-video-editor.md`), VST3/FFmpeg/.gan sidecar — product/licence go-ahead, not an open v1 checklist.
+
 ## 2026-10-18 — Batch 71: UX / usability (20 slices)
 
 Redirects, theme-safe Studio tiles, mock/tag/Jam polish, Messages EmptyState,
