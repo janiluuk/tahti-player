@@ -1,7 +1,7 @@
 import { BlocksIcon, UploadIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { UploadTrackDialog } from './UploadTrackDialog';
@@ -13,6 +13,8 @@ type Props = {
   size?: 'sm' | 'default';
   /** Center actions (e.g. empty state). */
   align?: 'start' | 'center';
+  /** Empty archive states should land on Library → Upload, not a second modal. */
+  uploadTarget?: 'dialog' | 'route';
   onUploaded?: () => void;
 };
 
@@ -21,6 +23,7 @@ type Props = {
 export function AddToMusicActions({
   size = 'sm',
   align = 'start',
+  uploadTarget = 'dialog',
   onUploaded,
 }: Props) {
   const [uploadOpen, setUploadOpen] = useState(false);
@@ -30,16 +33,23 @@ export function AddToMusicActions({
       <div
         className={`flex flex-wrap gap-2 ${align === 'center' ? 'justify-center' : ''}`}
       >
-        <Tooltip content={UPLOAD_HINT} side="top">
-          <Button
-            size={size}
-            onClick={() => setUploadOpen(true)}
-            aria-label="Upload"
-          >
+        {uploadTarget === 'route' ? (
+          <ButtonLink to="/library/upload" size={size} aria-label="Upload">
             <UploadIcon size={16} aria-hidden className="mr-1.5" />
             Upload
-          </Button>
-        </Tooltip>
+          </ButtonLink>
+        ) : (
+          <Tooltip content={UPLOAD_HINT} side="top">
+            <Button
+              size={size}
+              onClick={() => setUploadOpen(true)}
+              aria-label="Upload"
+            >
+              <UploadIcon size={16} aria-hidden className="mr-1.5" />
+              Upload
+            </Button>
+          </Tooltip>
+        )}
         <Button
           size={size}
           variant="secondary"
@@ -52,11 +62,13 @@ export function AddToMusicActions({
           Import
         </Button>
       </div>
-      <UploadTrackDialog
-        isOpen={uploadOpen}
-        onClose={() => setUploadOpen(false)}
-        onUploaded={() => onUploaded?.()}
-      />
+      {uploadTarget === 'dialog' ? (
+        <UploadTrackDialog
+          isOpen={uploadOpen}
+          onClose={() => setUploadOpen(false)}
+          onUploaded={() => onUploaded?.()}
+        />
+      ) : null}
     </>
   );
 }
