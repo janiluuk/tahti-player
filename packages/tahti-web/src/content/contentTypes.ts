@@ -49,14 +49,31 @@ const LEGACY_CONTENT_TYPE_ALIASES: Record<string, ContentTypeId> = {
   RADIO_SHOW: 'SHOW',
 };
 
+/** Normalize a raw/legacy content-type string to a known id, or `null`. */
+export function resolveContentTypeId(
+  contentType: string | null | undefined,
+): ContentTypeId | null {
+  if (!contentType) {
+    return null;
+  }
+  const upper = contentType.toUpperCase();
+  const resolved = LEGACY_CONTENT_TYPE_ALIASES[upper] ?? upper;
+  return CONTENT_TYPES.some((type) => type.id === resolved)
+    ? (resolved as ContentTypeId)
+    : null;
+}
+
 export function contentTypeLabel(
   contentType: string | null | undefined,
 ): string {
   if (!contentType) {
     return 'Unknown';
   }
-  const upper = contentType.toUpperCase();
-  const resolved = LEGACY_CONTENT_TYPE_ALIASES[upper] ?? upper;
-  const match = CONTENT_TYPES.find((t) => t.id === resolved);
-  return match?.label ?? contentType;
+  const resolved = resolveContentTypeId(contentType);
+  if (!resolved) {
+    return contentType;
+  }
+  return (
+    CONTENT_TYPES.find((type) => type.id === resolved)?.label ?? contentType
+  );
 }

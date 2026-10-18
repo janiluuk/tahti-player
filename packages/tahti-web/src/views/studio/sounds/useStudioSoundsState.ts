@@ -11,6 +11,7 @@ import {
 } from '../../../api/studio';
 import type { StudioSound } from '../../../api/studio-types';
 import {
+  resolveContentTypeId,
   SELECTABLE_CONTENT_TYPES,
   type ContentTypeId,
 } from '../../../content/contentTypes';
@@ -64,12 +65,12 @@ function parseDateInput(value: string): Date | null {
 }
 
 function parseContentTypeFilter(value: string | undefined): ContentTypeFilter {
-  if (!value) {
+  const resolved = resolveContentTypeId(value);
+  if (!resolved) {
     return 'ALL';
   }
-  const upper = value.toUpperCase();
-  if (SELECTABLE_CONTENT_TYPES.some((type) => type.id === upper)) {
-    return upper as ContentTypeId;
+  if (SELECTABLE_CONTENT_TYPES.some((type) => type.id === resolved)) {
+    return resolved;
   }
   return 'ALL';
 }
@@ -78,27 +79,8 @@ function parseContentTypeFilter(value: string | undefined): ContentTypeFilter {
 export function useStudioSoundsState() {
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as {
-    folder?: string;
     contentType?: string;
   };
-
-  useEffect(() => {
-    if (search.folder === 'files') {
-      void navigate({ to: '/library/stash', replace: true });
-      return;
-    }
-    if (search.folder === 'clips') {
-      void navigate({
-        to: '/library/sounds',
-        search: { contentType: 'CLIP' },
-        replace: true,
-      });
-      return;
-    }
-    if (search.folder === 'sound') {
-      void navigate({ to: '/library/sounds', replace: true });
-    }
-  }, [navigate, search.folder]);
 
   const [items, setItems] = useState<StudioSound[]>([]);
   const [query, setQuery] = useState('');
@@ -163,7 +145,7 @@ export function useStudioSoundsState() {
     const filteredItems = base.filter((item) => {
       if (
         contentTypeFilter !== 'ALL' &&
-        (item.contentType?.toUpperCase() ?? '') !== contentTypeFilter
+        resolveContentTypeId(item.contentType) !== contentTypeFilter
       ) {
         return false;
       }
