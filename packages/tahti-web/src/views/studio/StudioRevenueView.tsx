@@ -148,6 +148,20 @@ export function StudioRevenueView() {
                 <PurchaseOrdersList />
               </StudioPanel>
             </div>
+          ) : connect && !connect.stripeConfigured ? (
+            <StudioPanel title="Payments">
+              <EmptyState
+                size="sm"
+                data-testid="revenue-stripe-disconnected"
+                title="Stripe is not connected"
+                description="Connect Stripe before fan subscriptions, track sales, or grant payouts can reach you."
+                action={
+                  <ButtonLink to="/studio/stripe" size="sm">
+                    Open Stripe setup
+                  </ButtonLink>
+                }
+              />
+            </StudioPanel>
           ) : hasFanTiers === false ? (
             <StudioPanel title="Fan subscriptions">
               <EmptyState
