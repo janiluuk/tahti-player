@@ -129,14 +129,14 @@ export function SidebarQueuePanel({
 
       {toolbar ? (
         <div className="border-border flex shrink-0 items-center justify-center gap-1 border-t px-2 py-1.5">
-          <Tooltip content="Full screen" side="top">
+          <Tooltip content="Open full-screen player" side="top">
             <Button
               size="icon-sm"
               variant="text"
               disabled={!hasPlayable}
               onClick={() => setFullScreenPlayerOpen(true)}
               className="text-foreground-secondary hover:text-foreground"
-              aria-label="Full screen"
+              aria-label="Open full-screen player"
               data-testid="queue-fullscreen-button"
             >
               <Maximize2Icon size={15} aria-hidden />

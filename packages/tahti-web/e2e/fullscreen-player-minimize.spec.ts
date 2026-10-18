@@ -39,7 +39,7 @@ test('full player view: back arrow actually minimizes the player', async ({
   await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible();
 
   await clearToasts(page);
-  await page.getByRole('button', { name: 'Full screen' }).click();
+  await page.getByTestId('expand-full-screen-player').click();
 
   const minimize = page.getByRole('button', { name: 'Minimize player' });
   await expect(minimize).toBeVisible();
