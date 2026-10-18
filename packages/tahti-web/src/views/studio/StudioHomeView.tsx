@@ -13,7 +13,7 @@ import { StudioGate } from '../../components/StudioGate';
 import { useStripeConfigured } from '../../hooks/useStripeConfigured';
 import { accountRoleLabel, getAccountRole } from '../../lib/accountRoles';
 import { GovernanceSection } from './home/GovernanceSection';
-import { CompactBroadcastTile, Group } from './home/HomeTiles';
+import { CompactBroadcastTile, Group, HomeTileStagger } from './home/HomeTiles';
 import { MusicAudienceGrids } from './home/MusicAudienceGrids';
 import { RecentBroadcastRow } from './home/RecentBroadcastRow';
 import { SummaryStatsSection } from './home/SummaryStatsSection';
@@ -62,7 +62,7 @@ export function StudioHomeView() {
           ) : null}
 
           {!channel ? null : (
-            <div className="flex flex-col gap-8">
+            <HomeTileStagger>
               <div
                 role="group"
                 aria-label="Next steps"
@@ -145,7 +145,7 @@ export function StudioHomeView() {
                 state={state}
                 stripeConfigured={stripeConfigured}
               />
-            </div>
+            </HomeTileStagger>
           )}
         </ViewShell>
       </div>

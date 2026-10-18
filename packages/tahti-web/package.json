@@ -1,6 +1,6 @@
 {
   "name": "@tahti-player/tahti-web",
-  "version": "0.0.185",
+  "version": "0.0.186",
   "private": true,
   "type": "module",
   "description": "Tahti listening, artist, and governance web client",
@@ -33,6 +33,7 @@
     "@tonejs/midi": "2.0.28",
     "hls.js": "^1.5.15",
     "lucide-react": "^0.542.0",
+    "motion": "^12.23.12",
     "mermaid": "^11.16.1",
     "qrcode.react": "4.2.0",
     "react": "^18.3.1",
