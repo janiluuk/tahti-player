@@ -421,7 +421,7 @@ export function StudioUploadView() {
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6">
         <LibrarySectionTabs active="upload" />
         <ViewShell title="Upload" classes={{ root: 'px-0 pt-0' }}>
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 min-[391px]:grid-cols-2">
             <div className="border-accent-cyan flex min-h-48 flex-col justify-center rounded-xl border border-dashed p-5 sm:p-6">
               <FilePicker
                 labels={{
