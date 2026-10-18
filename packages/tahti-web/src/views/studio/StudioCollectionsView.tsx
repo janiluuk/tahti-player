@@ -41,6 +41,8 @@ import {
   collectionStyleLabel,
   normalizeCollectionStyle,
 } from '../../content/collectionStyles';
+import { hasStudioAccess } from '../../lib/accountRoles';
+import { useAuthStore } from '../../stores/authStore';
 import { LibrarySectionTabs } from '../LibraryView';
 import { CollectionOrderButton } from './CollectionOrderButton';
 
@@ -85,6 +87,8 @@ const editorRouteFor = (collection: StudioCollection) =>
     : '/studio/collections/$slug';
 
 export function StudioCollectionsView() {
+  const user = useAuthStore((s) => s.user);
+  const canCreate = hasStudioAccess(user);
   const navigate = useNavigate();
   const [rows, setRows] = useState<StudioCollection[]>([]);
   const [loading, setLoading] = useState(true);
@@ -202,21 +206,23 @@ export function StudioCollectionsView() {
           title="Collections"
           classes={{ root: 'px-0 pt-0' }}
           actions={
-            <div className="flex items-center gap-2">
-              <CollectionOrderButton />
-              <Tooltip content="New collection" side="top">
-                <Button
-                  size="icon-sm"
-                  onClick={() => {
-                    setMsg(null);
-                    setCreateOpen(true);
-                  }}
-                  aria-label="New collection"
-                >
-                  <PlusIcon size={16} aria-hidden />
-                </Button>
-              </Tooltip>
-            </div>
+            canCreate ? (
+              <div className="flex items-center gap-2">
+                <CollectionOrderButton />
+                <Tooltip content="New collection" side="top">
+                  <Button
+                    size="icon-sm"
+                    onClick={() => {
+                      setMsg(null);
+                      setCreateOpen(true);
+                    }}
+                    aria-label="New collection"
+                  >
+                    <PlusIcon size={16} aria-hidden />
+                  </Button>
+                </Tooltip>
+              </div>
+            ) : undefined
           }
         >
           {msg && <p className="mb-4 text-sm">{msg}</p>}
@@ -361,18 +367,35 @@ export function StudioCollectionsView() {
             ) : rows.length === 0 ? (
               <EmptyState
                 size="sm"
-                title="No collections yet"
-                description="Create an album, EP, DJ set, podcast, or playlist."
+                title={
+                  canCreate ? 'No collections yet' : 'No collections saved yet'
+                }
+                description={
+                  canCreate
+                    ? 'Create an album, EP, DJ set, podcast, or playlist.'
+                    : 'Follow public playlists from artist pages, or browse Discover for collections to save.'
+                }
                 action={
-                  <Tooltip content="New collection" side="top">
-                    <Button
-                      size="icon-sm"
-                      onClick={() => setCreateOpen(true)}
-                      aria-label="New collection"
+                  canCreate ? (
+                    <Tooltip content="New collection" side="top">
+                      <Button
+                        size="icon-sm"
+                        onClick={() => setCreateOpen(true)}
+                        aria-label="New collection"
+                      >
+                        <PlusIcon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                  ) : (
+                    <ButtonLink
+                      to="/discover"
+                      search={{ tab: 'discover' }}
+                      size="sm"
+                      variant="secondary"
                     >
-                      <PlusIcon size={16} aria-hidden />
-                    </Button>
-                  </Tooltip>
+                      Browse Discover
+                    </ButtonLink>
+                  )
                 }
               />
             ) : filteredRows.length === 0 ? (

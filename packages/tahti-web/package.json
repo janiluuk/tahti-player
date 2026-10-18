@@ -1,6 +1,10 @@
 {
   "name": "@tahti-player/tahti-web",
+<<<<<<< Updated upstream
   "version": "0.0.207",
+=======
+  "version": "0.0.208",
+>>>>>>> Stashed changes
   "private": true,
   "type": "module",
   "description": "Tahti listening, artist, and governance web client",
