@@ -278,7 +278,8 @@ export function ConnectedPlayerBar() {
   // Embed-only tracks have no seekable stream — the provider widget is the
   // transport. Skip the Tahti waveform so the bottom chrome stays a slim
   // strip instead of waveform + full widget stacking into the workspace.
-  const waveform = isLive || embed ? null : (
+  const waveform =
+    isLive || embed ? null : (
       <div className="px-4 pt-1">
         <WaveformSeekbar
           trackId={playable?.id ?? currentId ?? 'none'}
@@ -301,20 +302,21 @@ export function ConnectedPlayerBar() {
 
   const embedHostedInRow =
     embed?.provider === 'hearthis' && hearthisHostedInRow;
-  const embedPanel = embed && !embedHostedInRow ? (
-    <div
-      className="border-border max-h-28 w-[min(100%,20rem)] shrink-0 overflow-hidden rounded-lg border"
-      data-testid="hearthis-player-embed"
-    >
-      <EmbedSurface
-        provider={embed.provider}
-        embedUri={embed.embedUri}
-        title={title}
-        autoplay={isPlaying}
-        compact
-      />
-    </div>
-  ) : null;
+  const embedPanel =
+    embed && !embedHostedInRow ? (
+      <div
+        className="border-border max-h-28 w-[min(100%,20rem)] shrink-0 overflow-hidden rounded-lg border"
+        data-testid="hearthis-player-embed"
+      >
+        <EmbedSurface
+          provider={embed.provider}
+          embedUri={embed.embedUri}
+          title={title}
+          autoplay={isPlaying}
+          compact
+        />
+      </div>
+    ) : null;
 
   const barShellClass = cn(
     'flex w-full shrink-0 flex-col',
