@@ -4910,17 +4910,18 @@ Asked for as "next 15 slices of cross repo todo", then "rebase to latest master 
 - **Docs (#1011, #1012):** sweep leftovers folded; Help text for the member and venue features; tahti-web 0.0.164.
 - **Checked and left alone:** tahti-org `fansubs/payouts` CSV and `/api/me/channel-funnel-stats`: checked, already covered in the web (CSV export link; funnel data served by the gate and live routes). `/api/v1/custom-domain/resolve`, `/api/smartlink/click`, OAuth callbacks and `og/*` have no tahti-web caller on purpose (server or nginx side). Board side of elections, board terms, auditors and annual reports still has no admin UI in tahti-web (`/api/admin/governance/elections`, `board-terms`, `auditors`, `/api/admin/reports/annual`). Next candidate batch.
 
-## 2026-10-18 — Batch 73: UX / mock polish (tahti-player #1111–#1123)
+## 2026-10-18 — Batch 73: UX / mock polish (tahti-player #1111–#1128)
 
-Twenty-slice usability pass after batches 71–72: mock gaps, empty-state consistency, a11y polish, offline capture fixtures. tahti-web **0.0.206**.
+Twenty-slice usability pass after batches 71–72: mock gaps, empty-state consistency, a11y polish, offline capture fixtures. tahti-web **0.0.210**.
 
-- **Plan (#1111):** batch tracker + INDEX row.
+- **Plan (#1111):** batch tracker + INDEX row; fold (#1122) + INDEX cleanup (#1125).
 - **Docs / feed (#1112):** radio schedule docs sync, MOCKS/NAVIGATION-GAPS, signed-out Feed Discover CTA.
 - **A11y + settings (#1113, #1120):** AuthDialog `aria-live` errors, skip-link + `#main-content` focus, settings deep-link scroll-to-top.
 - **Mock flows (#1114, #1115):** press-kit gallery reload under mock; channel member add toast + list refresh (Settings → Artist → People).
-- **Empty states (#1118, #1123):** Studio Updates empty write CTA; Revenue Stripe-disconnected EmptyState. Other **6–14** empties already on master.
-- **Gated track fixtures (#1119):** `northern-lights-archive-6` (fan subs) and `-archive-7` (purchase) for offline `/t/$id` map capture.
+- **Empty states (#1118, #1123, #1124, #1126, #1127):** Studio Updates write CTA; Revenue Stripe-disconnected; Favorites signed-out; Library Collections listener; Stash upload CTA. GlobalSearch / Help / Discover / Channel empties already on master.
+- **Gated track fixtures (#1119):** offline `/t/$id` map capture (fan-subs + purchase fixtures).
 - **Tag search (#1121):** no-fixture empty uses EmptyState panel with Discover/Radio links.
+- **Hotfix (#1128):** clear parallel `package.json` merge markers.
 
 ## 2026-10-17 — Batch 69: the board side of governance (tahti-player #1013-#1033)
 
