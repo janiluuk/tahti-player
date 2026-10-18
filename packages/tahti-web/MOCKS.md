@@ -32,7 +32,7 @@ Production / beta builds (`import.meta.env.PROD`) **do not** fall back to fixtur
 ## Still thin / next mock polish
 
 - [x] Chat: persist mock sends into shared history store (reload-safe) (batch 66 #5)
-- [ ] Seed richer archive / releases / collections for Studio browse
+- [x] Seed richer archive / releases / collections for Studio browse
 - [x] Newsletter send confirmation (success toast + list refresh under mock)
 - [x] DM search users fixture expansion (batch 67 #7)
 - [x] Tag search (`fetchTracksByTag`) — offline tracks from mock latest genres + search title hits
