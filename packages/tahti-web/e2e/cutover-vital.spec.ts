@@ -1,25 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-async function signIn(
-  page: import('@playwright/test').Page,
-  email = 'artist@tahti.live',
-  password = process.env.TAHTI_E2E_PASSWORD ?? 'demo-password',
-): Promise<void> {
-  await page.goto('/login');
-  await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password').fill(password);
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await expect(
-    page.getByRole('button', { name: /^Signed in as/ }),
-  ).toBeVisible();
-  await page.evaluate(() => {
-    const raw = localStorage.getItem('tahti-web-auth');
-    const userId = raw ? JSON.parse(raw)?.state?.user?.id : null;
-    if (typeof userId === 'string') {
-      localStorage.setItem(`tahti-web-onboarded:${userId}`, '1');
-    }
-  });
-}
+import { signIn } from './helpers/auth';
 
 test('legacy callbacks land on the matching SPA surface', async ({ page }) => {
   await signIn(page);
@@ -40,10 +21,13 @@ test('registration asks for an artist name and matching passwords', async ({
   await page.goto('/join');
 
   await expect(page.getByLabel('Artist name')).toBeVisible();
+  await expect(
+    page.getByRole('radiogroup', { name: 'Account type' }),
+  ).toBeVisible();
   await expect(page.getByLabel('Verification token')).toHaveCount(0);
   await page.getByLabel('Email').fill('new-artist@tahti.live');
-  await page.getByLabel('Username').fill('new-artist');
   await page.getByLabel('Artist name').fill('New Artist');
+  await expect(page.getByTestId('username-hint')).toContainText('new-artist');
   await page.getByLabel('Password', { exact: true }).fill('secure-password');
   await page.getByLabel('Confirm password').fill('different-password');
   await expect(page.getByText('Passwords do not match.')).toBeVisible();

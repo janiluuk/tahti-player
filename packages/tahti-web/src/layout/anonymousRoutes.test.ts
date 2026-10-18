@@ -23,6 +23,8 @@ describe('isAnonymousRouteAllowed', () => {
     '/newsletter/unsubscribe/some-token',
     '/subscribe/liis-kask',
     '/schedule',
+    '/more',
+    '/admin/map',
   ])('lets a visitor open %s without a sign-in dialog', (path) => {
     expect(isAnonymousRouteAllowed(path)).toBe(true);
   });

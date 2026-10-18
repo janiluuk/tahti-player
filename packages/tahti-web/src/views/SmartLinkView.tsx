@@ -134,6 +134,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
       <EntitySocialHeader
         title={data.release.title}
         imageUrl={data.release.artworkUrl}
+        imageAlt={`${data.release.title} cover`}
         subtitle={
           <Link
             to="/u/$username"

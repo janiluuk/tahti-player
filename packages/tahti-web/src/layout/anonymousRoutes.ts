@@ -19,6 +19,8 @@ const ANONYMOUS_ALLOWED_ROUTES = [
   /^\/transparency(?:\/|$)/,
   /^\/governance\/history(?:\/|$)/,
   /^\/governance(?:\/feature-requests)?$/,
+  /^\/more(?:\/|$)/,
+  /^\/admin\/map(?:\/|$)/,
 ];
 
 export function isAnonymousRouteAllowed(pathname: string): boolean {

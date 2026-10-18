@@ -439,13 +439,13 @@ export function ConnectedPlayerBar() {
         }
         right={
           <div className="flex items-center gap-2">
-            <Tooltip content="Full screen" side="top">
+            <Tooltip content="Open full-screen player" side="top">
               <Button
                 size="icon-sm"
                 variant="text"
                 disabled={!playable}
                 onClick={() => setFullScreenPlayerOpen(true)}
-                aria-label="Full screen"
+                aria-label="Open full-screen player"
                 data-testid="expand-full-screen-player"
               >
                 <Maximize2Icon size={16} />
