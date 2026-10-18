@@ -38,7 +38,7 @@ Production / beta builds (`import.meta.env.PROD`) **do not** fall back to fixtur
 - [x] DM search users fixture expansion (batch 67 #7)
 - [x] Tag search (`fetchTracksByTag`) — offline tracks from mock latest genres + search title hits
 - [x] Press-kit gallery upload mock — Settings → Artist / Studio branding gallery; reloads across tabs (batch 73 #2)
-- [ ] Member invite mock (currently link-out)
+- [x] Member invite mock — Settings → Artist → People add-person flow (toast + list refresh, batch 73 #3)
 - [x] Stash upload / delete mock store (wave 7)
 - [x] Venue register mock success path
 - [x] TOTP setup/confirm/disable mock path
