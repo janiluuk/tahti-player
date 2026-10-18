@@ -17,13 +17,13 @@ const items = [
 ];
 
 describe('SectionTabs', () => {
-  it('stays on one scrolling line on phones and wraps from 640 px', () => {
+  it('stays on one scrolling line on phones and wraps from 768 px', () => {
     render(<SectionTabs aria-label="Studio" items={items} />);
 
     const list = screen.getByRole('tablist', { name: 'Studio' });
     expect(list.className).toContain('flex-wrap');
-    expect(list.className).toContain('max-sm:flex-nowrap');
-    expect(list.className).toContain('max-sm:overflow-x-auto');
+    expect(list.className).toContain('max-md:flex-nowrap');
+    expect(list.className).toContain('max-md:overflow-x-auto');
   });
 
   it('marks the active item as the selected tab', () => {
