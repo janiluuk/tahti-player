@@ -22,7 +22,7 @@ spots, `NAVIGATION-GAPS.md`, empty-state consistency, phone layout.
 | 12 | Discover tab empty section EmptyState | XS | |
 | 13 | Channel offline / empty tracklist EmptyState consistency | S | |
 | 14 | Studio Stash empty EmptyState + Upload CTA | XS | |
-| 15 | AuthDialog field errors exposed to `aria-live` | S | |
+| 15 | AuthDialog field errors exposed to `aria-live` | S | #1116 |
 | 16 | Skip-to-content target focus ring visible on all themes | XS | |
 | 17 | Settings deep-link scrolls active section into view | S | |
 | 18 | Mock gated track page fixture (subscriber / purchase) for capture | S | |
