@@ -25,8 +25,8 @@ the current menus.
   "Recorded at" on track pages.
 - `/library/smartlinks` is a Library tab.
 - `/jam/$code` is opened by "Start a Jam" on a collection page.
-- `/schedule` is also linked from the channel page programme block, not
-  only the booking calendar. Radio still does not link it.
+- `/schedule` is linked from the channel page programme block and from
+  the Radio hub (programme schedule + booking calendar actions).
 
 ### Redirects that land somewhere unexpected
 
