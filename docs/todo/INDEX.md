@@ -9,7 +9,6 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 
 | Status  | File                                                                                                     | One-line                                                                                                                                                                                                                                                       |
 | ------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| open    | [csp-radio-media-src.md](csp-radio-media-src.md) | #1078 CSP media-src/connect-src blocks external radio on beta |
 | blocked | [final-season-hardening.md](final-season-hardening.md) | Cutover L ops (proxy, runbook, vend SPA); Batch A/B code merged |
 | blocked | [first-100-users-infra.md](first-100-users-infra.md) | Ops verify backups/disk + deploy Swarm fail-closed (#872/#873/#1079 merged); host access required |
 | blocked | [finnish-radio-now-playing-scrapers.md](finnish-radio-now-playing-scrapers.md) | Yle key + Nelonen scrapers; org User-Agent/kill-switch |
