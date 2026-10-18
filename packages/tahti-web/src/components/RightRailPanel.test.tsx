@@ -9,9 +9,21 @@ import { act, cleanup, render, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
 
+import type { TahtiPlayable } from '../api/types';
 import { useLayoutStore } from '../stores/layoutStore';
+import { usePlayerStore } from '../stores/playerStore';
 import { RightRailHeaderActions } from './RightRailHeaderActions';
 import { RightRailPanel } from './RightRailPanel';
+
+const SAMPLE: TahtiPlayable = {
+  id: 'sound:queue-fs',
+  kind: 'sound',
+  title: 'Queue FS',
+  artist: 'Test',
+  streamUrl: 'https://cdn.tahti.live/demo.mp3',
+  protocol: 'https',
+  durationSec: 60,
+};
 
 const CHAT_OR_NOTIFICATIONS = /chat|notification/i;
 
@@ -59,6 +71,24 @@ describe('right rail is the queue only', () => {
     expect(
       screen.getByTestId('right-rail').getAttribute('data-right-rail-view'),
     ).toBe('queue');
+  });
+
+  it('opens the full-screen player from the queue header', async () => {
+    useLayoutStore.getState().setFullScreenPlayerOpen(false);
+    usePlayerStore.getState().clearQueue();
+    await renderInRouter(<RightRailHeaderActions />);
+    expect(screen.getByTestId('queue-fullscreen-button')).toBeDisabled();
+    cleanup();
+    usePlayerStore.getState().hydrateQueue([SAMPLE], SAMPLE.id);
+    await renderInRouter(<RightRailHeaderActions />);
+    const enabled = screen.getByTestId('queue-fullscreen-button');
+    expect(enabled).not.toBeDisabled();
+    await act(async () => {
+      enabled.click();
+    });
+    expect(useLayoutStore.getState().fullScreenPlayerOpen).toBe(true);
+    usePlayerStore.getState().clearQueue();
+    useLayoutStore.getState().setFullScreenPlayerOpen(false);
   });
 
   it('moves a saved chat or notifications rail back to the queue', async () => {
