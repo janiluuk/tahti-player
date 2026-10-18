@@ -223,7 +223,7 @@ pro-editor `MasteringPanel`/`StemsPanel`/`PluginControls`.
 | ----------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------- | --------- | ------------------------------------ |
 | [Messages](#messages)         | `/messages`, `/messages/$id` (also `/library/messages` redirects here) | `src/views/MessagesView.tsx`                      | Has Story | Card layout, InPageNav               |
 | Moderate channel              | `/moderate/$slug`                                                      | `src/views/ModerateChannelView.tsx`               | Has Story | Card layout (moderation panels)      |
-| [More](#more)                 | `/more` (diagnostics-gated; redirects to `/` otherwise)                | `src/views/MoreView.tsx`                          | No Story  | Card layout                          |
+| [More](#more)                 | `/more` (diagnostics-gated; redirects to `/` otherwise)                | `src/views/MoreView.tsx`                          | No Story  | Card layout; E2E runs section has its own story (`Tahti/Studio/E2eRunGallery`) |
 | Dashboard alias               | `/dashboard`, `/dashboard/$`                                           | `src/router/routes-embed.tsx`                     | No Story  | — (redirect only: Studio or Feed)    |
 | Studio Setup Channel redirect | `/studio/setup-channel`                                                | `src/views/studio/StudioSetupChannelRedirect.tsx` | No Story  | — (redirect-only helper, no real UI) |
 

@@ -35,6 +35,7 @@ import type { StudioSound } from '../api/studio-types';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { TrackEditDialog } from '../components/TrackEditDialog';
+import { hasStudioAccess } from '../lib/accountRoles';
 import { playableFromStudioHearthis } from '../lib/embedPlayback';
 import { EMBED_PROVIDER_LABEL } from '../lib/embedSrc';
 import { isPinned, sortPinnedFirst } from '../lib/pinnedTracks';
@@ -217,6 +218,7 @@ export const MyDiscographyView: FC = () => {
   };
 
   const hasChannel = Boolean(user?.channel);
+  const canUpload = hasStudioAccess(user);
 
   return (
     <div className="flex flex-col gap-8">
@@ -234,18 +236,30 @@ export const MyDiscographyView: FC = () => {
         // actually returned (e.g. a stale/late channel field on an
         // account that already has archive items).
         <PageEmpty
-          title="No tracks yet"
-          description="Go live or upload music to start your complete audio archive."
+          title={canUpload ? 'No tracks yet' : 'Nothing saved here yet'}
+          description={
+            canUpload
+              ? 'Go live or upload music to start your complete audio archive.'
+              : user
+                ? 'Follow artists and save favorites — tracks you collect show up here.'
+                : 'Sign in to save favorites, or browse Discover to find music.'
+          }
           action={
-            <ButtonLink
-              className="w-fit"
-              to="/studio/go-live"
-              size="sm"
-              variant="secondary"
-            >
-              <RadioTowerIcon size={16} aria-hidden className="mr-1.5" />
-              Open Studio
-            </ButtonLink>
+            canUpload ? (
+              <ButtonLink
+                className="w-fit"
+                to="/studio/go-live"
+                size="sm"
+                variant="secondary"
+              >
+                <RadioTowerIcon size={16} aria-hidden className="mr-1.5" />
+                Open Studio
+              </ButtonLink>
+            ) : (
+              <ButtonLink className="w-fit" to="/discover" size="sm">
+                Discover
+              </ButtonLink>
+            )
           }
         />
       ) : (
@@ -315,7 +329,9 @@ export const MyDiscographyView: FC = () => {
                 title={items.length === 0 ? 'No tracks yet' : 'No tracks match'}
                 description={
                   items.length === 0
-                    ? 'Upload or import audio to start your archive.'
+                    ? canUpload
+                      ? 'Upload or import audio to start your archive.'
+                      : 'Save favorites or follow artists to build your listening library.'
                     : 'Change the search or filter to see more of your archive.'
                 }
               />

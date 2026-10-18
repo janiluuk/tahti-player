@@ -6,6 +6,10 @@ play on beta. Widened both to `https:` (mirrors `img-src`); tahti-radio on
 `stream.tahti.live` remains allowed. Requires beta redeploy for the nginx
 header.
 
+## 2026-10-19 — E2E run gallery on the Tahti map
+
+`/more` now has an E2E runs section with step screenshots from the 2026-10-19 beta and mock Playwright runs, triage badges for findings, and a Storybook story. Jump nav uses `ButtonAnchor`. Listener library empty copy no longer prompts non-artists to upload; mock press-kit ZIP meta stays in sync after gallery edits. Findings tracked in `docs/todo/e2e-run-findings.md`. Bumped `packages/tahti-web/package.json` to `0.0.214`.
+
 ## 2026-10-17 — Distribution discoverability + chat docs
 
 Studio home shows a Distribution tile when the artist has releases; Releases

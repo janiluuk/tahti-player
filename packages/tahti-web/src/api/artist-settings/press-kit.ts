@@ -8,6 +8,7 @@ import {
 } from '.././mode';
 import { requestJson } from '.././request-json';
 import { mockPress, setMockPress } from './mock';
+import { syncMockPressKitMeta } from './press-kit-images';
 
 export type PressKitMeta = {
   hasZip: boolean;
@@ -62,6 +63,7 @@ export async function patchPressKitBio(
 ): Promise<{ ok: true; data: PressKitMeta } | { ok: false; error: string }> {
   if (isForceMock()) {
     setMockPress({ ...mockPress, bioShort });
+    syncMockPressKitMeta();
     return { ok: true, data: { ...mockPress } };
   }
   try {
