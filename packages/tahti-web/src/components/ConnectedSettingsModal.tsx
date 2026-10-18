@@ -69,6 +69,21 @@ export function ConnectedSettingsModal() {
 
   const resolvedTab = available ? activeTab : fallbackTab;
 
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    const reduceMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    const frame = window.requestAnimationFrame(() => {
+      document
+        .querySelector('[data-settings-panel-content]')
+        ?.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [isOpen, resolvedTab]);
+
   const tabs = nav.map((item) => {
     const Icon = item.Icon;
     return {
@@ -79,7 +94,10 @@ export function ConnectedSettingsModal() {
       // Settings dialog is p-0; pad sections. `min-w-0` + slightly tighter
       // mobile padding keep wide Add-ons / Themes bodies inside the pane.
       content: () => (
-        <div className={`min-w-0 p-4 md:p-6 lg:p-8`}>
+        <div
+          className={`min-w-0 p-4 md:p-6 lg:p-8`}
+          data-settings-panel-content
+        >
           <SettingsSectionBody section={item.id} />
         </div>
       ),

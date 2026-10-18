@@ -556,7 +556,7 @@ export function AppShell() {
               id={MAIN_CONTENT_ID}
               tabIndex={-1}
               className={cn(
-                'min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto outline-none',
+                'focus-visible:ring-primary min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto outline-none focus-visible:ring-2 focus-visible:ring-inset',
                 MAIN_CONTENT_PADDING,
               )}
               data-studio-shell
@@ -606,7 +606,7 @@ export function AppShell() {
                 id={MAIN_CONTENT_ID}
                 tabIndex={-1}
                 className={cn(
-                  'h-full min-w-0 overflow-x-hidden overflow-y-auto outline-none',
+                  'focus-visible:ring-primary h-full min-w-0 overflow-x-hidden overflow-y-auto outline-none focus-visible:ring-2 focus-visible:ring-inset',
                   fullBleedRoute && MAIN_CONTENT_PADDING,
                 )}
                 data-studio-shell
