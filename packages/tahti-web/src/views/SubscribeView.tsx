@@ -156,6 +156,10 @@ export function SubscribeView({
         <CurrentFanSubscriptionCard subscription={current} />
       ) : (
         <>
+          <h2 className="font-display text-xl font-bold tracking-tight">
+            Subscribe to {data.artist.displayName}
+          </h2>
+
           {!data.paymentsReady && meta?.source !== 'mock' && (
             <p className="text-foreground-secondary text-sm">
               This artist isn't set up to take payments yet, so subscribing
@@ -164,23 +168,26 @@ export function SubscribeView({
           )}
 
           {!user && (
-            <p className="border-border bg-background-secondary flex flex-wrap items-center gap-1 rounded-lg border px-3 py-2 text-sm">
-              Log in or join Tahti to subscribe.
-              <Button
-                size="xs"
-                variant="text"
-                onClick={() => useAuthModalStore.getState().open('login')}
-              >
-                Log in
-              </Button>
-              <Button
-                size="xs"
-                variant="text"
-                onClick={() => useAuthModalStore.getState().open('join')}
-              >
-                Join
-              </Button>
-            </p>
+            <div className="border-border bg-background-secondary flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border px-3 py-2 text-sm">
+              <p className="min-w-0 flex-1 basis-48">
+                Log in or join Tahti to subscribe.
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  size="xs"
+                  onClick={() => useAuthModalStore.getState().open('login')}
+                >
+                  Log in
+                </Button>
+                <Button
+                  size="xs"
+                  variant="secondary"
+                  onClick={() => useAuthModalStore.getState().open('join')}
+                >
+                  Join
+                </Button>
+              </div>
+            </div>
           )}
 
           {note && <p className="text-foreground-secondary text-sm">{note}</p>}
