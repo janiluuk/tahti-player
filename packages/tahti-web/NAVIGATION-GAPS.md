@@ -47,7 +47,7 @@ the current menus.
   mock fixture, so mock-mode capture cannot show them yet.
 - `/search?tag=` mock path derives tracks from latest/search fixtures that
   match the tag (genre or title); tags with no fixture match still empty.
-- `/jam/$code` has no mock session.
+- ~~`/jam/$code` has no mock session~~ — resolved: mock mode accepts `AURORA42` only (invalid codes show the empty state).
 
 ## 2026-09-03 — Chrome vs sitemap vs inbound links
 

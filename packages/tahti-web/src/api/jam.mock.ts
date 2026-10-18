@@ -2,6 +2,9 @@ import { getMockSessionUser } from './mock-session';
 import { isForceMock } from './mode';
 import type { JamParticipant, JamSession, JamTrack } from './types';
 
+/** Stable demo Jam code for mock mode, docs, and Storybook (`_fixtures/jam.ts`). */
+export const MOCK_JAM_DEMO_CODE = 'AURORA42';
+
 const MOCK_JAM_TRACK: JamTrack = {
   id: 'mock-jam-track-1',
   title: 'Aurora Drift',
@@ -30,6 +33,10 @@ export function setMockJamEnabled(enabled: boolean): void {
   mockJamEnabled = enabled;
 }
 
+export function resetMockJamSessions(): void {
+  sessions.clear();
+}
+
 export function mockJamActive(): boolean {
   return isForceMock() && mockJamEnabled;
 }
@@ -50,6 +57,7 @@ function sessionUserParticipant(role: JamParticipant['role']): JamParticipant {
 function store(session: JamSession): JamSession {
   sessions.set(session.id, session);
   sessions.set(session.code, session);
+  sessions.set(session.code.toUpperCase(), session);
   return session;
 }
 
@@ -70,22 +78,35 @@ function baseSession(code: string, host: JamParticipant): JamSession {
   };
 }
 
+function normalizeJamCode(code: string): string {
+  return code.trim().toUpperCase();
+}
+
 export function mockCreateJam(): JamSession {
-  return store(baseSession('MYJAM1', sessionUserParticipant('HOST')));
+  const host = sessionUserParticipant('HOST');
+  return store(baseSession(MOCK_JAM_DEMO_CODE, host));
 }
 
 export function mockJoinJam(code: string): JamSession {
-  const existing = sessions.get(code);
+  const normalized = normalizeJamCode(code);
+  const existing = sessions.get(code) ?? sessions.get(normalized);
   if (existing) {
     return existing;
   }
+  if (normalized !== MOCK_JAM_DEMO_CODE) {
+    throw new Error('Jam not found');
+  }
   const guest = sessionUserParticipant('GUEST');
-  const session = baseSession(code, MOCK_JAM_HOST);
+  const session = baseSession(MOCK_JAM_DEMO_CODE, MOCK_JAM_HOST);
   return store({ ...session, participants: [MOCK_JAM_HOST, guest] });
 }
 
 export function mockFetchJam(sessionId: string): JamSession {
-  return sessions.get(sessionId) ?? mockJoinJam(sessionId);
+  const session = sessions.get(sessionId);
+  if (session) {
+    return session;
+  }
+  return mockJoinJam(sessionId);
 }
 
 export function mockUpdateJam(

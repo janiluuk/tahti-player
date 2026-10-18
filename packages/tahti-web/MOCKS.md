@@ -12,6 +12,7 @@ Offline demo state lives in [`src/api/mock-session.ts`](src/api/mock-session.ts)
 | Fan subscribe                      | Activates in-session; Account / Settings Money lists it                                                       |
 | Studio upload (FORCE_MOCK)         | `mock-uploads.ts` keeps the original file; public `/t/:id` and download use it once visibility is not PRIVATE |
 | Studio Go Live                     | Broadcast mocks + simulate signal                                                                             |
+| Jam `/jam/AURORA42`                | Stable mock code; other codes show invalid/ended empty states                                                 |
 | Sources OAuth Connect              | In-app mock connect/disconnect (no real OAuth redirect)                                                       |
 | Stripe Connect onboard             | In-app activate — no `connect.stripe.com` redirect                                                            |
 | Chat join / send                   | Local mock append (history REST)                                                                              |
