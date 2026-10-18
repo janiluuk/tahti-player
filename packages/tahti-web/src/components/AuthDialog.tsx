@@ -122,7 +122,13 @@ export const AuthDialog: FC = () => {
             inputMode="numeric"
           />
           {error ? (
-            <p className="text-accent-red-strong text-sm">{error}</p>
+            <p
+              className="text-accent-red-strong text-sm"
+              role="alert"
+              aria-live="polite"
+            >
+              {error}
+            </p>
           ) : null}
           <Dialog.Actions>
             <Button variant="text" size="sm" onClick={() => cancelTotp()}>
@@ -171,7 +177,13 @@ export const AuthDialog: FC = () => {
             autoComplete="current-password"
           />
           {error ? (
-            <p className="text-accent-red-strong text-sm">{error}</p>
+            <p
+              className="text-accent-red-strong text-sm"
+              role="alert"
+              aria-live="polite"
+            >
+              {error}
+            </p>
           ) : null}
           <Link
             to="/forgot-password"
@@ -247,7 +259,13 @@ export const AuthDialog: FC = () => {
             </p>
           ) : null}
           {error ? (
-            <p className="text-accent-red-strong text-sm">{error}</p>
+            <p
+              className="text-accent-red-strong text-sm"
+              role="alert"
+              aria-live="polite"
+            >
+              {error}
+            </p>
           ) : null}
           {message ? (
             <p className="text-foreground-secondary text-sm">{message}</p>

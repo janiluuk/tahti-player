@@ -7,7 +7,7 @@ export function SkipToContent() {
     <ButtonAnchor
       href={`#${MAIN_CONTENT_ID}`}
       size="sm"
-      className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:h-9 focus:px-3"
+      className="focus:border-border focus:ring-primary focus:bg-background sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:h-9 focus:border focus:px-3 focus:shadow-md focus:ring-2"
       onClick={(event) => {
         const target = document.getElementById(MAIN_CONTENT_ID);
         if (target) {
