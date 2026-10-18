@@ -54,6 +54,10 @@ describe('jam in the offline mock app', () => {
     });
     expect(paused.isPlaying).toBe(false);
     expect(paused.positionSec).toBe(10);
+  });
+
+  it('lets the host change guest control on the demo jam', async () => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
 
     const demo = await joinJam(MOCK_JAM_DEMO_CODE);
     const guest = demo.participants.find((p) => p.role === 'GUEST')!;
