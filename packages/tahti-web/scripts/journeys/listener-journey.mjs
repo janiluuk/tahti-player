@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 /**
- * Listener journey — a verified, channel-less account (mock login always
- * yields an ARTIST account, so this persona's auth is injected directly —
- * see lib.mjs) browses library, history, favorites, messages, settings, and
+ * Listener journey — signs in as `listener@tahti.live` (mock mode's plain
+ * listener account) and browses library, history, favorites, messages, settings, and
  * views a paid fan-tier subscribe page as a signed-in listener (buy side of
  * paid content — pairs with artist-journey.mjs's add-ons/export sell side).
  *
@@ -17,6 +16,7 @@ import {
   injectState,
   runThemedJourney,
   shot,
+  signIn,
   summarize,
   writeManifest,
 } from './lib.mjs';
@@ -24,20 +24,6 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = join(__dirname, '../../docs/e2e-journeys/listener');
 const ARTIST = process.env.JOURNEY_ARTIST_SLUG ?? 'demo';
-
-const LISTENER_USER = {
-  id: 'mock-listener-1',
-  email: 'listener@tahti.live',
-  username: 'listener',
-  displayName: 'Demo Listener',
-  role: 'LISTENER',
-  roles: ['LISTENER'],
-  tier: 'MEMBER',
-  avatarUrl: null,
-  isMember: true,
-  isBoard: false,
-  channel: null,
-};
 
 const steps = [
   { path: '/library', file: '01-library.png', label: 'Library' },
@@ -68,7 +54,8 @@ async function main() {
   console.log('\n── Listener journey (Playwright + screenshots) ──');
   await runThemedJourney(OUT, async (page, theme, outDir) => {
     await page.goto(`${BASE}/`, { waitUntil: 'load' });
-    await injectState(page, { authUser: LISTENER_USER, colorMode: theme });
+    await injectState(page, { colorMode: theme });
+    await signIn(page, 'listener@tahti.live');
     for (const { path, file } of steps) {
       await page.goto(`${BASE}${path}`, {
         waitUntil: 'domcontentloaded',
