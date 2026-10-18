@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 
-import { Badge, Button, SegmentedControl } from '@tahti-player/ui';
+import { Badge, Button, ImageReveal, SegmentedControl } from '@tahti-player/ui';
 
 import {
   caseFlowchart,
@@ -365,6 +365,31 @@ export function ParityBadges({ parity }: { parity: MapParity }) {
   );
 }
 
+function ShotImage({
+  src,
+  fallbackSrc,
+  alt,
+}: {
+  src: string;
+  fallbackSrc?: string;
+  alt: string;
+}) {
+  const [current, setCurrent] = useState(src);
+  return (
+    <ImageReveal
+      src={current}
+      alt={alt}
+      onError={() => {
+        if (fallbackSrc && current !== fallbackSrc) {
+          setCurrent(fallbackSrc);
+        }
+      }}
+      className="h-full min-h-[14rem] w-full sm:min-h-[18rem] lg:min-h-[22rem]"
+      imgClassName="h-full w-full object-cover object-top"
+    />
+  );
+}
+
 function ShotPane({
   label,
   shot,
@@ -438,17 +463,11 @@ function ShotPane({
             <span className="text-xs opacity-80">{viewName}</span>
           </div>
         ) : (
-          <img
-            src={image}
-            onError={(event) => {
-              // Older shots may have no light capture yet: show the dark one.
-              if (shot.image && image !== shot.image) {
-                event.currentTarget.src = shot.image;
-              }
-            }}
+          <ShotImage
+            key={image}
+            src={image!}
+            fallbackSrc={shot.image}
             alt={`${label}: ${viewName}`}
-            loading="lazy"
-            className="h-full min-h-[14rem] w-full object-cover object-top sm:min-h-[18rem] lg:min-h-[22rem]"
           />
         )}
       </div>
