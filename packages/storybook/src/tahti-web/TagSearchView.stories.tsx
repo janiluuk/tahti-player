@@ -43,7 +43,7 @@ export const NoResults: Story = {
   play: async ({ canvasElement }) => {
     await expect(
       await within(canvasElement).findByText(
-        'No public tracks have this tag yet',
+        `No tracks tagged “${TAG}” in mock fixtures`,
       ),
     ).toBeVisible();
   },

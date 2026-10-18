@@ -9,6 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as likes from '../api/likes';
 import type { TahtiPlayable } from '../api/types';
+import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { FavoritesView } from './FavoritesView';
 
@@ -36,9 +37,23 @@ describe('FavoritesView', () => {
       data: [],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     });
+    useAuthStore.setState({
+      user: {
+        id: 'user-1',
+        email: 'demo@tahti.live',
+        username: 'demo',
+        displayName: 'Demo',
+        role: 'LISTENER',
+        isBoard: false,
+        isMember: true,
+      },
+      hydrated: true,
+      loading: false,
+    });
     useLibraryStore.setState({ favoriteChannels: [], favoriteTracks: [] });
   });
   afterEach(() => {
+    useAuthStore.setState({ user: null, hydrated: true, loading: false });
     useLibraryStore.setState({ favoriteChannels: [], favoriteTracks: [] });
     vi.restoreAllMocks();
   });

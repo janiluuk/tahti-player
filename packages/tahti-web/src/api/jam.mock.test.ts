@@ -55,8 +55,12 @@ describe('jam in the offline mock app', () => {
     expect(paused.isPlaying).toBe(false);
     expect(paused.positionSec).toBe(10);
 
+    // createJam stores a host-only AURORA42 session; reset so joinJam can
+    // mint the stable demo with a GUEST row for control/removal checks.
+    resetMockJamSessions();
     const demo = await joinJam(MOCK_JAM_DEMO_CODE);
     const guest = demo.participants.find((p) => p.role === 'GUEST')!;
+    expect(guest).toBeDefined();
     const granted = await setJamParticipantControl(demo.id, guest.userId, true);
     expect(
       granted?.participants.find((p) => p.userId === guest.userId)?.canControl,
