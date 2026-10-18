@@ -13,7 +13,7 @@ export type SectionTabsItem = {
 };
 
 export const PHONE_SCROLL_TAB_LIST =
-  'tahti-hide-scrollbar max-sm:w-full max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:pb-1';
+  'tahti-hide-scrollbar max-md:w-full max-md:flex-nowrap max-md:overflow-x-auto max-md:pb-1';
 
 export function useSelectedTabInView(selectedKey: string | number) {
   const ref = useRef<HTMLDivElement>(null);
