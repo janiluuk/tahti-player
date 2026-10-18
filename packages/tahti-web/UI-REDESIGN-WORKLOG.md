@@ -1,6 +1,6 @@
 ## 2026-10-18 — CSP unblock external radio streams
 
-#1078's starter CSP limited `media-src` (and `connect-src`) to Tahti CDN /
+PR 1078's starter CSP limited `media-src` (and `connect-src`) to Tahti CDN /
 stream hosts, so Finnish curated stations and other HTTPS radio could not
 play on beta. Widened both to `https:` (mirrors `img-src`); tahti-radio on
 `stream.tahti.live` remains allowed. Requires beta redeploy for the nginx
