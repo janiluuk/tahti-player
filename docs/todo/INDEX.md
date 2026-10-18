@@ -11,7 +11,6 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 | ------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | blocked | [final-season-hardening.md](final-season-hardening.md) | Cutover L ops (proxy, runbook, vend SPA); Batch A/B code merged |
 | blocked | [first-100-users-infra.md](first-100-users-infra.md) | Ops verify backups/disk + deploy Swarm fail-closed (#872/#873/#1079 merged); host access required |
-| partial | [batch-71-ux-usability.md](batch-71-ux-usability.md) | Batch 71 UX: remaining slices 6–9, 11, 13, 17–20 still to ship then fold |
 | blocked | [feature-swipe-product-flags.md](feature-swipe-product-flags.md) | Product call: Distribution StudioNav, /chat chrome, mobile More |
 | blocked | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live-API verify Centrifugo Send on brand-new channels |
 | blocked | [desktop-smart-playlists.md](desktop-smart-playlists.md) | Manual check on real 10k+ desktop library |
