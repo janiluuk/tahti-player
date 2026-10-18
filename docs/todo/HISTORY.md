@@ -1,6 +1,34 @@
 # docs/todo history
 
 
+
+## 2026-10-18 — Batch 71: UX / usability (20 slices)
+
+Redirects, theme-safe Studio tiles, mock/tag/Jam polish, Messages EmptyState,
+collections sort, track waveform theme tokens, archive Upload navigation,
+Go Live series preselect + subnav, sticky notification dismiss, listener
+journey sign-in, Upload 390px stack, and listener/signed-out Library empty copy.
+
+| Slices | PRs |
+| --- | --- |
+| Dashboard / channel redirects | #1054 |
+| Studio home tile accent colours | #1055 |
+| Mock tag tracks | #1058 |
+| Messages empty EmptyState | #1059 |
+| Collections newest-first | #1060 |
+| Studio Distribution tile + chat docs | #1071 |
+| Onboarding toast duration | #1084 |
+| Track waveform theme tokens | #1095 |
+| Empty archive Upload → `/library/upload` | #1096 |
+| Listener / signed-out Library empty copy | #1097 |
+| Go Live preselects new series | #1101 |
+| Go Live session subnav overflow | #1102 |
+| Richer mock studio archive | #1103 |
+| Mock sticky notification dismiss | #1104 |
+| Listener journey `listener@` sign-in | #1105 |
+| Stable mock Jam + invalid empty state | #1106 |
+| Studio Upload stack at 390px | #1107 |
+
 ## 2026-10-18 — Batch 72: smooth desktop-app feel (20 slices)
 
 Lazy chunks, intent/idle prefetch, purposeful motion (honours
