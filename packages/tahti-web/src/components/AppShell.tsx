@@ -38,6 +38,7 @@ import { hasAccountRole, hasStudioAccess } from '../lib/accountRoles';
 import { diagnosticsEnabled } from '../lib/buildPolicy';
 import { cn } from '../lib/cn';
 import { activeSidebarItem } from '../lib/navigationActive';
+import { navigationPathname } from '../lib/navigationPathname';
 import {
   deferOnboardingPrompt,
   hasDeferredOnboardingPrompt,
@@ -151,10 +152,10 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
   );
   const openSettings = useSettingsModalStore((state) => state.open);
   const settingsModalOpen = useSettingsModalStore((state) => state.isOpen);
-  const pathname = useRouterState({
-    select: (state) => state.location.pathname,
+  const sidebarPathname = useRouterState({ select: navigationPathname });
+  const sidebarActive = activeSidebarItem(sidebarPathname, {
+    settingsModalOpen,
   });
-  const sidebarActive = activeSidebarItem(pathname, { settingsModalOpen });
   return (
     <SidebarNavigation isCompact={compact}>
       <div className="flex h-full min-h-0 flex-col p-1">

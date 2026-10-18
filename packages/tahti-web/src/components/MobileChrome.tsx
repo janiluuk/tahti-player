@@ -18,6 +18,7 @@ import {
   isMobileMoreRoute,
   type MobileItemId,
 } from '../lib/navigationActive';
+import { navigationPathname } from '../lib/navigationPathname';
 import { useAuthStore } from '../stores/authStore';
 
 const PRIMARY = [
@@ -57,7 +58,7 @@ export function MobileBottomNav({
   onOpenMore,
   moreOpen = false,
 }: MobileBottomNavProps) {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathname = useRouterState({ select: navigationPathname });
   const user = useAuthStore((state) => state.user);
   const showStudio =
     hasAccountRole(user, 'ARTIST') || hasAccountRole(user, 'BOARD');
