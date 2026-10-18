@@ -1,6 +1,8 @@
 # Now-playing scrapers for the six Finnish radio stations
 
-**Status:** partial
+**Status:** blocked
+
+**Blocker:** Product call on Yle API key vs ICY-only for YleX; Nelonen/Radio Rock + Suomipop need reverse-engineered widget endpoints (or accept ICY). Remaining tahti-org: polite User-Agent + per-station kill switch.
 
 User ask (2026-10-04): make a scraper for each of the six Finnish stations in the radio catalog, so Listen, the player and the station page show what is playing instead of just the station name.
 
