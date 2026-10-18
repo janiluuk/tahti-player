@@ -114,6 +114,7 @@ export function ChannelMembersEditor({
       return false;
     }
     onChange([...members, result.data]);
+    toast.success(`${result.data.name} added to your lineup.`);
     return true;
   };
 
