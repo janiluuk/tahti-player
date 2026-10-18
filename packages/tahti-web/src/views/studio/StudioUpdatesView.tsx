@@ -63,8 +63,6 @@ export function StudioUpdatesView() {
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [pendingSend, setPendingSend] = useState<NewsletterDraft | null>(null);
 
-  const isEmpty = posts.length === 0 && drafts.length === 0;
-
   const reload = () => {
     void Promise.all([fetchArtistPosts(), fetchNewsletterDrafts()])
       .then(([p, n]) => {
@@ -163,18 +161,12 @@ export function StudioUpdatesView() {
                 <EmptyState
                   size="sm"
                   title="No posts yet"
+                  description="Share news, releases, and show notes with followers."
                   action={
-                    !isEmpty ? (
-                      <Tooltip content="New post" side="top">
-                        <Button
-                          size="icon-sm"
-                          onClick={() => setPostEditor({})}
-                          aria-label="New post"
-                        >
-                          <PlusIcon size={16} aria-hidden />
-                        </Button>
-                      </Tooltip>
-                    ) : undefined
+                    <Button size="sm" onClick={() => setPostEditor({})}>
+                      <PlusIcon size={15} aria-hidden className="mr-1.5" />
+                      Write post
+                    </Button>
                   }
                 />
               ) : (
@@ -270,18 +262,12 @@ export function StudioUpdatesView() {
                 <EmptyState
                   size="sm"
                   title="No drafts yet"
+                  description="Draft a newsletter before you send it to subscribers."
                   action={
-                    !isEmpty ? (
-                      <Tooltip content="New draft" side="top">
-                        <Button
-                          size="icon-sm"
-                          onClick={() => setDraftOpen(true)}
-                          aria-label="New draft"
-                        >
-                          <PlusIcon size={16} aria-hidden />
-                        </Button>
-                      </Tooltip>
-                    ) : undefined
+                    <Button size="sm" onClick={() => setDraftOpen(true)}>
+                      <PlusIcon size={15} aria-hidden className="mr-1.5" />
+                      New draft
+                    </Button>
                   }
                 />
               ) : (

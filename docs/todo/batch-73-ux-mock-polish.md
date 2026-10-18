@@ -12,7 +12,7 @@ spots, `NAVIGATION-GAPS.md`, empty-state consistency, phone layout.
 | 2 | Press-kit gallery upload works under mock (no bare link-out) | S | this PR |
 | 3 | Member invite flow works under mock (toast + list refresh) | S | this PR |
 | 4 | Mark MOCKS “richer archive” shipped; drop stale Jam gap note in NAVIGATION-GAPS | XS | this PR |
-| 5 | Studio Updates empty uses EmptyState + write CTA | XS | |
+| 5 | Studio Updates empty uses EmptyState + write CTA | XS | this PR |
 | 6 | Studio Revenue empty / disconnected uses EmptyState copy | XS | |
 | 7 | GlobalSearch no-results EmptyState | XS | |
 | 8 | Favorites empty: signed-out vs listener copy (no upload CTA) | XS | |
