@@ -16,6 +16,7 @@ import {
   ViewShell,
 } from '@tahti-player/ui';
 
+import { patchBroadcastPreflight } from '../../api/broadcast';
 import {
   createShowSeries,
   fetchEpisodesForShow,
@@ -88,6 +89,9 @@ export function StudioShowsView() {
     if (!r.ok) {
       setMsg(r.error);
       return;
+    }
+    if (r.data.mode === 'SERIES') {
+      await patchBroadcastPreflight({ seriesId: r.data.id });
     }
     setCreateOpen(false);
     setTitle('');
