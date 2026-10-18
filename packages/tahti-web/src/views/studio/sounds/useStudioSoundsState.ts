@@ -10,6 +10,11 @@ import {
   patchStudioSound,
 } from '../../../api/studio';
 import type { StudioSound } from '../../../api/studio-types';
+import {
+  resolveContentTypeId,
+  SELECTABLE_CONTENT_TYPES,
+  type ContentTypeId,
+} from '../../../content/contentTypes';
 import { playableFromStudioHearthis } from '../../../lib/embedPlayback';
 import type { EmbedProvider } from '../../../lib/embedSrc';
 import {
@@ -19,10 +24,9 @@ import {
 } from '../../../lib/pinnedTracks';
 import { usePlayerStore } from '../../../stores/playerStore';
 
-export const FOLDERS = ['sound', 'clips', 'files'] as const;
-
 export type EmbedFilter = 'ALL' | 'NATIVE' | EmbedProvider;
 export type SortField = 'title' | 'uploaded' | 'duration';
+export type ContentTypeFilter = 'ALL' | ContentTypeId;
 
 export const EMBED_FILTERS: Array<{ id: EmbedFilter; label: string }> = [
   { id: 'ALL', label: 'All sources' },
@@ -39,6 +43,17 @@ export const SORT_FIELDS: Array<{ id: SortField; label: string }> = [
   { id: 'duration', label: 'Duration' },
 ];
 
+export const CONTENT_TYPE_FILTERS: Array<{
+  id: ContentTypeFilter;
+  label: string;
+}> = [
+  { id: 'ALL', label: 'All types' },
+  ...SELECTABLE_CONTENT_TYPES.map((type) => ({
+    id: type.id,
+    label: type.label,
+  })),
+];
+
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 function parseDateInput(value: string): Date | null {
@@ -49,20 +64,31 @@ function parseDateInput(value: string): Date | null {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
-/** Loading, filtering, sorting and row actions for the Tracks list. */
+function parseContentTypeFilter(value: string | undefined): ContentTypeFilter {
+  const resolved = resolveContentTypeId(value);
+  if (!resolved) {
+    return 'ALL';
+  }
+  if (SELECTABLE_CONTENT_TYPES.some((type) => type.id === resolved)) {
+    return resolved;
+  }
+  return 'ALL';
+}
+
+/** Loading, filtering, sorting and row actions for the Sounds list. */
 export function useStudioSoundsState() {
   const navigate = useNavigate();
-  const search = useSearch({ strict: false }) as { folder?: string };
-  const folder =
-    search.folder === 'files'
-      ? 'files'
-      : search.folder === 'clips'
-        ? 'clips'
-        : 'sound';
+  const search = useSearch({ strict: false }) as {
+    contentType?: string;
+  };
+
   const [items, setItems] = useState<StudioSound[]>([]);
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [embedFilter, setEmbedFilter] = useState<EmbedFilter>('ALL');
+  const [contentTypeFilter, setContentTypeFilter] = useState<ContentTypeFilter>(
+    () => parseContentTypeFilter(search.contentType),
+  );
   const [sortField, setSortField] = useState<SortField>('uploaded');
   const [sortDescending, setSortDescending] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -77,6 +103,19 @@ export function useStudioSoundsState() {
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
 
+  useEffect(() => {
+    setContentTypeFilter(parseContentTypeFilter(search.contentType));
+  }, [search.contentType]);
+
+  const setContentTypeFilterAndUrl = (next: ContentTypeFilter) => {
+    setContentTypeFilter(next);
+    void navigate({
+      to: '/library/sounds',
+      search: next === 'ALL' ? {} : { contentType: next },
+      replace: true,
+    });
+  };
+
   const reload = () => {
     setLoading(true);
     fetchStudioSounds()
@@ -89,17 +128,6 @@ export function useStudioSoundsState() {
     reload();
   }, []);
 
-  const setTabFolder = (index: number) => {
-    const next = FOLDERS[index];
-    if (!next) {
-      return;
-    }
-    void navigate({
-      to: '/studio/sounds',
-      search: next === 'sound' ? {} : { folder: next },
-    });
-  };
-
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     const from = parseDateInput(uploadedFrom);
@@ -111,13 +139,14 @@ export function useStudioSoundsState() {
           (i) =>
             i.title.toLowerCase().includes(q) ||
             (i.genre?.toLowerCase().includes(q) ?? false) ||
-            i.status.toLowerCase().includes(q),
+            i.status.toLowerCase().includes(q) ||
+            (i.contentType?.toLowerCase().includes(q) ?? false),
         );
     const filteredItems = base.filter((item) => {
-      if (folder === 'clips' && item.contentType !== 'CLIP') {
-        return false;
-      }
-      if (folder === 'sound' && item.contentType === 'CLIP') {
+      if (
+        contentTypeFilter !== 'ALL' &&
+        resolveContentTypeId(item.contentType) !== contentTypeFilter
+      ) {
         return false;
       }
       const provider = item.embedProvider ?? 'NATIVE';
@@ -147,6 +176,7 @@ export function useStudioSoundsState() {
       return sortDescending ? -comparison : comparison;
     });
   }, [
+    contentTypeFilter,
     embedFilter,
     items,
     query,
@@ -154,7 +184,6 @@ export function useStudioSoundsState() {
     sortField,
     uploadedFrom,
     uploadedTo,
-    folder,
   ]);
 
   const pinnedCount = countPinnedTracks(items);
@@ -254,8 +283,6 @@ export function useStudioSoundsState() {
   };
 
   return {
-    folder,
-    setTabFolder,
     items,
     setItems,
     query,
@@ -263,6 +290,8 @@ export function useStudioSoundsState() {
     loading,
     embedFilter,
     setEmbedFilter,
+    contentTypeFilter,
+    setContentTypeFilter: setContentTypeFilterAndUrl,
     sortField,
     setSortField,
     sortDescending,

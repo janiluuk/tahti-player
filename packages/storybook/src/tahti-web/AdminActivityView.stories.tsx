@@ -2,7 +2,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminActivityView } from '@tahti-web/views/admin/AdminActivityView';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
-import { withMockAuth, withTahtiRouter } from './_lib/decorators';
+import {
+  storyRouterSettled,
+  withMockAuth,
+  withTahtiRouter,
+} from './_lib/decorators';
 
 const meta: Meta<typeof AdminActivityView> = {
   title: 'Tahti/Admin/AdminActivityView',
@@ -23,11 +27,16 @@ export const Default: Story = {
     </div>
   ),
   play: async ({ canvasElement }) => {
+    await storyRouterSettled();
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Activity' }),
-    ).toBeVisible();
-    await expect(await canvas.findByText('Nova Drift logged in')).toBeVisible();
+    await waitFor(async () => {
+      await expect(
+        canvas.getByRole('heading', { name: 'Activity' }),
+      ).toBeVisible();
+    });
+    await waitFor(async () => {
+      await expect(canvas.getByText('Nova Drift logged in')).toBeVisible();
+    });
     await expect(canvas.getByText('9 entries')).toBeVisible();
     await expect(
       canvas.getByRole('link', { name: 'Export full audit log as CSV' }),

@@ -51,6 +51,27 @@ export const libraryRoute = createRoute({
 export const librarySoundsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/sounds',
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { contentType?: string; folder?: string } => ({
+    contentType:
+      typeof search.contentType === 'string' ? search.contentType : undefined,
+    folder: typeof search.folder === 'string' ? search.folder : undefined,
+  }),
+  beforeLoad: ({ search }) => {
+    if (search.folder === 'files') {
+      throw redirect({ to: '/library/stash' });
+    }
+    if (search.folder === 'clips') {
+      throw redirect({
+        to: '/library/sounds',
+        search: { contentType: 'CLIP' },
+      });
+    }
+    if (search.folder === 'sound') {
+      throw redirect({ to: '/library/sounds' });
+    }
+  },
   component: StudioSoundsView,
 });
 

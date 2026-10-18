@@ -3,8 +3,10 @@ import { ChevronDownIcon, FilterIcon, SearchIcon } from 'lucide-react';
 import { Button, Input, Select, Tooltip } from '@tahti-player/ui';
 
 import {
+  CONTENT_TYPE_FILTERS,
   EMBED_FILTERS,
   SORT_FIELDS,
+  type ContentTypeFilter,
   type EmbedFilter,
   type SortField,
   type StudioSoundsState,
@@ -19,6 +21,8 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
     pinnedCount,
     embedFilter,
     setEmbedFilter,
+    contentTypeFilter,
+    setContentTypeFilter,
     sortField,
     setSortField,
     sortDescending,
@@ -34,7 +38,7 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <Input
           type="search"
-          aria-label="Search tracks"
+          aria-label="Search sounds"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search…"
@@ -42,6 +46,18 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
           startAddon={
             <SearchIcon size={14} aria-hidden className="opacity-70" />
           }
+        />
+        <Select
+          label="Type"
+          value={contentTypeFilter}
+          onValueChange={(value) =>
+            setContentTypeFilter(value as ContentTypeFilter)
+          }
+          options={CONTENT_TYPE_FILTERS.map((filterOption) => ({
+            id: filterOption.id,
+            label: filterOption.label,
+          }))}
+          className="min-w-36"
         />
         <Tooltip
           content={filtersOpen ? 'Collapse filters' : 'Expand filters'}

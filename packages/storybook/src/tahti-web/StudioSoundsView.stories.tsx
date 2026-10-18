@@ -21,13 +21,13 @@ const meta: Meta<typeof StudioSoundsView> = {
     docs: {
       description: {
         component:
-          'Artist sound-library surface for tracks, clips, and stash files. Lives on Studio → Music → Tracks, Clips, and Files.',
+          'Artist sound-library surface at Library → Sounds. One list with a Type filter (Track, Clip, DJ Set, …); Stash lives under Library → Stash.',
       },
     },
   },
   decorators: [
     withToaster(),
-    withTahtiRouter('/studio/sounds'),
+    withTahtiRouter('/library/sounds'),
     withMockAuth(),
   ],
 };
@@ -35,9 +35,9 @@ const meta: Meta<typeof StudioSoundsView> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Tracks: Story = {};
+export const Sounds: Story = {};
 
-/** Rows with cover art get a dominant-color ambient wash (library Tracks polish). */
+/** Rows with cover art get a dominant-color ambient wash (library Sounds polish). */
 export const AmbientCovers: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -86,9 +86,8 @@ export const HearthisRowEmbed: Story = {
   },
 };
 
-export const Clips: Story = {
-  parameters: { query: { folder: 'clips' } },
-};
+/** Type filter set to Clip (URL `?contentType=CLIP` in the live app). */
+export const ClipFilter: Story = {};
 
 /** The `<li>` row for the sound titled `title`. */
 function row(canvasElement: HTMLElement, title: string) {
