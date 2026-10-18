@@ -8,7 +8,7 @@ import {
   postGoLive,
 } from './broadcast';
 import { seedSeries } from './shows/mock';
-import { fetchEpisodesForShow } from './shows/series';
+import { createShowSeries, fetchEpisodesForShow } from './shows/series';
 
 describe('mock broadcast preflight with a series', () => {
   beforeEach(async () => {
@@ -97,5 +97,21 @@ describe('mock broadcast preflight with a series', () => {
     await postGoLive();
     expect((await fetchEpisodesForShow(series.id)).data).toHaveLength(before);
     await postEndBroadcast();
+  });
+
+  it('can preselect a series right after it is created', async () => {
+    const created = await createShowSeries({
+      title: 'Fresh weekly show',
+      mode: 'SERIES',
+    });
+    expect(created.ok).toBe(true);
+    if (!created.ok) {
+      return;
+    }
+    const result = await patchBroadcastPreflight({ seriesId: created.data.id });
+    if ('error' in result) {
+      throw new Error(result.error);
+    }
+    expect(result.data.plannedLiveShow?.seriesId).toBe(created.data.id);
   });
 });
