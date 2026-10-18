@@ -2,7 +2,7 @@
 
 **Status:** partial
 
-**In progress:** Slices 1–5, 10, 14–16 shipped (#1054–#1060, #1071). Slices 6–9, 11, 13, 17–20 open (#1099–#1108) — merge then fold.
+**In progress:** Slices 1–5, 10, 12, 14–16 shipped. Open PRs: #1095–#1097, #1101–#1107, #1109. Fold after merge.
 
 Sources: e2e journey leftovers (`E2E-JOURNEYS.md` colour fills + listener journey),
 `NAVIGATION-GAPS.md` redirects, `MOCKS.md` thin spots, feature-swipe leftovers,
@@ -15,8 +15,8 @@ and Studio go-live / Library phone gaps. Usability first; no new API inventing.
 | 3 | Collapse upload / moderators redirect hops to final routes | XS | #1054 |
 | 4 | Channel design/profile deep links land on Channel Designer (not Artist default) | S | #1054 |
 | 5 | Studio home quick-link tiles use theme-safe accent colours (e2e fill leftover) | S | #1055 |
-| 6 | Track editor hero / waveform uses theme tokens (e2e track-view leftover) | S | #1099 |
-| 7 | Music archive empty Upload opens `/library/upload` (not a second modal) | S | #1100 |
+| 6 | Track editor hero / waveform uses theme tokens (e2e track-view leftover) | S | #1095 |
+| 7 | Music archive empty Upload opens `/library/upload` (not a second modal) | S | #1096 |
 | 8 | After creating a Series show, Go Live preselects that series | S | #1101 |
 | 9 | Go Live session subnav overflows Prep siblings under ~640px | S | #1102 |
 | 10 | Mock `fetchTracksByTag` returns fixture tracks so tag chips work offline | XS | #1058 |
@@ -29,4 +29,4 @@ and Studio go-live / Library phone gaps. Usability first; no new API inventing.
 | 17 | Listener e2e journey signs in as `listener@` (not localStorage-only) | S | #1105 |
 | 18 | Stable mock Jam code + clear invalid/ended empty states | S | #1106 |
 | 19 | Studio Upload stacks FilePicker above recordings at 390px | S | #1107 |
-| 20 | Listener / signed-out Library empty copy (no upload-centric prompt) | XS | #1108 |
+| 20 | Listener / signed-out Library empty copy (no upload-centric prompt) | XS | #1097 |
