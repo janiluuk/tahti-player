@@ -67,6 +67,7 @@ import { HearthisEmbedHostProvider } from './HearthisEmbedHost';
 import { ListenHeartbeat } from './ListenHeartbeat';
 import { MobileBottomNav, MobileDrawer } from './MobileChrome';
 import { NotificationToasts } from './NotificationToasts';
+import { RouteChunkSkeleton } from './PageStates';
 import { PageTourSpotlight } from './PageTourSpotlight';
 import { RightRailHeaderActions } from './RightRailHeaderActions';
 import { RightRailPanel } from './RightRailPanel';
@@ -563,10 +564,12 @@ export function AppShell() {
                 <StudioNav current={navigationLocation} />
               ) : null}
               <RouteContent>
-                <RouteTransition
-                  key={userId ?? 'anonymous'}
-                  fast={fastNavigationRoute}
-                />
+                <Suspense fallback={<RouteChunkSkeleton />}>
+                  <RouteTransition
+                    key={userId ?? 'anonymous'}
+                    fast={fastNavigationRoute}
+                  />
+                </Suspense>
               </RouteContent>
             </main>
             {!fullScreenPlayerOpen && <ConnectedPlayerBar />}
@@ -611,10 +614,12 @@ export function AppShell() {
                   <StudioNav current={navigationLocation} />
                 ) : null}
                 <RouteContent>
-                  <RouteTransition
-                    key={userId ?? 'anonymous'}
-                    fast={fastNavigationRoute}
-                  />
+                  <Suspense fallback={<RouteChunkSkeleton />}>
+                    <RouteTransition
+                      key={userId ?? 'anonymous'}
+                      fast={fastNavigationRoute}
+                    />
+                  </Suspense>
                 </RouteContent>
               </div>
             </PlayerWorkspace.Main>

@@ -3,6 +3,20 @@ import type { ReactNode } from 'react';
 
 import { Button, CenteredLoader, EmptyState } from '@tahti-player/ui';
 
+export function RouteChunkSkeleton() {
+  return (
+    <div
+      className="flex flex-col gap-3 px-1 py-2"
+      role="status"
+      aria-label="Loading page"
+    >
+      <div className="bg-background-secondary/70 h-6 w-40 max-w-[55%] rounded-md motion-safe:animate-pulse" />
+      <div className="bg-background-secondary/50 h-4 w-full max-w-md rounded-md motion-safe:animate-pulse" />
+      <div className="bg-background-secondary/40 mt-1 h-4 w-3/4 max-w-sm rounded-md motion-safe:animate-pulse" />
+    </div>
+  );
+}
+
 export function PageLoading({ label }: { label?: string }) {
   return (
     <div className="flex flex-col items-center gap-3 py-10">
