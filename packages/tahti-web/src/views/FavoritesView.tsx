@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 import {
+  Button,
   ButtonLink,
   Card,
   CardGrid,
@@ -19,10 +20,14 @@ import {
 import { PageEmpty } from '../components/PageStates';
 import { PlayableTrackTable } from '../components/PlayableTrackTable';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
+import { useAuthModalStore } from '../stores/authModalStore';
+import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 
 export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
+  const user = useAuthStore((s) => s.user);
+  const hydrated = useAuthStore((s) => s.hydrated);
   const favoriteChannels = useLibraryStore((s) => s.favoriteChannels);
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
   const toggleFavoriteChannel = useLibraryStore((s) => s.toggleFavoriteChannel);
@@ -55,6 +60,33 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
       cancelled = true;
     };
   }, []);
+
+  if (hydrated && !user) {
+    const signedOut = (
+      <PageEmpty
+        icon="heart"
+        title="Sign in to see favorites"
+        description="Heart channels and tracks while you listen, then find them here."
+        action={
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <Button onClick={() => useAuthModalStore.getState().open('login')}>
+              Sign in
+            </Button>
+            <ButtonLink to="/discover" size="sm" variant="secondary">
+              Discover music
+            </ButtonLink>
+          </div>
+        }
+      />
+    );
+    return embedded ? (
+      signedOut
+    ) : (
+      <ViewShell title="Favorites" classes={{ root: 'px-0 pt-0' }}>
+        {signedOut}
+      </ViewShell>
+    );
+  }
 
   const body = (
     <div className="flex flex-col gap-6">
