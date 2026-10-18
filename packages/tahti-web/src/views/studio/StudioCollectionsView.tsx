@@ -387,12 +387,7 @@ export function StudioCollectionsView() {
                       </Button>
                     </Tooltip>
                   ) : (
-                    <ButtonLink
-                      to="/discover"
-                      search={{ tab: 'discover' }}
-                      size="sm"
-                      variant="secondary"
-                    >
+                    <ButtonLink to="/discover" size="sm" variant="secondary">
                       Browse Discover
                     </ButtonLink>
                   )
