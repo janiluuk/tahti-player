@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
-import { mockSearch, mockSmartLink, soundItemToPlayable } from './mock';
+import {
+  MOCK_GATED_PURCHASE_TRACK_ID,
+  MOCK_GATED_SUBSCRIBERS_TRACK_ID,
+  mockSearch,
+  mockSmartLink,
+  mockTrackDetail,
+  soundItemToPlayable,
+} from './mock';
 import type { ChannelSoundItem } from './types';
 
 function baseItem(overrides: Partial<ChannelSoundItem> = {}): ChannelSoundItem {
@@ -86,5 +93,19 @@ describe('mockSearch', () => {
           c.slug === 'favorites-vault' && c.ownerUsername === 'northern-lights',
       ),
     ).toBe(true);
+  });
+});
+
+describe('mockTrackDetail', () => {
+  it('includes fan-subscriber and purchase gate fixtures', () => {
+    expect(mockTrackDetail(MOCK_GATED_SUBSCRIBERS_TRACK_ID)).toMatchObject({
+      accessMode: 'SUBSCRIBERS_ONLY',
+      title: expect.stringContaining('Fan subscribers'),
+    });
+    expect(mockTrackDetail(MOCK_GATED_PURCHASE_TRACK_ID)).toMatchObject({
+      accessMode: 'PURCHASE',
+      purchaseTierName: 'Single unlock (demo)',
+      purchaseTierPriceCents: 300,
+    });
   });
 });

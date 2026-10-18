@@ -2672,9 +2672,9 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           caption: 'Prod equivalent not checked or captured',
         },
         new: {
-          route: '/t/$id (gated)',
+          route: '/t/northern-lights-archive-6',
           caption:
-            'Nuclear gated track - shot pending; mock mode has no gated track fixture yet.',
+            'Mock fan-subscribers gate; purchase gate at /t/northern-lights-archive-7 (VITE_FORCE_MOCK=1).',
         },
       },
       {

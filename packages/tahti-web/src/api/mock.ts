@@ -658,6 +658,11 @@ export function mockRadioRecentlyPlayed(): RadioRecentlyPlayedItem[] {
   ];
 }
 
+/** Offline capture fixtures for gated public track pages (`/t/$id`). */
+export const MOCK_GATED_SUBSCRIBERS_TRACK_ID = 'northern-lights-archive-6';
+export const MOCK_GATED_PURCHASE_TRACK_ID = 'northern-lights-archive-7';
+export const MOCK_GATED_PURCHASE_TIER_ID = 'mock-tier-northern-lights-unlock';
+
 const GENRE_TAGS: Record<string, string> = {
   ambient: 'ambient',
   live: 'live',
@@ -689,7 +694,7 @@ function buildMockSoundItems(slug: string): ChannelSoundItem[] {
     '2026-04-18T21:00:00.000Z',
     '2026-03-22T19:15:00.000Z',
   ];
-  return content.trackTitles.map((title, i) => ({
+  const items = content.trackTitles.map((title, i) => ({
     id: `${slug}-archive-${i + 1}`,
     title,
     artistName: artist,
@@ -702,6 +707,31 @@ function buildMockSoundItems(slug: string): ChannelSoundItem[] {
     createdAt: dates[i % dates.length],
     ...(i === 0 ? { pinnedAt: '2026-07-15T12:00:00.000Z' } : {}),
   }));
+  if (slug === 'northern-lights') {
+    items.push(
+      {
+        id: MOCK_GATED_SUBSCRIBERS_TRACK_ID,
+        title: 'Fan subscribers only (demo gate)',
+        artistName: artist,
+        durationSec: 245,
+        bannerUrl: '/mock/northern-lights/cover-first-light.svg',
+        audioUrl: DEMO_MP3,
+        genre: primaryGenre,
+        createdAt: '2026-02-01T18:00:00.000Z',
+      },
+      {
+        id: MOCK_GATED_PURCHASE_TRACK_ID,
+        title: 'Buy to listen (demo gate)',
+        artistName: artist,
+        durationSec: 198,
+        bannerUrl: '/mock/northern-lights/cover-first-light.svg',
+        audioUrl: DEMO_MP3,
+        genre: primaryGenre,
+        createdAt: '2026-02-02T18:00:00.000Z',
+      },
+    );
+  }
+  return items;
 }
 
 /** Stand-in for the real M27 ingest-time waveform decode — a smooth,
@@ -789,6 +819,18 @@ function buildMockTrackDetail(id: string): PublicTrackDetail | null {
   // provider's own widget supplies the audio on the public track page.
   const isSpotifyEmbed = id.endsWith('-archive-4');
   const isBandcampEmbed = id.endsWith('-archive-5');
+  const accessExtras =
+    id === MOCK_GATED_SUBSCRIBERS_TRACK_ID
+      ? { accessMode: 'SUBSCRIBERS_ONLY' as const }
+      : id === MOCK_GATED_PURCHASE_TRACK_ID
+        ? {
+            accessMode: 'PURCHASE' as const,
+            purchaseTierId: MOCK_GATED_PURCHASE_TIER_ID,
+            purchaseTierName: 'Single unlock (demo)',
+            purchaseTierPriceCents: 300,
+            purchaseTierPriceOptional: false,
+          }
+        : {};
   return {
     id: item.id,
     title: item.title,
@@ -834,6 +876,7 @@ function buildMockTrackDetail(id: string): PublicTrackDetail | null {
     peaks: mockPeaks(item.id, isSet ? 220 : 100),
     commentCount: isSet ? 3 : 0,
     downloadCount: isSet ? 13 : 0,
+    ...accessExtras,
   };
 }
 
