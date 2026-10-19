@@ -66,8 +66,8 @@ export function DetailsTabContent({
           }))}
         />
         <div className="sm:col-span-2">
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="text-foreground-secondary text-xs uppercase">
+          <label className="flex flex-col gap-2">
+            <span className="text-foreground text-sm font-semibold">
               Description
             </span>
             <Textarea
@@ -80,7 +80,7 @@ export function DetailsTabContent({
         </div>
         {!isAudioClip ? (
           <div className="flex flex-col gap-4 sm:flex-row">
-            <div className="w-full sm:w-36">
+            <div className="w-full sm:w-44">
               <Input
                 type="date"
                 label="Release date"
