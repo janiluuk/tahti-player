@@ -1,4 +1,4 @@
-import { AlignJustifyIcon, Rows2Icon, Rows3Icon } from 'lucide-react';
+import { AlignJustifyIcon, ListIcon, Rows2Icon, Rows3Icon } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
 import { SegmentedControl } from '@tahti-player/ui';
@@ -34,13 +34,26 @@ const SIZE_OPTIONS = [
   },
 ];
 
+const LIST_OPTION = {
+  id: 'list' as const,
+  label: 'List',
+  icon: <ListIcon size={14} aria-hidden />,
+};
+
+/** A row density, or `list`: a plain data table instead of ambient rows. */
+export type AmbientTrackListView = AmbientTrackRowDensity | 'list';
+
 const STORAGE_KEY = 'tahti.ambientTrackList.density';
 
-function readStoredDensity(
-  fallback: AmbientTrackRowDensity,
-): AmbientTrackRowDensity {
+function readStoredView(
+  fallback: AmbientTrackListView,
+  allowList: boolean,
+): AmbientTrackListView {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw === 'list' && allowList) {
+      return 'list';
+    }
     if (
       raw &&
       AMBIENT_TRACK_DENSITIES.includes(raw as AmbientTrackRowDensity)
@@ -71,6 +84,8 @@ export type AmbientTrackListProps = {
   emptyMessage?: string;
   /** Extra controls beside the size switcher. */
   toolbarEnd?: ReactNode;
+  /** Offers a List option in the switcher; renders this in place of the rows. */
+  renderList?: () => ReactNode;
   className?: string;
 };
 
@@ -82,46 +97,54 @@ export function AmbientTrackList({
   persistDensity,
   emptyMessage = 'No tracks yet.',
   toolbarEnd,
+  renderList,
   className,
 }: AmbientTrackListProps) {
   const controlled = densityProp !== undefined;
   const shouldPersist = persistDensity ?? !controlled;
-  const [internal, setInternal] = useState<AmbientTrackRowDensity>(() =>
-    shouldPersist ? readStoredDensity(defaultDensity) : defaultDensity,
+  const [internal, setInternal] = useState<AmbientTrackListView>(() =>
+    shouldPersist
+      ? readStoredView(defaultDensity, Boolean(renderList))
+      : defaultDensity,
   );
-  const density = controlled ? densityProp : internal;
+  const view: AmbientTrackListView = controlled ? densityProp : internal;
+  const showList = view === 'list' && Boolean(renderList);
+  const density: AmbientTrackRowDensity =
+    view === 'list' ? defaultDensity : view;
 
   useEffect(() => {
     if (!shouldPersist) {
       return;
     }
     try {
-      localStorage.setItem(STORAGE_KEY, density);
+      localStorage.setItem(STORAGE_KEY, view);
     } catch {
       /* ignore */
     }
-  }, [density, shouldPersist]);
+  }, [view, shouldPersist]);
 
-  const setDensity = (next: AmbientTrackRowDensity) => {
+  const setView = (next: AmbientTrackListView) => {
     if (!controlled) {
       setInternal(next);
     }
-    onDensityChange?.(next);
+    if (next !== 'list') {
+      onDensityChange?.(next);
+    }
   };
 
   return (
     <section
       className={cn('flex w-full min-w-0 flex-col gap-3', className)}
       data-testid="ambient-track-list"
-      data-density={density}
+      data-density={showList ? 'list' : density}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <SegmentedControl
           aria-label="Track size"
           iconOnly
-          options={SIZE_OPTIONS}
-          value={density}
-          onChange={setDensity}
+          options={renderList ? [...SIZE_OPTIONS, LIST_OPTION] : SIZE_OPTIONS}
+          value={showList ? 'list' : density}
+          onChange={setView}
         />
         {toolbarEnd ? (
           <div className="flex flex-wrap items-center gap-2">{toolbarEnd}</div>
@@ -129,6 +152,8 @@ export function AmbientTrackList({
       </div>
       {items.length === 0 ? (
         <p className="text-foreground-secondary text-sm">{emptyMessage}</p>
+      ) : showList && renderList ? (
+        renderList()
       ) : (
         <ul className="flex flex-col gap-2">
           {items.map((item) => {
