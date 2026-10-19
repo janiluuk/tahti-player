@@ -10,7 +10,7 @@ import {
   type UserMediaFile,
 } from '../api/user-media';
 import { ConfirmDialog } from '../components/ConfirmDialog';
-import { PageEmpty } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { StudioPanel } from '../components/StudioPanel';
 
 function formatBytes(bytes: number): string {
@@ -23,6 +23,7 @@ function formatBytes(bytes: number): string {
 export function LibraryMediaView() {
   const [files, setFiles] = useState<UserMediaFile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [pendingRemove, setPendingRemove] = useState<UserMediaFile | null>(
     null,
   );
@@ -31,6 +32,9 @@ export function LibraryMediaView() {
     setLoading(true);
     const result = await fetchUserMedia();
     setFiles(result.data);
+    setLoadError(
+      result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+    );
     setLoading(false);
   };
 
@@ -56,7 +60,13 @@ export function LibraryMediaView() {
       description="Background images and videos stored in your Cloudflare R2 media library."
     >
       {loading ? (
-        <p className="text-foreground-secondary text-sm">Loading media…</p>
+        <PageLoading label="Loading media…" />
+      ) : loadError && files.length === 0 ? (
+        <PageError
+          title="Could not load your media files"
+          description={loadError}
+          onRetry={() => void reload()}
+        />
       ) : files.length === 0 ? (
         <PageEmpty title="No media files yet. Add background images or a Video loop backdrop from Artist → Branding." />
       ) : (
