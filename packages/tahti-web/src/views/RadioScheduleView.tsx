@@ -32,7 +32,7 @@ import {
   type ShowType,
   type StudioShowBooking,
 } from '../api/shows';
-import { PageError } from '../components/PageStates';
+import { PageEmpty, PageError } from '../components/PageStates';
 import { cn } from '../lib/cn';
 import {
   addDays,
@@ -322,9 +322,7 @@ export function RadioScheduleView() {
               Your next two weeks
             </div>
             {upcomingBookings.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No upcoming shows booked.
-              </p>
+              <PageEmpty title="No upcoming shows booked." />
             ) : (
               <ul className="flex flex-col gap-2">
                 {upcomingBookings.map((booking) => (
