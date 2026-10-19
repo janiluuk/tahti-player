@@ -133,9 +133,7 @@ export function AdminLogsView() {
       {loading ? (
         <PageLoading label="Loading logs…" />
       ) : logs.length === 0 ? (
-        <p className="text-foreground-secondary py-4 text-center text-sm">
-          No log lines in the last hour.
-        </p>
+        <PageEmpty title="No log lines in the last hour." />
       ) : (
         <div className="h-[70vh]">
           <LogViewer.Root
