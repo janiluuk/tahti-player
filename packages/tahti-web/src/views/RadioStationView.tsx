@@ -1,11 +1,14 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 
 import {
+  backButtonCornerClassName,
+  BackButtonLink,
   Badge,
   Button,
   ExternalLink,
   FilterChips,
   MediaArtwork,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -83,6 +86,15 @@ export function RadioStationView({ stationId }: { stationId: string }) {
       subtitle={`${station.genre} · ${station.language}`}
       data-testid="radio-station-page"
       classes={{ content: 'gap-6' }}
+      corner={
+        <Tooltip
+          content="Back to radio"
+          side="right"
+          wrapperClassName={backButtonCornerClassName}
+        >
+          <BackButtonLink to="/radio" aria-label="Back to radio" />
+        </Tooltip>
+      }
     >
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
         <MediaArtwork
