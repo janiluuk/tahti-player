@@ -40,7 +40,7 @@ import { AdminUserDeletePanel } from './admin-user/AdminUserDeletePanel';
 import { AdminUserEngagementPanel } from './admin-user/AdminUserEngagementPanel';
 import { AdminUserRestrictionsPanel } from './admin-user/AdminUserRestrictionsPanel';
 import { ImageLightbox } from './ImageLightbox';
-import { PageError, PageLoading } from './PageStates';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 const ROLES = ['BOARD', 'ARTIST', 'LISTENER'] as const;
@@ -489,9 +489,7 @@ export function AdminUserEditPanel({
         >
           <div className="border-border bg-background flex max-h-64 min-h-36 flex-col gap-2 overflow-y-auto rounded-lg border p-3">
             {messages.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No messages yet. Start the conversation below.
-              </p>
+              <PageEmpty title="No messages yet. Start the conversation below." />
             ) : (
               messages.map((message) => (
                 <div
