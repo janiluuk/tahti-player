@@ -25,7 +25,6 @@ export function StudioScheduleView() {
     pendingCancel,
     setPendingCancel,
     cancelEpisode,
-    msg,
     openEditor,
     setEditorOpen,
   } = form;
@@ -122,12 +121,6 @@ export function StudioScheduleView() {
           <ScheduleAnalytics />
 
           <ChannelRadioPlaylistPanel />
-
-          {msg && (
-            <p className="text-foreground-secondary text-sm" role="status">
-              {msg}
-            </p>
-          )}
 
           <ScheduleEditorDialog form={form} />
         </ViewShell>

@@ -33,7 +33,6 @@ export function useScheduleForm() {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [note, setNote] = useState('');
-  const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [editorOpen, setEditorOpen] = useState(false);
@@ -120,7 +119,7 @@ export function useScheduleForm() {
   const saveRecurringSchedule = async () => {
     const selectedShow = shows.find((show) => show.id === selectedShowId);
     if (!selectedShow || !date || !time || frequencyDays.length === 0) {
-      setMsg('Choose a show, date, time, and at least one weekday.');
+      toast.error('Choose a show, date, time, and at least one weekday.');
       return;
     }
     setBusy(true);
@@ -133,7 +132,7 @@ export function useScheduleForm() {
     });
     setBusy(false);
     if (!recurrence.ok) {
-      setMsg(recurrence.error);
+      toast.error(recurrence.error);
       return;
     }
     setShows((current) =>
@@ -141,7 +140,9 @@ export function useScheduleForm() {
         show.id === recurrence.data.id ? recurrence.data : show,
       ),
     );
-    setMsg('Recurring schedule saved. Upcoming episodes are being generated.');
+    toast.success(
+      'Recurring schedule saved. Upcoming episodes are being generated.',
+    );
   };
 
   const stopRecurringSchedule = async () => {
@@ -158,26 +159,26 @@ export function useScheduleForm() {
     });
     setBusy(false);
     if (!result.ok) {
-      setMsg(result.error);
+      toast.error(result.error);
       return;
     }
     setShows((current) =>
       current.map((show) => (show.id === result.data.id ? result.data : show)),
     );
     setFrequencyDays([]);
-    setMsg(
+    toast.success(
       'Recurring schedule stopped. Existing upcoming episodes remain scheduled.',
     );
   };
 
   const scheduleEpisode = async () => {
     if (!selectedShowId || !date || !time) {
-      setMsg('Choose a show, date, and time.');
+      toast.error('Choose a show, date, and time.');
       return;
     }
     const startAt = fromLocalParts(date, time);
     if (!startAt) {
-      setMsg('Choose a valid date and time.');
+      toast.error('Choose a valid date and time.');
       return;
     }
     setBusy(true);
@@ -190,7 +191,7 @@ export function useScheduleForm() {
     });
     setBusy(false);
     if (!result.ok) {
-      setMsg(result.error);
+      toast.error(result.error);
       return;
     }
     setScheduledShows((current) =>
@@ -199,7 +200,7 @@ export function useScheduleForm() {
           new Date(left.startAt).getTime() - new Date(right.startAt).getTime(),
       ),
     );
-    setMsg(`${result.data.title} scheduled.`);
+    toast.success(`${result.data.title} scheduled.`);
     setEditorOpen(false);
   };
 
@@ -310,23 +311,21 @@ export function useScheduleForm() {
       setShowCoverUrl('');
       setSelectedShowId('');
     }
-    setMsg(null);
     setEditorOpen(true);
   };
 
   const saveSchedule = async () => {
     const nextBroadcastAt = fromLocalParts(date, time);
     if ((date || time) && !nextBroadcastAt) {
-      setMsg('Choose both a date and time.');
+      toast.error('Choose both a date and time.');
       return;
     }
     setBusy(true);
-    setMsg(null);
     let selectedShow = shows.find((show) => show.id === selectedShowId);
     if (!selectedShow) {
       if (!note.trim()) {
         setBusy(false);
-        setMsg('Enter a show name to create a new show.');
+        toast.error('Enter a show name to create a new show.');
         return;
       }
       const created = await createShowSeries({
@@ -345,7 +344,7 @@ export function useScheduleForm() {
       });
       if (!created.ok) {
         setBusy(false);
-        setMsg(created.error);
+        toast.error(created.error);
         return;
       }
       selectedShow = created.data;
@@ -363,11 +362,11 @@ export function useScheduleForm() {
     });
     setBusy(false);
     if (!result.ok) {
-      setMsg(result.error);
+      toast.error(result.error);
       return;
     }
     setSchedule(result.data);
-    setMsg('Next broadcast saved.');
+    toast.success('Next broadcast saved.');
     setSelectedShowId(selectedShow.id);
     setEditorOpen(false);
   };
@@ -379,7 +378,6 @@ export function useScheduleForm() {
     time,
     setTime,
     note,
-    msg,
     busy,
     loading,
     editorOpen,

@@ -7,6 +7,7 @@ import {
   UploadIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
@@ -54,7 +55,6 @@ export function StudioShowsView() {
   const [mode, setMode] = useState<ShowMode>('SERIES');
   const [autoPublish, setAutoPublish] = useState(true);
   const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
   const [query, setQuery] = useState('');
 
   const filteredShows = useMemo(() => {
@@ -94,7 +94,6 @@ export function StudioShowsView() {
       return;
     }
     setBusy(true);
-    setMsg(null);
     const r = await createShowSeries({
       title: title.trim(),
       description: description.trim(),
@@ -106,7 +105,7 @@ export function StudioShowsView() {
     });
     setBusy(false);
     if (!r.ok) {
-      setMsg(r.error);
+      toast.error(r.error);
       return;
     }
     if (r.data.mode === 'SERIES') {
@@ -141,10 +140,6 @@ export function StudioShowsView() {
             </Tooltip>
           }
         >
-          {msg && (
-            <p className="text-foreground-secondary mb-4 text-sm">{msg}</p>
-          )}
-
           <Dialog.Root isOpen={createOpen} onClose={() => setCreateOpen(false)}>
             <form
               onSubmit={(e) => {

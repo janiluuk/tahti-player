@@ -12,7 +12,6 @@ function makeForm(overrides: Partial<ScheduleForm> = {}): ScheduleForm {
     time: '',
     setTime: vi.fn(),
     note: '',
-    msg: null,
     busy: false,
     loading: false,
     editorOpen: true,

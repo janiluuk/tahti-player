@@ -7,14 +7,20 @@ import {
   Outlet,
   RouterProvider,
 } from '@tanstack/react-router';
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { createRoot, type Root } from 'react-dom/client';
+import { toast } from 'sonner';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useAuthStore } from '../../stores/authStore';
 import { StudioCollectionsView } from './StudioCollectionsView';
 
 const createStudioCollection = vi.fn();
+
+vi.mock('sonner', () => ({
+  toast: { error: vi.fn(), success: vi.fn() },
+  Toaster: () => null,
+}));
 
 const fetchStudioCollections = vi.fn(async () => ({
   data: [] as Array<{
@@ -174,7 +180,7 @@ describe('StudioCollectionsView create', () => {
 
     await createCollection('Night drive');
 
-    expect(await screen.findByText('Nope')).toBeInTheDocument();
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Nope'));
     expect(router.state.location.pathname).toBe('/studio/collections');
   });
 });

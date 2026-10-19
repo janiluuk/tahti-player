@@ -11,6 +11,7 @@ import {
   SearchIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
@@ -103,7 +104,6 @@ export function StudioCollectionsView() {
   const [releaseDate, setReleaseDate] = useState('');
   const [genres, setGenres] = useState('');
   const [collaborative, setCollaborative] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const reload = () => {
@@ -133,7 +133,6 @@ export function StudioCollectionsView() {
       return;
     }
     setBusy(true);
-    setMsg(null);
     void createStudioCollection({
       name: name.trim(),
       style,
@@ -151,10 +150,9 @@ export function StudioCollectionsView() {
       .then((r) => {
         setBusy(false);
         if (!r.ok) {
-          setMsg(r.error);
+          toast.error(r.error);
           return;
         }
-        setMsg(`Created ${r.data.name} — opening designer…`);
         closeCreate();
         reload();
         void navigate({
@@ -164,7 +162,7 @@ export function StudioCollectionsView() {
       })
       .catch(() => {
         setBusy(false);
-        setMsg('Could not create the collection.');
+        toast.error('Could not create the collection.');
       });
   };
 
@@ -213,7 +211,6 @@ export function StudioCollectionsView() {
                   <Button
                     size="icon-sm"
                     onClick={() => {
-                      setMsg(null);
                       setCreateOpen(true);
                     }}
                     aria-label="New collection"
@@ -225,8 +222,6 @@ export function StudioCollectionsView() {
             ) : undefined
           }
         >
-          {msg && <p className="mb-4 text-sm">{msg}</p>}
-
           <Dialog.Root isOpen={createOpen} onClose={closeCreate}>
             <form
               onSubmit={(e) => {
