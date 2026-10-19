@@ -1,6 +1,7 @@
 import { Button, Dialog } from '@tahti-player/ui';
 
 import { ConfirmDialog } from '../ConfirmDialog';
+import { PageError } from '../PageStates';
 import type { StreamManagerState } from './useStreamManagerState';
 
 export function PlaylistDialog({ state }: { state: StreamManagerState }) {
@@ -12,6 +13,7 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
     previewCollection,
     playlistLoading,
     selectedCollection,
+    previewError,
     selectedPlaylistHasRotationTracks,
     rotationBusy,
     pendingApply,
@@ -59,6 +61,12 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
               <p className="text-foreground-secondary text-sm">
                 Loading playlist…
               </p>
+            ) : previewError ? (
+              <PageError
+                title="Could not load this playlist"
+                description={previewError}
+                onRetry={() => void previewCollection(selectedCollectionSlug)}
+              />
             ) : selectedCollection ? (
               <>
                 <h3 className="font-semibold">{selectedCollection.name}</h3>
