@@ -6,6 +6,7 @@ import {
   fetchCurrentBoard,
   type BoardSeat,
 } from '../../api/governance-board';
+import { PageEmpty, PageError } from '../PageStates';
 import { GovernancePanel } from './GovernancePanel';
 
 function formatDay(iso: string): string {
@@ -20,6 +21,7 @@ function formatDay(iso: string): string {
 export function CurrentBoardPanel() {
   const [seats, setSeats] = useState<BoardSeat[] | null>(null);
   const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -33,20 +35,19 @@ export function CurrentBoardPanel() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   return (
     <GovernancePanel title="Board" icon={ShieldCheckIcon}>
       {seats === null ? (
         <p className="text-foreground-secondary text-sm">Loading the board…</p>
       ) : failed ? (
-        <p className="text-foreground-secondary text-sm">
-          Could not load the board. Try again later.
-        </p>
+        <PageError
+          title="Could not load the board"
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
       ) : seats.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No board terms are recorded yet.
-        </p>
+        <PageEmpty title="No board terms are recorded yet." />
       ) : (
         <ul className="divide-border divide-y">
           {seats.map((seat) => (
