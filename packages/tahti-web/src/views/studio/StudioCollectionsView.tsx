@@ -6,6 +6,7 @@ import {
   LibraryIcon,
   ListMusicIcon,
   Mic2Icon,
+  PlayIcon,
   PlusIcon,
   RadioTowerIcon,
   SearchIcon,
@@ -31,9 +32,14 @@ import {
 
 import {
   createStudioCollection,
+  fetchStudioCollection,
   fetchStudioCollections,
 } from '../../api/studio';
-import type { StudioCollection } from '../../api/studio-types';
+import type {
+  StudioCollection,
+  StudioCollectionItem,
+} from '../../api/studio-types';
+import type { TahtiPlayable } from '../../api/types';
 import { SubscribedCollections } from '../../components/library/SubscribedCollections';
 import { PageLoading } from '../../components/PageStates';
 import { StudioCollectionMoreMenu } from '../../components/StudioCollectionMoreMenu';
@@ -44,7 +50,10 @@ import {
   normalizeCollectionStyle,
 } from '../../content/collectionStyles';
 import { hasStudioAccess } from '../../lib/accountRoles';
+import { toEmbedPlaybackProvider } from '../../lib/embedSrc';
+import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { useAuthStore } from '../../stores/authStore';
+import { usePlayerStore } from '../../stores/playerStore';
 import { LibrarySectionTabs } from '../LibraryView';
 import { CollectionOrderButton } from './CollectionOrderButton';
 
@@ -93,8 +102,49 @@ function menuKindLabel(c: StudioCollection) {
   return label === 'EP' ? label : label.toLowerCase();
 }
 
+function collectionItemPlayable(
+  item: StudioCollectionItem,
+  fallbackArtist: string,
+): TahtiPlayable | null {
+  const sound = item.sound;
+  if (!sound) {
+    return null;
+  }
+  const artist = sound.artist?.displayName ?? fallbackArtist;
+  const coverUrl = placeholderArtworkUrl(sound.id);
+  const audio = sound.audioUrl ?? item.audioUrl;
+  if (audio) {
+    return {
+      id: `sound:${sound.id}`,
+      kind: 'sound',
+      title: sound.title,
+      artist,
+      coverUrl,
+      streamUrl: audio,
+      protocol: audio.includes('.m3u8') ? 'hls' : 'https',
+    };
+  }
+  if (sound.embedProvider && sound.embedUri) {
+    const provider = toEmbedPlaybackProvider(sound.embedProvider);
+    return {
+      id: `sound:${sound.id}`,
+      kind: 'sound',
+      title: sound.title,
+      artist,
+      coverUrl,
+      streamUrl: '',
+      protocol: 'https',
+      sourceProvider: provider,
+      embed: { provider, embedUri: sound.embedUri },
+    };
+  }
+  return null;
+}
+
 export function StudioCollectionsView() {
   const user = useAuthStore((s) => s.user);
+  const play = usePlayerStore((s) => s.play);
+  const [playingSlug, setPlayingSlug] = useState<string | null>(null);
   const canCreate = hasStudioAccess(user);
   const navigate = useNavigate();
   const [rows, setRows] = useState<StudioCollection[]>([]);
@@ -435,6 +485,42 @@ export function StudioCollectionsView() {
                         {`, ${(c.visibility ?? (c.isPublic === false ? 'PRIVATE' : 'PUBLIC')).toLowerCase()}`}
                       </p>
                     </div>
+                    <Tooltip content="Play" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="secondary"
+                        aria-label={`Play ${c.name}`}
+                        disabled={playingSlug === c.slug}
+                        onClick={() => {
+                          if (playingSlug) {
+                            return;
+                          }
+                          setPlayingSlug(c.slug);
+                          void fetchStudioCollection(c.slug).then((res) => {
+                            setPlayingSlug(null);
+                            const playables = (res.data.items ?? [])
+                              .map((item) =>
+                                collectionItemPlayable(item, 'You'),
+                              )
+                              .filter(
+                                (item): item is TahtiPlayable => item !== null,
+                              );
+                            if (playables.length === 0) {
+                              toast.error(
+                                'Nothing in this collection can play yet.',
+                              );
+                              return;
+                            }
+                            const [head, ...rest] = playables;
+                            if (head) {
+                              play(head, { enqueueRest: rest });
+                            }
+                          });
+                        }}
+                      >
+                        <PlayIcon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
                     <ButtonLink
                       to={editorRouteFor(c)}
                       params={{ slug: c.slug }}
