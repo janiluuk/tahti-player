@@ -35,6 +35,7 @@ import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSec
 import { ListenSection } from '../components/listen-view/ListenSection';
 import { StationCardSubtitle } from '../components/listen-view/StationCardSubtitle';
 import { useListenSections } from '../components/listen-view/useListenSections';
+import { WelcomeStrip } from '../components/listen-view/WelcomeStrip';
 import { ListenerWidgetsSection } from '../components/ListenerWidgetsSection';
 import { ListenWidgetStoreDialog } from '../components/ListenWidgetStoreDialog';
 import { PageError, PageLoading } from '../components/PageStates';
@@ -555,6 +556,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
 
         {tab === 'listen' ? (
           <div className="flex flex-col gap-4" data-testid="listen-dashboard">
+            {signedIn ? null : <WelcomeStrip />}
             <ListenSection
               data-testid="listen-tahti-radio"
               title="Tahti Radio"
