@@ -98,7 +98,7 @@ Legend:
 | [Subscribe](#subscribe)           | `/subscribe/$username`    | `src/views/SubscribeView.tsx`   | No Story  | Card layout                                                                                                                                  |
 | [Green Room](#green-room)         | `/u/$username/green-room` | `src/views/GreenRoomView.tsx`   | No Story  | ConnectedPlayerBar                                                                                                                         |
 | [Jam](#jam)                       | `/jam/$code`              | `src/views/JamView.tsx`         | Has Story | TahtiJam components                                                                                                                          |
-| [Chat](#chat)                     | `/chat`                   | `src/views/ChatView.tsx`        | Has Story | ChannelChatPanel                                                                                                                             |
+| [Chat](#chat)                     | `/chat`                   | `src/views/ChatView.tsx`        | Has Story | Sidebar footer / phone More entry; ChannelChatPanel                                                                                          |
 
 ### Auth / Account Views
 

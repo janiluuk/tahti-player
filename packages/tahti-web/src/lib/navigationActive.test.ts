@@ -14,6 +14,7 @@ const SIDEBAR_IDS = [
   'discover',
   'favorites',
   'library',
+  'chat',
   'studio',
   'admin',
   'help',
@@ -31,7 +32,8 @@ describe('navigation active states', () => {
     ['/t/arch-1', 'listen'],
     ['/r/demo-release', 'listen'],
     ['/c/northern-lights', 'listen'],
-    ['/chat/northern-lights', 'listen'],
+    ['/chat', 'chat'],
+    ['/chat/northern-lights', 'chat'],
     ['/u/demo-artist', 'listen'],
     ['/search', 'listen'],
     ['/search?q=techno', 'listen'],
@@ -117,6 +119,10 @@ describe('navigation active states', () => {
       true,
     );
     expect(isMobileMoreRoute('/help', { studioIsPrimary: false })).toBe(true);
+    expect(isMobileMoreRoute('/chat', { studioIsPrimary: true })).toBe(true);
+    expect(
+      isMobileMoreRoute('/chat/northern-lights', { studioIsPrimary: true }),
+    ).toBe(true);
     expect(isMobileMoreRoute('/studio', { studioIsPrimary: false })).toBe(true);
     expect(isMobileMoreRoute('/studio', { studioIsPrimary: true })).toBe(false);
     expect(isMobileMoreRoute('/', { studioIsPrimary: false })).toBe(false);

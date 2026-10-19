@@ -7,6 +7,7 @@ export type SidebarItemId =
   | 'discover'
   | 'favorites'
   | 'library'
+  | 'chat'
   | 'studio'
   | 'admin'
   | 'help'
@@ -41,6 +42,9 @@ export function activeSidebarItem(
   }
   if (isLibrarySidebarRoute(path)) {
     return 'library';
+  }
+  if (isChatRoute(path)) {
+    return 'chat';
   }
   if (getStudioPrimaryRoute(path) === '/studio') {
     return 'studio';
@@ -95,13 +99,16 @@ export function isMobileMoreRoute(
     return true;
   }
   const path = locationPathname(location);
-  return matchesSectionRoute(path, [
-    '/settings',
-    '/account',
-    '/help',
-    '/admin',
-    '/governance',
-  ]);
+  return (
+    isChatRoute(path) ||
+    matchesSectionRoute(path, [
+      '/settings',
+      '/account',
+      '/help',
+      '/admin',
+      '/governance',
+    ])
+  );
 }
 
 export function activeListenTab(
@@ -126,6 +133,10 @@ function isFavoritesRoute(path: string): boolean {
     path.startsWith('/library/favorites') ||
     path === '/favorites'
   );
+}
+
+function isChatRoute(path: string): boolean {
+  return path === '/chat' || path.startsWith('/chat/');
 }
 
 /** Library main-menu routes, including catalog pages that still live under
@@ -155,7 +166,6 @@ function isListenSidebarRoute(path: string): boolean {
     path === '/feed' ||
     path === '/history' ||
     path.startsWith('/channel/') ||
-    path.startsWith('/chat') ||
     path.startsWith('/t/') ||
     path.startsWith('/r/') ||
     path.startsWith('/c/') ||
