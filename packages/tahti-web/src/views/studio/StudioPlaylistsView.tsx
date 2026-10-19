@@ -44,7 +44,6 @@ export function StudioPlaylistsView() {
   const [isPublic, setIsPublic] = useState(true);
   const [collaborative, setCollaborative] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
 
   const reload = () => {
     setLoading(true);
@@ -73,14 +72,14 @@ export function StudioPlaylistsView() {
         collaborative: isPublic && collaborative,
       });
       if (!r.ok) {
-        setMsg(r.error);
+        toast.error(r.error);
         return;
       }
       setCreateOpen(false);
       setName('');
       reload();
     } catch {
-      setMsg('Could not create the playlist.');
+      toast.error('Could not create the playlist.');
     } finally {
       setBusy(false);
     }
@@ -113,10 +112,6 @@ export function StudioPlaylistsView() {
               Playlists
             </Button>
           </nav>
-
-          {msg && (
-            <p className="text-foreground-secondary px-1 text-sm">{msg}</p>
-          )}
 
           <Dialog.Root isOpen={createOpen} onClose={() => setCreateOpen(false)}>
             <form
