@@ -52,5 +52,5 @@ One PR per slice. Tick when merged.
 | # | Slice | Status |
 | - | ----- | ------ |
 | 28 | MediaArtwork thumb play overlay neutral (not primary fill) | done |
-| 29 | Card `surface="neutral"` + Listen cards adopt it | open |
+| 29 | Card `surface="neutral"` + Listen cards adopt it | done |
 | 30 | `StudioReleasesView` search input | done |
