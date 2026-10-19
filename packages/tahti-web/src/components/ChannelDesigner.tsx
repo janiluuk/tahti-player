@@ -169,6 +169,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       presetBusy,
       presetNameInput,
       presets,
+      presetsError,
+      retryPresets,
       previewPreset,
       previewStyle,
       previousSave,
@@ -670,6 +672,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
 
           <SavedLooksRow
             presets={presets}
+            loadError={presetsError}
+            onRetry={retryPresets}
             presetBusy={presetBusy}
             onApply={applyPreset}
             onRequestDelete={setDeletePresetTarget}
