@@ -20,13 +20,14 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageLoading } from '../../components/PageStates';
+import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 
 export function AdminI18nView() {
   const [languages, setLanguages] = useState<AdminLanguage[]>([]);
   const [loading, setLoading] = useState(true);
   const [unavailable, setUnavailable] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [newOpen, setNewOpen] = useState(false);
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
@@ -40,6 +41,11 @@ export function AdminI18nView() {
     void fetchAdminLanguages().then((res) => {
       setLanguages(res.data);
       setUnavailable(res.unavailable === true);
+      setLoadError(
+        res.unavailable !== true && res.meta.source === 'api'
+          ? (res.meta.reason ?? null)
+          : null,
+      );
       setLoading(false);
     });
   };
@@ -124,6 +130,12 @@ export function AdminI18nView() {
                     management, so languages cannot be added or imported here.
                     The app&apos;s translations ship with each release.
                   </p>
+                ) : loadError && languages.length === 0 ? (
+                  <PageError
+                    title="Could not load languages"
+                    description={loadError}
+                    onRetry={reload}
+                  />
                 ) : (
                   <ul className="divide-border divide-y">
                     {languages.map((lang) => {
