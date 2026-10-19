@@ -12,6 +12,8 @@ export type RadioStation = {
   /** False stops Tahti reading what this station is playing, from its
    * programme page and from its stream, when a site changes or objects. */
   nowPlaying?: boolean;
+  /** Prefer stream ICY `StreamTitle` only (no programme-page scrape). */
+  nowPlayingIcyOnly?: boolean;
 };
 
 export const RADIO_STATIONS: RadioStation[] = [
@@ -26,6 +28,7 @@ export const RADIO_STATIONS: RadioStation[] = [
     streamUrl: 'https://icecast.live.yle.fi/radio/YleX/icecast.audio',
     detailUrl: 'https://areena.yle.fi/podcastit/ohjelmat/57-3BdQK6a2a',
     programmingUrl: 'https://areena.yle.fi/audio/ohjelmat/yle-x',
+    nowPlayingIcyOnly: true,
   },
   {
     id: 'radio-helsinki',
@@ -51,6 +54,7 @@ export const RADIO_STATIONS: RadioStation[] = [
       'https://aud-stream-radiorock.nm-elemental.nelonenmedia.fi/playlist.m3u8',
     detailUrl: 'https://www.radiorock.fi/',
     programmingUrl: 'https://www.radiorock.fi/',
+    nowPlayingIcyOnly: true,
   },
   {
     id: 'suomipop',
@@ -64,6 +68,7 @@ export const RADIO_STATIONS: RadioStation[] = [
       'https://aud-stream-suomipop.nm-elemental.nelonenmedia.fi/playlist.m3u8',
     detailUrl: 'https://www.supla.fi/suomipop',
     programmingUrl: 'https://www.supla.fi/suomipop',
+    nowPlayingIcyOnly: true,
   },
   {
     id: 'nrj-fi',
@@ -104,13 +109,18 @@ export function radioStation(id: string): RadioStation | undefined {
 /** Where to read what a station is playing, or null when its now-playing is
  * switched off. */
 export function stationNowPlayingSource(
-  station: Pick<RadioStation, 'programmingUrl' | 'streamUrl' | 'nowPlaying'>,
+  station: Pick<
+    RadioStation,
+    'programmingUrl' | 'streamUrl' | 'nowPlaying' | 'nowPlayingIcyOnly'
+  >,
 ): { programmingUrl: string | null; streamUrl: string | null } | null {
   if (station.nowPlaying === false) {
     return null;
   }
   return {
-    programmingUrl: station.programmingUrl ?? null,
+    programmingUrl: station.nowPlayingIcyOnly
+      ? null
+      : (station.programmingUrl ?? null),
     streamUrl: station.streamUrl ?? null,
   };
 }
