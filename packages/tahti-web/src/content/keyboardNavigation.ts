@@ -38,6 +38,10 @@ export const KEYBOARD_NAVIGATION_SECTIONS: KeyboardShortcutSection[] = [
     heading: 'Player',
     rows: [
       {
+        label: 'Play / pause (when a track is loaded)',
+        shortcut: 'space',
+      },
+      {
         label: 'Toggle the full-screen player (when a track is loaded)',
         shortcut: 'v',
       },
