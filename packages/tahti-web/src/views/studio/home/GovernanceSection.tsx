@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
+import { PageEmpty } from '../../../components/PageStates';
 import { Group } from './HomeTiles';
 import type { StudioHomeState } from './useStudioHome';
 
@@ -31,9 +32,7 @@ export function GovernanceSection({ state }: { state: StudioHomeState }) {
             </p>
             {governanceVotes.length === 0 &&
             unresolvedRequests.every((request) => request.youVoted) ? (
-              <p className="text-foreground-secondary text-sm">
-                Nothing waiting for your vote.
-              </p>
+              <PageEmpty title="Nothing waiting for your vote." />
             ) : (
               <ul className="divide-border divide-y">
                 {[
