@@ -126,9 +126,7 @@ export function SoundCloudEmbedsPanel() {
               ))}
             </ul>
           ) : embeds ? (
-            <p className="text-foreground-secondary text-sm">
-              No SoundCloud tracks yet.
-            </p>
+            <PageEmpty title="No SoundCloud tracks yet." />
           ) : null}
         </div>
       )}
