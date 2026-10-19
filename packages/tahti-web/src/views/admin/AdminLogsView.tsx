@@ -17,7 +17,7 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { usePolling } from '../../hooks/usePolling';
 import { AdminActivityView } from './AdminActivityView';
@@ -54,9 +54,7 @@ function RecentAuditEntries() {
       {loading ? (
         <PageLoading label="Loading recent audit entries…" />
       ) : entries.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No recent audit entries.
-        </p>
+        <PageEmpty title="No recent audit entries." />
       ) : (
         <div className="h-[50vh]">
           <LogViewer.Root

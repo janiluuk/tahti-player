@@ -30,7 +30,7 @@ Bare empty copy and batch-4 leftovers after earlier sweeps. One PR per row. Tick
 | 112 | open | Content reports |
 | 113 | done | Account fan subscriptions |
 | 114 | done | Radio schedule upcoming |
-| 115 | open | Admin audit log |
+| 115 | done | Admin audit log |
 | 116 | open | Admin log lines |
 | 117 | open | Multistream destinations |
 | 118 | open | Channel rotation |
