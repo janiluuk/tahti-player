@@ -1,6 +1,5 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import {
-  ArrowLeftIcon,
   BarChart3Icon,
   Code2Icon,
   EyeIcon,
@@ -19,6 +18,8 @@ import {
 } from 'lucide-react';
 
 import {
+  backButtonCornerClassName,
+  BackButtonLink,
   Button,
   Dialog,
   EmptyState,
@@ -133,15 +134,13 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
 
   return (
     <StudioGate requireChannel={false}>
-      <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
-        <Tooltip content="Back to Releases" side="right">
-          <Link
-            to="/studio/releases"
-            aria-label="Back to Releases"
-            className="text-foreground-secondary hover:bg-background-secondary -mt-2 inline-flex size-8 w-fit items-center justify-center rounded-full"
-          >
-            <ArrowLeftIcon size={16} aria-hidden />
-          </Link>
+      <div className="studio-page-layout relative flex w-full flex-col gap-6 px-1 py-2">
+        <Tooltip
+          content="Back to Releases"
+          side="right"
+          wrapperClassName={backButtonCornerClassName}
+        >
+          <BackButtonLink to="/studio/releases" aria-label="Back to Releases" />
         </Tooltip>
         {!release ? (
           <StudioPanel>
