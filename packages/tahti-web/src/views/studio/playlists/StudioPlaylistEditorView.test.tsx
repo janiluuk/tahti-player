@@ -35,6 +35,7 @@ vi.mock('@tanstack/react-virtual', () => ({
 }));
 
 let collection: StudioCollection;
+let collectionFailure: string | null = null;
 const removeStudioCollectionItem = vi.fn();
 const patchStudioCollection = vi.fn();
 
@@ -42,10 +43,13 @@ vi.mock('../../../api/studio', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../../api/studio')>();
   return {
     ...actual,
-    fetchStudioCollection: async () => ({
-      data: collection,
-      meta: { source: 'mock' as const },
-    }),
+    fetchStudioCollection: async () =>
+      collectionFailure
+        ? {
+            data: { slug: 'my-list', name: 'my-list', items: [] },
+            meta: { source: 'api' as const, reason: collectionFailure },
+          }
+        : { data: collection, meta: { source: 'mock' as const } },
     fetchStudioSounds: async () => ({
       data: [],
       meta: { source: 'mock' as const },
@@ -81,6 +85,7 @@ let root: Root;
 
 beforeEach(() => {
   vi.stubEnv('VITE_FORCE_MOCK', '1');
+  collectionFailure = null;
   removeStudioCollectionItem.mockResolvedValue({ ok: true });
   patchStudioCollection.mockResolvedValue({
     ok: true,
@@ -244,5 +249,21 @@ describe('StudioPlaylistEditorView track order', () => {
       'my-list',
       expect.objectContaining({ trackSortMode: 'NAME' }),
     );
+  });
+});
+
+describe('StudioPlaylistEditorView load failure', () => {
+  it('shows an error instead of an editable blank playlist', async () => {
+    collectionFailure = 'HTTP 502';
+    await renderEditor();
+    expect(screen.getByText('Could not load this playlist')).toBeTruthy();
+    expect(screen.queryByText('First Track')).toBeNull();
+
+    collectionFailure = null;
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    expect(screen.getByText('First Track')).toBeTruthy();
   });
 });
