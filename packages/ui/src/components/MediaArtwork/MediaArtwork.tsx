@@ -297,13 +297,13 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                 <Button
                   type="button"
                   size="icon-sm"
-                  variant="default"
+                  variant="text"
                   disabled={playDisabled}
                   aria-label={playTooltip}
                   aria-pressed={isPlaying || undefined}
                   data-testid="media-artwork-play"
                   className={cn(
-                    'pointer-events-auto size-6 rounded-full shadow-md active:scale-[0.96] motion-reduce:active:scale-100',
+                    'pointer-events-auto size-6 rounded-full text-white active:scale-[0.96] motion-reduce:active:scale-100',
                     isPlaying ? 'opacity-100' : overlayReveal,
                   )}
                   onClick={handlePlayClick}
