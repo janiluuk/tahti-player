@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as board from '../../api/governance-board';
@@ -35,14 +35,19 @@ describe('CurrentBoardPanel', () => {
     ).toBeInTheDocument();
   });
 
-  it('says when the board could not be loaded', async () => {
-    vi.spyOn(board, 'fetchCurrentBoard').mockResolvedValue({
+  it('says when the board could not be loaded and can retry', async () => {
+    const fetch = vi.spyOn(board, 'fetchCurrentBoard').mockResolvedValue({
       data: [],
       meta: { source: 'api', reason: 'Members only' },
     });
     render(<CurrentBoardPanel />);
     expect(
-      await screen.findByText('Could not load the board. Try again later.'),
+      await screen.findByText('Could not load the board'),
+    ).toBeInTheDocument();
+    fetch.mockResolvedValue({ data: [], meta: { source: 'api' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(
+      await screen.findByText('No board terms are recorded yet.'),
     ).toBeInTheDocument();
   });
 });
