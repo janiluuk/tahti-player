@@ -8,7 +8,7 @@ import { fetchMembership, fetchMySubscriptions } from '../api/client';
 import type { FanSubscriptionRow, MembershipStatus } from '../api/types';
 import { FanSubscriptionsBillingButton } from '../components/FanSubscriptionsBillingButton';
 import { MembershipStatusPanel } from '../components/MembershipStatusPanel';
-import { PageLoading } from '../components/PageStates';
+import { PageEmpty, PageLoading } from '../components/PageStates';
 import {
   fanSubscriptionStatusLabel,
   hasPortalManagedSubscription,
@@ -144,10 +144,7 @@ export function AccountView() {
             count: subs.length,
             content:
               subs.length === 0 ? (
-                <p className="text-foreground-secondary text-sm">
-                  No fan subscriptions on this account. Support an artist from
-                  their profile.
-                </p>
+                <PageEmpty title="No fan subscriptions on this account. Support an artist from their profile." />
               ) : (
                 <div className="flex flex-col gap-3">
                   <ul className="flex flex-col gap-2">
