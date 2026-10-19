@@ -23,7 +23,7 @@ import {
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
 import { PageFrame } from '../components/PageHeader';
-import { PageLoading } from '../components/PageStates';
+import { PageEmpty, PageLoading } from '../components/PageStates';
 import { VenueRecordings } from '../components/VenueRecordings';
 import { countryFlagAndName } from '../lib/countries';
 import { syncDocumentMetadata } from '../lib/seo';
