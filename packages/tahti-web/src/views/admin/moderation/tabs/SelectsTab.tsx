@@ -24,7 +24,7 @@ import {
   type AdminSelectsItem,
   type AdminSelectsStream,
 } from '../../../../api/admin';
-import { PageLoading } from '../../../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { TahtiRotationPlaylistEditor } from '../../../../components/TahtiRotationPlaylistEditor';
 import { usePolling } from '../../../../hooks/usePolling';
@@ -281,9 +281,7 @@ export function SelectsTab() {
         {loading ? (
           <PageLoading label="Loading Selects rotation…" />
         ) : items.length === 0 ? (
-          <p className="text-foreground-secondary py-4 text-center text-sm">
-            Nothing in rotation yet — use the plus button to add tracks.
-          </p>
+          <PageEmpty title="Nothing in rotation yet — use the plus button to add tracks." />
         ) : (
           <TahtiRotationPlaylistEditor
             items={items}
