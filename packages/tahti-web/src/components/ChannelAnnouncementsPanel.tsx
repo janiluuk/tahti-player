@@ -18,6 +18,7 @@ import {
 import { usePolling } from '../hooks/usePolling';
 import { AnnouncementTrimDialog } from './AnnouncementTrimDialog';
 import { ConfirmDialog } from './ConfirmDialog';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 const formatDuration = (seconds: number | null) => {
   if (seconds == null) {
@@ -31,6 +32,7 @@ const RENDER_POLL_MS = 5_000;
 export function ChannelAnnouncementsPanel() {
   const [clips, setClips] = useState<AnnouncementClip[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -42,7 +44,12 @@ export function ChannelAnnouncementsPanel() {
 
   const reload = () => {
     void fetchAnnouncementClips().then((result) => {
-      setClips(result.data);
+      const reason =
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
+      setLoadError(reason);
+      if (!reason) {
+        setClips(result.data);
+      }
       setLoading(false);
     });
   };
@@ -176,13 +183,15 @@ export function ChannelAnnouncementsPanel() {
         }}
       />
       {loading ? (
-        <p className="text-foreground-secondary text-sm">
-          Loading announcements…
-        </p>
+        <PageLoading label="Loading announcements…" />
+      ) : loadError && clips.length === 0 ? (
+        <PageError
+          title="Could not load your announcement clips"
+          description={loadError}
+          onRetry={reload}
+        />
       ) : clips.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No announcement clips yet.
-        </p>
+        <PageEmpty title="No announcement clips yet" />
       ) : (
         <ul className="border-border divide-border divide-y rounded-lg border">
           {clips.map((clip) => (
