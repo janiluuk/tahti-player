@@ -162,9 +162,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
               meetingId={meeting.id}
               fallback={
                 agenda.length === 0 ? (
-                  <p className="text-foreground-secondary text-sm">
-                    No agenda published yet.
-                  </p>
+                  <PageEmpty title="No agenda published yet." />
                 ) : (
                   <ul className="flex flex-col gap-3">
                     {agenda.map((item) => (
