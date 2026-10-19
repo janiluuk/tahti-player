@@ -31,7 +31,11 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
     path: '/studio',
     children: [
       { id: 'studio-overview', label: 'Overview', path: '/studio' },
-      { id: 'studio-branding', label: 'Branding', path: '/studio/branding' },
+      {
+        id: 'studio-branding',
+        label: 'Branding',
+        path: '/settings/artist?tab=branding',
+      },
       { id: 'studio-stats', label: 'Stats', path: '/studio/stats' },
       {
         id: 'studio-governance',

@@ -60,16 +60,13 @@ test('Studio Go Live multistream: every API-supported provider is selectable, an
   page,
 }) => {
   await signIn(page);
-  await page.goto('/studio/go-live');
+  await page.goto('/studio/go-live?tab=destinations');
 
   await expect(page.getByText('YouTube')).toBeVisible();
 
   await page.getByRole('button', { name: 'Add destination' }).click();
   const dialog = page.getByRole('dialog');
-  const providerSelect = dialog.getByLabel('Provider');
-  const optionLabels = await providerSelect.locator('option').allTextContents();
-  expect(optionLabels).toEqual([
-    'YouTube',
+  for (const provider of [
     'Twitch',
     'Facebook',
     'Kick',
@@ -77,11 +74,13 @@ test('Studio Go Live multistream: every API-supported provider is selectable, an
     'Mixcloud Live',
     'Instagram',
     'Custom RTMP',
-  ]);
+  ]) {
+    await expect(dialog.getByRole('button', { name: provider })).toBeVisible();
+  }
 
-  await providerSelect.selectOption('TIKTOK');
-  await dialog.getByLabel('Stream key').fill('tiktok-stream-key-1234');
-  await dialog.getByRole('button', { name: 'Save destination' }).click();
+  await dialog.getByRole('button', { name: 'TikTok' }).click();
+  await page.getByLabel(/Stream key/).fill('tiktok-stream-key-1234');
+  await page.getByRole('button', { name: 'Save destination' }).click();
 
   await expect(dialog).toBeHidden();
   await expect(
@@ -121,21 +120,15 @@ test('Settings > Broadcast > Multistream: provider picker and existing-target la
   ).toBeVisible();
 });
 
-test('Settings connections: export targets render from the relocated plugin registry', async ({
+test('Settings artist connections: profile link fields render for export destinations', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/settings/connections');
+  await page.goto('/settings/artist?tab=connections');
 
-  const exportSection = page
-    .getByRole('heading', { name: 'Export music' })
-    .locator('..');
-  await expect(exportSection.getByText('Spotify')).toBeVisible();
-  await expect(
-    exportSection.getByText('Release delivery through Revelator.').first(),
-  ).toBeVisible();
-  await expect(exportSection.getByText('Bandcamp')).toBeVisible();
-  await expect(exportSection.getByText('hearthis.at')).toBeVisible();
+  await expect(page.getByLabel('Spotify')).toBeVisible();
+  await expect(page.getByLabel('Bandcamp')).toBeVisible();
+  await expect(page.getByLabel('hearthis.at')).toBeVisible();
 });
 
 test('Radio visualizer renders through the registry with no console errors', async ({
@@ -227,7 +220,7 @@ test('Listen add-widget dialog lists every Listen store add-on', async ({
   await page.getByRole('button', { name: 'Add Listen widgets' }).click();
   const dialog = page.getByRole('dialog');
   await expect(
-    dialog.getByRole('heading', { name: 'Listen add-ons' }),
+    dialog.getByRole('heading', { name: 'Add Listen widgets' }),
   ).toBeVisible();
   await expect(
     dialog.getByTestId('plugin-store-item-name').getByText('Favorites'),

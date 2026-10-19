@@ -23,6 +23,7 @@ import {
 } from '../../api/radio-public';
 import type { PublicChannel, TahtiPlayable } from '../../api/types';
 import { discoverTrackPlayable } from '../../lib/discoverTrackPlayable';
+import { isPlausiblePublicName } from '../../lib/publicDisplayName';
 
 export type ListenSectionStatus = 'loading' | 'ready' | 'error';
 
@@ -55,6 +56,10 @@ async function loadOnAir(): Promise<OnAirChannel[]> {
   const liveSlugs = new Set(live.map((channel) => channel.slug));
   return [...live, ...replaying]
     .filter((channel) => channel.slug !== TAHTI_RADIO_SLUG)
+    .filter((channel) => {
+      const name = channel.user.displayName?.trim();
+      return !name || isPlausiblePublicName(name);
+    })
     .map((channel) => ({
       ...channel,
       state: liveSlugs.has(channel.slug) ? 'LIVE' : 'REPLAY',

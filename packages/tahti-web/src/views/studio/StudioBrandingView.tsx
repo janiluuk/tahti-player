@@ -1,4 +1,4 @@
-import { useSearch } from '@tanstack/react-router';
+import { useRouterState, useSearch } from '@tanstack/react-router';
 import {
   DownloadIcon,
   ImagesIcon,
@@ -81,7 +81,7 @@ export const StudioBrandingPanel: FC<{
           <Tabs.List className="w-fit flex-wrap">
             {(
               [
-                ['branding', 'Branding', PaletteIcon],
+                ['branding', 'Artist branding', PaletteIcon],
                 ['gallery', 'Gallery', ImagesIcon],
                 ['press-kit', 'Press kit', DownloadIcon],
                 ['channel-designer', 'Channel Designer', PaintbrushIcon],
@@ -97,6 +97,11 @@ export const StudioBrandingPanel: FC<{
 
       {tab === 'branding' ? (
         <>
+          {hideSectionNav ? null : (
+            <h2 className="font-display text-lg font-bold tracking-tight">
+              Artist branding
+            </h2>
+          )}
           <ProfilePictureSection kit={kit} />
           <ProfileBackdropSection
             backdropUrl={profile?.backdropUrl ?? null}
@@ -174,16 +179,24 @@ export const StudioBrandingPanel: FC<{
 
 export const StudioBrandingView: FC = () => {
   const open = useSettingsModalStore((state) => state.open);
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
   const search = useSearch({ strict: false }) as { tab?: string };
   const section = isStudioBrandingSection(search.tab) ? search.tab : 'branding';
 
   useEffect(() => {
+    // ConnectedSettingsModal bookmark-syncs to `/settings/...`. Once there,
+    // SettingsView owns the modal — do not reopen Artist over Channel.
+    if (pathname.startsWith('/settings')) {
+      return;
+    }
     if (section === 'channel-designer') {
       open('channel');
       return;
     }
     open('artist', undefined, section);
-  }, [open, section]);
+  }, [open, pathname, section]);
 
   return null;
 };

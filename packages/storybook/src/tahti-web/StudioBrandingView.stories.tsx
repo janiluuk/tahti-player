@@ -16,7 +16,7 @@ const meta: Meta<typeof StudioBrandingView> = {
     docs: {
       description: {
         component:
-          '`/studio/branding` has no page of its own: it opens Settings → Artist on the Visuals group, landing on Branding (profile picture, backdrop, logo), Gallery or Press kit from `?tab=`. `?tab=channel-designer` opens Settings → Channel & chat instead.',
+          '`/studio/branding` has no page of its own: it opens Settings → Artist on the Artist branding group, landing on Branding (profile picture, backdrop, logo), Gallery or Press kit from `?tab=`. `?tab=channel-designer` opens Settings → Channel & chat instead.',
       },
     },
   },
@@ -48,7 +48,7 @@ export const Branding: Story = {
     await expectVisible(
       dialog.getByRole('heading', { level: 1, name: 'Artist' }),
     );
-    await expectSelectedTab(dialog, 'Visuals');
+    await expectSelectedTab(dialog, 'Artist branding');
     await expectSelectedTab(dialog, 'Branding');
     await expectVisible(
       await dialog.findByRole('heading', { name: 'Profile picture' }),

@@ -65,27 +65,30 @@ export function DetailsTabContent({
             label,
           }))}
         />
-        <div className="sm:col-span-2">
-          <label className="flex flex-col gap-2">
-            <span className="text-foreground text-sm font-semibold">
-              Description
-            </span>
-            <Textarea
-              tone="secondary"
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
-              rows={4}
-            />
+        <div className="flex flex-col gap-1.5 sm:col-span-2">
+          <label
+            htmlFor="sound-description"
+            className="text-foreground text-sm font-semibold"
+          >
+            Description
           </label>
+          <Textarea
+            id="sound-description"
+            tone="secondary"
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+            rows={4}
+          />
         </div>
         {!isAudioClip ? (
           <div className="flex flex-col gap-4 sm:flex-row">
-            <div className="w-full sm:w-44">
+            <div className="w-full min-w-0 sm:w-44">
               <Input
                 type="date"
                 label="Release date"
                 value={releaseDate}
                 onChange={(event) => setReleaseDate(event.target.value)}
+                className="w-full min-w-[11rem]"
               />
             </div>
             <div className="flex-1">

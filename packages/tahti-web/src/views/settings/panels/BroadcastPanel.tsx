@@ -193,13 +193,37 @@ export function BroadcastPanel({
     },
   ];
 
+  const studioBroadcastLink = (
+    <div className="flex flex-col gap-2">
+      <SettingsHint>
+        Defaults for radio, green room, and multistream live here. Run the live
+        session from Studio › Broadcast.
+      </SettingsHint>
+      <ButtonLink
+        className="w-fit"
+        to="/studio/go-live"
+        onClick={closeSettings}
+        size="sm"
+        variant="secondary"
+      >
+        Open Studio › Broadcast for the live session
+      </ButtonLink>
+    </div>
+  );
+
   if (section) {
     return (
       <div className="flex flex-col gap-6">
+        {studioBroadcastLink}
         {items.find((item) => item.id === section)?.content}
       </div>
     );
   }
 
-  return <Tabs listClassName="flex-wrap" items={items} />;
+  return (
+    <div className="flex flex-col gap-6">
+      {studioBroadcastLink}
+      <Tabs listClassName="flex-wrap" items={items} />
+    </div>
+  );
 }

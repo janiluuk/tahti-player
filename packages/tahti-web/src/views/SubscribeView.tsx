@@ -120,7 +120,7 @@ export function SubscribeView({
       </Link>
 
       <EntitySocialHeader
-        title={data.artist.displayName}
+        title={`Subscribe to ${data.artist.displayName}`}
         imageUrl={
           data.artist.avatarUrl ?? placeholderArtworkUrl(data.artist.username)
         }
@@ -132,7 +132,7 @@ export function SubscribeView({
               {data.artist.bio}
             </ClampedText>
           ) : (
-            <p>Subscribe to support this artist on Tahti.</p>
+            <p>Support this artist on Tahti with a fan subscription.</p>
           )
         }
         visualizerPreset={resolveArtworkVisualizerPreset(data.artist.username)}

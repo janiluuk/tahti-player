@@ -9,24 +9,6 @@ import { expectVisible, findDialog, findToast } from './_lib/play';
 
 type Scope = ReturnType<typeof within>;
 
-/**
- * SettingsView reads `?tab=`, `?status=` and `?social=` from
- * `window.location`, not the router, so the story sets the real URL and
- * puts it back afterwards.
- */
-function atUrl(search: string) {
-  return () => {
-    const previous = window.location.href;
-    window.history.replaceState(
-      null,
-      '',
-      `${window.location.pathname}${search}`,
-    );
-    resetSettingsModal();
-    return () => window.history.replaceState(null, '', previous);
-  };
-}
-
 const meta: Meta<typeof SettingsView> = {
   title: 'Tahti/Settings/SettingsView',
   component: SettingsView,
@@ -39,17 +21,13 @@ const meta: Meta<typeof SettingsView> = {
       },
     },
   },
-  beforeEach: atUrl(''),
+  beforeEach: resetSettingsModal,
   render: (args) => (
     <WithSettingsModal>
       <SettingsView {...args} />
     </WithSettingsModal>
   ),
-  decorators: [
-    withToaster(),
-    withTahtiRouter('/settings'),
-    withMockAuth(MOCK_USERS.artist),
-  ],
+  decorators: [withToaster(), withMockAuth(MOCK_USERS.artist)],
 };
 
 export default meta;
@@ -70,6 +48,7 @@ async function expectSelectedTab(scope: Scope, name: string) {
 }
 
 export const Account: Story = {
+  decorators: [withTahtiRouter('/settings')],
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement);
     await expectSection(dialog, 'Account');
@@ -80,7 +59,7 @@ export const Account: Story = {
 
 export const ArtistStoryTab: Story = {
   args: { sectionId: 'artist' },
-  beforeEach: atUrl('?tab=story'),
+  decorators: [withTahtiRouter('/settings/artist?tab=story')],
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement);
     await expectSection(dialog, 'Artist');
@@ -91,7 +70,7 @@ export const ArtistStoryTab: Story = {
 
 export const AccountSubscriptions: Story = {
   args: { sectionId: 'account' },
-  beforeEach: atUrl('?tab=subscriptions'),
+  decorators: [withTahtiRouter('/settings/account?tab=subscriptions')],
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement);
     await expectSelectedTab(dialog, 'Membership & billing');
@@ -101,7 +80,7 @@ export const AccountSubscriptions: Story = {
 
 export const ConnectedCallback: Story = {
   args: { sectionId: 'integrations' },
-  beforeEach: atUrl('?status=connected'),
+  decorators: [withTahtiRouter('/settings/integrations?status=connected')],
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement);
     await expectSection(dialog, 'Integrations');
@@ -110,7 +89,7 @@ export const ConnectedCallback: Story = {
 };
 
 export const SignedOut: Story = {
-  decorators: [withMockAuth(null)],
+  decorators: [withTahtiRouter('/settings'), withMockAuth(null)],
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement);
     await expectSection(dialog, 'Themes');

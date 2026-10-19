@@ -66,10 +66,6 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
     kind: 'stale-spec',
     note: SETTINGS_MODAL_NOTE,
   },
-  'cutover-vital-spec-legacy-callbacks-land-on-the-matching-spa-surface': {
-    kind: 'ux',
-    note: 'The SoundCloud ?sc=connected callback lands on Settings › Add-ons with no "SoundCloud connected." confirmation — the user gets no feedback that the connection worked.',
-  },
   'cutover-vital-spec-artist-can-sign-in-and-reach-broadcast-and-upload-t': {
     kind: 'ux',
     note: '"Record broadcast" is no longer on by default. Go live stacks 8 Studio tabs over 10 Broadcast sub-tabs that wrap ("Channel", "Radio" orphaned on a second row).',
@@ -100,11 +96,11 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
   },
   'cutover-vital-spec-branding-workspace-manages-an-avatar-public-gallery': {
     kind: 'ux',
-    note: 'Branding is three levels deep inside the Settings modal (Artist › Visuals › Branding), with no "Artist branding" heading — hard to find and easy to lose.',
+    note: 'Branding opens Settings › Artist › Artist branding with an "Artist branding" heading; gallery / channel designer / multicast still live in separate places.',
   },
   'cutover-vital-spec-branding-and-radio-own-gallery-channel-designer-and': {
     kind: 'ux',
-    note: 'The "Branding" tab is now nested under Settings › Artist › Visuals; gallery, channel designer and multicast live in three different places.',
+    note: 'Artist branding group is labeled; gallery, channel designer and multicast still live in three different places.',
   },
   'cutover-vital-spec-listen-chrome-lights-listen-on-child-tabs-and-favor': {
     kind: 'stale-spec',
@@ -112,7 +108,7 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
   },
   'cutover-vital-spec-artist-creates-a-four-image-promotion-kit-and-anoth': {
     kind: 'ux',
-    note: 'The promotion kit sits under the same three-level Settings › Artist › Visuals path, so there is no "Artist branding" page to start from.',
+    note: 'Promotion kit lives under Settings › Artist › Artist branding (press kit / gallery); still modal Settings rather than a dedicated page.',
   },
   'cutover-vital-spec-admin-user-profile-includes-identity-details-and-an': {
     kind: 'stale-spec',
@@ -121,10 +117,6 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
   'cutover-vital-spec-listener-can-open-a-fan-subscription-offer': {
     kind: 'ux',
     note: 'The subscribe page has no "Subscribe to …" heading — only the artist name — and "Log in" / "Join" are bare inline text, not buttons.',
-  },
-  'cutover-vital-spec-keyboard-navigation-and-review-map-work-in-the-beta': {
-    kind: 'ux',
-    note: 'The keyboard path to Radio stays on / in both runs — keyboard activation no longer reaches /radio.',
   },
   'fan-sub-and-track-purchase-spec-subscriber-and-track-purchase-both-get': {
     kind: 'blocked',
@@ -150,13 +142,9 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
     kind: 'fixture',
     note: 'After cancelling, the "demo" subscription row shows "Ends on 11/18/2026" — no "cancels" wording.',
   },
-  'mastering-spec-reference-mastering-is-also-reachable-from-the-track-ed': {
-    kind: 'ux',
-    note: 'Edit track › Audio › Properties shows "—" for Format, Sample rate, Bit depth, Channels and Bitrate — the panel is not wired to the analysed file.',
-  },
   'plugin-store-spec-studio-go-live-multistream-every-api-supported-provi': {
     kind: 'ux',
-    note: 'Multistream providers moved to Settings › Broadcast. Broadcast setup is split between Studio › Broadcast and Settings › Broadcast, with Radio and Green room in both.',
+    note: 'Multistream / green room cross-link Settings ↔ Studio › Broadcast; defaults stay in Settings, live session in Studio.',
   },
   'plugin-store-spec-settings-connections-export-targets-render-from-the-': {
     kind: 'stale-spec',
@@ -171,8 +159,8 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
     note: 'The dialog is now titled "Add Listen widgets".',
   },
   'plugin-store-spec-listen-add-widget-picker-installs-configures-and-uni': {
-    kind: 'ux',
-    note: 'Configuring hearthis.at opens a second dialog stacked over the picker, with an orphaned "Uninstall" text button at the bottom.',
+    kind: 'stale-spec',
+    note: 'hearthis.at configure expands inline in the picker; Uninstall is in the card header actions.',
   },
   'plugin-store-spec-settings-add-ons-listen-tab-can-add-and-remove-a-wid': {
     kind: 'stale-spec',
@@ -190,10 +178,6 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
     kind: 'stale-spec',
     note: 'Library is its own sidebar section now, not a Studio tab — there is no "Studio pages" nav on /library.',
   },
-  'real-user-journeys-spec-governance-a-member-can-submit-an-advisory-mot': {
-    kind: 'ux',
-    note: 'After "Motion draft submitted for board review" the new motion shows no DRAFT badge, so the member cannot see the state of what they just sent.',
-  },
   'real-user-journeys-spec-artist-stats-show-real-listen-minutes-and-the-': {
     kind: 'stale-spec',
     note: 'The listener world map moved to the "Plays & listeners" sub-tab of Stats.',
@@ -202,24 +186,12 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
     kind: 'stale-spec',
     note: 'Go live (Prep) no longer has a "Start rotation" button.',
   },
-  'stash-and-subscriber-access-spec-a-public-sound-is-playable-and-downlo': {
-    kind: 'ux',
-    note: 'Uploaded sounds keep the raw filename with extension as title ("mastering-reference-loud.wav"), and Release date is a native date input clipped to "dd/mm/yyy".',
-  },
 };
 
 const BETA_TRIAGE: Record<string, E2eTriage> = {
   'plugin-store-spec-radio-visualizer-renders-through-the-registry-with-n': {
     kind: 'app-bug',
     note: '/radio on beta logs a CSP violation (inline script blocked by script-src) and three 401 responses for a signed-out visitor.',
-  },
-  'real-user-journeys-spec-a-new-account-can-complete-registration-and-im': {
-    kind: 'app-bug',
-    note: 'Join on beta fails with a bare "Validation error" — no field is highlighted and the user cannot tell what to fix.',
-  },
-  'cutover-vital-spec-dsp-landing-page-leads-with-artwork-and-essential-r': {
-    kind: 'fixture',
-    note: 'Beta has no First Light EP release — the page shows "Release not found".',
   },
   'cutover-vital-spec-listener-can-open-a-fan-subscription-offer': {
     kind: 'ux',
@@ -228,10 +200,6 @@ const BETA_TRIAGE: Record<string, E2eTriage> = {
   'real-user-journeys-spec-governance-public-history-and-historical-grant': {
     kind: 'ux',
     note: 'Public governance history shows junk test data ("sjsj" / "jddkkfk") and no "Confirm annual report" grant report.',
-  },
-  'cutover-vital-spec-keyboard-navigation-and-review-map-work-in-the-beta': {
-    kind: 'ux',
-    note: 'Keyboard navigation does not reach /radio. The public On air rail also lists a junk channel "0fpmbnvefhfgrqd6fdp".',
   },
 };
 

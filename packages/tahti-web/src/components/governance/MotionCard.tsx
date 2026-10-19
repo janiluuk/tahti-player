@@ -25,7 +25,7 @@ function stateBadge(state: string): {
     return { color: 'secondary', label: 'Closed' };
   }
   if (state === 'DRAFT') {
-    return { color: 'orange', label: 'Discussion · 7-day circulation' };
+    return { color: 'orange', label: 'DRAFT' };
   }
   return { color: 'orange', label: state };
 }

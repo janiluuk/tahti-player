@@ -23,6 +23,11 @@ async function signIn(
   });
 }
 
+async function openChannelDesigner(page: import('@playwright/test').Page) {
+  await page.goto('/settings/channel');
+  await expect(page.getByTestId('channel-backdrop-card').first()).toBeVisible();
+}
+
 /** ChannelDesigner's preview card and the real channel page's hero both
  * render through the same <ChannelBackdropCard> component (see
  * src/components/ChannelBackdropCard.tsx) specifically so they cannot drift
@@ -33,7 +38,7 @@ test('channel designer preview and the real channel page render the same backdro
 }) => {
   await signIn(page);
 
-  await page.goto('/studio/branding?tab=channel-designer');
+  await openChannelDesigner(page);
   const designerCard = page.getByTestId('channel-backdrop-card').first();
   await expect(designerCard).toBeVisible();
   const designerName = await designerCard
@@ -72,7 +77,7 @@ test('a saved backdrop design change shows up on the real channel page', async (
 }) => {
   await signIn(page);
 
-  await page.goto('/studio/branding?tab=channel-designer');
+  await openChannelDesigner(page);
   const initialStyle = await page
     .getByTestId('channel-backdrop-card')
     .first()

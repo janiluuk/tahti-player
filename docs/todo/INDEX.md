@@ -26,7 +26,8 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 | blocked | [track-visualizer-video-editor.md](track-visualizer-video-editor.md) | PulseForge licence / port decision |
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
 | blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
-| partial | [e2e-run-findings.md](e2e-run-findings.md)                                           | 2026-10-19 e2e run: shipping clear app bugs + stale-spec fixes; larger UX leftovers remain        |
+| partial | [e2e-run-findings.md](e2e-run-findings.md)                                           | Product findings shipped (batches 1–3 / ~90 slices); leftovers = beta password + fan-purchase fixtures only |
+| partial | [e2e-findings-90-slices.md](e2e-findings-90-slices.md)                               | Batch-3 micro-slice ledger (CSP, settings URL, branding, broadcast links, tab scroll, hearthis, hygiene) |
 
 ## Fold rule (copy into CLAUDE / chat)
 

@@ -224,7 +224,7 @@ export function SupportTab() {
                     >
                       <div className="flex items-start justify-between gap-2">
                         <span
-                          className="min-w-0 truncate font-medium"
+                          className="line-clamp-2 min-w-0 font-medium break-words"
                           title={t.subject}
                         >
                           {t.subject}

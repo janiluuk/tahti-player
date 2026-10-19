@@ -48,7 +48,11 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
     }
     setBusy(true);
     setError(null);
-    const result = await uploadSoundFile({ file, title: title || file.name });
+    const fallbackTitle = file.name.replace(/\.[^.]+$/, '') || file.name;
+    const result = await uploadSoundFile({
+      file,
+      title: title.trim() || fallbackTitle,
+    });
     setBusy(false);
     if (!result.ok) {
       setError(result.error);

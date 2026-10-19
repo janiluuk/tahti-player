@@ -6,6 +6,10 @@ play on beta. Widened both to `https:` (mirrors `img-src`); tahti-radio on
 `stream.tahti.live` remains allowed. Requires beta redeploy for the nginx
 header.
 
+## 2026-10-19 — E2E findings batch 2 (~30 slices)
+
+Join validation shows Zod field issues; sticky policy toasts sit top-center; empty queue starts collapsed; SoundCloud toast is provider-aware; Subscribe has a real heading and buttons; motion drafts show DRAFT; Alt+2 reaches Radio; Record broadcast uses the auto-record API; uploads drop the file extension from the title; Description/Release date polish; mock audio properties fill; moderation subjects wrap; Add-ons drops the redundant Power toggle. Stale Playwright specs updated for Settings modal designer, Studio/Library chrome, purchase copy, and rotation totals. Bumped `packages/tahti-web/package.json` to `0.0.216`.
+
 ## 2026-10-19 — E2E finding fixes (fullscreen, join, /more, DSP cover)
 
 Queue and player-bar expand controls share the accessible name "Open full-screen player". Join shows a labelled Account type row. `/more` and `/admin/map` stay open for signed-out visitors. DSP landing artwork exposes "{title} cover". ScreenAtlas shots use ImageReveal. E2E auth helpers read TAHTI_E2E_EMAIL/PASSWORD. Bumped `packages/tahti-web/package.json` to `0.0.215`.

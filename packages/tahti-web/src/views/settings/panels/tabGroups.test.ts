@@ -22,7 +22,7 @@ describe('artist tab groups', () => {
     expect(grouped.map((entry) => entry.group.label)).toEqual([
       'Profile',
       'Links & press',
-      'Visuals',
+      'Artist branding',
     ]);
     const placed = grouped.flatMap((entry) => entry.tabs.map((tab) => tab.id));
     expect([...placed].sort()).toEqual(

@@ -1,9 +1,17 @@
 // @vitest-environment jsdom
 import { cleanup, render } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { useSettingsModalStore } from '../../stores/settingsModalStore';
 import { SettingsView } from './SettingsView';
+
+vi.mock('@tanstack/react-router', () => ({
+  useRouterState: ({
+    select,
+  }: {
+    select: (state: { location: { searchStr: string } }) => string;
+  }) => select({ location: { searchStr: window.location.search } }),
+}));
 
 describe('SettingsView', () => {
   afterEach(() => {

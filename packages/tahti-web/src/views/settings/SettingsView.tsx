@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useRouterState } from '@tanstack/react-router';
+import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
 import { pluginAudienceForTarget } from '../../content/pluginStoreCategories';
@@ -40,12 +41,18 @@ function isAccountSettingsSection(
  * `?social=` are surfaced as a toast, same as the retired Sources page did. */
 export function SettingsView({ sectionId }: { sectionId?: string }) {
   const open = useSettingsModalStore((s) => s.open);
+  const searchStr = useRouterState({
+    select: (state) => state.location.searchStr,
+  });
+  const toastedCallbackRef = useRef<string | null>(null);
   const section: SettingsSectionId = isSettingsSectionId(sectionId)
     ? sectionId
     : 'account';
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(
+      searchStr.startsWith('?') ? searchStr.slice(1) : searchStr,
+    );
     const category = params.get('category');
     const tab = params.get('tab');
     open(
@@ -58,18 +65,52 @@ export function SettingsView({ sectionId }: { sectionId?: string }) {
       useSettingsModalStore.setState({ openedToSection: false });
     }
     const status = params.get('status');
+    const social = params.get('social');
+    if (!status && !social) {
+      return;
+    }
+    const callbackKey = `${status ?? ''}|${social ?? ''}|${category ?? ''}`;
+    if (toastedCallbackRef.current === callbackKey) {
+      return;
+    }
+    toastedCallbackRef.current = callbackKey;
+    const providerLabel = (() => {
+      const categoryLabel = category?.toLowerCase() ?? '';
+      if (categoryLabel.includes('soundcloud')) {
+        return 'SoundCloud';
+      }
+      if (categoryLabel.includes('bandcamp')) {
+        return 'Bandcamp';
+      }
+      if (categoryLabel.includes('mixcloud')) {
+        return 'Mixcloud';
+      }
+      if (categoryLabel.includes('spotify')) {
+        return 'Spotify';
+      }
+      if (categoryLabel.includes('hearthis')) {
+        return 'hearthis.at';
+      }
+      return null;
+    })();
     if (status === 'connected') {
-      toast.success('Connected.');
+      toast.success(
+        providerLabel ? `${providerLabel} connected.` : 'Connected.',
+      );
     } else if (status === 'login') {
       toast.info('Sign in to Tahti first, then connect.');
     } else if (status) {
-      toast.error('Could not connect. Try again.');
+      toast.error(
+        providerLabel
+          ? `Could not connect ${providerLabel}. Try again.`
+          : 'Could not connect. Try again.',
+      );
     }
-    const social = socialCallbackToast(params.get('social'));
-    if (social) {
-      toast[social.kind](social.message);
+    const socialToast = socialCallbackToast(social);
+    if (socialToast) {
+      toast[socialToast.kind](socialToast.message);
     }
-  }, [open, section, sectionId]);
+  }, [open, searchStr, section, sectionId]);
 
   return null;
 }

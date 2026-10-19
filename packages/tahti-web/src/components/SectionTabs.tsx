@@ -13,7 +13,7 @@ export type SectionTabsItem = {
 };
 
 export const PHONE_SCROLL_TAB_LIST =
-  'tahti-hide-scrollbar max-md:w-full max-md:flex-nowrap max-md:overflow-x-auto max-md:pb-1';
+  'tahti-hide-scrollbar w-full min-w-0 flex-nowrap overflow-x-auto pb-1';
 
 export function useSelectedTabInView(selectedKey: string | number) {
   const ref = useRef<HTMLDivElement>(null);
@@ -37,9 +37,9 @@ export function useSelectedTabInView(selectedKey: string | number) {
 /** A section's page list as a row of small icon tabs, meant to sit
  * directly below a primary section-tabs row (see AdminNav.tsx's
  * AdminPageLayout) — not a left-docked sidebar column. Always a
- * horizontal row: it wraps when it runs out of space, except on phones,
- * where it stays on one line and scrolls sideways. Smaller than the
- * primary tabs above it so the two rows read as tab → sub-tab. */
+ * single horizontal row that scrolls sideways when tabs overflow.
+ * Smaller than the primary tabs above it so the two rows read as
+ * tab → sub-tab. */
 export function SectionTabs({
   items,
   'aria-label': ariaLabel,
@@ -67,10 +67,7 @@ export function SectionTabs({
             : undefined
         }
       >
-        <Tabs.List
-          aria-label={ariaLabel}
-          className={`w-fit flex-wrap ${PHONE_SCROLL_TAB_LIST}`}
-        >
+        <Tabs.List aria-label={ariaLabel} className={PHONE_SCROLL_TAB_LIST}>
           {items.map((item) => (
             <Tabs.Tab key={item.id}>
               <TabLabel icon={item.icon} count={item.count}>

@@ -48,7 +48,7 @@ export function MultistreamPanel({
               variant="ghost"
               onClick={() => useSettingsModalStore.getState().open('broadcast')}
             >
-              Prefs
+              Open Settings › Broadcast
             </Button>
             <Tooltip content="Add destination" side="top">
               <Button

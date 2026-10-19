@@ -17,18 +17,33 @@ export async function uploadSoundFile(input: {
     const id = `arch-mock-${Date.now()}`;
     const channelSlug = getMockSessionUser()?.username ?? 'demo';
     const filename = input.file.name || 'upload.wav';
+    const fallbackTitle = filename.replace(/\.[^.]+$/, '') || filename;
+    const title = input.title?.trim() || fallbackTitle;
+    const mime = input.file.type || 'audio/wav';
+    const format = mime.includes('flac')
+      ? 'flac'
+      : mime.includes('mpeg') || mime.includes('mp3')
+        ? 'mp3'
+        : mime.includes('ogg')
+          ? 'ogg'
+          : 'wav';
     mockSoundStore.unshift({
       id,
-      title: input.title || filename,
+      title,
       status: 'READY',
       durationSec: 180,
+      sourceFormat: format,
+      sourceSampleRateHz: 44100,
+      sourceBitDepth: format === 'mp3' || format === 'ogg' ? null : 16,
+      sourceChannels: 2,
+      sourceBitrateKbps: format === 'mp3' ? 320 : null,
       isPublic: false,
       downloadsEnabled: true,
       createdAt: new Date().toISOString(),
     });
     await registerMockUploadedSound({
       id,
-      title: input.title || filename,
+      title,
       filename,
       objectUrl: URL.createObjectURL(input.file),
       channelSlug,

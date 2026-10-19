@@ -4,7 +4,6 @@ import { useEffect, useState, type ReactNode } from 'react';
 import {
   Box,
   Button,
-  Dialog,
   Input,
   MediaArtwork,
   PluginStoreItem,
@@ -42,7 +41,6 @@ function ConfigurableCard({
   open,
   onOpenChange,
   className,
-  asModal = false,
 }: {
   header: ReactNode | ((open: () => void) => ReactNode);
   children: ReactNode;
@@ -50,9 +48,6 @@ function ConfigurableCard({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   className?: string;
-  /** Show the config panel in a Dialog instead of expanding inline — for
-   * configs too tall/rich to sit comfortably inside the addon list. */
-  asModal?: boolean;
 }) {
   return (
     <div className={cn('flex flex-col gap-2', className)}>
@@ -78,21 +73,7 @@ function ConfigurableCard({
           </Button>
         </Tooltip>
       </div>
-      {asModal ? (
-        <Dialog.Root
-          isOpen={open}
-          onClose={() => onOpenChange(false)}
-          className="max-w-lg"
-        >
-          <Dialog.Title>{title} configuration</Dialog.Title>
-          <div
-            className="mt-4 flex flex-col gap-4"
-            data-testid={`listen-addon-config-${title}`}
-          >
-            {children}
-          </div>
-        </Dialog.Root>
-      ) : open ? (
+      {open ? (
         <Box
           variant="tertiary"
           shadow="none"
@@ -366,21 +347,23 @@ export function ListenAddonsPanel({
                 isInstalled={favoritesInstalled}
                 onInstall={() => handleInstall('favorites')}
                 compact={compact}
+                accessory={
+                  favoritesInstalled ? (
+                    <Button
+                      size="sm"
+                      variant="text"
+                      onClick={() => handleUninstall('favorites')}
+                    >
+                      Uninstall
+                    </Button>
+                  ) : null
+                }
               />
             }
           >
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-foreground-secondary text-sm">
-                Enabled favorites appear on the Listen page.
-              </p>
-              <Button
-                size="sm"
-                variant="text"
-                onClick={() => handleUninstall('favorites')}
-              >
-                Uninstall
-              </Button>
-            </div>
+            <p className="text-foreground-secondary text-sm">
+              Enabled favorites appear on the Listen page.
+            </p>
           </ConfigurableCard>
         )}
         {newsInstalled === (installTab === 'installed') && (
@@ -400,6 +383,17 @@ export function ListenAddonsPanel({
                 isInstalled={newsInstalled}
                 onInstall={() => handleInstall(NEWS_WIDGET_TYPE_ID)}
                 compact={compact}
+                accessory={
+                  newsInstalled ? (
+                    <Button
+                      size="sm"
+                      variant="text"
+                      onClick={() => handleUninstall(NEWS_WIDGET_TYPE_ID)}
+                    >
+                      Uninstall
+                    </Button>
+                  ) : null
+                }
               />
             }
           >
@@ -468,19 +462,10 @@ export function ListenAddonsPanel({
                     {newsError}
                   </p>
                 ) : null}
-                <div className="flex items-center justify-between">
-                  <p className="text-foreground-secondary text-xs">
-                    Paste a public RSS 2.0 or Atom URL. Articles open in a new
-                    tab.
-                  </p>
-                  <Button
-                    size="sm"
-                    variant="text"
-                    onClick={() => handleUninstall(NEWS_WIDGET_TYPE_ID)}
-                  >
-                    Uninstall
-                  </Button>
-                </div>
+                <p className="text-foreground-secondary text-xs">
+                  Paste a public RSS 2.0 or Atom URL. Articles open in a new
+                  tab.
+                </p>
               </div>
             ) : (
               <p className="text-foreground-secondary text-sm">
@@ -501,7 +486,6 @@ export function ListenAddonsPanel({
               title={type.name}
               open={configuringId === type.id}
               onOpenChange={(open) => setConfiguringId(open ? type.id : null)}
-              asModal={type.id === 'hearthis'}
               header={
                 <PluginStoreItem
                   icon={listenAddonIcon(type.id)}
@@ -512,6 +496,17 @@ export function ListenAddonsPanel({
                   isInstalled={isInstalled}
                   onInstall={() => handleInstall(type.id)}
                   compact={compact}
+                  accessory={
+                    isInstalled ? (
+                      <Button
+                        size="sm"
+                        variant="text"
+                        onClick={() => handleUninstall(type.id)}
+                      >
+                        Uninstall
+                      </Button>
+                    ) : null
+                  }
                 />
               }
             >
@@ -656,18 +651,9 @@ export function ListenAddonsPanel({
                       ) : null}
                     </div>
                   )}
-                  <div className="flex items-center justify-between">
-                    <p className="text-foreground-secondary text-xs">
-                      {type.helpText}
-                    </p>
-                    <Button
-                      size="sm"
-                      variant="text"
-                      onClick={() => handleUninstall(type.id)}
-                    >
-                      Uninstall
-                    </Button>
-                  </div>
+                  <p className="text-foreground-secondary text-xs">
+                    {type.helpText}
+                  </p>
                 </div>
               ) : (
                 <p className="text-foreground-secondary text-sm">

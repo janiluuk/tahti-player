@@ -22,7 +22,7 @@ const meta: Meta<typeof ArtistPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Artist, in three groups: Profile (identity, story, and people for a band or collective), Links & press (social connections, news feed, auto-post; press kit) and Visuals (branding, gallery, release visual defaults). Signed out it only links to sign-in.',
+          'Settings → Artist, in three groups: Profile (identity, story, and people for a band or collective), Links & press (social connections, news feed, auto-post; press kit) and Artist branding (branding, gallery, release visual defaults). Signed out it only links to sign-in.',
       },
     },
   },
@@ -99,7 +99,7 @@ export const Connections: Story = {
 export const ReleaseVisuals: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await openGroup(canvas, 'Visuals', 'Releases');
+    await openGroup(canvas, 'Artist branding', 'Releases');
     await waitFor(() =>
       expect(canvas.getByText('New release background')).toBeVisible(),
     );

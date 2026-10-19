@@ -25,47 +25,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="canonical" href="https://app.tahti.live/" />
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
-    <script>
-      (function () {
-        try {
-          var bag = localStorage.getItem('tahti-web-theme');
-          var themeId = null;
-          var colorMode = null;
-          var dark = null;
-          if (bag) {
-            var parsed = JSON.parse(bag);
-            var state = parsed && parsed.state ? parsed.state : parsed;
-            if (state) {
-              if (typeof state.themeId === 'string') themeId = state.themeId;
-              if (typeof state.colorMode === 'string')
-                colorMode = state.colorMode;
-              if (typeof state.dark === 'boolean') dark = state.dark;
-            }
-          }
-          if (!themeId)
-            themeId = localStorage.getItem('tahti-nuclear-theme-id');
-          var darkRaw = localStorage.getItem('tahti-nuclear-dark');
-          if (darkRaw != null) dark = darkRaw === '1';
-          if (colorMode === 'light') dark = false;
-          else if (colorMode === 'dark') dark = true;
-          else if (colorMode === 'dynamic') {
-            var hour = new Date().getHours();
-            dark = hour < 7 || hour >= 19;
-          } else if (dark == null) {
-            // No preference stored anywhere yet: start dark, like the store's
-            // own first-run default (plugins/themes/store.ts merge()).
-            dark = true;
-          }
-          // Custom themes (including the default, custom:nuclear-green) are
-          // applied by the store; paint their dark base theme until then.
-          if (!themeId || themeId.indexOf('custom:') === 0)
-            themeId = 'nuclear:tahti-dark';
-          document.documentElement.setAttribute('data-theme-id', themeId);
-          if (dark) document.documentElement.setAttribute('data-theme', 'dark');
-          else document.documentElement.removeAttribute('data-theme');
-        } catch (e) {}
-      })();
-    </script>
+    <script src="/theme-boot.js"></script>
   </head>
   <body class="bg-background text-foreground">
     <div id="root"></div>
