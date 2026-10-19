@@ -32,9 +32,15 @@ import type { OnAirChannel } from '../api/listen';
 import { fetchStationNowPlaying } from '../api/radio-now-playing';
 import type { TahtiPlayable } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
+import {
+  NewReleasesRow,
+  TahtiSelectsRow,
+  TrendingRow,
+} from '../components/listen-view/HomeHighlights';
 import { ListenSection } from '../components/listen-view/ListenSection';
 import { StationCardSubtitle } from '../components/listen-view/StationCardSubtitle';
 import { useListenSections } from '../components/listen-view/useListenSections';
+import { WelcomeStrip } from '../components/listen-view/WelcomeStrip';
 import { ListenerWidgetsSection } from '../components/ListenerWidgetsSection';
 import { ListenWidgetStoreDialog } from '../components/ListenWidgetStoreDialog';
 import { PageError, PageLoading } from '../components/PageStates';
@@ -559,6 +565,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
 
         {tab === 'listen' ? (
           <div className="flex flex-col gap-4" data-testid="listen-dashboard">
+            {signedIn ? null : <WelcomeStrip />}
             <ListenSection
               data-testid="listen-tahti-radio"
               title="Tahti Radio"
@@ -603,38 +610,8 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               />
             ) : null}
 
-            <ListenSection
-              data-testid="listen-radio"
-              title="Radio"
-              badge="Internet radio"
-              badgeColor="cyan"
-              status={radioItems.length > 0 ? 'ready' : sections.presets.status}
-              empty={radioItems.length === 0}
-              emptyTitle="No radio stations yet"
-              emptyDescription={
-                signedIn ? 'Add stations from the widget store.' : undefined
-              }
-              onRetry={() => sections.retry('presets')}
-            >
-              <CardsRow
-                data-testid="listen-radio"
-                title="Radio"
-                badge="Internet radio"
-                badgeColor="cyan"
-                items={radioItems}
-                labels={{
-                  ...ROW_LABELS,
-                  filterPlaceholder: 'Filter stations…',
-                }}
-                renderItem={renderRadioItem}
-              />
-              {sections.presets.status === 'error' ? (
-                <PageError
-                  title="Curated stations couldn't load"
-                  onRetry={() => sections.retry('presets')}
-                />
-              ) : null}
-            </ListenSection>
+            <TahtiSelectsRow />
+            <NewReleasesRow />
 
             <ListenSection
               data-testid="listen-on-air"
@@ -680,6 +657,8 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               />
             ) : null}
 
+            <TrendingRow />
+
             <ListenSection
               data-testid="listen-new-tracks"
               title="New tracks"
@@ -700,6 +679,39 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                   <PlayableTrackTable items={sections.latestTracks.data} />
                 </div>
               </section>
+            </ListenSection>
+
+            <ListenSection
+              data-testid="listen-radio"
+              title="Radio"
+              badge="Internet radio"
+              badgeColor="cyan"
+              status={radioItems.length > 0 ? 'ready' : sections.presets.status}
+              empty={radioItems.length === 0}
+              emptyTitle="No radio stations yet"
+              emptyDescription={
+                signedIn ? 'Add stations from the widget store.' : undefined
+              }
+              onRetry={() => sections.retry('presets')}
+            >
+              <CardsRow
+                data-testid="listen-radio"
+                title="Radio"
+                badge="Internet radio"
+                badgeColor="cyan"
+                items={radioItems}
+                labels={{
+                  ...ROW_LABELS,
+                  filterPlaceholder: 'Filter stations…',
+                }}
+                renderItem={renderRadioItem}
+              />
+              {sections.presets.status === 'error' ? (
+                <PageError
+                  title="Curated stations couldn't load"
+                  onRetry={() => sections.retry('presets')}
+                />
+              ) : null}
             </ListenSection>
 
             <ListenerWidgetsSection />

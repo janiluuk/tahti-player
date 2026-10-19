@@ -13,12 +13,11 @@ export async function uploadSoundFile(input: {
 }): Promise<
   { ok: true; itemId: string; meta: FetchMeta } | { ok: false; error: string }
 > {
+  const filename = input.file.name || 'upload.wav';
+  const title = input.title?.trim() || titleFromFilename(filename);
   if (isForceMock()) {
     const id = `arch-mock-${Date.now()}`;
     const channelSlug = getMockSessionUser()?.username ?? 'demo';
-    const filename = input.file.name || 'upload.wav';
-    const fallbackTitle = filename.replace(/\.[^.]+$/, '') || filename;
-    const title = input.title?.trim() || fallbackTitle;
     const mime = input.file.type || 'audio/wav';
     const format = mime.includes('flac')
       ? 'flac'
@@ -61,13 +60,14 @@ export async function uploadSoundFile(input: {
     const { data: prep } = await requestJson<{
       uploadId: string;
       uploadUrl: string;
+      title?: string;
     }>('/api/uploads/prepare', {
       method: 'POST',
       body: JSON.stringify({
         filename: input.file.name,
         contentType: input.file.type || 'audio/mpeg',
         fileSizeBytes: input.file.size,
-        ...(input.title ? { title: input.title } : {}),
+        title,
       }),
     });
     const put = await fetch(prep.uploadUrl, {
@@ -87,7 +87,7 @@ export async function uploadSoundFile(input: {
         body: JSON.stringify({
           uploadId: prep.uploadId,
           etag: etag.replace(/"/g, ''),
-          ...(input.title ? { title: input.title } : {}),
+          title: prep.title || title,
         }),
       },
     );
@@ -98,4 +98,8 @@ export async function uploadSoundFile(input: {
       error: err instanceof Error ? err.message : 'Upload failed',
     };
   }
+}
+
+function titleFromFilename(filename: string): string {
+  return filename.replace(/\.[^.]+$/, '').trim() || filename;
 }

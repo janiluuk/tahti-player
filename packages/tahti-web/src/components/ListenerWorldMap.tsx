@@ -1,6 +1,7 @@
 import { MapPinIcon } from 'lucide-react';
 import { useMemo, type FC } from 'react';
 
+import { PageEmpty } from './PageStates';
 import worldCountryPaths from './worldCountryPaths.json';
 
 export type ListenerGeoPoint = {
@@ -146,9 +147,7 @@ export const ListenerWorldMap: FC<ListenerWorldMapProps> = ({
       </div>
 
       {topCountries.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No listener location data yet.
-        </p>
+        <PageEmpty title="No listener location data yet." />
       ) : (
         <ol
           className={

@@ -172,7 +172,11 @@ describe('ListenView sections', () => {
           ),
       ).toHaveLength(2),
     );
-    expect(screen.queryByRole('link', { name: 'Night Drive' })).toBeNull();
+    expect(
+      within(screen.getByTestId('listen-recently-played')).queryByRole('link', {
+        name: 'Night Drive',
+      }),
+    ).toBeNull();
     useLibraryStore.setState({ history: [] });
   });
 });

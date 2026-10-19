@@ -1,3 +1,4 @@
+import { apiErrorDetail, type ApiErrorBody } from './api-error-detail';
 import { apiBase } from './http';
 
 /** Thrown by `requestJson` for a non-2xx response; carries the API's
@@ -14,7 +15,7 @@ export class RequestJsonError extends Error {
 }
 
 /** The standard JSON request helper: credentials included, JSON in/out,
- * API `error`/`message` bodies become the thrown message. */
+ * API validation `issues`, `error` or `message` become the thrown message. */
 export async function requestJson<T>(
   path: string,
   init?: RequestInit,
@@ -33,14 +34,8 @@ export async function requestJson<T>(
     let detail = `${path} → ${res.status}`;
     let code: string | undefined;
     try {
-      const body = (await res.json()) as {
-        error?: string;
-        message?: string;
-        code?: unknown;
-      };
-      if (body.error || body.message) {
-        detail = body.error ?? body.message ?? detail;
-      }
+      const body = (await res.json()) as ApiErrorBody & { code?: unknown };
+      detail = apiErrorDetail(body, detail);
       if (typeof body.code === 'string') {
         code = body.code;
       }
