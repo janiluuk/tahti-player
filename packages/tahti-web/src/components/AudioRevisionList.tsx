@@ -330,7 +330,7 @@ export function AudioRevisionList({
       ) : null}
 
       {listed.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">No revisions yet.</p>
+        <PageEmpty title="No revisions yet." />
       ) : (
         <ul className="flex flex-col gap-1.5">
           {listed.map((version) => {
