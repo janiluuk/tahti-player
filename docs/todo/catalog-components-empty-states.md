@@ -1,10 +1,14 @@
 # Replace hand-rolled chips/tabs and bare empty-state text
 
-**Status:** open
+**Status:** partial
 
 2026-10-19 sweep. Catalog components (`Badge`, `FilterChips`, `Tabs`, `EmptyState`,
 `PageEmpty`) exist and are used broadly, but a set of surfaces still hand-roll the same
 controls or render bare `<p>` empty text with no icon/CTA.
+
+## Left after UX sweep
+
+Empties + FilterChips/Badge/Tabs swaps landed in the UX sweep fold. Remaining: raw `<table>` surfaces (loading/empty/filtered) listed below.
 
 ## Hand-rolled controls
 
