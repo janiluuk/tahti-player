@@ -1,5 +1,6 @@
 import { Link, useSearch } from '@tanstack/react-router';
 import {
+  BarChart3Icon,
   Disc3Icon,
   DiscAlbumIcon,
   ExternalLinkIcon,
@@ -32,7 +33,7 @@ import {
   patchStudioReleaseVisual,
 } from '../../api/studio';
 import type { StudioRelease } from '../../api/studio-types';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -58,6 +59,7 @@ const RELEASE_TYPES = [
 export function StudioReleasesView() {
   const [releases, setReleases] = useState<StudioRelease[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [openMoreId, setOpenMoreId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
@@ -65,7 +67,6 @@ export function StudioReleasesView() {
   const [releaseDate, setReleaseDate] = useState(() =>
     new Date().toISOString().slice(0, 10),
   );
-  const [msg, setMsg] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [query, setQuery] = useState('');
   const search = useSearch({ strict: false }) as { create?: boolean };
@@ -79,6 +80,9 @@ export function StudioReleasesView() {
   const reload = () => {
     void fetchStudioReleases().then((res) => {
       setReleases(res.data.releases);
+      setLoadError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
   };
@@ -107,7 +111,6 @@ export function StudioReleasesView() {
 
   const create = async () => {
     setCreating(true);
-    setMsg(null);
     const r = await createStudioRelease({
       title: title.trim(),
       type,
@@ -115,7 +118,7 @@ export function StudioReleasesView() {
     });
     setCreating(false);
     if (!r.ok) {
-      setMsg(r.error);
+      toast.error(r.error);
       return;
     }
     const visualResult = await patchStudioReleaseVisual(
@@ -125,7 +128,7 @@ export function StudioReleasesView() {
     if (!visualResult.ok) {
       toast.error('Release created, but its visualizer could not be saved.');
     }
-    setMsg(`Created ${r.data.title}.`);
+    toast.success(`Created ${r.data.title}.`);
     closeCreate();
     reload();
   };
@@ -152,10 +155,7 @@ export function StudioReleasesView() {
               <Tooltip content="New release" side="top">
                 <Button
                   size="icon-sm"
-                  onClick={() => {
-                    setMsg(null);
-                    setCreateOpen(true);
-                  }}
+                  onClick={() => setCreateOpen(true)}
                   aria-label="New release"
                 >
                   <PlusIcon size={16} aria-hidden />
@@ -164,10 +164,6 @@ export function StudioReleasesView() {
             </div>
           }
         >
-          {msg && (
-            <p className="text-foreground-secondary mb-4 text-sm">{msg}</p>
-          )}
-
           <Dialog.Root isOpen={createOpen} onClose={closeCreate}>
             <form
               onSubmit={(e) => {
@@ -217,6 +213,15 @@ export function StudioReleasesView() {
           <StudioPanel>
             {loading ? (
               <PageLoading label="Loading…" />
+            ) : loadError && releases.length === 0 ? (
+              <PageError
+                title="Could not load your releases"
+                description={loadError}
+                onRetry={() => {
+                  setLoading(true);
+                  reload();
+                }}
+              />
             ) : releases.length === 0 ? (
               <EmptyState
                 size="sm"
@@ -248,9 +253,18 @@ export function StudioReleasesView() {
                   }
                 />
                 {filteredReleases.length === 0 ? (
-                  <p className="text-foreground-secondary text-sm">
-                    No releases match “{query.trim()}”.
-                  </p>
+                  <PageEmpty
+                    title={`No releases match “${query.trim()}”`}
+                    action={
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => setQuery('')}
+                      >
+                        Clear search
+                      </Button>
+                    }
+                  />
                 ) : (
                   <ul className="divide-border divide-y">
                     {filteredReleases.map((r) => (
@@ -291,6 +305,18 @@ export function StudioReleasesView() {
                           />
                           Edit
                         </ButtonLink>
+                        <Tooltip content="Stats" side="top">
+                          <ButtonLink
+                            to="/studio/releases/$id"
+                            params={{ id: r.id }}
+                            search={{ tab: 'stats' }}
+                            size="icon-sm"
+                            variant="text"
+                            aria-label={`Stats for ${r.title}`}
+                          >
+                            <BarChart3Icon size={16} aria-hidden />
+                          </ButtonLink>
+                        </Tooltip>
                         <CopyButton
                           text={`${window.location.origin}/r/${r.smartLinkSlug}`}
                           size="icon-sm"

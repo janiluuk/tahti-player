@@ -1,13 +1,8 @@
-import {
-  ArrowLeftIcon,
-  MaximizeIcon,
-  MinimizeIcon,
-  MoreHorizontalIcon,
-} from 'lucide-react';
+import { MaximizeIcon, MinimizeIcon, MoreHorizontalIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { formatArtistNames } from '@tahti-player/model';
-import { Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
+import { BackButton, Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
 import type { VisualizerMode } from '@tahti-player/visualizer';
 
 import { useIsMobile } from '../hooks/useIsMobile';
@@ -200,15 +195,7 @@ export function FullScreenPlayer() {
        * top visually. */}
       <div className="absolute inset-x-0 top-0 z-20 flex items-start justify-between p-4">
         <Tooltip content="Back to player" side="right">
-          <Button
-            size="icon"
-            variant="text"
-            onClick={close}
-            aria-label="Minimize player"
-            className="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
-          >
-            <ArrowLeftIcon size={28} aria-hidden />
-          </Button>
+          <BackButton onClick={close} aria-label="Minimize player" />
         </Tooltip>
         <div className="flex items-start gap-2">
           <VisualizerModeMenu
