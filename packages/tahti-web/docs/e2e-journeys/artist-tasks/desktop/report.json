@@ -5,12 +5,8 @@
       "name": "Sign in as artist",
       "ok": true,
       "ms": 4513,
-      "notes": [
-        "landed on /; channel yaniho"
-      ],
-      "ux": [
-        "an artist lands on /, not Studio"
-      ],
+      "notes": ["landed on /; channel yaniho"],
+      "ux": ["an artist lands on /, not Studio"],
       "signals": [
         {
           "kind": "console",
@@ -157,9 +153,7 @@
           "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
         }
       ],
-      "shots": [
-        "01-sign-in-as-artist.png"
-      ]
+      "shots": ["01-sign-in-as-artist.png"]
     },
     {
       "name": "Studio dashboard: what should I do next?",
@@ -175,17 +169,13 @@
           "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
         }
       ],
-      "shots": [
-        "02-studio-dashboard-what-should-i-do-next.png"
-      ]
+      "shots": ["02-studio-dashboard-what-should-i-do-next.png"]
     },
     {
       "name": "Upload a track",
       "ok": true,
       "ms": 64531,
-      "notes": [
-        "/studio/sounds/cmvfpeusk0003u7ik37t0xqb8 after 62.7s"
-      ],
+      "notes": ["/studio/sounds/cmvfpeusk0003u7ik37t0xqb8 after 62.7s"],
       "ux": [
         "no Title field before uploading; the file name becomes the title",
         "Upload page never finished (Validation error); retried via the Tracks page Upload dialog"
@@ -248,10 +238,7 @@
           "detail": "Failed to load resource: the server responded with a status of 409 ()"
         }
       ],
-      "shots": [
-        "03-upload-staged.png",
-        "04-upload-a-track.png"
-      ]
+      "shots": ["03-upload-staged.png", "04-upload-a-track.png"]
     },
     {
       "name": "Edit the track title and description",
@@ -287,9 +274,7 @@
           "detail": "Failed to load resource: the server responded with a status of 409 ()"
         }
       ],
-      "shots": [
-        "05-edit-the-track-title-and-description.png"
-      ]
+      "shots": ["05-edit-the-track-title-and-description.png"]
     },
     {
       "name": "Find the track in my Sounds list",
@@ -303,17 +288,13 @@
           "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
         }
       ],
-      "shots": [
-        "06-find-the-track-in-my-sounds-list.png"
-      ]
+      "shots": ["06-find-the-track-in-my-sounds-list.png"]
     },
     {
       "name": "Create a release and add the track",
       "ok": false,
       "ms": 8759,
-      "notes": [
-        "track not listed in the release after adding"
-      ],
+      "notes": ["track not listed in the release after adding"],
       "ux": [],
       "signals": [
         {
@@ -347,9 +328,7 @@
       "ok": true,
       "ms": 3983,
       "notes": [],
-      "ux": [
-        "no link from the channel designer to the public channel page"
-      ],
+      "ux": ["no link from the channel designer to the public channel page"],
       "signals": [
         {
           "kind": "console",
@@ -368,9 +347,7 @@
           "detail": "Failed to load resource: the server responded with a status of 404 ()"
         }
       ],
-      "shots": [
-        "09-channel-designer-and-public-channel.png"
-      ]
+      "shots": ["09-channel-designer-and-public-channel.png"]
     },
     {
       "name": "Go-live setup (no broadcast)",
@@ -387,9 +364,7 @@
           "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
         }
       ],
-      "shots": [
-        "10-go-live-setup-no-broadcast.png"
-      ]
+      "shots": ["10-go-live-setup-no-broadcast.png"]
     },
     {
       "name": "Stats page",
@@ -403,9 +378,7 @@
           "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
         }
       ],
-      "shots": [
-        "11-stats-page.png"
-      ]
+      "shots": ["11-stats-page.png"]
     },
     {
       "name": "Insights page",
@@ -419,9 +392,7 @@
           "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
         }
       ],
-      "shots": [
-        "12-insights-page.png"
-      ]
+      "shots": ["12-insights-page.png"]
     },
     {
       "name": "Fans & revenue page",
@@ -435,9 +406,7 @@
           "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
         }
       ],
-      "shots": [
-        "13-fans-revenue-page.png"
-      ]
+      "shots": ["13-fans-revenue-page.png"]
     },
     {
       "name": "Schedule page",
@@ -451,9 +420,7 @@
           "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
         }
       ],
-      "shots": [
-        "14-schedule-page.png"
-      ]
+      "shots": ["14-schedule-page.png"]
     },
     {
       "name": "New event form page",
@@ -467,9 +434,7 @@
           "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
         }
       ],
-      "shots": [
-        "15-new-event-form-page.png"
-      ]
+      "shots": ["15-new-event-form-page.png"]
     },
     {
       "name": "Distribution page",
@@ -483,9 +448,7 @@
           "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
         }
       ],
-      "shots": [
-        "16-distribution-page.png"
-      ]
+      "shots": ["16-distribution-page.png"]
     },
     {
       "name": "Artist settings page",
@@ -499,9 +462,7 @@
           "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
         }
       ],
-      "shots": [
-        "17-artist-settings-page.png"
-      ]
+      "shots": ["17-artist-settings-page.png"]
     },
     {
       "name": "Cleanup: delete the test release",
@@ -558,9 +519,7 @@
           "detail": "Failed to load resource: the server responded with a status of 404 ()"
         }
       ],
-      "shots": [
-        "18-cleanup-delete-the-test-release.png"
-      ]
+      "shots": ["18-cleanup-delete-the-test-release.png"]
     },
     {
       "name": "Cleanup: delete the test track",
@@ -578,9 +537,7 @@
           "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
         }
       ],
-      "shots": [
-        "19-cleanup-delete-the-test-track.png"
-      ]
+      "shots": ["19-cleanup-delete-the-test-track.png"]
     }
   ]
 }

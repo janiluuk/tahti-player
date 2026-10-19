@@ -141,9 +141,7 @@
           "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
         }
       ],
-      "shots": [
-        "01-phone-sign-in.png"
-      ]
+      "shots": ["01-phone-sign-in.png"]
     },
     {
       "name": "Phone: /",
@@ -269,9 +267,7 @@
           "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
         }
       ],
-      "shots": [
-        "02-phone.png"
-      ]
+      "shots": ["02-phone.png"]
     },
     {
       "name": "Phone: /discover",
@@ -280,9 +276,7 @@
       "notes": [],
       "ux": [],
       "signals": [],
-      "shots": [
-        "03-phone-discover.png"
-      ]
+      "shots": ["03-phone-discover.png"]
     },
     {
       "name": "Phone: /radio",
@@ -291,9 +285,7 @@
       "notes": [],
       "ux": [],
       "signals": [],
-      "shots": [
-        "04-phone-radio.png"
-      ]
+      "shots": ["04-phone-radio.png"]
     },
     {
       "name": "Phone: /library",
@@ -302,9 +294,7 @@
       "notes": [],
       "ux": [],
       "signals": [],
-      "shots": [
-        "05-phone-library.png"
-      ]
+      "shots": ["05-phone-library.png"]
     },
     {
       "name": "Phone: /favorites",
@@ -322,9 +312,7 @@
           "detail": "Failed to load resource: the server responded with a status of 404 ()"
         }
       ],
-      "shots": [
-        "06-phone-favorites.png"
-      ]
+      "shots": ["06-phone-favorites.png"]
     },
     {
       "name": "Phone: /history",
@@ -430,9 +418,7 @@
           "detail": "Failed to load resource: net::ERR_FAILED"
         }
       ],
-      "shots": [
-        "07-phone-history.png"
-      ]
+      "shots": ["07-phone-history.png"]
     },
     {
       "name": "Phone: /channel/liis-kask-ee",
@@ -450,17 +436,13 @@
           "detail": "Failed to load resource: the server responded with a status of 404 ()"
         }
       ],
-      "shots": [
-        "08-phone-channel-liis-kask-ee.png"
-      ]
+      "shots": ["08-phone-channel-liis-kask-ee.png"]
     },
     {
       "name": "Phone: play from home and open full-screen player",
       "ok": false,
       "ms": 15393,
-      "notes": [
-        "locator.waitFor: Timeout 12000ms exceeded."
-      ],
+      "notes": ["locator.waitFor: Timeout 12000ms exceeded."],
       "ux": [],
       "signals": [
         {
@@ -580,9 +562,7 @@
           "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
         }
       ],
-      "shots": [
-        "09-phone-play-from-home-and-open-full-screen-player.png"
-      ]
+      "shots": ["09-phone-play-from-home-and-open-full-screen-player.png"]
     }
   ]
 }

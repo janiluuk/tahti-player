@@ -1,17 +1,17 @@
 # Artist tasks — phone 390×844
 
-Target: https://beta.tahti.live · 2026-10-19T20:27:04.757Z
+Target: https://beta.tahti.live
 
-| Task | Result | Time | UX notes | Signals |
-| --- | --- | --- | --- | --- |
-| Phone: sign in | **FAIL** locator.waitFor: Timeout 20000ms exceeded. | 21.7s |  | console×22 api×9 |
-| Phone: /studio | ok | 0.8s |  | api×3 console×3 |
-| Phone: /studio/upload | ok | 0.8s |  | api×3 console×3 |
-| Phone: /studio/sounds | ok | 0.7s |  | api×3 console×3 |
-| Phone: /studio/collections | ok | 0.7s |  | api×3 console×3 |
-| Phone: /studio/go-live | ok | 0.8s |  | api×9 console×9 |
-| Phone: /studio/stats | ok | 0.8s |  | api×11 console×11 |
-| Phone: /studio/channel | ok | 0.7s |  | api×2 console×2 |
+| Task                       | Result                                              | Time  | UX notes | Signals           |
+| -------------------------- | --------------------------------------------------- | ----- | -------- | ----------------- |
+| Phone: sign in             | **FAIL** locator.waitFor: Timeout 20000ms exceeded. | 21.7s |          | console×22 api×9  |
+| Phone: /studio             | ok                                                  | 0.8s  |          | api×3 console×3   |
+| Phone: /studio/upload      | ok                                                  | 0.8s  |          | api×3 console×3   |
+| Phone: /studio/sounds      | ok                                                  | 0.7s  |          | api×3 console×3   |
+| Phone: /studio/collections | ok                                                  | 0.7s  |          | api×3 console×3   |
+| Phone: /studio/go-live     | ok                                                  | 0.8s  |          | api×9 console×9   |
+| Phone: /studio/stats       | ok                                                  | 0.8s  |          | api×11 console×11 |
+| Phone: /studio/channel     | ok                                                  | 0.7s  |          | api×2 console×2   |
 
 ## Signals
 
@@ -90,4 +90,3 @@ Target: https://beta.tahti.live · 2026-10-19T20:27:04.757Z
 
 - api: `401 GET /tahti-api/api/auth/me`
 - console: `Failed to load resource: the server responded with a status of 401 ()`
-

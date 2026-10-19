@@ -1,18 +1,18 @@
 # Listener tasks — phone 390×844
 
-Target: https://beta.tahti.live · 2026-10-19T20:32:56.347Z
+Target: https://beta.tahti.live
 
-| Task | Result | Time | UX notes | Signals |
-| --- | --- | --- | --- | --- |
-| Phone: sign in | ok | 8.2s |  | api×8 console×20 audit×5 |
-| Phone: / | ok | 2.7s |  | console×18 api×6 audit×5 |
-| Phone: /discover | ok | 1.2s |  |  |
-| Phone: /radio | ok | 0.9s |  |  |
-| Phone: /library | ok | 0.8s |  |  |
-| Phone: /favorites | ok | 0.8s |  | api×1 console×1 |
-| Phone: /history | ok | 0.9s |  | api×6 console×18 |
-| Phone: /channel/liis-kask-ee | ok | 1.6s |  | api×1 console×1 |
-| Phone: play from home and open full-screen player | **FAIL** locator.waitFor: Timeout 12000ms exceeded. | 15.4s |  | console×18 api×6 audit×5 |
+| Task                                              | Result                                              | Time  | UX notes | Signals                  |
+| ------------------------------------------------- | --------------------------------------------------- | ----- | -------- | ------------------------ |
+| Phone: sign in                                    | ok                                                  | 8.2s  |          | api×8 console×20 audit×5 |
+| Phone: /                                          | ok                                                  | 2.7s  |          | console×18 api×6 audit×5 |
+| Phone: /discover                                  | ok                                                  | 1.2s  |          |                          |
+| Phone: /radio                                     | ok                                                  | 0.9s  |          |                          |
+| Phone: /library                                   | ok                                                  | 0.8s  |          |                          |
+| Phone: /favorites                                 | ok                                                  | 0.8s  |          | api×1 console×1          |
+| Phone: /history                                   | ok                                                  | 0.9s  |          | api×6 console×18         |
+| Phone: /channel/liis-kask-ee                      | ok                                                  | 1.6s  |          | api×1 console×1          |
+| Phone: play from home and open full-screen player | **FAIL** locator.waitFor: Timeout 12000ms exceeded. | 15.4s |          | console×18 api×6 audit×5 |
 
 ## Signals
 
@@ -98,4 +98,3 @@ Target: https://beta.tahti.live · 2026-10-19T20:32:56.347Z
 - api: `404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiorock.fi%2F`
 - api: `404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fareena.yle.fi%2Faudio%2Fohjelmat%2Fyle-x`
 - audit: `/: unlabeled field <input type="file" accept="image/jpeg,image/png,image/webp" class="sr-only" tabindex="-1" aria-hidden="true">`
-

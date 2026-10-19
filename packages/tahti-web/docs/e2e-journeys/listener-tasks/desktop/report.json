@@ -5,9 +5,7 @@
       "name": "Sign in as listener",
       "ok": true,
       "ms": 4140,
-      "notes": [
-        "landed on /"
-      ],
+      "notes": ["landed on /"],
       "ux": [],
       "signals": [
         {
@@ -143,17 +141,13 @@
           "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
         }
       ],
-      "shots": [
-        "01-sign-in-as-listener.png"
-      ]
+      "shots": ["01-sign-in-as-listener.png"]
     },
     {
       "name": "Home: what can I listen to?",
       "ok": false,
       "ms": 17266,
-      "notes": [
-        "no playable tracks on home"
-      ],
+      "notes": ["no playable tracks on home"],
       "ux": [],
       "signals": [
         {
@@ -325,17 +319,13 @@
           "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
         }
       ],
-      "shots": [
-        "02-home-what-can-i-listen-to.png"
-      ]
+      "shots": ["02-home-what-can-i-listen-to.png"]
     },
     {
       "name": "Play a track from home",
       "ok": false,
       "ms": 30001,
-      "notes": [
-        "locator.getAttribute: Timeout 30000ms exceeded."
-      ],
+      "notes": ["locator.getAttribute: Timeout 30000ms exceeded."],
       "ux": [],
       "signals": [
         {
@@ -367,18 +357,14 @@
           "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
         }
       ],
-      "shots": [
-        "03-play-a-track-from-home.png"
-      ]
+      "shots": ["03-play-a-track-from-home.png"]
     },
     {
       "name": "Pause and resume with the space bar",
       "ok": true,
       "ms": 1666,
       "notes": [],
-      "ux": [
-        "space bar paused but did not resume"
-      ],
+      "ux": ["space bar paused but did not resume"],
       "signals": [
         {
           "kind": "audit",
@@ -401,17 +387,13 @@
           "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
         }
       ],
-      "shots": [
-        "04-pause-and-resume-with-the-space-bar.png"
-      ]
+      "shots": ["04-pause-and-resume-with-the-space-bar.png"]
     },
     {
       "name": "Add another track to the queue and open the queue",
       "ok": false,
       "ms": 31101,
-      "notes": [
-        "locator.click: Timeout 30000ms exceeded."
-      ],
+      "notes": ["locator.click: Timeout 30000ms exceeded."],
       "ux": [],
       "signals": [
         {
@@ -451,9 +433,7 @@
           "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
         }
       ],
-      "shots": [
-        "05-add-another-track-to-the-queue-and-open-the-queue.png"
-      ]
+      "shots": ["05-add-another-track-to-the-queue-and-open-the-queue.png"]
     },
     {
       "name": "Favourite the playing track, find it in Favorites, undo",
@@ -631,21 +611,14 @@
           "detail": "/favorites: unnamed control <div class=\"border-border rounded-md border-(length:--border-width) bg-background-secondary text-foreground shadow-none "
         }
       ],
-      "shots": [
-        "06-favourite-the-playing-track-find-it-in-favorites-undo.png"
-      ]
+      "shots": ["06-favourite-the-playing-track-find-it-in-favorites-undo.png"]
     },
     {
       "name": "Search for the track I just played",
       "ok": true,
       "ms": 4139,
-      "notes": [
-        "0 suggestions; /favorites"
-      ],
-      "ux": [
-        "no suggestions for \"a\"",
-        "Enter in search went to /favorites"
-      ],
+      "notes": ["0 suggestions; /favorites"],
+      "ux": ["no suggestions for \"a\"", "Enter in search went to /favorites"],
       "signals": [
         {
           "kind": "audit",
@@ -656,17 +629,13 @@
           "detail": "/favorites: unnamed control <div class=\"border-border rounded-md border-(length:--border-width) bg-background-secondary text-foreground shadow-none "
         }
       ],
-      "shots": [
-        "07-search-for-the-track-i-just-played.png"
-      ]
+      "shots": ["07-search-for-the-track-i-just-played.png"]
     },
     {
       "name": "Open an artist channel from a track",
       "ok": true,
       "ms": 3607,
-      "notes": [
-        "/channel/liis-kask-ee → \"Discover\""
-      ],
+      "notes": ["/channel/liis-kask-ee → \"Discover\""],
       "ux": [],
       "signals": [
         {
@@ -678,17 +647,13 @@
           "detail": "/discover: unnamed control <div class=\"border-border rounded-md border-(length:--border-width) text-foreground shadow-none group relative flex item"
         }
       ],
-      "shots": [
-        "08-open-an-artist-channel-from-a-track.png"
-      ]
+      "shots": ["08-open-an-artist-channel-from-a-track.png"]
     },
     {
       "name": "Follow / subscribe to the artist",
       "ok": false,
       "ms": 11,
-      "notes": [
-        "no Follow or Subscribe button on the channel"
-      ],
+      "notes": ["no Follow or Subscribe button on the channel"],
       "ux": [],
       "signals": [
         {
@@ -700,9 +665,7 @@
           "detail": "/discover: unnamed control <div class=\"border-border rounded-md border-(length:--border-width) text-foreground shadow-none group relative flex item"
         }
       ],
-      "shots": [
-        "09-follow-subscribe-to-the-artist.png"
-      ]
+      "shots": ["09-follow-subscribe-to-the-artist.png"]
     },
     {
       "name": "Play a radio station",
@@ -734,9 +697,7 @@
           "detail": "/radio: unnamed control <div class=\"border-border rounded-md border-(length:--border-width) text-foreground shadow-none group relative flex item"
         }
       ],
-      "shots": [
-        "10-play-a-radio-station.png"
-      ]
+      "shots": ["10-play-a-radio-station.png"]
     },
     {
       "name": "Listening history shows what I played",
@@ -842,9 +803,7 @@
           "detail": "Failed to load resource: net::ERR_FAILED"
         }
       ],
-      "shots": [
-        "11-listening-history-shows-what-i-played.png"
-      ]
+      "shots": ["11-listening-history-shows-what-i-played.png"]
     },
     {
       "name": "Library and collections",
@@ -864,9 +823,7 @@
           "detail": "Failed to load resource: the server responded with a status of 404 ()"
         }
       ],
-      "shots": [
-        "12-library-and-collections.png"
-      ]
+      "shots": ["12-library-and-collections.png"]
     },
     {
       "name": "Messages and notifications",
@@ -900,30 +857,22 @@
           "detail": "Failed to load resource: the server responded with a status of 404 ()"
         }
       ],
-      "shots": [
-        "13-messages-and-notifications.png"
-      ]
+      "shots": ["13-messages-and-notifications.png"]
     },
     {
       "name": "Account settings",
       "ok": true,
       "ms": 875,
       "notes": [],
-      "ux": [
-        "account settings has no editable fields"
-      ],
+      "ux": ["account settings has no editable fields"],
       "signals": [],
-      "shots": [
-        "14-account-settings.png"
-      ]
+      "shots": ["14-account-settings.png"]
     },
     {
       "name": "Sign out",
       "ok": false,
       "ms": 30001,
-      "notes": [
-        "locator.click: Timeout 30000ms exceeded."
-      ],
+      "notes": ["locator.click: Timeout 30000ms exceeded."],
       "ux": [],
       "signals": [
         {
@@ -935,9 +884,7 @@
           "detail": "Failed to load resource: the server responded with a status of 404 ()"
         }
       ],
-      "shots": [
-        "15-sign-out.png"
-      ]
+      "shots": ["15-sign-out.png"]
     }
   ]
 }

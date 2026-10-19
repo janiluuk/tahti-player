@@ -1,24 +1,24 @@
 # Listener tasks — desktop 1440×900
 
-Target: https://beta.tahti.live · 2026-10-19T20:31:14.433Z
+Target: https://beta.tahti.live
 
-| Task | Result | Time | UX notes | Signals |
-| --- | --- | --- | --- | --- |
-| Sign in as listener | ok | 4.1s |  | api×8 console×20 audit×5 |
-| Home: what can I listen to? | **FAIL** no playable tracks on home | 17.3s |  | console×18 api×6 slow×13 audit×5 |
-| Play a track from home | **FAIL** locator.getAttribute: Timeout 30000ms exceeded. | 30.0s |  | api×1 console×1 audit×5 |
-| Pause and resume with the space bar | ok | 1.7s | space bar paused but did not resume | audit×5 |
-| Add another track to the queue and open the queue | **FAIL** locator.click: Timeout 30000ms exceeded. | 31.1s |  | api×1 console×1 audit×7 |
-| Favourite the playing track, find it in Favorites, undo | ok | 8.7s |  | console×19 api×7 slow×14 audit×2 |
-| Search for the track I just played | ok | 4.1s | no suggestions for "a"<br>Enter in search went to /favorites | audit×2 |
-| Open an artist channel from a track | ok | 3.6s |  | audit×2 |
-| Follow / subscribe to the artist | **FAIL** no Follow or Subscribe button on the channel | 0.0s |  | audit×2 |
-| Play a radio station | **FAIL** "Play Radio" did not start: [{"paused":false,"t":0,"src":"blob:https://beta.tahti.live/b4f84f4a-810d-4b77-9535-8f02b1e5029b","err":null}] | 7.1s |  | console×3 audit×2 |
-| Listening history shows what I played | ok | 1.3s |  | api×6 console×18 |
-| Library and collections | ok | 2.3s |  | api×1 console×1 |
-| Messages and notifications | ok | 0.9s |  | api×3 console×3 |
-| Account settings | ok | 0.9s | account settings has no editable fields |  |
-| Sign out | **FAIL** locator.click: Timeout 30000ms exceeded. | 30.0s |  | api×1 console×1 |
+| Task                                                    | Result                                                                                                                                             | Time  | UX notes                                                   | Signals                          |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----- | ---------------------------------------------------------- | -------------------------------- |
+| Sign in as listener                                     | ok                                                                                                                                                 | 4.1s  |                                                            | api×8 console×20 audit×5         |
+| Home: what can I listen to?                             | **FAIL** no playable tracks on home                                                                                                                | 17.3s |                                                            | console×18 api×6 slow×13 audit×5 |
+| Play a track from home                                  | **FAIL** locator.getAttribute: Timeout 30000ms exceeded.                                                                                           | 30.0s |                                                            | api×1 console×1 audit×5          |
+| Pause and resume with the space bar                     | ok                                                                                                                                                 | 1.7s  | space bar paused but did not resume                        | audit×5                          |
+| Add another track to the queue and open the queue       | **FAIL** locator.click: Timeout 30000ms exceeded.                                                                                                  | 31.1s |                                                            | api×1 console×1 audit×7          |
+| Favourite the playing track, find it in Favorites, undo | ok                                                                                                                                                 | 8.7s  |                                                            | console×19 api×7 slow×14 audit×2 |
+| Search for the track I just played                      | ok                                                                                                                                                 | 4.1s  | no suggestions for "a"; Enter in search went to /favorites | audit×2                          |
+| Open an artist channel from a track                     | ok                                                                                                                                                 | 3.6s  |                                                            | audit×2                          |
+| Follow / subscribe to the artist                        | **FAIL** no Follow or Subscribe button on the channel                                                                                              | 0.0s  |                                                            | audit×2                          |
+| Play a radio station                                    | **FAIL** "Play Radio" did not start: ({"paused":false,"t":0,"src":"blob:https://beta.tahti.live/b4f84f4a-810d-4b77-9535-8f02b1e5029b","err":null}) | 7.1s  |                                                            | console×3 audit×2                |
+| Listening history shows what I played                   | ok                                                                                                                                                 | 1.3s  |                                                            | api×6 console×18                 |
+| Library and collections                                 | ok                                                                                                                                                 | 2.3s  |                                                            | api×1 console×1                  |
+| Messages and notifications                              | ok                                                                                                                                                 | 0.9s  |                                                            | api×3 console×3                  |
+| Account settings                                        | ok                                                                                                                                                 | 0.9s  | account settings has no editable fields                    |                                  |
+| Sign out                                                | **FAIL** locator.click: Timeout 30000ms exceeded.                                                                                                  | 30.0s |                                                            | api×1 console×1                  |
 
 ## Signals
 
@@ -177,4 +177,3 @@ Target: https://beta.tahti.live · 2026-10-19T20:31:14.433Z
 
 - api: `404 GET /tahti-api/api/me/sound/processing`
 - console: `Failed to load resource: the server responded with a status of 404 ()`
-

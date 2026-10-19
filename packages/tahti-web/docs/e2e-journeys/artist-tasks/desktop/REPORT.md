@@ -1,26 +1,26 @@
 # Artist tasks — desktop 1440×900
 
-Target: https://beta.tahti.live · 2026-10-19T20:26:33.837Z
+Target: https://beta.tahti.live
 
-| Task | Result | Time | UX notes | Signals |
-| --- | --- | --- | --- | --- |
-| Sign in as artist | ok | 4.5s | an artist lands on /, not Studio | console×23 api×8 audit×5 |
-| Studio dashboard: what should I do next? | ok | 1.0s |  | console×1 |
-| Upload a track | ok | 64.5s | no Title field before uploading; the file name becomes the title<br>Upload page never finished (Validation error); retried via the Tracks page Upload dialog | console×8 api×6 |
-| Edit the track title and description | ok | 5.6s |  | console×4 api×2 |
-| Find the track in my Sounds list | ok | 2.5s |  | console×1 |
-| Create a release and add the track | **FAIL** track not listed in the release after adding | 8.8s |  | console×3 api×2 |
-| Channel designer and public channel | ok | 4.0s | no link from the channel designer to the public channel page | console×3 api×1 |
-| Go-live setup (no broadcast) | ok | 2.8s | an empty "Queue" side panel stays open across Studio, taking ~25% of the width<br>go-live sits under 2 rows of tabs (Studio sections + Broadcast sub-tabs) | console×1 |
-| Stats page | ok | 0.9s |  | console×1 |
-| Insights page | ok | 0.9s |  | console×1 |
-| Fans & revenue page | ok | 0.9s |  | console×1 |
-| Schedule page | ok | 1.0s |  | console×1 |
-| New event form page | ok | 0.8s |  | console×1 |
-| Distribution page | ok | 0.9s |  | console×1 |
-| Artist settings page | ok | 0.9s |  | console×1 |
-| Cleanup: delete the test release | ok | 11.8s | collections list rows have no delete/more menu; delete is only on the release page<br>deleting a release from Studio lands on /library/collections | console×7 api×4 |
-| Cleanup: delete the test track | ok | 6.2s |  | console×2 |
+| Task                                     | Result                                                | Time  | UX notes                                                                                                                                                   | Signals                  |
+| ---------------------------------------- | ----------------------------------------------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| Sign in as artist                        | ok                                                    | 4.5s  | an artist lands on /, not Studio                                                                                                                           | console×23 api×8 audit×5 |
+| Studio dashboard: what should I do next? | ok                                                    | 1.0s  |                                                                                                                                                            | console×1                |
+| Upload a track                           | ok                                                    | 64.5s | no Title field before uploading; the file name becomes the title; Upload page never finished (Validation error); retried via the Tracks page Upload dialog | console×8 api×6          |
+| Edit the track title and description     | ok                                                    | 5.6s  |                                                                                                                                                            | console×4 api×2          |
+| Find the track in my Sounds list         | ok                                                    | 2.5s  |                                                                                                                                                            | console×1                |
+| Create a release and add the track       | **FAIL** track not listed in the release after adding | 8.8s  |                                                                                                                                                            | console×3 api×2          |
+| Channel designer and public channel      | ok                                                    | 4.0s  | no link from the channel designer to the public channel page                                                                                               | console×3 api×1          |
+| Go-live setup (no broadcast)             | ok                                                    | 2.8s  | an empty "Queue" side panel stays open across Studio, taking ~25% of the width; go-live sits under 2 rows of tabs (Studio sections + Broadcast sub-tabs)   | console×1                |
+| Stats page                               | ok                                                    | 0.9s  |                                                                                                                                                            | console×1                |
+| Insights page                            | ok                                                    | 0.9s  |                                                                                                                                                            | console×1                |
+| Fans & revenue page                      | ok                                                    | 0.9s  |                                                                                                                                                            | console×1                |
+| Schedule page                            | ok                                                    | 1.0s  |                                                                                                                                                            | console×1                |
+| New event form page                      | ok                                                    | 0.8s  |                                                                                                                                                            | console×1                |
+| Distribution page                        | ok                                                    | 0.9s  |                                                                                                                                                            | console×1                |
+| Artist settings page                     | ok                                                    | 0.9s  |                                                                                                                                                            | console×1                |
+| Cleanup: delete the test release         | ok                                                    | 11.8s | collections list rows have no delete/more menu; delete is only on the release page; deleting a release from Studio lands on /library/collections           | console×7 api×4          |
+| Cleanup: delete the test track           | ok                                                    | 6.2s  |                                                                                                                                                            | console×2                |
 
 ## Signals
 
@@ -125,4 +125,3 @@ Target: https://beta.tahti.live · 2026-10-19T20:26:33.837Z
 ### Cleanup: delete the test track
 
 - console: `Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena`
-

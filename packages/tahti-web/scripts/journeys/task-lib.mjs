@@ -39,22 +39,31 @@ export async function createRun(outDir, { viewport }) {
   let shotIndex = 0;
 
   const note = (kind, detail) => {
-    if (current) current.signals.push({ kind, detail });
+    if (current) {
+      current.signals.push({ kind, detail });
+    }
   };
   page.on('console', (m) => {
-    if (m.type() === 'error') note('console', m.text().slice(0, 300));
+    if (m.type() === 'error') {
+      note('console', m.text().slice(0, 300));
+    }
   });
   page.on('pageerror', (e) => note('exception', e.message.slice(0, 300)));
   const started = new Map();
   page.on('request', (r) => started.set(r, Date.now()));
   page.on('response', (r) => {
     const url = r.url();
-    if (!url.includes('/api/')) return;
+    if (!url.includes('/api/')) {
+      return;
+    }
     const ms = Date.now() - (started.get(r.request()) ?? Date.now());
     const path = url.replace(/^https?:\/\/[^/]+/, '').slice(0, 160);
     const method = r.request().method();
-    if (r.status() >= 400) note('api', `${r.status()} ${method} ${path}`);
-    else if (ms > SLOW_MS) note('slow', `${ms}ms ${method} ${path}`);
+    if (r.status() >= 400) {
+      note('api', `${r.status()} ${method} ${path}`);
+    } else if (ms > SLOW_MS) {
+      note('slow', `${ms}ms ${method} ${path}`);
+    }
   });
 
   async function shot(label) {
@@ -67,7 +76,9 @@ export async function createRun(outDir, { viewport }) {
     await page
       .screenshot({ path: join(outDir, file), fullPage: false })
       .catch(() => {});
-    if (current) current.shots.push(file);
+    if (current) {
+      current.shots.push(file);
+    }
     return file;
   }
 
@@ -123,14 +134,21 @@ export async function createRun(outDir, { viewport }) {
         };
       })
       .catch(() => null);
-    if (!result) return;
-    if (result.h1 !== 1) note('audit', `${result.url}: ${result.h1} h1`);
-    if (result.overflowX)
+    if (!result) {
+      return;
+    }
+    if (result.h1 !== 1) {
+      note('audit', `${result.url}: ${result.h1} h1`);
+    }
+    if (result.overflowX) {
       note('audit', `${result.url}: horizontal page overflow`);
-    for (const u of result.unnamed)
+    }
+    for (const u of result.unnamed) {
       note('audit', `${result.url}: unnamed control ${u}`);
-    for (const u of result.unlabeled)
+    }
+    for (const u of result.unlabeled) {
       note('audit', `${result.url}: unlabeled field ${u}`);
+    }
   }
 
   /** Run one user task. `fn` returns an optional note string; throwing marks
@@ -151,7 +169,9 @@ export async function createRun(outDir, { viewport }) {
     const ux = (msg) => current.ux.push(msg);
     try {
       const out = await fn({ page, ux, shot });
-      if (out) current.notes.push(out);
+      if (out) {
+        current.notes.push(out);
+      }
       console.log(`✓ ${name}`);
     } catch (e) {
       current.ok = false;
@@ -166,7 +186,9 @@ export async function createRun(outDir, { viewport }) {
     await page.waitForTimeout(400);
     await audit();
     await shot(name);
-    for (const u of current.ux) console.log(`   ~ ${u}`);
+    for (const u of current.ux) {
+      console.log(`   ~ ${u}`);
+    }
     current = null;
   }
 
@@ -176,35 +198,7 @@ export async function createRun(outDir, { viewport }) {
       join(outDir, 'report.json'),
       JSON.stringify({ base: BASE, tasks }, null, 2) + '\n',
     );
-    const lines = [
-      `# ${title}`,
-      '',
-      `Target: ${BASE} · ${new Date().toISOString()}`,
-      '',
-    ];
-    lines.push(
-      '| Task | Result | Time | UX notes | Signals |',
-      '| --- | --- | --- | --- | --- |',
-    );
-    for (const t of tasks) {
-      const sig = [...new Set(t.signals.map((s) => s.kind))]
-        .map((k) => `${k}×${t.signals.filter((s) => s.kind === k).length}`)
-        .join(' ');
-      lines.push(
-        `| ${t.name} | ${t.ok ? 'ok' : `**FAIL** ${t.notes.join('; ')}`} | ${(t.ms / 1000).toFixed(1)}s | ${t.ux.join('<br>')} | ${sig} |`,
-      );
-    }
-    lines.push('', '## Signals', '');
-    for (const t of tasks) {
-      if (!t.signals.length) continue;
-      lines.push(`### ${t.name}`, '');
-      for (const s of [
-        ...new Map(t.signals.map((s) => [s.kind + s.detail, s])).values(),
-      ])
-        lines.push(`- ${s.kind}: \`${s.detail.replace(/`/g, "'")}\``);
-      lines.push('');
-    }
-    await writeFile(join(outDir, 'REPORT.md'), lines.join('\n') + '\n');
+    await writeReport(outDir, title, BASE, tasks);
     const failed = tasks.filter((t) => !t.ok).length;
     console.log(
       `\n${tasks.length - failed}/${tasks.length} tasks ok → ${outDir}/REPORT.md`,
@@ -212,6 +206,40 @@ export async function createRun(outDir, { viewport }) {
   }
 
   return { page, context, task, shot, finish };
+}
+
+const cell = (text) =>
+  text.replace(/[[\]|]/g, (c) => ({ '[': '(', ']': ')', '|': '/' })[c]);
+
+/** REPORT.md from a run's tasks; also used to rebuild it from report.json. */
+export async function writeReport(outDir, title, base, tasks) {
+  const lines = [`# ${title}`, '', `Target: ${base}`, ''];
+  lines.push(
+    '| Task | Result | Time | UX notes | Signals |',
+    '| --- | --- | --- | --- | --- |',
+  );
+  for (const t of tasks) {
+    const sig = [...new Set(t.signals.map((s) => s.kind))]
+      .map((k) => `${k}×${t.signals.filter((s) => s.kind === k).length}`)
+      .join(' ');
+    const result = t.ok ? 'ok' : `**FAIL** ${t.notes.join('; ')}`;
+    lines.push(
+      `| ${cell(t.name)} | ${cell(result)} | ${(t.ms / 1000).toFixed(1)}s | ${cell(t.ux.join('; '))} | ${sig} |`,
+    );
+  }
+  lines.push('', '## Signals', '');
+  for (const t of tasks) {
+    if (!t.signals.length) {
+      continue;
+    }
+    lines.push(`### ${cell(t.name)}`, '');
+    const unique = new Map(t.signals.map((s) => [s.kind + s.detail, s]));
+    for (const s of unique.values()) {
+      lines.push(`- ${s.kind}: \`${s.detail.replace(/`/g, "'")}\``);
+    }
+    lines.push('');
+  }
+  await writeFile(join(outDir, 'REPORT.md'), lines.join('\n') + '\n');
 }
 
 export async function signIn(page, email, password) {

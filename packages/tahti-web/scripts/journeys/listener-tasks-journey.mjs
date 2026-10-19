@@ -60,7 +60,7 @@ async function main() {
   const run = await createRun(join(OUT, 'desktop'), {
     viewport: { width: 1440, height: 900 },
   });
-  const { page, task } = run;
+  const { task } = run;
   let trackTitle = '';
   let artistHref = '';
 
@@ -69,18 +69,24 @@ async function main() {
     await signIn(page, EMAIL, PASSWORD);
     const landed = new URL(page.url()).pathname;
     const ms = Date.now() - t0;
-    if (ms > 5000) ux(`sign-in took ${(ms / 1000).toFixed(1)}s`);
-    if (landed === '/login') ux('still on /login after signing in');
+    if (ms > 5000) {
+      ux(`sign-in took ${(ms / 1000).toFixed(1)}s`);
+    }
+    if (landed === '/login') {
+      ux('still on /login after signing in');
+    }
     await page.waitForTimeout(2000);
     await dismissInterruptions(page, ux);
     return `landed on ${landed}`;
   });
 
-  await task('Home: what can I listen to?', async ({ page, ux }) => {
+  await task('Home: what can I listen to?', async ({ page }) => {
     await go(page, '/');
     await reveal(page, page.locator(PLAY)).catch(() => {});
     const plays = await page.locator(PLAY).count();
-    if (plays === 0) throw new Error('no playable tracks on home');
+    if (plays === 0) {
+      throw new Error('no playable tracks on home');
+    }
     const headings = await page.locator('main h2').allTextContents();
     return `${plays} playable tracks; sections: ${headings.join(', ')}`;
   });
@@ -94,12 +100,16 @@ async function main() {
     const bar = await playerTitle(page);
     const audio = await audioState(page);
     const playing = await isPlaying(page);
-    if (!bar.includes(trackTitle))
+    if (!bar.includes(trackTitle)) {
       ux(`player bar shows "${bar.trim().slice(0, 60)}" not "${trackTitle}"`);
-    if (!playing) ux('player bar has no Pause button 4s after Play');
+    }
+    if (!playing) {
+      ux('player bar has no Pause button 4s after Play');
+    }
     const moving = audio.some((a) => !a.paused && a.t > 0.5);
-    if (!moving)
+    if (!moving) {
       throw new Error(`audio not advancing: ${JSON.stringify(audio)}`);
+    }
     return `playing "${trackTitle}"`;
   });
 
@@ -116,8 +126,11 @@ async function main() {
     const a2 = await audioState(page);
     const pausedOnce = a1.some((a) => a.paused);
     const resumed = a2.some((a) => !a.paused);
-    if (!pausedOnce) ux('space bar does not pause playback');
-    else if (!resumed) ux('space bar paused but did not resume');
+    if (!pausedOnce) {
+      ux('space bar does not pause playback');
+    } else if (!resumed) {
+      ux('space bar paused but did not resume');
+    }
   });
 
   await task(
@@ -127,14 +140,17 @@ async function main() {
         name: 'Add to queue',
         exact: true,
       });
-      if ((await adds.count()) < 2)
+      if ((await adds.count()) < 2) {
         throw new Error('fewer than two "Add to queue" buttons on home');
+      }
       await adds.nth(1).click({ force: true });
       await page.waitForTimeout(800);
       const toast = await page
         .locator('[role=status], [data-sonner-toast], [role=alert]')
         .allTextContents();
-      if (!toast.join('').trim()) ux('no confirmation after Add to queue');
+      if (!toast.join('').trim()) {
+        ux('no confirmation after Add to queue');
+      }
       const queueBtn = page
         .locator(
           '[data-testid=open-bottom-queue], [data-testid=close-bottom-queue]',
@@ -158,50 +174,63 @@ async function main() {
         .getByRole('button', { name: 'Add to favorites', exact: true })
 
         .first();
-      if (!(await fav.count()))
+      if (!(await fav.count())) {
         throw new Error('no "Add to favorites" button on home');
+      }
       await fav.click({ force: true });
       await page.waitForTimeout(800);
       await go(page, '/favorites');
       const body = await page.locator('main').innerText();
-      if (/no favou?rites/i.test(body) || body.trim().length < 40)
+      if (/no favou?rites/i.test(body) || body.trim().length < 40) {
         ux('favourited track does not show on /favorites');
+      }
       const remove = page
         .getByRole('button', { name: /Remove from favou?rites/ })
         .first();
-      if (await remove.count()) await remove.click();
-      else ux('no "Remove from favorites" control on /favorites');
+      if (await remove.count()) {
+        await remove.click();
+      } else {
+        ux('no "Remove from favorites" control on /favorites');
+      }
     },
   );
 
   await task('Search for the track I just played', async ({ page, ux }) => {
     const q = trackTitle.split(' ').slice(0, 2).join(' ') || 'a';
     const box = page.getByRole('combobox', { name: /Search artists/ });
-    if (!(await box.count())) throw new Error('no global search box');
+    if (!(await box.count())) {
+      throw new Error('no global search box');
+    }
     await box.click();
     await box.fill(q);
     await page.waitForTimeout(2000);
     const options = await page.getByRole('option').allTextContents();
-    if (!options.length) ux(`no suggestions for "${q}"`);
+    if (!options.length) {
+      ux(`no suggestions for "${q}"`);
+    }
     await box.press('Enter');
     await page.waitForTimeout(2000);
     const url = new URL(page.url());
-    if (url.pathname !== '/search')
+    if (url.pathname !== '/search') {
       ux(`Enter in search went to ${url.pathname}`);
+    }
     const main = await page.locator('main').innerText();
-    if (!main.toLowerCase().includes(trackTitle.toLowerCase().slice(0, 8)))
+    if (!main.toLowerCase().includes(trackTitle.toLowerCase().slice(0, 8))) {
       ux(`search page for "${q}" does not list "${trackTitle}"`);
+    }
     return `${options.length} suggestions; ${url.pathname}${url.search}`;
   });
 
-  await task('Open an artist channel from a track', async ({ page, ux }) => {
+  await task('Open an artist channel from a track', async ({ page }) => {
     await go(page, '/discover');
     const link = page
       .locator(
         'main a[href^="/channel/"], main a[href^="/u/"], main a[href^="/c/"]',
       )
       .first();
-    if (!(await link.count())) throw new Error('no artist link on /discover');
+    if (!(await link.count())) {
+      throw new Error('no artist link on /discover');
+    }
     artistHref = (await link.getAttribute('href')) ?? '';
     await link.click();
     await page.waitForTimeout(2500);
@@ -218,8 +247,9 @@ async function main() {
       .getByRole('button', { name: /^(Follow|Subscribe)\b/ })
       .or(page.getByRole('link', { name: /^(Follow|Subscribe)\b/ }))
       .first();
-    if (!(await follow.count()))
+    if (!(await follow.count())) {
       throw new Error('no Follow or Subscribe button on the channel');
+    }
     const label = (await follow.textContent())?.trim();
     await follow.click();
     await page.waitForTimeout(2000);
@@ -229,32 +259,38 @@ async function main() {
         name: /^(Following|Unfollow|Subscribed|Unsubscribe)/,
       })
       .count();
-    if (dest.startsWith('/subscribe') || dest.includes('/subscribe'))
+    if (dest.startsWith('/subscribe') || dest.includes('/subscribe')) {
       ux(
         `"${label}" opens the paid fan-tier page (${dest}); there is no free follow`,
       );
-    else if (!after) ux(`"${label}" gave no visible followed state`);
+    } else if (!after) {
+      ux(`"${label}" gave no visible followed state`);
+    }
     return `clicked "${label}" → ${dest}`;
   });
 
-  await task('Play a radio station', async ({ page, ux }) => {
+  await task('Play a radio station', async ({ page }) => {
     await go(page, '/radio');
     const play = page.getByRole('button', { name: /^Play / }).first();
-    if (!(await play.count())) throw new Error('no Play button on /radio');
+    if (!(await play.count())) {
+      throw new Error('no Play button on /radio');
+    }
     const label = await play.getAttribute('aria-label');
     await play.click({ force: true });
     await page.waitForTimeout(6000);
     const audio = await audioState(page);
-    if (!audio.some((a) => !a.paused && a.t > 1))
+    if (!audio.some((a) => !a.paused && a.t > 1)) {
       throw new Error(`"${label}" did not start: ${JSON.stringify(audio)}`);
+    }
     return label;
   });
 
   await task('Listening history shows what I played', async ({ page, ux }) => {
     await go(page, '/history');
     const text = await page.locator('main').innerText();
-    if (trackTitle && !text.includes(trackTitle))
+    if (trackTitle && !text.includes(trackTitle)) {
       ux(`"${trackTitle}" not in /history after playing it`);
+    }
   });
 
   await task('Library and collections', async ({ page, ux }) => {
@@ -266,7 +302,9 @@ async function main() {
     const create = await page
       .getByRole('button', { name: /New (playlist|collection)|Create/ })
       .count();
-    if (!create) ux('no way to create a playlist from /library/collections');
+    if (!create) {
+      ux('no way to create a playlist from /library/collections');
+    }
     return `tabs: ${tabs.join(', ')}`;
   });
 
@@ -277,16 +315,19 @@ async function main() {
   await task('Account settings', async ({ page, ux }) => {
     await go(page, '/settings/account');
     const fields = await page.locator('main input:visible').count();
-    if (!fields) ux('account settings has no editable fields');
+    if (!fields) {
+      ux('account settings has no editable fields');
+    }
   });
 
-  await task('Sign out', async ({ page, ux }) => {
+  await task('Sign out', async ({ page }) => {
     await page.getByRole('button', { name: /^Signed in as/ }).click();
     const out = page
       .getByRole('menuitem', { name: /Sign out|Log out/ })
       .or(page.getByRole('button', { name: /Sign out|Log out/ }));
-    if (!(await out.count()))
+    if (!(await out.count())) {
       throw new Error('no Sign out in the account menu');
+    }
     await out.first().click();
     await page.waitForTimeout(1500);
   });
@@ -317,7 +358,7 @@ async function main() {
   }
   await phone.task(
     'Phone: play from home and open full-screen player',
-    async ({ page, ux }) => {
+    async ({ page }) => {
       await go(page, '/');
       await dismissInterruptions(page);
       await reveal(page, page.locator(PLAY));
@@ -326,8 +367,9 @@ async function main() {
       const open = page
         .getByRole('button', { name: 'Open full-screen player' })
         .first();
-      if (!(await open.isVisible().catch(() => false)))
+      if (!(await open.isVisible().catch(() => false))) {
         throw new Error('no visible player bar on phone');
+      }
       await open.click();
       await page.waitForTimeout(1000);
     },

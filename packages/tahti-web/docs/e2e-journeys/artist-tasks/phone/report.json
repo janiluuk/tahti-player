@@ -5,9 +5,7 @@
       "name": "Phone: sign in",
       "ok": false,
       "ms": 21701,
-      "notes": [
-        "locator.waitFor: Timeout 20000ms exceeded."
-      ],
+      "notes": ["locator.waitFor: Timeout 20000ms exceeded."],
       "ux": [],
       "signals": [
         {
@@ -135,9 +133,7 @@
           "detail": "Failed to load resource: net::ERR_FAILED"
         }
       ],
-      "shots": [
-        "01-phone-sign-in.png"
-      ]
+      "shots": ["01-phone-sign-in.png"]
     },
     {
       "name": "Phone: /studio",
@@ -171,9 +167,7 @@
           "detail": "Failed to load resource: the server responded with a status of 401 ()"
         }
       ],
-      "shots": [
-        "02-phone-studio.png"
-      ]
+      "shots": ["02-phone-studio.png"]
     },
     {
       "name": "Phone: /studio/upload",
@@ -207,9 +201,7 @@
           "detail": "Failed to load resource: the server responded with a status of 401 ()"
         }
       ],
-      "shots": [
-        "03-phone-studio-upload.png"
-      ]
+      "shots": ["03-phone-studio-upload.png"]
     },
     {
       "name": "Phone: /studio/sounds",
@@ -243,9 +235,7 @@
           "detail": "Failed to load resource: the server responded with a status of 401 ()"
         }
       ],
-      "shots": [
-        "04-phone-studio-sounds.png"
-      ]
+      "shots": ["04-phone-studio-sounds.png"]
     },
     {
       "name": "Phone: /studio/collections",
@@ -279,9 +269,7 @@
           "detail": "Failed to load resource: the server responded with a status of 401 ()"
         }
       ],
-      "shots": [
-        "05-phone-studio-collections.png"
-      ]
+      "shots": ["05-phone-studio-collections.png"]
     },
     {
       "name": "Phone: /studio/go-live",
@@ -363,9 +351,7 @@
           "detail": "Failed to load resource: the server responded with a status of 401 ()"
         }
       ],
-      "shots": [
-        "06-phone-studio-go-live.png"
-      ]
+      "shots": ["06-phone-studio-go-live.png"]
     },
     {
       "name": "Phone: /studio/stats",
@@ -463,9 +449,7 @@
           "detail": "Failed to load resource: the server responded with a status of 401 ()"
         }
       ],
-      "shots": [
-        "07-phone-studio-stats.png"
-      ]
+      "shots": ["07-phone-studio-stats.png"]
     },
     {
       "name": "Phone: /studio/channel",
@@ -491,9 +475,7 @@
           "detail": "Failed to load resource: the server responded with a status of 401 ()"
         }
       ],
-      "shots": [
-        "08-phone-studio-channel.png"
-      ]
+      "shots": ["08-phone-studio-channel.png"]
     }
   ]
 }
