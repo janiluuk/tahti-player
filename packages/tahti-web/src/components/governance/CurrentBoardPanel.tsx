@@ -6,6 +6,7 @@ import {
   fetchCurrentBoard,
   type BoardSeat,
 } from '../../api/governance-board';
+import { PageEmpty } from '../PageStates';
 import { GovernancePanel } from './GovernancePanel';
 
 function formatDay(iso: string): string {
