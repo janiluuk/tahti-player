@@ -1,9 +1,10 @@
 import { useLayoutEffect, useRef } from 'react';
 
-import { Button, EmptyState } from '@tahti-player/ui';
+import { Button } from '@tahti-player/ui';
 
 import type { ChatDm } from '../api/messages';
 import { DmRoleBadge } from './DmRoleBadge';
+import { PageEmpty } from './PageStates';
 
 type Props = {
   messages: ChatDm[];
@@ -58,9 +59,7 @@ export function DmThreadMessages({
         </div>
       )}
       {messages.length === 0 ? (
-        <EmptyState
-          size="sm"
-          className="items-start py-8 text-left"
+        <PageEmpty
           title="No messages yet"
           description="Say hello — your first message starts the thread."
         />
