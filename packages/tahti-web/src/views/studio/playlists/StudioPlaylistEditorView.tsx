@@ -1,10 +1,10 @@
-import { Link } from '@tanstack/react-router';
-import { ArrowLeftIcon, MusicIcon, PlayIcon, PlusIcon } from 'lucide-react';
+import { MusicIcon, PlayIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import type { Track } from '@tahti-player/model';
 import {
+  BackButtonLink,
   Badge,
   Button,
   Dialog,
@@ -309,13 +309,11 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
       <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
         <LibrarySectionTabs active="collections" />
         <Tooltip content="Back to Collections" side="right">
-          <Link
+          <BackButtonLink
             to="/studio/collections"
             aria-label="Back to Collections"
-            className="text-foreground-secondary hover:bg-background-secondary -mt-2 inline-flex size-8 w-fit items-center justify-center rounded-full"
-          >
-            <ArrowLeftIcon size={16} aria-hidden />
-          </Link>
+            className="-mt-2"
+          />
         </Tooltip>
 
         {!col ? (

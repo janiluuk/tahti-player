@@ -1,9 +1,10 @@
-import { Link, useNavigate } from '@tanstack/react-router';
-import { ArrowLeftIcon, CheckIcon, RadioIcon } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
+import { CheckIcon, RadioIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  BackButtonLink,
   Button,
   ButtonLink,
   Input,
@@ -167,14 +168,11 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
     <StudioGate>
       <div className="studio-page-layout flex w-full flex-col gap-6">
         <Tooltip content={`Back to ${show?.title ?? 'Show'}`} side="right">
-          <Link
+          <BackButtonLink
             to="/studio/shows/$id"
             params={{ id: episode.showId }}
             aria-label={`Back to ${show?.title ?? 'Show'}`}
-            className="text-foreground-secondary hover:bg-background-secondary inline-flex size-8 w-fit items-center justify-center rounded-full"
-          >
-            <ArrowLeftIcon size={16} aria-hidden />
-          </Link>
+          />
         </Tooltip>
 
         <ViewShell

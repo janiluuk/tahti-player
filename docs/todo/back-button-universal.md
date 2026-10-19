@@ -12,7 +12,9 @@ everywhere these cases appear.
 
 1. `@tahti-player/ui` `BackButton` / `BackButtonLink` / `BackButtonAnchor` + story + tests.
 2. Wired: ChannelView, RadioStationView, AppTopNav history pair, FullScreenPlayer,
-   StudioReleaseDetailView, StudioCollectionEditView.
+   StudioReleaseDetailView, StudioCollectionEditView, StudioSoundView,
+   StudioShowDetailView, StudioEpisodeReviewView, StudioPlaylistEditorView,
+   ArtistView, CollectionView, TrackHero.
 
 ## Left
 

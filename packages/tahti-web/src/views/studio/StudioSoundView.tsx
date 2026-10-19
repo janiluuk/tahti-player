@@ -1,12 +1,6 @@
-import { Link } from '@tanstack/react-router';
-import {
-  ArrowLeftIcon,
-  BarChart3Icon,
-  ListMusicIcon,
-  TagsIcon,
-} from 'lucide-react';
+import { BarChart3Icon, ListMusicIcon, TagsIcon } from 'lucide-react';
 
-import { Alert, Tabs, Tooltip } from '@tahti-player/ui';
+import { Alert, BackButtonLink, Tabs, Tooltip } from '@tahti-player/ui';
 
 import { AddToPlaylistPanel } from '../../components/AddToPlaylistPanel';
 import { PageLoading } from '../../components/PageStates';
@@ -39,13 +33,7 @@ export function StudioSoundView({ id }: { id: string }) {
       <div className="studio-page-layout flex w-full flex-col gap-6">
         <LibrarySectionTabs active="sounds" />
         <Tooltip content="Back to Music" side="right">
-          <Link
-            to="/studio/sounds"
-            aria-label="Back to Music"
-            className="text-foreground-secondary hover:bg-background-secondary inline-flex size-8 w-fit items-center justify-center rounded-full"
-          >
-            <ArrowLeftIcon size={16} aria-hidden />
-          </Link>
+          <BackButtonLink to="/studio/sounds" aria-label="Back to Music" />
         </Tooltip>
         {!item ? (
           <PageLoading label="Loading…" />

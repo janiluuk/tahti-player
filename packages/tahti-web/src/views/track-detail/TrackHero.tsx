@@ -1,7 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import {
   ActivityIcon,
-  ArrowLeftIcon,
   DownloadIcon,
   HeartIcon,
   MessageCircleIcon,
@@ -15,7 +14,14 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { Badge, Button, Input, MediaArtwork, Tooltip } from '@tahti-player/ui';
+import {
+  BackButton,
+  Badge,
+  Button,
+  Input,
+  MediaArtwork,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
 import { ReportButton } from '../../components/ReportButton';
@@ -128,15 +134,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
 
       <div className="relative z-10 flex flex-col gap-5 text-white">
         <Tooltip content="Back" side="right">
-          <Button
-            variant="text"
-            size="icon-sm"
-            onClick={() => router.history.back()}
-            aria-label="Back"
-            className="w-fit rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 active:bg-white/20"
-          >
-            <ArrowLeftIcon size={16} aria-hidden />
-          </Button>
+          <BackButton onClick={() => router.history.back()} aria-label="Back" />
         </Tooltip>
         {shareKey ? (
           <Badge

@@ -1,6 +1,5 @@
 import { Link } from '@tanstack/react-router';
 import {
-  ArrowLeftIcon,
   ImagesIcon,
   ListMusicIcon,
   MonitorPlayIcon,
@@ -11,7 +10,14 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { ClampedText, Dialog, TabLabel, Tabs, Tooltip } from '@tahti-player/ui';
+import {
+  BackButtonLink,
+  ClampedText,
+  Dialog,
+  TabLabel,
+  Tabs,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   fetchMyPressKitImages,
@@ -418,14 +424,7 @@ function ArtistProfilePage({ username }: { username: string }) {
         />
       ) : null}
       <Tooltip content="Back to Listen" side="right">
-        <Link
-          to="/"
-          aria-label="Back to Listen"
-          className="inline-flex size-8 w-fit items-center justify-center rounded-full hover:bg-white/10"
-          style={{ color: pageScheme.muted }}
-        >
-          <ArrowLeftIcon size={16} aria-hidden />
-        </Link>
+        <BackButtonLink to="/" aria-label="Back to Listen" />
       </Tooltip>
 
       <ArtistPageHero
