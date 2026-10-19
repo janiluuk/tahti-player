@@ -5,6 +5,7 @@ import { Badge, Button } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { DmRoleBadge } from '../DmRoleBadge';
+import { PageEmpty } from '../PageStates';
 import { iconBtnClass } from './shared';
 import { type TopNavState } from './useTopNavState';
 
@@ -79,9 +80,7 @@ export function MessagesPopover({ nav }: { nav: TopNavState }) {
             </Link>
           </div>
           {conversations.length === 0 ? (
-            <p className="text-foreground-secondary px-2 py-3 text-xs">
-              No messages yet.
-            </p>
+            <PageEmpty title="No messages yet." />
           ) : (
             conversations.slice(0, 5).map((conversation) => (
               <Link
