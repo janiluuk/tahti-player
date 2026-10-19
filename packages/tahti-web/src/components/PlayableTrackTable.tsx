@@ -13,6 +13,7 @@ import { trackTableLabels } from '../lib/trackTableLabels';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useTrackDetailStore } from '../stores/trackDetailStore';
+import { PageEmpty } from './PageStates';
 import { PlayableTrackContextMenu } from './PlayableTrackContextMenu';
 
 type Props = {
@@ -72,7 +73,7 @@ export function PlayableTrackTable({
   const rememberTrackDetail = useTrackDetailStore((s) => s.remember);
 
   if (items.length === 0) {
-    return <p className="text-foreground-secondary text-sm">{emptyMessage}</p>;
+    return <PageEmpty title={emptyMessage} />;
   }
 
   const tracks: Track[] = items.map(playableToTrack);

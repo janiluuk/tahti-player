@@ -32,6 +32,7 @@ import {
 import { ImageUploadField } from './ImageUploadField';
 import { ListenerWidgetEmbed } from './ListenerWidgetEmbed';
 import { NewsFeedWidget } from './NewsFeedWidget';
+import { PageEmpty } from './PageStates';
 import { SourceServiceIcon } from './SourceServiceIcon';
 
 function ConfigurableCard({
@@ -665,9 +666,7 @@ export function ListenAddonsPanel({
         })}
       </div>
       {installTab === 'installed' && installedCount === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          Nothing installed yet — check Available.
-        </p>
+        <PageEmpty title="Nothing installed yet — check Available." />
       ) : null}
       {installTab === 'available' && availableCount === 0 ? (
         <p className="text-foreground-secondary text-sm">

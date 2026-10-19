@@ -22,6 +22,7 @@ import {
 
 import type { EditList, ProEditorPluginId } from '../../../api/studio-types';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { AUDIO_FX_PLUGINS, useAudioFxStore } from '../../../plugins/audio-fx';
 import {
@@ -174,9 +175,7 @@ export function MasteringPanel({ editList, onChange }: Props) {
 
             <div className="flex flex-row items-start gap-3 overflow-x-auto pb-2">
               {visiblePluginChain.length === 0 ? (
-                <p className="text-foreground-secondary text-sm">
-                  No audio add-ons in the chain yet.
-                </p>
+                <PageEmpty title="No audio add-ons in the chain yet." />
               ) : (
                 visiblePluginChain.map((id) => {
                   const meta = AUDIO_FX_PLUGINS[id];

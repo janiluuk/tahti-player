@@ -6,7 +6,7 @@ import { Badge, Input, StatChip, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMembers } from '../api/client';
 import type { GovernanceMember } from '../api/types';
-import { PageLoading } from '../components/PageStates';
+import { PageEmpty, PageLoading } from '../components/PageStates';
 import { useAuthStore } from '../stores/authStore';
 
 export function GovernanceMembersView() {
@@ -87,11 +87,13 @@ export function GovernanceMembersView() {
             placeholder="Search by name or username"
           />
           {filtered.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              {members.length === 0
-                ? 'No member directory is published yet.'
-                : 'No members match this search.'}
-            </p>
+            <PageEmpty
+              title={
+                members.length === 0
+                  ? 'No member directory is published yet.'
+                  : 'No members match this search.'
+              }
+            />
           ) : (
             <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
               {filtered.map((member) => {

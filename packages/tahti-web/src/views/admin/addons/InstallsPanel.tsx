@@ -3,7 +3,7 @@ import { ArrowDownIcon, ArrowUpIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { Badge, Button, Input, Toggle, Tooltip } from '@tahti-player/ui';
 
 import { type AdminAddonInstall } from '../../../api/admin';
-import { PageLoading } from '../../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../../components/PageStates';
 
 export function InstallsPanel({
   surface,
@@ -61,9 +61,7 @@ export function InstallsPanel({
       {loading ? (
         <PageLoading label="Loading installs…" />
       ) : installs.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          Nothing installed on "{surface}" yet.
-        </p>
+        <PageEmpty title={`Nothing installed on "${surface}" yet.`} />
       ) : (
         <ul className="flex flex-col gap-2">
           {installs.map((install, index) => (

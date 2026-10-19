@@ -10,7 +10,7 @@ import type { GovernanceMeeting } from '../api/types';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
 import { MeetingAgendaItems } from '../components/governance/MeetingAgendaItems';
 import { MeetingConflicts } from '../components/governance/MeetingConflicts';
-import { PageLoading } from '../components/PageStates';
+import { PageEmpty, PageLoading } from '../components/PageStates';
 import { isSafeHref } from '../lib/safeHref';
 import { useAuthStore } from '../stores/authStore';
 
@@ -162,9 +162,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
               meetingId={meeting.id}
               fallback={
                 agenda.length === 0 ? (
-                  <p className="text-foreground-secondary text-sm">
-                    No agenda published yet.
-                  </p>
+                  <PageEmpty title="No agenda published yet." />
                 ) : (
                   <ul className="flex flex-col gap-3">
                     {agenda.map((item) => (

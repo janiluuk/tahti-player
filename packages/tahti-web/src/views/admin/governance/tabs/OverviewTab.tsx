@@ -30,6 +30,7 @@ import {
   type AdminGovernanceOverview,
 } from '../../../../api/admin';
 import type { BoardResolution } from '../../../../api/types';
+import { PageEmpty } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import type { AdminGovernanceTabId } from '../governanceNav';
 import { LegalHoldControl } from '../records/LegalHoldControl';
@@ -202,9 +203,7 @@ export function OverviewTab() {
             </h3>
           </div>
           {votingActivity.length === 0 ? (
-            <p className="text-foreground-secondary px-3 py-4 text-sm">
-              No voting activity recorded.
-            </p>
+            <PageEmpty title="No voting activity recorded." />
           ) : (
             <ul className="divide-border divide-y">
               {votingActivity.slice(0, 12).map((entry) => (

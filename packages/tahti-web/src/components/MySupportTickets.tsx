@@ -10,6 +10,7 @@ import {
   type MySupportTicketReply,
   type SupportTicketStatus,
 } from '../api/support';
+import { PageEmpty } from './PageStates';
 
 const STATUS_BADGES: Record<
   SupportTicketStatus,
@@ -165,9 +166,7 @@ export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
                   {ticket.message}
                 </p>
                 {ticket.replies.length === 0 ? (
-                  <p className="text-foreground-secondary text-xs">
-                    No reply yet.
-                  </p>
+                  <PageEmpty title="No reply yet." />
                 ) : (
                   <ul
                     aria-label={`Replies to ${ticket.subject}`}

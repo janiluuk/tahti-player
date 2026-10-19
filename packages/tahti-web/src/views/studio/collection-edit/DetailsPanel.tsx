@@ -10,6 +10,7 @@ import {
 } from '@tahti-player/ui';
 
 import type { CollectionTrackSortMode } from '../../../api/studio-types';
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { COLLECTION_STYLES } from '../../../content/collectionStyles';
 import type { CollectionEditState } from './useCollectionEditState';
@@ -120,17 +121,17 @@ export function DetailsPanel({ state }: { state: CollectionEditState }) {
             />
           </section>
         </div>
-      ) : (
+      ) : releaseDate || genres.trim() ? (
         <p className="text-foreground-secondary text-sm">
-          {releaseDate || genres.trim()
-            ? [
-                releaseDate ? `Release ${releaseDate}` : null,
-                genres.trim() || null,
-              ]
-                .filter(Boolean)
-                .join(' · ')
-            : 'No release date or genres set yet.'}
+          {[
+            releaseDate ? `Release ${releaseDate}` : null,
+            genres.trim() || null,
+          ]
+            .filter(Boolean)
+            .join(' · ')}
         </p>
+      ) : (
+        <PageEmpty title="No release date or genres set yet." />
       )}
     </StudioPanel>
   );

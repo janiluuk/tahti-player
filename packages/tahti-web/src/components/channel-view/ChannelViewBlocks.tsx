@@ -20,7 +20,7 @@ import { isSafeChannelLinkUrl } from '../../lib/safeHref';
 import type { ListenerWidgetInstance } from '../../stores/listenerWidgetsStore';
 import { ChannelPlaylistBlock } from '../ChannelPlaylistBlock';
 import { ListenerWidgetEmbed } from '../ListenerWidgetEmbed';
-import { PageError, PageLoading } from '../PageStates';
+import { PageEmpty, PageError, PageLoading } from '../PageStates';
 import { PlayableTrackTable } from '../PlayableTrackTable';
 import { ShowEpisodeList } from '../ShowEpisodeList';
 import { SocialLinkIcon } from '../SocialLinkIcon';
@@ -195,11 +195,13 @@ export function renderChannelBlock(
         >
           <h2 className="text-sm font-bold tracking-tight">Links</h2>
           {links.length === 0 ? (
-            <p className="text-foreground-secondary mt-1 text-xs">
-              {editing
-                ? 'Add links in the side panel to show them here.'
-                : 'No links yet.'}
-            </p>
+            <PageEmpty
+              title={
+                editing
+                  ? 'Add links in the side panel to show them here.'
+                  : 'No links yet.'
+              }
+            />
           ) : (
             <div className="mt-2 flex flex-wrap gap-2">
               {links

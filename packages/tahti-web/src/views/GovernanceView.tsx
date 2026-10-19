@@ -335,9 +335,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <GovernancePanel title="Published meetings" icon={UsersIcon}>
             {meetings.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No published meeting records yet.
-              </p>
+              <PageEmpty title="No published meeting records yet." />
             ) : (
               <ul className="divide-border divide-y">
                 {meetings.map((meeting) => {
@@ -388,9 +386,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
           </GovernancePanel>
           <GovernancePanel title="Published documents" icon={FileTextIcon}>
             {documents.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No governance documents have been published yet.
-              </p>
+              <PageEmpty title="No governance documents have been published yet." />
             ) : (
               <ul className="divide-border divide-y">
                 {documents.map((document) => (
@@ -424,9 +420,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
           </GovernancePanel>
           <GovernancePanel title="Quarterly reviews" icon={ScrollTextIcon}>
             {reports.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No quarterly feature-request reviews have been published yet.
-              </p>
+              <PageEmpty title="No quarterly feature-request reviews have been published yet." />
             ) : (
               <ul className="divide-border divide-y">
                 {reports.map((report) => (
@@ -456,9 +450,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
           </GovernancePanel>
           <GovernancePanel title="Member directory" icon={UsersIcon}>
             {members.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No member directory is published yet.
-              </p>
+              <PageEmpty title="No member directory is published yet." />
             ) : (
               <ul className="divide-border divide-y">
                 {members.slice(0, 8).map((member) => (
