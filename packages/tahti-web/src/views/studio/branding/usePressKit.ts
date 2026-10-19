@@ -33,6 +33,7 @@ export function usePressKit() {
   const [profile, setProfile] = useState<ProfileFields | null>(null);
   const [images, setImages] = useState<PressKitImageItem[]>([]);
   const [pressKit, setPressKit] = useState<PressKitMeta | null>(null);
+  const [pressKitError, setPressKitError] = useState<string | null>(null);
   const [galleryPublic, setGalleryPublic] = useState(false);
   const [uploadMode, setUploadMode] = useState<UploadMode>('append');
   const [includeUploads, setIncludeUploads] = useState(true);
@@ -58,7 +59,12 @@ export function usePressKit() {
     ]);
     setProfile(profileResult.data);
     setImages(imageResult.data);
-    setPressKit(pressResult.data);
+    const pressReason =
+      pressResult.meta.source === 'api'
+        ? (pressResult.meta.reason ?? null)
+        : null;
+    setPressKitError(pressReason);
+    setPressKit(pressReason ? null : pressResult.data);
     const publicResult = await fetchPublicPressKitImages(
       profileResult.data.username,
     );
@@ -279,6 +285,8 @@ export function usePressKit() {
     setImages,
     pressKit,
     setPressKit,
+    pressKitError,
+    reload,
     galleryPublic,
     uploadMode,
     setUploadMode,

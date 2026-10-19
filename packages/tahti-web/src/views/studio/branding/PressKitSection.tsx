@@ -15,6 +15,7 @@ import {
   MAX_PRESS_KIT_SELECTED_IMAGES,
   updatePressKitImage,
 } from '../../../api/artist-settings';
+import { PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { ACCEPTED_IMAGES } from './constants';
 import { PressKitPreview } from './PressKitPreview';
@@ -28,6 +29,8 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
     setImages,
     pressKit,
     setPressKit,
+    pressKitError,
+    reload,
     pressImages,
     busy,
     setSelectedGalleryFiles,
@@ -45,7 +48,16 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
         title="Press kit story"
         description="A concise introduction for promoters, venues, and journalists."
       >
-        <label className="flex flex-col gap-1.5 text-sm">
+        {pressKitError ? (
+          <PageError
+            title="Could not load your press kit bio"
+            description={pressKitError}
+            onRetry={() => void reload()}
+          />
+        ) : null}
+        <label
+          className={`flex flex-col gap-1.5 text-sm ${pressKitError ? 'hidden' : ''}`}
+        >
           <span className="text-foreground-secondary text-xs uppercase">
             Short bio
           </span>

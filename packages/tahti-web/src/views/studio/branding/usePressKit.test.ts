@@ -134,3 +134,39 @@ describe('usePressKit replace-upload order', () => {
     expect(result.current.pendingReplaceUpload?.files).toHaveLength(1);
   });
 });
+
+describe('usePressKit load failure', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    fetchMeProfile.mockResolvedValue({
+      data: { username: 'artist' },
+      meta: { source: 'api' },
+    });
+    fetchMyPressKitImages.mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    });
+    fetchPublicPressKitImages.mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    });
+  });
+
+  it('keeps no saveable bio when the press kit fails to load', async () => {
+    fetchPressKitMeta.mockResolvedValue({
+      data: { bioShort: '' },
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    const { result } = renderHook(() => usePressKit());
+    await waitFor(() => expect(result.current.pressKitError).toBe('HTTP 502'));
+    expect(result.current.pressKit).toBeNull();
+
+    fetchPressKitMeta.mockResolvedValue({
+      data: { bioShort: 'Helsinki techno duo' },
+      meta: { source: 'api' },
+    });
+    await act(() => result.current.reload());
+    expect(result.current.pressKitError).toBeNull();
+    expect(result.current.pressKit?.bioShort).toBe('Helsinki techno duo');
+  });
+});
