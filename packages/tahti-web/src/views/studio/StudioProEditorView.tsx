@@ -21,7 +21,7 @@ import {
 import type { EditList } from '../../api/studio-types';
 import { createDefaultEditList } from '../../api/studio-types';
 import { ClientCapabilityNotice } from '../../components/ClientCapabilityNotice';
-import { PageEmpty, PageLoading } from '../../components/PageStates';
+import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { usePolling } from '../../hooks/usePolling';
@@ -91,6 +91,7 @@ function ProEditor({ soundId }: { soundId: string }) {
   >(null);
   const [loading, setLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [renderPromptOpen, setRenderPromptOpen] = useState(false);
   const [dirty, setDirty] = useState(false);
   // Bumped on every edit so a save only clears `dirty` if nothing changed
@@ -163,6 +164,8 @@ function ProEditor({ soundId }: { soundId: string }) {
 
   useEffect(() => {
     let cancelled = false;
+    setLoading(true);
+    setLoadFailed(false);
     Promise.all([fetchEditorSource(soundId), fetchEditorDraft(soundId)])
       .then(([src, draft]) => {
         if (cancelled) {
@@ -197,7 +200,7 @@ function ProEditor({ soundId }: { soundId: string }) {
     return () => {
       cancelled = true;
     };
-  }, [soundId]);
+  }, [soundId, loadAttempt]);
 
   usePolling(
     () => {
@@ -400,9 +403,10 @@ function ProEditor({ soundId }: { soundId: string }) {
               <PageLoading label="Loading editor…" />
             </StudioPanel>
           ) : loadFailed || !editList ? (
-            <PageEmpty
+            <PageError
               title="Could not load the editor"
-              description="Check your connection and reload the page."
+              description="Check your connection."
+              onRetry={() => setLoadAttempt((n) => n + 1)}
             />
           ) : (
             <>
