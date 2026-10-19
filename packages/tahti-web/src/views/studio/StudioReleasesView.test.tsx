@@ -89,4 +89,18 @@ describe('StudioReleasesView', () => {
     });
     expect(link.getAttribute('href')).toBe('/studio/releases/rel-1?tab=stats');
   });
+
+  it('clears a search that matches nothing', async () => {
+    vi.spyOn(studio, 'fetchStudioReleases').mockResolvedValue({
+      data: list([release]),
+      meta: { source: 'api' },
+    });
+    await renderWithRouter(<StudioReleasesView />);
+    fireEvent.change(await screen.findByLabelText('Search releases'), {
+      target: { value: 'zzz' },
+    });
+    expect(screen.getByText('No releases match “zzz”')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Clear search' }));
+    expect(screen.getByText('After Hours')).toBeTruthy();
+  });
 });
