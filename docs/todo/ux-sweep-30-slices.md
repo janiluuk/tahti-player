@@ -44,7 +44,7 @@ One PR per slice. Tick when merged.
 | 23 | `ArtistProfileSections` → `SectionTitle` | open |
 | 24 | History stats active-tab accent | open |
 | 25 | History list active-row accent | open |
-| 26 | CollectionView cover-tint header | open |
+| 26 | CollectionView cover-tint header | done |
 | 27 | CollectionView track list `shadow-float` | open |
 
 ## De-green + studio search starters (28–30)
