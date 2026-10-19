@@ -44,9 +44,7 @@ export function CurrentBoardPanel() {
           Could not load the board. Try again later.
         </p>
       ) : seats.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No board terms are recorded yet.
-        </p>
+        <PageEmpty title="No board terms are recorded yet." />
       ) : (
         <ul className="divide-border divide-y">
           {seats.map((seat) => (
