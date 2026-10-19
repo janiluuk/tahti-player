@@ -335,9 +335,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <GovernancePanel title="Published meetings" icon={UsersIcon}>
             {meetings.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No published meeting records yet.
-              </p>
+              <PageEmpty title="No published meeting records yet." />
             ) : (
               <ul className="divide-border divide-y">
                 {meetings.map((meeting) => {
