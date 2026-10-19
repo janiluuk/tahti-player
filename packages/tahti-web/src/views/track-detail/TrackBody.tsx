@@ -3,6 +3,7 @@ import { Link } from '@tanstack/react-router';
 import { Button, MediaArtwork } from '@tahti-player/ui';
 
 import { CommentItem } from '../../components/CommentItem';
+import { PageEmpty } from '../../components/PageStates';
 import { cn } from '../../lib/cn';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
@@ -88,9 +89,7 @@ export function TrackBody({ page }: { page: TrackPage }) {
               Comments
             </h2>
             {comments.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No comments yet.
-              </p>
+              <PageEmpty title="No comments yet" />
             ) : (
               <ul className="flex flex-col gap-4">
                 {comments.map((comment) => {
