@@ -45,7 +45,7 @@ One PR per slice. Tick when merged.
 | 24 | History stats active-tab accent | open |
 | 25 | History list active-row accent | open |
 | 26 | CollectionView cover-tint header | open |
-| 27 | CollectionView track list `shadow-float` | open |
+| 27 | CollectionView track list `shadow-float` | done |
 
 ## De-green + studio search starters (28–30)
 
