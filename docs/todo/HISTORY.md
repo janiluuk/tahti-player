@@ -1,5 +1,12 @@
 # docs/todo history
 
+## 2026-10-19 — Spotify Listen widget playlist tracks
+
+Folded `spotify-listen-widget-tracks.md`. tahti-org #876 + tahti-player #1387:
+public Spotify playlists render as `PlayableTrackTable` (embed playback);
+compact Listen widgets dialog layout fix. Live needs API deploy of #876.
+
+
 
 
 ## 2026-10-19 — UX sweep batch 3 PageEmpty (tahti-player #1259)
