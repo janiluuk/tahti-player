@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as purchaseTiers from '../api/purchase-tiers';
@@ -77,5 +77,30 @@ describe('PurchaseAccessSection', () => {
     fireEvent.click(link);
     expect(await screen.findByTestId('routed-to')).toBeTruthy();
     expect(router.state.location.pathname).toBe('/studio/audience');
+  });
+
+  it('says the purchase tiers failed to load and can retry', async () => {
+    const fetch = vi
+      .spyOn(purchaseTiers, 'fetchMyPurchaseTiers')
+      .mockResolvedValue({
+        data: [],
+        meta: { source: 'api', reason: 'HTTP 502' },
+      });
+    await renderWithRouter(
+      <PurchaseAccessSection
+        access={{ accessMode: 'FREE', purchaseTierId: null }}
+        onAccessChange={vi.fn()}
+      />,
+    );
+    expect(
+      await screen.findByText(/Could not load your purchase tiers/),
+    ).toBeTruthy();
+    fetch.mockResolvedValue({ data: [TIER], meta: { source: 'api' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    await waitFor(() =>
+      expect(
+        screen.queryByText(/Could not load your purchase tiers/),
+      ).toBeNull(),
+    );
   });
 });
