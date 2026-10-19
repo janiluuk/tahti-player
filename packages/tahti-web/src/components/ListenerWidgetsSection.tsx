@@ -159,17 +159,25 @@ export function ListenerWidgetsSection() {
       {embedInstances.length > 0 && (
         <div className="grid gap-3 sm:grid-cols-2">
           {embedInstances.map((instance) => (
-            <ListenerWidgetEmbed
+            <div
               key={instance.id}
-              instance={instance}
-              onRemove={() =>
-                setPendingRemoval({
-                  kind: 'instance',
-                  id: instance.id,
-                  label: instance.label,
-                })
+              className={
+                instance.typeId === 'spotify'
+                  ? 'min-w-0 sm:col-span-2'
+                  : 'min-w-0'
               }
-            />
+            >
+              <ListenerWidgetEmbed
+                instance={instance}
+                onRemove={() =>
+                  setPendingRemoval({
+                    kind: 'instance',
+                    id: instance.id,
+                    label: instance.label,
+                  })
+                }
+              />
+            </div>
           ))}
         </div>
       )}

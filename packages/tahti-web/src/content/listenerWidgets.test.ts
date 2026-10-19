@@ -302,6 +302,19 @@ describe('Spotify playlist listener embed', () => {
     ).toBe('https://open.spotify.com/embed/playlist/37i9dQZF1DX4WYpdgoIcn6');
   });
 
+  it('accepts intl paths and tracking query params', () => {
+    expect(
+      spotify?.toEmbedUrl(
+        'https://open.spotify.com/playlist/2esDahb3pYLC84NF3bWx98?si=f022a0a9cc20432f',
+      ),
+    ).toBe('https://open.spotify.com/embed/playlist/2esDahb3pYLC84NF3bWx98');
+    expect(
+      spotify?.toEmbedUrl(
+        'https://open.spotify.com/intl-fi/playlist/2esDahb3pYLC84NF3bWx98',
+      ),
+    ).toBe('https://open.spotify.com/embed/playlist/2esDahb3pYLC84NF3bWx98');
+  });
+
   it('rejects Spotify tracks, profiles, and unrelated URLs', () => {
     expect(
       spotify?.toEmbedUrl(

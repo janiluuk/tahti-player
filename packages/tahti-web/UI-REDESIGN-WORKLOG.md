@@ -1,3 +1,13 @@
+## 2026-10-19 — Spotify Listen widget → track table
+
+Spotify Listen add-on loads a public playlist via
+`GET /api/v1/imports/spotify/by-playlist-url` and renders
+`PlayableTrackTable` (player-bar Spotify embed) instead of an iframe.
+Compact “Add Listen widgets” rows keep the configure gear inside
+`PluginStoreItem` accessory. Needs the matching tahti-org route deployed.
+Bumped `packages/tahti-web/package.json` to `0.0.226`. Requires tahti-org #876
+(merged) deployed for playlist track fetch.
+
 ## 2026-10-19 — Distribution StudioNav + Chat via More
 
 Product flags: Distribution is a Studio sibling tab next to Releases; Chat hub lives in the sidebar footer (phone More). Favorites / Library / Help stay out of the mobile primary bar.

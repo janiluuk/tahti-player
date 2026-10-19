@@ -61,7 +61,7 @@ export const PluginStoreItem: FC<PluginStoreItemProps> = ({
       data-testid="plugin-store-item"
       variant="tertiary"
       className={cn(
-        'flex-row flex-wrap items-center justify-between',
+        'h-auto w-auto flex-row flex-wrap items-center justify-between',
         compact ? 'gap-2 p-2' : 'gap-4',
         className,
       )}
