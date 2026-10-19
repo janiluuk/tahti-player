@@ -1,0 +1,52 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SectionTitle > (Snapshot) renders title, badge, and accent className 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-4"
+  >
+    <div
+      class="flex items-center gap-2"
+      data-testid="section-title"
+    >
+      <h2
+        class="text-foreground text-lg font-bold whitespace-nowrap"
+      >
+        New tracks
+      </h2>
+    </div>
+    <div
+      class="flex items-center gap-2"
+      data-testid="section-title"
+    >
+      <h2
+        class="text-foreground text-lg font-bold whitespace-nowrap"
+      >
+        On air
+      </h2>
+      <span
+        class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-green text-accent-foreground"
+        data-testid="section-title-badge"
+      >
+        Live
+      </span>
+    </div>
+    <div
+      class="flex items-center gap-2 border-accent-purple/40 border-l-4 pl-3"
+      data-testid="section-title"
+    >
+      <h2
+        class="text-foreground text-lg font-bold whitespace-nowrap"
+      >
+        Recently played
+      </h2>
+      <span
+        class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-yellow text-accent-foreground"
+        data-testid="section-title-badge"
+      >
+        History
+      </span>
+    </div>
+  </div>
+</div>
+`;
