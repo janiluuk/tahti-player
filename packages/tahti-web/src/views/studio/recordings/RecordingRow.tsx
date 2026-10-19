@@ -1,12 +1,12 @@
 import { Link } from '@tanstack/react-router';
 import {
   CheckIcon,
+  LoaderCircleIcon,
   PencilIcon,
   RadioIcon,
-  UploadCloudIcon,
 } from 'lucide-react';
 
-import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
+import { Button, Tooltip } from '@tahti-player/ui';
 
 import type { RecentBroadcast } from '../../../api/broadcast';
 import { formatDate, formatDuration, isPublished } from './helpers';
@@ -27,6 +27,7 @@ export function RecordingRow({
   const title =
     show.title || show.soundTitle || `Show ${formatDate(show.startedAt)}`;
   const published = isPublished(show);
+  const processing = !show.soundId;
 
   return (
     <li
@@ -68,8 +69,21 @@ export function RecordingRow({
           }`}
         >
           {published && <CheckIcon size={11} aria-hidden />}
-          {published ? 'Published' : 'Draft'}
+          {processing && (
+            <LoaderCircleIcon
+              size={11}
+              aria-hidden
+              className="motion-safe:animate-spin"
+            />
+          )}
+          {published ? 'Published' : processing ? 'Processing' : 'Draft'}
         </span>
+        {processing ? (
+          <p className="text-foreground-secondary mt-0.5 text-xs">
+            Still being saved to your library. It shows up in Sounds, ready to
+            edit and publish, when it's done.
+          </p>
+        ) : null}
       </div>
       {show.soundId ? (
         <Tooltip content="Edit track" side="top">
@@ -82,12 +96,7 @@ export function RecordingRow({
             <PencilIcon size={16} aria-hidden />
           </Button>
         </Tooltip>
-      ) : (
-        <ButtonLink to="/studio/sounds" size="sm" variant="secondary">
-          <UploadCloudIcon size={14} aria-hidden className="mr-1.5" />
-          Publish
-        </ButtonLink>
-      )}
+      ) : null}
     </li>
   );
 }

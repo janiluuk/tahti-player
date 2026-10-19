@@ -312,6 +312,7 @@ function RecordedBroadcastCard({
           <div className="text-foreground-secondary truncate text-xs">
             {formatRecordingDate(broadcast.startedAt)} ·{' '}
             {formatRecordingDuration(broadcast.durationSec)}
+            {broadcast.soundId ? '' : ' · still processing'}
           </div>
         </div>
         {broadcast.soundId ? (
