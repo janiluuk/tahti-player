@@ -10,18 +10,14 @@ toasts, dead `MyDiscographyView` removed).
 
 ## Left
 
-Most of what is left lives in `StudioReleasesView.tsx`, which the UX sweep
-(`ux-sweep-30-slices.md`, slice 30: release search) is editing — do these after it lands.
+Batch 75 shipped the release-row Stats shortcut, create errors as toasts, a load-failure
+state on Releases / Collections / Sounds, and Play on collection rows (see HISTORY).
 
-1. **Release rows:** a stats shortcut to the release's `?tab=stats`, and a delete-release
-   action (create + pin only today, `ReleasePinButton.tsx`).
-2. **Releases feedback drift:** `StudioReleasesView.tsx` still prints create errors in an
-   inline `msg` paragraph; release-create failure blocks the success confirmation.
-3. **Bulk selection, second action:** add-to-release from a Sounds selection (releases
+1. **Delete a release:** blocked on the API — tahti-org has no `DELETE` for a release
+   (only artwork and tracks). Needs a tahti-org route first.
+2. **Bulk selection, second action:** add-to-release from a Sounds selection (releases
    build their tracklist through their own flow; needs a picker).
-4. **Collections row play:** list rows carry no items, so playing a collection from the
-   list needs a fetch-then-play helper.
-5. **Undo** for publish/create flows (none anywhere in Studio).
+3. **Undo** for publish/create flows (none anywhere in Studio).
 
 ## Verify
 
