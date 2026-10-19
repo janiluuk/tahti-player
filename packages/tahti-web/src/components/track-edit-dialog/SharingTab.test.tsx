@@ -8,7 +8,9 @@ import { SharingTab } from './SharingTab';
 import type { TrackEditDialogState } from './useTrackEditDialog';
 
 vi.mock('../../api/purchase-tiers', () => ({
-  fetchMyPurchaseTiers: vi.fn().mockResolvedValue({ data: [] }),
+  fetchMyPurchaseTiers: vi
+    .fn()
+    .mockResolvedValue({ data: [], meta: { source: 'api' } }),
 }));
 
 vi.mock('../../api/studio-extras/sound-download-gate', () => ({
