@@ -9,7 +9,7 @@ import type {
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
 import { ConfirmDialog } from './ConfirmDialog';
-import { PageError } from './PageStates';
+import { PageEmpty, PageError } from './PageStates';
 
 type Props = {
   isOpen: boolean;
@@ -92,9 +92,7 @@ export function PlayHistoryDialog({
               onRetry={() => void load(0)}
             />
           ) : entries.length === 0 && !loading ? (
-            <p className="text-foreground-secondary text-sm">
-              Nothing yet. A listen counts after 30 seconds of a local track.
-            </p>
+            <PageEmpty title="Nothing yet. A listen counts after 30 seconds of a local track." />
           ) : (
             <ul className="flex flex-col gap-1">
               {entries.map((entry) => (

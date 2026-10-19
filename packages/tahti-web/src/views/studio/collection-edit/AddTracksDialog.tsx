@@ -5,6 +5,17 @@ import { Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../../api/studio-types';
 
+function notReadyLabel(status: string): string | null {
+  const s = status.toUpperCase();
+  if (s === 'PENDING' || s === 'PROCESSING') {
+    return 'Processing…';
+  }
+  if (s === 'ERROR') {
+    return 'Processing failed';
+  }
+  return null;
+}
+
 function formatDuration(sec: number): string {
   const s = Math.max(0, Math.floor(sec));
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -77,6 +88,7 @@ export function AddTracksDialog({
             <ul aria-label="Available library tracks">
               {available.map((sound, index) => {
                 const previewing = isPreviewing(sound);
+                const notReady = notReadyLabel(sound.status ?? '');
                 return (
                   <li
                     key={sound.id}
@@ -104,16 +116,26 @@ export function AddTracksDialog({
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-medium">{sound.title}</p>
                       <p className="text-foreground-secondary truncate text-xs">
-                        {sound.artistName ?? 'Unknown artist'}
-                        {sound.genre ? ` · ${sound.genre}` : ''}
-                        {sound.durationSec
-                          ? ` · ${formatDuration(sound.durationSec)}`
-                          : ''}
+                        {[
+                          notReady,
+                          sound.artistName,
+                          sound.genre,
+                          !notReady && sound.durationSec
+                            ? formatDuration(sound.durationSec)
+                            : null,
+                        ]
+                          .filter(Boolean)
+                          .join(' · ')}
                       </p>
                     </div>
                     <Button
                       size="sm"
-                      disabled={addBusyId === sound.id}
+                      disabled={Boolean(notReady) || addBusyId === sound.id}
+                      aria-label={
+                        notReady
+                          ? `Add ${sound.title} (available once processing finishes)`
+                          : undefined
+                      }
                       onClick={() => onAdd(sound)}
                     >
                       <PlusIcon size={15} aria-hidden className="mr-1" />

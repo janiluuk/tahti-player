@@ -193,9 +193,7 @@ export function SubscribeView({
           {note && <p className="text-foreground-secondary text-sm">{note}</p>}
 
           {data.tiers.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              No active fan tiers yet.
-            </p>
+            <PageEmpty title="No active fan tiers yet." />
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
               {data.tiers.map((tier) => (

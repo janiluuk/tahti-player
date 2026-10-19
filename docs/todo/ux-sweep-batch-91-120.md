@@ -9,20 +9,20 @@ Bare empty copy and batch-4 leftovers after earlier sweeps. One PR per row. Tick
 | 91 | done | Audio revisions |
 | 92 | open | Add to playlist |
 | 93 | open | Admin user messages |
-| 94 | open | Channel playlist picker |
+| 94 | done | Channel playlist picker |
 | 95 | open | Fan payouts |
-| 96 | open | Listener map |
-| 97 | open | Membership invoices |
+| 96 | done | Listener map |
+| 97 | done | Membership invoices |
 | 98 | open | Pinned announcements |
-| 99 | open | Play history |
-| 100 | open | Radio booking slots |
-| 101 | open | SoundCloud embeds |
-| 102 | open | Share links |
-| 103 | open | Extra track credits |
-| 104 | open | Tracklist editor |
-| 105 | open | Messages popover |
-| 106 | open | Venue shows |
-| 107 | open | Fan subscribe |
+| 99 | done | Play history |
+| 100 | done | Radio booking slots |
+| 101 | done | SoundCloud embeds |
+| 102 | done | Share links |
+| 103 | done | Extra track credits |
+| 104 | done | Tracklist editor |
+| 105 | done | Messages popover |
+| 106 | done | Venue shows |
+| 107 | done | Fan subscribe |
 | 108 | open | Venue detail |
 | 109 | open | System announcements |
 | 110 | open | Selects rotation |

@@ -11,6 +11,7 @@ import {
   type SoundShare,
 } from '../api/studio';
 import { ConfirmDialog } from './ConfirmDialog';
+import { PageEmpty } from './PageStates';
 
 const EXPIRY_OPTIONS = [1, 3, 7, 30, 0] as const;
 
@@ -152,7 +153,7 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
           ))}
         </ul>
       ) : (
-        <p className="text-foreground-secondary text-xs">No share links yet.</p>
+        <PageEmpty title="No share links yet." />
       )}
 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end">

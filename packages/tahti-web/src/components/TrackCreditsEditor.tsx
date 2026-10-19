@@ -9,6 +9,7 @@ import {
   type ReleaseCreditRole,
 } from '../api/studio-types';
 import { cn } from '../lib/cn';
+import { PageEmpty } from './PageStates';
 
 type Props = {
   value: ReleaseCredit[];
@@ -51,11 +52,7 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
       </Button>
       {expanded && (
         <div className="border-border border-t p-4 pt-3">
-          {value.length === 0 && (
-            <p className="text-foreground-secondary mb-2 text-xs">
-              No extra credits yet.
-            </p>
-          )}
+          {value.length === 0 && <PageEmpty title="No extra credits yet." />}
           <ul className="flex flex-col gap-2">
             {value.map((credit, index) => (
               <li
