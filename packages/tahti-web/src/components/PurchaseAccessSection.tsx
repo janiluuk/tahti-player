@@ -1,7 +1,7 @@
 import { PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { ButtonLink, Select, Tooltip } from '@tahti-player/ui';
+import { Button, ButtonLink, Select, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchMyPurchaseTiers,
@@ -41,10 +41,17 @@ export function PurchaseAccessSection({
   onAccessChange: (access: SoundAccess) => void;
 }) {
   const [tiers, setTiers] = useState<PurchaseTierRow[]>([]);
+  const [tiersFailed, setTiersFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    void fetchMyPurchaseTiers().then((result) => setTiers(result.data));
-  }, []);
+    void fetchMyPurchaseTiers().then((result) => {
+      setTiers(result.data);
+      setTiersFailed(
+        result.meta.source === 'api' && Boolean(result.meta.reason),
+      );
+    });
+  }, [attempt]);
 
   const activeTiers = tiers.filter((t) => t.active);
 
@@ -84,6 +91,22 @@ export function PurchaseAccessSection({
           onValueChange={(value) => onAccessChange(accessFromOption(value))}
         />
       </div>
+      {tiersFailed && tiers.length === 0 ? (
+        <div
+          role="alert"
+          className="text-accent-red-strong flex flex-wrap items-center gap-2 text-xs"
+        >
+          Could not load your purchase tiers, so they are missing from this
+          list.
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => setAttempt((n) => n + 1)}
+          >
+            Retry
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 }
