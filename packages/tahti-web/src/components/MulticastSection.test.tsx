@@ -36,6 +36,26 @@ describe('MulticastSection', () => {
     expect(screen.getByRole('button', { name: /YouTube/ })).toBeTruthy();
   });
 
+  it('says the destinations failed to load instead of showing none configured', async () => {
+    const fetchTargets = vi
+      .spyOn(broadcast, 'fetchRtmpTargets')
+      .mockResolvedValue({
+        data: [],
+        meta: { source: 'api', reason: 'HTTP 502' },
+      });
+    await act(async () => {
+      render(<MulticastSection />);
+    });
+    expect(screen.getByText('Could not load your destinations')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /YouTube/ })).toBeNull();
+
+    fetchTargets.mockResolvedValue({ data: [], meta: { source: 'api' } });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(screen.getByRole('button', { name: /YouTube/ })).toBeTruthy();
+  });
+
   it('loads the artist destinations by default', async () => {
     const fetchTargets = vi
       .spyOn(broadcast, 'fetchRtmpTargets')

@@ -26,6 +26,7 @@ import {
   multicastProviders,
   type MulticastProviderId,
 } from '../plugins/multicast';
+import { PageError, PageLoading } from './PageStates';
 import {
   RotationMirrorToggle,
   useRotationMirror,
@@ -403,11 +404,13 @@ function DestinationsGrid({
 }) {
   const [targets, setTargets] = useState<RtmpTarget[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [editing, setEditing] = useState<EditingState | null>(null);
 
   const reload = () => {
     void fetchRtmpTargets(scope).then((r) => {
       setTargets(r.data);
+      setLoadError(r.meta.source === 'api' ? (r.meta.reason ?? null) : null);
       setLoading(false);
     });
   };
@@ -430,9 +433,16 @@ function DestinationsGrid({
         </Tooltip>
       </div>
       {loading ? (
-        <p className="text-foreground-secondary text-sm">
-          Loading destinations…
-        </p>
+        <PageLoading label="Loading destinations…" />
+      ) : loadError && targets.length === 0 ? (
+        <PageError
+          title="Could not load your destinations"
+          description={loadError}
+          onRetry={() => {
+            setLoading(true);
+            reload();
+          }}
+        />
       ) : (
         <div className="border-border rounded-xl border p-3">
           <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8">
