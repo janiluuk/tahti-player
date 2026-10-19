@@ -13,7 +13,7 @@ import {
 
 import { fetchStudioSounds } from '../../api/studio';
 import type { StudioSound } from '../../api/studio-types';
-import { PageGate, PageLoading } from '../../components/PageStates';
+import { PageError, PageGate, PageLoading } from '../../components/PageStates';
 import { StashFilesPanel } from '../../components/StashFilesPanel';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -55,13 +55,21 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
   const openAuth = useAuthModalStore((s) => s.open);
   const [tab, setTab] = useState<'all' | 'files'>('all');
   const [items, setItems] = useState<StudioSound[]>([]);
+  const [itemsLoading, setItemsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!hasStudioAccess(user)) {
       return;
     }
+    setItemsLoading(true);
     void fetchStudioSounds().then((result) => {
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
+      setItemsLoading(false);
       setItems(
         result.data.filter(
           (item) =>
@@ -72,7 +80,7 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
         ),
       );
     });
-  }, [user]);
+  }, [user, attempt]);
 
   if (!hydrated) {
     return <PageLoading label="Loading session…" />;
@@ -124,7 +132,15 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
         title="Stash tracks"
         description="Edit these items like any other track. They stay out of public listings."
       >
-        {items.length === 0 ? (
+        {itemsLoading ? (
+          <PageLoading label="Loading your stash…" />
+        ) : loadError && items.length === 0 ? (
+          <PageError
+            title="Could not load your stash"
+            description={loadError}
+            onRetry={() => setAttempt((n) => n + 1)}
+          />
+        ) : items.length === 0 ? (
           <EmptyState
             size="sm"
             title="No tracks in your stash yet"

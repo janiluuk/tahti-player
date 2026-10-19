@@ -5,7 +5,13 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
-import { act, cleanup, render, screen } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { AuthUser } from '../../api/types';
@@ -21,8 +27,15 @@ vi.mock('../../api/sources', () => ({
   uploadStashFile: vi.fn(),
 }));
 
+const fetchStudioSounds = vi.fn(
+  async (): Promise<{
+    data: Array<{ id: string; title: string; visibility: string }>;
+    meta: { source: 'api' | 'mock'; reason?: string };
+  }> => ({ data: [], meta: { source: 'mock' } }),
+);
+
 vi.mock('../../api/studio', () => ({
-  fetchStudioSounds: async () => ({ data: [], meta: { source: 'mock' } }),
+  fetchStudioSounds: () => fetchStudioSounds(),
   fetchStudioCollections: async () => ({ data: [], meta: { source: 'mock' } }),
   patchStudioSound: vi.fn(),
   patchStudioCollection: vi.fn(),
@@ -78,5 +91,42 @@ describe('StudioStashView for listeners', () => {
     expect(screen.getByText('Your files')).toBeInTheDocument();
     expect(screen.getByText('No stash files yet')).toBeInTheDocument();
     expect(screen.queryByText('Add from your library')).toBeNull();
+  });
+});
+
+describe('StudioStashView for artists', () => {
+  beforeEach(() => {
+    useAuthStore.setState({
+      user: { ...listener, role: 'ARTIST', roles: ['ARTIST'] },
+      profileLoaded: true,
+      hydrated: true,
+    });
+  });
+
+  afterEach(() => {
+    cleanup();
+    fetchStudioSounds.mockReset();
+    useAuthStore.setState({ user: null, profileLoaded: false, hydrated: true });
+  });
+
+  it('says the stash failed to load instead of "No tracks in your stash yet"', async () => {
+    fetchStudioSounds.mockResolvedValueOnce({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await renderStash();
+    expect(
+      await screen.findByText('Could not load your stash'),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('No tracks in your stash yet')).toBeNull();
+
+    fetchStudioSounds.mockResolvedValueOnce({
+      data: [{ id: 's1', title: 'Demo take', visibility: 'STASH' }],
+      meta: { source: 'api' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(await screen.findByText('Demo take')).toBeInTheDocument();
   });
 });
