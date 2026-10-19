@@ -77,6 +77,26 @@ Screenshots + findings: [`docs/e2e-journeys/artist-lifecycle/`](./e2e-journeys/a
 DJ set create, fan Subscribe, comments/chat attempt, recurring show, Go Live
 with interval shots for the configured stream duration.
 
+## Task journeys on a real backend (listener / artist)
+
+Task-based (not screenshot sweeps): sign in, play, queue, favourite, search,
+follow, radio; upload, edit, release, channel, go-live setup, stats. Default
+target `https://beta.tahti.live` with real accounts; each task is timed and
+records console errors, failed/slow `/api` calls and a small a11y audit.
+
+```bash
+TAHTI_E2E_LISTENER_EMAIL=… TAHTI_E2E_LISTENER_PASSWORD=… \
+  node scripts/journeys/listener-tasks-journey.mjs
+TAHTI_E2E_EMAIL=… TAHTI_E2E_PASSWORD=… \
+  node scripts/journeys/artist-tasks-journey.mjs
+```
+
+The artist run uploads an `e2e-test …` track and creates an `e2e-test …`
+release, then deletes both. It never goes live. Results:
+`docs/e2e-journeys/{listener,artist}-tasks/{desktop,phone}/REPORT.md`.
+The phone pass waits 65 s before signing in again (beta auth rate limit;
+`JOURNEY_LOGIN_GAP_MS`). Findings: `docs/todo/e2e-beta-ux-findings.md`.
+
 ## What each journey covers
 
 - **Anonymous** (`anonymous-journey.mjs`) — home/listen, radio, a public
