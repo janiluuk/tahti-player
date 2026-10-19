@@ -103,6 +103,7 @@ export function useStreamManagerState({
     replace: boolean;
   } | null>(null);
   const [playlistLoading, setPlaylistLoading] = useState(false);
+  const [previewError, setPreviewError] = useState<string | null>(null);
   const [rotationBusy, setRotationBusy] = useState(false);
   const [rotationMsg, setRotationMsg] = useState<string | null>(null);
   const [liveStartedAt, setLiveStartedAt] = useState<number | null>(null);
@@ -300,8 +301,11 @@ export function useStreamManagerState({
   const previewCollection = async (collectionSlug: string) => {
     setSelectedCollectionSlug(collectionSlug);
     setPlaylistLoading(true);
-    const { data: collection } = await fetchStudioCollection(collectionSlug);
-    setSelectedCollection(collection);
+    const { data: collection, meta } =
+      await fetchStudioCollection(collectionSlug);
+    const reason = meta.source === 'api' ? (meta.reason ?? null) : null;
+    setPreviewError(reason);
+    setSelectedCollection(reason ? null : collection);
     setPlaylistLoading(false);
   };
 
@@ -452,6 +456,7 @@ export function useStreamManagerState({
     collections,
     selectedCollectionSlug,
     selectedCollection,
+    previewError,
     playlistDialogOpen,
     setPlaylistDialogOpen,
     pendingApply,
