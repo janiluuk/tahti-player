@@ -180,9 +180,7 @@ export function ChannelAnnouncementsPanel() {
           Loading announcements…
         </p>
       ) : clips.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No announcement clips yet.
-        </p>
+        <PageEmpty title="No announcement clips yet." />
       ) : (
         <ul className="border-border divide-border divide-y rounded-lg border">
           {clips.map((clip) => (
