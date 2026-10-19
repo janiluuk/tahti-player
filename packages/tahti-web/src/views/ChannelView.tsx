@@ -1,9 +1,16 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
-import { ArrowLeftIcon, UsersIcon } from 'lucide-react';
+import { UsersIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, ClampedText, Dialog, Tooltip } from '@tahti-player/ui';
+import {
+  backButtonCornerClassName,
+  BackButtonLink,
+  Button,
+  ClampedText,
+  Dialog,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   BRAND_ACCENTS,
@@ -583,23 +590,21 @@ export function ChannelView({ slug }: { slug: string }) {
       )}
 
       <div className="relative z-10 flex w-full flex-col gap-1.5 px-4 py-3 sm:px-6 sm:py-4">
+        {!editing ? (
+          <Tooltip
+            content="Back to Listen"
+            side="right"
+            wrapperClassName={backButtonCornerClassName}
+          >
+            <BackButtonLink to="/" aria-label="Back to Listen" />
+          </Tooltip>
+        ) : null}
         {!heroVisible && <ChannelTopBar text={channel.topBarText} />}
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          {!editing ? (
-            <Tooltip content="Back to Listen" side="right">
-              <Link
-                to="/"
-                aria-label="Back to Listen"
-                className="text-foreground-secondary hover:bg-background-secondary inline-flex size-12 items-center justify-center rounded-full"
-              >
-                <ArrowLeftIcon size={28} aria-hidden />
-              </Link>
-            </Tooltip>
-          ) : (
-            <span />
-          )}
-          {!heroVisible ? pageActions : null}
-        </div>
+        {!heroVisible && pageActions ? (
+          <div className="flex flex-wrap items-center justify-end gap-2 pl-14">
+            {pageActions}
+          </div>
+        ) : null}
 
         {!heroVisible && (editing || channel.user.showPageHero !== false) && (
           <div
