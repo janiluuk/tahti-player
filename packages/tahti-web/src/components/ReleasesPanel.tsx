@@ -142,9 +142,7 @@ export function ReleasesPanel({
       />
 
       {sortedReleases.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No releases match “{query}”.
-        </p>
+        <PageEmpty title={`No releases match “${query}”.`} />
       ) : (
         <div className="border-border overflow-hidden rounded-lg border">
           <table className="w-full text-sm">

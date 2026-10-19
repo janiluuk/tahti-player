@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 
 import { Button, Dialog, SaveButton } from '@tahti-player/ui';
 
-import { PageLoading } from './PageStates';
+import { PageEmpty, PageLoading } from './PageStates';
 
 export type OrderItem = { id: string; title: string };
 
@@ -82,7 +82,7 @@ export function ProfileOrderDialog({
         {items === null ? (
           <PageLoading label="Loading…" />
         ) : items.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">{empty}</p>
+          <PageEmpty title={empty} />
         ) : (
           <ol className="flex flex-col gap-1.5" aria-label={title}>
             {items.map((item, index) => (
