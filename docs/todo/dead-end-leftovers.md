@@ -25,16 +25,25 @@ that tahti-web can fix on its own (see HISTORY). These need someone else first.
 - **Delete a release:** no `DELETE` release route in tahti-org (see
   `studio-artist-usability.md`).
 
-## Waiting on another session's open PRs
+## Found in batch 77
 
-- Governance board / elections / annual reports panels say "Could not load … Try again
-  later." with no Retry. #1231, #1232 and #1234 (another session's PageEmpty sweep) edit
-  those files; add Retry (as #1254 did for the association panel) after they land.
+- **Meeting conflicts never load:** `MeetingConflicts` calls
+  `GET /api/v1/governance/meetings/:id/conflicts`, which tahti-org doesn't have (only the
+  admin route exists), so the panel is always hidden. Needs a member route in tahti-org.
+- **~100 fetchers label real API failures as `source: 'mock'`** (`failMeta(err)` with
+  empty data and no mock fallback, e.g. `fetchMyEvents`, `fetchAdminUsers`,
+  `fetchStatsTopTracks`). Views that check `meta.source === 'api'` can't tell those
+  failures from empty data. Switching them to `apiErrorMeta` needs a check of the few
+  callers that read `source === 'mock'` (`SubscribeView`, `ChannelChatPanel`,
+  `BroadcastRecordingToggles`, `libraryStore`, `useMultitrackSession`).
 
 ## Left after batch 76 (failed loads still shown as empty)
 
 Low-impact or owned by another session's open work; same `meta.reason` → `PageError` fix:
 
+- `useStudioHome` (motions / feature requests / broadcasts), `PlayableTrackContextMenu`,
+  `ChannelPlaylistPicker`, `CollectionOrderButton`, `HearthisCard`, `StashFilesPanel`
+  collections and sounds, `ReleaseOpsPanel` royalties, `RecordedAtVenuePicker`.
 - `MeetingAgendaItems` falls back to the legacy agenda on any failure (keep the fallback for
   servers without the route; only show an error for non-404 failures).
 - `RadioShowView` now-playing / upcoming (polled; hides on failure), `ArtistLikes` and
