@@ -14,7 +14,7 @@ One PR per slice. Tick when merged.
 | 3 | `MyRadioStations` → `PageEmpty` | open |
 | 4 | `ScheduledTimes` → `PageEmpty` | open |
 | 5 | `CreditsEditor` → `PageEmpty` | open |
-| 6 | `MemberRegisterPanel` → `PageEmpty` (+ clear filters) | open |
+| 6 | `MemberRegisterPanel` → `PageEmpty` (+ clear filters) | done |
 | 7 | Studio home `GovernanceSection` → `PageEmpty` | open |
 | 8 | Studio home `SummaryStatsSection` discography → `PageEmpty` + CTA | open |
 | 9 | `FeatureRequestsView` comments → `PageEmpty` | open |
