@@ -24,6 +24,7 @@ import { useCollectionPlayback } from './useCollectionPlayback';
 /** Loading, editing, tracklist and playback state for one collection. */
 export function useCollectionEditState(slug: string) {
   const [col, setCol] = useState<StudioCollection | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [sounds, setSounds] = useState<StudioSound[]>([]);
   const [addPickerOpen, setAddPickerOpen] = useState(false);
   const [addBusyId, setAddBusyId] = useState<string | null>(null);
@@ -70,6 +71,11 @@ export function useCollectionEditState(slug: string) {
       fetchStudioSounds(),
       fetchCollectionGallery(slug),
     ]).then(([c, a, g]) => {
+      if (c.meta.source === 'api' && c.meta.reason) {
+        setLoadError(c.meta.reason);
+        return;
+      }
+      setLoadError(null);
       setCol(c.data);
       setSounds(a.data);
       setName(c.data.name);
@@ -100,6 +106,10 @@ export function useCollectionEditState(slug: string) {
   const refreshItems = async () => {
     try {
       const fresh = await fetchStudioCollection(slug);
+      if (fresh.meta.source === 'api' && fresh.meta.reason) {
+        toast.error('Could not refresh the tracklist.');
+        return;
+      }
       setCol((current) =>
         current ? { ...current, items: fresh.data.items } : fresh.data,
       );
@@ -226,6 +236,8 @@ export function useCollectionEditState(slug: string) {
 
   return {
     col,
+    loadError,
+    reload,
     sounds,
     addPickerOpen,
     setAddPickerOpen,

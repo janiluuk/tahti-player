@@ -4,7 +4,7 @@ import {
   Tooltip,
 } from '@tahti-player/ui';
 
-import { PageLoading } from '../../components/PageStates';
+import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { LibrarySectionTabs } from '../LibraryView';
@@ -26,7 +26,7 @@ export function StudioCollectionEditView({
   nav?: 'studio' | 'library';
 }) {
   const state = useCollectionEditState(slug);
-  const { col, isAlbumLike } = state;
+  const { col, isAlbumLike, loadError, reload } = state;
 
   return (
     <StudioGate requireChannel={false}>
@@ -47,7 +47,15 @@ export function StudioCollectionEditView({
               aria-label="Back to Collections"
             />
           </Tooltip>
-          {!col ? (
+          {!col && loadError ? (
+            <StudioPanel>
+              <PageError
+                title="Could not load this collection"
+                description={loadError}
+                onRetry={reload}
+              />
+            </StudioPanel>
+          ) : !col ? (
             <StudioPanel>
               <PageLoading label="Loading…" />
             </StudioPanel>
