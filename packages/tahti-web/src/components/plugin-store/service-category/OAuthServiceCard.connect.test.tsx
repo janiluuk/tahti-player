@@ -123,4 +123,25 @@ describe('OAuthServiceCard connecting', () => {
     ).toBeTruthy();
     expect(toast.error).not.toHaveBeenCalled();
   });
+
+  it('points a connected Google Drive at uploading instead', async () => {
+    adapter.id = 'google-drive';
+    adapter.checkStatus.mockResolvedValue({
+      data: { connected: true, configured: true },
+    });
+    try {
+      await renderWithRouter(
+        <OAuthServiceCard plugin={plugin} action={action} />,
+      );
+      await open();
+      expect(
+        await screen.findByText(/Picking files from Google Drive/),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole('link', { name: 'Upload files' }).getAttribute('href'),
+      ).toBe('/library/upload');
+    } finally {
+      adapter.id = 'soundcloud';
+    }
+  });
 });
