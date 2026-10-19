@@ -37,6 +37,7 @@ import {
   TahtiSelectsRow,
   TrendingRow,
 } from '../components/listen-view/HomeHighlights';
+import { HomeNews } from '../components/listen-view/HomeNews';
 import { ListenSection } from '../components/listen-view/ListenSection';
 import { StationCardSubtitle } from '../components/listen-view/StationCardSubtitle';
 import { useListenSections } from '../components/listen-view/useListenSections';
@@ -690,6 +691,8 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                 />
               ) : null}
             </ListenSection>
+
+            <HomeNews />
 
             <ListenerWidgetsSection />
             <DiscoWidgetsSection
