@@ -15,7 +15,7 @@ One PR per slice. Tick when merged.
 | 4 | `ScheduledTimes` → `PageEmpty` | open |
 | 5 | `CreditsEditor` → `PageEmpty` | open |
 | 6 | `MemberRegisterPanel` → `PageEmpty` (+ clear filters) | open |
-| 7 | Studio home `GovernanceSection` → `PageEmpty` | open |
+| 7 | Studio home `GovernanceSection` → `PageEmpty` | done |
 | 8 | Studio home `SummaryStatsSection` discography → `PageEmpty` + CTA | open |
 | 9 | `FeatureRequestsView` comments → `PageEmpty` | open |
 | 10 | `TrackBody` comments → `PageEmpty` | open |
