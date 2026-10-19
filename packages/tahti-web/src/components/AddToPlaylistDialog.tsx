@@ -106,9 +106,7 @@ export function AddToPlaylistDialog({
         {playlists === null ? (
           <p className="text-foreground-secondary text-sm">Loading…</p>
         ) : playlists.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">
-            No playlists yet — create one below.
-          </p>
+          <PageEmpty title="No playlists yet — create one below." />
         ) : (
           playlists.map((playlist) => (
             <Button
