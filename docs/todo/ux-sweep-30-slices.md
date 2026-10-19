@@ -41,7 +41,7 @@ One PR per slice. Tick when merged.
 | 20 | Add `SectionTitle` to `@tahti-player/ui` + story | done |
 | 21 | Listen New tracks → `SectionTitle` | open |
 | 22 | `ArtistReferenceSections` → `SectionTitle` | open |
-| 23 | `ArtistProfileSections` → `SectionTitle` | open |
+| 23 | `ArtistProfileSections` → `SectionTitle` | done |
 | 24 | History stats active-tab accent | open |
 | 25 | History list active-row accent | open |
 | 26 | CollectionView cover-tint header | open |
