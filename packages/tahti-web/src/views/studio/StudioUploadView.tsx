@@ -3,24 +3,17 @@ import {
   PauseIcon,
   PencilIcon,
   PlayIcon,
-  PlugIcon,
   RadioIcon,
   UploadIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
-  Badge,
   Button,
-  ButtonAnchor,
   ButtonLink,
-  Card,
-  CardGrid,
-  Dialog,
   EmptyState,
   FilePicker,
   Loader,
-  Toggle,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -29,218 +22,16 @@ import {
   fetchRecentBroadcasts,
   type RecentBroadcast,
 } from '../../api/broadcast';
-import type { MockOauthId } from '../../api/mock-session';
-import { connectIntegrationMock, type IntegrationId } from '../../api/sources';
 import { fetchEditorSource, uploadSoundFile } from '../../api/studio';
-import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
 import { WaveformSeekbar } from '../../components/tahti/WaveformSeekbar';
 import {
   UPLOAD_AUDIO_ACCEPT,
   UPLOAD_AUDIO_FORMATS_LABEL,
 } from '../../lib/uploadAudioFormats';
-import {
-  importSourcePlugins,
-  type ImportSourcePlugin,
-} from '../../plugins/import-sources';
-import { useAuthStore } from '../../stores/authStore';
 import { usePlayerStore } from '../../stores/playerStore';
 import { LibrarySectionTabs } from '../LibraryView';
-
-const ENABLED_SOURCES_STORAGE_KEY = 'tahti-web-enabled-sources';
-const UPLOAD_SOURCES = importSourcePlugins.filter(
-  (source) => source.id !== 'upload' && source.id !== 'stash',
-);
-
-function UploadSourceWidgets() {
-  const user = useAuthStore((state) => state.user);
-  const [statuses, setStatuses] = useState<
-    Partial<
-      Record<
-        IntegrationId,
-        Awaited<ReturnType<ImportSourcePlugin['checkStatus']>>
-      >
-    >
-  >({});
-  const [enabledIds, setEnabledIds] = useState<Set<IntegrationId>>(new Set());
-  const [selectedId, setSelectedId] = useState<IntegrationId | null>(null);
-
-  useEffect(() => {
-    void Promise.all(
-      UPLOAD_SOURCES.map(
-        async (source) => [source.id, await source.checkStatus()] as const,
-      ),
-    ).then((entries) => setStatuses(Object.fromEntries(entries)));
-    const storageKey = user
-      ? `${ENABLED_SOURCES_STORAGE_KEY}:${user.id}`
-      : ENABLED_SOURCES_STORAGE_KEY;
-    const stored =
-      typeof localStorage === 'undefined'
-        ? null
-        : localStorage.getItem(storageKey);
-    if (stored) {
-      try {
-        const ids = JSON.parse(stored) as unknown;
-        setEnabledIds(new Set(Array.isArray(ids) ? ids : []));
-      } catch {
-        setEnabledIds(new Set());
-      }
-    }
-  }, [user]);
-
-  const selected = UPLOAD_SOURCES.find((source) => source.id === selectedId);
-  const selectedStatus = selectedId ? statuses[selectedId]?.data : undefined;
-  // A definite "no" from the API. An unread status is not one: the artist
-  // can still try, and the API answers 503 if it really is not set up.
-  const serverNotSetUp =
-    selectedStatus !== undefined &&
-    !selectedStatus.unavailable &&
-    !selectedStatus.configured;
-  const toggleEnabled = (id: IntegrationId) => {
-    setEnabledIds((current) => {
-      const next = new Set(current);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      const storageKey = user
-        ? `${ENABLED_SOURCES_STORAGE_KEY}:${user.id}`
-        : ENABLED_SOURCES_STORAGE_KEY;
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(storageKey, JSON.stringify([...next]));
-      }
-      return next;
-    });
-  };
-
-  return (
-    <section aria-labelledby="source-widgets-title">
-      <h2
-        id="source-widgets-title"
-        className="text-foreground-secondary mb-3 text-xs font-semibold tracking-wide uppercase"
-      >
-        Import sources
-      </h2>
-      <CardGrid className="grid-cols-[repeat(auto-fit,minmax(12rem,1fr))]">
-        {UPLOAD_SOURCES.map((source) => {
-          const status = statuses[source.id]?.data;
-          const enabled = enabledIds.has(source.id);
-          const configured = Boolean(status?.configured);
-          return (
-            <Card
-              key={source.id}
-              title={source.name}
-              subtitle={
-                enabled && configured
-                  ? 'Enabled'
-                  : status?.unavailable
-                    ? 'Status unavailable'
-                    : !configured
-                      ? 'Needs setup'
-                      : 'Disabled'
-              }
-              image={<SourceServiceIcon id={source.id} />}
-              className={
-                !enabled || !configured ? 'opacity-60 grayscale' : undefined
-              }
-              onClick={() => setSelectedId(source.id)}
-            />
-          );
-        })}
-      </CardGrid>
-      {selected && (
-        <Dialog.Root
-          isOpen
-          onClose={() => setSelectedId(null)}
-          className="max-w-lg"
-        >
-          <Dialog.Title>Configure {selected.name}</Dialog.Title>
-          <Dialog.Description>{selected.description}</Dialog.Description>
-          <div className="mt-4 flex flex-col gap-3">
-            <div className="border-border flex items-center justify-between rounded-lg border p-3">
-              <div className="flex items-center gap-2">
-                <Badge
-                  variant="pill"
-                  color={selectedStatus?.configured ? 'green' : 'secondary'}
-                >
-                  {selectedStatus?.configured
-                    ? 'Configured'
-                    : selectedStatus?.unavailable
-                      ? 'Status unavailable'
-                      : 'Needs setup'}
-                </Badge>
-                <span className="text-foreground-secondary text-sm">
-                  {enabledIds.has(selected.id) ? 'Enabled' : 'Disabled'}
-                </span>
-              </div>
-              <Toggle
-                label={
-                  enabledIds.has(selected.id)
-                    ? 'Disable source'
-                    : 'Enable source'
-                }
-                checked={enabledIds.has(selected.id)}
-                disabled={!selectedStatus?.configured}
-                onChange={(checked) => {
-                  if (checked !== enabledIds.has(selected.id)) {
-                    toggleEnabled(selected.id);
-                  }
-                }}
-              />
-            </div>
-            {selected.kind === 'oauth' && selected.oauthUrl ? (
-              import.meta.env.VITE_FORCE_MOCK === '1' ? (
-                <Button
-                  size="sm"
-                  disabled={!user}
-                  onClick={() => {
-                    void connectIntegrationMock(
-                      selected.id as MockOauthId,
-                    ).then(() => {
-                      void selected.checkStatus().then((result) =>
-                        setStatuses((current) => ({
-                          ...current,
-                          [selected.id]: result,
-                        })),
-                      );
-                    });
-                  }}
-                >
-                  <PlugIcon size={16} aria-hidden className="mr-1.5" />
-                  {selectedStatus?.connected ? 'Reconnect' : 'Connect'}
-                </Button>
-              ) : (
-                <ButtonAnchor
-                  className="w-fit"
-                  href={selected.oauthUrl}
-                  size="sm"
-                  disabled={!user || serverNotSetUp}
-                >
-                  <PlugIcon size={16} aria-hidden className="mr-1.5" />
-                  {selectedStatus?.connected ? 'Reconnect' : 'Connect'}
-                </ButtonAnchor>
-              )
-            ) : (
-              <p className="text-foreground-secondary text-sm">
-                This source is ready without an external connection.
-              </p>
-            )}
-            {selected.kind === 'oauth' && serverNotSetUp && (
-              <p className="text-foreground-secondary text-sm">
-                {selected.name} is not set up on this server yet, so it cannot
-                be connected.
-              </p>
-            )}
-          </div>
-          <Dialog.Actions>
-            <Dialog.Close>Done</Dialog.Close>
-          </Dialog.Actions>
-        </Dialog.Root>
-      )}
-    </section>
-  );
-}
+import { UploadSourceWidgets } from './upload/UploadSourceWidgets';
 
 function formatRecordingDate(iso: string): string {
   return new Date(iso).toLocaleString(undefined, {

@@ -7,6 +7,7 @@ import {
 } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { renderWithRouter } from '../../../test/renderWithRouter';
 import type { ServiceAction, ServicePlugin } from '../serviceCatalog';
 import { OAuthServiceCard } from './OAuthServiceCard';
 
@@ -57,30 +58,27 @@ beforeEach(() => {
 });
 
 describe('OAuthServiceCard connecting', () => {
-  it('does not send the artist to a provider the server has not set up', async () => {
+  it('opens setup help instead of a provider the server has not set up', async () => {
     adapter.checkStatus.mockResolvedValue({
       data: { connected: false, configured: false },
     });
-    render(<OAuthServiceCard plugin={plugin} action={action} />);
+    await renderWithRouter(
+      <OAuthServiceCard plugin={plugin} action={action} />,
+    );
     await waitFor(() => expect(adapter.checkStatus).toHaveBeenCalled());
 
     fireEvent.click(await screen.findByRole('button', { name: /Connect/ }));
 
-    await waitFor(() =>
-      expect(toast.error).toHaveBeenCalledWith(
-        'SoundCloud is not set up on this server yet.',
-      ),
-    );
-    expect(window.location.href).toBe(startHref);
-    await open();
     expect(
-      await screen.findByText(
-        'SoundCloud is not set up on this server yet, so it cannot be connected.',
-      ),
+      await screen.findByText(/SoundCloud is not switched on for Tahti yet/),
     ).toBeTruthy();
+    expect(window.location.href).toBe(startHref);
+    expect(
+      screen.getByRole('link', { name: 'Upload files' }).getAttribute('href'),
+    ).toBe('/library/upload');
   });
 
-  it('says the status could not be read instead of "not connected"', async () => {
+  it('offers to check again when the status could not be read', async () => {
     adapter.checkStatus.mockResolvedValue({
       data: { connected: false, configured: false, unavailable: true },
     });
@@ -88,10 +86,10 @@ describe('OAuthServiceCard connecting', () => {
     await open();
 
     expect(
-      await screen.findByText(
-        'Could not check this connection. Try again in a moment.',
-      ),
+      await screen.findByText('Could not check this connection.'),
     ).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+    await waitFor(() => expect(adapter.checkStatus).toHaveBeenCalledTimes(2));
   });
 
   it('falls back to Connect when the SoundCloud connection has expired', async () => {
@@ -124,5 +122,26 @@ describe('OAuthServiceCard connecting', () => {
       ),
     ).toBeTruthy();
     expect(toast.error).not.toHaveBeenCalled();
+  });
+
+  it('points a connected Google Drive at uploading instead', async () => {
+    adapter.id = 'google-drive';
+    adapter.checkStatus.mockResolvedValue({
+      data: { connected: true, configured: true },
+    });
+    try {
+      await renderWithRouter(
+        <OAuthServiceCard plugin={plugin} action={action} />,
+      );
+      await open();
+      expect(
+        await screen.findByText(/Picking files from Google Drive/),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole('link', { name: 'Upload files' }).getAttribute('href'),
+      ).toBe('/library/upload');
+    } finally {
+      adapter.id = 'soundcloud';
+    }
   });
 });
