@@ -36,6 +36,7 @@ import {
 import type { StudioCollection } from '../../api/studio-types';
 import { SubscribedCollections } from '../../components/library/SubscribedCollections';
 import { PageLoading } from '../../components/PageStates';
+import { StudioCollectionMoreMenu } from '../../components/StudioCollectionMoreMenu';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import {
@@ -86,6 +87,11 @@ const editorRouteFor = (collection: StudioCollection) =>
   ['PLAYLIST', 'DJ_SET_SERIES'].includes(collectionStyle(collection))
     ? '/studio/playlists/$slug'
     : '/studio/collections/$slug';
+
+function menuKindLabel(c: StudioCollection) {
+  const label = collectionStyleLabel(collectionStyle(c));
+  return label === 'EP' ? label : label.toLowerCase();
+}
 
 export function StudioCollectionsView() {
   const user = useAuthStore((s) => s.user);
@@ -438,6 +444,28 @@ export function StudioCollectionsView() {
                         ? 'Design'
                         : 'Edit'}
                     </ButtonLink>
+                    <StudioCollectionMoreMenu
+                      col={c}
+                      kindLabel={menuKindLabel(c)}
+                      onDeleted={() =>
+                        setRows((current) =>
+                          current.filter((row) => row.slug !== c.slug),
+                        )
+                      }
+                      onChanged={(next) =>
+                        setRows((current) =>
+                          current.map((row) =>
+                            row.slug === next.slug
+                              ? {
+                                  ...row,
+                                  visibility: next.visibility,
+                                  isPublic: next.isPublic,
+                                }
+                              : row,
+                          ),
+                        )
+                      }
+                    />
                   </li>
                 ))}
               </ul>
