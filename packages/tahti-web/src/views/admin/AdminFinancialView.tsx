@@ -8,7 +8,7 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageLoading } from '../../components/PageStates';
+import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { FanSubArtistsPanel } from './financial/FanSubArtistsPanel';
 import { FanSubPayoutQueue } from './financial/FanSubPayoutQueue';
@@ -18,11 +18,13 @@ import { LegacyMembersPanel } from './financial/LegacyMembersPanel';
 export function AdminFinancialView() {
   const [overview, setOverview] = useState<AdminFinancialOverview | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [year, setYear] = useState(() => new Date().getUTCFullYear());
 
   const reload = () => {
     void fetchAdminFinancial(year).then((res) => {
       setOverview(res.data);
+      setLoadError(res.meta.reason ?? null);
       setLoading(false);
     });
   };
@@ -41,9 +43,14 @@ export function AdminFinancialView() {
               {loading ? (
                 <PageLoading label="Loading financial data…" />
               ) : !overview ? (
-                <p className="text-foreground-secondary py-4 text-center text-sm">
-                  Could not load financial data.
-                </p>
+                <PageError
+                  title="Could not load financial data"
+                  description={loadError ?? undefined}
+                  onRetry={() => {
+                    setLoading(true);
+                    reload();
+                  }}
+                />
               ) : (
                 <>
                   <StudioPanel title="Fan subscriptions">
