@@ -104,9 +104,7 @@ export function MotionDiscussion({
           {!commentsLoaded ? (
             <p className="text-foreground-secondary text-xs">Loading…</p>
           ) : comments.length === 0 ? (
-            <p className="text-foreground-secondary text-xs">
-              No comments yet.
-            </p>
+            <PageEmpty title="No comments yet." />
           ) : (
             <ul className="border-border divide-border divide-y overflow-hidden rounded-md border text-sm">
               {comments.map((c) => (
