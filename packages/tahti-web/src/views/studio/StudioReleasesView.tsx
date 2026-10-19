@@ -65,7 +65,6 @@ export function StudioReleasesView() {
   const [releaseDate, setReleaseDate] = useState(() =>
     new Date().toISOString().slice(0, 10),
   );
-  const [msg, setMsg] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [query, setQuery] = useState('');
   const search = useSearch({ strict: false }) as { create?: boolean };
@@ -107,7 +106,6 @@ export function StudioReleasesView() {
 
   const create = async () => {
     setCreating(true);
-    setMsg(null);
     const r = await createStudioRelease({
       title: title.trim(),
       type,
@@ -115,7 +113,7 @@ export function StudioReleasesView() {
     });
     setCreating(false);
     if (!r.ok) {
-      setMsg(r.error);
+      toast.error(r.error);
       return;
     }
     const visualResult = await patchStudioReleaseVisual(
@@ -125,7 +123,7 @@ export function StudioReleasesView() {
     if (!visualResult.ok) {
       toast.error('Release created, but its visualizer could not be saved.');
     }
-    setMsg(`Created ${r.data.title}.`);
+    toast.success(`Created ${r.data.title}.`);
     closeCreate();
     reload();
   };
@@ -152,10 +150,7 @@ export function StudioReleasesView() {
               <Tooltip content="New release" side="top">
                 <Button
                   size="icon-sm"
-                  onClick={() => {
-                    setMsg(null);
-                    setCreateOpen(true);
-                  }}
+                  onClick={() => setCreateOpen(true)}
                   aria-label="New release"
                 >
                   <PlusIcon size={16} aria-hidden />
@@ -164,10 +159,6 @@ export function StudioReleasesView() {
             </div>
           }
         >
-          {msg && (
-            <p className="text-foreground-secondary mb-4 text-sm">{msg}</p>
-          )}
-
           <Dialog.Root isOpen={createOpen} onClose={closeCreate}>
             <form
               onSubmit={(e) => {
