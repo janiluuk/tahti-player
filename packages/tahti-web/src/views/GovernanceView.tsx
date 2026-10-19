@@ -456,9 +456,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
           </GovernancePanel>
           <GovernancePanel title="Member directory" icon={UsersIcon}>
             {members.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No member directory is published yet.
-              </p>
+              <PageEmpty title="No member directory is published yet." />
             ) : (
               <ul className="divide-border divide-y">
                 {members.slice(0, 8).map((member) => (
