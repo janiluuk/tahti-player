@@ -111,9 +111,7 @@ export function StudioRadioSubmissionPanel() {
         {loading ? (
           <PageLoading label="Loading submissions…" />
         ) : submissions.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">
-            No submissions yet.
-          </p>
+          <PageEmpty title="No submissions yet." />
         ) : (
           <ul className="border-border divide-border divide-y rounded-lg border">
             {submissions.map((submission) => (
