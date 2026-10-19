@@ -1,15 +1,17 @@
-import { ListPlusIcon, XIcon } from 'lucide-react';
+import { Disc3Icon, ListPlusIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@tahti-player/ui';
 
 import { AddToPlaylistPanel } from '../../../components/AddToPlaylistPanel';
+import { AddToReleasePanel } from '../../../components/AddToReleasePanel';
 import type { StudioSoundsState } from './useStudioSoundsState';
 
 /** Bulk actions over the checked Sounds rows; hidden until one is checked. */
 export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
   const { items, filtered, selectedIds, setSelectedIds } = state;
   const [playlistOpen, setPlaylistOpen] = useState(false);
+  const [releaseOpen, setReleaseOpen] = useState(false);
   const selected = items.filter((item) => selectedIds.has(item.id));
 
   if (selected.length === 0) {
@@ -43,6 +45,15 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
       <div className="ml-auto flex flex-wrap items-center gap-2">
         <Button
           size="sm"
+          variant="secondary"
+          className="gap-1.5"
+          onClick={() => setReleaseOpen(true)}
+        >
+          <Disc3Icon size={15} aria-hidden />
+          Add to release
+        </Button>
+        <Button
+          size="sm"
           className="gap-1.5"
           onClick={() => setPlaylistOpen(true)}
         >
@@ -59,6 +70,11 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
           Clear
         </Button>
       </div>
+      <AddToReleasePanel
+        isOpen={releaseOpen}
+        tracks={selected.map((item) => ({ id: item.id, title: item.title }))}
+        onClose={() => setReleaseOpen(false)}
+      />
       <AddToPlaylistPanel
         isOpen={playlistOpen}
         soundIds={selected.map((item) => item.id)}
