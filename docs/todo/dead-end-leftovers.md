@@ -31,6 +31,22 @@ that tahti-web can fix on its own (see HISTORY). These need someone else first.
   later." with no Retry. #1231, #1232 and #1234 (another session's PageEmpty sweep) edit
   those files; add Retry (as #1254 did for the association panel) after they land.
 
+## Left after batch 76 (failed loads still shown as empty)
+
+Low-impact or owned by another session's open work; same `meta.reason` → `PageError` fix:
+
+- `MeetingAgendaItems` falls back to the legacy agenda on any failure (keep the fallback for
+  servers without the route; only show an error for non-404 failures).
+- `RadioShowView` now-playing / upcoming (polled; hides on failure), `ArtistLikes` and
+  `SubscribedCollections` (hidden on failure), `DeliveryTab` platform modes.
+- `show-detail/useShowDetail.ts` episodes and bookings — another session's batch 4 edits
+  `EpisodesTab` / `OverviewTab`.
+- `ArtistPanel` social connections and `NotificationsVisibilityPanel` (profile toggles show
+  off on failure).
+- `StudioCollectionsView` row Play says "Nothing in this collection can play yet" when the
+  fetch failed; stream manager "Apply to rotation" refetch says "no tracks" (it aborts, so
+  no data loss).
+
 ## Checked and fine
 
 - `/sources/*` redirects to Settings › Plugin store with the Import group open (only
