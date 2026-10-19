@@ -32,6 +32,11 @@ import type { OnAirChannel } from '../api/listen';
 import { fetchStationNowPlaying } from '../api/radio-now-playing';
 import type { TahtiPlayable } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
+import {
+  NewReleasesRow,
+  TahtiSelectsRow,
+  TrendingRow,
+} from '../components/listen-view/HomeHighlights';
 import { ListenSection } from '../components/listen-view/ListenSection';
 import { StationCardSubtitle } from '../components/listen-view/StationCardSubtitle';
 import { useListenSections } from '../components/listen-view/useListenSections';
@@ -599,6 +604,58 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               />
             ) : null}
 
+            <TahtiSelectsRow />
+            <NewReleasesRow />
+
+            <ListenSection
+              data-testid="listen-on-air"
+              title="On air"
+              badge="Live"
+              badgeColor="green"
+              status={sections.onAir.status}
+              empty={onAirItems.length === 0}
+              emptyTitle="Nobody is on air right now"
+              emptyDescription="Live and replaying channels show up here."
+              onRetry={() => sections.retry('onAir')}
+            >
+              <CardsRow
+                data-testid="listen-on-air"
+                title="On air"
+                badge="Live"
+                badgeColor="green"
+                items={onAirItems}
+                labels={{
+                  ...ROW_LABELS,
+                  filterPlaceholder: 'Filter channels…',
+                }}
+                renderItem={renderOnAirItem}
+              />
+            </ListenSection>
+
+            <TrendingRow />
+
+            <ListenSection
+              data-testid="listen-new-tracks"
+              title="New tracks"
+              status={sections.latestTracks.status}
+              empty={sections.latestTracks.data.length === 0}
+              emptyTitle="No new tracks yet"
+              onRetry={() => sections.retry('latestTracks')}
+            >
+              <section
+                className="flex flex-col gap-3"
+                data-testid="listen-new-tracks"
+              >
+                <SectionTitle
+                  title="New tracks"
+                  className="border-accent-purple/40 border-l-4 pl-3"
+                />
+                <div className="shadow-float rounded-[var(--radius-card)]">
+                  <PlayableTrackTable items={sections.latestTracks.data} />
+                </div>
+              </section>
+            </ListenSection>
+
             <ListenSection
               data-testid="listen-radio"
               title="Radio"
@@ -630,53 +687,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                   onRetry={() => sections.retry('presets')}
                 />
               ) : null}
-            </ListenSection>
-
-            <ListenSection
-              data-testid="listen-on-air"
-              title="On air"
-              badge="Live"
-              badgeColor="green"
-              status={sections.onAir.status}
-              empty={onAirItems.length === 0}
-              emptyTitle="Nobody is on air right now"
-              emptyDescription="Live and replaying channels show up here."
-              onRetry={() => sections.retry('onAir')}
-            >
-              <CardsRow
-                data-testid="listen-on-air"
-                title="On air"
-                badge="Live"
-                badgeColor="green"
-                items={onAirItems}
-                labels={{
-                  ...ROW_LABELS,
-                  filterPlaceholder: 'Filter channels…',
-                }}
-                renderItem={renderOnAirItem}
-              />
-            </ListenSection>
-
-            <ListenSection
-              data-testid="listen-new-tracks"
-              title="New tracks"
-              status={sections.latestTracks.status}
-              empty={sections.latestTracks.data.length === 0}
-              emptyTitle="No new tracks yet"
-              onRetry={() => sections.retry('latestTracks')}
-            >
-              <section
-                className="flex flex-col gap-3"
-                data-testid="listen-new-tracks"
-              >
-                <SectionTitle
-                  title="New tracks"
-                  className="border-accent-purple/40 border-l-4 pl-3"
-                />
-                <div className="shadow-float rounded-[var(--radius-card)]">
-                  <PlayableTrackTable items={sections.latestTracks.data} />
-                </div>
-              </section>
             </ListenSection>
 
             <ListenerWidgetsSection />
