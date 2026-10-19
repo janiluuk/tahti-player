@@ -93,6 +93,20 @@ describe('BroadcastPreflightPanel series episode', () => {
     vi.clearAllMocks();
   });
 
+  it('offers Retry when the show details fail to load', async () => {
+    vi.mocked(fetchBroadcastPreflight).mockResolvedValueOnce({
+      data: null,
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await renderPanel();
+    expect(screen.getByText('Could not load your show details')).toBeTruthy();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(screen.getByDisplayValue('Friday set')).toBeTruthy();
+  });
+
   it('sends the picked series and shows the planned episode after saving', async () => {
     await renderPanel();
 
