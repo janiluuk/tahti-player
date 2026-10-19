@@ -1,6 +1,5 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
-  ArrowLeftIcon,
   BookmarkIcon,
   ListMusicIcon,
   ListPlusIcon,
@@ -13,7 +12,14 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, ButtonLink, EmptyState, Tooltip } from '@tahti-player/ui';
+import {
+  backButtonCornerClassName,
+  BackButtonLink,
+  Button,
+  ButtonLink,
+  EmptyState,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   fetchCollection,
@@ -333,15 +339,13 @@ export function CollectionView({ slug }: { slug: string }) {
   };
 
   return (
-    <PageFrame maxWidth="full">
-      <Tooltip content="Back to Listen" side="right">
-        <Link
-          to="/"
-          aria-label="Back to Listen"
-          className="text-foreground-secondary hover:bg-background-secondary inline-flex size-8 w-fit items-center justify-center rounded-full"
-        >
-          <ArrowLeftIcon size={16} aria-hidden />
-        </Link>
+    <PageFrame maxWidth="full" className="relative">
+      <Tooltip
+        content="Back to Listen"
+        side="right"
+        wrapperClassName={backButtonCornerClassName}
+      >
+        <BackButtonLink to="/" aria-label="Back to Listen" />
       </Tooltip>
 
       <EntitySocialHeader
