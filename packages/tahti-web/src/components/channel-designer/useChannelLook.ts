@@ -548,6 +548,8 @@ export function useChannelLook({
 
   const {
     presets,
+    presetsError,
+    retryPresets,
     savePresetOpen,
     setSavePresetOpen,
     presetNameInput,
@@ -676,6 +678,8 @@ export function useChannelLook({
     presetBusy,
     presetNameInput,
     presets,
+    presetsError,
+    retryPresets,
     previewPreset,
     previewStyle,
     previousSave,

@@ -3,9 +3,12 @@ import { Trash2Icon } from 'lucide-react';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import type { ChannelVisualPreset } from '../../api/channel-design';
+import { PageError } from '../PageStates';
 
 type Props = {
   presets: ChannelVisualPreset[];
+  loadError?: string | null;
+  onRetry?: () => void;
   presetBusy: boolean;
   onApply: (preset: ChannelVisualPreset) => void;
   onRequestDelete: (preset: ChannelVisualPreset) => void;
@@ -15,10 +18,21 @@ type Props = {
  * exists. */
 export function SavedLooksRow({
   presets,
+  loadError,
+  onRetry,
   presetBusy,
   onApply,
   onRequestDelete,
 }: Props) {
+  if (loadError && presets.length === 0) {
+    return (
+      <PageError
+        title="Could not load your saved looks"
+        description={loadError}
+        onRetry={onRetry}
+      />
+    );
+  }
   if (presets.length === 0) {
     return null;
   }

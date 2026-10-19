@@ -27,6 +27,8 @@ export function useSavedPresets({
   clearAppliedPresetName,
 }: Options) {
   const [presets, setPresets] = useState<ChannelVisualPreset[]>([]);
+  const [presetsError, setPresetsError] = useState<string | null>(null);
+  const [presetsAttempt, setPresetsAttempt] = useState(0);
   const [savePresetOpen, setSavePresetOpen] = useState(false);
   const [presetNameInput, setPresetNameInput] = useState('');
   const [presetBusy, setPresetBusy] = useState(false);
@@ -36,16 +38,17 @@ export function useSavedPresets({
   useEffect(() => {
     let stale = false;
     void fetchChannelVisualPresets()
-      .then(({ data }) => {
+      .then(({ data, meta }) => {
         if (!stale) {
           setPresets(data);
+          setPresetsError(meta.source === 'api' ? (meta.reason ?? null) : null);
         }
       })
       .catch(() => undefined);
     return () => {
       stale = true;
     };
-  }, [reloadToken]);
+  }, [reloadToken, presetsAttempt]);
 
   const openSavePresetModal = () => {
     if (hasPendingBackdropFile) {
@@ -119,6 +122,8 @@ export function useSavedPresets({
 
   return {
     presets,
+    presetsError,
+    retryPresets: () => setPresetsAttempt((n) => n + 1),
     savePresetOpen,
     setSavePresetOpen,
     presetNameInput,
