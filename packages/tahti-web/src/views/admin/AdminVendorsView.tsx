@@ -8,6 +8,7 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
+import { PageError } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 
 const CRITICAL_VENDORS = [
@@ -260,9 +261,17 @@ export function AdminVendorsContent() {
     [],
   );
 
+  const [statusError, setStatusError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
+
   useEffect(() => {
-    void fetchAdminIntegrationStatus().then((res) => setIntegrations(res.data));
-  }, []);
+    void fetchAdminIntegrationStatus().then((res) => {
+      setIntegrations(res.data);
+      setStatusError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
+    });
+  }, [attempt]);
 
   const integrationVendors: Vendor[] = INTEGRATION_VENDORS.map((vendor) => {
     const liveStatus = integrations.find((row) => row.name === vendor.name);
@@ -301,6 +310,16 @@ export function AdminVendorsContent() {
             <p className="text-sm">No explicit launch blockers are recorded.</p>
           )}
         </StudioPanel>
+
+        {statusError && integrations.length === 0 ? (
+          <StudioPanel title="Distribution status">
+            <PageError
+              title="Could not check live integration status"
+              description={`The blocker list above uses the recorded status only. ${statusError}`}
+              onRetry={() => setAttempt((n) => n + 1)}
+            />
+          </StudioPanel>
+        ) : null}
 
         {integrations.length > 0 && (
           <StudioPanel title="Distribution status">
