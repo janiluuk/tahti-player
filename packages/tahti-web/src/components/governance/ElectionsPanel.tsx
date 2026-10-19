@@ -8,6 +8,7 @@ import {
   fetchGovernanceElections,
   type GovernanceElection,
 } from '../../api/governance-elections';
+import { PageEmpty } from '../PageStates';
 import { CandidacyControl } from './CandidacyControl';
 import { GovernancePanel } from './GovernancePanel';
 
