@@ -19,7 +19,7 @@ import { DmBlockButton } from '../components/DmBlockButton';
 import { DmRoleBadge } from '../components/DmRoleBadge';
 import { DmThreadMessages } from '../components/DmThreadMessages';
 import { MessageContacts } from '../components/MessageContacts';
-import { PageEmpty } from '../components/PageStates';
+import { PageEmpty, PageError } from '../components/PageStates';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
@@ -27,6 +27,7 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const [inbox, setInbox] = useState<ConversationSummary[]>([]);
+  const [inboxError, setInboxError] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(threadId ?? null);
   const [messages, setMessages] = useState<ChatDm[]>([]);
   const [hasMore, setHasMore] = useState(false);
@@ -45,6 +46,7 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
   const reloadInbox = () => {
     void fetchConversations().then((r) => {
       setInbox(r.data);
+      setInboxError(r.meta.source === 'api' ? (r.meta.reason ?? null) : null);
     });
   };
 
@@ -246,7 +248,15 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
 
         <div className="grid gap-4 md:grid-cols-[240px_1fr]">
           <ul className="border-border divide-border max-h-96 divide-y overflow-y-auto rounded-lg border">
-            {inbox.length === 0 ? (
+            {inboxError && inbox.length === 0 ? (
+              <li className="p-3">
+                <PageError
+                  title="Could not load your conversations"
+                  description={inboxError}
+                  onRetry={reloadInbox}
+                />
+              </li>
+            ) : inbox.length === 0 ? (
               <li className="p-3">
                 <PageEmpty
                   title="No conversations yet"

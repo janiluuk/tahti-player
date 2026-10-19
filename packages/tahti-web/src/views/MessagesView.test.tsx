@@ -283,3 +283,40 @@ describe('MessagesView older messages', () => {
     );
   });
 });
+
+describe('MessagesView inbox', () => {
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+    useAuthStore.setState({ user: null });
+  });
+
+  it('says the inbox failed to load instead of "No conversations yet"', async () => {
+    useAuthStore.setState({ user: { username: 'me' } as AuthUser });
+    vi.spyOn(blocks, 'fetchBlockedUsers').mockResolvedValue([]);
+    const fetch = vi.spyOn(api, 'fetchConversations').mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    const router = createRouter({
+      routeTree: createRootRoute({ component: () => <MessagesView /> }),
+      history: createMemoryHistory({ initialEntries: ['/messages'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+    expect(
+      await screen.findByText('Could not load your conversations'),
+    ).toBeTruthy();
+    expect(screen.queryByText('No conversations yet')).toBeNull();
+
+    fetch.mockResolvedValue({
+      data: [conversation()],
+      meta: { source: 'api' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(await screen.findByText('Aino')).toBeTruthy();
+  });
+});
