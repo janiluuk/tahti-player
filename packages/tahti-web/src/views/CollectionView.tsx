@@ -488,15 +488,17 @@ export function CollectionView({ slug }: { slug: string }) {
       />
 
       {playables.length > 0 && (
-        <PlayableTrackTable
-          items={playables}
-          compactActions
-          emptyMessage="No tracks yet."
-          getAnnotation={(item) => {
-            const line = contributions.get(item.id);
-            return line ? <CollectionContribution line={line} /> : null;
-          }}
-        />
+        <div className="shadow-float rounded-[var(--radius-card)]">
+          <PlayableTrackTable
+            items={playables}
+            compactActions
+            emptyMessage="No tracks yet."
+            getAnnotation={(item) => {
+              const line = contributions.get(item.id);
+              return line ? <CollectionContribution line={line} /> : null;
+            }}
+          />
+        </div>
       )}
 
       {playables.length === 0 && (
