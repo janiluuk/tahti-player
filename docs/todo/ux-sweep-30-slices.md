@@ -20,7 +20,7 @@ One PR per slice. Tick when merged.
 | 9 | `FeatureRequestsView` comments → `PageEmpty` | open |
 | 10 | `TrackBody` comments → `PageEmpty` | done |
 | 11 | `MessagesView` → `PageEmpty` | done |
-| 12 | `SocialPostNow` → `PageEmpty` | open |
+| 12 | `SocialPostNow` → `PageEmpty` | done |
 
 ## Catalog controls (13–18)
 
