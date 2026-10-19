@@ -11,6 +11,7 @@ import { Badge, HorizontalScroll } from '@tahti-player/ui';
 
 import type { FanPayoutStats } from '../api/revenue';
 import type { RevenueOrderRow } from '../lib/revenueOrders';
+import { PageEmpty } from './PageStates';
 
 type FanSubscriptionStatsProps = {
   stats: FanPayoutStats;
