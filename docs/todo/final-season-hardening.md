@@ -2,7 +2,42 @@
 
 **Status:** blocked
 
-**Blocker:** Cutover L ops: same-origin `/tahti-api` proxy, runbook rehearsal, vend SPA — needs explicit ops confirmation (no DNS flip).
+**Blocker:** Cutover L ops still open (vend SPA image, same-origin proxy on
+prod upstream, runbook rehearsal). **DNS flip is yours** — domain map below.
+NPM UI at `http://pi4.local:81` (no agent credentials on hand to edit hosts).
+
+## DNS / NPM cutover map (you flip DNS; NPM forwards)
+
+Public edge today: DNS → `91.152.54.76` (same box as `tahti.live`), then
+**Pi4 Nginx Proxy Manager** (`pi4.local:81`) → LAN upstreams. Prefer
+**upstream switch in NPM** over DNS TTL games (CUTOVER §8.4).
+
+| Hostname | Role after cutover | Where it should point | Notes |
+| --- | --- | --- | --- |
+| `app.tahti.live` | Product SPA (listen/studio) | NPM proxy host → **SPA nginx** (same contract as beta: host that serves `tahti-web` `dist/` with `/tahti-api` + `/api` → `https://api.tahti.live`) | Today: Next `apps/web`. Flip when SPA image is the Swarm/prod web upstream. Cookie must be host-only on `app.` via same-origin proxy — do **not** send browsers to `api.tahti.live` for login. |
+| `tahti.live` (apex) | Marketing `website/` | Unchanged (static marketing nginx) | Not the SPA. Link `/listen` → `https://app.tahti.live/`. |
+| `www.tahti.live` | Usually → apex | Keep current redirect/proxy | Do not point at SPA unless product says so. |
+| `beta.tahti.live` | Canary / soak | NPM **#61** → `http://192.168.2.100:15180` (vimage `tahti-beta-web`) | Already correct (`ops/beta-tahti-live.md`). Sunset after soak (remove #61). |
+| `api.tahti.live` | API | Unchanged | SPA talks via same-origin `/tahti-api` rewrite, not by changing this DNS. |
+| `chat.tahti.live` | Centrifugo WS | Unchanged (`wss://…`) | |
+| `cdn.tahti.live` / `stream.tahti.live` | Media | Unchanged (Caddy) | Separate from NPM web hosts. |
+| `*.tahti.live` channel vanity (NPM **#55**) | Channel custom hosts | Must hit the **SPA** after cutover (same upstream as `app.`) | Keep `beta` excluded so it does not fall into #55. |
+| Board admin host (current Next `/admin/*`) | Admin stays Next | **Do not** retarget to SPA | Decided out of cutover critical path. |
+
+**NPM actions when SPA image is ready (no DNS change required if IP stays):**
+
+1. Find the proxy host for `app.tahti.live` (prod web).
+2. Change Forward Hostname/IP + port from Next web → SPA container (or to the
+   Swarm published port that serves the new `tahti/web` SPA image).
+3. Confirm custom locations are **not** needed if the SPA nginx already
+   proxies `/tahti-api` and `/api` internally (beta pattern).
+4. Smoke: `https://app.tahti.live` 200, login cookie on `app.`, HLS play,
+   chat WS to `chat.tahti.live`.
+5. Leave `beta.tahti.live` #61 alone until soak ends.
+
+Agent cannot apply NPM edits without Proxy Manager admin login (email +
+password or API token). Paste credentials (or a short-lived token) when you
+want the host updated automatically.
 
 Batch A org (#866–#871) and Batch B player (#1072–#1078) are on `master`. First-100 code PRs #872/#873/#1079 merged; remaining work is L ops only (see blocker + [`first-100-users-infra.md`](first-100-users-infra.md)).
 
