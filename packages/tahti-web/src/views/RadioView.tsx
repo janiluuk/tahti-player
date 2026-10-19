@@ -613,9 +613,7 @@ export function RadioView() {
                   count: featured.length > 0 ? featured.length : undefined,
                   content:
                     featured.length === 0 ? (
-                      <p className="text-foreground-secondary text-sm">
-                        No member sets relayed yet.
-                      </p>
+                      <PageEmpty title="No member sets relayed yet." />
                     ) : (
                       <ul
                         className="border-border divide-border divide-y overflow-hidden rounded-lg border"
