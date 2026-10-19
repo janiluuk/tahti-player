@@ -30,6 +30,7 @@ import type {
   GovernanceDocument,
   GovernanceMeeting,
 } from '../../../../api/types';
+import { PageEmpty } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { isSafeHref } from '../../../../lib/safeHref';
 import { GovernanceDocumentRow } from '../records/GovernanceDocumentRow';
@@ -687,9 +688,7 @@ export function AgmTab() {
             />
           </div>
           {documents.length === 0 ? (
-            <p className="text-foreground-secondary mt-1 text-xs">
-              No governance documents yet.
-            </p>
+            <PageEmpty title="No governance documents yet." />
           ) : (
             <ul className="mt-2 space-y-1 text-xs">
               {documents.map((document) => (
