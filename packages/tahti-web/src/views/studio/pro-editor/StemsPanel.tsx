@@ -11,6 +11,7 @@ import {
   type StemJob,
   type StemSet,
 } from '../../../api/studio';
+import { PageEmpty } from '../../../components/PageStates';
 import { StemMixer } from '../../../components/StemMixer';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { usePolling } from '../../../hooks/usePolling';
@@ -168,10 +169,7 @@ export function StemsPanel({
       </div>
 
       {stems.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No stem jobs yet — request a split above. Splits are cached for 7
-          days, then cleared automatically.
-        </p>
+        <PageEmpty title="No stem jobs yet — request a split above. Splits are cached for 7 days, then cleared automatically." />
       ) : (
         <ul className="divide-border divide-y">
           {stems.map((job) => (
