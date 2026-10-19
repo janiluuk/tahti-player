@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as association from '../../api/governance-association';
@@ -51,16 +51,22 @@ describe('AssociationPanel', () => {
     ).toBeInTheDocument();
   });
 
-  it('says when the details could not be loaded', async () => {
-    vi.spyOn(association, 'fetchAssociationProfile').mockResolvedValue({
-      data: null,
-      meta: { source: 'api', reason: 'Members only' },
-    });
+  it('says when the details could not be loaded, and retries', async () => {
+    const fetch = vi
+      .spyOn(association, 'fetchAssociationProfile')
+      .mockResolvedValue({
+        data: null,
+        meta: { source: 'api', reason: 'Members only' },
+      });
     render(<AssociationPanel />);
     expect(
-      await screen.findByText(
-        "Could not load the association's details. Try again later.",
-      ),
+      await screen.findByText("Could not load the association's details"),
     ).toBeInTheDocument();
+    fetch.mockResolvedValue({
+      data: association.mockAssociationProfile(),
+      meta: { source: 'api' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(await screen.findByText('1234567-8')).toBeInTheDocument();
   });
 });
