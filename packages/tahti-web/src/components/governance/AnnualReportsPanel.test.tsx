@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as reports from '../../api/governance-annual-reports';
@@ -31,6 +31,22 @@ describe('AnnualReportsPanel', () => {
       meta: { source: 'api' },
     });
     render(<AnnualReportsPanel />);
+    expect(
+      await screen.findByText('No annual report has been published yet.'),
+    ).toBeInTheDocument();
+  });
+
+  it('says when the reports could not be loaded and can retry', async () => {
+    const fetch = vi.spyOn(reports, 'fetchAnnualReports').mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    render(<AnnualReportsPanel />);
+    expect(
+      await screen.findByText('Could not load the annual reports'),
+    ).toBeInTheDocument();
+    fetch.mockResolvedValue({ data: [], meta: { source: 'api' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(
       await screen.findByText('No annual report has been published yet.'),
     ).toBeInTheDocument();

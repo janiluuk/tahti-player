@@ -5,6 +5,7 @@ import {
   fetchAnnualReports,
   type PublishedAnnualReport,
 } from '../../api/governance-annual-reports';
+import { PageEmpty, PageError } from '../PageStates';
 import { GovernancePanel } from './GovernancePanel';
 
 function formatDay(iso: string): string {
@@ -31,6 +32,7 @@ function reportDetails(report: PublishedAnnualReport): string {
 export function AnnualReportsPanel() {
   const [reports, setReports] = useState<PublishedAnnualReport[] | null>(null);
   const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -44,7 +46,7 @@ export function AnnualReportsPanel() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   return (
     <GovernancePanel title="Annual reports" icon={BookOpenIcon}>
@@ -53,13 +55,12 @@ export function AnnualReportsPanel() {
           Loading annual reports…
         </p>
       ) : failed ? (
-        <p className="text-foreground-secondary text-sm">
-          Could not load the annual reports. Try again later.
-        </p>
+        <PageError
+          title="Could not load the annual reports"
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
       ) : reports.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No annual report has been published yet.
-        </p>
+        <PageEmpty title="No annual report has been published yet." />
       ) : (
         <ul className="divide-border divide-y">
           {reports.map((report) => (
