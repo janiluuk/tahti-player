@@ -55,11 +55,13 @@ describe('StudioNav section coverage', () => {
     expect(destinations).toEqual(
       expect.arrayContaining([
         '/studio/releases',
+        '/studio/distribution',
         '/studio/editor',
         '/studio/go-live',
       ]),
     );
     expect(getStudioPrimaryRoute('/studio/releases')).toBe('/studio');
+    expect(getStudioPrimaryRoute('/studio/distribution')).toBe('/studio');
     expect(getStudioPrimaryRoute('/studio/go-live')).toBe('/studio');
   });
 
@@ -71,7 +73,7 @@ describe('StudioNav section coverage', () => {
       ['/studio/editor', '/studio/editor'],
       ['/studio/mastering/arch-1', '/studio/editor'],
       ['/studio/releases', '/studio/releases'],
-      ['/studio/distribution', '/studio/releases'],
+      ['/studio/distribution', '/studio/distribution'],
       ['/studio/go-live', '/studio/go-live'],
       ['/studio/info', '/studio/go-live'],
       ['/studio/schedule', '/studio/go-live'],

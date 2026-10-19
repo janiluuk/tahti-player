@@ -89,8 +89,8 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Chat',
         body: [
-          'Live chat lives on each channel page (and at /chat/$slug for that channel). There is no separate Chat item in the main sidebar — open a channel that is on air or has chat enabled.',
-          'Messages in the sidebar are private direct messages between accounts, not channel chat.',
+          'Live chat lives on each channel page (and at /chat/$slug for that channel). Open Chat from the sidebar footer (phone: More) to pick a channel, or open a channel that is on air or has chat enabled.',
+          'Messages (under Library) are private direct messages between accounts, not channel chat.',
           'Anonymous joining on a live channel may require hCaptcha. Moderators can mute or remove disruptive messages.',
         ],
       },
@@ -206,7 +206,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Copy RTMP or Icecast credentials from the broadcast studio, then stream from OBS, Mixxx, or Traktor.',
           'Upload archive sets and releases from the studio; they appear on your channel and profile.',
-          'When you have releases, Studio home and the Releases page link to Distribution for delivery status and royalties.',
+          'Distribution is a Studio tab next to Releases — delivery status and royalties. Studio home and the Releases page also link there when you have releases.',
         ],
       },
       {

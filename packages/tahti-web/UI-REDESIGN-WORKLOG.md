@@ -1,6 +1,11 @@
+## 2026-10-19 — Distribution StudioNav + Chat via More
+
+Product flags: Distribution is a Studio sibling tab next to Releases; Chat hub lives in the sidebar footer (phone More). Favorites / Library / Help stay out of the mobile primary bar.
+
 ## 2026-10-19 — UX sweep batch 3 (PageEmpty)
 
 Thirty more bare empty strings → `PageEmpty` across governance, studio, add-ons, hearthis, and shared `PlayableTrackTable` / radio episode lists.
+
 
 ## 2026-10-18 — CSP unblock external radio streams
 

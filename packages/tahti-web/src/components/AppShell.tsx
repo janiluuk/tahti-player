@@ -6,6 +6,7 @@ import {
   LayoutDashboardIcon,
   LibraryIcon,
   ListMusicIcon,
+  MessageCircleIcon,
   RadioIcon,
   SettingsIcon,
   ShieldIcon,
@@ -229,6 +230,14 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
           )}
         </div>
         <div className="border-border mt-2 flex shrink-0 flex-col gap-2 border-t pt-2">
+          <div data-tour-id="nav-chat">
+            <SidebarNavigationItem
+              to="/chat"
+              icon={<MessageCircleIcon size={16} />}
+              label="Chat"
+              isSelected={sidebarActive === 'chat'}
+            />
+          </div>
           <div data-tour-id="nav-help">
             <SidebarNavigationItem
               to="/help"

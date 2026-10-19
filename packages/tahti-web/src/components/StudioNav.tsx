@@ -16,6 +16,7 @@ import {
   RadioIcon,
   RadioTowerIcon,
   Settings2Icon,
+  Share2Icon,
   SlidersHorizontalIcon,
   TrendingUpIcon,
 } from 'lucide-react';
@@ -91,6 +92,11 @@ export const SUBMENUS = {
       to: '/studio/releases',
       labelKey: 'studio.releases',
       icon: <ListMusicIcon size={16} />,
+    },
+    {
+      to: '/studio/distribution',
+      labelKey: 'studio.distribution',
+      icon: <Share2Icon size={16} />,
     },
     {
       to: '/studio/editor',
@@ -270,7 +276,6 @@ const isSubmenuActive = (current: string | undefined, to: string) => {
       : to === '/library' || to === '/studio'
         ? pathname === to
         : pathname === to || pathname?.startsWith(`${to}/`) === true) ||
-    (to === '/studio/releases' && pathname === '/studio/distribution') ||
     (to === '/library/sounds' &&
       (pathname?.startsWith('/studio/sounds') === true ||
         pathname?.startsWith('/studio/archive') === true)) ||
