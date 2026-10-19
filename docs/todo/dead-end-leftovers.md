@@ -11,7 +11,7 @@ that tahti-web can fix on its own (see HISTORY). These need someone else first.
 - **OAuth providers say "Not available yet"** until the API has their app credentials:
   `SOUNDCLOUD_`, `BANDCAMP_`, `MIXCLOUD_`, `GOOGLE_DRIVE_`, `MUSICBRAINZ_` +
   `CLIENT_ID` / `CLIENT_SECRET` (tahti-org `apps/api/src/config.ts`), set on the deploy
-  host with `scripts/stack-env.sh set` and a redeploy. Each needs an app registered with
+  host with `pnpm tahti-ops env set …` and a redeploy (`pnpm tahti-ops deploy stack`). Each needs an app registered with
   the provider and the redirect URL `<API>/api/me/<provider>/oauth/callback`. The setup
   dialog now shows board members these steps. Storing them from an admin page instead of
   env would be a tahti-org change (needs go-ahead).

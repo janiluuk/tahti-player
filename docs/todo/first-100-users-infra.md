@@ -2,7 +2,7 @@
 
 **Status:** blocked
 
-**Blocker:** Ops host access: verify backup cron/`backup.sh status`, MinIO disk/DR alias, deploy Swarm `RATE_LIMIT_REDIS_FAIL_OPEN=false`.
+**Blocker:** Ops host access: verify backup cron/`pnpm tahti-ops backup status`, MinIO disk/DR alias, deploy Swarm `RATE_LIMIT_REDIS_FAIL_OPEN=false`.
 
 Small-production hardening for ~100 concurrent/registered users on the
 existing Swarm / Caddy / Postgres / Redis / MinIO / Centrifugo stack. Not
@@ -27,7 +27,7 @@ enough for 100 users if artist libraries and polling stay bounded.
 | 1 | **Rate limit fail-closed in Swarm** | tahti-org `infra/docker-stack.yml` + policy doc | S | Set `RATE_LIMIT_REDIS_FAIL_OPEN=false` on `api`. Code default remains fail-open for local/dev. |
 | 2 | **Cap channel fallback sound pool** | tahti-org `routes/internal/channel-fallback.ts` | S | Unbounded `sound.findMany` for READY playback keys can OOM/lock on huge archives. Cap ~500. |
 | 3 | **Soften ConnectedStatusBar poll** | tahti-web `ConnectedStatusBar.tsx` | S | Was 5 s × (sounds list + conversations + storage) per signed-in artist with bar visible → ~12 req/min/user. Target ≥15 s. |
-| 4 | **Confirm backup cron on manager** | ops | L | `sudo ./scripts/install-crons.sh`; `./scripts/backup.sh status`; weekly `restore-test` log. Already documented — verify live, do not assume. |
+| 4 | **Confirm backup cron on manager** | ops | L | `sudo ./scripts/install-crons.sh`; from tahti-player `pnpm tahti-ops backup status`; weekly `restore-test` log. Already documented — verify live, do not assume. |
 | 5 | **Land remaining Batch A/B** | both | — | Collections `expand` take, CSP, feed N+1, virtualize Studio Music, suspend sessions, CDN CORS, log scrub, SNS SSRF. |
 
 ## P1 — same week / first soak
@@ -50,9 +50,9 @@ docker service update --env-add RATE_LIMIT_REDIS_FAIL_OPEN=false tahti_api   # i
 docker service ps tahti_api tahti_pgbouncer tahti_redis tahti_postgres
 curl -fsS https://api.tahti.live/health
 
-# Backups
-sudo ./scripts/install-crons.sh
-./scripts/backup.sh status
+# Backups (from tahti-player monorepo; cron on the host may still call backup.sh)
+sudo ./scripts/install-crons.sh   # on Swarm manager / tahti-org checkout
+pnpm tahti-ops backup status
 sudo tail -n 50 /var/log/tahti-backup.log /var/log/tahti-restore-test.log
 
 # Pool sanity (inside pgbouncer / postgres)

@@ -30,6 +30,8 @@ This repository is the Tahti fork of Nuclear (`janiluuk/tahti-player`). Upstream
 - `@tahti-player/player` — Tauri app
 - `@tahti-player/ui` / `storybook` / `plugin-sdk` / `model` / `themes` / `hifi` / `i18n`
 - `@tahti-player/tahti-web` — beta.tahti.live
+- `@tahti-player/tahti-cli` — product `tahti` API/TUI CLI
+- `@tahti-player/tahti-ops` — maintainer `tahti-ops` (folds `scripts/`; separate from product CLI)
 - `@tahti-player/docs` / `website` / `tools` / shared eslint + tailwind configs
 
 ## Environment
@@ -46,6 +48,8 @@ pnpm dev                 # Player
 pnpm dev:remote          # Bind Vite 0.0.0.0 for remote control
 pnpm storybook
 pnpm dev:tahti           # tahti-web
+pnpm tahti --help        # product API/TUI CLI
+pnpm tahti-ops --help    # maintainer CLI (env / smoke / backup / deploy)
 pnpm build && pnpm tauri build
 pnpm lint && pnpm type-check && pnpm test
 pnpm --filter @tahti-player/ui test -- src/components/Badge/Badge.test.tsx

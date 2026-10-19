@@ -115,9 +115,12 @@ pnpm player:build:run
 The helper is at [`scripts/build-and-run-player.sh`](./scripts/build-and-run-player.sh)
 and accepts arguments that are passed to the player process. The existing
 `pnpm player:run` command launches an already-built Linux binary without
-compiling it first. Release, Flatpak, AUR, and deployment helpers live under
-`scripts/`; package-local capture and deploy helpers remain beside their
-package-specific assets.
+compiling it first. Player build/run and packaging helpers still live under
+`scripts/`. **Stack env, smoke, backup status, and production deploys** use
+[`pnpm tahti-ops`](./packages/tahti-ops/README.md) (do not call the old
+`../tahti-org/scripts/{stack-env,stack-smoke,backup,deploy_*}.sh` entrypoints
+from docs or runbooks). Package-local capture helpers remain beside their
+assets.
 
 ## Screenshots
 
