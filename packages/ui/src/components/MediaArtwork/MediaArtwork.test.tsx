@@ -3,6 +3,32 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { MediaArtwork } from './MediaArtwork';
 
 describe('MediaArtwork play / queue', () => {
+  it('uses a neutral text overlay on thumb and sm play controls', () => {
+    const { rerender } = render(
+      <MediaArtwork
+        src="https://media.example/a.jpg"
+        imageReveal={false}
+        size="thumb"
+        onPlay={vi.fn()}
+      />,
+    );
+    let play = screen.getByTestId('media-artwork-play');
+    expect(play.className).toMatch(/text-white/);
+    expect(play.className).not.toMatch(/bg-primary/);
+
+    rerender(
+      <MediaArtwork
+        src="https://media.example/a.jpg"
+        imageReveal={false}
+        size="sm"
+        onPlay={vi.fn()}
+      />,
+    );
+    play = screen.getByTestId('media-artwork-play');
+    expect(play.className).toMatch(/text-white/);
+    expect(play.className).not.toMatch(/bg-primary/);
+  });
+
   it('plays on click and queues on Shift+click when onQueue is set', () => {
     const onPlay = vi.fn();
     const onQueue = vi.fn();
