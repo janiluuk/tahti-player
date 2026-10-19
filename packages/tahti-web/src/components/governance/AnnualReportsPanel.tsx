@@ -57,9 +57,7 @@ export function AnnualReportsPanel() {
           Could not load the annual reports. Try again later.
         </p>
       ) : reports.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No annual report has been published yet.
-        </p>
+        <PageEmpty title="No annual report has been published yet." />
       ) : (
         <ul className="divide-border divide-y">
           {reports.map((report) => (
