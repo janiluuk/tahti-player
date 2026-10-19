@@ -4,6 +4,7 @@ import {
   fetchMotionSeconders,
   type MotionSeconder,
 } from '../../api/governance-motion-detail';
+import { PageError } from '../PageStates';
 
 export function MotionSeconders({
   motionId,
@@ -13,18 +14,33 @@ export function MotionSeconders({
   refreshKey?: unknown;
 }) {
   const [seconders, setSeconders] = useState<MotionSeconder[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     void fetchMotionSeconders(motionId).then((res) => {
       if (!cancelled) {
         setSeconders(res.data);
+        setLoadError(
+          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+        );
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [motionId, refreshKey]);
+  }, [motionId, refreshKey, attempt]);
+
+  if (loadError && seconders.length === 0) {
+    return (
+      <PageError
+        title="Could not load who seconded this motion"
+        description={loadError}
+        onRetry={() => setAttempt((n) => n + 1)}
+      />
+    );
+  }
 
   if (seconders.length === 0) {
     return null;
