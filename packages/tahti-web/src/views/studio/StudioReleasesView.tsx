@@ -1,5 +1,6 @@
 import { Link, useSearch } from '@tanstack/react-router';
 import {
+  BarChart3Icon,
   Disc3Icon,
   DiscAlbumIcon,
   ExternalLinkIcon,
@@ -32,7 +33,7 @@ import {
   patchStudioReleaseVisual,
 } from '../../api/studio';
 import type { StudioRelease } from '../../api/studio-types';
-import { PageError, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -252,9 +253,18 @@ export function StudioReleasesView() {
                   }
                 />
                 {filteredReleases.length === 0 ? (
-                  <p className="text-foreground-secondary text-sm">
-                    No releases match “{query.trim()}”.
-                  </p>
+                  <PageEmpty
+                    title={`No releases match “${query.trim()}”`}
+                    action={
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => setQuery('')}
+                      >
+                        Clear search
+                      </Button>
+                    }
+                  />
                 ) : (
                   <ul className="divide-border divide-y">
                     {filteredReleases.map((r) => (
@@ -295,6 +305,18 @@ export function StudioReleasesView() {
                           />
                           Edit
                         </ButtonLink>
+                        <Tooltip content="Stats" side="top">
+                          <ButtonLink
+                            to="/studio/releases/$id"
+                            params={{ id: r.id }}
+                            search={{ tab: 'stats' }}
+                            size="icon-sm"
+                            variant="text"
+                            aria-label={`Stats for ${r.title}`}
+                          >
+                            <BarChart3Icon size={16} aria-hidden />
+                          </ButtonLink>
+                        </Tooltip>
                         <CopyButton
                           text={`${window.location.origin}/r/${r.smartLinkSlug}`}
                           size="icon-sm"
