@@ -188,9 +188,7 @@ export function StudioEditorListView() {
               <PageLoading label="Loading…" />
             ) : projects.length === 0 ? (
               <div className="flex flex-col gap-3 py-4 text-center">
-                <p className="text-foreground-secondary text-sm">
-                  No editor projects yet.
-                </p>
+                <PageEmpty title="No editor projects yet." />
                 <div>
                   <Tooltip content="New session" side="top">
                     <Button
