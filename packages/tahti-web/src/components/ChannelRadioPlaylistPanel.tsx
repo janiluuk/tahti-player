@@ -205,7 +205,14 @@ export const ChannelRadioPlaylistPanel: FC = () => {
       return;
     }
     setBusy(true);
-    const { data } = await fetchStudioCollection(selectedSlug);
+    const { data, meta } = await fetchStudioCollection(selectedSlug);
+    if (meta.source === 'api' && meta.reason) {
+      setBusy(false);
+      toast.error(
+        'Could not load that playlist, so the rotation was left unchanged.',
+      );
+      return;
+    }
     const soundIds = (data.items ?? [])
       .map((item) => item.soundId)
       .filter((id): id is string => Boolean(id));
