@@ -11,6 +11,7 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import * as client from '../api/client';
 import { useAuthStore } from '../stores/authStore';
 import { GovernanceView } from './GovernanceView';
 
@@ -162,5 +163,35 @@ describe('GovernanceView', () => {
     expect(
       buttons.some((b) => b.textContent === 'Close & publish result'),
     ).toBe(false);
+  });
+});
+
+describe('GovernanceView failed sections', () => {
+  it('says which section failed to load instead of "nothing published"', async () => {
+    const fetch = vi
+      .spyOn(client, 'fetchGovernanceDocuments')
+      .mockResolvedValue({
+        data: [],
+        meta: { source: 'api', reason: 'HTTP 502' },
+      });
+    await renderAsBoard();
+    expect(container.textContent).toContain('Could not load documents');
+    expect(container.textContent).not.toContain(
+      'No governance documents have been published yet.',
+    );
+    expect(container.textContent).not.toContain('Could not load meetings');
+
+    fetch.mockResolvedValue({ data: [], meta: { source: 'api' } });
+    const retry = [...container.querySelectorAll('button')].find(
+      (button) => button.textContent === 'Retry',
+    );
+    await act(async () => {
+      retry?.click();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    expect(container.textContent).toContain(
+      'No governance documents have been published yet.',
+    );
+    fetch.mockRestore();
   });
 });

@@ -49,7 +49,7 @@ import { CurrentBoardPanel } from '../components/governance/CurrentBoardPanel';
 import { ElectionsPanel } from '../components/governance/ElectionsPanel';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
 import { MotionCard } from '../components/governance/MotionCard';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { hasAccountRole } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -96,6 +96,19 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
   const [reports, setReports] = useState<GovernanceQuarterlyReport[]>([]);
   const [forbidden, setForbidden] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadErrors, setLoadErrors] = useState<
+    Partial<
+      Record<
+        | 'motions'
+        | 'requests'
+        | 'meetings'
+        | 'documents'
+        | 'members'
+        | 'reports',
+        string
+      >
+    >
+  >({});
   const [actionMsg, setActionMsg] = useState<string | null>(null);
   const [draftTitle, setDraftTitle] = useState('');
   const [draftDescription, setDraftDescription] = useState('');
@@ -135,6 +148,20 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
         setDocuments(documentsResult.data);
         setMembers(membersResult.data);
         setReports(reportsResult.data);
+        const reasonOf = (meta: { source: string; reason?: string }) =>
+          meta.source === 'api' ? meta.reason : undefined;
+        setLoadErrors({
+          motions: motionsResult.forbidden
+            ? undefined
+            : reasonOf(motionsResult.meta),
+          requests: requestsResult.forbidden
+            ? undefined
+            : reasonOf(requestsResult.meta),
+          meetings: reasonOf(meetingsResult.meta),
+          documents: reasonOf(documentsResult.meta),
+          members: reasonOf(membersResult.meta),
+          reports: reasonOf(reportsResult.meta),
+        });
         setForbidden(
           Boolean(motionsResult.forbidden || requestsResult.forbidden) &&
             motionsResult.data.length === 0 &&
@@ -294,7 +321,13 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             </ButtonLink>
           </GovernancePanel>
           <GovernancePanel title="Top topics" icon={LandmarkIcon}>
-            {requests.length === 0 ? (
+            {loadErrors.requests && requests.length === 0 ? (
+              <PageError
+                title="Could not load topics"
+                description={loadErrors.requests}
+                onRetry={reload}
+              />
+            ) : requests.length === 0 ? (
               <PageEmpty title="No topics yet." />
             ) : (
               <ul className="divide-border divide-y">
@@ -334,7 +367,13 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       {user && !loading && !forbidden && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <GovernancePanel title="Published meetings" icon={UsersIcon}>
-            {meetings.length === 0 ? (
+            {loadErrors.meetings && meetings.length === 0 ? (
+              <PageError
+                title="Could not load meetings"
+                description={loadErrors.meetings}
+                onRetry={reload}
+              />
+            ) : meetings.length === 0 ? (
               <PageEmpty title="No published meeting records yet." />
             ) : (
               <ul className="divide-border divide-y">
@@ -385,7 +424,13 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             )}
           </GovernancePanel>
           <GovernancePanel title="Published documents" icon={FileTextIcon}>
-            {documents.length === 0 ? (
+            {loadErrors.documents && documents.length === 0 ? (
+              <PageError
+                title="Could not load documents"
+                description={loadErrors.documents}
+                onRetry={reload}
+              />
+            ) : documents.length === 0 ? (
               <PageEmpty title="No governance documents have been published yet." />
             ) : (
               <ul className="divide-border divide-y">
@@ -419,7 +464,13 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             )}
           </GovernancePanel>
           <GovernancePanel title="Quarterly reviews" icon={ScrollTextIcon}>
-            {reports.length === 0 ? (
+            {loadErrors.reports && reports.length === 0 ? (
+              <PageError
+                title="Could not load reviews"
+                description={loadErrors.reports}
+                onRetry={reload}
+              />
+            ) : reports.length === 0 ? (
               <PageEmpty title="No quarterly feature-request reviews have been published yet." />
             ) : (
               <ul className="divide-border divide-y">
@@ -449,7 +500,13 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             )}
           </GovernancePanel>
           <GovernancePanel title="Member directory" icon={UsersIcon}>
-            {members.length === 0 ? (
+            {loadErrors.members && members.length === 0 ? (
+              <PageError
+                title="Could not load the member directory"
+                description={loadErrors.members}
+                onRetry={reload}
+              />
+            ) : members.length === 0 ? (
               <PageEmpty title="No member directory is published yet." />
             ) : (
               <ul className="divide-border divide-y">
@@ -571,11 +628,19 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
         </p>
       )}
 
-      {user && !loading && !forbidden && motions.length === 0 && (
-        <p className="text-foreground-secondary text-sm">
-          No motions returned.
-        </p>
-      )}
+      {user &&
+        !loading &&
+        !forbidden &&
+        motions.length === 0 &&
+        (loadErrors.motions ? (
+          <PageError
+            title="Could not load motions"
+            description={loadErrors.motions}
+            onRetry={reload}
+          />
+        ) : (
+          <PageEmpty title="No motions yet" />
+        ))}
 
       {user && motions.length > 0 && (
         <div className="flex flex-col gap-3">
