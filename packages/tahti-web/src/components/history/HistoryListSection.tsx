@@ -17,6 +17,7 @@ import type { TahtiPlayable } from '../../api/types';
 import { resolveLocalPlayableForReplay } from '../../lib/nativeLibrary';
 import { useLibraryStore, type HistoryEntry } from '../../stores/libraryStore';
 import { usePlayerStore } from '../../stores/playerStore';
+import { PageEmpty } from '../PageStates';
 
 async function resolvePlayableForReplay(
   playable: TahtiPlayable,
@@ -209,9 +210,9 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          Nothing in your history matches “{filter.trim()}”.
-        </p>
+        <PageEmpty
+          title={`Nothing in your history matches “${filter.trim()}”.`}
+        />
       ) : null}
 
       {groups.map((group) => (
