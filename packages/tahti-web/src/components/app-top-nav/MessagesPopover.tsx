@@ -5,6 +5,7 @@ import { Badge, Button } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { DmRoleBadge } from '../DmRoleBadge';
+import { PageEmpty } from '../PageStates';
 import { iconBtnClass } from './shared';
 import { type TopNavState } from './useTopNavState';
 
