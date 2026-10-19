@@ -110,9 +110,7 @@ export function VenueShowsSection({
         Upcoming shows
       </h3>
       {shows.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No shows booked here yet.
-        </p>
+        <PageEmpty title="No shows booked here yet." />
       ) : (
         <ul className="divide-border divide-y">
           {shows.map((show) => (
