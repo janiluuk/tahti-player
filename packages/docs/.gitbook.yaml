@@ -4,6 +4,22 @@ structure:
   readme: README.md
   summary: SUMMARY.md
 
+redirects:
+  core-concepts/how-nuclear-works: user-manual/how-it-works.md
+  core-concepts/plugins-and-providers: user-manual/account/add-ons.md
+  core-concepts/the-queue: user-manual/listening/the-queue.md
+  core-concepts/favorites: user-manual/listening/favorites.md
+  core-concepts/playlists: user-manual/listening/playlists.md
+  core-concepts/listening-history: user-manual/listening/history.md
+  core-concepts/listening-stats: user-manual/listening/stats.md
+  misc/discovery: user-manual/listening/discover-and-search.md
+  misc/keyboard-shortcuts: user-manual/reference/keyboard-shortcuts.md
+  misc/platform-specific: user-manual/desktop/platform-notes.md
+  user-manual/installation: user-manual/desktop/installation.md
+  user-manual/remote-control: user-manual/desktop/remote-control.md
+  user-manual/command-line: user-manual/reference/command-line.md
+  user-manual/tahti-live-web: user-manual/getting-started.md
+
 title: Tahti Documentation
 description: Complete documentation for Tahti Player
 

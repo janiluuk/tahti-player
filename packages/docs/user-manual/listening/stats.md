@@ -10,6 +10,6 @@ The **Stats** tab in **Listen → History** turns your history into:
 - **Time of day** and **Day of week**: when you listen.
 - **Listening calendar**: a year of days, darker on days you listened more. On a narrow screen it opens on the latest weeks.
 
-<figure><img src="../.gitbook/assets/listening-stats.png" alt="Listening stats with top lists and charts"><figcaption><p>Stats — tops, time of day, and calendar</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/listening-stats.png" alt="Listening stats with top lists and charts"><figcaption><p>Stats — tops, time of day, and calendar</p></figcaption></figure>
 
 If nothing was played in the chosen range, it says so instead of showing empty charts.

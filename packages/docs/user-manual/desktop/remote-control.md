@@ -6,7 +6,7 @@ description: Control Tahti Player from your phone or any other device on your ne
 
 Tahti Jam turns any device with a web browser into a remote for the Tahti Player desktop app. Scan a QR code with your phone and you can control playback, see the queue and add tracks. Handy for parties, cooking, your housemates, and so on.
 
-This is **not** the shared listening Jam on the web app (`/jam/$code`, started from a playlist). That feature is documented under [Tahti Live (web)](tahti-live-web.md) and in the in-app Help center.
+This is **not** the shared listening Jam on the web app (`/jam/$code`, started from a playlist). That feature is described in [Listen together (Jam)](../listening/jam.md).
 
 How does it work? The desktop app starts a small web server on your computer. Your phone connects to it directly over your own network, so nothing goes through a Tahti server. Only devices you have paired can control the player.
 
@@ -32,7 +32,7 @@ If the phone isn't paired (or a new pairing link replaced its code), the remote 
 
 The remote UI is a single screen with four sections: a search bar in the header, now playing, controls, and the queue.
 
-<figure><img src="../.gitbook/assets/jam-remote.png" alt="Tahti Jam remote control UI on a phone showing now playing, controls, and queue" width="300"><figcaption><p>Tahti Jam on a phone</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/jam-remote.png" alt="Tahti Jam remote control UI on a phone showing now playing, controls, and queue" width="300"><figcaption><p>Tahti Jam on a phone</p></figcaption></figure>
 
 - **Now playing** at the top, with cover art, track title, and artist.
 - **Controls** in the middle: previous, play/pause, next, plus a seek bar, shuffle, and repeat.

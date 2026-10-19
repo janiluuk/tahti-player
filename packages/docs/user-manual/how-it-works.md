@@ -20,8 +20,8 @@ Tahti Player is one React app (`packages/tahti-web` in the repository). The brow
 ## What only the desktop app does
 
 - The local library: import, folder watching, tag editing, analysis (BPM, key, loudness), playlists and smart playlists.
-- Local servers you can turn on in Settings → Integrations: [Tahti Jam](../user-manual/remote-control.md) (a phone remote for paired devices), an [MCP server](../integrations/mcp-server.md) for AI tools, an [MPD server](../integrations/mpd-server.md) for MPD clients, and [Discord](../integrations/discord.md) Rich Presence.
+- Local servers you can turn on in Settings → Integrations: [Tahti Jam](desktop/remote-control.md) (a phone remote for paired devices), an [MCP server](../integrations/mcp-server.md) for AI tools, an [MPD server](../integrations/mpd-server.md) for MPD clients, and [Discord](../integrations/discord.md) Rich Presence.
 
 ## Add-ons
 
-Themes, visualizers, import sources and other add-ons are in Settings → Add-ons; see [Plugins and providers](plugins-and-providers.md).
+Themes, visualizers, import sources and other add-ons are in Settings → Add-ons; see [Plugins and providers](account/add-ons.md).

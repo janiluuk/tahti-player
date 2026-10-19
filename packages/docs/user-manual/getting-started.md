@@ -1,46 +1,45 @@
 ---
-description: Install Tahti Player and play your first track
+description: A first look at Tahti, playing your first track, and where to go next.
 ---
 
 # Getting started
 
-Tahti Player is the app for [tahti.live](https://tahti.live), a nonprofit broadcasting platform for independent artists. The same app runs in the browser at beta.tahti.live and as a desktop app for Linux, macOS and Windows. The desktop app adds a library for the music files on your computer and a few local integrations (see [How Tahti Player works](../core-concepts/how-nuclear-works.md)).
+Tahti is a nonprofit broadcasting platform for independent artists, run by its members. Listening is free, with no ads and no tracking. The same app runs in the browser at [beta.tahti.live](https://beta.tahti.live) and as a [desktop app](desktop/installation.md) for Linux, macOS and Windows; the desktop app adds a library for the music files on your computer.
 
-## Install
+## Listener or artist?
 
-Download the desktop app for your platform; see [Installation](installation.md). Or open the web app in a browser; nothing to install.
+- **Listener:** no account needed to listen. A free account lets you follow artists, save favorites, make playlists, comment, chat and send messages.
+- **Artist:** you get a channel to broadcast live, upload and release music, and earn from fans. Start free, or become a Tahti ry member for unlimited live time. See [Studio: getting started](studio/getting-started.md).
 
-## First look
+**Join free** is on the front page; **Log in** is at the top right.
 
-You don't need an account to listen. The window has:
+## A first look
 
-- **Top bar:** search (artists, tracks, playlists), and once you are signed in: notifications, messages and your account menu.
-- **Sidebar:** **Listen** (the home page: who is on air, channels, radio), **Radio**, **Discover**, **Favorites** and **Library**; **Studio** for artists. **Help center** and **Settings** are at the bottom.
+<figure><img src="../.gitbook/assets/app-layout-overview.png" alt="Tahti Listen home with sidebar, main content, and player bar"><figcaption><p>Listen home — sidebar, main view, and player bar</p></figcaption></figure>
+
+- **Top bar:** back and forward, search, and once you're signed in: notifications, messages and your account menu.
+- **Sidebar:** **Listen** (the front page), **Radio**, **Discover**, **Favorites** and **Library**; **Studio** for artists (listeners see **Become an artist**). **Chat**, **Help center** and **Settings** are at the bottom.
 - **Right panel:** the queue.
-- **Player bar:** appears at the bottom once a track is loaded.
+- **Player bar:** appears at the bottom once something is playing.
 
-<figure><img src="../.gitbook/assets/app-layout-overview.png" alt="Tahti Player Listen home with sidebar, main content, and player bar"><figcaption><p>Listen home — sidebar, main view, and player bar</p></figcaption></figure>
-
-On a phone the sidebar becomes a bar at the bottom, and the rest is in the menu.
+On a phone the main sections are in a bar at the bottom and the rest is under **More**.
 
 Press **H** on any page for a short guided tour of it.
 
 ## Play something
 
-1. On **Listen**, press play on a live channel, a radio station or a track.
-2. **Add to queue** on any track lines it up next; see [The queue](../core-concepts/the-queue.md).
-3. The heart saves a track or channel to [Favorites](../core-concepts/favorites.md).
+1. On **Listen**, press play on Tahti Radio, a track, a release or a live channel.
+2. **Add to queue** on any track lines it up next.
+3. The heart saves a track or channel to **Favorites**; **Follow** on a channel follows the artist.
 
-## Sign in or join
+## Where to next
 
-**Log in** (top right) to follow artists, like and comment, keep playlists and send messages. Joining is free for listeners. Artists take a membership to get their own channel, releases and live shows; see the Help center's "Free tier vs membership".
-
-## Play your own files (desktop app)
-
-In the desktop app, open **Library → Local files** and add a folder. The app imports your music (MP3, FLAC, WAV, AIFF, M4A, OGG and more), keeps watching the folder, and can analyse BPM, key and loudness. Local tracks play in the same player and queue as Tahti tracks.
-
-## Next
-
-- [Keyboard shortcuts](../misc/keyboard-shortcuts.md)
-- [Remote control](remote-control.md) from your phone
-- [Themes](../themes/themes.md)
+| I want to… | Read |
+| --- | --- |
+| Find music | [The front page](listening/front-page.md), [Radio](listening/radio.md), [Discover and search](listening/discover-and-search.md) |
+| Follow and support artists | [Channels and artists](listening/channels-and-artists.md), [Support an artist](listening/supporting-artists.md) |
+| Keep my music organised | [Favorites](listening/favorites.md), [Playlists](listening/playlists.md), [History](listening/history.md) |
+| Upload, release and go live | [Studio: getting started](studio/getting-started.md) |
+| Change settings or the look | [Settings](account/settings.md), [Themes](../themes/themes.md) |
+| Use the desktop app | [Installation](desktop/installation.md), [Your local music](desktop/local-library.md) |
+| Fix a problem | [Troubleshooting](reference/troubleshooting.md) |

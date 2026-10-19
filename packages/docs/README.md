@@ -26,15 +26,16 @@ Tahti Player started as a fork of [Nuclear](https://github.com/nukeop/nuclear). 
 
 ## For users
 
-New to Tahti Player? Start here:
+The user guide is organised by what you want to do:
 
-- [Getting started](user-manual/getting-started.md) - a first look at the app and playing your first track
-- [Installation](user-manual/installation.md) - download, install and update the desktop app
-- [How Tahti Player works](core-concepts/how-nuclear-works.md) - what the app is made of and where the music comes from
-- [The queue](core-concepts/the-queue.md), [Favorites](core-concepts/favorites.md) and [Playlists](core-concepts/playlists.md)
-- [Remote control](user-manual/remote-control.md) - control the desktop app from your phone with Tahti Jam
-- [Command line (tahti-cli)](user-manual/command-line.md) - use Tahti from a terminal
-- [Themes](themes/themes.md) - change how Tahti Player looks
+- **Start here:** [Getting started](user-manual/getting-started.md) and [How Tahti works](user-manual/how-it-works.md)
+- **Listening:** [the front page](user-manual/listening/front-page.md), [radio](user-manual/listening/radio.md), [discover and search](user-manual/listening/discover-and-search.md), [channels and artists](user-manual/listening/channels-and-artists.md), [the player](user-manual/listening/player.md), [favorites](user-manual/listening/favorites.md), [playlists](user-manual/listening/playlists.md), [listening together](user-manual/listening/jam.md)
+- **For artists:** [Studio: getting started](user-manual/studio/getting-started.md), then uploads, releases, your channel, broadcasting, shows and events, stats and earnings, posts and moderation
+- **Your account:** [Settings](user-manual/account/settings.md), [membership and governance](user-manual/account/membership-and-governance.md), [notifications and support](user-manual/account/notifications-and-support.md), [add-ons](user-manual/account/add-ons.md), [themes](themes/themes.md)
+- **Desktop app:** [installation](user-manual/desktop/installation.md), [your local music](user-manual/desktop/local-library.md), [remote control](user-manual/desktop/remote-control.md), and the MCP, MPD and Discord integrations
+- **Reference:** [keyboard shortcuts](user-manual/reference/keyboard-shortcuts.md), [command line](user-manual/reference/command-line.md), [troubleshooting](user-manual/reference/troubleshooting.md)
+
+The in-app **Help center** has short task guides too, and **H** on any page starts a guided tour.
 
 ## What is in this repo?
 

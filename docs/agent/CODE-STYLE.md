@@ -123,9 +123,13 @@ The 2026-10 axe and keyboard sweeps (`docs/todo/HISTORY.md`, batch 59) settled t
 - **Utilities**: lodash-es (use individual imports: `import isEqual from 'lodash-es/isEqual'`)
 - **HTTP**: Native fetch via ApiClient base class (no axios)
 
-### Adding New Domains
+### Desktop features (where new work goes)
 
-A "domain" is a feature area exposed to plugins (e.g., settings, queue, favorites). When adding a new domain:
+Since 2026-09-01 the desktop app mounts tahti-web (`packages/player/src/main.tsx` → `mountTahtiApp`); Nuclear's `initPlayerApp`, its stores, hosts and bridge no longer run. Desktop features belong in `packages/tahti-web`, using natives the Tauri shell hands over as `globalThis.__TAHTI_NATIVE_*__` (examples: MCP `src/lib/mcp/`, MPD `src/lib/mpd/`, Discord `src/lib/discord/`, Tahti Jam `src/lib/jam/`, updates `src/lib/updates/`, wired from `packages/player/src/desktop*.ts`). Before touching anything under `packages/player/src`, check it is reachable from `main.tsx`.
+
+### Adding New Domains (legacy Nuclear plugin SDK)
+
+Kept for the legacy SDK only; the shipped app does not load these plugins. A "domain" is a feature area exposed to plugins (e.g., settings, queue, favorites). When adding a new domain:
 
 1. **Types** (`packages/plugin-sdk/src/types/myDomain.ts`)
    - Define the `MyDomainHost` interface (the contract between player and SDK)
@@ -146,7 +150,7 @@ A "domain" is a feature area exposed to plugins (e.g., settings, queue, favorite
 
 ### External API Clients
 
-Live in `packages/player/src/apis/`. Use `ApiClient` base class (fetch→json→Zod).
+In tahti-web, API modules live in `packages/tahti-web/src/api/` and use `requestJson` / `getJson` (credentials included, API `issues`/`error` become the thrown message). Legacy player clients live in `packages/player/src/apis/` (`ApiClient` base class, fetch→json→Zod).
 
 - Validate external data with Zod schemas
 - Export singleton instances

@@ -6,7 +6,7 @@ description: How the queue works and how to manage it
 
 The queue is what plays next. It sits in the panel on the right of the window; the queue button in the player bar shows or hides it.
 
-<figure><img src="../.gitbook/assets/queue-panel.png" alt="Tahti Player with the queue panel open on the right"><figcaption><p>The queue in the right panel</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/queue-panel.png" alt="Tahti Player with the queue panel open on the right"><figcaption><p>The queue in the right panel</p></figcaption></figure>
 
 - **Play** on a track starts it now. **Add to queue** puts it at the end.
 - Drag a track to move it. With the keyboard, the arrow keys move between rows and **Delete** removes the focused one.

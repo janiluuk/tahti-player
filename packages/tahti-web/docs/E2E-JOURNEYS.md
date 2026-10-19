@@ -95,7 +95,7 @@ The artist run uploads an `e2e-test …` track and creates an `e2e-test …`
 release, then deletes both. It never goes live. Results:
 `docs/e2e-journeys/{listener,artist}-tasks/{desktop,phone}/REPORT.md`.
 The phone pass waits 65 s before signing in again (beta auth rate limit;
-`JOURNEY_LOGIN_GAP_MS`). Findings: `docs/todo/e2e-beta-ux-findings.md`.
+`JOURNEY_LOGIN_GAP_MS`). Findings: `docs/todo/beta-launch-findings.md`.
 
 ## What each journey covers
 

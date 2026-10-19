@@ -8,7 +8,7 @@ description: Create playlists and add tracks to them
 
 Your playlists live in **Library → Collections**. To add a track, use **Add to playlist** in the player bar, or the **+** on a track row. The panel that opens lists your playlists and has **New playlist** at the bottom. A playlist's page plays it in order, shuffles it, or adds it to the queue.
 
-<figure><img src="../.gitbook/assets/playlists.png" alt="Library Collections with playlists and albums"><figcaption><p>Library → Collections — playlists and albums</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/playlists.png" alt="Library Collections with playlists and albums"><figcaption><p>Library → Collections — playlists and albums</p></figcaption></figure>
 
 Artists use the same Collections page for releases and albums, with the album designer for the cover and track list.
 

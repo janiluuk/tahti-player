@@ -5034,3 +5034,20 @@ Asked for as "work on next 30 slices". Same sweep as batch 76, now that the othe
 - **Radio and shows (#1333, #1336, #1337, #1349, #1353):** Radio tabs, the schedule week (drew every slot free on failure), go-live show info Retry, green room "Check again" for waiting guests, and Tahti Radio submissions (`fetchMyRadioSubmissions` labelled failures `mock`; now `apiErrorMeta`).
 - **Library and studio (#1326, #1334, #1335, #1344, #1345, #1351, #1352):** announcement clips (a failed poll no longer wipes them), Library media, editor projects + library picker, Admin financial and user editor Retry, event venue directory, channel designer saved looks.
 - **Desktop library (#1346, #1347, #1348, #1350):** add-to-playlist, listening history (keeps loaded pages on a failed page), smart playlists; 15 components used `text-muted-foreground` / `text-destructive`, which the theme never defined, so hints and errors had no colour.
+
+## 2026-10-20 — Batch 78: beta launch fixes and the new front page (tahti-player #1390-#1413, tahti-org #877-#879)
+
+Asked for as "open pr for it, then do 30 more slices of cross-repo work", with mid-batch asks to fix the core CI failure, show a Processing animation on tracks, sweep the legacy admin/Studio panels, and make beta.tahti.live the main site with interesting content on the front page. 19 of the 30 slices shipped; the rest are in `beta-launch-findings.md` / `ux-backlog.md`.
+
+- **Real-backend e2e (#1390):** listener and artist task journeys against beta.tahti.live (`scripts/journeys/*-tasks-journey.mjs`, `task-lib.mjs`), with findings.
+- **Uploads and releases:** the Studio Upload page always failed on the real API (no `title`; #1392, tahti-org #877 derives one from the file name); API validation `issues` now reach the user. The release picker disables still-processing tracks and drops "Unknown artist" (#1393, tahti-org #878 `SOUND_NOT_READY`). Tracks being processed show a `TrackProcessing` spinner + "Processing" (new `@tahti-player/ui` component; track page and Tracks list, #1395). Upload shows import progress for queued SoundCloud/Drive jobs (#1412).
+- **Front page (`/`):** Tahti Selects, New releases and Trending this week, with internet radio moved down (#1397); Live now vs Replays (#1398); a welcome strip for signed-out visitors (#1399); From Tahti news (#1400); Coming up from tahti-org #879 `GET /api/v1/events/upcoming` (#1401). Deployed to beta on 2026-10-19 23:05 UTC after the host's deploy-folder permissions were fixed; #1413 swaps the deploy config in by rename so the permission drift can't block it again.
+- **Listener fixes:** off-air channels can be followed and Subscribe shows only when the artist has fan tiers (#1405); playback failures are announced (#1406); one collections request instead of one per track row (#1407); Space plays/pauses (#1408); Enter in search opens a full results page (#1409).
+- **Studio parity with the legacy dashboard:** recent uploads + fan-sub income on Studio home (#1402); the MusicBrainz registration prompt with a remembered choice (#1403). Parity sweep result (#1396): admin has endpoint parity; ban-from-message and Mixcloud upload already existed.
+- **CI:** a `SharingTab` test mock without `meta` failed tahti-web shard 3 on every PR (#1394).
+
+## 2026-10-20 — Todo consolidation and docs audit
+
+- Folded as done: `back-button-universal` (#1165), `feature-swipe-product-flags` (#1246), `ux-sweep-batch-91-120` (all 30 rows merged), `e2e-beta-ux-findings` and `admin-studio-parity-sweep` (fixed items above).
+- Merged the open remainder of `ux-sweep-30-slices`, `ux-sweep-batch-4`, `catalog-components-empty-states`, `listen-ui-liveliness`, `ambient-waveform-track-rows`, `view-modes-track-tables`, `profile-surfaces-unification` and `studio-artist-usability` into `ux-backlog.md`; the open launch items into `beta-launch-findings.md`.
+- INDEX regrouped by what each item waits on; the stale `spotify-listen-widget-tracks` row (folded in 3ab7c10ee) removed; `navigation-flow-audit` and `studio-usability-audit` (#1410) indexed.
