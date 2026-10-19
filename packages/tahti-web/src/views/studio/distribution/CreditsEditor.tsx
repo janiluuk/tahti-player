@@ -7,6 +7,7 @@ import type {
   ReleaseCreditRole,
 } from '../../../api/studio-types';
 import { RELEASE_CREDIT_ROLES } from '../../../api/studio-types';
+import { PageEmpty } from '../../../components/PageStates';
 
 export function CreditsEditor({
   credits,
@@ -21,9 +22,7 @@ export function CreditsEditor({
     <div>
       <p className="mb-2 text-xs font-medium">Credits & roles</p>
       {credits.length === 0 && (
-        <p className="text-foreground-secondary mb-2 text-xs">
-          No credits yet — add writers, performers, producers, etc.
-        </p>
+        <PageEmpty title="No credits yet — add writers, performers, producers, etc." />
       )}
       <ul className="flex flex-col gap-2">
         {credits.map((credit, index) => (

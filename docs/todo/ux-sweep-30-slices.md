@@ -13,7 +13,7 @@ One PR per slice. Tick when merged.
 | 2 | `GovernanceView` topics → `PageEmpty` | open |
 | 3 | `MyRadioStations` → `PageEmpty` | open |
 | 4 | `ScheduledTimes` → `PageEmpty` | open |
-| 5 | `CreditsEditor` → `PageEmpty` | open |
+| 5 | `CreditsEditor` → `PageEmpty` | done |
 | 6 | `MemberRegisterPanel` → `PageEmpty` (+ clear filters) | open |
 | 7 | Studio home `GovernanceSection` → `PageEmpty` | open |
 | 8 | Studio home `SummaryStatsSection` discography → `PageEmpty` + CTA | open |
