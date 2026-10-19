@@ -1,14 +1,7 @@
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  LogInIcon,
-  MenuIcon,
-  SearchIcon,
-  XIcon,
-} from 'lucide-react';
+import { LogInIcon, MenuIcon, SearchIcon, XIcon } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
 
-import { Button, CenteredLoader, Dialog } from '@tahti-player/ui';
+import { BackButton, Button, CenteredLoader, Dialog } from '@tahti-player/ui';
 
 import { useOpenedOnce } from '../hooks/useOpenedOnce';
 import { cn } from '../lib/cn';
@@ -81,35 +74,18 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
         {user && processingItems.length > 0 ? (
           <ProcessingIndicator nav={nav} />
         ) : null}
-        <div className="hidden items-center gap-0.5 sm:flex">
-          <Button
-            variant="text"
-            size="icon-sm"
-            className={cn(
-              iconBtnClass,
-              'disabled:pointer-events-none disabled:opacity-30',
-            )}
+        <div className="hidden items-center gap-1 sm:flex">
+          <BackButton
             disabled={!canGoBack}
-            aria-label="Go back"
             title="Go back"
             onClick={() => router.history.back()}
-          >
-            <ChevronLeftIcon size={16} />
-          </Button>
-          <Button
-            variant="text"
-            size="icon-sm"
-            className={cn(
-              iconBtnClass,
-              'disabled:pointer-events-none disabled:opacity-30',
-            )}
+          />
+          <BackButton
+            direction="forward"
             disabled={!canGoForward}
-            aria-label="Go forward"
             title="Go forward"
             onClick={() => router.history.forward()}
-          >
-            <ChevronRightIcon size={16} />
-          </Button>
+          />
         </div>
       </div>
 
