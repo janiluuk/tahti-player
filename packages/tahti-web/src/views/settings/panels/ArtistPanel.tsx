@@ -37,6 +37,7 @@ import {
 } from '../../../api/studio-extras';
 import { ArtistImagePurposePicker } from '../../../components/ArtistImagePurposePicker';
 import { MentionTextarea } from '../../../components/MentionTextarea';
+import { PageError } from '../../../components/PageStates';
 import { SocialLinkIcon } from '../../../components/SocialLinkIcon';
 import { COUNTRIES, flagEmoji } from '../../../lib/countries';
 import {
@@ -167,6 +168,8 @@ export function ArtistPanel() {
   const [msg, setMsg] = useState<string | null>(null);
   const [socialMsg, setSocialMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     void Promise.all([
@@ -174,15 +177,20 @@ export function ArtistPanel() {
       fetchChannelMembers(),
       fetchSocialConnections(),
     ]).then(([p, m, s]) => {
+      setMembers(m.data);
+      setSocial(s.data);
+      if (p.meta.source === 'api' && p.meta.reason) {
+        setProfileError(p.meta.reason);
+        return;
+      }
+      setProfileError(null);
       const detectedCountry = p.data.countryCode ? null : detectCountryCode();
       setProfile(
         detectedCountry ? { ...p.data, countryCode: detectedCountry } : p.data,
       );
-      setMembers(m.data);
-      setSocial(s.data);
       setArtistRoles(parseArtistRoles(p.data));
     });
-  }, []);
+  }, [attempt]);
 
   const saveArtistInfo = () => {
     if (!profile) {
@@ -221,13 +229,23 @@ export function ArtistPanel() {
     );
   }
 
+  const profilePending = profileError ? (
+    <PageError
+      title="Could not load your artist profile"
+      description={profileError}
+      onRetry={() => setAttempt((n) => n + 1)}
+    />
+  ) : (
+    <SettingsHint>Loading…</SettingsHint>
+  );
+
   const tabItems: TabsItem[] = [
     {
       id: 'identity',
       label: 'Identity',
       icon: <UserCircle2 size={14} />,
       content: !profile ? (
-        <SettingsHint>Loading…</SettingsHint>
+        profilePending
       ) : (
         <div className="flex flex-col gap-6">
           <Input
@@ -334,7 +352,7 @@ export function ArtistPanel() {
       label: 'Story',
       icon: <UserCircle2 size={14} />,
       content: !profile ? (
-        <SettingsHint>Loading…</SettingsHint>
+        profilePending
       ) : (
         <div className="flex flex-col gap-6">
           <MentionTextarea
