@@ -38,6 +38,37 @@ describe('listener widgets store', () => {
     ]);
   });
 
+  it('removing the last instance of a type also uninstalls it', () => {
+    const store = useListenerWidgetsStore.getState();
+    store.installType('spotify');
+    store.addInstance(
+      'spotify',
+      'https://open.spotify.com/playlist/2esDahb3pYLC84NF3bWx98',
+      'Spotify',
+    );
+    const id = useListenerWidgetsStore.getState().instances[0]!.id;
+
+    useListenerWidgetsStore.getState().removeInstance(id);
+
+    const next = useListenerWidgetsStore.getState();
+    expect(next.instances).toHaveLength(0);
+    expect(next.installedTypeIds).not.toContain('spotify');
+  });
+
+  it('removing one of several instances keeps the type installed', () => {
+    const store = useListenerWidgetsStore.getState();
+    store.installType('spotify');
+    store.addInstance('spotify', 'https://open.spotify.com/playlist/aaa', 'A');
+    store.addInstance('spotify', 'https://open.spotify.com/playlist/bbb', 'B');
+    const firstId = useListenerWidgetsStore.getState().instances[0]!.id;
+
+    useListenerWidgetsStore.getState().removeInstance(firstId);
+
+    const next = useListenerWidgetsStore.getState();
+    expect(next.instances).toHaveLength(1);
+    expect(next.installedTypeIds).toContain('spotify');
+  });
+
   it('favorites install and uninstall do not touch other embeds', () => {
     const store = useListenerWidgetsStore.getState();
     store.installType('favorites');

@@ -16,8 +16,8 @@ vi.mock('../../components/AddToMusicActions', () => ({
   AddToMusicActions: () => null,
 }));
 vi.mock('./sounds/TrackOrderButton', () => ({ TrackOrderButton: () => null }));
-vi.mock('./sounds/SoundsList', () => ({
-  SoundsList: ({ items }: { items: StudioSound[] }) => (
+vi.mock('./sounds/SoundsAmbientList', () => ({
+  SoundsAmbientList: ({ items }: { items: StudioSound[] }) => (
     <ul>
       {items.map((item) => (
         <li key={item.id}>{item.title}</li>

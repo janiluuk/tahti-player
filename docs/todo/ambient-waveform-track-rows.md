@@ -5,22 +5,16 @@
 ## Goal
 
 Listener/library track rows with cover-ambient wash and a scrubbable
-waveform — comfortable (screenshot-like) and compact densities.
+waveform — comfortable / compact / dense densities via a top size control.
 
-## Phase 1 (in progress)
+## Done
 
-- [x] `AmbientTrackRow` component (`comfortable` | `compact`)
-- [x] Storybook `Tahti/Media/AmbientTrackRow` + deploy for review
-- [ ] Wire after sign-off: all `PlayableTrackTable` surfaces + Library Tracks
+- [x] `AmbientTrackRow` (comfortable | compact | dense)
+- [x] `AmbientTrackList` listing widget + size SegmentedControl (persisted)
+- [x] Storybook `Tahti/Media/AmbientTrackRow` + `AmbientTrackList`
+- [x] Library → Sounds uses `SoundsAmbientList` (ambient rows + size control)
 
-Review:
+## Left
 
-- Comfortable: https://storybook.tahti.live/?path=/story/tahti-media-ambienttrackrow--comfortable
-- Compact: https://storybook.tahti.live/?path=/story/tahti-media-ambienttrackrow--compact
-- Stack: https://storybook.tahti.live/?path=/story/tahti-media-ambienttrackrow--stack
-
-## Phase 2 (after review)
-
-- Persist density (see `view-modes-track-tables.md`)
-- Plumb `peaks` into list playables
-- Upgrade Library `SoundRow` / expanded table mode
+- Wire other PlayableTrackTable surfaces (Listen, Favorites, Collections, …)
+- Prefer real `peaks` from list API when present (mock peaks fallback today)

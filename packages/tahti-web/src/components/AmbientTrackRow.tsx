@@ -31,11 +31,60 @@ export function mockAmbientPeaks(seed = 1, count = 96): number[] {
   });
 }
 
-export type AmbientTrackRowDensity = 'comfortable' | 'compact';
+export type AmbientTrackRowDensity = 'comfortable' | 'compact' | 'dense';
+
+const DENSITY_LAYOUT: Record<
+  AmbientTrackRowDensity,
+  {
+    pad: string;
+    gap: string;
+    art: 'sm' | 'thumb' | 'md';
+    artist: string;
+    title: string;
+    meta: string;
+    bars: number;
+    wave: string;
+  }
+> = {
+  comfortable: {
+    pad: 'gap-3 p-3',
+    gap: 'gap-1.5',
+    art: 'md',
+    artist: 'text-xs',
+    title: 'text-base',
+    meta: 'text-xs',
+    bars: 72,
+    wave: 'h-11',
+  },
+  compact: {
+    pad: 'gap-2 p-2',
+    gap: 'gap-1',
+    art: 'thumb',
+    artist: 'text-[11px]',
+    title: 'text-sm',
+    meta: 'text-[11px]',
+    bars: 48,
+    wave: 'h-6',
+  },
+  dense: {
+    pad: 'gap-2 px-2 py-1.5',
+    gap: 'gap-0.5',
+    art: 'sm',
+    artist: 'text-[10px]',
+    title: 'text-xs',
+    meta: 'text-[10px]',
+    bars: 36,
+    wave: 'h-4',
+  },
+};
 
 export type AmbientTrackRowProps = {
   trackId: string;
   title: string;
+  /** When set, replaces the plain title text (e.g. a router Link). */
+  titleNode?: ReactNode;
+  /** Status / error lines under the title (Studio Sounds). */
+  belowTitle?: ReactNode;
   artist: string;
   coverUrl?: string | null;
   durationLabel?: string;
@@ -57,6 +106,8 @@ export type AmbientTrackRowProps = {
 export function AmbientTrackRow({
   trackId,
   title,
+  titleNode,
+  belowTitle,
   artist,
   coverUrl,
   durationLabel,
@@ -73,7 +124,7 @@ export function AmbientTrackRow({
 }: AmbientTrackRowProps) {
   const sampled = useDominantColor(ambientRgb === undefined ? coverUrl : null);
   const rgb = ambientRgb === undefined ? sampled : ambientRgb;
-  const compact = density === 'compact';
+  const layout = DENSITY_LAYOUT[density];
   const meta = [genreLabel, durationLabel].filter(Boolean).join(' · ');
 
   return (
@@ -82,18 +133,18 @@ export function AmbientTrackRow({
       data-density={density}
       className={cn(
         'border-border/40 flex w-full min-w-0 rounded-lg border',
-        compact ? 'gap-2 p-2' : 'gap-3 p-3',
+        layout.pad,
         className,
       )}
       style={ambientStyle(rgb)}
     >
       <MediaArtwork
         src={coverUrl ?? undefined}
-        size={compact ? 'thumb' : 'md'}
+        size={layout.art}
         className="shrink-0"
         imageReveal={Boolean(coverUrl)}
       />
-      <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+      <div className={cn('flex min-w-0 flex-1 flex-col', layout.gap)}>
         <div className="flex min-w-0 items-start gap-2">
           {onPlay ? (
             <Button
@@ -114,7 +165,7 @@ export function AmbientTrackRow({
             <p
               className={cn(
                 'text-foreground-secondary truncate',
-                compact ? 'text-[11px]' : 'text-xs',
+                layout.artist,
               )}
             >
               {artist}
@@ -122,17 +173,18 @@ export function AmbientTrackRow({
             <h3
               className={cn(
                 'text-foreground truncate font-semibold',
-                compact ? 'text-sm' : 'text-base',
+                layout.title,
               )}
             >
-              {title}
+              {titleNode ?? title}
             </h3>
+            {belowTitle}
           </div>
           {meta ? (
             <p
               className={cn(
                 'text-foreground-secondary shrink-0 text-right',
-                compact ? 'text-[11px]' : 'text-xs',
+                layout.meta,
               )}
             >
               {meta}
@@ -143,19 +195,12 @@ export function AmbientTrackRow({
           trackId={trackId}
           progress={progress}
           peaks={peaks}
-          bars={compact ? 48 : 72}
+          bars={layout.bars}
           onSeek={onSeek}
-          className={compact ? 'h-6' : 'h-11'}
+          className={layout.wave}
         />
         {actions ? (
-          <div
-            className={cn(
-              'flex flex-wrap items-center gap-1.5',
-              compact && 'gap-1',
-            )}
-          >
-            {actions}
-          </div>
+          <div className="flex flex-wrap items-center gap-1.5">{actions}</div>
         ) : null}
       </div>
     </article>

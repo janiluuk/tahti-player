@@ -1,3 +1,10 @@
+## 2026-10-20 — AmbientTrackList on Library Sounds
+
+`AmbientTrackList` listing with Large/Medium/Small size control (persisted)
+and ambient+waveform rows. Library → Sounds uses it instead of the dense
+`SoundRow` list. Storybook: `Tahti/Media/AmbientTrackList`. Bumped to
+`0.0.227`.
+
 ## 2026-10-19 — Spotify Listen widget → track table
 
 Spotify Listen add-on loads a public playlist via
