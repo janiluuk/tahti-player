@@ -1,6 +1,7 @@
 import { ImageReveal } from '@tahti-player/ui';
 
 import { type PressKitImageItem } from '../../../api/artist-settings';
+import { PageEmpty } from '../../../components/PageStates';
 
 export function PressKitPreview({
   displayName,
@@ -28,11 +29,11 @@ export function PressKitPreview({
         </h3>
       </div>
       <div className="flex flex-col gap-4 p-5">
-        <p
-          className={`text-sm leading-relaxed ${bio ? 'text-foreground' : 'text-foreground-secondary italic'}`}
-        >
-          {bio || 'No bio yet.'}
-        </p>
+        {bio ? (
+          <p className="text-foreground text-sm leading-relaxed">{bio}</p>
+        ) : (
+          <PageEmpty title="No bio yet." />
+        )}
         {images.length > 1 ? (
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {images.slice(1, 5).map((image) => (

@@ -31,7 +31,7 @@ One PR per slice. Tick when merged.
 | 15 | `RadioStationView` toggle → `FilterChips` | open |
 | 16 | `DirectoryArtistsBrowser` Active/Filters → `FilterChips` | open |
 | 17 | `HeaderStyleTabs` → catalog `Tabs` | open |
-| 18 | `PressKitPreview` bio → `PageEmpty` | open |
+| 18 | `PressKitPreview` bio → `PageEmpty` | done |
 
 ## Liveliness + shared title (19–27)
 
