@@ -66,9 +66,7 @@ export function ChannelPlaylistPicker({
 
   if (playlists.length === 0) {
     return (
-      <p className="text-foreground-secondary text-xs">
-        No playlists in your library yet. Create one under Studio → Collections.
-      </p>
+      <PageEmpty title="No playlists in your library yet. Create one under Studio → Collections." />
     );
   }
 
