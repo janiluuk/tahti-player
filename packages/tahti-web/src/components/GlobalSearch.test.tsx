@@ -55,15 +55,15 @@ describe('GlobalSearch', () => {
     vi.restoreAllMocks();
   });
 
-  it('opens the top result on Enter when nothing is highlighted', async () => {
+  it('opens the full results page on Enter when nothing is highlighted', async () => {
     await renderWithRouter(<GlobalSearch />);
     const input = await search('north');
 
     fireEvent.keyDown(input, { key: 'Enter' });
 
     expect(navigate).toHaveBeenCalledWith({
-      to: '/u/$username',
-      params: { username: 'northern-lights' },
+      to: '/search',
+      search: { q: 'north' },
     });
   });
 
