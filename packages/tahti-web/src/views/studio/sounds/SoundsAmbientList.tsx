@@ -3,7 +3,6 @@ import {
   BarChart3Icon,
   DownloadIcon,
   PencilIcon,
-  PlayIcon,
   RotateCcwIcon,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
@@ -17,14 +16,17 @@ import {
   type AmbientTrackListItem,
 } from '../../../components/AmbientTrackList';
 import { mockAmbientPeaks } from '../../../components/AmbientTrackRow';
-import { useHearthisEmbedClaim } from '../../../components/HearthisEmbedHost';
-import { HearthisEmbedSurface } from '../../../components/HearthisEmbedSurface';
+import { EmbedTrackRow } from '../../../components/EmbedTrackRow';
 import { StudioSoundRowMenu } from '../../../components/StudioSoundRowMenu';
 import {
   canRetrySoundProcessing,
   useRetrySoundProcessing,
 } from '../../../hooks/useRetrySoundProcessing';
-import { EMBED_PROVIDER_LABEL, embedSrcFor } from '../../../lib/embedSrc';
+import {
+  EMBED_PROVIDER_LABEL,
+  embedSrcFor,
+  type EmbedProvider,
+} from '../../../lib/embedSrc';
 import { isPinned } from '../../../lib/pinnedTracks';
 import { formatDuration } from '../../../lib/playableToTrack';
 import { usePlayerStore } from '../../../stores/playerStore';
@@ -43,6 +45,10 @@ function formatUploadDate(value: string | undefined): string | null {
     month: 'short',
     day: 'numeric',
   }).format(date);
+}
+
+function isEmbedSound(item: StudioSound): boolean {
+  return Boolean(item.embedProvider && item.embedUri);
 }
 
 function SoundTitle({ item }: { item: StudioSound }) {
@@ -95,6 +101,7 @@ function SoundStatusLine({ item }: { item: StudioSound }) {
   );
 }
 
+/** Studio actions only — play lives on AmbientTrackRow (hosted) or EmbedTrackRow. */
 function SoundRowActions({
   item,
   state,
@@ -104,76 +111,20 @@ function SoundRowActions({
 }) {
   const {
     busyId,
-    playItem,
-    playEmbedItem,
     downloadItem,
     togglePin,
     setEditingId,
     setStatsItem,
     setPendingDeleteItem,
   } = state;
-  const embedSrc =
-    item.embedProvider && item.embedUri
-      ? embedSrcFor(item.embedProvider, item.embedUri)
-      : null;
-  const currentId = usePlayerStore((s) => s.currentId);
-  const playerStatus = usePlayerStore((s) => s.status);
-  const hearthisActive =
-    item.embedProvider === 'HEARTHIS' &&
-    Boolean(item.embedUri) &&
-    currentId === `sound:${item.id}`;
-  const hearthisPlaying =
-    hearthisActive &&
-    (playerStatus === 'playing' || playerStatus === 'loading');
-  useHearthisEmbedClaim(hearthisActive);
+  const hasEmbed = isEmbedSound(item);
 
   return (
     <div
       className="relative flex max-w-full min-w-0 flex-wrap items-center gap-2"
       data-testid="sound-row-actions"
     >
-      <Tooltip
-        content={
-          embedSrc
-            ? `Play on ${EMBED_PROVIDER_LABEL[item.embedProvider!]}`
-            : 'Play'
-        }
-        side="top"
-      >
-        <Button
-          size="icon-sm"
-          variant="text"
-          disabled={busyId === item.id}
-          onClick={() => {
-            if (embedSrc) {
-              playEmbedItem(item);
-              return;
-            }
-            void playItem(item.id, item.title);
-          }}
-          aria-label={
-            embedSrc
-              ? `Play ${item.title} on ${EMBED_PROVIDER_LABEL[item.embedProvider!]}`
-              : `Play ${item.title}`
-          }
-        >
-          <PlayIcon size={14} aria-hidden />
-        </Button>
-      </Tooltip>
-      {hearthisActive && item.embedUri ? (
-        <div
-          className="border-border relative max-h-28 w-[min(100%,18rem)] shrink overflow-hidden rounded-lg border contain-paint"
-          data-testid="hearthis-row-embed"
-        >
-          <HearthisEmbedSurface
-            embedUri={item.embedUri}
-            title={item.title}
-            autoplay={hearthisPlaying}
-            compact
-          />
-        </div>
-      ) : null}
-      {!item.embedProvider ? (
+      {!hasEmbed ? (
         <Tooltip content="Download original" side="top">
           <Button
             size="icon-sm"
@@ -210,7 +161,7 @@ function SoundRowActions({
       <StudioSoundRowMenu
         item={item}
         busy={busyId === item.id}
-        hasEmbed={Boolean(embedSrc)}
+        hasEmbed={hasEmbed}
         onTogglePin={() => void togglePin(item)}
         onDelete={() => setPendingDeleteItem(item)}
       />
@@ -218,7 +169,7 @@ function SoundRowActions({
   );
 }
 
-function toListItem(
+function toHostedListItem(
   item: StudioSound,
   state: StudioSoundsState,
   playback: {
@@ -233,11 +184,7 @@ function toListItem(
     retryingId: string | null;
   },
 ): AmbientTrackListItem {
-  const { playItem, playEmbedItem } = state;
-  const embedSrc =
-    item.embedProvider && item.embedUri
-      ? embedSrcFor(item.embedProvider, item.embedUri)
-      : null;
+  const { playItem } = state;
   const playerId = `sound:${item.id}`;
   const isCurrent = playback.currentId === playerId;
   const isPlaying =
@@ -303,7 +250,38 @@ function toListItem(
   };
 }
 
-/** Library → Sounds list using ambient+waveform rows and a track-size control. */
+function EmbedSoundCard({
+  item,
+  state,
+}: {
+  item: StudioSound;
+  state: StudioSoundsState;
+}) {
+  const provider = item.embedProvider as EmbedProvider;
+  const embedUri = item.embedUri!;
+
+  return (
+    <li className="flex flex-col gap-2" data-testid="sounds-embed-card">
+      <EmbedTrackRow
+        title={item.title}
+        provider={provider}
+        embedUri={embedUri}
+      />
+      <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+        <p className="text-foreground-secondary min-w-0 flex-1 text-xs">
+          <SoundTitle item={item} />
+          <span className="text-foreground-secondary">
+            {' '}
+            · via {EMBED_PROVIDER_LABEL[provider]}
+          </span>
+        </p>
+        <SoundRowActions item={item} state={state} />
+      </div>
+    </li>
+  );
+}
+
+/** Library → Sounds: hosted tracks as ambient rows; embeds in their own list. */
 export function SoundsAmbientList({
   items,
   state,
@@ -326,15 +304,53 @@ export function SoundsAmbientList({
       ),
     ),
   );
-  const listItems = items.map((item) =>
-    toListItem(item, state, playback, { retry, retryingId }),
+
+  const hosted = items.filter((item) => !isEmbedSound(item));
+  const embeds = items.filter(isEmbedSound);
+  const listItems = hosted.map((item) =>
+    toHostedListItem(item, state, playback, { retry, retryingId }),
   );
 
   return (
-    <AmbientTrackList
-      items={listItems}
-      defaultDensity="comfortable"
-      emptyMessage="No sounds match these filters."
-    />
+    <div className="flex flex-col gap-8">
+      {hosted.length > 0 || embeds.length === 0 ? (
+        <AmbientTrackList
+          items={listItems}
+          defaultDensity="comfortable"
+          emptyMessage={
+            embeds.length > 0
+              ? 'No hosted sounds match these filters.'
+              : 'No sounds match these filters.'
+          }
+        />
+      ) : null}
+
+      {embeds.length > 0 ? (
+        <section
+          className="flex flex-col gap-3"
+          aria-labelledby="sounds-embeds-heading"
+          data-testid="sounds-embeds-section"
+        >
+          <div>
+            <h2
+              id="sounds-embeds-heading"
+              className="font-display text-lg font-bold tracking-tight"
+            >
+              Embeds
+            </h2>
+            <p className="text-foreground-secondary mt-1 text-sm">
+              hearthis.at, Spotify, Mixcloud and Bandcamp play in the provider
+              widget — listed separately so they are not mixed with hosted
+              waveforms.
+            </p>
+          </div>
+          <ul className="flex flex-col gap-3">
+            {embeds.map((item) => (
+              <EmbedSoundCard key={item.id} item={item} state={state} />
+            ))}
+          </ul>
+        </section>
+      ) : null}
+    </div>
   );
 }

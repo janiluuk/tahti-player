@@ -38,6 +38,7 @@ import {
 } from '../components/SectionTabs';
 import { StudioPanel } from '../components/StudioPanel';
 import { hasStudioAccess } from '../lib/accountRoles';
+import { getNativeLibrary } from '../lib/nativeLibrary';
 import { formatPlayCount } from '../lib/topListEntries';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -141,9 +142,12 @@ function useLibraryTabs() {
       state.profileLoaded &&
       !hasStudioAccess(state.user),
   );
-  return listener
+  // Local files is the desktop native library — hide on plain web.
+  const desktopLocal = Boolean(getNativeLibrary());
+  const tabs = listener
     ? LIBRARY_SECTION_TABS.filter((item) => !ARTIST_ONLY_TABS.has(item.id))
     : LIBRARY_SECTION_TABS;
+  return desktopLocal ? tabs : tabs.filter((item) => item.id !== 'local');
 }
 
 /**

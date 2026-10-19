@@ -168,6 +168,12 @@ export const libraryMediaRoute = createRoute({
 export const libraryLocalRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/local',
+  beforeLoad: async () => {
+    const { getNativeLibrary } = await import('../lib/nativeLibrary');
+    if (!getNativeLibrary()) {
+      throw redirect({ to: '/library' });
+    }
+  },
   component: () => <LibraryView tab="local" />,
 });
 

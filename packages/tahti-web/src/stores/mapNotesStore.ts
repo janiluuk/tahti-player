@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-/** Where on `/more` the comment was submitted from. */
-export type MapCommentKind = 'case' | 'flow' | 'feature';
+/** Where on `/more` (or the admin page comment) the comment was submitted from. */
+export type MapCommentKind = 'case' | 'flow' | 'feature' | 'page';
 
 export type MapComment = {
   id: string;
   kind: MapCommentKind;
-  /** Case id, flow diagram id, or feature name. */
+  /** Case id, flow diagram id, feature name, or route path for `page`. */
   targetId: string;
   title: string;
   /** Flow pack (`current` / `nuclear`) when kind is `flow`. */
@@ -16,6 +16,10 @@ export type MapComment = {
   feature?: string;
   text: string;
   submittedAt: string;
+  /** Last edit time when the text was updated after submit. */
+  updatedAt?: string;
+  /** Set when an admin marks the comment resolved. */
+  resolvedAt?: string;
 };
 
 export type SubmitMapCommentInput = {
@@ -46,14 +50,17 @@ type MapNotesState = {
   draftsByKey: Record<string, string>;
   /** @deprecated Prefer draftsByKey — kept for localStorage migrate. */
   notesByCaseId: Record<string, string>;
-  /** Submitted comments (append-only log, newest first). */
+  /** Submitted comments (newest first). Many per target allowed. */
   comments: MapComment[];
   /** Case ids marked reviewed/approved — collapsed by default in the atlas. */
   approvedByCaseId: Record<string, boolean>;
   setDraft: (kind: MapCommentKind, targetId: string, text: string) => void;
   getDraft: (kind: MapCommentKind, targetId: string) => string;
-  /** Persist a submitted comment; updates the draft to the saved text. */
+  /** Persist a new submitted comment; keeps the draft as the saved text. */
   submitComment: (input: SubmitMapCommentInput) => MapComment | null;
+  updateComment: (id: string, text: string) => MapComment | null;
+  resolveComment: (id: string) => void;
+  unresolveComment: (id: string) => void;
   clearComments: () => void;
   /** Snapshot of submitted comments (exportable). */
   listComments: () => MapComment[];
@@ -128,6 +135,44 @@ export const useMapNotesStore = create<MapNotesState>()(
         });
         return comment;
       },
+      updateComment: (id, text) => {
+        const trimmed = text.trim();
+        if (!trimmed) {
+          return null;
+        }
+        let updated: MapComment | null = null;
+        set((s) => ({
+          comments: s.comments.map((c) => {
+            if (c.id !== id) {
+              return c;
+            }
+            updated = {
+              ...c,
+              text: trimmed,
+              updatedAt: new Date().toISOString(),
+            };
+            return updated;
+          }),
+        }));
+        return updated;
+      },
+      resolveComment: (id) =>
+        set((s) => ({
+          comments: s.comments.map((c) =>
+            c.id === id ? { ...c, resolvedAt: new Date().toISOString() } : c,
+          ),
+        })),
+      unresolveComment: (id) =>
+        set((s) => ({
+          comments: s.comments.map((c) => {
+            if (c.id !== id) {
+              return c;
+            }
+            const next = { ...c };
+            delete next.resolvedAt;
+            return next;
+          }),
+        })),
       clearComments: () => set({ comments: [] }),
       listComments: () => get().comments,
       isCaseApproved: (caseId) => Boolean(get().approvedByCaseId[caseId]),
@@ -144,7 +189,7 @@ export const useMapNotesStore = create<MapNotesState>()(
     }),
     {
       name: 'tahti-web-map-notes',
-      version: 3,
+      version: 4,
       migrate: (persisted) => {
         const p = (persisted ?? {}) as Partial<MapNotesState>;
         const notesByCaseId = p.notesByCaseId ?? {};
@@ -155,10 +200,18 @@ export const useMapNotesStore = create<MapNotesState>()(
             draftsByKey[key] = note;
           }
         }
+        const comments = Array.isArray(p.comments)
+          ? p.comments.map((c) => ({
+              ...c,
+              // Older saves had no resolve fields.
+              resolvedAt: c.resolvedAt,
+              updatedAt: c.updatedAt,
+            }))
+          : [];
         return {
           draftsByKey,
           notesByCaseId,
-          comments: Array.isArray(p.comments) ? p.comments : [],
+          comments,
           approvedByCaseId: p.approvedByCaseId ?? {},
         };
       },

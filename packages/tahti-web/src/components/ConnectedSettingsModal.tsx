@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 
 import { Button, SettingsPanel } from '@tahti-player/ui';
 
+import { hasAccountRole } from '../lib/accountRoles';
 import { buildSettingsPath } from '../lib/settingsUrl';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -63,17 +64,16 @@ export function ConnectedSettingsModal() {
   const user = useAuthStore((s) => s.user);
   const openAuth = useAuthModalStore((s) => s.open);
   const signedIn = Boolean(user);
+  const isBoard = hasAccountRole(user, 'BOARD');
   const returnPathRef = useRef<string | null>(null);
 
   const profileLoaded = useAuthStore((s) => s.profileLoaded);
   const hasChannel = Boolean(user?.channel) || !profileLoaded;
 
-  const nav = settingsNavFor({ signedIn, hasChannel });
-  const available = isSettingsSectionAvailable(activeTab, {
-    signedIn,
-    hasChannel,
-  });
-  const fallbackTab = fallbackSettingsSection({ signedIn, hasChannel });
+  const audience = { signedIn, hasChannel, isBoard };
+  const nav = settingsNavFor(audience);
+  const available = isSettingsSectionAvailable(activeTab, audience);
+  const fallbackTab = fallbackSettingsSection(audience);
 
   useEffect(() => {
     if (isOpen && !available) {

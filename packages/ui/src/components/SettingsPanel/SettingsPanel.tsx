@@ -54,7 +54,7 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
       // Fill the DialogRoot padded viewport on mobile (`w-full` + dvh), not a
       // second `100vw-2rem` that stacks with the overlay's `p-4`. `min-w-0`
       // + `overflow-hidden` keep section bodies scrolling inside the pane.
-      className="flex h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] w-full max-w-none min-w-0 flex-col overflow-hidden p-0 sm:h-[80vh] sm:max-h-[900px] sm:w-[80vw] sm:max-w-6xl sm:flex-row!"
+      className="flex! h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] w-full max-w-none min-w-0 flex-col overflow-hidden! p-0 sm:h-[80vh] sm:max-h-[900px] sm:w-[80vw] sm:max-w-6xl sm:flex-row!"
     >
       <SettingsPanelNav
         tabs={tabs}

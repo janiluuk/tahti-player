@@ -868,7 +868,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Play a track',
           'Edit metadata',
           'Open the audio editor',
-          'Switch Overview / Tracks / Collections / Recordings / Media / Stash / Embeds / Smart links / Local files tabs',
+          'Switch Overview / Tracks / Collections / Recordings / Media / Stash / Embeds / Smart links tabs (Local files is desktop-only)',
         ],
         goesTo: [
           {

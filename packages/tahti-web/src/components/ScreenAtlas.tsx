@@ -11,6 +11,7 @@ import {
   type MapParity,
   type MapShot,
 } from '../content/mapScreens';
+import { downloadMapCommentsCsv } from '../lib/mapCommentsCsv';
 import { useMapNotesStore, type MapComment } from '../stores/mapNotesStore';
 import { MapCommentForm } from './MapCommentForm';
 import { MermaidDiagram } from './MermaidDiagram';
@@ -137,84 +138,22 @@ function ScreenNavigation({ c }: { c: MapCase }) {
   );
 }
 
-function csvCell(value: string): string {
-  return `"${value.replace(/"/g, '""')}"`;
-}
-
-/** Flat id → title/viewName lookup so the export can label rows without a note. */
-function caseLookup(): Record<string, { title: string; viewName: string }> {
-  const map: Record<string, { title: string; viewName: string }> = {};
-  for (const group of MAP_CASE_GROUPS) {
-    for (const c of group.cases) {
-      map[c.id] = { title: c.title, viewName: c.viewName };
-    }
-  }
-  return map;
-}
-
-function commentsToCsv(comments: MapComment[]): string {
-  const lookup = caseLookup();
-  const header = [
-    'kind',
-    'target_id',
-    'title',
-    'view_name',
-    'pack',
-    'feature',
-    'commentary',
-    'submitted_at',
-  ];
-  const rows = comments.map((c) => {
-    // 'flow' comments from ScreenNavigation are keyed by the same case id
-    // as 'case' comments (see caseFlowchart's per-screen comment box), so
-    // the same lookup resolves a view_name for both kinds. Flow comments
-    // from the top-level FlowGallery use flow-diagram ids instead, which
-    // this lookup has no entry for — view_name stays blank there, which is
-    // fine since `title` already carries a readable label.
-    const meta = lookup[c.targetId];
-    return [
-      c.kind,
-      c.targetId,
-      c.title,
-      meta?.viewName ?? '',
-      c.pack ?? '',
-      c.feature ?? '',
-      c.text,
-      c.submittedAt,
-    ];
-  });
-  return [header, ...rows]
-    .map((row) => row.map(csvCell).join(','))
-    .join('\r\n');
-}
-
 function ExportNotesButton() {
   const comments = useMapNotesStore((s) => s.comments);
   const count = comments.length;
-
-  const download = () => {
-    const csv = commentsToCsv(comments);
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const stamp = new Date().toISOString().slice(0, 10);
-    a.href = url;
-    a.download = `tahti-map-notes-${stamp}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  const openCount = comments.filter((c) => !c.resolvedAt).length;
 
   return (
     <Button
       size="sm"
       variant="secondary"
-      onClick={download}
+      onClick={() => downloadMapCommentsCsv(comments)}
       disabled={count === 0}
       aria-label="Export submitted comments as CSV"
       title={
         count === 0
           ? 'Submit a comment below to enable export'
-          : `Export ${count} comment${count === 1 ? '' : 's'} as CSV`
+          : `Export ${count} comment${count === 1 ? '' : 's'} (${openCount} open) as CSV for fixing`
       }
     >
       Export comments ({count}) as CSV

@@ -39,6 +39,19 @@ describe('SavedMapComments', () => {
     expect(screen.getByText('Clear all 1 saved comments?')).toBeInTheDocument();
   });
 
+  it('offers CSV export for handing comments to fix', () => {
+    render(<SavedMapComments />);
+    expect(
+      screen.getByRole('button', { name: /Export CSV/ }),
+    ).toBeInTheDocument();
+  });
+
+  it('resolves an open comment', () => {
+    render(<SavedMapComments />);
+    fireEvent.click(screen.getByRole('button', { name: 'Resolve' }));
+    expect(useMapNotesStore.getState().comments[0]?.resolvedAt).toBeTruthy();
+  });
+
   it('clears the log and reports it once confirmed', () => {
     render(<SavedMapComments />);
 

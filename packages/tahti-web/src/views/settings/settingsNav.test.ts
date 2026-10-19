@@ -15,16 +15,33 @@ describe('settingsNavFor', () => {
       'playback',
       'themes',
       'plugin-store',
-      'logs',
       'whats-new',
     ]);
   });
 
-  it('shows an artist every section', () => {
+  it('shows an artist every section except board Logs', () => {
     const nav = settingsNavFor({ signedIn: true, hasChannel: true });
     expect(nav.map((item) => item.id)).toContain('channel');
     expect(nav.map((item) => item.id)).toContain('broadcast');
+    expect(nav.map((item) => item.id)).not.toContain('logs');
     expect(nav.find((item) => item.id === 'artist')?.label).toBe('Artist');
+  });
+
+  it('shows Logs only for board members', () => {
+    expect(
+      settingsNavFor({
+        signedIn: true,
+        hasChannel: true,
+        isBoard: true,
+      }).map((item) => item.id),
+    ).toContain('logs');
+    expect(
+      isSettingsSectionAvailable('logs', {
+        signedIn: true,
+        hasChannel: true,
+        isBoard: false,
+      }),
+    ).toBe(false);
   });
 
   it('hides the channel sections from a listener with no channel', () => {
@@ -36,7 +53,6 @@ describe('settingsNavFor', () => {
       'integrations',
       'themes',
       'plugin-store',
-      'logs',
       'whats-new',
     ]);
     expect(nav.find((item) => item.id === 'artist')?.label).toBe('Profile');
