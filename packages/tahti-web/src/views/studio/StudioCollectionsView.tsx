@@ -41,7 +41,7 @@ import type {
 } from '../../api/studio-types';
 import type { TahtiPlayable } from '../../api/types';
 import { SubscribedCollections } from '../../components/library/SubscribedCollections';
-import { PageLoading } from '../../components/PageStates';
+import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioCollectionMoreMenu } from '../../components/StudioCollectionMoreMenu';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -149,6 +149,7 @@ export function StudioCollectionsView() {
   const navigate = useNavigate();
   const [rows, setRows] = useState<StudioCollection[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [name, setName] = useState('');
   const [style, setStyle] = useState<CreateStyle>('ALBUM');
@@ -165,6 +166,9 @@ export function StudioCollectionsView() {
   const reload = () => {
     void fetchStudioCollections().then((res) => {
       setRows(res.data);
+      setLoadError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
   };
@@ -415,6 +419,15 @@ export function StudioCollectionsView() {
             </div>
             {loading ? (
               <PageLoading label="Loading…" />
+            ) : loadError && rows.length === 0 ? (
+              <PageError
+                title="Could not load your collections"
+                description={loadError}
+                onRetry={() => {
+                  setLoading(true);
+                  reload();
+                }}
+              />
             ) : rows.length === 0 ? (
               <EmptyState
                 size="sm"
