@@ -675,13 +675,13 @@ exports[`Search view > (Snapshot) renders the search view 1`] = `
               data-testid="search-view"
             >
               <h1
-                class="mb-6 flex w-full flex-0 flex-row text-center text-3xl font-bold"
+                class="mb-6 flex w-full flex-0 flex-row text-3xl font-bold text-center"
                 data-testid="title"
               >
                 Search
               </h1>
               <h2
-                class="mb-4 flex w-full flex-0 flex-row text-center text-xl font-semibold"
+                class="mb-4 flex w-full flex-0 flex-row text-xl font-semibold text-center"
               >
                 Query: "test"
               </h2>
