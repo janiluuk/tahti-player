@@ -10,6 +10,7 @@ import {
   type UserMediaFile,
 } from '../api/user-media';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { PageEmpty } from '../components/PageStates';
 import { StudioPanel } from '../components/StudioPanel';
 
 function formatBytes(bytes: number): string {
@@ -57,10 +58,7 @@ export function LibraryMediaView() {
       {loading ? (
         <p className="text-foreground-secondary text-sm">Loading media…</p>
       ) : files.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No media files yet. Add background images or a Video loop backdrop
-          from Artist → Branding.
-        </p>
+        <PageEmpty title="No media files yet. Add background images or a Video loop backdrop from Artist → Branding." />
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {files.map((file) => {
