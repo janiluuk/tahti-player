@@ -24,8 +24,8 @@ green wall; several surfaces are fully flat (no accent, no elevation, no tint). 
 
 ## Left
 
-2. **De-green the uniform layer** — `Card.tsx` / `Button.tsx` / `MediaArtwork` play overlay toward neutral fills + context accent.
-4. History stats/list active-row accent; CollectionView cover-tint header; optional DiscoverGatewayBackground on flat Listen surfaces.
+2. **De-green Button** — Cards/MediaArtwork play overlay shipped in UX sweep; Button still primary-heavy.
+4. Optional DiscoverGatewayBackground on flat Listen surfaces.
 5. Verify across `tahti-blue` / `spotify-dark-theme`.
 
 ## Verify
