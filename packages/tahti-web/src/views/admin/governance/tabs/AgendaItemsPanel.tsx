@@ -9,6 +9,7 @@ import {
   reorderAdminAgendaItems,
   type GovernanceAgendaItem,
 } from '../../../../api/admin/admin-governance-agenda';
+import { PageEmpty } from '../../../../components/PageStates';
 import { AgendaItemRow } from './AgendaItemRow';
 import { CollapsibleRecord } from './MeetingRecordPanels';
 
@@ -67,9 +68,7 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
       {items === null ? (
         <p className="text-foreground-secondary text-xs">Loading…</p>
       ) : items.length === 0 ? (
-        <p className="text-foreground-secondary text-xs">
-          No agenda items yet.
-        </p>
+        <PageEmpty title="No agenda items yet." />
       ) : (
         <ol className="flex flex-col gap-2 text-sm">
           {items.map((item, index) => (
