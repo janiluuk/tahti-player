@@ -164,7 +164,7 @@ export function SocialPostNow({
         </div>
       ) : posts && selected ? (
         <PageEmpty
-          title="Nothing posted yet"
+          title="Nothing posted yet."
           description="Use Post now above to queue your first message."
         />
       ) : null}
