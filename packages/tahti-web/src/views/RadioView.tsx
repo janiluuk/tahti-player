@@ -45,7 +45,7 @@ import {
   MediaIconActions,
   playQueueFavoriteActions,
 } from '../components/MediaIconActions';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { RadioBookingCalendar } from '../components/RadioBookingCalendar';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
@@ -98,6 +98,9 @@ export function RadioView() {
   const [featured, setFeatured] = useState<RadioFeatureHistoryItem[]>([]);
   const [upcoming, setUpcoming] = useState<StudioShowBooking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sectionErrors, setSectionErrors] = useState<
+    Partial<Record<'upcoming' | 'recent' | 'featured', string>>
+  >({});
   const [infoTrack, setInfoTrack] = useState<TrackInfo | null>(null);
   const [calendarOpen, setCalendarOpen] = useState(false);
 
@@ -119,6 +122,10 @@ export function RadioView() {
       Date.now() + UPCOMING_WINDOW_DAYS * 24 * 3600_000,
     ).toISOString();
     void fetchShowBookings(from, to).then((r) => {
+      setSectionErrors((current) => ({
+        ...current,
+        upcoming: r.meta.source === 'api' ? r.meta.reason : undefined,
+      }));
       setUpcoming(
         r.data
           .filter((b) => new Date(b.startAt).getTime() > Date.now())
@@ -140,6 +147,15 @@ export function RadioView() {
       setRelay(memberRelay.data);
       setRecent(recentRes.data);
       setFeatured(featuredRes.data);
+      setSectionErrors((current) => ({
+        ...current,
+        recent:
+          recentRes.meta.source === 'api' ? recentRes.meta.reason : undefined,
+        featured:
+          featuredRes.meta.source === 'api'
+            ? featuredRes.meta.reason
+            : undefined,
+      }));
       setLoading(false);
     });
     reloadUpcoming();
@@ -428,7 +444,13 @@ export function RadioView() {
                   icon: <ListOrderedIcon size={14} />,
                   count: upcoming.length > 0 ? upcoming.length : undefined,
                   content:
-                    upcoming.length === 0 ? (
+                    sectionErrors.upcoming && upcoming.length === 0 ? (
+                      <PageError
+                        title="Could not load the schedule"
+                        description={sectionErrors.upcoming}
+                        onRetry={reloadUpcoming}
+                      />
+                    ) : upcoming.length === 0 ? (
                       <div className="flex flex-col items-start gap-2">
                         <PageEmpty title="Nothing booked yet — fair rotation plays when nobody is." />
                         {user && (
@@ -493,7 +515,13 @@ export function RadioView() {
                   icon: <HistoryIcon size={14} />,
                   count: recent.length > 0 ? recent.length : undefined,
                   content:
-                    recent.length === 0 ? (
+                    sectionErrors.recent && recent.length === 0 ? (
+                      <PageError
+                        title="Could not load recent plays"
+                        description={sectionErrors.recent}
+                        onRetry={reload}
+                      />
+                    ) : recent.length === 0 ? (
                       <PageEmpty title="No recent plays logged yet." />
                     ) : (
                       <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
@@ -607,7 +635,13 @@ export function RadioView() {
                   icon: <MicIcon size={14} />,
                   count: featured.length > 0 ? featured.length : undefined,
                   content:
-                    featured.length === 0 ? (
+                    sectionErrors.featured && featured.length === 0 ? (
+                      <PageError
+                        title="Could not load member sets"
+                        description={sectionErrors.featured}
+                        onRetry={reload}
+                      />
+                    ) : featured.length === 0 ? (
                       <PageEmpty title="No member sets relayed yet." />
                     ) : (
                       <ul
