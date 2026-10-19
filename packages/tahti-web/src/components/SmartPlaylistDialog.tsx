@@ -251,7 +251,7 @@ export function SmartPlaylistDialog({
         </div>
         <p className="text-sm" role="status" data-testid="smart-preview">
           {problem ? (
-            <span className="text-destructive">{problem}</span>
+            <span className="text-accent-red-strong">{problem}</span>
           ) : matches === null ? (
             'Checking…'
           ) : (

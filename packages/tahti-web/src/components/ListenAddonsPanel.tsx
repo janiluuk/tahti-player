@@ -459,7 +459,7 @@ export function ListenAddonsPanel({
                   </Button>
                 </form>
                 {newsError ? (
-                  <p className="text-destructive text-xs" role="alert">
+                  <p className="text-accent-red-strong text-xs" role="alert">
                     {newsError}
                   </p>
                 ) : null}
@@ -574,7 +574,7 @@ export function ListenAddonsPanel({
                     </Button>
                   </form>
                   {errorByType[type.id] ? (
-                    <p className="text-destructive text-xs" role="alert">
+                    <p className="text-accent-red-strong text-xs" role="alert">
                       {errorByType[type.id]}
                     </p>
                   ) : null}
@@ -609,7 +609,10 @@ export function ListenAddonsPanel({
                         </Button>
                       </form>
                       {hearthisSetsError ? (
-                        <p className="text-destructive text-xs" role="alert">
+                        <p
+                          className="text-accent-red-strong text-xs"
+                          role="alert"
+                        >
                           {hearthisSetsError}
                         </p>
                       ) : null}

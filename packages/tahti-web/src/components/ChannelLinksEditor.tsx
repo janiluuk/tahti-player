@@ -69,7 +69,7 @@ export function ChannelLinksEditor({
                 maxLength={2000}
                 aria-invalid={urlInvalid || undefined}
                 onChange={(e) => updateLink(i, 'url', e.target.value)}
-                className={`min-w-0 flex-1 ${urlInvalid ? 'border-destructive' : ''}`}
+                className={`min-w-0 flex-1 ${urlInvalid ? 'border-accent-red-strong' : ''}`}
               />
               <Tooltip
                 content={hidden ? 'Show on channel' : 'Hide from channel'}
@@ -105,7 +105,7 @@ export function ChannelLinksEditor({
               </Tooltip>
             </div>
             {urlInvalid ? (
-              <p className="text-destructive pl-8 text-xs">
+              <p className="text-accent-red-strong pl-8 text-xs">
                 Use an http(s) or mailto: link
               </p>
             ) : null}

@@ -105,7 +105,7 @@ export function LibraryRootsBlock({
                   className={
                     root.available
                       ? 'text-foreground-secondary truncate text-[10px]'
-                      : 'text-destructive truncate text-[10px]'
+                      : 'text-accent-red-strong truncate text-[10px]'
                   }
                 >
                   {root.available

@@ -264,7 +264,7 @@ function ResultSummary({
                 className="truncate"
                 title={`${failure.path}: ${failure.error}`}
               >
-                <span className="text-destructive">{failure.error}</span>{' '}
+                <span className="text-accent-red-strong">{failure.error}</span>{' '}
                 <span className="text-foreground-secondary">
                   {failure.path}
                 </span>
@@ -336,7 +336,7 @@ export function ItunesImportDialog({
       </Dialog.Description>
 
       {state.error ? (
-        <p role="alert" className="text-destructive text-sm">
+        <p role="alert" className="text-accent-red-strong text-sm">
           {state.error}
         </p>
       ) : null}

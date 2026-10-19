@@ -142,11 +142,11 @@ export function BackupRestoreDialog({
         the backup — they must already be on this computer.
       </Dialog.Description>
       {error ? (
-        <p role="alert" className="text-destructive text-sm">
+        <p role="alert" className="text-accent-red-strong text-sm">
           {error}
         </p>
       ) : !preview ? (
-        <p className="text-muted-foreground flex items-center gap-2 text-sm">
+        <p className="text-foreground-secondary flex items-center gap-2 text-sm">
           <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
           Reading the backup…
         </p>
@@ -176,8 +176,8 @@ export function BackupRestoreDialog({
                     <p
                       className={
                         root.exists
-                          ? 'text-muted-foreground truncate'
-                          : 'text-destructive truncate'
+                          ? 'text-foreground-secondary truncate'
+                          : 'text-accent-red-strong truncate'
                       }
                       title={root.to}
                     >
@@ -199,7 +199,7 @@ export function BackupRestoreDialog({
             </div>
           ) : null}
           {preview.missingExamples.length > 0 ? (
-            <div className="text-muted-foreground flex flex-col gap-0.5 text-xs">
+            <div className="text-foreground-secondary flex flex-col gap-0.5 text-xs">
               <p>Not found, for example:</p>
               {preview.missingExamples.map((path) => (
                 <p key={path} className="truncate" title={path}>
