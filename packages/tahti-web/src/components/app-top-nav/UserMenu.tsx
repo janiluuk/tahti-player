@@ -167,7 +167,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
                 onClick={() => setOpen(false)}
               >
                 <LayoutDashboardIcon size={14} />
-                Artist panel
+                Studio
               </Link>
               <Link
                 to="/u/$username"
@@ -177,7 +177,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
                 onClick={() => setOpen(false)}
               >
                 <UserIcon size={14} />
-                My channel
+                My artist profile
               </Link>
             </>
           ) : null}
