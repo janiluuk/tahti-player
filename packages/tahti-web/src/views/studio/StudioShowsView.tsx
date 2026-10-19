@@ -1,6 +1,12 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import { MicIcon, PlusIcon, RadioIcon, UploadIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import {
+  MicIcon,
+  PlusIcon,
+  RadioIcon,
+  SearchIcon,
+  UploadIcon,
+} from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   Button,
@@ -49,6 +55,19 @@ export function StudioShowsView() {
   const [autoPublish, setAutoPublish] = useState(true);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
+
+  const filteredShows = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) {
+      return shows;
+    }
+    return shows.filter((show) =>
+      [show.title, show.description, show.scheduleNote].some((text) =>
+        text?.toLowerCase().includes(normalizedQuery),
+      ),
+    );
+  }, [query, shows]);
 
   const reload = () => {
     setLoading(true);
@@ -251,15 +270,31 @@ export function StudioShowsView() {
                 }
               />
             ) : (
-              <ul className="divide-border divide-y">
-                {shows.map((s) => (
-                  <ShowRow
-                    key={s.id}
-                    show={s}
-                    episodeCount={episodeCounts[s.id] ?? 0}
-                  />
-                ))}
-              </ul>
+              <>
+                <Input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search shows…"
+                  aria-label="Search shows"
+                  className="mb-4"
+                  startAddon={
+                    <SearchIcon size={14} aria-hidden className="opacity-70" />
+                  }
+                />
+                {filteredShows.length === 0 ? (
+                  <EmptyState size="sm" title="No shows match this search." />
+                ) : (
+                  <ul className="divide-border divide-y">
+                    {filteredShows.map((s) => (
+                      <ShowRow
+                        key={s.id}
+                        show={s}
+                        episodeCount={episodeCounts[s.id] ?? 0}
+                      />
+                    ))}
+                  </ul>
+                )}
+              </>
             )}
           </StudioPanel>
         </ViewShell>
