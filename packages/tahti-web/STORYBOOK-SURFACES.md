@@ -51,6 +51,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Admin/AdminVenuesView` | `tahti-web/AdminVenuesView.stories.tsx` |
 | `Tahti/Track/AiGeneratedBadge` | `tahti-web/AiGeneratedBadge.stories.tsx` |
 | `Tahti/Artist/AlbumPlayPromptDialog` | `tahti-web/AlbumPlayPromptDialog.stories.tsx` |
+| `Tahti/Media/AmbientTrackList` | `tahti-web/AmbientTrackList.stories.tsx` |
 | `Tahti/Media/AmbientTrackRow` | `tahti-web/AmbientTrackRow.stories.tsx` |
 | `Tahti/Chrome/API connection` | `tahti-web/ApiConnectionIndicator.stories.tsx` |
 | `Tahti/Chrome/AppShell` | `tahti-web/AppShell.stories.tsx` |

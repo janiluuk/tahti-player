@@ -6,8 +6,8 @@ import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { LibrarySectionTabs } from '../LibraryView';
 import { SoundFilters } from './sounds/SoundFilters';
+import { SoundsAmbientList } from './sounds/SoundsAmbientList';
 import { SoundsDialogs } from './sounds/SoundsDialogs';
-import { SoundsList } from './sounds/SoundsList';
 import { SoundsSelectionBar } from './sounds/SoundsSelectionBar';
 import { TrackOrderButton } from './sounds/TrackOrderButton';
 import { useStudioSoundsState } from './sounds/useStudioSoundsState';
@@ -60,7 +60,7 @@ export function StudioSoundsView() {
             ) : (
               <>
                 <SoundsSelectionBar state={state} />
-                <SoundsList items={filtered} state={state} />
+                <SoundsAmbientList items={filtered} state={state} />
               </>
             )}
           </StudioPanel>
