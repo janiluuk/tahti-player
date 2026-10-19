@@ -6,7 +6,7 @@ import { Button, cn, ImageReveal, ViewShell } from '@tahti-player/ui';
 
 import { fetchAnnouncements } from '../api/client';
 import type { Announcement } from '../api/types';
-import { PageLoading } from '../components/PageStates';
+import { PageEmpty, PageLoading } from '../components/PageStates';
 
 function TimelineNode({ isLatest }: { isLatest?: boolean }) {
   return isLatest ? (
@@ -153,9 +153,7 @@ export function NewsView() {
         {loading && <PageLoading label="Loading announcements…" />}
 
         {!loading && entries.length === 0 && (
-          <p className="text-foreground-secondary text-sm">
-            No announcements yet.
-          </p>
+          <PageEmpty title="No announcements yet." />
         )}
 
         {visibleEntries.map((entry, index) => (
