@@ -10,8 +10,8 @@ Press the heart on a track or a channel to keep it in **Favorites** (in the side
 - **Tracks** you favorited, ready to play or add to the queue.
 - **Liked on Tahti**: tracks you liked while signed in, from your Tahti account. It only shows when you have some.
 
-<figure><img src="../.gitbook/assets/favorites.png" alt="Favorites page showing favorited channels and tracks"><figcaption><p>Favorites — channels, tracks, and likes</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/favorites.png" alt="Favorites page showing favorited channels and tracks"><figcaption><p>Favorites — channels, tracks, and likes</p></figcaption></figure>
 
-Favorited channels and tracks are kept for your account in this browser (or the desktop app). Following an artist is separate: it is on their profile, and their new releases and posts reach your **Feed**.
+Favorited channels and tracks are kept for your account in this browser (or the desktop app). Following an artist is separate: press **Follow** on their channel (see [Channels and artists](channels-and-artists.md)), and their new releases and posts reach your **Feed**.
 
 Signed out, the heart asks you to sign in.

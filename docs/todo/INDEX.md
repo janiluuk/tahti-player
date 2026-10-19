@@ -5,44 +5,51 @@ When a task is finished → fold into [`HISTORY.md`](HISTORY.md), delete the tod
 
 Status values: `open` | `blocked` | `partial`.
 
-This index should only contain **blocked** items (human/product/ops dependency) or **partial** items actively mid-shipping. Shipped work belongs in HISTORY.
+Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
-| Status  | File                                                                                                     | One-line                                                                                                                                                                                                                                                       |
-| ------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+## Launch: beta.tahti.live → main site
+
+| Status  | File | One-line |
+| ------- | ---- | -------- |
+| partial | [beta-launch-findings.md](beta-launch-findings.md) | Domain switch, Tahti Radio HLS 404, #879 to prod, test releases on the front page; open Studio/listener/platform findings from the beta e2e run and the legacy parity sweep |
 | blocked | [final-season-hardening.md](final-season-hardening.md) | Cutover L ops (vend SPA, prod upstream, runbook); DNS map filled — you flip |
 | blocked | [first-100-users-infra.md](first-100-users-infra.md) | Ops verify backups/disk + deploy Swarm fail-closed (#872/#873/#1079 merged); host access required |
+| open    | [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md) | Radio Nova + NRJ (Bauer AAC streams) do not play in production; reproduce in a real browser |
 | partial | [finnish-radio-now-playing-scrapers.md](finnish-radio-now-playing-scrapers.md) | ICY-only for YleX/Rock/Suomipop; left: org UA + kill-switch |
-| partial | [feature-swipe-product-flags.md](feature-swipe-product-flags.md) | Shipping in #1246: Distribution StudioNav + /chat via More |
 | blocked | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live verify Centrifugo Send on brand-new channel — playbook ready |
-| blocked | [desktop-smart-playlists.md](desktop-smart-playlists.md) | Manual check on real 10k+ desktop library |
-| blocked | [ai-dj-radio-dj-port.md](ai-dj-radio-dj-port.md) | POC not committed; no prod ship without go-ahead |
-| blocked | [desktop-pro-library.md](desktop-pro-library.md) | Real-music validation + Phases 6–7 untouched |
-| blocked | [import-provider-set-to-native-library.md](import-provider-set-to-native-library.md) | Manual desktop run vs real hearthis.at / SoundCloud |
-| blocked | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Multi-phase 13-category project not started |
-| blocked | [release-player-workflow-broken.md](release-player-workflow-broken.md) | User store secrets + first real release run |
-| blocked | [tahti-cli-tool.md](tahti-cli-tool.md) | npm publish @tahti/api-client (NPM_TOKEN) |
+
+## Engineering backlog (no external blocker)
+
+| Status  | File | One-line |
+| ------- | ---- | -------- |
+| open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |
+| open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |
+| open    | [studio-usability-audit.md](studio-usability-audit.md) | Studio uses shared components; 3 actionable findings |
+| open    | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + rotating refresh tokens for web/desktop/CLI; separate client package + tahti-org token module (needs go-ahead) |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |
-| blocked | [desktop-ui-slowness.md](desktop-ui-slowness.md) | Waiting user manual test of 30 fps fix |
-| blocked | [listening-party.md](listening-party.md) | Needs user go-ahead for tahti-org work |
-| blocked | [track-visualizer-video-editor.md](track-visualizer-video-editor.md) | PulseForge licence / port decision |
+
+## Blocked on a decision, credentials or manual testing
+
+| Status  | File | One-line |
+| ------- | ---- | -------- |
+| blocked | [dead-end-leftovers.md](dead-end-leftovers.md) | OAuth app credentials (ops), Bandcamp API approval, Google Drive Picker, release delete (tahti-org route), governance Retry |
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
 | blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
-| blocked | [dead-end-leftovers.md](dead-end-leftovers.md) | OAuth app credentials (ops), Bandcamp/Drive import (API), release delete (tahti-org), member meeting-conflicts route (tahti-org), ~100 fetchers mislabel failures as mock, low-impact failed-load leftovers |
-| open    | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + rotating refresh tokens for web/desktop/CLI; separate client package + tahti-org token module (needs go-ahead) |
-| open    | [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md) | Radio Nova + NRJ (Bauer AAC streams) do not play in production; reproduce in a real browser |
-| partial | [listen-ui-liveliness.md](listen-ui-liveliness.md) | Nuclear-green accents + section pill hues shipped; left: de-green Card/Button/MediaArtwork, History/Collection depth |
-| partial | [back-button-universal.md](back-button-universal.md) | BackButton on listen/studio detail backs; left: merge + fold |
-| open    | [ux-sweep-30-slices.md](ux-sweep-30-slices.md) | 30 micro-slices across empties, catalog chips, SectionTitle, History/Collection depth, Card surface, Studio search |
-| open    | [ux-sweep-batch-4.md](ux-sweep-batch-4.md) | Follow-on empties/chips after #1259 (Radio, Admin content, History filter, Badge links) |
-| open    | [ux-sweep-batch-91-120.md](ux-sweep-batch-91-120.md) | PageEmpty/Badge slices 91-120 for remaining bare empty copy |
-| open    | [view-modes-track-tables.md](view-modes-track-tables.md) | No list/grid view-mode or sort anywhere; add to shared PlayableTrackTable + studio/library lists |
-| partial | [studio-artist-usability.md](studio-artist-usability.md) | Two rounds shipped; left: release delete (no API), add-to-release from selection, undo |
-| open    | [profile-surfaces-unification.md](profile-surfaces-unification.md) | Artist/Channel profile pages + 3× collection rendering + Library trio are copy-pasted; extract shared surfaces |
-| partial | [catalog-components-empty-states.md](catalog-components-empty-states.md) | Empties/chips/tabs shipped in UX sweep; left: HelpView / ReleasesPanel / FanSubscriptionStats tables |
-| partial | [spotify-listen-widget-tracks.md](spotify-listen-widget-tracks.md) | Playlist API + PlayableTrackTable for Spotify Listen widget; compact dialog layout |
-| partial | [ambient-waveform-track-rows.md](ambient-waveform-track-rows.md) | AmbientTrackList on Library Sounds; left: other PlayableTrackTable surfaces + real peaks |
-| open    | [e2e-beta-ux-findings.md](e2e-beta-ux-findings.md) | Real-beta artist + listener journeys: P0 upload page 400 (no title), Tahti Radio HLS 404; ~35 UX/API findings |
-| open    | [admin-studio-parity-sweep.md](admin-studio-parity-sweep.md) | Legacy admin/studio vs new app: admin has endpoint parity; 6 Studio gaps (channel blocks, Mixcloud upload, Drive import, MusicBrainz default, dashboard cards, ban-from-message) |
+| blocked | [listening-party.md](listening-party.md) | Needs user go-ahead for tahti-org work |
+| blocked | [ai-dj-radio-dj-port.md](ai-dj-radio-dj-port.md) | POC not committed; no prod ship without go-ahead |
+| blocked | [track-visualizer-video-editor.md](track-visualizer-video-editor.md) | PulseForge licence / port decision |
+| blocked | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Multi-phase 13-category project not started |
+| blocked | [tahti-cli-tool.md](tahti-cli-tool.md) | npm publish @tahti/api-client (NPM_TOKEN) |
+| blocked | [release-player-workflow-broken.md](release-player-workflow-broken.md) | User store secrets + first real release run |
+
+## Desktop app
+
+| Status  | File | One-line |
+| ------- | ---- | -------- |
+| blocked | [desktop-pro-library.md](desktop-pro-library.md) | Real-music validation + Phases 6–7 untouched |
+| blocked | [desktop-smart-playlists.md](desktop-smart-playlists.md) | Manual check on real 10k+ desktop library |
+| blocked | [import-provider-set-to-native-library.md](import-provider-set-to-native-library.md) | Manual desktop run vs real hearthis.at / SoundCloud |
+| blocked | [desktop-ui-slowness.md](desktop-ui-slowness.md) | Waiting user manual test of 30 fps fix |
 
 ## Fold rule (copy into CLAUDE / chat)
 

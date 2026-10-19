@@ -23,7 +23,7 @@ that tahti-web can fix on its own (see HISTORY). These need someone else first.
 - **Google Drive:** connects, but the Google Picker file chooser was never built, so
   there is nothing to import. Hidden on the upload page; the card points to Upload.
 - **Delete a release:** no `DELETE` release route in tahti-org (see
-  `studio-artist-usability.md`).
+  `ux-backlog.md`).
 
 ## Found in batch 77
 

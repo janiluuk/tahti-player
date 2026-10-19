@@ -71,8 +71,8 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Financial operations | `/admin/financial` | Partial | Fan-sub payout queue with retry (#237); ledger entries can be added again (#241), by year with CSV export (#242); legacy-member migration queue, read-only because the API has no action for it (#243). |
 | User/support detail pages | `/admin/users` | Partial | User panel now has CSV export (#231), engagement by year with board adjustments (#232, #233), account restrictions (#234) and GDPR deletion (#235). Support ticket detail depth not re-checked. |
 | Announcement clip/detail workflows | `/admin/announcements` | Present | Switch and upload fixed to the real routes (#239); trim editor for system clips (#240); uploads send the clip length (#248). |
-| Widget catalog administration | Production admin/catalog | Missing from beta | Listener widgets work, but catalog management remains in the production/Next admin surface. |
-| Full production admin surface | Production has roughly 35 admin pages; beta has 22 | Partial | Beta covers the main board workflows but is not a complete admin replacement. Added since: workers and cron run history on `/admin/status` (#250, #251), chat and mailbox stats on `/admin` (#252). The governance overview and content views now have their API routes (tahti-org#574, #575). |
+| Widget catalog administration | `/admin/disco-widgets`, `/admin/addons` | Present | Publish, approve and version add-ons from the beta admin. |
+| Full production admin surface | `/admin/*` | Present | 2026-10-20 sweep: every `/api/...` endpoint the 124 legacy `/admin/*` and `/dashboard/*` pages call is also called by tahti-web (see `docs/todo/HISTORY.md`, "Todo consolidation and docs audit"). |
 
 ## Recommended implementation order
 
@@ -113,17 +113,7 @@ The production app has dedicated surfaces that the beta currently folds together
 
 ### Admin cutover boundary
 
-The current cutover decision keeps production Next `/admin/*` canonical and switches only the public listener/artist client. That decision prevents accidental loss of admin capabilities. If Admin is moved to the Nuclear client later, the following production routes need to be ported or explicitly retained on Next before changing the host:
-
-- channel-specific archive and programme management (`/admin/channels/[slug]/archive`, `/admin/channels/[slug]/programme`); the 24/7 rotation editor (#247) and track title/credit/genre/visibility edits (#264) are in `/admin/streams`, the rest of archive management is not
-- announcement editor/detail (`/admin/announcements/editor/[id]`)
-- widget catalog administration (`/admin/disco-widgets`), themes (moderation tab at `/admin/moderation/themes`, #246; listeners submit from Settings → Themes, #258), internet radio, and missed shows
-- financial fan-subscriptions, ledger, and legacy-member workflows (per-artist fan-sub revenue and Connect status on `/admin/financial`, #262)
-- governance audit, reports, resolutions, and publishing (per-meeting conflict declarations and notice deliveries are in the AGM tab, #253)
-- grant year/run/preview detail (`/admin/grants/[year]`)
-- support ticket detail (`/admin/support/[id]`) and user detail/restrictions (`/admin/users/[id]`)
-
-The beta Admin port should remain clearly labelled partial until those surfaces either exist in Nuclear or the deployment contract guarantees that `/admin/*` stays on Next. The existing Admin Logs and Moderation tab consolidations are intentional and must retain their deep-link compatibility aliases.
+The 2026-10-20 parity sweep found endpoint parity between the Next `/admin/*` pages and the beta admin, including the routes this section used to list (per-channel programme and sounds, announcement editor, disco-widgets and themes, internet radio, missed shows, financial fan-subs / ledger / legacy members, governance audit / reports / resolutions, grant years, support and user detail). Moving `/admin/*` to the beta host no longer drops a capability; keep the moderation and logs deep-link aliases.
 
 ### Deployment safeguards
 
