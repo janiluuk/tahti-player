@@ -22,6 +22,7 @@ import { searchMentionUsers, type MentionUser } from '../api/mentions';
 import type { TracklistEntry } from '../api/studio-types';
 import { parseTracklist, readTracklistFile } from '../lib/tracklistImport';
 import { ClientCapabilityNotice } from './ClientCapabilityNotice';
+import { PageEmpty } from './PageStates';
 import { WaveformCanvas } from './WaveformCanvas';
 
 type Props = {
@@ -165,8 +166,8 @@ export const TracklistEditor: FC<Props> = ({
   const tracklist = (
     <ol className="border-border divide-border divide-y rounded-xl border">
       {value.length === 0 ? (
-        <li className="text-foreground-secondary p-4 text-sm">
-          No tracks added yet.
+        <li className="list-none p-4">
+          <PageEmpty title="No tracks added yet." />
         </li>
       ) : (
         value.map((entry, index) => (
