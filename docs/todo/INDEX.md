@@ -42,6 +42,7 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 | partial | [spotify-listen-widget-tracks.md](spotify-listen-widget-tracks.md) | Playlist API + PlayableTrackTable for Spotify Listen widget; compact dialog layout |
 | partial | [ambient-waveform-track-rows.md](ambient-waveform-track-rows.md) | Ambient+waveform track row (comfortable/compact); Storybook review before Listen/Library wire-up |
 | open    | [e2e-beta-ux-findings.md](e2e-beta-ux-findings.md) | Real-beta artist + listener journeys: P0 upload page 400 (no title), Tahti Radio HLS 404; ~35 UX/API findings |
+| open    | [admin-studio-parity-sweep.md](admin-studio-parity-sweep.md) | Legacy admin/studio vs new app: admin has endpoint parity; 6 Studio gaps (channel blocks, Mixcloud upload, Drive import, MusicBrainz default, dashboard cards, ban-from-message) |
 
 ## Fold rule (copy into CLAUDE / chat)
 
