@@ -16,6 +16,7 @@ import {
   type FanTierRow,
 } from '../api/fan-tiers';
 import { FAN_TIER_PERK_LABELS, humanizeFanTierPerk } from '../lib/fanTierPerks';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 const PERK_OPTIONS = [
   {
@@ -41,6 +42,8 @@ function euros(cents: number): string {
 
 export function FanTiersEditor() {
   const [tiers, setTiers] = useState<FanTierRow[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [name, setName] = useState('Supporter');
   const [eurosAmt, setEurosAmt] = useState('5');
@@ -52,6 +55,8 @@ export function FanTiersEditor() {
   const reload = () => {
     void fetchMyFanTiers().then((r) => {
       setTiers(r.data);
+      setLoadError(r.meta.source === 'api' ? (r.meta.reason ?? null) : null);
+      setLoaded(true);
     });
   };
 
@@ -88,10 +93,19 @@ export function FanTiersEditor() {
         </Button>
       </div>
 
-      {tiers.length === 0 ? (
-        <div className="border-border flex flex-col items-center gap-3 rounded-lg border px-4 py-6 text-center">
-          <p className="text-foreground-secondary text-sm">No tiers yet.</p>
-        </div>
+      {!loaded ? (
+        <PageLoading label="Loading tiers…" />
+      ) : loadError && tiers.length === 0 ? (
+        <PageError
+          title="Could not load your fan tiers"
+          description={loadError}
+          onRetry={reload}
+        />
+      ) : tiers.length === 0 ? (
+        <PageEmpty
+          title="No tiers yet"
+          description="Add a tier so fans can subscribe to support you."
+        />
       ) : (
         <ul className="flex flex-col gap-2">
           {tiers.map((t) => (
