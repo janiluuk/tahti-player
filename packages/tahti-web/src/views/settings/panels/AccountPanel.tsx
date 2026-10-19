@@ -50,7 +50,7 @@ import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { FanSubscriptionsBillingButton } from '../../../components/FanSubscriptionsBillingButton';
 import { MembershipInvoices } from '../../../components/MembershipInvoices';
 import { MembershipStatusPanel } from '../../../components/MembershipStatusPanel';
-import { PageLoading } from '../../../components/PageStates';
+import { PageError, PageLoading } from '../../../components/PageStates';
 import { SecurityTotpPanel } from '../../../components/SecurityTotpPanel';
 import {
   fanSubscriptionStatusLabel,
@@ -85,6 +85,8 @@ export function AccountPanel() {
   const closeSettings = useSettingsModalStore((s) => s.close);
   const accountSection = useSettingsModalStore((s) => s.accountSection);
   const [membership, setMembership] = useState<MembershipStatus | null>(null);
+  const [membershipError, setMembershipError] = useState<string | null>(null);
+  const [membershipAttempt, setMembershipAttempt] = useState(0);
   const [subscriptions, setSubscriptions] = useState<FanSubscriptionRow[]>([]);
   const [purchases, setPurchases] = useState<PurchaseRow[]>([]);
   const [pendingCancel, setPendingCancel] = useState<FanSubscriptionRow | null>(
@@ -101,8 +103,11 @@ export function AccountPanel() {
     }
     void fetchMembership().then((r) => {
       setMembership(r.data);
+      setMembershipError(
+        r.data ? null : (r.meta.reason ?? 'Membership is unavailable.'),
+      );
     });
-  }, [user]);
+  }, [user, membershipAttempt]);
 
   useEffect(() => {
     void reloadSubscriptions();
@@ -169,20 +174,30 @@ export function AccountPanel() {
       id: 'membership',
       label: 'Membership',
       icon: <Wallet size={14} />,
-      content: !membership ? (
-        <SettingsHint>Could not load membership.</SettingsHint>
-      ) : (
-        <div className="flex flex-col gap-6">
-          <MembershipStatusPanel
-            membership={membership}
-            userEmail={user.email}
-            onChange={() => {
-              void fetchMembership().then((r) => setMembership(r.data));
+      content:
+        !membership && membershipError ? (
+          <PageError
+            title="Could not load your membership"
+            description={membershipError}
+            onRetry={() => {
+              setMembershipError(null);
+              setMembershipAttempt((n) => n + 1);
             }}
           />
-          <MembershipInvoices />
-        </div>
-      ),
+        ) : !membership ? (
+          <PageLoading label="Loading membership…" />
+        ) : (
+          <div className="flex flex-col gap-6">
+            <MembershipStatusPanel
+              membership={membership}
+              userEmail={user.email}
+              onChange={() => {
+                void fetchMembership().then((r) => setMembership(r.data));
+              }}
+            />
+            <MembershipInvoices />
+          </div>
+        ),
     },
     {
       id: 'governance',
