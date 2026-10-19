@@ -132,11 +132,8 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
           <tbody className="divide-border divide-y">
             {orders.length === 0 ? (
               <tr>
-                <td
-                  colSpan={5}
-                  className="text-foreground-secondary px-2 py-4 text-center"
-                >
-                  No payouts yet.
+                <td colSpan={5} className="px-2 py-4">
+                  <PageEmpty title="No payouts yet." />
                 </td>
               </tr>
             ) : (
