@@ -12,6 +12,7 @@ import type { GovernanceMotion } from '../../api/types';
 import { hasAccountRole } from '../../lib/accountRoles';
 import { useAuthStore } from '../../stores/authStore';
 import { ConfirmDialog } from '../ConfirmDialog';
+import { PageError } from '../PageStates';
 
 export function MotionDiscussion({
   motion,
@@ -67,6 +68,9 @@ export function MotionDiscussion({
     });
   };
 
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
+
   useEffect(() => {
     if (!expanded || commentsLoaded) {
       return;
@@ -76,13 +80,18 @@ export function MotionDiscussion({
       if (cancelled) {
         return;
       }
+      if (res.meta.source === 'api' && res.meta.reason) {
+        setLoadError(res.meta.reason);
+        return;
+      }
+      setLoadError(null);
       setComments(res.data);
       setCommentsLoaded(true);
     });
     return () => {
       cancelled = true;
     };
-  }, [expanded, commentsLoaded, motion.id]);
+  }, [expanded, commentsLoaded, motion.id, attempt]);
 
   return (
     <>
@@ -101,7 +110,16 @@ export function MotionDiscussion({
 
       {expanded && (
         <div className="border-border mt-3 flex flex-col gap-2 border-t pt-3">
-          {!commentsLoaded ? (
+          {!commentsLoaded && loadError ? (
+            <PageError
+              title="Could not load the discussion"
+              description={loadError}
+              onRetry={() => {
+                setLoadError(null);
+                setAttempt((n) => n + 1);
+              }}
+            />
+          ) : !commentsLoaded ? (
             <p className="text-foreground-secondary text-xs">Loading…</p>
           ) : comments.length === 0 ? (
             <p className="text-foreground-secondary text-xs">
