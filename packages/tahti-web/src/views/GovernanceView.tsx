@@ -424,9 +424,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
           </GovernancePanel>
           <GovernancePanel title="Quarterly reviews" icon={ScrollTextIcon}>
             {reports.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No quarterly feature-request reviews have been published yet.
-              </p>
+              <PageEmpty title="No quarterly feature-request reviews have been published yet." />
             ) : (
               <ul className="divide-border divide-y">
                 {reports.map((report) => (
