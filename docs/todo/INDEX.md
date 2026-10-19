@@ -41,6 +41,8 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 | partial | [catalog-components-empty-states.md](catalog-components-empty-states.md) | Empties/chips/tabs shipped in UX sweep; left: HelpView / ReleasesPanel / FanSubscriptionStats tables |
 
 | partial | [ambient-waveform-track-rows.md](ambient-waveform-track-rows.md) | Ambient+waveform track row (comfortable/compact); Storybook review before Listen/Library wire-up |
+| open    | [admin-studio-parity-sweep.md](admin-studio-parity-sweep.md) | Legacy admin/studio vs new app: admin has endpoint parity; 6 Studio gaps (channel blocks, Mixcloud upload, Drive import, MusicBrainz default, dashboard cards, ban-from-message) |
+
 ## Fold rule (copy into CLAUDE / chat)
 
 ```
