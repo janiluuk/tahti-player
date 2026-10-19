@@ -21,9 +21,10 @@ note from `MOCK_TRIAGE` / `BETA_TRIAGE`.
 - [x] **Duplicate "Full screen" buttons.** Queue + player bar both use
       "Open full-screen player"; fullscreen minimize spec uses the player-bar
       test id.
-- [x] **CSP violation on `/radio` (beta).** nginx `script-src` allows
-      `blob:` + `'wasm-unsafe-eval'` (visualizer/wasm); hcaptcha hosts kept.
-      Signed-out 401 noise on plugin-store still separate.
+- [x] **CSP violation on `/radio` (beta).** Theme FOUC boot moved to
+      `/theme-boot.js` (stays under `'self'`); nginx `script-src` also allows
+      `blob:` + `'wasm-unsafe-eval'` for visualizer/wasm. Signed-out 401 noise
+      on plugin-store still separate.
 - [x] **Join on beta fails with a bare "Validation error".** `requestJson`
       now surfaces Zod `issues` (`field: message`) instead of only `error`.
 - [x] **DSP landing cover has no accessible name.** `SmartLinkView` passes

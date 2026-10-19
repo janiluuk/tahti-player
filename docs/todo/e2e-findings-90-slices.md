@@ -11,7 +11,7 @@ shipped micro-edit; product findings are now checked in
 1. nginx SPA `script-src` + `blob:`
 2. nginx SPA `script-src` + `'wasm-unsafe-eval'`
 3. nginx duplicate HTML location CSP mirrored
-4. (vite widget CSP left alone — sandbox only)
+4. Extract inline theme FOUC → `public/theme-boot.js` + `<script src>`
 5–8. visualizer/hcaptcha remain external/`blob` (verified no new inline inject)
 9–10. unit/e2e notes deferred to follow-up if CSP still fires on beta after deploy
 11–12. VIEW-CATALOG / STORYBOOK one-liners
