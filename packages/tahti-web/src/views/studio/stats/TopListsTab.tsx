@@ -78,6 +78,7 @@ export function TopListsTab({
                     void navigate({
                       to: '/studio/sounds/$id',
                       params: { id: entry.soundId },
+                      search: { tab: 'insights' },
                     });
                   },
                 }))}
@@ -101,6 +102,7 @@ export function TopListsTab({
                 void navigate({
                   to: '/studio/sounds/$id',
                   params: { id: track.soundId },
+                  search: { tab: 'insights' },
                 });
               },
             }))}
