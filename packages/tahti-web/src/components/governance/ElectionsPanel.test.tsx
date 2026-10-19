@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as elections from '../../api/governance-elections';
@@ -62,6 +62,24 @@ describe('ElectionsPanel', () => {
       meta: { source: 'api' },
     });
     render(<ElectionsPanel />);
+    expect(
+      await screen.findByText('No board elections have been called yet.'),
+    ).toBeInTheDocument();
+  });
+
+  it('says when the elections could not be loaded and can retry', async () => {
+    const fetch = vi
+      .spyOn(elections, 'fetchGovernanceElections')
+      .mockResolvedValue({
+        data: [],
+        meta: { source: 'api', reason: 'HTTP 502' },
+      });
+    render(<ElectionsPanel />);
+    expect(
+      await screen.findByText('Could not load the elections'),
+    ).toBeInTheDocument();
+    fetch.mockResolvedValue({ data: [], meta: { source: 'api' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(
       await screen.findByText('No board elections have been called yet.'),
     ).toBeInTheDocument();
