@@ -10,7 +10,7 @@ import {
   removeArtistEmbed,
   type ArtistEmbed,
 } from '../api/artist-embeds';
-import { PageError } from './PageStates';
+import { PageEmpty, PageError } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 const MAX_EMBEDS = 20;
@@ -126,9 +126,7 @@ export function SoundCloudEmbedsPanel() {
               ))}
             </ul>
           ) : embeds ? (
-            <p className="text-foreground-secondary text-sm">
-              No SoundCloud tracks yet.
-            </p>
+            <PageEmpty title="No SoundCloud tracks yet." />
           ) : null}
         </div>
       )}

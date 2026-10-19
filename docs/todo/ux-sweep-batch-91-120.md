@@ -16,7 +16,7 @@ Bare empty copy and batch-4 leftovers after earlier sweeps. One PR per row. Tick
 | 98 | open | Pinned announcements |
 | 99 | done | Play history |
 | 100 | done | Radio booking slots |
-| 101 | open | SoundCloud embeds |
+| 101 | done | SoundCloud embeds |
 | 102 | open | Share links |
 | 103 | open | Extra track credits |
 | 104 | open | Tracklist editor |
