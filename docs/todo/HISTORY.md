@@ -2,6 +2,14 @@
 
 
 
+## 2026-10-19 — UX sweep 30 micro-slices (tahti-player #1155–#1196+)
+
+Folded `ux-sweep-30-slices.md`. PageEmpty empties, Badge/FilterChips/Tabs
+catalog swaps, `SectionTitle`, History/Collection depth accents, neutral
+Card/MediaArtwork play overlay, Studio releases search. Source todos
+(`listen-ui-liveliness`, `catalog-components-empty-states`, etc.) retain
+any leftover beyond this ledger.
+
 ## 2026-10-19 — Batch 74 cont.: e2e findings batches 2–3 (tahti-player #1148)
 
 Folded `e2e-run-findings.md` + `e2e-findings-90-slices.md`. Product findings
