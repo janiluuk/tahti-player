@@ -11,6 +11,7 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import * as client from '../api/client';
 import { useAuthStore } from '../stores/authStore';
 import { GovernanceMembersView } from './GovernanceMembersView';
 
@@ -105,6 +106,32 @@ describe('GovernanceMembersView', () => {
 
     const search = container.querySelector('input') as HTMLInputElement;
     expect(search).toBeTruthy();
+  });
+
+  it('says the directory failed to load instead of "No member directory"', async () => {
+    const fetch = vi.spyOn(client, 'fetchGovernanceMembers').mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    const router = createMembersRouter();
+    await act(async () => {
+      root.render(<RouterProvider router={router} />);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    expect(container.textContent).toContain(
+      'Could not load the member directory',
+    );
+    expect(container.textContent).not.toContain('No member directory');
+
+    fetch.mockRestore();
+    const retry = [...container.querySelectorAll('button')].find(
+      (button) => button.textContent === 'Retry',
+    );
+    await act(async () => {
+      retry?.click();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    expect(container.textContent).toContain('Mart Saar');
   });
 
   it('prompts signed-out visitors to sign in instead of showing the list', async () => {

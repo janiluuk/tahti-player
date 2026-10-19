@@ -2,11 +2,11 @@ import { Link } from '@tanstack/react-router';
 import { LandmarkIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Badge, Input, StatChip, ViewShell } from '@tahti-player/ui';
+import { Badge, Button, Input, StatChip, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMembers } from '../api/client';
 import type { GovernanceMember } from '../api/types';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { useAuthStore } from '../stores/authStore';
 
 export function GovernanceMembersView() {
@@ -14,6 +14,8 @@ export function GovernanceMembersView() {
   const [members, setMembers] = useState<GovernanceMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (!user) {
@@ -23,9 +25,12 @@ export function GovernanceMembersView() {
     setLoading(true);
     void fetchGovernanceMembers().then((result) => {
       setMembers(result.data);
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
-  }, [user]);
+  }, [user, attempt]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -86,12 +91,29 @@ export function GovernanceMembersView() {
             aria-label="Search by name or username"
             placeholder="Search by name or username"
           />
-          {filtered.length === 0 ? (
+          {loadError && members.length === 0 ? (
+            <PageError
+              title="Could not load the member directory"
+              description={loadError}
+              onRetry={() => setAttempt((n) => n + 1)}
+            />
+          ) : filtered.length === 0 ? (
             <PageEmpty
               title={
                 members.length === 0
                   ? 'No member directory is published yet.'
                   : 'No members match this search.'
+              }
+              action={
+                members.length > 0 ? (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setQuery('')}
+                  >
+                    Clear search
+                  </Button>
+                ) : undefined
               }
             />
           ) : (
