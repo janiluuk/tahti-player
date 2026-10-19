@@ -43,7 +43,7 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../../../components/EntitySocialHeader';
-import { PageLoading } from '../../../components/PageStates';
+import { PageError, PageLoading } from '../../../components/PageStates';
 import { StudioCollectionMoreMenu } from '../../../components/StudioCollectionMoreMenu';
 import { StudioGate } from '../../../components/StudioGate';
 import { StudioPanel } from '../../../components/StudioPanel';
@@ -63,6 +63,7 @@ const TRACK_ORDER_OPTIONS: SelectOption[] = [
 
 export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const [col, setCol] = useState<StudioCollection | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [sounds, setSounds] = useState<StudioSound[]>([]);
   const [releases, setReleases] = useState<StudioRelease[]>([]);
   const [name, setName] = useState('');
@@ -98,6 +99,11 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
       fetchStudioReleases(),
     ])
       .then(([c, a, r]) => {
+        if (c.meta.source === 'api' && c.meta.reason) {
+          setLoadError(c.meta.reason);
+          return;
+        }
+        setLoadError(null);
         setCol(c.data);
         setName(c.data.name);
         setDescription(c.data.description ?? '');
@@ -120,6 +126,10 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const refreshItems = async () => {
     try {
       const fresh = await fetchStudioCollection(slug);
+      if (fresh.meta.source === 'api' && fresh.meta.reason) {
+        toast.error('Could not refresh the tracklist.');
+        return;
+      }
       setCol((current) =>
         current ? { ...current, items: fresh.data.items } : fresh.data,
       );
@@ -321,7 +331,15 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
             />
           </Tooltip>
 
-          {!col ? (
+          {!col && loadError ? (
+            <StudioPanel>
+              <PageError
+                title={`Could not load this ${kindLabel}`}
+                description={loadError}
+                onRetry={reload}
+              />
+            </StudioPanel>
+          ) : !col ? (
             <StudioPanel>
               <PageLoading label="Loading…" />
             </StudioPanel>
