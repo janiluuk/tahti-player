@@ -497,9 +497,7 @@ export function RadioView() {
                   count: recent.length > 0 ? recent.length : undefined,
                   content:
                     recent.length === 0 ? (
-                      <p className="text-foreground-secondary text-sm">
-                        No recent plays logged yet.
-                      </p>
+                      <PageEmpty title="No recent plays logged yet." />
                     ) : (
                       <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
                         {recent.map((item) => {
