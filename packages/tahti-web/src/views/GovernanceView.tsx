@@ -388,9 +388,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
           </GovernancePanel>
           <GovernancePanel title="Published documents" icon={FileTextIcon}>
             {documents.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No governance documents have been published yet.
-              </p>
+              <PageEmpty title="No governance documents have been published yet." />
             ) : (
               <ul className="divide-border divide-y">
                 {documents.map((document) => (
