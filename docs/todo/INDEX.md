@@ -26,7 +26,7 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 | blocked | [track-visualizer-video-editor.md](track-visualizer-video-editor.md) | PulseForge licence / port decision |
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
 | blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
-| open    | [listen-ui-liveliness.md](listen-ui-liveliness.md) | Multi-hue accents (nuclear-green has no tuned accents) + depth on flat Listen/History/Collection surfaces; de-green uniform Card/Button/section pills |
+| partial | [listen-ui-liveliness.md](listen-ui-liveliness.md) | Nuclear-green accents + section pill hues shipped; left: de-green Card/Button/MediaArtwork, History/Collection depth |
 | open    | [view-modes-track-tables.md](view-modes-track-tables.md) | No list/grid view-mode or sort anywhere; add to shared PlayableTrackTable + studio/library lists |
 | open    | [studio-artist-usability.md](studio-artist-usability.md) | Per-release stats, bulk selection, search parity, release lifecycle, row quick actions, toast drift |
 | open    | [profile-surfaces-unification.md](profile-surfaces-unification.md) | Artist/Channel profile pages + 3× collection rendering + Library trio are copy-pasted; extract shared surfaces |

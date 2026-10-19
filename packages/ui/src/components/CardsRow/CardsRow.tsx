@@ -23,9 +23,22 @@ export type CardsRowLabels = {
   nothingFound: string;
 };
 
+export type CardsRowBadgeColor =
+  | 'green'
+  | 'cyan'
+  | 'orange'
+  | 'red'
+  | 'yellow'
+  | 'purple'
+  | 'blue'
+  | 'secondary'
+  | 'inverted';
+
 export type CardsRowProps<T extends CardsRowItem = CardsRowItem> = {
   title: string;
   badge?: string;
+  /** Section-meaning hue for the title pill (live / radio / history…). */
+  badgeColor?: CardsRowBadgeColor;
   items: T[];
   labels: CardsRowLabels;
   className?: string;
@@ -39,6 +52,7 @@ export type CardsRowProps<T extends CardsRowItem = CardsRowItem> = {
 export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
   title,
   badge,
+  badgeColor = 'purple',
   items,
   labels,
   className,
@@ -63,7 +77,11 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
             {title}
           </h2>
           {badge && (
-            <Badge data-testid="cards-row-badge" variant="pill" color="purple">
+            <Badge
+              data-testid="cards-row-badge"
+              variant="pill"
+              color={badgeColor}
+            >
               {badge}
             </Badge>
           )}

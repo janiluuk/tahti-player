@@ -26,6 +26,7 @@ const meta = {
   args: {
     title: 'On air',
     badge: 'Live',
+    badgeColor: 'green',
     status: 'ready',
     empty: false,
     emptyTitle: 'Nobody is on air right now',
@@ -35,6 +36,7 @@ const meta = {
       <CardsRow
         title="On air"
         badge="Live"
+        badgeColor="green"
         items={channels}
         labels={{
           filterPlaceholder: 'Filter channels…',
