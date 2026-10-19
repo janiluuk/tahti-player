@@ -17,6 +17,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { RadioView } from './RadioView';
 
+let recentFailure: string | null = null;
+
 vi.mock('../api/client', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../api/client')>();
   return {
@@ -27,7 +29,9 @@ vi.mock('../api/client', async (importOriginal) => {
     }),
     fetchRadioRecentlyPlayed: async () => ({
       data: [],
-      meta: { source: 'api' as const },
+      meta: recentFailure
+        ? { source: 'api' as const, reason: recentFailure }
+        : { source: 'api' as const },
     }),
     fetchRadioFeatureHistory: async () => ({
       data: [
@@ -82,5 +86,42 @@ describe('RadioView featured history', () => {
     const list = screen.getByTestId('radio-featured');
     const link = within(list).getByRole('link', { name: 'DJ Moon' });
     expect(link.getAttribute('href')).toBe('/channel/moon');
+  });
+});
+
+describe('RadioView failed sections', () => {
+  beforeEach(() => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+  });
+
+  afterEach(() => {
+    cleanup();
+    vi.unstubAllEnvs();
+    recentFailure = null;
+  });
+
+  it('says recent plays failed to load instead of "No recent plays"', async () => {
+    recentFailure = 'HTTP 502';
+    const router = createRouter({
+      routeTree: createRootRoute({ component: RadioView }),
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: /Just played/ }));
+    });
+    expect(screen.getByText('Could not load recent plays')).toBeTruthy();
+    expect(screen.queryByText('No recent plays logged yet.')).toBeNull();
+
+    recentFailure = null;
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: /Just played/ }));
+    });
+    expect(screen.getByText('No recent plays logged yet.')).toBeTruthy();
   });
 });
