@@ -34,5 +34,5 @@ Bare empty copy and batch-4 leftovers after earlier sweeps. One PR per row. Tick
 | 116 | done | Admin log lines |
 | 117 | done | Multistream destinations |
 | 118 | done | Channel rotation |
-| 119 | open | Motion comments |
+| 119 | done | Motion comments |
 | 120 | open | Channel link badges |

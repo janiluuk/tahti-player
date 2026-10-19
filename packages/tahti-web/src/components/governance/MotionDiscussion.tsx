@@ -12,7 +12,7 @@ import type { GovernanceMotion } from '../../api/types';
 import { hasAccountRole } from '../../lib/accountRoles';
 import { useAuthStore } from '../../stores/authStore';
 import { ConfirmDialog } from '../ConfirmDialog';
-import { PageError } from '../PageStates';
+import { PageEmpty, PageError } from '../PageStates';
 
 export function MotionDiscussion({
   motion,
@@ -122,9 +122,7 @@ export function MotionDiscussion({
           ) : !commentsLoaded ? (
             <p className="text-foreground-secondary text-xs">Loading…</p>
           ) : comments.length === 0 ? (
-            <p className="text-foreground-secondary text-xs">
-              No comments yet.
-            </p>
+            <PageEmpty title="No comments yet." />
           ) : (
             <ul className="border-border divide-border divide-y overflow-hidden rounded-md border text-sm">
               {comments.map((c) => (
