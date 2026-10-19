@@ -1,5 +1,6 @@
 import {
   FlagIcon,
+  HeartIcon,
   ListMusicIcon,
   MoreHorizontalIcon,
   PencilIcon,
@@ -26,6 +27,8 @@ type ChannelPageActionsProps = {
   isAdministrator: boolean;
   onEditDesign?: () => void;
   onOpenStreamManager?: () => void;
+  /** Shown when the stage player (which carries its own Follow) is off air. */
+  follow?: { following: boolean; busy: boolean; toggle: () => unknown } | null;
 };
 
 export function ChannelPageActions({
@@ -35,6 +38,7 @@ export function ChannelPageActions({
   isAdministrator,
   onEditDesign,
   onOpenStreamManager,
+  follow,
 }: ChannelPageActionsProps) {
   const displayName = channel.user.displayName;
   const showShare = channel.user.showShareButton !== false;
@@ -82,6 +86,24 @@ export function ChannelPageActions({
     />
   ) : null;
 
+  const followButton = follow ? (
+    <Button
+      size="sm"
+      variant={follow.following ? 'secondary' : 'default'}
+      disabled={follow.busy}
+      aria-pressed={follow.following}
+      onClick={() => void follow.toggle()}
+      className="gap-1.5"
+    >
+      <HeartIcon
+        size={14}
+        aria-hidden
+        className={follow.following ? 'fill-current' : undefined}
+      />
+      {follow.following ? 'Following' : 'Follow'}
+    </Button>
+  ) : null;
+
   const desktopRss = (
     <RssFeedButton
       href={channelRssFeedUrl(slug)}
@@ -100,6 +122,7 @@ export function ChannelPageActions({
     >
       <ChannelAirBadge channel={channel} />
       <ChannelVizPackLabel channel={channel} />
+      {followButton}
       {streamManager}
       <div className="hidden items-center gap-2 sm:flex">
         {editDesign}
