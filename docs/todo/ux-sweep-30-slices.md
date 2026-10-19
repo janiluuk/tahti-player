@@ -30,7 +30,7 @@ One PR per slice. Tick when merged.
 | 14 | `ProcessingIndicator` → `Badge` | open |
 | 15 | `RadioStationView` toggle → `FilterChips` | open |
 | 16 | `DirectoryArtistsBrowser` Active/Filters → `FilterChips` | open |
-| 17 | `HeaderStyleTabs` → catalog `Tabs` | open |
+| 17 | `HeaderStyleTabs` → catalog `Tabs` | done |
 | 18 | `PressKitPreview` bio → `PageEmpty` | open |
 
 ## Liveliness + shared title (19–27)
