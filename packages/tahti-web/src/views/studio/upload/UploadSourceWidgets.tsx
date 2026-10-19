@@ -24,13 +24,18 @@ const configurePluginFor = (id: IntegrationId) =>
         plugin.id === 'spotify'),
   );
 
-/** Sources the upload page can do something with: a configure dialog, or a
- * Studio page to go to. Sources with neither are left out, not shown as a
- * card that leads nowhere. */
+/** OAuth sources whose configure dialog lists the account's tracks to
+ * import. The others connect, but there is nothing to import from them yet. */
+const OAUTH_IMPORT_UI = new Set<IntegrationId>(['soundcloud']);
+
+/** Sources the upload page can import from: through a configure dialog, or
+ * a Studio page to go to. Anything else would be a card that leads nowhere. */
 const UPLOAD_SOURCES = (importSourcePlugins as ImportSourcePlugin[]).filter(
   (source) =>
     source.id !== 'upload' &&
     source.id !== 'stash' &&
+    source.capabilities.import &&
+    (source.kind !== 'oauth' || OAUTH_IMPORT_UI.has(source.id)) &&
     (configurePluginFor(source.id) !== undefined ||
       Boolean(source.studioDeepLink)),
 );

@@ -34,4 +34,17 @@ describe('UploadSourceWidgets', () => {
     ).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Upload files' })).toBeTruthy();
   });
+
+  it('lists only sources it can import from', async () => {
+    vi.spyOn(sources, 'fetchConnectionStatus').mockResolvedValue({
+      data: { connected: true, configured: true },
+      meta: { source: 'api' },
+    });
+    await renderWithRouter(<UploadSourceWidgets />);
+    await screen.findByText('SoundCloud');
+    for (const name of ['Bandcamp', 'Google Drive', 'Mixcloud']) {
+      expect(screen.queryByText(name)).toBeNull();
+    }
+    expect(screen.getByText('hearthis.at')).toBeTruthy();
+  });
 });
