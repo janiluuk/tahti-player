@@ -32,4 +32,21 @@ One PR consolidates the next thirty bare-empty → `PageEmpty` micro-slices afte
 | 29 | Mastering chain | `MasteringPanel.tsx` |
 | 30 | (covered) PlayableTrackTable / RadioShowEpisodeList fan-out | shared |
 
-Fold this file when the PR merges.
+Fold this file when the PR merges (#1259).
+
+## Next candidates (from catalog sweep; not in #1259)
+
+Bare empties / chips still worth a follow-on batch:
+
+- `RadioView.tsx` — Nothing booked / No recent plays / No member sets
+- `GovernanceView.tsx` — “No motions returned.”
+- `AdminContentView.tsx` — curated content + recorded broadcasts
+- `LibraryMediaView.tsx` — media empty
+- `show-detail/EpisodesTab.tsx` + `OverviewTab.tsx` — episodes / upcoming slots
+- `SelectsTab.tsx`, `ContentReportsTab.tsx`, `GrantsTab.tsx`
+- `ChannelRotationEditor.tsx`, `PlayHistoryDialog.tsx`
+- `AccountView.tsx` fan subscriptions; `RadioScheduleView.tsx`; `AdminLogsView.tsx`
+- `go-live/MultistreamPanel.tsx` destinations
+- `HistoryListSection.tsx` filter miss + clear
+- `ChannelViewBlocks.tsx` link pills → `Badge`
+- `ReleasesPanel.tsx` search miss + clear
