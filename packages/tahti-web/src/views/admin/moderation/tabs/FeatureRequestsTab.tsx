@@ -20,7 +20,7 @@ import {
   type AdminFeatureRequestStatus,
 } from '../../../../api/admin';
 import type { GovernanceQuarterlyReport } from '../../../../api/types';
-import { PageLoading } from '../../../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { ModerationTabs } from '../ModerationTabs';
 
@@ -78,9 +78,7 @@ function QuarterlyReportsPanel() {
       {loading ? (
         <PageLoading label="Loading reports…" />
       ) : reports.length === 0 ? (
-        <p className="text-foreground-secondary mt-2 text-sm">
-          No quarterly reports generated yet.
-        </p>
+        <PageEmpty title="No quarterly reports generated yet." />
       ) : (
         <ul className="divide-border mt-2 divide-y">
           {reports.map((report) => (

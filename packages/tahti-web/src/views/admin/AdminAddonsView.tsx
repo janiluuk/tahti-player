@@ -6,7 +6,7 @@ import type { AdminAddonScope } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { AddonCard } from './addons/AddonCard';
 import { InstallPickerDialog } from './addons/InstallPickerDialog';
 import { InstallsPanel } from './addons/InstallsPanel';
@@ -140,11 +140,13 @@ export function AdminAddonsView() {
               {loading ? (
                 <PageLoading label="Loading add-on catalog…" />
               ) : visibleAddons.length === 0 ? (
-                <p className="text-foreground-secondary text-sm">
-                  {needsReviewOnly
-                    ? 'No add-ons need review right now.'
-                    : 'No add-ons registered for this type yet.'}
-                </p>
+                <PageEmpty
+                  title={
+                    needsReviewOnly
+                      ? 'No add-ons need review right now.'
+                      : 'No add-ons registered for this type yet.'
+                  }
+                />
               ) : (
                 <div className="grid gap-4 md:grid-cols-2">
                   {visibleAddons.map((addon) => (

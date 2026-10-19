@@ -10,6 +10,7 @@ import {
   type StudioReleaseTrack,
   type TrackCredit,
 } from '../../../api/studio-types';
+import { PageEmpty } from '../../../components/PageStates';
 
 function TrackCreditsRow({
   releaseId,
@@ -54,9 +55,7 @@ function TrackCreditsRow({
         {track.position}. {track.title}
       </p>
       {credits.length === 0 && (
-        <p className="text-foreground-secondary text-xs">
-          No credits on this track yet.
-        </p>
+        <PageEmpty title="No credits on this track yet." />
       )}
       <ul className="flex flex-col gap-2">
         {credits.map((credit, index) => (

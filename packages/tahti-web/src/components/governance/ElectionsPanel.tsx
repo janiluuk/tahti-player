@@ -8,6 +8,7 @@ import {
   fetchGovernanceElections,
   type GovernanceElection,
 } from '../../api/governance-elections';
+import { PageEmpty } from '../PageStates';
 import { CandidacyControl } from './CandidacyControl';
 import { GovernancePanel } from './GovernancePanel';
 
@@ -59,7 +60,7 @@ function ElectionItem({
         {electionStatus(election)}
       </div>
       {election.candidates.length === 0 ? (
-        <p className="text-foreground-secondary text-xs">No candidates yet.</p>
+        <PageEmpty title="No candidates yet." />
       ) : (
         <ul
           aria-label={`Candidates in ${election.title}`}
@@ -120,9 +121,7 @@ export function ElectionsPanel() {
           Could not load the elections. Try again later.
         </p>
       ) : elections.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No board elections have been called yet.
-        </p>
+        <PageEmpty title="No board elections have been called yet." />
       ) : (
         <ul className="divide-border divide-y">
           {elections.map((election) => (

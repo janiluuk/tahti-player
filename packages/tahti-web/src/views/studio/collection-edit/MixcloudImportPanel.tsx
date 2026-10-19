@@ -17,6 +17,7 @@ import {
   searchMixcloud,
   type MixcloudCloudcast,
 } from '../../../api/sources/mixcloud';
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 
 type Mode = 'search' | 'mine' | 'profile';
@@ -130,11 +131,13 @@ export function MixcloudImportPanel({
           </form>
         ) : null}
         {results === null ? null : results.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">
-            {mode === 'mine'
-              ? 'No mixes found. Add your Mixcloud handle to your social links first.'
-              : 'No cloudcasts found.'}
-          </p>
+          <PageEmpty
+            title={
+              mode === 'mine'
+                ? 'No mixes found. Add your Mixcloud handle to your social links first.'
+                : 'No cloudcasts found.'
+            }
+          />
         ) : (
           <ul aria-label="Mixcloud cloudcasts" className="flex flex-col gap-2">
             {results.map((cloudcast) => (

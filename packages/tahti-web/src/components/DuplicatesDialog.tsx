@@ -12,6 +12,7 @@ import type {
 } from '../lib/nativeLibrary';
 import { formatDuration } from '../lib/playableToTrack';
 import { ConfirmDialog } from './ConfirmDialog';
+import { PageEmpty } from './PageStates';
 
 type Props = {
   isOpen: boolean;
@@ -222,10 +223,10 @@ export function DuplicatesDialog({
               Looking…
             </p>
           ) : groups.length === 0 ? (
-            <p className="text-muted-foreground text-sm">
-              No duplicates found. Use “Compare file contents” to check for
-              exact copies.
-            </p>
+            <PageEmpty
+              title="No duplicates found"
+              description="Use “Compare file contents” to check for exact copies."
+            />
           ) : (
             groups.map((group) => (
               <section

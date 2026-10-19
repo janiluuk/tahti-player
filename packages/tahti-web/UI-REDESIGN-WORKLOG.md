@@ -1,3 +1,7 @@
+## 2026-10-19 — UX sweep batch 3 (PageEmpty)
+
+Thirty more bare empty strings → `PageEmpty` across governance, studio, add-ons, hearthis, and shared `PlayableTrackTable` / radio episode lists.
+
 ## 2026-10-18 — CSP unblock external radio streams
 
 PR 1078's starter CSP limited `media-src` (and `connect-src`) to Tahti CDN /

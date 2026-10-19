@@ -41,6 +41,7 @@ import { hearthisSourceAdapter } from '../../../plugins/import-sources';
 import { useAuthStore } from '../../../stores/authStore';
 import { usePlayerStore } from '../../../stores/playerStore';
 import { usePluginInstallStore } from '../../../stores/pluginInstallStore';
+import { PageEmpty } from '../../PageStates';
 import { SourceServiceIcon } from '../../SourceServiceIcon';
 import type { ServicePlugin } from '../serviceCatalog';
 import { ConfigurableCard } from '../shared';
@@ -760,9 +761,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
             tab !== 'search' &&
             tab !== 'collections' &&
             visibleTracks.length === 0 && (
-              <p className="text-foreground-secondary text-sm">
-                No {tab} found for this profile.
-              </p>
+              <PageEmpty title={`No ${tab} found for this profile.`} />
             )}
         </>
       )}

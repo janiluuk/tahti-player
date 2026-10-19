@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Button, Input } from '@tahti-player/ui';
 
 import { searchCatalogTracks, type CatalogTrack } from '../api/catalog-search';
+import { PageEmpty } from './PageStates';
 
 const PAGE_SIZE = 20;
 
@@ -99,9 +100,7 @@ export function CatalogTrackSearch({
       searched === query.trim() &&
       !error &&
       visible.length === 0 ? (
-        <p className="text-foreground-secondary text-xs">
-          No public tracks match “{query.trim()}”.
-        </p>
+        <PageEmpty title={`No public tracks match “${query.trim()}”.`} />
       ) : null}
       {visible.length > 0 ? (
         <ul
