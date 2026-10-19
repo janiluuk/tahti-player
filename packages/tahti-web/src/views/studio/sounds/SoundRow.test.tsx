@@ -56,6 +56,8 @@ const state = {
   setStatsItem: vi.fn(),
   setPendingDeleteItem: vi.fn(),
   setItems: vi.fn(),
+  selectedIds: new Set<string>(),
+  toggleSelected: vi.fn(),
 } as unknown as StudioSoundsState;
 
 function renderRow(item: Partial<StudioSound>) {
@@ -74,6 +76,14 @@ describe('SoundRow', () => {
     cleanup();
     vi.clearAllMocks();
     useProcessingJobsStore.setState({ jobs: [] });
+  });
+
+  it('selects the row through its checkbox', () => {
+    renderRow({});
+    fireEvent.click(
+      screen.getByRole('checkbox', { name: 'Select Night Drive' }),
+    );
+    expect(state.toggleSelected).toHaveBeenCalledWith('s1');
   });
 
   it('explains a failed upload and retries it', async () => {
