@@ -1,6 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 
-import { Card, CardGrid, MediaArtwork } from '@tahti-player/ui';
+import { Card, CardGrid, MediaArtwork, SectionTitle } from '@tahti-player/ui';
 
 import type {
   PublicProfileCollection,
@@ -21,7 +21,7 @@ export type RelatedArtist = {
 };
 
 function SectionHeading({ children }: { children: string }) {
-  return <h2 className="mb-2 text-lg font-semibold">{children}</h2>;
+  return <SectionTitle title={children} className="mb-2" />;
 }
 
 export function ArtistPopularTracks({
