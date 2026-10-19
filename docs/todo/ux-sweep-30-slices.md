@@ -39,7 +39,7 @@ One PR per slice. Tick when merged.
 | - | ----- | ------ |
 | 19 | CardsRow `nothingFound` + clear-filter action | open |
 | 20 | Add `SectionTitle` to `@tahti-player/ui` + story | done |
-| 21 | Listen New tracks → `SectionTitle` | open |
+| 21 | Listen New tracks → `SectionTitle` | done |
 | 22 | `ArtistReferenceSections` → `SectionTitle` | open |
 | 23 | `ArtistProfileSections` → `SectionTitle` | done |
 | 24 | History stats active-tab accent | open |
