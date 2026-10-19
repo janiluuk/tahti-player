@@ -1,11 +1,14 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 
 import {
+  backButtonCornerClassName,
+  BackButtonLink,
   Badge,
   Button,
+  ButtonLink,
   ExternalLink,
-  FilterChips,
   MediaArtwork,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -24,7 +27,6 @@ import { usePlayerStore } from '../stores/playerStore';
  * `content/radioStations.ts`, instead of sending listeners off to the
  * broadcaster's site. */
 export function RadioStationView({ stationId }: { stationId: string }) {
-  const navigate = useNavigate();
   const base = radioStation(stationId);
   const override = useListenerWidgetsStore(
     (s) => s.stationOverrides[stationId],
@@ -83,6 +85,15 @@ export function RadioStationView({ stationId }: { stationId: string }) {
       subtitle={`${station.genre} · ${station.language}`}
       data-testid="radio-station-page"
       classes={{ content: 'gap-6' }}
+      corner={
+        <Tooltip
+          content="Back to radio"
+          side="right"
+          wrapperClassName={backButtonCornerClassName}
+        >
+          <BackButtonLink to="/radio" aria-label="Back to radio" />
+        </Tooltip>
+      }
     >
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
         <MediaArtwork
@@ -151,17 +162,21 @@ export function RadioStationView({ stationId }: { stationId: string }) {
         <h2 id="other-stations" className="text-sm font-bold tracking-tight">
           Other stations
         </h2>
-        <FilterChips
-          aria-label="Other stations"
-          items={others.map((item) => ({ id: item.id, label: item.name }))}
-          selected=""
-          onChange={(id) => {
-            void navigate({
-              to: '/radio/station/$stationId',
-              params: { stationId: id },
-            });
-          }}
-        />
+        <ul className="flex flex-wrap gap-2">
+          {others.map((item) => (
+            <li key={item.id}>
+              <ButtonLink
+                to="/radio/station/$stationId"
+                params={{ stationId: item.id }}
+                size="sm"
+                variant="secondary"
+                className="rounded-full"
+              >
+                {item.name}
+              </ButtonLink>
+            </li>
+          ))}
+        </ul>
       </section>
     </ViewShell>
   );
