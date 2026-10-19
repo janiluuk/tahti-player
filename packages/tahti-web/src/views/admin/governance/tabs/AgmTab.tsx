@@ -30,6 +30,7 @@ import type {
   GovernanceDocument,
   GovernanceMeeting,
 } from '../../../../api/types';
+import { PageEmpty } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { isSafeHref } from '../../../../lib/safeHref';
 import { GovernanceDocumentRow } from '../records/GovernanceDocumentRow';
@@ -365,10 +366,7 @@ export function AgmTab() {
           </Button>
         </div>
         {meetings.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">
-            No persisted meeting records yet. Create the meeting record before
-            publishing notice or minutes.
-          </p>
+          <PageEmpty title="No persisted meeting records yet. Create the meeting record before publishing notice or minutes." />
         ) : (
           <ul className="divide-border divide-y">
             {meetings.map((meeting) => (
