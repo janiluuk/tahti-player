@@ -16,6 +16,7 @@ import {
   Tooltip,
 } from '@tahti-player/ui';
 
+import { PageEmpty } from '../../../components/PageStates';
 import {
   formatDate,
   formatTimeRange,
@@ -66,10 +67,10 @@ export function ScheduledTimes({
       </header>
       {items.length === 0 ? (
         <div className="px-4 py-5">
-          <p className="text-sm font-medium">Nothing scheduled yet</p>
-          <p className="text-foreground-secondary mt-1 text-xs">
-            Pick a local date and time below to tell listeners when you return.
-          </p>
+          <PageEmpty
+            title="Nothing scheduled yet"
+            description="Pick a local date and time below to tell listeners when you return."
+          />
         </div>
       ) : (
         <ol
