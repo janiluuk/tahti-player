@@ -17,7 +17,7 @@ import {
   MediaIconActions,
   playQueueFavoriteActions,
 } from '../components/MediaIconActions';
-import { PageEmpty } from '../components/PageStates';
+import { PageEmpty, PageError } from '../components/PageStates';
 import { PlayableTrackTable } from '../components/PlayableTrackTable';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { useAuthModalStore } from '../stores/authModalStore';
@@ -43,11 +43,14 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
     (track) => track.kind === 'sound' || Boolean(track.embed),
   );
   const [likedTracks, setLikedTracks] = useState<TahtiPlayable[]>([]);
+  const [likesError, setLikesError] = useState<string | null>(null);
+  const [likesAttempt, setLikesAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
-    void fetchMyLikes().then(({ data }) => {
+    void fetchMyLikes().then(({ data, meta }) => {
       if (!cancelled) {
+        setLikesError(meta.source === 'api' ? (meta.reason ?? null) : null);
         setLikedTracks(
           data.flatMap((track) => {
             const playable = likedTrackToPlayable(track);
@@ -59,7 +62,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [likesAttempt]);
 
   if (hydrated && !user) {
     const signedOut = (
@@ -217,6 +220,14 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
             items={likedTracks}
             emptyMessage="No liked tracks yet."
             playAll={false}
+          />
+        </SectionShell>
+      ) : likesError ? (
+        <SectionShell title="Liked on Tahti">
+          <PageError
+            title="Could not load your likes"
+            description={likesError}
+            onRetry={() => setLikesAttempt((n) => n + 1)}
           />
         </SectionShell>
       ) : null}
