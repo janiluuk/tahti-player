@@ -24,6 +24,7 @@ export function HistoryView({ embedded = false }: { embedded?: boolean }) {
     <Tabs
       className="flex flex-col"
       panelClassName="flex flex-col"
+      tabClassName="data-[selected]:bg-accent-yellow data-[selected]:text-accent-foreground"
       items={[
         {
           id: 'stats',
