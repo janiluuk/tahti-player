@@ -85,6 +85,7 @@ export function useStudioSoundsState() {
   const [items, setItems] = useState<StudioSound[]>([]);
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [embedFilter, setEmbedFilter] = useState<EmbedFilter>('ALL');
   const [contentTypeFilter, setContentTypeFilter] = useState<ContentTypeFilter>(
     () => parseContentTypeFilter(search.contentType),
@@ -120,7 +121,12 @@ export function useStudioSoundsState() {
   const reload = () => {
     setLoading(true);
     fetchStudioSounds()
-      .then((res) => setItems(res.data))
+      .then((res) => {
+        setItems(res.data);
+        setLoadError(
+          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+        );
+      })
       .catch(() => toast.error('Could not load your music.'))
       .finally(() => setLoading(false));
   };
@@ -128,6 +134,14 @@ export function useStudioSoundsState() {
   useEffect(() => {
     reload();
   }, []);
+
+  const clearFilters = () => {
+    setQuery('');
+    setEmbedFilter('ALL');
+    setContentTypeFilterAndUrl('ALL');
+    setUploadedFrom('');
+    setUploadedTo('');
+  };
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -301,6 +315,8 @@ export function useStudioSoundsState() {
     query,
     setQuery,
     loading,
+    loadError,
+    clearFilters,
     embedFilter,
     setEmbedFilter,
     contentTypeFilter,

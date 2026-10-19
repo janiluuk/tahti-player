@@ -69,10 +69,9 @@ const IMPORT_SERVICE_PLUGINS: ServicePlugin[] = importPlugins
             oauthPath: source.oauthStartPath ?? '',
             ...OAUTH_SOURCE_INSTRUCTIONS[source.id],
           }
-        : {
-            kind: 'deep-link' as const,
-            to: source.studioDeepLink ?? `/sources/${source.id}`,
-          },
+        : source.studioDeepLink
+          ? { kind: 'deep-link' as const, to: source.studioDeepLink }
+          : { kind: 'info' as const },
   }));
 
 const EXPORT_SERVICE_PLUGINS: ServicePlugin[] = EXPORT_TARGETS.filter(

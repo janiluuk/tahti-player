@@ -31,7 +31,7 @@ import {
   type StorageUsage,
 } from '../api/studio-extras';
 import { DesktopLibraryPanel } from '../components/DesktopLibraryPanel';
-import { PageEmpty } from '../components/PageStates';
+import { PageEmpty, PageError } from '../components/PageStates';
 import {
   PHONE_SCROLL_TAB_LIST,
   useSelectedTabInView,
@@ -261,7 +261,9 @@ function LibraryStats() {
   const signedIn = Boolean(user);
   const [topTracks, setTopTracks] = useState<StatsTopTrack[]>([]);
   const [storage, setStorage] = useState<StorageUsage | null>(null);
-  const [soundCount, setSoundCount] = useState(0);
+  const [soundCount, setSoundCount] = useState<number | null>(null);
+  const [soundsError, setSoundsError] = useState<string | null>(null);
+  const [soundsAttempt, setSoundsAttempt] = useState(0);
 
   useEffect(() => {
     void Promise.all([fetchStatsTopTracks('all'), fetchStorageUsage()]).then(
@@ -273,10 +275,15 @@ function LibraryStats() {
   }, []);
 
   useEffect(() => {
-    void fetchStudioSounds().then((result) =>
-      setSoundCount(result.data.length),
-    );
-  }, []);
+    void fetchStudioSounds().then((result) => {
+      setSoundsError(
+        canUpload && result.meta.source === 'api'
+          ? (result.meta.reason ?? null)
+          : null,
+      );
+      setSoundCount(result.data.length);
+    });
+  }, [canUpload, soundsAttempt]);
 
   return (
     <StudioPanel
@@ -289,7 +296,9 @@ function LibraryStats() {
           <p className="text-foreground-secondary mt-2 text-xs uppercase">
             Total sounds
           </p>
-          <p className="mt-1 text-2xl font-bold tabular-nums">{soundCount}</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums">
+            {soundCount === null || soundsError ? '—' : soundCount}
+          </p>
         </div>
         <div className="border-border bg-background-secondary/40 rounded-lg border p-3">
           <HardDriveIcon
@@ -346,6 +355,14 @@ function LibraryStats() {
                 });
               },
             }))}
+          />
+        </div>
+      ) : soundsError ? (
+        <div className="mt-4">
+          <PageError
+            title="Could not load your catalog"
+            description={soundsError}
+            onRetry={() => setSoundsAttempt((n) => n + 1)}
           />
         </div>
       ) : soundCount === 0 ? (

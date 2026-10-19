@@ -18,6 +18,7 @@ import {
 import { toast } from 'sonner';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import * as studioApi from '../../api/studio';
 import { useAuthStore } from '../../stores/authStore';
 import { StudioProEditorView } from './StudioProEditorView';
 
@@ -199,6 +200,31 @@ describe('StudioProEditorView', () => {
       screen.getByRole('button', { name: /(expand|minimize) mastering/i }),
     ).toBeTruthy();
     expect(screen.queryByText('Could not load the editor')).toBeNull();
+  });
+
+  it('retries a failed editor load', async () => {
+    const draft = vi
+      .spyOn(studioApi, 'fetchEditorDraft')
+      .mockRejectedValueOnce(new Error('offline'));
+    useAuthStore.setState({
+      user: {
+        id: 'user-1',
+        email: 'artist@tahti.live',
+        username: 'artist',
+        displayName: 'An Artist',
+        role: 'ARTIST',
+        isBoard: false,
+        isMember: true,
+        channel: { slug: 'artist', state: 'OFFLINE' },
+      },
+      hydrated: true,
+      loading: false,
+    });
+    render(<RouterProvider router={createRouterFor()} />);
+    expect(await screen.findByText('Could not load the editor')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    await screen.findByRole('button', { name: /save draft/i });
+    expect(draft).toHaveBeenCalledTimes(2);
   });
 
   it('leaves freely when nothing was edited', async () => {

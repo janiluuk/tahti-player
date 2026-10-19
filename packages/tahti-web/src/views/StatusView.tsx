@@ -4,6 +4,7 @@ import { ViewShell } from '@tahti-player/ui';
 
 import { fetchPlatformStatus } from '../api/client';
 import type { PlatformStatus } from '../api/types';
+import { PageError, PageLoading } from '../components/PageStates';
 
 function stateClass(state: string): string {
   if (state === 'ok' || state === 'healthy') {
@@ -18,6 +19,7 @@ function stateClass(state: string): string {
 export function StatusView() {
   const [data, setData] = useState<PlatformStatus | null>(null);
   const [loading, setLoading] = useState(true);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -32,16 +34,14 @@ export function StatusView() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   return (
     <ViewShell
       title="Status"
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', content: 'gap-4' }}
     >
-      {loading && (
-        <p className="text-foreground-secondary text-sm">Checking…</p>
-      )}
+      {loading && <PageLoading label="Checking…" />}
       {!loading && data && (
         <>
           <p
@@ -73,40 +73,50 @@ export function StatusView() {
               </div>
             )}
           </dl>
-          <table className="w-full border-collapse text-left text-sm">
-            <thead>
-              <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-                <th className="py-2 pr-3 font-medium">Check</th>
-                <th className="py-2 pr-3 font-medium">State</th>
-                <th className="py-2 pr-3 font-medium">Latency</th>
-                <th className="py-2 font-medium">Detail</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(data.checks).map(([id, check]) => (
-                <tr key={id} className="border-border border-b">
-                  <td className="py-2 pr-3 font-medium">
-                    {id}
-                    {check.critical ? ' *' : ''}
-                  </td>
-                  <td className={`py-2 pr-3 ${stateClass(check.state)}`}>
-                    {check.state}
-                  </td>
-                  <td className="text-foreground-secondary py-2 pr-3">
-                    {typeof check.latencyMs === 'number'
-                      ? `${check.latencyMs} ms`
-                      : '—'}
-                  </td>
-                  <td className="text-foreground-secondary py-2 text-xs">
-                    {check.detail ?? ''}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <p className="text-foreground-secondary text-xs">
-            * Critical dependency
-          </p>
+          {Object.keys(data.checks).length === 0 ? (
+            <PageError
+              title="No health checks reported"
+              description="The API did not answer."
+              onRetry={() => setAttempt((n) => n + 1)}
+            />
+          ) : (
+            <>
+              <table className="w-full border-collapse text-left text-sm">
+                <thead>
+                  <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
+                    <th className="py-2 pr-3 font-medium">Check</th>
+                    <th className="py-2 pr-3 font-medium">State</th>
+                    <th className="py-2 pr-3 font-medium">Latency</th>
+                    <th className="py-2 font-medium">Detail</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(data.checks).map(([id, check]) => (
+                    <tr key={id} className="border-border border-b">
+                      <td className="py-2 pr-3 font-medium">
+                        {id}
+                        {check.critical ? ' *' : ''}
+                      </td>
+                      <td className={`py-2 pr-3 ${stateClass(check.state)}`}>
+                        {check.state}
+                      </td>
+                      <td className="text-foreground-secondary py-2 pr-3">
+                        {typeof check.latencyMs === 'number'
+                          ? `${check.latencyMs} ms`
+                          : '—'}
+                      </td>
+                      <td className="text-foreground-secondary py-2 text-xs">
+                        {check.detail ?? ''}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="text-foreground-secondary text-xs">
+                * Critical dependency
+              </p>
+            </>
+          )}
         </>
       )}
 

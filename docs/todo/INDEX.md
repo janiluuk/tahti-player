@@ -9,11 +9,11 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 
 | Status  | File                                                                                                     | One-line                                                                                                                                                                                                                                                       |
 | ------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| blocked | [final-season-hardening.md](final-season-hardening.md) | Cutover L ops (proxy, runbook, vend SPA); Batch A/B code merged |
+| blocked | [final-season-hardening.md](final-season-hardening.md) | Cutover L ops (vend SPA, prod upstream, runbook); DNS map filled — you flip |
 | blocked | [first-100-users-infra.md](first-100-users-infra.md) | Ops verify backups/disk + deploy Swarm fail-closed (#872/#873/#1079 merged); host access required |
-| blocked | [finnish-radio-now-playing-scrapers.md](finnish-radio-now-playing-scrapers.md) | Yle key + Nelonen scrapers; org User-Agent/kill-switch |
+| partial | [finnish-radio-now-playing-scrapers.md](finnish-radio-now-playing-scrapers.md) | ICY-only for YleX/Rock/Suomipop; left: org UA + kill-switch |
 | blocked | [feature-swipe-product-flags.md](feature-swipe-product-flags.md) | Product call: Distribution StudioNav, /chat chrome, mobile More |
-| blocked | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live-API verify Centrifugo Send on brand-new channels |
+| blocked | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live verify Centrifugo Send on brand-new channel — playbook ready |
 | blocked | [desktop-smart-playlists.md](desktop-smart-playlists.md) | Manual check on real 10k+ desktop library |
 | blocked | [ai-dj-radio-dj-port.md](ai-dj-radio-dj-port.md) | POC not committed; no prod ship without go-ahead |
 | blocked | [desktop-pro-library.md](desktop-pro-library.md) | Real-music validation + Phases 6–7 untouched |

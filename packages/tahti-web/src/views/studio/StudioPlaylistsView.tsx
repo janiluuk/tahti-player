@@ -27,7 +27,7 @@ import {
   fetchStudioCollections,
 } from '../../api/studio';
 import type { StudioCollection } from '../../api/studio-types';
-import { PageLoading } from '../../components/PageStates';
+import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { LibrarySectionTabs } from '../LibraryView';
@@ -39,6 +39,7 @@ function isPlaylist(c: StudioCollection) {
 export function StudioPlaylistsView() {
   const [rows, setRows] = useState<StudioCollection[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [name, setName] = useState('');
   const [isPublic, setIsPublic] = useState(true);
@@ -50,6 +51,9 @@ export function StudioPlaylistsView() {
     void fetchStudioCollections()
       .then((res) => {
         setRows(res.data.filter(isPlaylist));
+        setLoadError(
+          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+        );
       })
       .catch(() => toast.error('Could not load your playlists.'))
       .finally(() => setLoading(false));
@@ -163,6 +167,12 @@ export function StudioPlaylistsView() {
           <StudioPanel>
             {loading ? (
               <PageLoading label="Loading…" />
+            ) : loadError && rows.length === 0 ? (
+              <PageError
+                title="Could not load your playlists"
+                description={loadError}
+                onRetry={reload}
+              />
             ) : rows.length === 0 ? (
               <EmptyState
                 icon={<ListMusicIcon size={40} className="opacity-40" />}

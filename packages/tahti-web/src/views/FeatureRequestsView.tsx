@@ -12,7 +12,7 @@ import {
   type MotionComment,
 } from '../api/client';
 import type { FeatureRequest, FeatureRequestStatus } from '../api/types';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
@@ -39,6 +39,7 @@ export function FeatureRequestsView({
   const [requests, setRequests] = useState<FeatureRequest[]>([]);
   const [forbidden, setForbidden] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [comments, setComments] = useState<MotionComment[]>([]);
   const [commentBody, setCommentBody] = useState('');
@@ -57,6 +58,11 @@ export function FeatureRequestsView({
     void fetchFeatureRequests().then((res) => {
       setRequests(res.data);
       setForbidden(Boolean(res.forbidden) && res.data.length === 0);
+      setLoadError(
+        !res.forbidden && res.meta.source === 'api'
+          ? (res.meta.reason ?? null)
+          : null,
+      );
       setLoading(false);
     });
   };
@@ -189,12 +195,27 @@ export function FeatureRequestsView({
         </p>
       )}
 
-      {user && !loading && !forbidden && requests.length === 0 && (
-        <PageEmpty
-          title="No feature requests yet"
-          description="Be the first to propose an idea for Tahti."
+      {user && !loading && !forbidden && loadError && requests.length === 0 && (
+        <PageError
+          title="Could not load feature requests"
+          description={loadError}
+          onRetry={() => {
+            setLoading(true);
+            reload();
+          }}
         />
       )}
+
+      {user &&
+        !loading &&
+        !forbidden &&
+        !loadError &&
+        requests.length === 0 && (
+          <PageEmpty
+            title="No feature requests yet"
+            description="Be the first to propose an idea for Tahti."
+          />
+        )}
 
       {user && requests.length > 0 && (
         <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">

@@ -181,8 +181,9 @@ export const SOURCE_DEFS: SourceDef[] = [
     id: 'mixcloud-embed',
     name: 'Mixcloud search',
     description:
-      'Search Mixcloud cloudcasts and add them as provider-hosted embeds (no audio re-host). Distinct from Mixcloud OAuth upload/rescue.',
+      'Search Mixcloud cloudcasts and add them as provider-hosted embeds (no audio re-host) from a collection in Studio. Distinct from Mixcloud OAuth upload/rescue.',
     oauthStartPath: null,
+    studioDeepLink: '/studio/collections',
     kind: 'search',
     capabilities: {
       connect: false,

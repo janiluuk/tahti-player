@@ -4,7 +4,7 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as likes from '../api/likes';
@@ -74,5 +74,23 @@ describe('FavoritesView', () => {
 
     expect(await screen.findByText('Night Drive')).toBeInTheDocument();
     expect(screen.queryByText('No favorite tracks')).not.toBeInTheDocument();
+  });
+
+  it('says the likes failed to load instead of hiding them', async () => {
+    const fetch = vi.spyOn(likes, 'fetchMyLikes').mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    renderFavorites();
+
+    expect(
+      await screen.findByText('Could not load your likes'),
+    ).toBeInTheDocument();
+    fetch.mockResolvedValue({ data: [], meta: { source: 'api' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    await waitFor(() =>
+      expect(screen.queryByText('Liked on Tahti')).not.toBeInTheDocument(),
+    );
+    expect(fetch).toHaveBeenCalledTimes(2);
   });
 });
