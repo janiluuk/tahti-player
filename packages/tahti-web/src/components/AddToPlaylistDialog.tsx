@@ -9,6 +9,7 @@ import type {
   NativePlaylistSummary,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
+import { PageError } from './PageStates';
 
 type Props = {
   isOpen: boolean;
@@ -35,6 +36,8 @@ export function AddToPlaylistDialog({
   );
   const [name, setName] = useState('');
   const [busy, setBusy] = useState<string | 'new' | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (!isOpen) {
@@ -42,6 +45,7 @@ export function AddToPlaylistDialog({
     }
     let stale = false;
     setPlaylists(null);
+    setLoadError(null);
     library.playlists
       .list()
       .then((list) => {
@@ -52,7 +56,7 @@ export function AddToPlaylistDialog({
       .catch((error: unknown) => {
         if (!stale) {
           setPlaylists([]);
-          toast.error(
+          setLoadError(
             error instanceof Error
               ? error.message
               : 'Could not load playlists.',
@@ -62,7 +66,7 @@ export function AddToPlaylistDialog({
     return () => {
       stale = true;
     };
-  }, [isOpen, library]);
+  }, [isOpen, library, attempt]);
 
   const addTo = async (
     key: string,
@@ -105,6 +109,12 @@ export function AddToPlaylistDialog({
       <div className="flex max-h-[45vh] flex-col gap-1 overflow-y-auto py-2">
         {playlists === null ? (
           <p className="text-foreground-secondary text-sm">Loading…</p>
+        ) : loadError ? (
+          <PageError
+            title="Could not load your playlists"
+            description={loadError}
+            onRetry={() => setAttempt((n) => n + 1)}
+          />
         ) : playlists.length === 0 ? (
           <p className="text-foreground-secondary text-sm">
             No playlists yet — create one below.
