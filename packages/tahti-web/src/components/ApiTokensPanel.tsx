@@ -19,7 +19,7 @@ import {
   type ApiToken,
 } from '../api/api-tokens';
 import { ConfirmDialog } from './ConfirmDialog';
-import { PageLoading } from './PageStates';
+import { PageEmpty, PageLoading } from './PageStates';
 
 const EXPIRY_OPTIONS = [
   { id: 'never', label: 'Never' },
