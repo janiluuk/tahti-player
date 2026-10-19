@@ -48,7 +48,7 @@ export function PurchaseAccessSection({
     void fetchMyPurchaseTiers().then((result) => {
       setTiers(result.data);
       setTiersFailed(
-        result.meta.source === 'api' && Boolean(result.meta.reason),
+        result.meta?.source === 'api' && Boolean(result.meta.reason),
       );
     });
   }, [attempt]);
