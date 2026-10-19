@@ -9,6 +9,7 @@ import {
   RadioShowView,
   RadioStationView,
   RadioView,
+  SearchResultsView,
   TagSearchView,
 } from './router-lazy-views';
 
@@ -54,15 +55,25 @@ export const discoverRoute = createRoute({
 export const tagSearchRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/search',
-  validateSearch: (search: Record<string, unknown>): { tag?: string } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tag?: string; q?: string } => ({
     tag:
       typeof search.tag === 'string' && search.tag.trim()
         ? search.tag.trim()
         : undefined,
+    q:
+      typeof search.q === 'string' && search.q.trim()
+        ? search.q.trim()
+        : undefined,
   }),
   component: function TagSearchRoute() {
-    const { tag } = tagSearchRoute.useSearch();
-    return <TagSearchView tag={tag} />;
+    const { tag, q } = tagSearchRoute.useSearch();
+    return tag ? (
+      <TagSearchView tag={tag} />
+    ) : (
+      <SearchResultsView q={q ?? ''} />
+    );
   },
 });
 

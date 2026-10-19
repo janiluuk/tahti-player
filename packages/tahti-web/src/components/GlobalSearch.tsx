@@ -215,6 +215,13 @@ export function GlobalSearch({
   ];
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && hasQuery && activeIndex < 0) {
+      e.preventDefault();
+      const q = trimmed;
+      close();
+      void navigate({ to: '/search', search: { q } });
+      return;
+    }
     if (!open || flatOptions.length === 0) {
       return;
     }
