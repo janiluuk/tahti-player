@@ -430,10 +430,7 @@ export function RadioView() {
                   content:
                     upcoming.length === 0 ? (
                       <div className="flex flex-col items-start gap-2">
-                        <p className="text-foreground-secondary text-sm">
-                          Nothing booked yet — fair rotation plays when nobody
-                          is.
-                        </p>
+                        <PageEmpty title="Nothing booked yet — fair rotation plays when nobody is." />
                         {user && (
                           <Button
                             size="sm"
