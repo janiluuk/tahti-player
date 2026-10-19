@@ -21,6 +21,7 @@ The same list is in the app under **Help → Keyboard shortcuts**. Shortcuts are
 
 | Action | Keys |
 | --- | --- |
+| Play or pause (when a track is loaded; not while a button or link has focus) | `Space` |
 | Open or close the full-screen player (when a track is loaded) | `V` |
 | Skip backward | `Shift` `←` |
 | Skip forward | `Shift` `→` |

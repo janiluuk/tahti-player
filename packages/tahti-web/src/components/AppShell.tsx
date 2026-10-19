@@ -51,6 +51,7 @@ import {
   setPlaybackDocumentTitle,
   syncDocumentMetadata,
 } from '../lib/seo';
+import { spaceActivatesTarget } from '../lib/spaceActivatesTarget';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useChannelSetupModalStore } from '../stores/channelSetupModalStore';
@@ -507,6 +508,25 @@ export function AppShell() {
           event.preventDefault();
           void navigate({ to: destination });
         }
+        return;
+      }
+
+      if (
+        event.code === 'Space' &&
+        !event.altKey &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.shiftKey &&
+        currentTrackId &&
+        !spaceActivatesTarget(target)
+      ) {
+        event.preventDefault();
+        const player = usePlayerStore.getState();
+        player.setStatus(
+          player.status === 'playing' || player.status === 'loading'
+            ? 'paused'
+            : 'playing',
+        );
         return;
       }
 
