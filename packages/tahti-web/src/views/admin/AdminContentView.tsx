@@ -14,7 +14,7 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
 
@@ -133,9 +133,7 @@ export function AdminContentView() {
                     description="Recent broadcasts captured by the platform recorder."
                   >
                     {data.latestBroadcasts.length === 0 ? (
-                      <p className="text-foreground-secondary text-sm">
-                        No recorded broadcasts yet.
-                      </p>
+                      <PageEmpty title="No recorded broadcasts yet." />
                     ) : (
                       <ul className="divide-border divide-y">
                         {data.latestBroadcasts.map((broadcast) => (
