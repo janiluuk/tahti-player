@@ -28,6 +28,7 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 | blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
 | open    | [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md) | Radio Nova + NRJ (Bauer AAC streams) do not play in production; reproduce in a real browser |
 | partial | [listen-ui-liveliness.md](listen-ui-liveliness.md) | Nuclear-green accents + section pill hues shipped; left: de-green Card/Button/MediaArtwork, History/Collection depth |
+| partial | [back-button-universal.md](back-button-universal.md) | BackButton in ui + Storybook; wired channel/radio/top-nav/fullscreen/studio; left: merge + fold |
 | open    | [ux-sweep-30-slices.md](ux-sweep-30-slices.md) | 30 micro-slices across empties, catalog chips, SectionTitle, History/Collection depth, Card surface, Studio search |
 | open    | [view-modes-track-tables.md](view-modes-track-tables.md) | No list/grid view-mode or sort anywhere; add to shared PlayableTrackTable + studio/library lists |
 | open    | [studio-artist-usability.md](studio-artist-usability.md) | Per-release stats, bulk selection, search parity, release lifecycle, row quick actions, toast drift |

@@ -1,10 +1,12 @@
 import { Link } from '@tanstack/react-router';
 
 import {
+  BackButtonLink,
   Badge,
   Button,
   ExternalLink,
   MediaArtwork,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -82,6 +84,13 @@ export function RadioStationView({ stationId }: { stationId: string }) {
       data-testid="radio-station-page"
       classes={{ content: 'gap-6' }}
     >
+      <Tooltip content="Back to radio" side="right">
+        <BackButtonLink
+          to="/radio"
+          aria-label="Back to radio"
+          className="-mt-2"
+        />
+      </Tooltip>
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
         <MediaArtwork
           src={station.logoUrl}

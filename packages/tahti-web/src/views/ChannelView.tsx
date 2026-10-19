@@ -1,9 +1,15 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
-import { ArrowLeftIcon, UsersIcon } from 'lucide-react';
+import { UsersIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, ClampedText, Dialog, Tooltip } from '@tahti-player/ui';
+import {
+  BackButtonLink,
+  Button,
+  ClampedText,
+  Dialog,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   BRAND_ACCENTS,
@@ -587,13 +593,7 @@ export function ChannelView({ slug }: { slug: string }) {
         <div className="flex flex-wrap items-center justify-between gap-2">
           {!editing ? (
             <Tooltip content="Back to Listen" side="right">
-              <Link
-                to="/"
-                aria-label="Back to Listen"
-                className="text-foreground-secondary hover:bg-background-secondary inline-flex size-12 items-center justify-center rounded-full"
-              >
-                <ArrowLeftIcon size={28} aria-hidden />
-              </Link>
+              <BackButtonLink to="/" aria-label="Back to Listen" />
             </Tooltip>
           ) : (
             <span />
