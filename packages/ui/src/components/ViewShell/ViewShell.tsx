@@ -20,6 +20,7 @@ type ViewShellProps = {
    * actions row with tighter spacing before the content.
    */
   actions?: ReactNode;
+  corner?: ReactNode;
   'data-testid'?: string;
   classes?: ViewShellClasses;
 };
@@ -29,6 +30,7 @@ export const ViewShell: FC<ViewShellProps> = ({
   title,
   subtitle,
   actions,
+  corner,
   'data-testid': dataTestId,
   classes,
 }) => {
@@ -48,9 +50,12 @@ export const ViewShell: FC<ViewShellProps> = ({
       )}
       data-testid={dataTestId}
     >
+      {corner}
       {actions ? (
         <div className="mb-3 flex w-full flex-0 flex-row items-start justify-between gap-4">
-          <div className="flex min-w-0 flex-col text-left">
+          <div
+            className={cn('flex min-w-0 flex-col text-left', corner && 'pl-14')}
+          >
             {title && (
               <h1 className="text-3xl font-bold" data-testid="title">
                 {title}
@@ -68,14 +73,22 @@ export const ViewShell: FC<ViewShellProps> = ({
         <>
           {title && (
             <h1
-              className="mb-6 flex w-full flex-0 flex-row text-center text-3xl font-bold"
+              className={cn(
+                'mb-6 flex w-full flex-0 flex-row text-3xl font-bold',
+                corner ? 'pl-14' : 'text-center',
+              )}
               data-testid="title"
             >
               {title}
             </h1>
           )}
           {subtitle && (
-            <h2 className="mb-4 flex w-full flex-0 flex-row text-center text-xl font-semibold">
+            <h2
+              className={cn(
+                'mb-4 flex w-full flex-0 flex-row text-xl font-semibold',
+                corner ? 'pl-14' : 'text-center',
+              )}
+            >
               {subtitle}
             </h2>
           )}
