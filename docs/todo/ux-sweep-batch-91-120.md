@@ -20,7 +20,7 @@ Bare empty copy and batch-4 leftovers after earlier sweeps. One PR per row. Tick
 | 102 | done | Share links |
 | 103 | done | Extra track credits |
 | 104 | done | Tracklist editor |
-| 105 | open | Messages popover |
+| 105 | done | Messages popover |
 | 106 | open | Venue shows |
 | 107 | open | Fan subscribe |
 | 108 | open | Venue detail |
