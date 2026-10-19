@@ -8,6 +8,7 @@ import {
 
 import { ButtonLink } from '@tahti-player/ui';
 
+import { PageEmpty } from '../../../components/PageStates';
 import { SummaryStat } from './HomeTiles';
 import type { StudioHomeState } from './useStudioHome';
 
@@ -47,29 +48,27 @@ export function SummaryStatsSection({ state }: { state: StudioHomeState }) {
       </section>
 
       {hasEmptyDiscography ? (
-        <div className="border-border bg-background-secondary/30 flex flex-wrap items-center justify-between gap-4 rounded-xl border p-4">
-          <div>
-            <p className="text-sm font-bold">Nothing in your discography yet</p>
-            <p className="text-foreground-secondary mt-1 text-xs">
-              Add an album or a track to start building it out.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <ButtonLink
-              to="/studio/releases"
-              search={{ create: true }}
-              size="sm"
-              variant="secondary"
-            >
-              <PlusIcon size={14} aria-hidden className="mr-1.5" />
-              Add an album
-            </ButtonLink>
-            <ButtonLink to="/library/upload" size="sm">
-              <PlusIcon size={14} aria-hidden className="mr-1.5" />
-              Add a track
-            </ButtonLink>
-          </div>
-        </div>
+        <PageEmpty
+          title="Nothing in your discography yet"
+          description="Add an album or a track to start building it out."
+          action={
+            <div className="flex flex-wrap gap-2">
+              <ButtonLink
+                to="/studio/releases"
+                search={{ create: true }}
+                size="sm"
+                variant="secondary"
+              >
+                <PlusIcon size={14} aria-hidden className="mr-1.5" />
+                Add an album
+              </ButtonLink>
+              <ButtonLink to="/library/upload" size="sm">
+                <PlusIcon size={14} aria-hidden className="mr-1.5" />
+                Add a track
+              </ButtonLink>
+            </div>
+          }
+        />
       ) : null}
     </>
   );
