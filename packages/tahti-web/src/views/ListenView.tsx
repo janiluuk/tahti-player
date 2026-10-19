@@ -32,6 +32,7 @@ import type { OnAirChannel } from '../api/listen';
 import { fetchStationNowPlaying } from '../api/radio-now-playing';
 import type { TahtiPlayable } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
+import { HomeComingUp } from '../components/listen-view/HomeComingUp';
 import { ListenSection } from '../components/listen-view/ListenSection';
 import { StationCardSubtitle } from '../components/listen-view/StationCardSubtitle';
 import { useListenSections } from '../components/listen-view/useListenSections';
@@ -656,6 +657,8 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                 renderItem={renderOnAirItem}
               />
             </ListenSection>
+
+            <HomeComingUp />
 
             <ListenSection
               data-testid="listen-new-tracks"
