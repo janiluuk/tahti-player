@@ -6,6 +6,7 @@ import {
   type AssociationProfile,
   type GovernanceAuditor,
 } from '../../api/governance-association';
+import { PageError } from '../PageStates';
 import { GovernancePanel } from './GovernancePanel';
 
 function auditorRole(auditor: GovernanceAuditor): string {
@@ -39,9 +40,11 @@ function hasDetails(profile: AssociationProfile): boolean {
 export function AssociationPanel() {
   const [profile, setProfile] = useState<AssociationProfile | null>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'failed'>('loading');
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    setState('loading');
     void fetchAssociationProfile().then((result) => {
       if (cancelled) {
         return;
@@ -52,16 +55,17 @@ export function AssociationPanel() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   return (
     <GovernancePanel title="The association" icon={Building2Icon}>
       {state === 'loading' ? (
         <p className="text-foreground-secondary text-sm">Loading…</p>
       ) : state === 'failed' || !profile ? (
-        <p className="text-foreground-secondary text-sm">
-          Could not load the association's details. Try again later.
-        </p>
+        <PageError
+          title="Could not load the association's details"
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
       ) : (
         <>
           {hasDetails(profile) ? (
