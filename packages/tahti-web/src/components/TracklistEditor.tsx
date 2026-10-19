@@ -165,8 +165,8 @@ export const TracklistEditor: FC<Props> = ({
   const tracklist = (
     <ol className="border-border divide-border divide-y rounded-xl border">
       {value.length === 0 ? (
-        <li className="text-foreground-secondary p-4 text-sm">
-          No tracks added yet.
+        <li className="list-none p-4">
+          <PageEmpty title="No tracks added yet." />
         </li>
       ) : (
         value.map((entry, index) => (
