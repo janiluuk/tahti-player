@@ -117,8 +117,8 @@ export const ProcessingFailed: Story = {
     await expect(legacy.queryByRole('button', { name: /^Retry/ })).toBeNull();
 
     await expect(
-      row(canvasElement, PROCESSING_SOUND.title).getByText(/^PROCESSING/),
-    ).toBeVisible();
+      row(canvasElement, PROCESSING_SOUND.title).getByTestId('track-processing'),
+    ).toHaveTextContent('Processing');
 
     await userEvent.click(
       failed.getByRole('button', {
@@ -128,8 +128,8 @@ export const ProcessingFailed: Story = {
     await findToast(canvasElement, `Processing "${FAILED_SOUND.title}" again`);
     await waitFor(() =>
       expect(
-        row(canvasElement, FAILED_SOUND.title).getByText(/^PENDING/),
-      ).toBeVisible(),
+        row(canvasElement, FAILED_SOUND.title).getByTestId('track-processing'),
+      ).toHaveTextContent('Processing'),
     );
     await expect(
       canvas.queryByRole('button', {
