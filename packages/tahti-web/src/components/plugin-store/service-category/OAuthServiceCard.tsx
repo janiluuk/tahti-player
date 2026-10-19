@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 
 import {
   Button,
+  ButtonLink,
   ExternalLink,
   Input,
   MediaArtwork,
@@ -14,8 +15,10 @@ import type { BandcampAlbum, SoundcloudTrack } from '../../../api/sources';
 import { fetchMeProfile, patchMeProfile } from '../../../api/studio-extras';
 import { oauthAdapterFor } from '../../../plugins/import-sources';
 import { usePluginInstallStore } from '../../../stores/pluginInstallStore';
+import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import type { ServiceAction, ServicePlugin } from '../serviceCatalog';
 import { ConfigurableCard } from '../shared';
+import { ServerSetupHelp } from './ServerSetupHelp';
 
 export function OAuthServiceCard({
   plugin,
@@ -249,7 +252,7 @@ export function OAuthServiceCard({
   return (
     <ConfigurableCard
       title={plugin.name}
-      header={
+      header={(openConfigure) => (
         <PluginStoreItem
           name={plugin.name}
           author={plugin.author}
@@ -257,14 +260,14 @@ export function OAuthServiceCard({
           isInstalled={Boolean(status?.connected)}
           onInstall={() => {
             if (notSetUp) {
-              toast.error(`${plugin.name} is not set up on this server yet.`);
+              openConfigure();
               return;
             }
             window.location.href = adapter.oauthUrl;
           }}
           labels={{ install: 'Connect', installed: 'Connected' }}
         />
-      }
+      )}
     >
       {status?.connected ? (
         <>
@@ -280,6 +283,29 @@ export function OAuthServiceCard({
           >
             {busy ? 'Disconnecting…' : 'Disconnect'}
           </Button>
+          {adapter.id === 'mixcloud' && (
+            <p className="text-foreground-secondary border-border border-t pt-3 text-sm">
+              To send a mix to Mixcloud, open the track's edit dialog (✎ on the
+              track) and use its Export tab.
+            </p>
+          )}
+          {adapter.id === 'google-drive' && (
+            <div className="border-border flex flex-col gap-2 border-t pt-3">
+              <p className="text-foreground-secondary text-sm">
+                Picking files from Google Drive isn't available here yet.
+                Download them from Drive and upload them instead.
+              </p>
+              <ButtonLink
+                to="/library/upload"
+                size="sm"
+                variant="secondary"
+                className="self-start"
+                onClick={() => useSettingsModalStore.getState().close()}
+              >
+                Upload files
+              </ButtonLink>
+            </div>
+          )}
           {adapter.id === 'bandcamp' && (
             <div className="border-border flex flex-col gap-3 border-t pt-3">
               <p className="text-sm font-medium">Your Bandcamp discography</p>
@@ -407,14 +433,41 @@ export function OAuthServiceCard({
         </>
       ) : (
         <>
-          <p className="text-foreground-secondary text-sm">
-            {status?.unavailable
-              ? 'Could not check this connection. Try again in a moment.'
-              : notSetUp
-                ? `${plugin.name} is not set up on this server yet, so it cannot be connected.`
-                : 'Not connected yet.'}
-          </p>
-          {action.instructionsHref && action.instructionsLabel && (
+          {notSetUp ? (
+            <ServerSetupHelp
+              integrationId={action.integrationId}
+              name={plugin.name}
+            />
+          ) : status?.unavailable ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-foreground-secondary text-sm">
+                Could not check this connection.
+              </p>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setStatusTick((n) => n + 1)}
+              >
+                Try again
+              </Button>
+            </div>
+          ) : (
+            <>
+              <p className="text-foreground-secondary text-sm">
+                Not connected yet.
+              </p>
+              <Button
+                size="sm"
+                className="self-start"
+                onClick={() => {
+                  window.location.href = adapter.oauthUrl;
+                }}
+              >
+                Connect {plugin.name}
+              </Button>
+            </>
+          )}
+          {!notSetUp && action.instructionsHref && action.instructionsLabel && (
             <ExternalLink href={action.instructionsHref} className="text-sm">
               {action.instructionsLabel} →
             </ExternalLink>
