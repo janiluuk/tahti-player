@@ -343,6 +343,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
             }
           />
           <Card
+            surface="neutral"
             title={
               catalogId ? (
                 <Link
@@ -404,6 +405,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           </Button>
         </Tooltip>
         <Card
+          surface="neutral"
           title={
             <Link
               to="/radio/station/$stationId"
@@ -445,6 +447,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     return (
       <div onPointerEnter={warmChannelRoute} onFocus={warmChannelRoute}>
         <Card
+          surface="neutral"
           title={
             <Link
               to="/channel/$slug"
@@ -485,6 +488,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     const stationId = radioStationIdForPlayable(playable);
     return (
       <Card
+        surface="neutral"
         title={
           stationId ? (
             <Link

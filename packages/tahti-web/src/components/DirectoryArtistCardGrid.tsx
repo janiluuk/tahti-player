@@ -106,6 +106,7 @@ export function DirectoryArtistCardGrid({
             return (
               <Card
                 key={artist.slug}
+                surface="neutral"
                 title={
                   <Link
                     to="/u/$username"

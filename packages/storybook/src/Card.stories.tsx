@@ -14,6 +14,10 @@ const meta = {
     title: { control: 'text' },
     subtitle: { control: 'text' },
     imageReveal: { control: 'boolean' },
+    surface: {
+      control: 'inline-radio',
+      options: ['brand', 'neutral'],
+    },
   },
 } satisfies Meta<typeof Card>;
 
@@ -27,6 +31,16 @@ export const Default: Story = {
     src: cover,
     title: 'Random Album',
     subtitle: 'Some Artist',
+    surface: 'brand',
+  },
+};
+
+export const NeutralSurface: Story = {
+  args: {
+    src: cover,
+    title: 'Random Album',
+    subtitle: 'Some Artist',
+    surface: 'neutral',
   },
 };
 

@@ -43,10 +43,8 @@ export type CardsRowProps<T extends CardsRowItem = CardsRowItem> = {
   labels: CardsRowLabels;
   className?: string;
   'data-testid'?: string;
-  /** Custom card renderer, for callers whose items carry richer content
-   * than the default title/subtitle/imageUrl Card can show. Filtering
-   * (by `.title`) and scrolling still work the same either way. */
   renderItem?: (item: T) => ReactNode;
+  cardSurface?: 'brand' | 'neutral';
 };
 
 export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
@@ -58,6 +56,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
   className,
   'data-testid': testId = 'cards-row',
   renderItem,
+  cardSurface = 'brand',
 }: CardsRowProps<T>) => {
   const {
     filterText,
@@ -165,6 +164,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
                 title={item.title}
                 subtitle={item.subtitle}
                 onClick={item.onClick}
+                surface={cardSurface}
               />
             ),
           )
