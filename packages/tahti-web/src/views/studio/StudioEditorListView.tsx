@@ -18,7 +18,7 @@ import {
   fetchStudioSounds,
 } from '../../api/studio';
 import type { EditorProjectRow, StudioSound } from '../../api/studio-types';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { contentTypeLabel } from '../../content/contentTypes';
