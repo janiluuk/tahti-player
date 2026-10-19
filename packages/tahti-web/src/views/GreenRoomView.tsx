@@ -24,6 +24,7 @@ export function GreenRoomView({ username }: { username: string }) {
   const [loading, setLoading] = useState(true);
   const [needsLogin, setNeedsLogin] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   const openAuth = useAuthModalStore((s) => s.open);
   const play = usePlayerStore((s) => s.play);
@@ -75,7 +76,17 @@ export function GreenRoomView({ username }: { username: string }) {
     return () => {
       cancelled = true;
     };
-  }, [username]);
+  }, [username, attempt]);
+
+  const checkAgain = (
+    <Button
+      size="sm"
+      variant="secondary"
+      onClick={() => setAttempt((n) => n + 1)}
+    >
+      Check again
+    </Button>
+  );
 
   const backLink = (
     <Link
@@ -136,6 +147,7 @@ export function GreenRoomView({ username }: { username: string }) {
           icon="alert"
           title="Green room unavailable"
           description={error ?? 'Could not load green room access.'}
+          action={checkAgain}
         />
       </ViewShell>
     );
@@ -152,6 +164,7 @@ export function GreenRoomView({ username }: { username: string }) {
         <PageEmpty
           title="Not open yet"
           description={`${access.artistDisplayName} has not opened the green room for this broadcast yet.`}
+          action={checkAgain}
         />
       </ViewShell>
     );
