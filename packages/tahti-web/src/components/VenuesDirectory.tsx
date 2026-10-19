@@ -6,28 +6,44 @@ import { ImageReveal } from '@tahti-player/ui';
 import { fetchVenues } from '../api/client';
 import type { VenueDirectoryItem } from '../api/types';
 import { countryFlagAndName } from '../lib/countries';
-import { PageEmpty, PageLoading } from './PageStates';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 export function VenuesDirectory() {
   const [venues, setVenues] = useState<VenueDirectoryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    setLoading(true);
     void fetchVenues().then((res) => {
       if (cancelled) {
         return;
       }
       setVenues(res.data);
+      setLoadError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   if (loading) {
     return <PageLoading label="Loading venues…" />;
+  }
+
+  if (loadError && venues.length === 0) {
+    return (
+      <PageError
+        title="Could not load venues"
+        description={loadError}
+        onRetry={() => setAttempt((n) => n + 1)}
+      />
+    );
   }
 
   if (venues.length === 0) {
