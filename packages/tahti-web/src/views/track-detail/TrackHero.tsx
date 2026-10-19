@@ -1,7 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import {
   ActivityIcon,
-  ArrowLeftIcon,
   DownloadIcon,
   HeartIcon,
   MessageCircleIcon,
@@ -15,7 +14,15 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { Badge, Button, Input, MediaArtwork, Tooltip } from '@tahti-player/ui';
+import {
+  BackButton,
+  backButtonCornerClassName,
+  Badge,
+  Button,
+  Input,
+  MediaArtwork,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
 import { ReportButton } from '../../components/ReportButton';
@@ -126,18 +133,15 @@ export function TrackHero({ page }: { page: TrackPage }) {
       )}
       <div className="pointer-events-none absolute inset-0 bg-black/45" />
 
+      <Tooltip
+        content="Back"
+        side="right"
+        wrapperClassName={backButtonCornerClassName}
+      >
+        <BackButton onClick={() => router.history.back()} aria-label="Back" />
+      </Tooltip>
+
       <div className="relative z-10 flex flex-col gap-5 text-white">
-        <Tooltip content="Back" side="right">
-          <Button
-            variant="text"
-            size="icon-sm"
-            onClick={() => router.history.back()}
-            aria-label="Back"
-            className="w-fit rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 active:bg-white/20"
-          >
-            <ArrowLeftIcon size={16} aria-hidden />
-          </Button>
-        </Tooltip>
         {shareKey ? (
           <Badge
             variant="pill"
@@ -148,7 +152,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
             Private — viewing via share link
           </Badge>
         ) : null}
-        <div className="flex items-start gap-6">
+        <div className="flex items-start gap-6 pl-14">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-4">
               {accessGate ? null : embedSrc ? (
