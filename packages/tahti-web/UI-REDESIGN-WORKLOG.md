@@ -5883,3 +5883,8 @@ Spotify, Mixcloud, Bandcamp and hearthis.at embeds now behave the same as Tahti-
 ## 2026-10-20 — Admin Grafana monitoring hub (0.0.230)
 
 Admin dashboard Monitoring panel links to Grafana (vital services, lab overview, infrastructure, Docker/OS) and container logs. New `/admin/monitoring` embeds the vital-services dashboard (kiosk iframe) and live Loki container logs, with per-service Grafana + app-log shortcuts. Bumped `packages/tahti-web/package.json` to `0.0.230`.
+
+
+## 2026-10-20 — What's New biweekly cycles + full-update modal (0.0.231)
+
+What's New is rebuilt as ~two-week cycles with Listen / Studio / Library / Admin / Settings / Desktop / Platform sections, filled from merged feature PRs since early September. Long cycles show four bullets on the timeline; click opens a modal with the full list. Bumped `packages/tahti-web/package.json` to `0.0.231`.

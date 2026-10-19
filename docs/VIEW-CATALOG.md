@@ -213,7 +213,7 @@ pro-editor `MasteringPanel`/`StemsPanel`/`PluginControls`.
 | [AGPL](#agpl)                 | `/agpl`                                   | `src/views/AgplView.tsx`     | No Story  | LegalDocShell              |
 | [Status](#status)             | `/status`                                 | `src/views/StatusView.tsx`   | No Story  | StatChip, Table            |
 | [News](#news)                 | `/news`                                   | `src/views/NewsView.tsx`     | No Story  | NewsWidget                 |
-| [What's New](#whats-new-web)  | `/whats-new`                              | `src/views/WhatsNewView.tsx` | No Story  | Timeline components        |
+| [What's New](#whats-new-web)  | `/whats-new`                              | `src/views/WhatsNewView.tsx` | Has Story | Timeline + Dialog (full cycle) |
 | [What Is It](#what-is-it)     | `/what-is-it`                             | `src/views/WhatIsItView.tsx` | No Story  | Marketing layout           |
 
 ### Utility / Alias Views
