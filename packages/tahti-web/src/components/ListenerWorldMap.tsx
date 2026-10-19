@@ -146,9 +146,7 @@ export const ListenerWorldMap: FC<ListenerWorldMapProps> = ({
       </div>
 
       {topCountries.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No listener location data yet.
-        </p>
+        <PageEmpty title="No listener location data yet." />
       ) : (
         <ol
           className={

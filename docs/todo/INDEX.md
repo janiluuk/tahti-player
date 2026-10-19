@@ -30,6 +30,7 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 | open    | [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md) | Radio Nova + NRJ (Bauer AAC streams) do not play in production; reproduce in a real browser |
 | partial | [listen-ui-liveliness.md](listen-ui-liveliness.md) | Nuclear-green accents + section pill hues shipped; left: de-green Card/Button/MediaArtwork, History/Collection depth |
 | open    | [ux-sweep-30-slices.md](ux-sweep-30-slices.md) | 30 micro-slices across empties, catalog chips, SectionTitle, History/Collection depth, Card surface, Studio search |
+| open    | [ux-sweep-next-30.md](ux-sweep-next-30.md) | Next 30 PageEmpty slices for remaining bare empty copy |
 | open    | [view-modes-track-tables.md](view-modes-track-tables.md) | No list/grid view-mode or sort anywhere; add to shared PlayableTrackTable + studio/library lists |
 | partial | [studio-artist-usability.md](studio-artist-usability.md) | First round shipped; left: release-row stats + delete, Releases toast drift, add-to-release from selection, collection row play, undo |
 | open    | [profile-surfaces-unification.md](profile-surfaces-unification.md) | Artist/Channel profile pages + 3× collection rendering + Library trio are copy-pasted; extract shared surfaces |
