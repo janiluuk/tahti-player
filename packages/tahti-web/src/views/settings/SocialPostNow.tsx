@@ -11,7 +11,7 @@ import {
   type SocialPostLog,
   type SocialPostPlatform,
 } from '../../api/social-autopost';
-import { SettingsHint } from './SettingsFields';
+import { PageEmpty } from '../../components/PageStates';
 
 const PLATFORM_NAMES: Record<SocialPostPlatform, string> = {
   MASTODON: 'Mastodon',
@@ -163,7 +163,10 @@ export function SocialPostNow({
           </ul>
         </div>
       ) : posts && selected ? (
-        <SettingsHint>Nothing posted yet.</SettingsHint>
+        <PageEmpty
+          title="Nothing posted yet"
+          description="Use Post now above to queue your first message."
+        />
       ) : null}
     </div>
   );
