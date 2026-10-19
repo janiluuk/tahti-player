@@ -8,7 +8,7 @@ import {
   fetchGovernanceElections,
   type GovernanceElection,
 } from '../../api/governance-elections';
-import { PageEmpty } from '../PageStates';
+import { PageEmpty, PageError } from '../PageStates';
 import { CandidacyControl } from './CandidacyControl';
 import { GovernancePanel } from './GovernancePanel';
 
@@ -117,9 +117,10 @@ export function ElectionsPanel() {
       {elections === null ? (
         <p className="text-foreground-secondary text-sm">Loading elections…</p>
       ) : failed ? (
-        <p className="text-foreground-secondary text-sm">
-          Could not load the elections. Try again later.
-        </p>
+        <PageError
+          title="Could not load the elections"
+          onRetry={() => void load()}
+        />
       ) : elections.length === 0 ? (
         <PageEmpty title="No board elections have been called yet." />
       ) : (
