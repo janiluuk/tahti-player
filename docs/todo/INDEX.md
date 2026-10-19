@@ -39,7 +39,7 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 | partial | [studio-artist-usability.md](studio-artist-usability.md) | Two rounds shipped; left: release delete (no API), add-to-release from selection, undo |
 | open    | [profile-surfaces-unification.md](profile-surfaces-unification.md) | Artist/Channel profile pages + 3× collection rendering + Library trio are copy-pasted; extract shared surfaces |
 | partial | [catalog-components-empty-states.md](catalog-components-empty-states.md) | Empties/chips/tabs shipped in UX sweep; left: HelpView / ReleasesPanel / FanSubscriptionStats tables |
-| partial | [spotify-listen-widget-tracks.md](spotify-listen-widget-tracks.md) | Playlist API + PlayableTrackTable for Spotify Listen widget; compact dialog layout |
+| partial | [ambient-waveform-track-rows.md](ambient-waveform-track-rows.md) | Ambient+waveform track row (comfortable/compact); Storybook review before Listen/Library wire-up |
 
 ## Fold rule (copy into CLAUDE / chat)
 
