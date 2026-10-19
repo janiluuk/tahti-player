@@ -52,9 +52,11 @@ export const StillProcessing: Story = {
   args: { id: PROCESSING_SOUND.id },
   decorators: [withTahtiRouter(`/studio/sounds/${PROCESSING_SOUND.id}`)],
   play: async ({ canvasElement }) => {
-    await expect(
-      await within(canvasElement).findByText(/Still processing/),
-    ).toBeVisible();
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByText(/Still processing/)).toBeVisible();
+    await expect(canvas.getByTestId('track-processing')).toHaveTextContent(
+      'Processing',
+    );
   },
 };
 

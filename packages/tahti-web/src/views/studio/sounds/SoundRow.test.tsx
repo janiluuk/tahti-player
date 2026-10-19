@@ -78,6 +78,16 @@ describe('SoundRow', () => {
     useProcessingJobsStore.setState({ jobs: [] });
   });
 
+  it('shows a processing track as Processing with Play disabled', () => {
+    renderRow({ status: 'PROCESSING' });
+
+    expect(screen.getByRole('status')).toHaveTextContent('Processing');
+    expect(screen.queryByText('PROCESSING')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Play Night Drive' }),
+    ).toBeDisabled();
+  });
+
   it('selects the row through its checkbox', () => {
     renderRow({});
     fireEvent.click(

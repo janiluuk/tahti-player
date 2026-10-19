@@ -7,7 +7,13 @@ import {
   RotateCcwIcon,
 } from 'lucide-react';
 
-import { Button, Checkbox, MediaArtwork, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  Checkbox,
+  MediaArtwork,
+  Tooltip,
+  TrackProcessing,
+} from '@tahti-player/ui';
 
 import type { StudioSound } from '../../../api/studio-types';
 import { AddToPlaylistButton } from '../../../components/AddToPlaylistButton';
@@ -86,6 +92,9 @@ export function SoundRow({
     ),
   );
   const failed = item.status === 'ERROR';
+  const processing =
+    !item.embedProvider &&
+    (item.status === 'PENDING' || item.status === 'PROCESSING');
   const rgb = useDominantColor(item.bannerUrl);
   const currentId = usePlayerStore((s) => s.currentId);
   const playerStatus = usePlayerStore((s) => s.status);
@@ -115,11 +124,12 @@ export function SoundRow({
         onChange={() => toggleSelected(item.id)}
         aria-label={`Select ${item.title}`}
       />
-      <MediaArtwork
-        src={item.bannerUrl ?? undefined}
-        size="sm"
-        className="shrink-0"
-      />
+      <div className="relative shrink-0 overflow-hidden rounded-md">
+        <MediaArtwork src={item.bannerUrl ?? undefined} size="sm" />
+        {processing ? (
+          <TrackProcessing variant="overlay" label="" decorative />
+        ) : null}
+      </div>
       <div className="min-w-44 flex-1">
         <Link
           to="/t/$id"
@@ -129,7 +139,13 @@ export function SoundRow({
           {item.title}
         </Link>
         <p className="text-foreground-secondary text-xs">
-          {failed ? 'Processing failed' : item.status}
+          {processing ? (
+            <TrackProcessing />
+          ) : failed ? (
+            'Processing failed'
+          ) : (
+            item.status
+          )}
           {formatUploadDate(item.createdAt)
             ? `, uploaded ${formatUploadDate(item.createdAt)}`
             : ''}
@@ -174,7 +190,7 @@ export function SoundRow({
         >
           <Button
             size="icon-sm"
-            disabled={busyId === item.id}
+            disabled={processing || busyId === item.id}
             onClick={(event) => {
               const queue = event.shiftKey;
               if (embedSrc) {

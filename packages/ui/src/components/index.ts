@@ -80,3 +80,4 @@ export * from './ViewShell';
 export * from '../providers/PlatformProvider';
 export * from '../utils/time';
 export * from './TrackTable';
+export * from './TrackProcessing';
