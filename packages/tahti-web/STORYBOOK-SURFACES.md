@@ -320,6 +320,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Player/WaveformCanvas` | `tahti-web/WaveformCanvas.stories.tsx` |
 | `Tahti/Widgets/WaveformMinimap` | `tahti-web/WaveformMinimap.stories.tsx` |
 | `Tahti/Player/WaveformSeekbar` | `tahti-web/WaveformSeekbar.stories.tsx` |
+| `Tahti/Listen/WelcomeStrip` | `tahti-web/WelcomeStrip.stories.tsx` |
 | `Tahti/Discover/WidgetCard` | `tahti-web/WidgetCard.stories.tsx` |
 | `Tahti/Discover/WidgetTrackRow` | `tahti-web/WidgetTrackRow.stories.tsx` |
 | `Components/ActionSheet` | `ActionSheet.stories.tsx` |
