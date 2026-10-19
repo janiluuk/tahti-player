@@ -3,7 +3,6 @@ import {
   MessageSquareIcon,
   SendIcon,
   ShieldAlertIcon,
-  UserRoundIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -41,7 +40,7 @@ import { AdminUserDeletePanel } from './admin-user/AdminUserDeletePanel';
 import { AdminUserEngagementPanel } from './admin-user/AdminUserEngagementPanel';
 import { AdminUserRestrictionsPanel } from './admin-user/AdminUserRestrictionsPanel';
 import { ImageLightbox } from './ImageLightbox';
-import { PageLoading } from './PageStates';
+import { PageError, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 const ROLES = ['BOARD', 'ARTIST', 'LISTENER'] as const;
@@ -76,6 +75,8 @@ export function AdminUserEditPanel({
     null,
   );
   const [avatarOpen, setAvatarOpen] = useState(false);
+  const [detailError, setDetailError] = useState<string | null>(null);
+  const [detailAttempt, setDetailAttempt] = useState(0);
 
   const syncDetail = (user: AdminUserDetail) => {
     setDetail(user);
@@ -102,9 +103,10 @@ export function AdminUserEditPanel({
       } else {
         setDetail(null);
       }
+      setDetailError(result.data ? null : (result.meta.reason ?? null));
       setDetailLoading(false);
     });
-  }, [userId]);
+  }, [userId, detailAttempt]);
 
   const saveUser = async () => {
     if (!detail) {
@@ -208,16 +210,11 @@ export function AdminUserEditPanel({
   if (!detail) {
     return (
       <StudioPanel className="flex min-h-72 items-center justify-center">
-        <div className="text-center">
-          <UserRoundIcon
-            size={28}
-            aria-hidden
-            className="text-foreground-secondary mx-auto mb-2"
-          />
-          <p className="text-foreground-secondary text-sm">
-            Could not load this account.
-          </p>
-        </div>
+        <PageError
+          title="Could not load this account"
+          description={detailError ?? undefined}
+          onRetry={() => setDetailAttempt((n) => n + 1)}
+        />
       </StudioPanel>
     );
   }
