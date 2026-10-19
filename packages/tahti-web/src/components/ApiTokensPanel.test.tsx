@@ -36,6 +36,24 @@ describe('ApiTokensPanel', () => {
     vi.restoreAllMocks();
   });
 
+  it('says the tokens failed to load instead of "No API tokens yet"', async () => {
+    const fetch = vi.spyOn(api, 'fetchApiTokens').mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    } as never);
+    await act(async () => {
+      render(<ApiTokensPanel />);
+    });
+    expect(screen.getByText('Could not load your API tokens')).toBeTruthy();
+    expect(screen.queryByText('No API tokens yet')).toBeNull();
+
+    fetch.mockResolvedValue({ data: [], meta: { source: 'api' } } as never);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(screen.getByText('No API tokens yet')).toBeTruthy();
+  });
+
   it('shows the MCP server URL an AI tool uses with a token', async () => {
     await renderPanel([]);
     expect(

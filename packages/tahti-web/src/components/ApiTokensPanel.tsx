@@ -19,7 +19,7 @@ import {
   type ApiToken,
 } from '../api/api-tokens';
 import { ConfirmDialog } from './ConfirmDialog';
-import { PageLoading } from './PageStates';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 const EXPIRY_OPTIONS = [
   { id: 'never', label: 'Never' },
@@ -54,13 +54,18 @@ export function ApiTokensPanel() {
   const [revealedToken, setRevealedToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pendingRevoke, setPendingRevoke] = useState<ApiToken | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     void fetchApiTokens().then((result) => {
       setTokens(result.data);
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
-  }, []);
+  }, [attempt]);
 
   const createToken = () => {
     const trimmedName = name.trim();
@@ -158,11 +163,20 @@ export function ApiTokensPanel() {
             </div>
           ) : null}
 
-          {tokens.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              No API tokens yet. Create one for scripted access to the Tahti
-              API.
-            </p>
+          {loadError && tokens.length === 0 ? (
+            <PageError
+              title="Could not load your API tokens"
+              description={loadError}
+              onRetry={() => {
+                setLoading(true);
+                setAttempt((n) => n + 1);
+              }}
+            />
+          ) : tokens.length === 0 ? (
+            <PageEmpty
+              title="No API tokens yet"
+              description="Create one for scripted access to the Tahti API."
+            />
           ) : (
             <ul className="divide-border divide-y">
               {tokens.map((token) => (
