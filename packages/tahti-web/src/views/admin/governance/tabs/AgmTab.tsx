@@ -30,6 +30,7 @@ import type {
   GovernanceDocument,
   GovernanceMeeting,
 } from '../../../../api/types';
+import { PageEmpty } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { isSafeHref } from '../../../../lib/safeHref';
 import { GovernanceDocumentRow } from '../records/GovernanceDocumentRow';
@@ -206,9 +207,7 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
       {loading ? (
         <p className="text-foreground-secondary text-xs">Loading…</p>
       ) : records.length === 0 ? (
-        <p className="text-foreground-secondary text-xs">
-          No attendance recorded yet.
-        </p>
+        <PageEmpty title="No attendance recorded yet." />
       ) : (
         <ul className="divide-border mb-3 divide-y text-sm">
           {records.map((record) => (
