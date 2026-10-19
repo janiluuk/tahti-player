@@ -384,11 +384,13 @@ export function SelectsTab() {
             />
             <div className="border-border min-h-0 overflow-auto rounded-md border">
               {browse.length === 0 ? (
-                <p className="text-foreground-secondary p-4 text-sm">
-                  {query.trim()
-                    ? `No public archive tracks match “${query}”.`
-                    : 'No eligible archive tracks found.'}
-                </p>
+                <PageEmpty
+                  title={
+                    query.trim()
+                      ? `No public archive tracks match “${query}”.`
+                      : 'No eligible archive tracks found.'
+                  }
+                />
               ) : (
                 <ul
                   aria-label="Available tracks"
