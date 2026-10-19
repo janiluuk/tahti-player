@@ -11,6 +11,8 @@
     "dev": "turbo dev --filter=@tahti-player/player --filter=@tahti-player/ui",
     "dev:remote": "VITE_HOST=0.0.0.0 turbo dev --filter=@tahti-player/player --filter=@tahti-player/ui",
     "dev:tahti": "pnpm --filter @tahti-player/tahti-web dev",
+    "tahti-ops": "node packages/tahti-ops/src/cli.mjs",
+    "tahti": "node packages/tahti-cli/src/cli.mjs",
     "deploy:tahti-beta": "pnpm --filter @tahti-player/tahti-web run deploy:vimage",
     "deploy:tahti-storybook": "pnpm --filter @tahti-player/storybook run deploy:vimage",
     "build": "turbo build",

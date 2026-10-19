@@ -1,0 +1,89 @@
+# tahti-ops — fold `scripts/` into a universal ops CLI
+
+**Status:** partial
+
+Maintainer/dev CLI that absorbs scattered `scripts/` entrypoints. Separate from
+product [`tahti-cli-tool.md`](tahti-cli-tool.md) (`tahti` API/TUI) so artists can
+install the product CLI without deploy SSH tooling.
+
+**Binary:** `tahti-ops` (`@tahti-player/tahti-ops`) — root: `pnpm tahti-ops`  
+**Decision:** product `tahti` stays API-only; ops lives in its own package
+([`docs/DECISIONS.md`](../DECISIONS.md)).
+
+## Shipped
+
+| Command | Replaces | Notes |
+| --- | --- | --- |
+| `tahti-ops env …` | `scripts/stack-env.sh` | bundled script; prefers org copy when present |
+| `tahti-ops stack smoke` | `scripts/stack-smoke.sh` | `--dry-run`; progress on stderr |
+| `tahti-ops backup status` | `scripts/backup.sh status` | cron may still call the script on the host |
+| `tahti-ops deploy stack` | `scripts/deploy_prod.sh` | flags: `--no-cache` `--down` |
+| `tahti-ops deploy worker` | `scripts/deploy_worker_remote.sh` | flags: `--bootstrap-env` |
+| `tahti-ops deploy minio` | `scripts/deploy_minio_remote.sh` | flags: `--bootstrap-env` |
+| `tahti-ops deploy all` | stack → worker → minio | stops on first failure |
+
+Shared: `--help`, `--dry-run`, `TAHTI_ORG_ROOT`, short `→` / `✓` / `✗` labels.
+
+## Script → command inventory
+
+### tahti-org `scripts/` (primary)
+
+| Script | `tahti-ops` surface | Status |
+| --- | --- | --- |
+| stack-up.sh | `stack up` / `stack down` | planned |
+| stack-smoke.sh | `stack smoke` | shipped |
+| unified-smoke.sh | `stack smoke --unified` | planned |
+| status-monitor.sh | `stack status` | planned |
+| stack-screenshots.sh | `stack screenshots` | planned |
+| stack-env.sh | `env …` | shipped (bundled until org merges) |
+| deploy_prod.sh | `deploy stack` | shipped |
+| deploy_worker_remote.sh | `deploy worker` | shipped |
+| deploy_minio_remote.sh | `deploy minio` | shipped |
+| db-migrate-deploy.sh | `deploy migrate` | planned |
+| init-secrets.sh | `init secrets` | planned |
+| init-minio-buckets.sh | `init buckets` | planned |
+| backup.sh | `backup run` / `backup status` | status shipped |
+| backup-postgres.sh | `backup postgres` | planned |
+| backup-minio.sh | `backup minio` | planned |
+| restore-postgres.sh / restore-test.sh | `backup restore` / `backup restore-test` | planned |
+| backup-drill.sh | `backup drill` | planned |
+| install-crons.sh | `backup crons` | planned |
+| next-release-tag.sh | `release tag` | planned |
+| release-changelog.sh | `release changelog` | planned |
+| release-meta.sh | `release meta` | planned |
+| check-prod-readiness.sh | `check prod` | planned |
+| check-mixcloud-prod.sh | `check mixcloud` | planned |
+| check-revelator-prod.sh | `check revelator` | planned |
+| check-distribution-prod.sh | `check distribution` | planned |
+| sync-tor-exit-list.mjs / check-tor-exit-list-fresh.mjs | `check tor` | planned |
+| channel-load-test.sh / editor-load-test.sh | `load channel` / `load editor` | planned |
+| check-design-tokens.sh / check-reference-token-values.sh / check-font-weight-cap.sh / design-conformance-routes.sh | `check design …` | planned |
+| dev-setup.sh | `dev setup` | planned |
+| ci-check.sh | `ci check` | planned |
+| ci-docker-cleanup.sh / docker-disk-cleanup.sh | `docker cleanup` | planned |
+| run-e2e-journeys.sh | `e2e journeys` | planned |
+| capture-e2e-screenshots.mjs / capture-mobile-screenshots.mjs / e2e-screenshots.sh / demo-live-screenshots.mjs | `e2e capture …` | planned |
+
+### tahti-player `scripts/` (secondary)
+
+| Script | Proposed surface | Status |
+| --- | --- | --- |
+| build-and-run-*.sh / run-linux.sh | `player build` / `player run` | planned |
+| flatpak-*.sh / update-aur.sh | `package flatpak` / `package aur` | planned |
+| deploy-production.sh | `deploy web` | planned |
+| scripts/ci/* | keep CI-only; optional `ci digest` | planned |
+| check-file-size.mjs | `check size` | planned |
+| generate-storybook-surfaces.mjs | `storybook surfaces` | planned |
+| close-external-issue.cjs | `github …` | planned |
+
+### Keep package-local
+
+`packages/tahti-web/scripts/` journeys / captures / route checks — fold only
+frequent operator entrypoints later (`web audit` / `web journeys`).
+
+## Done criteria
+
+1. `tahti-ops --help` lists shipped groups
+2. Day-1 + deploy documented; no active docs tell operators to run the raw scripts above
+3. Wrapped scripts print a deprecation hint pointing at `tahti-ops …`
+4. Product `tahti` unchanged / no deploy SSH in that package

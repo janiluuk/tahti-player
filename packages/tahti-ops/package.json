@@ -1,0 +1,22 @@
+{
+  "name": "@tahti-player/tahti-ops",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Maintainer CLI that folds repo scripts/ into one help tree (stack, env, backup, deploy).",
+  "bin": {
+    "tahti-ops": "./src/cli.mjs"
+  },
+  "scripts": {
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@tahti-player/eslint-config": "workspace:*",
+    "@types/node": "^24.13.4",
+    "typescript": "^5.9.2",
+    "vitest": "^4.1.11"
+  }
+}

@@ -21,6 +21,7 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 | blocked | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Multi-phase 13-category project not started |
 | blocked | [release-player-workflow-broken.md](release-player-workflow-broken.md) | User store secrets + first real release run |
 | blocked | [tahti-cli-tool.md](tahti-cli-tool.md) | npm publish @tahti/api-client (NPM_TOKEN) |
+| partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |
 | blocked | [desktop-ui-slowness.md](desktop-ui-slowness.md) | Waiting user manual test of 30 fps fix |
 | blocked | [listening-party.md](listening-party.md) | Needs user go-ahead for tahti-org work |
 | blocked | [track-visualizer-video-editor.md](track-visualizer-video-editor.md) | PulseForge licence / port decision |

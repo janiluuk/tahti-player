@@ -81,7 +81,7 @@ export function ServerSetupHelp({
             <code className="text-foreground">
               {setup.envPrefix}_CLIENT_SECRET
             </code>{' '}
-            on the API (<code>scripts/stack-env.sh set</code>) and redeploy.
+            on the API (<code>pnpm tahti-ops env set</code>) and redeploy.
           </li>
         </ol>
       ) : (
