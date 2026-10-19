@@ -34,7 +34,7 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 | open    | [view-modes-track-tables.md](view-modes-track-tables.md) | No list/grid view-mode or sort anywhere; add to shared PlayableTrackTable + studio/library lists |
 | partial | [studio-artist-usability.md](studio-artist-usability.md) | First round shipped; left: release-row stats + delete, Releases toast drift, add-to-release from selection, collection row play, undo |
 | open    | [profile-surfaces-unification.md](profile-surfaces-unification.md) | Artist/Channel profile pages + 3× collection rendering + Library trio are copy-pasted; extract shared surfaces |
-| open    | [catalog-components-empty-states.md](catalog-components-empty-states.md) | Hand-rolled pills/tabs/badges + 10 raw tables + bare empty text → catalog Badge/FilterChips/Tabs/EmptyState |
+| partial | [catalog-components-empty-states.md](catalog-components-empty-states.md) | Empties/chips/tabs shipped in UX sweep; left: raw `<table>` loading/empty/filtered states |
 
 ## Fold rule (copy into CLAUDE / chat)
 
