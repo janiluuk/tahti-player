@@ -19,7 +19,7 @@ One PR per slice. Tick when merged.
 | 8 | Studio home `SummaryStatsSection` discography → `PageEmpty` + CTA | open |
 | 9 | `FeatureRequestsView` comments → `PageEmpty` | open |
 | 10 | `TrackBody` comments → `PageEmpty` | open |
-| 11 | `MessagesView` → `PageEmpty` | open |
+| 11 | `MessagesView` → `PageEmpty` | done |
 | 12 | `SocialPostNow` → `PageEmpty` | open |
 
 ## Catalog controls (13–18)
