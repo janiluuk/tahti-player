@@ -18,6 +18,7 @@ import {
   SaveButton,
   Tooltip,
   TrackContextMenu,
+  TrackProcessing,
 } from '@tahti-player/ui';
 
 import { EntitySocialHeader } from '../../../components/EntitySocialHeader';
@@ -191,40 +192,49 @@ export function SoundHeader({
             )}
           </Button>
         </Tooltip>
-        <div className="min-w-0 flex-1">
-          <WaveformSeekbar
-            trackId={id}
-            peaks={peaks}
-            bars={peaks.length || 180}
-            progress={
-              isCurrent && playerDuration > 0 ? currentTime / playerDuration : 0
-            }
-            className="h-14"
-            onSeek={(fraction) =>
-              void startPlayback(
-                fraction * (editList?.sourceDuration ?? item.durationSec ?? 0),
-              )
-            }
-          />
-          <div className="text-foreground-secondary mt-1 flex justify-between text-xs tabular-nums">
-            <span>
-              {isCurrent
-                ? `${Math.floor(currentTime / 60)}:${String(Math.floor(currentTime % 60)).padStart(2, '0')}`
-                : '0:00'}
-            </span>
-            <span>
-              {Math.floor(
-                (editList?.sourceDuration ?? item.durationSec ?? 0) / 60,
-              )}
-              :
-              {String(
-                Math.floor(
-                  (editList?.sourceDuration ?? item.durationSec ?? 0) % 60,
-                ),
-              ).padStart(2, '0')}
-            </span>
+        {notReady ? (
+          <div className="min-w-0 flex-1">
+            <TrackProcessing variant="waveform" />
           </div>
-        </div>
+        ) : (
+          <div className="min-w-0 flex-1">
+            <WaveformSeekbar
+              trackId={id}
+              peaks={peaks}
+              bars={peaks.length || 180}
+              progress={
+                isCurrent && playerDuration > 0
+                  ? currentTime / playerDuration
+                  : 0
+              }
+              className="h-14"
+              onSeek={(fraction) =>
+                void startPlayback(
+                  fraction *
+                    (editList?.sourceDuration ?? item.durationSec ?? 0),
+                )
+              }
+            />
+            <div className="text-foreground-secondary mt-1 flex justify-between text-xs tabular-nums">
+              <span>
+                {isCurrent
+                  ? `${Math.floor(currentTime / 60)}:${String(Math.floor(currentTime % 60)).padStart(2, '0')}`
+                  : '0:00'}
+              </span>
+              <span>
+                {Math.floor(
+                  (editList?.sourceDuration ?? item.durationSec ?? 0) / 60,
+                )}
+                :
+                {String(
+                  Math.floor(
+                    (editList?.sourceDuration ?? item.durationSec ?? 0) % 60,
+                  ),
+                ).padStart(2, '0')}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
     </EntitySocialHeader>
   );

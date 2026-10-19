@@ -410,6 +410,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Layout/TopBar` | `TopBar.stories.tsx` |
 | `Components/TopList` | `TopList.stories.tsx` |
 | `Components/TrackContextMenu` | `TrackContextMenu.stories.tsx` |
+| `Components/TrackProcessing` | `TrackProcessing.stories.tsx` |
 | `Components/TrackTable` | `TrackTable.stories.tsx` |
 | `Components/ViewShell` | `ViewShell.stories.tsx` |
 | `Audio/VisualizerHost` | `VisualizerHost.stories.tsx` |
