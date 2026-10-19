@@ -34,7 +34,7 @@ export function ServiceCategory({
   );
 }
 
-function ServiceCard({ plugin }: { plugin: ServicePlugin }) {
+export function ServiceCard({ plugin }: { plugin: ServicePlugin }) {
   const navigate = useNavigate();
   // hearthis/spotify/oauth each track their own real status and write it
   // to usePluginInstallStore themselves (see those cards) — only the

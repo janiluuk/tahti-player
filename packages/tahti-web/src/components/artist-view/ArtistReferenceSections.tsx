@@ -1,6 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 
-import { Card, CardGrid, MediaArtwork } from '@tahti-player/ui';
+import { Card, CardGrid, MediaArtwork, SectionTitle } from '@tahti-player/ui';
 
 import type {
   PublicProfileCollection,
@@ -20,10 +20,6 @@ export type RelatedArtist = {
   displayName: string;
 };
 
-function SectionHeading({ children }: { children: string }) {
-  return <h2 className="mb-2 text-lg font-semibold">{children}</h2>;
-}
-
 export function ArtistPopularTracks({
   items,
   isOwner,
@@ -35,7 +31,7 @@ export function ArtistPopularTracks({
 }) {
   return (
     <section className="flex min-w-0 flex-col" data-testid="artist-popular">
-      <SectionHeading>Popular tracks</SectionHeading>
+      <SectionTitle title="Popular tracks" />
       <TopListRankBadges items={items} />
       <PlayableTrackTable
         items={items}
@@ -57,7 +53,7 @@ export function ArtistRelatedArtists({
 }) {
   return (
     <section className="flex min-w-0 flex-col" data-testid="artist-related">
-      <SectionHeading>Related artists</SectionHeading>
+      <SectionTitle title="Related artists" />
       <ul className="divide-border bg-primary text-primary-foreground border-border divide-y-(length:--border-width) border-(length:--border-width)">
         {artists.map((related) => (
           <li key={related.username}>
@@ -108,7 +104,7 @@ export function ArtistReleasesGrid({
   const navigate = useNavigate();
   return (
     <section className="flex flex-col" data-testid="artist-releases">
-      <SectionHeading>Releases</SectionHeading>
+      <SectionTitle title="Releases" />
       <CardGrid className="grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] pr-0">
         {releases.map(({ release, playable }) => {
           const playables = releasePlayables(release, artistName, channelSlug);
@@ -171,7 +167,7 @@ export function ArtistPlaylistsGrid({
   const navigate = useNavigate();
   return (
     <section className="flex flex-col" data-testid="artist-playlists">
-      <SectionHeading>Playlists</SectionHeading>
+      <SectionTitle title="Playlists" />
       <CardGrid className="grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] pr-0">
         {collections.map((collection) => (
           <Card
