@@ -19,6 +19,7 @@ import {
 } from '../api/sound-versions';
 import { usePolling } from '../hooks/usePolling';
 import { usePlayerStore } from '../stores/playerStore';
+import { PageEmpty } from './PageStates';
 import { Eyebrow } from './tahti/Eyebrow';
 import { VersionRenderProgress } from './VersionRenderProgress';
 
@@ -330,7 +331,7 @@ export function AudioRevisionList({
       ) : null}
 
       {listed.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">No revisions yet.</p>
+        <PageEmpty title="No revisions yet." />
       ) : (
         <ul className="flex flex-col gap-1.5">
           {listed.map((version) => {
