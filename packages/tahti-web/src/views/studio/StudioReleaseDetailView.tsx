@@ -39,6 +39,7 @@ import {
 } from '../../components/EntitySocialHeader';
 import { FingerprintTrackPanel } from '../../components/FingerprintTrackPanel';
 import { ImageUrlForm } from '../../components/ImageUrlForm';
+import { MusicBrainzRegisterPrompt } from '../../components/MusicBrainzRegisterPrompt';
 import { MusicBrainzSubmissionAssistant } from '../../components/MusicBrainzSubmissionAssistant';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
@@ -451,6 +452,15 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                             : 'Publish'}
                         </Button>
                       </div>
+                      {release.state === 'PUBLISHED' ? (
+                        <MusicBrainzRegisterPrompt
+                          title={release.title}
+                          artistName={user?.displayName ?? ''}
+                          releaseDate={release.releaseDate}
+                          barcode={release.upc}
+                          tracks={release.tracks}
+                        />
+                      ) : null}
                     </>
                   ),
                 },
