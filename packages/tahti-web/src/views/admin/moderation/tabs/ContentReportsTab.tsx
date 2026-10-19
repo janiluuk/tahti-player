@@ -17,7 +17,7 @@ import {
   type AdminContentReportStatus,
 } from '../../../../api/admin';
 import { deleteComment } from '../../../../api/comments';
-import { PageLoading } from '../../../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { ModerationTabs } from '../ModerationTabs';
 
@@ -267,9 +267,7 @@ export function ContentReportsTab() {
         {loading ? (
           <PageLoading label="Loading content reports…" />
         ) : reports.length === 0 ? (
-          <p className="text-foreground-secondary py-4 text-center text-sm">
-            No reports in this view.
-          </p>
+          <PageEmpty title="No reports in this view." />
         ) : (
           <ul className="divide-border divide-y">
             {reports.map((r) => (

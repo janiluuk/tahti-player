@@ -27,7 +27,7 @@ Bare empty copy and batch-4 leftovers after earlier sweeps. One PR per row. Tick
 | 109 | done | System announcements |
 | 110 | done | Selects rotation |
 | 111 | done | Selects archive browse |
-| 112 | open | Content reports |
+| 112 | done | Content reports |
 | 113 | done | Account fan subscriptions |
 | 114 | done | Radio schedule upcoming |
 | 115 | done | Admin audit log |
