@@ -55,6 +55,7 @@ import { StreamManagerPanel } from '../components/StreamManagerPanel';
 import { listenerWidgetType } from '../content/listenerWidgets';
 import { useChannelAutoplay } from '../hooks/useChannelAutoplay';
 import { useChannelLayoutEditing } from '../hooks/useChannelLayoutEditing';
+import { useHasFanTiers } from '../hooks/useHasFanTiers';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { hasAccountRole } from '../lib/accountRoles';
 import { avatarPoster } from '../lib/avatarPoster';
@@ -144,6 +145,7 @@ export function ChannelView({ slug }: { slug: string }) {
       : null,
     Boolean(me && !isOwner),
   );
+  const hasFanTiers = useHasFanTiers(channel?.user.username ?? null);
   const subtle = activePresetId === 'subtle';
   const configuredEmbedItems = useMemo(
     () =>
@@ -238,6 +240,8 @@ export function ChannelView({ slug }: { slug: string }) {
   const bioVisible = layout.find((i) => i.type === 'about')?.visible ?? true;
   const subscribeVisible =
     channel?.channelKind !== 'RADIO' &&
+    !isOwner &&
+    hasFanTiers === true &&
     (layout.find((i) => i.type === 'subscribe')?.visible ?? false);
   const layersMenu =
     editing && channel ? (
@@ -413,6 +417,7 @@ export function ChannelView({ slug }: { slug: string }) {
       slug={slug}
       isOwner={isOwner}
       isAdministrator={isAdministrator}
+      follow={!isOwner && me && !live && !channel.nowPlaying ? follow : null}
       onEditDesign={isOwner ? startEdit : undefined}
       onOpenStreamManager={
         isOwner || isAdministrator
