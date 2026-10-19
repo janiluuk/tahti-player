@@ -324,6 +324,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/ActionSheet` | `ActionSheet.stories.tsx` |
 | `Components/Alert` | `Alert.stories.tsx` |
 | `Components/AmbientCard` | `AmbientCard.stories.tsx` |
+| `Components/BackButton` | `BackButton.stories.tsx` |
 | `Components/Badge` | `Badge.stories.tsx` |
 | `Layout/BottomBar` | `BottomBar.stories.tsx` |
 | `Components/Box` | `Box.stories.tsx` |
@@ -376,6 +377,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/QueuePanel` | `QueuePanel.stories.tsx` |
 | `Components/SaveButton` | `SaveButton.stories.tsx` |
 | `Components/ScrollableArea` | `ScrollableArea.stories.tsx` |
+| `Components/SectionTitle` | `SectionTitle.stories.tsx` |
 | `Components/SegmentedControl` | `SegmentedControl.stories.tsx` |
 | `Components/Select` | `Select.stories.tsx` |
 | `Components/SelectableList` | `SelectableList.stories.tsx` |
