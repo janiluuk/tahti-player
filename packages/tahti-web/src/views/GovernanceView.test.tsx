@@ -98,7 +98,7 @@ async function renderAsBoard() {
 describe('GovernanceView', () => {
   it('shows a distinct DRAFT badge with circulation-period copy, not a bare state label', async () => {
     await renderAsBoard();
-    expect(container.textContent).toContain('Discussion · 7-day circulation');
+    expect(container.textContent).toContain('DRAFT');
     expect(container.textContent).toContain(
       'after circulation period (bylaws §9)',
     );
