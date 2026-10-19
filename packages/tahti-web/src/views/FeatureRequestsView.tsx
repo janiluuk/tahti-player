@@ -273,9 +273,10 @@ export function FeatureRequestsView({
                 {expandedId === r.id && (
                   <div className="border-border mt-3 flex flex-col gap-2 border-t pt-3">
                     {comments.length === 0 ? (
-                      <p className="text-foreground-secondary text-xs">
-                        No comments yet.
-                      </p>
+                      <PageEmpty
+                        title="No comments yet."
+                        description="Be the first to comment."
+                      />
                     ) : (
                       <ul className="border-border divide-border divide-y overflow-hidden rounded-md border text-sm">
                         {comments.map((c) => (
