@@ -12,6 +12,7 @@ import type { GovernanceMotion } from '../../api/types';
 import { hasAccountRole } from '../../lib/accountRoles';
 import { useAuthStore } from '../../stores/authStore';
 import { ConfirmDialog } from '../ConfirmDialog';
+import { PageEmpty } from '../PageStates';
 
 export function MotionDiscussion({
   motion,
