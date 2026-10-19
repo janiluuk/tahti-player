@@ -60,8 +60,7 @@ function SortHeader({
 }
 
 /** Searchable, sortable, zebra-striped release table with tracklist
- * drill-down — the "Releases" half of MyDiscographyView, pulled out so
- * it can also stand alone as its own Library tab. */
+ * drill-down, shown as its own Library tab. */
 export function ReleasesPanel({
   releases,
   artist,

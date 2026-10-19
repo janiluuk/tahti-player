@@ -44,7 +44,6 @@ import { useAuthStore } from '../stores/authStore';
 import { LibraryEmbedsView } from './LibraryEmbedsView';
 import { LibraryMediaView } from './LibraryMediaView';
 import { LibrarySmartLinksView } from './LibrarySmartLinksView';
-import { MyDiscographyView } from './MyDiscographyView';
 import { StudioRecordingsView } from './studio/StudioRecordingsView';
 import { StudioStashView } from './studio/StudioStashView';
 
@@ -215,11 +214,6 @@ export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
         {tab === 'library' ? (
           <div className="mt-2">
             <LibraryStats />
-          </div>
-        ) : null}
-        {tab === 'sounds' ? (
-          <div className="mt-2">
-            <MyDiscographyView />
           </div>
         ) : null}
         {tab === 'recordings' ? (

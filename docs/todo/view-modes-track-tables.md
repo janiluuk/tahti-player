@@ -5,7 +5,7 @@
 2026-10-19 sweep. No list/grid view-mode toggle exists anywhere in the app, and the shared
 `PlayableTrackTable` has no sort surface even though its columns declare `sortable: true`
 (`PlayableTrackTable.tsx:161`). The sort pattern already exists for a few studio lists
-(`MyDiscographyView.tsx` SortKey + FilterChips, `studio/sounds/SoundFilters.tsx:83`,
+(`studio/sounds/SoundFilters.tsx:83`,
 `ReleasesPanel.tsx`, `admin/storage/FilesBrowserTab.tsx:360`, player `Playlists.tsx`
 `usePlaylistSort`) but is not generalized to the primary listen surfaces.
 
@@ -23,7 +23,7 @@
 3. **Library view modes** — `LibraryMediaView` / `LibraryEmbedsView` /
    `LibrarySmartLinksView` hand-roll rows with no sort and no toggle; converge onto the
    shared track table (or a shared library-row) with FilterChips + sort. Pattern:
-   `MyDiscographyView.tsx`.
+   `studio/sounds/SoundFilters.tsx`.
 
 ## Verify
 

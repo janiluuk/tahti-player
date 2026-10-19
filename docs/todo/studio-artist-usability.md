@@ -30,8 +30,9 @@ functional gaps below are new.
    (`StudioReleaseDetailView.tsx:333-383`) lacks the per-track editor link that smart-link
    rows have (`ReleaseTrackRow.tsx:137-145`).
 5. **Row quick actions** — Collections rows: no delete-item / play / visibility toggle
-   (`StudioCollectionsView.tsx`); MyDiscography rows: no share / download / delete
-   (`MyDiscographyView.tsx`).
+   (`StudioCollectionsView.tsx`). (`MyDiscographyView.tsx` was unreachable since #551 —
+   `/library/sounds` renders `StudioSoundsView`, whose rows already have download + a
+   pin/audio-tools/delete menu — and was removed.)
 6. **Feedback drift** — inline `msg` `<p>` vs sonner toast mixed on the same screen:
    `StudioReleasesView.tsx:155-156`, `StudioShowsView.tsx:125-126`,
    `StudioPlaylistsView.tsx:117-118`, `StudioCollectionsView.tsx:228`,
