@@ -43,7 +43,7 @@ One PR per slice. Tick when merged.
 | 22 | `ArtistReferenceSections` → `SectionTitle` | open |
 | 23 | `ArtistProfileSections` → `SectionTitle` | open |
 | 24 | History stats active-tab accent | open |
-| 25 | History list active-row accent | open |
+| 25 | History list active-row accent | done |
 | 26 | CollectionView cover-tint header | open |
 | 27 | CollectionView track list `shadow-float` | open |
 

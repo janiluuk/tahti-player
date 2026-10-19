@@ -108,6 +108,7 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
   const enqueueMany = usePlayerStore((s) => s.enqueueMany);
+  const currentId = usePlayerStore((s) => s.currentId);
 
   const [filter, setFilter] = useState('');
   const [page, setPage] = useState(1);
@@ -228,6 +229,7 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
                 })}
                 artworkUrl={p.coverUrl}
                 isFavorite={isFavoriteTrack(p.id)}
+                isActive={currentId === p.id}
                 onToggleFavorite={() => toggleFavoriteTrack(p)}
                 onAddToQueue={() => {
                   void resolvePlayableForReplay(p).then(
