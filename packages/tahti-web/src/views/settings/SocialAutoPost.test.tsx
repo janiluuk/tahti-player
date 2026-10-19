@@ -56,6 +56,22 @@ describe('SocialAutoPost', () => {
     vi.restoreAllMocks();
   });
 
+  it('offers Retry when the settings fail to load', async () => {
+    const fetch = vi.spyOn(api, 'fetchSocialAutoPost').mockResolvedValue({
+      data: null,
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await renderSection();
+    expect(
+      screen.getByText('Could not load auto-posting settings'),
+    ).toBeTruthy();
+    fetch.mockResolvedValue({ data: settings(), meta: { source: 'api' } });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(screen.getByRole('region', { name: 'Mastodon' })).toBeTruthy();
+  });
+
   it('connects Mastodon with the instance, token and triggers', async () => {
     vi.spyOn(api, 'fetchSocialAutoPost').mockResolvedValue({
       data: settings(),
