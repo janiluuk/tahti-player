@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import type { Decorator, Preview } from '@storybook/react-vite';
 import { MotionConfig } from 'motion/react';
 import { createElement } from 'react';
@@ -22,6 +23,18 @@ import {
   forgetStoryRouter,
   storyRouterSettled,
 } from '../src/tahti-web/_lib/decorators';
+
+// Under the Vitest play runner, CSS transitions and animations (fade-ins,
+// dialog and popover enter/leave) made assertions race them on busy CI
+// runners: "element is not visible" mid fade-in, a closing popover still in
+// the DOM. Motion is already reduced below; this does the same for CSS.
+if (import.meta.env.VITEST) {
+  const style = document.createElement('style');
+  style.setAttribute('data-storybook-test', 'no-animations');
+  style.textContent =
+    '*,*::before,*::after{transition-duration:0s!important;transition-delay:0s!important;animation-duration:0s!important;animation-delay:0s!important;animation-iteration-count:1!important;}';
+  document.head.appendChild(style);
+}
 
 const withReducedMotion: Decorator = (Story) =>
   createElement(
