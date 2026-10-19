@@ -51,6 +51,12 @@ export const fetchSpotifyArtistTracks = (artistUrl: string) =>
     `/api/v1/imports/spotify/by-artist-url?artistUrl=${encodeURIComponent(artistUrl)}`,
   );
 
+/** Public playlist tracks for the Listen Spotify widget (embed refs only). */
+export const fetchSpotifyPlaylistTracks = (playlistUrl: string) =>
+  list(
+    `/api/v1/imports/spotify/by-playlist-url?playlistUrl=${encodeURIComponent(playlistUrl)}`,
+  );
+
 /** Spotify's CDN is reached through the API so the artist's IP never hits it. */
 export const spotifyCoverUrl = (coverUrl: string) =>
   `${apiBase()}/api/v1/imports/spotify/cover?url=${encodeURIComponent(coverUrl)}`;

@@ -29,6 +29,7 @@ export {
   addSpotifyTrack,
   fetchMySpotifyTracks,
   fetchSpotifyArtistTracks,
+  fetchSpotifyPlaylistTracks,
   searchSpotify,
   spotifyCoverUrl,
 } from './sources/spotify-collection';
