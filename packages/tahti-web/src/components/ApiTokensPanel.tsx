@@ -159,10 +159,7 @@ export function ApiTokensPanel() {
           ) : null}
 
           {tokens.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              No API tokens yet. Create one for scripted access to the Tahti
-              API.
-            </p>
+            <PageEmpty title="No API tokens yet. Create one for scripted access to the Tahti API." />
           ) : (
             <ul className="divide-border divide-y">
               {tokens.map((token) => (
