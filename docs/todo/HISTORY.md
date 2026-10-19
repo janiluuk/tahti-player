@@ -4972,3 +4972,14 @@ Asked for after the full e2e run on the Tahti map (#1137): "continue with the ta
 - **#1143:** DSP landing spec accepts artwork beside the heading (desktop) and first-matches the year / genre.
 - **#1146:** sound details Description label matches the other fields; release date column no longer clips.
 - **Rate limits (tahti-org, not pushed — the push was blocked for this session):** `fix/auth-rate-limit-own-bucket` moves auth requests to their own `rl:auth:<ip>` bucket (they shared `rl:api:<ip>` with all page traffic, which locked sign-in on beta during the e2e run); `feat/stack-env-script` adds `scripts/stack-env.sh` (list/get/set/unset/preset/diff/restore/apply on the deploy host's `infra/stack.env`, Swarm-safe) and `docs/todo/admin-cli-consolidation.md`, the plan to fold `scripts/` into one `tahti-admin` CLI.
+
+## 2026-10-19 — Studio usability for artists, first round (tahti-player #1160-#1170)
+
+Asked for as "start working on new branch the todo list", then "merge them when green, then continue the todo list". Picked from `studio-artist-usability.md`, staying out of `StudioReleasesView.tsx` (another session's UX sweep slice 30 edits it).
+
+- **Stats (#1161, #1162, #1167):** Stats › Top lists open a sound on its Insights tab; release track rows get "Edit track" (sound editor) and "Open track" (the release-track insights page nothing linked to); release detail gets a Stats tab summing each track's insights (plays, downloads, tracks ranked by plays, combined listener map, 7d/30d/all) — the API has no release-level stats query.
+- **Search + feedback (#1163, #1164):** search on Studio › Shows ("1 episode" grammar too); Shows, Playlists, Collections and Schedule errors were written on the page behind the still-open dialog — now `toast.error` / `toast.success`.
+- **Bulk + row actions (#1168, #1170):** Sounds rows get a checkbox and a "Selected sounds" toolbar (Select all, Add to playlist, Clear); `AddToPlaylistPanel` takes `soundIds`; new `@tahti-player/ui` `Checkbox` with a story. Collections rows reuse the editors' "⋮" menu (Make private/public, Delete); `PopoverItem` gets opt-in `closeOnClick` because popover items never closed their popover.
+- **Cleanup (#1166):** removed `MyDiscographyView`, unreachable since #551 (`/library/sounds` renders `StudioSoundsView`).
+- **Todos (#1160, #1169):** Radio Nova / NRJ not playing in production (`radio-nova-nrj-playback.md`); roadmap epic for staying signed in with JWT + rotating refresh tokens (`auth-refresh-tokens.md`) — noted there that every login currently revokes all other sessions (SEC-010) and sessions never slide.
+
