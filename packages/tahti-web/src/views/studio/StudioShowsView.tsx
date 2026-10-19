@@ -329,7 +329,9 @@ function ShowRow({
         </Link>
         <p className="text-foreground-secondary text-xs">
           Next episode #{show.nextEpisodeNumber}
-          {episodeCount ? `, ${episodeCount} episodes` : ''}
+          {episodeCount
+            ? `, ${episodeCount} ${episodeCount === 1 ? 'episode' : 'episodes'}`
+            : ''}
           {`, ${show.intervalHours}h slots`}
           {show.scheduleNote ? `, ${show.scheduleNote}` : ''}
           {show.mode === 'SINGLE' ? ', single show' : ', continuing series'}
