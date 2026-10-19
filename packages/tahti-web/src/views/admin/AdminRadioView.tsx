@@ -27,7 +27,7 @@ import { fetchRadioStation } from '../../api/client';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { MulticastSection } from '../../components/MulticastSection';
-import { PageEmpty, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { TahtiRotationPlaylistEditor } from '../../components/TahtiRotationPlaylistEditor';
 import { usePlayerStore } from '../../stores/playerStore';
@@ -58,6 +58,7 @@ export function AdminRadioView() {
     ReturnType<typeof fetchRadioStation>
   > | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
   const reload = () => {
@@ -66,6 +67,11 @@ export function AdminRadioView() {
       fetchAdminRadioRotation(),
       fetchRadioStation(),
     ]).then(([radioResult, rotationResult, stationResult]) => {
+      setLoadError(
+        radioResult.meta.source === 'api'
+          ? (radioResult.meta.reason ?? null)
+          : null,
+      );
       setData(radioResult.data);
       setRotation(rotationResult.data);
       setStation(stationResult);
@@ -148,6 +154,17 @@ export function AdminRadioView() {
               {loading || !data ? (
                 <StudioPanel>
                   <PageLoading label="Loading radio…" />
+                </StudioPanel>
+              ) : loadError ? (
+                <StudioPanel>
+                  <PageError
+                    title="Could not load Tahti Radio"
+                    description={loadError}
+                    onRetry={() => {
+                      setLoading(true);
+                      reload();
+                    }}
+                  />
                 </StudioPanel>
               ) : (
                 <Tabs
