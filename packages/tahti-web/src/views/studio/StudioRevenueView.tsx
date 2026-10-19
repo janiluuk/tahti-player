@@ -27,6 +27,7 @@ import {
 import { FanSubOrderBreakdown } from '../../components/FanSubOrderBreakdown';
 import { FanSubscriptionStats } from '../../components/FanSubscriptionStats';
 import { FanTiersEditor } from '../../components/FanTiersEditor';
+import { PageError } from '../../components/PageStates';
 import { PurchaseOrdersList } from '../../components/PurchaseOrdersList';
 import { PurchaseTiersEditor } from '../../components/PurchaseTiersEditor';
 import { StudioGate } from '../../components/StudioGate';
@@ -51,6 +52,8 @@ export function StudioRevenueView() {
   const [connect, setConnect] = useState<FanConnectStatus | null>(null);
   const [fanPayouts, setFanPayouts] = useState<FanPayoutStats | null>(null);
   const [hasFanTiers, setHasFanTiers] = useState<boolean | null>(null);
+  const [tiersError, setTiersError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [grants, setGrants] = useState<GrantRow[]>([]);
   const [estimate, setEstimate] = useState<GrantEstimate | null>(null);
   const [mergedOrders, setMergedOrders] = useState(mergeRevenueOrders([], []));
@@ -74,7 +77,16 @@ export function StudioRevenueView() {
       ]) => {
         setConnect(connectResult.data);
         setFanPayouts(payoutsResult.data);
-        setHasFanTiers(tiersResult.data.length > 0);
+        const tiersReason =
+          tiersResult.meta.source === 'api'
+            ? (tiersResult.meta.reason ?? null)
+            : null;
+        setTiersError(tiersReason);
+        setHasFanTiers(
+          tiersReason && tiersResult.data.length === 0
+            ? null
+            : tiersResult.data.length > 0,
+        );
         setMergedOrders(
           mergeRevenueOrders(payoutsResult.data.recent, royaltiesResult.data),
         );
@@ -82,7 +94,7 @@ export function StudioRevenueView() {
         setEstimate(estimateResult.data);
       },
     );
-  }, []);
+  }, [attempt]);
 
   const showConnectWarning = useMemo(
     () =>
@@ -160,6 +172,14 @@ export function StudioRevenueView() {
                     Open Stripe setup
                   </ButtonLink>
                 }
+              />
+            </StudioPanel>
+          ) : tiersError && hasFanTiers === null ? (
+            <StudioPanel title="Fan subscriptions">
+              <PageError
+                title="Could not load your fan tiers"
+                description={tiersError}
+                onRetry={() => setAttempt((n) => n + 1)}
               />
             </StudioPanel>
           ) : hasFanTiers === false ? (
