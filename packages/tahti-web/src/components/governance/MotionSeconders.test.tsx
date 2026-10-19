@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { MotionSeconders } from './MotionSeconders';
@@ -51,5 +51,31 @@ describe('MotionSeconders', () => {
 
     await vi.waitFor(() => expect(fetchMotionSeconders).toHaveBeenCalled());
     expect(container.textContent).toBe('');
+  });
+
+  it('says the seconders failed to load instead of hiding them', async () => {
+    fetchMotionSeconders.mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    render(<MotionSeconders motionId="m1" />);
+    expect(
+      await screen.findByText('Could not load who seconded this motion'),
+    ).toBeTruthy();
+
+    fetchMotionSeconders.mockResolvedValue({
+      data: [
+        {
+          displayName: 'Aino',
+          username: 'aino',
+          secondedAt: '2026-10-14T08:00:00.000Z',
+        },
+      ],
+      meta: { source: 'api' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(
+      await screen.findByRole('heading', { name: 'Seconded by' }),
+    ).toBeTruthy();
   });
 });
