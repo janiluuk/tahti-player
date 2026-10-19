@@ -5,7 +5,7 @@ import { Badge, FilterChips, SectionShell, ViewShell } from '@tahti-player/ui';
 
 import { fetchTransparencyResolutions } from '../api/client';
 import type { BoardResolution } from '../api/types';
-import { PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEAR_OPTIONS = Array.from({ length: 5 }, (_, i) => CURRENT_YEAR - i);
@@ -27,6 +27,8 @@ export function TransparencyResolutionsView() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const [resolutions, setResolutions] = useState<BoardResolution[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -36,12 +38,15 @@ export function TransparencyResolutionsView() {
         return;
       }
       setResolutions(result.data);
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
     return () => {
       cancelled = true;
     };
-  }, [year]);
+  }, [year, attempt]);
 
   return (
     <ViewShell
@@ -67,10 +72,14 @@ export function TransparencyResolutionsView() {
 
       {loading ? (
         <PageLoading label="Loading resolutions…" />
+      ) : loadError && resolutions.length === 0 ? (
+        <PageError
+          title="Could not load the resolutions"
+          description={loadError}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
       ) : resolutions.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No published resolutions for {year}.
-        </p>
+        <PageEmpty title={`No published resolutions for ${year}.`} />
       ) : (
         <SectionShell title={`Resolutions ${year}`}>
           <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
