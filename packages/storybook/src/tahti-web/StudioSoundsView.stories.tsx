@@ -44,10 +44,10 @@ export const AmbientCovers: Story = {
     const link = await canvas.findByRole('link', {
       name: 'Northern Lights — Live Set',
     });
-    const li = link.closest('li');
-    await expect(li).toBeTruthy();
+    const rowEl = link.closest('[data-testid="ambient-track-row"]');
+    await expect(rowEl).toBeTruthy();
     await waitFor(() => {
-      const bg = li!.getAttribute('style') ?? '';
+      const bg = rowEl!.getAttribute('style') ?? '';
       expect(bg).toMatch(/linear-gradient|radial-gradient|background/i);
     });
   },

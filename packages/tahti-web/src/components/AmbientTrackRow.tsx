@@ -81,6 +81,10 @@ const DENSITY_LAYOUT: Record<
 export type AmbientTrackRowProps = {
   trackId: string;
   title: string;
+  /** When set, replaces the plain title text (e.g. a router Link). */
+  titleNode?: ReactNode;
+  /** Status / error lines under the title (Studio Sounds). */
+  belowTitle?: ReactNode;
   artist: string;
   coverUrl?: string | null;
   durationLabel?: string;
@@ -102,6 +106,8 @@ export type AmbientTrackRowProps = {
 export function AmbientTrackRow({
   trackId,
   title,
+  titleNode,
+  belowTitle,
   artist,
   coverUrl,
   durationLabel,
@@ -170,8 +176,9 @@ export function AmbientTrackRow({
                 layout.title,
               )}
             >
-              {title}
+              {titleNode ?? title}
             </h3>
+            {belowTitle}
           </div>
           {meta ? (
             <p
