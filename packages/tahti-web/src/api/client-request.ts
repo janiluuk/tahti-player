@@ -1,3 +1,4 @@
+import { apiErrorDetail, type ApiErrorBody } from './api-error-detail';
 import { apiBase } from './http';
 
 /** Browser calls go through Vite proxy → Tahti API (avoids CORS). */
@@ -18,32 +19,7 @@ export async function requestJson<T>(
   if (!res.ok) {
     let detail = `${path} → ${res.status}`;
     try {
-      const body = (await res.json()) as {
-        error?: string;
-        message?: string;
-        issues?: Array<{ path?: Array<string | number>; message?: string }>;
-      };
-      if (body.issues?.length) {
-        const parts = body.issues
-          .map((issue) => {
-            const field = Array.isArray(issue.path)
-              ? issue.path.filter((part) => part !== 'body').join('.')
-              : '';
-            const message = issue.message?.trim();
-            if (!message) {
-              return null;
-            }
-            return field ? `${field}: ${message}` : message;
-          })
-          .filter((part): part is string => Boolean(part));
-        if (parts.length) {
-          detail = parts.join(' · ');
-        } else if (body.error || body.message) {
-          detail = body.error ?? body.message ?? detail;
-        }
-      } else if (body.error || body.message) {
-        detail = body.error ?? body.message ?? detail;
-      }
+      detail = apiErrorDetail((await res.json()) as ApiErrorBody, detail);
     } catch {
       // ignore
     }
