@@ -12,7 +12,7 @@ import {
 } from '../api/broadcast';
 import { fetchShowSeries } from '../api/shows';
 import { fetchMeProfile } from '../api/studio-extras';
-import { PageLoading } from './PageStates';
+import { PageError, PageLoading } from './PageStates';
 import { RoundImageUploadButton } from './RoundImageUploadButton';
 
 type Props = {
@@ -46,6 +46,8 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
   const [series, setSeries] = useState<
     Array<{ id: string; title: string; nextEpisodeNumber: number }>
   >([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -58,6 +60,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
         return;
       }
       const loadedPreflight = preflightResult.data;
+      setLoadError(preflightResult.meta.reason ?? null);
       if (loadedPreflight) {
         setPreflight(loadedPreflight);
         setTitle(loadedPreflight.title ?? '');
@@ -83,7 +86,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   if (!loaded) {
     return <PageLoading label="Loading show info…" />;
@@ -91,9 +94,14 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
 
   if (!preflight) {
     return (
-      <p className="text-foreground-secondary text-sm">
-        Show details could not be loaded.
-      </p>
+      <PageError
+        title="Could not load your show details"
+        description={loadError ?? undefined}
+        onRetry={() => {
+          setLoaded(false);
+          setAttempt((n) => n + 1);
+        }}
+      />
     );
   }
 
