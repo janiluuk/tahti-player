@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  backButtonCornerClassName,
   BackButtonLink,
   Button,
   ButtonLink,
@@ -288,8 +289,12 @@ export function CollectionView({ slug }: { slug: string }) {
   };
 
   return (
-    <PageFrame maxWidth="full">
-      <Tooltip content="Back to Listen" side="right">
+    <PageFrame maxWidth="full" className="relative">
+      <Tooltip
+        content="Back to Listen"
+        side="right"
+        wrapperClassName={backButtonCornerClassName}
+      >
         <BackButtonLink to="/" aria-label="Back to Listen" />
       </Tooltip>
 

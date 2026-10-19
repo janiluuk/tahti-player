@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  backButtonCornerClassName,
   BackButtonLink,
   Button,
   ClampedText,
@@ -589,17 +590,21 @@ export function ChannelView({ slug }: { slug: string }) {
       )}
 
       <div className="relative z-10 flex w-full flex-col gap-1.5 px-4 py-3 sm:px-6 sm:py-4">
+        {!editing ? (
+          <Tooltip
+            content="Back to Listen"
+            side="right"
+            wrapperClassName={backButtonCornerClassName}
+          >
+            <BackButtonLink to="/" aria-label="Back to Listen" />
+          </Tooltip>
+        ) : null}
         {!heroVisible && <ChannelTopBar text={channel.topBarText} />}
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          {!editing ? (
-            <Tooltip content="Back to Listen" side="right">
-              <BackButtonLink to="/" aria-label="Back to Listen" />
-            </Tooltip>
-          ) : (
-            <span />
-          )}
-          {!heroVisible ? pageActions : null}
-        </div>
+        {!heroVisible && pageActions ? (
+          <div className="flex flex-wrap items-center justify-end gap-2 pl-14">
+            {pageActions}
+          </div>
+        ) : null}
 
         {!heroVisible && (editing || channel.user.showPageHero !== false) && (
           <div

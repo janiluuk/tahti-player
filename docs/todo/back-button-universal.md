@@ -14,7 +14,8 @@ everywhere these cases appear.
 2. Wired: ChannelView, RadioStationView, AppTopNav history pair, FullScreenPlayer,
    StudioReleaseDetailView, StudioCollectionEditView, StudioSoundView,
    StudioShowDetailView, StudioEpisodeReviewView, StudioPlaylistEditorView,
-   ArtistView, CollectionView, TrackHero.
+   ArtistView, CollectionView, TrackHero. Page backs float in the top-left
+   corner instead of taking a row.
 
 ## Left
 

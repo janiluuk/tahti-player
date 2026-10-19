@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  backButtonCornerClassName,
   BackButtonLink,
   Button,
   ButtonLink,
@@ -167,18 +168,23 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
   return (
     <StudioGate>
       <div className="studio-page-layout flex w-full flex-col gap-6">
-        <Tooltip content={`Back to ${show?.title ?? 'Show'}`} side="right">
-          <BackButtonLink
-            to="/studio/shows/$id"
-            params={{ id: episode.showId }}
-            aria-label={`Back to ${show?.title ?? 'Show'}`}
-          />
-        </Tooltip>
-
         <ViewShell
           title={episode.title}
           classes={{ root: 'px-0 pt-0' }}
           actions={<Eyebrow>Episode #{episode.episodeNumber}</Eyebrow>}
+          corner={
+            <Tooltip
+              content={`Back to ${show?.title ?? 'Show'}`}
+              side="right"
+              wrapperClassName={backButtonCornerClassName}
+            >
+              <BackButtonLink
+                to="/studio/shows/$id"
+                params={{ id: episode.showId }}
+                aria-label={`Back to ${show?.title ?? 'Show'}`}
+              />
+            </Tooltip>
+          }
         >
           {episode.description ? (
             <p className="text-sm">{episode.description}</p>

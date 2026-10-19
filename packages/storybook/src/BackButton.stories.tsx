@@ -50,8 +50,9 @@ export const OnMediaBackdrop: Story = {
     },
   },
   render: (args) => (
-    <div className="relative flex h-40 w-72 items-start justify-start overflow-hidden rounded-xl bg-gradient-to-br from-teal-900 to-black p-4">
-      <BackButton {...args} />
+    <div className="relative h-40 w-80 overflow-hidden rounded-xl bg-gradient-to-br from-teal-900 to-black p-4">
+      <p className="pl-14 text-lg font-bold text-white">Hero underneath</p>
+      <BackButton {...args} className="absolute top-3 left-3" />
     </div>
   ),
   args: {

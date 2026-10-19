@@ -11,6 +11,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 
 import {
+  backButtonCornerClassName,
   BackButtonLink,
   ClampedText,
   Dialog,
@@ -423,7 +424,11 @@ function ArtistProfilePage({ username }: { username: string }) {
           preset={resolvePublicVisualizerPreset(backgroundVisualPreset)}
         />
       ) : null}
-      <Tooltip content="Back to Listen" side="right">
+      <Tooltip
+        content="Back to Listen"
+        side="right"
+        wrapperClassName={backButtonCornerClassName}
+      >
         <BackButtonLink to="/" aria-label="Back to Listen" />
       </Tooltip>
 

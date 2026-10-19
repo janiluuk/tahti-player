@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 
 import {
+  backButtonCornerClassName,
   BackButtonLink,
   Badge,
   Button,
@@ -83,14 +84,16 @@ export function RadioStationView({ stationId }: { stationId: string }) {
       subtitle={`${station.genre} · ${station.language}`}
       data-testid="radio-station-page"
       classes={{ content: 'gap-6' }}
+      corner={
+        <Tooltip
+          content="Back to radio"
+          side="right"
+          wrapperClassName={backButtonCornerClassName}
+        >
+          <BackButtonLink to="/radio" aria-label="Back to radio" />
+        </Tooltip>
+      }
     >
-      <Tooltip content="Back to radio" side="right">
-        <BackButtonLink
-          to="/radio"
-          aria-label="Back to radio"
-          className="-mt-2"
-        />
-      </Tooltip>
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
         <MediaArtwork
           src={station.logoUrl}

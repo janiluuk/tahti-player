@@ -8,6 +8,8 @@ import { Button } from '../Button';
 export const backButtonClassName =
   'size-12 shrink-0 justify-center rounded-full border-0 bg-background/55 text-foreground shadow-none backdrop-blur-md hover:bg-background/80 hover:translate-x-0 hover:translate-y-0 active:scale-95 disabled:pointer-events-none disabled:opacity-30';
 
+export const backButtonCornerClassName = 'absolute top-3 left-3 z-30 w-fit';
+
 export type BackButtonDirection = 'back' | 'forward';
 
 type SharedProps = {

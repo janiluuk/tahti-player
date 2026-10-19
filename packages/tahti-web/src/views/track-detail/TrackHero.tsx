@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 
 import {
   BackButton,
+  backButtonCornerClassName,
   Badge,
   Button,
   Input,
@@ -132,10 +133,15 @@ export function TrackHero({ page }: { page: TrackPage }) {
       )}
       <div className="pointer-events-none absolute inset-0 bg-black/45" />
 
+      <Tooltip
+        content="Back"
+        side="right"
+        wrapperClassName={backButtonCornerClassName}
+      >
+        <BackButton onClick={() => router.history.back()} aria-label="Back" />
+      </Tooltip>
+
       <div className="relative z-10 flex flex-col gap-5 text-white">
-        <Tooltip content="Back" side="right">
-          <BackButton onClick={() => router.history.back()} aria-label="Back" />
-        </Tooltip>
         {shareKey ? (
           <Badge
             variant="pill"
@@ -146,7 +152,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
             Private — viewing via share link
           </Badge>
         ) : null}
-        <div className="flex items-start gap-6">
+        <div className="flex items-start gap-6 pl-14">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-4">
               {accessGate ? null : embedSrc ? (

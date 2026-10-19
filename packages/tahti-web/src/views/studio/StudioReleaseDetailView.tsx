@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 
 import {
+  backButtonCornerClassName,
   BackButtonLink,
   Button,
   Dialog,
@@ -133,13 +134,13 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
 
   return (
     <StudioGate requireChannel={false}>
-      <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
-        <Tooltip content="Back to Releases" side="right">
-          <BackButtonLink
-            to="/studio/releases"
-            aria-label="Back to Releases"
-            className="-mt-2"
-          />
+      <div className="studio-page-layout relative flex w-full flex-col gap-6 px-1 py-2">
+        <Tooltip
+          content="Back to Releases"
+          side="right"
+          wrapperClassName={backButtonCornerClassName}
+        >
+          <BackButtonLink to="/studio/releases" aria-label="Back to Releases" />
         </Tooltip>
         {!release ? (
           <StudioPanel>

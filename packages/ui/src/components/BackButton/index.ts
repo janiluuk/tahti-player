@@ -3,6 +3,7 @@ export {
   BackButtonAnchor,
   BackButtonLink,
   backButtonClassName,
+  backButtonCornerClassName,
 } from './BackButton';
 export type {
   BackButtonAnchorProps,

@@ -1,4 +1,8 @@
-import { BackButtonLink, Tooltip } from '@tahti-player/ui';
+import {
+  backButtonCornerClassName,
+  BackButtonLink,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
@@ -16,13 +20,13 @@ export function StudioShowDetailView({ id }: { id: string }) {
 
   return (
     <StudioGate>
-      <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
-        <Tooltip content="Back to Shows" side="right">
-          <BackButtonLink
-            to="/studio/shows"
-            aria-label="Back to Shows"
-            className="-mt-2"
-          />
+      <div className="studio-page-layout relative flex w-full flex-col gap-6 px-1 py-2">
+        <Tooltip
+          content="Back to Shows"
+          side="right"
+          wrapperClassName={backButtonCornerClassName}
+        >
+          <BackButtonLink to="/studio/shows" aria-label="Back to Shows" />
         </Tooltip>
 
         {!show ? (
