@@ -21,6 +21,7 @@ import type {
 import { preparePlayables, shuffled } from '../lib/nativePlayback';
 import { usePlayerStore } from '../stores/playerStore';
 import { ConfirmDialog } from './ConfirmDialog';
+import { PageError } from './PageStates';
 import { PlaylistNameDialog } from './PlaylistNameDialog';
 import { SmartPlaylistDialog } from './SmartPlaylistDialog';
 import { describeRules, EMPTY_SMART } from './smartPlaylistRules';
@@ -69,6 +70,7 @@ async function playSmart(
 /** Smart playlists: saved rule sets; counts follow library changes as they happen. */
 export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
   const [lists, setLists] = useState<NativeSmartPlaylist[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [editing, setEditing] = useState<{
     id: string | null;
@@ -83,6 +85,7 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
   const load = useCallback(async () => {
     try {
       const next = await library.analysis.smart.list();
+      setLoadError(null);
       setLists(next);
       const entries = await Promise.all(
         next.map(async (list) => {
@@ -101,7 +104,7 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
       setCounts(Object.fromEntries(entries));
     } catch (failure) {
       setLists([]);
-      toast.error(
+      setLoadError(
         failure instanceof Error
           ? failure.message
           : 'Could not load smart playlists.',
@@ -144,7 +147,13 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
           New smart playlist
         </Button>
       </div>
-      {lists === null ? null : lists.length === 0 ? (
+      {lists === null ? null : loadError && lists.length === 0 ? (
+        <PageError
+          title="Could not load your smart playlists"
+          description={loadError}
+          onRetry={() => void load()}
+        />
+      ) : lists.length === 0 ? (
         <p className="text-foreground-secondary text-xs">
           Rules like “house, 120–128 BPM, rating 4+, not played in 30 days” keep
           themselves up to date.
