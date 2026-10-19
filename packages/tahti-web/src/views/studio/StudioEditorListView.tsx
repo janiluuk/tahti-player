@@ -18,7 +18,7 @@ import {
   fetchStudioSounds,
 } from '../../api/studio';
 import type { EditorProjectRow, StudioSound } from '../../api/studio-types';
-import { PageLoading } from '../../components/PageStates';
+import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { contentTypeLabel } from '../../content/contentTypes';
@@ -32,6 +32,8 @@ export function StudioEditorListView() {
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [soundsError, setSoundsError] = useState<string | null>(null);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [libraryType, setLibraryType] = useState('ALL');
   const [libraryQuery, setLibraryQuery] = useState('');
@@ -71,6 +73,10 @@ export function StudioEditorListView() {
         // no Tahti-hosted audio file, so there's nothing for the Pro
         // Editor to open or trim — keep them out of "Open from library".
         setSounds(a.data.filter((item) => !item.embedProvider));
+        setLoadError(p.meta.source === 'api' ? (p.meta.reason ?? null) : null);
+        setSoundsError(
+          a.meta.source === 'api' ? (a.meta.reason ?? null) : null,
+        );
         setLoading(false);
       },
     );
@@ -186,6 +192,15 @@ export function StudioEditorListView() {
           <StudioPanel title="Projects">
             {loading ? (
               <PageLoading label="Loading…" />
+            ) : loadError && projects.length === 0 ? (
+              <PageError
+                title="Could not load your editor projects"
+                description={loadError}
+                onRetry={() => {
+                  setLoading(true);
+                  reload();
+                }}
+              />
             ) : projects.length === 0 ? (
               <div className="flex flex-col gap-3 py-4 text-center">
                 <p className="text-foreground-secondary text-sm">
@@ -305,7 +320,13 @@ export function StudioEditorListView() {
                   placeholder="Search library…"
                   aria-label="Search library"
                 />
-                {filteredLibrary.length === 0 ? (
+                {soundsError && sounds.length === 0 ? (
+                  <PageError
+                    title="Could not load your library"
+                    description={soundsError}
+                    onRetry={reload}
+                  />
+                ) : filteredLibrary.length === 0 ? (
                   <p className="text-foreground-secondary py-8 text-center text-sm">
                     {sounds.length === 0
                       ? 'Upload content in Library first.'
