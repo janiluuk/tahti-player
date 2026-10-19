@@ -7,15 +7,23 @@ import {
   NotificationsVisibilityPanel,
 } from './NotificationsPanel';
 
+const PREFS = {
+  notifyMoneyMovesEmail: true,
+  notifyMoneyMovesInApp: true,
+  notifyListenerActivityEmail: true,
+  notifyWeeklyRecapEmail: true,
+};
+
+let prefsFailure: string | null = null;
+
 vi.mock('../../../api/artist-settings', () => ({
-  fetchNotificationPrefs: async () => ({
-    data: {
-      notifyMoneyMovesEmail: true,
-      notifyMoneyMovesInApp: true,
-      notifyListenerActivityEmail: true,
-      notifyWeeklyRecapEmail: true,
-    },
-  }),
+  fetchNotificationPrefs: async () =>
+    prefsFailure
+      ? {
+          data: { ...PREFS, notifyMoneyMovesEmail: false },
+          meta: { source: 'api', reason: prefsFailure },
+        }
+      : { data: PREFS, meta: { source: 'api' } },
   patchNotificationPrefs: vi.fn(),
 }));
 
@@ -41,6 +49,19 @@ describe('NotificationsPanel', () => {
     expect(screen.queryAllByRole('note')).toHaveLength(0);
     expect(screen.getByText(/3 new chat messages/)).toBeTruthy();
     expect(screen.getByText(/1,247 plays/)).toBeTruthy();
+  });
+
+  it('says the settings failed to load instead of showing them all off', async () => {
+    prefsFailure = 'HTTP 502';
+    render(<NotificationsPanel />);
+    expect(
+      await screen.findByText('Could not load your notification settings'),
+    ).toBeTruthy();
+    expect(screen.queryByText('Money moves')).toBeNull();
+
+    prefsFailure = null;
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(await screen.findByText('Money moves')).toBeTruthy();
   });
 
   it('saves whether liked tracks show on the profile', async () => {

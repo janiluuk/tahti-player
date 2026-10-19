@@ -11,6 +11,7 @@ import {
   patchMeProfile,
   type ProfileFields,
 } from '../../../api/studio-extras';
+import { PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
 import { CommentSettingsToggles } from './CommentSettingsToggles';
@@ -19,10 +20,16 @@ import { TopListsToggle } from './TopListsToggle';
 
 export function NotificationsPanel() {
   const [prefs, setPrefs] = useState<NotificationPrefs | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    void fetchNotificationPrefs().then((r) => setPrefs(r.data));
-  }, []);
+    void fetchNotificationPrefs().then((r) => {
+      const reason = r.meta.source === 'api' ? (r.meta.reason ?? null) : null;
+      setLoadError(reason);
+      setPrefs(reason ? null : r.data);
+    });
+  }, [attempt]);
 
   const set = async (key: keyof NotificationPrefs, value: boolean) => {
     if (!prefs) {
@@ -40,6 +47,19 @@ export function NotificationsPanel() {
     setPrefs(result.data);
     toast.success('Notification preference saved.');
   };
+
+  if (!prefs && loadError) {
+    return (
+      <PageError
+        title="Could not load your notification settings"
+        description={loadError}
+        onRetry={() => {
+          setLoadError(null);
+          setAttempt((n) => n + 1);
+        }}
+      />
+    );
+  }
 
   if (!prefs) {
     return <SettingsHint>Loading…</SettingsHint>;
