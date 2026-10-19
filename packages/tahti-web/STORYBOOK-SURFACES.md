@@ -258,8 +258,8 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Navigation/SectionTabs` | `tahti-web/SectionTabs.stories.tsx` |
 | `Tahti/Misc/SecurityTotpPanel` | `tahti-web/SecurityTotpPanel.stories.tsx` |
 | `Tahti/Settings/AccountPanel` | `tahti-web/SettingsAccountPanel.stories.tsx` |
-| `Tahti/Settings/ArtistPanel` | `tahti-web/SettingsArtistPanel.stories.tsx` (Artist branding heading) |
-| `Tahti/Settings/BroadcastPanel` | `tahti-web/SettingsBroadcastPanel.stories.tsx` (Studio Broadcast cross-link) |
+| `Tahti/Settings/ArtistPanel` | `tahti-web/SettingsArtistPanel.stories.tsx` |
+| `Tahti/Settings/BroadcastPanel` | `tahti-web/SettingsBroadcastPanel.stories.tsx` |
 | `Tahti/Settings/ChannelPanel` | `tahti-web/SettingsChannelPanel.stories.tsx` |
 | `Tahti/Settings/IntegrationsPanel` | `tahti-web/SettingsIntegrationsPanel.stories.tsx` |
 | `Tahti/Settings/LogsPanel` | `tahti-web/SettingsLogsPanel.stories.tsx` |
