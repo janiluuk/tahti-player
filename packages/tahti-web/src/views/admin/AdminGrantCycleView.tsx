@@ -20,7 +20,7 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 
 const MIN_UNITS = 5;
@@ -112,9 +112,10 @@ export function AdminGrantCycleView() {
               {loading ? (
                 <PageLoading label="Loading grant preview…" />
               ) : !preview ? (
-                <p className="text-accent-red-strong text-sm">
-                  Could not load the grant preview.
-                </p>
+                <PageError
+                  title="Could not load the grant preview"
+                  onRetry={load}
+                />
               ) : (
                 <>
                   <div className="@container">
@@ -143,53 +144,60 @@ export function AdminGrantCycleView() {
                   </div>
 
                   <SectionShell title="Per-artist allocation preview">
-                    <HorizontalScroll label="Per-artist allocation preview">
-                      <table className="w-full text-left text-sm">
-                        <thead className="text-foreground-secondary border-border border-b text-xs">
-                          <tr>
-                            <th className="px-2 py-2">Artist</th>
-                            <th className="px-2 py-2">Downloads</th>
-                            <th className="px-2 py-2">Fan subs</th>
-                            <th className="px-2 py-2">Units</th>
-                            <th className="px-2 py-2 text-right">Grant</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-border divide-y">
-                          {[...preview.artists]
-                            .sort((left, right) => right.units - left.units)
-                            .map((artist) => (
-                              <tr key={artist.userId}>
-                                <td className="px-2 py-2">
-                                  <Link
-                                    to="/u/$username"
-                                    params={{ username: artist.username }}
-                                    className="hover:underline"
-                                  >
-                                    {artist.displayName}
-                                  </Link>
-                                  <div className="text-foreground-secondary text-xs">
-                                    @{artist.username}
-                                  </div>
-                                </td>
-                                <td className="px-2 py-2">
-                                  {artist.freeDownloads} +{' '}
-                                  {artist.paidDownloads}
-                                  ×5
-                                </td>
-                                <td className="px-2 py-2">
-                                  €{artist.fanSubEuros}
-                                </td>
-                                <td className="px-2 py-2">
-                                  {artist.units.toLocaleString()}
-                                </td>
-                                <td className="px-2 py-2 text-right font-medium">
-                                  {formatEur(artist.amountCents)}
-                                </td>
-                              </tr>
-                            ))}
-                        </tbody>
-                      </table>
-                    </HorizontalScroll>
+                    {preview.artists.length === 0 ? (
+                      <PageEmpty
+                        title={`No artist activity in ${year}`}
+                        description="Downloads and fan subscriptions count toward a grant; none were recorded this year."
+                      />
+                    ) : (
+                      <HorizontalScroll label="Per-artist allocation preview">
+                        <table className="w-full text-left text-sm">
+                          <thead className="text-foreground-secondary border-border border-b text-xs">
+                            <tr>
+                              <th className="px-2 py-2">Artist</th>
+                              <th className="px-2 py-2">Downloads</th>
+                              <th className="px-2 py-2">Fan subs</th>
+                              <th className="px-2 py-2">Units</th>
+                              <th className="px-2 py-2 text-right">Grant</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-border divide-y">
+                            {[...preview.artists]
+                              .sort((left, right) => right.units - left.units)
+                              .map((artist) => (
+                                <tr key={artist.userId}>
+                                  <td className="px-2 py-2">
+                                    <Link
+                                      to="/u/$username"
+                                      params={{ username: artist.username }}
+                                      className="hover:underline"
+                                    >
+                                      {artist.displayName}
+                                    </Link>
+                                    <div className="text-foreground-secondary text-xs">
+                                      @{artist.username}
+                                    </div>
+                                  </td>
+                                  <td className="px-2 py-2">
+                                    {artist.freeDownloads} +{' '}
+                                    {artist.paidDownloads}
+                                    ×5
+                                  </td>
+                                  <td className="px-2 py-2">
+                                    €{artist.fanSubEuros}
+                                  </td>
+                                  <td className="px-2 py-2">
+                                    {artist.units.toLocaleString()}
+                                  </td>
+                                  <td className="px-2 py-2 text-right font-medium">
+                                    {formatEur(artist.amountCents)}
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                        </table>
+                      </HorizontalScroll>
+                    )}
                     <p className="text-foreground-secondary mt-3 text-xs">
                       Sum check: allocations {sumCheckOk ? '=' : '≠'} pool to
                       the cent using largest remainder.

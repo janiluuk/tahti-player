@@ -212,3 +212,26 @@ describe('StudioCollectionsView list order', () => {
     ).toBeTruthy();
   });
 });
+
+describe('StudioCollectionsView load failure', () => {
+  it('says the list failed to load instead of "No collections yet"', async () => {
+    fetchStudioCollections.mockResolvedValueOnce({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    } as never);
+    await renderCollections();
+    expect(
+      await screen.findByText('Could not load your collections'),
+    ).toBeTruthy();
+    expect(screen.queryByText('No collections yet')).toBeNull();
+
+    fetchStudioCollections.mockResolvedValueOnce({
+      data: [{ slug: 'mix', name: 'Night Mix', style: 'PLAYLIST' }],
+      meta: { source: 'mock' },
+    });
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' })),
+    );
+    expect(await screen.findByText('Night Mix')).toBeTruthy();
+  });
+});

@@ -1,7 +1,7 @@
-import { EmptyState, ViewShell } from '@tahti-player/ui';
+import { Button, EmptyState, ViewShell } from '@tahti-player/ui';
 
 import { AddToMusicActions } from '../../components/AddToMusicActions';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { LibrarySectionTabs } from '../LibraryView';
@@ -14,7 +14,7 @@ import { useStudioSoundsState } from './sounds/useStudioSoundsState';
 
 export function StudioSoundsView() {
   const state = useStudioSoundsState();
-  const { reload, loading, filtered } = state;
+  const { reload, loading, loadError, items, filtered, clearFilters } = state;
 
   return (
     <StudioGate requireChannel={false}>
@@ -30,6 +30,21 @@ export function StudioSoundsView() {
             <SoundFilters state={state} />
             {loading ? (
               <PageLoading label="Loading…" />
+            ) : loadError && items.length === 0 ? (
+              <PageError
+                title="Could not load your sounds"
+                description={loadError}
+                onRetry={reload}
+              />
+            ) : items.length > 0 && filtered.length === 0 ? (
+              <PageEmpty
+                title="No sounds match these filters"
+                action={
+                  <Button size="sm" variant="secondary" onClick={clearFilters}>
+                    Clear filters
+                  </Button>
+                }
+              />
             ) : filtered.length === 0 ? (
               <EmptyState
                 size="sm"

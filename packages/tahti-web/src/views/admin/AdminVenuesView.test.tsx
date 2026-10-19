@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import * as admin from '../../api/admin';
 import { AdminVenuesView } from './AdminVenuesView';
 
 vi.mock('@tanstack/react-router', async (importOriginal) => ({
@@ -53,6 +54,7 @@ vi.mock('../../api/admin', () => ({
         submitter: { username: 'nightdrive', displayName: 'Nightdrive' },
       },
     ],
+    meta: { source: 'api' },
   })),
   setAdminVenueVerification: vi.fn(),
 }));
@@ -79,5 +81,28 @@ describe('admin venues list', () => {
       'submitted by Nightdrive on',
     );
     expect(document.body.textContent).not.toContain('cmdef456submitterid');
+  });
+
+  it('says the venues failed to load instead of "No venues found"', async () => {
+    vi.mocked(admin.fetchAdminVenues).mockResolvedValueOnce({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    render(<AdminVenuesView />);
+    expect(await screen.findByText('Could not load venues')).toBeTruthy();
+    expect(screen.queryByText('No venues found')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(await screen.findByText('Northern Lights Hall')).toBeTruthy();
+  });
+
+  it('clears a search that matches no venues', async () => {
+    render(<AdminVenuesView />);
+    await screen.findByText('Northern Lights Hall');
+    fireEvent.change(screen.getByLabelText('Search venues'), {
+      target: { value: 'polka' },
+    });
+    expect(screen.getByText('No venues found')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Clear search' }));
+    expect(screen.getByText('Northern Lights Hall')).toBeTruthy();
   });
 });

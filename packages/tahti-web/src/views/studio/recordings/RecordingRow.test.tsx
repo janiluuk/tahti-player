@@ -15,15 +15,30 @@ const draft: RecentBroadcast = {
 };
 
 describe('RecordingRow', () => {
-  it('labels an unpublished recording Draft in the body text colour, readable on the tinted row', async () => {
+  it('labels a draft in the body text colour, readable on the tinted row', async () => {
     await renderWithRouter(
       <ul>
-        <RecordingRow show={draft} index={0} onEdit={() => {}} />
+        <RecordingRow
+          show={{ ...draft, soundId: 'snd-1', soundStatus: 'PROCESSING' }}
+          index={0}
+          onEdit={() => {}}
+        />
       </ul>,
     );
     const label = screen.getByText('Draft');
     expect(label).toHaveClass('text-foreground');
     expect(label).not.toHaveClass('text-primary-strong');
+  });
+
+  it('says a recording with no sound yet is still processing', async () => {
+    await renderWithRouter(
+      <ul>
+        <RecordingRow show={draft} index={0} onEdit={() => {}} />
+      </ul>,
+    );
+    expect(screen.getByText('Processing')).toBeInTheDocument();
+    expect(screen.getByText(/Still being saved to your library/)).toBeTruthy();
+    expect(screen.queryByRole('link', { name: /Publish/ })).toBeNull();
   });
 
   it('labels a ready recording Published', async () => {

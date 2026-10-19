@@ -11,7 +11,7 @@ import type {
   RevelatorRoyaltyReportRow,
   StudioRelease,
 } from '../../api/studio-types';
-import { PageLoading } from '../../components/PageStates';
+import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
@@ -24,16 +24,22 @@ export function StudioDistributionView() {
     [],
   );
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    setLoading(true);
     Promise.all([fetchStudioReleases(), fetchAllRoyalties()])
       .then(([rel, roy]) => {
         setReleases(rel.data.releases ?? []);
         setAllRoyalties(roy.data ?? []);
+        setLoadError(
+          rel.meta.source === 'api' ? (rel.meta.reason ?? null) : null,
+        );
       })
       .catch(() => toast.error('Could not load your releases.'))
       .finally(() => setLoading(false));
-  }, []);
+  }, [attempt]);
 
   return (
     <StudioGate requireChannel={false}>
@@ -56,6 +62,12 @@ export function StudioDistributionView() {
             </h2>
             {loading ? (
               <PageLoading label="Loading…" />
+            ) : loadError && releases.length === 0 ? (
+              <PageError
+                title="Could not load your releases"
+                description={loadError}
+                onRetry={() => setAttempt((n) => n + 1)}
+              />
             ) : releases.length === 0 ? (
               <EmptyState
                 size="sm"
