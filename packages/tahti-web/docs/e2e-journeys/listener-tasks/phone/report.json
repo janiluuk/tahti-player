@@ -1,0 +1,588 @@
+{
+  "base": "https://beta.tahti.live",
+  "tasks": [
+    {
+      "name": "Phone: sign in",
+      "ok": true,
+      "ms": 8227,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiohelsinki.fi%2Fohjelmakartta%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fradio-nova"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fnrj"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-suomipop.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested reso"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-radiorock.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested res"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream.radiohelsinki.fi/stream' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origi"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://icecast.live.yle.fi/radio/YleX/icecast.audio' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Request header field icy-metadata is not allowed by Access-Control-Allow-Headers in preflight response."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.supla.fi%2Fsuomipop"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fareena.yle.fi%2Faudio%2Fohjelmat%2Fyle-x"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiorock.fi%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        }
+      ],
+      "shots": [
+        "01-phone-sign-in.png"
+      ]
+    },
+    {
+      "name": "Phone: /",
+      "ok": true,
+      "ms": 2718,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://icecast.live.yle.fi/radio/YleX/icecast.audio' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Request header field icy-metadata is not allowed by Access-Control-Allow-Headers in preflight response."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiohelsinki.fi%2Fohjelmakartta%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-radiorock.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested res"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-suomipop.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested reso"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fradio-nova"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fnrj"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origi"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream.radiohelsinki.fi/stream' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.supla.fi%2Fsuomipop"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fareena.yle.fi%2Faudio%2Fohjelmat%2Fyle-x"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiorock.fi%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        }
+      ],
+      "shots": [
+        "02-phone.png"
+      ]
+    },
+    {
+      "name": "Phone: /discover",
+      "ok": true,
+      "ms": 1203,
+      "notes": [],
+      "ux": [],
+      "signals": [],
+      "shots": [
+        "03-phone-discover.png"
+      ]
+    },
+    {
+      "name": "Phone: /radio",
+      "ok": true,
+      "ms": 871,
+      "notes": [],
+      "ux": [],
+      "signals": [],
+      "shots": [
+        "04-phone-radio.png"
+      ]
+    },
+    {
+      "name": "Phone: /library",
+      "ok": true,
+      "ms": 848,
+      "notes": [],
+      "ux": [],
+      "signals": [],
+      "shots": [
+        "05-phone-library.png"
+      ]
+    },
+    {
+      "name": "Phone: /favorites",
+      "ok": true,
+      "ms": 774,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/likes?limit=100"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        }
+      ],
+      "shots": [
+        "06-phone-favorites.png"
+      ]
+    },
+    {
+      "name": "Phone: /history",
+      "ok": true,
+      "ms": 902,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fnrj"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.supla.fi%2Fsuomipop"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiorock.fi%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiohelsinki.fi%2Fohjelmakartta%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fareena.yle.fi%2Faudio%2Fohjelmat%2Fyle-x"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fradio-nova"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origi"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream.radiohelsinki.fi/stream' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://icecast.live.yle.fi/radio/YleX/icecast.audio' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Request header field icy-metadata is not allowed by Access-Control-Allow-Headers in preflight response."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-radiorock.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested res"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-suomipop.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested reso"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        }
+      ],
+      "shots": [
+        "07-phone-history.png"
+      ]
+    },
+    {
+      "name": "Phone: /channel/liis-kask-ee",
+      "ok": true,
+      "ms": 1603,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/channels/liis-kask-ee/schedule"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        }
+      ],
+      "shots": [
+        "08-phone-channel-liis-kask-ee.png"
+      ]
+    },
+    {
+      "name": "Phone: play from home and open full-screen player",
+      "ok": false,
+      "ms": 15393,
+      "notes": [
+        "locator.waitFor: Timeout 12000ms exceeded."
+      ],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://icecast.live.yle.fi/radio/YleX/icecast.audio' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Request header field icy-metadata is not allowed by Access-Control-Allow-Headers in preflight response."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-radiorock.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested res"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-suomipop.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested reso"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fnrj"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiohelsinki.fi%2Fohjelmakartta%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fradio-nova"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origi"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream.radiohelsinki.fi/stream' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.supla.fi%2Fsuomipop"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiorock.fi%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fareena.yle.fi%2Faudio%2Fohjelmat%2Fyle-x"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        }
+      ],
+      "shots": [
+        "09-phone-play-from-home-and-open-full-screen-player.png"
+      ]
+    }
+  ]
+}

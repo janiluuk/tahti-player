@@ -1,0 +1,499 @@
+{
+  "base": "https://beta.tahti.live",
+  "tasks": [
+    {
+      "name": "Phone: sign in",
+      "ok": false,
+      "ms": 21701,
+      "notes": [
+        "locator.waitFor: Timeout 20000ms exceeded."
+      ],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiohelsinki.fi%2Fohjelmakartta%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fnrj"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.supla.fi%2Fsuomipop"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fradio-nova"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiorock.fi%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fareena.yle.fi%2Faudio%2Fohjelmat%2Fyle-x"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-suomipop.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested reso"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origi"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-radiorock.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested res"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "api",
+          "detail": "429 POST /tahti-api/api/auth/login"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 429 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://icecast.live.yle.fi/radio/YleX/icecast.audio' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Request header field icy-metadata is not allowed by Access-Control-Allow-Headers in preflight response."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream.radiohelsinki.fi/stream' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        }
+      ],
+      "shots": [
+        "01-phone-sign-in.png"
+      ]
+    },
+    {
+      "name": "Phone: /studio",
+      "ok": true,
+      "ms": 840,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/fan-subs/connect"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "shots": [
+        "02-phone-studio.png"
+      ]
+    },
+    {
+      "name": "Phone: /studio/upload",
+      "ok": true,
+      "ms": 816,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/broadcasts/recent?limit=5"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "shots": [
+        "03-phone-studio-upload.png"
+      ]
+    },
+    {
+      "name": "Phone: /studio/sounds",
+      "ok": true,
+      "ms": 705,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/sound"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "shots": [
+        "04-phone-studio-sounds.png"
+      ]
+    },
+    {
+      "name": "Phone: /studio/collections",
+      "ok": true,
+      "ms": 685,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "shots": [
+        "05-phone-studio-collections.png"
+      ]
+    },
+    {
+      "name": "Phone: /studio/go-live",
+      "ok": true,
+      "ms": 773,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/channel/preflight"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/stream-settings/status"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/stream-settings"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/broadcast-usage"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/channel/recording"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/rtmp-targets"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "shots": [
+        "06-phone-studio-go-live.png"
+      ]
+    },
+    {
+      "name": "Phone: /studio/stats",
+      "ok": true,
+      "ms": 776,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/stats/top-tracks?range=30"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/stats/top-countries?range=30"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/channel-egress"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/stats/top-lists?period=month&dimension=type&sort=desc"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/listener-geo?period=30d"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/stats/summary"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/stats/plays?range=30"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/grants/estimate"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/me/channel-live-stats"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "shots": [
+        "07-phone-studio-stats.png"
+      ]
+    },
+    {
+      "name": "Phone: /studio/channel",
+      "ok": true,
+      "ms": 737,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "shots": [
+        "08-phone-studio-channel.png"
+      ]
+    }
+  ]
+}

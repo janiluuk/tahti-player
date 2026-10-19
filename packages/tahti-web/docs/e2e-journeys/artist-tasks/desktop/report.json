@@ -1,0 +1,586 @@
+{
+  "base": "https://beta.tahti.live",
+  "tasks": [
+    {
+      "name": "Sign in as artist",
+      "ok": true,
+      "ms": 4513,
+      "notes": [
+        "landed on /; channel yaniho"
+      ],
+      "ux": [
+        "an artist lands on /, not Studio"
+      ],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fareena.yle.fi%2Faudio%2Fohjelmat%2Fyle-x"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiohelsinki.fi%2Fohjelmakartta%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiorock.fi%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.supla.fi%2Fsuomipop"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fradio-nova"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fnrj"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origi"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream.radiohelsinki.fi/stream' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://icecast.live.yle.fi/radio/YleX/icecast.audio' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Request header field icy-metadata is not allowed by Access-Control-Allow-Headers in preflight response."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-suomipop.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested reso"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-radiorock.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested res"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        }
+      ],
+      "shots": [
+        "01-sign-in-as-artist.png"
+      ]
+    },
+    {
+      "name": "Studio dashboard: what should I do next?",
+      "ok": true,
+      "ms": 1038,
+      "notes": [
+        "Studio · Broadcast · Recent broadcasts · No broadcasts yet · Governance · Music · Audience & channel"
+      ],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        }
+      ],
+      "shots": [
+        "02-studio-dashboard-what-should-i-do-next.png"
+      ]
+    },
+    {
+      "name": "Upload a track",
+      "ok": true,
+      "ms": 64531,
+      "notes": [
+        "/studio/sounds/cmvfpeusk0003u7ik37t0xqb8 after 62.7s"
+      ],
+      "ux": [
+        "no Title field before uploading; the file name becomes the title",
+        "Upload page never finished (Validation error); retried via the Tracks page Upload dialog"
+      ],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/mixcloud-embed"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/mixcloud-embed"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "400 POST /tahti-api/api/uploads/prepare"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 400 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/sound/processing"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/sound/processing"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        },
+        {
+          "kind": "api",
+          "detail": "409 GET /tahti-api/api/me/sound/cmvfpeusk0003u7ik37t0xqb8/editor/draft"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 409 ()"
+        }
+      ],
+      "shots": [
+        "03-upload-staged.png",
+        "04-upload-a-track.png"
+      ]
+    },
+    {
+      "name": "Edit the track title and description",
+      "ok": true,
+      "ms": 5612,
+      "notes": [
+        "Still processing — this can take a minute for longer files. Playback, the waveform, and quick fixes will unlock once it'"
+      ],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        },
+        {
+          "kind": "api",
+          "detail": "409 GET /tahti-api/api/me/sound/cmvfpeusk0003u7ik37t0xqb8/editor/draft"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 409 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        },
+        {
+          "kind": "api",
+          "detail": "409 GET /tahti-api/api/me/sound/cmvfpeusk0003u7ik37t0xqb8/editor/draft"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 409 ()"
+        }
+      ],
+      "shots": [
+        "05-edit-the-track-title-and-description.png"
+      ]
+    },
+    {
+      "name": "Find the track in my Sounds list",
+      "ok": true,
+      "ms": 2514,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        }
+      ],
+      "shots": [
+        "06-find-the-track-in-my-sounds-list.png"
+      ]
+    },
+    {
+      "name": "Create a release and add the track",
+      "ok": false,
+      "ms": 8759,
+      "notes": [
+        "track not listed in the release after adding"
+      ],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/collection-subscriptions"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "400 POST /tahti-api/api/me/collections/yaniho-e2e-test-release-202610192024/items"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 400 ()"
+        }
+      ],
+      "shots": [
+        "07-new-release-form.png",
+        "08-create-a-release-and-add-the-track.png"
+      ]
+    },
+    {
+      "name": "Channel designer and public channel",
+      "ok": true,
+      "ms": 3983,
+      "notes": [],
+      "ux": [
+        "no link from the channel designer to the public channel page"
+      ],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        },
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/channels/yaniho/schedule"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        }
+      ],
+      "shots": [
+        "09-channel-designer-and-public-channel.png"
+      ]
+    },
+    {
+      "name": "Go-live setup (no broadcast)",
+      "ok": true,
+      "ms": 2753,
+      "notes": [],
+      "ux": [
+        "an empty \"Queue\" side panel stays open across Studio, taking ~25% of the width",
+        "go-live sits under 2 rows of tabs (Studio sections + Broadcast sub-tabs)"
+      ],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        }
+      ],
+      "shots": [
+        "10-go-live-setup-no-broadcast.png"
+      ]
+    },
+    {
+      "name": "Stats page",
+      "ok": true,
+      "ms": 898,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        }
+      ],
+      "shots": [
+        "11-stats-page.png"
+      ]
+    },
+    {
+      "name": "Insights page",
+      "ok": true,
+      "ms": 852,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        }
+      ],
+      "shots": [
+        "12-insights-page.png"
+      ]
+    },
+    {
+      "name": "Fans & revenue page",
+      "ok": true,
+      "ms": 869,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        }
+      ],
+      "shots": [
+        "13-fans-revenue-page.png"
+      ]
+    },
+    {
+      "name": "Schedule page",
+      "ok": true,
+      "ms": 961,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        }
+      ],
+      "shots": [
+        "14-schedule-page.png"
+      ]
+    },
+    {
+      "name": "New event form page",
+      "ok": true,
+      "ms": 814,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        }
+      ],
+      "shots": [
+        "15-new-event-form-page.png"
+      ]
+    },
+    {
+      "name": "Distribution page",
+      "ok": true,
+      "ms": 852,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        }
+      ],
+      "shots": [
+        "16-distribution-page.png"
+      ]
+    },
+    {
+      "name": "Artist settings page",
+      "ok": true,
+      "ms": 895,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        }
+      ],
+      "shots": [
+        "17-artist-settings-page.png"
+      ]
+    },
+    {
+      "name": "Cleanup: delete the test release",
+      "ok": true,
+      "ms": 11844,
+      "notes": [],
+      "ux": [
+        "collections list rows have no delete/more menu; delete is only on the release page",
+        "deleting a release from Studio lands on /library/collections"
+      ],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/collection-subscriptions"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/collection-subscriptions"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/collection-subscriptions"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/collection-subscriptions"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        }
+      ],
+      "shots": [
+        "18-cleanup-delete-the-test-release.png"
+      ]
+    },
+    {
+      "name": "Cleanup: delete the test track",
+      "ok": true,
+      "ms": 6199,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        },
+        {
+          "kind": "console",
+          "detail": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://js.hcaptcha.com https://newassets.hcaptcha.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-044kngVhpVG3YnQFq9RC9S8kpYAowexz8fxOhaqJhtg='), or a nonce ('nonce-...') is required to ena"
+        }
+      ],
+      "shots": [
+        "19-cleanup-delete-the-test-track.png"
+      ]
+    }
+  ]
+}
