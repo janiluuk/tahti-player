@@ -312,6 +312,10 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
       })),
     [sections.onAir.data],
   );
+  const liveItems = onAirItems.filter((item) => item.channel.state === 'LIVE');
+  const replayItems = onAirItems.filter(
+    (item) => item.channel.state !== 'LIVE',
+  );
 
   const recentItems = useMemo<RecentRowItem[]>(
     () =>
@@ -612,21 +616,25 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
 
             <ListenSection
               data-testid="listen-on-air"
-              title="On air"
+              title="Live now"
               badge="Live"
               badgeColor="green"
               status={sections.onAir.status}
-              empty={onAirItems.length === 0}
-              emptyTitle="Nobody is on air right now"
-              emptyDescription="Live and replaying channels show up here."
+              empty={liveItems.length === 0}
+              emptyTitle="Nobody is live right now"
+              emptyDescription={
+                replayItems.length > 0
+                  ? 'Recent broadcasts are replaying below.'
+                  : 'Live channels show up here when an artist goes on air.'
+              }
               onRetry={() => sections.retry('onAir')}
             >
               <CardsRow
                 data-testid="listen-on-air"
-                title="On air"
+                title="Live now"
                 badge="Live"
                 badgeColor="green"
-                items={onAirItems}
+                items={liveItems}
                 labels={{
                   ...ROW_LABELS,
                   filterPlaceholder: 'Filter channels…',
@@ -634,6 +642,21 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                 renderItem={renderOnAirItem}
               />
             </ListenSection>
+
+            {replayItems.length > 0 ? (
+              <CardsRow
+                data-testid="listen-replays"
+                title="Replays"
+                badge="Replay"
+                badgeColor="secondary"
+                items={replayItems}
+                labels={{
+                  ...ROW_LABELS,
+                  filterPlaceholder: 'Filter channels…',
+                }}
+                renderItem={renderOnAirItem}
+              />
+            ) : null}
 
             <TrendingRow />
 

@@ -84,7 +84,7 @@ describe('ListenView sections', () => {
     await renderListen();
 
     const onAir = await screen.findByTestId('listen-on-air');
-    await within(onAir).findByText("On air couldn't load");
+    await within(onAir).findByText("Live now couldn't load");
     const tracks = await screen.findByTestId('listen-new-tracks');
     expect(tracks.getAttribute('data-status')).toBeNull();
 
@@ -95,7 +95,7 @@ describe('ListenView sections', () => {
       ),
     );
     expect(onAirSpy).toHaveBeenCalledTimes(2);
-    expect(screen.queryByText("On air couldn't load")).toBeNull();
+    expect(screen.queryByText("Live now couldn't load")).toBeNull();
   });
 
   it('shows an empty state, not an error, when nothing is on air', async () => {
@@ -109,8 +109,26 @@ describe('ListenView sections', () => {
     await waitFor(() =>
       expect(onAir.getAttribute('data-status')).toBe('ready'),
     );
-    expect(within(onAir).getByText('Nobody is on air right now')).toBeTruthy();
+    expect(within(onAir).getByText('Nobody is live right now')).toBeTruthy();
     expect(within(onAir).queryByRole('button', { name: 'Retry' })).toBeNull();
+  });
+
+  it('lists a replaying channel under Replays, not Live now', async () => {
+    const { data } = await listen.fetchOnAirChannels();
+    const channel = [...data.live, ...data.replaying][0]!;
+    vi.spyOn(listen, 'fetchOnAirChannels').mockResolvedValue({
+      data: { live: [], replaying: [channel], recent: [] },
+      meta: { source: 'api' },
+    });
+    await renderListen();
+
+    const replays = await screen.findByTestId('listen-replays');
+    expect(replays.textContent).toContain(channel.user.displayName);
+    const live = screen.getByTestId('listen-on-air');
+    expect(within(live).getByText('Nobody is live right now')).toBeTruthy();
+    expect(
+      within(live).getByText('Recent broadcasts are replaying below.'),
+    ).toBeTruthy();
   });
 
   it('links a recently played radio station to its station page', async () => {
