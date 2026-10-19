@@ -32,6 +32,7 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 | partial | [listen-ui-liveliness.md](listen-ui-liveliness.md) | Nuclear-green accents + section pill hues shipped; left: de-green Card/Button/MediaArtwork, History/Collection depth |
 | partial | [back-button-universal.md](back-button-universal.md) | BackButton on listen/studio detail backs; left: merge + fold |
 | open    | [ux-sweep-30-slices.md](ux-sweep-30-slices.md) | 30 micro-slices across empties, catalog chips, SectionTitle, History/Collection depth, Card surface, Studio search |
+| open    | [ux-sweep-batch-61-90.md](ux-sweep-batch-61-90.md) | PageEmpty slices 61-90 for remaining bare empty copy |
 | open    | [view-modes-track-tables.md](view-modes-track-tables.md) | No list/grid view-mode or sort anywhere; add to shared PlayableTrackTable + studio/library lists |
 | partial | [studio-artist-usability.md](studio-artist-usability.md) | Two rounds shipped; left: release delete (no API), add-to-release from selection, undo |
 | open    | [profile-surfaces-unification.md](profile-surfaces-unification.md) | Artist/Channel profile pages + 3× collection rendering + Library trio are copy-pasted; extract shared surfaces |
