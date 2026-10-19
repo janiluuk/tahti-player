@@ -42,6 +42,8 @@ export function DiscordBotAddonCard() {
   const [forbidden, setForbidden] = useState(false);
   const [confirmRestart, setConfirmRestart] = useState(false);
   const [restarting, setRestarting] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (!isBoard) {
@@ -58,6 +60,11 @@ export function DiscordBotAddonCard() {
         setInstalled(DISCORD_BOT_ADDON_ID, false);
         return;
       }
+      if (meta.source === 'api' && meta.reason) {
+        setLoadError(true);
+        return;
+      }
+      setLoadError(false);
       setSettings(data);
       setClientId(data.clientId);
       setInstalled(DISCORD_BOT_ADDON_ID, data.tokenConfigured);
@@ -65,7 +72,7 @@ export function DiscordBotAddonCard() {
     return () => {
       cancelled = true;
     };
-  }, [isBoard, setInstalled]);
+  }, [isBoard, setInstalled, attempt]);
 
   if (!isBoard || forbidden) {
     return null;
@@ -124,14 +131,27 @@ export function DiscordBotAddonCard() {
             author={DISCORD_BOT_ADDON.author}
             description={DISCORD_BOT_ADDON.description}
             isInstalled={Boolean(settings?.tokenConfigured)}
-            onInstall={() => setOpen(true)}
+            onInstall={() => (loadError ? undefined : setOpen(true))}
             labels={{
               install: 'Configure',
               installed: 'Configured',
             }}
           />
         </div>
-        {settings?.tokenConfigured ? (
+        {loadError ? (
+          <>
+            <Badge variant="pill" color="red">
+              Status unavailable
+            </Badge>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => setAttempt((n) => n + 1)}
+            >
+              Retry
+            </Button>
+          </>
+        ) : settings?.tokenConfigured ? (
           <Badge variant="pill" color="green">
             Configured
           </Badge>
@@ -157,6 +177,7 @@ export function DiscordBotAddonCard() {
           <Button
             size="icon-sm"
             variant="secondary"
+            disabled={loadError}
             onClick={() => setOpen(true)}
             aria-label="Configure Tahti Radio Discord bot"
           >
