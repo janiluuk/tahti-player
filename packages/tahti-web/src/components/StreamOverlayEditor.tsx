@@ -32,6 +32,7 @@ import { HelpLayer } from './HelpLayer';
 import { ImageSlotDeleteBadge } from './imageSlot/ImageSlotDeleteBadge';
 import { ImageSlotPreviewDialog } from './imageSlot/ImageSlotPreviewDialog';
 import { useImageSlotChrome } from './imageSlot/useImageSlotChrome';
+import { PageError, PageLoading } from './PageStates';
 
 const VISUAL_PRESET_OPTIONS = STORED_VISUAL_PRESETS.map((id) => ({
   id,
@@ -100,6 +101,9 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
     streamOverlayVisualPreset: 'MINIMAL' as StoredVisualPreset,
   });
   const [saving, setSaving] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [coverUploadOpen, setCoverUploadOpen] = useState(false);
   const [coverUploading, setCoverUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -123,6 +127,12 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       channelSlug ? fetchChannel(channelSlug) : null,
     ]).then(
       ([overlayResult, preflightResult, profileResult, channelResult]) => {
+        setLoaded(true);
+        if (overlayResult.meta.source === 'api' && overlayResult.meta.reason) {
+          setLoadError(overlayResult.meta.reason);
+          return;
+        }
+        setLoadError(null);
         const preflight = preflightResult.data;
         setOverlay({
           streamOverlayTitle:
@@ -148,7 +158,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
         );
       },
     );
-  }, [channelSlug]);
+  }, [channelSlug, attempt]);
 
   const save = () => {
     setSaving(true);
@@ -199,6 +209,23 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
   const showText = overlay.streamOverlayShowTitle;
   const hasOverlayText =
     overlay.streamOverlayTitle.trim() || overlay.streamOverlaySubtitle.trim();
+
+  if (!loaded) {
+    return <PageLoading label="Loading overlay…" />;
+  }
+
+  if (loadError) {
+    return (
+      <PageError
+        title="Could not load your stream overlay"
+        description={loadError}
+        onRetry={() => {
+          setLoaded(false);
+          setAttempt((n) => n + 1);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4">

@@ -1,4 +1,10 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -54,6 +60,30 @@ async function renderEditor() {
 describe('StreamOverlayEditor', () => {
   afterEach(() => {
     vi.clearAllMocks();
+  });
+
+  it('shows an error instead of a blank, saveable overlay when the load fails', async () => {
+    await renderEditor();
+    cleanup();
+    vi.mocked(fetchStreamOverlay).mockResolvedValue({
+      data: { ...saved, streamOverlayBackdropUrl: null },
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await act(async () => {
+      render(<StreamOverlayEditor />);
+    });
+    expect(screen.getByText('Could not load your stream overlay')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /Save overlay/ })).toBeNull();
+
+    vi.mocked(fetchStreamOverlay).mockResolvedValue({
+      data: saved,
+      meta: { source: 'api' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(screen.getByRole('button', { name: /Save overlay/ })).toBeTruthy();
+    expect(patchStreamOverlay).not.toHaveBeenCalled();
   });
 
   it('loads and saves the backdrop and visualizer preset', async () => {
