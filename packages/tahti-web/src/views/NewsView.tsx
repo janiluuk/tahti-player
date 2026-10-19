@@ -6,7 +6,7 @@ import { Button, cn, ImageReveal, ViewShell } from '@tahti-player/ui';
 
 import { fetchAnnouncements } from '../api/client';
 import type { Announcement } from '../api/types';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 
 function TimelineNode({ isLatest }: { isLatest?: boolean }) {
   return isLatest ? (
@@ -116,6 +116,8 @@ const INITIAL_COUNT = 5;
 export function NewsView() {
   const [entries, setEntries] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
@@ -126,12 +128,15 @@ export function NewsView() {
         return;
       }
       setEntries(res.data);
+      setLoadError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   const visibleEntries = showAll ? entries : entries.slice(0, INITIAL_COUNT);
   const hiddenCount = entries.length - INITIAL_COUNT;
@@ -152,7 +157,15 @@ export function NewsView() {
 
         {loading && <PageLoading label="Loading announcements…" />}
 
-        {!loading && entries.length === 0 && (
+        {!loading && loadError && entries.length === 0 && (
+          <PageError
+            title="Could not load the news"
+            description={loadError}
+            onRetry={() => setAttempt((n) => n + 1)}
+          />
+        )}
+
+        {!loading && !loadError && entries.length === 0 && (
           <PageEmpty title="No announcements yet." />
         )}
 
