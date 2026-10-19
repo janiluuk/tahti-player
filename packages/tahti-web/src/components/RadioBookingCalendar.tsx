@@ -33,7 +33,7 @@ import {
   BroadcastDetailsFields,
   type BroadcastDetailsValues,
 } from './BroadcastDetailsFields';
-import { PageLoading } from './PageStates';
+import { PageEmpty, PageLoading } from './PageStates';
 
 const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -389,9 +389,7 @@ export function RadioBookingCalendar({
           {loading ? (
             <PageLoading label="Loading…" />
           ) : selectedBookings.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              No slots booked yet.
-            </p>
+            <PageEmpty title="No slots booked yet." />
           ) : (
             <ul className="flex flex-col gap-1.5">
               {selectedBookings.map((b) => (
