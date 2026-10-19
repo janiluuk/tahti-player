@@ -232,8 +232,8 @@ export function OAuthServiceCard({
       );
       const text = r.ok
         ? all
-          ? `Queued all ${r.count} SoundCloud tracks. Check Studio → Music.`
-          : `Queued import (${r.count}). Check Studio → Music.`
+          ? `Queued all ${r.count} SoundCloud tracks. Follow progress on Studio → Upload.`
+          : `Queued import (${r.count}). Follow progress on Studio → Upload.`
         : r.error;
       setScMessage(text);
       (r.ok ? toast.success : toast.error)(text);
