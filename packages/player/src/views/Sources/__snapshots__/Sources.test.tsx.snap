@@ -652,7 +652,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
               data-testid="sources-view"
             >
               <h1
-                class="mb-6 flex w-full flex-0 flex-row text-center text-3xl font-bold"
+                class="mb-6 flex w-full flex-0 flex-row text-3xl font-bold text-center"
                 data-testid="title"
               >
                 Sources

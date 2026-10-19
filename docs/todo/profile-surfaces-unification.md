@@ -21,8 +21,6 @@ collection content is rendered in three independent surfaces.
   empty message, no shared surface.
 - `LibraryView` trio (`LibraryMediaView` / `LibraryEmbedsView` / `LibrarySmartLinksView`)
   each hand-roll rows + grouping + ad-hoc empty text (`LibraryView.tsx:335,364`).
-- Local `SectionTitle` recreations: `ArtistReferenceSections.tsx:24`,
-  `ArtistProfileSections.tsx:301,369`, `ListenView.tsx:662`.
 
 ## Tasks
 
@@ -33,7 +31,6 @@ collection content is rendered in three independent surfaces.
    StudioCollectionsView.
 3. Converge the Library trio onto one shared library-row surface (pairs with
    [view-modes-track-tables.md](view-modes-track-tables.md) item 3).
-4. Add a `SectionTitle` to `@tahti-player/ui` or `components/` and replace the local copies.
 
 ## Verify
 
