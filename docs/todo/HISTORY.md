@@ -13,6 +13,16 @@ for implausible public names, plus batch-2 app/spec slices. Ops leftovers
 only (not tracked as open todos): beta `TAHTI_E2E_PASSWORD` re-run, fan-
 purchase fixtures.
 
+
+## 2026-10-19 — Beta e2e gallery rerun (map assets, #1151)
+
+Signed-in beta rerun after tahti-org #875 (auth rate-limit bucket): 14 passed
+(was 2), no sign-in failures / 429s. Map gallery frames + captions updated
+(`public/map/e2e/beta/…`); email/password redacted in captions and login Email
+fields covered. Beta still on the 18 Oct build — deploy has failed since #1147
+(`Permission denied` on `/srv/tahti-beta/deploy/`; needs `chown` on vimage).
+Upload/Join still answer a bare "Validation error" until beta gets #1148.
+
 ## 2026-10-18 — CSP unblock external radio on beta
 
 Folded `csp-radio-media-src.md`. #1078's starter CSP limited `media-src` /
