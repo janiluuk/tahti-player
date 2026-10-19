@@ -16,6 +16,7 @@ export function useRecordingsState() {
   const [showRefBySoundItemId, setShowRefBySoundItemId] =
     useState<ShowRefBySoundItemId>(new Map());
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<SortKey>('newest');
   const [editingSoundId, setEditingSoundId] = useState<string | null>(null);
@@ -27,6 +28,11 @@ export function useRecordingsState() {
       fetchShowRefBySoundItemId(),
     ]).then(([broadcastsRes, showRefRes]) => {
       setRecordings(broadcastsRes.data);
+      setLoadError(
+        broadcastsRes.meta.source === 'api'
+          ? (broadcastsRes.meta.reason ?? null)
+          : null,
+      );
       setShowRefBySoundItemId(showRefRes.data);
       setLoading(false);
     });
@@ -68,6 +74,7 @@ export function useRecordingsState() {
   return {
     recordings,
     loading,
+    loadError,
     query,
     setQuery,
     sort,
