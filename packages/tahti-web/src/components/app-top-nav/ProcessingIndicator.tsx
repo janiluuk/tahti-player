@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
-import { Button } from '@tahti-player/ui';
+import { Badge, Button } from '@tahti-player/ui';
 
 import { type TopNavState } from './useTopNavState';
 
@@ -12,13 +12,13 @@ export function ProcessingIndicator({ nav }: { nav: TopNavState }) {
       <Button
         variant="text"
         size="icon-sm"
-        className="border-accent-blue/50 bg-accent-blue/10 text-accent-blue-strong inline-flex size-7 items-center justify-center rounded-full border active:scale-100"
+        className="inline-flex size-7 items-center justify-center active:scale-100"
         aria-label={`${processingItems.length} track${processingItems.length === 1 ? '' : 's'} processing`}
         aria-expanded={processingOpen}
         title="Track processing status"
         onClick={() => setProcessingOpen((current) => !current)}
       >
-        <span className="bg-accent-blue size-2 rounded-full motion-safe:animate-pulse" />
+        <Badge variant="dot" color="blue" animated aria-hidden />
       </Button>
       {processingOpen ? (
         <div className="border-border bg-background absolute top-[calc(100%+8px)] left-0 z-40 w-72 rounded-lg border p-2 shadow-lg">
@@ -35,9 +35,9 @@ export function ProcessingIndicator({ nav }: { nav: TopNavState }) {
                   onClick={() => setProcessingOpen(false)}
                 >
                   <span className="min-w-0 truncate">{item.title}</span>
-                  <span className="text-accent-blue-strong shrink-0">
+                  <Badge variant="pill" color="blue" className="shrink-0">
                     {item.status === 'PENDING' ? 'Queued' : 'Processing'}
-                  </span>
+                  </Badge>
                 </Link>
               </li>
             ))}
