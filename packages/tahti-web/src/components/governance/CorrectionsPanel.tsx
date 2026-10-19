@@ -15,6 +15,7 @@ import {
   type GovernanceCorrection,
 } from '../../api/governance-corrections';
 import { ConfirmDialog } from '../ConfirmDialog';
+import { PageError } from '../PageStates';
 import { GovernancePanel } from './GovernancePanel';
 
 const STATE_LABELS: Record<
@@ -121,9 +122,14 @@ export function CorrectionsPanel() {
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
 
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   const load = useCallback(async () => {
     const result = await fetchMyCorrections();
     setCorrections(result.data);
+    setLoadError(
+      result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+    );
   }, []);
 
   useEffect(() => {
@@ -207,6 +213,12 @@ export function CorrectionsPanel() {
             ))}
           </ul>
         </div>
+      ) : loadError ? (
+        <PageError
+          title="Could not load your requests"
+          description={loadError}
+          onRetry={() => void load()}
+        />
       ) : null}
     </GovernancePanel>
   );

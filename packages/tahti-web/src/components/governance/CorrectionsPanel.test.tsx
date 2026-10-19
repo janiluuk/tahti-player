@@ -24,6 +24,22 @@ describe('CorrectionsPanel', () => {
     ).toBeInTheDocument();
   });
 
+  it('says the requests failed to load instead of hiding them', async () => {
+    const fetchMine = vi
+      .spyOn(corrections, 'fetchMyCorrections')
+      .mockResolvedValue({
+        data: [],
+        meta: { source: 'api', reason: 'HTTP 502' },
+      });
+    render(<CorrectionsPanel />);
+    expect(
+      await screen.findByText('Could not load your requests'),
+    ).toBeInTheDocument();
+    fetchMine.mockResolvedValue({ data: [answered], meta: { source: 'api' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(await screen.findByText('Your requests')).toBeInTheDocument();
+  });
+
   it('sends a request and reloads the list', async () => {
     const fetchMine = vi
       .spyOn(corrections, 'fetchMyCorrections')
