@@ -23,6 +23,7 @@ import {
   type RecentBroadcast,
 } from '../../api/broadcast';
 import { fetchEditorSource, uploadSoundFile } from '../../api/studio';
+import { ImportJobsPanel } from '../../components/ImportJobsPanel';
 import { StudioGate } from '../../components/StudioGate';
 import { WaveformSeekbar } from '../../components/tahti/WaveformSeekbar';
 import {
@@ -296,6 +297,8 @@ export function StudioUploadView() {
               )}
             </div>
           </div>
+
+          <ImportJobsPanel />
 
           <UploadSourceWidgets />
 
