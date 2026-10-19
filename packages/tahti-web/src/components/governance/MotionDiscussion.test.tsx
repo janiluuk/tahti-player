@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import * as client from '../../api/client';
 import type { MotionComment } from '../../api/governance-member';
 import type { GovernanceMotion } from '../../api/types';
 import { useAuthStore } from '../../stores/authStore';
@@ -123,5 +124,38 @@ describe('MotionDiscussion comment removal', () => {
     );
     expect(removeMotionComment).toHaveBeenCalledWith('m1', '2');
     expect(screen.queryByText('Theirs')).toBeNull();
+  });
+});
+
+describe('MotionDiscussion load failure', () => {
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+    useAuthStore.setState({ user: null });
+  });
+
+  it('says the discussion failed to load instead of "No comments yet"', async () => {
+    signIn(false);
+    const fetch = vi.spyOn(client, 'fetchMotionComments').mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    render(
+      <MotionDiscussion
+        motion={motion}
+        canPost
+        defaultExpanded
+        onMessage={() => {}}
+        onChanged={() => {}}
+      />,
+    );
+    expect(
+      await screen.findByText('Could not load the discussion'),
+    ).toBeTruthy();
+    expect(screen.queryByText('No comments yet.')).toBeNull();
+
+    fetch.mockResolvedValue({ data: comments, meta: { source: 'api' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(await screen.findByText('Theirs')).toBeTruthy();
   });
 });
