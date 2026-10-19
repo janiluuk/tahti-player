@@ -11,7 +11,7 @@ One PR per slice. Tick when merged.
 | - | ----- | ------ |
 | 1 | `NewsView` → `PageEmpty` | done |
 | 2 | `GovernanceView` topics → `PageEmpty` | open |
-| 3 | `MyRadioStations` → `PageEmpty` | open |
+| 3 | `MyRadioStations` → `PageEmpty` | done |
 | 4 | `ScheduledTimes` → `PageEmpty` | open |
 | 5 | `CreditsEditor` → `PageEmpty` | open |
 | 6 | `MemberRegisterPanel` → `PageEmpty` (+ clear filters) | open |
