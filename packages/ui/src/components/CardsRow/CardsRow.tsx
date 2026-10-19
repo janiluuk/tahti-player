@@ -6,6 +6,7 @@ import { cn } from '../../utils';
 import { Badge } from '../Badge';
 import { Button } from '../Button';
 import { Card } from '../Card';
+import { EmptyState } from '../EmptyState';
 import { Input } from '../Input';
 import { Tooltip } from '../Tooltip';
 import { useCardsRow } from './useCardsRow';
@@ -21,6 +22,7 @@ export type CardsRowItem = {
 export type CardsRowLabels = {
   filterPlaceholder: string;
   nothingFound: string;
+  clearFilter?: string;
 };
 
 export type CardsRowBadgeColor =
@@ -43,10 +45,8 @@ export type CardsRowProps<T extends CardsRowItem = CardsRowItem> = {
   labels: CardsRowLabels;
   className?: string;
   'data-testid'?: string;
-  /** Custom card renderer, for callers whose items carry richer content
-   * than the default title/subtitle/imageUrl Card can show. Filtering
-   * (by `.title`) and scrolling still work the same either way. */
   renderItem?: (item: T) => ReactNode;
+  cardSurface?: 'brand' | 'neutral';
 };
 
 export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
@@ -58,6 +58,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
   className,
   'data-testid': testId = 'cards-row',
   renderItem,
+  cardSurface = 'brand',
 }: CardsRowProps<T>) => {
   const {
     filterText,
@@ -142,12 +143,24 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {isEmpty(filteredItems) ? (
-          <div
+          <EmptyState
             data-testid="cards-row-nothing-found"
-            className="text-foreground-secondary py-8 text-sm"
-          >
-            {labels.nothingFound}
-          </div>
+            size="sm"
+            title={labels.nothingFound}
+            className="w-full py-8"
+            action={
+              filterText ? (
+                <Button
+                  data-testid="cards-row-nothing-found-clear"
+                  size="sm"
+                  variant="secondary"
+                  onClick={clearFilter}
+                >
+                  {labels.clearFilter ?? 'Clear filter'}
+                </Button>
+              ) : undefined
+            }
+          />
         ) : (
           filteredItems.map((item) =>
             renderItem ? (
@@ -165,6 +178,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
                 title={item.title}
                 subtitle={item.subtitle}
                 onClick={item.onClick}
+                surface={cardSurface}
               />
             ),
           )

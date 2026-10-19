@@ -1,9 +1,10 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 
 import {
   Badge,
   Button,
   ExternalLink,
+  FilterChips,
   MediaArtwork,
   ViewShell,
 } from '@tahti-player/ui';
@@ -23,6 +24,7 @@ import { usePlayerStore } from '../stores/playerStore';
  * `content/radioStations.ts`, instead of sending listeners off to the
  * broadcaster's site. */
 export function RadioStationView({ stationId }: { stationId: string }) {
+  const navigate = useNavigate();
   const base = radioStation(stationId);
   const override = useListenerWidgetsStore(
     (s) => s.stationOverrides[stationId],
@@ -149,19 +151,17 @@ export function RadioStationView({ stationId }: { stationId: string }) {
         <h2 id="other-stations" className="text-sm font-bold tracking-tight">
           Other stations
         </h2>
-        <ul className="flex flex-wrap gap-2">
-          {others.map((item) => (
-            <li key={item.id}>
-              <Link
-                to="/radio/station/$stationId"
-                params={{ stationId: item.id }}
-                className="border-border hover:border-primary/50 inline-flex rounded-full border px-3 py-1.5 text-xs font-semibold"
-              >
-                {item.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <FilterChips
+          aria-label="Other stations"
+          items={others.map((item) => ({ id: item.id, label: item.name }))}
+          selected=""
+          onChange={(id) => {
+            void navigate({
+              to: '/radio/station/$stationId',
+              params: { stationId: id },
+            });
+          }}
+        />
       </section>
     </ViewShell>
   );
