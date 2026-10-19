@@ -7,7 +7,7 @@ import {
   RssIcon,
 } from 'lucide-react';
 
-import { Button, EmptyState, StatChip, Tooltip } from '@tahti-player/ui';
+import { Badge, Button, EmptyState, StatChip, Tooltip } from '@tahti-player/ui';
 
 import type { ChannelLink } from '../../api/channel-design';
 import type { PublicRadioShow } from '../../api/shows';
@@ -220,12 +220,14 @@ export function renderChannelBlock(
                       link.url.startsWith('mailto:') ? undefined : '_blank'
                     }
                     rel="noopener noreferrer"
-                    className={`border-border hover:border-primary/50 hover:bg-primary/5 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${
-                      editing && link.hidden ? 'opacity-50' : ''
-                    }`}
+                    className={
+                      editing && link.hidden ? 'opacity-50' : undefined
+                    }
                   >
-                    <SocialLinkIcon label={link.label} url={link.url} />
-                    {link.label}
+                    <Badge variant="pill" color="secondary" className="gap-1.5">
+                      <SocialLinkIcon label={link.label} url={link.url} />
+                      {link.label}
+                    </Badge>
                   </a>
                 ))}
             </div>

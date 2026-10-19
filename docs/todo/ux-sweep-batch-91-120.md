@@ -35,4 +35,4 @@ Bare empty copy and batch-4 leftovers after earlier sweeps. One PR per row. Tick
 | 117 | done | Multistream destinations |
 | 118 | done | Channel rotation |
 | 119 | done | Motion comments |
-| 120 | open | Channel link badges |
+| 120 | done | Channel link badges |
