@@ -76,4 +76,13 @@ describe('fetchSoundcloudTracks', () => {
     expect(result.data).toEqual([]);
     expect(result.needsReconnect).toBeUndefined();
   });
+
+  it('does not probe search-only Mixcloud embeds (no /api/me route)', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch');
+
+    const { data } = await fetchConnectionStatus('mixcloud-embed');
+
+    expect(data).toEqual({ connected: true, configured: true });
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
 });
