@@ -70,10 +70,30 @@ function getMockCollectionStore(): StudioCollection[] {
   return mockCollectionStore;
 }
 
-export async function fetchStudioCollections(): Promise<{
+type StudioCollectionsResult = {
   data: StudioCollection[];
   meta: FetchMeta;
-}> {
+};
+
+let inflightCollections: Promise<StudioCollectionsResult> | null = null;
+
+/** The artist's collections with items. Callers that ask while a request is
+ * already running share it: every track row's context menu asks on mount,
+ * which sent the same request once per row. Nothing is cached after it
+ * settles, so edits are always re-read. */
+export function fetchStudioCollections(): Promise<StudioCollectionsResult> {
+  if (!inflightCollections) {
+    inflightCollections = loadStudioCollections().finally(() => {
+      inflightCollections = null;
+    });
+  }
+  return inflightCollections.then((result) => ({
+    data: result.data.map((row) => ({ ...row })),
+    meta: result.meta,
+  }));
+}
+
+async function loadStudioCollections(): Promise<StudioCollectionsResult> {
   if (isForceMock()) {
     return {
       data: getMockCollectionStore().map((row) => ({ ...row })),
