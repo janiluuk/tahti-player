@@ -87,9 +87,7 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
             Loading announcements…
           </p>
         ) : items.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">
-            No pinned announcements yet.
-          </p>
+          <PageEmpty title="No pinned announcements yet." />
         ) : (
           <ul className="border-border divide-border divide-y rounded-lg border">
             {items.map((item) => (
