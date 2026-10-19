@@ -1,5 +1,6 @@
 import { Link, useSearch } from '@tanstack/react-router';
 import {
+  BarChart3Icon,
   Disc3Icon,
   DiscAlbumIcon,
   ExternalLinkIcon,
@@ -295,6 +296,18 @@ export function StudioReleasesView() {
                           />
                           Edit
                         </ButtonLink>
+                        <Tooltip content="Stats" side="top">
+                          <ButtonLink
+                            to="/studio/releases/$id"
+                            params={{ id: r.id }}
+                            search={{ tab: 'stats' }}
+                            size="icon-sm"
+                            variant="text"
+                            aria-label={`Stats for ${r.title}`}
+                          >
+                            <BarChart3Icon size={16} aria-hidden />
+                          </ButtonLink>
+                        </Tooltip>
                         <CopyButton
                           text={`${window.location.origin}/r/${r.smartLinkSlug}`}
                           size="icon-sm"

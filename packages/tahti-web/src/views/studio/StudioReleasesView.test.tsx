@@ -77,4 +77,16 @@ describe('StudioReleasesView', () => {
     );
     expect(screen.getByLabelText('Title')).toBeTruthy();
   });
+
+  it('links each release to its Stats tab', async () => {
+    vi.spyOn(studio, 'fetchStudioReleases').mockResolvedValue({
+      data: list([release]),
+      meta: { source: 'api' },
+    });
+    await renderWithRouter(<StudioReleasesView />);
+    const link = await screen.findByRole('link', {
+      name: 'Stats for After Hours',
+    });
+    expect(link.getAttribute('href')).toBe('/studio/releases/rel-1?tab=stats');
+  });
 });
