@@ -18,7 +18,7 @@ import {
   type RadioSubmission,
 } from '../api/studio';
 import type { StudioSound } from '../api/studio-types';
-import { PageLoading } from './PageStates';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 const MAX_TRACKS = 5;
@@ -37,6 +37,7 @@ export function StudioRadioSubmissionPanel() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [optedOut, setOptedOut] = useState(false);
+  const [submissionsError, setSubmissionsError] = useState<string | null>(null);
 
   const reload = () => {
     void Promise.all([
@@ -46,6 +47,11 @@ export function StudioRadioSubmissionPanel() {
     ]).then(([soundResult, submissionResult, preference]) => {
       setSounds(soundResult.data);
       setSubmissions(submissionResult.data);
+      setSubmissionsError(
+        submissionResult.meta.source === 'api'
+          ? (submissionResult.meta.reason ?? null)
+          : null,
+      );
       setOptedOut(preference.data.metaStreamOptOut);
       setLoading(false);
     });
@@ -110,10 +116,17 @@ export function StudioRadioSubmissionPanel() {
       >
         {loading ? (
           <PageLoading label="Loading submissions…" />
+        ) : submissionsError && submissions.length === 0 ? (
+          <PageError
+            title="Could not load your submissions"
+            description={submissionsError}
+            onRetry={() => {
+              setLoading(true);
+              reload();
+            }}
+          />
         ) : submissions.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">
-            No submissions yet.
-          </p>
+          <PageEmpty title="No submissions yet" />
         ) : (
           <ul className="border-border divide-border divide-y rounded-lg border">
             {submissions.map((submission) => (

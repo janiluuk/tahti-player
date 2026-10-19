@@ -396,7 +396,7 @@ export async function fetchMyRadioSubmissions(): Promise<{
     );
     return { data: data.items, meta: { source: 'api' } };
   } catch (err) {
-    return { data: [], meta: failMeta(err) };
+    return { data: [], meta: apiErrorMeta(err) };
   }
 }
 
