@@ -62,3 +62,50 @@ describe('DiscordBotAddonCard restart', () => {
     ).toBeNull();
   });
 });
+
+describe('DiscordBotAddonCard load failure', () => {
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+    useAuthStore.setState({ user: null });
+  });
+
+  it('says the status is unavailable instead of "Not configured"', async () => {
+    useAuthStore.setState({
+      user: { username: 'board', isBoard: true } as AuthUser,
+    });
+    const fetch = vi.spyOn(api, 'fetchDiscordBotSettings').mockResolvedValue({
+      data: {
+        clientId: '',
+        tokenConfigured: false,
+        tokenHint: null,
+        source: 'none',
+      },
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await act(async () => {
+      render(<DiscordBotAddonCard />);
+    });
+    expect(screen.getByText('Status unavailable')).toBeTruthy();
+    expect(screen.queryByText('Not configured')).toBeNull();
+    expect(
+      screen
+        .getByRole('button', { name: 'Configure Tahti Radio Discord bot' })
+        .hasAttribute('disabled'),
+    ).toBe(true);
+
+    fetch.mockResolvedValue({
+      data: {
+        clientId: '1168742859038531594',
+        tokenConfigured: true,
+        tokenHint: '••••f4eb',
+        source: 'database',
+      },
+      meta: { source: 'api' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(screen.getAllByText('Configured').length).toBeGreaterThan(0);
+  });
+});
