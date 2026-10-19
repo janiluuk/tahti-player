@@ -39,6 +39,7 @@ export function useGoLiveState() {
   const setPlaybackStatus = usePlayerStore((state) => state.setStatus);
 
   const [settings, setSettings] = useState<StreamSettings | null>(null);
+  const [settingsError, setSettingsError] = useState<string | null>(null);
   const [signal, setSignal] = useState<SignalStatus | null>(null);
   const [usage, setUsage] = useState<BroadcastUsage | null>(null);
   const [targets, setTargets] = useState<RtmpTarget[]>([]);
@@ -101,6 +102,11 @@ export function useGoLiveState() {
       fetchAutoRecordEnabled(),
     ]);
     setSettings(settingsResult.data);
+    setSettingsError(
+      settingsResult.data
+        ? null
+        : (settingsResult.meta.reason ?? 'Stream settings are unavailable.'),
+    );
     setUsage(usageResult.data);
     setTargets(targetResult.data);
     setPreflight(preflightResult.data);
@@ -220,6 +226,7 @@ export function useGoLiveState() {
     analyser,
     settings,
     setSettings,
+    settingsError,
     signal,
     setSignal,
     usage,

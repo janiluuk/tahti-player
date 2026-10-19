@@ -97,3 +97,29 @@ describe('BroadcastCredentialsPanel rotation', () => {
     expect(screen.getByText('new-pass')).toBeTruthy();
   });
 });
+
+describe('BroadcastCredentialsPanel load failure', () => {
+  afterEach(cleanup);
+
+  it('offers Retry when the stream settings failed to load', () => {
+    const reload = vi.fn(async () => undefined);
+    const state = {
+      settings: null,
+      settingsError: 'HTTP 502',
+      reload,
+      setSettings: vi.fn(),
+      channelState: 'OFFLINE',
+      credentialsExpanded: true,
+      setCredentialsExpanded: vi.fn(),
+      ingest: 'obs',
+      setIngest: vi.fn(),
+      slug: 'slug',
+    } as unknown as GoLiveState;
+    render(<BroadcastCredentialsPanel state={state} />);
+    expect(
+      screen.getByText('Could not load your stream settings'),
+    ).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(reload).toHaveBeenCalled();
+  });
+});

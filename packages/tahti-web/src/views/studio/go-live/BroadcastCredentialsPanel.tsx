@@ -17,6 +17,7 @@ import {
 } from '../../../api/broadcast';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { ObsPresetButton } from '../../../components/ObsPresetButton';
+import { PageError, PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { CopyField } from './CopyField';
 import type { GoLiveState } from './useGoLiveState';
@@ -43,6 +44,8 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
   const {
     settings,
     setSettings,
+    settingsError,
+    reload,
     channelState,
     credentialsExpanded,
     setCredentialsExpanded,
@@ -97,12 +100,17 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
   );
 
   const renderCredentials = () => {
-    if (!settings) {
+    if (!settings && settingsError) {
       return (
-        <p className="text-foreground-secondary text-sm">
-          Stream settings could not be loaded.
-        </p>
+        <PageError
+          title="Could not load your stream settings"
+          description={settingsError}
+          onRetry={() => void reload()}
+        />
       );
+    }
+    if (!settings) {
+      return <PageLoading label="Loading stream settings…" />;
     }
     if (ingest === 'obs') {
       return (
