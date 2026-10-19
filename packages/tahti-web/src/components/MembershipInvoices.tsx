@@ -56,10 +56,7 @@ export function MembershipInvoices() {
       ) : invoices === null ? (
         <p className="text-foreground-secondary mt-2 text-sm">Loading…</p>
       ) : invoices.length === 0 ? (
-        <p className="text-foreground-secondary mt-2 text-sm">
-          No membership invoices yet. Invoices appear here once you pay through
-          Stripe checkout.
-        </p>
+        <PageEmpty title="No membership invoices yet. Invoices appear here once you pay through Stripe checkout." />
       ) : (
         <ul className="divide-border mt-2 divide-y">
           {invoices.map((invoice) => {
