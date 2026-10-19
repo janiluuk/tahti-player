@@ -37,6 +37,7 @@ vi.mock('@tanstack/react-virtual', () => ({
 const addStudioCollectionItem = vi.fn();
 let collectionName = 'Original Name';
 let collectionItems: StudioCollection['items'] = [];
+let collectionFailure: string | null = null;
 const sounds: StudioSound[] = [
   { id: 'sound-1', title: 'Bonus Track', status: 'READY' },
 ];
@@ -54,10 +55,16 @@ vi.mock('../../api/studio', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../api/studio')>();
   return {
     ...actual,
-    fetchStudioCollection: async () => ({
-      data: makeCollection(),
-      meta: { source: 'mock' as const },
-    }),
+    fetchStudioCollection: async () =>
+      collectionFailure
+        ? {
+            data: { slug: 'my-album', name: 'my-album', items: [] },
+            meta: { source: 'api' as const, reason: collectionFailure },
+          }
+        : {
+            data: makeCollection(),
+            meta: { source: 'mock' as const },
+          },
     fetchStudioSounds: async () => ({
       data: sounds,
       meta: { source: 'mock' as const },
@@ -96,6 +103,7 @@ beforeEach(() => {
   vi.stubEnv('VITE_FORCE_MOCK', '1');
   collectionName = 'Original Name';
   collectionItems = [];
+  collectionFailure = null;
   addStudioCollectionItem.mockImplementation(async () => {
     // The server round trip that follows a successful add would normally
     // reflect any concurrent server-side change too — simulate that here.
@@ -184,5 +192,21 @@ describe('StudioCollectionEditView contributions', () => {
       'Added by @mira · “Perfect opener”',
     );
     expect(document.body.textContent).not.toContain('mira@example.com');
+  });
+});
+
+describe('StudioCollectionEditView load failure', () => {
+  it('shows an error instead of an editable blank collection', async () => {
+    collectionFailure = 'HTTP 502';
+    await renderView();
+    expect(screen.getByText('Could not load this collection')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Edit details' })).toBeNull();
+
+    collectionFailure = null;
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    expect(screen.getByRole('button', { name: 'Edit details' })).toBeTruthy();
   });
 });
