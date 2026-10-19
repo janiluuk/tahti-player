@@ -4,6 +4,7 @@ import { MessageCircleIcon, MicIcon } from 'lucide-react';
 import { MediaArtwork } from '@tahti-player/ui';
 
 import type { PublicRadioShowEpisode } from '../api/shows';
+import { PageEmpty } from './PageStates';
 
 function formatDate(startAt: string, endAt: string) {
   const start = new Date(startAt);
@@ -88,7 +89,7 @@ export function RadioShowEpisodeList({
   emptyMessage: string;
 }) {
   if (episodes.length === 0) {
-    return <p className="text-foreground-secondary text-sm">{emptyMessage}</p>;
+    return <PageEmpty title={emptyMessage} />;
   }
 
   return (
