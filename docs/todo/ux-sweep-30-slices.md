@@ -10,26 +10,26 @@ One PR per slice. Tick when merged.
 | # | Slice | Status |
 | - | ----- | ------ |
 | 1 | `NewsView` → `PageEmpty` | done |
-| 2 | `GovernanceView` topics → `PageEmpty` | open |
+| 2 | `GovernanceView` topics → `PageEmpty` | done |
 | 3 | `MyRadioStations` → `PageEmpty` | open |
-| 4 | `ScheduledTimes` → `PageEmpty` | open |
+| 4 | `ScheduledTimes` → `PageEmpty` | done |
 | 5 | `CreditsEditor` → `PageEmpty` | done |
-| 6 | `MemberRegisterPanel` → `PageEmpty` (+ clear filters) | open |
+| 6 | `MemberRegisterPanel` → `PageEmpty` (+ clear filters) | done |
 | 7 | Studio home `GovernanceSection` → `PageEmpty` | open |
-| 8 | Studio home `SummaryStatsSection` discography → `PageEmpty` + CTA | open |
+| 8 | Studio home `SummaryStatsSection` discography → `PageEmpty` + CTA | done |
 | 9 | `FeatureRequestsView` comments → `PageEmpty` | open |
 | 10 | `TrackBody` comments → `PageEmpty` | open |
-| 11 | `MessagesView` → `PageEmpty` | open |
+| 11 | `MessagesView` → `PageEmpty` | done |
 | 12 | `SocialPostNow` → `PageEmpty` | open |
 
 ## Catalog controls (13–18)
 
 | # | Slice | Status |
 | - | ----- | ------ |
-| 13 | `TrackDetailsBlock` → `Badge` | open |
+| 13 | `TrackDetailsBlock` → `Badge` | done |
 | 14 | `ProcessingIndicator` → `Badge` | open |
 | 15 | `RadioStationView` toggle → `FilterChips` | open |
-| 16 | `DirectoryArtistsBrowser` Active/Filters → `FilterChips` | open |
+| 16 | `DirectoryArtistsBrowser` Active/Filters → `FilterChips` | done |
 | 17 | `HeaderStyleTabs` → catalog `Tabs` | open |
 | 18 | `PressKitPreview` bio → `PageEmpty` | open |
 
@@ -38,10 +38,10 @@ One PR per slice. Tick when merged.
 | # | Slice | Status |
 | - | ----- | ------ |
 | 19 | CardsRow `nothingFound` + clear-filter action | open |
-| 20 | Add `SectionTitle` to `@tahti-player/ui` + story | open |
-| 21 | Listen New tracks → `SectionTitle` | open |
+| 20 | Add `SectionTitle` to `@tahti-player/ui` + story | done |
+| 21 | Listen New tracks → `SectionTitle` | done |
 | 22 | `ArtistReferenceSections` → `SectionTitle` | open |
-| 23 | `ArtistProfileSections` → `SectionTitle` | open |
+| 23 | `ArtistProfileSections` → `SectionTitle` | done |
 | 24 | History stats active-tab accent | open |
 | 25 | History list active-row accent | open |
 | 26 | CollectionView cover-tint header | open |
@@ -53,4 +53,4 @@ One PR per slice. Tick when merged.
 | - | ----- | ------ |
 | 28 | MediaArtwork thumb play overlay neutral (not primary fill) | open |
 | 29 | Card `surface="neutral"` + Listen cards adopt it | open |
-| 30 | `StudioReleasesView` search input | open |
+| 30 | `StudioReleasesView` search input | done |
