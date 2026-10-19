@@ -65,8 +65,18 @@ const ReorderableQueueItemView: FC<ReorderableQueueItemProps> = ({
         'z-50': isDragging,
         'cursor-grab': isReorderable,
       })}
-      {...attributes}
-      {...listeners}
+      {...(isReorderable
+        ? {
+            ...attributes,
+            ...listeners,
+            'aria-label': [
+              item.track.title,
+              item.track.artists?.map((artist) => artist.name).join(', '),
+            ]
+              .filter(Boolean)
+              .join(' — '),
+          }
+        : {})}
     >
       <QueueItemPopover
         track={item.track}
