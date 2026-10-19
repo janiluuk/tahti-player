@@ -32,6 +32,7 @@ import type { OnAirChannel } from '../api/listen';
 import { fetchStationNowPlaying } from '../api/radio-now-playing';
 import type { TahtiPlayable } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
+import { HomeComingUp } from '../components/listen-view/HomeComingUp';
 import {
   NewReleasesRow,
   TahtiSelectsRow,
@@ -659,6 +660,8 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
             ) : null}
 
             <TrendingRow />
+
+            <HomeComingUp />
 
             <ListenSection
               data-testid="listen-new-tracks"
