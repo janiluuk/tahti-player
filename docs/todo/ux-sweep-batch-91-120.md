@@ -13,7 +13,7 @@ Bare empty copy and batch-4 leftovers after earlier sweeps. One PR per row. Tick
 | 95 | open | Fan payouts |
 | 96 | done | Listener map |
 | 97 | done | Membership invoices |
-| 98 | open | Pinned announcements |
+| 98 | done | Pinned announcements |
 | 99 | done | Play history |
 | 100 | done | Radio booking slots |
 | 101 | done | SoundCloud embeds |
