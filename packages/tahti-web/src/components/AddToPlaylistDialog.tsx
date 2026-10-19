@@ -9,7 +9,7 @@ import type {
   NativePlaylistSummary,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
-import { PageError } from './PageStates';
+import { PageEmpty, PageError } from './PageStates';
 
 type Props = {
   isOpen: boolean;
@@ -116,9 +116,7 @@ export function AddToPlaylistDialog({
             onRetry={() => setAttempt((n) => n + 1)}
           />
         ) : playlists.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">
-            No playlists yet — create one below.
-          </p>
+          <PageEmpty title="No playlists yet — create one below." />
         ) : (
           playlists.map((playlist) => (
             <Button
