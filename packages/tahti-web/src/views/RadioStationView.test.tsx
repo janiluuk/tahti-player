@@ -62,8 +62,8 @@ describe('RadioStationView', () => {
     expect(
       screen.getByText('Programme guide').closest('a')?.getAttribute('href'),
     ).toBe('https://www.radiohelsinki.fi/ohjelmakartta/');
-    expect(screen.getByRole('radio', { name: 'YleX' })).toBeTruthy();
-    expect(screen.queryByRole('radio', { name: 'Radio Helsinki' })).toBeNull();
+    expect(screen.getByRole('link', { name: 'YleX' })).toBeTruthy();
+    expect(screen.queryByRole('link', { name: 'Radio Helsinki' })).toBeNull();
   });
 
   it('plays the stream and toggles it on the Listen page', async () => {
