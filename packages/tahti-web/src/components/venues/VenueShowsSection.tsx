@@ -9,6 +9,7 @@ import {
   type VenueBroadcast,
 } from '../../api/venues-manage';
 import { ConfirmDialog } from '../ConfirmDialog';
+import { PageEmpty } from '../PageStates';
 
 function formatShow(show: VenueBroadcast): string {
   const start = new Date(show.startAt);
@@ -110,9 +111,7 @@ export function VenueShowsSection({
         Upcoming shows
       </h3>
       {shows.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No shows booked here yet.
-        </p>
+        <PageEmpty title="No shows booked here yet." />
       ) : (
         <ul className="divide-border divide-y">
           {shows.map((show) => (
