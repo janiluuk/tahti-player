@@ -14,6 +14,7 @@ import {
   MulticastConfigureDialog,
   type MulticastConfiguring,
 } from '../../../components/MulticastConfigureDialog';
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import {
   multicastProviderLabel,
@@ -64,9 +65,7 @@ export function MultistreamPanel({
         }
       >
         {targets.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">
-            No destinations configured.
-          </p>
+          <PageEmpty title="No destinations configured." />
         ) : (
           <ul className="flex flex-col gap-2">
             {targets.map((target) => (
