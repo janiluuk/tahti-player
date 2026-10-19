@@ -7,9 +7,10 @@ import {
 } from './releaseDetailTabs';
 
 describe('releaseDetailTabs', () => {
-  it('lists the six content tabs', () => {
+  it('lists the seven content tabs', () => {
     expect(RELEASE_DETAIL_TABS).toEqual([
       'overview',
+      'stats',
       'smart-links',
       'credits',
       'versions',

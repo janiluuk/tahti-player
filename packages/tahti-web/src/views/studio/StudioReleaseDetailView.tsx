@@ -1,6 +1,7 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
+  BarChart3Icon,
   Code2Icon,
   EyeIcon,
   FingerprintIcon,
@@ -50,6 +51,7 @@ import {
 import { ReleasePoweredByFooterToggle } from './release-detail/ReleasePoweredByFooterToggle';
 import { ReleaseSmartLinksPanel } from './release-detail/ReleaseSmartLinksPanel';
 import { ReleaseSmartLinkStats } from './release-detail/ReleaseSmartLinkStats';
+import { ReleaseStatsPanel } from './release-detail/ReleaseStatsPanel';
 import { ReleaseTrackCreditsPanel } from './release-detail/ReleaseTrackCreditsPanel';
 import { ReleaseTrackVersionsPanel } from './release-detail/ReleaseTrackVersionsPanel';
 import { useReleaseDetail } from './release-detail/useReleaseDetail';
@@ -424,6 +426,12 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                       </div>
                     </>
                   ),
+                },
+                {
+                  id: 'stats',
+                  label: 'Stats',
+                  icon: <BarChart3Icon size={14} />,
+                  content: <ReleaseStatsPanel tracks={release.tracks ?? []} />,
                 },
                 {
                   id: 'smart-links',

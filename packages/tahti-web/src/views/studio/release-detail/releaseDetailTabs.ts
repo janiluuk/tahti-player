@@ -1,6 +1,7 @@
 /** Studio release detail content tabs (URL `?tab=`). */
 export const RELEASE_DETAIL_TABS = [
   'overview',
+  'stats',
   'smart-links',
   'credits',
   'versions',
