@@ -26,6 +26,11 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 | blocked | [track-visualizer-video-editor.md](track-visualizer-video-editor.md) | PulseForge licence / port decision |
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
 | blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
+| open    | [listen-ui-liveliness.md](listen-ui-liveliness.md) | Multi-hue accents (nuclear-green has no tuned accents) + depth on flat Listen/History/Collection surfaces; de-green uniform Card/Button/section pills |
+| open    | [view-modes-track-tables.md](view-modes-track-tables.md) | No list/grid view-mode or sort anywhere; add to shared PlayableTrackTable + studio/library lists |
+| open    | [studio-artist-usability.md](studio-artist-usability.md) | Per-release stats, bulk selection, search parity, release lifecycle, row quick actions, toast drift |
+| open    | [profile-surfaces-unification.md](profile-surfaces-unification.md) | Artist/Channel profile pages + 3× collection rendering + Library trio are copy-pasted; extract shared surfaces |
+| open    | [catalog-components-empty-states.md](catalog-components-empty-states.md) | Hand-rolled pills/tabs/badges + 10 raw tables + bare empty text → catalog Badge/FilterChips/Tabs/EmptyState |
 
 ## Fold rule (copy into CLAUDE / chat)
 
