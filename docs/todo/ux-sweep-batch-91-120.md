@@ -23,7 +23,7 @@ Bare empty copy and batch-4 leftovers after earlier sweeps. One PR per row. Tick
 | 105 | done | Messages popover |
 | 106 | done | Venue shows |
 | 107 | done | Fan subscribe |
-| 108 | open | Venue detail |
+| 108 | done | Venue detail |
 | 109 | open | System announcements |
 | 110 | open | Selects rotation |
 | 111 | open | Selects archive browse |

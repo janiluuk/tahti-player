@@ -23,7 +23,7 @@ import {
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
 import { PageFrame } from '../components/PageHeader';
-import { PageLoading } from '../components/PageStates';
+import { PageEmpty, PageLoading } from '../components/PageStates';
 import { VenueRecordings } from '../components/VenueRecordings';
 import { countryFlagAndName } from '../lib/countries';
 import { syncDocumentMetadata } from '../lib/seo';
@@ -218,9 +218,7 @@ function VenueUpcomingShows({
         </div>
       </div>
       {broadcasts.length === 0 ? (
-        <p className="text-foreground-secondary mt-2 text-sm">
-          No shows booked here yet.
-        </p>
+        <PageEmpty title="No shows booked here yet." />
       ) : (
         <ul className="divide-border mt-2 divide-y">
           {broadcasts.map((show) => (
