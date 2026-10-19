@@ -19,4 +19,5 @@ everywhere these cases appear.
 
 ## Left
 
+- CI: refresh CardGrid, CardsRow, and Tabs snapshots for the Card `data-surface` class order, and point the radio station test at the other-stations chip.
 - Merge PR; fold this todo.
