@@ -41,7 +41,7 @@ import { AdminUserDeletePanel } from './admin-user/AdminUserDeletePanel';
 import { AdminUserEngagementPanel } from './admin-user/AdminUserEngagementPanel';
 import { AdminUserRestrictionsPanel } from './admin-user/AdminUserRestrictionsPanel';
 import { ImageLightbox } from './ImageLightbox';
-import { PageLoading } from './PageStates';
+import { PageEmpty, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 const ROLES = ['BOARD', 'ARTIST', 'LISTENER'] as const;
