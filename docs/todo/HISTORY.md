@@ -2,6 +2,13 @@
 
 
 
+## 2026-10-19 — UX sweep batch 3 PageEmpty (tahti-player #1259)
+
+Folded `ux-sweep-batch-3.md`. Thirty more bare empties → `PageEmpty`
+(governance hub/AGM, studio credits/stems/mastering, add-ons, hearthis,
+shared `PlayableTrackTable` / radio episode lists). Follow-on candidates
+live in `ux-sweep-batch-4.md`.
+
 ## 2026-10-19 — UX sweep 30 micro-slices (tahti-player #1155–#1196+)
 
 Folded `ux-sweep-30-slices.md`. PageEmpty empties, Badge/FilterChips/Tabs
