@@ -27,7 +27,7 @@ One PR per slice. Tick when merged.
 | # | Slice | Status |
 | - | ----- | ------ |
 | 13 | `TrackDetailsBlock` → `Badge` | open |
-| 14 | `ProcessingIndicator` → `Badge` | open |
+| 14 | `ProcessingIndicator` → `Badge` | done |
 | 15 | `RadioStationView` toggle → `FilterChips` | open |
 | 16 | `DirectoryArtistsBrowser` Active/Filters → `FilterChips` | open |
 | 17 | `HeaderStyleTabs` → catalog `Tabs` | open |
