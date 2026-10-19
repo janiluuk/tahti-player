@@ -57,4 +57,25 @@ describe('PurchaseTiersEditor store section', () => {
     await vi.waitFor(() => expect(load).toHaveBeenCalled());
     expect(screen.queryByRole('switch')).toBeNull();
   });
+
+  it('says the tiers failed to load instead of "No purchase tiers yet"', async () => {
+    vi.spyOn(purchaseTiers, 'fetchStoreSettings').mockResolvedValue({
+      ok: true,
+      storeEnabled: false,
+    });
+    const fetch = vi
+      .spyOn(purchaseTiers, 'fetchMyPurchaseTiers')
+      .mockResolvedValue({
+        data: [],
+        meta: { source: 'api', reason: 'HTTP 502' },
+      });
+    render(<PurchaseTiersEditor />);
+    expect(
+      await screen.findByText('Could not load your purchase tiers'),
+    ).toBeTruthy();
+    expect(screen.queryByText('No purchase tiers yet')).toBeNull();
+    fetch.mockResolvedValue({ data: [], meta: { source: 'api' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(await screen.findByText('No purchase tiers yet')).toBeTruthy();
+  });
 });

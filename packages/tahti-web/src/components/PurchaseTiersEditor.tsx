@@ -11,6 +11,7 @@ import {
   setStoreEnabled,
   type PurchaseTierRow,
 } from '../api/purchase-tiers';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 function euros(cents: number): string {
   return `€${(cents / 100).toFixed(cents % 100 === 0 ? 0 : 2)}`;
@@ -18,6 +19,8 @@ function euros(cents: number): string {
 
 export function PurchaseTiersEditor() {
   const [tiers, setTiers] = useState<PurchaseTierRow[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [name, setName] = useState('Track');
   const [eurosAmt, setEurosAmt] = useState('5');
@@ -31,6 +34,8 @@ export function PurchaseTiersEditor() {
   const reload = () => {
     void fetchMyPurchaseTiers().then((r) => {
       setTiers(r.data);
+      setLoadError(r.meta.source === 'api' ? (r.meta.reason ?? null) : null);
+      setLoaded(true);
     });
   };
 
@@ -101,12 +106,19 @@ export function PurchaseTiersEditor() {
         </Button>
       </div>
 
-      {tiers.length === 0 ? (
-        <div className="border-border flex flex-col items-center gap-3 rounded-lg border px-4 py-6 text-center">
-          <p className="text-foreground-secondary text-sm">
-            No purchase tiers yet.
-          </p>
-        </div>
+      {!loaded ? (
+        <PageLoading label="Loading tiers…" />
+      ) : loadError && tiers.length === 0 ? (
+        <PageError
+          title="Could not load your purchase tiers"
+          description={loadError}
+          onRetry={reload}
+        />
+      ) : tiers.length === 0 ? (
+        <PageEmpty
+          title="No purchase tiers yet"
+          description="Add a tier, then assign it to a track from its edit dialog."
+        />
       ) : (
         <ul className="flex flex-col gap-2">
           {tiers.map((t) => (
