@@ -11,7 +11,7 @@ Bare empty copy and batch-4 leftovers after earlier sweeps. One PR per row. Tick
 | 93 | open | Admin user messages |
 | 94 | open | Channel playlist picker |
 | 95 | open | Fan payouts |
-| 96 | open | Listener map |
+| 96 | done | Listener map |
 | 97 | open | Membership invoices |
 | 98 | open | Pinned announcements |
 | 99 | open | Play history |
