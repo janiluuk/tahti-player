@@ -4,7 +4,7 @@ import type { IntegrationId } from '../api/sources';
 import { fetchStudioSounds } from '../api/studio';
 import type { StudioSound } from '../api/studio-types';
 import { EmbedTrackRow } from '../components/EmbedTrackRow';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { SoundCloudEmbedsPanel } from '../components/SoundCloudEmbedsPanel';
 import { SourceServiceIcon } from '../components/SourceServiceIcon';
 import { EMBED_PROVIDER_LABEL, type EmbedProvider } from '../lib/embedSrc';
@@ -30,18 +30,23 @@ const isEmbedItem = (item: StudioSound): item is EmbedItem =>
  * Tahti-hosted audio in the regular Tracks list. */
 export function LibraryEmbedsView() {
   const [items, setItems] = useState<StudioSound[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     void fetchStudioSounds().then((result) => {
       if (!cancelled) {
+        setLoadError(
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+        );
         setItems(result.data);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   const groups = useMemo(() => {
     const byProvider = new Map<EmbedProvider, EmbedItem[]>();
@@ -65,7 +70,16 @@ export function LibraryEmbedsView() {
   return (
     <div className="flex flex-col gap-8">
       <SoundCloudEmbedsPanel />
-      {groups.length === 0 ? (
+      {loadError && groups.length === 0 ? (
+        <PageError
+          title="Could not load your imported embeds"
+          description={loadError}
+          onRetry={() => {
+            setItems(null);
+            setAttempt((n) => n + 1);
+          }}
+        />
+      ) : groups.length === 0 ? (
         <PageEmpty
           title="No imported embeds yet"
           description="Tracks imported from hearthis.at, Mixcloud, Spotify, or Bandcamp show up here, grouped by provider, once you import some from Settings → Add-ons → Import."
