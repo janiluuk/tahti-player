@@ -7,9 +7,10 @@ import {
   MoreHorizontalIcon,
   PencilIcon,
   PlusIcon,
+  SearchIcon,
   Share2Icon,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -66,6 +67,7 @@ export function StudioReleasesView() {
   );
   const [msg, setMsg] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [query, setQuery] = useState('');
   const search = useSearch({ strict: false }) as { create?: boolean };
 
   useEffect(() => {
@@ -84,6 +86,16 @@ export function StudioReleasesView() {
   useEffect(() => {
     reload();
   }, []);
+
+  const filteredReleases = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    if (!needle) {
+      return releases;
+    }
+    return releases.filter((release) =>
+      release.title.toLowerCase().includes(needle),
+    );
+  }, [releases, query]);
 
   const closeCreate = () => {
     setCreateOpen(false);
@@ -223,110 +235,133 @@ export function StudioReleasesView() {
                 }
               />
             ) : (
-              <ul className="divide-border divide-y">
-                {releases.map((r) => (
-                  <li
-                    key={r.id}
-                    className="flex flex-wrap items-center gap-2 py-3 text-sm first:pt-0 last:pb-0"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <Link
-                        to="/studio/releases/$id"
-                        params={{ id: r.id }}
-                        className="font-medium hover:underline"
+              <>
+                <Input
+                  type="search"
+                  aria-label="Search releases"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search by title…"
+                  className="mb-4 max-w-md"
+                  startAddon={
+                    <SearchIcon size={14} aria-hidden className="opacity-70" />
+                  }
+                />
+                {filteredReleases.length === 0 ? (
+                  <p className="text-foreground-secondary text-sm">
+                    No releases match “{query.trim()}”.
+                  </p>
+                ) : (
+                  <ul className="divide-border divide-y">
+                    {filteredReleases.map((r) => (
+                      <li
+                        key={r.id}
+                        className="flex flex-wrap items-center gap-2 py-3 text-sm first:pt-0 last:pb-0"
                       >
-                        {r.title}
-                      </Link>
-                      <p className="text-foreground-secondary truncate text-xs">
-                        {r.type}, {r.state}
-                        {typeof r._count?.tracks === 'number'
-                          ? `, ${r._count.tracks} tracks`
-                          : ''}
-                        {r.pinnedAt ? ', pinned to profile' : ''}
-                        {' · '}
-                        <code className="text-foreground-secondary">
-                          /r/{r.smartLinkSlug}
-                        </code>
-                      </p>
-                    </div>
-                    <ButtonLink
-                      to="/studio/releases/$id"
-                      params={{ id: r.id }}
-                      size="sm"
-                      variant="secondary"
-                    >
-                      <PencilIcon size={14} aria-hidden className="mr-1.5" />
-                      Edit
-                    </ButtonLink>
-                    <CopyButton
-                      text={`${window.location.origin}/r/${r.smartLinkSlug}`}
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={`Copy smartlink for ${r.title}`}
-                    />
-                    {r.smartLinkTargets?.bandcamp ? (
-                      <ExternalLink
-                        href={r.smartLinkTargets.bandcamp}
-                        className="border-border size-8 justify-center overflow-hidden rounded border no-underline"
-                        aria-label={`Open ${r.title} on Bandcamp`}
-                        title="Open on Bandcamp"
-                      >
-                        <SourceServiceIcon id="bandcamp" size="detail" />
-                      </ExternalLink>
-                    ) : null}
-                    <Tooltip
-                      content={openMoreId === r.id ? 'Less' : 'More'}
-                      side="top"
-                    >
-                      <Button
-                        size="icon-sm"
-                        variant="text"
-                        aria-label={openMoreId === r.id ? 'Less' : 'More'}
-                        onClick={() =>
-                          setOpenMoreId((id) => (id === r.id ? null : r.id))
-                        }
-                      >
-                        <MoreHorizontalIcon size={16} aria-hidden />
-                      </Button>
-                    </Tooltip>
-                    {openMoreId === r.id && (
-                      <div className="flex w-full flex-wrap gap-2 pt-1">
-                        <ReleasePinButton
-                          release={r}
-                          onChange={(pinnedAt) =>
-                            setReleases((list) =>
-                              list.map((x) =>
-                                x.id === r.id ? { ...x, pinnedAt } : x,
-                              ),
-                            )
-                          }
+                        <div className="min-w-0 flex-1">
+                          <Link
+                            to="/studio/releases/$id"
+                            params={{ id: r.id }}
+                            className="font-medium hover:underline"
+                          >
+                            {r.title}
+                          </Link>
+                          <p className="text-foreground-secondary truncate text-xs">
+                            {r.type}, {r.state}
+                            {typeof r._count?.tracks === 'number'
+                              ? `, ${r._count.tracks} tracks`
+                              : ''}
+                            {r.pinnedAt ? ', pinned to profile' : ''}
+                            {' · '}
+                            <code className="text-foreground-secondary">
+                              /r/{r.smartLinkSlug}
+                            </code>
+                          </p>
+                        </div>
+                        <ButtonLink
+                          to="/studio/releases/$id"
+                          params={{ id: r.id }}
+                          size="sm"
+                          variant="secondary"
+                        >
+                          <PencilIcon
+                            size={14}
+                            aria-hidden
+                            className="mr-1.5"
+                          />
+                          Edit
+                        </ButtonLink>
+                        <CopyButton
+                          text={`${window.location.origin}/r/${r.smartLinkSlug}`}
+                          size="icon-sm"
+                          variant="text"
+                          aria-label={`Copy smartlink for ${r.title}`}
                         />
-                        <Tooltip content="Public link" side="top">
-                          <ButtonLink
-                            to="/r/$slug"
-                            params={{ slug: r.smartLinkSlug }}
+                        {r.smartLinkTargets?.bandcamp ? (
+                          <ExternalLink
+                            href={r.smartLinkTargets.bandcamp}
+                            className="border-border size-8 justify-center overflow-hidden rounded border no-underline"
+                            aria-label={`Open ${r.title} on Bandcamp`}
+                            title="Open on Bandcamp"
+                          >
+                            <SourceServiceIcon id="bandcamp" size="detail" />
+                          </ExternalLink>
+                        ) : null}
+                        <Tooltip
+                          content={openMoreId === r.id ? 'Less' : 'More'}
+                          side="top"
+                        >
+                          <Button
                             size="icon-sm"
                             variant="text"
-                            aria-label="Public link"
+                            aria-label={openMoreId === r.id ? 'Less' : 'More'}
+                            onClick={() =>
+                              setOpenMoreId((id) => (id === r.id ? null : r.id))
+                            }
                           >
-                            <ExternalLinkIcon size={16} aria-hidden />
-                          </ButtonLink>
+                            <MoreHorizontalIcon size={16} aria-hidden />
+                          </Button>
                         </Tooltip>
-                        <Tooltip content="Distribution" side="top">
-                          <ButtonLink
-                            to="/studio/distribution"
-                            size="icon-sm"
-                            variant="text"
-                            aria-label="Distribution"
-                          >
-                            <Share2Icon size={16} aria-hidden />
-                          </ButtonLink>
-                        </Tooltip>
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
+                        {openMoreId === r.id && (
+                          <div className="flex w-full flex-wrap gap-2 pt-1">
+                            <ReleasePinButton
+                              release={r}
+                              onChange={(pinnedAt) =>
+                                setReleases((list) =>
+                                  list.map((x) =>
+                                    x.id === r.id ? { ...x, pinnedAt } : x,
+                                  ),
+                                )
+                              }
+                            />
+                            <Tooltip content="Public link" side="top">
+                              <ButtonLink
+                                to="/r/$slug"
+                                params={{ slug: r.smartLinkSlug }}
+                                size="icon-sm"
+                                variant="text"
+                                aria-label="Public link"
+                              >
+                                <ExternalLinkIcon size={16} aria-hidden />
+                              </ButtonLink>
+                            </Tooltip>
+                            <Tooltip content="Distribution" side="top">
+                              <ButtonLink
+                                to="/studio/distribution"
+                                size="icon-sm"
+                                variant="text"
+                                aria-label="Distribution"
+                              >
+                                <Share2Icon size={16} aria-hidden />
+                              </ButtonLink>
+                            </Tooltip>
+                          </div>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </>
             )}
           </StudioPanel>
         </ViewShell>
