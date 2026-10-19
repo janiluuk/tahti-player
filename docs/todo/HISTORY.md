@@ -4943,3 +4943,11 @@ Asked for as "do the next 20 slices and open pr". Web only; every slice wires a 
 - **Records tab (#1026-#1031):** members' correction requests and the board's answer, the association's registered details, auditors (add, end a term), one list of records on legal hold.
 - **#1032:** batch 68 folded, admin Help text, tahti-web 0.0.165. **#1033:** Combobox story used `text-accent-red`, which failed the themes contrast test for every core-package PR.
 
+## 2026-10-19 — Batch 74: e2e run findings, first pass (tahti-player #1139-#1146; tahti-org branches)
+
+Asked for after the full e2e run on the Tahti map (#1137): "continue with the tasks at hand, make PRs". A Cursor session shipped the overlapping fixes as #1145 at the same time, so #1139 (full-screen opener names), #1140 (e2e credentials helper), #1141 (Join account-type label) and #1144 (ScreenAtlas `ImageReveal`) were closed as superseded.
+
+- **#1142:** subscribe page gets a "Subscribe to <artist>" heading and real Log in / Join buttons.
+- **#1143:** DSP landing spec accepts artwork beside the heading (desktop) and first-matches the year / genre.
+- **#1146:** sound details Description label matches the other fields; release date column no longer clips.
+- **Rate limits (tahti-org, not pushed — the push was blocked for this session):** `fix/auth-rate-limit-own-bucket` moves auth requests to their own `rl:auth:<ip>` bucket (they shared `rl:api:<ip>` with all page traffic, which locked sign-in on beta during the e2e run); `feat/stack-env-script` adds `scripts/stack-env.sh` (list/get/set/unset/preset/diff/restore/apply on the deploy host's `infra/stack.env`, Swarm-safe) and `docs/todo/admin-cli-consolidation.md`, the plan to fold `scripts/` into one `tahti-admin` CLI.
