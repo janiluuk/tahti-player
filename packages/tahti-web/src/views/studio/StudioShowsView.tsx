@@ -32,7 +32,7 @@ import {
   type StudioEpisode,
   type StudioShowSeries,
 } from '../../api/shows';
-import { PageLoading } from '../../components/PageStates';
+import { PageError, PageLoading } from '../../components/PageStates';
 import { ShowImagePicker } from '../../components/ShowImagePicker';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -44,6 +44,7 @@ export function StudioShowsView() {
     {},
   );
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -73,6 +74,9 @@ export function StudioShowsView() {
     setLoading(true);
     void fetchShowSeries().then(async (res) => {
       setShows(res.data);
+      setLoadError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
       const counts: Record<string, number> = {};
       await Promise.all(
         res.data.map(async (s) => {
@@ -247,6 +251,12 @@ export function StudioShowsView() {
           <StudioPanel>
             {loading ? (
               <PageLoading label="Loading…" />
+            ) : loadError && shows.length === 0 ? (
+              <PageError
+                title="Could not load your shows"
+                description={loadError}
+                onRetry={reload}
+              />
             ) : shows.length === 0 ? (
               <EmptyState
                 size="sm"
@@ -277,7 +287,19 @@ export function StudioShowsView() {
                   }
                 />
                 {filteredShows.length === 0 ? (
-                  <EmptyState size="sm" title="No shows match this search." />
+                  <EmptyState
+                    size="sm"
+                    title="No shows match this search."
+                    action={
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => setQuery('')}
+                      >
+                        Clear search
+                      </Button>
+                    }
+                  />
                 ) : (
                   <ul className="divide-border divide-y">
                     {filteredShows.map((s) => (
