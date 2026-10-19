@@ -3,6 +3,7 @@ import { PlayIcon } from 'lucide-react';
 
 import { ButtonLink } from '@tahti-player/ui';
 
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import type { ShowDetailState } from './useShowDetail';
 
@@ -18,9 +19,7 @@ export function RecordingsTab({ state }: { state: ShowDetailState }) {
       description="Broadcast recordings linked to this show series."
     >
       {recordings.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No recordings from this show yet.
-        </p>
+        <PageEmpty title="No recordings from this show yet." />
       ) : (
         <ul className="divide-border divide-y">
           {recordings.map((episode) => (
