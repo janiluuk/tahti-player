@@ -31,9 +31,10 @@ function StoryElement() {
  * links across stories.
  */
 function makeStoryRouter(path: string) {
+  const pathname = path.split('?')[0] || '/';
   const rootRoute = createRootRoute({ component: StoryElement });
   const routeTree = rootRoute.addChildren([
-    createRoute({ getParentRoute: () => rootRoute, path }),
+    createRoute({ getParentRoute: () => rootRoute, path: pathname }),
   ]);
   return createRouter({
     routeTree,
