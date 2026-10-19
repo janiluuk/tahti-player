@@ -79,15 +79,20 @@ describe('MyVenuesView', () => {
     ).toHaveAttribute('href', '/venues/register');
   });
 
-  it('says when the venues could not be loaded', async () => {
-    vi.spyOn(venuesManage, 'fetchMyVenues').mockResolvedValue({
-      data: [],
-      meta: { source: 'mock', reason: 'HTTP 500' },
-    });
+  it('says when the venues could not be loaded, and retries', async () => {
+    const fetchMine = vi
+      .spyOn(venuesManage, 'fetchMyVenues')
+      .mockResolvedValue({
+        data: [],
+        meta: { source: 'mock', reason: 'HTTP 500' },
+      });
     await renderWithRouter(<MyVenuesView />);
     expect(
       await screen.findByText('Could not load your venues'),
     ).toBeInTheDocument();
+    fetchMine.mockResolvedValue({ data: [], meta: { source: 'api' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(await screen.findByText('No venues yet')).toBeInTheDocument();
   });
 
   it('asks a visitor to sign in', async () => {
