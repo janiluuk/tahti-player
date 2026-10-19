@@ -5,6 +5,7 @@ import {
   fetchAnnualReports,
   type PublishedAnnualReport,
 } from '../../api/governance-annual-reports';
+import { PageEmpty } from '../PageStates';
 import { GovernancePanel } from './GovernancePanel';
 
 function formatDay(iso: string): string {
