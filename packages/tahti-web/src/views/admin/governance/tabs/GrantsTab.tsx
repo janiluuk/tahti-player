@@ -6,7 +6,7 @@ import {
   fetchAdminGrants,
   type AdminGrantYearSummary,
 } from '../../../../api/admin';
-import { PageLoading } from '../../../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 
 function formatEur(cents: number): string {
@@ -30,9 +30,7 @@ export function GrantsTab() {
         {loading ? (
           <PageLoading label="Loading grant cycles…" />
         ) : history.length === 0 ? (
-          <p className="text-foreground-secondary py-4 text-center text-sm">
-            No grant cycles have been run yet.
-          </p>
+          <PageEmpty title="No grant cycles have been run yet." />
         ) : (
           <ul className="divide-border divide-y">
             {history.map((row) => (

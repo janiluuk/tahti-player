@@ -1,3 +1,4 @@
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { EpisodeEditorRow } from './EpisodeEditorRow';
 import type { ShowDetailState } from './useShowDetail';
@@ -11,9 +12,7 @@ export function EpisodesTab({ state }: { state: ShowDetailState }) {
       description="Edit every episode and review its publishing and listening metadata."
     >
       {episodes.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No episodes have been created for this show yet.
-        </p>
+        <PageEmpty title="No episodes have been created for this show yet." />
       ) : (
         <ul className="flex flex-col gap-3">
           {episodes.map((episode) => (

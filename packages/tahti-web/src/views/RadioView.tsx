@@ -430,10 +430,7 @@ export function RadioView() {
                   content:
                     upcoming.length === 0 ? (
                       <div className="flex flex-col items-start gap-2">
-                        <p className="text-foreground-secondary text-sm">
-                          Nothing booked yet — fair rotation plays when nobody
-                          is.
-                        </p>
+                        <PageEmpty title="Nothing booked yet — fair rotation plays when nobody is." />
                         {user && (
                           <Button
                             size="sm"
@@ -497,9 +494,7 @@ export function RadioView() {
                   count: recent.length > 0 ? recent.length : undefined,
                   content:
                     recent.length === 0 ? (
-                      <p className="text-foreground-secondary text-sm">
-                        No recent plays logged yet.
-                      </p>
+                      <PageEmpty title="No recent plays logged yet." />
                     ) : (
                       <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
                         {recent.map((item) => {
@@ -613,9 +608,7 @@ export function RadioView() {
                   count: featured.length > 0 ? featured.length : undefined,
                   content:
                     featured.length === 0 ? (
-                      <p className="text-foreground-secondary text-sm">
-                        No member sets relayed yet.
-                      </p>
+                      <PageEmpty title="No member sets relayed yet." />
                     ) : (
                       <ul
                         className="border-border divide-border divide-y overflow-hidden rounded-lg border"

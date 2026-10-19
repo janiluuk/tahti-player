@@ -11,6 +11,7 @@ import {
   type GovernanceConflictDeclaration,
   type GovernanceNoticeDelivery,
 } from '../../../../api/admin';
+import { PageEmpty } from '../../../../components/PageStates';
 
 export function CollapsibleRecord({
   label,
@@ -223,9 +224,7 @@ export function NoticeDeliveriesPanel({ meetingId }: { meetingId: string }) {
       ) : records === null ? (
         <p className="text-foreground-secondary text-xs">Loading…</p>
       ) : records.length === 0 ? (
-        <p className="text-foreground-secondary text-xs">
-          No meeting notice has been sent yet.
-        </p>
+        <PageEmpty title="No meeting notice has been sent yet." />
       ) : (
         <ul className="divide-border divide-y text-sm">
           {records.map((record) => (

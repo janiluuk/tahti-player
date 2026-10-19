@@ -12,6 +12,7 @@ import {
 } from '@tahti-player/ui';
 
 import type { StudioShowSeries } from '../../../api/shows';
+import { PageEmpty } from '../../../components/PageStates';
 import { ShowImagePicker } from '../../../components/ShowImagePicker';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { EpisodeSourceIcon, episodeStatusLabel } from '../StudioShowsView';
@@ -233,10 +234,9 @@ export function OverviewTab({
       {show.mode !== 'SINGLE' ? (
         <StudioPanel title="Episodes">
           {episodes.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              No episodes yet. Create one — episode #{nextEpisodeNumber} is
-              ready.
-            </p>
+            <PageEmpty
+              title={`No episodes yet. Create one — episode #${nextEpisodeNumber} is ready.`}
+            />
           ) : (
             <ul className="divide-border divide-y">
               {episodes.map((ep) => (
