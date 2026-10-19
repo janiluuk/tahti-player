@@ -188,14 +188,49 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
   },
 };
 
+const UPLOAD_VALIDATION_NOTE =
+  'Uploading the fixture WAV on beta shows a bare "Validation error" under Upload and never creates the sound, so the flow stops before /studio/sounds/$id.';
+
 const BETA_TRIAGE: Record<string, E2eTriage> = {
   'plugin-store-spec-radio-visualizer-renders-through-the-registry-with-n': {
     kind: 'app-bug',
-    note: '/radio on beta logs a CSP violation (inline script blocked by script-src) and three 401 responses for a signed-out visitor.',
+    note: '/radio on beta logs a CSP violation (inline script blocked by script-src) and three 401 responses for a signed-out visitor. The CSP half is fixed on master (#1148, /theme-boot.js) but not deployed yet.',
+  },
+  'real-user-journeys-spec-a-new-account-can-complete-registration-and-im': {
+    kind: 'app-bug',
+    note: 'Join on beta answers with a bare "Validation error" that names no field; the account is not created. Master (#1148) now shows the failing field, but beta has not picked it up yet.',
+  },
+  'listener-purchase-flow-spec-listener-buys-a-track-sees-it-in-purchases': {
+    kind: 'app-bug',
+    note: UPLOAD_VALIDATION_NOTE,
+  },
+  'fan-sub-and-track-purchase-spec-subscriber-and-track-purchase-both-get': {
+    kind: 'app-bug',
+    note: UPLOAD_VALIDATION_NOTE,
+  },
+  'stash-and-subscriber-access-spec-a-public-sound-is-playable-and-downlo': {
+    kind: 'app-bug',
+    note: UPLOAD_VALIDATION_NOTE,
+  },
+  'stash-and-subscriber-access-spec-a-private-sound-is-hidden-from-the-pu': {
+    kind: 'blocked',
+    note: 'Sign-in succeeded, but /studio/upload then showed the signed-out Studio wall, so there was no file input to upload into.',
+  },
+  'listener-purchase-flow-spec-listener-subscribes-sees-it-in-your-subs-c': {
+    kind: 'stale-spec',
+    note: 'The spec imports /src/api/studio-extras.ts in the page, which only exists on the Vite dev server, not on a built deploy.',
+  },
+  'layout-stability-spec-admin-shell-stays-full-width-and-keeps-navigatio': {
+    kind: 'stale-spec',
+    note: "The spec's own signIn() navigates before the session lands, so every admin route shows the Board admin login wall.",
+  },
+  'cutover-vital-spec-admin-user-profile-includes-identity-details-and-an': {
+    kind: 'ux',
+    note: 'The admin user page has three controls labelled "Role", so getByLabel(\'Role\') cannot tell them apart — neither can a screen reader.',
   },
   'cutover-vital-spec-listener-can-open-a-fan-subscription-offer': {
     kind: 'ux',
-    note: 'northern-lights on beta has no fan tiers and payments are not set up; the heading falls back to the slug.',
+    note: 'northern-lights on beta has no fan tiers and payments are not set up; the "Subscribe to …" heading never renders.',
   },
   'real-user-journeys-spec-governance-public-history-and-historical-grant': {
     kind: 'ux',
@@ -203,17 +238,26 @@ const BETA_TRIAGE: Record<string, E2eTriage> = {
   },
 };
 
+const BETA_FIXTURE_NOTE: E2eTriage = {
+  kind: 'fixture',
+  note: 'Looks for seeded mock data (tracks, motions, archive ids, stat values) that the beta account does not have.',
+};
+
 function betaTriage(tests: E2eTest[]): Record<string, E2eTriage> {
+  const mockFailed = new Set(
+    (mockRun as RunManifest).tests
+      .filter((t) => t.status !== 'passed')
+      .map((t) => t.id),
+  );
   const triage: Record<string, E2eTriage> = {};
   for (const t of tests) {
-    if (t.error?.includes('Signed in as')) {
-      triage[t.id] = {
-        kind: 'blocked',
-        note: 'Beta rejects the default artist@tahti.live / demo-password login — rerun with TAHTI_E2E_PASSWORD (and the matching account) to get past sign-in.',
-      };
+    if (t.status === 'passed') {
+      continue;
     }
+    const fromMock = mockFailed.has(t.id) ? MOCK_TRIAGE[t.id] : undefined;
+    triage[t.id] = BETA_TRIAGE[t.id] ?? fromMock ?? BETA_FIXTURE_NOTE;
   }
-  return { ...triage, ...BETA_TRIAGE };
+  return triage;
 }
 
 export const E2E_RUNS: E2eRun[] = [
@@ -233,7 +277,7 @@ export const E2E_RUNS: E2eRun[] = [
     baseUrl: (betaRun as RunManifest).baseUrl,
     capturedAt: '2026-10-19',
     summary:
-      'Full suite against the deployed beta without TAHTI_E2E_PASSWORD — beta rejects the default artist@tahti.live / demo-password login, so signed-in specs stop at the login dialog.',
+      'Full suite against the deployed beta, signed in with a real account (TAHTI_E2E_EMAIL / TAHTI_E2E_PASSWORD) after the API gave logins their own rate-limit bucket — no sign-in failures and no 429s. Beta still serves the 18 Oct build (its deploy has failed since #1147), so fixes from #1148 are not in these shots; most other failures look for mock fixture data the account does not have.',
     tests: (betaRun as RunManifest).tests,
     triage: betaTriage((betaRun as RunManifest).tests),
   },
