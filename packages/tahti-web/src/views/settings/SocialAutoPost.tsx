@@ -13,6 +13,7 @@ import {
   type SocialPlatformStatus,
 } from '../../api/social-autopost';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { PageError } from '../../components/PageStates';
 import { SettingsHint } from './SettingsFields';
 import { showOAuthPlatform, SocialOAuthPlatform } from './SocialOAuthPlatform';
 import { SocialPostNow } from './SocialPostNow';
@@ -233,7 +234,13 @@ export function SocialAutoPost() {
   }
   if (!settings) {
     return (
-      <SettingsHint>Auto-posting settings could not be loaded.</SettingsHint>
+      <PageError
+        title="Could not load auto-posting settings"
+        onRetry={() => {
+          setLoaded(false);
+          load();
+        }}
+      />
     );
   }
 
