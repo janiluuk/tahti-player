@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, Tooltip, TrackProcessing } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../../api/studio-types';
 import { AddToPlaylistButton } from '../../../components/AddToPlaylistButton';
@@ -53,6 +53,13 @@ function SoundTitle({ item }: { item: StudioSound }) {
   );
 }
 
+function isProcessingSound(item: StudioSound): boolean {
+  return (
+    !item.embedProvider &&
+    (item.status === 'PENDING' || item.status === 'PROCESSING')
+  );
+}
+
 function SoundStatusLine({ item }: { item: StudioSound }) {
   const failed = item.status === 'ERROR';
   const embedSrc =
@@ -62,7 +69,13 @@ function SoundStatusLine({ item }: { item: StudioSound }) {
   return (
     <>
       <p className="text-foreground-secondary text-xs">
-        {failed ? 'Processing failed' : item.status}
+        {isProcessingSound(item) ? (
+          <TrackProcessing />
+        ) : failed ? (
+          'Processing failed'
+        ) : (
+          item.status
+        )}
         {formatUploadDate(item.createdAt)
           ? `, uploaded ${formatUploadDate(item.createdAt)}`
           : ''}
@@ -273,13 +286,15 @@ function toListItem(
     peaks,
     progress,
     isPlaying,
-    onPlay: () => {
-      if (embedSrc) {
-        playEmbedItem(item);
-        return;
-      }
-      void playItem(item.id, item.title);
-    },
+    onPlay: isProcessingSound(item)
+      ? undefined
+      : () => {
+          if (embedSrc) {
+            playEmbedItem(item);
+            return;
+          }
+          void playItem(item.id, item.title);
+        },
     onSeek:
       isCurrent && playback.duration > 0
         ? (fraction) => playback.seekTo(fraction * playback.duration)
