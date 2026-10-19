@@ -201,11 +201,11 @@ export function TrackEditorDialog({
         are not modified. Leave a field alone to keep each track’s own value.
       </Dialog.Description>
       {loadError ? (
-        <p role="alert" className="text-destructive text-sm">
+        <p role="alert" className="text-accent-red-strong text-sm">
           {loadError}
         </p>
       ) : !summary ? (
-        <p className="text-muted-foreground flex items-center gap-2 text-sm">
+        <p className="text-foreground-secondary flex items-center gap-2 text-sm">
           <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
           Loading…
         </p>
@@ -281,11 +281,11 @@ export function TrackEditorDialog({
         </div>
       )}
       {previewError ? (
-        <p role="alert" className="text-destructive text-sm">
+        <p role="alert" className="text-accent-red-strong text-sm">
           {previewError}
         </p>
       ) : preview ? (
-        <div className="text-muted-foreground flex flex-col gap-1 text-xs">
+        <div className="text-foreground-secondary flex flex-col gap-1 text-xs">
           <p>
             {preview.tracksChanged === 0
               ? 'No track would change.'

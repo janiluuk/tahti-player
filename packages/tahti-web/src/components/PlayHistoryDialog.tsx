@@ -85,11 +85,11 @@ export function PlayHistoryDialog({
         </Dialog.Description>
         <div className="flex max-h-[50vh] flex-col gap-1 overflow-y-auto py-2">
           {error ? (
-            <p role="alert" className="text-destructive text-sm">
+            <p role="alert" className="text-accent-red-strong text-sm">
               {error}
             </p>
           ) : entries.length === 0 && !loading ? (
-            <p className="text-muted-foreground text-sm">
+            <p className="text-foreground-secondary text-sm">
               Nothing yet. A listen counts after 30 seconds of a local track.
             </p>
           ) : (
@@ -103,7 +103,7 @@ export function PlayHistoryDialog({
                     {entry.title}
                     {entry.artist ? ` — ${entry.artist}` : ''}
                   </span>
-                  <span className="text-muted-foreground shrink-0 text-xs">
+                  <span className="text-foreground-secondary shrink-0 text-xs">
                     {entry.playedAt} UTC
                   </span>
                 </li>

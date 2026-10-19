@@ -188,7 +188,7 @@ export function DuplicatesDialog({
           </Button>
           {hashing ? (
             <>
-              <span className="text-muted-foreground text-xs" role="status">
+              <span className="text-foreground-secondary text-xs" role="status">
                 {hashing.total > 0
                   ? `Comparing ${hashing.done.toLocaleString('en-US')} of ${hashing.total.toLocaleString('en-US')}…`
                   : 'Starting…'}
@@ -202,7 +202,7 @@ export function DuplicatesDialog({
               </Button>
             </>
           ) : (
-            <span className="text-muted-foreground text-xs">
+            <span className="text-foreground-secondary text-xs">
               Reads every file once to find exact copies; unchanged files are
               skipped next time.
             </span>
@@ -210,11 +210,11 @@ export function DuplicatesDialog({
         </div>
         <div className="flex max-h-[50vh] flex-col gap-4 overflow-y-auto py-2">
           {error ? (
-            <p role="alert" className="text-destructive text-sm">
+            <p role="alert" className="text-accent-red-strong text-sm">
               {error}
             </p>
           ) : groups === null ? (
-            <p className="text-muted-foreground flex items-center gap-2 text-sm">
+            <p className="text-foreground-secondary flex items-center gap-2 text-sm">
               <LoaderCircleIcon
                 size={14}
                 className="animate-spin"
@@ -235,7 +235,7 @@ export function DuplicatesDialog({
                 aria-label={groupHeading(group)}
               >
                 <h3 className="text-sm font-semibold">{groupHeading(group)}</h3>
-                <p className="text-muted-foreground text-xs">
+                <p className="text-foreground-secondary text-xs">
                   {groupHint(group)}
                 </p>
                 <ul className="flex flex-col gap-1">
@@ -250,7 +250,7 @@ export function DuplicatesDialog({
                           {track.artist ? ` — ${track.artist}` : ''}
                         </p>
                         <p
-                          className="text-muted-foreground truncate text-xs"
+                          className="text-foreground-secondary truncate text-xs"
                           title={track.path}
                         >
                           {track.path} · {formatLibrarySize(track.sizeBytes)}

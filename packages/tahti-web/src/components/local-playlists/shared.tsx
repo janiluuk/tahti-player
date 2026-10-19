@@ -30,7 +30,7 @@ export const PLAYLIST_COLUMNS: CatalogColumn<NativePlaylistEntry>[] = [
         {entry.title}
         {entry.unavailable ? (
           <span
-            className="text-destructive ml-2 text-xs"
+            className="text-accent-red-strong ml-2 text-xs"
             title={
               entry.track
                 ? 'The original file is missing'

@@ -106,11 +106,11 @@ export function WriteTagsDialog({
         tagged on a copy and checked before it replaces the original.
       </Dialog.Description>
       {error ? (
-        <p role="alert" className="text-destructive text-sm">
+        <p role="alert" className="text-accent-red-strong text-sm">
           {error}
         </p>
       ) : !preview ? (
-        <p className="text-muted-foreground flex items-center gap-2 text-sm">
+        <p className="text-foreground-secondary flex items-center gap-2 text-sm">
           <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
           Checking…
         </p>
@@ -121,7 +121,7 @@ export function WriteTagsDialog({
             will be written
             {preview.noEdits ? `; ${n(preview.noEdits)} have no edits` : ''}.
           </p>
-          <p className="text-muted-foreground text-xs">
+          <p className="text-foreground-secondary text-xs">
             Supported formats: {preview.formats.join(', ')}. WAV stores no album
             artist or disc number; those edits stay in the library only.
           </p>

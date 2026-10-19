@@ -60,7 +60,7 @@ export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
           {track.title}
           {!track.available ? (
             <span
-              className="text-destructive ml-2 text-xs"
+              className="text-accent-red-strong ml-2 text-xs"
               title="Original file is missing"
             >
               Missing

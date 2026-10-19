@@ -183,7 +183,7 @@ export function OrganizeFilesDialog({
             onChange={(event) => setTemplate(event.target.value)}
             placeholder={DEFAULT_TEMPLATE}
           />
-          <p className="text-muted-foreground text-xs">
+          <p className="text-foreground-secondary text-xs">
             Use {'{artist}'}, {'{albumArtist}'}, {'{album}'}, {'{title}'},{' '}
             {'{track}'}, {'{disc}'}, {'{year}'}, {'{genre}'}; “/” starts a
             folder. The file extension is kept.
@@ -199,11 +199,11 @@ export function OrganizeFilesDialog({
             onChange={setKeepBoth}
           />
           {error ? (
-            <p role="alert" className="text-destructive">
+            <p role="alert" className="text-accent-red-strong">
               {error}
             </p>
           ) : checking ? (
-            <p className="text-muted-foreground flex items-center gap-2">
+            <p className="text-foreground-secondary flex items-center gap-2">
               <LoaderCircleIcon
                 size={14}
                 className="animate-spin"
@@ -225,7 +225,7 @@ export function OrganizeFilesDialog({
                 {plan.missing ? `; ${n(plan.missing)} missing on disk` : ''}.
               </p>
               {!move && plan.originalsInWatchedFolders > 0 ? (
-                <p className="text-muted-foreground text-xs">
+                <p className="text-foreground-secondary text-xs">
                   {n(plan.originalsInWatchedFolders)} originals sit in a watched
                   folder and will be added again as new tracks by the next scan.
                 </p>
@@ -236,7 +236,7 @@ export function OrganizeFilesDialog({
                 .map((item) => (
                   <p
                     key={item.id}
-                    className="text-muted-foreground truncate text-xs"
+                    className="text-foreground-secondary truncate text-xs"
                     title={`${item.from} → ${item.to}`}
                   >
                     → {item.to}

@@ -143,7 +143,7 @@ export function TrackOrganizeDialog({
         library; they never change the audio files.
       </Dialog.Description>
       {!data ? (
-        <p className="text-muted-foreground flex items-center gap-2 text-sm">
+        <p className="text-foreground-secondary flex items-center gap-2 text-sm">
           <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
           Loading…
         </p>
@@ -245,7 +245,7 @@ export function TrackOrganizeDialog({
             <span className="text-sm font-medium">Tags</span>
             <div className="flex flex-wrap gap-1">
               {tagCounts.length === 0 ? (
-                <span className="text-muted-foreground text-xs">
+                <span className="text-foreground-secondary text-xs">
                   No tags on {ids.length === 1 ? 'this track' : 'these tracks'}.
                 </span>
               ) : null}

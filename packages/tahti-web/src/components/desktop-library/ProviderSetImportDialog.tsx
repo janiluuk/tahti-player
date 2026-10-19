@@ -150,7 +150,7 @@ function TrackRows({ rows }: { rows: SetImportRow[] }) {
             </Badge>
           ) : null}
           <span
-            className={`shrink-0 text-xs ${row.state === 'failed' ? 'text-destructive max-w-[45%] truncate' : 'text-foreground-secondary'}`}
+            className={`shrink-0 text-xs ${row.state === 'failed' ? 'text-accent-red-strong max-w-[45%] truncate' : 'text-foreground-secondary'}`}
             title={row.error ?? undefined}
           >
             {row.state === 'failed' ? row.error : rowStatus(row)}
@@ -202,7 +202,7 @@ export function ProviderSetImportDialog({
       </Dialog.Description>
 
       {state.error ? (
-        <p role="alert" className="text-destructive text-sm">
+        <p role="alert" className="text-accent-red-strong text-sm">
           {state.error}
         </p>
       ) : null}
