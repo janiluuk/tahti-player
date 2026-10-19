@@ -114,7 +114,31 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
           ],
         })),
       removeInstance: (id) =>
-        set((s) => ({ instances: s.instances.filter((i) => i.id !== id) })),
+        set((s) => {
+          const removed = s.instances.find((i) => i.id === id);
+          const instances = s.instances.filter((i) => i.id !== id);
+          if (!removed) {
+            return { instances };
+          }
+          // Favorites has no instances — only Uninstall clears it. For
+          // embed/news types, removing the last instance from Listen also
+          // uninstalls so the store does not show a dead "Installed" row.
+          if (removed.typeId === 'favorites') {
+            return { instances };
+          }
+          const stillHasType = instances.some(
+            (i) => i.typeId === removed.typeId,
+          );
+          if (stillHasType) {
+            return { instances };
+          }
+          return {
+            instances,
+            installedTypeIds: s.installedTypeIds.filter(
+              (typeId) => typeId !== removed.typeId,
+            ),
+          };
+        }),
       toggleStation: (stationId) =>
         set((s) => ({
           enabledStationIds: s.enabledStationIds.includes(stationId)

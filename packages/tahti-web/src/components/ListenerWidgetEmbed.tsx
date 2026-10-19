@@ -40,16 +40,25 @@ function SpotifyPlaylistTracks({
     'loading',
   );
   const [items, setItems] = useState<TahtiPlayable[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     setStatus('loading');
+    setLoadError(null);
     void fetchSpotifyPlaylistTracks(instance.input).then((result) => {
       if (cancelled) {
         return;
       }
-      if (!result.ok || result.data.length === 0) {
+      if (!result.ok) {
         setItems([]);
+        setLoadError(result.error);
+        setStatus('fallback');
+        return;
+      }
+      if (result.data.length === 0) {
+        setItems([]);
+        setLoadError('This playlist has no playable tracks.');
         setStatus('fallback');
         return;
       }
@@ -102,22 +111,29 @@ function SpotifyPlaylistTracks({
         />
       ) : null}
       {status === 'fallback' ? (
-        embedUrl && type ? (
-          <iframe
-            title={instance.label}
-            src={embedUrl}
-            width="100%"
-            height={type.embedHeight}
-            style={{ border: 0 }}
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="lazy"
-          />
-        ) : (
-          <p className="text-foreground-secondary text-xs" role="alert">
-            Couldn&apos;t load this Spotify playlist — remove it and try a
-            public playlist link again.
-          </p>
-        )
+        <div className="flex flex-col gap-2">
+          {loadError ? (
+            <p className="text-foreground-secondary text-xs" role="status">
+              {loadError} Showing Spotify&apos;s embed instead when possible.
+            </p>
+          ) : null}
+          {embedUrl && type ? (
+            <iframe
+              title={instance.label}
+              src={embedUrl}
+              width="100%"
+              height={type.embedHeight}
+              style={{ border: 0 }}
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+            />
+          ) : (
+            <p className="text-destructive text-xs" role="alert">
+              Couldn&apos;t load this Spotify playlist — remove it and try a
+              public playlist link again.
+            </p>
+          )}
+        </div>
       ) : null}
     </Box>
   );
