@@ -6,6 +6,7 @@ import { cn } from '../../utils';
 import { Badge } from '../Badge';
 import { Button } from '../Button';
 import { Card } from '../Card';
+import { EmptyState } from '../EmptyState';
 import { Input } from '../Input';
 import { Tooltip } from '../Tooltip';
 import { useCardsRow } from './useCardsRow';
@@ -21,6 +22,7 @@ export type CardsRowItem = {
 export type CardsRowLabels = {
   filterPlaceholder: string;
   nothingFound: string;
+  clearFilter?: string;
 };
 
 export type CardsRowBadgeColor =
@@ -142,12 +144,24 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {isEmpty(filteredItems) ? (
-          <div
+          <EmptyState
             data-testid="cards-row-nothing-found"
-            className="text-foreground-secondary py-8 text-sm"
-          >
-            {labels.nothingFound}
-          </div>
+            size="sm"
+            title={labels.nothingFound}
+            className="w-full py-8"
+            action={
+              filterText ? (
+                <Button
+                  data-testid="cards-row-nothing-found-clear"
+                  size="sm"
+                  variant="secondary"
+                  onClick={clearFilter}
+                >
+                  {labels.clearFilter ?? 'Clear filter'}
+                </Button>
+              ) : undefined
+            }
+          />
         ) : (
           filteredItems.map((item) =>
             renderItem ? (

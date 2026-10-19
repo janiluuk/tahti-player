@@ -42,6 +42,17 @@ describe('CardsRow', () => {
     expect(Wrapper.cards).toHaveLength(0);
   });
 
+  it('clears the filter from the nothing-found empty action', async () => {
+    Wrapper.mount();
+
+    await Wrapper.filter.type('zzzzz');
+    expect(Wrapper.nothingFound).toBeInTheDocument();
+
+    await userEvent.click(screen.getByTestId('cards-row-nothing-found-clear'));
+    expect(Wrapper.cards).toHaveLength(3);
+    expect(Wrapper.filter.input).toHaveValue('');
+  });
+
   it('clears the filter when the clear filter button is clicked', async () => {
     Wrapper.mount();
 
