@@ -9,6 +9,43 @@ import type { TahtiPlayable } from '../../../api/types';
 import { playableFromStudioHearthis } from '../../../lib/embedPlayback';
 import { usePlayerStore } from '../../../stores/playerStore';
 
+export type PlayableSound = {
+  id: string;
+  title: string;
+  artistName?: string | null;
+  bannerUrl?: string | null;
+  embedProvider?: string | null;
+  embedUri?: string | null;
+  durationSec?: number | null;
+  artist?: { displayName: string } | null;
+  audioUrl?: string | null;
+};
+
+/** Non-hearthis EMBED_ONLY sounds have no Tahti-hosted audio and no
+ * shared-player widget to build a playable from. */
+export const buildPlayable = async (
+  sound: PlayableSound,
+): Promise<TahtiPlayable | null> => {
+  const hearthis = playableFromStudioHearthis(sound);
+  if (hearthis) {
+    return hearthis;
+  }
+  if (sound.embedProvider && sound.embedProvider !== 'HEARTHIS') {
+    return null;
+  }
+  const artist = sound.artist?.displayName ?? 'You';
+  const streamUrl =
+    sound.audioUrl ?? (await fetchEditorSource(sound.id)).data.url;
+  return {
+    id: `sound:${sound.id}`,
+    kind: 'sound',
+    title: sound.title,
+    artist,
+    streamUrl,
+    protocol: streamUrl.includes('.m3u8') ? 'hls' : 'https',
+  };
+};
+
 /** Playback of a collection's sounds (play, queue, toggle the current one). */
 export function useCollectionPlayback(items: StudioCollectionItem[]) {
   const play = usePlayerStore((s) => s.play);
@@ -18,43 +55,6 @@ export function useCollectionPlayback(items: StudioCollectionItem[]) {
   const status = usePlayerStore((s) => s.status);
   const setStatus = usePlayerStore((s) => s.setStatus);
   const isPlaying = status === 'playing' || status === 'loading';
-
-  type PlayableSound = {
-    id: string;
-    title: string;
-    artistName?: string | null;
-    bannerUrl?: string | null;
-    embedProvider?: string | null;
-    embedUri?: string | null;
-    durationSec?: number | null;
-    artist?: { displayName: string } | null;
-    audioUrl?: string | null;
-  };
-
-  /** Non-hearthis EMBED_ONLY sounds have no Tahti-hosted audio and no
-   * shared-player widget to build a playable from. */
-  const buildPlayable = async (
-    sound: PlayableSound,
-  ): Promise<TahtiPlayable | null> => {
-    const hearthis = playableFromStudioHearthis(sound);
-    if (hearthis) {
-      return hearthis;
-    }
-    if (sound.embedProvider && sound.embedProvider !== 'HEARTHIS') {
-      return null;
-    }
-    const artist = sound.artist?.displayName ?? 'You';
-    const streamUrl =
-      sound.audioUrl ?? (await fetchEditorSource(sound.id)).data.url;
-    return {
-      id: `sound:${sound.id}`,
-      kind: 'sound',
-      title: sound.title,
-      artist,
-      streamUrl,
-      protocol: streamUrl.includes('.m3u8') ? 'hls' : 'https',
-    };
-  };
 
   const playSound = async (sound: PlayableSound) => {
     const playable = await buildPlayable(sound);

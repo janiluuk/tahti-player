@@ -46,6 +46,7 @@ import {
 import { hasStudioAccess } from '../../lib/accountRoles';
 import { useAuthStore } from '../../stores/authStore';
 import { LibrarySectionTabs } from '../LibraryView';
+import { PlayCollectionButton } from './collection-edit/PlayCollectionButton';
 import { CollectionOrderButton } from './CollectionOrderButton';
 
 /** Styles this quick-create dialog and the filter tabs offer — a subset of
@@ -435,6 +436,7 @@ export function StudioCollectionsView() {
                         {`, ${(c.visibility ?? (c.isPublic === false ? 'PRIVATE' : 'PUBLIC')).toLowerCase()}`}
                       </p>
                     </div>
+                    <PlayCollectionButton slug={c.slug} name={c.name} />
                     <ButtonLink
                       to={editorRouteFor(c)}
                       params={{ slug: c.slug }}
