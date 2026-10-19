@@ -32,7 +32,7 @@ import {
   patchStudioReleaseVisual,
 } from '../../api/studio';
 import type { StudioRelease } from '../../api/studio-types';
-import { PageLoading } from '../../components/PageStates';
+import { PageError, PageLoading } from '../../components/PageStates';
 import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -58,6 +58,7 @@ const RELEASE_TYPES = [
 export function StudioReleasesView() {
   const [releases, setReleases] = useState<StudioRelease[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [openMoreId, setOpenMoreId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
@@ -79,6 +80,9 @@ export function StudioReleasesView() {
   const reload = () => {
     void fetchStudioReleases().then((res) => {
       setReleases(res.data.releases);
+      setLoadError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
   };
@@ -217,6 +221,15 @@ export function StudioReleasesView() {
           <StudioPanel>
             {loading ? (
               <PageLoading label="Loading…" />
+            ) : loadError && releases.length === 0 ? (
+              <PageError
+                title="Could not load your releases"
+                description={loadError}
+                onRetry={() => {
+                  setLoading(true);
+                  reload();
+                }}
+              />
             ) : releases.length === 0 ? (
               <EmptyState
                 size="sm"

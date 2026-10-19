@@ -1,0 +1,53 @@
+// @vitest-environment jsdom
+import { cleanup, fireEvent, screen } from '@testing-library/react';
+import type { ReactNode } from 'react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import * as studio from '../../api/studio';
+import type { StudioRelease } from '../../api/studio-types';
+import { renderWithRouter } from '../../test/renderWithRouter';
+import { StudioReleasesView } from './StudioReleasesView';
+
+vi.mock('../../components/StudioGate', () => ({
+  StudioGate: ({ children }: { children: ReactNode }) => children,
+}));
+
+const release = {
+  id: 'rel-1',
+  title: 'After Hours',
+  type: 'ALBUM',
+  state: 'PUBLISHED',
+  releaseDate: '2026-06-01',
+  smartLinkSlug: 'after-hours',
+  _count: { tracks: 3 },
+} as unknown as StudioRelease;
+
+const list = (releases: StudioRelease[]) => ({
+  page: 1,
+  limit: 100,
+  total: releases.length,
+  releases,
+});
+
+describe('StudioReleasesView', () => {
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+  });
+
+  it('says the list failed to load instead of "No releases yet"', async () => {
+    const fetch = vi.spyOn(studio, 'fetchStudioReleases').mockResolvedValue({
+      data: list([]),
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await renderWithRouter(<StudioReleasesView />);
+    expect(
+      await screen.findByText('Could not load your releases'),
+    ).toBeTruthy();
+    expect(screen.queryByText('No releases yet')).toBeNull();
+
+    fetch.mockResolvedValue({ data: list([release]), meta: { source: 'api' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(await screen.findByText('After Hours')).toBeTruthy();
+  });
+});
