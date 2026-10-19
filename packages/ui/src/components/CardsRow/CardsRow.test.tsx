@@ -60,6 +60,12 @@ describe('CardsRow', () => {
     expect(Wrapper.badge).toHaveTextContent('Acme Music');
   });
 
+  it('applies the section badge color class', () => {
+    Wrapper.mount({ badge: 'Live', badgeColor: 'green' });
+
+    expect(Wrapper.badge).toHaveClass('bg-accent-green');
+  });
+
   it('does not render a badge when badge is not set', () => {
     Wrapper.mount();
 

@@ -87,6 +87,23 @@ const NUCLEAR_GREEN_VARS: Record<string, string> = {
   border: '#435c55',
   'border-input': '#435c55',
   ring: '#3a9a83',
+  'accent-green': '#4db89a',
+  'accent-yellow': '#c9a84a',
+  'accent-purple': '#8b7ec8',
+  'accent-blue': '#5a8fbf',
+  'accent-orange': '#d4894a',
+  'accent-cyan': '#4aa8b8',
+  'accent-red': '#c45a5a',
+  'accent-foreground': '#0c1915',
+  'accent-green-strong': '#4db89a',
+  'accent-yellow-strong': '#c9a84a',
+  'accent-purple-strong': '#8b7ec8',
+  'accent-blue-strong': '#5a8fbf',
+  'accent-orange-strong': '#d4894a',
+  'accent-cyan-strong': '#4aa8b8',
+  'accent-red-strong': '#c45a5a',
+  'discover-glow-primary': '#3a9a83',
+  'discover-glow-secondary': '#8b7ec8',
 };
 
 export const NUCLEAR_GREEN_THEME: AdvancedTheme = {

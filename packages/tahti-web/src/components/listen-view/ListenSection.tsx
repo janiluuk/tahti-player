@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { Badge } from '@tahti-player/ui';
+import { Badge, type CardsRowBadgeColor } from '@tahti-player/ui';
 
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
 import type { ListenSectionStatus } from './useListenSections';
@@ -8,6 +8,8 @@ import type { ListenSectionStatus } from './useListenSections';
 export type ListenSectionProps = {
   title: string;
   badge?: string;
+  /** Section-meaning hue (live = green, radio = cyan, history = yellow…). */
+  badgeColor?: CardsRowBadgeColor;
   status: ListenSectionStatus;
   empty: boolean;
   emptyTitle: string;
@@ -25,6 +27,7 @@ export type ListenSectionProps = {
 export function ListenSection({
   title,
   badge,
+  badgeColor = 'purple',
   status,
   empty,
   emptyTitle,
@@ -48,7 +51,7 @@ export function ListenSection({
           {title}
         </h2>
         {badge && (
-          <Badge variant="pill" color="purple">
+          <Badge variant="pill" color={badgeColor}>
             {badge}
           </Badge>
         )}

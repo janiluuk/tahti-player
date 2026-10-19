@@ -587,6 +587,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                 data-testid="listen-recently-played"
                 title="Recently played"
                 badge="History"
+                badgeColor="yellow"
                 items={recentItems}
                 labels={{ ...ROW_LABELS, filterPlaceholder: 'Filter tracks…' }}
                 renderItem={renderRecentItem}
@@ -597,6 +598,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               data-testid="listen-radio"
               title="Radio"
               badge="Internet radio"
+              badgeColor="cyan"
               status={radioItems.length > 0 ? 'ready' : sections.presets.status}
               empty={radioItems.length === 0}
               emptyTitle="No radio stations yet"
@@ -609,6 +611,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                 data-testid="listen-radio"
                 title="Radio"
                 badge="Internet radio"
+                badgeColor="cyan"
                 items={radioItems}
                 labels={{
                   ...ROW_LABELS,
@@ -628,6 +631,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               data-testid="listen-on-air"
               title="On air"
               badge="Live"
+              badgeColor="green"
               status={sections.onAir.status}
               empty={onAirItems.length === 0}
               emptyTitle="Nobody is on air right now"
@@ -638,6 +642,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                 data-testid="listen-on-air"
                 title="On air"
                 badge="Live"
+                badgeColor="green"
                 items={onAirItems}
                 labels={{
                   ...ROW_LABELS,
@@ -659,10 +664,12 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                 className="flex flex-col gap-3"
                 data-testid="listen-new-tracks"
               >
-                <h2 className="text-foreground text-lg font-bold">
+                <h2 className="text-foreground border-accent-purple/40 border-l-4 pl-3 text-lg font-bold">
                   New tracks
                 </h2>
-                <PlayableTrackTable items={sections.latestTracks.data} />
+                <div className="shadow-float rounded-[var(--radius-card)]">
+                  <PlayableTrackTable items={sections.latestTracks.data} />
+                </div>
               </section>
             </ListenSection>
 
