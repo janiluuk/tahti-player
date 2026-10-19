@@ -43,10 +43,17 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
   const [startAt, setStartAt] = useState('');
   const [busy, setBusy] = useState(false);
   const [venues, setVenues] = useState<VenueDirectoryItem[]>([]);
+  const [venuesFailed, setVenuesFailed] = useState(false);
+  const [venuesAttempt, setVenuesAttempt] = useState(0);
 
   useEffect(() => {
-    void fetchVenues().then((result) => setVenues(result.data));
-  }, []);
+    void fetchVenues().then((result) => {
+      setVenues(result.data);
+      setVenuesFailed(
+        result.meta.source === 'api' && Boolean(result.meta.reason),
+      );
+    });
+  }, [venuesAttempt]);
 
   useEffect(() => {
     if (eventId === undefined) {
@@ -144,6 +151,22 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                         }
                       }}
                     />
+                    {venuesFailed && venues.length === 0 ? (
+                      <div
+                        role="alert"
+                        className="text-accent-red-strong flex flex-wrap items-center gap-2 text-xs"
+                      >
+                        Could not load the venue directory. Type the place
+                        above, or
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => setVenuesAttempt((n) => n + 1)}
+                        >
+                          Retry
+                        </Button>
+                      </div>
+                    ) : null}
                     <Link
                       to="/venues/register"
                       className="text-primary-strong text-xs hover:underline"

@@ -38,8 +38,15 @@ vi.mock('../../api/events', () => ({
   updateEvent: (...args: unknown[]) => updateEvent(...args),
 }));
 
+let venuesFailure: string | null = null;
+
 vi.mock('../../api/client', () => ({
-  fetchVenues: async () => ({ data: [], meta: { source: 'api' as const } }),
+  fetchVenues: async () => ({
+    data: [],
+    meta: venuesFailure
+      ? { source: 'api' as const, reason: venuesFailure }
+      : { source: 'api' as const },
+  }),
 }));
 
 let container: HTMLDivElement;
@@ -53,6 +60,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  venuesFailure = null;
   act(() => root.unmount());
   container.remove();
   vi.clearAllMocks();
@@ -133,5 +141,21 @@ describe('StudioEventCreateView editing', () => {
   it('goes back to the list when the event is not the artist’s', async () => {
     await renderEdit('someone-elses');
     expect(await screen.findByText('Events list')).toBeInTheDocument();
+  });
+});
+
+describe('StudioEventCreateView venue directory', () => {
+  it('says the venue directory failed to load and can retry', async () => {
+    venuesFailure = 'HTTP 502';
+    await renderEdit('evt-1');
+    expect(screen.getByRole('alert').textContent).toContain(
+      'Could not load the venue directory',
+    );
+    venuesFailure = null;
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    expect(screen.queryByRole('alert')).toBeNull();
   });
 });
