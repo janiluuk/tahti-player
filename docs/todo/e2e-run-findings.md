@@ -21,9 +21,9 @@ note from `MOCK_TRIAGE` / `BETA_TRIAGE`.
 - [x] **Duplicate "Full screen" buttons.** Queue + player bar both use
       "Open full-screen player"; fullscreen minimize spec uses the player-bar
       test id.
-- [ ] **CSP violation on `/radio` (beta).** Inline script blocked by
-      `script-src 'self' https://js.hcaptcha.com …`, plus three 401s for a
-      signed-out visitor (`plugin-store.spec.ts:139`).
+- [x] **CSP violation on `/radio` (beta).** nginx `script-src` allows
+      `blob:` + `'wasm-unsafe-eval'` (visualizer/wasm); hcaptcha hosts kept.
+      Signed-out 401 noise on plugin-store still separate.
 - [x] **Join on beta fails with a bare "Validation error".** `requestJson`
       now surfaces Zod `issues` (`field: message`) instead of only `error`.
 - [x] **DSP landing cover has no accessible name.** `SmartLinkView` passes
@@ -35,25 +35,28 @@ note from `MOCK_TRIAGE` / `BETA_TRIAGE`.
       `top-center` so they do not cover the queue / Settings corner.
 - [x] **Empty queue pane is always open.** Layout persist v8 defaults
       `rightCollapsed: true` (migrates existing opens closed once).
-- [ ] **Settings modal as a route target.** `/studio/branding`, channel designer,
+- [x] **Settings modal as a route target.** `/studio/branding`, channel designer,
       radio cover and plugin-store links open Settings (Channel & chat / Add-ons)
-      over the app instead of a page; the URL and the visible surface disagree.
-- [ ] **Branding buried three levels deep:** Settings › Artist › Visuals ›
-      Branding, with no "Artist branding" heading. Gallery, channel designer and
-      multicast live in three different places.
-- [ ] **Broadcast setup split** between Studio › Broadcast (10 sub-tabs incl.
-      Radio, Green room) and Settings › Broadcast (Radio, Green room,
-      Multistream).
-- [ ] **Tab overload:** Go live = 8 Studio tabs + 10 Broadcast sub-tabs wrapping
-      ("Channel", "Radio" orphaned on row 2); Library = 10 tabs wrapping (Smart
-      links, Local files); Admin › Moderation = four stacked tab rows.
+      over the app; URL now syncs to `/settings/$section` (`?tab=` / `?category=`)
+      while open and restores the prior path (or `/`) on close.
+- [x] **Branding buried three levels deep:** Visuals group renamed to Artist
+      branding; heading added above branding panel; nav path points at
+      `/settings/artist?tab=branding`. Gallery / channel designer / multicast
+      placement still split (tab-overload / settings-as-route leftovers).
+- [x] **Broadcast setup split** — Settings › Broadcast links to Studio ›
+      Broadcast for the live session; Multistream / Green room open Settings ›
+      Broadcast. Full tab consolidation still open under Tab overload.
+- [x] **Tab overload (wrap → scroll):** SectionTabs / go-live nested nav,
+      LibrarySectionTabs, and ModerationTabs use `overflow-x-auto flex-nowrap`
+      instead of wrapping. Full Broadcast tab consolidation still open under
+      settings-as-route leftovers if needed.
 - [x] **Admin Moderation list truncates ticket titles** — subjects use
       `line-clamp-2` / `break-words` instead of a single-line truncate.
 - [x] **Add-ons Activate + power toggle** — dropped the redundant Power
       accessory; Activate/Active CTA remains. (Header/Discover (i) info toggles
       stay — they expand different copy.)
-- [ ] **hearthis.at config** opens a second dialog stacked over the Add Listen
-      widgets picker, with an orphaned "Uninstall" text button.
+- [x] **hearthis.at config** — configure expands inline (no stacked dialog);
+      Uninstall lives in the card header actions.
 - [x] **SoundCloud `?sc=connected` callback** — toast is now
       `"SoundCloud connected."` (provider-aware from `category`).
 - [x] **Join form:** Account type has a visible label on its own row above
@@ -66,8 +69,8 @@ note from `MOCK_TRIAGE` / `BETA_TRIAGE`.
       `/radio` (and 1/3/4/5 for the other Listen destinations).
 - [x] **`/more` opens the Log in dialog** over the map for signed-out visitors
       — `/more` and `/admin/map` are on the anonymous allowlist.
-- [ ] **Beta public data hygiene:** governance history shows "sjsj" /
-      "jddkkfk"; On air lists a channel named "0fpmbnvefhfgrqd6fdp".
+- [x] **Beta public data hygiene:** soft-filter via `isPlausiblePublicName`
+      on On-air Listen list + public governance history titles.
 
 ## Unwired components
 

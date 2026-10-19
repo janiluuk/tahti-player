@@ -33,7 +33,7 @@ export const ModerationTabs = ({
       selectedIndex={selectedIndex}
       onChange={(index) => onChange(items[index].id)}
       className={className ?? 'w-full'}
-      listClassName="flex flex-wrap gap-3"
+      listClassName="flex flex-nowrap gap-3 overflow-x-auto"
       tabClassName="h-8 rounded-md border border-border px-2.5 text-xs font-semibold tracking-wide uppercase"
     >
       <Tabs.List aria-label={ariaLabel}>

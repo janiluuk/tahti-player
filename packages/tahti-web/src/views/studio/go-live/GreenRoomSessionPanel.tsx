@@ -103,7 +103,7 @@ export function GreenRoomSessionPanel() {
           variant="ghost"
           onClick={() => useSettingsModalStore.getState().open('broadcast')}
         >
-          Prefs
+          Open Settings › Broadcast
         </Button>
       }
     >

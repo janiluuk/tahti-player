@@ -96,11 +96,11 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
   },
   'cutover-vital-spec-branding-workspace-manages-an-avatar-public-gallery': {
     kind: 'ux',
-    note: 'Branding is three levels deep inside the Settings modal (Artist › Visuals › Branding), with no "Artist branding" heading — hard to find and easy to lose.',
+    note: 'Branding opens Settings › Artist › Artist branding with an "Artist branding" heading; gallery / channel designer / multicast still live in separate places.',
   },
   'cutover-vital-spec-branding-and-radio-own-gallery-channel-designer-and': {
     kind: 'ux',
-    note: 'The "Branding" tab is now nested under Settings › Artist › Visuals; gallery, channel designer and multicast live in three different places.',
+    note: 'Artist branding group is labeled; gallery, channel designer and multicast still live in three different places.',
   },
   'cutover-vital-spec-listen-chrome-lights-listen-on-child-tabs-and-favor': {
     kind: 'stale-spec',
@@ -108,7 +108,7 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
   },
   'cutover-vital-spec-artist-creates-a-four-image-promotion-kit-and-anoth': {
     kind: 'ux',
-    note: 'The promotion kit sits under the same three-level Settings › Artist › Visuals path, so there is no "Artist branding" page to start from.',
+    note: 'Promotion kit lives under Settings › Artist › Artist branding (press kit / gallery); still modal Settings rather than a dedicated page.',
   },
   'cutover-vital-spec-admin-user-profile-includes-identity-details-and-an': {
     kind: 'stale-spec',
@@ -144,7 +144,7 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
   },
   'plugin-store-spec-studio-go-live-multistream-every-api-supported-provi': {
     kind: 'ux',
-    note: 'Multistream providers moved to Settings › Broadcast. Broadcast setup is split between Studio › Broadcast and Settings › Broadcast, with Radio and Green room in both.',
+    note: 'Multistream / green room cross-link Settings ↔ Studio › Broadcast; defaults stay in Settings, live session in Studio.',
   },
   'plugin-store-spec-settings-connections-export-targets-render-from-the-': {
     kind: 'stale-spec',
@@ -159,8 +159,8 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
     note: 'The dialog is now titled "Add Listen widgets".',
   },
   'plugin-store-spec-listen-add-widget-picker-installs-configures-and-uni': {
-    kind: 'ux',
-    note: 'Configuring hearthis.at opens a second dialog stacked over the picker, with an orphaned "Uninstall" text button at the bottom.',
+    kind: 'stale-spec',
+    note: 'hearthis.at configure expands inline in the picker; Uninstall is in the card header actions.',
   },
   'plugin-store-spec-settings-add-ons-listen-tab-can-add-and-remove-a-wid': {
     kind: 'stale-spec',

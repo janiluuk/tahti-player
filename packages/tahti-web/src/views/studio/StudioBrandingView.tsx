@@ -81,7 +81,7 @@ export const StudioBrandingPanel: FC<{
           <Tabs.List className="w-fit flex-wrap">
             {(
               [
-                ['branding', 'Branding', PaletteIcon],
+                ['branding', 'Artist branding', PaletteIcon],
                 ['gallery', 'Gallery', ImagesIcon],
                 ['press-kit', 'Press kit', DownloadIcon],
                 ['channel-designer', 'Channel Designer', PaintbrushIcon],
@@ -97,6 +97,11 @@ export const StudioBrandingPanel: FC<{
 
       {tab === 'branding' ? (
         <>
+          {hideSectionNav ? null : (
+            <h2 className="font-display text-lg font-bold tracking-tight">
+              Artist branding
+            </h2>
+          )}
           <ProfilePictureSection kit={kit} />
           <ProfileBackdropSection
             backdropUrl={profile?.backdropUrl ?? null}

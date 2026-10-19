@@ -6,6 +6,7 @@ import { Badge, Box, ButtonLink, StatChip, ViewShell } from '@tahti-player/ui';
 import { fetchPublicGovernanceMotions } from '../api/client';
 import type { PublicGovernanceMotion } from '../api/types';
 import { PageLoading } from '../components/PageStates';
+import { isPlausiblePublicName } from '../lib/publicDisplayName';
 
 export function PublicGovernanceHistoryView() {
   const [motions, setMotions] = useState<PublicGovernanceMotion[]>([]);
@@ -13,7 +14,12 @@ export function PublicGovernanceHistoryView() {
 
   useEffect(() => {
     void fetchPublicGovernanceMotions().then((result) => {
-      setMotions(result.data);
+      setMotions(
+        result.data.filter((motion) => {
+          const title = motion.title?.trim();
+          return !title || isPlausiblePublicName(title);
+        }),
+      );
       setLoading(false);
     });
   }, []);

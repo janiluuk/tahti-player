@@ -487,7 +487,14 @@ export function ArtistPanel() {
       id: 'branding',
       label: 'Branding',
       icon: <Paintbrush size={14} />,
-      content: <StudioBrandingPanel section="branding" />,
+      content: (
+        <div className="flex flex-col gap-4">
+          <h2 className="font-display text-lg font-bold tracking-tight">
+            Artist branding
+          </h2>
+          <StudioBrandingPanel section="branding" />
+        </div>
+      ),
     },
     {
       id: 'gallery',

@@ -1,8 +1,10 @@
+import { useNavigate, useRouter, useRouterState } from '@tanstack/react-router';
 import { BookOpenIcon, GithubIcon, LogInIcon } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { Button, SettingsPanel } from '@tahti-player/ui';
 
+import { buildSettingsPath } from '../lib/settingsUrl';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
@@ -42,14 +44,23 @@ function DiscordIcon({ size = 18 }: { size?: number }) {
 
 /** Nuclear SettingsPanel modal wrapping Tahti settings sections. */
 export function ConnectedSettingsModal() {
+  const navigate = useNavigate();
+  const router = useRouter();
+  const locationHref = useRouterState({
+    select: (state) => state.location.pathname + state.location.searchStr,
+  });
   const isOpen = useSettingsModalStore((s) => s.isOpen);
   const close = useSettingsModalStore((s) => s.close);
   const activeTab = useSettingsModalStore((s) => s.activeTab);
   const setActiveTab = useSettingsModalStore((s) => s.setActiveTab);
   const openedToSection = useSettingsModalStore((s) => s.openedToSection);
+  const artistSection = useSettingsModalStore((s) => s.artistSection);
+  const accountSection = useSettingsModalStore((s) => s.accountSection);
+  const pluginCategory = useSettingsModalStore((s) => s.pluginCategory);
   const user = useAuthStore((s) => s.user);
   const openAuth = useAuthModalStore((s) => s.open);
   const signedIn = Boolean(user);
+  const returnPathRef = useRef<string | null>(null);
 
   const profileLoaded = useAuthStore((s) => s.profileLoaded);
   const hasChannel = Boolean(user?.channel) || !profileLoaded;
@@ -73,6 +84,32 @@ export function ConnectedSettingsModal() {
     if (!isOpen) {
       return;
     }
+    const path = buildSettingsPath({
+      section: resolvedTab,
+      artistSection,
+      accountSection,
+      pluginCategory,
+    });
+    if (!locationHref.startsWith('/settings')) {
+      returnPathRef.current = locationHref;
+    }
+    if (locationHref !== path) {
+      void navigate({ href: path, replace: true });
+    }
+  }, [
+    accountSection,
+    artistSection,
+    isOpen,
+    locationHref,
+    navigate,
+    pluginCategory,
+    resolvedTab,
+  ]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
     const reduceMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches;
@@ -83,6 +120,24 @@ export function ConnectedSettingsModal() {
     });
     return () => window.cancelAnimationFrame(frame);
   }, [isOpen, resolvedTab]);
+
+  const handleClose = () => {
+    const { pathname } = router.state.location;
+    close();
+    if (!pathname.startsWith('/settings')) {
+      returnPathRef.current = null;
+      return;
+    }
+    const returnTo = returnPathRef.current;
+    returnPathRef.current = null;
+    if (returnTo) {
+      void navigate({ href: returnTo, replace: true });
+    } else if (router.history.canGoBack()) {
+      router.history.back();
+    } else {
+      void navigate({ to: '/', replace: true });
+    }
+  };
 
   const tabs = nav.map((item) => {
     const Icon = item.Icon;
@@ -107,7 +162,7 @@ export function ConnectedSettingsModal() {
   return (
     <SettingsPanel
       isOpen={isOpen}
-      onClose={close}
+      onClose={handleClose}
       tabs={tabs}
       activeTab={resolvedTab}
       onTabChange={(tabId) => setActiveTab(tabId as SettingsSectionId)}

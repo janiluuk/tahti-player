@@ -17,7 +17,7 @@ export const ARTIST_TAB_GROUPS: readonly TabGroup[] = [
   },
   {
     id: 'visuals',
-    label: 'Visuals',
+    label: 'Artist branding',
     Icon: Images,
     tabIds: ['branding', 'gallery', 'release-visuals'],
   },
