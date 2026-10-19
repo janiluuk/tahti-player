@@ -2,6 +2,17 @@
 
 
 
+## 2026-10-19 — Batch 74 cont.: e2e findings batches 2–3 (tahti-player #1148)
+
+Folded `e2e-run-findings.md` + `e2e-findings-90-slices.md`. Product findings
+from the 2026-10-19 Playwright map run are cleared: Settings modal URL sync
+(`/settings/$section?tab=&category=`), Artist branding IA, Broadcast
+Studio↔Settings cross-links, tab-row scroll, hearthis Uninstall in header,
+CSP `blob:`/`wasm-unsafe-eval` + theme FOUC → `/theme-boot.js`, soft-filter
+for implausible public names, plus batch-2 app/spec slices. Ops leftovers
+only (not tracked as open todos): beta `TAHTI_E2E_PASSWORD` re-run, fan-
+purchase fixtures.
+
 ## 2026-10-18 — CSP unblock external radio on beta
 
 Folded `csp-radio-media-src.md`. #1078's starter CSP limited `media-src` /
