@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { CardsRow } from '@tahti-player/ui';
 
@@ -124,6 +125,30 @@ export const Empty: Story = {
     title: 'Top Albums',
     items: [],
     labels,
+  },
+};
+
+export const NothingFound: Story = {
+  name: 'Nothing found (clear filter)',
+  args: {
+    title: 'Top Albums',
+    items,
+    labels: {
+      ...labels,
+      clearFilter: 'Clear filter',
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.type(
+      canvas.getByTestId('cards-row-filter'),
+      'zzzzz-no-match',
+    );
+    await expect(canvas.getByTestId('cards-row-nothing-found')).toBeVisible();
+    await userEvent.click(canvas.getByTestId('cards-row-nothing-found-clear'));
+    await expect(
+      canvas.queryByTestId('cards-row-nothing-found'),
+    ).not.toBeInTheDocument();
   },
 };
 

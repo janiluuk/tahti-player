@@ -11,16 +11,16 @@ One PR per slice. Tick when merged.
 | - | ----- | ------ |
 | 1 | `NewsView` → `PageEmpty` | done |
 | 2 | `GovernanceView` topics → `PageEmpty` | done |
-| 3 | `MyRadioStations` → `PageEmpty` | open |
+| 3 | `MyRadioStations` → `PageEmpty` | done |
 | 4 | `ScheduledTimes` → `PageEmpty` | done |
-| 5 | `CreditsEditor` → `PageEmpty` | open |
+| 5 | `CreditsEditor` → `PageEmpty` | done |
 | 6 | `MemberRegisterPanel` → `PageEmpty` (+ clear filters) | done |
-| 7 | Studio home `GovernanceSection` → `PageEmpty` | open |
+| 7 | Studio home `GovernanceSection` → `PageEmpty` | done |
 | 8 | Studio home `SummaryStatsSection` discography → `PageEmpty` + CTA | done |
 | 9 | `FeatureRequestsView` comments → `PageEmpty` | open |
 | 10 | `TrackBody` comments → `PageEmpty` | done |
 | 11 | `MessagesView` → `PageEmpty` | done |
-| 12 | `SocialPostNow` → `PageEmpty` | open |
+| 12 | `SocialPostNow` → `PageEmpty` | done |
 
 ## Catalog controls (13–18)
 
@@ -28,29 +28,29 @@ One PR per slice. Tick when merged.
 | - | ----- | ------ |
 | 13 | `TrackDetailsBlock` → `Badge` | done |
 | 14 | `ProcessingIndicator` → `Badge` | open |
-| 15 | `RadioStationView` toggle → `FilterChips` | open |
+| 15 | `RadioStationView` toggle → `FilterChips` | done |
 | 16 | `DirectoryArtistsBrowser` Active/Filters → `FilterChips` | done |
 | 17 | `HeaderStyleTabs` → catalog `Tabs` | open |
-| 18 | `PressKitPreview` bio → `PageEmpty` | open |
+| 18 | `PressKitPreview` bio → `PageEmpty` | done |
 
 ## Liveliness + shared title (19–27)
 
 | # | Slice | Status |
 | - | ----- | ------ |
-| 19 | CardsRow `nothingFound` + clear-filter action | open |
+| 19 | CardsRow `nothingFound` + clear-filter action | done |
 | 20 | Add `SectionTitle` to `@tahti-player/ui` + story | done |
 | 21 | Listen New tracks → `SectionTitle` | done |
 | 22 | `ArtistReferenceSections` → `SectionTitle` | open |
 | 23 | `ArtistProfileSections` → `SectionTitle` | done |
 | 24 | History stats active-tab accent | done |
-| 25 | History list active-row accent | done |
-| 26 | CollectionView cover-tint header | open |
-| 27 | CollectionView track list `shadow-float` | open |
+| 25 | History list active-row accent | open |
+| 26 | CollectionView cover-tint header | done |
+| 27 | CollectionView track list `shadow-float` | done |
 
 ## De-green + studio search starters (28–30)
 
 | # | Slice | Status |
 | - | ----- | ------ |
-| 28 | MediaArtwork thumb play overlay neutral (not primary fill) | open |
-| 29 | Card `surface="neutral"` + Listen cards adopt it | open |
+| 28 | MediaArtwork thumb play overlay neutral (not primary fill) | done |
+| 29 | Card `surface="neutral"` + Listen cards adopt it | done |
 | 30 | `StudioReleasesView` search input | done |
