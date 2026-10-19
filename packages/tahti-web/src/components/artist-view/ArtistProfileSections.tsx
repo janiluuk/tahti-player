@@ -15,6 +15,7 @@ import {
   ButtonAnchor,
   ButtonLink,
   SaveButton,
+  SectionTitle,
   Textarea,
   Tooltip,
 } from '@tahti-player/ui';
@@ -298,9 +299,7 @@ export function ArtistLiveShows({
       <div>
         <div className="flex items-center gap-2">
           <CalendarDays size={18} aria-hidden />
-          <h2 className="font-display text-lg font-bold tracking-tight">
-            Live shows
-          </h2>
+          <SectionTitle title="Live shows" />
         </div>
         <p className="text-foreground-secondary mt-1 text-sm">
           Upcoming broadcasts and recordings from this artist on Tahti Radio.
@@ -366,9 +365,7 @@ export function ArtistTaggedIn({
   return (
     <section className="rounded-2xl border p-4 sm:p-6" style={surfaceStyle}>
       <div className="mb-3">
-        <h2 className="font-display text-lg font-bold tracking-tight">
-          Tagged in
-        </h2>
+        <SectionTitle title="Tagged in" />
         <p className="text-foreground-secondary mt-1 text-sm">
           Projects and artist pages where this artist has been credited.
         </p>

@@ -54,6 +54,7 @@ export * from './ImageReveal';
 export * from './SaveButton';
 export * from './ScrollableArea';
 export * from './SectionShell';
+export * from './SectionTitle';
 export * from './SettingsPanel';
 export * from './Select';
 export * from './SelectableList';
