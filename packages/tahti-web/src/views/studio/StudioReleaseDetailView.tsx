@@ -380,8 +380,36 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                                     });
                                   }
                                 },
+                                onEdit: (t) => {
+                                  const rt = release.tracks?.find(
+                                    (candidate) => candidate.id === t.source.id,
+                                  );
+                                  if (rt?.soundId) {
+                                    void navigate({
+                                      to: '/studio/sounds/$id/editor',
+                                      params: { id: rt.soundId },
+                                    });
+                                  }
+                                },
+                                onOpenDetail: (t) => {
+                                  void navigate({
+                                    to: '/studio/insights/$kind/$id',
+                                    params: {
+                                      kind: 'release-tracks',
+                                      id: t.source.id,
+                                    },
+                                  });
+                                },
                               }}
                               meta={{
+                                canEditTrack: (track) =>
+                                  Boolean(
+                                    release.tracks?.find(
+                                      (candidate) =>
+                                        candidate.id === track.source.id,
+                                    )?.soundId,
+                                  ),
+                                canOpenDetail: () => true,
                                 isCurrentTrack: (track) => {
                                   const rt = release.tracks?.find(
                                     (candidate) =>
