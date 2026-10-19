@@ -11,7 +11,7 @@ import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 import type { RecentBroadcast } from '../../../api/broadcast';
 import { formatDate, formatDuration, isPublished } from './helpers';
 
-/** Same row treatment as the Tracks tab (MyDiscographyView) — thumbnail
+/** Library row treatment — thumbnail
  * box, title, subtitle, status badge, and an edit action — reused here
  * rather than a new listing widget. Recordings carry no artwork/waveform
  * data, so the thumbnail is always the placeholder icon. */
