@@ -138,6 +138,24 @@ export const SignedOutRotation: Story = {
   },
 };
 
+export const RotationWithoutTrackInfo: Story = {
+  args: {
+    channel: storyChannel({
+      nowPlaying: null,
+      nowPlayingNext: null,
+      signalConnected: false,
+    }),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText(/24\/7 rotation is playing/)).toBeVisible();
+    await expect(canvas.queryByText(/Stream is live/)).toBeNull();
+    await expect(
+      canvas.getByRole('button', { name: 'Play stream' }),
+    ).toBeVisible();
+  },
+};
+
 export const LiveWithoutTrackInfo: Story = {
   args: { channel: storyChannel({ nowPlaying: null, nowPlayingNext: null }) },
   play: async ({ canvasElement }) => {
