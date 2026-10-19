@@ -33,6 +33,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Admin/AdminMapView` | `tahti-web/AdminMapView.stories.tsx` |
 | `Tahti/Admin/AdminMissedShowsView` | `tahti-web/AdminMissedShowsView.stories.tsx` |
 | `Tahti/Admin/AdminModerationView` | `tahti-web/AdminModerationView.stories.tsx` |
+| `Tahti/Admin/AdminMonitoringView` | `tahti-web/AdminMonitoringView.stories.tsx` |
 | `Tahti/Admin/AdminNav` | `tahti-web/AdminNav.stories.tsx` |
 | `Tahti/Admin/AdminNewsView` | `tahti-web/AdminNewsView.stories.tsx` |
 | `Tahti/Admin/AdminOrphanPagesView` | `tahti-web/AdminOrphanPagesView.stories.tsx` |

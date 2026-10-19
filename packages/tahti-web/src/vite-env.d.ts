@@ -10,6 +10,8 @@ interface ImportMetaEnv {
   readonly VITE_ALLOW_MOCK_FALLBACK?: string;
   /** `1` unlocks `/more` Screen atlas and other diagnostics-only chrome (beta sets this). */
   readonly VITE_ENABLE_DIAGNOSTICS?: string;
+  /** Public Grafana base URL (default https://grafana.tahti.live). */
+  readonly VITE_GRAFANA_URL?: string;
   readonly VITE_CENTRIFUGO_WS?: string;
   readonly VITE_HCAPTCHA_SITEKEY?: string;
 }

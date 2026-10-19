@@ -1,28 +1,36 @@
-import { ActivityIcon, ContainerIcon, HistoryIcon } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useSearch } from '@tanstack/react-router';
+import {
+  ActivityIcon,
+  ContainerIcon,
+  ExternalLinkIcon,
+  HistoryIcon,
+} from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   Alert,
+  ButtonAnchor,
   LogViewer,
   Tabs,
   ViewShell,
   type LogEntryData,
 } from '@tahti-player/ui';
 
-import {
-  fetchAdminContainerLogs,
-  fetchAdminDashboard,
-  type AdminAuditRow,
-  type AdminLogEntry,
-} from '../../api/admin';
+import { fetchAdminDashboard, type AdminAuditRow } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
-import { usePolling } from '../../hooks/usePolling';
+import {
+  GRAFANA_DASHBOARDS,
+  grafanaDashboardUrl,
+  grafanaExploreLogsUrl,
+} from '../../lib/grafanaMonitoring';
 import { AdminActivityView } from './AdminActivityView';
+import { ContainerLogsPanel } from './monitoring/ContainerLogsPanel';
 
-const REFRESH_INTERVAL_MS = 15_000;
+const TAB_IDS = ['activity', 'containers', 'recent-audit'] as const;
+type LogsTabId = (typeof TAB_IDS)[number];
 
 function toAuditLogEntry(entry: AdminAuditRow): LogEntryData {
   return {
@@ -81,82 +89,70 @@ function RecentAuditEntries() {
   );
 }
 
-// Container names carry the compose project prefix ("tahti-stack-api-1")
-// — group by the middle segment so the ScopeFilter reads as service names
-// instead of every entry being its own scope.
-function scopeFor(service: string): string {
-  const match = /^tahti-stack-([a-z0-9-]+?)(-\d+)?$/.exec(service);
-  return match?.[1] ?? service;
-}
-
-function toLogEntry(entry: AdminLogEntry, index: number): LogEntryData {
-  return {
-    id: `${entry.timestampMs}-${index}`,
-    timestamp: new Date(entry.timestampMs),
-    level: 'info',
-    target: entry.service,
-    source: { type: 'core', scope: scopeFor(entry.service) },
-    message: entry.line,
-  };
+function parseLogsTab(
+  tab: string | undefined,
+  service: string | undefined,
+): LogsTabId {
+  if (tab === 'containers' || tab === 'recent-audit' || tab === 'activity') {
+    return tab;
+  }
+  if (service) {
+    return 'containers';
+  }
+  return 'activity';
 }
 
 export function AdminLogsView() {
-  const [entries, setEntries] = useState<AdminLogEntry[]>([]);
-  const [lokiReachable, setLokiReachable] = useState(true);
-  const [loading, setLoading] = useState(true);
-
-  const load = useCallback(async () => {
-    const res = await fetchAdminContainerLogs({ limit: 500 });
-    setEntries(res.entries);
-    setLokiReachable(res.lokiReachable);
-    setLoading(false);
-  }, []);
+  const search = useSearch({ strict: false }) as {
+    tab?: string;
+    service?: string;
+  };
+  const initialTab = parseLogsTab(search.tab, search.service);
+  const [selectedIndex, setSelectedIndex] = useState(() =>
+    TAB_IDS.indexOf(initialTab),
+  );
 
   useEffect(() => {
-    void load();
-  }, [load]);
-  usePolling(() => {
-    void load();
-  }, REFRESH_INTERVAL_MS);
+    setSelectedIndex(TAB_IDS.indexOf(parseLogsTab(search.tab, search.service)));
+  }, [search.tab, search.service]);
 
-  const logs = entries.map(toLogEntry);
-  const scopes = [...new Set(logs.map((l) => l.source.scope))].sort();
-
-  const containerLogs = (
-    <StudioPanel>
-      {!lokiReachable && (
-        <Alert tone="error" className="mb-3">
-          Could not reach the logging backend. It may be down, or this
-          environment can&apos;t reach it on the LAN.
-        </Alert>
-      )}
-      {loading ? (
-        <PageLoading label="Loading logs…" />
-      ) : logs.length === 0 ? (
-        <PageEmpty title="No log lines in the last hour." />
-      ) : (
-        <div className="h-[70vh]">
-          <LogViewer.Root
-            logs={logs}
-            scopes={scopes}
-            onClear={() => {}}
-            onExport={() => {}}
-            onOpenLogFolder={() => {}}
+  const containerLogs = useMemo(
+    () => (
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-wrap gap-2">
+          <ButtonAnchor
+            href={grafanaExploreLogsUrl(search.service)}
+            target="_blank"
+            rel="noreferrer"
+            size="sm"
+            variant="secondary"
           >
-            <div className="flex flex-wrap items-center gap-4">
-              <LogViewer.SearchInput />
-              <LogViewer.DateRangeFilter />
-            </div>
-            <div className="flex flex-wrap items-center gap-4">
-              <LogViewer.ScopeFilter />
-              <LogViewer.EntryCount />
-            </div>
-            <LogViewer.VirtualizedList />
-            <LogViewer.EntryDetailDialog />
-          </LogViewer.Root>
+            Open in Grafana Explore
+            <ExternalLinkIcon size={12} aria-hidden className="ml-1" />
+          </ButtonAnchor>
+          <ButtonAnchor
+            href={grafanaDashboardUrl(GRAFANA_DASHBOARDS.docker.uid)}
+            target="_blank"
+            rel="noreferrer"
+            size="sm"
+            variant="text"
+          >
+            Docker metrics
+            <ExternalLinkIcon size={12} aria-hidden className="ml-1" />
+          </ButtonAnchor>
         </div>
-      )}
-    </StudioPanel>
+        {search.service ? (
+          <Alert tone="neutral">
+            Filtering container logs for “{search.service}”.
+          </Alert>
+        ) : null}
+        <ContainerLogsPanel
+          service={search.service}
+          heightClassName="h-[70vh]"
+        />
+      </div>
+    ),
+    [search.service],
   );
 
   return (
@@ -169,6 +165,8 @@ export function AdminLogsView() {
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <Tabs
+                selectedIndex={selectedIndex}
+                onChange={setSelectedIndex}
                 items={[
                   {
                     id: 'activity',

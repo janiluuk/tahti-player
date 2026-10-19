@@ -1,9 +1,11 @@
+import { ExternalLinkIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
   Alert,
   Badge,
   Button,
+  ButtonAnchor,
   ButtonLink,
   Dialog,
   ViewShell,
@@ -15,6 +17,12 @@ import { AdminPageLayout } from '../../components/AdminNav';
 import { PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
+import {
+  GRAFANA_DASHBOARDS,
+  grafanaDashboardUrl,
+  grafanaExploreLogsUrl,
+  MONITORING_SERVICES,
+} from '../../lib/grafanaMonitoring';
 import { CommunityStatsPanel } from './dashboard/CommunityStatsPanel';
 
 function euros(cents: number): string {
@@ -194,6 +202,101 @@ export function AdminDashboardView() {
                       );
                     })}
                   </div>
+                </StudioPanel>
+
+                <StudioPanel title="Monitoring">
+                  <p className="text-foreground-secondary mb-3 text-sm">
+                    Grafana vitals, infrastructure, and container logs for the
+                    production stack.
+                  </p>
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    <ButtonLink
+                      to="/admin/monitoring"
+                      size="sm"
+                      variant="secondary"
+                    >
+                      Operations hub
+                    </ButtonLink>
+                    <ButtonLink
+                      to="/admin/logs"
+                      search={{ tab: 'containers' }}
+                      size="sm"
+                      variant="text"
+                    >
+                      Container logs
+                    </ButtonLink>
+                    {(
+                      Object.values(GRAFANA_DASHBOARDS) as Array<{
+                        uid: string;
+                        title: string;
+                      }>
+                    ).map((dash) => (
+                      <ButtonAnchor
+                        key={dash.uid}
+                        href={grafanaDashboardUrl(dash.uid)}
+                        target="_blank"
+                        rel="noreferrer"
+                        size="sm"
+                        variant="text"
+                      >
+                        {dash.title}
+                        <ExternalLinkIcon
+                          size={12}
+                          aria-hidden
+                          className="ml-1"
+                        />
+                      </ButtonAnchor>
+                    ))}
+                    <ButtonAnchor
+                      href={grafanaExploreLogsUrl()}
+                      target="_blank"
+                      rel="noreferrer"
+                      size="sm"
+                      variant="text"
+                    >
+                      Grafana Loki
+                      <ExternalLinkIcon
+                        size={12}
+                        aria-hidden
+                        className="ml-1"
+                      />
+                    </ButtonAnchor>
+                  </div>
+                  <ul className="divide-border divide-y">
+                    {MONITORING_SERVICES.slice(0, 6).map((svc) => {
+                      const dash = GRAFANA_DASHBOARDS[svc.grafana.dashboard];
+                      return (
+                        <li
+                          key={svc.id}
+                          className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm first:pt-0 last:pb-0"
+                        >
+                          <span className="font-medium">{svc.label}</span>
+                          <div className="flex flex-wrap gap-2">
+                            <ButtonAnchor
+                              href={grafanaDashboardUrl(dash.uid)}
+                              target="_blank"
+                              rel="noreferrer"
+                              size="sm"
+                              variant="text"
+                            >
+                              Grafana
+                            </ButtonAnchor>
+                            <ButtonLink
+                              to="/admin/logs"
+                              search={{
+                                tab: 'containers',
+                                service: svc.logService,
+                              }}
+                              size="sm"
+                              variant="text"
+                            >
+                              Logs
+                            </ButtonLink>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </StudioPanel>
 
                 <CommunityStatsPanel />
