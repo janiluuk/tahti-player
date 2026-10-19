@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`BackButton > (Snapshot) renders the round back control 1`] = `
+<button
+  aria-label="Go back"
+  class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:active:scale-100 motion-reduce:transition-none size-12 shrink-0 justify-center rounded-full border-0 bg-background/55 text-foreground shadow-none backdrop-blur-md hover:bg-background/80 hover:translate-x-0 hover:translate-y-0 active:scale-95 disabled:pointer-events-none disabled:opacity-30"
+  data-headlessui-state=""
+  type="button"
+>
+  <svg
+    aria-hidden="true"
+    class="lucide lucide-arrow-left"
+    fill="none"
+    height="28"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="1.7142857142857142"
+    viewBox="0 0 24 24"
+    width="28"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="m12 19-7-7 7-7"
+    />
+    <path
+      d="M19 12H5"
+    />
+  </svg>
+</button>
+`;
