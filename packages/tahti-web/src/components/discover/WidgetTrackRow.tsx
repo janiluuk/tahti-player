@@ -1,28 +1,11 @@
 import { Link } from '@tanstack/react-router';
 import { HeartIcon, MusicIcon } from 'lucide-react';
-import { useState } from 'react';
 
 import { MediaArtwork } from '@tahti-player/ui';
 
-import { fetchTrackDetail } from '../../api/client';
 import type { DiscoverTrackItem } from '../../api/types';
+import { useDiscoverTrackPlayback } from '../../hooks/useDiscoverTrackPlayback';
 import { cn } from '../../lib/cn';
-import { discoverTrackPlayable as toPlayable } from '../../lib/discoverTrackPlayable';
-import { usePlayerStore } from '../../stores/playerStore';
-
-function matchesCurrentTrack(
-  currentId: string | null,
-  itemId: string,
-): boolean {
-  if (!currentId) {
-    return false;
-  }
-  if (currentId === itemId) {
-    return true;
-  }
-  const bareId = itemId.replace(/^sound:/, '');
-  return currentId === bareId || currentId === `sound:${bareId}`;
-}
 
 export function WidgetTrackRow({
   item,
@@ -33,59 +16,8 @@ export function WidgetTrackRow({
   rank?: number;
   onSelect?: (item: DiscoverTrackItem) => void;
 }) {
-  const play = usePlayerStore((state) => state.play);
-  const enqueue = usePlayerStore((state) => state.enqueue);
-  const setStatus = usePlayerStore((state) => state.setStatus);
-  const currentId = usePlayerStore((state) => state.currentId);
-  const status = usePlayerStore((state) => state.status);
-  const [loading, setLoading] = useState(false);
-  const playable = toPlayable(item);
-  const isCurrent = matchesCurrentTrack(currentId, item.id);
-  const isPlaying = isCurrent && status === 'playing';
-
-  const resolvePlayable = async () => {
-    if (playable) {
-      return playable;
-    }
-    setLoading(true);
-    const result = await fetchTrackDetail(item.id.replace(/^sound:/, ''));
-    setLoading(false);
-    const detail = result.data;
-    if (!detail?.audioUrl) {
-      return null;
-    }
-    return {
-      id: item.id,
-      kind: 'sound' as const,
-      title: detail.title,
-      artist: detail.artistName,
-      coverUrl: detail.bannerUrl ?? undefined,
-      streamUrl: detail.audioUrl,
-      protocol: detail.audioUrl.includes('.m3u8')
-        ? ('hls' as const)
-        : ('https' as const),
-      channelSlug: detail.channelSlug,
-      durationSec: detail.durationSec,
-    };
-  };
-
-  const handlePlay = async () => {
-    if (isCurrent) {
-      setStatus(isPlaying ? 'paused' : 'playing');
-      return;
-    }
-    const next = await resolvePlayable();
-    if (next) {
-      play(next);
-    }
-  };
-
-  const handleQueue = async () => {
-    const next = await resolvePlayable();
-    if (next) {
-      enqueue(next);
-    }
-  };
+  const { isCurrent, isPlaying, loading, togglePlay, queue } =
+    useDiscoverTrackPlayback(item);
 
   return (
     <Link
@@ -118,10 +50,10 @@ export function WidgetTrackRow({
         isPlaying={isPlaying}
         playDisabled={loading}
         onPlay={() => {
-          void handlePlay();
+          void togglePlay();
         }}
         onQueue={() => {
-          void handleQueue();
+          void queue();
         }}
         queueLabel={`Add ${item.title} to queue`}
         playLabel={`Play ${item.title}`}
