@@ -2,6 +2,14 @@
 
 
 
+## 2026-10-19 — UX sweep 30 micro-slices (tahti-player #1155–#1196+)
+
+Folded `ux-sweep-30-slices.md`. PageEmpty empties, Badge/FilterChips/Tabs
+catalog swaps, `SectionTitle`, History/Collection depth accents, neutral
+Card/MediaArtwork play overlay, Studio releases search. Source todos
+(`listen-ui-liveliness`, `catalog-components-empty-states`, etc.) retain
+any leftover beyond this ledger.
+
 ## 2026-10-19 — Batch 74 cont.: e2e findings batches 2–3 (tahti-player #1148)
 
 Folded `e2e-run-findings.md` + `e2e-findings-90-slices.md`. Product findings
@@ -4983,3 +4991,14 @@ Asked for as "start working on new branch the todo list", then "merge them when 
 - **Cleanup (#1166):** removed `MyDiscographyView`, unreachable since #551 (`/library/sounds` renders `StudioSoundsView`).
 - **Todos (#1160, #1169):** Radio Nova / NRJ not playing in production (`radio-nova-nrj-playback.md`); roadmap epic for staying signed in with JWT + rotating refresh tokens (`auth-refresh-tokens.md`) — noted there that every login currently revokes all other sessions (SEC-010) and sessions never slide.
 
+
+## 2026-10-19 — Batch 75: dead ends and failed loads (tahti-player #1200-#1255)
+
+Asked for as "continue with 20 slices of work and make pr". Mid-batch the user reported that Library › Upload › Configure SoundCloud said "Needs setup" with nothing to set up, and asked to fix it and flag similar dead ends; that became the theme. Another session's PageEmpty sweep (#1215-#1245) ran at the same time, so its files were left alone. Unresolved dead ends are in `dead-end-leftovers.md`.
+
+- **Import sources (#1206, #1242, #1248, #1207):** the upload page's import cards had a fake "Enable source" toggle (written to `localStorage`, read by nothing) and stopped at "Needs setup". They now open the Plugin store's real configure dialog (`ConfigureDialogHost`), show real status, and only list sources that can import. "Not set up on this server" explains what is missing (board members get the provider portal, redirect URL and env vars) and offers Upload files. Connected Google Drive / Mixcloud say what to do next. The Mixcloud search add-on linked to `/sources/mixcloud-embed`, which redirects back to the store; it now opens Studio collections.
+- **Failed loads that looked like empty data (#1211, #1250, #1251):** Studio releases, Library collections and Library sounds said "No … yet" when the API call failed; now `PageError` with Retry. Sounds also says "No sounds match these filters" with Clear filters instead of "No sounds yet".
+- **Endless spinners and missing Retry (#1200, #1205, #1208, #1210, #1252, #1253, #1254):** Transparency and the grant-year page never left their spinner when a fetch threw; Status, the admin grant cycle, My venues, the sound editor and the association panel now offer Retry and explain empty results.
+- **Recordings (#1255):** a recording still being processed showed Draft + a Publish button that opened Sounds (where it isn't yet); now "Processing".
+- **Studio releases (#1212-#1214):** create errors as toasts (were written behind the open dialog), a Stats shortcut per row, Clear search on no match. **Collections (#1247):** Play on each row (fetches, then queues in tracklist order).
+- **#1249:** port inventory status uses `Badge`.
