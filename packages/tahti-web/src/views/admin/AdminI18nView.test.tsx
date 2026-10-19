@@ -2,6 +2,7 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import * as admin from '../../api/admin';
 import { fetchAdminLanguages } from '../../api/admin';
 import { AdminI18nView } from './AdminI18nView';
 
@@ -62,5 +63,15 @@ describe('admin languages without a translation API', () => {
     expect(await screen.findByText('Swedish')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'New language' })).toBeTruthy();
     expect(screen.getByRole('button', { name: /Import CSV/ })).toBeTruthy();
+  });
+
+  it('says the languages failed to load when the API errors', async () => {
+    vi.spyOn(admin, 'fetchAdminLanguages').mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    render(<AdminI18nView />);
+    expect(await screen.findByText('Could not load languages')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeTruthy();
   });
 });
