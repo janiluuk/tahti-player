@@ -12,7 +12,7 @@ import {
 } from '@tahti-player/ui';
 
 import { fetchMyVenues, type MyVenue } from '../api/venues-manage';
-import { PageLoading } from '../components/PageStates';
+import { PageError, PageLoading } from '../components/PageStates';
 import { VenueDetailsForm } from '../components/venues/VenueDetailsForm';
 import { VenueShowsSection } from '../components/venues/VenueShowsSection';
 import { useAuthStore } from '../stores/authStore';
@@ -121,9 +121,12 @@ export function MyVenuesView() {
       ) : venues === null ? (
         <PageLoading label="Loading your venues…" />
       ) : failed ? (
-        <EmptyState
+        <PageError
           title="Could not load your venues"
-          description="Try again in a moment."
+          onRetry={() => {
+            setVenues(null);
+            void load();
+          }}
         />
       ) : venues.length === 0 ? (
         <EmptyState
