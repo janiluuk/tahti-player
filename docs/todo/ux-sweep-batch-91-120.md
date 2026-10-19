@@ -10,7 +10,7 @@ Bare empty copy and batch-4 leftovers after earlier sweeps. One PR per row. Tick
 | 92 | done | Add to playlist |
 | 93 | done | Admin user messages |
 | 94 | done | Channel playlist picker |
-| 95 | open | Fan payouts |
+| 95 | done | Fan payouts |
 | 96 | done | Listener map |
 | 97 | done | Membership invoices |
 | 98 | done | Pinned announcements |

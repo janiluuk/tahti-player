@@ -11,6 +11,7 @@ import { Badge, HorizontalScroll } from '@tahti-player/ui';
 
 import type { FanPayoutStats } from '../api/revenue';
 import type { RevenueOrderRow } from '../lib/revenueOrders';
+import { PageEmpty } from './PageStates';
 
 type FanSubscriptionStatsProps = {
   stats: FanPayoutStats;
@@ -132,11 +133,8 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
           <tbody className="divide-border divide-y">
             {orders.length === 0 ? (
               <tr>
-                <td
-                  colSpan={5}
-                  className="text-foreground-secondary px-2 py-4 text-center"
-                >
-                  No payouts yet.
+                <td colSpan={5} className="px-2 py-4">
+                  <PageEmpty title="No payouts yet." />
                 </td>
               </tr>
             ) : (
