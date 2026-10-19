@@ -5,15 +5,20 @@ import { Badge, Box, ButtonLink, StatChip, ViewShell } from '@tahti-player/ui';
 
 import { fetchPublicGovernanceMotions } from '../api/client';
 import type { PublicGovernanceMotion } from '../api/types';
-import { PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { isPlausiblePublicName } from '../lib/publicDisplayName';
 
 export function PublicGovernanceHistoryView() {
   const [motions, setMotions] = useState<PublicGovernanceMotion[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     void fetchPublicGovernanceMotions().then((result) => {
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setMotions(
         result.data.filter((motion) => {
           const title = motion.title?.trim();
@@ -22,7 +27,7 @@ export function PublicGovernanceHistoryView() {
       );
       setLoading(false);
     });
-  }, []);
+  }, [attempt]);
 
   return (
     <ViewShell
@@ -45,10 +50,17 @@ export function PublicGovernanceHistoryView() {
 
       {loading ? (
         <PageLoading label="Loading governance history…" />
+      ) : loadError && motions.length === 0 ? (
+        <PageError
+          title="Could not load governance history"
+          description={loadError}
+          onRetry={() => {
+            setLoading(true);
+            setAttempt((n) => n + 1);
+          }}
+        />
       ) : motions.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No closed advisory motions have been published yet.
-        </p>
+        <PageEmpty title="No closed advisory motions have been published yet." />
       ) : (
         <div className="flex flex-col gap-4">
           {motions.map((motion) => (
