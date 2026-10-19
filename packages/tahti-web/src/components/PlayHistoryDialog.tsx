@@ -9,6 +9,7 @@ import type {
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
 import { ConfirmDialog } from './ConfirmDialog';
+import { PageError } from './PageStates';
 
 type Props = {
   isOpen: boolean;
@@ -84,10 +85,12 @@ export function PlayHistoryDialog({
           only.
         </Dialog.Description>
         <div className="flex max-h-[50vh] flex-col gap-1 overflow-y-auto py-2">
-          {error ? (
-            <p role="alert" className="text-accent-red-strong text-sm">
-              {error}
-            </p>
+          {error && entries.length === 0 ? (
+            <PageError
+              title="Could not load your listening history"
+              description={error}
+              onRetry={() => void load(0)}
+            />
           ) : entries.length === 0 && !loading ? (
             <p className="text-foreground-secondary text-sm">
               Nothing yet. A listen counts after 30 seconds of a local track.
@@ -110,6 +113,11 @@ export function PlayHistoryDialog({
               ))}
             </ul>
           )}
+          {error && entries.length > 0 ? (
+            <p role="alert" className="text-accent-red-strong text-xs">
+              {error}
+            </p>
+          ) : null}
           {loading ? (
             <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
           ) : entries.length < total ? (
