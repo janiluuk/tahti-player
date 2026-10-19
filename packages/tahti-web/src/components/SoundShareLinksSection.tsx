@@ -152,7 +152,7 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
           ))}
         </ul>
       ) : (
-        <p className="text-foreground-secondary text-xs">No share links yet.</p>
+        <PageEmpty title="No share links yet." />
       )}
 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
