@@ -27,6 +27,7 @@ This index should only contain **blocked** items (human/product/ops dependency) 
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
 | blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
 | partial | [listen-ui-liveliness.md](listen-ui-liveliness.md) | Nuclear-green accents + section pill hues shipped; left: de-green Card/Button/MediaArtwork, History/Collection depth |
+| open    | [ux-sweep-30-slices.md](ux-sweep-30-slices.md) | 30 micro-slices across empties, catalog chips, SectionTitle, History/Collection depth, Card surface, Studio search |
 | open    | [view-modes-track-tables.md](view-modes-track-tables.md) | No list/grid view-mode or sort anywhere; add to shared PlayableTrackTable + studio/library lists |
 | open    | [studio-artist-usability.md](studio-artist-usability.md) | Per-release stats, bulk selection, search parity, release lifecycle, row quick actions, toast drift |
 | open    | [profile-surfaces-unification.md](profile-surfaces-unification.md) | Artist/Channel profile pages + 3× collection rendering + Library trio are copy-pasted; extract shared surfaces |
