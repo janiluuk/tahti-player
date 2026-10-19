@@ -21,6 +21,7 @@ import {
 import { TAHTI_RADIO_SLUG } from '../api/client';
 import { radioStationIdForPlayable } from '../content/radioStations';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { usePlaybackErrorToast } from '../hooks/usePlaybackErrorToast';
 import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { useAuthStore } from '../stores/authStore';
@@ -87,6 +88,7 @@ export function ConnectedPlayerBar() {
 
   const current = queue.find((q) => q.id === currentId);
   const playable = current ? playableFromQueueItem(current) : null;
+  usePlaybackErrorToast(playable?.title);
   const isPlaying = status === 'playing' || status === 'loading';
   const isLoading = status === 'loading';
   const embed = playable?.embed;
@@ -204,9 +206,12 @@ export function ConnectedPlayerBar() {
         onShuffleToggle={toggleShuffle}
         onRepeatToggle={cycleRepeat}
       />
-      {isLive && status === 'error' ? (
-        <div className="text-foreground-secondary text-xs tracking-wide uppercase">
-          Error
+      {status === 'error' ? (
+        <div
+          className="text-accent-red-strong text-xs"
+          data-testid="player-error-note"
+        >
+          {isLive ? 'Can’t connect — press play to retry' : 'Can’t play this'}
         </div>
       ) : null}
     </div>
