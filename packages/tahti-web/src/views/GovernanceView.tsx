@@ -49,7 +49,7 @@ import { CurrentBoardPanel } from '../components/governance/CurrentBoardPanel';
 import { ElectionsPanel } from '../components/governance/ElectionsPanel';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
 import { MotionCard } from '../components/governance/MotionCard';
-import { PageLoading } from '../components/PageStates';
+import { PageEmpty, PageLoading } from '../components/PageStates';
 import { hasAccountRole } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -295,9 +295,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
           </GovernancePanel>
           <GovernancePanel title="Top topics" icon={LandmarkIcon}>
             {requests.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No topics yet.
-              </p>
+              <PageEmpty title="No topics yet." />
             ) : (
               <ul className="divide-border divide-y">
                 {requests
