@@ -10,7 +10,7 @@ import {
   removeArtistEmbed,
   type ArtistEmbed,
 } from '../api/artist-embeds';
-import { PageError } from './PageStates';
+import { PageEmpty, PageError } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 const MAX_EMBEDS = 20;
