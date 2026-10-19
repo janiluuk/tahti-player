@@ -18,7 +18,7 @@ import type {
   TransparencyLedgerEntry,
   TransparencyYtd,
 } from '../api/types';
-import { PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 
 function centsLabel(raw: string) {
   const n = Number(raw);
@@ -33,10 +33,14 @@ export function TransparencyView() {
   const [grants, setGrants] = useState<TransparencyGrantReport | null>(null);
   const [ledger, setLedger] = useState<TransparencyLedgerEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
-    void Promise.all([
+    setLoading(true);
+    setFailed(false);
+    void Promise.allSettled([
       fetchTransparencyYtd(),
       fetchTransparencyGrants(),
       fetchTransparencyLedger(),
@@ -44,15 +48,20 @@ export function TransparencyView() {
       if (cancelled) {
         return;
       }
-      setYtd(y.data);
-      setGrants(g.data);
-      setLedger(l.data);
+      setYtd(y.status === 'fulfilled' ? y.value.data : null);
+      setGrants(g.status === 'fulfilled' ? g.value.data : null);
+      setLedger(l.status === 'fulfilled' ? l.value.data : []);
+      setFailed(
+        y.status === 'rejected' &&
+          g.status === 'rejected' &&
+          l.status === 'rejected',
+      );
       setLoading(false);
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   return (
     <ViewShell
@@ -84,6 +93,11 @@ export function TransparencyView() {
 
       {loading ? (
         <PageLoading label="Loading transparency…" />
+      ) : failed ? (
+        <PageError
+          title="Could not load transparency data"
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
       ) : (
         <>
           {ytd && (
@@ -187,34 +201,38 @@ export function TransparencyView() {
           )}
 
           <SectionShell title="Latest ledger">
-            <HorizontalScroll label="Latest ledger">
-              <table className="w-full border-collapse text-left text-sm">
-                <thead>
-                  <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-                    <th className="py-2 pr-3 font-medium">When</th>
-                    <th className="py-2 pr-3 font-medium">Category</th>
-                    <th className="py-2 pr-3 font-medium">Description</th>
-                    <th className="py-2 font-medium">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {ledger.map((e) => (
-                    <tr key={e.id} className="border-border border-b">
-                      <td className="text-foreground-secondary py-2 pr-3 text-xs whitespace-nowrap">
-                        {e.createdAt.slice(0, 10)}
-                      </td>
-                      <td className="py-2 pr-3 font-mono text-xs">
-                        {e.category}
-                      </td>
-                      <td className="py-2 pr-3">{e.description}</td>
-                      <td className="py-2 whitespace-nowrap">
-                        {centsLabel(e.amountCents)}
-                      </td>
+            {ledger.length === 0 ? (
+              <PageEmpty title="No ledger entries yet" />
+            ) : (
+              <HorizontalScroll label="Latest ledger">
+                <table className="w-full border-collapse text-left text-sm">
+                  <thead>
+                    <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
+                      <th className="py-2 pr-3 font-medium">When</th>
+                      <th className="py-2 pr-3 font-medium">Category</th>
+                      <th className="py-2 pr-3 font-medium">Description</th>
+                      <th className="py-2 font-medium">Amount</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </HorizontalScroll>
+                  </thead>
+                  <tbody>
+                    {ledger.map((e) => (
+                      <tr key={e.id} className="border-border border-b">
+                        <td className="text-foreground-secondary py-2 pr-3 text-xs whitespace-nowrap">
+                          {e.createdAt.slice(0, 10)}
+                        </td>
+                        <td className="py-2 pr-3 font-mono text-xs">
+                          {e.category}
+                        </td>
+                        <td className="py-2 pr-3">{e.description}</td>
+                        <td className="py-2 whitespace-nowrap">
+                          {centsLabel(e.amountCents)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </HorizontalScroll>
+            )}
           </SectionShell>
         </>
       )}
