@@ -143,9 +143,7 @@ export function AdminAnnouncementsView() {
               {loading ? (
                 <PageLoading label="Loading announcements…" />
               ) : clips.length === 0 ? (
-                <p className="text-foreground-secondary py-4 text-center text-sm">
-                  No system announcement clips yet.
-                </p>
+                <PageEmpty title="No system announcement clips yet." />
               ) : (
                 <ul className="divide-border divide-y">
                   {clips.map((clip) => (
