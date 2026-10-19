@@ -100,6 +100,7 @@ export function useStudioSoundsState() {
   const [statsItem, setStatsItem] = useState<StudioSound | null>(null);
   const [pendingDeleteItem, setPendingDeleteItem] =
     useState<StudioSound | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
 
@@ -261,6 +262,18 @@ export function useStudioSoundsState() {
     );
   };
 
+  const toggleSelected = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
   const confirmDelete = () => {
     const item = pendingDeleteItem;
     setPendingDeleteItem(null);
@@ -318,6 +331,9 @@ export function useStudioSoundsState() {
     downloadItem,
     togglePin,
     confirmDelete,
+    selectedIds,
+    setSelectedIds,
+    toggleSelected,
   };
 }
 

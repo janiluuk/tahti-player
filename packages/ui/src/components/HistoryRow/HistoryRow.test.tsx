@@ -108,4 +108,21 @@ describe('HistoryRow', () => {
       screen.getByRole('button', { name: 'Remove from favorites' }),
     ).toBeInTheDocument();
   });
+
+  it('marks the active row for the currently playing track', () => {
+    render(
+      <HistoryRow
+        title="Paranoid Android"
+        artist="Radiohead"
+        time="11:55 AM"
+        labels={labels}
+        isActive
+      />,
+    );
+
+    const row = screen.getByTestId('history-row');
+    expect(row).toHaveAttribute('aria-current', 'true');
+    expect(row).toHaveAttribute('data-active', 'true');
+    expect(row.className).toMatch(/border-l-accent-yellow/);
+  });
 });

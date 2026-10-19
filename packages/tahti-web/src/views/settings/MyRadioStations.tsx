@@ -10,7 +10,7 @@ import {
   removeMyRadioStation,
   type MyRadioStation,
 } from '../../api/my-radio-stations';
-import { PageError } from '../../components/PageStates';
+import { PageEmpty, PageError } from '../../components/PageStates';
 import { usePlayerStore } from '../../stores/playerStore';
 
 const playableId = (station: MyRadioStation) => `radio:my-${station.id}`;
@@ -139,9 +139,7 @@ export function MyRadioStations() {
           })}
         </ul>
       ) : stations ? (
-        <p className="text-foreground-secondary text-sm">
-          No stations yet. Add one with its stream URL.
-        </p>
+        <PageEmpty title="No stations yet. Add one with its stream URL." />
       ) : null}
       <form
         className="flex flex-col gap-3"

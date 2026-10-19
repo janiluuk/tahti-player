@@ -1,13 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 
-import {
-  Button,
-  ButtonLink,
-  EmptyState,
-  Input,
-  ViewShell,
-} from '@tahti-player/ui';
+import { Button, ButtonLink, Input, ViewShell } from '@tahti-player/ui';
 
 import { fetchBlockedUsers } from '../api/blocks';
 import {
@@ -25,6 +19,7 @@ import { DmBlockButton } from '../components/DmBlockButton';
 import { DmRoleBadge } from '../components/DmRoleBadge';
 import { DmThreadMessages } from '../components/DmThreadMessages';
 import { MessageContacts } from '../components/MessageContacts';
+import { PageEmpty } from '../components/PageStates';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
@@ -253,9 +248,7 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
           <ul className="border-border divide-border max-h-96 divide-y overflow-y-auto rounded-lg border">
             {inbox.length === 0 ? (
               <li className="p-3">
-                <EmptyState
-                  size="sm"
-                  className="items-start p-0 text-left"
+                <PageEmpty
                   title="No conversations yet"
                   description="Search for someone above, or find artists on Discover."
                   action={
@@ -308,9 +301,7 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
           >
             {!activeId ? (
               <div className="p-4">
-                <EmptyState
-                  size="sm"
-                  className="items-start p-0 text-left"
+                <PageEmpty
                   title="Select a conversation"
                   description={
                     inbox.length === 0

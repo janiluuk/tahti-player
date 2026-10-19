@@ -336,6 +336,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Layout/CardGrid` | `CardGrid.stories.tsx` |
 | `Components/CardsRow` | `CardsRow.stories.tsx` |
 | `Components/CatalogTable` | `CatalogTable.stories.tsx` |
+| `Components/Checkbox` | `Checkbox.stories.tsx` |
 | `Components/ClampedText` | `ClampedText.stories.tsx` |
 | `Components/Combobox` | `Combobox.stories.tsx` |
 | `Components/CopyButton` | `CopyButton.stories.tsx` |

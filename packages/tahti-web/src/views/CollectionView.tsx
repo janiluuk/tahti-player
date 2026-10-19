@@ -52,12 +52,56 @@ import { ReportButton } from '../components/ReportButton';
 import { RssFeedButton } from '../components/RssFeedButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
+import { contrastingText } from '../lib/colorScheme';
 import { toEmbedPlaybackProvider } from '../lib/embedSrc';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { syncDocumentMetadata } from '../lib/seo';
+import { useDominantColor } from '../lib/useDominantColor';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
+
+function rgbToHex(r: number, g: number, b: number): string {
+  return `#${[r, g, b].map((c) => c.toString(16).padStart(2, '0')).join('')}`;
+}
+
+function schemeFromCoverRgb(rgb: [number, number, number] | null):
+  | {
+      bg: string;
+      text: string;
+      accent: string;
+      highlight: string;
+      muted: string;
+    }
+  | undefined {
+  if (!rgb) {
+    return undefined;
+  }
+  const [r, g, b] = rgb;
+  const bg = rgbToHex(r, g, b);
+  const accent = rgbToHex(
+    Math.min(255, Math.round(r * 0.85 + 40)),
+    Math.min(255, Math.round(g * 0.85 + 40)),
+    Math.min(255, Math.round(b * 0.85 + 40)),
+  );
+  const highlight = rgbToHex(
+    Math.min(255, Math.round(r * 0.7 + 80)),
+    Math.min(255, Math.round(g * 0.7 + 80)),
+    Math.min(255, Math.round(b * 0.7 + 80)),
+  );
+  const muted = rgbToHex(
+    Math.round(r * 0.55 + 60),
+    Math.round(g * 0.55 + 60),
+    Math.round(b * 0.55 + 60),
+  );
+  return {
+    bg,
+    text: contrastingText(bg),
+    accent,
+    highlight,
+    muted,
+  };
+}
 
 function collectionSoundToPlayable(
   sound: NonNullable<PublicCollection['items'][number]['sound']>,
@@ -199,6 +243,12 @@ export function CollectionView({ slug }: { slug: string }) {
     [collection],
   );
 
+  const coverTintUrl = collection
+    ? (collection.coverUrl ?? placeholderArtworkUrl(collection.slug))
+    : null;
+  const coverRgb = useDominantColor(coverTintUrl);
+  const coverScheme = useMemo(() => schemeFromCoverRgb(coverRgb), [coverRgb]);
+
   if (loading) {
     return <PageLoading label="Loading collection…" />;
   }
@@ -317,6 +367,7 @@ export function CollectionView({ slug }: { slug: string }) {
         }
         description={collection.description}
         backdropUrl={backdropUrl}
+        colorScheme={coverScheme}
         visualizerPreset={resolveArtworkVisualizerPreset(collection.slug)}
         artworkUrlForVisualizer={coverUrl}
         stats={headerStats}
@@ -441,15 +492,17 @@ export function CollectionView({ slug }: { slug: string }) {
       />
 
       {playables.length > 0 && (
-        <PlayableTrackTable
-          items={playables}
-          compactActions
-          emptyMessage="No tracks yet."
-          getAnnotation={(item) => {
-            const line = contributions.get(item.id);
-            return line ? <CollectionContribution line={line} /> : null;
-          }}
-        />
+        <div className="shadow-float rounded-[var(--radius-card)]">
+          <PlayableTrackTable
+            items={playables}
+            compactActions
+            emptyMessage="No tracks yet."
+            getAnnotation={(item) => {
+              const line = contributions.get(item.id);
+              return line ? <CollectionContribution line={line} /> : null;
+            }}
+          />
+        </div>
       )}
 
       {playables.length === 0 && (

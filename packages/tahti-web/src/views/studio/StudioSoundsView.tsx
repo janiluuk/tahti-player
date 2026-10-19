@@ -8,6 +8,7 @@ import { LibrarySectionTabs } from '../LibraryView';
 import { SoundFilters } from './sounds/SoundFilters';
 import { SoundsDialogs } from './sounds/SoundsDialogs';
 import { SoundsList } from './sounds/SoundsList';
+import { SoundsSelectionBar } from './sounds/SoundsSelectionBar';
 import { TrackOrderButton } from './sounds/TrackOrderButton';
 import { useStudioSoundsState } from './sounds/useStudioSoundsState';
 
@@ -42,7 +43,10 @@ export function StudioSoundsView() {
                 }
               />
             ) : (
-              <SoundsList items={filtered} state={state} />
+              <>
+                <SoundsSelectionBar state={state} />
+                <SoundsList items={filtered} state={state} />
+              </>
             )}
           </StudioPanel>
         </ViewShell>

@@ -20,6 +20,7 @@ export type HistoryRowProps = ComponentProps<'div'> & {
   time: string;
   artworkUrl?: string | null;
   isFavorite?: boolean;
+  isActive?: boolean;
   onToggleFavorite?: () => void;
   onAddToQueue?: () => void;
   onPlayNow?: () => void;

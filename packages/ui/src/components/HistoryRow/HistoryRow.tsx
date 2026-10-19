@@ -14,6 +14,7 @@ export const HistoryRow: FC<HistoryRowProps> = ({
   time,
   artworkUrl,
   isFavorite = false,
+  isActive = false,
   onToggleFavorite,
   onAddToQueue,
   onPlayNow,
@@ -24,8 +25,11 @@ export const HistoryRow: FC<HistoryRowProps> = ({
 }) => (
   <div
     data-testid="history-row"
+    data-active={isActive || undefined}
+    aria-current={isActive ? 'true' : undefined}
     className={cn(
       'border-border bg-background-secondary group grid grid-cols-[auto_auto_1fr_1fr_auto] items-center border-b-(length:--border-width) select-none last:border-b-0',
+      isActive && 'border-l-accent-yellow bg-accent-yellow/15 border-l-2',
       classes?.root,
       className,
     )}

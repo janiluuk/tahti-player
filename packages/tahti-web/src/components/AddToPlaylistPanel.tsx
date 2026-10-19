@@ -22,7 +22,9 @@ import { PageLoading } from './PageStates';
 
 type Props = {
   isOpen: boolean;
-  soundId: string;
+  /** One sound, or several via `soundIds` (bulk add from a selection). */
+  soundId?: string;
+  soundIds?: string[];
   trackTitle: string;
   onClose: () => void;
 };
@@ -37,12 +39,33 @@ function playlistGlyph(c: StudioCollection) {
   return <GlobeIcon size={22} aria-hidden />;
 }
 
+async function addAll(slug: string, soundIds: string[]) {
+  let added = 0;
+  let error: string | null = null;
+  for (const soundId of soundIds) {
+    const r = await addStudioCollectionItem(slug, { soundId });
+    if (r.ok) {
+      added += 1;
+    } else {
+      error ??= r.error;
+    }
+  }
+  return { added, error };
+}
+
+function trackCount(count: number) {
+  return count === 1 ? '1 track' : `${count} tracks`;
+}
+
 export function AddToPlaylistPanel({
   isOpen,
   soundId,
+  soundIds,
   trackTitle,
   onClose,
 }: Props) {
+  const ids = soundIds ?? (soundId ? [soundId] : []);
+  const bulk = ids.length > 1;
   const user = useAuthStore((s) => s.user);
   const [collections, setCollections] = useState<StudioCollection[] | null>(
     null,
@@ -99,13 +122,19 @@ export function AddToPlaylistPanel({
     setAddingSlug(slug);
     setNote(null);
     try {
-      const r = await addStudioCollectionItem(slug, { soundId });
-      if (!r.ok) {
-        setNote(r.error);
+      const { added, error } = await addAll(slug, ids);
+      if (added === 0) {
+        setNote(error);
         return;
       }
       setAddedSlugs((prev) => new Set(prev).add(slug));
-      setNote(`Added to ${name}`);
+      setNote(
+        !bulk
+          ? `Added to ${name}`
+          : error
+            ? `Added ${added} of ${trackCount(ids.length)} to ${name}: ${error}`
+            : `Added ${trackCount(added)} to ${name}`,
+      );
     } finally {
       setAddingSlug(null);
     }
@@ -129,10 +158,8 @@ export function AddToPlaylistPanel({
         setNote(created.error);
         return;
       }
-      const add = await addStudioCollectionItem(created.data.slug, {
-        soundId,
-      });
-      if (!add.ok) {
+      const add = await addAll(created.data.slug, ids);
+      if (add.added === 0) {
         setNote(add.error);
         return;
       }
@@ -140,7 +167,11 @@ export function AddToPlaylistPanel({
       setAddedSlugs((prev) => new Set(prev).add(created.data.slug));
       setNewName('');
       setCreating(false);
-      setNote(`Created “${name}” and added the track`);
+      setNote(
+        bulk
+          ? `Created “${name}” and added ${trackCount(add.added)}`
+          : `Created “${name}” and added the track`,
+      );
     } finally {
       setCreatingBusy(false);
     }
@@ -160,7 +191,11 @@ export function AddToPlaylistPanel({
         </span>
       </Dialog.Title>
       <Dialog.Description>
-        Choose a playlist for &ldquo;{trackTitle}&rdquo;, or create one.
+        {bulk ? (
+          <>Choose a playlist for {trackCount(ids.length)}, or create one.</>
+        ) : (
+          <>Choose a playlist for &ldquo;{trackTitle}&rdquo;, or create one.</>
+        )}
       </Dialog.Description>
 
       <div className="mt-4">

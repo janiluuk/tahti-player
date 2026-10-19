@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import { Badge, Input } from '@tahti-player/ui';
+import { Badge, Button, Input } from '@tahti-player/ui';
 
 import {
   fetchMemberRegister,
   type MemberRegisterRow,
 } from '../../../../api/admin/admin-member-register';
+import { PageEmpty } from '../../../../components/PageStates';
 import { CollapsibleRecord } from '../tabs/MeetingRecordPanels';
 
 const STATUS_COLORS: Record<string, 'green' | 'yellow' | 'red' | 'secondary'> =
@@ -73,9 +74,20 @@ export function MemberRegisterPanel() {
             onChange={(e) => setQuery(e.target.value)}
           />
           {shown.length === 0 ? (
-            <p className="text-foreground-secondary text-xs">
-              No member matches.
-            </p>
+            <PageEmpty
+              title="No member matches."
+              action={
+                q ? (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setQuery('')}
+                  >
+                    Clear filters
+                  </Button>
+                ) : undefined
+              }
+            />
           ) : (
             <ul className="divide-border divide-y text-sm">
               {shown.map((row) => (

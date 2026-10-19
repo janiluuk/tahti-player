@@ -15,6 +15,7 @@ import {
   Button,
   Card,
   CardsRow,
+  SectionTitle,
   TabLabel,
   Tabs,
   Tooltip,
@@ -343,6 +344,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
             }
           />
           <Card
+            surface="neutral"
             title={
               catalogId ? (
                 <Link
@@ -404,6 +406,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           </Button>
         </Tooltip>
         <Card
+          surface="neutral"
           title={
             <Link
               to="/radio/station/$stationId"
@@ -445,6 +448,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     return (
       <div onPointerEnter={warmChannelRoute} onFocus={warmChannelRoute}>
         <Card
+          surface="neutral"
           title={
             <Link
               to="/channel/$slug"
@@ -485,6 +489,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     const stationId = radioStationIdForPlayable(playable);
     return (
       <Card
+        surface="neutral"
         title={
           stationId ? (
             <Link
@@ -664,9 +669,10 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                 className="flex flex-col gap-3"
                 data-testid="listen-new-tracks"
               >
-                <h2 className="text-foreground border-accent-purple/40 border-l-4 pl-3 text-lg font-bold">
-                  New tracks
-                </h2>
+                <SectionTitle
+                  title="New tracks"
+                  className="border-accent-purple/40 border-l-4 pl-3"
+                />
                 <div className="shadow-float rounded-[var(--radius-card)]">
                   <PlayableTrackTable items={sections.latestTracks.data} />
                 </div>

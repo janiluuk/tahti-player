@@ -51,6 +51,7 @@ export const AllVariants: Story = {
         time="9:03 AM"
         artworkUrl="https://picsum.photos/seed/hail/64"
         labels={labels}
+        isActive
         onToggleFavorite={onToggleFavorite}
         onAddToQueue={onAddToQueue}
         onPlayNow={onPlayNow}
@@ -76,4 +77,18 @@ export const AllVariants: Story = {
       />
     </div>
   ),
+};
+
+export const Active: Story = {
+  args: {
+    title: 'Paranoid Android',
+    artist: 'Radiohead',
+    time: '11:55 AM',
+    artworkUrl: 'https://picsum.photos/seed/okcomputer/64',
+    labels,
+    isActive: true,
+    onToggleFavorite,
+    onAddToQueue,
+    onPlayNow,
+  },
 };
