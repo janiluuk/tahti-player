@@ -7,7 +7,7 @@ import {
   RotateCcwIcon,
 } from 'lucide-react';
 
-import { Button, MediaArtwork, Tooltip } from '@tahti-player/ui';
+import { Button, Checkbox, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../../api/studio-types';
 import { AddToPlaylistButton } from '../../../components/AddToPlaylistButton';
@@ -73,6 +73,8 @@ export function SoundRow({
     setStatsItem,
     setPendingDeleteItem,
     setItems,
+    selectedIds,
+    toggleSelected,
   } = state;
   const { retry, retryingId } = useRetrySoundProcessing((id) =>
     setItems((prev) =>
@@ -108,6 +110,11 @@ export function SoundRow({
       className="flex flex-wrap items-center gap-2 py-3 text-sm first:pt-0 last:pb-0"
       style={ambientStyle(rgb)}
     >
+      <Checkbox
+        checked={selectedIds.has(item.id)}
+        onChange={() => toggleSelected(item.id)}
+        aria-label={`Select ${item.title}`}
+      />
       <MediaArtwork
         src={item.bannerUrl ?? undefined}
         size="sm"
