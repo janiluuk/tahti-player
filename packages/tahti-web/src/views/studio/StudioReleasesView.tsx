@@ -1,5 +1,7 @@
 import { Link, useSearch } from '@tanstack/react-router';
 import {
+  ArchiveIcon,
+  BarChart3Icon,
   Disc3Icon,
   DiscAlbumIcon,
   ExternalLinkIcon,
@@ -29,9 +31,11 @@ import {
 import {
   createStudioRelease,
   fetchStudioReleases,
+  patchStudioRelease,
   patchStudioReleaseVisual,
 } from '../../api/studio';
 import type { StudioRelease } from '../../api/studio-types';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageLoading } from '../../components/PageStates';
 import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
@@ -60,6 +64,9 @@ export function StudioReleasesView() {
   const [loading, setLoading] = useState(true);
   const [createOpen, setCreateOpen] = useState(false);
   const [openMoreId, setOpenMoreId] = useState<string | null>(null);
+  const [archiveTarget, setArchiveTarget] = useState<StudioRelease | null>(
+    null,
+  );
   const [title, setTitle] = useState('');
   const [type, setType] = useState('SINGLE');
   const [releaseDate, setReleaseDate] = useState(() =>
@@ -324,6 +331,30 @@ export function StudioReleasesView() {
                         </Tooltip>
                         {openMoreId === r.id && (
                           <div className="flex w-full flex-wrap gap-2 pt-1">
+                            <Tooltip content="Stats" side="top">
+                              <ButtonLink
+                                to="/studio/releases/$id"
+                                params={{ id: r.id }}
+                                search={{ tab: 'stats' }}
+                                size="icon-sm"
+                                variant="text"
+                                aria-label={`Stats for ${r.title}`}
+                              >
+                                <BarChart3Icon size={16} aria-hidden />
+                              </ButtonLink>
+                            </Tooltip>
+                            {r.state !== 'ARCHIVED' ? (
+                              <Tooltip content="Archive" side="top">
+                                <Button
+                                  size="icon-sm"
+                                  variant="text"
+                                  aria-label={`Archive ${r.title}`}
+                                  onClick={() => setArchiveTarget(r)}
+                                >
+                                  <ArchiveIcon size={16} aria-hidden />
+                                </Button>
+                              </Tooltip>
+                            ) : null}
                             <ReleasePinButton
                               release={r}
                               onChange={(pinnedAt) =>
@@ -365,6 +396,38 @@ export function StudioReleasesView() {
             )}
           </StudioPanel>
         </ViewShell>
+        <ConfirmDialog
+          isOpen={archiveTarget !== null}
+          title="Archive this release?"
+          description={
+            archiveTarget
+              ? `“${archiveTarget.title}” stays in your account as archived. There is no delete for a release.`
+              : ''
+          }
+          confirmLabel="Archive"
+          onCancel={() => setArchiveTarget(null)}
+          onConfirm={() => {
+            const target = archiveTarget;
+            if (!target) {
+              return;
+            }
+            setArchiveTarget(null);
+            void patchStudioRelease(target.id, { state: 'ARCHIVED' }).then(
+              (result) => {
+                if (!result.ok) {
+                  toast.error(result.error);
+                  return;
+                }
+                setReleases((list) =>
+                  list.map((row) =>
+                    row.id === target.id ? { ...row, state: 'ARCHIVED' } : row,
+                  ),
+                );
+                toast.success(`Archived ${target.title}.`);
+              },
+            );
+          }}
+        />
       </div>
     </StudioGate>
   );
