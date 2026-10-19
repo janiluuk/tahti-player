@@ -46,9 +46,7 @@ export function PublicGovernanceHistoryView() {
       {loading ? (
         <PageLoading label="Loading governance history…" />
       ) : motions.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No closed advisory motions have been published yet.
-        </p>
+        <PageEmpty title="No closed advisory motions have been published yet." />
       ) : (
         <div className="flex flex-col gap-4">
           {motions.map((motion) => (
