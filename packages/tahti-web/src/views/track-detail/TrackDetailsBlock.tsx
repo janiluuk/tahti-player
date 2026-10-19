@@ -1,6 +1,8 @@
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 
+import { Badge } from '@tahti-player/ui';
+
 import type { PublicTrackDetail } from '../../api/types';
 import { hasTrackDetailFacts, trackDetailFacts } from './trackDetails';
 
@@ -48,12 +50,10 @@ export function TrackDetailsBlock({
             <ul className="flex flex-wrap gap-1.5" aria-label="Tags">
               {tags.map((tag) => (
                 <li key={tag}>
-                  <Link
-                    to="/search"
-                    search={{ tag }}
-                    className="bg-background-secondary hover:text-primary-strong inline-flex rounded-full px-2.5 py-0.5 text-xs"
-                  >
-                    #{tag}
+                  <Link to="/search" search={{ tag }}>
+                    <Badge variant="pill" color="secondary">
+                      #{tag}
+                    </Badge>
                   </Link>
                 </li>
               ))}
