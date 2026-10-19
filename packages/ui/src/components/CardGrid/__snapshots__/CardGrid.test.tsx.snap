@@ -6,7 +6,8 @@ exports[`Card grid > (Snapshot) Renders correctly 1`] = `
     class="grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] gap-4 pr-2 pb-4"
   >
     <div
-      class="text-primary-foreground bg-primary border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all"
+      class="border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all text-primary-foreground bg-primary"
+      data-surface="brand"
       data-testid="card"
     >
       <div
@@ -74,13 +75,13 @@ exports[`Card grid > (Snapshot) Renders correctly 1`] = `
         class="min-w-0"
       >
         <div
-          class="text-primary-foreground truncate text-sm font-bold"
+          class="truncate text-sm font-bold text-primary-foreground"
           data-testid="card-title"
         >
           Test album
         </div>
         <div
-          class="text-primary-foreground truncate text-xs"
+          class="truncate text-xs text-primary-foreground"
         >
           Test artist
         </div>
