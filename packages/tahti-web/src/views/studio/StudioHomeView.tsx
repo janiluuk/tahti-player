@@ -15,6 +15,7 @@ import { accountRoleLabel, getAccountRole } from '../../lib/accountRoles';
 import { GovernanceSection } from './home/GovernanceSection';
 import { CompactBroadcastTile, Group, HomeTileStagger } from './home/HomeTiles';
 import { MusicAudienceGrids } from './home/MusicAudienceGrids';
+import { RecentActivitySection } from './home/RecentActivitySection';
 import { RecentBroadcastRow } from './home/RecentBroadcastRow';
 import { SummaryStatsSection } from './home/SummaryStatsSection';
 import { UpcomingShowsSection } from './home/UpcomingShowsSection';
@@ -86,6 +87,7 @@ export function StudioHomeView() {
               </div>
 
               <SummaryStatsSection state={state} />
+              <RecentActivitySection />
 
               <Group title="Broadcast">
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
