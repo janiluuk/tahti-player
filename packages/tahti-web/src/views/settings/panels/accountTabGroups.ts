@@ -14,7 +14,7 @@ export const ACCOUNT_TAB_GROUPS: readonly AccountTabGroup[] = [
     id: 'sign-in',
     label: 'Sign-in & security',
     Icon: Lock,
-    tabIds: ['session', 'two-factor', 'api-tokens'],
+    tabIds: ['session', 'devices', 'two-factor', 'api-tokens'],
   },
   {
     id: 'membership-billing',

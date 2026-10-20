@@ -24,6 +24,7 @@ import {
   Toaster,
 } from '@tahti-player/ui';
 
+import { startAuthSession } from '../api/auth-session-client';
 import { useAutoHideNavWhilePlaying } from '../hooks/useAutoHideNavWhilePlaying';
 import { useIsCompactDesktop, useIsMobile } from '../hooks/useIsMobile';
 import { useOpenedOnce } from '../hooks/useOpenedOnce';
@@ -354,6 +355,10 @@ export function AppShell() {
     /^\/studio\/(?:archive\/[^/]+\/editor|editor\/[^/]+)$/.test(pathname);
   const anonymousRouteBlocked =
     authHydrated && !userId && !isAnonymousRouteAllowed(pathname);
+
+  useEffect(() => {
+    startAuthSession();
+  }, []);
 
   useEffect(() => {
     void refresh();

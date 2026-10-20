@@ -8,6 +8,7 @@ import {
 
 const ALL_TABS = [
   'session',
+  'devices',
   'two-factor',
   'api-tokens',
   'membership',
@@ -43,8 +44,10 @@ describe('account tab groups', () => {
   it('lands a deep link on its group and tab', () => {
     expect(accountTabLanding('subscriptions')).toEqual({ group: 1, tab: 2 });
     expect(ACCOUNT_TAB_GROUPS[1].tabIds[2]).toBe('subscriptions');
-    expect(accountTabLanding('api-tokens')).toEqual({ group: 0, tab: 2 });
-    expect(ACCOUNT_TAB_GROUPS[0].tabIds[2]).toBe('api-tokens');
+    expect(accountTabLanding('api-tokens')).toEqual({ group: 0, tab: 3 });
+    expect(ACCOUNT_TAB_GROUPS[0].tabIds[3]).toBe('api-tokens');
+    expect(accountTabLanding('devices')).toEqual({ group: 0, tab: 1 });
+    expect(ACCOUNT_TAB_GROUPS[0].tabIds[1]).toBe('devices');
   });
 
   it('lands on the first tab without a deep link or for an unknown one', () => {

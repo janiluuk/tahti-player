@@ -11,6 +11,7 @@ import {
   Lock,
   LogInIcon,
   LogOutIcon,
+  MonitorSmartphone,
   Shield,
   Trash2,
   User,
@@ -47,6 +48,7 @@ import type {
 import { ApiTokensPanel } from '../../../components/ApiTokensPanel';
 import { BlockedAccounts } from '../../../components/BlockedAccounts';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
+import { DevicesSessionsPanel } from '../../../components/DevicesSessionsPanel';
 import { FanSubscriptionsBillingButton } from '../../../components/FanSubscriptionsBillingButton';
 import { MembershipInvoices } from '../../../components/MembershipInvoices';
 import { MembershipStatusPanel } from '../../../components/MembershipStatusPanel';
@@ -157,6 +159,12 @@ export function AccountPanel() {
           </div>
         </div>
       ),
+    },
+    {
+      id: 'devices',
+      label: 'Devices',
+      icon: <MonitorSmartphone size={14} />,
+      content: <DevicesSessionsPanel />,
     },
     {
       id: 'two-factor',
