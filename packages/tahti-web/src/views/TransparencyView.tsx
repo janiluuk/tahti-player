@@ -18,6 +18,7 @@ import type {
   TransparencyLedgerEntry,
   TransparencyYtd,
 } from '../api/types';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 
 function rejectedReason(result: PromiseRejectedResult): string {
@@ -88,6 +89,7 @@ export function TransparencyView() {
         root: 'px-0 pt-0 mx-auto max-w-4xl',
       }}
     >
+      <PageBackLink to="/governance" label="Governance" />
       <div className="mb-6 flex flex-col gap-1">
         <Link
           to="/transparency/methodology"

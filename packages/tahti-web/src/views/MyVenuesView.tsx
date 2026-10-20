@@ -13,6 +13,7 @@ import {
 } from '@tahti-player/ui';
 
 import { fetchMyVenues, type MyVenue } from '../api/venues-manage';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { VenueDetailsForm } from '../components/venues/VenueDetailsForm';
 import { VenueShowsSection } from '../components/venues/VenueShowsSection';
@@ -123,6 +124,11 @@ export function MyVenuesView() {
       title="My venues"
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', content: 'gap-4' }}
     >
+      <PageBackLink
+        to="/discover"
+        search={{ tab: 'venues' }}
+        label="All venues"
+      />
       {!user ? (
         <EmptyState
           title="Sign in to manage your venues"

@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { cn, Dialog, ViewShell } from '@tahti-player/ui';
 
+import { PageBackLink } from '../components/PageBackLink';
 import {
   countHighlights,
   RELEASE_NOTES,
@@ -202,6 +203,7 @@ export function WhatsNewPanel() {
 export function WhatsNewView() {
   return (
     <ViewShell title="What's New">
+      <PageBackLink to="/help" label="Help center" />
       <div className="mx-auto flex w-full max-w-2xl flex-col">
         <WhatsNewPanel />
       </div>

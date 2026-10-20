@@ -1,10 +1,10 @@
-import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 import { ViewShell } from '@tahti-player/ui';
 
 import { fetchTransparencyGrants } from '../api/client';
 import type { TransparencyGrantReport } from '../api/types';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 
 function centsLabel(raw: string | number) {
@@ -49,12 +49,7 @@ export function TransparencyGrantYearView({ year }: { year: number }) {
       title={`Grant report ${year}`}
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
     >
-      <Link
-        to="/transparency"
-        className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
-      >
-        Transparency overview →
-      </Link>
+      <PageBackLink to="/transparency" label="Transparency" />
       {loading ? (
         <PageLoading label="Loading grant report…" />
       ) : failed ? (
