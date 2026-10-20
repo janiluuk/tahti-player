@@ -309,7 +309,7 @@ export async function createStudioRelease(input: {
   try {
     const { data } = await requestJson<StudioRelease>('/api/me/releases', {
       method: 'POST',
-      body: JSON.stringify(input),
+      body: JSON.stringify({ ...input, state: 'DRAFT' }),
     });
     return { ok: true, data };
   } catch (err) {

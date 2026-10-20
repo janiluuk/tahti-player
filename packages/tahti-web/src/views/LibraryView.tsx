@@ -176,7 +176,7 @@ export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
       >
         <Tabs.List
           aria-label="Library sections"
-          className={PHONE_SCROLL_TAB_LIST}
+          className={`${PHONE_SCROLL_TAB_LIST} max-w-full`}
         >
           {tabs.map((item) => (
             <Tabs.Tab key={item.id}>

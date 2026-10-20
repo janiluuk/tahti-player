@@ -118,9 +118,9 @@ export function SoundsListTable({
             sound.embedProvider && sound.embedUri
               ? embedSrcFor(sound.embedProvider, sound.embedUri)
               : null;
+          const isCurrent = currentId === `sound:${sound.id}`;
           const isPlaying =
-            currentId === `sound:${sound.id}` &&
-            (status === 'playing' || status === 'loading');
+            isCurrent && (status === 'playing' || status === 'loading');
           return (
             <span className="flex min-w-0 items-center gap-2">
               <MediaArtwork
@@ -128,7 +128,8 @@ export function SoundsListTable({
                 alt=""
                 size="sm"
                 className="size-8 min-w-8 rounded-sm"
-                isPlaying={isPlaying}
+                isPlaying={isPlaying && status !== 'loading'}
+                isLoading={isCurrent && status === 'loading'}
                 playDisabled={isProcessingSound(sound)}
                 playLabel={`Preview ${sound.title}`}
                 pauseLabel={`Pause ${sound.title}`}

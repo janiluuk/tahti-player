@@ -111,7 +111,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
             }
           />
         ) : (
-          <CardGrid>
+          <CardGrid className="grid-cols-[repeat(auto-fit,minmax(7.5rem,1fr))] sm:grid-cols-[repeat(auto-fit,minmax(10rem,1fr))]">
             {favoriteChannels.map((ch) => (
               <div key={ch.slug} className="flex flex-col gap-2">
                 <Link to="/channel/$slug" params={{ slug: ch.slug }}>

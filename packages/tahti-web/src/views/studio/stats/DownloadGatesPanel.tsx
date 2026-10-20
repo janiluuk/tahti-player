@@ -6,23 +6,33 @@ import {
   fetchDownloadGateStats,
   type DownloadGateStats,
 } from '../../../api/studio-extras/download-gates';
-import { PageEmpty } from '../../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 
 export function DownloadGatesPanel({ active }: { active: boolean }) {
   const [stats, setStats] = useState<DownloadGateStats | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
     void fetchDownloadGateStats().then((result) => {
       if (!cancelled) {
         setStats(result.data);
+        setLoading(false);
       }
     });
     return () => {
       cancelled = true;
     };
   }, []);
+
+  if (loading) {
+    return active ? (
+      <StudioPanel title="Download gates">
+        <PageLoading label="Loading download gates…" />
+      </StudioPanel>
+    ) : null;
+  }
 
   if (!stats) {
     return null;

@@ -36,12 +36,11 @@ export function PublicGovernanceHistoryView() {
     >
       <ButtonLink
         className="w-fit"
-        to="/transparency"
+        to="/governance"
         size="sm"
         variant="secondary"
       >
-        <ScrollTextIcon size={14} aria-hidden className="mr-1.5" />
-        Transparency overview
+        <ScrollTextIcon size={14} aria-hidden className="mr-1.5" />← Governance
       </ButtonLink>
 
       {!loading && motions.length > 0 && (

@@ -1,4 +1,5 @@
 import { requestJson } from './client-request';
+import { apiBase } from './http';
 import { mockFixture, type PasswordLinkInfo } from './mock-overrides';
 import {
   buildMockLoginUser,
@@ -19,14 +20,28 @@ export async function fetchAuthMe(): Promise<{
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
+  // Signed-out visitors always get 401 here. Handle it as a normal null
+  // session without throwing, so the browser console stays quiet.
   try {
-    const { data } = await requestJson<AuthUser>('/api/auth/me');
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : '';
-    if (message.includes('401') || message.includes('Unauthorized')) {
+    const res = await fetch(`${apiBase()}/api/auth/me`, {
+      credentials: 'include',
+      headers: { Accept: 'application/json' },
+    });
+    if (res.status === 401) {
       return { data: null, meta: { source: 'api' } };
     }
+    if (!res.ok) {
+      return {
+        data: null,
+        meta: {
+          source: 'api',
+          reason: `/api/auth/me → ${res.status}`,
+        },
+      };
+    }
+    const data = (await res.json()) as AuthUser;
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
     return { data: null, meta: apiErrorMeta(err) };
   }
 }

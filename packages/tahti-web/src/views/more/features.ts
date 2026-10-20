@@ -115,7 +115,7 @@ export const FEATURES: FeatureRow[] = [
     nuclear: '/settings, /settings/$section',
     status: 'live',
     notes:
-      'Account · Artist · Channel & chat · Broadcast · Money · Notifications · Themes · Connections',
+      'Account · Artist · Channel & chat · Broadcast · Revenue · Notifications · Themes · Connections',
   },
   {
     feature: 'Themes',
@@ -242,7 +242,7 @@ export const FEATURES: FeatureRow[] = [
     tahti: '/dashboard/settings/account',
     nuclear: '/settings/account',
     status: 'live',
-    notes: 'Session, membership, fan subs under Money',
+    notes: 'Session, membership, fan subs under Revenue',
   },
   {
     feature: 'Studio overview',

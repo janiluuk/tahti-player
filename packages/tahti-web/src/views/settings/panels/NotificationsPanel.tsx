@@ -72,7 +72,7 @@ export function NotificationsPanel() {
   return (
     <div className="flex flex-col gap-4">
       <StudioPanel
-        title="Money moves"
+        title="Revenue moves"
         description="When fan subscriptions arrive or payouts complete."
       >
         <div className="flex flex-col gap-3">

@@ -136,7 +136,7 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
         data-testid="history-empty-state"
         icon={<HistoryIcon size={48} />}
         title="Nothing played yet"
-        description="Tracks you play show up here, most recent first."
+        description="Tracks you play show up here after about 30 seconds (or half the track, if it's shorter)."
         className="flex-1"
       />
     );
@@ -212,6 +212,11 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
       {filtered.length === 0 ? (
         <PageEmpty
           title={`Nothing in your history matches “${filter.trim()}”.`}
+          action={
+            <Button size="sm" variant="secondary" onClick={() => setFilter('')}>
+              Clear filter
+            </Button>
+          }
         />
       ) : null}
 

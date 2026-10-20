@@ -30,23 +30,20 @@ How these were found:
 
 ## Artist (Studio)
 
-- [ ] New releases (and dialog uploads) are public immediately, even an empty
-  EP. Default release-like collections to draft until they have tracks.
-- [ ] Channel hero says "Stream is live — hit Play live…" while the badge says
-  24/7 ROTATION.
-- [ ] Collections list has no row menu (delete only on the release page), and
-  deleting from Studio lands on `/library/collections`.
-- [ ] Empty Queue side panel stays open across Studio (~25% of 1440 px), so
-  tables truncate.
-- [ ] Own channel track table: Artist column repeats the owner (username, not
-  display name) while Title truncates.
-- [ ] Library tab bar wraps to two rows at 1440; go-live sits under two tab
-  rows; Library tab row is cut off at 390 px.
-- [ ] Collections list says "Design" or "Edit" for the same action.
+- [x] New ALBUM/EP collections default to private; create release POST sends
+  `state: 'DRAFT'` (batch 79).
+- [x] Channel hero says rotation, not live, when nobody is broadcasting (#1418).
+- [x] Collections list has a row menu; delete from the editor lands on
+  `/library/collections` (#batch 79; menu already on master).
+- [x] Empty Queue side panel auto-collapses when the queue empties (batch 79;
+  also starts collapsed since layoutStore v8).
+- [x] Own channel track table hides the Artist column for the owner (batch 79).
+- [x] Library section tabs stay a single scrollable row (`PHONE_SCROLL_TAB_LIST`).
+- [x] Collections list uses one label — "Edit" (batch 79).
 - [ ] Track editing lives under Library while uploads/releases are reached from
   Studio; the sidebar highlight jumps mid-task.
-- [ ] No link from the channel designer to the public channel.
-- [ ] Tracks rows are six unlabeled icon buttons.
+- [x] Channel designer links to the public channel ("Open my channel →").
+- [x] Tracks rows have aria-labels / tooltips on icon actions.
 - [ ] Sign-in lands an artist on `/`, not Studio (product call).
 - [ ] **Channel add-on block layout** (parity): add-on widgets render on the
   channel page via `/api/v1/channels/:slug/addons`, but the legacy order/width
@@ -55,28 +52,26 @@ How these were found:
 - [ ] **Google Drive import** (parity): API exists (`/api/me/google-drive/picker-config`,
   `/import`, cloud-import jobs); tahti-web connects Drive but has no Picker.
   Import progress for queued jobs is shown on Upload (#1412).
-- [ ] MusicBrainz prompt can't be turned back on after "Don't ask again"
-  (legacy had a Settings → Connections toggle).
+- [x] MusicBrainz prompt re-enable toggle in Settings → Artist → Connections
+  (batch 79).
 
 ## Listener
 
 - [ ] Player "Try again" after a stream error (#1406 announces failures; a
   reload needs an `AudioEngine` change).
-- [ ] History showed "Nothing to show yet" minutes after playing two tracks;
-  check the play-report threshold and say it in the empty state.
-- [ ] Play takes ~3.8 s from click to sound; show loading on the Play button.
-- [ ] Queue rows are `role="button"` with no accessible name.
-- [ ] Account menu says "Artist panel" / "My channel" while the sidebar says
-  Studio.
-- [ ] Favorites on phone: one full-width channel card per screen.
+- [x] History empty copy explains the ~30 s play-report threshold (batch 79).
+- [x] Play button shows loading while `status === 'loading'` (MediaArtwork +
+  player bar; batch 79).
+- [x] Queue rows are named; only act as buttons when reorderable (#1420).
+- [x] Account menu says Studio / My artist profile (#1419).
+- [x] Favorites channel cards use a denser phone grid (batch 79).
 - [ ] Beta seed data: channel `0fpmbnvefhfgrqd6fdp`; seeded tracks share one MP3.
 
 ## Platform
 
-- [ ] `GET /api/me/mixcloud-embed` 404 on every Upload load: the source status
-  probe (`api/sources/catalog.ts`) builds `/api/me/${id}` for the search-only
-  `mixcloud-embed`. Skip when `capabilities.connect` is false.
-- [ ] `GET /api/auth/me` 401 logged as a console error on every signed-out load.
+- [x] Mixcloud-embed connect probe skipped (#1417).
+- [x] Signed-out `/api/auth/me` 401 handled without throwing (batch 79; Network
+  tab may still show the status until the API returns a soft 200).
 - [ ] Beta auth rate limit: a second login within a minute got 429 on
   2026-10-19 although tahti-org #875 (separate auth bucket) is merged; verify
   after the next API deploy.

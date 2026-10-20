@@ -44,6 +44,8 @@ type Props = {
   /** Secondary line under a row's title, e.g. who added it to a shared
    * playlist. Rows grow taller only when some item has one. */
   getAnnotation?: (item: TahtiPlayable) => ReactNode;
+  /** Hide the Artist column (e.g. own channel where every row is the owner). */
+  hideArtist?: boolean;
 };
 
 export function PlayableTrackTable({
@@ -59,6 +61,7 @@ export function PlayableTrackTable({
   selectable = false,
   onBulkRemove,
   getAnnotation,
+  hideArtist = false,
 }: Props) {
   const navigate = useNavigate();
   const play = usePlayerStore((s) => s.play);
@@ -170,7 +173,7 @@ export function PlayableTrackTable({
           display={{
             displayThumbnail: true,
             displayFavorite: true,
-            displayArtist: true,
+            displayArtist: !hideArtist,
             displayDuration: true,
             displayAlbum: items.some((i) =>
               Boolean(i.sourceProvider && i.sourceProvider !== 'tahti'),

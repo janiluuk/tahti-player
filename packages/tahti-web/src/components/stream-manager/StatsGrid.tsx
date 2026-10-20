@@ -87,17 +87,8 @@ export function StatsGrid({ state }: { state: StreamManagerState }) {
         icon={<MonitorPlayIcon size={14} aria-hidden />}
         label="Overlay"
         value={overlayShowTitle == null ? '—' : overlayShowTitle ? 'On' : 'Off'}
-        role="button"
-        tabIndex={0}
         aria-label="Open stream overlay settings"
-        className="hover:border-primary cursor-pointer"
         onClick={() => setOverlayModalOpen(true)}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            setOverlayModalOpen(true);
-          }
-        }}
       />
       <StatChip
         icon={<UsersIcon size={14} aria-hidden />}

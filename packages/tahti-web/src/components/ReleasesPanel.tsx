@@ -142,7 +142,14 @@ export function ReleasesPanel({
       />
 
       {sortedReleases.length === 0 ? (
-        <PageEmpty title={`No releases match “${query}”.`} />
+        <PageEmpty
+          title={`No releases match “${query}”.`}
+          action={
+            <Button size="sm" variant="secondary" onClick={() => setQuery('')}>
+              Clear search
+            </Button>
+          }
+        />
       ) : (
         <div className="border-border overflow-hidden rounded-lg border">
           <table className="w-full text-sm">

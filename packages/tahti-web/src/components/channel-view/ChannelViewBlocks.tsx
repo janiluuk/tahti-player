@@ -101,6 +101,7 @@ export function renderChannelBlock(
                   filterable={false}
                   addAllToQueue={false}
                   quietHeader
+                  hideArtist={ctx.isOwner}
                 />
               </div>
             )}
@@ -119,6 +120,7 @@ export function renderChannelBlock(
                       : 'No public tracks for this channel yet.'
                   }
                   quietHeader
+                  hideArtist={ctx.isOwner}
                 />
               </div>
             )}
