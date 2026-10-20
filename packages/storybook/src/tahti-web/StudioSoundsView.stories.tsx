@@ -86,15 +86,17 @@ export const HearthisRowEmbed: Story = {
 /** Type filter set to Clip (URL `?contentType=CLIP` in the live app). */
 export const ClipFilter: Story = {};
 
-/** The `<li>` row for the sound titled `title`. */
+/** The ambient list row for the sound titled `title`. */
 function row(canvasElement: HTMLElement, title: string) {
   const link = within(canvasElement).getByRole('link', { name: title });
-  return within(link.closest('li')!);
+  const host =
+    link.closest('[data-testid="ambient-track-row"]') ?? link.closest('li');
+  return within(host as HTMLElement);
 }
 
 // Rows for an upload that failed processing (with the reason and a Retry
 // button), one that failed on an API without retry, and one still
-// processing. Retry re-queues the file and the row goes back to PENDING.
+// processing. Retry re-queues the file; the row shows TrackProcessing again.
 export const ProcessingFailed: Story = {
   beforeEach: seedStudioSounds([
     FAILED_SOUND,
@@ -114,8 +116,10 @@ export const ProcessingFailed: Story = {
     await expect(legacy.queryByRole('button', { name: /^Retry/ })).toBeNull();
 
     await expect(
-      row(canvasElement, PROCESSING_SOUND.title).getByText(/PROCESSING/i),
-    ).toBeVisible();
+      row(canvasElement, PROCESSING_SOUND.title).getByTestId(
+        'track-processing',
+      ),
+    ).toHaveTextContent('Processing');
 
     await userEvent.click(
       failed.getByRole('button', {
@@ -125,8 +129,8 @@ export const ProcessingFailed: Story = {
     await findToast(canvasElement, `Processing "${FAILED_SOUND.title}" again`);
     await waitFor(() =>
       expect(
-        row(canvasElement, FAILED_SOUND.title).getByText(/PENDING/i),
-      ).toBeVisible(),
+        row(canvasElement, FAILED_SOUND.title).getByTestId('track-processing'),
+      ).toHaveTextContent('Processing'),
     );
     await expect(
       canvas.queryByRole('button', {
