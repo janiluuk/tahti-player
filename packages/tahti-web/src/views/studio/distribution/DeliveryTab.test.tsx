@@ -43,6 +43,33 @@ function ControlledDeliveryTab({ onSubmit }: { onSubmit: () => void }) {
   );
 }
 
+describe('DeliveryTab royalty reports', () => {
+  it('shows an error with retry instead of an empty state', async () => {
+    const onRetryRoyalties = vi.fn();
+    render(
+      <DeliveryTab
+        revelatorStatus="delivered"
+        revelatorId={null}
+        billing={null}
+        busy={false}
+        canSubmit={false}
+        confirmSubmit={false}
+        setConfirmSubmit={vi.fn()}
+        onSubmit={vi.fn()}
+        showRoyalties
+        royaltiesLoaded
+        royalties={[]}
+        royaltiesError="Server unavailable"
+        onRetryRoyalties={onRetryRoyalties}
+      />,
+    );
+    expect(await screen.findByText('Server unavailable')).toBeInTheDocument();
+    expect(screen.queryByText('No reports yet')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(onRetryRoyalties).toHaveBeenCalled();
+  });
+});
+
 describe('DeliveryTab submit-to-Revelator confirmation', () => {
   beforeEach(() => {
     vi.clearAllMocks();

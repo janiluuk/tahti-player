@@ -60,4 +60,16 @@ describe('ArtistUpcomingEvents', () => {
     const { container } = await renderEvents([]);
     expect(container).toBeEmptyDOMElement();
   });
+
+  it('shows an error instead of hiding when events fail to load', async () => {
+    vi.mocked(fetchChannelEvents).mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await act(async () => {
+      render(<ArtistUpcomingEvents channelSlug="night-drive" />);
+    });
+    expect(screen.getByText('Could not load upcoming events')).toBeTruthy();
+    expect(screen.getByText('HTTP 502')).toBeTruthy();
+  });
 });

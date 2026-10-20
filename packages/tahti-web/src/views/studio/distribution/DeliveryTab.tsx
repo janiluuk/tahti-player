@@ -12,7 +12,7 @@ import type {
   RevelatorRoyaltyReportRow,
 } from '../../../api/studio-types';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
-import { PageLoading } from '../../../components/PageStates';
+import { PageError, PageLoading } from '../../../components/PageStates';
 import { euros } from './distribution-helpers';
 
 export function DeliveryTab({
@@ -27,6 +27,8 @@ export function DeliveryTab({
   showRoyalties,
   royaltiesLoaded,
   royalties,
+  royaltiesError = null,
+  onRetryRoyalties,
 }: {
   revelatorStatus: string | null;
   revelatorId: string | null;
@@ -39,26 +41,40 @@ export function DeliveryTab({
   showRoyalties: boolean;
   royaltiesLoaded: boolean;
   royalties: RevelatorRoyaltyReportRow[];
+  royaltiesError?: string | null;
+  onRetryRoyalties?: () => void;
 }) {
   const [platforms, setPlatforms] = useState<DistributionPlatformMode[]>([]);
+  const [platformsError, setPlatformsError] = useState<string | null>(null);
+  const [platformsAttempt, setPlatformsAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     void fetchDistributionStatus().then((result) => {
       if (!cancelled) {
+        setPlatformsError(
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+        );
         setPlatforms(result.data);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [platformsAttempt]);
 
   const stubPlatforms = platforms.filter((row) => row.mode === 'stub');
   const revelatorStub = stubPlatforms.some((row) => row.id === 'revelator');
 
   return (
     <div className="flex flex-col gap-3">
+      {platformsError ? (
+        <PageError
+          title="Could not check platform status"
+          description={platformsError}
+          onRetry={() => setPlatformsAttempt((n) => n + 1)}
+        />
+      ) : null}
       {stubPlatforms.length > 0 ? (
         <div
           role="status"
@@ -141,6 +157,12 @@ export function DeliveryTab({
           <p className="mb-1 text-xs font-medium">Royalty reports</p>
           {!royaltiesLoaded ? (
             <PageLoading label="Loading…" />
+          ) : royaltiesError && royalties.length === 0 ? (
+            <PageError
+              title="Could not load royalty reports"
+              description={royaltiesError}
+              onRetry={onRetryRoyalties}
+            />
           ) : royalties.length === 0 ? (
             <EmptyState
               size="sm"

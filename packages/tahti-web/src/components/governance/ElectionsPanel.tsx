@@ -100,12 +100,14 @@ function ElectionItem({
  * (GET /api/v1/governance/elections). */
 export function ElectionsPanel() {
   const [elections, setElections] = useState<GovernanceElection[] | null>(null);
-  const [failed, setFailed] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const result = await fetchGovernanceElections();
     setElections(result.data);
-    setFailed(result.meta.source === 'api' && Boolean(result.meta.reason));
+    setLoadError(
+      result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+    );
   }, []);
 
   useEffect(() => {
@@ -116,9 +118,10 @@ export function ElectionsPanel() {
     <GovernancePanel title="Board elections" icon={VoteIcon}>
       {elections === null ? (
         <p className="text-foreground-secondary text-sm">Loading elections…</p>
-      ) : failed ? (
+      ) : loadError ? (
         <PageError
           title="Could not load the elections"
+          description={loadError}
           onRetry={() => void load()}
         />
       ) : elections.length === 0 ? (

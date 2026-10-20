@@ -170,6 +170,7 @@ export function ArtistPanel() {
   const [socialMsg, setSocialMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
+  const [socialError, setSocialError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -179,7 +180,10 @@ export function ArtistPanel() {
       fetchSocialConnections(),
     ]).then(([p, m, s]) => {
       setMembers(m.data);
-      setSocial(s.data);
+      const socialReason =
+        s.meta.source === 'api' ? (s.meta.reason ?? null) : null;
+      setSocialError(socialReason);
+      setSocial(socialReason ? null : s.data);
       if (p.meta.source === 'api' && p.meta.reason) {
         setProfileError(p.meta.reason);
         return;
@@ -435,7 +439,18 @@ export function ArtistPanel() {
       label: 'Connections',
       icon: <Share2 size={14} />,
       content: !social ? (
-        <SettingsHint>Loading…</SettingsHint>
+        socialError ? (
+          <PageError
+            title="Could not load your connections"
+            description={socialError}
+            onRetry={() => {
+              setSocialError(null);
+              setAttempt((n) => n + 1);
+            }}
+          />
+        ) : (
+          <SettingsHint>Loading…</SettingsHint>
+        )
       ) : (
         <div className="flex flex-col gap-6">
           <SettingsHint>

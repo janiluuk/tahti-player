@@ -97,7 +97,7 @@ export function FeatureRequestsView({
           </Link>
         ) : (
           <Link
-            to="/feature-requests"
+            to="/governance/feature-requests"
             className="text-foreground-secondary text-xs hover:underline"
           >
             Open full page →

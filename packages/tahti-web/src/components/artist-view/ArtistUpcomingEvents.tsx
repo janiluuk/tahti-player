@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ExternalLink } from '@tahti-player/ui';
 
 import { fetchChannelEvents, type ArtistEvent } from '../../api/events';
+import { PageError } from '../PageStates';
 import { Eyebrow } from '../tahti/Eyebrow';
 
 const dateFormat: Intl.DateTimeFormatOptions = {
@@ -17,18 +18,34 @@ const dateFormat: Intl.DateTimeFormatOptions = {
 
 export function ArtistUpcomingEvents({ channelSlug }: { channelSlug: string }) {
   const [events, setEvents] = useState<ArtistEvent[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    setLoadError(null);
     void fetchChannelEvents(channelSlug).then((result) => {
       if (!cancelled) {
+        setLoadError(
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+        );
         setEvents(result.data);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [channelSlug]);
+  }, [channelSlug, reloadKey]);
+
+  if (loadError) {
+    return (
+      <PageError
+        title="Could not load upcoming events"
+        description={loadError}
+        onRetry={() => setReloadKey((key) => key + 1)}
+      />
+    );
+  }
 
   if (events.length === 0) {
     return null;

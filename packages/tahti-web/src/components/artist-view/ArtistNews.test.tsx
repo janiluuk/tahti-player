@@ -68,4 +68,16 @@ describe('ArtistNews', () => {
     const { container } = await renderNews([]);
     expect(container.innerHTML).toBe('');
   });
+
+  it('shows an error instead of hiding when the feed fails to load', async () => {
+    vi.mocked(fetchArtistNewsFeed).mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await act(async () => {
+      render(<ArtistNews news={[]} username="selector" />);
+    });
+    expect(screen.getByText('Could not load news')).toBeTruthy();
+    expect(screen.getByText('HTTP 502')).toBeTruthy();
+  });
 });

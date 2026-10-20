@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 
 import { Button, Dialog, SaveButton } from '@tahti-player/ui';
 
-import { PageEmpty, PageLoading } from './PageStates';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 export type OrderItem = { id: string; title: string };
 
@@ -21,28 +21,34 @@ export function ProfileOrderDialog({
   title: string;
   description: string;
   empty: string;
-  load: () => Promise<OrderItem[]>;
+  load: () => Promise<{ items: OrderItem[]; error: string | null }>;
   save: (ids: string[]) => Promise<{ ok: true } | { ok: false; error: string }>;
   onClose: () => void;
 }) {
   const [items, setItems] = useState<OrderItem[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
       setItems(null);
+      setLoadError(null);
       return;
     }
     let cancelled = false;
+    setItems(null);
+    setLoadError(null);
     void load().then((loaded) => {
       if (!cancelled) {
-        setItems(loaded);
+        setItems(loaded.items);
+        setLoadError(loaded.error);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [isOpen, load]);
+  }, [isOpen, load, attempt]);
 
   const move = (index: number, delta: -1 | 1) => {
     setItems((current) => {
@@ -81,6 +87,12 @@ export function ProfileOrderDialog({
       <div className="max-h-96 overflow-y-auto py-4">
         {items === null ? (
           <PageLoading label="Loading…" />
+        ) : loadError && items.length === 0 ? (
+          <PageError
+            title="Could not load the list"
+            description={loadError}
+            onRetry={() => setAttempt((current) => current + 1)}
+          />
         ) : items.length === 0 ? (
           <PageEmpty title={empty} />
         ) : (

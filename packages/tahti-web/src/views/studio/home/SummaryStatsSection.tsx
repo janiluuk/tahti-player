@@ -8,44 +8,52 @@ import {
 
 import { ButtonLink } from '@tahti-player/ui';
 
-import { PageEmpty } from '../../../components/PageStates';
+import { PageEmpty, PageError } from '../../../components/PageStates';
 import { SummaryStat } from './HomeTiles';
 import type { StudioHomeState } from './useStudioHome';
 
 export function SummaryStatsSection({ state }: { state: StudioHomeState }) {
-  const { stats, hasEmptyDiscography } = state;
+  const { stats, statsError, hasEmptyDiscography, reloadOverview } = state;
 
   return (
     <>
-      <section
-        aria-label="Channel summary"
-        className="grid grid-cols-2 gap-3 sm:grid-cols-4"
-      >
-        <SummaryStat
-          label="Plays today"
-          value={stats.playsToday}
-          note="Open detailed stats"
-          icon={RadioIcon}
+      {statsError ? (
+        <PageError
+          title="Could not load channel summary"
+          description={statsError}
+          onRetry={reloadOverview}
         />
-        <SummaryStat
-          label="Total plays"
-          value={stats.playsTotal}
-          note="All-time audience"
-          icon={BarChart3Icon}
-        />
-        <SummaryStat
-          label="Total downloads"
-          value={stats.downloadsTotal}
-          note={`${stats.downloadsToday.toLocaleString()} today`}
-          icon={UploadCloudIcon}
-        />
-        <SummaryStat
-          label="Followers"
-          value={stats.followerCount}
-          note="Audience overview"
-          icon={UsersIcon}
-        />
-      </section>
+      ) : (
+        <section
+          aria-label="Channel summary"
+          className="grid grid-cols-2 gap-3 sm:grid-cols-4"
+        >
+          <SummaryStat
+            label="Plays today"
+            value={stats.playsToday}
+            note="Open detailed stats"
+            icon={RadioIcon}
+          />
+          <SummaryStat
+            label="Total plays"
+            value={stats.playsTotal}
+            note="All-time audience"
+            icon={BarChart3Icon}
+          />
+          <SummaryStat
+            label="Total downloads"
+            value={stats.downloadsTotal}
+            note={`${stats.downloadsToday.toLocaleString()} today`}
+            icon={UploadCloudIcon}
+          />
+          <SummaryStat
+            label="Followers"
+            value={stats.followerCount}
+            note="Audience overview"
+            icon={UsersIcon}
+          />
+        </section>
+      )}
 
       {hasEmptyDiscography ? (
         <PageEmpty

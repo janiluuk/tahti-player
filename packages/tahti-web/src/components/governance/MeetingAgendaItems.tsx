@@ -5,6 +5,7 @@ import {
   fetchMeetingAgenda,
   type MemberAgendaItem,
 } from '../../api/governance-meeting-agenda';
+import { PageError } from '../PageStates';
 
 const RESOLUTION_OUTCOME: Record<
   MemberAgendaItem['resolutions'][number]['outcome'],
@@ -65,19 +66,37 @@ export function MeetingAgendaItems({
   fallback: ReactNode;
 }) {
   const [items, setItems] = useState<MemberAgendaItem[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     void fetchMeetingAgenda(meetingId).then((result) => {
       if (!cancelled) {
+        const reason =
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
+        setLoadError(reason && !reason.includes('404') ? reason : null);
         setItems(result.data);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [meetingId]);
+  }, [meetingId, reloadKey]);
 
+  if (loadError) {
+    return (
+      <PageError
+        title="Could not load the agenda"
+        description={loadError}
+        onRetry={() => {
+          setItems(null);
+          setLoadError(null);
+          setReloadKey((key) => key + 1);
+        }}
+      />
+    );
+  }
   if (items === null) {
     return (
       <p className="text-foreground-secondary text-sm">Loading the agenda…</p>

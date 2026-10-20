@@ -15,6 +15,7 @@ const ITEMS = [
 async function renderDialog(
   save = vi.fn().mockResolvedValue({ ok: true }),
   onClose = vi.fn(),
+  load = () => Promise.resolve({ items: ITEMS, error: null }),
 ) {
   await act(async () => {
     render(
@@ -23,7 +24,7 @@ async function renderDialog(
         title="Track order"
         description="d"
         empty="Nothing here."
-        load={() => Promise.resolve(ITEMS)}
+        load={load}
         save={save}
         onClose={onClose}
       />,
@@ -63,6 +64,20 @@ describe('ProfileOrderDialog', () => {
     });
     expect(toast.error).toHaveBeenCalledWith('ids array is required');
     expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('shows an error with retry when loading fails', async () => {
+    const load = vi
+      .fn()
+      .mockResolvedValueOnce({ items: [], error: 'boom' })
+      .mockResolvedValueOnce({ items: ITEMS, error: null });
+    await renderDialog(undefined, undefined, load);
+    expect(screen.getByText('boom')).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(load).toHaveBeenCalledTimes(2);
+    expect(titles()).toEqual(['Alpha', 'Beta', 'Gamma']);
   });
 
   it('disables moving past either end', async () => {

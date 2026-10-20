@@ -2,11 +2,24 @@ import { CalendarIcon } from 'lucide-react';
 
 import { ButtonLink } from '@tahti-player/ui';
 
+import { PageError } from '../../../components/PageStates';
 import { Group } from './HomeTiles';
 import type { StudioHomeState } from './useStudioHome';
 
 export function UpcomingShowsSection({ state }: { state: StudioHomeState }) {
-  const { upcomingShows } = state;
+  const { upcomingShows, scheduleError, reloadOverview } = state;
+
+  if (scheduleError && upcomingShows.length === 0) {
+    return (
+      <Group title="Upcoming shows">
+        <PageError
+          title="Could not load upcoming shows"
+          description={scheduleError}
+          onRetry={reloadOverview}
+        />
+      </Group>
+    );
+  }
 
   if (upcomingShows.length === 0) {
     return null;

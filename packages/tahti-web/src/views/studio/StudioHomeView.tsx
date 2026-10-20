@@ -9,6 +9,7 @@ import {
   ViewShell,
 } from '@tahti-player/ui';
 
+import { PageError } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { useStripeConfigured } from '../../hooks/useStripeConfigured';
 import { accountRoleLabel, getAccountRole } from '../../lib/accountRoles';
@@ -24,7 +25,14 @@ import { useStudioHome } from './home/useStudioHome';
 export function StudioHomeView() {
   const stripeConfigured = useStripeConfigured();
   const state = useStudioHome();
-  const { user, openChannelSetup, channel, recentBroadcasts } = state;
+  const {
+    user,
+    openChannelSetup,
+    channel,
+    recentBroadcasts,
+    broadcastsError,
+    reloadOverview,
+  } = state;
 
   return (
     <StudioGate requireChannel={false}>
@@ -108,7 +116,13 @@ export function StudioHomeView() {
                 </div>
               </Group>
               <Group title="Recent broadcasts">
-                {recentBroadcasts.length === 0 ? (
+                {broadcastsError && recentBroadcasts.length === 0 ? (
+                  <PageError
+                    title="Could not load recent broadcasts"
+                    description={broadcastsError}
+                    onRetry={reloadOverview}
+                  />
+                ) : recentBroadcasts.length === 0 ? (
                   <EmptyState
                     size="sm"
                     className="border-border rounded-xl border"

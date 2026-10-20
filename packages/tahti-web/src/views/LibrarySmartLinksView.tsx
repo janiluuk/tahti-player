@@ -6,13 +6,14 @@ import {
   Button,
   ButtonLink,
   EmptyState,
+  FilterChips,
   ImageReveal,
   Input,
 } from '@tahti-player/ui';
 
 import { fetchStudioReleases } from '../api/studio';
 import type { StudioRelease } from '../api/studio-types';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { StudioGate } from '../components/StudioGate';
 import { StudioPanel } from '../components/StudioPanel';
 
@@ -42,24 +43,55 @@ function releaseTargets(release: StudioRelease): Array<[string, string]> {
 export function LibrarySmartLinksView() {
   const [releases, setReleases] = useState<StudioRelease[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [query, setQuery] = useState('');
+  const [dspFilter, setDspFilter] = useState<string>('ALL');
 
   useEffect(() => {
+    let cancelled = false;
     void fetchStudioReleases().then((result) => {
+      if (cancelled) {
+        return;
+      }
       setReleases(result.data.releases);
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [attempt]);
+
+  const dspChips = useMemo(() => {
+    const ids = new Set<string>();
+    for (const release of releases) {
+      for (const [provider] of releaseTargets(release)) {
+        ids.add(provider);
+      }
+    }
+    return [
+      { id: 'ALL', label: 'All' },
+      ...[...ids]
+        .sort((a, b) => targetLabel(a).localeCompare(targetLabel(b)))
+        .map((id) => ({ id, label: targetLabel(id) })),
+    ];
+  }, [releases]);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    if (!needle) {
-      return releases;
-    }
-    return releases.filter((release) =>
-      release.title.toLowerCase().includes(needle),
-    );
-  }, [releases, query]);
+    return releases.filter((release) => {
+      if (
+        dspFilter !== 'ALL' &&
+        !releaseTargets(release).some(([provider]) => provider === dspFilter)
+      ) {
+        return false;
+      }
+      return !needle || release.title.toLowerCase().includes(needle);
+    });
+  }, [releases, query, dspFilter]);
 
   return (
     <StudioGate requireChannel={false} embedded>
@@ -70,6 +102,15 @@ export function LibrarySmartLinksView() {
         <StudioPanel>
           {loading ? (
             <PageLoading label="Loading smartlinks…" />
+          ) : loadError && releases.length === 0 ? (
+            <PageError
+              title="Could not load your smartlinks"
+              description={loadError}
+              onRetry={() => {
+                setLoading(true);
+                setAttempt((n) => n + 1);
+              }}
+            />
           ) : releases.length === 0 ? (
             <EmptyState
               size="sm"
@@ -101,16 +142,32 @@ export function LibrarySmartLinksView() {
                   <SearchIcon size={14} aria-hidden className="opacity-70" />
                 }
               />
+              {dspChips.length > 2 ? (
+                <FilterChips
+                  items={dspChips}
+                  selected={dspFilter}
+                  onChange={setDspFilter}
+                  aria-label="Filter smartlinks by platform"
+                  className="mb-4"
+                />
+              ) : null}
               {filtered.length === 0 ? (
                 <PageEmpty
-                  title={`No smartlinks match “${query.trim()}”`}
+                  title={
+                    query.trim()
+                      ? `No smartlinks match “${query.trim()}”`
+                      : 'No smartlinks match this filter'
+                  }
                   action={
                     <Button
                       size="sm"
                       variant="secondary"
-                      onClick={() => setQuery('')}
+                      onClick={() => {
+                        setQuery('');
+                        setDspFilter('ALL');
+                      }}
                     >
-                      Clear search
+                      {dspFilter !== 'ALL' ? 'Clear filters' : 'Clear search'}
                     </Button>
                   }
                 />

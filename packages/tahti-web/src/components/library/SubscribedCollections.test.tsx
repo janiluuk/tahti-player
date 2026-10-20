@@ -50,4 +50,15 @@ describe('SubscribedCollections', () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(container.textContent).toBe('');
   });
+
+  it('shows PageError when the api load fails', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response('nope', { status: 500 }),
+    );
+    render(<SubscribedCollections />);
+    expect(
+      await screen.findByText('Could not load subscribed collections'),
+    ).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeTruthy();
+  });
 });

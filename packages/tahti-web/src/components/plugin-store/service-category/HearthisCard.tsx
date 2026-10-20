@@ -41,7 +41,7 @@ import { hearthisSourceAdapter } from '../../../plugins/import-sources';
 import { useAuthStore } from '../../../stores/authStore';
 import { usePlayerStore } from '../../../stores/playerStore';
 import { usePluginInstallStore } from '../../../stores/pluginInstallStore';
-import { PageEmpty } from '../../PageStates';
+import { PageEmpty, PageError } from '../../PageStates';
 import { SourceServiceIcon } from '../../SourceServiceIcon';
 import type { ServicePlugin } from '../serviceCatalog';
 import { ConfigurableCard } from '../shared';
@@ -63,6 +63,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
 
   const [library, setLibrary] = useState<HearthisLibrary | null>(null);
   const [libraryBusy, setLibraryBusy] = useState(false);
+  const [libraryLoadError, setLibraryLoadError] = useState<string | null>(null);
   const [searching, setSearching] = useState(false);
   const [tab, setTab] = useState<'tracks' | 'sets' | 'collections' | 'search'>(
     'tracks',
@@ -115,12 +116,18 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
     }
     const request = ++libraryRequest.current;
     setLibraryBusy(true);
+    setLibraryLoadError(null);
     Promise.all([hearthisSourceAdapter.library(), fetchStudioCollections()])
       .then(([libraryResult, collectionResult]) => {
         if (request !== libraryRequest.current) {
           return;
         }
         setLibrary(libraryResult.data);
+        setLibraryLoadError(
+          libraryResult.meta.source === 'api'
+            ? (libraryResult.meta.reason ?? null)
+            : null,
+        );
         setDestinationCollections(collectionResult.data);
         setDestinationId(
           (current) =>
@@ -129,6 +136,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       })
       .catch(() => {
         if (request === libraryRequest.current) {
+          setLibraryLoadError('Could not load your hearthis.at library.');
           toast.error('Could not load your hearthis.at library.');
         }
       })
@@ -204,6 +212,14 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
         : tab === 'search'
           ? hits
           : [];
+  const showLibraryError =
+    !libraryBusy &&
+    tab !== 'search' &&
+    libraryLoadError !== null &&
+    (library?.tracks.length ?? 0) +
+      (library?.sets.length ?? 0) +
+      (library?.collections.length ?? 0) ===
+      0;
   const playlistDestinations = destinationCollections.filter(
     (c) => !c.style || c.style === 'PLAYLIST',
   );
@@ -626,7 +642,13 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
             </div>
           )}
 
-          {tab === 'collections' ? (
+          {showLibraryError ? (
+            <PageError
+              title="Could not load your hearthis.at library"
+              description={libraryLoadError ?? undefined}
+              onRetry={loadLibrary}
+            />
+          ) : tab === 'collections' ? (
             <ul className="grid gap-3 sm:grid-cols-2">
               {(library?.collections ?? []).map((collection) => (
                 <li
@@ -758,6 +780,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
           )}
 
           {!libraryBusy &&
+            !showLibraryError &&
             tab !== 'search' &&
             tab !== 'collections' &&
             visibleTracks.length === 0 && (

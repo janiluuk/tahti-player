@@ -315,10 +315,18 @@ export function useStreamManagerState({
     }
     setRotationBusy(true);
     setRotationMsg(null);
-    const collection =
-      selectedCollection?.slug === selectedCollectionSlug
-        ? selectedCollection
-        : (await fetchStudioCollection(selectedCollectionSlug)).data;
+    let collection = selectedCollection;
+    if (selectedCollection?.slug !== selectedCollectionSlug) {
+      const fetched = await fetchStudioCollection(selectedCollectionSlug);
+      const fetchReason =
+        fetched.meta.source === 'api' ? (fetched.meta.reason ?? null) : null;
+      if (fetchReason) {
+        setRotationBusy(false);
+        setRotationMsg(`Could not load collection: ${fetchReason}`);
+        return;
+      }
+      collection = fetched.data;
+    }
     const plan = planCollectionRotationApply({
       replace,
       currentFallbackIds: editableRotation.map((item) => item.id),

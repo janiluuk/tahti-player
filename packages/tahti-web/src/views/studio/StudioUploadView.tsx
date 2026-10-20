@@ -24,6 +24,7 @@ import {
 } from '../../api/broadcast';
 import { fetchEditorSource, uploadSoundFile } from '../../api/studio';
 import { ImportJobsPanel } from '../../components/ImportJobsPanel';
+import { PageError } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { WaveformSeekbar } from '../../components/tahti/WaveformSeekbar';
 import {
@@ -148,16 +149,28 @@ export function StudioUploadView() {
   const [message, setMessage] = useState<string | null>(null);
   const [recordings, setRecordings] = useState<RecentBroadcast[]>([]);
   const [recordingsLoading, setRecordingsLoading] = useState(true);
+  const [recordingsError, setRecordingsError] = useState<string | null>(null);
+  const [recordingsAttempt, setRecordingsAttempt] = useState(0);
   const [recordingLoadingId, setRecordingLoadingId] = useState<string | null>(
     null,
   );
 
   useEffect(() => {
+    let cancelled = false;
     void fetchRecentBroadcasts(5).then((result) => {
+      if (cancelled) {
+        return;
+      }
       setRecordings(result.data);
+      setRecordingsError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setRecordingsLoading(false);
     });
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [recordingsAttempt]);
 
   const playRecording = async (recording: RecentBroadcast) => {
     const playableId = `broadcast:${recording.id}`;
@@ -260,6 +273,15 @@ export function StudioUploadView() {
                     Loading recordings…
                   </span>
                 </div>
+              ) : recordingsError && recordings.length === 0 ? (
+                <PageError
+                  title="Could not load recent recordings"
+                  description={recordingsError}
+                  onRetry={() => {
+                    setRecordingsLoading(true);
+                    setRecordingsAttempt((n) => n + 1);
+                  }}
+                />
               ) : recordings.length === 0 ? (
                 <EmptyState
                   size="sm"
