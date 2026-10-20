@@ -308,23 +308,43 @@ function loadAppCss(packageName) {
   return null;
 }
 
+function assetsDirFor(packageName) {
+  const order = [packageName, ...APP_BUNDLES].filter(
+    (name, i, all) => name && all.indexOf(name) === i,
+  );
+  for (const name of order) {
+    const dir = path.join(ROOT, 'packages', name, 'dist/assets');
+    if (existsSync(dir)) {
+      return dir;
+    }
+  }
+  return null;
+}
+
 function wrapHtmlDocument(fragment, title, packageName) {
   const appCss = loadAppCss(packageName);
   // Full-window app roots use h-screen/w-screen: pin them to the capture
-  // viewport (900x700, minus the ~32px label row) so they can't overflow it.
+  // viewport (900x700). The label is out-of-flow so it does not push the
+  // snapshot fragment down (that was reading as a vertical offset).
+  // Theme id matches the player default so --background / --foreground and
+  // friends resolve; without it the CSS vars stay unset and rem/layout drift.
   const baseStyle = appCss
-    ? `body { margin: 0; padding: 0; }
-    .h-screen { height: 668px; }
-    .w-screen { width: 100%; }`
+    ? `html { font-size: 16px; }
+    body { margin: 0; padding: 0; }
+    .h-screen { height: 700px; }
+    .w-screen { width: 100%; }
+    .tahti-snapshot-root { min-height: 100%; }`
     : `:root { color-scheme: dark; }
+    html { font-size: 16px; }
     body { margin: 0; padding: 24px 24px 48px; font-family: ui-sans-serif, system-ui, sans-serif; background: #0b1220; color: #f8fafc; }`;
   const labelStyle =
-    '.tahti-snapshot-label { font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.6; padding: 8px 12px; }';
+    '.tahti-snapshot-label { position: absolute; top: 0; left: 0; z-index: 2147483647; font-size: 11px; line-height: 1; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.55; padding: 6px 10px; pointer-events: none; background: rgba(0,0,0,0.45); color: #f8fafc; }';
 
   return `<!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="dark" data-theme-id="nuclear:tahti-dark">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${escapeHtml(title)}</title>
   <style>${appCss ?? ''}
 ${baseStyle}
@@ -332,10 +352,113 @@ ${labelStyle}</style>
 </head>
 <body class="bg-background text-foreground">
   <div class="tahti-snapshot-label">${escapeHtml(title)}</div>
-${fragment}
+  <div class="tahti-snapshot-root">${fragment}</div>
 </body>
 </html>
 `;
+}
+
+/** Built CSS references fonts as url(/assets/….woff2). file:// pages cannot
+ * resolve those, so Playwright fell back to system fonts (larger metrics,
+ * layout shift). Serve the digest HTML + matching dist/assets over HTTP. */
+function startDigestAssetServer(assetDirs) {
+  const roots = assetDirs.filter(Boolean);
+  return new Promise((resolve, reject) => {
+    import('node:http')
+      .then(({ createServer }) => {
+        const mime = {
+          '.html': 'text/html; charset=utf-8',
+          '.css': 'text/css; charset=utf-8',
+          '.js': 'text/javascript; charset=utf-8',
+          '.woff': 'font/woff',
+          '.woff2': 'font/woff2',
+          '.ttf': 'font/ttf',
+          '.otf': 'font/otf',
+          '.png': 'image/png',
+          '.svg': 'image/svg+xml',
+          '.jpg': 'image/jpeg',
+          '.jpeg': 'image/jpeg',
+          '.webp': 'image/webp',
+        };
+
+        function resolveAsset(rel) {
+          for (const dir of roots) {
+            const candidate = path.join(dir, rel);
+            if (
+              candidate.startsWith(dir + path.sep) &&
+              existsSync(candidate)
+            ) {
+              return candidate;
+            }
+          }
+          return null;
+        }
+
+        const server = createServer((req, res) => {
+          try {
+            const urlPath = decodeURIComponent((req.url ?? '/').split('?')[0]);
+            let filePath = null;
+            if (urlPath.startsWith('/assets/')) {
+              filePath = resolveAsset(urlPath.slice('/assets/'.length));
+            } else if (urlPath === '/' || urlPath.endsWith('.html')) {
+              const name =
+                urlPath === '/' ? 'index.html' : path.basename(urlPath);
+              const candidate = path.join(OUT_DIR, name);
+              if (candidate.startsWith(OUT_DIR + path.sep) && existsSync(candidate)) {
+                filePath = candidate;
+              }
+            }
+            if (!filePath) {
+              res.writeHead(404);
+              res.end('not found');
+              return;
+            }
+            const ext = path.extname(filePath).toLowerCase();
+            res.writeHead(200, {
+              'Content-Type': mime[ext] ?? 'application/octet-stream',
+              'Cache-Control': 'no-store',
+            });
+            res.end(readFileSync(filePath));
+          } catch (error) {
+            res.writeHead(500);
+            res.end(String(error?.message ?? error));
+          }
+        });
+        server.listen(0, '127.0.0.1', () => {
+          const { port } = server.address();
+          resolve({
+            origin: `http://127.0.0.1:${port}`,
+            close: () =>
+              new Promise((done) => {
+                server.close(() => done());
+              }),
+          });
+        });
+        server.on('error', reject);
+      })
+      .catch(reject);
+  });
+}
+
+async function screenshotHtml(page, origin, htmlName, pngName) {
+  await page.goto(`${origin}/${htmlName}`, {
+    waitUntil: 'networkidle',
+  });
+  try {
+    await page.evaluate(async () => {
+      if (document.fonts?.ready) {
+        await document.fonts.ready;
+      }
+    });
+  } catch {
+    // fonts API unavailable — still capture
+  }
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  await page.screenshot({
+    path: path.join(OUT_DIR, pngName),
+    fullPage: true,
+    animations: 'disabled',
+  });
 }
 
 async function maybeScreenshot(digestItems) {
@@ -345,33 +468,50 @@ async function maybeScreenshot(digestItems) {
     return;
   }
 
-  const browser = await chromium.launch({ headless: true });
+  const assetDirs = [
+    ...new Set(
+      digestItems
+        .map((item) => assetsDirFor(item.packageName))
+        .concat(APP_BUNDLES.map((name) => assetsDirFor(name))),
+    ),
+  ].filter(Boolean);
+  if (assetDirs.length === 0) {
+    console.warn(
+      'snapshot-digest: no dist/assets to serve fonts from; PNGs may use fallback fonts',
+    );
+  }
+
+  const server = await startDigestAssetServer(assetDirs);
+  let browser;
+  try {
+    browser = await chromium.launch({ headless: true });
+  } catch (error) {
+    console.warn(
+      `snapshot-digest: chromium launch failed (${error.message}); skipping PNGs`,
+    );
+    await server.close();
+    return;
+  }
   try {
     const page = await browser.newPage({
       viewport: { width: 900, height: 700 },
+      deviceScaleFactor: 1,
     });
     for (const item of digestItems) {
       if (item.expectedHtmlPath) {
         const png = `${item.id}.expected.png`;
-        await page.goto(`file://${path.join(OUT_DIR, item.expectedHtmlPath)}`);
-        await page.screenshot({
-          path: path.join(OUT_DIR, png),
-          fullPage: true,
-        });
+        await screenshotHtml(page, server.origin, item.expectedHtmlPath, png);
         item.expectedPng = png;
       }
       if (item.receivedHtmlPath) {
         const png = `${item.id}.received.png`;
-        await page.goto(`file://${path.join(OUT_DIR, item.receivedHtmlPath)}`);
-        await page.screenshot({
-          path: path.join(OUT_DIR, png),
-          fullPage: true,
-        });
+        await screenshotHtml(page, server.origin, item.receivedHtmlPath, png);
         item.receivedPng = png;
       }
     }
   } finally {
     await browser.close();
+    await server.close();
   }
 }
 
