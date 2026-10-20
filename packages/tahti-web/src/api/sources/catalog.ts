@@ -231,7 +231,8 @@ export async function fetchConnectionStatus(
     id === 'url' ||
     id === 'broadcast' ||
     id === 'radio' ||
-    id === 'hearthis'
+    id === 'hearthis' ||
+    id === 'mixcloud-embed'
   ) {
     return {
       data: { connected: true, configured: true },
