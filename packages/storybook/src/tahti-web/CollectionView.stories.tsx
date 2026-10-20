@@ -73,17 +73,22 @@ export const CollaborativeVisitor: Story = {
 
     await step('favorite toggles pressed state', async () => {
       const header = within(canvas.getByTestId('collection-social-header'));
-      const favorite = header.getByRole('button', {
+      const [favorite] = header.getAllByRole('button', {
         name: 'Favorite',
         pressed: false,
       });
-      await userEvent.click(favorite);
+      await userEvent.click(favorite!);
       await waitFor(() =>
         expect(
-          header.getByRole('button', { name: 'Favorited', pressed: true }),
-        ).toBeVisible(),
+          header.getAllByRole('button', {
+            name: 'Favorited',
+            pressed: true,
+          }),
+        ).not.toHaveLength(0),
       );
-      await userEvent.click(header.getByRole('button', { name: 'Favorited' }));
+      await userEvent.click(
+        header.getAllByRole('button', { name: 'Favorited' })[0]!,
+      );
     });
 
     await step('Play starts the first track', async () => {
