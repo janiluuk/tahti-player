@@ -1,5 +1,13 @@
 # docs/todo history
 
+## 2026-10-20 — Settings × close + tooltip (tahti-player #1430)
+
+Folded `settings-close-tooltip.md`. Dropped Floating UI Tooltip on
+`DialogXClose` (aria-label only, `z-[100]`, after panel children);
+`ConnectedSettingsModal` skips URL sync while `dismissRouteOpen` and
+navigates to a non-settings return path (or `/`) instead of
+`history.back()`.
+
 ## 2026-10-20 — Admin Grafana monitoring hub
 
 Folded `admin-grafana-monitoring.md`. `/admin/monitoring` embeds Grafana
