@@ -1,6 +1,6 @@
 {
   "name": "@tahti-player/tahti-web",
-  "version": "0.0.234",
+  "version": "0.0.235",
   "private": true,
   "type": "module",
   "description": "Tahti listening, artist, and governance web client",
@@ -23,6 +23,7 @@
     "deploy:vimage": "./deploy/deploy-vimage.sh"
   },
   "dependencies": {
+    "@tahti-player/auth-session": "workspace:*",
     "@tahti-player/i18n": "workspace:*",
     "@tahti-player/model": "workspace:*",
     "@tahti-player/tailwind-config": "workspace:*",

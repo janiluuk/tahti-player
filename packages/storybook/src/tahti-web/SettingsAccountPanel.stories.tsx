@@ -27,7 +27,7 @@ const meta: Meta<typeof AccountPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Account, in four groups: Sign-in & security (session, two-factor, API tokens), Membership & billing (membership, governance, your fan subscriptions, purchases), Notifications (notifications & visibility, mentions) and Privacy & data (data export, blocked accounts, deletion request, storage). Signed out it only offers Log in.',
+          'Settings → Account, in four groups: Sign-in & security (session, devices, two-factor, API tokens), Membership & billing (membership, governance, your fan subscriptions, purchases), Notifications (notifications & visibility, mentions) and Privacy & data (data export, blocked accounts, deletion request, storage). Signed out it only offers Log in.',
       },
     },
   },
@@ -62,10 +62,24 @@ export const Session: Story = {
       canvas.getByRole('link', { name: 'Keyboard shortcuts' }),
     ).toHaveAttribute('href', '/help/keyboard-shortcuts');
     await expectVisible(canvas.getByRole('button', { name: 'Log out' }));
+    await expectVisible(canvas.getByRole('tab', { name: 'Devices' }));
     await expectVisible(
       canvas.getByRole('tab', { name: 'Two-factor authentication' }),
     );
     await expectVisible(canvas.getByRole('tab', { name: 'API tokens' }));
+  },
+};
+
+export const Devices: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await openGroup(canvas, 'Sign-in & security', 'Devices');
+    await expectVisible(canvas.getByText(/Each sign-in keeps its own session/));
+    await expectVisible(canvas.getByText('This browser'));
+    await expectVisible(canvas.getByText('This device'));
+    await expectVisible(
+      canvas.getByRole('button', { name: 'Sign out everywhere' }),
+    );
   },
 };
 

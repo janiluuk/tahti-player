@@ -350,6 +350,21 @@ importers:
         specifier: ^4.0.0
         version: 4.1.11(@types/node@25.9.8)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(jsdom@26.1.0(supports-color@8.1.1))(vite@7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))
 
+  packages/auth-session:
+    devDependencies:
+      '@tahti-player/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.13.6
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vitest:
+        specifier: ^4.0.0
+        version: 4.1.11(@types/node@24.13.6)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(jsdom@26.1.0(supports-color@8.1.1))(vite@7.3.6(@types/node@24.13.6)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))
+
   packages/docs: {}
 
   packages/eslint-config:
@@ -962,6 +977,9 @@ importers:
       '@tahti-player/audio-rack':
         specifier: workspace:*
         version: link:../audio-rack
+      '@tahti-player/auth-session':
+        specifier: workspace:*
+        version: link:../auth-session
       '@tahti-player/i18n':
         specifier: workspace:*
         version: link:../i18n

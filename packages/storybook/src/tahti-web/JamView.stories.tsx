@@ -111,21 +111,25 @@ export const GuestWithControl: Story = {
     const canvas = await findJam(canvasElement);
 
     await step('now playing and the control notice', async () => {
-      await expect(canvas.getByText('Borrowed Light')).toBeVisible();
+      await waitFor(() =>
+        expect(canvas.getByTestId('now-playing-title')).toHaveTextContent(
+          'Borrowed Light',
+        ),
+      );
       await expect(
-        canvas.getByText('The host has given you control of playback.'),
+        await canvas.findByText(/The host has given you control of playback/),
       ).toBeVisible();
       await expect(
         canvas.queryByRole('switch', { name: /control playback/ }),
       ).toBeNull();
       await expect(
-        canvas.getByRole('button', { name: /Leave Jam/ }),
+        await canvas.findByRole('button', { name: /Leave Jam/ }),
       ).toBeVisible();
     });
 
     await step('pause and resume for everyone', async () => {
       await userEvent.click(
-        canvas.getByRole('button', { name: /Pause for everyone/ }),
+        await canvas.findByRole('button', { name: /Pause for everyone/ }),
       );
       await userEvent.click(
         await canvas.findByRole('button', { name: /Play for everyone/ }),
@@ -136,7 +140,9 @@ export const GuestWithControl: Story = {
     });
 
     await step('play along starts this device', async () => {
-      await userEvent.click(canvas.getByRole('button', { name: /Play along/ }));
+      await userEvent.click(
+        await canvas.findByRole('button', { name: /Play along/ }),
+      );
       await expect(
         await canvas.findByText(
           /pausing or resuming your player does it for everyone/,
@@ -161,9 +167,9 @@ export const GuestListening: Story = {
       canvas.queryByRole('button', { name: /for everyone/ }),
     ).toBeNull();
     await expect(
-      canvas.getByRole('button', { name: /Play along/ }),
+      await canvas.findByRole('button', { name: /Play along/ }),
     ).toBeVisible();
-    await expect(canvas.getByText('Can control')).toBeVisible();
+    await expect(await canvas.findByText('Can control')).toBeVisible();
   },
 };
 
@@ -184,9 +190,11 @@ export const InvalidLink: Story = {
   beforeEach: () => installFakeJam(jamSession(), { joinFails: true }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText('Jam not found')).toBeVisible();
     await expect(
-      canvas.getByText('This Jam link is invalid or has ended.'),
+      await canvas.findByRole('heading', { name: 'Jam not found' }),
+    ).toBeVisible();
+    await expect(
+      await canvas.findByText('This Jam link is invalid or has ended.'),
     ).toBeVisible();
   },
 };

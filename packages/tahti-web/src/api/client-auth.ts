@@ -1,3 +1,4 @@
+import { getAuthSession } from './auth-session-client';
 import { requestJson } from './client-request';
 import { apiBase } from './http';
 import { mockFixture, type PasswordLinkInfo } from './mock-overrides';
@@ -9,6 +10,27 @@ import {
 } from './mock-session';
 import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 import type { AuthUser } from './types';
+
+type LoginTokenFields = {
+  accessToken?: string;
+  expiresIn?: number;
+  refreshToken?: string;
+};
+
+async function captureLoginTokens(
+  data: LoginTokenFields,
+  userId?: string,
+): Promise<void> {
+  if (!data.accessToken || !data.expiresIn) {
+    return;
+  }
+  await getAuthSession().setFromLogin({
+    accessToken: data.accessToken,
+    expiresIn: data.expiresIn,
+    refreshToken: data.refreshToken,
+    userId,
+  });
+}
 
 export async function fetchAuthMe(): Promise<{
   data: AuthUser | null;
@@ -68,13 +90,22 @@ export async function loginRequest(
     return { ok: true, user };
   }
   try {
-    const { data } = await requestJson<{
-      user?: AuthUser;
-      requiresTotp?: boolean;
-      challengeId?: string;
-    }>('/api/auth/login', {
+    const { data } = await requestJson<
+      {
+        user?: AuthUser;
+        requiresTotp?: boolean;
+        challengeId?: string;
+      } & LoginTokenFields
+    >('/api/auth/login', {
       method: 'POST',
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({
+        email,
+        password,
+        deviceLabel:
+          typeof navigator !== 'undefined'
+            ? navigator.userAgent.slice(0, 120)
+            : undefined,
+      }),
     });
     if (data.requiresTotp && data.challengeId) {
       return { ok: true, requiresTotp: true, challengeId: data.challengeId };
@@ -82,6 +113,7 @@ export async function loginRequest(
     if (!data.user) {
       return { ok: false, error: 'Login failed' };
     }
+    await captureLoginTokens(data, data.user.id);
     return { ok: true, user: data.user };
   } catch (err) {
     return {
@@ -118,16 +150,24 @@ export async function loginTotpRequest(
     return { ok: false, error: 'Invalid code.' };
   }
   try {
-    const { data } = await requestJson<{ user: AuthUser }>(
+    const { data } = await requestJson<{ user: AuthUser } & LoginTokenFields>(
       '/api/auth/login/totp',
       {
         method: 'POST',
-        body: JSON.stringify({ challengeId, code }),
+        body: JSON.stringify({
+          challengeId,
+          code,
+          deviceLabel:
+            typeof navigator !== 'undefined'
+              ? navigator.userAgent.slice(0, 120)
+              : undefined,
+        }),
       },
     );
     if (!data.user) {
       return { ok: false, error: 'Login failed' };
     }
+    await captureLoginTokens(data, data.user.id);
     return { ok: true, user: data.user };
   } catch (err) {
     return {
@@ -333,7 +373,7 @@ export async function logoutRequest(): Promise<void> {
     return;
   }
   try {
-    await requestJson('/api/auth/logout', { method: 'POST' });
+    await getAuthSession().signOut();
   } catch {
     // ignore
   }

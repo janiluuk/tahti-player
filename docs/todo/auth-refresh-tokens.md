@@ -1,6 +1,6 @@
 # Stay signed in: JWT access tokens + refresh tokens for every client
 
-**Status:** open
+**Status:** partial
 
 Requested by the user on 2026-10-19: use JWTs with a refresh-token mechanism in
 all clients so people stop having to sign in again and again. It must be robust
@@ -75,6 +75,25 @@ repo. Needs the user's go-ahead before tahti-org work starts.
 - tahti-web wires it in one place (the API base / `requestJson` helpers and
   `authStore`); views do not touch tokens.
 
+
+
+## Progress (2026-10-20)
+
+- tahti-org [#880](https://github.com/janiluuk/tahti-org/pull/880): RefreshToken
+  table, access JWT, refresh rotation + reuse grace, `/api/me/sessions`, login
+  no longer revokes other devices.
+- `@tahti-player/auth-session`: in-memory access token, single-flight refresh,
+  cookie refresh adapter, `fetchWithAuth`.
+- tahti-web: `requestJson` goes through auth-session; Settings → Account →
+  Devices; cookie session still works as fallback.
+
+### Still open
+
+- Deploy/migrate tahti-org #880 in each env.
+- Desktop keychain storage adapter + sleep/wake checks.
+- CLI `tahti login --device` optional JWT path.
+- Eventually drop cookie-session once all clients are on tokens.
+
 ## Plan (slices)
 
 1. Decide with the user: drop the "every login signs out other devices" rule
@@ -96,3 +115,15 @@ repo. Needs the user's go-ahead before tahti-org work starts.
 A signed-in user on web, desktop and CLI stays signed in across restarts,
 sleep and weeks of normal use, signing in on another device does not sign
 them out, and a stolen refresh token is detected and revoked.
+
+## Desktop / CLI cutover notes
+
+- **Desktop (Tauri webview):** same cookie refresh path as web for now. Next:
+  OS keychain adapter implementing `AuthSessionStorage` (store refresh only);
+  call `authSession.start()` on wake/`online` (already listens) and verify
+  offline cold start keeps signed-in state until refresh fails.
+- **CLI:** keep `tahti_` API tokens for automation. Optional interactive login
+  can call `/api/auth/login` with `deviceLabel`, persist refresh under
+  `~/.config/tahti/` mode `0600`, and use `fetchWithAuth` in the API client.
+- **Cookie session:** remains valid during transition; do not remove until
+  web + desktop + optional CLI JWT path have run in production.
