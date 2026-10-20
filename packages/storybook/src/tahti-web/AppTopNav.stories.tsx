@@ -174,8 +174,8 @@ export const UserMenuArtist: Story = {
     const menu = within(await canvas.findByRole('menu'));
     await expect(menu.getByText('@northern-lights')).toBeVisible();
     for (const item of [
-      'Artist panel',
-      'My channel',
+      'Studio',
+      'My artist profile',
       'Settings',
       'tahti.live',
       'Log out',
@@ -187,7 +187,7 @@ export const UserMenuArtist: Story = {
   },
 };
 
-/** Listeners have no channel, so no Artist panel / My channel entries. */
+/** Listeners have no channel, so no Studio / My artist profile entries. */
 export const UserMenuListener: Story = {
   decorators: [withMockAuth(MOCK_USERS.listener)],
   play: async ({ canvasElement }) => {
@@ -199,8 +199,6 @@ export const UserMenuListener: Story = {
     await expect(
       menu.getByRole('menuitem', { name: 'Settings' }),
     ).toBeVisible();
-    await expect(
-      menu.queryByRole('menuitem', { name: 'Artist panel' }),
-    ).toBeNull();
+    await expect(menu.queryByRole('menuitem', { name: 'Studio' })).toBeNull();
   },
 };
