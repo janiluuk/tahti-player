@@ -1,6 +1,11 @@
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
-import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import {
+  allowMockFallback,
+  apiErrorMeta,
+  isForceMock,
+  mockFallbackMeta,
+} from './mode';
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${apiBase()}${path}`, {
@@ -54,7 +59,7 @@ export async function fetchChannelGallery(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (error) {
     if (allowMockFallback()) {
-      return { data: DEFAULT_GALLERY, meta: failMeta(error) };
+      return { data: DEFAULT_GALLERY, meta: mockFallbackMeta(error) };
     }
     return { data: DEFAULT_GALLERY, meta: apiErrorMeta(error) };
   }

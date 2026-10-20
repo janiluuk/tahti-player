@@ -1,5 +1,10 @@
 import type { FetchMeta } from './client';
-import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import {
+  allowMockFallback,
+  apiErrorMeta,
+  isForceMock,
+  mockFallbackMeta,
+} from './mode';
 import { requestJson } from './request-json';
 
 export type FanTierRow = {
@@ -41,7 +46,10 @@ export async function fetchMyFanTiers(): Promise<{
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockTiers.map((t) => ({ ...t })), meta: failMeta(err) };
+      return {
+        data: mockTiers.map((t) => ({ ...t })),
+        meta: mockFallbackMeta(err),
+      };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }

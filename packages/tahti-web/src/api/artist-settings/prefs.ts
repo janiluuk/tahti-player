@@ -2,8 +2,8 @@ import type { FetchMeta } from '.././client';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
 import { mockNotifications, setMockNotifications } from './mock';
@@ -32,7 +32,7 @@ export async function fetchNotificationPrefs(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: { ...mockNotifications }, meta: failMeta(err) };
+      return { data: { ...mockNotifications }, meta: mockFallbackMeta(err) };
     }
     return {
       data: {

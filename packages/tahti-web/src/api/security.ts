@@ -1,7 +1,7 @@
 import {
   allowMockFallback,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
   type FetchMeta,
 } from './mode';
 import { requestJson } from './request-json';
@@ -25,7 +25,7 @@ export async function fetchTotpStatus(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: { enabled: false }, meta: failMeta(err) };
+      return { data: { enabled: false }, meta: mockFallbackMeta(err) };
     }
     throw err;
   }

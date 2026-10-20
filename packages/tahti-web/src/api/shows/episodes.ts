@@ -2,8 +2,8 @@ import type { FetchMeta } from '.././client';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
 import {
@@ -68,7 +68,7 @@ export async function fetchEpisode(
       const all = seedEpisodes();
       return {
         data: all.find((e) => e.id === id) ?? null,
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     return { data: null, meta: apiErrorMeta(err) };

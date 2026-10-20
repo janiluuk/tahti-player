@@ -3,8 +3,8 @@ import { mockFixture } from '.././mock-overrides';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
 import { DEFAULT_COLOR_SCHEME, type ColorScheme } from './colors';
@@ -33,7 +33,7 @@ export async function fetchChannelVisual(): Promise<{
     return { data: normalizeChannelVisual(data), meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: { ...mockVisual }, meta: failMeta(err) };
+      return { data: { ...mockVisual }, meta: mockFallbackMeta(err) };
     }
     return {
       data: {

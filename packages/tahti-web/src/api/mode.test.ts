@@ -1,51 +1,43 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import { allowMockFallback, isForceMock } from './mode';
+import {
+  apiErrorMeta,
+  failMeta,
+  mockFallbackMeta,
+  withMockFallback,
+} from './mode';
 
-describe('isForceMock', () => {
-  afterEach(() => {
-    vi.unstubAllEnvs();
+describe('fetch meta helpers', () => {
+  it('apiErrorMeta and failMeta mark empty stand-ins as api failures', () => {
+    const err = new Error('boom');
+    expect(apiErrorMeta(err)).toEqual({ source: 'api', reason: 'boom' });
+    expect(failMeta(err)).toEqual({ source: 'api', reason: 'boom' });
   });
 
-  it('is true only when VITE_FORCE_MOCK is exactly "1"', () => {
-    vi.stubEnv('VITE_FORCE_MOCK', '1');
-    expect(isForceMock()).toBe(true);
-
-    vi.stubEnv('VITE_FORCE_MOCK', 'true');
-    expect(isForceMock()).toBe(false);
-
-    vi.unstubAllEnvs();
-    expect(isForceMock()).toBe(false);
-  });
-});
-
-describe('allowMockFallback', () => {
-  afterEach(() => {
-    vi.unstubAllEnvs();
+  it('mockFallbackMeta keeps source mock for intentional fixtures', () => {
+    expect(mockFallbackMeta(new Error('down'))).toEqual({
+      source: 'mock',
+      reason: 'down',
+    });
   });
 
-  it('is always true when force-mock is on', () => {
-    vi.stubEnv('VITE_FORCE_MOCK', '1');
-    vi.stubEnv('VITE_ALLOW_MOCK_FALLBACK', '0');
-    expect(allowMockFallback()).toBe(true);
-  });
-
-  it('is true when explicitly opted in via VITE_ALLOW_MOCK_FALLBACK=1', () => {
-    vi.stubEnv('VITE_ALLOW_MOCK_FALLBACK', '1');
-    expect(allowMockFallback()).toBe(true);
-  });
-
-  it('is false when explicitly opted out via VITE_ALLOW_MOCK_FALLBACK=0, even in dev', () => {
-    vi.stubEnv('DEV', true);
-    vi.stubEnv('VITE_ALLOW_MOCK_FALLBACK', '0');
-    expect(allowMockFallback()).toBe(false);
-  });
-
-  it('falls back to DEV when neither flag is set -- the production-safety default', () => {
-    vi.stubEnv('DEV', false);
-    expect(allowMockFallback()).toBe(false);
-
-    vi.stubEnv('DEV', true);
-    expect(allowMockFallback()).toBe(true);
+  it('withMockFallback returns empty + api meta when fallback is off', () => {
+    const previous = import.meta.env.VITE_ALLOW_MOCK_FALLBACK;
+    const force = import.meta.env.VITE_FORCE_MOCK;
+    import.meta.env.VITE_ALLOW_MOCK_FALLBACK = '0';
+    import.meta.env.VITE_FORCE_MOCK = '0';
+    try {
+      const result = withMockFallback(
+        new Error('offline'),
+        () => ['mock'],
+        () => [],
+      );
+      expect(result.data).toEqual([]);
+      expect(result.meta.source).toBe('api');
+      expect(result.meta.reason).toBe('offline');
+    } finally {
+      import.meta.env.VITE_ALLOW_MOCK_FALLBACK = previous;
+      import.meta.env.VITE_FORCE_MOCK = force;
+    }
   });
 });

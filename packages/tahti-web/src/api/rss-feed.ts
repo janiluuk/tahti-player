@@ -3,8 +3,8 @@ import { apiBase } from './http';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
   type FetchMeta,
 } from './mode';
 
@@ -73,7 +73,7 @@ export async function fetchRssArticles(feedUrl: string): Promise<{
       return {
         data: MOCK_RSS_ARTICLES,
         feedTitle: 'Tahti News',
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     return { data: [], meta: apiErrorMeta(err) };

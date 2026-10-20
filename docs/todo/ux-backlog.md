@@ -19,18 +19,18 @@ new surface, one PR per row.
 
 - [x] `FeatureRequestsView` comments → `PageEmpty` (already on master)
 - [x] `ProcessingIndicator` (top bar) → `Badge` (already on master)
-- [ ] `HeaderStyleTabs` → catalog `Tabs`
+- [x] `HeaderStyleTabs` → catalog `Tabs` (already on master)
 - [x] `ArtistReferenceSections` → `SectionTitle` (already on master)
 - [x] History list active-row accent (already on master)
 - [x] `GovernanceView` "No motions returned." → `PageEmpty` (already on master)
-- [x] History / Releases filter: clear-filter action on the filtered-empty state (batch 79)
-- [x] `ReleasesPanel` filtered-empty + clear (batch 79); HelpView still TBD
+- [x] History / Releases filter: clear-filter (batch 79; HelpView already clears)
+- [x] `ReleasesPanel` filtered-empty + clear (batch 79)
 
 ## Liveliness
 
 - [ ] De-green `Button` (primary-heavy everywhere; Cards and the MediaArtwork
   overlay were already neutralised).
-- [ ] Optional `DiscoverGatewayBackground` on flat Listen surfaces.
+- [x] Optional `DiscoverGatewayBackground` on flat Listen surfaces (batch 80).
 - [ ] Verify Card / Badge / CardsRow / MediaArtwork / ListenSection stories in
   all five stock themes (incl. `tahti-blue`, `spotify-dark-theme`).
 
@@ -42,11 +42,11 @@ new surface, one PR per row.
   persisted (pattern: player `usePlaylistSort`). Fixes ListenView,
   CollectionView, SmartLinkView, FavoritesView, ChannelViewBlocks,
   TagSearchView, BrowserLocalFiles at once.
-- [ ] Same toggle/sort for Studio lists that lack it: `StudioShowsView`,
-  `MyVenuesView` (Releases already has search).
+- [x] `StudioShowsView` search + clear (already); `MyVenuesView` search + clear (batch 80).
 - [ ] Library trio (`LibraryMediaView` / `LibraryEmbedsView` /
   `LibrarySmartLinksView`): converge on a shared library row with FilterChips +
-  sort (pattern: `studio/sounds/SoundFilters.tsx`).
+  sort (pattern: `studio/sounds/SoundFilters.tsx`). Partial: Embeds FilterChips +
+  SmartLinks search (batch 80).
 
 ## Shared surfaces (de-duplication)
 

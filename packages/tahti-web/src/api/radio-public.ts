@@ -10,8 +10,8 @@ import {
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
   withMockFallback,
   type FetchMeta,
 } from './mode';
@@ -63,7 +63,11 @@ export async function fetchRadio(): Promise<{
   } catch (err) {
     if (allowMockFallback()) {
       const data = mockRadio();
-      return { data, meta: failMeta(err), playable: radioToPlayable(data) };
+      return {
+        data,
+        meta: mockFallbackMeta(err),
+        playable: radioToPlayable(data),
+      };
     }
     return {
       data: { live: false, channel: null },

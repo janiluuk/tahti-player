@@ -3,8 +3,8 @@ import { DEMO_MP3 } from '../mock';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '../mode';
 import { addMockSoundVersion } from '../sound-versions';
 import type {
@@ -61,7 +61,7 @@ export async function fetchEditorProjects(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: [...mockProjects], meta: failMeta(err) };
+      return { data: [...mockProjects], meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }

@@ -2,8 +2,8 @@ import type { FetchMeta } from '.././client';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
 import { mockSocial, setMockSocial } from './mock';
@@ -79,7 +79,7 @@ export async function fetchSocialConnections(): Promise<{
     };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: { ...mockSocial }, meta: failMeta(err) };
+      return { data: { ...mockSocial }, meta: mockFallbackMeta(err) };
     }
     return { data: socialConnectionsFromLinks(null), meta: apiErrorMeta(err) };
   }

@@ -32,6 +32,7 @@ import type { OnAirChannel } from '../api/listen';
 import { fetchStationNowPlaying } from '../api/radio-now-playing';
 import type { TahtiPlayable } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
+import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { HomeComingUp } from '../components/listen-view/HomeComingUp';
 import {
   NewReleasesRow,
@@ -524,7 +525,8 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   };
 
   return (
-    <div className="flex w-full min-w-0 flex-col gap-6">
+    <div className="relative flex w-full min-w-0 flex-col gap-6">
+      {tab === 'listen' ? <DiscoverGatewayBackground /> : null}
       <Tabs.Root
         selectedIndex={Math.max(
           0,

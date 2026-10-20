@@ -32,6 +32,26 @@ import type { TourStep } from '../lib/pageTour';
 import { matchesSectionRoute } from '../lib/sectionNavigation';
 import { SectionTabs } from './SectionTabs';
 
+/**
+ * Admin chrome (`PRIMARY` below) is not exhaustive. These paths are still
+ * routable but only via redirects, deep links, or a parent tab’s search —
+ * see `NAVIGATION-SITEMAP.md` / navigation-flow-audit. Keep this list in
+ * sync when adding a redirect-only admin URL.
+ */
+export const ADMIN_TAB_ONLY_ROUTES = [
+  '/admin/activity', // → /admin/logs
+  '/admin/disco-widgets', // → /admin/addons
+  '/admin/grants/$year', // governance grants child
+  '/admin/moderation/$tab', // moderation search tabs
+  '/admin/orphan-pages/$tab', // orphan-pages search tabs
+  '/admin/support', // → /admin/moderation?tab=support
+  '/admin/reports', // moderation / content-reports
+  '/admin/feature-requests', // moderation feature-requests tab
+  '/admin/content-reports', // moderation content-reports tab
+  '/admin/radio-submissions',
+  '/admin/radio-station-suggestions',
+] as const;
+
 export const PRIMARY = [
   {
     to: '/admin',

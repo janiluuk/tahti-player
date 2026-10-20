@@ -86,8 +86,8 @@ export function FeatureRequestsView({
 
   const body = (
     <>
-      {!embedded && (
-        <div className="flex flex-wrap items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        {!embedded ? (
           <Link
             to="/governance"
             onClick={closeSettings}
@@ -95,13 +95,20 @@ export function FeatureRequestsView({
           >
             ← Governance
           </Link>
-          {user && !forbidden ? (
-            <Button size="sm" onClick={() => setComposerOpen((v) => !v)}>
-              {composerOpen ? 'Cancel' : 'Propose an idea'}
-            </Button>
-          ) : null}
-        </div>
-      )}
+        ) : (
+          <Link
+            to="/feature-requests"
+            className="text-foreground-secondary text-xs hover:underline"
+          >
+            Open full page →
+          </Link>
+        )}
+        {user && !forbidden ? (
+          <Button size="sm" onClick={() => setComposerOpen((v) => !v)}>
+            {composerOpen ? 'Cancel' : 'Propose an idea'}
+          </Button>
+        ) : null}
+      </div>
 
       {!user && (
         <div className="border-border flex flex-col gap-3 rounded-lg border p-4">

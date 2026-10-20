@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
-import { MapPinIcon } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { MapPinIcon, SearchIcon } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   Badge,
@@ -8,11 +8,12 @@ import {
   Button,
   ButtonLink,
   EmptyState,
+  Input,
   ViewShell,
 } from '@tahti-player/ui';
 
 import { fetchMyVenues, type MyVenue } from '../api/venues-manage';
-import { PageError, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { VenueDetailsForm } from '../components/venues/VenueDetailsForm';
 import { VenueShowsSection } from '../components/venues/VenueShowsSection';
 import { useAuthStore } from '../stores/authStore';
@@ -80,14 +81,30 @@ export function MyVenuesView() {
   const user = useAuthStore((s) => s.user);
   const [venues, setVenues] = useState<MyVenue[] | null>(null);
   const [failed, setFailed] = useState(false);
+  const [query, setQuery] = useState('');
 
   const load = useCallback(async () => {
     const result = await fetchMyVenues();
     setVenues(result.data);
     setFailed(
-      result.meta.source !== 'api' && result.meta.reason !== 'VITE_FORCE_MOCK',
+      Boolean(result.meta.reason) && result.meta.reason !== 'VITE_FORCE_MOCK',
     );
   }, []);
+
+  const filtered = useMemo(() => {
+    if (!venues) {
+      return [];
+    }
+    const needle = query.trim().toLowerCase();
+    if (!needle) {
+      return venues;
+    }
+    return venues.filter((venue) =>
+      [venue.name, venue.city, venue.address, venue.slug].some((text) =>
+        text?.toLowerCase().includes(needle),
+      ),
+    );
+  }, [venues, query]);
 
   useEffect(() => {
     if (user) {
@@ -136,13 +153,39 @@ export function MyVenuesView() {
         />
       ) : (
         <>
-          {venues.map((venue) => (
-            <VenueCard
-              key={venue.id}
-              venue={venue}
-              onChanged={() => void load()}
+          <Input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search venues…"
+            aria-label="Search venues"
+            className="max-w-md"
+            startAddon={
+              <SearchIcon size={14} aria-hidden className="opacity-70" />
+            }
+          />
+          {filtered.length === 0 ? (
+            <PageEmpty
+              title={`No venues match “${query.trim()}”`}
+              action={
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setQuery('')}
+                >
+                  Clear search
+                </Button>
+              }
             />
-          ))}
+          ) : (
+            filtered.map((venue) => (
+              <VenueCard
+                key={venue.id}
+                venue={venue}
+                onChanged={() => void load()}
+              />
+            ))
+          )}
           {registerLink}
         </>
       )}

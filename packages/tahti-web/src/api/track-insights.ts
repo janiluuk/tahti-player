@@ -1,6 +1,6 @@
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
-import { isForceMock } from './mode';
+import { failMeta, isForceMock } from './mode';
 
 async function requestJson<T>(
   path: string,
@@ -22,13 +22,6 @@ async function requestJson<T>(
     throw new Error(detail);
   }
   return { data: (await res.json()) as T, status: res.status };
-}
-
-function failMeta(err: unknown): FetchMeta {
-  return {
-    source: 'mock',
-    reason: err instanceof Error ? err.message : 'fetch failed',
-  };
 }
 
 export type InsightsPeriod = '7d' | '30d' | 'all';

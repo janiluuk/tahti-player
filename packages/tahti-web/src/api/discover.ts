@@ -6,6 +6,7 @@ import {
   apiErrorMeta,
   failMeta,
   isForceMock,
+  mockFallbackMeta,
   type FetchMeta,
 } from './mode';
 import type { DiscoverCollection, DiscoverTrackItem } from './types';
@@ -84,7 +85,7 @@ export async function fetchPublicCollections(
     if (allowMockFallback()) {
       return {
         data: [],
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     throw err instanceof Error ? err : new Error('Public collections failed');
@@ -252,9 +253,9 @@ export async function fetchTopTracks(
     return { data: merged.map(topListEntryToTrack), meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockTopTracks(sort), meta: failMeta(err) };
+      return { data: mockTopTracks(sort), meta: mockFallbackMeta(err) };
     }
-    return { data: [], meta: failMeta(err) };
+    return { data: [], meta: mockFallbackMeta(err) };
   }
 }
 
@@ -322,7 +323,7 @@ export async function fetchLatestTracks(
     };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockLatestTracks(), meta: failMeta(err) };
+      return { data: mockLatestTracks(), meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }
@@ -365,7 +366,7 @@ export async function fetchNewToYou(): Promise<{
         data: mock.items,
         authenticated: true,
         preferenceGenres: mock.preferenceGenres,
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     return {
@@ -438,7 +439,7 @@ export async function fetchLovedTracks(
           ...item,
           loves: Math.max(1, 42 - index * 7),
         })),
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     return { data: [], meta: failMeta(err) };

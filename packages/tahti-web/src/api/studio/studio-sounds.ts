@@ -8,6 +8,7 @@ import {
   apiErrorMeta,
   failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '../mode';
 import type {
   EditorSource,
@@ -36,7 +37,7 @@ export async function fetchStudioSounds(): Promise<{
     if (allowMockFallback()) {
       return {
         data: mockFixture('studioSounds', [...mockSoundStore]),
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     return { data: [], meta: apiErrorMeta(err) };
@@ -100,7 +101,7 @@ export async function fetchSoundProcessingStatus(
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockProcessingStatus(ids), meta: failMeta(err) };
+      return { data: mockProcessingStatus(ids), meta: mockFallbackMeta(err) };
     }
     return { data: { processing: [], settled: [] }, meta: apiErrorMeta(err) };
   }
@@ -123,7 +124,7 @@ export async function fetchStudioSoundCount(): Promise<{
     return { data: data.count, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockSoundStore.length, meta: failMeta(err) };
+      return { data: mockSoundStore.length, meta: mockFallbackMeta(err) };
     }
     return { data: 0, meta: apiErrorMeta(err) };
   }
@@ -150,7 +151,7 @@ export async function fetchStudioSound(id: string): Promise<{
     if (allowMockFallback()) {
       const item =
         mockSoundStore.find((a) => a.id === id) ?? mockSoundStore[0]!;
-      return { data: { ...item, id }, meta: failMeta(err) };
+      return { data: { ...item, id }, meta: mockFallbackMeta(err) };
     }
     throw err instanceof Error ? err : new Error('Track fetch failed');
   }

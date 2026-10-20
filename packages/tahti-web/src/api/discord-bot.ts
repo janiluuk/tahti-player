@@ -2,8 +2,8 @@ import { apiBase } from './http';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
   type FetchMeta,
 } from './mode';
 
@@ -74,7 +74,7 @@ export async function fetchDiscordBotSettings(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockSettings(), meta: failMeta(err) };
+      return { data: mockSettings(), meta: mockFallbackMeta(err) };
     }
     return {
       data: {

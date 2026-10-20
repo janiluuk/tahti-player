@@ -30,12 +30,10 @@ that tahti-web can fix on its own (see HISTORY). These need someone else first.
 - **Meeting conflicts never load:** `MeetingConflicts` calls
   `GET /api/v1/governance/meetings/:id/conflicts`, which tahti-org doesn't have (only the
   admin route exists), so the panel is always hidden. Needs a member route in tahti-org.
-- **~100 fetchers label real API failures as `source: 'mock'`** (`failMeta(err)` with
-  empty data and no mock fallback, e.g. `fetchMyEvents`, `fetchAdminUsers`,
-  `fetchStatsTopTracks`). Views that check `meta.source === 'api'` can't tell those
-  failures from empty data. Switching them to `apiErrorMeta` needs a check of the few
-  callers that read `source === 'mock'` (`SubscribeView`, `ChannelChatPanel`,
-  `BroadcastRecordingToggles`, `libraryStore`, `useMultitrackSession`).
+- [x] **~100 fetchers labeled real API failures as `source: 'mock'`** — fixed in
+  batch 80: `failMeta` ≡ `apiErrorMeta` (`source: 'api'`); intentional mock
+  fixture returns use `mockFallbackMeta`. Callers updated (`libraryStore`,
+  `BroadcastRecordingToggles`).
 
 ## Left after batch 76 (failed loads still shown as empty)
 

@@ -237,14 +237,18 @@ export const useLibraryStore = create<LibraryState>()(
 
       mergeServerFollowing: async (username) => {
         const { data, meta } = await fetchFollowing(username);
-        if (meta.source === 'mock' && import.meta.env.VITE_FORCE_MOCK !== '1') {
+        if (
+          meta.reason &&
+          meta.reason !== 'VITE_FORCE_MOCK' &&
+          import.meta.env.VITE_FORCE_MOCK !== '1'
+        ) {
           set({
             syncNote:
               'Following could not be synced. Your saved artists remain available on this device.',
           });
           return;
         }
-        if (data.length === 0 && meta.source !== 'api') {
+        if (data.length === 0 && meta.source === 'mock') {
           set({
             syncNote: 'Saved tracks and listening history stay on this device.',
           });

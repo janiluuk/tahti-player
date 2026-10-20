@@ -1,8 +1,8 @@
 import { apiBase } from './http';
 import {
   allowMockFallback,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
   type FetchMeta,
 } from './mode';
 
@@ -57,7 +57,7 @@ export async function searchMentionUsers(query: string): Promise<{
     return {
       data: [],
       meta: allowMockFallback()
-        ? failMeta(error)
+        ? mockFallbackMeta(error)
         : { source: 'api', reason: String(error) },
     };
   }
@@ -98,7 +98,7 @@ export async function fetchPublicMentions(username: string): Promise<{
     return {
       data: [],
       meta: allowMockFallback()
-        ? failMeta(error)
+        ? mockFallbackMeta(error)
         : { source: 'api', reason: String(error) },
     };
   }
