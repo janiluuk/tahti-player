@@ -5,7 +5,6 @@ import {
   HistoryIcon,
   ListMusicIcon,
   NewspaperIcon,
-  XIcon,
 } from 'lucide-react';
 import {
   lazy,
@@ -35,7 +34,6 @@ import {
   fetchChannel,
   fetchRadioStation,
   TAHTI_RADIO_SLUG,
-  type EnabledInternetRadioPreset,
 } from '../api/client';
 import type { OnAirChannel } from '../api/listen';
 import { fetchStationNowPlaying } from '../api/radio-now-playing';
@@ -50,7 +48,10 @@ import {
 } from '../components/listen-view/HomeHighlights';
 import { HomeNews } from '../components/listen-view/HomeNews';
 import { ListenSection } from '../components/listen-view/ListenSection';
-import { StationCardSubtitle } from '../components/listen-view/StationCardSubtitle';
+import {
+  RadioRowCard,
+  type RadioRowItem,
+} from '../components/listen-view/RadioRowCard';
 import { useListenSections } from '../components/listen-view/useListenSections';
 import { WelcomeStrip } from '../components/listen-view/WelcomeStrip';
 import { useListenerWidgetBlocks } from '../components/ListenerWidgetsSection';
@@ -58,15 +59,11 @@ import { ListenWidgetStoreDialog } from '../components/ListenWidgetStoreDialog';
 import { PageError, PageLoading } from '../components/PageStates';
 import { PlayableTrackTable } from '../components/PlayableTrackTable';
 import { RadioListItem } from '../components/RadioListItem';
-import { RadioStationCoverEditButton } from '../components/RadioStationCover';
 import { RemoveWidgetDialog } from '../components/RemoveWidgetDialog';
 import {
-  RADIO_STATIONS,
   radioStation,
   radioStationIdForPlayable,
   radioStationPlayable,
-  stationNowPlayingSource,
-  type RadioStation,
 } from '../content/radioStations';
 import { usePolling } from '../hooks/usePolling';
 import { scheduleIdleRoutePrefetch } from '../lib/idleRoutePrefetch';
@@ -108,15 +105,6 @@ const ROW_LABELS = {
   filterPlaceholder: 'Filter…',
   nothingFound: 'Nothing matches that filter.',
 };
-
-type RadioRowItem =
-  | {
-      id: string;
-      title: string;
-      kind: 'preset';
-      preset: EnabledInternetRadioPreset;
-    }
-  | { id: string; title: string; kind: 'catalog'; station: RadioStation };
 
 type OnAirRowItem = { id: string; title: string; channel: OnAirChannel };
 
@@ -363,130 +351,26 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     [history],
   );
 
-  const renderRadioItem = (item: RadioRowItem) => {
-    const warmRadioRoute = () => prefetchListenCardIntent('radio');
-    if (item.kind === 'preset') {
-      const { preset } = item;
-      const catalogId = RADIO_STATIONS.find(
-        (station) => station.name === preset.name,
-      )?.id;
-      return (
-        <div
-          className="group relative w-fit"
-          onPointerEnter={catalogId ? warmRadioRoute : undefined}
-          onFocus={catalogId ? warmRadioRoute : undefined}
-        >
-          <RadioStationCoverEditButton
-            label={preset.name}
-            stationName={preset.name}
-            catalogStationId={catalogId}
-            presetId={preset.id}
-            className="absolute top-3 left-3 z-10 rounded-full"
-            onCoverChange={(iconUrl) =>
-              setRadioPresets((current) =>
-                current.map((entry) =>
-                  entry.id === preset.id ? { ...entry, iconUrl } : entry,
-                ),
-              )
-            }
-          />
-          <Card
-            surface="neutral"
-            title={
-              catalogId ? (
-                <Link
-                  to="/radio/station/$stationId"
-                  params={{ stationId: catalogId }}
-                  className="hover:underline"
-                >
-                  {preset.name}
-                </Link>
-              ) : (
-                preset.name
-              )
-            }
-            subtitle={
-              !preset.streamUrl
-                ? 'Off air'
-                : (presetNowPlaying[preset.id] ??
-                  preset.genre ??
-                  'Internet radio')
-            }
-            src={preset.iconUrl ?? placeholderArtworkUrl(item.id)}
-            isPlaying={isActive(item.id)}
-            playDisabled={!preset.streamUrl}
-            onPlay={() => {
-              if (!preset.streamUrl) {
-                return;
-              }
-              togglePlayback(item.id, () => playRadioRowStation(item.id));
-            }}
-          />
-        </div>
-      );
-    }
-    const { station } = item;
-    const streamUrl = station.streamUrl;
-    return (
-      <div
-        className="group relative w-fit"
-        onPointerEnter={warmRadioRoute}
-        onFocus={warmRadioRoute}
-      >
-        <RadioStationCoverEditButton
-          label={station.name}
-          stationName={station.name}
-          catalogStationId={station.id}
-          className="absolute top-3 left-3 z-10 rounded-full"
-        />
-        <Tooltip content={`Remove ${station.name}`} side="top">
-          <Button
-            size="icon-sm"
-            variant="text"
-            aria-label={`Remove ${station.name}`}
-            onClick={() =>
-              setPendingStationRemoval({ id: station.id, label: station.name })
-            }
-            className="bg-background/80 hover:bg-background absolute top-1 right-1 z-10 rounded-full opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-          >
-            <XIcon size={14} aria-hidden />
-          </Button>
-        </Tooltip>
-        <Card
-          surface="neutral"
-          title={
-            <Link
-              to="/radio/station/$stationId"
-              params={{ stationId: station.id }}
-              className="hover:underline"
-            >
-              {station.name}
-            </Link>
-          }
-          subtitle={
-            <StationCardSubtitle
-              source={stationNowPlayingSource(station)}
-              fallback={
-                streamUrl
-                  ? `${station.language} · ${station.bitrateKbps}kbps`
-                  : 'Off air'
-              }
-            />
-          }
-          src={station.logoUrl}
-          isPlaying={isActive(item.id)}
-          playLabel={streamUrl ? 'Play' : 'Stream pending'}
-          playDisabled={!streamUrl}
-          onPlay={
-            streamUrl
-              ? () =>
-                  togglePlayback(item.id, () => playRadioRowStation(item.id))
-              : undefined
-          }
-        />
-      </div>
-    );
-  };
+  const renderRadioItem = (item: RadioRowItem) => (
+    <RadioRowCard
+      item={item}
+      isPlaying={isActive(item.id)}
+      nowPlaying={
+        item.kind === 'preset' ? presetNowPlaying[item.preset.id] : undefined
+      }
+      onPlay={() => togglePlayback(item.id, () => playRadioRowStation(item.id))}
+      onCoverChange={(presetId, iconUrl) =>
+        setRadioPresets((current) =>
+          current.map((entry) =>
+            entry.id === presetId ? { ...entry, iconUrl } : entry,
+          ),
+        )
+      }
+      onRemove={(station) =>
+        setPendingStationRemoval({ id: station.id, label: station.name })
+      }
+    />
+  );
 
   const renderOnAirItem = ({ channel }: OnAirRowItem) => {
     const playableId = `live:${channel.slug}`;

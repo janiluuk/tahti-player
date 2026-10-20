@@ -390,6 +390,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/SettingsPanel` | `SettingsPanel.stories.tsx` |
 | `Navigation/SidebarNavigation` | `SidebarNavigation.stories.tsx` |
 | `Components/Slider` | `Slider.stories.tsx` |
+| `Components/SortableBlocks` | `SortableBlocks.stories.tsx` |
 | `Components/StatChip` | `StatChip.stories.tsx` |
 | `Components/StatTile` | `StatTile.stories.tsx` |
 | `Layout/Tabs` | `Tabs.stories.tsx` |
