@@ -221,7 +221,18 @@ export const studioScheduleRoute = createRoute({
 export const studioStatsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/stats',
-  component: StudioStatsView,
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: 'plays' | 'top-lists' } => ({
+    tab:
+      search.tab === 'plays' || search.tab === 'top-lists'
+        ? search.tab
+        : undefined,
+  }),
+  component: function StudioStatsRoute() {
+    const search = studioStatsRoute.useSearch();
+    return <StudioStatsView tab={search.tab ?? 'overview'} />;
+  },
 });
 
 export const studioGovernanceRoute = createRoute({
@@ -355,7 +366,15 @@ export const studioPlaylistEditRoute = createRoute({
 export const studioUpdatesRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/updates',
-  component: StudioUpdatesView,
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: 'newsletter' } => ({
+    tab: search.tab === 'newsletter' ? 'newsletter' : undefined,
+  }),
+  component: function StudioUpdatesRoute() {
+    const search = studioUpdatesRoute.useSearch();
+    return <StudioUpdatesView tab={search.tab ?? 'posts'} />;
+  },
 });
 
 export const studioAudienceRoute = createRoute({

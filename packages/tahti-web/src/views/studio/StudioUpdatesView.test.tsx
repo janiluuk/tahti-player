@@ -13,7 +13,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { ArtistPost } from '../../api/studio-extras';
 import { useAuthStore } from '../../stores/authStore';
-import { StudioUpdatesView } from './StudioUpdatesView';
+import { StudioUpdatesView, type StudioUpdatesTab } from './StudioUpdatesView';
 
 const { toast } = vi.hoisted(() => ({
   toast: { success: vi.fn(), error: vi.fn() },
@@ -58,12 +58,12 @@ vi.mock('../../api/studio-extras', async (importOriginal) => {
   };
 });
 
-function createRouterFor() {
+function createRouterFor(tab: StudioUpdatesTab = 'posts') {
   const rootRoute = createRootRoute({ component: () => <Outlet /> });
   const route = createRoute({
     getParentRoute: () => rootRoute,
     path: '/studio/updates',
-    component: StudioUpdatesView,
+    component: () => <StudioUpdatesView tab={tab} />,
   });
   return createRouter({
     routeTree: rootRoute.addChildren([route]),
@@ -93,7 +93,7 @@ afterEach(() => {
   useAuthStore.setState({ user: null, hydrated: true, loading: false });
 });
 
-async function renderView() {
+async function renderView(tab?: StudioUpdatesTab) {
   useAuthStore.setState({
     user: {
       id: 'user-1',
@@ -108,7 +108,7 @@ async function renderView() {
     hydrated: true,
     loading: false,
   });
-  const router = createRouterFor();
+  const router = createRouterFor(tab);
   await act(async () => {
     root.render(<RouterProvider router={router} />);
     await new Promise((resolve) => setTimeout(resolve, 0));
@@ -117,11 +117,7 @@ async function renderView() {
 
 describe('StudioUpdatesView newsletter send confirmation', () => {
   it('asks for confirmation before mailing every subscriber', async () => {
-    await renderView();
-
-    await act(async () => {
-      fireEvent.click(screen.getByRole('tab', { name: 'Newsletter' }));
-    });
+    await renderView('newsletter');
 
     const sendButton = screen.getByRole('button', { name: /Send/ });
     await act(async () => fireEvent.click(sendButton));
@@ -140,11 +136,7 @@ describe('StudioUpdatesView newsletter send confirmation', () => {
   });
 
   it('sends nothing when the confirmation is cancelled', async () => {
-    await renderView();
-
-    await act(async () => {
-      fireEvent.click(screen.getByRole('tab', { name: 'Newsletter' }));
-    });
+    await renderView('newsletter');
     await act(async () =>
       fireEvent.click(screen.getByRole('button', { name: /Send/ })),
     );
@@ -161,8 +153,10 @@ describe('StudioUpdatesView newsletter subscribers', () => {
     await renderView();
     expect(screen.queryByTestId('newsletter-subscriber-stats')).toBeNull();
 
+    act(() => root.unmount());
+    root = createRoot(container);
+    await renderView('newsletter');
     await act(async () => {
-      fireEvent.click(screen.getByRole('tab', { name: 'Newsletter' }));
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
