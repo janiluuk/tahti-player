@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminStreamsView } from '@tahti-web/views/admin/AdminStreamsView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -22,9 +22,10 @@ export const Default: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Live streams (2)' }),
-    ).toBeVisible();
+    const live = await canvas.findByRole('heading', {
+      name: 'Live streams (2)',
+    });
+    await waitFor(() => expect(live).toBeVisible());
     await expect(
       canvas.getByRole('heading', { name: 'Channel 24/7 rotation' }),
     ).toBeVisible();
