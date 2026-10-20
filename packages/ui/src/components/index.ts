@@ -13,6 +13,7 @@ export * from './HorizontalScroll';
 export * from './NewsWidget';
 export * from './Combobox';
 export * from './ClampedText';
+export * from './ConfirmDialog';
 export * from './CopyButton';
 export * from './ExternalLink';
 export * from './Dialog';

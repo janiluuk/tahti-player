@@ -57,6 +57,7 @@ import { SettingsHint } from '../SettingsFields';
 import { SocialAutoPost } from '../SocialAutoPost';
 import { buildArtistInfoPatch } from './artist-info-patch';
 import { ARTIST_TAB_GROUPS } from './artistTabGroups';
+import { MusicBrainzOfferToggle } from './MusicBrainzOfferToggle';
 import { groupTabs, tabLanding } from './tabGroups';
 
 const PRONOUN_OPTIONS: SelectOption[] = [
@@ -498,6 +499,7 @@ export function ArtistPanel() {
           {socialMsg && <SettingsHint>{socialMsg}</SettingsHint>}
           <NewsFeedUrlField />
           <SocialAutoPost />
+          <MusicBrainzOfferToggle />
         </div>
       ),
     },

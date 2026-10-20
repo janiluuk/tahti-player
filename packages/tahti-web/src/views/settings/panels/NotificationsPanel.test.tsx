@@ -45,7 +45,7 @@ describe('NotificationsPanel', () => {
 
   it('shows what each email looks like now that Tahti sends them', async () => {
     render(<NotificationsPanel />);
-    expect(await screen.findByText('Money moves')).toBeTruthy();
+    expect(await screen.findByText('Revenue moves')).toBeTruthy();
     expect(screen.queryAllByRole('note')).toHaveLength(0);
     expect(screen.getByText(/3 new chat messages/)).toBeTruthy();
     expect(screen.getByText(/1,247 plays/)).toBeTruthy();
@@ -57,11 +57,11 @@ describe('NotificationsPanel', () => {
     expect(
       await screen.findByText('Could not load your notification settings'),
     ).toBeTruthy();
-    expect(screen.queryByText('Money moves')).toBeNull();
+    expect(screen.queryByText('Revenue moves')).toBeNull();
 
     prefsFailure = null;
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
-    expect(await screen.findByText('Money moves')).toBeTruthy();
+    expect(await screen.findByText('Revenue moves')).toBeTruthy();
   });
 
   it('saves whether liked tracks show on the profile', async () => {

@@ -17,15 +17,14 @@ new surface, one PR per row.
 
 ## Small slices (from the sweeps)
 
-- [ ] `FeatureRequestsView` comments → `PageEmpty`
-- [ ] `ProcessingIndicator` (top bar) → `Badge`
+- [x] `FeatureRequestsView` comments → `PageEmpty` (already on master)
+- [x] `ProcessingIndicator` (top bar) → `Badge` (already on master)
 - [ ] `HeaderStyleTabs` → catalog `Tabs`
-- [ ] `ArtistReferenceSections` → `SectionTitle`
-- [ ] History list active-row accent
-- [ ] `GovernanceView` "No motions returned." → `PageEmpty`
-- [ ] History / Releases filter: clear-filter action on the filtered-empty state
-- [ ] Raw tables without loading / empty / filtered states: `components/ReleasesPanel.tsx`,
-  `HelpView.tsx` (check whether it needs any)
+- [x] `ArtistReferenceSections` → `SectionTitle` (already on master)
+- [x] History list active-row accent (already on master)
+- [x] `GovernanceView` "No motions returned." → `PageEmpty` (already on master)
+- [x] History / Releases filter: clear-filter action on the filtered-empty state (batch 79)
+- [x] `ReleasesPanel` filtered-empty + clear (batch 79); HelpView still TBD
 
 ## Liveliness
 

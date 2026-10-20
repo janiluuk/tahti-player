@@ -157,7 +157,7 @@ export function StudioCollectionsView() {
   const [query, setQuery] = useState('');
   const [visibility, setVisibility] = useState<
     'PUBLIC' | 'UNLISTED' | 'PRIVATE'
-  >('PUBLIC');
+  >('PRIVATE');
   const [releaseDate, setReleaseDate] = useState('');
   const [genres, setGenres] = useState('');
   const [collaborative, setCollaborative] = useState(false);
@@ -181,7 +181,7 @@ export function StudioCollectionsView() {
     setCreateOpen(false);
     setName('');
     setStyle('ALBUM');
-    setVisibility('PUBLIC');
+    setVisibility('PRIVATE');
     setReleaseDate('');
     setGenres('');
     setCollaborative(false);
@@ -308,7 +308,18 @@ export function StudioCollectionsView() {
                 <FilterChips
                   items={CREATE_STYLES}
                   selected={style}
-                  onChange={(id) => setStyle(id as CreateStyle)}
+                  onChange={(id) => {
+                    const next = id as CreateStyle;
+                    setStyle(next);
+                    // Release-like collections stay private until the artist
+                    // publishes; playlists/sets default to public.
+                    setVisibility(
+                      next === 'ALBUM' || next === 'EP' ? 'PRIVATE' : 'PUBLIC',
+                    );
+                    if (next !== 'PLAYLIST') {
+                      setCollaborative(false);
+                    }
+                  }}
                   aria-label="Collection style"
                 />
                 {style === 'ALBUM' || style === 'EP' ? (
@@ -539,9 +550,7 @@ export function StudioCollectionsView() {
                       params={{ slug: c.slug }}
                       size="sm"
                     >
-                      {['ALBUM', 'EP'].includes(collectionStyle(c))
-                        ? 'Design'
-                        : 'Edit'}
+                      Edit
                     </ButtonLink>
                     <StudioCollectionMoreMenu
                       col={c}

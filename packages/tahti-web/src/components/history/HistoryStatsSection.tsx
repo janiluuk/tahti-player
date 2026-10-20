@@ -93,7 +93,7 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
         data-testid="history-stats-empty"
         icon={<ChartColumnIcon size={48} />}
         title="Nothing to show yet"
-        description="Stats build up from what you've played — come back once you've listened to something."
+        description="Stats build up after about 30 seconds of play (or half the track). Come back once you've listened to something."
         className="flex-1"
       />
     );

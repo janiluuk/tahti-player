@@ -1,4 +1,11 @@
-import { CassetteTape, Heart, ListPlus, Pause, Play } from 'lucide-react';
+import {
+  CassetteTape,
+  Heart,
+  ListPlus,
+  LoaderCircle,
+  Pause,
+  Play,
+} from 'lucide-react';
 import { FC, ReactNode, useState, type MouseEvent } from 'react';
 
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
@@ -42,6 +49,8 @@ export type MediaArtworkProps = {
   playLabel?: string;
   pauseLabel?: string;
   isPlaying?: boolean;
+  /** Shows a spinner on the play control while the stream buffers. */
+  isLoading?: boolean;
   playDisabled?: boolean;
   /** Convenience queue action (top-right overlay). Also used by Shift+play. */
   onQueue?: () => void;
@@ -101,6 +110,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   playLabel = 'Play',
   pauseLabel = 'Pause',
   isPlaying = false,
+  isLoading = false,
   playDisabled,
   onQueue,
   queueLabel = 'Add to queue',
@@ -191,13 +201,29 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   const interactive = hasPlay || hasSecondary || Boolean(onArtworkClick);
   const queueOnShift = Boolean(onQueue) && !queueDisabled && !isPlaying;
   const showQueueIcon = queueOnShift && shiftHeld;
-  const playTooltip = isPlaying
-    ? pauseLabel
-    : showQueueIcon
-      ? queueLabel
-      : onQueue
-        ? `${playLabel} · Shift+click to queue`
-        : playLabel;
+  const playTooltip = isLoading
+    ? 'Loading…'
+    : isPlaying
+      ? pauseLabel
+      : showQueueIcon
+        ? queueLabel
+        : onQueue
+          ? `${playLabel} · Shift+click to queue`
+          : playLabel;
+
+  const playIcon = isLoading ? (
+    <LoaderCircle
+      size={iconPx}
+      className="animate-spin motion-reduce:animate-none"
+      data-testid="media-artwork-loading"
+    />
+  ) : isPlaying ? (
+    <Pause size={iconPx} className="fill-current" />
+  ) : showQueueIcon ? (
+    <ListPlus size={iconPx} />
+  ) : (
+    <Play size={iconPx} className="translate-x-px fill-current" />
+  );
 
   return (
     <div
@@ -301,23 +327,15 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   disabled={playDisabled}
                   aria-label={playTooltip}
                   aria-pressed={isPlaying || undefined}
+                  aria-busy={isLoading || undefined}
                   data-testid="media-artwork-play"
                   className={cn(
                     'pointer-events-auto size-6 rounded-full text-white active:scale-[0.96] motion-reduce:active:scale-100',
-                    isPlaying ? 'opacity-100' : overlayReveal,
+                    isPlaying || isLoading ? 'opacity-100' : overlayReveal,
                   )}
                   onClick={handlePlayClick}
                 >
-                  {isPlaying ? (
-                    <Pause size={iconPx} className="fill-current" />
-                  ) : showQueueIcon ? (
-                    <ListPlus size={iconPx} />
-                  ) : (
-                    <Play
-                      size={iconPx}
-                      className="translate-x-px fill-current"
-                    />
-                  )}
+                  {playIcon}
                 </Button>
               </Tooltip>
             )}
@@ -359,26 +377,18 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   disabled={playDisabled}
                   aria-label={playTooltip}
                   aria-pressed={isPlaying || undefined}
+                  aria-busy={isLoading || undefined}
                   data-testid="media-artwork-play"
                   className={cn(
                     'pointer-events-auto rounded-full active:scale-[0.96] motion-reduce:active:scale-100',
-                    isPlaying ? 'opacity-100' : overlayReveal,
+                    isPlaying || isLoading ? 'opacity-100' : overlayReveal,
                     size === 'thumb'
                       ? 'text-white'
                       : ['shadow-md', size === 'md' ? 'size-9' : 'size-11'],
                   )}
                   onClick={handlePlayClick}
                 >
-                  {isPlaying ? (
-                    <Pause size={iconPx} className="fill-current" />
-                  ) : showQueueIcon ? (
-                    <ListPlus size={iconPx} />
-                  ) : (
-                    <Play
-                      size={iconPx}
-                      className="translate-x-px fill-current"
-                    />
-                  )}
+                  {playIcon}
                 </Button>
               </Tooltip>
             </div>

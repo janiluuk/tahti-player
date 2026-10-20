@@ -465,6 +465,15 @@ export function AppShell() {
     setRightCollapsed(true);
   }, [isCompactDesktop, setLeftCollapsed, setRightCollapsed]);
 
+  // Empty queue takes ~25% of a 1440 px Studio/Library layout; collapse the
+  // rail automatically when the last item leaves (user can still reopen it).
+  useEffect(() => {
+    if (playerQueue.length > 0) {
+      return;
+    }
+    setRightCollapsed(true);
+  }, [playerQueue.length, setRightCollapsed]);
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target;

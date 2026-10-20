@@ -46,6 +46,6 @@ The studio side is built on shared components. Zero CSS-in-JS engines, zero cust
 
 ## Action Items (priority order)
 
-1. Upstream `ConfirmDialog` to `@tahti-player/ui` as `AlertDialog` or `ConfirmDialog`
-2. Add `onClick` / `as="button"` prop to `StatChip` to eliminate repetitive keyboard shim patterns
-3. Extract download gates table to local `StatsTable` if pattern repeats elsewhere
+1. [x] Upstream `ConfirmDialog` to `@tahti-player/ui` (batch 79; tahti-web re-exports)
+2. [x] `StatChip` optional `onClick` with button semantics (batch 79)
+3. Download gates panel: loading/empty via PageLoading/PageEmpty (batch 79); extract `StatsTable` only if the pattern repeats
