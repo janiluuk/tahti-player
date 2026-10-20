@@ -126,10 +126,7 @@ export class AuthSession {
     init?: RequestInit,
   ): Promise<Response> {
     const headers = new Headers(init?.headers);
-    let token = this.getAccessToken();
-    if (!token) {
-      token = await this.refresh();
-    }
+    const token = this.getAccessToken();
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
@@ -139,6 +136,9 @@ export class AuthSession {
       credentials: init?.credentials ?? 'include',
     });
     if (response.status !== 401) {
+      return response;
+    }
+    if (this.state.status === 'signed-out' && !token) {
       return response;
     }
     const next = await this.refresh();

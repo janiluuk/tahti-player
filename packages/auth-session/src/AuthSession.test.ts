@@ -78,6 +78,19 @@ describe('AuthSession', () => {
     expect(session.getAccessToken()).toBe('a2');
   });
 
+  it('does not refresh when signed out', async () => {
+    const fetchMock = vi.fn(async () => new Response('nope', { status: 401 }));
+    const session = new AuthSession({
+      apiBase: 'https://api.test',
+      storage: createMemoryStorage(null),
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+    const res = await session.fetchWithAuth('https://api.test/api/v1/search');
+    expect(res.status).toBe(401);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(String(fetchMock.mock.calls[0]![0])).toContain('/api/v1/search');
+  });
+
   it('signs out when refresh returns 401', async () => {
     const fetchMock = vi.fn(async () => new Response('nope', { status: 401 }));
     const storage = createMemoryStorage('r1');
