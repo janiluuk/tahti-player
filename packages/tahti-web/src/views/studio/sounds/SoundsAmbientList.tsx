@@ -30,9 +30,10 @@ import {
 import { isPinned } from '../../../lib/pinnedTracks';
 import { formatDuration } from '../../../lib/playableToTrack';
 import { usePlayerStore } from '../../../stores/playerStore';
+import { SoundsListTable } from './SoundsListTable';
 import type { StudioSoundsState } from './useStudioSoundsState';
 
-function formatUploadDate(value: string | undefined): string | null {
+export function formatUploadDate(value: string | undefined): string | null {
   if (!value) {
     return null;
   }
@@ -51,7 +52,7 @@ function isEmbedSound(item: StudioSound): boolean {
   return Boolean(item.embedProvider && item.embedUri);
 }
 
-function SoundTitle({ item }: { item: StudioSound }) {
+export function SoundTitle({ item }: { item: StudioSound }) {
   return (
     <Link to="/t/$id" params={{ id: item.id }} className="hover:underline">
       {item.title}
@@ -326,6 +327,7 @@ export function SoundsAmbientList({
               ? 'No hosted sounds match these filters.'
               : 'No sounds match these filters.'
           }
+          renderList={() => <SoundsListTable items={hosted} state={state} />}
         />
       ) : null}
 
