@@ -26,7 +26,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |
 | open    | [studio-usability-audit.md](studio-usability-audit.md) | Studio uses shared components; 3 actionable findings |
-| partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + auth-session + Devices UI shipped in PRs; desktop/CLI adapters + cookie cutover remain |
+| partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |
 
 ## Blocked on a decision, credentials or manual testing

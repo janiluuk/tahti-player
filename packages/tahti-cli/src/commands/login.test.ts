@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { resolveConfig } from '../api-client.mjs';
 import { readSavedConfig } from '../config-file.mjs';
 import { mockFetchJson, TEST_CONFIG } from '../test-helpers';
-import { readToken, runLogin, runLogout } from './login.mjs';
+import { readToken, runDeviceLogin, runLogin, runLogout } from './login.mjs';
 
 const USER = { username: 'aurora', displayName: 'Aurora' };
 
@@ -63,13 +63,68 @@ describe('login and logout', () => {
       token: 'tahti_abc',
       apiUrl: 'http://localhost:4000',
     });
-    expect(resolveConfig(env)).toEqual({
+    expect(resolveConfig(env)).toMatchObject({
       apiUrl: 'http://localhost:4000',
       token: 'tahti_abc',
+      refreshToken: null,
     });
     expect(resolveConfig({ ...env, TAHTI_API_TOKEN: 'tahti_env' }).token).toBe(
       'tahti_env',
     );
+  });
+
+  it('device login saves access and refresh tokens at mode 0600', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        accessToken: 'jwt-access',
+        refreshToken: 'jwt-refresh',
+        expiresIn: 900,
+        user: USER,
+      }),
+    });
+    const output = await runDeviceLogin(TEST_CONFIG, {
+      email: 'aurora@example.com',
+      password: 'secret',
+      env,
+      fetchImpl: fetchMock,
+      deviceLabel: 'test-cli',
+    });
+    const path = join(home, 'tahti', 'config.json');
+    expect(output).toBe(
+      `Signed in as Aurora (@aurora) (device session). Credentials saved to ${path}.`,
+    );
+    expect(fetchMock.mock.calls[0][0]).toBe(
+      `${TEST_CONFIG.apiUrl}/api/auth/login`,
+    );
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+      email: 'aurora@example.com',
+      password: 'secret',
+      deviceLabel: 'test-cli',
+    });
+    const saved = JSON.parse(await readFile(path, 'utf8'));
+    expect(saved.accessToken).toBe('jwt-access');
+    expect(saved.refreshToken).toBe('jwt-refresh');
+    expect(saved.expiresAt).toBeGreaterThan(Date.now());
+    expect((await stat(path)).mode & 0o777).toBe(0o600);
+    expect(resolveConfig(env).token).toBe('jwt-access');
+    expect(resolveConfig(env).refreshToken).toBe('jwt-refresh');
+  });
+
+  it('device login rejects TOTP challenges', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ requiresTotp: true, challengeId: 'c1' }),
+    });
+    await expect(
+      runDeviceLogin(TEST_CONFIG, {
+        email: 'a@b.c',
+        password: 'x',
+        env,
+        fetchImpl: fetchMock,
+      }),
+    ).rejects.toThrow(/TOTP/);
+    expect(readSavedConfig(env)).toEqual({});
   });
 
   it('saves nothing when the API rejects the token', async () => {
@@ -93,7 +148,7 @@ describe('login and logout', () => {
     mockFetchJson(USER);
     await runLogin(TEST_CONFIG, { token: 'tahti_abc', env });
     expect(await runLogout({ env })).toContain(
-      'still works until you revoke it',
+      'still work until you revoke them',
     );
     expect(readSavedConfig(env)).toEqual({});
     expect(await runLogout({ env: {} })).toBe('No saved token.');

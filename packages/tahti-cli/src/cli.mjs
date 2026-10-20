@@ -65,23 +65,43 @@ membership and channel. --json prints the full API response unchanged.`,
   },
   {
     path: ['login'],
-    usage: 'tahti login [--token <token>]',
-    summary: 'Save an API token so you do not have to export it',
-    details: `Reads the token from a prompt, or from stdin when piped
+    usage:
+      'tahti login [--token <token>] [--device] [--email <email>] [--password <password>]',
+    summary:
+      'Save an API token or a device session so you do not have to export it',
+    details: `Default: reads a personal API token from a prompt, or from stdin when piped
 (\`pass tahti | tahti login\`), checks it with GET /api/auth/me, then saves it to
 $XDG_CONFIG_HOME/tahti/config.json (~/.config/tahti/config.json), readable
 only by you. TAHTI_API_TOKEN still wins when it is set. A TAHTI_API_URL set
 while logging in is saved too.
-  --token <token>   Give the token directly (it ends up in your shell history)`,
-    options: { token: { type: 'string' } },
-    run: (config, { values }) => runLogin(config, { token: values.token }),
+
+With --device: signs in with your account email/password via POST /api/auth/login,
+stores access + refresh tokens (mode 600), and refreshes them on 401. TOTP accounts
+should keep using a personal API token for now.
+  --token <token>       Give the API token directly (it ends up in your shell history)
+  --device               Password login; creates a per-device JWT session
+  --email <email>       Email for --device (otherwise prompted)
+  --password <password> Password for --device (otherwise prompted; ends up in history)`,
+    options: {
+      token: { type: 'string' },
+      device: { type: 'boolean', default: false },
+      email: { type: 'string' },
+      password: { type: 'string' },
+    },
+    run: (config, { values }) =>
+      runLogin(config, {
+        token: values.token,
+        device: values.device,
+        email: values.email,
+        password: values.password,
+      }),
   },
   {
     path: ['logout'],
     usage: 'tahti logout',
-    summary: 'Forget the saved API token',
-    details: `Deletes the file \`tahti login\` wrote. The token keeps working until you
-revoke it at tahti.live → Settings → Account → API tokens.`,
+    summary: 'Forget the saved API token or device session',
+    details: `Deletes the file \`tahti login\` wrote. Personal API tokens keep working until
+you revoke them at tahti.live → Settings → Account → API tokens.`,
     options: {},
     run: () => runLogout(),
   },
