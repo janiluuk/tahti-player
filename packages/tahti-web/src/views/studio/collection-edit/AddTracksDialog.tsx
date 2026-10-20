@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../../api/studio-types';
+import { PageEmpty } from '../../../components/PageStates';
 
 function notReadyLabel(status: string): string | null {
   const s = status.toUpperCase();
@@ -79,11 +80,24 @@ export function AddTracksDialog({
         />
         <div className="border-border max-h-96 min-h-0 overflow-auto rounded-md border">
           {available.length === 0 ? (
-            <p className="text-foreground-secondary p-4 text-sm">
-              {query.trim()
-                ? 'No available tracks match your search.'
-                : 'All library tracks are already in this collection.'}
-            </p>
+            <PageEmpty
+              title={
+                query.trim()
+                  ? 'No available tracks match your search'
+                  : 'All library tracks are already in this collection'
+              }
+              action={
+                query.trim() ? (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setQuery('')}
+                  >
+                    Clear search
+                  </Button>
+                ) : undefined
+              }
+            />
           ) : (
             <ul aria-label="Available library tracks">
               {available.map((sound, index) => {

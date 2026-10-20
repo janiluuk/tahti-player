@@ -11,6 +11,7 @@ import { useLayoutStore } from '../stores/layoutStore';
 import { useMapNotesStore, type MapComment } from '../stores/mapNotesStore';
 import { usePageCommentsRailStore } from '../stores/pageCommentsRailStore';
 import { MapCommentForm } from './MapCommentForm';
+import { PageEmpty } from './PageStates';
 
 function PageCommentRow({ comment }: { comment: MapComment }) {
   const updateComment = useMapNotesStore((s) => s.updateComment);
@@ -179,10 +180,10 @@ export function AdminPageCommentsPanel() {
       </div>
 
       {forPage.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No comments for this page yet. Saved notes also appear under Saved
-          comments on the Tahti atlas.
-        </p>
+        <PageEmpty
+          title="No comments for this page yet"
+          description="Saved notes also appear under Saved comments on the Tahti atlas."
+        />
       ) : (
         <ul className="tahti-hide-scrollbar flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
           {forPage.map((c) => (

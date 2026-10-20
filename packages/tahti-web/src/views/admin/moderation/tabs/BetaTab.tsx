@@ -17,7 +17,11 @@ import {
   type AdminBetaApplication,
   type AdminBetaStatus,
 } from '../../../../api/admin';
-import { PageLoading } from '../../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { ModerationTabs } from '../ModerationTabs';
 
@@ -68,6 +72,7 @@ export function BetaTab() {
   const [filter, setFilter] = useState<AdminBetaStatus | 'all'>('PENDING');
   const [apps, setApps] = useState<AdminBetaApplication[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [approveTarget, setApproveTarget] =
     useState<AdminBetaApplication | null>(null);
   const [username, setUsername] = useState('');
@@ -81,6 +86,9 @@ export function BetaTab() {
     void fetchAdminBetaApplications(filter === 'all' ? undefined : filter).then(
       (res) => {
         setApps(res.data);
+        setLoadError(
+          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+        );
         setLoading(false);
       },
     );
@@ -126,10 +134,14 @@ export function BetaTab() {
       <StudioPanel>
         {loading ? (
           <PageLoading label="Loading applications…" />
+        ) : loadError && apps.length === 0 ? (
+          <PageError
+            title="Could not load beta applications"
+            description={loadError}
+            onRetry={reload}
+          />
         ) : apps.length === 0 ? (
-          <p className="text-foreground-secondary py-4 text-center text-sm">
-            No applications in this view.
-          </p>
+          <PageEmpty title="No applications in this view" />
         ) : (
           <ul className="divide-border divide-y">
             {apps.map((app) => {

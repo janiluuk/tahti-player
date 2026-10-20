@@ -14,7 +14,7 @@ import {
   type StatsPlays,
   type StatsPlaysRange,
 } from '../../api/studio-extras';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
@@ -121,9 +121,7 @@ export function StudioStatsDetailView() {
                 </p>
 
                 {data.daily.length === 0 ? (
-                  <p className="text-foreground-secondary mt-4 text-sm">
-                    No daily points in this range.
-                  </p>
+                  <PageEmpty title="No daily activity in this range" />
                 ) : useHeatmap ? (
                   <HorizontalScroll label="Daily activity" className="mt-4">
                     <CalendarHeatmap

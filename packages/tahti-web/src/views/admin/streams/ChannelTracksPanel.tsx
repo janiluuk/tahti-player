@@ -16,6 +16,7 @@ import {
   patchAdminChannelSound,
   type AdminChannelSound,
 } from '../../../api/admin';
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 
 function TrackEditDialog({
@@ -174,9 +175,7 @@ export function ChannelTracksPanel() {
 
       {slug ? (
         sounds.length === 0 ? (
-          <p className="text-foreground-secondary mt-4 text-sm">
-            This channel has no tracks.
-          </p>
+          <PageEmpty title="This channel has no tracks" />
         ) : (
           <ul
             className="divide-border mt-4 divide-y"

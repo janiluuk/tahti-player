@@ -7,7 +7,7 @@ import {
   fetchAdminUserEngagement,
   type AdminUserEngagement,
 } from '../../api/admin';
-import { PageError, PageLoading } from '../PageStates';
+import { PageEmpty, PageError, PageLoading } from '../PageStates';
 import { StudioPanel } from '../StudioPanel';
 
 const FIRST_YEAR = 2020;
@@ -166,9 +166,7 @@ export function AdminUserEngagementPanel({
             </p>
           </div>
           {data.adjustments.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              No adjustments in {data.year}.
-            </p>
+            <PageEmpty title={`No adjustments in ${data.year}`} />
           ) : (
             <ul className="divide-border divide-y text-sm">
               {data.adjustments.map((entry) => (

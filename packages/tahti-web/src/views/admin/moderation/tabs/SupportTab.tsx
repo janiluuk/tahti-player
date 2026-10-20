@@ -20,7 +20,11 @@ import {
   type AdminSupportTicket,
   type AdminSupportTicketDetail,
 } from '../../../../api/admin';
-import { PageLoading } from '../../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { ModerationTabs } from '../ModerationTabs';
 
@@ -72,6 +76,8 @@ export function SupportTab() {
   const [query, setQuery] = useState('');
   const [tickets, setTickets] = useState<AdminSupportTicket[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detail, setDetail] = useState<AdminSupportTicketDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -112,6 +118,9 @@ export function SupportTab() {
             return;
           }
           setTickets(result.data);
+          setLoadError(
+            result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+          );
           setSelectedId((current) => {
             if (current && result.data.some((t) => t.id === current)) {
               return current;
@@ -127,7 +136,7 @@ export function SupportTab() {
       cancelled = true;
       clearTimeout(handle);
     };
-  }, [filter, query]);
+  }, [filter, query, attempt]);
 
   useEffect(() => {
     setMsg(null);
@@ -204,10 +213,27 @@ export function SupportTab() {
         <StudioPanel className="max-h-[32rem] overflow-y-auto p-0 sm:p-0">
           {loading ? (
             <PageLoading label="Loading support tickets…" />
+          ) : loadError && tickets.length === 0 ? (
+            <PageError
+              title="Could not load support tickets"
+              description={loadError}
+              onRetry={() => setAttempt((n) => n + 1)}
+            />
           ) : tickets.length === 0 ? (
-            <p className="text-foreground-secondary p-4 text-center text-sm">
-              No tickets in this view.
-            </p>
+            <PageEmpty
+              title="No tickets in this view"
+              action={
+                query.trim() ? (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setQuery('')}
+                  >
+                    Clear search
+                  </Button>
+                ) : undefined
+              }
+            />
           ) : (
             <ul className="divide-border divide-y">
               {tickets.map((t) => {

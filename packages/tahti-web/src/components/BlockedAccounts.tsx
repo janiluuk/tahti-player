@@ -4,29 +4,34 @@ import { toast } from 'sonner';
 import { Button, MediaArtwork } from '@tahti-player/ui';
 
 import {
-  fetchBlockedUsers,
+  fetchBlockedUsersResult,
   unblockUser,
   type BlockedUser,
 } from '../api/blocks';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 /** The accounts you blocked from messaging you, each with an Unblock
  * button. Blocking itself happens from a direct-message thread. */
 export function BlockedAccounts() {
   const [blocked, setBlocked] = useState<BlockedUser[] | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
-    void fetchBlockedUsers().then((list) => {
+    setBlocked(null);
+    void fetchBlockedUsersResult().then(({ data, meta }) => {
       if (!cancelled) {
-        setBlocked(list);
+        setBlocked(data);
+        setLoadError(meta.source === 'api' ? (meta.reason ?? null) : null);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   const unblock = (user: BlockedUser) => {
     setBusy(user.username);
@@ -60,11 +65,15 @@ export function BlockedAccounts() {
         conversation in Messages.
       </p>
       {blocked === null ? (
-        <p className="text-foreground-secondary text-sm">Loading…</p>
+        <PageLoading label="Loading blocked accounts…" />
+      ) : loadError && blocked.length === 0 ? (
+        <PageError
+          title="Could not load blocked accounts"
+          description={loadError}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
       ) : blocked.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          You haven&apos;t blocked anyone.
-        </p>
+        <PageEmpty title="You haven't blocked anyone" />
       ) : (
         <ul className="divide-border divide-y">
           {blocked.map((user) => (

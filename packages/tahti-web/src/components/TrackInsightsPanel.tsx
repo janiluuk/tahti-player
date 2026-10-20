@@ -9,7 +9,7 @@ import {
   type TrackInsights,
 } from '../api/track-insights';
 import { ListenerWorldMap } from './ListenerWorldMap';
-import { PageLoading } from './PageStates';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 import { Eyebrow } from './tahti/Eyebrow';
 import { StatNumber } from './tahti/StatNumber';
@@ -26,14 +26,26 @@ export function TrackInsightsPanel({
   const [period, setPeriod] = useState<InsightsPeriod>('30d');
   const [insights, setInsights] = useState<TrackInsights | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    let cancelled = false;
     setLoading(true);
     void fetchTrackInsights(kind, id, period).then((result) => {
+      if (cancelled) {
+        return;
+      }
       setInsights(result.data);
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
-  }, [kind, id, period]);
+    return () => {
+      cancelled = true;
+    };
+  }, [kind, id, period, attempt]);
 
   const maxDaily = insights
     ? Math.max(1, ...insights.daily.map((day) => day.downloads))
@@ -56,10 +68,14 @@ export function TrackInsightsPanel({
 
       {loading ? (
         <PageLoading label="Loading…" />
+      ) : loadError && !insights ? (
+        <PageError
+          title="Could not load insights"
+          description={loadError}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
       ) : !insights ? (
-        <p className="text-foreground-secondary text-sm">
-          No insights available for this track.
-        </p>
+        <PageEmpty title="No insights for this track yet" />
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -86,9 +102,7 @@ export function TrackInsightsPanel({
 
           <StudioPanel title="Downloads by day">
             {insights.daily.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No downloads in this period.
-              </p>
+              <PageEmpty title="No downloads in this period" />
             ) : (
               <div className="flex h-32 items-end gap-1">
                 {insights.daily.map((day) => (

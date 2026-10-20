@@ -72,9 +72,7 @@ describe('MySupportTickets', () => {
     await act(async () => {
       render(<MySupportTickets />);
     });
-    expect(
-      screen.getByText(/haven't contacted support while signed in yet/),
-    ).toBeTruthy();
+    expect(screen.getByText('No support requests yet')).toBeTruthy();
   });
 
   it('shows the error with a retry when loading fails', async () => {

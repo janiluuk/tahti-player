@@ -43,7 +43,11 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../../../components/EntitySocialHeader';
-import { PageError, PageLoading } from '../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../components/PageStates';
 import { StudioCollectionMoreMenu } from '../../../components/StudioCollectionMoreMenu';
 import { StudioGate } from '../../../components/StudioGate';
 import { StudioPanel } from '../../../components/StudioPanel';
@@ -444,10 +448,10 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                 description={`${items.length} item${items.length === 1 ? '' : 's'}`}
               >
                 {tracks.length === 0 ? (
-                  <p className="text-foreground-secondary text-sm">
-                    Empty {kindLabel.toLowerCase()} — add sound tracks or whole
-                    releases below.
-                  </p>
+                  <PageEmpty
+                    title={`This ${kindLabel.toLowerCase()} is empty`}
+                    description="Add sound tracks or whole releases below."
+                  />
                 ) : (
                   <div className="min-h-[200px]">
                     <TrackTable

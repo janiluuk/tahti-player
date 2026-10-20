@@ -14,6 +14,7 @@ import type {
   ProgrammeLibraryTrack,
   ProgrammeView,
 } from '../../../api/studio-extras/schedule';
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { RotationReleaseLibrary } from './RotationReleaseLibrary';
 
@@ -197,9 +198,7 @@ export function ChannelRotationPanel() {
           </p>
 
           {items.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              This channel has no ready tracks.
-            </p>
+            <PageEmpty title="This channel has no ready tracks" />
           ) : (
             <ol className="divide-border divide-y">
               {items.map((item, index) => (
