@@ -10,7 +10,7 @@ adapters.
 | --- | --- |
 | `createBrowserCookieStorage` | Web / Tauri webview — refresh cookie only |
 | `createMemoryStorage` | Tests |
-| `createNodeConfigFileStorage(path)` | Node CLI config file (`0600`) |
+| `createNodeConfigFileStorage(path)` from `@tahti-player/auth-session/node` | Node CLI config file (`0600`); keep off the browser entry |
 | `createInjectedStorage({ getRefreshToken, setRefreshToken })` | Desktop OS keychain (or any host bridge) |
 
 Desktop next step: wire `createInjectedStorage` to a Tauri keychain plugin,

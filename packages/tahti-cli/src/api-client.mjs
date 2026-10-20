@@ -145,7 +145,7 @@ async function authorizedFetch(
   const url = `${config.apiUrl}${path}`;
   const run = (token) =>
     fetchImpl(url, {
-      method,
+      ...(method === 'GET' ? {} : { method }),
       headers: {
         ...headers,
         Authorization: `Bearer ${token}`,
