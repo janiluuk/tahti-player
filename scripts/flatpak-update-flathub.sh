@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-FLATPAK_DIR="${REPO_ROOT}/flatpak"
+FLATPAK_DIR="${REPO_ROOT}/packaging/flatpak"
 
 FLATHUB_REPO="flathub/live.tahti.player"
 MANIFEST="live.tahti.player.yml"
