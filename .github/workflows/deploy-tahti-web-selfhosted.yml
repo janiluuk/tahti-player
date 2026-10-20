@@ -114,11 +114,23 @@ jobs:
       - name: Sync dist + deploy config locally
         run: |
           set -euo pipefail
-          mkdir -p "${DEPLOY_PATH}/deploy"
-          rsync -a --delete \
+          # deploy/ (Dockerfile, compose, nginx.conf) is swapped in by rename
+          # like dist/ below: rsync -a into the live deploy/ failed with
+          # "chgrp … Operation not permitted" and "mkstemp … Permission
+          # denied" once its files drifted to another owner on the host.
+          new_cfg="${DEPLOY_PATH}/deploy.new"
+          rm -rf "$new_cfg"
+          mkdir -p "$new_cfg"
+          rsync -rlt \
             --exclude 'deploy-vimage.sh' \
             --exclude 'README.md' \
-            packages/tahti-web/deploy/ "${DEPLOY_PATH}/deploy/"
+            packages/tahti-web/deploy/ "$new_cfg/"
+          if [ -d "${DEPLOY_PATH}/deploy" ]; then
+            old_cfg="${DEPLOY_PATH}/deploy.old.$(date +%s)"
+            mv -T "${DEPLOY_PATH}/deploy" "$old_cfg"
+            rm -rf "$old_cfg" 2>/dev/null || true
+          fi
+          mv -T "$new_cfg" "${DEPLOY_PATH}/deploy"
 
           # Swap the whole dist/ tree in by rename instead of rsync'ing into
           # the live one in place. Some subdirectories under the live dist/
@@ -143,7 +155,7 @@ jobs:
 
           # Best-effort cleanup of any earlier backup that failed to remove
           # above — harmless disk usage, never a deploy blocker.
-          find "${DEPLOY_PATH}" -maxdepth 1 -name 'dist.old.*' -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+          find "${DEPLOY_PATH}" -maxdepth 1 \( -name 'dist.old.*' -o -name 'deploy.old.*' \) -mtime +1 -exec rm -rf {} + 2>/dev/null || true
 
       - name: Build image and restart container
         run: |
