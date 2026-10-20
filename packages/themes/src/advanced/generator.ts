@@ -90,10 +90,10 @@ export function generateAdvancedThemeCSS(theme: AdvancedTheme): string {
 
   const parts: string[] = [];
   if (light) {
-    parts.push(`:root{${light}}`);
+    parts.push(`html:root{${light}}`);
   }
   if (dark) {
-    parts.push(`[data-theme='dark']{${dark}}`);
+    parts.push(`html[data-theme='dark']{${dark}}`);
   }
   return parts.join('\n');
 }

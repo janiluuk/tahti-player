@@ -97,10 +97,6 @@ export async function prepareCapturePage(page) {
         );
       }
       localStorage.setItem('tahti-web-theme', JSON.stringify(theme));
-      // Legacy keys the theme store's early index.html bootstrap reads
-      // before zustand rehydrates -- see plugins/themes/store.ts.
-      localStorage.setItem('tahti-nuclear-theme-id', theme.state.themeId);
-      localStorage.setItem('tahti-nuclear-dark', theme.state.dark ? '1' : '0');
       const addStyle = () => {
         const style = document.createElement('style');
         style.dataset.captureSetup = '';

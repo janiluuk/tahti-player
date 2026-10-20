@@ -66,6 +66,7 @@ const DARK_KEY = 'tahti-nuclear-dark';
 const PERSIST_NAME = 'tahti-web-theme';
 const BOOT_CSS_KEY = 'tahti-theme-css';
 const BOOT_STYLE_ID = 'advanced-theme-boot';
+const CUSTOM_THEME_ATTR = 'data-custom-theme-id';
 
 /** Basic theme under every custom theme: supplies the structural CSS vars a
  * custom theme doesn't override. Must be the stock theme, whose plain `:root`
@@ -232,14 +233,17 @@ function applyThemeToDocument(
   }
   document.getElementById(BOOT_STYLE_ID)?.remove();
   const root = document.documentElement;
+  if (custom && root.getAttribute(CUSTOM_THEME_ATTR) !== themeId) {
+    root.setAttribute(CUSTOM_THEME_ATTR, themeId);
+  } else if (!custom && root.hasAttribute(CUSTOM_THEME_ATTR)) {
+    root.removeAttribute(CUSTOM_THEME_ATTR);
+  }
   if (dark && root.getAttribute('data-theme') !== 'dark') {
     root.setAttribute('data-theme', 'dark');
   } else if (!dark && root.hasAttribute('data-theme')) {
     root.removeAttribute('data-theme');
   }
   try {
-    writeIfChanged(THEME_KEY, themeId);
-    writeIfChanged(DARK_KEY, dark ? '1' : '0');
     writeIfChanged(BOOT_CSS_KEY, custom ? advancedThemeCSS(custom) : null);
   } catch {
     // ignore quota / private mode
@@ -257,6 +261,7 @@ type ThemeState = {
   colorMode: ColorMode;
   hydrated: boolean;
   init: () => void;
+  tickDynamicMode: () => void;
   setTheme: (id: string) => void;
   /** Low-level: applies a dark/light boolean without touching colorMode.
    * Prefer `setColorMode` from UI — this exists for internal re-application
@@ -284,6 +289,17 @@ type ThemeState = {
 
 let dynamicModeInterval: ReturnType<typeof setInterval> | undefined;
 
+function syncDynamicModeInterval(colorMode: ColorMode, tick: () => void): void {
+  if (colorMode !== 'dynamic') {
+    clearInterval(dynamicModeInterval);
+    dynamicModeInterval = undefined;
+    return;
+  }
+  if (typeof window !== 'undefined' && !dynamicModeInterval) {
+    dynamicModeInterval = setInterval(tick, 5 * 60 * 1000);
+  }
+}
+
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
@@ -301,21 +317,14 @@ export const useThemeStore = create<ThemeState>()(
         const dark = resolveDarkForMode(colorMode);
         applyThemeToDocument(id, dark, customThemes);
         set({ customThemes, themeId: id, dark, hydrated: true });
+        syncDynamicModeInterval(colorMode, get().tickDynamicMode);
+      },
 
-        if (typeof window !== 'undefined' && !dynamicModeInterval) {
-          dynamicModeInterval = setInterval(
-            () => {
-              const state = get();
-              if (state.colorMode !== 'dynamic') {
-                return;
-              }
-              const nextDark = isDynamicDark();
-              if (nextDark !== state.dark) {
-                state.setDark(nextDark);
-              }
-            },
-            5 * 60 * 1000,
-          );
+      tickDynamicMode: () => {
+        const state = get();
+        const nextDark = isDynamicDark();
+        if (state.colorMode === 'dynamic' && nextDark !== state.dark) {
+          state.setDark(nextDark);
         }
       },
 
@@ -331,6 +340,7 @@ export const useThemeStore = create<ThemeState>()(
         const dark = resolveDarkForMode(mode);
         applyThemeToDocument(themeId, dark, customThemes);
         set({ colorMode: mode, dark });
+        syncDynamicModeInterval(mode, get().tickDynamicMode);
       },
 
       setDark: (dark) => {
@@ -434,6 +444,8 @@ export const useThemeStore = create<ThemeState>()(
             const raw = localStorage.getItem(DARK_KEY);
             dark = raw == null ? undefined : raw === '1';
           }
+          localStorage.removeItem(THEME_KEY);
+          localStorage.removeItem(DARK_KEY);
         } catch {
           // ignore
         }

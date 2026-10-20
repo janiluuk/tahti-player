@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { isDynamicDark } from './store';
 
@@ -90,5 +90,48 @@ describe('theme persistence', () => {
     useThemeStore.getState().setTheme('custom:gruvbox');
     const bag = JSON.parse(localStorage.getItem('tahti-web-theme') ?? '{}');
     expect(Object.keys(bag.state.customThemes)).toEqual(['custom:nord']);
+  });
+});
+
+describe('theme document state', () => {
+  it('marks the active custom theme on the root element', async () => {
+    const { useThemeStore } = await import('./store');
+    useThemeStore.getState().setTheme('custom:tahti-blue');
+    expect(document.documentElement.getAttribute('data-custom-theme-id')).toBe(
+      'custom:tahti-blue',
+    );
+    useThemeStore.getState().setTheme('nuclear:ember');
+    expect(document.documentElement.hasAttribute('data-custom-theme-id')).toBe(
+      false,
+    );
+  });
+
+  it('no longer writes the legacy theme keys', async () => {
+    localStorage.clear();
+    const { useThemeStore } = await import('./store');
+    useThemeStore.getState().setTheme('nuclear:aurora');
+    useThemeStore.getState().setDark(true);
+    expect(localStorage.getItem('tahti-nuclear-theme-id')).toBeNull();
+    expect(localStorage.getItem('tahti-nuclear-dark')).toBeNull();
+  });
+
+  it('runs the day/night timer only in dynamic mode', async () => {
+    const { useThemeStore } = await import('./store');
+    useThemeStore.getState().setColorMode('light');
+    const started = vi.spyOn(globalThis, 'setInterval');
+    const stopped = vi.spyOn(globalThis, 'clearInterval');
+    try {
+      useThemeStore.getState().setColorMode('light');
+      expect(started).not.toHaveBeenCalled();
+      useThemeStore.getState().setColorMode('dynamic');
+      useThemeStore.getState().setColorMode('dynamic');
+      expect(started).toHaveBeenCalledTimes(1);
+      const id = started.mock.results[0].value;
+      useThemeStore.getState().setColorMode('dark');
+      expect(stopped).toHaveBeenCalledWith(id);
+    } finally {
+      started.mockRestore();
+      stopped.mockRestore();
+    }
   });
 });

@@ -19,12 +19,12 @@
         }
       }
     }
-    if (!themeId) {
+    if (!bag) {
       themeId = localStorage.getItem('tahti-nuclear-theme-id');
-    }
-    var darkRaw = localStorage.getItem('tahti-nuclear-dark');
-    if (darkRaw != null) {
-      dark = darkRaw === '1';
+      var darkRaw = localStorage.getItem('tahti-nuclear-dark');
+      if (darkRaw != null) {
+        dark = darkRaw === '1';
+      }
     }
     if (colorMode === 'light') {
       dark = false;
@@ -36,28 +36,33 @@
     } else if (dark == null) {
       dark = false;
     }
+    var root = document.documentElement;
+    var style = document.getElementById('advanced-theme-boot');
     if (!themeId) {
-      themeId = 'nuclear:default';
-    } else if (themeId.indexOf('custom:') === 0) {
+      themeId = 'custom:gruvbox';
+    }
+    if (themeId.indexOf('custom:') === 0) {
       var css = localStorage.getItem('tahti-theme-css');
       if (css) {
-        var style = document.createElement('style');
-        style.id = 'advanced-theme-boot';
-        style.textContent = css
-          .replace(/(^|\n):root\{/, '$1html:root{')
-          .replace(
-            /(^|\n)\[data-theme='dark'\]\{/,
-            "$1html[data-theme='dark']{",
-          );
-        document.head.appendChild(style);
+        if (!style) {
+          style = document.createElement('style');
+          style.id = 'advanced-theme-boot';
+          document.head.appendChild(style);
+        }
+        style.textContent = css;
+      } else if (style && themeId !== style.getAttribute('data-theme-for')) {
+        style.remove();
       }
+      root.setAttribute('data-custom-theme-id', themeId);
       themeId = 'nuclear:default';
+    } else if (style) {
+      style.remove();
     }
-    document.documentElement.setAttribute('data-theme-id', themeId);
+    root.setAttribute('data-theme-id', themeId);
     if (dark) {
-      document.documentElement.setAttribute('data-theme', 'dark');
+      root.setAttribute('data-theme', 'dark');
     } else {
-      document.documentElement.removeAttribute('data-theme');
+      root.removeAttribute('data-theme');
     }
   } catch {
     void 0;
