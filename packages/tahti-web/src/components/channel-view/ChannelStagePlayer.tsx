@@ -20,6 +20,7 @@ import { prefetchHls } from '../../lib/hlsLoader';
 import { usePlayerStore } from '../../stores/playerStore';
 import { NowPlayingOverlay } from '../NowPlayingOverlay';
 import { WaveformSeekbar } from '../tahti/WaveformSeekbar';
+import { channelAirState } from './ChannelAirBadge';
 import { ChannelStageTrackMeta } from './ChannelStageTrackMeta';
 import { useRotationNowPlaying } from './useRotationNowPlaying';
 
@@ -66,6 +67,7 @@ export function ChannelStagePlayer({
       : 'Favorited'
     : favoriteLabel;
   const navigate = useNavigate();
+  const onAir = live && channelAirState(channel) === 'on-air';
   const { nowPlaying, next } = useRotationNowPlaying(
     slug,
     channel.nowPlaying,
@@ -172,7 +174,9 @@ export function ChannelStagePlayer({
         </>
       ) : (
         <p className="text-sm text-white/80">
-          Stream is live — hit Play live to drive the visualizer.
+          {onAir
+            ? 'Stream is live — hit Play live to drive the visualizer.'
+            : '24/7 rotation is playing — press Play to listen.'}
         </p>
       )}
       {(live || channel.hlsUrl) && (
@@ -219,7 +223,7 @@ export function ChannelStagePlayer({
                 ? 'Loading stream'
                 : channelIsPlaying
                   ? 'Pause stream'
-                  : live
+                  : onAir
                     ? 'Play live'
                     : 'Play stream'
             }
@@ -236,7 +240,7 @@ export function ChannelStagePlayer({
                   ? 'Loading stream'
                   : channelIsPlaying
                     ? 'Pause stream'
-                    : live
+                    : onAir
                       ? 'Play live'
                       : 'Play stream'
               }
