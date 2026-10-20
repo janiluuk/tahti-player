@@ -1,4 +1,4 @@
-import { useNavigate, useRouter, useRouterState } from '@tanstack/react-router';
+import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { BookOpenIcon, GithubIcon, LogInIcon } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
@@ -46,7 +46,6 @@ function DiscordIcon({ size = 18 }: { size?: number }) {
 /** Nuclear SettingsPanel modal wrapping Tahti settings sections. */
 export function ConnectedSettingsModal() {
   const navigate = useNavigate();
-  const router = useRouter();
   const locationHref = useRouterState({
     select: (state) => state.location.pathname + state.location.searchStr,
   });
@@ -93,6 +92,11 @@ export function ConnectedSettingsModal() {
     if (!isOpen) {
       return;
     }
+    // Close sets dismissRouteOpen before navigation leaves /settings; do not
+    // push a settings URL again or the route effect re-opens the modal.
+    if (useSettingsModalStore.getState().dismissRouteOpen) {
+      return;
+    }
     const path = buildSettingsPath({
       section: resolvedTab,
       artistSection,
@@ -131,21 +135,20 @@ export function ConnectedSettingsModal() {
   }, [isOpen, resolvedTab]);
 
   const handleClose = () => {
-    const { pathname } = router.state.location;
-    close();
-    if (!pathname.startsWith('/settings')) {
-      returnPathRef.current = null;
-      return;
-    }
+    const onSettingsRoute = locationHref.startsWith('/settings');
     const returnTo = returnPathRef.current;
     returnPathRef.current = null;
-    if (returnTo) {
-      void navigate({ href: returnTo, replace: true });
-    } else if (router.history.canGoBack()) {
-      router.history.back();
-    } else {
-      void navigate({ to: '/', replace: true });
+    close();
+    if (!onSettingsRoute) {
+      return;
     }
+    // Prefer a real non-settings destination. history.back() can land on
+    // another /settings URL and fight dismissRouteOpen on slow navigations.
+    if (returnTo && !returnTo.startsWith('/settings')) {
+      void navigate({ href: returnTo, replace: true });
+      return;
+    }
+    void navigate({ to: '/', replace: true });
   };
 
   const tabs = nav.map((item) => {

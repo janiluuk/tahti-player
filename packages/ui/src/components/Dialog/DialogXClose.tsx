@@ -1,9 +1,8 @@
 import { XIcon } from 'lucide-react';
-import { FC } from 'react';
+import { FC, type MouseEvent } from 'react';
 
 import { cn } from '../../utils';
 import { Button } from '../Button';
-import { Tooltip } from '../Tooltip';
 import { useDialogContext } from './context';
 
 type DialogXCloseProps = {
@@ -13,22 +12,26 @@ type DialogXCloseProps = {
 export const DialogXClose: FC<DialogXCloseProps> = ({ className }) => {
   const { onClose } = useDialogContext();
 
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onClose();
+  };
+
   return (
-    <Tooltip
-      content="Close"
-      side="top"
-      wrapperClassName="absolute top-3 right-3 z-30"
+    <Button
+      variant="text"
+      size="icon-sm"
+      onClick={handleClick}
+      onMouseDown={(event) => event.stopPropagation()}
+      className={cn(
+        'pointer-events-auto absolute top-3 right-3 z-[100]',
+        className,
+      )}
+      aria-label="Close"
+      data-testid="dialog-x-close"
     >
-      <Button
-        variant="text"
-        size="icon-sm"
-        onClick={onClose}
-        className={cn(className)}
-        aria-label="Close"
-        data-testid="dialog-x-close"
-      >
-        <XIcon size={16} />
-      </Button>
-    </Tooltip>
+      <XIcon size={16} />
+    </Button>
   );
 };
