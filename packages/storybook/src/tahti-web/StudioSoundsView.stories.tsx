@@ -53,7 +53,7 @@ export const AmbientCovers: Story = {
   },
 };
 
-/** Hearthis embed hosts in the row action box (compact), not a full-width PlayerBar strip. */
+/** Hearthis embeds live in the Embeds section (provider widget), not mixed into ambient rows. */
 export const HearthisRowEmbed: Story = {
   beforeEach: () => {
     usePlayerStore.setState({ currentId: null, status: 'idle', queue: [] });
@@ -63,21 +63,18 @@ export const HearthisRowEmbed: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const link = await canvas.findByRole('link', {
-      name: 'Imported from hearthis.at',
-    });
-    const li = link.closest('li');
-    await expect(li).toBeTruthy();
-    const actions = within(li!).getByTestId('sound-row-actions');
+    const embeds = await canvas.findByTestId('sounds-embeds-section');
+    await expect(
+      within(embeds).getByRole('heading', { name: 'Embeds' }),
+    ).toBeVisible();
     await userEvent.click(
-      within(actions).getByRole('button', {
+      within(embeds).getByRole('button', {
         name: 'Play Imported from hearthis.at on hearthis.at',
       }),
     );
-    const embed = await within(actions).findByTestId('hearthis-row-embed');
+    const embed = await within(embeds).findByTestId('hearthis-row-embed');
     await expect(embed).toBeVisible();
     await expect(embed.className).toMatch(/max-h-28/);
-    await expect(actions.contains(embed)).toBe(true);
     await expect(
       canvasElement.querySelector(
         '[data-testid="connected-player-bar"] [data-testid="hearthis-row-embed"]',
@@ -117,8 +114,8 @@ export const ProcessingFailed: Story = {
     await expect(legacy.queryByRole('button', { name: /^Retry/ })).toBeNull();
 
     await expect(
-      row(canvasElement, PROCESSING_SOUND.title).getByRole('status'),
-    ).toHaveTextContent('Processing');
+      row(canvasElement, PROCESSING_SOUND.title).getByText(/PROCESSING/i),
+    ).toBeVisible();
 
     await userEvent.click(
       failed.getByRole('button', {
@@ -128,8 +125,8 @@ export const ProcessingFailed: Story = {
     await findToast(canvasElement, `Processing "${FAILED_SOUND.title}" again`);
     await waitFor(() =>
       expect(
-        row(canvasElement, FAILED_SOUND.title).getByRole('status'),
-      ).toHaveTextContent('Processing'),
+        row(canvasElement, FAILED_SOUND.title).getByText(/PENDING/i),
+      ).toBeVisible(),
     );
     await expect(
       canvas.queryByRole('button', {
