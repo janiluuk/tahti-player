@@ -6,7 +6,7 @@ import { Button, ButtonAnchor, FilePicker, ViewShell } from '@tahti-player/ui';
 
 import { fetchEditorSource } from '../../api/studio';
 import type { EditorSource } from '../../api/studio-types';
-import { PageLoading } from '../../components/PageStates';
+import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { decodeSourceAndReference } from '../../plugins/mastering/decodeAudio';
@@ -23,6 +23,8 @@ const STAGE_LABELS: Record<MasteringStage, string> = {
 export function StudioMasteringView({ soundId }: { soundId: string }) {
   const [source, setSource] = useState<EditorSource | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [referenceFile, setReferenceFile] = useState<File | null>(null);
   const [decodeError, setDecodeError] = useState<string | null>(null);
   const [decoding, setDecoding] = useState(false);
@@ -32,16 +34,19 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    void fetchEditorSource(soundId).then(({ data }) => {
-      if (!cancelled) {
-        setSource(data);
-        setLoading(false);
+    setLoadError(null);
+    void fetchEditorSource(soundId).then(({ data, meta }) => {
+      if (cancelled) {
+        return;
       }
+      setSource(data);
+      setLoadError(meta.source === 'api' && meta.reason ? meta.reason : null);
+      setLoading(false);
     });
     return () => {
       cancelled = true;
     };
-  }, [soundId]);
+  }, [soundId, attempt]);
 
   const handleReferenceFiles = (files: readonly File[]) => {
     setDecodeError(null);
@@ -109,8 +114,14 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
         </div>
 
         <ViewShell title="Reference mastering" classes={{ root: 'px-0 pt-0' }}>
-          {loading || !source ? (
+          {loading ? (
             <PageLoading label="Loading track…" />
+          ) : loadError || !source ? (
+            <PageError
+              title="Could not load this track"
+              description={loadError ?? 'Source audio is unavailable.'}
+              onRetry={() => setAttempt((n) => n + 1)}
+            />
           ) : (
             <>
               <StudioPanel title="Track" description={source.title}>

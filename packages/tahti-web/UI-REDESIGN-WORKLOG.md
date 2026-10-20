@@ -1,3 +1,9 @@
+## 2026-10-20 — UX batch 82 (show-detail / Feed / SmartLink honesty)
+
+Show detail, Feed, SmartLink, Artist, Mastering, Multistream, Updates, and
+channel playlist blocks surface `PageError` on API fail; Admin Moderation /
+Orphan breadcrumbs; `/settings/money` → Revenue. Bumped to `0.0.236`.
+
 ## 2026-10-20 — UX batch 81 (dead-end honesty + library chips)
 
 Studio home / pickers / artist satellites / governance panels show `PageError`

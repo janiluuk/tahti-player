@@ -53,11 +53,21 @@ export function useShowDetail(id: string) {
   const [nextEpisodeNumberDraft, setNextEpisodeNumberDraft] = useState(1);
   const [savingMeta, setSavingMeta] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [showLoadError, setShowLoadError] = useState<string | null>(null);
+  const [episodesLoadError, setEpisodesLoadError] = useState<string | null>(
+    null,
+  );
+  const [bookingsLoadError, setBookingsLoadError] = useState<string | null>(
+    null,
+  );
   const recordingCount = episodes.filter(
     (episode) => episode.source === 'broadcast',
   ).length;
 
   const reload = () => {
+    setShowLoadError(null);
+    setEpisodesLoadError(null);
+    setBookingsLoadError(null);
     fetchShowSeriesById(id)
       .then((r) => {
         setShow(r.data);
@@ -74,16 +84,39 @@ export function useShowDetail(id: string) {
           setNextEpisodeNumberDraft(r.data.nextEpisodeNumber);
         }
       })
-      .catch(() => toast.error('Could not load the show.'))
+      .catch((err) => {
+        setShow(null);
+        setShowLoadError(
+          err instanceof Error ? err.message : 'Could not load the show.',
+        );
+        toast.error('Could not load the show.');
+      })
       .finally(() => setLoaded(true));
     fetchEpisodesForShow(id)
-      .then((r) => setEpisodes(r.data))
-      .catch(() => toast.error('Could not load the episodes.'));
+      .then((r) => {
+        setEpisodes(r.data);
+        setEpisodesLoadError(null);
+      })
+      .catch((err) => {
+        setEpisodes([]);
+        setEpisodesLoadError(
+          err instanceof Error ? err.message : 'Could not load the episodes.',
+        );
+        toast.error('Could not load the episodes.');
+      });
     const from = new Date().toISOString();
     const to = new Date(Date.now() + 14 * 24 * 3600_000).toISOString();
     fetchShowBookings(from, to)
-      .then((r) => setBookings(r.data.filter((b) => b.isMine)))
-      .catch(() => undefined);
+      .then((r) => {
+        setBookings(r.data.filter((b) => b.isMine));
+        setBookingsLoadError(null);
+      })
+      .catch((err) => {
+        setBookings([]);
+        setBookingsLoadError(
+          err instanceof Error ? err.message : 'Could not load bookings.',
+        );
+      });
   };
 
   useEffect(() => {
@@ -307,6 +340,9 @@ export function useShowDetail(id: string) {
     setNextEpisodeNumberDraft,
     savingMeta,
     loaded,
+    showLoadError,
+    episodesLoadError,
+    bookingsLoadError,
     showTab,
     setShowTab,
     recordingCount,

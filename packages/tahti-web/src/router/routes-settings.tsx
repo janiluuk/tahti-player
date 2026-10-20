@@ -20,7 +20,14 @@ export const settingsSectionRoute = createRoute({
       params.section === 'fan-subs' ||
       params.section === 'fan-tiers'
     ) {
-      throw redirect({ to: '/studio/audience' });
+      throw redirect({
+        to:
+          params.section === 'money' ||
+          params.section === 'fan-subs' ||
+          params.section === 'fan-tiers'
+            ? '/studio/revenue'
+            : '/studio/audience',
+      });
     }
   },
   component: function SettingsSectionRoute() {

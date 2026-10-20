@@ -1,4 +1,4 @@
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { RadioIcon } from 'lucide-react';
 
 import { TabLabel, Tabs, ViewShell } from '@tahti-player/ui';
@@ -31,8 +31,21 @@ export function AdminOrphanPagesView({ tab }: { tab?: AdminOrphanPageTabId }) {
 
   return (
     <AdminGate>
-      <div className="admin-page-layout px-1 py-2">
+      <div
+        className="admin-page-layout px-1 py-2"
+        data-testid="admin-page-layout"
+      >
         <AdminPageLayout current="/admin/orphan-pages">
+          <nav
+            aria-label="Breadcrumb"
+            className="text-foreground-secondary mb-4 flex flex-wrap items-center gap-1 text-xs"
+          >
+            <Link to="/admin" className="hover:underline">
+              Admin
+            </Link>
+            <span aria-hidden>→</span>
+            <span aria-current="page">Orphan pages</span>
+          </nav>
           <Tabs.Root
             selectedIndex={selectedIndex < 0 ? 0 : selectedIndex}
             onChange={(index) => {

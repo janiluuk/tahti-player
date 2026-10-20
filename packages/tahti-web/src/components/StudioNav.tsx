@@ -511,7 +511,11 @@ function StudioNavigation({ current }: { current?: string }) {
   const showAudience = isStudioAudienceGroup(current);
 
   return (
-    <div className="flex min-w-0 flex-col" data-studio-navigation>
+    <div
+      className="flex min-w-0 flex-col"
+      data-studio-navigation
+      data-testid="studio-navigation"
+    >
       <div className={STUDIO_SECTION_MENU_SLOT} data-studio-section-menu>
         <SectionTabs
           aria-label={`${t(sectionLabel)} pages`}

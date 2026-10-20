@@ -18,7 +18,7 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { PlayableTrackTable } from '../components/PlayableTrackTable';
 import { ReleaseTrackDownloads } from '../components/ReleaseTrackDownloads';
 import { ReportButton } from '../components/ReportButton';
@@ -39,12 +39,15 @@ type SmartLinkViewProps = { slug: string };
 export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
   const [data, setData] = useState<SmartLinkData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const play = usePlayerStore((state) => state.play);
   const me = useAuthStore((state) => state.user);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
+    setLoadError(null);
     fetchSmartLink(slug)
       .then((result) => {
         if (cancelled) {
@@ -60,9 +63,12 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
           image: release.artworkUrl ?? artist.avatarUrl ?? undefined,
         });
       })
-      .catch(() => {
+      .catch((err) => {
         if (!cancelled) {
           setData(null);
+          setLoadError(
+            err instanceof Error ? err.message : 'Could not load this release.',
+          );
         }
       })
       .finally(() => {
@@ -73,7 +79,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, attempt]);
 
   const playables = useMemo(
     () => (data ? smartLinkPlayables(data) : []),
@@ -82,6 +88,16 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
 
   if (loading) {
     return <PageLoading label="Loading release…" />;
+  }
+
+  if (loadError) {
+    return (
+      <PageError
+        title="Could not load this release"
+        description={loadError}
+        onRetry={() => setAttempt((n) => n + 1)}
+      />
+    );
   }
 
   if (!data) {

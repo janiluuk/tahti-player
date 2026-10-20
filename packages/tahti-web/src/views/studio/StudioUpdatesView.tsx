@@ -32,6 +32,7 @@ import {
 } from '../../api/studio-extras';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ImageLightbox } from '../../components/ImageLightbox';
+import { PageError } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { newsletterDeliverySummary } from '../../lib/newsletterDelivery';
@@ -62,16 +63,34 @@ export function StudioUpdatesView() {
   );
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [pendingSend, setPendingSend] = useState<NewsletterDraft | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   const isEmpty = posts.length === 0 && drafts.length === 0;
 
   const reload = () => {
+    setLoadError(null);
     void Promise.all([fetchArtistPosts(), fetchNewsletterDrafts()])
       .then(([p, n]) => {
+        const reasons = [p.meta, n.meta]
+          .filter((meta) => meta.source === 'api' && meta.reason)
+          .map((meta) => meta.reason!);
         setPosts(p.data);
         setDrafts(n.data);
+        setLoadError(reasons[0] ?? null);
+        if (reasons[0]) {
+          toast.error('Could not load posts and newsletters.');
+        }
       })
-      .catch(() => toast.error('Could not load posts and newsletters.'));
+      .catch((err) => {
+        setLoadError(
+          err instanceof Error
+            ? err.message
+            : 'Could not load posts and newsletters.',
+        );
+        toast.error('Could not load posts and newsletters.');
+      })
+      .finally(() => setLoaded(true));
   };
 
   useEffect(() => {
@@ -104,7 +123,17 @@ export function StudioUpdatesView() {
 
   return (
     <StudioGate>
-      <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6 px-1 py-2">
+      <div
+        className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6 px-1 py-2"
+        data-testid="studio-page-layout"
+      >
+        {loaded && loadError && isEmpty ? (
+          <PageError
+            title="Could not load posts and newsletters"
+            description={loadError}
+            onRetry={reload}
+          />
+        ) : null}
         <Tabs.Root
           selectedIndex={tab === 'posts' ? 0 : 1}
           onChange={(index) => setTab(index === 0 ? 'posts' : 'newsletter')}

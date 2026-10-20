@@ -48,7 +48,8 @@ new surface, one PR per row.
   `LibrarySmartLinksView`): converge on a shared library row with FilterChips +
   sort (pattern: `studio/sounds/SoundFilters.tsx`). Partial: Embeds FilterChips +
   SmartLinks search (batch 80); Media kind chips + SmartLinks DSP chips + load
-  `PageError` (batch 81). Shared row still open.
+  `PageError` (batch 81); Embeds PageError even with partial data (batch 82).
+  Shared row still open.
 
 ## Shared surfaces (de-duplication)
 

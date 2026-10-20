@@ -146,11 +146,13 @@ describe('ArtistView', () => {
     ).toContain('Midnight Cartography');
   });
 
-  it('shows "Artist not found" instead of spinning forever when the profile fetch fails', async () => {
+  it('shows PageError instead of spinning forever when the profile fetch fails', async () => {
     vi.spyOn(client, 'fetchProfile').mockRejectedValue(new Error('offline'));
     const { container } = await renderArtist('northern-lights');
-    expect(container.textContent).toContain('Artist not found');
+    expect(container.textContent).toContain('Could not load this artist');
+    expect(container.textContent).toContain('offline');
     expect(container.textContent).not.toContain('Loading artist');
+    expect(container.textContent).not.toContain('Artist not found');
   });
 
   it('survives failing side requests (look, posts, mentions) and still renders', async () => {

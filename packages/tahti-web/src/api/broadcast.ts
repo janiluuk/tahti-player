@@ -1,5 +1,3 @@
-import type { MulticastProviderId } from '../plugins/multicast';
-import type { StoredVisualPreset } from './channel-design/presets';
 import type { FetchMeta } from './client';
 import { DEMO_MP3 } from './mock';
 import {
@@ -25,6 +23,18 @@ import { requestJson } from './request-json';
 import type { TahtiPlayable } from './types';
 
 export { setMockLiveSlug };
+export type { StreamOverlay } from './broadcast-overlay';
+export { fetchStreamOverlay, patchStreamOverlay } from './broadcast-overlay';
+export type { RecentBroadcast } from './broadcast-recordings';
+export { fetchRecentBroadcasts } from './broadcast-recordings';
+export type { RtmpTarget, RtmpTargetScope } from './broadcast-rtmp';
+export {
+  createRtmpTarget,
+  deleteRtmpTarget,
+  fetchRtmpTargets,
+  patchRtmpTarget,
+  testRtmpTarget,
+} from './broadcast-rtmp';
 
 export type StreamSettings = {
   rtmp: { server: string; streamKey: string; fallbackServers?: string[] };
@@ -162,33 +172,9 @@ const MOCK_USAGE: BroadcastUsage = {
   showUpgradeCta: false,
 };
 
-export type RtmpTarget = {
-  id: string;
-  provider: MulticastProviderId;
-  label: string | null;
-  rtmpUrl: string;
-  alwaysMirror: boolean;
-  enabled: boolean;
-  keyLast4?: string;
-  createdAt?: string;
-};
-
 export type LiveChannelState = 'OFFLINE' | 'PREVIEW' | 'LIVE' | string;
 
-// ── Mock session state (persisted — see mock-live-session.ts) ───────────────
-
 const MOCK_RECORDING_STORAGE_KEY = 'tahti-web-auto-record-broadcast';
-let mockTargets: RtmpTarget[] = [
-  {
-    id: 'rtmp-mock-yt',
-    provider: 'YOUTUBE',
-    label: 'YouTube',
-    rtmpUrl: 'rtmp://a.rtmp.youtube.com/live2',
-    alwaysMirror: false,
-    enabled: false,
-    keyLast4: 'demo',
-  },
-];
 
 export function mockSimulateSignal(connected = true) {
   writeMockSimulateSignal(connected);
@@ -486,245 +472,6 @@ export const pauseChannelRotation = (slug: string) =>
 export const resumeChannelRotation = (slug: string) =>
   postChannelTransport(slug, 'resume');
 
-export type RtmpTargetScope = 'me' | 'radio';
-
-let mockRadioTargets: RtmpTarget[] = [];
-
-function rtmpTargetsPath(scope: RtmpTargetScope, id?: string): string {
-  const base =
-    scope === 'radio'
-      ? '/api/admin/radio/rtmp-targets'
-      : '/api/me/rtmp-targets';
-  return id ? `${base}/${encodeURIComponent(id)}` : base;
-}
-
-function readMockTargets(scope: RtmpTargetScope): RtmpTarget[] {
-  return scope === 'radio' ? mockRadioTargets : mockTargets;
-}
-
-function writeMockTargets(scope: RtmpTargetScope, next: RtmpTarget[]): void {
-  if (scope === 'radio') {
-    mockRadioTargets = next;
-  } else {
-    mockTargets = next;
-  }
-}
-
-export async function fetchRtmpTargets(scope: RtmpTargetScope = 'me'): Promise<{
-  data: RtmpTarget[];
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return {
-      data: [...readMockTargets(scope)],
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const { data } = await requestJson<RtmpTarget[]>(rtmpTargetsPath(scope));
-    return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
-  } catch (err) {
-    if (allowMockFallback()) {
-      return { data: [...readMockTargets(scope)], meta: mockFallbackMeta(err) };
-    }
-    return { data: [], meta: apiErrorMeta(err) };
-  }
-}
-
-export async function createRtmpTarget(
-  input: {
-    provider: MulticastProviderId;
-    streamKey: string;
-    label?: string;
-    rtmpUrl?: string;
-    enabled?: boolean;
-    alwaysMirror?: boolean;
-  },
-  scope: RtmpTargetScope = 'me',
-): Promise<{ ok: true; target: RtmpTarget } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    if (input.streamKey.trim() === 'fail') {
-      return { ok: false, error: 'Ingest rejected the stream key.' };
-    }
-    const target: RtmpTarget = {
-      id: `rtmp-mock-${Date.now()}`,
-      provider: input.provider,
-      // Matches tahti-org/apps/api/src/routes/me/rtmp-targets.ts: an unset
-      // label is stored as-is, not defaulted to the raw provider id -- the
-      // display label fallback (multicastProviderLabel) is what's meant to
-      // fill that in, in mock mode and prod alike.
-      label: input.label ?? null,
-      rtmpUrl: input.rtmpUrl ?? 'rtmp://custom.example/live',
-      alwaysMirror: input.alwaysMirror ?? false,
-      enabled: input.enabled ?? true,
-      keyLast4: input.streamKey.slice(-4),
-    };
-    writeMockTargets(scope, [...readMockTargets(scope), target]);
-    return { ok: true, target };
-  }
-  try {
-    const { data } = await requestJson<RtmpTarget>(rtmpTargetsPath(scope), {
-      method: 'POST',
-      body: JSON.stringify(input),
-    });
-    return { ok: true, target: data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Create failed',
-    };
-  }
-}
-
-export async function patchRtmpTarget(
-  id: string,
-  patch: { enabled?: boolean; alwaysMirror?: boolean; label?: string },
-  scope: RtmpTargetScope = 'me',
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    writeMockTargets(
-      scope,
-      readMockTargets(scope).map((t) => (t.id === id ? { ...t, ...patch } : t)),
-    );
-    return { ok: true };
-  }
-  try {
-    await requestJson(rtmpTargetsPath(scope, id), {
-      method: 'PATCH',
-      body: JSON.stringify(patch),
-    });
-    return { ok: true };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Update failed',
-    };
-  }
-}
-
-export async function deleteRtmpTarget(
-  id: string,
-  scope: RtmpTargetScope = 'me',
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    writeMockTargets(
-      scope,
-      readMockTargets(scope).filter((t) => t.id !== id),
-    );
-    return { ok: true };
-  }
-  try {
-    await requestJson(rtmpTargetsPath(scope, id), {
-      method: 'DELETE',
-    });
-    return { ok: true };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Delete failed',
-    };
-  }
-}
-
-export async function testRtmpTarget(
-  id: string,
-  scope: RtmpTargetScope = 'me',
-): Promise<
-  | { ok: true; reachable: boolean; error?: string }
-  | { ok: false; error: string }
-> {
-  if (isForceMock()) {
-    return { ok: true, reachable: true };
-  }
-  try {
-    const { data } = await requestJson<{ ok: boolean; error?: string }>(
-      `${rtmpTargetsPath(scope, id)}/test`,
-      { method: 'POST' },
-    );
-    return { ok: true, reachable: data.ok, error: data.error };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Test failed',
-    };
-  }
-}
-
-export type StreamOverlay = {
-  streamOverlayTitle: string | null;
-  streamOverlaySubtitle: string | null;
-  streamOverlayShowTitle: boolean;
-  /** Hex "#RRGGBB", or null to use the default title/subtitle colors. */
-  streamOverlayTextColor: string | null;
-  /** Darkening rectangle behind the title/subtitle text in the RTMP mirror
-   * (video.add_rectangle) — improves legibility over busy cover art. */
-  streamOverlayScrimEnabled: boolean;
-  streamOverlayCoverUrl: string | null;
-  streamOverlayBackdropUrl: string | null;
-  streamOverlayVisualPreset: StoredVisualPreset;
-};
-
-const EMPTY_STREAM_OVERLAY: StreamOverlay = {
-  streamOverlayTitle: null,
-  streamOverlaySubtitle: null,
-  streamOverlayShowTitle: false,
-  streamOverlayTextColor: null,
-  streamOverlayScrimEnabled: false,
-  streamOverlayCoverUrl: null,
-  streamOverlayBackdropUrl: null,
-  streamOverlayVisualPreset: 'MINIMAL',
-};
-
-let mockStreamOverlay: StreamOverlay = { ...EMPTY_STREAM_OVERLAY };
-
-export async function fetchStreamOverlay(): Promise<{
-  data: StreamOverlay;
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return {
-      data: { ...mockStreamOverlay },
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const { data } = await requestJson<StreamOverlay>(
-      '/api/me/channel/stream-overlay',
-    );
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    if (allowMockFallback()) {
-      return { data: { ...mockStreamOverlay }, meta: mockFallbackMeta(err) };
-    }
-    return { data: { ...EMPTY_STREAM_OVERLAY }, meta: apiErrorMeta(err) };
-  }
-}
-
-export async function patchStreamOverlay(
-  patch: StreamOverlay,
-): Promise<{ ok: true; data: StreamOverlay } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    mockStreamOverlay = { ...patch };
-    return { ok: true, data: { ...mockStreamOverlay } };
-  }
-  try {
-    const { data } = await requestJson<StreamOverlay>(
-      '/api/me/channel/stream-overlay',
-      {
-        method: 'PATCH',
-        body: JSON.stringify(patch),
-      },
-    );
-    return { ok: true, data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Save failed',
-    };
-  }
-}
-
-/** Build a TahtiPlayable for the artist's own live channel after go-live. */
 export function liveChannelPlayable(
   slug: string,
   displayName: string,
@@ -741,64 +488,4 @@ export function liveChannelPlayable(
     channelSlug: slug,
     sourceProvider: 'tahti',
   };
-}
-
-export type RecentBroadcast = {
-  id: string;
-  title?: string | null;
-  source?: string;
-  startedAt: string;
-  endedAt?: string | null;
-  soundId: string | null;
-  soundTitle?: string;
-  soundStatus?: string;
-  durationSec?: number;
-};
-
-const mockRecordings: RecentBroadcast[] = [
-  {
-    id: 'rec-1',
-    title: 'Friday night set',
-    source: 'RTMP',
-    startedAt: new Date(Date.now() - 2 * 86_400_000).toISOString(),
-    endedAt: new Date(Date.now() - 2 * 86_400_000 + 3600_000).toISOString(),
-    soundId: 'arc-1',
-    soundTitle: 'Friday night set',
-    soundStatus: 'READY',
-    durationSec: 3600,
-  },
-  {
-    id: 'rec-2',
-    title: null,
-    source: 'BROWSER',
-    startedAt: new Date(Date.now() - 6 * 86_400_000).toISOString(),
-    endedAt: new Date(Date.now() - 6 * 86_400_000 + 1800_000).toISOString(),
-    soundId: null,
-    durationSec: 1800,
-  },
-];
-
-/** Every completed show recording, newest first — recordings made while
- * going live, whether or not they've been promoted into a published
- * archive item yet. */
-export async function fetchRecentBroadcasts(
-  limit = 50,
-): Promise<{ data: RecentBroadcast[]; meta: FetchMeta }> {
-  if (isForceMock()) {
-    return {
-      data: mockRecordings,
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const { data } = await requestJson<{ broadcasts?: RecentBroadcast[] }>(
-      `/api/me/broadcasts/recent?limit=${limit}`,
-    );
-    return { data: data.broadcasts ?? [], meta: { source: 'api' } };
-  } catch (err) {
-    if (allowMockFallback()) {
-      return { data: mockRecordings, meta: mockFallbackMeta(err) };
-    }
-    return { data: [], meta: apiErrorMeta(err) };
-  }
 }
