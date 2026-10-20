@@ -42,9 +42,9 @@ export const DialogRoot: FC<DialogRootProps> = ({
             className={cn('relative', layerClassName)}
           >
             <DialogOverlayBackdrop />
-            <div className="fixed inset-0 flex items-center justify-center p-4">
+            <div className="pointer-events-none fixed inset-0 flex items-center justify-center p-4">
               <motion.div
-                className="w-full max-w-[calc(100vw-2rem)]"
+                className="pointer-events-auto flex max-h-full w-full max-w-[calc(100vw-2rem)] flex-col"
                 initial={{ opacity: 1, scale: 1, y: 0 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 8 }}

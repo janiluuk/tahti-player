@@ -51,6 +51,9 @@ export function ConnectedSettingsModal() {
   });
   const isOpen = useSettingsModalStore((s) => s.isOpen);
   const close = useSettingsModalStore((s) => s.close);
+  const clearDismissRouteOpen = useSettingsModalStore(
+    (s) => s.clearDismissRouteOpen,
+  );
   const activeTab = useSettingsModalStore((s) => s.activeTab);
   const setActiveTab = useSettingsModalStore((s) => s.setActiveTab);
   const openedToSection = useSettingsModalStore((s) => s.openedToSection);
@@ -79,6 +82,12 @@ export function ConnectedSettingsModal() {
   }, [available, fallbackTab, isOpen, setActiveTab]);
 
   const resolvedTab = available ? activeTab : fallbackTab;
+
+  useEffect(() => {
+    if (!locationHref.startsWith('/settings')) {
+      clearDismissRouteOpen();
+    }
+  }, [clearDismissRouteOpen, locationHref]);
 
   useEffect(() => {
     if (!isOpen) {

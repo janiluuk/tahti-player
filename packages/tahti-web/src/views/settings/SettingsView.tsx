@@ -44,12 +44,26 @@ export function SettingsView({ sectionId }: { sectionId?: string }) {
   const searchStr = useRouterState({
     select: (state) => state.location.searchStr,
   });
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
   const toastedCallbackRef = useRef<string | null>(null);
   const section: SettingsSectionId = isSettingsSectionId(sectionId)
     ? sectionId
     : 'account';
 
   useEffect(() => {
+    // Close sets dismissRouteOpen so this route effect cannot fight Esc/X and
+    // re-open the modal before navigation leaves /settings (seen on Firefox).
+    // While a close navigates away, the router already reports the new
+    // location but still renders this route for a moment; opening then would
+    // send the user straight back to /settings.
+    if (
+      useSettingsModalStore.getState().dismissRouteOpen ||
+      !pathname.startsWith('/settings')
+    ) {
+      return;
+    }
     const params = new URLSearchParams(
       searchStr.startsWith('?') ? searchStr.slice(1) : searchStr,
     );
@@ -110,7 +124,7 @@ export function SettingsView({ sectionId }: { sectionId?: string }) {
     if (socialToast) {
       toast[socialToast.kind](socialToast.message);
     }
-  }, [open, searchStr, section, sectionId]);
+  }, [open, pathname, searchStr, section, sectionId]);
 
   return null;
 }

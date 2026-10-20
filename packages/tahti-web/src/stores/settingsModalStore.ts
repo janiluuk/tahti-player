@@ -29,6 +29,13 @@ type SettingsModalState = {
   /** Sub-tab when activeTab === 'account'. */
   accountSection: AccountSettingsSection | null;
   openedToSection: boolean;
+  /**
+   * After Close while the URL is still `/settings…`, SettingsView must not
+   * call `open()` again (Firefox especially: Esc/X closes, then the route
+   * effect races and re-opens). Cleared when leaving `/settings` or on the
+   * next intentional `open()`.
+   */
+  dismissRouteOpen: boolean;
   open: (
     tab?: SettingsSectionId,
     pluginCategory?: PluginCategoryTarget,
@@ -37,6 +44,7 @@ type SettingsModalState = {
   ) => void;
   close: () => void;
   setActiveTab: (tab: SettingsSectionId) => void;
+  clearDismissRouteOpen: () => void;
 };
 
 export const useSettingsModalStore = create<SettingsModalState>((set) => ({
@@ -46,16 +54,21 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
   artistSection: null,
   accountSection: null,
   openedToSection: false,
+  dismissRouteOpen: false,
   open: (tab, pluginCategory, artistSection, accountSection) =>
     set((state) => ({
       isOpen: true,
-      openedToSection: tab !== undefined,
+      dismissRouteOpen: false,
+      // Keep list/detail mode when already open (URL sync from tab clicks);
+      // only jump to content when opening into a specific section fresh.
+      openedToSection: state.isOpen ? state.openedToSection : tab !== undefined,
       activeTab: tab ?? state.activeTab,
       pluginCategory: pluginCategory ?? null,
       artistSection: artistSection ?? null,
       accountSection: accountSection ?? null,
     })),
-  close: () => set({ isOpen: false }),
+  close: () => set({ isOpen: false, dismissRouteOpen: true }),
   setActiveTab: (tab) =>
     set({ activeTab: tab, artistSection: null, accountSection: null }),
+  clearDismissRouteOpen: () => set({ dismissRouteOpen: false }),
 }));
