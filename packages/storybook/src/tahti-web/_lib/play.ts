@@ -91,20 +91,22 @@ const movedY = (element: HTMLElement | null | undefined) =>
 
 /** Keyboard-drags a dnd-kit sortable one slot down: Space picks it up,
  * ArrowDown moves it, Space drops it. dnd-kit ignores ArrowDown until it
- * has measured the drop targets, so ArrowDown is retried until the block
- * has moved, and the drop waits until the displaced block has moved too. */
+ * has measured the drop targets, so ArrowDown is pressed again only after
+ * a second with no move (a quicker retry overshoots by a slot), and the drop
+ * waits until the displaced block has moved too. */
 export async function keyboardMoveDown(handle: HTMLElement) {
   const block = handle.closest<HTMLElement>('[data-sortable-block]');
   const next = block?.nextElementSibling as HTMLElement | null;
   handle.focus();
   await userEvent.keyboard(' ');
   await waitFor(() => expect(handle).toHaveAttribute('aria-pressed', 'true'));
-  await waitFor(async () => {
-    if (!movedY(block)) {
-      await userEvent.keyboard('{ArrowDown}');
-    }
-    await expect(movedY(block)).toBe(true);
-  });
+  for (let attempt = 0; attempt < 8 && !movedY(block); attempt += 1) {
+    await userEvent.keyboard('{ArrowDown}');
+    await waitFor(() => expect(movedY(block)).toBe(true), {
+      timeout: 1000,
+    }).catch(() => undefined);
+  }
+  await expect(movedY(block)).toBe(true);
   await waitFor(() => expect(movedY(next)).toBe(true));
   await userEvent.keyboard(' ');
   await waitFor(() =>
