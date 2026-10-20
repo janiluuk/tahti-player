@@ -5091,3 +5091,17 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 - Service config moved to `.github/` (`codecov.yml`, `renovate.json`); the unused `crowdin.yml` inherited from Nuclear deleted; codecov's ignore list lost four packages that no longer exist.
 - `aur/` and `flatpak/` moved under `packaging/` (scripts, manifests, snap icon path, `.gitignore` updated); `Dockerfile.player.test` became `packages/tahti-web/Dockerfile.test`, now copying every workspace package and taking pnpm from `packageManager` via corepack, with its own `.dockerignore`. `snap/` stays at the root, where Snapcraft requires it.
 - Root layout documented in `docs/REPO-LAYOUT.md`.
+
+## 2026-10-20 — Theme coverage and performance
+
+- Elements that ignored theme changes (top search, focus rings, toggles, buttons on `--primary`) now follow every theme:
+  - The custom-theme generator derives `primary-foreground`, `primary-strong`, `secondary`, `secondary-foreground` and the input background, text and border tokens from each theme's palette; 41 preset var blocks had been falling back to stock Nuclear.
+  - `--foreground-input` follows `--foreground`.
+  - Arctic Moss / Aurora / Ember / Lagoon light set `--background-input`.
+  - Input / Select / Textarea / Toggle focus rings use `ring-primary` instead of `ring-black`, and the Toggle off-track uses `background-secondary` instead of white.
+- Performance:
+  - Shipped presets are no longer copied into the persisted `tahti-web-theme` bag (46.7 KB → 101 B per write), and stale stored copies are replaced by the shipped preset, keeping a rename.
+  - Generated CSS is memoised per theme object, and unchanged attribute, style and storage writes are skipped (6 → 1 DOM writes at startup).
+  - `theme-boot.js` paints the cached custom-theme CSS before the app loads, so repeat visits no longer flash stock Nuclear.
+  - The theme crossfade, a class with no CSS behind it, was removed.
+- Leftovers: [theme-system-performance.md](theme-system-performance.md).
