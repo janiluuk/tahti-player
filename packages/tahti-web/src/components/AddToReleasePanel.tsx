@@ -5,7 +5,7 @@ import { Button, Dialog } from '@tahti-player/ui';
 
 import { addStudioReleaseTrack, fetchStudioReleases } from '../api/studio';
 import type { StudioRelease } from '../api/studio-types';
-import { PageEmpty, PageLoading } from './PageStates';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 type Track = { id: string; title: string };
 
@@ -20,6 +20,8 @@ export function AddToReleasePanel({
 }) {
   const [releases, setReleases] = useState<StudioRelease[] | null>(null);
   const [addingId, setAddingId] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (!isOpen) {
@@ -27,18 +29,33 @@ export function AddToReleasePanel({
     }
     let cancelled = false;
     setReleases(null);
-    void fetchStudioReleases().then((res) => {
-      if (cancelled) {
-        return;
-      }
-      setReleases(
-        res.data.releases.filter((release) => release.state !== 'ARCHIVED'),
-      );
-    });
+    setLoadError(null);
+    void fetchStudioReleases()
+      .then((res) => {
+        if (cancelled) {
+          return;
+        }
+        const reason =
+          res.meta.source === 'api' ? (res.meta.reason ?? null) : null;
+        if (reason) {
+          setLoadError(reason);
+          return;
+        }
+        setReleases(
+          res.data.releases.filter((release) => release.state !== 'ARCHIVED'),
+        );
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setLoadError(
+            err instanceof Error ? err.message : 'Could not load releases.',
+          );
+        }
+      });
     return () => {
       cancelled = true;
     };
-  }, [isOpen]);
+  }, [isOpen, attempt]);
 
   const addTo = (release: StudioRelease) => {
     if (addingId) {
@@ -87,7 +104,13 @@ export function AddToReleasePanel({
           : `${tracks.length} selected tracks`}
       </Dialog.Description>
       <div className="mt-3 flex max-h-72 flex-col gap-1 overflow-y-auto">
-        {releases === null ? (
+        {loadError ? (
+          <PageError
+            title="Could not load releases"
+            description={loadError}
+            onRetry={() => setAttempt((n) => n + 1)}
+          />
+        ) : releases === null ? (
           <PageLoading label="Loading releases…" />
         ) : releases.length === 0 ? (
           <PageEmpty

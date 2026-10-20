@@ -46,7 +46,7 @@ import {
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
 import { PageFrame } from '../components/PageHeader';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { PlayableTrackTable } from '../components/PlayableTrackTable';
 import { ReportButton } from '../components/ReportButton';
 import { RssFeedButton } from '../components/RssFeedButton';
@@ -178,6 +178,8 @@ export function CollectionView({ slug }: { slug: string }) {
     (PublicCollection & Partial<CollectionTextLayer>) | null
   >(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const me = useAuthStore((s) => s.user);
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
@@ -197,26 +199,45 @@ export function CollectionView({ slug }: { slug: string }) {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    void fetchCollection(slug).then((res) => {
-      if (cancelled) {
-        return;
-      }
-      setCollection(res.data);
-      setLoading(false);
-      if (res.data) {
-        syncDocumentMetadata(window.location.pathname, {
-          title: `${res.data.name} by ${res.data.user.displayName} on Tahti`,
-          description:
-            res.data.description ??
-            `Listen to ${res.data.name}, a collection by ${res.data.user.displayName} on Tahti.`,
-          image: res.data.coverUrl ?? placeholderArtworkUrl(res.data.slug),
-        });
-      }
-    });
+    setLoadError(null);
+    void fetchCollection(slug)
+      .then((res) => {
+        if (cancelled) {
+          return;
+        }
+        setCollection(res.data);
+        setLoadError(
+          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+        );
+        if (res.data) {
+          syncDocumentMetadata(window.location.pathname, {
+            title: `${res.data.name} by ${res.data.user.displayName} on Tahti`,
+            description:
+              res.data.description ??
+              `Listen to ${res.data.name}, a collection by ${res.data.user.displayName} on Tahti.`,
+            image: res.data.coverUrl ?? placeholderArtworkUrl(res.data.slug),
+          });
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setCollection(null);
+          setLoadError(
+            err instanceof Error
+              ? err.message
+              : 'Could not load this collection.',
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, attempt]);
 
   useEffect(() => {
     let cancelled = false;
@@ -251,6 +272,16 @@ export function CollectionView({ slug }: { slug: string }) {
 
   if (loading) {
     return <PageLoading label="Loading collection…" />;
+  }
+
+  if (loadError) {
+    return (
+      <PageError
+        title="Could not load this collection"
+        description={loadError}
+        onRetry={() => setAttempt((n) => n + 1)}
+      />
+    );
   }
 
   if (!collection) {

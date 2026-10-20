@@ -119,7 +119,9 @@ export function ArtistProfilePage({ username }: { username: string }) {
     galleryImages,
     setGalleryImages,
     galleryLoaded,
+    galleryError,
     taggedIn,
+    mentionsError,
   } = useArtistProfileLoad(username, isOwnerEarly);
 
   const {
@@ -515,6 +517,12 @@ export function ArtistProfilePage({ username }: { username: string }) {
         isOwner={isOwner}
       />
 
+      {mentionsError && taggedIn.length === 0 ? (
+        <p className="text-foreground-secondary text-xs" role="status">
+          Could not load mentions: {mentionsError}
+        </p>
+      ) : null}
+
       {lookVisibility.feed && taggedIn.length > 0 ? (
         <ArtistTaggedIn
           mentions={taggedIn}
@@ -555,9 +563,15 @@ export function ArtistProfilePage({ username }: { username: string }) {
             </Tabs.List>
           </Tabs.Root>
         ) : null}
+        {galleryError && galleryImages.length === 0 ? (
+          <p className="text-foreground-secondary text-xs" role="status">
+            Could not load the gallery: {galleryError}
+          </p>
+        ) : null}
         {isOwner &&
         lookVisibility.gallery !== false &&
         galleryLoaded &&
+        !galleryError &&
         galleryImages.length === 0 ? (
           <ArtistGalleryAddIcon
             onCreated={(images) => {

@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { Button, ButtonLink, Dialog, Input } from '@tahti-player/ui';
 
 import { AddToPlaylistPanel } from '../components/AddToPlaylistPanel';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { TrackEditDialog } from '../components/TrackEditDialog';
 import { buildTrackPage } from './track-detail/buildTrackPage';
 import { DownloadGateDialog } from './track-detail/DownloadGateDialog';
@@ -24,13 +24,24 @@ export function TrackDetailView({
   shareKey?: string;
 }) {
   const t = useTrackDetail(id, shareKey);
-  const { playable, loading } = t;
+  const { playable, loading, loadError, retryLoad } = t;
 
   if (!playable) {
     if (loading) {
       return (
         <div className="flex min-h-full items-center justify-center">
           <PageLoading label="Loading track…" />
+        </div>
+      );
+    }
+    if (loadError) {
+      return (
+        <div className="mx-auto flex max-w-lg flex-col py-10">
+          <PageError
+            title="Could not load this track"
+            description={loadError}
+            onRetry={retryLoad}
+          />
         </div>
       );
     }

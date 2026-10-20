@@ -26,7 +26,11 @@ import {
 } from '../../../api/shows';
 import { fetchEditorDraft, renderEditorDraft } from '../../../api/studio';
 import { createDefaultEditList } from '../../../api/studio-types';
-import { PageEmpty, PageLoading } from '../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../components/PageStates';
 import { StudioGate } from '../../../components/StudioGate';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { Eyebrow } from '../../../components/tahti/Eyebrow';
@@ -45,14 +49,24 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
   const [publicTitle, setPublicTitle] = useState('');
   const [publicDescription, setPublicDescription] = useState('');
   const [savingDetails, setSavingDetails] = useState(false);
-  const [loadError, setLoadError] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [notFound, setNotFound] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    setLoadError(null);
+    setNotFound(false);
     void (async () => {
       try {
         const r = await fetchEpisode(episodeId);
         if (cancelled) {
+          return;
+        }
+        const reason = r.meta.source === 'api' ? (r.meta.reason ?? null) : null;
+        if (reason) {
+          setEpisode(null);
+          setLoadError(reason);
           return;
         }
         setEpisode(r.data);
@@ -64,24 +78,32 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
             setShow(s.data);
           }
         } else {
-          setLoadError(true);
+          setNotFound(true);
         }
-      } catch {
+      } catch (err) {
         if (!cancelled) {
-          setLoadError(true);
+          setLoadError(
+            err instanceof Error ? err.message : 'Could not load this episode.',
+          );
         }
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [episodeId]);
+  }, [episodeId, attempt]);
 
   if (!episode) {
     return (
       <StudioGate>
         <div className="studio-page-layout flex w-full flex-col">
           {loadError ? (
+            <PageError
+              title="Could not load this episode"
+              description={loadError}
+              onRetry={() => setAttempt((n) => n + 1)}
+            />
+          ) : notFound ? (
             <PageEmpty title="Episode not found" />
           ) : (
             <PageLoading label="Loading…" />

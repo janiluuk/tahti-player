@@ -9,7 +9,7 @@ import {
   reorderAdminAgendaItems,
   type GovernanceAgendaItem,
 } from '../../../../api/admin/admin-governance-agenda';
-import { PageEmpty } from '../../../../components/PageStates';
+import { PageEmpty, PageError } from '../../../../components/PageStates';
 import { AgendaItemRow } from './AgendaItemRow';
 import { CollapsibleRecord } from './MeetingRecordPanels';
 
@@ -19,6 +19,7 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<GovernanceAgendaItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [saving, setSaving] = useState(false);
@@ -26,10 +27,11 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
   const load = useCallback(async () => {
     const result = await fetchAdminAgendaItems(meetingId);
     if (!result.ok) {
-      setError(result.error);
+      setLoadError(result.error);
       setItems([]);
       return;
     }
+    setLoadError(null);
     setError(null);
     setItems(result.data);
   }, [meetingId]);
@@ -67,6 +69,15 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
     >
       {items === null ? (
         <p className="text-foreground-secondary text-xs">Loading…</p>
+      ) : loadError && items.length === 0 ? (
+        <PageError
+          title="Could not load agenda items"
+          description={loadError}
+          onRetry={() => {
+            setItems(null);
+            void load();
+          }}
+        />
       ) : items.length === 0 ? (
         <PageEmpty title="No agenda items yet." />
       ) : (

@@ -12,7 +12,7 @@ import {
 import type { FanSubscriptionRow, FanTiersResponse } from '../api/types';
 import { CurrentFanSubscriptionCard } from '../components/CurrentFanSubscriptionCard';
 import { EntitySocialHeader } from '../components/EntitySocialHeader';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import type { FanCheckoutReturn } from '../lib/fanCheckoutReturn';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
@@ -48,6 +48,8 @@ export function SubscribeView({
   const [data, setData] = useState<FanTiersResponse | null>(null);
   const [meta, setMeta] = useState<FetchMeta | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [busyTier, setBusyTier] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
   const [current, setCurrent] = useState<FanSubscriptionRow | null>(null);
@@ -56,24 +58,41 @@ export function SubscribeView({
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    void fetchFanTiers(username).then((res) => {
-      if (cancelled) {
-        return;
-      }
-      setData(res.data);
-      setMeta(res.meta);
-      setLoading(false);
-      const name = res.data?.artist.displayName;
-      if (name) {
-        syncDocumentMetadata(window.location.pathname, {
-          title: `Subscribe to ${name} · Tahti`,
-        });
-      }
-    });
+    setLoadError(null);
+    void fetchFanTiers(username)
+      .then((res) => {
+        if (cancelled) {
+          return;
+        }
+        setData(res.data);
+        setMeta(res.meta);
+        setLoadError(
+          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+        );
+        const name = res.data?.artist.displayName;
+        if (name) {
+          syncDocumentMetadata(window.location.pathname, {
+            title: `Subscribe to ${name} · Tahti`,
+          });
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setData(null);
+          setLoadError(
+            err instanceof Error ? err.message : 'Could not load tiers.',
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
     return () => {
       cancelled = true;
     };
-  }, [username]);
+  }, [username, attempt]);
 
   const reloadCurrent = () =>
     fetchMySubscriptions().then((res) =>
@@ -98,6 +117,16 @@ export function SubscribeView({
 
   if (loading) {
     return <PageLoading label="Loading tiers…" />;
+  }
+
+  if (loadError) {
+    return (
+      <PageError
+        title="Could not load subscription tiers"
+        description={loadError}
+        onRetry={() => setAttempt((n) => n + 1)}
+      />
+    );
   }
 
   if (!data) {

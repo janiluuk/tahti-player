@@ -6,28 +6,38 @@ import { Button, Input, Tooltip } from '@tahti-player/ui';
 
 import {
   deletePinnedAnnouncement,
-  fetchPinnedAnnouncements,
+  fetchPinnedAnnouncementsWithMeta,
   postPinnedAnnouncement,
   type PinnedAnnouncement,
 } from '../api/announcements';
 import { ConfirmDialog } from './ConfirmDialog';
-import { PageEmpty } from './PageStates';
+import { PageEmpty, PageError } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
   const [items, setItems] = useState<PinnedAnnouncement[]>([]);
   const [body, setBody] = useState('');
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [pendingRemove, setPendingRemove] = useState<PinnedAnnouncement | null>(
     null,
   );
 
   const reload = () => {
-    void fetchPinnedAnnouncements(slug).then((data) => {
-      setItems(data);
-      setLoading(false);
-    });
+    setLoading(true);
+    setLoadError(null);
+    void fetchPinnedAnnouncementsWithMeta(slug)
+      .then(({ data, meta }) => {
+        setItems(data);
+        setLoadError(meta.source === 'api' ? (meta.reason ?? null) : null);
+      })
+      .catch((err) => {
+        setLoadError(
+          err instanceof Error ? err.message : 'Could not load announcements.',
+        );
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(reload, [slug]);
@@ -87,6 +97,12 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
           <p className="text-foreground-secondary text-sm">
             Loading announcements…
           </p>
+        ) : loadError ? (
+          <PageError
+            title="Could not load announcements"
+            description={loadError}
+            onRetry={reload}
+          />
         ) : items.length === 0 ? (
           <PageEmpty title="No pinned announcements yet." />
         ) : (

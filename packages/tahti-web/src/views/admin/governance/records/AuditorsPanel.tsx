@@ -8,7 +8,11 @@ import {
   fetchAdminAuditors,
 } from '../../../../api/admin/admin-governance-auditors';
 import type { GovernanceAuditor } from '../../../../api/governance-association';
-import { PageEmpty, PageLoading } from '../../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 
 const KIND_OPTIONS: Array<{ id: GovernanceAuditor['kind']; label: string }> = [
@@ -229,10 +233,14 @@ function EndAuditorTerm({
 /** Auditors and operations inspectors elected by the general meeting. */
 export function AuditorsPanel() {
   const [auditors, setAuditors] = useState<GovernanceAuditor[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const result = await fetchAdminAuditors();
     setAuditors(result.data);
+    setLoadError(
+      result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+    );
   }, []);
 
   useEffect(() => {
@@ -244,6 +252,15 @@ export function AuditorsPanel() {
       <AddAuditorForm onAdded={() => void load()} />
       {auditors === null ? (
         <PageLoading label="Loading auditors…" />
+      ) : loadError && auditors.length === 0 ? (
+        <PageError
+          title="Could not load auditors"
+          description={loadError}
+          onRetry={() => {
+            setAuditors(null);
+            void load();
+          }}
+        />
       ) : auditors.length === 0 ? (
         <PageEmpty title="No auditors recorded yet" />
       ) : (

@@ -22,7 +22,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [batch-82-forty-slices.md](batch-82-forty-slices.md) | Forty slices: show-detail/Feed/SmartLink/Artist PageError, Multistream load, admin breadcrumbs, money→revenue |
+| open    | [batch-83-forty-slices.md](batch-83-forty-slices.md) | Forty slices: Collection/Search/Subscribe/embeds/admin governance PageError, Discover, stats, de-green, library toolbar |
 | open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |
 | open    | [studio-usability-audit.md](studio-usability-audit.md) | Studio uses shared components; 3 actionable findings |

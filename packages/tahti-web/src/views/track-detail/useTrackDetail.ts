@@ -54,6 +54,8 @@ export function useTrackDetail(id: string, shareKey?: string) {
     null,
   );
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const [downloadBusy, setDownloadBusy] = useState(false);
   const [downloadGates, setDownloadGates] = useState<DownloadGateStatus | null>(
@@ -74,10 +76,14 @@ export function useTrackDetail(id: string, shareKey?: string) {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    void fetchTrackDetail(id, shareKey).then(({ data }) => {
-      if (!cancelled) {
+    setLoadError(null);
+    void fetchTrackDetail(id, shareKey)
+      .then(({ data, meta }) => {
+        if (cancelled) {
+          return;
+        }
         setDetail(data);
-        setLoading(false);
+        setLoadError(meta.source === 'api' ? (meta.reason ?? null) : null);
         if (data) {
           syncDocumentMetadata(window.location.pathname, {
             title: `${data.title} by ${data.artistName} on Tahti`,
@@ -90,12 +96,23 @@ export function useTrackDetail(id: string, shareKey?: string) {
             setProfile(result.data),
           );
         }
-      }
-    });
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setLoadError(
+            err instanceof Error ? err.message : 'Could not load this track.',
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
     return () => {
       cancelled = true;
     };
-  }, [id, shareKey]);
+  }, [id, shareKey, attempt]);
 
   useEffect(() => {
     let cancelled = false;
@@ -184,6 +201,8 @@ export function useTrackDetail(id: string, shareKey?: string) {
     setDeletingCommentId,
     loading,
     setLoading,
+    loadError,
+    retryLoad: () => setAttempt((n) => n + 1),
     playlistOpen,
     setPlaylistOpen,
     downloadBusy,

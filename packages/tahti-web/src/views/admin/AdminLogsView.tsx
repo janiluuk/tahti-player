@@ -19,7 +19,7 @@ import {
 import { fetchAdminDashboard, type AdminAuditRow } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageEmpty, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import {
   GRAFANA_DASHBOARDS,
@@ -46,13 +46,18 @@ function toAuditLogEntry(entry: AdminAuditRow): LogEntryData {
 function RecentAuditEntries() {
   const [entries, setEntries] = useState<AdminAuditRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     void fetchAdminDashboard().then((result) => {
       setEntries(result.data.audit);
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
-  }, []);
+  }, [attempt]);
 
   const logs = entries.map(toAuditLogEntry);
   const scopes = [...new Set(logs.map((l) => l.source.scope))].sort();
@@ -61,6 +66,15 @@ function RecentAuditEntries() {
     <StudioPanel title="Recent audit entries">
       {loading ? (
         <PageLoading label="Loading recent audit entries…" />
+      ) : loadError && entries.length === 0 ? (
+        <PageError
+          title="Could not load recent audit entries"
+          description={loadError}
+          onRetry={() => {
+            setLoading(true);
+            setAttempt((n) => n + 1);
+          }}
+        />
       ) : entries.length === 0 ? (
         <PageEmpty title="No recent audit entries." />
       ) : (

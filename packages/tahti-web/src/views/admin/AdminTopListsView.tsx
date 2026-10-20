@@ -13,7 +13,7 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageEmpty, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import {
   formatListenCount,
@@ -46,14 +46,19 @@ export function AdminTopListsView() {
   const [query, setQuery] = useState('');
   const [buckets, setBuckets] = useState<AdminTopListBucket[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     setLoading(true);
     void fetchAdminTopLists(period, dimension, sort).then((result) => {
       setBuckets(result.data);
+      const reason =
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
+      setLoadError(reason);
       setLoading(false);
     });
-  }, [period, dimension, sort]);
+  }, [period, dimension, sort, attempt]);
 
   const normalizedQuery = query.trim().toLowerCase();
   const visibleBuckets = buckets
@@ -119,6 +124,14 @@ export function AdminTopListsView() {
             {loading ? (
               <StudioPanel>
                 <PageLoading label="Loading top lists…" />
+              </StudioPanel>
+            ) : loadError && buckets.length === 0 ? (
+              <StudioPanel>
+                <PageError
+                  title="Could not load top lists"
+                  description={loadError}
+                  onRetry={() => setAttempt((n) => n + 1)}
+                />
               </StudioPanel>
             ) : visibleBuckets.length === 0 ? (
               <StudioPanel>

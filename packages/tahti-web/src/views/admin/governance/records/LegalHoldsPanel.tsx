@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Badge } from '@tahti-player/ui';
 
@@ -7,7 +7,11 @@ import {
   type GovernanceLegalHold,
   type LegalHoldKind,
 } from '../../../../api/admin/admin-governance-legal-holds';
-import { PageEmpty, PageLoading } from '../../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 
 const KIND_LABELS: Record<LegalHoldKind, string> = {
@@ -29,15 +33,33 @@ function formatDay(iso: string): string {
  * regenerated, corrected, archived or deleted until released where they live. */
 export function LegalHoldsPanel() {
   const [holds, setHolds] = useState<GovernanceLegalHold[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    const result = await fetchGovernanceLegalHolds();
+    setHolds(result.data);
+    setLoadError(
+      result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+    );
+  }, []);
 
   useEffect(() => {
-    void fetchGovernanceLegalHolds().then((result) => setHolds(result.data));
-  }, []);
+    void load();
+  }, [load]);
 
   return (
     <StudioPanel title="Legal holds">
       {holds === null ? (
         <PageLoading label="Loading legal holds…" />
+      ) : loadError && holds.length === 0 ? (
+        <PageError
+          title="Could not load legal holds"
+          description={loadError}
+          onRetry={() => {
+            setHolds(null);
+            void load();
+          }}
+        />
       ) : holds.length === 0 ? (
         <PageEmpty title="Nothing is on legal hold" />
       ) : (

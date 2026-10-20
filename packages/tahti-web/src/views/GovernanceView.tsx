@@ -55,6 +55,27 @@ import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 
+function LoadErrorCaption({
+  message,
+  onRetry,
+}: {
+  message: string;
+  onRetry: () => void;
+}) {
+  return (
+    <p className="text-foreground-secondary mb-2 text-xs" role="status">
+      Could not refresh this list: {message}{' '}
+      <button
+        type="button"
+        className="underline underline-offset-2"
+        onClick={onRetry}
+      >
+        Retry
+      </button>
+    </p>
+  );
+}
+
 const QUICK_LINKS = [
   {
     to: '/governance/feature-requests' as const,
@@ -181,6 +202,14 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       limit: MOTIONS_PAGE_SIZE,
       cursor: motionsCursor,
     }).then((result) => {
+      const reason =
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
+      if (reason) {
+        setActionMsg(`Could not load more motions: ${reason}`);
+        setLoadingMoreMotions(false);
+        return;
+      }
+      setActionMsg(null);
       setMotions((prev) => [...prev, ...result.data]);
       setMotionsCursor(result.nextCursor);
       setLoadingMoreMotions(false);
@@ -321,6 +350,12 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             </ButtonLink>
           </GovernancePanel>
           <GovernancePanel title="Top topics" icon={LandmarkIcon}>
+            {loadErrors.requests && requests.length > 0 ? (
+              <LoadErrorCaption
+                message={loadErrors.requests}
+                onRetry={reload}
+              />
+            ) : null}
             {loadErrors.requests && requests.length === 0 ? (
               <PageError
                 title="Could not load topics"
@@ -367,6 +402,12 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       {user && !loading && !forbidden && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <GovernancePanel title="Published meetings" icon={UsersIcon}>
+            {loadErrors.meetings && meetings.length > 0 ? (
+              <LoadErrorCaption
+                message={loadErrors.meetings}
+                onRetry={reload}
+              />
+            ) : null}
             {loadErrors.meetings && meetings.length === 0 ? (
               <PageError
                 title="Could not load meetings"
@@ -424,6 +465,12 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             )}
           </GovernancePanel>
           <GovernancePanel title="Published documents" icon={FileTextIcon}>
+            {loadErrors.documents && documents.length > 0 ? (
+              <LoadErrorCaption
+                message={loadErrors.documents}
+                onRetry={reload}
+              />
+            ) : null}
             {loadErrors.documents && documents.length === 0 ? (
               <PageError
                 title="Could not load documents"
@@ -464,6 +511,9 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             )}
           </GovernancePanel>
           <GovernancePanel title="Quarterly reviews" icon={ScrollTextIcon}>
+            {loadErrors.reports && reports.length > 0 ? (
+              <LoadErrorCaption message={loadErrors.reports} onRetry={reload} />
+            ) : null}
             {loadErrors.reports && reports.length === 0 ? (
               <PageError
                 title="Could not load reviews"
@@ -500,6 +550,9 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             )}
           </GovernancePanel>
           <GovernancePanel title="Member directory" icon={UsersIcon}>
+            {loadErrors.members && members.length > 0 ? (
+              <LoadErrorCaption message={loadErrors.members} onRetry={reload} />
+            ) : null}
             {loadErrors.members && members.length === 0 ? (
               <PageError
                 title="Could not load the member directory"
@@ -644,6 +697,9 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
 
       {user && motions.length > 0 && (
         <div className="flex flex-col gap-3">
+          {loadErrors.motions ? (
+            <LoadErrorCaption message={loadErrors.motions} onRetry={reload} />
+          ) : null}
           <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
             {motions.map((m) => (
               <MotionCard

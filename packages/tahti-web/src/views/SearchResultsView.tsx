@@ -6,10 +6,13 @@ import { MediaArtwork, SectionTitle, ViewShell } from '@tahti-player/ui';
 import { fetchSearch } from '../api/listen';
 import type { SearchResponse } from '../api/search-types';
 import { GlobalSearch } from '../components/GlobalSearch';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 
-type State = { status: 'loading' } | { status: 'ready'; data: SearchResponse };
+type State =
+  | { status: 'loading' }
+  | { status: 'error'; message: string }
+  | { status: 'ready'; data: SearchResponse };
 
 function duration(sec: number | null): string | null {
   if (sec == null) {
@@ -27,6 +30,7 @@ const rowClass =
 export function SearchResultsView({ q }: { q: string }) {
   const query = q.trim();
   const [state, setState] = useState<State>({ status: 'loading' });
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (!query) {
@@ -34,15 +38,31 @@ export function SearchResultsView({ q }: { q: string }) {
     }
     let cancelled = false;
     setState({ status: 'loading' });
-    void fetchSearch(query).then(({ data }) => {
-      if (!cancelled) {
-        setState({ status: 'ready', data });
-      }
-    });
+    void fetchSearch(query)
+      .then(({ data, meta }) => {
+        if (cancelled) {
+          return;
+        }
+        const reason = meta.source === 'api' ? (meta.reason ?? null) : null;
+        setState(
+          reason
+            ? { status: 'error', message: reason }
+            : { status: 'ready', data },
+        );
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setState({
+            status: 'error',
+            message:
+              err instanceof Error ? err.message : 'Could not run this search.',
+          });
+        }
+      });
     return () => {
       cancelled = true;
     };
-  }, [query]);
+  }, [query, attempt]);
 
   return (
     <ViewShell
@@ -55,6 +75,12 @@ export function SearchResultsView({ q }: { q: string }) {
         </div>
       ) : state.status === 'loading' ? (
         <PageLoading label="Searching…" />
+      ) : state.status === 'error' ? (
+        <PageError
+          title="Could not load search results"
+          description={state.message}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
       ) : state.data.artists.length +
           state.data.tracks.length +
           state.data.collections.length ===

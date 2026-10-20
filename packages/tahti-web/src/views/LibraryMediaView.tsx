@@ -16,6 +16,7 @@ import {
   type UserMediaFile,
 } from '../api/user-media';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { LibrarySectionToolbar } from '../components/library/LibrarySectionToolbar';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { StudioPanel } from '../components/StudioPanel';
 
@@ -100,12 +101,14 @@ export function LibraryMediaView() {
       ) : (
         <div className="flex flex-col gap-4">
           {kindChips.length > 2 ? (
-            <FilterChips
-              items={kindChips}
-              selected={kindFilter}
-              onChange={setKindFilter}
-              aria-label="Filter media by type"
-            />
+            <LibrarySectionToolbar>
+              <FilterChips
+                items={kindChips}
+                selected={kindFilter}
+                onChange={setKindFilter}
+                aria-label="Filter media by type"
+              />
+            </LibrarySectionToolbar>
           ) : null}
           {visibleFiles.length === 0 ? (
             <PageEmpty

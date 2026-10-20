@@ -117,4 +117,39 @@ describe('useStatsData top-list-only refetch', () => {
     const { result } = renderHook(() => useStatsData());
     await waitFor(() => expect(result.current.loading).toBe(false));
   });
+
+  it('sets loadError instead of zeros when the API reports a failure', async () => {
+    fetchStatsSummary.mockResolvedValue({
+      data: {
+        playsToday: 0,
+        playsTotal: 0,
+        downloadsToday: 0,
+        downloadsTotal: 0,
+        followerCount: 0,
+      },
+      meta: { source: 'api' as const, reason: 'HTTP 500' },
+    });
+    const { result } = renderHook(() => useStatsData());
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.loadError).toBe('HTTP 500');
+
+    fetchStatsSummary.mockResolvedValue(
+      empty({
+        playsToday: 3,
+        playsTotal: 3,
+        downloadsToday: 0,
+        downloadsTotal: 0,
+        followerCount: 0,
+      }),
+    );
+    act(() => result.current.reload());
+    await waitFor(() => expect(result.current.loadError).toBeNull());
+    await waitFor(() => expect(result.current.summary.playsToday).toBe(3));
+  });
+
+  it('sets loadError when a request rejects', async () => {
+    fetchStatsSummary.mockRejectedValue(new Error('boom'));
+    const { result } = renderHook(() => useStatsData());
+    await waitFor(() => expect(result.current.loadError).not.toBeNull());
+  });
 });

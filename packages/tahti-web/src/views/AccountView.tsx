@@ -8,7 +8,7 @@ import { fetchMembership, fetchMySubscriptions } from '../api/client';
 import type { FanSubscriptionRow, MembershipStatus } from '../api/types';
 import { FanSubscriptionsBillingButton } from '../components/FanSubscriptionsBillingButton';
 import { MembershipStatusPanel } from '../components/MembershipStatusPanel';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import {
   fanSubscriptionStatusLabel,
   hasPortalManagedSubscription,
@@ -26,10 +26,13 @@ export function AccountView() {
   const [membership, setMembership] = useState<MembershipStatus | null>(null);
   const [subs, setSubs] = useState<FanSubscriptionRow[]>([]);
   const [loading, setLoading] = useState(false);
+  const [membershipError, setMembershipError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (!user) {
       setMembership(null);
+      setMembershipError(null);
       setSubs([]);
       return;
     }
@@ -41,6 +44,8 @@ export function AccountView() {
           return;
         }
         setMembership(m.data);
+        const reason = m.meta.source === 'api' ? (m.meta.reason ?? null) : null;
+        setMembershipError(reason);
         setSubs(s.data);
         setLoading(false);
       },
@@ -48,7 +53,7 @@ export function AccountView() {
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [user, attempt]);
 
   if (!user) {
     return (
@@ -123,19 +128,26 @@ export function AccountView() {
             id: 'membership',
             label: 'Membership',
             icon: <BadgeCheckIcon size={14} />,
-            content: !membership ? (
-              <p className="text-foreground-secondary text-sm">
-                Membership details are unavailable right now.
-              </p>
-            ) : (
-              <MembershipStatusPanel
-                membership={membership}
-                userEmail={user.email}
-                onChange={() =>
-                  void fetchMembership().then((m) => setMembership(m.data))
-                }
-              />
-            ),
+            content:
+              membershipError && !membership ? (
+                <PageError
+                  title="Could not load membership"
+                  description={membershipError}
+                  onRetry={() => setAttempt((n) => n + 1)}
+                />
+              ) : !membership ? (
+                <p className="text-foreground-secondary text-sm">
+                  Membership details are unavailable right now.
+                </p>
+              ) : (
+                <MembershipStatusPanel
+                  membership={membership}
+                  userEmail={user.email}
+                  onChange={() =>
+                    void fetchMembership().then((m) => setMembership(m.data))
+                  }
+                />
+              ),
           },
           {
             id: 'subscriptions',

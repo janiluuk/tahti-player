@@ -23,7 +23,7 @@ import {
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
 import { PageFrame } from '../components/PageHeader';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { VenueRecordings } from '../components/VenueRecordings';
 import { countryFlagAndName } from '../lib/countries';
 import { syncDocumentMetadata } from '../lib/seo';
@@ -32,32 +32,47 @@ export function VenueDetailView({ slug }: { slug: string }) {
   const [venue, setVenue] = useState<VenueProfile | null | undefined>(
     undefined,
   );
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     setVenue(undefined);
-    void fetchVenueProfile(slug).then((res) => {
-      if (cancelled) {
-        return;
-      }
-      const found = res.data;
-      setVenue(found);
-      if (found) {
-        const place = [found.city, found.countryCode]
-          .filter(Boolean)
-          .join(', ');
-        syncDocumentMetadata(window.location.pathname, {
-          title: `${found.name} on Tahti`,
-          description:
-            found.description ??
-            `${found.name}${place ? ` — ${place}` : ''} is a verified venue on Tahti.`,
-        });
-      }
-    });
+    setLoadError(null);
+    void fetchVenueProfile(slug)
+      .then((res) => {
+        if (cancelled) {
+          return;
+        }
+        const found = res.data;
+        setVenue(found);
+        setLoadError(
+          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+        );
+        if (found) {
+          const place = [found.city, found.countryCode]
+            .filter(Boolean)
+            .join(', ');
+          syncDocumentMetadata(window.location.pathname, {
+            title: `${found.name} on Tahti`,
+            description:
+              found.description ??
+              `${found.name}${place ? ` — ${place}` : ''} is a verified venue on Tahti.`,
+          });
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setVenue(null);
+          setLoadError(
+            err instanceof Error ? err.message : 'Could not load this venue.',
+          );
+        }
+      });
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, attempt]);
 
   const backLink = (
     <Link
@@ -75,6 +90,19 @@ export function VenueDetailView({ slug }: { slug: string }) {
       <PageFrame maxWidth="3xl">
         {backLink}
         <PageLoading label="Loading venue…" />
+      </PageFrame>
+    );
+  }
+
+  if (venue === null && loadError) {
+    return (
+      <PageFrame maxWidth="3xl">
+        {backLink}
+        <PageError
+          title="Could not load this venue"
+          description={loadError}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
       </PageFrame>
     );
   }

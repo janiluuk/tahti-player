@@ -20,6 +20,12 @@ import type {
 } from '../api/types';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 
+function rejectedReason(result: PromiseRejectedResult): string {
+  return result.reason instanceof Error
+    ? result.reason.message
+    : 'Request failed';
+}
+
 function centsLabel(raw: string) {
   const n = Number(raw);
   if (!Number.isFinite(n)) {
@@ -34,6 +40,9 @@ export function TransparencyView() {
   const [ledger, setLedger] = useState<TransparencyLedgerEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
+  const [ytdError, setYtdError] = useState<string | null>(null);
+  const [grantsError, setGrantsError] = useState<string | null>(null);
+  const [ledgerError, setLedgerError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -51,6 +60,15 @@ export function TransparencyView() {
       setYtd(y.status === 'fulfilled' ? y.value.data : null);
       setGrants(g.status === 'fulfilled' ? g.value.data : null);
       setLedger(l.status === 'fulfilled' ? l.value.data : []);
+      setYtdError(y.status === 'rejected' ? rejectedReason(y) : null);
+      setGrantsError(g.status === 'rejected' ? rejectedReason(g) : null);
+      const ledgerReason =
+        l.status === 'fulfilled'
+          ? l.value.meta.source === 'api'
+            ? (l.value.meta.reason ?? null)
+            : null
+          : rejectedReason(l);
+      setLedgerError(ledgerReason);
       setFailed(
         y.status === 'rejected' &&
           g.status === 'rejected' &&
@@ -100,6 +118,16 @@ export function TransparencyView() {
         />
       ) : (
         <>
+          {!ytd && ytdError && (
+            <SectionShell title="Year to date">
+              <PageError
+                title="Could not load year-to-date figures"
+                description={ytdError}
+                onRetry={() => setAttempt((n) => n + 1)}
+              />
+            </SectionShell>
+          )}
+
           {ytd && (
             <SectionShell title={`YTD ${ytd.year}`}>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -137,6 +165,16 @@ export function TransparencyView() {
                   </tbody>
                 </table>
               </HorizontalScroll>
+            </SectionShell>
+          )}
+
+          {!grants && grantsError && (
+            <SectionShell title="Grants">
+              <PageError
+                title="Could not load the grants report"
+                description={grantsError}
+                onRetry={() => setAttempt((n) => n + 1)}
+              />
             </SectionShell>
           )}
 
@@ -201,7 +239,13 @@ export function TransparencyView() {
           )}
 
           <SectionShell title="Latest ledger">
-            {ledger.length === 0 ? (
+            {ledgerError && ledger.length === 0 ? (
+              <PageError
+                title="Could not load the ledger"
+                description={ledgerError}
+                onRetry={() => setAttempt((n) => n + 1)}
+              />
+            ) : ledger.length === 0 ? (
               <PageEmpty title="No ledger entries yet" />
             ) : (
               <HorizontalScroll label="Latest ledger">

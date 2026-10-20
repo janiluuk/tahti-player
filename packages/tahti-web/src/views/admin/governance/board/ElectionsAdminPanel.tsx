@@ -11,7 +11,11 @@ import {
   BOARD_ROLE_LABELS,
   type GovernanceBoardRole,
 } from '../../../../api/governance-board';
-import { PageEmpty, PageLoading } from '../../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { BOARD_ROLE_OPTIONS } from './AddBoardTermForm';
 import { ElectionActions } from './ElectionActions';
@@ -153,10 +157,14 @@ function NewElectionForm({ onCreated }: { onCreated: () => void }) {
 /** Board elections: call one, follow it to the result. */
 export function ElectionsAdminPanel() {
   const [elections, setElections] = useState<AdminElection[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const result = await fetchAdminElections();
     setElections(result.data);
+    setLoadError(
+      result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+    );
   }, []);
 
   useEffect(() => {
@@ -168,6 +176,15 @@ export function ElectionsAdminPanel() {
       <NewElectionForm onCreated={() => void load()} />
       {elections === null ? (
         <PageLoading label="Loading elections…" />
+      ) : loadError && elections.length === 0 ? (
+        <PageError
+          title="Could not load elections"
+          description={loadError}
+          onRetry={() => {
+            setElections(null);
+            void load();
+          }}
+        />
       ) : elections.length === 0 ? (
         <PageEmpty title="No elections called yet" />
       ) : (
