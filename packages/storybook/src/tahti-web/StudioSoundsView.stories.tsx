@@ -53,7 +53,7 @@ export const AmbientCovers: Story = {
   },
 };
 
-/** Hearthis embed hosts in the row action box (compact), not a full-width PlayerBar strip. */
+/** Hearthis embeds live in the Embeds section (provider widget), not mixed into ambient rows. */
 export const HearthisRowEmbed: Story = {
   beforeEach: () => {
     usePlayerStore.setState({ currentId: null, status: 'idle', queue: [] });
@@ -63,21 +63,18 @@ export const HearthisRowEmbed: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const link = await canvas.findByRole('link', {
-      name: 'Imported from hearthis.at',
-    });
-    const li = link.closest('li');
-    await expect(li).toBeTruthy();
-    const actions = within(li!).getByTestId('sound-row-actions');
+    const embeds = await canvas.findByTestId('sounds-embeds-section');
+    await expect(
+      within(embeds).getByRole('heading', { name: 'Embeds' }),
+    ).toBeVisible();
     await userEvent.click(
-      within(actions).getByRole('button', {
+      within(embeds).getByRole('button', {
         name: 'Play Imported from hearthis.at on hearthis.at',
       }),
     );
-    const embed = await within(actions).findByTestId('hearthis-row-embed');
+    const embed = await within(embeds).findByTestId('hearthis-row-embed');
     await expect(embed).toBeVisible();
     await expect(embed.className).toMatch(/max-h-28/);
-    await expect(actions.contains(embed)).toBe(true);
     await expect(
       canvasElement.querySelector(
         '[data-testid="connected-player-bar"] [data-testid="hearthis-row-embed"]',
@@ -89,15 +86,17 @@ export const HearthisRowEmbed: Story = {
 /** Type filter set to Clip (URL `?contentType=CLIP` in the live app). */
 export const ClipFilter: Story = {};
 
-/** The `<li>` row for the sound titled `title`. */
+/** The ambient list row for the sound titled `title`. */
 function row(canvasElement: HTMLElement, title: string) {
   const link = within(canvasElement).getByRole('link', { name: title });
-  return within(link.closest('li')!);
+  const host =
+    link.closest('[data-testid="ambient-track-row"]') ?? link.closest('li');
+  return within(host as HTMLElement);
 }
 
 // Rows for an upload that failed processing (with the reason and a Retry
 // button), one that failed on an API without retry, and one still
-// processing. Retry re-queues the file and the row goes back to PENDING.
+// processing. Retry re-queues the file; the row shows TrackProcessing again.
 export const ProcessingFailed: Story = {
   beforeEach: seedStudioSounds([
     FAILED_SOUND,
@@ -117,7 +116,9 @@ export const ProcessingFailed: Story = {
     await expect(legacy.queryByRole('button', { name: /^Retry/ })).toBeNull();
 
     await expect(
-      row(canvasElement, PROCESSING_SOUND.title).getByRole('status'),
+      row(canvasElement, PROCESSING_SOUND.title).getByTestId(
+        'track-processing',
+      ),
     ).toHaveTextContent('Processing');
 
     await userEvent.click(
@@ -128,7 +129,7 @@ export const ProcessingFailed: Story = {
     await findToast(canvasElement, `Processing "${FAILED_SOUND.title}" again`);
     await waitFor(() =>
       expect(
-        row(canvasElement, FAILED_SOUND.title).getByRole('status'),
+        row(canvasElement, FAILED_SOUND.title).getByTestId('track-processing'),
       ).toHaveTextContent('Processing'),
     );
     await expect(
