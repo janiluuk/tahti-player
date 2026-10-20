@@ -63,7 +63,8 @@ export const BookShow: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText('Album release show')).toBeVisible();
+    const existing = await canvas.findByText('Album release show');
+    await waitFor(() => expect(existing).toBeVisible());
     await userEvent.click(canvas.getByRole('button', { name: 'Book a show' }));
     await userEvent.type(canvas.getByLabelText('Starts'), '2030-01-15T20:00');
     await userEvent.type(

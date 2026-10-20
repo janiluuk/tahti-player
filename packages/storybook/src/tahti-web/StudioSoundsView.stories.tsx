@@ -63,6 +63,9 @@ export const HearthisRowEmbed: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    await canvas.findByRole('button', {
+      name: 'Play Imported from hearthis.at on hearthis.at',
+    });
     const embeds = await canvas.findByTestId('sounds-embeds-section');
     await expect(
       within(embeds).getByRole('heading', { name: 'Embeds' }),

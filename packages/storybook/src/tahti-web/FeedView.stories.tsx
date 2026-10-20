@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FeedView } from '@tahti-web/views/FeedView';
 import type { ReactNode } from 'react';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -61,9 +61,8 @@ export const SignedOutPhone: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('Sign in to see your feed'),
-    ).toBeVisible();
+    const heading = await canvas.findByText('Sign in to see your feed');
+    await waitFor(() => expect(heading).toBeVisible());
     await expect(canvas.getByRole('button', { name: 'Log in' })).toBeVisible();
     const box = canvasElement.getBoundingClientRect();
     await expect(box.width).toBeLessThanOrEqual(390);
