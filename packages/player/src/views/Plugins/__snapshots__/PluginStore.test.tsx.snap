@@ -710,7 +710,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                         class="flex flex-col gap-3 px-2 py-2"
                                       >
                                         <div
-                                          class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row flex-wrap items-center justify-between gap-4"
+                                          class="border-border flex rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-4"
                                           data-testid="plugin-store-item"
                                         >
                                           <div
@@ -796,7 +796,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                           </div>
                                         </div>
                                         <div
-                                          class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row flex-wrap items-center justify-between gap-4"
+                                          class="border-border flex rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-4"
                                           data-testid="plugin-store-item"
                                         >
                                           <div
@@ -882,7 +882,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                           </div>
                                         </div>
                                         <div
-                                          class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row flex-wrap items-center justify-between gap-4"
+                                          class="border-border flex rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-4"
                                           data-testid="plugin-store-item"
                                         >
                                           <div
