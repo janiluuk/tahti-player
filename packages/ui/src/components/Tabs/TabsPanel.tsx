@@ -1,7 +1,8 @@
 import { TabPanel } from '@headlessui/react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 import { FC, PropsWithChildren } from 'react';
 
+import { useSkipEnterMotion } from '../../hooks/useSkipEnterMotion';
 import { cn } from '../../utils';
 import { ScrollableArea } from '../ScrollableArea';
 import { useTabsContext } from './context';
@@ -16,7 +17,7 @@ type TabsPanelProps = PropsWithChildren<{
 // AnimatePresence-driven delay) while still giving the swap some motion.
 export const TabsPanel: FC<TabsPanelProps> = ({ children, className }) => {
   const { panelClassName } = useTabsContext();
-  const reducedMotion = useReducedMotion();
+  const reducedMotion = useSkipEnterMotion();
   return (
     <TabPanel
       className={cn(

@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { type LucideIcon } from 'lucide-react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 import {
   createContext,
   useContext,
@@ -10,6 +10,8 @@ import {
   type PropsWithChildren,
   type ReactNode,
 } from 'react';
+
+import { useSkipEnterMotion } from '@tahti-player/ui';
 
 import { Eyebrow } from '../../../components/tahti/Eyebrow';
 
@@ -34,7 +36,7 @@ const tileStaggerItem = {
 };
 
 export function HomeTileStagger({ children }: PropsWithChildren) {
-  const reducedMotion = useReducedMotion();
+  const reducedMotion = useSkipEnterMotion();
   const [skipEnter] = useState(() => {
     if (typeof sessionStorage === 'undefined') {
       return false;

@@ -4,13 +4,10 @@ import {
   useRouter,
   useRouterState,
 } from '@tanstack/react-router';
-import {
-  AnimatePresence,
-  motion,
-  useIsPresent,
-  useReducedMotion,
-} from 'motion/react';
+import { AnimatePresence, motion, useIsPresent } from 'motion/react';
 import { forwardRef, memo, useRef } from 'react';
+
+import { useSkipEnterMotion } from '../hooks/useSkipEnterMotion';
 
 const SLIDE_DISTANCE = 8;
 const SCALE_FACTOR = 0.995;
@@ -104,7 +101,7 @@ const AnimatedOutlet = forwardRef<HTMLDivElement, { fast?: boolean }>(
   ({ fast = false }, ref) => {
     const router = useRouter();
     const isPresent = useIsPresent();
-    const reducedMotion = useReducedMotion();
+    const reducedMotion = useSkipEnterMotion();
     const frozenSnapshot = useRef<RouterSnapshot | null>(null);
     const frozen = useRef<Router | null>(null);
 

@@ -7,10 +7,10 @@ import {
   RadioIcon,
   XIcon,
 } from 'lucide-react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, Tooltip, useSkipEnterMotion } from '@tahti-player/ui';
 
 import { hasAccountRole } from '../lib/accountRoles';
 import { cn } from '../lib/cn';
@@ -147,7 +147,7 @@ export function MobileDrawer({
 }: MobileDrawerProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const [closeTooltipArmed, setCloseTooltipArmed] = useState(false);
-  const reducedMotion = useReducedMotion();
+  const reducedMotion = useSkipEnterMotion();
   const offScreenX = side === 'left' ? '-100%' : '100%';
 
   useEffect(() => {
