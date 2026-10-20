@@ -26,7 +26,7 @@ export const Default: Story = {
     await expect(
       await canvas.findByRole('heading', { name: "What's New" }),
     ).toBeVisible();
-    await expect(canvas.getByText('7–20 Oct 2026')).toBeVisible();
+    await expect(canvas.getByText(/7–20 Oct 2026/)).toBeVisible();
     await expect(canvas.getByText('Listen')).toBeVisible();
     const openFull = await canvas.findByRole('button', {
       name: /Read full update for 7–20 Oct 2026/i,

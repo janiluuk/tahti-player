@@ -25,25 +25,27 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
     />
   </div>
   <div
-    class="fixed inset-0 flex items-center justify-center p-4"
+    class="pointer-events-none fixed inset-0 flex items-center justify-center p-4"
   >
     <div
       animate="[object Object]"
-      class="w-full max-w-[calc(100vw-2rem)]"
+      class="pointer-events-auto flex max-h-full w-full max-w-[calc(100vw-2rem)] flex-col"
       exit="[object Object]"
       initial="[object Object]"
       transition="[object Object]"
     >
       <div
-        class="border-border bg-background shadow-shadow relative mx-auto rounded-md border-(length:--border-width) flex h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] w-full max-w-none min-w-0 flex-col overflow-hidden p-0 sm:h-[80vh] sm:max-h-[900px] sm:w-[80vw] sm:max-w-6xl sm:flex-row!"
+        class="border-border bg-background shadow-shadow relative mx-auto overflow-y-auto rounded-md border-(length:--border-width) flex! h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] w-full max-w-none min-w-0 flex-col overflow-hidden! p-0 sm:h-[80vh] sm:max-h-[900px] sm:w-[80vw] sm:max-w-6xl sm:flex-row!"
         data-headlessui-state="open"
         data-open=""
         id="headlessui-dialog-panel-:ra:"
       >
-        <div>
+        <div
+          class="absolute top-3 right-3 z-30"
+        >
           <button
             aria-label="Close"
-            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center absolute top-3 right-3"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
             data-headlessui-state=""
             data-testid="dialog-x-close"
             type="button"
