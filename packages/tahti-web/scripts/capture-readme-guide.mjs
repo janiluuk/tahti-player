@@ -629,11 +629,6 @@ async function seedSession() {
       localStorage.setItem('tahti-web-onboarded:mock-board-1', '1');
       // Spotify theme in CAPTURE_THEME_MODE (see lib/captureSetup.mjs).
       localStorage.setItem('tahti-web-theme', JSON.stringify(themeState));
-      localStorage.setItem('tahti-nuclear-theme-id', themeState.state.themeId);
-      localStorage.setItem(
-        'tahti-nuclear-dark',
-        themeState.state.dark ? '1' : '0',
-      );
     },
     { authState: auth, layoutState: layout, themeState: CAPTURE_THEME_STATE },
   );

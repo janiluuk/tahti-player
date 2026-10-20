@@ -22,8 +22,8 @@ describe('generateAdvancedThemeCSS', () => {
     });
 
     expect(css).toMatchInlineSnapshot(`
-      ":root{--background: oklch(98% 0 0); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary); --background-input: var(--background);}
-      [data-theme='dark']{--background: oklch(40% 0.03 277); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary); --background-input: var(--background);}"
+      "html:root{--background: oklch(98% 0 0); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary); --background-input: var(--background);}
+      html[data-theme='dark']{--background: oklch(40% 0.03 277); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary); --background-input: var(--background);}"
     `);
   });
 
@@ -34,8 +34,7 @@ describe('generateAdvancedThemeCSS', () => {
       vars: { radius: ' 10px  ' },
     });
 
-    expect(css).toMatchInlineSnapshot(`
-":root{--radius: 10px;}"`);
+    expect(css).toMatchInlineSnapshot(`"html:root{--radius: 10px;}"`);
   });
 
   it('fills tokens a theme leaves out from the ones it sets', () => {

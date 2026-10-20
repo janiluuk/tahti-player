@@ -36,8 +36,6 @@ const THEME_STATE = CAPTURE_THEME_STATE;
 async function setDarkTheme() {
   await page.evaluate((theme) => {
     localStorage.setItem('tahti-web-theme', JSON.stringify(theme));
-    localStorage.setItem('tahti-nuclear-theme-id', theme.state.themeId);
-    localStorage.setItem('tahti-nuclear-dark', theme.state.dark ? '1' : '0');
   }, THEME_STATE);
 }
 

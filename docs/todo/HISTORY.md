@@ -5117,3 +5117,17 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
   - `theme-boot.js` paints the cached custom-theme CSS before the app loads, so repeat visits no longer flash stock Nuclear.
   - The theme crossfade, a class with no CSS behind it, was removed.
 - Leftovers: [theme-system-performance.md](theme-system-performance.md).
+
+## 2026-10-20 — Theme audit leftovers
+
+- First visits no longer flash stock Nuclear: a Vite `transformIndexHtml` plugin builds Gruvbox's generated CSS into `index.html` as `<style id="advanced-theme-boot" data-theme-for="custom:gruvbox">`. `theme-boot.js` swaps in the cached CSS of the stored custom theme, or drops the baked style for a basic theme or an uncached custom one.
+- Custom-theme CSS no longer depends on source order: the generator emits `html:root` / `html[data-theme='dark']`.
+- The active custom theme is marked as `data-custom-theme-id` on `<html>`. The `custom:tahti-blue` rules in `styles.css` never matched before, because `data-theme-id` is always `nuclear:default` for custom themes; they now target the new attribute.
+- Arctic Moss / Aurora / Ember / Lagoon light now tint `--background-secondary` (top bar, sidebar), `--foreground` and `--border` instead of using stock white / navy / black. All contrast pairs still pass.
+- Legacy `tahti-nuclear-theme-id` / `tahti-nuclear-dark` keys:
+  - The store no longer writes them, and removes them after migrating.
+  - `theme-boot.js` reads them only when nothing is saved under `tahti-web-theme`.
+  - The capture scripts no longer seed them.
+- The day/night timer runs only in dynamic mode.
+- Card / Badge / CardsRow / MediaArtwork / ListenSection stories checked in all six stock themes, light and dark: 72 renders, no errors, no text under 4.5:1.
+- Not done, by decision: lazy-loading the preset themes. They are about 10 KB gzipped of the 461 KB `TahtiApp` chunk, the default theme (Gruvbox) is one of them, and Settings lists all of them, so a split would add a request before the first theme application.

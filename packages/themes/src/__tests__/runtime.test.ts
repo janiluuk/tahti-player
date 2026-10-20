@@ -27,8 +27,9 @@ describe('runtime API', () => {
     applyAdvancedTheme({ version: 1, name: 'X', vars: { radius: '10px' } });
     const style = document.getElementById('advanced-theme');
     expect(style).toBeTruthy();
-    expect(style?.textContent).toMatchInlineSnapshot(`
-":root{--radius: 10px;}"`);
+    expect(style?.textContent).toMatchInlineSnapshot(
+      `"html:root{--radius: 10px;}"`,
+    );
 
     clearAdvancedTheme();
     expect(document.getElementById('advanced-theme')).toBeNull();

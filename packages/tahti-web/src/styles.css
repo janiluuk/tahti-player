@@ -58,7 +58,7 @@ body,
 }
 
 :root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,
-:root[data-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
+:root[data-custom-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
   background-color: var(--background);
   transition:
     background-color 240ms ease,
@@ -87,7 +87,7 @@ body,
   :root[data-theme-id='nuclear:tahti-dark']
     :is(button, a, [role='button'], [role='tab'], summary),
   :root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,
-  :root[data-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
+  :root[data-custom-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
     transition-duration: 0.01ms;
   }
 }
