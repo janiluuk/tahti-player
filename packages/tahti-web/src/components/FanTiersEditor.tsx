@@ -16,7 +16,12 @@ import {
   type FanTierRow,
 } from '../api/fan-tiers';
 import { FAN_TIER_PERK_LABELS, humanizeFanTierPerk } from '../lib/fanTierPerks';
-import { PageEmpty, PageError, PageLoading } from './PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from './PageStates';
 
 const PERK_OPTIONS = [
   {
@@ -92,6 +97,14 @@ export function FanTiersEditor() {
           New tier
         </Button>
       </div>
+
+      {loaded && loadError && tiers.length > 0 ? (
+        <PageErrorBanner
+          title="Could not refresh your fan tiers."
+          description={loadError}
+          onRetry={reload}
+        />
+      ) : null}
 
       {!loaded ? (
         <PageLoading label="Loading tiers…" />

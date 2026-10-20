@@ -10,7 +10,12 @@ import {
   type DeviceSession,
 } from '../api/sessions';
 import { ConfirmDialog } from './ConfirmDialog';
-import { PageEmpty, PageError, PageLoading } from './PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from './PageStates';
 
 function formatWhen(value: string | null): string {
   if (!value) {
@@ -70,6 +75,13 @@ export function DevicesSessionsPanel() {
 
   return (
     <div className="flex flex-col gap-4">
+      {loadError ? (
+        <PageErrorBanner
+          title="Could not refresh your devices"
+          description={loadError}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
+      ) : null}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <p className="text-foreground/80 text-sm">
           Each sign-in keeps its own session. Signing in elsewhere no longer

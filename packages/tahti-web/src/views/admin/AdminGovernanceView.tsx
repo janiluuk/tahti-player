@@ -1,4 +1,4 @@
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import {
   BanknoteIcon,
   FileTextIcon,
@@ -71,12 +71,29 @@ export function AdminGovernanceView({ tab }: { tab?: AdminGovernanceTabId }) {
   const active = isAdminGovernanceTabId(tab)
     ? tab
     : DEFAULT_ADMIN_GOVERNANCE_TAB;
+  const activeLabel =
+    ADMIN_GOVERNANCE_TABS.find((item) => item.id === active)?.label ??
+    'Overview';
 
   return (
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/governance">
           <div className="flex max-w-4xl flex-col gap-6">
+            <nav
+              aria-label="Breadcrumb"
+              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
+            >
+              <Link to="/admin" className="hover:underline">
+                Admin
+              </Link>
+              <span aria-hidden>→</span>
+              <Link to="/admin/governance" className="hover:underline">
+                Governance
+              </Link>
+              <span aria-hidden>→</span>
+              <span aria-current="page">{activeLabel}</span>
+            </nav>
             <ModerationTabs
               activeId={active}
               items={GOVERNANCE_TAB_ITEMS}

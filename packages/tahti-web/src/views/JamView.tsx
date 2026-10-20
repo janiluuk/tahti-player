@@ -172,7 +172,7 @@ export function JamView({ code }: { code: string }) {
 
   if (!userId) {
     return (
-      <TahtiJam>
+      <TahtiJam data-testid="jam-view">
         <EmptyState
           icon={<LogInIcon size={48} />}
           title="Log in to join this Jam"
@@ -196,7 +196,7 @@ export function JamView({ code }: { code: string }) {
 
   if (joinError) {
     return (
-      <TahtiJam>
+      <TahtiJam data-testid="jam-view">
         <EmptyState
           icon={<XIcon size={48} />}
           title="Jam not found"
@@ -213,7 +213,7 @@ export function JamView({ code }: { code: string }) {
 
   if (ended) {
     return (
-      <TahtiJam>
+      <TahtiJam data-testid="jam-view">
         <EmptyState
           icon={<XIcon size={48} />}
           title="This Jam has ended"
@@ -227,7 +227,7 @@ export function JamView({ code }: { code: string }) {
 
   if (removed) {
     return (
-      <TahtiJam>
+      <TahtiJam data-testid="jam-view">
         <EmptyState
           icon={<XIcon size={48} />}
           title="You are no longer in this Jam"
@@ -241,7 +241,7 @@ export function JamView({ code }: { code: string }) {
 
   if (!session || connectionStatus === 'connecting') {
     return (
-      <TahtiJam>
+      <TahtiJam data-testid="jam-view">
         <TahtiJam.Connecting
           labels={{
             title: 'Joining the Jam…',
@@ -255,7 +255,7 @@ export function JamView({ code }: { code: string }) {
   const track = session.currentTrack;
 
   return (
-    <TahtiJam className="relative h-full">
+    <TahtiJam data-testid="jam-view" className="relative h-full">
       <div className="pointer-events-none absolute inset-0 opacity-50">
         <ChannelVisualizer
           artworkUrl={track?.coverUrl}

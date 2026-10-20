@@ -44,9 +44,20 @@ describe('TagSearchView', () => {
     fetchMock.mockResolvedValue({ ok: true, tracks: [] });
     await renderWithRouter(<TagSearchView tag="drone" />);
     expect(
+      await screen.findByText('No public tracks tagged “drone” yet'),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/mock fixtures/)).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Discover' })).toBeInTheDocument();
+  });
+
+  it('mentions mock fixtures only in force-mock mode', async () => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+    fetchMock.mockResolvedValue({ ok: true, tracks: [] });
+    await renderWithRouter(<TagSearchView tag="drone" />);
+    expect(
       await screen.findByText(/No tracks tagged “drone” in mock fixtures/),
     ).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Discover' })).toBeInTheDocument();
+    vi.unstubAllEnvs();
   });
 
   it('shows an error when the API cannot filter by tag', async () => {

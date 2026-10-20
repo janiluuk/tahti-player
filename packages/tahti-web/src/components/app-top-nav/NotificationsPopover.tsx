@@ -3,6 +3,7 @@ import { BellIcon } from 'lucide-react';
 import { Badge, Button, EmptyState } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
+import { PageError } from '../PageStates';
 import { iconBtnClass } from './shared';
 import { type TopNavState } from './useTopNavState';
 
@@ -19,6 +20,8 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
     hasOlderNotifications,
     loadingOlderNotifications,
     loadOlderNotifications,
+    notificationsError,
+    loadNotifications,
   } = nav;
 
   return (
@@ -31,7 +34,7 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
           'relative',
           isMobile && 'hidden',
           notificationsOpen &&
-            'border-primary bg-primary/15 text-primary-strong',
+            'border-accent-cyan bg-accent-cyan/15 text-foreground',
         )}
         aria-label="Notifications"
         aria-haspopup="menu"
@@ -63,7 +66,28 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
           <div className="px-2 py-1">
             <span className="text-sm font-semibold">Notifications</span>
           </div>
-          {notifications.length === 0 ? (
+          {notificationsError && notifications.length > 0 ? (
+            <div
+              role="alert"
+              className="text-accent-red-strong flex items-center justify-between gap-2 px-2 py-1 text-xs"
+            >
+              <span>Could not refresh notifications.</span>
+              <Button
+                size="xs"
+                variant="text"
+                onClick={() => void loadNotifications()}
+              >
+                Retry
+              </Button>
+            </div>
+          ) : null}
+          {notificationsError && notifications.length === 0 ? (
+            <PageError
+              title="Could not load notifications"
+              description={notificationsError}
+              onRetry={() => void loadNotifications()}
+            />
+          ) : notifications.length === 0 ? (
             <EmptyState
               size="sm"
               title="No notifications yet"
@@ -78,7 +102,7 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
                     'rounded-md px-2 py-2 text-xs',
                     notification.readAt
                       ? 'text-foreground-secondary'
-                      : 'bg-primary/10',
+                      : 'bg-accent-cyan/10',
                   )}
                 >
                   <div className="flex items-start gap-2">

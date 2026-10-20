@@ -41,11 +41,30 @@ describe('HomeComingUp', () => {
   it('renders nothing when no events are coming up', async () => {
     vi.spyOn(upcoming, 'fetchUpcomingEvents').mockResolvedValue({
       data: [],
-      meta: { source: 'api', reason: 'HTTP 404' },
+      meta: { source: 'api' },
     });
 
     await renderWithRouter(<HomeComingUp />);
 
     expect(screen.queryByTestId('listen-coming-up')).toBeNull();
+    expect(screen.queryByTestId('listen-coming-up-error')).toBeNull();
+  });
+
+  it('shows an error with retry when the events fetch fails', async () => {
+    const fetchEvents = vi
+      .spyOn(upcoming, 'fetchUpcomingEvents')
+      .mockResolvedValue({
+        data: [],
+        meta: { source: 'api', reason: 'HTTP 502' },
+      });
+
+    await renderWithRouter(<HomeComingUp />);
+
+    expect(
+      await screen.findByText('Could not load upcoming events'),
+    ).toBeVisible();
+    fetchEvents.mockResolvedValue({ data: [event], meta: { source: 'api' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(await screen.findByText('Album release show')).toBeVisible();
   });
 });

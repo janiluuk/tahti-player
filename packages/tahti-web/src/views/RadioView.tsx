@@ -98,6 +98,7 @@ export function RadioView() {
   const [featured, setFeatured] = useState<RadioFeatureHistoryItem[]>([]);
   const [upcoming, setUpcoming] = useState<StudioShowBooking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [stationError, setStationError] = useState<string | null>(null);
   const [sectionErrors, setSectionErrors] = useState<
     Partial<Record<'upcoming' | 'recent' | 'featured', string>>
   >({});
@@ -138,12 +139,23 @@ export function RadioView() {
   const reload = () => {
     setLoading(true);
     void Promise.all([
-      fetchRadioStation().catch(() => null),
+      fetchRadioStation().then(
+        (result) => ({
+          result,
+          reason:
+            result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+        }),
+        (err: unknown) => ({
+          result: null,
+          reason: err instanceof Error ? err.message : 'Station fetch failed',
+        }),
+      ),
       fetchRadio(),
       fetchRadioRecentlyPlayed(),
       fetchRadioFeatureHistory(),
-    ]).then(([ch, memberRelay, recentRes, featuredRes]) => {
-      setStation(ch?.data ?? null);
+    ]).then(([stationRes, memberRelay, recentRes, featuredRes]) => {
+      setStation(stationRes.result?.data ?? null);
+      setStationError(stationRes.result ? null : stationRes.reason);
       setRelay(memberRelay.data);
       setRecent(recentRes.data);
       setFeatured(featuredRes.data);
@@ -210,9 +222,19 @@ export function RadioView() {
   };
 
   return (
-    <ViewShell title="Radio" classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}>
+    <ViewShell
+      title="Radio"
+      data-testid="radio-view"
+      classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
+    >
       {loading ? (
         <PageLoading label="Tuning Tahti Radio…" />
+      ) : !station && stationError ? (
+        <PageError
+          title="Could not load Tahti Radio"
+          description={stationError}
+          onRetry={reload}
+        />
       ) : !station ? (
         <PageEmpty
           icon="radio"

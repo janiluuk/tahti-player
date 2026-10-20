@@ -16,6 +16,7 @@ import {
   type Mention,
   type MentionSettings,
 } from '../../../api/me-mentions';
+import { PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { humanizePastDate } from '../../../lib/humanizeDate';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
@@ -57,6 +58,7 @@ export function MentionsPanel() {
   const [settings, setSettings] = useState<MentionSettings | null>(null);
   const [mentions, setMentions] = useState<Mention[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [mentionsError, setMentionsError] = useState<string | null>(null);
   const [handle, setHandle] = useState('');
   const [muteError, setMuteError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -68,7 +70,9 @@ export function MentionsPanel() {
           setError(settingsResult.error);
           return;
         }
+        setError(null);
         setSettings(settingsResult.data);
+        setMentionsError(mentionsResult.ok ? null : mentionsResult.error);
         setMentions(mentionsResult.ok ? mentionsResult.data : []);
       },
     );
@@ -77,7 +81,16 @@ export function MentionsPanel() {
   useEffect(load, [load]);
 
   if (error) {
-    return <SettingsHint>{error}</SettingsHint>;
+    return (
+      <PageError
+        title="Could not load your mention settings"
+        description={error}
+        onRetry={() => {
+          setError(null);
+          load();
+        }}
+      />
+    );
   }
   if (!settings || !mentions) {
     return <SettingsHint>Loading…</SettingsHint>;
@@ -136,7 +149,13 @@ export function MentionsPanel() {
       </StudioPanel>
 
       <StudioPanel title="Recent mentions">
-        {mentions.length === 0 ? (
+        {mentionsError ? (
+          <PageError
+            title="Could not load your mentions"
+            description={mentionsError}
+            onRetry={load}
+          />
+        ) : mentions.length === 0 ? (
           <SettingsHint>Nobody has mentioned you yet.</SettingsHint>
         ) : (
           <ul className="divide-border divide-y">

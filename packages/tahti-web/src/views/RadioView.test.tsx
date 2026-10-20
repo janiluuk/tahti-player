@@ -18,11 +18,18 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { RadioView } from './RadioView';
 
 let recentFailure: string | null = null;
+let stationFailure: string | null = null;
 
 vi.mock('../api/client', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../api/client')>();
   return {
     ...actual,
+    fetchRadioStation: async () => {
+      if (stationFailure) {
+        throw new Error(stationFailure);
+      }
+      return actual.fetchRadioStation();
+    },
     fetchRadio: async () => ({
       data: { live: false, channel: null },
       meta: { source: 'api' as const },
@@ -123,5 +130,38 @@ describe('RadioView failed sections', () => {
       fireEvent.click(screen.getByRole('tab', { name: /Just played/ }));
     });
     expect(screen.getByText('No recent plays logged yet.')).toBeTruthy();
+  });
+});
+
+describe('RadioView station failure', () => {
+  beforeEach(() => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+  });
+
+  afterEach(() => {
+    cleanup();
+    vi.unstubAllEnvs();
+    stationFailure = null;
+  });
+
+  it('shows a retryable error instead of the offline empty state when the station fetch fails', async () => {
+    stationFailure = 'HTTP 503';
+    const router = createRouter({
+      routeTree: createRootRoute({ component: RadioView }),
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+    expect(screen.getByTestId('radio-view')).toBeTruthy();
+    expect(screen.getByText('Could not load Tahti Radio')).toBeTruthy();
+    expect(screen.getByText('HTTP 503')).toBeTruthy();
+    expect(screen.queryByText('Radio unavailable')).toBeNull();
+
+    stationFailure = null;
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(screen.queryByText('Could not load Tahti Radio')).toBeNull();
   });
 });

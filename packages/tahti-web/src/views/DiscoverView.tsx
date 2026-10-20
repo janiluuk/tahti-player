@@ -683,7 +683,7 @@ function DiscoverWaveformPlayer({
           type="button"
           variant="text"
           size="flexible"
-          className="bg-primary text-primary-foreground hover:bg-primary flex size-10 shrink-0 items-center justify-center rounded-full transition-transform hover:scale-105"
+          className="bg-foreground text-background hover:bg-foreground/90 flex size-10 shrink-0 items-center justify-center rounded-full transition-transform hover:scale-105"
           onClick={() => {
             if (isCurrent) {
               setStatus(isPlaying ? 'paused' : 'playing');

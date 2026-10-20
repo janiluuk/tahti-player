@@ -20,6 +20,7 @@ export function PurchaseOrdersList() {
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -29,6 +30,9 @@ export function PurchaseOrdersList() {
         return;
       }
       setOrders(result.data);
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
     return () => {
@@ -43,6 +47,7 @@ export function PurchaseOrdersList() {
     return (
       <PageError
         title="Couldn't load sales"
+        description={loadError ?? undefined}
         onRetry={() => setAttempt((current) => current + 1)}
       />
     );

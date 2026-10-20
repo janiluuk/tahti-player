@@ -11,7 +11,11 @@ import type {
   RevelatorRoyaltyReportRow,
   StudioRelease,
 } from '../../api/studio-types';
-import { PageError, PageLoading } from '../../components/PageStates';
+import {
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
@@ -60,6 +64,13 @@ export function StudioDistributionView() {
             <h2>
               <Eyebrow>Releases</Eyebrow>
             </h2>
+            {!loading && loadError && releases.length > 0 ? (
+              <PageErrorBanner
+                title="Could not refresh your releases."
+                description={loadError}
+                onRetry={() => setAttempt((n) => n + 1)}
+              />
+            ) : null}
             {loading ? (
               <PageLoading label="Loading…" />
             ) : loadError && releases.length === 0 ? (

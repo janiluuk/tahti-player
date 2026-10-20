@@ -8,6 +8,7 @@ import {
   type UpcomingEvent,
 } from '../../api/upcoming-events';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
+import { PageError } from '../PageStates';
 
 const ROW_LABELS = {
   filterPlaceholder: 'Filter events…',
@@ -60,23 +61,37 @@ function EventCard({ event }: { event: UpcomingEvent }) {
   );
 }
 
-/** Artists' upcoming shows on the front page. Renders nothing when there
- * are none, or when the API doesn't serve the list yet. */
 export function HomeComingUp() {
   const [events, setEvents] = useState<UpcomingEvent[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     let cancelled = false;
-    void fetchUpcomingEvents().then(({ data }) => {
+    void fetchUpcomingEvents().then((result) => {
       if (!cancelled) {
-        setEvents(data);
+        setLoadError(
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+        );
+        setEvents(result.data);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
   if (events.length === 0) {
-    return null;
+    if (!loadError) {
+      return null;
+    }
+    return (
+      <div data-testid="listen-coming-up-error">
+        <PageError
+          title="Could not load upcoming events"
+          description={loadError}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
+      </div>
+    );
   }
   const items: EventRowItem[] = events.map((event) => ({
     id: event.id,

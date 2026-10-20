@@ -19,7 +19,12 @@ import {
   type ApiToken,
 } from '../api/api-tokens';
 import { ConfirmDialog } from './ConfirmDialog';
-import { PageEmpty, PageError, PageLoading } from './PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from './PageStates';
 
 const EXPIRY_OPTIONS = [
   { id: 'never', label: 'Never' },
@@ -178,45 +183,57 @@ export function ApiTokensPanel() {
               description="Create one for scripted access to the Tahti API."
             />
           ) : (
-            <ul className="divide-border divide-y">
-              {tokens.map((token) => (
-                <li
-                  key={token.id}
-                  className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
-                >
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium">
-                      {token.name}{' '}
-                      <span className="text-foreground-secondary font-mono text-xs">
-                        {token.tokenPrefix}…
-                      </span>
-                      {isExpired(token) ? (
-                        <Badge variant="pill" color="red">
-                          Expired
-                        </Badge>
-                      ) : null}
-                    </p>
-                    <p className="text-foreground-secondary text-xs">
-                      {token.scopes.includes('write')
-                        ? 'Read / write'
-                        : 'Read-only'}{' '}
-                      · last used {formatDate(token.lastUsedAt)} · created{' '}
-                      {formatDate(token.createdAt)}
-                      {token.expiresAt
-                        ? ` · ${isExpired(token) ? 'expired' : 'expires'} ${formatDate(token.expiresAt)}`
-                        : ''}
-                    </p>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => setPendingRevoke(token)}
+            <>
+              {loadError ? (
+                <PageErrorBanner
+                  title="Could not refresh your API tokens"
+                  description={loadError}
+                  onRetry={() => {
+                    setLoading(true);
+                    setAttempt((n) => n + 1);
+                  }}
+                />
+              ) : null}
+              <ul className="divide-border divide-y">
+                {tokens.map((token) => (
+                  <li
+                    key={token.id}
+                    className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
                   >
-                    Revoke
-                  </Button>
-                </li>
-              ))}
-            </ul>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium">
+                        {token.name}{' '}
+                        <span className="text-foreground-secondary font-mono text-xs">
+                          {token.tokenPrefix}…
+                        </span>
+                        {isExpired(token) ? (
+                          <Badge variant="pill" color="red">
+                            Expired
+                          </Badge>
+                        ) : null}
+                      </p>
+                      <p className="text-foreground-secondary text-xs">
+                        {token.scopes.includes('write')
+                          ? 'Read / write'
+                          : 'Read-only'}{' '}
+                        · last used {formatDate(token.lastUsedAt)} · created{' '}
+                        {formatDate(token.createdAt)}
+                        {token.expiresAt
+                          ? ` · ${isExpired(token) ? 'expired' : 'expires'} ${formatDate(token.expiresAt)}`
+                          : ''}
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => setPendingRevoke(token)}
+                    >
+                      Revoke
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
 
           {!adding ? (

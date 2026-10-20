@@ -76,8 +76,12 @@ describe('PurchaseOrdersList', () => {
   it('offers a retry when loading fails', async () => {
     const fetch = vi
       .spyOn(purchaseTiers, 'fetchMyPurchaseOrders')
-      .mockResolvedValue({ data: null, meta: { source: 'api' } });
+      .mockResolvedValue({
+        data: null,
+        meta: { source: 'api', reason: 'HTTP 502' },
+      });
     await renderList();
+    expect(screen.getByText('HTTP 502')).toBeTruthy();
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Retry|Try again/ }));
     });

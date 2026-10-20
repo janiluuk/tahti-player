@@ -34,6 +34,8 @@ export function useReleaseDetail(id: string) {
   const [release, setRelease] = useState<StudioRelease | null>(null);
   const [description, setDescription] = useState('');
   const [loaded, setLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [publishing, setPublishing] = useState(false);
   const [confirmPublish, setConfirmPublish] = useState(false);
   const [artworkPreview, setArtworkPreview] = useState<string | null>(null);
@@ -47,6 +49,7 @@ export function useReleaseDetail(id: string) {
   useEffect(() => {
     let cancelled = false;
     setLoaded(false);
+    setLoadError(null);
     fetchStudioRelease(id)
       .then((result) => {
         if (cancelled) {
@@ -54,7 +57,7 @@ export function useReleaseDetail(id: string) {
         }
         if (!result.ok) {
           setRelease(null);
-          toast.error(result.error);
+          setLoadError(/not found/i.test(result.error) ? null : result.error);
           return;
         }
         setRelease(result.data);
@@ -64,7 +67,7 @@ export function useReleaseDetail(id: string) {
       .catch(() => {
         if (!cancelled) {
           setRelease(null);
-          toast.error('Could not load the release.');
+          setLoadError('Could not load the release.');
         }
       })
       .finally(() => {
@@ -75,7 +78,7 @@ export function useReleaseDetail(id: string) {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, loadAttempt]);
 
   useEffect(() => {
     let cancelled = false;
@@ -258,6 +261,8 @@ export function useReleaseDetail(id: string) {
     description,
     setDescription,
     loaded,
+    loadError,
+    retryLoad: () => setLoadAttempt((n) => n + 1),
     publishing,
     confirmPublish,
     setConfirmPublish,

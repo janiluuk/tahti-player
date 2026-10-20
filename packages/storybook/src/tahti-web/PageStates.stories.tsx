@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   PageEmpty,
   PageError,
+  PageErrorBanner,
   PageLoading,
 } from '@tahti-web/components/PageStates';
 
@@ -41,6 +42,16 @@ export const Error: Story = {
   render: () => (
     <PageError
       description="Couldn't reach the API — check your connection and retry."
+      onRetry={() => {}}
+    />
+  ),
+};
+
+export const ErrorBanner: Story = {
+  render: () => (
+    <PageErrorBanner
+      title="Could not refresh the list"
+      description="Showing what we loaded earlier."
       onRetry={() => {}}
     />
   ),
