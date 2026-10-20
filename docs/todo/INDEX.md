@@ -27,6 +27,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |
 | open    | [studio-usability-audit.md](studio-usability-audit.md) | Studio uses shared components; 3 actionable findings |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
+| open    | [theme-system-performance.md](theme-system-performance.md) | Theme audit leftovers: first-visit flash, basic light themes' stock chrome tokens, source-order fragility, legacy keys, lazy presets |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |
 
 ## Blocked on a decision, credentials or manual testing

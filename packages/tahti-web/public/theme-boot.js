@@ -36,7 +36,21 @@
     } else if (dark == null) {
       dark = false;
     }
-    if (!themeId || themeId.indexOf('custom:') === 0) {
+    if (!themeId) {
+      themeId = 'nuclear:default';
+    } else if (themeId.indexOf('custom:') === 0) {
+      var css = localStorage.getItem('tahti-theme-css');
+      if (css) {
+        var style = document.createElement('style');
+        style.id = 'advanced-theme-boot';
+        style.textContent = css
+          .replace(/(^|\n):root\{/, '$1html:root{')
+          .replace(
+            /(^|\n)\[data-theme='dark'\]\{/,
+            "$1html[data-theme='dark']{",
+          );
+        document.head.appendChild(style);
+      }
       themeId = 'nuclear:default';
     }
     document.documentElement.setAttribute('data-theme-id', themeId);

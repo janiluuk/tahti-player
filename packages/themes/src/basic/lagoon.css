@@ -2,6 +2,7 @@
   --background: oklch(0.985 0.018 210);
   --primary: oklch(0.67 0.16 205);
   --secondary: oklch(0.9 0.06 205);
+  --background-input: var(--secondary);
   --secondary-foreground: oklch(0.22 0.06 205);
   --foreground-secondary: oklch(0.42 0.1 205);
   --primary-strong: oklch(0.51 0.16 205);

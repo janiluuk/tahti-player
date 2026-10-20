@@ -32,8 +32,6 @@ new surface, one PR per row.
   overlay were already neutralised). Partial: Governance attention panel +
   stream PlaylistDialog selected row (batch 81).
 - [x] Optional `DiscoverGatewayBackground` on flat Listen surfaces (batch 80).
-- [ ] Verify Card / Badge / CardsRow / MediaArtwork / ListenSection stories in
-  all five stock themes (incl. `tahti-blue`, `spotify-dark-theme`).
 
 ## Track lists: ambient rows, view modes, sort
 

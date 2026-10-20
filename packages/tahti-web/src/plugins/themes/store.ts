@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 import {
+  advancedThemeCSS,
   applyAdvancedTheme,
   clearAdvancedTheme,
   listBasicThemes,
@@ -57,13 +58,14 @@ import {
   YORHA_THEME,
   YORHA_THEME_ID,
 } from './presets';
-import { withThemeVisualTransition } from './themeCrossfade';
 
 const CUSTOM_THEME_PREFIX = 'custom:';
 
 const THEME_KEY = 'tahti-nuclear-theme-id';
 const DARK_KEY = 'tahti-nuclear-dark';
 const PERSIST_NAME = 'tahti-web-theme';
+const BOOT_CSS_KEY = 'tahti-theme-css';
+const BOOT_STYLE_ID = 'advanced-theme-boot';
 
 /** Basic theme under every custom theme: supplies the structural CSS vars a
  * custom theme doesn't override. Must be the stock theme, whose plain `:root`
@@ -160,6 +162,44 @@ function withPresetCustomThemes(
   return { ...customThemes, ...Object.fromEntries(missing) };
 }
 
+function refreshPresetCustomThemes(
+  customThemes: Record<string, AdvancedTheme>,
+): Record<string, AdvancedTheme> {
+  const refreshed: Record<string, AdvancedTheme> = {};
+  for (const [id, theme] of Object.entries(customThemes)) {
+    const preset = PRESET_CUSTOM_THEMES[id];
+    refreshed[id] =
+      !preset || preset === theme
+        ? theme
+        : preset.name === theme.name
+          ? preset
+          : { ...preset, name: theme.name };
+  }
+  return withPresetCustomThemes(refreshed);
+}
+
+function persistableCustomThemes(
+  customThemes: Record<string, AdvancedTheme>,
+): Record<string, AdvancedTheme> {
+  return Object.fromEntries(
+    Object.entries(customThemes).filter(([id, theme]) => {
+      const preset = PRESET_CUSTOM_THEMES[id];
+      return !preset || preset.name !== theme.name;
+    }),
+  );
+}
+
+function writeIfChanged(key: string, value: string | null) {
+  if (localStorage.getItem(key) === value) {
+    return;
+  }
+  if (value === null) {
+    localStorage.removeItem(key);
+  } else {
+    localStorage.setItem(key, value);
+  }
+}
+
 function resolveThemeId(
   id: string | null | undefined,
   customThemes: Record<string, AdvancedTheme>,
@@ -190,31 +230,20 @@ function applyThemeToDocument(
     clearAdvancedTheme();
     setBasicTheme(themeId);
   }
-  if (dark) {
-    document.documentElement.setAttribute('data-theme', 'dark');
-  } else {
-    document.documentElement.removeAttribute('data-theme');
+  document.getElementById(BOOT_STYLE_ID)?.remove();
+  const root = document.documentElement;
+  if (dark && root.getAttribute('data-theme') !== 'dark') {
+    root.setAttribute('data-theme', 'dark');
+  } else if (!dark && root.hasAttribute('data-theme')) {
+    root.removeAttribute('data-theme');
   }
   try {
-    localStorage.setItem(THEME_KEY, themeId);
-    localStorage.setItem(DARK_KEY, dark ? '1' : '0');
+    writeIfChanged(THEME_KEY, themeId);
+    writeIfChanged(DARK_KEY, dark ? '1' : '0');
+    writeIfChanged(BOOT_CSS_KEY, custom ? advancedThemeCSS(custom) : null);
   } catch {
     // ignore quota / private mode
   }
-}
-
-function applyToDocument(
-  themeId: string,
-  dark: boolean,
-  customThemes: Record<string, AdvancedTheme>,
-  opts?: { animate?: boolean },
-) {
-  const apply = () => applyThemeToDocument(themeId, dark, customThemes);
-  if (opts?.animate === false) {
-    apply();
-    return;
-  }
-  withThemeVisualTransition(apply);
 }
 
 type ThemeState = {
@@ -270,7 +299,7 @@ export const useThemeStore = create<ThemeState>()(
         const customThemes = withPresetCustomThemes(get().customThemes);
         const id = resolveThemeId(themeId, customThemes);
         const dark = resolveDarkForMode(colorMode);
-        applyToDocument(id, dark, customThemes, { animate: false });
+        applyThemeToDocument(id, dark, customThemes);
         set({ customThemes, themeId: id, dark, hydrated: true });
 
         if (typeof window !== 'undefined' && !dynamicModeInterval) {
@@ -293,20 +322,20 @@ export const useThemeStore = create<ThemeState>()(
       setTheme: (rawId) => {
         const { dark, customThemes } = get();
         const id = resolveThemeId(rawId, customThemes);
-        applyToDocument(id, dark, customThemes);
+        applyThemeToDocument(id, dark, customThemes);
         set({ themeId: id });
       },
 
       setColorMode: (mode) => {
         const { themeId, customThemes } = get();
         const dark = resolveDarkForMode(mode);
-        applyToDocument(themeId, dark, customThemes);
+        applyThemeToDocument(themeId, dark, customThemes);
         set({ colorMode: mode, dark });
       },
 
       setDark: (dark) => {
         const { themeId, customThemes } = get();
-        applyToDocument(themeId, dark, customThemes);
+        applyThemeToDocument(themeId, dark, customThemes);
         set({ dark });
       },
 
@@ -322,7 +351,7 @@ export const useThemeStore = create<ThemeState>()(
         }
         const id = `${CUSTOM_THEME_PREFIX}${slugify(theme.name)}-${Date.now().toString(36)}`;
         const customThemes = { ...get().customThemes, [id]: theme };
-        applyToDocument(id, get().dark, customThemes);
+        applyThemeToDocument(id, get().dark, customThemes);
         set({ customThemes, themeId: id });
         return { ok: true, id };
       },
@@ -333,7 +362,7 @@ export const useThemeStore = create<ThemeState>()(
         }
         const customThemes = { ...get().customThemes, [id]: theme };
         if (get().themeId === id) {
-          applyToDocument(id, get().dark, customThemes);
+          applyThemeToDocument(id, get().dark, customThemes);
         }
         set({ customThemes });
         return { ok: true };
@@ -353,7 +382,7 @@ export const useThemeStore = create<ThemeState>()(
           [id]: { ...existing, name: trimmedName },
         };
         if (get().themeId === id) {
-          applyToDocument(id, get().dark, customThemes);
+          applyThemeToDocument(id, get().dark, customThemes);
         }
         set({ customThemes });
         return { ok: true };
@@ -367,7 +396,7 @@ export const useThemeStore = create<ThemeState>()(
         set({ customThemes });
         if (stillActive) {
           const fallback = resolveThemeId(undefined, customThemes);
-          applyToDocument(fallback, get().dark, customThemes);
+          applyThemeToDocument(fallback, get().dark, customThemes);
           set({ themeId: fallback });
         }
       },
@@ -378,7 +407,7 @@ export const useThemeStore = create<ThemeState>()(
         themeId: s.themeId,
         dark: s.dark,
         colorMode: s.colorMode,
-        customThemes: s.customThemes,
+        customThemes: persistableCustomThemes(s.customThemes),
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) {
@@ -386,7 +415,7 @@ export const useThemeStore = create<ThemeState>()(
         }
         const id = resolveThemeId(state.themeId, state.customThemes);
         const dark = resolveDarkForMode(state.colorMode);
-        applyToDocument(id, dark, state.customThemes, { animate: false });
+        applyThemeToDocument(id, dark, state.customThemes);
         state.themeId = id;
         state.dark = dark;
         state.hydrated = true;
@@ -413,7 +442,7 @@ export const useThemeStore = create<ThemeState>()(
           // first-ever load starts light: the default theme is Gruvbox Light.
           colorMode = dark == null ? 'light' : dark ? 'dark' : 'light';
         }
-        const customThemes = p.customThemes ?? {};
+        const customThemes = refreshPresetCustomThemes(p.customThemes ?? {});
         return {
           ...current,
           customThemes,

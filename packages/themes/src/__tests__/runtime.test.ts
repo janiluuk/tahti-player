@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
+  advancedThemeCSS,
   applyAdvancedTheme,
   clearAdvancedTheme,
   setBasicTheme,
@@ -31,5 +32,34 @@ describe('runtime API', () => {
 
     clearAdvancedTheme();
     expect(document.getElementById('advanced-theme')).toBeNull();
+  });
+
+  it('does not rewrite the style when the theme is unchanged', () => {
+    const theme = { version: 1 as const, name: 'Y', vars: { radius: '4px' } };
+    applyAdvancedTheme(theme);
+    const style = document.getElementById('advanced-theme')!;
+    const observer = vi.fn();
+    const mo = new MutationObserver(observer);
+    mo.observe(style, { childList: true, characterData: true, subtree: true });
+    applyAdvancedTheme(theme);
+    applyAdvancedTheme({ ...theme });
+    mo.takeRecords().forEach(() => observer());
+    mo.disconnect();
+    expect(observer).not.toHaveBeenCalled();
+    clearAdvancedTheme();
+  });
+
+  it('caches generated CSS per theme object', () => {
+    const theme = { version: 1 as const, name: 'Z', vars: { radius: '2px' } };
+    expect(advancedThemeCSS(theme)).toBe(advancedThemeCSS(theme));
+    expect(advancedThemeCSS(theme)).toContain('--radius: 2px');
+  });
+
+  it('leaves data-theme-id alone when it already matches', () => {
+    setThemeId('nuclear:lagoon');
+    const spy = vi.spyOn(document.documentElement, 'setAttribute');
+    setThemeId('nuclear:lagoon');
+    expect(spy).not.toHaveBeenCalled();
+    spy.mockRestore();
   });
 });
