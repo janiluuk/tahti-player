@@ -18,6 +18,7 @@ function stateClass(state: string): string {
 
 export function StatusView() {
   const [data, setData] = useState<PlatformStatus | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [attempt, setAttempt] = useState(0);
 
@@ -28,7 +29,12 @@ export function StatusView() {
       if (cancelled) {
         return;
       }
-      setData(res.data);
+      const reason =
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null;
+      const unusable =
+        reason !== null && Object.keys(res.data.checks).length === 0;
+      setLoadError(unusable ? reason : null);
+      setData(unusable ? null : res.data);
       setLoading(false);
     });
     return () => {
@@ -42,6 +48,13 @@ export function StatusView() {
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', content: 'gap-4' }}
     >
       {loading && <PageLoading label="Checking…" />}
+      {!loading && !data && (
+        <PageError
+          title="Could not load platform status"
+          description={loadError ?? undefined}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
+      )}
       {!loading && data && (
         <>
           <p

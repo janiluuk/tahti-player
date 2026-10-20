@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ButtonLink, MediaArtwork, ViewShell } from '@tahti-player/ui';
 
 import { fetchTracksByTag } from '../api/listen';
+import { isForceMock } from '../api/mode';
 import type { SearchTrackResult } from '../api/types';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { formatDuration } from '../lib/playableToTrack';
@@ -64,7 +65,11 @@ export function TagSearchView({ tag }: { tag?: string }) {
         />
       ) : state.tracks.length === 0 ? (
         <PageEmpty
-          title={`No tracks tagged “${trimmed}” in mock fixtures`}
+          title={
+            isForceMock()
+              ? `No tracks tagged “${trimmed}” in mock fixtures`
+              : `No public tracks tagged “${trimmed}” yet`
+          }
           description="Try a tag from a track page, or browse Discover and Radio."
           action={
             <div className="flex flex-wrap items-center justify-center gap-2">

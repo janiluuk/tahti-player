@@ -41,7 +41,7 @@ import { FingerprintTrackPanel } from '../../components/FingerprintTrackPanel';
 import { ImageUrlForm } from '../../components/ImageUrlForm';
 import { MusicBrainzRegisterPrompt } from '../../components/MusicBrainzRegisterPrompt';
 import { MusicBrainzSubmissionAssistant } from '../../components/MusicBrainzSubmissionAssistant';
-import { PageEmpty, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { trackTableLabels } from '../../lib/trackTableLabels';
@@ -71,6 +71,8 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     description,
     setDescription,
     loaded,
+    loadError,
+    retryLoad,
     publishing,
     confirmPublish,
     setConfirmPublish,
@@ -145,7 +147,13 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
         </Tooltip>
         {!release ? (
           <StudioPanel>
-            {loaded ? (
+            {loaded && loadError ? (
+              <PageError
+                title="Could not load this release"
+                description={loadError}
+                onRetry={retryLoad}
+              />
+            ) : loaded ? (
               <PageEmpty title="Release not found in list" />
             ) : (
               <PageLoading label="Loading…" />

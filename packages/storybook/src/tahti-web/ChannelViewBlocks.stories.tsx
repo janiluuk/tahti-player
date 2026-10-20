@@ -260,6 +260,21 @@ export const Feed: Story = {
     ctx: blockContext(),
   },
   play: async ({ canvasElement }) => {
+    await expect(canvasElement.textContent?.trim()).toBe('');
+  },
+};
+
+export const FeedEditing: Story = {
+  args: {
+    item: {
+      id: 'feed-1',
+      type: 'feed',
+      visible: true,
+      feedDisplay: 'cards',
+    },
+    ctx: blockContext({ editing: true }),
+  },
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole('heading', { name: 'Feed' })).toBeVisible();
     await expect(

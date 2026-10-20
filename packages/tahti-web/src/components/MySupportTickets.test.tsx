@@ -77,15 +77,23 @@ describe('MySupportTickets', () => {
     ).toBeTruthy();
   });
 
-  it('shows the error when loading fails', async () => {
-    vi.spyOn(support, 'fetchMySupportTickets').mockResolvedValue({
-      ok: false,
-      error: 'HTTP 500',
-    });
+  it('shows the error with a retry when loading fails', async () => {
+    const fetchTickets = vi
+      .spyOn(support, 'fetchMySupportTickets')
+      .mockResolvedValue({
+        ok: false,
+        error: 'HTTP 500',
+      });
     await act(async () => {
       render(<MySupportTickets />);
     });
-    expect(screen.getByRole('alert').textContent).toBe('HTTP 500');
+    expect(screen.getByText('HTTP 500')).toBeTruthy();
+    fetchTickets.mockResolvedValue({ ok: true, tickets: [] });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(screen.queryByText('HTTP 500')).toBeNull();
+    expect(fetchTickets).toHaveBeenCalledTimes(2);
   });
 
   it('sends a reply, shows it and reopens a resolved request', async () => {

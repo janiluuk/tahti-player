@@ -78,7 +78,7 @@ export function BrowserLocalFiles() {
         labels={FILE_LABELS}
         onFiles={onFiles}
       />
-      <p className="border-primary/30 bg-primary/5 text-foreground-secondary rounded-md border px-2 py-1.5 text-xs">
+      <p className="border-border bg-background-secondary text-foreground-secondary rounded-md border px-2 py-1.5 text-xs">
         Tahti Player desktop runtime detected. Native library is unavailable;
         browser imports remain available.
       </p>

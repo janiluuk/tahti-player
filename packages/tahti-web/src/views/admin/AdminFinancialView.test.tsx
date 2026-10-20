@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as admin from '../../api/admin';
+import { renderWithRouter } from '../../test/renderWithRouter';
 import { AdminFinancialView } from './AdminFinancialView';
 
 vi.mock('../../components/AdminGate', () => ({
@@ -25,7 +26,8 @@ describe('AdminFinancialView', () => {
       data: null,
       meta: { source: 'api', reason: 'HTTP 502' },
     } as never);
-    render(<AdminFinancialView />);
+    await renderWithRouter(<AdminFinancialView />);
+    expect(screen.getByRole('navigation', { name: 'Breadcrumb' })).toBeTruthy();
     expect(
       await screen.findByText('Could not load financial data'),
     ).toBeTruthy();

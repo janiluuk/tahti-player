@@ -31,6 +31,8 @@ export function PurchaseTiersEditor() {
   const [storeEnabled, setStoreEnabledState] = useState<boolean | null>(null);
   const [savingStore, setSavingStore] = useState(false);
 
+  const [storeError, setStoreError] = useState<string | null>(null);
+
   const reload = () => {
     void fetchMyPurchaseTiers().then((r) => {
       setTiers(r.data);
@@ -39,13 +41,20 @@ export function PurchaseTiersEditor() {
     });
   };
 
-  useEffect(() => {
-    reload();
+  const reloadStoreSettings = () => {
     void fetchStoreSettings().then((r) => {
       if (r.ok) {
         setStoreEnabledState(r.storeEnabled);
+        setStoreError(null);
+      } else {
+        setStoreError(r.error);
       }
     });
+  };
+
+  useEffect(() => {
+    reload();
+    reloadStoreSettings();
   }, []);
 
   const toggleStore = async (next: boolean) => {
@@ -71,6 +80,13 @@ export function PurchaseTiersEditor() {
 
   return (
     <div className="flex flex-col gap-4">
+      {storeEnabled === null && storeError ? (
+        <PageError
+          title="Could not load your store settings"
+          description={storeError}
+          onRetry={reloadStoreSettings}
+        />
+      ) : null}
       {storeEnabled !== null && (
         <div className="border-border flex items-center justify-between gap-3 rounded-lg border px-3 py-2">
           <div>

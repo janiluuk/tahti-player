@@ -29,6 +29,7 @@ import {
 } from '../../../api/me-themes';
 import { AMBIENT_SCHEME } from '../../../components/AmbientBackground';
 import { ChannelVisualizer } from '../../../components/ChannelVisualizer';
+import { PageError } from '../../../components/PageStates';
 import { ThemeEditor } from '../../../components/ThemeEditor';
 import { ThemeSubmissions } from '../../../components/ThemeSubmissions';
 import {
@@ -56,16 +57,21 @@ export function ThemesPanel() {
   } = useThemeStore();
   const signedIn = useAuthStore((s) => Boolean(s.user));
   const [submissions, setSubmissions] = useState<MyTheme[]>([]);
+  const [submissionsError, setSubmissionsError] = useState<string | null>(null);
   const [submittingId, setSubmittingId] = useState<string | null>(null);
   const loadSubmissions = useCallback(() => {
     if (!signedIn) {
       setSubmissions([]);
+      setSubmissionsError(null);
       return;
     }
     void fetchMyThemes().then((result) => {
       if (result.ok) {
+        setSubmissionsError(null);
         setSubmissions(result.data);
+        return;
       }
+      setSubmissionsError(result.error);
     });
   }, [signedIn]);
   useEffect(loadSubmissions, [loadSubmissions]);
@@ -327,6 +333,13 @@ export function ThemesPanel() {
                     </div>
                   </div>
                 )}
+                {submissionsError ? (
+                  <PageError
+                    title="Could not load your community submissions"
+                    description={submissionsError}
+                    onRetry={loadSubmissions}
+                  />
+                ) : null}
                 <ThemeSubmissions
                   themes={submissions}
                   onChanged={loadSubmissions}

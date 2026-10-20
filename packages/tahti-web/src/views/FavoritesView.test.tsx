@@ -93,4 +93,19 @@ describe('FavoritesView', () => {
     );
     expect(fetch).toHaveBeenCalledTimes(2);
   });
+
+  it('keeps the likes error banner next to favorite tracks', async () => {
+    useLibraryStore.setState({ favoriteTracks: [TRACK] });
+    vi.spyOn(likes, 'fetchMyLikes').mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 500' },
+    });
+    renderFavorites();
+
+    expect(await screen.findByText('Night Drive')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Could not load your likes'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('HTTP 500')).toBeInTheDocument();
+  });
 });

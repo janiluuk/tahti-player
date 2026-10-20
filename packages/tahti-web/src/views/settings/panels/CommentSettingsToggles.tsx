@@ -8,22 +8,44 @@ import {
   setNewUploadCommentsEnabled,
   type CommentSettings,
 } from '../../../api/comment-settings';
+import { PageError } from '../../../components/PageStates';
 import { SettingsToggle } from '../SettingsFields';
 
 export function CommentSettingsToggles() {
   const [settings, setSettings] = useState<CommentSettings | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     void fetchCommentSettings().then((result) => {
-      if (!cancelled && result.ok) {
-        setSettings(result.data);
+      if (cancelled) {
+        return;
       }
+      if (result.ok) {
+        setLoadError(null);
+        setSettings(result.data);
+        return;
+      }
+      setLoadError(result.error);
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
+
+  if (!settings && loadError) {
+    return (
+      <PageError
+        title="Could not load your comment settings"
+        description={loadError}
+        onRetry={() => {
+          setLoadError(null);
+          setAttempt((n) => n + 1);
+        }}
+      />
+    );
+  }
 
   if (!settings) {
     return null;

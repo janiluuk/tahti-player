@@ -16,7 +16,6 @@ import {
   updateChannelSlug,
   verifyCustomDomain,
 } from '../../../api/channel-design';
-import { isForceMock } from '../../../api/mode';
 import {
   fetchMeProfile,
   patchMeProfile,
@@ -28,6 +27,7 @@ import { ChannelModeratorsPanel } from '../../../components/moderation/ChannelMo
 import { ChatAccessPanel } from '../../../components/moderation/ChatAccessPanel';
 import { ChatBansPanel } from '../../../components/moderation/ChatBansPanel';
 import { ChatMessagesPanel } from '../../../components/moderation/ChatMessagesPanel';
+import { PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import {
   formatGenreTags,
@@ -62,7 +62,8 @@ export function ChannelPanel() {
   const [channelProfile, setChannelProfile] = useState<ProfileFields | null>(
     null,
   );
-  const [profileLoaded, setProfileLoaded] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [slug, setSlug] = useState(channel?.slug ?? '');
   const [bansVersion, setBansVersion] = useState(0);
   const [domain, setDomain] = useState('');
@@ -77,11 +78,26 @@ export function ChannelPanel() {
 
   useEffect(() => {
     void fetchMeProfile().then((r) => {
-      setChannelProfile(r.data);
-      setProfileLoaded(!r.meta.reason || isForceMock());
+      const reason = r.meta.source === 'api' ? (r.meta.reason ?? null) : null;
+      setProfileError(reason);
+      setChannelProfile(reason ? null : r.data);
     });
+  }, [attempt]);
+
+  useEffect(() => {
     setSlug(channel?.slug ?? user?.username ?? '');
   }, [channel?.slug, user?.username]);
+
+  const profileFailed = (
+    <PageError
+      title="Could not load your channel profile"
+      description={profileError ?? undefined}
+      onRetry={() => {
+        setProfileError(null);
+        setAttempt((n) => n + 1);
+      }}
+    />
+  );
 
   const saveProfileSwitch = (
     key: 'chatEnabled' | 'showDailyListeners' | 'showShareButton',
@@ -130,7 +146,11 @@ export function ChannelPanel() {
           label: 'Discovery',
           icon: <Compass size={14} />,
           content: !channelProfile ? (
-            <SettingsHint>Loading…</SettingsHint>
+            profileError ? (
+              profileFailed
+            ) : (
+              <SettingsHint>Loading…</SettingsHint>
+            )
           ) : (
             <div className="flex flex-col gap-4">
               <StudioPanel
@@ -164,12 +184,6 @@ export function ChannelPanel() {
                       parseGenreTags(channelProfile.socialLinks?.genres),
                     )}
                     onChange={(genres) => {
-                      // socialLinks is replaced wholesale on save, so a profile
-                      // that failed to load must not be written back.
-                      if (!profileLoaded) {
-                        toast.error('Could not load your profile. Try again.');
-                        return;
-                      }
                       const previous = channelProfile;
                       const socialLinks = {
                         ...(previous.socialLinks ?? {}),
@@ -323,7 +337,11 @@ export function ChannelPanel() {
           content: (
             <div className="flex flex-col gap-6">
               {!channelProfile ? (
-                <SettingsHint>Loading…</SettingsHint>
+                profileError ? (
+                  profileFailed
+                ) : (
+                  <SettingsHint>Loading…</SettingsHint>
+                )
               ) : (
                 <div className="flex flex-col gap-5">
                   <SettingsToggle

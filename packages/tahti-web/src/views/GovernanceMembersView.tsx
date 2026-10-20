@@ -6,7 +6,13 @@ import { Badge, Button, Input, StatChip, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMembers } from '../api/client';
 import type { GovernanceMember } from '../api/types';
-import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../components/PageStates';
+import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
 export function GovernanceMembersView() {
@@ -60,10 +66,16 @@ export function GovernanceMembersView() {
       </Link>
 
       {!user && (
-        <p className="text-foreground-secondary text-sm">
-          Sign in with a cooperative membership account to view the member
-          directory.
-        </p>
+        <PageEmpty
+          icon="inbox"
+          title="Sign in to view the member directory"
+          description="Use a cooperative membership account to see who belongs to the co-op."
+          action={
+            <Button onClick={() => useAuthModalStore.getState().open('login')}>
+              Sign in
+            </Button>
+          }
+        />
       )}
 
       {user && loading && <PageLoading label="Loading members…" />}
@@ -91,6 +103,13 @@ export function GovernanceMembersView() {
             aria-label="Search by name or username"
             placeholder="Search by name or username"
           />
+          {loadError && members.length > 0 ? (
+            <PageErrorBanner
+              title="Could not refresh the member directory."
+              description={loadError}
+              onRetry={() => setAttempt((n) => n + 1)}
+            />
+          ) : null}
           {loadError && members.length === 0 ? (
             <PageError
               title="Could not load the member directory"

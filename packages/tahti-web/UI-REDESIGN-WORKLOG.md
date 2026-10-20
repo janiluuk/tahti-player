@@ -1,3 +1,10 @@
+## 2026-10-20 — UX batch 84 (partial-fail banners + Favorites ambient)
+
+Soft `PageErrorBanner` when API fails but data remains; Favorites
+`PlayableAmbientTrackList`; settings hide-on-fail → PageError; admin
+Governance/Financial/Storage/Dashboard/Radio breadcrumbs; chrome testids;
+light de-green. Bumped to `0.0.238`.
+
 ## 2026-10-20 — UX batch 82 (show-detail / Feed / SmartLink honesty)
 
 Show detail, Feed, SmartLink, Artist, Mastering, Multistream, Updates, and

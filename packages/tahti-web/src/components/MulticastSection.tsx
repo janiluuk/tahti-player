@@ -26,7 +26,7 @@ import {
   multicastProviders,
   type MulticastProviderId,
 } from '../plugins/multicast';
-import { PageError, PageLoading } from './PageStates';
+import { PageError, PageErrorBanner, PageLoading } from './PageStates';
 import {
   RotationMirrorToggle,
   useRotationMirror,
@@ -445,6 +445,18 @@ function DestinationsGrid({
         />
       ) : (
         <div className="border-border rounded-xl border p-3">
+          {loadError ? (
+            <div className="mb-3">
+              <PageErrorBanner
+                title="Could not refresh your destinations"
+                description={loadError}
+                onRetry={() => {
+                  setLoading(true);
+                  reload();
+                }}
+              />
+            </div>
+          ) : null}
           <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8">
             {multicastProviders.map((provider) => {
               const target = targets.find(

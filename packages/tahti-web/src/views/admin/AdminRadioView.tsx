@@ -1,4 +1,4 @@
-import { useNavigate, useRouterState } from '@tanstack/react-router';
+import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import {
   ArrowLeftToLineIcon,
   BanIcon,
@@ -46,6 +46,13 @@ function fmt(iso: string): string {
     minute: '2-digit',
   });
 }
+
+const ADMIN_RADIO_TAB_LABELS: Record<AdminRadioTabId, string> = {
+  feature: 'Feature',
+  presets: 'Presets',
+  'opt-outs': 'Opt-outs',
+  history: 'History',
+};
 
 export function AdminRadioView() {
   const play = usePlayerStore((state) => state.play);
@@ -141,6 +148,22 @@ export function AdminRadioView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/radio">
           <div className="flex max-w-4xl flex-col gap-6">
+            <nav
+              aria-label="Breadcrumb"
+              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
+            >
+              <Link to="/admin" className="hover:underline">
+                Admin
+              </Link>
+              <span aria-hidden>→</span>
+              <Link to="/admin/radio" className="hover:underline">
+                Radio
+              </Link>
+              <span aria-hidden>→</span>
+              <span aria-current="page">
+                {ADMIN_RADIO_TAB_LABELS[activeTab]}
+              </span>
+            </nav>
             <ViewShell
               title="Radio"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}

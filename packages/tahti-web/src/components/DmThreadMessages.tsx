@@ -10,6 +10,7 @@ type Props = {
   messages: ChatDm[];
   hasMore: boolean;
   loadingOlder: boolean;
+  olderError?: boolean;
   onLoadOlder: () => void;
 };
 
@@ -17,6 +18,7 @@ export function DmThreadMessages({
   messages,
   hasMore,
   loadingOlder,
+  olderError = false,
   onLoadOlder,
 }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -47,14 +49,23 @@ export function DmThreadMessages({
       className="flex-1 space-y-2 overflow-y-auto p-3 text-sm"
     >
       {hasMore && (
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-1">
+          {olderError && !loadingOlder ? (
+            <p role="status" className="text-accent-red-strong text-xs">
+              Could not load older messages.
+            </p>
+          ) : null}
           <Button
             size="sm"
             variant="text"
             disabled={loadingOlder}
             onClick={loadOlder}
           >
-            {loadingOlder ? 'Loading…' : 'Load older messages'}
+            {loadingOlder
+              ? 'Loading…'
+              : olderError
+                ? 'Try again'
+                : 'Load older messages'}
           </Button>
         </div>
       )}

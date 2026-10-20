@@ -16,6 +16,7 @@ type NotificationInboxState = {
   unreadCount: number;
   hasMore: boolean;
   loadingOlder: boolean;
+  lastInboxError: string | null;
   load: (opts?: { toastNew?: boolean }) => Promise<void>;
   loadOlder: () => Promise<void>;
   acknowledge: (id: string) => Promise<void>;
@@ -48,10 +49,15 @@ export const useNotificationInboxStore = create<NotificationInboxState>(
     unreadCount: 0,
     hasMore: false,
     loadingOlder: false,
+    lastInboxError: null,
 
     load: async (opts) => {
       const toastNew = opts?.toastNew ?? true;
       const result = await fetchNotifications();
+      if (result.meta.source === 'api' && result.meta.reason) {
+        set({ lastInboxError: result.meta.reason });
+        return;
+      }
       const previousSeen = seenIds;
       const nextSeen = new Set(result.data.map((item) => item.id));
       const unread = result.data.filter((item) => !item.readAt);
@@ -81,6 +87,7 @@ export const useNotificationInboxStore = create<NotificationInboxState>(
         items: [...result.data, ...olderKept],
         unreadCount: result.unreadCount,
         hasMore: olderKept.length > 0 ? get().hasMore : result.hasMore,
+        lastInboxError: null,
       });
     },
 
@@ -91,6 +98,10 @@ export const useNotificationInboxStore = create<NotificationInboxState>(
       }
       set({ loadingOlder: true });
       const result = await fetchNotifications(oldest.id);
+      if (result.meta.source === 'api' && result.meta.reason) {
+        set({ loadingOlder: false, lastInboxError: result.meta.reason });
+        return;
+      }
       const known = new Set(get().items.map((item) => item.id));
       set((state) => ({
         items: [
@@ -99,6 +110,7 @@ export const useNotificationInboxStore = create<NotificationInboxState>(
         ],
         hasMore: result.hasMore,
         loadingOlder: false,
+        lastInboxError: null,
       }));
     },
 
@@ -138,7 +150,13 @@ export const useNotificationInboxStore = create<NotificationInboxState>(
       seenIds = new Set();
       initialLoadDone = false;
       toast.dismiss();
-      set({ items: [], unreadCount: 0, hasMore: false, loadingOlder: false });
+      set({
+        items: [],
+        unreadCount: 0,
+        hasMore: false,
+        loadingOlder: false,
+        lastInboxError: null,
+      });
     },
   }),
 );

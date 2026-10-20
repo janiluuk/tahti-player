@@ -21,6 +21,7 @@ import {
   type ProgrammeView,
 } from '../../../api/studio-extras';
 import { MulticastSection } from '../../../components/MulticastSection';
+import { PageError } from '../../../components/PageStates';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
 import { BroadcastRecordingToggles } from './BroadcastRecordingToggles';
@@ -42,15 +43,30 @@ export function BroadcastPanel({
   const closeSettings = useSettingsModalStore((s) => s.close);
   const [programme, setProgramme] = useState<ProgrammeView | null>(null);
   const [green, setGreen] = useState<GreenRoomPrefs | null>(null);
+  const [programmeError, setProgrammeError] = useState<string | null>(null);
+  const [greenError, setGreenError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     void Promise.all([fetchProgramme(), fetchGreenRoomPrefs()]).then(
       ([p, g]) => {
-        setProgramme(p.data);
-        setGreen(g.data);
+        const programmeReason =
+          p.meta.source === 'api' ? (p.meta.reason ?? null) : null;
+        const greenReason =
+          g.meta.source === 'api' ? (g.meta.reason ?? null) : null;
+        setProgrammeError(programmeReason);
+        setGreenError(greenReason);
+        setProgramme(programmeReason ? null : p.data);
+        setGreen(greenReason ? null : g.data);
       },
     );
-  }, []);
+  }, [attempt]);
+
+  const retry = () => {
+    setProgrammeError(null);
+    setGreenError(null);
+    setAttempt((n) => n + 1);
+  };
 
   // Both saves show the new value at once and put the old one back, with the
   // API's reason, when the save fails.
@@ -95,7 +111,15 @@ export function BroadcastPanel({
       label: 'Radio',
       icon: <RadioIcon size={14} />,
       content: !programme ? (
-        <SettingsHint>Loading…</SettingsHint>
+        programmeError ? (
+          <PageError
+            title="Could not load your radio settings"
+            description={programmeError}
+            onRetry={retry}
+          />
+        ) : (
+          <SettingsHint>Loading…</SettingsHint>
+        )
       ) : (
         <div className="flex flex-col gap-6">
           <SettingsToggle
@@ -132,7 +156,15 @@ export function BroadcastPanel({
       label: 'Green room',
       icon: <Mic size={14} />,
       content: !green ? (
-        <SettingsHint>Loading…</SettingsHint>
+        greenError ? (
+          <PageError
+            title="Could not load your green room settings"
+            description={greenError}
+            onRetry={retry}
+          />
+        ) : (
+          <SettingsHint>Loading…</SettingsHint>
+        )
       ) : (
         <div className="flex flex-col gap-6">
           <SettingsToggle

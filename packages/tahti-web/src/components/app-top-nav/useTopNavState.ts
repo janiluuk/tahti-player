@@ -51,6 +51,8 @@ export function useTopNavState() {
     (s) => s.loadingOlder,
   );
   const loadOlderNotifications = useNotificationInboxStore((s) => s.loadOlder);
+  const notificationsError = useNotificationInboxStore((s) => s.lastInboxError);
+  const loadNotifications = useNotificationInboxStore((s) => s.load);
   const acknowledgeNotification = useNotificationInboxStore(
     (s) => s.acknowledge,
   );
@@ -249,6 +251,8 @@ export function useTopNavState() {
     hasOlderNotifications,
     loadingOlderNotifications,
     loadOlderNotifications,
+    notificationsError,
+    loadNotifications,
     unreadMessagesCount,
     processingItems,
   };

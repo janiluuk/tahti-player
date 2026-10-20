@@ -17,7 +17,12 @@ import type {
   PublicProfileRelease,
   TahtiPlayable,
 } from '../api/types';
-import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../components/PageStates';
 import { releasePlayables } from '../components/ReleaseTracklistDialog';
 import { TrackInfoDialog, type TrackInfo } from '../components/TrackInfoDialog';
 import { feedBadge } from '../lib/feedBadge';
@@ -224,6 +229,13 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
 
   const content = (
     <>
+      {loadError && items.length > 0 ? (
+        <PageErrorBanner
+          title="Could not refresh your feed."
+          description={loadError}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
+      ) : null}
       {loadError && items.length === 0 ? (
         <PageError
           title="Could not load your feed"

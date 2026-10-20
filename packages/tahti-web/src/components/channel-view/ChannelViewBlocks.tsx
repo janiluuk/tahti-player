@@ -372,6 +372,9 @@ export function renderChannelBlock(
       // see the 'about' case above for why this never actually runs.
       return null;
     case 'feed': {
+      if (!editing) {
+        return null;
+      }
       const filters = item.feedFilters ?? [];
       const activeLabels = FEED_FILTER_OPTIONS.filter(
         (option) => filters.length === 0 || filters.includes(option.id),

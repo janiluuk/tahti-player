@@ -18,7 +18,7 @@ import {
   playQueueFavoriteActions,
 } from '../components/MediaIconActions';
 import { PageEmpty, PageError } from '../components/PageStates';
-import { PlayableTrackTable } from '../components/PlayableTrackTable';
+import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -210,24 +210,22 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
             }
           />
         ) : (
-          <PlayableTrackTable items={audioFavorites} playAll={false} />
+          <PlayableAmbientTrackList items={audioFavorites} />
         )}
-      </SectionShell>
-
-      {likedTracks.length > 0 ? (
-        <SectionShell title="Liked on Tahti">
-          <PlayableTrackTable
-            items={likedTracks}
-            emptyMessage="No liked tracks yet."
-            playAll={false}
-          />
-        </SectionShell>
-      ) : likesError ? (
-        <SectionShell title="Liked on Tahti">
+        {likesError ? (
           <PageError
             title="Could not load your likes"
             description={likesError}
             onRetry={() => setLikesAttempt((n) => n + 1)}
+          />
+        ) : null}
+      </SectionShell>
+
+      {likedTracks.length > 0 ? (
+        <SectionShell title="Liked on Tahti">
+          <PlayableAmbientTrackList
+            items={likedTracks}
+            emptyMessage="No liked tracks yet."
           />
         </SectionShell>
       ) : null}

@@ -10,7 +10,7 @@ import {
   type MySupportTicketReply,
   type SupportTicketStatus,
 } from '../api/support';
-import { PageEmpty } from './PageStates';
+import { PageEmpty, PageError } from './PageStates';
 
 const STATUS_BADGES: Record<
   SupportTicketStatus,
@@ -89,6 +89,7 @@ type MySupportTicketsProps = {
 export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
   const [tickets, setTickets] = useState<MySupportTicket[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -106,7 +107,7 @@ export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
     return () => {
       cancelled = true;
     };
-  }, [refreshKey]);
+  }, [refreshKey, attempt]);
 
   const addReply = (ticketId: string, reply: MySupportTicketReply) => {
     setTickets((current) =>
@@ -134,9 +135,14 @@ export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
         Your requests
       </h2>
       {error ? (
-        <p className="text-accent-red-strong text-sm" role="alert">
-          {error}
-        </p>
+        <PageError
+          title="Could not load your requests"
+          description={error}
+          onRetry={() => {
+            setError(null);
+            setAttempt((n) => n + 1);
+          }}
+        />
       ) : tickets === null ? (
         <p className="text-foreground-secondary text-sm">Loading…</p>
       ) : tickets.length === 0 ? (

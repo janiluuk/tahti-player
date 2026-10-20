@@ -111,16 +111,18 @@ describe('ChannelPanel discovery', () => {
     ).toBeTruthy();
   });
 
-  it('does not write genres over links it could not load', async () => {
+  it('shows a retryable error instead of genres it could not load', async () => {
     api.fetchMeProfile.mockResolvedValue({
       data: { ...profile, socialLinks: {} },
       meta: { source: 'api', reason: 'Network error' },
     });
     await openDiscovery();
 
-    await act(async () => {
-      fireEvent.click(screen.getByRole('checkbox', { name: 'Techno' }));
-    });
+    expect(
+      screen.getByText('Could not load your channel profile'),
+    ).toBeTruthy();
+    expect(screen.getByText('Network error')).toBeTruthy();
+    expect(screen.queryByRole('checkbox', { name: 'Techno' })).toBeNull();
     expect(api.patchMeProfile).not.toHaveBeenCalled();
   });
 

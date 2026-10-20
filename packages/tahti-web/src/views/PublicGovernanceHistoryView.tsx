@@ -5,7 +5,12 @@ import { Badge, Box, ButtonLink, StatChip, ViewShell } from '@tahti-player/ui';
 
 import { fetchPublicGovernanceMotions } from '../api/client';
 import type { PublicGovernanceMotion } from '../api/types';
-import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../components/PageStates';
 import { isPlausiblePublicName } from '../lib/publicDisplayName';
 
 export function PublicGovernanceHistoryView() {
@@ -62,6 +67,16 @@ export function PublicGovernanceHistoryView() {
         <PageEmpty title="No closed advisory motions have been published yet." />
       ) : (
         <div className="flex flex-col gap-4">
+          {loadError ? (
+            <PageErrorBanner
+              title="Could not refresh governance history"
+              description={loadError}
+              onRetry={() => {
+                setLoading(true);
+                setAttempt((n) => n + 1);
+              }}
+            />
+          ) : null}
           {motions.map((motion) => (
             <Box
               key={motion.id}

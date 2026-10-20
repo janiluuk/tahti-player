@@ -32,6 +32,8 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
   const [messages, setMessages] = useState<ChatDm[]>([]);
   const [hasMore, setHasMore] = useState(false);
   const [loadingOlder, setLoadingOlder] = useState(false);
+  const [olderError, setOlderError] = useState(false);
+  const [threadError, setThreadError] = useState<string | null>(null);
   const [other, setOther] = useState<ConversationSummary['otherUser'] | null>(
     null,
   );
@@ -81,8 +83,15 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
   }, [user, threadId]);
 
   function loadThread(id: string) {
+    setThreadError(null);
+    setOlderError(false);
     void fetchConversation(id).then((r) => {
       if (!r.data) {
+        const reason = r.meta.source === 'api' ? (r.meta.reason ?? null) : null;
+        setMessages([]);
+        setHasMore(false);
+        setOther(null);
+        setThreadError(reason ?? 'Could not load this conversation.');
         return;
       }
       setMessages(r.data.messages);
@@ -109,9 +118,11 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
       return;
     }
     setLoadingOlder(true);
+    setOlderError(false);
     void fetchOlderMessages(id, oldest.id).then((page) => {
       setLoadingOlder(false);
       if (!page) {
+        setOlderError(true);
         return;
       }
       const shown = new Set(messages.map((m) => m.id));
@@ -172,6 +183,7 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
     return (
       <ViewShell
         title="Messages"
+        data-testid="messages-view"
         classes={{ root: 'px-0 pt-0 mx-auto max-w-4xl' }}
       >
         <p className="text-foreground-secondary text-sm">
@@ -190,6 +202,7 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
   return (
     <ViewShell
       title="Messages"
+      data-testid="messages-view"
       classes={{ root: 'px-0 pt-0 mx-auto max-w-4xl' }}
     >
       <div className="flex flex-col gap-4">
@@ -332,6 +345,14 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
                   }
                 />
               </div>
+            ) : threadError ? (
+              <div className="p-4">
+                <PageError
+                  title="Could not load this conversation"
+                  description={threadError}
+                  onRetry={() => loadThread(activeId)}
+                />
+              </div>
             ) : (
               <>
                 <div className="border-border flex items-center gap-1.5 border-b px-3 py-2 text-sm font-medium">
@@ -354,6 +375,7 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
                   messages={messages}
                   hasMore={hasMore}
                   loadingOlder={loadingOlder}
+                  olderError={olderError}
                   onLoadOlder={loadOlder}
                 />
                 {other && blockedUsernames.has(other.username) ? (

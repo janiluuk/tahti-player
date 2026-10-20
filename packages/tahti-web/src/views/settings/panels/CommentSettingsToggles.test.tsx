@@ -87,4 +87,33 @@ describe('CommentSettingsToggles', () => {
     expect(save).toHaveBeenCalledWith(false);
     expect(channelDefault.getAttribute('aria-checked')).toBe('false');
   });
+
+  it('shows a retryable error when the settings fetch fails', async () => {
+    const fetchSettings = vi
+      .spyOn(api, 'fetchCommentSettings')
+      .mockResolvedValue({ ok: false, error: 'HTTP 500' });
+    await act(async () => {
+      render(<CommentSettingsToggles />);
+    });
+    expect(
+      screen.getByText('Could not load your comment settings'),
+    ).toBeTruthy();
+    expect(screen.getByText('HTTP 500')).toBeTruthy();
+    expect(screen.queryByRole('switch')).toBeNull();
+
+    fetchSettings.mockResolvedValue({
+      ok: true,
+      data: {
+        channelCommentsEnabled: true,
+        newUploadCommentsEnabled: true,
+        newChannelCommentsEnabled: true,
+      },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(
+      screen.getByRole('switch', { name: 'Allow comments on my new uploads' }),
+    ).toBeTruthy();
+  });
 });

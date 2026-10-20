@@ -47,7 +47,11 @@ export function HistoryView({ embedded = false }: { embedded?: boolean }) {
   }
 
   return (
-    <ViewShell title="History" classes={{ root: 'px-0 pt-0' }}>
+    <ViewShell
+      title="History"
+      data-testid="history-view"
+      classes={{ root: 'px-0 pt-0' }}
+    >
       {tabs}
     </ViewShell>
   );

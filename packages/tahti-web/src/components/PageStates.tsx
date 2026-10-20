@@ -1,7 +1,7 @@
 import { AlertCircle, Inbox, PackageOpen, Radio } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button, CenteredLoader, EmptyState } from '@tahti-player/ui';
+import { Alert, Button, CenteredLoader, EmptyState } from '@tahti-player/ui';
 
 export function RouteChunkSkeleton() {
   return (
@@ -107,5 +107,28 @@ export function PageError({
         ) : undefined
       }
     />
+  );
+}
+
+export function PageErrorBanner({
+  title,
+  description,
+  onRetry,
+}: {
+  title: string;
+  description?: string;
+  onRetry?: () => void;
+}) {
+  return (
+    <Alert tone="error" title={title}>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        {description ? <span>{description}</span> : <span />}
+        {onRetry ? (
+          <Button size="sm" variant="secondary" onClick={onRetry}>
+            Retry
+          </Button>
+        ) : null}
+      </div>
+    </Alert>
   );
 }

@@ -1,5 +1,11 @@
 # docs/todo history
 
+## 2026-10-20 — UX batch 83 forty slices (tahti-player #1440)
+
+Folded `batch-83-forty-slices.md`. Collection/Search/Subscribe/embeds/admin
+governance PageError honesty; Discover; studio stats; library toolbar;
+de-green polish.
+
 ## 2026-10-20 — UX batch 82 forty slices (tahti-player #1437)
 
 Folded `batch-82-forty-slices.md`. Show-detail / Feed / SmartLink / Artist

@@ -27,7 +27,11 @@ import {
   fetchStudioCollections,
 } from '../../api/studio';
 import type { StudioCollection } from '../../api/studio-types';
-import { PageError, PageLoading } from '../../components/PageStates';
+import {
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { LibrarySectionTabs } from '../LibraryView';
@@ -165,6 +169,13 @@ export function StudioPlaylistsView() {
           </Dialog.Root>
 
           <StudioPanel>
+            {!loading && loadError && rows.length > 0 ? (
+              <PageErrorBanner
+                title="Could not refresh your playlists."
+                description={loadError}
+                onRetry={reload}
+              />
+            ) : null}
             {loading ? (
               <PageLoading label="Loading…" />
             ) : loadError && rows.length === 0 ? (
