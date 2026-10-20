@@ -29,7 +29,6 @@ export const DialogXClose: FC<DialogXCloseProps> = ({ className }) => {
         className,
       )}
       aria-label="Close"
-      title="Close"
       data-testid="dialog-x-close"
     >
       <XIcon size={16} />

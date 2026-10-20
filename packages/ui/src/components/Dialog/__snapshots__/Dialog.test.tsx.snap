@@ -69,7 +69,6 @@ exports[`Dialog > (Snapshot) renders open dialog 1`] = `
           class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center pointer-events-auto absolute top-3 right-3 z-[100]"
           data-headlessui-state=""
           data-testid="dialog-x-close"
-          title="Close"
           type="button"
         >
           <svg
