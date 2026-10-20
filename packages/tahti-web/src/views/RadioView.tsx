@@ -5,7 +5,6 @@ import {
   HeartIcon,
   HistoryIcon,
   ListOrderedIcon,
-  MessageCircleIcon,
   MicIcon,
   PauseIcon,
   PlayIcon,
@@ -33,7 +32,12 @@ import {
   TAHTI_RADIO_SLUG,
 } from '../api/client';
 import type { RadioFeatureHistoryItem } from '../api/radio-public';
-import { fetchShowBookings, type StudioShowBooking } from '../api/shows';
+import {
+  fetchRadioShowUpcoming,
+  fetchShowBookings,
+  type RadioShowUpcomingTrack,
+  type StudioShowBooking,
+} from '../api/shows';
 import type {
   PublicChannel,
   RadioNowPlaying,
@@ -47,6 +51,7 @@ import {
 } from '../components/MediaIconActions';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { RadioBookingCalendar } from '../components/RadioBookingCalendar';
+import { RadioUpNextPanel } from '../components/RadioUpNextPanel';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { TrackInfoDialog, type TrackInfo } from '../components/TrackInfoDialog';
@@ -73,34 +78,17 @@ function formatAgo(iso: string): string {
   return `${Math.floor(hours / 24)}d ago`;
 }
 
-function formatUpcoming(iso: string): string {
-  const d = new Date(iso);
-  const now = new Date();
-  const dayDiff = Math.round(
-    (new Date(d.toDateString()).getTime() -
-      new Date(now.toDateString()).getTime()) /
-      86_400_000,
-  );
-  const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  if (dayDiff === 0) {
-    return `Today ${time}`;
-  }
-  if (dayDiff === 1) {
-    return `Tomorrow ${time}`;
-  }
-  return `${d.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })} ${time}`;
-}
-
 export function RadioView() {
   const [station, setStation] = useState<PublicChannel | null>(null);
   const [relay, setRelay] = useState<RadioNowPlaying | null>(null);
   const [recent, setRecent] = useState<RadioRecentlyPlayedItem[]>([]);
   const [featured, setFeatured] = useState<RadioFeatureHistoryItem[]>([]);
   const [upcoming, setUpcoming] = useState<StudioShowBooking[]>([]);
+  const [rotation, setRotation] = useState<RadioShowUpcomingTrack[]>([]);
   const [loading, setLoading] = useState(true);
   const [stationError, setStationError] = useState<string | null>(null);
   const [sectionErrors, setSectionErrors] = useState<
-    Partial<Record<'upcoming' | 'recent' | 'featured', string>>
+    Partial<Record<'upcoming' | 'rotation' | 'recent' | 'featured', string>>
   >({});
   const [infoTrack, setInfoTrack] = useState<TrackInfo | null>(null);
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -133,6 +121,16 @@ export function RadioView() {
           .sort((a, b) => a.startAt.localeCompare(b.startAt))
           .slice(0, UPCOMING_LIMIT),
       );
+    });
+  };
+
+  const reloadRotation = () => {
+    void fetchRadioShowUpcoming(TAHTI_RADIO_SLUG).then((r) => {
+      setSectionErrors((current) => ({
+        ...current,
+        rotation: r.meta.source === 'api' ? r.meta.reason : undefined,
+      }));
+      setRotation(r.data);
     });
   };
 
@@ -187,6 +185,12 @@ export function RadioView() {
 
   const online = Boolean(station?.hlsUrl);
   const nowPlaying = station?.nowPlaying;
+  const nowPlayingTitle = nowPlaying?.title;
+
+  useEffect(() => {
+    reloadRotation();
+  }, [nowPlayingTitle]);
+
   const stationLogo =
     station?.user.avatarUrl ?? station?.nowPlaying?.artworkUrl ?? null;
   const memberLive =
@@ -197,6 +201,7 @@ export function RadioView() {
           title: relay.channel.title,
         }
       : null;
+  const upcomingCount = (memberLive ? 0 : rotation.length) + upcoming.length;
   const TAGLINE =
     '24/7 community radio — always on. Fair rotation when nobody is booked.';
   const description = [TAGLINE, station?.user.bio]
@@ -464,72 +469,19 @@ export function RadioView() {
                   id: 'up-next',
                   label: 'Up next',
                   icon: <ListOrderedIcon size={14} />,
-                  count: upcoming.length > 0 ? upcoming.length : undefined,
-                  content:
-                    sectionErrors.upcoming && upcoming.length === 0 ? (
-                      <PageError
-                        title="Could not load the schedule"
-                        description={sectionErrors.upcoming}
-                        onRetry={reloadUpcoming}
-                      />
-                    ) : upcoming.length === 0 ? (
-                      <div className="flex flex-col items-start gap-2">
-                        <PageEmpty title="Nothing booked yet — fair rotation plays when nobody is." />
-                        {user && (
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            onClick={() => setCalendarOpen(true)}
-                          >
-                            <CalendarIcon
-                              size={15}
-                              className="mr-1.5"
-                              aria-hidden
-                            />
-                            Book a slot
-                          </Button>
-                        )}
-                      </div>
-                    ) : (
-                      <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
-                        {upcoming.map((b) => (
-                          <li
-                            key={b.id}
-                            className="flex items-center gap-3 px-3 py-2"
-                          >
-                            {b.showType === 'TALK' ? (
-                              <MessageCircleIcon
-                                size={16}
-                                aria-hidden
-                                className="text-foreground-secondary shrink-0"
-                              />
-                            ) : (
-                              <MicIcon
-                                size={16}
-                                aria-hidden
-                                className="text-foreground-secondary shrink-0"
-                              />
-                            )}
-                            <div className="min-w-0 flex-1">
-                              <Link
-                                to="/radio/show/$channelSlug"
-                                params={{ channelSlug: b.channelSlug }}
-                                className="block truncate text-sm leading-6 font-medium underline-offset-2 hover:underline"
-                              >
-                                {b.note ?? b.displayName}
-                              </Link>
-                              <div className="text-foreground-secondary truncate text-xs">
-                                {b.displayName}
-                                {b.isMine ? ' (you)' : ''}
-                              </div>
-                            </div>
-                            <span className="text-foreground-secondary shrink-0 text-xs tabular-nums">
-                              {formatUpcoming(b.startAt)}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    ),
+                  count: upcomingCount > 0 ? upcomingCount : undefined,
+                  content: (
+                    <RadioUpNextPanel
+                      onRotation={!memberLive}
+                      rotation={rotation}
+                      rotationError={sectionErrors.rotation}
+                      onRetryRotation={reloadRotation}
+                      bookings={upcoming}
+                      bookingsError={sectionErrors.upcoming}
+                      onRetryBookings={reloadUpcoming}
+                      onBook={user ? () => setCalendarOpen(true) : undefined}
+                    />
+                  ),
                 },
                 {
                   id: 'just-played',

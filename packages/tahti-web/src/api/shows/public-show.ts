@@ -1,4 +1,5 @@
 import type { FetchMeta } from '.././client';
+import { TAHTI_RADIO_SLUG } from '.././mock';
 import { mockFixture } from '.././mock-overrides';
 import { apiErrorMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
@@ -116,6 +117,30 @@ export type RadioShowUpcomingTrack = {
   artworkUrl: string | null;
 };
 
+const MOCK_TAHTI_RADIO_ROTATION: RadioShowUpcomingTrack[] = [
+  {
+    id: 'rot-1',
+    title: 'Aurora Drift',
+    artistName: 'Northern Lights',
+    artistUsername: 'northern-lights',
+    artworkUrl: null,
+  },
+  {
+    id: 'rot-2',
+    title: 'Late Session',
+    artistName: 'Midnight Cartography',
+    artistUsername: 'midnight-cartography',
+    artworkUrl: null,
+  },
+  {
+    id: 'rot-3',
+    title: 'Archive Session 02',
+    artistName: 'Kuudes Linja',
+    artistUsername: null,
+    artworkUrl: null,
+  },
+];
+
 /** Upcoming tracks in the channel's curated rotation queue, starting after
  * the current track. Empty for a channel with no curated rotation
  * configured (most artist channels — this only applies to Tahti Selects-
@@ -125,7 +150,11 @@ export async function fetchRadioShowUpcoming(
 ): Promise<{ data: RadioShowUpcomingTrack[]; meta: FetchMeta }> {
   if (isForceMock()) {
     return {
-      data: mockFixture('radioShowUpcoming', [], channelSlug),
+      data: mockFixture(
+        'radioShowUpcoming',
+        channelSlug === TAHTI_RADIO_SLUG ? MOCK_TAHTI_RADIO_ROTATION : [],
+        channelSlug,
+      ),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
