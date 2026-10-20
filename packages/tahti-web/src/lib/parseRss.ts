@@ -4,6 +4,11 @@ export type RssArticle = {
   teaser?: string;
   imageUrl?: string;
   link?: string;
+  /** ISO date from pubDate / published / updated, when it parses. */
+  publishedAt?: string;
+  /** Plain-text paragraphs of the full entry (content:encoded, content or
+   * description); never HTML. */
+  paragraphs?: string[];
 };
 
 export type ParsedRssFeed = {
@@ -103,6 +108,61 @@ function teaserFrom(item: Element): string | undefined {
   return stripped || undefined;
 }
 
+const MAX_PARAGRAPHS = 40;
+
+const ZONE_OFFSETS: Record<string, string> = {
+  BST: '+0100',
+  CET: '+0100',
+  CEST: '+0200',
+  EET: '+0200',
+  EEST: '+0300',
+};
+
+function publishedAtFrom(item: Element): string | undefined {
+  const raw =
+    textContent(childByLocalName(item, 'pubDate')) ||
+    textContent(childByLocalName(item, 'published')) ||
+    textContent(childByLocalName(item, 'updated')) ||
+    textContent(childByLocalName(item, 'date'));
+  const time = raw
+    ? Date.parse(
+        raw.replace(
+          /\b(BST|CEST|CET|EEST|EET)$/,
+          (zone) => ZONE_OFFSETS[zone] ?? zone,
+        ),
+      )
+    : Number.NaN;
+  return Number.isNaN(time) ? undefined : new Date(time).toISOString();
+}
+
+function paragraphsFrom(item: Element): string[] | undefined {
+  const source =
+    childByLocalName(item, 'encoded') ??
+    childByLocalName(item, 'content') ??
+    childByLocalName(item, 'description') ??
+    childByLocalName(item, 'summary');
+  const raw = source?.textContent?.trim();
+  if (!raw) {
+    return undefined;
+  }
+  const html = new DOMParser().parseFromString(raw, 'text/html');
+  const blocks = Array.from(
+    html.body.querySelectorAll('p, li, h2, h3, h4, blockquote'),
+  )
+    .filter((node) => !node.parentElement?.closest('p, li, blockquote'))
+    .map((node) => (node.textContent ?? '').replace(/\s+/g, ' ').trim());
+  const paragraphs = (
+    blocks.length > 0
+      ? blocks
+      : (html.body.textContent ?? '')
+          .split(/\n\s*\n/)
+          .map((part) => part.replace(/\s+/g, ' ').trim())
+  )
+    .filter(Boolean)
+    .slice(0, MAX_PARAGRAPHS);
+  return paragraphs.length > 0 ? paragraphs : undefined;
+}
+
 function parseItems(elements: Element[]): RssArticle[] {
   return elements.slice(0, MAX_ITEMS).flatMap((item, index) => {
     const title = textContent(childByLocalName(item, 'title'));
@@ -122,6 +182,8 @@ function parseItems(elements: Element[]): RssArticle[] {
         teaser: teaserFrom(item),
         imageUrl: firstImageUrl(item),
         link,
+        publishedAt: publishedAtFrom(item),
+        paragraphs: paragraphsFrom(item),
       },
     ];
   });

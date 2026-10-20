@@ -44,6 +44,7 @@ describe('parseRssXml', () => {
         teaser: 'Member-voted grants are open again.',
         imageUrl: 'https://cdn.example/grants.jpg',
         link: 'https://tahti.live/news/grants',
+        paragraphs: ['Member-voted grants are open again.'],
       },
       {
         id: 'No link item-1',
@@ -51,6 +52,7 @@ describe('parseRssXml', () => {
         teaser: 'HTML teaser',
         imageUrl: 'https://cdn.example/thumb.png',
         link: undefined,
+        paragraphs: ['HTML teaser'],
       },
     ]);
   });
@@ -65,8 +67,41 @@ describe('parseRssXml', () => {
         teaser: 'Short atom summary',
         imageUrl: undefined,
         link: 'https://tahti.live/news/atom',
+        paragraphs: ['Short atom summary'],
       },
     ]);
+  });
+
+  it('reads the date and full-text paragraphs without markup', () => {
+    const xml = `<?xml version="1.0"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <item>
+      <title>Studio diary</title>
+      <pubDate>Tue, 20 Oct 2026 09:30:00 +0000</pubDate>
+      <description>Short teaser</description>
+      <content:encoded><![CDATA[<p>First <b>bold</b> line.</p><img src="x" onerror="alert(1)"><ul><li>One</li><li>Two</li></ul><script>alert(1)</script>]]></content:encoded>
+    </item>
+  </channel>
+</rss>`;
+    const [item] = parseRssXml(xml).items;
+    expect(item?.publishedAt).toBe('2026-10-20T09:30:00.000Z');
+    expect(item?.paragraphs).toEqual(['First bold line.', 'One', 'Two']);
+    expect(item?.teaser).toBe('Short teaser');
+  });
+
+  it('reads pubDates with a European zone abbreviation', () => {
+    const xml = `<rss><channel><item><title>T</title><pubDate>Tue, 20 Oct 2026 17:05:53 BST</pubDate></item></channel></rss>`;
+    expect(parseRssXml(xml).items[0]?.publishedAt).toBe(
+      '2026-10-20T16:05:53.000Z',
+    );
+  });
+
+  it('splits plain-text descriptions on blank lines', () => {
+    const xml = `<rss><channel><item><title>T</title><description>One
+
+Two</description></item></channel></rss>`;
+    expect(parseRssXml(xml).items[0]?.paragraphs).toEqual(['One', 'Two']);
   });
 
   it('returns no items for invalid XML', () => {

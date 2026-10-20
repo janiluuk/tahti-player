@@ -16,6 +16,12 @@ export const MOCK_RSS_ARTICLES: RssArticle[] = [
       'The cooperative’s member-voted grant pool is open again — here’s how the engagement-unit split works and how to apply before the deadline.',
     imageUrl: 'https://picsum.photos/640/360?random=21',
     link: 'https://tahti.live/news/winter-grants',
+    publishedAt: '2026-10-18T09:00:00.000Z',
+    paragraphs: [
+      'The member-voted grant pool is open for the winter round.',
+      "Each artist's share follows engagement units from the past year: plays, live minutes and fan support all count.",
+      'Applications close at the end of November.',
+    ],
   },
   {
     id: 'mock-news-2',
@@ -24,6 +30,11 @@ export const MOCK_RSS_ARTICLES: RssArticle[] = [
       'A look at the infrastructure work that cut stream startup latency in half, and what it means for artists going live.',
     imageUrl: 'https://picsum.photos/640/360?random=22',
     link: 'https://tahti.live/news/broadcast-pipeline',
+    publishedAt: '2026-10-12T12:00:00.000Z',
+    paragraphs: [
+      'Stream startup latency dropped by half after the broadcast pipeline rebuild.',
+      'Artists going live now reach listeners in under three seconds on most connections.',
+    ],
   },
   {
     id: 'mock-news-3',
@@ -32,6 +43,11 @@ export const MOCK_RSS_ARTICLES: RssArticle[] = [
       'Meet the latest artists to join Tahti — genres, first releases, and where to catch their debut broadcasts.',
     imageUrl: 'https://picsum.photos/640/360?random=23',
     link: 'https://tahti.live/news/new-collectives',
+    publishedAt: '2026-10-05T15:30:00.000Z',
+    paragraphs: [
+      'Three collectives join the roster this month, from ambient to breakbeat.',
+      'Their first broadcasts are on the schedule this weekend.',
+    ],
   },
 ];
 
