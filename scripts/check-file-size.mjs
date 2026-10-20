@@ -2,7 +2,11 @@
 // Size guard: source files (not tests/stories/data) over LIMIT lines may not
 // appear or grow. Existing offenders are pinned in scripts/file-size-baseline.json
 // and should only ever shrink — lower the number (or delete the entry) when you
-// split one. Run with --update to rewrite the baseline after a split.
+// split one.
+//
+//   node scripts/check-file-size.mjs           # CI check
+//   node scripts/check-file-size.mjs --update  # rewrite baseline to files > LIMIT
+//   node scripts/check-file-size.mjs --prune   # drop stale pins (≤ LIMIT / missing)
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
@@ -48,12 +52,31 @@ let baseline = {};
 try {
   baseline = JSON.parse(readFileSync(baselinePath, 'utf8'));
 } catch {}
+
+const stale = Object.keys(baseline).filter((f) => !(f in sizes));
+if (stale.length) {
+  if (process.argv.includes('--prune')) {
+    for (const f of stale) delete baseline[f];
+    writeFileSync(baselinePath, JSON.stringify(baseline, null, 2) + '\n');
+    console.log(
+      `Pruned ${stale.length} stale baseline pin(s): ${stale.join(', ')}`,
+    );
+  } else {
+    console.warn(
+      `Stale baseline pin(s) (file ≤ ${LIMIT} or gone — run with --prune): ${stale.join(', ')}`,
+    );
+  }
+}
+
 const problems = Object.entries(sizes).filter(
   ([f, n]) => n > (baseline[f] ?? LIMIT),
 );
 for (const [file, lines] of problems) {
+  const pinned = baseline[file];
   console.error(
-    `${file}: ${lines} lines (limit ${baseline[file] ?? LIMIT}). Split it, or see scripts/check-file-size.mjs.`,
+    pinned != null
+      ? `${file}: ${lines} lines (pinned ≤ ${pinned}). Split it and lower/remove the pin in scripts/file-size-baseline.json — do not raise the pin.`
+      : `${file}: ${lines} lines (limit ${LIMIT}). Split it under ${LIMIT}, or pin once via: node scripts/check-file-size.mjs --update`,
   );
 }
 process.exit(problems.length ? 1 : 0);
