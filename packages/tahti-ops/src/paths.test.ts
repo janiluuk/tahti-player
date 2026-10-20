@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -25,7 +25,7 @@ describe('paths', () => {
 
   it('resolves package and player roots', () => {
     expect(packageRoot()).toMatch(/packages\/tahti-ops$/);
-    expect(playerRoot()).toMatch(/tahti-player$/);
+    expect(existsSync(join(playerRoot(), 'pnpm-workspace.yaml'))).toBe(true);
   });
 
   it('uses TAHTI_ORG_ROOT when set', () => {

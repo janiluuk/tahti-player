@@ -1,5 +1,7 @@
-import { OpsError, requireOrgScript } from '../paths.mjs';
-import { runScript } from '../run-script.mjs';
+import { resolve } from 'node:path';
+
+import { OpsError, playerRoot, requireOrgScript } from '../paths.mjs';
+import { runProgram, runScript } from '../run-script.mjs';
 
 const TARGETS = {
   stack: {
@@ -19,11 +21,51 @@ const TARGETS = {
   },
 };
 
+/** Targets built and shipped from this repo (not tahti-org scripts). */
+const LOCAL_TARGETS = {
+  web: {
+    script: 'packages/tahti-web/deploy/deploy-vimage.sh',
+    label: 'deploy web (beta.tahti.live)',
+    workflow: 'deploy-tahti-web-selfhosted.yml',
+  },
+  storybook: {
+    script: 'packages/storybook/deploy/deploy-vimage.sh',
+    label: 'deploy storybook',
+  },
+};
+
 export function deployTargets() {
-  return Object.keys(TARGETS);
+  return [...Object.keys(TARGETS), ...Object.keys(LOCAL_TARGETS)];
+}
+
+function runLocal(target, { dryRun, env, extraArgs }) {
+  const spec = LOCAL_TARGETS[target];
+  const ci = extraArgs.includes('--ci');
+  const rest = extraArgs.filter((arg) => arg !== '--ci');
+  if (rest.length > 0) {
+    throw new OpsError(`Unknown option for deploy ${target}: ${rest[0]}`);
+  }
+  if (ci) {
+    if (!spec.workflow) {
+      throw new OpsError(`deploy ${target} has no CI workflow; drop --ci`);
+    }
+    return runProgram(
+      'gh',
+      ['workflow', 'run', spec.workflow, '--ref', 'master'],
+      { dryRun, env, cwd: playerRoot(), label: `${spec.label} via CI` },
+    );
+  }
+  return runScript(resolve(playerRoot(), spec.script), [], {
+    dryRun,
+    env,
+    label: spec.label,
+  });
 }
 
 async function runOne(target, { dryRun, env, extraArgs }) {
+  if (LOCAL_TARGETS[target]) {
+    return runLocal(target, { dryRun, env, extraArgs });
+  }
   const spec = TARGETS[target];
   if (!spec) {
     throw new OpsError(

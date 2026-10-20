@@ -22,7 +22,20 @@ install the product CLI without deploy SSH tooling.
 | `tahti-ops deploy minio` | `scripts/deploy_minio_remote.sh` | flags: `--bootstrap-env` |
 | `tahti-ops deploy all` | stack → worker → minio | stops on first failure |
 
+| `tahti-ops desktop run\|launch\|dev\|bundle` | `scripts/build-and-run-player.sh`, `scripts/run-linux.sh`, `pnpm dev`, `pnpm tauri build` | root `pnpm desktop`, `pnpm desktop:dev` |
+| `tahti-ops test [group…]` | `turbo test` / per-package `pnpm --filter … test` | groups web ui player storybook types lint all; args after `--` |
+| `tahti-ops e2e journeys\|tasks\|playwright` | `run-e2e-journeys.sh`, `*-tasks-journey.mjs`, `pnpm test:e2e` | `--env-file` for real-backend credentials |
+| `tahti-ops snapshots list\|update` | `vitest run -u` per package, `generate-storybook-surfaces.mjs` | groups ui player hifi surfaces, or all; `--only <test>`; prints changed `.snap` files |
+| `tahti-ops deploy web\|storybook` | `deploy-vimage.sh` in each package | `--ci` dispatches `deploy-tahti-web-selfhosted.yml` |
+
 Shared: `--help`, `--dry-run`, `TAHTI_ORG_ROOT`, short `→` / `✓` / `✗` labels.
+
+## Cross-check of existing scripts (2026-10-20)
+
+- `scripts/deploy-production.sh` is misnamed: it doesn't deploy. It bumps the desktop version, commits, tags `player@X` and runs `tauri build` — the release-prep job `pnpm release:prepare` and the release workflow already cover. Candidate: `tahti-ops release prepare`, then delete the script.
+- `deploy-vimage.sh` (tahti-web, Storybook) tried `nvm use 22` before 24; this repo needs Node 24 — fixed to prefer 24.
+- `build:linux:run` and `player:build:run` were the same script (the Linux one only checks `uname`); both now point at `tahti-ops desktop run`.
+- Two web deploy paths exist: `deploy-vimage.sh` from a laptop over SSH, and the self-hosted CI workflow (fails when `/srv/tahti-beta/deploy` drifts to another owner; #1413 swaps the config in by rename). `tahti-ops deploy web [--ci]` exposes both.
 
 ## Script → command inventory
 

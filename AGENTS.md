@@ -50,7 +50,12 @@ pnpm dev:remote          # Bind Vite 0.0.0.0 for remote control
 pnpm storybook
 pnpm dev:tahti           # tahti-web
 pnpm tahti --help        # product API/TUI CLI
-pnpm tahti-ops --help    # maintainer CLI (env / smoke / backup / deploy)
+pnpm tahti-ops --help    # maintainer CLI: desktop, test, e2e, snapshots, deploy, stack, env, backup
+pnpm desktop             # build + launch the desktop app (tahti-ops desktop run)
+pnpm test:all            # every package's tests (tahti-ops test all)
+pnpm e2e                 # screenshot journeys on the mock app (tahti-ops e2e journeys)
+pnpm snapshots update ui player   # re-record snapshot groups (tahti-ops snapshots)
+pnpm deploy:web          # ship beta.tahti.live (tahti-ops deploy web)
 pnpm build && pnpm tauri build
 pnpm lint && pnpm type-check && pnpm test
 pnpm --filter @tahti-player/ui test -- src/components/Badge/Badge.test.tsx

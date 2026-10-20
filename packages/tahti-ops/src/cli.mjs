@@ -3,8 +3,16 @@ import { parseArgs } from 'node:util';
 
 import { runBackupStatus } from './commands/backup-status.mjs';
 import { deployTargets, runDeploy } from './commands/deploy.mjs';
+import { desktopModes, runDesktop } from './commands/desktop.mjs';
+import { runE2e } from './commands/e2e.mjs';
 import { runEnv } from './commands/env.mjs';
+import {
+  listSnapshots,
+  snapshotGroups,
+  updateSnapshots,
+} from './commands/snapshots.mjs';
 import { runStackSmoke } from './commands/stack-smoke.mjs';
+import { runTests, testGroups } from './commands/test.mjs';
 import { OpsError } from './paths.mjs';
 
 const ENVIRONMENT_HELP = `Environment:
@@ -58,14 +66,17 @@ Examples:
   {
     path: ['deploy'],
     usage:
-      'tahti-ops deploy <stack|worker|minio|all> [--dry-run] [script flags]',
+      'tahti-ops deploy <stack|worker|minio|all|web|storybook> [--dry-run] [flags]',
     summary:
-      'Deploy production stack, remote worker, remote MinIO, or all three',
+      'Deploy the production stack, worker, MinIO, the web app (beta.tahti.live) or Storybook',
     details: `Targets:
   stack    compose stack on DEPLOY_HOST (vimage) — flags: --no-cache --down
   worker   remote transcode worker — flags: --bootstrap-env
   minio    remote MinIO node — flags: --bootstrap-env
   all      stack, then worker, then minio
+  web      build tahti-web and ship it to beta.tahti.live (deploy-vimage.sh over SSH);
+           --ci dispatches the self-hosted GitHub deploy workflow instead
+  storybook  build Storybook and ship it to the Storybook host
 
   --dry-run   Print each step without running it`,
     passthrough: true,
@@ -86,7 +97,111 @@ Examples:
   },
 ];
 
-const HELP = `tahti-ops — maintainer CLI (stack, env, backup, deploy)
+const splitDryRun = (argv) => ({
+  dryRun: argv.includes('--dry-run'),
+  args: argv.filter((arg) => arg !== '--dry-run'),
+});
+
+function takeOption(args, name) {
+  const index = args.indexOf(name);
+  if (index === -1) {
+    return { value: null, rest: args };
+  }
+  const value = args[index + 1];
+  if (!value || value.startsWith('--')) {
+    throw new OpsError(`${name} needs a value`);
+  }
+  return { value, rest: [...args.slice(0, index), ...args.slice(index + 2)] };
+}
+
+COMMANDS.push(
+  {
+    path: ['desktop'],
+    usage: 'tahti-ops desktop <run|launch|dev|bundle> [--dry-run]',
+    summary:
+      'Build and launch the desktop app, run it in dev mode, or bundle it',
+    details: `Modes:
+${Object.entries(desktopModes())
+  .map(([mode, text]) => `  ${mode.padEnd(8)} ${text}`)
+  .join('\n')}
+
+Needs Rust and the Tauri system packages (see AGENTS.md → Environment).`,
+    passthrough: true,
+    run: (_parsed, argv) => {
+      const { dryRun, args } = splitDryRun(argv);
+      return runDesktop(args[0], { dryRun, extraArgs: args.slice(1) });
+    },
+  },
+  {
+    path: ['test'],
+    usage: 'tahti-ops test [<group>…] [--dry-run] [-- <vitest args>]',
+    summary: 'Run tests by group: web, ui, player, storybook, types, lint, all',
+    details: `Groups (default: all):
+${Object.entries(testGroups())
+  .map(([name, group]) => `  ${name.padEnd(10)} ${group.summary}`)
+  .join('\n')}
+
+Arguments after -- go to the test runner, e.g.
+  tahti-ops test web -- src/views/ListenView.test.tsx`,
+    passthrough: true,
+    allowEmpty: true,
+    run: (_parsed, argv) => {
+      const dashIndex = argv.indexOf('--');
+      const own = dashIndex === -1 ? argv : argv.slice(0, dashIndex);
+      const extraArgs = dashIndex === -1 ? [] : argv.slice(dashIndex + 1);
+      const { dryRun, args } = splitDryRun(own);
+      return runTests(args, { dryRun, extraArgs });
+    },
+  },
+  {
+    path: ['e2e'],
+    usage:
+      'tahti-ops e2e <journeys|tasks|playwright> [names…] [--env-file <path>] [--dry-run]',
+    summary:
+      'Run e2e: screenshot journeys, real-backend task journeys, Playwright specs',
+    details: `Kinds:
+  journeys [anonymous|listener|artist|admin]  Screenshot journeys on the mock app (starts a dev server)
+  tasks <listener|artist>                     Task journeys against a real backend (default beta.tahti.live);
+                                              needs TAHTI_E2E_* credentials, e.g. --env-file ~/.tahti-e2e.env
+  playwright [spec…]                          Playwright specs in packages/tahti-web/e2e (PLAYWRIGHT_BASE_URL)
+
+  --env-file <path>  Load KEY=value credentials for this run only`,
+    passthrough: true,
+    run: (_parsed, argv) => {
+      const { dryRun, args } = splitDryRun(argv);
+      const { value: envFile, rest } = takeOption(args, '--env-file');
+      return runE2e(rest[0], rest.slice(1), { dryRun, envFile });
+    },
+  },
+  {
+    path: ['snapshots'],
+    usage:
+      'tahti-ops snapshots <list|update> [<group>…|all] [--only <test path>] [--dry-run]',
+    summary:
+      'List snapshot groups or re-record them (ui, player, hifi, surfaces)',
+    details: `Groups: ${Object.keys(snapshotGroups()).join(', ')}, or all.
+  list                   Snapshot files per group
+  update <group…|all>    Re-record, then show which snapshot files changed
+  --only <test path>     Limit to one test file (one group only)
+
+A change in packages/ui often changes player snapshots too:
+  tahti-ops snapshots update ui player`,
+    passthrough: true,
+    run: (_parsed, argv) => {
+      const { dryRun, args } = splitDryRun(argv);
+      const { value: only, rest } = takeOption(args, '--only');
+      if (rest[0] === 'list') {
+        return listSnapshots();
+      }
+      if (rest[0] === 'update') {
+        return updateSnapshots(rest.slice(1), { dryRun, only });
+      }
+      throw new OpsError('Try: tahti-ops snapshots list | update <group…|all>');
+    },
+  },
+);
+
+const HELP = `tahti-ops — maintainer CLI (desktop, tests, e2e, snapshots, deploy, stack, env, backup)
 
 Usage:
   tahti-ops <command> [options]
@@ -173,7 +288,7 @@ export async function main(argv) {
 
   if (command.passthrough) {
     if (
-      args.length === 0 ||
+      (args.length === 0 && !command.allowEmpty) ||
       (args.length === 1 && isHelpFlag(args[0])) ||
       (command.path[0] === 'deploy' && args.some(isHelpFlag))
     ) {

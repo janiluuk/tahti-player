@@ -11,6 +11,34 @@ Roadmap / inventory: [`docs/todo/tahti-ops-cli.md`](../../docs/todo/tahti-ops-cl
 ```bash
 pnpm tahti-ops --help
 
+# desktop app (needs Rust + Tauri system packages)
+pnpm tahti-ops desktop run        # release build, then launch   (= pnpm desktop)
+pnpm tahti-ops desktop launch     # launch the last build (Linux)
+pnpm tahti-ops desktop dev        # dev mode with hot reload     (= pnpm desktop:dev)
+pnpm tahti-ops desktop bundle     # installers / packages
+
+# tests
+pnpm tahti-ops test               # every package                (= pnpm test:all)
+pnpm tahti-ops test web ui        # chosen groups: web ui player storybook types lint all
+pnpm tahti-ops test web -- src/views/ListenView.test.tsx
+
+# e2e
+pnpm tahti-ops e2e journeys [listener]      # screenshot journeys on the mock app (= pnpm e2e)
+pnpm tahti-ops e2e tasks artist --env-file ~/.tahti-e2e.env   # real backend (beta)
+pnpm tahti-ops e2e playwright [spec]        # Playwright specs (PLAYWRIGHT_BASE_URL)
+
+# snapshots
+pnpm tahti-ops snapshots list               # snapshot files per group
+pnpm tahti-ops snapshots update ui player   # re-record groups, then show changed .snap files
+pnpm tahti-ops snapshots update all
+pnpm tahti-ops snapshots update ui --only packages/ui/src/components/Dialog/Dialog.test.tsx
+pnpm tahti-ops snapshots update surfaces    # STORYBOOK-SURFACES.md index
+
+# web app and Storybook
+pnpm tahti-ops deploy web         # build + ship beta.tahti.live over SSH (= pnpm deploy:web)
+pnpm tahti-ops deploy web --ci    # dispatch the self-hosted deploy workflow instead
+pnpm tahti-ops deploy storybook
+
 # stack.env on the deploy host
 pnpm tahti-ops env list
 pnpm tahti-ops env get RATE_LIMIT_AUTH_MAX
@@ -42,7 +70,12 @@ Progress lines go to stderr (`→` / `✓` / `✗`); script stdout is unchanged.
 | `../tahti-org/scripts/deploy_prod.sh` | `pnpm tahti-ops deploy stack` |
 | `../tahti-org/scripts/deploy_worker_remote.sh` | `pnpm tahti-ops deploy worker` |
 | `../tahti-org/scripts/deploy_minio_remote.sh` | `pnpm tahti-ops deploy minio` |
-| (all three deploys) | `pnpm tahti-ops deploy all` |
+| (all three deploys) | `pnpm tahti-ops deploy all` (= `pnpm deploy:prod`) |
+| `scripts/build-and-run-player.sh`, `pnpm player:build:run`, `pnpm build:linux:run` | `pnpm tahti-ops desktop run` (= `pnpm desktop`) |
+| `scripts/run-linux.sh`, `pnpm player:run` | `pnpm tahti-ops desktop launch` |
+| `packages/tahti-web/deploy/deploy-vimage.sh`, `pnpm deploy:tahti-beta` | `pnpm tahti-ops deploy web` |
+| `packages/tahti-web/scripts/run-e2e-journeys.sh` | `pnpm tahti-ops e2e journeys` |
+| `vitest run -u` per package | `pnpm tahti-ops snapshots update <group>` |
 
 Cron entries may still call `backup.sh` directly on the host; operators use
 `tahti-ops` from this monorepo.
