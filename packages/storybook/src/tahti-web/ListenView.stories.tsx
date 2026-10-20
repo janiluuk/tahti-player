@@ -7,7 +7,7 @@ import { ListenView } from '@tahti-web/views/ListenView';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
-import { selectTab } from './_lib/play';
+import { keyboardMoveDown, selectTab } from './_lib/play';
 
 const meta: Meta<typeof ListenView> = {
   title: 'Tahti/Listen/ListenView',
@@ -118,13 +118,7 @@ export const OrderSections: Story = {
     await userEvent.click(toggle);
     await expect(toggle).toHaveAttribute('aria-pressed', 'true');
     const handle = canvas.getByRole('button', { name: 'Move Tahti Radio' });
-    handle.focus();
-    const pause = () => new Promise((resolve) => setTimeout(resolve, 100));
-    await userEvent.keyboard(' ');
-    await pause();
-    await userEvent.keyboard('{ArrowDown}');
-    await pause();
-    await userEvent.keyboard(' ');
+    await keyboardMoveDown(handle);
     await waitFor(() =>
       expect(dashboardBlockIds(canvasElement).slice(0, 2)).toEqual([
         'selects',

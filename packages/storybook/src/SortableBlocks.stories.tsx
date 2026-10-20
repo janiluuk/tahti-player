@@ -1,8 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { Button, SortableBlocks, type SortableBlock } from '@tahti-player/ui';
+
+import { keyboardMoveDown } from './tahti-web/_lib/play';
 
 const meta = {
   title: 'Components/SortableBlocks',
@@ -74,13 +76,7 @@ export const Reordering: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const handle = canvas.getByRole('button', { name: 'Move Tahti Radio' });
-    handle.focus();
-    const pause = () => new Promise((resolve) => setTimeout(resolve, 100));
-    await userEvent.keyboard(' ');
-    await pause();
-    await userEvent.keyboard('{ArrowDown}');
-    await pause();
-    await userEvent.keyboard(' ');
+    await keyboardMoveDown(handle);
     await waitFor(() => {
       const ids = Array.from(
         canvasElement.querySelectorAll<HTMLElement>('[data-sortable-block]'),
