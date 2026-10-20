@@ -1,5 +1,11 @@
 # docs/todo history
 
+## 2026-10-20 — UX batch 82 forty slices (tahti-player #1437)
+
+Folded `batch-82-forty-slices.md`. Show-detail / Feed / SmartLink / Artist
+PageError honesty; Multistream load; admin moderation/orphan breadcrumbs;
+settings money→revenue; Library Embeds PageError with partial data.
+
 ## 2026-10-20 — UX batch 81 forty slices (tahti-player #1436)
 
 Folded `batch-81-forty-slices.md`. Studio home / pickers / artist satellites /

@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 import { Button, ImageReveal } from '@tahti-player/ui';
 
@@ -6,6 +6,7 @@ import {
   fetchEmbedChannel,
   fetchEmbedCollection,
   fetchEmbedRelease,
+  type FetchMeta,
 } from '../api/client';
 import type {
   ChannelEmbedView,
@@ -17,7 +18,7 @@ import { AudioEngine } from '../components/AudioEngine';
 import { ConnectedPlayerBar } from '../components/ConnectedPlayerBar';
 import { HearthisEmbedHostProvider } from '../components/HearthisEmbedHost';
 import { ListenHeartbeat } from '../components/ListenHeartbeat';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { useThemeStore } from '../plugins/themes';
 import { usePlayerStore } from '../stores/playerStore';
 
@@ -38,34 +39,88 @@ function EmbedChrome({ children }: { children: ReactNode }) {
   );
 }
 
-export function EmbedChannelView({ slug }: { slug: string }) {
-  const [data, setData] = useState<ChannelEmbedView | null>(null);
-  const [playable, setPlayable] = useState<TahtiPlayable | null>(null);
+function useEmbedLoad<R extends { meta: FetchMeta }>(
+  load: () => Promise<R>,
+  key: string,
+) {
+  const loadRef = useRef(load);
+  loadRef.current = load;
+  const [result, setResult] = useState<R | null>(null);
   const [loading, setLoading] = useState(true);
-  const play = usePlayerStore((s) => s.play);
-  const status = usePlayerStore((s) => s.status);
-  const isPlaying = status === 'playing' || status === 'loading';
+  const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    void fetchEmbedChannel(slug).then((res) => {
-      if (cancelled) {
-        return;
-      }
-      setData(res.data);
-      setPlayable(res.playable);
-      setLoading(false);
-    });
+    setError(null);
+    loadRef
+      .current()
+      .then((res) => {
+        if (cancelled) {
+          return;
+        }
+        setResult(res);
+        setError(res.meta.source === 'api' ? (res.meta.reason ?? null) : null);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setResult(null);
+          setError(
+            err instanceof Error ? err.message : 'Could not load this embed.',
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [key, attempt]);
+
+  return {
+    result,
+    loading,
+    error,
+    retry: () => setAttempt((n) => n + 1),
+  };
+}
+
+function EmbedLoadError({
+  message,
+  onRetry,
+}: {
+  message: string;
+  onRetry: () => void;
+}) {
+  return (
+    <PageError
+      title="Could not load this embed"
+      description={message}
+      onRetry={onRetry}
+    />
+  );
+}
+
+export function EmbedChannelView({ slug }: { slug: string }) {
+  const { result, loading, error, retry } = useEmbedLoad(
+    () => fetchEmbedChannel(slug),
+    slug,
+  );
+  const data: ChannelEmbedView | null = error ? null : (result?.data ?? null);
+  const playable: TahtiPlayable | null = result?.playable ?? null;
+  const play = usePlayerStore((s) => s.play);
+  const status = usePlayerStore((s) => s.status);
+  const isPlaying = status === 'playing' || status === 'loading';
 
   return (
     <EmbedChrome>
       {loading && <PageLoading label="Loading embed…" />}
-      {!loading && !data && <PageEmpty title="Channel unavailable" />}
+      {!loading && error && <EmbedLoadError message={error} onRetry={retry} />}
+      {!loading && !error && !data && <PageEmpty title="Channel unavailable" />}
       {!loading && data && (
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
@@ -112,31 +167,19 @@ export function EmbedChannelView({ slug }: { slug: string }) {
 }
 
 export function EmbedReleaseView({ id }: { id: string }) {
-  const [data, setData] = useState<ReleaseEmbedView | null>(null);
-  const [playables, setPlayables] = useState<TahtiPlayable[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { result, loading, error, retry } = useEmbedLoad(
+    () => fetchEmbedRelease(id),
+    id,
+  );
+  const data: ReleaseEmbedView | null = error ? null : (result?.data ?? null);
+  const playables: TahtiPlayable[] = result?.playables ?? [];
   const play = usePlayerStore((s) => s.play);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    void fetchEmbedRelease(id).then((res) => {
-      if (cancelled) {
-        return;
-      }
-      setData(res.data);
-      setPlayables(res.playables);
-      setLoading(false);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [id]);
 
   return (
     <EmbedChrome>
       {loading && <PageLoading label="Loading embed…" />}
-      {!loading && !data && <PageEmpty title="Release unavailable" />}
+      {!loading && error && <EmbedLoadError message={error} onRetry={retry} />}
+      {!loading && !error && !data && <PageEmpty title="Release unavailable" />}
       {!loading && data && (
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
@@ -215,34 +258,26 @@ export function EmbedCollectionView({
   slug: string;
   username?: string;
 }) {
-  const [data, setData] = useState<CollectionEmbedView | null>(null);
-  const [playables, setPlayables] = useState<TahtiPlayable[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { result, loading, error, retry } = useEmbedLoad(
+    () => fetchEmbedCollection(slug),
+    slug,
+  );
+  const data: CollectionEmbedView | null = error
+    ? null
+    : (result?.data ?? null);
+  const playables: TahtiPlayable[] = result?.playables ?? [];
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    void fetchEmbedCollection(slug).then((res) => {
-      if (cancelled) {
-        return;
-      }
-      setData(res.data);
-      setPlayables(res.playables);
-      setLoading(false);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [slug]);
 
   const artistUsername = data?.artist.username ?? username;
 
   return (
     <EmbedChrome>
       {loading && <PageLoading label="Loading embed…" />}
-      {!loading && !data && <PageEmpty title="Collection unavailable" />}
+      {!loading && error && <EmbedLoadError message={error} onRetry={retry} />}
+      {!loading && !error && !data && (
+        <PageEmpty title="Collection unavailable" />
+      )}
       {!loading && data && (
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">

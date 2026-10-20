@@ -7,6 +7,7 @@ import { useState, type FC } from 'react';
 
 import { TabLabel, Tabs, ViewShell } from '@tahti-player/ui';
 
+import { PageError } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { DownloadGatesPanel } from './stats/DownloadGatesPanel';
 import { HourlyDialog } from './stats/HourlyDialog';
@@ -60,11 +61,24 @@ export const StudioStatsView: FC = () => {
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
           <RangeControls state={state} />
-          <KeyMetrics state={state} active={activeTab === 'overview'} />
-          <PlaysTab state={state} active={activeTab === 'plays'} />
-          <TopListsTab state={state} active={activeTab === 'top-lists'} />
-          <EngagementSection state={state} active={activeTab === 'overview'} />
-          <DownloadGatesPanel active={activeTab === 'overview'} />
+          {state.loadError && !state.loading ? (
+            <PageError
+              title="Could not load your stats"
+              description={state.loadError}
+              onRetry={state.reload}
+            />
+          ) : (
+            <>
+              <KeyMetrics state={state} active={activeTab === 'overview'} />
+              <PlaysTab state={state} active={activeTab === 'plays'} />
+              <TopListsTab state={state} active={activeTab === 'top-lists'} />
+              <EngagementSection
+                state={state}
+                active={activeTab === 'overview'}
+              />
+              <DownloadGatesPanel active={activeTab === 'overview'} />
+            </>
+          )}
         </ViewShell>
       </div>
 

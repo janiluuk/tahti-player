@@ -5,8 +5,15 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
-import { act, cleanup, render, screen, within } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { CollectionItemContribution } from '../api/collection-contribution';
 import type { CollectionItem, PublicCollection } from '../api/types';
@@ -33,15 +40,16 @@ vi.mock('@tanstack/react-virtual', () => ({
 }));
 
 let collection: PublicCollection;
+let fetchCollectionImpl: () => Promise<{
+  data: PublicCollection;
+  meta: { source: 'api' | 'mock'; reason?: string };
+}>;
 
 vi.mock('../api/client', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../api/client')>();
   return {
     ...actual,
-    fetchCollection: async () => ({
-      data: collection,
-      meta: { source: 'api' as const },
-    }),
+    fetchCollection: () => fetchCollectionImpl(),
     fetchCollectionSubscription: async () => null,
   };
 });
@@ -75,7 +83,7 @@ function makeCollection(items: CollectionItem[]): PublicCollection {
   };
 }
 
-async function renderView() {
+async function mountView() {
   const router = createRouter({
     routeTree: createRootRoute({
       component: () => <CollectionView slug="road-trip" />,
@@ -85,8 +93,19 @@ async function renderView() {
   await act(async () => {
     render(<RouterProvider router={router} />);
   });
+}
+
+async function renderView() {
+  await mountView();
   await screen.findByText('Track 1');
 }
+
+beforeEach(() => {
+  fetchCollectionImpl = async () => ({
+    data: collection,
+    meta: { source: 'api' as const },
+  });
+});
 
 afterEach(() => {
   cleanup();
@@ -159,5 +178,40 @@ describe('CollectionView contributions', () => {
     expect(
       screen.queryByTestId('collection-contribution'),
     ).not.toBeInTheDocument();
+  });
+});
+
+describe('CollectionView load errors', () => {
+  it('shows a retryable error when the collection API fails', async () => {
+    collection = makeCollection([item(1)]);
+    fetchCollectionImpl = vi
+      .fn<typeof fetchCollectionImpl>()
+      .mockRejectedValueOnce(new Error('/api/v1/collections/road-trip → 500'))
+      .mockResolvedValue({ data: collection, meta: { source: 'api' } });
+    await mountView();
+
+    expect(
+      await screen.findByText('Could not load this collection'),
+    ).toBeTruthy();
+    expect(screen.queryByText('Collection not found')).toBeNull();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(await screen.findByText('Track 1')).toBeTruthy();
+  });
+
+  it('shows the error state when the API meta carries a reason', async () => {
+    collection = makeCollection([]);
+    fetchCollectionImpl = async () => ({
+      data: collection,
+      meta: { source: 'api', reason: 'boom' },
+    });
+    await mountView();
+
+    expect(
+      await screen.findByText('Could not load this collection'),
+    ).toBeTruthy();
+    expect(screen.getByText('boom')).toBeTruthy();
   });
 });

@@ -7,7 +7,11 @@ import {
   type AdminGovernanceCorrection,
 } from '../../../../api/admin/admin-governance-corrections';
 import { CORRECTION_SUBJECT_LABELS } from '../../../../api/governance-corrections';
-import { PageEmpty, PageLoading } from '../../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { AnswerCorrectionForm } from './AnswerCorrectionForm';
 
@@ -37,12 +41,16 @@ function formatDay(iso: string): string {
 export function CorrectionsQueuePanel() {
   const [filter, setFilter] = useState<Filter>('waiting');
   const [rows, setRows] = useState<AdminGovernanceCorrection[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const result = await fetchAdminCorrections(
       filter === 'waiting' ? 'OPEN' : undefined,
     );
     setRows(result.data);
+    setLoadError(
+      result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+    );
   }, [filter]);
 
   useEffect(() => {
@@ -63,6 +71,15 @@ export function CorrectionsQueuePanel() {
       />
       {rows === null ? (
         <PageLoading label="Loading requests…" />
+      ) : loadError && rows.length === 0 ? (
+        <PageError
+          title="Could not load correction requests"
+          description={loadError}
+          onRetry={() => {
+            setRows(null);
+            void load();
+          }}
+        />
       ) : rows.length === 0 ? (
         <PageEmpty
           title={

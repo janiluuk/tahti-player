@@ -23,7 +23,11 @@ import {
   ViewShell,
 } from '@tahti-player/ui';
 
-import { fetchDirectory, fetchTrackDetail } from '../api/client';
+import {
+  fetchDirectory,
+  fetchTrackDetail,
+  type FetchMeta,
+} from '../api/client';
 import {
   fetchArtistOfTheWeek,
   fetchLatestTracks,
@@ -49,6 +53,7 @@ import { DirectoryArtistsBrowser } from '../components/DirectoryArtistsBrowser';
 import { WidgetCard } from '../components/discover/WidgetCard';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { NewsFeedWidget } from '../components/NewsFeedWidget';
+import { PageError } from '../components/PageStates';
 import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { VenuesDirectory } from '../components/VenuesDirectory';
 import { CONTENT_TYPES } from '../content/contentTypes';
@@ -68,6 +73,10 @@ import {
 import { usePlayerStore } from '../stores/playerStore';
 
 const ALL_FILTER_ID = '__all__';
+
+function apiReason(meta: FetchMeta): string | null {
+  return meta.source === 'api' ? (meta.reason ?? null) : null;
+}
 
 const WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
   'this-week-most-played': 'This week: most played',
@@ -91,6 +100,7 @@ const TOP_LIST_WIDGET_IDS = new Set<DiscoverWidgetId>([
 
 type WidgetData = {
   loading: boolean;
+  error?: string | null;
   items: DiscoverTrackItem[];
   collections?: DiscoverCollection[];
   releases?: LatestRelease[];
@@ -145,6 +155,8 @@ export function DiscoverView() {
   );
   const [artists, setArtists] = useState<ChannelDirectoryItem[]>([]);
   const [artistsLoading, setArtistsLoading] = useState(true);
+  const [artistsError, setArtistsError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const search = useSearch({ strict: false }) as { tab?: string };
   const activeTab = discoverTabFromSearch(search.tab);
   const navigate = useNavigate();
@@ -162,13 +174,20 @@ export function DiscoverView() {
         setArtists(
           result.data.items.filter((artist) => artist.slug !== 'tahti-radio'),
         );
+        setArtistsError(apiReason(result.meta));
         setArtistsLoading(false);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [contentTypeFilter, genreFilter, randomArtistRotationDays, unheardOnly]);
+  }, [
+    contentTypeFilter,
+    genreFilter,
+    randomArtistRotationDays,
+    unheardOnly,
+    reloadKey,
+  ]);
 
   useEffect(() => {
     if (!unheardOnly) {
@@ -199,47 +218,58 @@ export function DiscoverView() {
       const load = async (): Promise<WidgetData> => {
         switch (id) {
           case 'artist-of-the-week': {
-            const { data: artist } = await fetchArtistOfTheWeek();
-            return { loading: false, items: [], artist: artist ?? undefined };
+            const { data: artist, meta } = await fetchArtistOfTheWeek();
+            return {
+              loading: false,
+              error: apiReason(meta),
+              items: [],
+              artist: artist ?? undefined,
+            };
           }
           case 'random-artist': {
-            const { data: artist } = await fetchRandomArtist(
+            const { data: artist, meta } = await fetchRandomArtist(
               randomArtistRotationDays,
             );
-            return { loading: false, items: [], artist: artist ?? undefined };
+            return {
+              loading: false,
+              error: apiReason(meta),
+              items: [],
+              artist: artist ?? undefined,
+            };
           }
           case 'this-week-most-played': {
-            const { data: items } = await fetchTopTracks(
+            const { data: items, meta } = await fetchTopTracks(
               'week',
               'desc',
               filters,
             );
-            return { loading: false, items };
+            return { loading: false, error: apiReason(meta), items };
           }
           case 'this-week-least-played': {
-            const { data: items } = await fetchTopTracks(
+            const { data: items, meta } = await fetchTopTracks(
               'week',
               'asc',
               filters,
             );
-            return { loading: false, items };
+            return { loading: false, error: apiReason(meta), items };
           }
           case 'most-played': {
-            const { data: items } = await fetchTopTracks(
+            const { data: items, meta } = await fetchTopTracks(
               'all_time',
               'desc',
               filters,
             );
-            return { loading: false, items };
+            return { loading: false, error: apiReason(meta), items };
           }
           case 'latest-tracks': {
-            const { data: items } = await fetchLatestTracks(filters);
-            return { loading: false, items };
+            const { data: items, meta } = await fetchLatestTracks(filters);
+            return { loading: false, error: apiReason(meta), items };
           }
           case 'new-to-you': {
             const res = await fetchNewToYou();
             return {
               loading: false,
+              error: apiReason(res.meta),
               items: res.data,
               subtitle: res.authenticated
                 ? res.preferenceGenres.length > 0
@@ -249,21 +279,33 @@ export function DiscoverView() {
             };
           }
           case 'loved': {
-            const { data: items } = await fetchLovedTracks(filters);
-            return { loading: false, items };
+            const { data: items, meta } = await fetchLovedTracks(filters);
+            return { loading: false, error: apiReason(meta), items };
           }
           case 'public-playlists': {
-            const { data: collections } = await fetchPublicCollections(filters);
-            return { loading: false, items: [], collections };
-          }
-          case 'latest-releases': {
-            const { data: releases } = await fetchLatestReleases();
-            return { loading: false, items: [], releases };
-          }
-          case 'tahti-selects': {
-            const { data: items } = await fetchTahtiSelects();
+            const { data: collections, meta } =
+              await fetchPublicCollections(filters);
             return {
               loading: false,
+              error: apiReason(meta),
+              items: [],
+              collections,
+            };
+          }
+          case 'latest-releases': {
+            const { data: releases, meta } = await fetchLatestReleases();
+            return {
+              loading: false,
+              error: apiReason(meta),
+              items: [],
+              releases,
+            };
+          }
+          case 'tahti-selects': {
+            const { data: items, meta } = await fetchTahtiSelects();
+            return {
+              loading: false,
+              error: apiReason(meta),
               items,
               subtitle: 'Picked for the Tahti Selects rotation',
             };
@@ -294,6 +336,7 @@ export function DiscoverView() {
     unheardIds,
     unheardOnly,
     randomArtistRotationDays,
+    reloadKey,
   ]);
 
   const availableToAdd = ALL_WIDGET_IDS.filter(
@@ -496,6 +539,8 @@ export function DiscoverView() {
                   title={WIDGET_LABELS[id]}
                   subtitle={widgetData?.subtitle}
                   loading={widgetData?.loading ?? true}
+                  error={widgetData?.error}
+                  onRetry={() => setReloadKey((n) => n + 1)}
                   items={widgetData?.items ?? []}
                   collections={widgetData?.collections}
                   releases={widgetData?.releases}
@@ -542,7 +587,13 @@ export function DiscoverView() {
           </div>
         )}
 
-        {activeTab === 'artists' ? (
+        {activeTab === 'artists' && artistsError && artists.length === 0 ? (
+          <PageError
+            title="Could not load the artist directory"
+            description={artistsError}
+            onRetry={() => setReloadKey((n) => n + 1)}
+          />
+        ) : activeTab === 'artists' ? (
           <DirectoryArtistsBrowser
             artists={artists}
             loading={artistsLoading}

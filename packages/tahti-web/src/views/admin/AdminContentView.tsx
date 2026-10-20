@@ -14,7 +14,7 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageEmpty, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
 
@@ -36,9 +36,17 @@ function formatDate(value: string): string {
 export function AdminContentView() {
   const [data, setData] = useState<AdminContentOverview | null>(null);
 
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
+
   useEffect(() => {
-    void fetchAdminContentOverview().then((result) => setData(result.data));
-  }, []);
+    void fetchAdminContentOverview().then((result) => {
+      const reason =
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
+      setLoadError(reason);
+      setData(result.data);
+    });
+  }, [attempt]);
 
   return (
     <AdminGate>
@@ -61,6 +69,17 @@ export function AdminContentView() {
             {!data ? (
               <StudioPanel>
                 <PageLoading label="Loading content overview…" />
+              </StudioPanel>
+            ) : loadError ? (
+              <StudioPanel>
+                <PageError
+                  title="Could not load the content overview"
+                  description={loadError}
+                  onRetry={() => {
+                    setData(null);
+                    setAttempt((n) => n + 1);
+                  }}
+                />
               </StudioPanel>
             ) : (
               <>

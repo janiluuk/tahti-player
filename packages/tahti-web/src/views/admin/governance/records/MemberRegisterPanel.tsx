@@ -6,7 +6,7 @@ import {
   fetchMemberRegister,
   type MemberRegisterRow,
 } from '../../../../api/admin/admin-member-register';
-import { PageEmpty } from '../../../../components/PageStates';
+import { PageEmpty, PageError } from '../../../../components/PageStates';
 import { CollapsibleRecord } from '../tabs/MeetingRecordPanels';
 
 const STATUS_COLORS: Record<string, 'green' | 'yellow' | 'red' | 'secondary'> =
@@ -32,7 +32,7 @@ export function MemberRegisterPanel() {
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState<MemberRegisterRow[] | null>(null);
   const [query, setQuery] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open || rows !== null) {
@@ -40,10 +40,11 @@ export function MemberRegisterPanel() {
     }
     void fetchMemberRegister().then((result) => {
       if (!result.ok) {
-        setError(result.error);
+        setLoadError(result.error);
         setRows([]);
         return;
       }
+      setLoadError(null);
       setRows(result.data);
     });
   }, [open, rows]);
@@ -65,6 +66,12 @@ export function MemberRegisterPanel() {
     >
       {rows === null ? (
         <p className="text-foreground-secondary text-xs">Loading…</p>
+      ) : loadError && rows.length === 0 ? (
+        <PageError
+          title="Could not load the member register"
+          description={loadError}
+          onRetry={() => setRows(null)}
+        />
       ) : (
         <div className="flex flex-col gap-2">
           <Input
@@ -121,11 +128,6 @@ export function MemberRegisterPanel() {
           )}
         </div>
       )}
-      {error ? (
-        <p className="text-accent-red-strong mt-2 text-xs" role="alert">
-          {error}
-        </p>
-      ) : null}
     </CollapsibleRecord>
   );
 }

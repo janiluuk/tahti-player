@@ -30,13 +30,14 @@ import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ImageUploadField } from '../../components/ImageUploadField';
-import { PageEmpty, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { AdminTestNotificationPanel } from './AdminTestNotificationPanel';
 
 export function AdminNewsView() {
   const [posts, setPosts] = useState<AdminNewsPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [composeOpen, setComposeOpen] = useState(false);
   const [headline, setHeadline] = useState('');
   const [summary, setSummary] = useState('');
@@ -57,6 +58,9 @@ export function AdminNewsView() {
   const reload = () => {
     void fetchAdminNews().then((res) => {
       setPosts(res.data);
+      setLoadError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
   };
@@ -110,6 +114,15 @@ export function AdminNewsView() {
             <StudioPanel>
               {loading ? (
                 <PageLoading label="Loading news…" />
+              ) : loadError && posts.length === 0 ? (
+                <PageError
+                  title="Could not load news posts"
+                  description={loadError}
+                  onRetry={() => {
+                    setLoading(true);
+                    reload();
+                  }}
+                />
               ) : posts.length === 0 ? (
                 <PageEmpty
                   title="No news posts yet"

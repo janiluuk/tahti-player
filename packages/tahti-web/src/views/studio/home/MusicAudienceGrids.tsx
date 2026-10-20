@@ -51,7 +51,7 @@ export function MusicAudienceGrids({
             icon={UploadCloudIcon}
             label="Upload"
             subtitle="Add audio"
-            color="bg-accent-green"
+            color="bg-accent-blue"
           />
           <StudioActionTile
             to="/studio/collections"
@@ -105,7 +105,7 @@ export function MusicAudienceGrids({
             icon={WalletIcon}
             label="Revenue"
             subtitle="Orders & grants"
-            color="bg-accent-green"
+            color="bg-accent-yellow"
           />
           {stripeConfigured ? (
             <StudioActionTile

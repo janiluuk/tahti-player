@@ -61,19 +61,31 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
+export async function fetchPinnedAnnouncementsWithMeta(slug: string): Promise<{
+  data: PinnedAnnouncement[];
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return {
+      data: [...mockPinnedAnnouncements],
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await requestJson<PinnedAnnouncement[]>(
+      `/api/chat/${encodeURIComponent(slug)}/announcements`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: apiErrorMeta(err) };
+  }
+}
+
 export async function fetchPinnedAnnouncements(
   slug: string,
 ): Promise<PinnedAnnouncement[]> {
-  if (isForceMock()) {
-    return [...mockPinnedAnnouncements];
-  }
-  try {
-    return await requestJson<PinnedAnnouncement[]>(
-      `/api/chat/${encodeURIComponent(slug)}/announcements`,
-    );
-  } catch {
-    return [];
-  }
+  const { data } = await fetchPinnedAnnouncementsWithMeta(slug);
+  return data;
 }
 
 export async function postPinnedAnnouncement(

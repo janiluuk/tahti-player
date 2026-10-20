@@ -261,7 +261,7 @@ export function StudioUploadView() {
               </div>
             </div>
 
-            <div className="border-accent-green rounded-xl border p-5 sm:p-6">
+            <div className="border-border bg-background-secondary/40 rounded-xl border p-5 sm:p-6">
               <div className="flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
                 <RadioIcon size={15} aria-hidden />
                 Last recorded broadcasts

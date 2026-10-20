@@ -165,6 +165,22 @@ export function NewsView() {
           />
         )}
 
+        {!loading && loadError && entries.length > 0 && (
+          <p
+            className="border-border bg-background-secondary mb-4 rounded-md border px-3 py-2 text-xs"
+            role="status"
+          >
+            Could not refresh the news: {loadError}{' '}
+            <button
+              type="button"
+              className="underline underline-offset-2"
+              onClick={() => setAttempt((n) => n + 1)}
+            >
+              Retry
+            </button>
+          </p>
+        )}
+
         {!loading && !loadError && entries.length === 0 && (
           <PageEmpty title="No announcements yet." />
         )}

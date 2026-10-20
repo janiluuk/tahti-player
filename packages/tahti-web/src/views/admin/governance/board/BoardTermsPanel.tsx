@@ -7,7 +7,11 @@ import {
   type AdminBoardTerm,
 } from '../../../../api/admin/admin-governance-board';
 import { BOARD_ROLE_LABELS } from '../../../../api/governance-board';
-import { PageEmpty, PageLoading } from '../../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { AddBoardTermForm } from './AddBoardTermForm';
 import { EndBoardTermForm } from './EndBoardTermForm';
@@ -43,10 +47,14 @@ function termStatus(term: AdminBoardTerm): {
 /** Every board term the association has recorded, current ones first. */
 export function BoardTermsPanel() {
   const [terms, setTerms] = useState<AdminBoardTerm[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const result = await fetchAdminBoardTerms();
     setTerms(result.data);
+    setLoadError(
+      result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+    );
   }, []);
 
   useEffect(() => {
@@ -66,6 +74,15 @@ export function BoardTermsPanel() {
       <AddBoardTermForm onAdded={() => void load()} />
       {sorted === null ? (
         <PageLoading label="Loading board terms…" />
+      ) : loadError && sorted.length === 0 ? (
+        <PageError
+          title="Could not load board terms"
+          description={loadError}
+          onRetry={() => {
+            setTerms(null);
+            void load();
+          }}
+        />
       ) : sorted.length === 0 ? (
         <PageEmpty title="No board terms recorded yet" />
       ) : (

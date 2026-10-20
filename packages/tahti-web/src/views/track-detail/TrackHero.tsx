@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import {
   BackButton,
   backButtonCornerClassName,
+  BackButtonLink,
   Badge,
   Button,
   Input,
@@ -138,7 +139,15 @@ export function TrackHero({ page }: { page: TrackPage }) {
         side="right"
         wrapperClassName={backButtonCornerClassName}
       >
-        <BackButton onClick={() => router.history.back()} aria-label="Back" />
+        {detail?.channel.username ? (
+          <BackButtonLink
+            to="/u/$username"
+            params={{ username: detail.channel.username }}
+            aria-label={`Back to ${detail.channel.displayName}`}
+          />
+        ) : (
+          <BackButton onClick={() => router.history.back()} aria-label="Back" />
+        )}
       </Tooltip>
 
       <div className="relative z-10 flex flex-col gap-5 text-white">

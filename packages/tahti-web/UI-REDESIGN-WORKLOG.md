@@ -4,6 +4,12 @@ Show detail, Feed, SmartLink, Artist, Mastering, Multistream, Updates, and
 channel playlist blocks surface `PageError` on API fail; Admin Moderation /
 Orphan breadcrumbs; `/settings/money` → Revenue. Bumped to `0.0.236`.
 
+## 2026-10-20 — UX batch 83 (entity/admin/Discover PageError)
+
+Collection/Search/Subscribe/embeds/admin governance/Discover/stats show
+`PageError` instead of not-found or empty; LibrarySectionToolbar; TrackHero
+artist back link; light de-green. Bumped to `0.0.237`.
+
 ## 2026-10-20 — UX batch 81 (dead-end honesty + library chips)
 
 Studio home / pickers / artist satellites / governance panels show `PageError`

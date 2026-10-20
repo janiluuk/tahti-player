@@ -11,7 +11,7 @@ import {
   type SoundShare,
 } from '../api/studio';
 import { ConfirmDialog } from './ConfirmDialog';
-import { PageEmpty } from './PageStates';
+import { PageEmpty, PageError } from './PageStates';
 
 const EXPIRY_OPTIONS = [1, 3, 7, 30, 0] as const;
 
@@ -42,6 +42,7 @@ function shareLinkFor(soundId: string, token: string): string {
 export function SoundShareLinksSection({ soundId }: { soundId: string }) {
   const [shares, setShares] = useState<SoundShare[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [granteeUsername, setGranteeUsername] = useState('');
   const [permission, setPermission] = useState<'READ' | 'DOWNLOAD'>('READ');
@@ -50,10 +51,20 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
 
   const reload = () => {
     setLoading(true);
-    void fetchSoundShares(soundId).then((result) => {
-      setShares(result.data);
-      setLoading(false);
-    });
+    setLoadError(null);
+    void fetchSoundShares(soundId)
+      .then((result) => {
+        setShares(result.data);
+        setLoadError(
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+        );
+      })
+      .catch((err) => {
+        setLoadError(
+          err instanceof Error ? err.message : 'Could not load share links.',
+        );
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(reload, [soundId]);
@@ -104,6 +115,12 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
 
       {loading ? (
         <p className="text-foreground-secondary text-xs">Loading…</p>
+      ) : loadError ? (
+        <PageError
+          title="Could not load share links"
+          description={loadError}
+          onRetry={reload}
+        />
       ) : shares.length > 0 ? (
         <ul className="flex flex-col gap-2">
           {shares.map((share) => (

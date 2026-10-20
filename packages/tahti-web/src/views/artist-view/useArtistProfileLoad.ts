@@ -17,7 +17,9 @@ export function useArtistProfileLoad(username: string, isOwner: boolean) {
   const [attempt, setAttempt] = useState(0);
   const [galleryImages, setGalleryImages] = useState<PublicPressKitImage[]>([]);
   const [galleryLoaded, setGalleryLoaded] = useState(false);
+  const [galleryError, setGalleryError] = useState<string | null>(null);
   const [taggedIn, setTaggedIn] = useState<PublicMention[]>([]);
+  const [mentionsError, setMentionsError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -53,9 +55,23 @@ export function useArtistProfileLoad(username: string, isOwner: boolean) {
           setLoading(false);
         }
       });
+    setMentionsError(null);
     void fetchPublicMentions(username)
-      .then((mentions) => !cancelled && setTaggedIn(mentions.data))
-      .catch(() => undefined);
+      .then((mentions) => {
+        if (!cancelled) {
+          setTaggedIn(mentions.data);
+          setMentionsError(
+            mentions.meta.source === 'api'
+              ? (mentions.meta.reason ?? null)
+              : null,
+          );
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setMentionsError(err instanceof Error ? err.message : 'Failed');
+        }
+      });
     return () => {
       cancelled = true;
     };
@@ -64,18 +80,32 @@ export function useArtistProfileLoad(username: string, isOwner: boolean) {
   useEffect(() => {
     let cancelled = false;
     setGalleryLoaded(false);
+    setGalleryError(null);
     const load = isOwner
-      ? fetchMyPressKitImages().then((res) =>
-          res.data.map(({ id, imageUrl, title }) => ({ id, imageUrl, title })),
-        )
-      : fetchPublicPressKitImages(username).then((res) => res.data);
+      ? fetchMyPressKitImages().then((res) => ({
+          images: res.data.map(({ id, imageUrl, title }) => ({
+            id,
+            imageUrl,
+            title,
+          })),
+          meta: res.meta,
+        }))
+      : fetchPublicPressKitImages(username).then((res) => ({
+          images: res.data,
+          meta: res.meta,
+        }));
     void load
-      .then((images) => {
+      .then(({ images, meta }) => {
         if (!cancelled) {
           setGalleryImages(images);
+          setGalleryError(meta.source === 'api' ? (meta.reason ?? null) : null);
         }
       })
-      .catch(() => undefined)
+      .catch((err) => {
+        if (!cancelled) {
+          setGalleryError(err instanceof Error ? err.message : 'Failed');
+        }
+      })
       .finally(() => {
         if (!cancelled) {
           setGalleryLoaded(true);
@@ -95,6 +125,8 @@ export function useArtistProfileLoad(username: string, isOwner: boolean) {
     galleryImages,
     setGalleryImages,
     galleryLoaded,
+    galleryError,
     taggedIn,
+    mentionsError,
   };
 }

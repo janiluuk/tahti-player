@@ -19,7 +19,7 @@ import {
 } from '../api/sound-versions';
 import { usePolling } from '../hooks/usePolling';
 import { usePlayerStore } from '../stores/playerStore';
-import { PageEmpty } from './PageStates';
+import { PageEmpty, PageError } from './PageStates';
 import { Eyebrow } from './tahti/Eyebrow';
 import { VersionRenderProgress } from './VersionRenderProgress';
 
@@ -74,6 +74,7 @@ export function AudioRevisionList({
 
   const [versions, setVersions] = useState<SoundVersion[]>([]);
   const [message, setMessage] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [versionBusy, setVersionBusy] = useState<string | null>(null);
   const [previewBusy, setPreviewBusy] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -83,9 +84,20 @@ export function AudioRevisionList({
   const [compareB, setCompareB] = useState<string>('');
 
   const load = useCallback(() => {
-    void fetchSoundVersions(soundId).then((result) => {
-      setVersions(result.data.map((version) => ({ ...version })));
-    });
+    void fetchSoundVersions(soundId)
+      .then((result) => {
+        const reason =
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
+        setLoadError(reason);
+        if (!reason) {
+          setVersions(result.data.map((version) => ({ ...version })));
+        }
+      })
+      .catch((err) => {
+        setLoadError(
+          err instanceof Error ? err.message : 'Could not load revisions.',
+        );
+      });
   }, [soundId]);
 
   useEffect(() => {
@@ -330,7 +342,13 @@ export function AudioRevisionList({
         </p>
       ) : null}
 
-      {listed.length === 0 ? (
+      {loadError && listed.length === 0 ? (
+        <PageError
+          title="Could not load revisions"
+          description={loadError}
+          onRetry={load}
+        />
+      ) : listed.length === 0 ? (
         <PageEmpty title="No revisions yet." />
       ) : (
         <ul className="flex flex-col gap-1.5">

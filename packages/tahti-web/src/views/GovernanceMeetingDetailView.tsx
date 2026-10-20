@@ -10,7 +10,7 @@ import type { GovernanceMeeting } from '../api/types';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
 import { MeetingAgendaItems } from '../components/governance/MeetingAgendaItems';
 import { MeetingConflicts } from '../components/governance/MeetingConflicts';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { isSafeHref } from '../lib/safeHref';
 import { useAuthStore } from '../stores/authStore';
 
@@ -25,20 +25,47 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
   const [meeting, setMeeting] = useState<GovernanceMeeting | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (!user) {
       setLoading(false);
       return;
     }
+    let cancelled = false;
     setLoading(true);
-    void fetchGovernanceMeetings().then((result) => {
-      const found = result.data.find((m) => m.id === id) ?? null;
-      setMeeting(found);
-      setNotFound(!found);
-      setLoading(false);
-    });
-  }, [user, id]);
+    setLoadError(null);
+    void fetchGovernanceMeetings()
+      .then((result) => {
+        if (cancelled) {
+          return;
+        }
+        const reason =
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
+        const found = result.data.find((m) => m.id === id) ?? null;
+        setLoadError(reason);
+        setMeeting(found);
+        setNotFound(!found && !reason);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setMeeting(null);
+          setNotFound(false);
+          setLoadError(
+            err instanceof Error ? err.message : 'Could not load meetings.',
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, id, attempt]);
 
   const agenda = meeting ? parseMeetingAgenda(meeting.agenda) : [];
 
@@ -65,11 +92,19 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
 
       {user && loading && <PageLoading label="Loading meeting…" />}
 
+      {user && !loading && loadError && (
+        <PageError
+          title="Could not load this meeting"
+          description={loadError}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
+      )}
+
       {user && !loading && notFound && (
         <p className="text-foreground-secondary text-sm">Meeting not found.</p>
       )}
 
-      {user && !loading && meeting && (
+      {user && !loading && !loadError && meeting && (
         <>
           <GovernancePanel title="Overview" icon={UsersIcon}>
             <div className="flex flex-wrap items-center gap-2">

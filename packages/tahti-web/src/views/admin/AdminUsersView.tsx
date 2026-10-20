@@ -18,7 +18,7 @@ import {
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { AdminUserEditPanel } from '../../components/AdminUserEditPanel';
-import { PageEmpty, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 
 const ROLES = ['', 'BOARD', 'ARTIST', 'LISTENER'] as const;
@@ -30,6 +30,8 @@ export const AdminUsersView = () => {
   const [users, setUsers] = useState<AdminUserRow[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -38,6 +40,9 @@ export const AdminUsersView = () => {
       void fetchAdminUsers({ q: query, role, isMember }).then((result) => {
         setUsers(result.data);
         setTotal(result.total);
+        const reason =
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
+        setLoadError(reason);
         setSelectedId((current) => {
           if (current && result.data.some((user) => user.id === current)) {
             return current;
@@ -48,7 +53,7 @@ export const AdminUsersView = () => {
       });
     }, 200);
     return () => clearTimeout(handle);
-  }, [query, role, isMember]);
+  }, [query, role, isMember, attempt]);
 
   return (
     <AdminGate>
@@ -112,6 +117,12 @@ export const AdminUsersView = () => {
                 <div className="min-h-0 flex-1 overflow-y-auto">
                   {loading ? (
                     <PageLoading label="Loading users…" />
+                  ) : loadError && users.length === 0 ? (
+                    <PageError
+                      title="Could not load users"
+                      description={loadError}
+                      onRetry={() => setAttempt((n) => n + 1)}
+                    />
                   ) : users.length === 0 ? (
                     <PageEmpty title="No users match these filters" />
                   ) : (

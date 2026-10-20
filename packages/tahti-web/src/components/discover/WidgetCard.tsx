@@ -22,6 +22,7 @@ import type { DiscoverArtistOfWeek } from '../../api/discover';
 import type { LatestRelease } from '../../api/latest-releases';
 import type { DiscoverCollection, DiscoverTrackItem } from '../../api/types';
 import type { DiscoverWidgetId } from '../../stores/discoverStore';
+import { PageError } from '../PageStates';
 import { WidgetTrackRow } from './WidgetTrackRow';
 
 const MAX_ROWS = 8;
@@ -31,6 +32,8 @@ export function WidgetCard({
   title,
   subtitle,
   loading,
+  error = null,
+  onRetry,
   items,
   collections = [],
   releases = [],
@@ -49,6 +52,8 @@ export function WidgetCard({
   title: string;
   subtitle?: ReactNode;
   loading: boolean;
+  error?: string | null;
+  onRetry?: () => void;
   items: DiscoverTrackItem[];
   collections?: DiscoverCollection[];
   releases?: LatestRelease[];
@@ -137,6 +142,12 @@ export function WidgetCard({
         <div className="flex flex-1 items-center justify-center">
           <Loader size="sm" />
         </div>
+      ) : error ? (
+        <PageError
+          title={`Could not load ${title.toLowerCase()}`}
+          description={error}
+          onRetry={onRetry}
+        />
       ) : artist ? (
         <div className="flex flex-1 flex-col items-center text-center">
           <ImageReveal

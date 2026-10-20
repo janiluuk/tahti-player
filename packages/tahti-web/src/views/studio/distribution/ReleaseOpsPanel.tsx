@@ -30,7 +30,7 @@ import type {
   RevelatorRoyaltyReportRow,
   StudioRelease,
 } from '../../../api/studio-types';
-import { PageLoading } from '../../../components/PageStates';
+import { PageError, PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { assignStripeRedirectUrl } from '../../../lib/stripeRedirect';
 import { CreditsEditor } from './CreditsEditor';
@@ -57,6 +57,8 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
   const [royalties, setRoyalties] = useState<RevelatorRoyaltyReportRow[]>([]);
   const [royaltiesLoaded, setRoyaltiesLoaded] = useState(false);
   const [royaltiesError, setRoyaltiesError] = useState<string | null>(null);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
+  const [billingError, setBillingError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [confirmSubmit, setConfirmSubmit] = useState(false);
@@ -81,6 +83,12 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
       fetchRevelatorBilling(release.id),
     ])
       .then(([c, b]) => {
+        setCatalogError(
+          c.meta.source === 'api' ? (c.meta.reason ?? null) : null,
+        );
+        setBillingError(
+          b.meta.source === 'api' ? (b.meta.reason ?? null) : null,
+        );
         if (c.data) {
           setCatalog(c.data);
           setForm(catalogToForm(c.data));
@@ -106,7 +114,10 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         }
         setBilling(b.data);
       })
-      .catch(() => toast.error('Could not load the distribution details.'))
+      .catch(() => {
+        setCatalogError('Could not load the distribution details.');
+        toast.error('Could not load the distribution details.');
+      })
       .finally(() => setLoading(false));
   };
 
@@ -254,6 +265,13 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
 
   const catalogTab = (
     <div className="flex flex-col gap-4">
+      {catalogError ? (
+        <PageError
+          title="Could not load the catalog"
+          description={catalogError}
+          onRetry={loadOps}
+        />
+      ) : null}
       <ul className="flex flex-col gap-1 text-xs">
         {checklist.map((step) => (
           <li key={step.id}>
@@ -424,21 +442,30 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
   );
 
   const deliveryTab = (
-    <DeliveryTab
-      revelatorStatus={revelatorStatus}
-      revelatorId={revelatorId}
-      billing={billing}
-      busy={busy}
-      canSubmit={canSubmit}
-      confirmSubmit={confirmSubmit}
-      setConfirmSubmit={setConfirmSubmit}
-      onSubmit={() => void submitToRevelator()}
-      showRoyalties={showRoyalties}
-      royaltiesLoaded={royaltiesLoaded}
-      royalties={royalties}
-      royaltiesError={royaltiesError}
-      onRetryRoyalties={() => setRoyaltiesLoaded(false)}
-    />
+    <div className="flex flex-col gap-3">
+      {billingError ? (
+        <PageError
+          title="Could not load billing"
+          description={billingError}
+          onRetry={loadOps}
+        />
+      ) : null}
+      <DeliveryTab
+        revelatorStatus={revelatorStatus}
+        revelatorId={revelatorId}
+        billing={billing}
+        busy={busy}
+        canSubmit={canSubmit}
+        confirmSubmit={confirmSubmit}
+        setConfirmSubmit={setConfirmSubmit}
+        onSubmit={() => void submitToRevelator()}
+        showRoyalties={showRoyalties}
+        royaltiesLoaded={royaltiesLoaded}
+        royalties={royalties}
+        royaltiesError={royaltiesError}
+        onRetryRoyalties={() => setRoyaltiesLoaded(false)}
+      />
+    </div>
   );
 
   const guidesTab = <GuidesTab />;
@@ -474,8 +501,18 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
       </div>
 
       {open &&
-        (loading || !form ? (
+        (loading ? (
           <PageLoading label="Loading…" />
+        ) : !form ? (
+          catalogError ? (
+            <PageError
+              title="Could not load the catalog"
+              description={catalogError}
+              onRetry={loadOps}
+            />
+          ) : (
+            <PageLoading label="Loading…" />
+          )
         ) : (
           <Tabs
             className="mt-4"

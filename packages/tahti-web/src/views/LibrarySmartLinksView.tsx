@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { ExternalLinkIcon, Link2Icon, SearchIcon } from 'lucide-react';
+import { ExternalLinkIcon, Link2Icon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
@@ -8,11 +8,11 @@ import {
   EmptyState,
   FilterChips,
   ImageReveal,
-  Input,
 } from '@tahti-player/ui';
 
 import { fetchStudioReleases } from '../api/studio';
 import type { StudioRelease } from '../api/studio-types';
+import { LibrarySectionToolbar } from '../components/library/LibrarySectionToolbar';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { StudioGate } from '../components/StudioGate';
 import { StudioPanel } from '../components/StudioPanel';
@@ -131,26 +131,22 @@ export function LibrarySmartLinksView() {
             />
           ) : (
             <>
-              <Input
-                type="search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search smartlinks…"
-                aria-label="Search smartlinks"
-                className="mb-4 max-w-md"
-                startAddon={
-                  <SearchIcon size={14} aria-hidden className="opacity-70" />
-                }
-              />
-              {dspChips.length > 2 ? (
-                <FilterChips
-                  items={dspChips}
-                  selected={dspFilter}
-                  onChange={setDspFilter}
-                  aria-label="Filter smartlinks by platform"
-                  className="mb-4"
-                />
-              ) : null}
+              <LibrarySectionToolbar
+                className="mb-4"
+                query={query}
+                onQueryChange={setQuery}
+                searchPlaceholder="Search smartlinks…"
+                searchLabel="Search smartlinks"
+              >
+                {dspChips.length > 2 ? (
+                  <FilterChips
+                    items={dspChips}
+                    selected={dspFilter}
+                    onChange={setDspFilter}
+                    aria-label="Filter smartlinks by platform"
+                  />
+                ) : null}
+              </LibrarySectionToolbar>
               {filtered.length === 0 ? (
                 <PageEmpty
                   title={

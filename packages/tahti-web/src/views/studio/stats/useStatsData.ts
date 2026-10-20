@@ -98,6 +98,8 @@ export function useStatsData() {
   const [live, setLive] = useState<ChannelLiveStats>(EMPTY_LIVE);
   const [grant, setGrant] = useState<GrantEstimate | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [hourly, setHourly] = useState<number[]>([]);
   const [hourlyLoading, setHourlyLoading] = useState(false);
@@ -138,6 +140,7 @@ export function useStatsData() {
     }
     let cancelled = false;
     setLoading(true);
+    setLoadError(null);
     const geoPeriod =
       range === '1' || range === '7' ? '7d' : range === '30' ? '30d' : 'all';
     Promise.all([
@@ -168,6 +171,18 @@ export function useStatsData() {
           if (cancelled) {
             return;
           }
+          const failed = [
+            summaryResult,
+            playsResult,
+            egressResult,
+            liveResult,
+          ].find(
+            (result) => result.meta.source === 'api' && result.meta.reason,
+          );
+          if (failed) {
+            setLoadError(failed.meta.reason ?? 'Could not load your stats.');
+            return;
+          }
           setSummary(summaryResult.data);
           setPlays(playsResult.data);
           setTracks(tracksResult.data);
@@ -180,7 +195,7 @@ export function useStatsData() {
       )
       .catch(() => {
         if (!cancelled) {
-          toast.error('Could not load your stats.');
+          setLoadError('Could not load your stats.');
         }
       })
       .finally(() => {
@@ -191,7 +206,7 @@ export function useStatsData() {
     return () => {
       cancelled = true;
     };
-  }, [range, appliedCustom, playsQueryReady]);
+  }, [range, appliedCustom, playsQueryReady, reloadKey]);
 
   // The top lists alone re-fetch when their dimension or sort changes.
   useEffect(() => {
@@ -327,6 +342,8 @@ export function useStatsData() {
     },
   ];
 
+  const reload = () => setReloadKey((key) => key + 1);
+
   const openDay = (date: string) => setSelectedDay(date);
 
   const applyCustomRange = () => {
@@ -359,6 +376,8 @@ export function useStatsData() {
     live,
     grant,
     loading,
+    loadError,
+    reload,
     selectedDay,
     setSelectedDay,
     hourly,

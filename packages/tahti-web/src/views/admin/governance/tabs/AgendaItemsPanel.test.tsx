@@ -45,9 +45,8 @@ describe('AgendaItemsPanel', () => {
     });
     render(<AgendaItemsPanel meetingId="nope" />);
     fireEvent.click(screen.getByRole('button', { name: /Agenda items/ }));
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      'Meeting not found',
-    );
+    expect(await screen.findByText('Could not load agenda items')).toBeTruthy();
+    expect(screen.getByText('Meeting not found')).toBeTruthy();
   });
 
   it('adds an item at the end and reloads', async () => {
