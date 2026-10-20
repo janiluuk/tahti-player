@@ -33,6 +33,6 @@ export const Default: Story = {
     await userEvent.click(openFull);
     // findDialog already returns within(dialog)
     const dialog = await findDialog(canvasElement);
-    await expect(dialog.getByText(/MusicBrainz registration/i)).toBeVisible();
+    await expect(dialog.getByText(/register with MusicBrainz/i)).toBeVisible();
   },
 };
