@@ -1,3 +1,10 @@
+## 2026-10-20 — UX batch 85 twenty slices (tahti-player #1444)
+
+Folded `ux-batch-85-twenty.md`. PageEmpty leftovers (studio editor, admin
+dashboard/AGM/vendors/streams, channel programming/feed/shows, fingerprint,
+plays, governance home); Embeds `LibrarySectionToolbar`; Collection + SmartLink
+ambient lists; batch 84 fold. Shipped as `0.0.239`.
+
 ## 2026-10-20 — UX batch 84 forty slices (folded)
 
 Folded `batch-84-forty-slices.md`. Partial-fail banners, Favorites ambient,
