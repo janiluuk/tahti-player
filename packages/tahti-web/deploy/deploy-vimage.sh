@@ -55,7 +55,7 @@ export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 # shellcheck disable=SC1091
 if [[ -s "$NVM_DIR/nvm.sh" ]]; then
   . "$NVM_DIR/nvm.sh"
-  nvm use 22 >/dev/null 2>&1 || nvm use 24 >/dev/null 2>&1 || true
+  nvm use 24 >/dev/null 2>&1 || true
 fi
 
 echo "==> Building @tahti-player/tahti-web (${PROFILE})"

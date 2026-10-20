@@ -67,3 +67,56 @@ export async function runScript(scriptPath, args, options = {}) {
 
   return { ...result, label: display };
 }
+
+/** Runs a program (pnpm, node, gh…) directly, from `cwd`, with the same
+ * dry-run and → / ✓ / ✗ labels as `runScript`. */
+export async function runProgram(program, args, options = {}) {
+  const {
+    dryRun = false,
+    env = process.env,
+    cwd = process.cwd(),
+    label = null,
+    log = console.error,
+  } = options;
+  const display = label ?? formatCommand(program, args);
+  if (dryRun) {
+    return {
+      exitCode: 0,
+      output: label
+        ? `dry-run: ${label} — ${formatCommand(program, args)}`
+        : `dry-run: ${formatCommand(program, args)}`,
+      label: display,
+    };
+  }
+  log(`→ ${display}`);
+  const result = await new Promise((resolvePromise, reject) => {
+    const child = spawn(program, args, { env, cwd, stdio: 'inherit' });
+    child.on('error', (error) => {
+      reject(new OpsError(`Failed to run ${program}: ${error.message}`));
+    });
+    child.on('close', (code, signal) => {
+      resolvePromise({ exitCode: signal ? 1 : (code ?? 1), output: '' });
+    });
+  });
+  log(
+    result.exitCode === 0
+      ? `✓ ${display}`
+      : `✗ ${display} (exit ${result.exitCode})`,
+  );
+  return { ...result, label: display };
+}
+
+/** Runs steps in order and stops at the first failure. */
+export async function runSteps(steps, { dryRun = false } = {}) {
+  const lines = [];
+  for (const step of steps) {
+    const result = await step({ dryRun });
+    if (result.output) {
+      lines.push(result.output);
+    }
+    if (result.exitCode !== 0) {
+      return { exitCode: result.exitCode, output: lines.join('\n') };
+    }
+  }
+  return { exitCode: 0, output: lines.join('\n') };
+}
