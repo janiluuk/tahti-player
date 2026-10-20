@@ -59,7 +59,7 @@ export class AuthSession {
       storage: config.storage,
       cookieRefresh: config.cookieRefresh ?? false,
       accessTokenTtlSkewSec: config.accessTokenTtlSkewSec ?? 60,
-      fetch: config.fetch ?? fetch.bind(globalThis),
+      fetch: config.fetch ?? ((input, init) => globalThis.fetch(input, init)),
       now: config.now ?? (() => Date.now()),
     };
   }
