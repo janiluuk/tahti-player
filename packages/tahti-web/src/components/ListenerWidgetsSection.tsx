@@ -1,12 +1,21 @@
 import { XIcon } from 'lucide-react';
-import { useState } from 'react';
-
-import { Button, Card, CardGrid, Tooltip } from '@tahti-player/ui';
+import { useState, type ReactNode } from 'react';
 
 import {
+  Button,
+  Card,
+  CardGrid,
+  Tooltip,
+  type SortableBlock,
+} from '@tahti-player/ui';
+
+import {
+  BROWSER_STATIONS_BLOCK_ID,
+  FAVORITES_BLOCK_ID,
   NEWS_WIDGET_TYPE_ID,
   newsWidgetsOn,
   useListenerWidgetsStore,
+  widgetBlockId,
 } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
@@ -19,12 +28,14 @@ type PendingRemoval =
   | { kind: 'instance'; id: string; label: string }
   | { kind: 'browser'; id: string; label: string };
 
-/** Listen-page add-ons (Settings → Add-ons): saved Radio Browser stations,
- * news feeds, embeds, favorites. Renders nothing when empty. Curated-catalog
- * radio channels (packages/tahti-web/src/content/radioStations.ts) render in
- * ListenView's own "Radio" section instead, alongside board-curated presets —
- * having one working, reactive play-button list beats two. */
-export function ListenerWidgetsSection() {
+/** One Listen block per add-on (Settings → Add-ons): the saved Radio
+ * Browser stations, each news feed, each embed, and favorites. Curated
+ * catalog stations render in ListenView's own "Radio" section instead.
+ * `dialog` is the remove confirmation and must be rendered once. */
+export function useListenerWidgetBlocks(): {
+  blocks: SortableBlock[];
+  dialog: ReactNode;
+} {
   const instances = useListenerWidgetsStore((s) => s.instances);
   const installedTypeIds = useListenerWidgetsStore((s) => s.installedTypeIds);
   const savedBrowserStations = useListenerWidgetsStore(
@@ -35,7 +46,6 @@ export function ListenerWidgetsSection() {
     (s) => s.removeSavedBrowserStation,
   );
   const playFromList = usePlayerStore((s) => s.playFromList);
-  const openSettings = useSettingsModalStore((s) => s.open);
   const [pendingRemoval, setPendingRemoval] = useState<PendingRemoval | null>(
     null,
   );
@@ -43,17 +53,10 @@ export function ListenerWidgetsSection() {
   const embedInstances = instances.filter(
     (instance) => instance.typeId !== NEWS_WIDGET_TYPE_ID,
   );
-  const newsFeeds = newsWidgetsOn(instances, 'listen');
+  const newsIds = new Set(
+    newsWidgetsOn(instances, 'listen').map((instance) => instance.id),
+  );
   const favoritesEnabled = installedTypeIds.includes('favorites');
-
-  if (
-    embedInstances.length === 0 &&
-    savedBrowserStations.length === 0 &&
-    !favoritesEnabled &&
-    newsFeeds.length === 0
-  ) {
-    return null;
-  }
 
   const confirmRemoval = () => {
     if (!pendingRemoval) {
@@ -67,25 +70,13 @@ export function ListenerWidgetsSection() {
     setPendingRemoval(null);
   };
 
-  return (
-    <section
-      className="mb-6 flex w-full flex-col gap-3"
-      data-testid="listener-widgets-section"
-    >
-      <div className="flex w-full flex-wrap items-center justify-between gap-2">
-        <h2 className="text-2xl font-bold">Listen add-ons</h2>
-        <Button
-          variant="text"
-          size="flexible"
-          type="button"
-          onClick={() => openSettings('plugin-store', 'listen')}
-          className="text-foreground-secondary text-xs underline-offset-2 hover:bg-transparent hover:underline"
-        >
-          Manage widgets
-        </Button>
-      </div>
+  const blocks: SortableBlock[] = [];
 
-      {savedBrowserStations.length > 0 && (
+  if (savedBrowserStations.length > 0) {
+    blocks.push({
+      id: BROWSER_STATIONS_BLOCK_ID,
+      label: 'Saved stations',
+      content: (
         <CardGrid>
           {savedBrowserStations.map((station) => (
             <div key={station.id} className="group relative w-fit">
@@ -136,60 +127,88 @@ export function ListenerWidgetsSection() {
             </div>
           ))}
         </CardGrid>
-      )}
+      ),
+    });
+  }
 
-      {newsFeeds.length > 0 && (
-        <div className="flex flex-col gap-4">
-          {newsFeeds.map((instance) => (
-            <NewsFeedWidget
-              key={instance.id}
-              instance={instance}
-              onRemove={() =>
-                setPendingRemoval({
-                  kind: 'instance',
-                  id: instance.id,
-                  label: instance.label,
-                })
-              }
-            />
-          ))}
-        </div>
-      )}
+  instances.forEach((instance) => {
+    const onRemove = () =>
+      setPendingRemoval({
+        kind: 'instance',
+        id: instance.id,
+        label: instance.label,
+      });
+    if (newsIds.has(instance.id)) {
+      blocks.push({
+        id: widgetBlockId(instance.id),
+        label: instance.label,
+        content: <NewsFeedWidget instance={instance} onRemove={onRemove} />,
+      });
+    } else if (embedInstances.includes(instance)) {
+      blocks.push({
+        id: widgetBlockId(instance.id),
+        label: instance.label,
+        content: (
+          <ListenerWidgetEmbed instance={instance} onRemove={onRemove} />
+        ),
+      });
+    }
+  });
 
-      {embedInstances.length > 0 && (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {embedInstances.map((instance) => (
-            <div
-              key={instance.id}
-              className={
-                instance.typeId === 'spotify'
-                  ? 'min-w-0 sm:col-span-2'
-                  : 'min-w-0'
-              }
-            >
-              <ListenerWidgetEmbed
-                instance={instance}
-                onRemove={() =>
-                  setPendingRemoval({
-                    kind: 'instance',
-                    id: instance.id,
-                    label: instance.label,
-                  })
-                }
-              />
-            </div>
-          ))}
-        </div>
-      )}
+  if (favoritesEnabled) {
+    blocks.push({
+      id: FAVORITES_BLOCK_ID,
+      label: 'Favorites',
+      content: <FavoritesView embedded />,
+    });
+  }
 
-      {favoritesEnabled ? <FavoritesView embedded /> : null}
-
+  return {
+    blocks,
+    dialog: (
       <RemoveWidgetDialog
         isOpen={pendingRemoval != null}
         label={pendingRemoval?.label ?? ''}
         onCancel={() => setPendingRemoval(null)}
         onConfirm={confirmRemoval}
       />
+    ),
+  };
+}
+
+/** The add-ons on their own, newest first, under a "Listen add-ons" heading.
+ * Renders nothing when empty. ListenView places the blocks itself. */
+export function ListenerWidgetsSection() {
+  const openSettings = useSettingsModalStore((s) => s.open);
+  const { blocks, dialog } = useListenerWidgetBlocks();
+
+  if (blocks.length === 0) {
+    return null;
+  }
+
+  return (
+    <section
+      className="mb-6 flex w-full flex-col gap-3"
+      data-testid="listener-widgets-section"
+    >
+      <div className="flex w-full flex-wrap items-center justify-between gap-2">
+        <h2 className="text-2xl font-bold">Listen add-ons</h2>
+        <Button
+          variant="text"
+          size="flexible"
+          type="button"
+          onClick={() => openSettings('plugin-store', 'listen')}
+          className="text-foreground-secondary text-xs underline-offset-2 hover:bg-transparent hover:underline"
+        >
+          Manage widgets
+        </Button>
+      </div>
+      {blocks.map((block) => (
+        <div key={block.id} className="min-w-0">
+          {block.content}
+        </div>
+      ))}
+      {dialog}
     </section>
   );
 }
