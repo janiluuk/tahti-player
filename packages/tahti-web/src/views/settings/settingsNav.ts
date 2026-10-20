@@ -92,7 +92,8 @@ export const SETTINGS_NAV: SettingsNavItem[] = [
   {
     id: 'logs',
     label: 'Logs',
-    description: 'Warnings, errors and player events from this tab',
+    description:
+      'Client warnings and errors from this tab, plus links to server container logs',
     Icon: ScrollText,
     group: 'App',
   },
@@ -112,8 +113,12 @@ export const PUBLIC_SETTINGS_SECTION_IDS: readonly SettingsSectionId[] = [
   'playback',
   'themes',
   'plugin-store',
-  'logs',
   'whats-new',
+];
+
+/** Board-only diagnostics (client log buffer). Not shown to listeners/artists. */
+export const BOARD_SETTINGS_SECTION_IDS: readonly SettingsSectionId[] = [
+  'logs',
 ];
 
 export const DEFAULT_PUBLIC_SETTINGS_SECTION: SettingsSectionId = 'themes';
@@ -135,12 +140,17 @@ export type SettingsNavAudience = {
   signedIn: boolean;
   /** False for a listener account that has not created a channel. */
   hasChannel: boolean;
+  /** Board members see diagnostics sections (client Logs). */
+  isBoard?: boolean;
 };
 
 export function isSettingsSectionAvailable(
   id: SettingsSectionId,
   audience: SettingsNavAudience,
 ): boolean {
+  if (BOARD_SETTINGS_SECTION_IDS.includes(id)) {
+    return Boolean(audience.signedIn && audience.isBoard);
+  }
   if (!audience.signedIn) {
     return isPublicSettingsSection(id);
   }

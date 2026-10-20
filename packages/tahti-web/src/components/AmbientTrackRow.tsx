@@ -98,6 +98,11 @@ export type AmbientTrackRowProps = {
   onSeek?: (fraction: number) => void;
   /** Listener-facing extras (like / add / download) — not Studio tooling. */
   actions?: ReactNode;
+  /**
+   * Replaces the waveform (e.g. hearthis.at widget while that track is
+   * current). Native seek UI stays hidden so the embed is not stacked on top.
+   */
+  media?: ReactNode;
   className?: string;
   /** Skip canvas sampling (Storybook / offline). */
   ambientRgb?: [number, number, number] | null;
@@ -119,6 +124,7 @@ export function AmbientTrackRow({
   onPlay,
   onSeek,
   actions,
+  media,
   className,
   ambientRgb,
 }: AmbientTrackRowProps) {
@@ -146,7 +152,7 @@ export function AmbientTrackRow({
       />
       <div className={cn('flex min-w-0 flex-1 flex-col', layout.gap)}>
         <div className="flex min-w-0 items-start gap-2">
-          {onPlay ? (
+          {onPlay && !media ? (
             <Button
               size="icon-sm"
               variant="secondary"
@@ -191,14 +197,23 @@ export function AmbientTrackRow({
             </p>
           ) : null}
         </div>
-        <WaveformSeekbar
-          trackId={trackId}
-          progress={progress}
-          peaks={peaks}
-          bars={layout.bars}
-          onSeek={onSeek}
-          className={layout.wave}
-        />
+        {media ? (
+          <div
+            className="border-border w-full min-w-0 overflow-hidden rounded-lg border contain-paint"
+            data-testid="ambient-track-row-media"
+          >
+            {media}
+          </div>
+        ) : (
+          <WaveformSeekbar
+            trackId={trackId}
+            progress={progress}
+            peaks={peaks}
+            bars={layout.bars}
+            onSeek={onSeek}
+            className={layout.wave}
+          />
+        )}
         {actions ? (
           <div className="flex flex-wrap items-center gap-1.5">{actions}</div>
         ) : null}

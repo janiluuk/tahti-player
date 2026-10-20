@@ -5878,3 +5878,23 @@ it cannot expand into a full-width band. Claim registration uses
 ## 2026-10-18 — Embedded tracks play like native tracks everywhere
 
 Spotify, Mixcloud, Bandcamp and hearthis.at embeds now behave the same as Tahti-hosted tracks: they show in the same track tables (playlists and artist profiles no longer push them into a separate "Elsewhere" section), they play in the shared player bar and the full-screen player the exact same way (a new provider-agnostic `EmbedSurface` widget stands in for the hearthis-only one in the bar and full-screen player, while rows keep their inline hearthis widget and single-iframe claim), and you can favorite any of them — favorited or queued embedded tracks replay from Favorites, History and the queue bar instead of silently doing nothing (mixcloud/spotify/bandcamp ones were previously dead entries once favorited). The track detail page keeps its own inline provider player as before. Embeds stay out of the 24/7 radio fallback rotation, where they can't play unattended. Bumped `packages/tahti-web/package.json` to `0.0.211`.
+
+
+## 2026-10-20 — Admin Grafana monitoring hub (0.0.230)
+
+Admin dashboard Monitoring panel links to Grafana (vital services, lab overview, infrastructure, Docker/OS) and container logs. New `/admin/monitoring` embeds the vital-services dashboard (kiosk iframe) and live Loki container logs, with per-service Grafana + app-log shortcuts. Bumped `packages/tahti-web/package.json` to `0.0.230`.
+
+
+## 2026-10-20 — What's New biweekly cycles + full-update modal (0.0.231)
+
+What's New is rebuilt as ~two-week cycles with Listen / Studio / Library / Admin / Settings / Desktop / Platform sections, filled from merged feature PRs since early September. Long cycles show four bullets on the timeline; click opens a modal with the full list. Bumped `packages/tahti-web/package.json` to `0.0.231`.
+
+
+## 2026-10-20 — Settings Logs board-only + dialog click fix (0.0.232)
+
+Settings → Logs is board-only, with links to Admin container logs and Monitoring. DialogRoot lets backdrop clicks through (`pointer-events-none` on the centering layer) and SettingsPanel forces `overflow-hidden` so Chromium does not double-scroll the pane. Bumped `packages/tahti-web/package.json` to `0.0.232`.
+
+
+## 2026-10-20 — Admin page comments + atlas CSV export (0.0.233)
+
+Board members open **Page comments** from the right-rail header (same `tahti-web-map-notes` store as the Tahti atlas). Multiple comments per page, edit, resolve/reopen. Atlas **Saved comments** and Screen atlas header both **Export CSV** (status, route, commentary) for handing off fixes. Bumped to `0.0.233`.

@@ -44,6 +44,20 @@ const station = (id: string, name: string) => ({
 });
 
 describe('RadioBrowserDirectoryCard', () => {
+  it('puts Suggest a station inside Configure, not on the card face', async () => {
+    useRadioBrowserStore.setState({ enabled: true } as never);
+    radio.searchStations.mockResolvedValue([]);
+    render(<RadioBrowserDirectoryCard />);
+    expect(
+      screen.queryByRole('button', { name: 'Suggest a station' }),
+    ).toBeNull();
+    const gears = await screen.findAllByRole('button', { name: 'Configure' });
+    fireEvent.click(gears[gears.length - 1]!);
+    expect(
+      await screen.findByRole('button', { name: 'Suggest a station' }),
+    ).toBeTruthy();
+  });
+
   it('only the newest search updates the results', async () => {
     useRadioBrowserStore.setState({ enabled: true } as never);
     radio.searchStations.mockResolvedValueOnce([]); // initial popular list

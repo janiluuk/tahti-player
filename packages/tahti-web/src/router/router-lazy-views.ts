@@ -100,6 +100,10 @@ export const AdminLogsView = lazyRouteComponent(
   () => import('../views/admin/AdminLogsView'),
   'AdminLogsView',
 );
+export const AdminMonitoringView = lazyRouteComponent(
+  () => import('../views/admin/AdminMonitoringView'),
+  'AdminMonitoringView',
+);
 export const AdminAnnouncementsView = lazyRouteComponent(
   () => import('../views/admin/AdminAnnouncementsView'),
   'AdminAnnouncementsView',

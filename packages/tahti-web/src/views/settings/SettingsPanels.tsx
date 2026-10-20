@@ -1,8 +1,8 @@
-import { InfoIcon } from 'lucide-react';
-import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
+import { lazy, Suspense, type ReactNode } from 'react';
 
-import { Box, Button, Loader, Tooltip } from '@tahti-player/ui';
+import { Loader } from '@tahti-player/ui';
 
+import { hasAccountRole } from '../../lib/accountRoles';
 import { useAuthStore } from '../../stores/authStore';
 import { WhatsNewPanel } from '../WhatsNewView';
 import { AccountPanel } from './panels/AccountPanel';
@@ -29,8 +29,9 @@ export function SettingsSectionBody({
   section: SettingsSectionId;
 }) {
   let content: ReactNode;
-  const [showAddonInfo, setShowAddonInfo] = useState(false);
-  const signedIn = useAuthStore((s) => Boolean(s.user));
+  const user = useAuthStore((s) => s.user);
+  const signedIn = Boolean(user);
+  const isBoard = hasAccountRole(user, 'BOARD');
   const hasChannel = useAuthStore(
     (s) => Boolean(s.user?.channel) || !s.profileLoaded,
   );
@@ -80,57 +81,17 @@ export function SettingsSectionBody({
       return null;
   }
 
-  const navItem = settingsNavFor({ signedIn, hasChannel }).find(
+  const navItem = settingsNavFor({ signedIn, hasChannel, isBoard }).find(
     (item) => item.id === section,
   );
-  const isAddonStore = section === 'plugin-store';
-
-  useEffect(() => {
-    if (!isAddonStore) {
-      setShowAddonInfo(false);
-    }
-  }, [isAddonStore]);
 
   return (
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-2">
-        <div className="flex items-start justify-between gap-3">
-          <h1 className="font-display text-3xl font-extrabold tracking-tight">
-            {navItem?.label}
-          </h1>
-          {isAddonStore ? (
-            <Tooltip
-              content={`About ${navItem?.label ?? 'Add-ons'}`}
-              side="top"
-            >
-              <Button
-                size="icon-sm"
-                variant="secondary"
-                aria-label={`About ${navItem?.label ?? 'Add-ons'}`}
-                aria-expanded={showAddonInfo}
-                onClick={() => setShowAddonInfo((value) => !value)}
-              >
-                <InfoIcon size={16} aria-hidden />
-              </Button>
-            </Tooltip>
-          ) : null}
-        </div>
-        {isAddonStore ? (
-          showAddonInfo && navItem?.description ? (
-            <Box
-              variant="tertiary"
-              role="note"
-              className="border-primary/40 bg-primary/10 flex-row items-start gap-2 py-3"
-            >
-              <InfoIcon
-                className="text-primary-strong mt-0.5 shrink-0"
-                size={16}
-                aria-hidden
-              />
-              <p className="text-foreground text-sm">{navItem.description}</p>
-            </Box>
-          ) : null
-        ) : navItem?.description ? (
+        <h1 className="font-display text-3xl font-extrabold tracking-tight">
+          {navItem?.label}
+        </h1>
+        {navItem?.description ? (
           <p className="text-foreground-secondary text-sm">
             {navItem.description}
           </p>

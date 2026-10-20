@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { clearClientLogs, logClientEvent } from '@tahti-web/lib/clientLogs';
 import { LogsPanel } from '@tahti-web/views/settings/panels/LogsPanel';
 
-import { withPageSurface } from './_lib/decorators';
+import { withPageSurface, withTahtiRouter } from './_lib/decorators';
 
 const meta: Meta<typeof LogsPanel> = {
   title: 'Tahti/Settings/LogsPanel',
@@ -12,11 +12,11 @@ const meta: Meta<typeof LogsPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Logs: in-memory client log buffer (console warnings/errors and app events) with search, level/scope filters, Clear and Export. Missing states: none beyond empty (the buffer is local).',
+          'Settings → Logs (board): client log buffer plus links to Admin container logs and the monitoring hub. Missing states: none beyond empty (the buffer is local).',
       },
     },
   },
-  decorators: [withPageSurface()],
+  decorators: [withTahtiRouter('/settings/logs'), withPageSurface()],
 };
 
 export default meta;

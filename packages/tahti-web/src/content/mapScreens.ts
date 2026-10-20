@@ -868,7 +868,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Play a track',
           'Edit metadata',
           'Open the audio editor',
-          'Switch Overview / Tracks / Collections / Recordings / Media / Stash / Embeds / Smart links / Local files tabs',
+          'Switch Overview / Tracks / Collections / Recordings / Media / Stash / Embeds / Smart links tabs (Local files is desktop-only)',
         ],
         goesTo: [
           {
@@ -2378,7 +2378,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Review platform KPIs',
           'Open a shortcut to another admin page',
         ],
-        goesTo: [{ label: 'Open Admin logs', to: '/admin/logs' }],
+        goesTo: [
+          { label: 'Open Admin logs', to: '/admin/logs' },
+          { label: 'Open Monitoring hub', to: '/admin/monitoring' },
+        ],
         old: {
           absent: true,
           route: '—',
@@ -2393,6 +2396,37 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         storybookUrl: storybookStory(
           'Tahti/Admin/AdminDashboardView',
+          'Default',
+        ),
+      },
+      {
+        id: 'admin-monitoring',
+        title: 'Admin monitoring',
+        viewName: 'Admin · Monitoring',
+        caption:
+          'Embedded Grafana vital services plus live Loki container logs, with outbound links to infrastructure dashboards and Explore.',
+        actions: [
+          'Review vital service gauges in Grafana',
+          'Open a service Grafana dashboard',
+          'Filter container logs by service',
+          'Open Grafana Explore for Loki',
+        ],
+        goesTo: [
+          { label: 'Return to Admin overview', to: '/admin' },
+          { label: 'Open Admin logs', to: '/admin/logs' },
+          { label: 'Open platform status', to: '/admin/status' },
+        ],
+        old: {
+          absent: true,
+          route: '—',
+          caption: 'No direct Nuclear-era capture',
+        },
+        new: {
+          route: '/admin/monitoring',
+          caption: 'Grafana vitals embed and container logs hub',
+        },
+        storybookUrl: storybookStory(
+          'Tahti/Admin/AdminMonitoringView',
           'Default',
         ),
       },

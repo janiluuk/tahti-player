@@ -180,37 +180,41 @@ export function SoundRow({
         className="relative flex max-w-full min-w-0 flex-wrap items-center gap-2"
         data-testid="sound-row-actions"
       >
-        <Tooltip
-          content={
-            embedSrc
-              ? `Play on ${EMBED_PROVIDER_LABEL[item.embedProvider!]} · Shift+click to queue`
-              : 'Play · Shift+click to queue'
-          }
-          side="top"
-        >
-          <Button
-            size="icon-sm"
-            disabled={processing || busyId === item.id}
-            onClick={(event) => {
-              const queue = event.shiftKey;
-              if (embedSrc) {
-                void playEmbedItem(item, { queue });
-                return;
-              }
-              void playItem(item.id, item.title, { queue });
-            }}
-            aria-label={
-              embedSrc
-                ? `Play ${item.title} on ${EMBED_PROVIDER_LABEL[item.embedProvider!]}`
-                : `Play ${item.title}`
-            }
+        {!item.embedProvider ? (
+          <Tooltip content="Play · Shift+click to queue" side="top">
+            <Button
+              size="icon-sm"
+              disabled={processing || busyId === item.id}
+              onClick={(event) => {
+                void playItem(item.id, item.title, {
+                  queue: event.shiftKey,
+                });
+              }}
+              aria-label={`Play ${item.title}`}
+            >
+              <PlayIcon size={16} aria-hidden />
+            </Button>
+          </Tooltip>
+        ) : (
+          <Tooltip
+            content={`Play on ${EMBED_PROVIDER_LABEL[item.embedProvider!]} · Shift+click to queue`}
+            side="top"
           >
-            <PlayIcon size={16} aria-hidden />
-          </Button>
-        </Tooltip>
+            <Button
+              size="icon-sm"
+              disabled={busyId === item.id}
+              onClick={(event) => {
+                void playEmbedItem(item, { queue: event.shiftKey });
+              }}
+              aria-label={`Play ${item.title} on ${EMBED_PROVIDER_LABEL[item.embedProvider!]}`}
+            >
+              <PlayIcon size={16} aria-hidden />
+            </Button>
+          </Tooltip>
+        )}
         {hearthisActive && item.embedUri ? (
           <div
-            className="border-border relative max-h-28 w-[min(100%,18rem)] shrink overflow-hidden rounded-lg border contain-paint"
+            className="border-border relative w-full max-w-md basis-full overflow-hidden rounded-lg border contain-paint sm:w-[min(100%,18rem)] sm:basis-auto"
             data-testid="hearthis-row-embed"
           >
             <HearthisEmbedSurface

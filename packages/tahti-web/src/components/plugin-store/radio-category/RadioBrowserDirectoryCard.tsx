@@ -42,6 +42,7 @@ import {
   CuratedFinnishStationRow,
   RadioBrowserStationRow,
 } from './StationRows';
+import { SuggestStationForm } from './SuggestStationForm';
 
 export function RadioBrowserDirectoryCard() {
   const enabled = useRadioBrowserStore((s) => s.enabled);
@@ -415,6 +416,7 @@ export function RadioBrowserDirectoryCard() {
             ]}
           />
         )}
+        <SuggestStationForm />
       </ConfigurableCard>
 
       {editingStation && (

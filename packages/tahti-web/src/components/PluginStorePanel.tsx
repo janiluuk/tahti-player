@@ -1,7 +1,7 @@
-import { ChevronDownIcon, InfoIcon } from 'lucide-react';
+import { ChevronDownIcon } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 
-import { Box, Button, Tabs, Tooltip } from '@tahti-player/ui';
+import { Box, Button, Tabs } from '@tahti-player/ui';
 
 import {
   PLUGIN_CATEGORIES,
@@ -117,39 +117,13 @@ function AudienceBody({
   const category = PLUGIN_CATEGORIES.find(
     (candidate) => candidate.id === categoryId,
   )!;
-  const [showInfo, setShowInfo] = useState(false);
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center justify-end">
-        <Tooltip content={`About ${category.label} add-ons`} side="top">
-          <Button
-            size="icon-sm"
-            variant="secondary"
-            aria-label={`About ${category.label} add-ons`}
-            aria-expanded={showInfo}
-            onClick={() => setShowInfo((value) => !value)}
-          >
-            <InfoIcon size={16} aria-hidden />
-          </Button>
-        </Tooltip>
-      </div>
-      {showInfo ? (
-        <Box
-          variant="tertiary"
-          role="note"
-          className="border-primary/40 bg-primary/10 flex-row items-start gap-2 py-3"
-        >
-          <InfoIcon
-            className="text-primary-strong mt-0.5 shrink-0"
-            size={16}
-            aria-hidden
-          />
-          <p className="text-foreground text-sm">
-            <span className="font-semibold">{category.label}</span>{' '}
-            {category.description}
-          </p>
-        </Box>
+      {category.description ? (
+        <p className="text-foreground-secondary text-sm">
+          {category.description}
+        </p>
       ) : null}
       {categoryId === 'listener' ? <ListenerAddons target={target} /> : null}
       {categoryId === 'artist' ? <ArtistAddons target={target} /> : null}

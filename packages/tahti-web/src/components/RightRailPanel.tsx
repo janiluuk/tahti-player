@@ -1,11 +1,13 @@
-import { ListMusicIcon } from 'lucide-react';
+import { ListMusicIcon, MessageSquareIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 import { Button, cn, QueuePanel, Tooltip } from '@tahti-player/ui';
 
 import { useLayoutStore } from '../stores/layoutStore';
+import { usePageCommentsRailStore } from '../stores/pageCommentsRailStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useRightRailOverrideStore } from '../stores/rightRailOverrideStore';
+import { AdminPageCommentsPanel } from './AdminPageCommentsPanel';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
 
 const COLLAPSED_LABELS = {
@@ -37,6 +39,7 @@ function RightRailPanelFade({
 
 export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
   const railOverride = useRightRailOverrideStore((s) => s.override);
+  const commentsOpen = usePageCommentsRailStore((s) => s.open);
   const toggleRight = useLayoutStore((s) => s.toggleRight);
 
   if (isCollapsed) {
@@ -51,6 +54,21 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
             onClick={() => toggleRight()}
           >
             <ListMusicIcon size={18} aria-hidden />
+          </Button>
+        </Tooltip>
+      );
+    }
+    if (commentsOpen) {
+      return (
+        <Tooltip content="Open page comments" side="left">
+          <Button
+            size="icon-sm"
+            variant="text"
+            className="mx-auto"
+            aria-label="Open page comments"
+            onClick={() => toggleRight()}
+          >
+            <MessageSquareIcon size={18} aria-hidden />
           </Button>
         </Tooltip>
       );
@@ -77,6 +95,31 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
           </div>
           <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-y-auto p-2">
             {railOverride.content}
+          </div>
+        </aside>
+      </RightRailPanelFade>
+    );
+  }
+
+  if (commentsOpen) {
+    return (
+      <RightRailPanelFade
+        panelKey="page-comments"
+        className="flex h-full min-h-0 flex-col"
+      >
+        <aside
+          aria-label="Page comments"
+          className="flex h-full min-h-0 flex-col"
+          data-testid="right-rail"
+          data-right-rail-view="page-comments"
+        >
+          <div className="border-border shrink-0 border-b px-2 py-2">
+            <p className="text-foreground-secondary text-xs font-bold tracking-wide uppercase">
+              Page comments
+            </p>
+          </div>
+          <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-y-auto p-2">
+            <AdminPageCommentsPanel />
           </div>
         </aside>
       </RightRailPanelFade>

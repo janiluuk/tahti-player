@@ -16,6 +16,7 @@ const studioRoutes = [
 const adminRoutes = [
   '/admin',
   '/admin/logs',
+  '/admin/monitoring',
   '/admin/status',
   '/admin/moderation',
   '/admin/tahti-selects',

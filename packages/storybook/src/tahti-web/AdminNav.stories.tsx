@@ -39,7 +39,14 @@ export const Default: Story = {
   },
   play: async ({ canvasElement }) => {
     const pages = await expectSelected(canvasElement, 'Overview', 'Dashboard');
-    for (const name of ['Financial', 'Storage', 'Logs', 'Status', 'Vendors']) {
+    for (const name of [
+      'Financial',
+      'Storage',
+      'Logs',
+      'Monitoring',
+      'Status',
+      'Vendors',
+    ]) {
       await expect(pages.getByRole('tab', { name })).toBeVisible();
     }
   },

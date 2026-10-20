@@ -50,8 +50,17 @@ export function SuggestStationForm() {
   };
 
   return (
-    <>
-      <div className="flex flex-wrap items-center justify-end gap-2">
+    <div className="border-border flex flex-col gap-3 border-t pt-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h3 className="font-display text-sm font-bold tracking-wide uppercase">
+            Suggest a station
+          </h3>
+          <p className="text-foreground-secondary mt-0.5 text-xs">
+            Send a public stream for the Tahti team to review for curated
+            Finnish stations.
+          </p>
+        </div>
         <Button
           size="sm"
           variant="secondary"
@@ -61,7 +70,7 @@ export function SuggestStationForm() {
         </Button>
       </div>
 
-      {open && (
+      {open ? (
         <form
           className="border-border bg-background-secondary/40 flex flex-col gap-3 rounded-lg border p-4"
           onSubmit={(e) => {
@@ -111,10 +120,12 @@ export function SuggestStationForm() {
             >
               {busy ? 'Sending…' : 'Send for review'}
             </Button>
-            {msg && <p className="text-foreground-secondary text-xs">{msg}</p>}
+            {msg ? (
+              <p className="text-foreground-secondary text-xs">{msg}</p>
+            ) : null}
           </div>
         </form>
-      )}
-    </>
+      ) : null}
+    </div>
   );
 }

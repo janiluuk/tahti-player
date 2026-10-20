@@ -35,7 +35,7 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
       transition="[object Object]"
     >
       <div
-        class="border-border bg-background shadow-shadow relative mx-auto rounded-md border-(length:--border-width) flex h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] w-full max-w-none min-w-0 flex-col overflow-hidden p-0 sm:h-[80vh] sm:max-h-[900px] sm:w-[80vw] sm:max-w-6xl sm:flex-row!"
+        class="border-border bg-background shadow-shadow relative mx-auto overflow-y-auto rounded-md border-(length:--border-width) flex! h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] w-full max-w-none min-w-0 flex-col overflow-hidden! p-0 sm:h-[80vh] sm:max-h-[900px] sm:w-[80vw] sm:max-w-6xl sm:flex-row!"
         data-headlessui-state="open"
         data-open=""
         id="headlessui-dialog-panel-:ra:"

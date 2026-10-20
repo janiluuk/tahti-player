@@ -33,6 +33,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Admin/AdminMapView` | `tahti-web/AdminMapView.stories.tsx` |
 | `Tahti/Admin/AdminMissedShowsView` | `tahti-web/AdminMissedShowsView.stories.tsx` |
 | `Tahti/Admin/AdminModerationView` | `tahti-web/AdminModerationView.stories.tsx` |
+| `Tahti/Admin/AdminMonitoringView` | `tahti-web/AdminMonitoringView.stories.tsx` |
 | `Tahti/Admin/AdminNav` | `tahti-web/AdminNav.stories.tsx` |
 | `Tahti/Admin/AdminNewsView` | `tahti-web/AdminNewsView.stories.tsx` |
 | `Tahti/Admin/AdminOrphanPagesView` | `tahti-web/AdminOrphanPagesView.stories.tsx` |
@@ -322,6 +323,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/WaveformMinimap` | `tahti-web/WaveformMinimap.stories.tsx` |
 | `Tahti/Player/WaveformSeekbar` | `tahti-web/WaveformSeekbar.stories.tsx` |
 | `Tahti/Listen/WelcomeStrip` | `tahti-web/WelcomeStrip.stories.tsx` |
+| `Tahti/App/WhatsNewView` | `tahti-web/WhatsNewView.stories.tsx` |
 | `Tahti/Discover/WidgetCard` | `tahti-web/WidgetCard.stories.tsx` |
 | `Tahti/Discover/WidgetTrackRow` | `tahti-web/WidgetTrackRow.stories.tsx` |
 | `Components/ActionSheet` | `ActionSheet.stories.tsx` |

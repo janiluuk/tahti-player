@@ -17,6 +17,7 @@ import {
   AdminLogsView,
   AdminMapView,
   AdminModerationView,
+  AdminMonitoringView,
   AdminNewsView,
   AdminOrphanPagesView,
   AdminRadioView,
@@ -48,7 +49,19 @@ export const adminActivityRoute = createRoute({
 export const adminLogsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/logs',
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: string; service?: string } => ({
+    tab: typeof search.tab === 'string' ? search.tab : undefined,
+    service: typeof search.service === 'string' ? search.service : undefined,
+  }),
   component: AdminLogsView,
+});
+
+export const adminMonitoringRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/admin/monitoring',
+  component: AdminMonitoringView,
 });
 
 // Beta applications, radio submissions, Selects, support, content reports,

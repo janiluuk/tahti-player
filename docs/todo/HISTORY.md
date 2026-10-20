@@ -1,5 +1,12 @@
 # docs/todo history
 
+## 2026-10-20 — Admin Grafana monitoring hub
+
+Folded `admin-grafana-monitoring.md`. `/admin/monitoring` embeds Grafana
+vital services + Loki container logs; dashboard links to Grafana
+dashboards / Explore / per-service logs; Admin Overview nav entry.
+Version `0.0.230`.
+
 ## 2026-10-19 — Spotify Listen widget playlist tracks
 
 Folded `spotify-listen-widget-tracks.md`. tahti-org #876 + tahti-player #1387:

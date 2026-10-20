@@ -12,6 +12,7 @@ import {
   LandmarkIcon,
   LanguagesIcon,
   LibraryIcon,
+  LineChartIcon,
   MapIcon,
   MapPinIcon,
   MegaphoneIcon,
@@ -44,6 +45,13 @@ export const PRIMARY = [
     icon: <FileTextIcon size={16} aria-hidden />,
     description:
       'Live container logs from every service in the production stack.',
+  },
+  {
+    to: '/admin/monitoring',
+    label: 'Monitoring',
+    icon: <LineChartIcon size={16} aria-hidden />,
+    description:
+      'Grafana vital stats embed, service dashboards, and container logs.',
   },
   {
     to: '/admin/moderation',
@@ -185,6 +193,7 @@ export const ADMIN_SECTIONS = [
       '/admin/storage',
       '/admin/artwork-presets',
       '/admin/logs',
+      '/admin/monitoring',
       '/admin/status',
       '/admin/vendors',
     ].map((to) => PRIMARY.find((item) => item.to === to)!),

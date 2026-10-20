@@ -144,7 +144,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Login["/login · /join · /verify · password reset"] --> Session["Signed in"]
   Session --> Feed["/listen/feed · /feed"]
   Session --> History["/listen/history"]
-  Session --> Library["/library · Tracks · Collections · Upload · Recordings · Media · Stash · Embeds · Smart links · Local files"]
+  Session --> Library["/library · Tracks · Collections · Upload · Recordings · Media · Stash · Embeds · Smart links"]
   Session --> Messages["/messages · /messages/$id"]
   Session --> Onboarding["/onboarding"]
   Session --> Settings["Settings modal · /settings/$section"]
@@ -219,7 +219,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Shell --> Admin["Admin · board role + diagnostics"]
 
   subgraph libraryTabs["Library tabs"]
-    Library --> LibraryMenu["Overview · Tracks · Collections · Upload · Recordings · Media · Stash · Embeds · Smart links · Local files"]
+    Library --> LibraryMenu["Overview · Tracks · Collections · Upload · Recordings · Media · Stash · Embeds · Smart links"]
   end
 
   subgraph studio["Studio sections"]
@@ -967,7 +967,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   end
 
   subgraph library["Library · own sidebar item"]
-    LIB["/library · Tracks · Collections · Upload · Recordings · Media · Stash · Embeds · Smart links · Local files"]
+    LIB["/library · Tracks · Collections · Upload · Recordings · Media · Stash · Embeds · Smart links"]
   end
 
   subgraph studio["Studio routes"]
