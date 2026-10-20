@@ -72,19 +72,18 @@ export const CollaborativeVisitor: Story = {
     });
 
     await step('favorite toggles pressed state', async () => {
-      const [favorite] = canvas.getAllByRole('button', {
+      const header = within(canvas.getByTestId('collection-social-header'));
+      const favorite = header.getByRole('button', {
         name: 'Favorite',
         pressed: false,
       });
-      await userEvent.click(favorite!);
+      await userEvent.click(favorite);
       await waitFor(() =>
         expect(
-          canvas.getAllByRole('button', { name: 'Favorited', pressed: true }),
-        ).not.toHaveLength(0),
+          header.getByRole('button', { name: 'Favorited', pressed: true }),
+        ).toBeVisible(),
       );
-      await userEvent.click(
-        canvas.getAllByRole('button', { name: 'Favorited' })[0]!,
-      );
+      await userEvent.click(header.getByRole('button', { name: 'Favorited' }));
     });
 
     await step('Play starts the first track', async () => {
@@ -132,7 +131,8 @@ export const Owner: Story = {
     await expect(
       canvas.queryByRole('button', { name: `Report ${COLLECTION_NAME}` }),
     ).toBeNull();
-    await expect(canvas.queryByRole('button', { name: 'Favorite' })).toBeNull();
+    const header = within(canvas.getByTestId('collection-social-header'));
+    await expect(header.queryByRole('button', { name: 'Favorite' })).toBeNull();
   },
 };
 

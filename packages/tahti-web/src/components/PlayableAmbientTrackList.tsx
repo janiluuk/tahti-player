@@ -45,6 +45,7 @@ export function PlayableAmbientTrackList({
       isCurrent && (status === 'playing' || status === 'loading');
     const soundId = soundIdFromPlayableId(item.id);
     const rest = items.filter((other) => other.id !== item.id);
+    const annotation = getAnnotation?.(item);
     return {
       id: item.id,
       trackId: item.id,
@@ -53,6 +54,9 @@ export function PlayableAmbientTrackList({
         <Link to="/t/$id" params={{ id: soundId }} className="hover:underline">
           {item.title}
         </Link>
+      ) : undefined,
+      belowTitle: annotation ? (
+        <div className="text-foreground-secondary text-xs">{annotation}</div>
       ) : undefined,
       artist: item.artist,
       coverUrl: item.coverUrl,
