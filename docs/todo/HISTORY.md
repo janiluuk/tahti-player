@@ -5051,3 +5051,9 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 - Folded as done: `back-button-universal` (#1165), `feature-swipe-product-flags` (#1246), `ux-sweep-batch-91-120` (all 30 rows merged), `e2e-beta-ux-findings` and `admin-studio-parity-sweep` (fixed items above).
 - Merged the open remainder of `ux-sweep-30-slices`, `ux-sweep-batch-4`, `catalog-components-empty-states`, `listen-ui-liveliness`, `ambient-waveform-track-rows`, `view-modes-track-tables`, `profile-surfaces-unification` and `studio-artist-usability` into `ux-backlog.md`; the open launch items into `beta-launch-findings.md`.
 - INDEX regrouped by what each item waits on; the stale `spotify-listen-widget-tracks` row (folded in 3ab7c10ee) removed; `navigation-flow-audit` and `studio-usability-audit` (#1410) indexed.
+
+## 2026-10-20 — Repo root tidy-up
+
+- Service config moved to `.github/` (`codecov.yml`, `renovate.json`); the unused `crowdin.yml` inherited from Nuclear deleted; codecov's ignore list lost four packages that no longer exist.
+- `aur/` and `flatpak/` moved under `packaging/` (scripts, manifests, snap icon path, `.gitignore` updated); `Dockerfile.player.test` became `packages/tahti-web/Dockerfile.test`, now copying every workspace package and taking pnpm from `packageManager` via corepack, with its own `.dockerignore`. `snap/` stays at the root, where Snapcraft requires it.
+- Root layout documented in `docs/REPO-LAYOUT.md`.

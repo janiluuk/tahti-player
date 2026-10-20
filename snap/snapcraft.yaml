@@ -83,10 +83,10 @@ parts:
       dpkg -x src-tauri/target/release/bundle/deb/*.deb $SNAPCRAFT_PART_INSTALL/
 
       # Tauri names the deb's desktop file after productName ("Tahti Player"),
-      # so install the repo's own desktop file and icon, as flatpak/ does.
+      # so install the repo's own desktop file and icon, as packaging/flatpak/ does.
       install -Dm644 "$SNAPCRAFT_PART_BUILD/packages/player/src-tauri/resources/live.tahti.player.desktop" \
         "$SNAPCRAFT_PART_INSTALL/usr/share/applications/live.tahti.player.desktop"
-      install -Dm644 "$SNAPCRAFT_PART_BUILD/flatpak/icons/512x512.png" \
+      install -Dm644 "$SNAPCRAFT_PART_BUILD/packaging/flatpak/icons/512x512.png" \
         "$SNAPCRAFT_PART_INSTALL/usr/share/icons/hicolor/512x512/apps/live.tahti.player.png"
 
       sed -i \
