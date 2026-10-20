@@ -2,7 +2,7 @@
 
 exports[`PluginStoreItem > (Snapshot) renders compact 1`] = `
 <div
-  class="border-border flex h-full w-full rounded-md border-(length:--border-width) bg-background-secondary text-foreground shadow-shadow flex-row flex-wrap items-center justify-between gap-2 p-2"
+  class="border-border flex rounded-md border-(length:--border-width) bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-2 p-2"
   data-testid="plugin-store-item"
 >
   <div
@@ -76,7 +76,7 @@ exports[`PluginStoreItem > (Snapshot) renders compact 1`] = `
 
 exports[`PluginStoreItem > (Snapshot) renders default state 1`] = `
 <div
-  class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row flex-wrap items-center justify-between gap-4"
+  class="border-border flex rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-4"
   data-testid="plugin-store-item"
 >
   <div
@@ -170,7 +170,7 @@ exports[`PluginStoreItem > (Snapshot) renders default state 1`] = `
 
 exports[`PluginStoreItem > (Snapshot) renders installed state 1`] = `
 <div
-  class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row flex-wrap items-center justify-between gap-4"
+  class="border-border flex rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-4"
   data-testid="plugin-store-item"
 >
   <div
@@ -260,7 +260,7 @@ exports[`PluginStoreItem > (Snapshot) renders installed state 1`] = `
 
 exports[`PluginStoreItem > (Snapshot) renders installing state 1`] = `
 <div
-  class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row flex-wrap items-center justify-between gap-4"
+  class="border-border flex rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-4"
   data-testid="plugin-store-item"
 >
   <div
@@ -362,7 +362,7 @@ exports[`PluginStoreItem > (Snapshot) renders installing state 1`] = `
 
 exports[`PluginStoreItem > (Snapshot) renders with custom labels 1`] = `
 <div
-  class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row flex-wrap items-center justify-between gap-4"
+  class="border-border flex rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-4"
   data-testid="plugin-store-item"
 >
   <div
@@ -456,7 +456,7 @@ exports[`PluginStoreItem > (Snapshot) renders with custom labels 1`] = `
 
 exports[`PluginStoreItem > (Snapshot) renders with long description 1`] = `
 <div
-  class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row flex-wrap items-center justify-between gap-4"
+  class="border-border flex rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-4"
   data-testid="plugin-store-item"
 >
   <div
