@@ -17,7 +17,7 @@ import type {
   PublicProfileRelease,
   TahtiPlayable,
 } from '../api/types';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { releasePlayables } from '../components/ReleaseTracklistDialog';
 import { TrackInfoDialog, type TrackInfo } from '../components/TrackInfoDialog';
 import { feedBadge } from '../lib/feedBadge';
@@ -85,6 +85,8 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
   const [items, setItems] = useState<FeedItem[]>([]);
   const [followingCount, setFollowingCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [infoTrack, setInfoTrack] = useState<TrackInfo | null>(null);
   const [feedPlayables, setFeedPlayables] = useState<
     Record<string, TahtiPlayable>
@@ -102,9 +104,13 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
       return;
     }
     setLoading(true);
+    setLoadError(null);
     void fetchFeed().then((res) => {
       setItems(res.data.items);
       setFollowingCount(res.data.followingCount);
+      setLoadError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
       setLoading(false);
       const tracks = res.data.items.filter(
         (item): item is Extract<FeedItem, { kind: 'track' }> =>
@@ -176,7 +182,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
         );
       });
     });
-  }, [user]);
+  }, [user, attempt]);
 
   const wrapFeed = (body: ReactNode) =>
     embedded ? (
@@ -218,7 +224,13 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
 
   const content = (
     <>
-      {items.length === 0 ? (
+      {loadError && items.length === 0 ? (
+        <PageError
+          title="Could not load your feed"
+          description={loadError}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
+      ) : items.length === 0 ? (
         <PageEmpty
           icon="inbox"
           title={

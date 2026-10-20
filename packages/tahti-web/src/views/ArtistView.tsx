@@ -68,7 +68,7 @@ import { ChannelVisualizer } from '../components/ChannelVisualizer';
 import { type EntitySocialStat } from '../components/EntitySocialHeader';
 import { FollowListDialog } from '../components/FollowListDialog';
 import { ImageLightbox } from '../components/ImageLightbox';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { QueueConfirmDialog } from '../components/QueueConfirmDialog';
 import {
   releasePlayables,
@@ -110,6 +110,8 @@ function ArtistProfilePage({ username }: { username: string }) {
   const profileLoaded = useAuthStore((s) => s.profileLoaded);
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [tab, setTab] = useState<Tab>('stage');
   const [galleryImages, setGalleryImages] = useState<PublicPressKitImage[]>([]);
   const [galleryLoaded, setGalleryLoaded] = useState(false);
@@ -186,6 +188,7 @@ function ArtistProfilePage({ username }: { username: string }) {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
+    setLoadError(null);
     void fetchProfile(username)
       .then((res) => {
         if (cancelled) {
@@ -203,9 +206,12 @@ function ArtistProfilePage({ username }: { username: string }) {
           });
         }
       })
-      .catch(() => {
+      .catch((err) => {
         if (!cancelled) {
           setProfile(null);
+          setLoadError(
+            err instanceof Error ? err.message : 'Could not load this artist.',
+          );
         }
       })
       .finally(() => {
@@ -219,7 +225,7 @@ function ArtistProfilePage({ username }: { username: string }) {
     return () => {
       cancelled = true;
     };
-  }, [username]);
+  }, [username, attempt]);
 
   useEffect(() => {
     let cancelled = false;
@@ -292,6 +298,16 @@ function ArtistProfilePage({ username }: { username: string }) {
 
   if (loading) {
     return <PageLoading label="Loading artist…" />;
+  }
+
+  if (loadError) {
+    return (
+      <PageError
+        title="Could not load this artist"
+        description={loadError}
+        onRetry={() => setAttempt((n) => n + 1)}
+      />
+    );
   }
 
   if (!profile) {

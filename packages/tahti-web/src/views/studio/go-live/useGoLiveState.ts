@@ -43,6 +43,7 @@ export function useGoLiveState() {
   const [signal, setSignal] = useState<SignalStatus | null>(null);
   const [usage, setUsage] = useState<BroadcastUsage | null>(null);
   const [targets, setTargets] = useState<RtmpTarget[]>([]);
+  const [targetsError, setTargetsError] = useState<string | null>(null);
   const [channelState, setChannelState] = useState(
     user?.channel?.state ?? 'OFFLINE',
   );
@@ -109,6 +110,11 @@ export function useGoLiveState() {
     );
     setUsage(usageResult.data);
     setTargets(targetResult.data);
+    setTargetsError(
+      targetResult.meta.source === 'api'
+        ? (targetResult.meta.reason ?? null)
+        : null,
+    );
     setPreflight(preflightResult.data);
     setRecordEnabled(recordingResult.data);
     if (
@@ -231,6 +237,7 @@ export function useGoLiveState() {
     setSignal,
     usage,
     targets,
+    targetsError,
     channelState,
     setChannelState,
     ingest,

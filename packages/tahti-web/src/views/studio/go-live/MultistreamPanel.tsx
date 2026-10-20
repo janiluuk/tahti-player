@@ -14,7 +14,7 @@ import {
   MulticastConfigureDialog,
   type MulticastConfiguring,
 } from '../../../components/MulticastConfigureDialog';
-import { PageEmpty } from '../../../components/PageStates';
+import { PageEmpty, PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import {
   multicastProviderLabel,
@@ -27,9 +27,11 @@ import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 export function MultistreamPanel({
   targets,
   reload,
+  loadError = null,
 }: {
   targets: RtmpTarget[];
   reload: () => void | Promise<void>;
+  loadError?: string | null;
 }) {
   const [showAddDestination, setShowAddDestination] = useState(false);
   const [configuringDestination, setConfiguringDestination] =
@@ -64,7 +66,13 @@ export function MultistreamPanel({
           </div>
         }
       >
-        {targets.length === 0 ? (
+        {loadError && targets.length === 0 ? (
+          <PageError
+            title="Could not load destinations"
+            description={loadError}
+            onRetry={() => void reload()}
+          />
+        ) : targets.length === 0 ? (
           <PageEmpty title="No destinations configured." />
         ) : (
           <ul className="flex flex-col gap-2">

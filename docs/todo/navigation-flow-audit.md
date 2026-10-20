@@ -116,7 +116,7 @@ When navigating **across** app boundary zones, the back-link patterns diverge:
 | 1b | `FeatureRequestsView` hides back link in embedded mode | Low | Embedded exit + full-page link → `/governance/feature-requests` (batch 80/81) |
 | 2 | Admin routes silently reachable via tab-redirect (6 items with no nav-chrome entry) | Medium | Document the tab-mapping in a `NAVIGATION-SITEMAP.md` comment block inside `AdminNav.tsx`; add `as const` assertion to verify every admin route has either a Primary entry or an explicit mapping list |
 | 4 | `ChannelView + TrackHero` use imperative `router.history.back()` instead of `<Link>` | Low | Convert to `<Button onClick={goBack}>` (fine for overlay), but keep `<Link>` in navigational chrome views |
-| 6 | No breadcrumb trail inside tabbed admin routes | Low | `AdminGrantCycleView` breadcrumb shipped (batch 81); other tabbed admin routes still open |
-| 8 | Missing `data-testid` on nav chrome | Low | `admin-page-layout`, `listen-shell`, `app-top-nav` shipped (batch 81) |
+| 6 | No breadcrumb trail inside tabbed admin routes | Low | Grant cycle (81); Moderation + Orphan pages breadcrumbs (batch 82) |
+| 8 | Missing `data-testid` on nav chrome | Low | `admin-page-layout`, `listen-shell`, `app-top-nav` (81); `studio-navigation` / orphan layout (82) |
 | 7 | 66 % route gap in e2e tests, governance+discover completely untested | High | Prioritize governance (member flows) and discover/radio/subscribe routes |
-| 9 | Settings `$section` redirect silently changes URL without notice | Low-Medium | Add a redirect notice banner OR rename tab label "Money" → "Revenue" to avoid confusion |
+| 9 | Settings `$section` redirect silently changes URL without notice | Low-Medium | money/fan-* → `/studio/revenue`, audience → `/studio/audience` (batch 82) |

@@ -142,7 +142,13 @@ function GoLiveTabContent({
     return <RecordingPanel state={state} />;
   }
   if (tab === 'destinations') {
-    return <MultistreamPanel targets={state.targets} reload={state.reload} />;
+    return (
+      <MultistreamPanel
+        targets={state.targets}
+        reload={state.reload}
+        loadError={state.targetsError}
+      />
+    );
   }
   return <GreenRoomSessionPanel />;
 }

@@ -8,7 +8,7 @@ import type { PublicCollection, TahtiPlayable } from '../api/types';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { usePlayerStore } from '../stores/playerStore';
-import { PageEmpty, PageLoading } from './PageStates';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 import { PlayableTrackTable } from './PlayableTrackTable';
 
 function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
@@ -63,12 +63,13 @@ export function ChannelPlaylistBlock({
   const setStatus = usePlayerStore((state) => state.setStatus);
   const [collection, setCollection] = useState<PublicCollection | null>(null);
   const [loading, setLoading] = useState(true);
-  const [failed, setFailed] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    setFailed(false);
+    setLoadError(null);
     void fetchCollection(playlistSlug)
       .then((result) => {
         if (cancelled) {
@@ -77,18 +78,20 @@ export function ChannelPlaylistBlock({
         setCollection(result.data);
         setLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
         if (cancelled) {
           return;
         }
         setCollection(null);
-        setFailed(true);
+        setLoadError(
+          err instanceof Error ? err.message : 'Could not load this playlist.',
+        );
         setLoading(false);
       });
     return () => {
       cancelled = true;
     };
-  }, [playlistSlug]);
+  }, [playlistSlug, attempt]);
 
   const playables = useMemo(
     () => (collection ? collectionToPlayables(collection) : []),
@@ -99,7 +102,21 @@ export function ChannelPlaylistBlock({
     return <PageLoading label="Loading playlist…" />;
   }
 
-  if (failed || !collection) {
+  if (loadError) {
+    return (
+      <PageError
+        title="Could not load playlist"
+        description={
+          editing
+            ? `${loadError} Pick another in widget settings, or try again.`
+            : loadError
+        }
+        onRetry={() => setAttempt((n) => n + 1)}
+      />
+    );
+  }
+
+  if (!collection) {
     return (
       <PageEmpty
         title="Playlist unavailable"

@@ -3,12 +3,12 @@ import { PlayIcon } from 'lucide-react';
 
 import { ButtonLink } from '@tahti-player/ui';
 
-import { PageEmpty } from '../../../components/PageStates';
+import { PageEmpty, PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import type { ShowDetailState } from './useShowDetail';
 
 export function RecordingsTab({ state }: { state: ShowDetailState }) {
-  const { episodes } = state;
+  const { episodes, episodesLoadError, bookingsLoadError, reload } = state;
   const recordings = episodes.filter(
     (episode) => episode.source === 'broadcast',
   );
@@ -18,8 +18,21 @@ export function RecordingsTab({ state }: { state: ShowDetailState }) {
       title="Recordings from this show"
       description="Broadcast recordings linked to this show series."
     >
-      {recordings.length === 0 ? (
-        <PageEmpty title="No recordings from this show yet." />
+      {episodesLoadError ? (
+        <PageError
+          title="Could not load recordings"
+          description={episodesLoadError}
+          onRetry={reload}
+        />
+      ) : recordings.length === 0 ? (
+        <>
+          <PageEmpty title="No recordings from this show yet." />
+          {bookingsLoadError ? (
+            <p className="text-foreground-secondary mt-2 text-xs">
+              Upcoming bookings could not be refreshed: {bookingsLoadError}
+            </p>
+          ) : null}
+        </>
       ) : (
         <ul className="divide-border divide-y">
           {recordings.map((episode) => (

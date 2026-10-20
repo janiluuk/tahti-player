@@ -103,7 +103,7 @@ export function LibraryEmbedsView() {
           aria-label="Filter embeds by provider"
         />
       ) : null}
-      {loadError && !hasAnyEmbeds ? (
+      {loadError ? (
         <PageError
           title="Could not load your imported embeds"
           description={loadError}
@@ -112,7 +112,8 @@ export function LibraryEmbedsView() {
             setAttempt((n) => n + 1);
           }}
         />
-      ) : groups.length === 0 ? (
+      ) : null}
+      {!loadError && groups.length === 0 ? (
         <PageEmpty
           title={
             hasAnyEmbeds

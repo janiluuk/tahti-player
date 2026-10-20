@@ -1,5 +1,11 @@
 # docs/todo history
 
+## 2026-10-20 — UX batch 81 forty slices (tahti-player #1436)
+
+Folded `batch-81-forty-slices.md`. Studio home / pickers / artist satellites /
+governance `PageError` honesty; Library Media + SmartLinks FilterChips; Admin
+grant breadcrumb + chrome testids; light de-green. Broadcast size baseline 805.
+
 ## 2026-10-20 — UX batch 80 forty slices (tahti-player #1433)
 
 Folded `batch-80-forty-slices.md`. `failMeta` ≡ `apiErrorMeta`; intentional

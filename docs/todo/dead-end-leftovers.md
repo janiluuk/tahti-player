@@ -43,8 +43,8 @@ that tahti-web can fix on its own (see HISTORY). These need someone else first.
   `RadioShowView` initial vs poll, `ArtistLikes` / upcoming / reposts / news,
   `SubscribedCollections`, `DeliveryTab` platform modes, ArtistPanel Connections,
   `NotificationsVisibilityPanel`, StudioCollections Play toast, stream Apply refetch.
-- `show-detail/useShowDetail.ts` episodes and bookings — another session's batch 4 edits
-  `EpisodesTab` / `OverviewTab` (still open if those tabs hide failures).
+- [x] `show-detail/useShowDetail.ts` episodes and bookings — batch 82: load error
+  state + PageError on show detail / EpisodesTab / RecordingsTab.
 
 ## Checked and fine
 

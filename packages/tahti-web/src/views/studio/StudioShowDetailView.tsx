@@ -4,7 +4,7 @@ import {
   Tooltip,
 } from '@tahti-player/ui';
 
-import { PageEmpty, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { EpisodesTab } from './show-detail/EpisodesTab';
@@ -16,11 +16,14 @@ import { useShowDetail } from './show-detail/useShowDetail';
 
 export function StudioShowDetailView({ id }: { id: string }) {
   const state = useShowDetail(id);
-  const { show, loaded, showTab, msg } = state;
+  const { show, loaded, showLoadError, showTab, msg, reload } = state;
 
   return (
     <StudioGate>
-      <div className="studio-page-layout relative flex w-full flex-col gap-6 px-1 py-2">
+      <div
+        className="studio-page-layout relative flex w-full flex-col gap-6 px-1 py-2"
+        data-testid="studio-page-layout"
+      >
         <Tooltip
           content="Back to Shows"
           side="right"
@@ -31,10 +34,16 @@ export function StudioShowDetailView({ id }: { id: string }) {
 
         {!show ? (
           <StudioPanel>
-            {loaded ? (
-              <PageEmpty title="Show not found" />
-            ) : (
+            {!loaded ? (
               <PageLoading label="Loading…" />
+            ) : showLoadError ? (
+              <PageError
+                title="Could not load this show"
+                description={showLoadError}
+                onRetry={reload}
+              />
+            ) : (
+              <PageEmpty title="Show not found" />
             )}
           </StudioPanel>
         ) : (
