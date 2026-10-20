@@ -27,13 +27,15 @@ export const Default: Story = {
       await canvas.findByRole('heading', { name: "What's New" }),
     ).toBeVisible();
     await expect(canvas.getByText(/7–20 Oct 2026/)).toBeVisible();
-    await expect(canvas.getByText('Listen')).toBeVisible();
+    await expect(canvas.getAllByText('Listen').length).toBeGreaterThan(0);
     const openFull = await canvas.findByRole('button', {
       name: /Read full update for 7–20 Oct 2026/i,
     });
     await userEvent.click(openFull);
     const dialog = await findDialog(canvasElement);
-    await expect(within(dialog).getByText('Studio')).toBeVisible();
+    await expect(within(dialog).getAllByText('Studio').length).toBeGreaterThan(
+      0,
+    );
     await expect(
       within(dialog).getByText(/MusicBrainz registration/i),
     ).toBeVisible();

@@ -184,7 +184,11 @@ function toHostedListItem(
     retryingId: string | null;
   },
 ): AmbientTrackListItem {
-  const { playItem } = state;
+  const { playItem, playEmbedItem } = state;
+  const embedSrc =
+    item.embedProvider && item.embedUri
+      ? embedSrcFor(item.embedProvider, item.embedUri)
+      : null;
   const playerId = `sound:${item.id}`;
   const isCurrent = playback.currentId === playerId;
   const isPlaying =
