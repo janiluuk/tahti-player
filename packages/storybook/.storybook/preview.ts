@@ -35,8 +35,10 @@ if (import.meta.env.VITEST) {
   style.textContent =
     '*,*::before,*::after{transition-duration:0s!important;transition-delay:0s!important;animation-duration:0s!important;animation-delay:0s!important;animation-iteration-count:1!important;}';
   document.head.appendChild(style);
+  document.documentElement.setAttribute('data-skip-enter-motion', '');
   // MotionConfig reducedMotion only drops transforms, and components that
-  // read useReducedMotion() ignore it, so opacity fades still started at 0.
+  // read useReducedMotion() ignore it, so opacity fades still started at 0;
+  // skipAnimations finishes the rest on the next frame.
   MotionGlobalConfig.skipAnimations = true;
   // Two story files share a busy runner; the 1s default made findBy*
   // time out on data that was a moment away.

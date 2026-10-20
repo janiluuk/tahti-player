@@ -1,6 +1,7 @@
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { FC, ReactNode, useEffect, useState } from 'react';
 
+import { useSkipEnterMotion } from '../../hooks/useSkipEnterMotion';
 import { cn } from '../../utils';
 
 type ImageRevealProps = {
@@ -32,7 +33,7 @@ export const ImageReveal: FC<ImageRevealProps> = ({
   onLoad,
   onError,
 }) => {
-  const prefersReduced = useReducedMotion();
+  const prefersReduced = useSkipEnterMotion();
   const animationsDisabled = !enabled || !!prefersReduced;
 
   const [loaded, setLoaded] = useState(false);

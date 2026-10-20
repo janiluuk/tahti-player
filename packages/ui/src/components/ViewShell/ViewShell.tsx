@@ -1,6 +1,7 @@
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 import { FC, ReactNode } from 'react';
 
+import { useSkipEnterMotion } from '../../hooks/useSkipEnterMotion';
 import { cn } from '../../utils';
 import { ScrollableArea } from '../ScrollableArea';
 
@@ -34,13 +35,7 @@ export const ViewShell: FC<ViewShellProps> = ({
   'data-testid': dataTestId,
   classes,
 }) => {
-  const reducedMotion = useReducedMotion();
-  // Storybook interaction plays assert toBeVisible on first paint; an enter
-  // fade starts at opacity 0 and flakes those checks.
-  const skipEnter =
-    reducedMotion === true ||
-    (typeof document !== 'undefined' &&
-      document.getElementById('storybook-root') !== null);
+  const skipEnter = useSkipEnterMotion();
 
   return (
     <div
