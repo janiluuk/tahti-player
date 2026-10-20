@@ -20,6 +20,10 @@ import * as discover from '../api/discover';
 import * as listen from '../api/listen';
 import { clearListenSectionCache } from '../components/listen-view/useListenSections';
 import { useLibraryStore } from '../stores/libraryStore';
+import {
+  BROWSER_STATIONS_BLOCK_ID,
+  useListenerWidgetsStore,
+} from '../stores/listenerWidgetsStore';
 import { ListenView } from './ListenView';
 
 vi.mock('sonner', () => ({
@@ -178,5 +182,80 @@ describe('ListenView sections', () => {
       }),
     ).toBeNull();
     useLibraryStore.setState({ history: [] });
+  });
+});
+
+describe('ListenView block order', () => {
+  beforeEach(() => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+    clearListenSectionCache();
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
+    useListenerWidgetsStore.setState({
+      instances: [],
+      installedTypeIds: [],
+      savedBrowserStations: [],
+      listenOrder: [],
+    });
+  });
+
+  afterEach(() => {
+    cleanup();
+    vi.unstubAllEnvs();
+    vi.restoreAllMocks();
+  });
+
+  const blockIds = () =>
+    Array.from(
+      screen
+        .getByTestId('listen-dashboard')
+        .querySelectorAll<HTMLElement>('[data-sortable-block]'),
+    ).map((node) => node.dataset.sortableBlock);
+
+  it('puts a widget added from the store above every section', async () => {
+    await renderListen();
+    expect(blockIds()[0]).toBe('tahti-radio');
+
+    act(() => {
+      useListenerWidgetsStore.getState().addSavedBrowserStation({
+        id: 'kexp',
+        name: 'KEXP',
+        streamUrl: 'https://kexp.example/stream',
+      });
+    });
+
+    expect(blockIds()[0]).toBe(BROWSER_STATIONS_BLOCK_ID);
+    expect(blockIds()[1]).toBe('tahti-radio');
+  });
+
+  it('shows drag handles only while the Order toggle is on', async () => {
+    await renderListen();
+    expect(
+      screen.queryByRole('button', { name: 'Move Tahti Radio' }),
+    ).toBeNull();
+
+    const toggle = screen.getByRole('button', { name: 'Order sections' });
+    fireEvent.click(toggle);
+
+    expect(toggle.getAttribute('aria-pressed')).toBe('true');
+    expect(
+      screen.getByRole('button', { name: 'Move Tahti Radio' }),
+    ).toBeTruthy();
+
+    fireEvent.click(toggle);
+    expect(
+      screen.queryByRole('button', { name: 'Move Tahti Radio' }),
+    ).toBeNull();
+  });
+
+  it('follows the stored order and keeps unknown sections by their neighbours', async () => {
+    useListenerWidgetsStore.setState({ listenOrder: ['radio', 'tahti-radio'] });
+    await renderListen();
+    const ids = blockIds();
+    expect(ids[0]).toBe('radio');
+    expect(ids[1]).toBe('news');
+    expect(ids.indexOf('tahti-radio')).toBeLessThan(ids.indexOf('selects'));
+    expect(ids.indexOf('new-tracks')).toBeGreaterThan(
+      ids.indexOf('tahti-radio'),
+    );
   });
 });

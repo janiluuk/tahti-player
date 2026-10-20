@@ -1,9 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import {
+  BROWSER_STATIONS_BLOCK_ID,
+  useListenerWidgetsStore,
+} from '@tahti-web/stores/listenerWidgetsStore';
 import { ListenView } from '@tahti-web/views/ListenView';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
-import { selectTab } from './_lib/play';
+import { keyboardMoveDown, selectTab } from './_lib/play';
 
 const meta: Meta<typeof ListenView> = {
   title: 'Tahti/Listen/ListenView',
@@ -13,7 +17,7 @@ const meta: Meta<typeof ListenView> = {
     docs: {
       description: {
         component:
-          'The home Listen page (`/`) with its Listen / Feed / History section tabs. Listen shows Tahti Radio, recently played, internet radio, On air channels, new tracks, listener widgets and the disco widgets; signed-in listeners also get the widget store.',
+          'The home Listen page (`/`) with its Listen / Feed / History section tabs. Listen shows Tahti Radio, recently played, internet radio, On air channels, new tracks, listener widgets and the disco widgets; signed-in listeners also get the widget store. The Order toggle in the header shows a drag handle on every section and widget; a widget added from the store goes to the top.',
       },
     },
   },
@@ -74,4 +78,82 @@ export const HistoryTab: Story = {
     withMockAuth(MOCK_USERS.listener),
     withTahtiRouter('/listen/history'),
   ],
+};
+
+const resetListenOrder = () => {
+  const saved = useListenerWidgetsStore.getState();
+  useListenerWidgetsStore.setState({
+    listenOrder: [],
+    savedBrowserStations: [],
+    instances: [],
+    installedTypeIds: [],
+  });
+  return () =>
+    useListenerWidgetsStore.setState({
+      listenOrder: saved.listenOrder,
+      savedBrowserStations: saved.savedBrowserStations,
+      instances: saved.instances,
+      installedTypeIds: saved.installedTypeIds,
+    });
+};
+
+const dashboardBlockIds = (canvasElement: HTMLElement) =>
+  Array.from(
+    canvasElement.querySelectorAll<HTMLElement>(
+      '[data-testid="listen-dashboard"] [data-sortable-block]',
+    ),
+  ).map((node) => node.dataset.sortableBlock);
+
+export const OrderSections: Story = {
+  name: 'Order sections (drag handles)',
+  decorators: [withMockAuth(MOCK_USERS.listener), withTahtiRouter('/')],
+  beforeEach: resetListenOrder,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByTestId('listen-dashboard');
+    await expect(
+      canvas.queryByRole('button', { name: 'Move Tahti Radio' }),
+    ).toBeNull();
+    const toggle = canvas.getByRole('button', { name: 'Order sections' });
+    await userEvent.click(toggle);
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    const handle = canvas.getByRole('button', { name: 'Move Tahti Radio' });
+    await keyboardMoveDown(handle);
+    await waitFor(() =>
+      expect(dashboardBlockIds(canvasElement).slice(0, 2)).toEqual([
+        'selects',
+        'tahti-radio',
+      ]),
+    );
+    await expect(useListenerWidgetsStore.getState().listenOrder[0]).toBe(
+      'selects',
+    );
+    await userEvent.click(toggle);
+    await expect(
+      canvas.queryByRole('button', { name: 'Move Tahti Radio' }),
+    ).toBeNull();
+  },
+};
+
+export const NewWidgetOnTop: Story = {
+  name: 'New widget goes to the top',
+  decorators: [withMockAuth(MOCK_USERS.listener), withTahtiRouter('/')],
+  beforeEach: () => {
+    const restore = resetListenOrder();
+    useListenerWidgetsStore.getState().addSavedBrowserStation({
+      id: 'story-kexp',
+      name: 'KEXP',
+      streamUrl: 'https://kexp.example/stream',
+      country: 'United States',
+    });
+    return restore;
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByTestId('listen-dashboard');
+    await expect(dashboardBlockIds(canvasElement)[0]).toBe(
+      BROWSER_STATIONS_BLOCK_ID,
+    );
+    await expect(await canvas.findByText('KEXP')).toBeVisible();
+  },
 };

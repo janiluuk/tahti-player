@@ -10,6 +10,35 @@ export const NEWS_WIDGET_TYPE_ID = 'news';
 
 export type ListenerWidgetSurface = 'listen' | 'discover';
 
+/** Listen page block ids for user-added widgets; built-in sections use
+ * their own ids (see ListenView). */
+export const widgetBlockId = (id: string) => `widget:${id}`;
+export const isWidgetBlockId = (id: string) => id.startsWith('widget:');
+export const BROWSER_STATIONS_BLOCK_ID = widgetBlockId('browser-stations');
+export const FAVORITES_BLOCK_ID = widgetBlockId('favorites');
+
+const toFront = (order: string[], id: string) => [
+  id,
+  ...order.filter((item) => item !== id),
+];
+
+/** `order` first, then every id it lacks from `fallback`, each placed right
+ * after the nearest id before it in `fallback` (or first when none is). */
+export function mergeBlockOrder(order: string[], fallback: string[]): string[] {
+  const result = [...order];
+  fallback.forEach((id, index) => {
+    if (result.includes(id)) {
+      return;
+    }
+    const before = fallback
+      .slice(0, index)
+      .reverse()
+      .find((item) => result.includes(item));
+    result.splice(before === undefined ? 0 : result.indexOf(before) + 1, 0, id);
+  });
+  return result;
+}
+
 /** Radio Browser stations saved onto Listen tiles (not the curated catalog). */
 export type SavedBrowserStation = {
   id: string;
@@ -63,6 +92,9 @@ type ListenerWidgetsState = {
   stationOverrides: Record<string, Partial<RadioStation>>;
   /** Radio Browser directory stations pinned to Listen. */
   savedBrowserStations: SavedBrowserStation[];
+  /** Listen page block order set from the Order toggle; new widgets go first. */
+  listenOrder: string[];
+  setListenOrder: (ids: string[]) => void;
   installType: (typeId: string) => void;
   uninstallType: (typeId: string) => void;
   addInstance: (
@@ -87,32 +119,45 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
       enabledStationIds: [...DEFAULT_ENABLED_STATION_IDS],
       stationOverrides: {},
       savedBrowserStations: [],
+      listenOrder: [],
+      setListenOrder: (ids) =>
+        set((s) => ({ listenOrder: mergeBlockOrder(ids, s.listenOrder) })),
       installType: (typeId) =>
-        set((s) => ({
-          installedTypeIds: s.installedTypeIds.includes(typeId)
-            ? s.installedTypeIds
-            : [...s.installedTypeIds, typeId],
-        })),
+        set((s) =>
+          s.installedTypeIds.includes(typeId)
+            ? s
+            : {
+                installedTypeIds: [...s.installedTypeIds, typeId],
+                listenOrder:
+                  typeId === 'favorites'
+                    ? toFront(s.listenOrder, FAVORITES_BLOCK_ID)
+                    : s.listenOrder,
+              },
+        ),
       uninstallType: (typeId) =>
         set((s) => ({
           installedTypeIds: s.installedTypeIds.filter((id) => id !== typeId),
           instances: s.instances.filter((i) => i.typeId !== typeId),
         })),
       addInstance: (typeId, input, label, extras) =>
-        set((s) => ({
-          instances: [
-            ...s.instances,
-            {
-              id: crypto.randomUUID(),
-              typeId,
-              input,
-              label,
-              addedAt: new Date().toISOString(),
-              thumbnailUrl: extras?.thumbnailUrl,
-              surfaces: extras?.surfaces,
-            },
-          ],
-        })),
+        set((s) => {
+          const id = crypto.randomUUID();
+          return {
+            instances: [
+              {
+                id,
+                typeId,
+                input,
+                label,
+                addedAt: new Date().toISOString(),
+                thumbnailUrl: extras?.thumbnailUrl,
+                surfaces: extras?.surfaces,
+              },
+              ...s.instances,
+            ],
+            listenOrder: toFront(s.listenOrder, widgetBlockId(id)),
+          };
+        }),
       removeInstance: (id) =>
         set((s) => {
           const removed = s.instances.find((i) => i.id === id);
@@ -143,7 +188,7 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
         set((s) => ({
           enabledStationIds: s.enabledStationIds.includes(stationId)
             ? s.enabledStationIds.filter((id) => id !== stationId)
-            : [...s.enabledStationIds, stationId],
+            : [stationId, ...s.enabledStationIds],
         })),
       updateStation: (stationId, patch) =>
         set((s) => ({
@@ -157,10 +202,16 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
           const exists = s.savedBrowserStations.some(
             (item) => item.id === station.id,
           );
+          if (exists) {
+            return {
+              savedBrowserStations: s.savedBrowserStations.filter(
+                (item) => item.id !== station.id,
+              ),
+            };
+          }
           return {
-            savedBrowserStations: exists
-              ? s.savedBrowserStations.filter((item) => item.id !== station.id)
-              : [...s.savedBrowserStations, station],
+            savedBrowserStations: [station, ...s.savedBrowserStations],
+            listenOrder: toFront(s.listenOrder, BROWSER_STATIONS_BLOCK_ID),
           };
         }),
       addSavedBrowserStation: (station) =>
@@ -171,7 +222,8 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
           );
           if (existingIndex === -1) {
             return {
-              savedBrowserStations: [...s.savedBrowserStations, station],
+              savedBrowserStations: [station, ...s.savedBrowserStations],
+              listenOrder: toFront(s.listenOrder, BROWSER_STATIONS_BLOCK_ID),
             };
           }
           const next = [...s.savedBrowserStations];

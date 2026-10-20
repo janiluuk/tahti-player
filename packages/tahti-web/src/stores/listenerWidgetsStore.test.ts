@@ -1,7 +1,12 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { useListenerWidgetsStore } from './listenerWidgetsStore';
+import {
+  BROWSER_STATIONS_BLOCK_ID,
+  mergeBlockOrder,
+  useListenerWidgetsStore,
+  widgetBlockId,
+} from './listenerWidgetsStore';
 
 describe('listener widgets store', () => {
   beforeEach(() => {
@@ -12,7 +17,65 @@ describe('listener widgets store', () => {
       enabledStationIds: [],
       stationOverrides: {},
       savedBrowserStations: [],
+      listenOrder: [],
     });
+  });
+
+  it('puts a newly added widget first on Listen', () => {
+    const store = useListenerWidgetsStore.getState();
+    useListenerWidgetsStore.setState({ listenOrder: ['radio', 'news'] });
+    store.addInstance('news', 'https://example.com/feed.xml', 'News');
+    const { instances, listenOrder } = useListenerWidgetsStore.getState();
+    expect(listenOrder).toEqual([
+      widgetBlockId(instances[0]!.id),
+      'radio',
+      'news',
+    ]);
+  });
+
+  it('moves the saved stations block first when a station is saved', () => {
+    useListenerWidgetsStore.setState({
+      listenOrder: ['radio', BROWSER_STATIONS_BLOCK_ID],
+      savedBrowserStations: [
+        { id: 'old', name: 'Old', streamUrl: 'https://old.example/s' },
+      ],
+    });
+    useListenerWidgetsStore.getState().addSavedBrowserStation({
+      id: 'new',
+      name: 'New',
+      streamUrl: 'https://new.example/s',
+    });
+    const next = useListenerWidgetsStore.getState();
+    expect(next.listenOrder).toEqual([BROWSER_STATIONS_BLOCK_ID, 'radio']);
+    expect(next.savedBrowserStations.map((station) => station.id)).toEqual([
+      'new',
+      'old',
+    ]);
+  });
+
+  it('keeps hidden blocks in place when the visible order is saved', () => {
+    useListenerWidgetsStore.setState({
+      listenOrder: ['radio', 'recent', 'news', 'trending'],
+    });
+    useListenerWidgetsStore
+      .getState()
+      .setListenOrder(['news', 'radio', 'trending']);
+    expect(useListenerWidgetsStore.getState().listenOrder).toEqual([
+      'news',
+      'radio',
+      'recent',
+      'trending',
+    ]);
+  });
+
+  it('merges unknown ids after their default neighbour', () => {
+    expect(mergeBlockOrder(['c', 'a'], ['a', 'b', 'c', 'd'])).toEqual([
+      'c',
+      'd',
+      'a',
+      'b',
+    ]);
+    expect(mergeBlockOrder(['b'], ['a', 'b'])).toEqual(['a', 'b']);
   });
 
   it('uninstalling a type removes its embeds from Listen', () => {
