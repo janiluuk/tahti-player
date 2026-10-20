@@ -41,38 +41,6 @@ exports[`Dialog > (Snapshot) renders open dialog 1`] = `
         data-open=""
         id="headlessui-dialog-panel-:r6:"
       >
-        <div
-          class="absolute top-3 right-3 z-30"
-        >
-          <button
-            aria-label="Close"
-            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
-            data-headlessui-state=""
-            data-testid="dialog-x-close"
-            type="button"
-          >
-            <svg
-              aria-hidden="true"
-              class="lucide lucide-x"
-              fill="none"
-              height="16"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-              width="16"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M18 6 6 18"
-              />
-              <path
-                d="m6 6 12 12"
-              />
-            </svg>
-          </button>
-        </div>
         <h2
           class="text-foreground text-lg font-bold"
           data-headlessui-state="open"
@@ -96,6 +64,35 @@ exports[`Dialog > (Snapshot) renders open dialog 1`] = `
             OK
           </button>
         </div>
+        <button
+          aria-label="Close"
+          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center pointer-events-auto absolute top-3 right-3 z-[100]"
+          data-headlessui-state=""
+          data-testid="dialog-x-close"
+          title="Close"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-x"
+            fill="none"
+            height="16"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="16"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M18 6 6 18"
+            />
+            <path
+              d="m6 6 12 12"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   </div>

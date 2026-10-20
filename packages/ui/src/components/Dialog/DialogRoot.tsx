@@ -61,8 +61,8 @@ export const DialogRoot: FC<DialogRootProps> = ({
                     className,
                   )}
                 >
-                  {showCloseButton && <DialogXClose />}
                   {children}
+                  {showCloseButton ? <DialogXClose /> : null}
                 </DialogPanel>
               </motion.div>
             </div>
