@@ -6,6 +6,7 @@ import type { IntegrationId } from '../api/sources';
 import { fetchStudioSounds } from '../api/studio';
 import type { StudioSound } from '../api/studio-types';
 import { EmbedTrackRow } from '../components/EmbedTrackRow';
+import { LibrarySectionToolbar } from '../components/library/LibrarySectionToolbar';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { SoundCloudEmbedsPanel } from '../components/SoundCloudEmbedsPanel';
 import { SourceServiceIcon } from '../components/SourceServiceIcon';
@@ -96,12 +97,14 @@ export function LibraryEmbedsView() {
     <div className="flex flex-col gap-8">
       <SoundCloudEmbedsPanel />
       {hasAnyEmbeds && providerChips.length > 2 ? (
-        <FilterChips
-          items={providerChips}
-          selected={providerFilter}
-          onChange={setProviderFilter}
-          aria-label="Filter embeds by provider"
-        />
+        <LibrarySectionToolbar>
+          <FilterChips
+            items={providerChips}
+            selected={providerFilter}
+            onChange={setProviderFilter}
+            aria-label="Filter embeds by provider"
+          />
+        </LibrarySectionToolbar>
       ) : null}
       {loadError ? (
         <PageError

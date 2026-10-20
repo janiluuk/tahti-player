@@ -1,3 +1,10 @@
+## 2026-10-20 — UX batch 85 (PageEmpty leftovers + ambient + Embeds toolbar)
+
+Studio editor / admin dashboard / channel blocks / AGM / fingerprint / plays /
+streams / vendors / programming grid → `PageEmpty`/`PageError`; Library Embeds
+adopts `LibrarySectionToolbar`; Collection + SmartLink use
+`PlayableAmbientTrackList`; folded batch 84. Bumped to `0.0.239`.
+
 ## 2026-10-20 — UX batch 84 (partial-fail banners + Favorites ambient)
 
 Soft `PageErrorBanner` when API fails but data remains; Favorites

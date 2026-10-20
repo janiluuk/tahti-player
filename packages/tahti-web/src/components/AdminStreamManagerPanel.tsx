@@ -35,7 +35,7 @@ import {
   type ChannelManageStats,
 } from '../api/broadcast';
 import { ConfirmDialog } from './ConfirmDialog';
-import { PageLoading } from './PageStates';
+import { PageEmpty, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 type StreamAction = (
@@ -142,9 +142,7 @@ export function AdminStreamManagerPanel({
   const streamList = loading ? (
     <PageLoading label="Loading streams…" />
   ) : streams.length === 0 ? (
-    <p className="text-foreground-secondary py-4 text-center text-sm">
-      No channels are live right now.
-    </p>
+    <PageEmpty title="No channels are live right now." />
   ) : (
     <ul className="divide-border divide-y">
       {streams.map((stream) => (

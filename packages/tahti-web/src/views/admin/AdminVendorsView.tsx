@@ -8,7 +8,7 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageError } from '../../components/PageStates';
+import { PageEmpty, PageError } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 
 const CRITICAL_VENDORS = [
@@ -307,7 +307,7 @@ export function AdminVendorsContent() {
               ))}
             </ul>
           ) : (
-            <p className="text-sm">No explicit launch blockers are recorded.</p>
+            <PageEmpty title="No explicit launch blockers are recorded." />
           )}
         </StudioPanel>
 

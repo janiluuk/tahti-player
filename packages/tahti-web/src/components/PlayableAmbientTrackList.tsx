@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import type { ReactNode } from 'react';
 
 import type { TahtiPlayable } from '../api/types';
 import { formatDuration } from '../lib/playableToTrack';
@@ -16,9 +17,15 @@ import { PlayableTrackTable } from './PlayableTrackTable';
 export function PlayableAmbientTrackList({
   items,
   emptyMessage = 'No tracks yet.',
+  getAnnotation,
+  compactActions,
+  playAll = false,
 }: {
   items: TahtiPlayable[];
   emptyMessage?: string;
+  getAnnotation?: (item: TahtiPlayable) => ReactNode;
+  compactActions?: boolean;
+  playAll?: boolean;
 }) {
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
@@ -91,7 +98,9 @@ export function PlayableAmbientTrackList({
         <PlayableTrackTable
           items={items}
           emptyMessage={emptyMessage}
-          playAll={false}
+          playAll={playAll}
+          compactActions={compactActions}
+          getAnnotation={getAnnotation}
         />
       )}
     />

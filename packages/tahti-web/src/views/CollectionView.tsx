@@ -1,7 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
   BookmarkIcon,
-  ListMusicIcon,
   ListPlusIcon,
   MusicIcon,
   PencilIcon,
@@ -17,7 +16,6 @@ import {
   BackButtonLink,
   Button,
   ButtonLink,
-  EmptyState,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -47,7 +45,7 @@ import {
 } from '../components/EntitySocialHeader';
 import { PageFrame } from '../components/PageHeader';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
-import { PlayableTrackTable } from '../components/PlayableTrackTable';
+import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
 import { ReportButton } from '../components/ReportButton';
 import { RssFeedButton } from '../components/RssFeedButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
@@ -524,7 +522,7 @@ export function CollectionView({ slug }: { slug: string }) {
 
       {playables.length > 0 && (
         <div className="shadow-float rounded-[var(--radius-card)]">
-          <PlayableTrackTable
+          <PlayableAmbientTrackList
             items={playables}
             compactActions
             emptyMessage="No tracks yet."
@@ -537,8 +535,7 @@ export function CollectionView({ slug }: { slug: string }) {
       )}
 
       {playables.length === 0 && (
-        <EmptyState
-          icon={<ListMusicIcon size={40} className="opacity-40" />}
+        <PageEmpty
           title="No tracks in this playlist"
           description={
             isOwner

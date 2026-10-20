@@ -18,7 +18,7 @@ import {
   fetchStudioSounds,
 } from '../../api/studio';
 import type { EditorProjectRow, StudioSound } from '../../api/studio-types';
-import { PageError, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { contentTypeLabel } from '../../content/contentTypes';
@@ -202,22 +202,21 @@ export function StudioEditorListView() {
                 }}
               />
             ) : projects.length === 0 ? (
-              <div className="flex flex-col gap-3 py-4 text-center">
-                <p className="text-foreground-secondary text-sm">
-                  No editor projects yet.
-                </p>
-                <div>
+              <PageEmpty
+                title="No editor projects yet."
+                action={
                   <Tooltip content="New session" side="top">
                     <Button
                       size="icon-sm"
+                      variant="secondary"
                       onClick={() => setCreateOpen(true)}
                       aria-label="New session"
                     >
                       <PlusIcon size={16} aria-hidden />
                     </Button>
                   </Tooltip>
-                </div>
-              </div>
+                }
+              />
             ) : (
               <ul className="divide-border divide-y">
                 {projects.map((p) => (
@@ -327,11 +326,13 @@ export function StudioEditorListView() {
                     onRetry={reload}
                   />
                 ) : filteredLibrary.length === 0 ? (
-                  <p className="text-foreground-secondary py-8 text-center text-sm">
-                    {sounds.length === 0
-                      ? 'Upload content in Library first.'
-                      : 'No library items match this selection.'}
-                  </p>
+                  <PageEmpty
+                    title={
+                      sounds.length === 0
+                        ? 'Upload content in Library first.'
+                        : 'No library items match this selection.'
+                    }
+                  />
                 ) : (
                   <ul className="border-border divide-border max-h-[20rem] divide-y overflow-y-auto rounded-md border">
                     {filteredLibrary.map((item) => (

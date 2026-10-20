@@ -37,8 +37,7 @@ new surface, one PR per row.
 
 - [ ] Wire `AmbientTrackRow` / `AmbientTrackList` beyond Library → Sounds
   (Listen, Favorites, Collections…); prefer real `peaks` from the list API.
-  Partial: Favorites liked + hearted audio via `PlayableAmbientTrackList`
-  (batch 84).
+  Partial: Favorites (batch 84); CollectionView + SmartLinkView (batch 85).
 - [ ] `PlayableTrackTable` view mode (dense / expanded / grid) + client sort,
   persisted (pattern: player `usePlaylistSort`). Fixes ListenView,
   CollectionView, SmartLinkView, FavoritesView, ChannelViewBlocks,
@@ -49,8 +48,8 @@ new surface, one PR per row.
   sort (pattern: `studio/sounds/SoundFilters.tsx`). Partial: Embeds FilterChips +
   SmartLinks search (batch 80); Media kind chips + SmartLinks DSP chips + load
   `PageError` (batch 81); Embeds PageError even with partial data (batch 82);
-  shared `LibrarySectionToolbar` on Media + SmartLinks (batch 83). Sort /
-  Embeds adoption still open.
+  shared `LibrarySectionToolbar` on Media + SmartLinks (batch 83); Embeds
+  (batch 85). Sort still open.
 
 ## Shared surfaces (de-duplication)
 

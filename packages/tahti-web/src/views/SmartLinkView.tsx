@@ -19,7 +19,7 @@ import {
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
-import { PlayableTrackTable } from '../components/PlayableTrackTable';
+import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
 import { ReleaseTrackDownloads } from '../components/ReleaseTrackDownloads';
 import { ReportButton } from '../components/ReportButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
@@ -215,7 +215,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
       {playables.length > 0 ? (
         <section className="flex flex-col gap-3">
           <Eyebrow>Tracks</Eyebrow>
-          <PlayableTrackTable items={playables} />
+          <PlayableAmbientTrackList items={playables} />
         </section>
       ) : null}
 

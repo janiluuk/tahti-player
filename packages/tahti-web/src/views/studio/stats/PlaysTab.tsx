@@ -7,6 +7,7 @@ import {
 } from '@tahti-player/ui';
 
 import { ListenerWorldMap } from '../../../components/ListenerWorldMap';
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { StatNumber } from '../../../components/tahti/StatNumber';
 import {
@@ -72,9 +73,7 @@ export function PlaysTab({
             />
           </div>
           {plays.daily.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              No plays in this period.
-            </p>
+            <PageEmpty title="No plays in this period." />
           ) : useHeatmap ? (
             <HorizontalScroll label="Daily plays">
               <CalendarHeatmap
