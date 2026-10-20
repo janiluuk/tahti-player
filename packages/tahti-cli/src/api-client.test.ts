@@ -1,3 +1,6 @@
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -6,8 +9,10 @@ import {
   CliError,
   describeHttpError,
   parsePositiveInt,
+  refreshAccessToken,
   resolveConfig,
 } from './api-client.mjs';
+import { writeSavedConfig } from './config-file.mjs';
 import { mockFetchJson, TEST_CONFIG } from './test-helpers';
 
 describe('resolveConfig', () => {
@@ -16,6 +21,20 @@ describe('resolveConfig', () => {
     expect(
       resolveConfig({ TAHTI_API_URL: 'http://localhost:4000/' }).apiUrl,
     ).toBe('http://localhost:4000');
+  });
+
+  it('prefers a personal API token, then a saved access token', () => {
+    expect(
+      resolveConfig(
+        { TAHTI_API_TOKEN: 'tahti_env' },
+        { token: 'tahti_saved', accessToken: 'jwt' },
+      ).token,
+    ).toBe('tahti_env');
+    expect(
+      resolveConfig({}, { token: 'tahti_saved', accessToken: 'jwt' }).token,
+    ).toBe('tahti_saved');
+    expect(resolveConfig({}, { accessToken: 'jwt' }).token).toBe('jwt');
+    expect(resolveConfig({}, { refreshToken: 'r1' }).refreshToken).toBe('r1');
   });
 });
 
@@ -100,6 +119,51 @@ describe('apiGet', () => {
     );
   });
 
+  it('refreshes a device session once on 401 then retries', async () => {
+    const home = await mkdtemp(join(tmpdir(), 'tahti-refresh-'));
+    const env = { XDG_CONFIG_HOME: home };
+    writeSavedConfig(env, {
+      apiUrl: TEST_CONFIG.apiUrl,
+      accessToken: 'old-access',
+      refreshToken: 'old-refresh',
+      expiresAt: Date.now() - 1000,
+    });
+    const config = resolveConfig(env);
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        json: async () => ({ error: 'expired' }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          accessToken: 'new-access',
+          refreshToken: 'new-refresh',
+          expiresIn: 900,
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ ok: true }),
+      });
+    vi.stubGlobal('fetch', fetchMock);
+    await expect(apiGet('/api/x', config)).resolves.toEqual({ ok: true });
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(fetchMock.mock.calls[1][0]).toBe(
+      `${config.apiUrl}/api/auth/token/refresh`,
+    );
+    expect(config.token).toBe('new-access');
+    expect(config.refreshToken).toBe('new-refresh');
+    const saved = JSON.parse(
+      await readFile(join(home, 'tahti', 'config.json'), 'utf8'),
+    );
+    expect(saved.accessToken).toBe('new-access');
+    expect(saved.refreshToken).toBe('new-refresh');
+    await rm(home, { recursive: true, force: true });
+  });
+
   it('falls back to the status line when the error body is not JSON', async () => {
     vi.stubGlobal(
       'fetch',
@@ -126,5 +190,13 @@ describe('apiGet', () => {
     expect(error.message).toBe(
       'Could not reach the Tahti API at https://api.example.test: fetch failed',
     );
+  });
+});
+
+describe('refreshAccessToken', () => {
+  it('returns null when there is no refresh token', async () => {
+    expect(
+      await refreshAccessToken({ ...TEST_CONFIG, refreshToken: null }),
+    ).toBeNull();
   });
 });

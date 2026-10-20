@@ -90,9 +90,17 @@ repo. Needs the user's go-ahead before tahti-org work starts.
 ### Still open
 
 - Deploy/migrate tahti-org #880 in each env.
-- Desktop keychain storage adapter + sleep/wake checks.
-- CLI `tahti login --device` optional JWT path.
+- Desktop: wire `createInjectedStorage` to a real Tauri OS keychain plugin +
+  verify sleep/wake / offline cold start (adapter + notes shipped; plugin TBD).
 - Eventually drop cookie-session once all clients are on tokens.
+
+### Phase 4 (this slice)
+
+- `createNodeConfigFileStorage` + `createInjectedStorage` in
+  `@tahti-player/auth-session` (CLI config file / desktop keychain bridge).
+- CLI `tahti login --device` (+ `--email` / `--password`): password login,
+  persists access + refresh under `~/.config/tahti/config.json` mode `0600`,
+  refreshes on 401 in `api-client`. Personal `tahti_` tokens unchanged.
 
 ## Plan (slices)
 
@@ -118,12 +126,13 @@ them out, and a stolen refresh token is detected and revoked.
 
 ## Desktop / CLI cutover notes
 
-- **Desktop (Tauri webview):** same cookie refresh path as web for now. Next:
-  OS keychain adapter implementing `AuthSessionStorage` (store refresh only);
-  call `authSession.start()` on wake/`online` (already listens) and verify
-  offline cold start keeps signed-in state until refresh fails.
-- **CLI:** keep `tahti_` API tokens for automation. Optional interactive login
-  can call `/api/auth/login` with `deviceLabel`, persist refresh under
-  `~/.config/tahti/` mode `0600`, and use `fetchWithAuth` in the API client.
+- **Desktop (Tauri webview):** same cookie refresh path as web for now.
+  `createInjectedStorage` is the host bridge for an OS keychain plugin (not
+  wired yet). Call `authSession.start()` on wake/`online` (browser already
+  listens) and verify offline cold start keeps signed-in until refresh fails.
+- **CLI:** `tahti_` API tokens remain for automation. `tahti login --device`
+  calls `/api/auth/login` with `deviceLabel`, persists access + refresh under
+  `~/.config/tahti/config.json` mode `0600`, and refreshes on 401 in
+  `api-client` (plain Node; does not import the TS package).
 - **Cookie session:** remains valid during transition; do not remove until
   web + desktop + optional CLI JWT path have run in production.

@@ -63,12 +63,15 @@ approach `packages/tahti-web` itself uses (it doesn't consume
 that it did).
 
 1. Sign in at [tahti.live](https://tahti.live) → Settings → Account → API
-   tokens → create a token.
-2. Run `tahti login` and paste it (or pipe it in: `pass tahti | tahti login`).
+   tokens → create a token, **or** use a device session (step 2b).
+2. Run `tahti login` and paste the token (or pipe it in: `pass tahti | tahti login`).
    It is checked, then saved to `$XDG_CONFIG_HOME/tahti/config.json`
    (`~/.config/tahti/config.json`), readable only by you. `tahti logout`
    deletes that file. Alternatively `export TAHTI_API_TOKEN=tahti_...`, which
    wins over the saved token.
+2b. Or `tahti login --device` with your account email/password. That stores
+   access + refresh JWTs (mode 600) and refreshes them on 401. Prefer a
+   personal API token for automation and for accounts with TOTP.
 3. Optionally `export TAHTI_API_URL=https://api.tahti.live` (this is
    already the default).
 
@@ -93,7 +96,7 @@ Every command accepts `--json` (prints the API response unchanged) and
 | Command                                                                                       | API route                                                                     | Output                                                                                                                                                                                        |
 | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `tahti whoami [--json]`                                                                       | `GET /api/auth/me`                                                            | Username, display name, tier, membership, channel slug, storage used                                                                                                                          |
-| `tahti login [--token <token>]` / `tahti logout` | `GET /api/auth/me` | Checks the token and saves it to `~/.config/tahti/config.json` (mode 600), or deletes that file; `TAHTI_API_TOKEN` still wins when set |
+| `tahti login [--token <token>] [--device] [--email] [--password]` / `tahti logout` | `GET /api/auth/me` or `POST /api/auth/login` (+ refresh on 401) | Saves a personal API token or a device JWT session to `~/.config/tahti/config.json` (mode 600), or deletes that file; `TAHTI_API_TOKEN` still wins when set |
 | `tahti library list [--sort <order>] [--json]`                                                | `GET /api/me/sound`                                                           | Your library sounds (up to 100); `--sort` is one of `newest`, `oldest`, `title`, `duration`, `bpm`, `genre`                                                                                   |
 | `tahti library show <id> [--json]`                                                            | `GET /api/me/sound/:id`                                                       | One sound's metadata (status, duration, visibility, genre, BPM/key, source format, dates)                                                                                                     |
 | `tahti library edit <id> [--title] [--description] [--genre] [--tags] [--bpm] [--key] [--public \| --private] [--downloads on\|off] [--json]` | `PATCH /api/me/sound/:id` | Changes only the given fields and prints the sound as saved; `""` or `none` clears a field; needs the `write` scope |
