@@ -87,7 +87,7 @@ export const PopulatedGrid: Story = {
     await expect(canvas.getByText(/, unlisted/)).toBeVisible();
     await expect(canvas.getAllByText(/, private/).length).toBeGreaterThan(0);
     await expect(
-      canvas.getAllByRole('link', { name: 'Design' }).length,
+      canvas.getAllByRole('link', { name: 'Edit' }).length,
     ).toBeGreaterThan(0);
   },
 };
