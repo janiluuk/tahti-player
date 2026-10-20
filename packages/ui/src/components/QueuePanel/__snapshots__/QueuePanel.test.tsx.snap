@@ -68,6 +68,7 @@ exports[`QueuePanel > (Snapshot) renders collapsed state 1`] = `
           <div
             aria-describedby="DndDescribedBy-1"
             aria-disabled="false"
+            aria-label="Bohemian Rhapsody — Queen"
             aria-roledescription="sortable"
             class="cursor-grab"
             data-queue-item-id="1"
@@ -114,6 +115,7 @@ exports[`QueuePanel > (Snapshot) renders collapsed state 1`] = `
           <div
             aria-describedby="DndDescribedBy-1"
             aria-disabled="false"
+            aria-label="Stairway to Heaven — Led Zeppelin"
             aria-roledescription="sortable"
             class="cursor-grab"
             data-queue-item-id="2"
@@ -160,6 +162,7 @@ exports[`QueuePanel > (Snapshot) renders collapsed state 1`] = `
           <div
             aria-describedby="DndDescribedBy-1"
             aria-disabled="false"
+            aria-label="Hotel California — Eagles"
             aria-roledescription="sortable"
             class="cursor-grab"
             data-queue-item-id="3"
@@ -247,6 +250,7 @@ exports[`QueuePanel > (Snapshot) renders default state 1`] = `
           <div
             aria-describedby="DndDescribedBy-0"
             aria-disabled="false"
+            aria-label="Bohemian Rhapsody — Queen"
             aria-roledescription="sortable"
             class="cursor-grab"
             data-queue-item-id="1"
@@ -348,6 +352,7 @@ exports[`QueuePanel > (Snapshot) renders default state 1`] = `
           <div
             aria-describedby="DndDescribedBy-0"
             aria-disabled="false"
+            aria-label="Stairway to Heaven — Led Zeppelin"
             aria-roledescription="sortable"
             class="cursor-grab"
             data-queue-item-id="2"
@@ -449,6 +454,7 @@ exports[`QueuePanel > (Snapshot) renders default state 1`] = `
           <div
             aria-describedby="DndDescribedBy-0"
             aria-disabled="false"
+            aria-label="Hotel California — Eagles"
             aria-roledescription="sortable"
             class="cursor-grab"
             data-queue-item-id="3"
