@@ -15,7 +15,7 @@ import {
 import { fetchAdminDashboard, type AdminDashboard } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
 import {
@@ -115,9 +115,7 @@ export function AdminDashboardView() {
 
                   <StudioPanel title="Needs action">
                     {data.actionRows.length === 0 ? (
-                      <p className="text-foreground-secondary text-sm">
-                        Nothing needs action right now.
-                      </p>
+                      <PageEmpty title="Nothing needs action right now." />
                     ) : (
                       <ul className="divide-border divide-y">
                         {data.actionRows.map((row) => (

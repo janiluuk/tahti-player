@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import type { ReactNode } from 'react';
 
 import type { TahtiPlayable } from '../api/types';
 import { formatDuration } from '../lib/playableToTrack';
@@ -16,9 +17,15 @@ import { PlayableTrackTable } from './PlayableTrackTable';
 export function PlayableAmbientTrackList({
   items,
   emptyMessage = 'No tracks yet.',
+  getAnnotation,
+  compactActions,
+  playAll = false,
 }: {
   items: TahtiPlayable[];
   emptyMessage?: string;
+  getAnnotation?: (item: TahtiPlayable) => ReactNode;
+  compactActions?: boolean;
+  playAll?: boolean;
 }) {
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
@@ -38,6 +45,7 @@ export function PlayableAmbientTrackList({
       isCurrent && (status === 'playing' || status === 'loading');
     const soundId = soundIdFromPlayableId(item.id);
     const rest = items.filter((other) => other.id !== item.id);
+    const annotation = getAnnotation?.(item);
     return {
       id: item.id,
       trackId: item.id,
@@ -46,6 +54,9 @@ export function PlayableAmbientTrackList({
         <Link to="/t/$id" params={{ id: soundId }} className="hover:underline">
           {item.title}
         </Link>
+      ) : undefined,
+      belowTitle: annotation ? (
+        <div className="text-foreground-secondary text-xs">{annotation}</div>
       ) : undefined,
       artist: item.artist,
       coverUrl: item.coverUrl,
@@ -91,7 +102,9 @@ export function PlayableAmbientTrackList({
         <PlayableTrackTable
           items={items}
           emptyMessage={emptyMessage}
-          playAll={false}
+          playAll={playAll}
+          compactActions={compactActions}
+          getAnnotation={getAnnotation}
         />
       )}
     />

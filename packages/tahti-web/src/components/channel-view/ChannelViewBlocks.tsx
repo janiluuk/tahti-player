@@ -266,9 +266,7 @@ export function renderChannelBlock(
               {channel.nextBroadcastNote}
             </p>
           ) : (
-            <p className="text-foreground-secondary text-sm">
-              No broadcast currently scheduled.
-            </p>
+            <PageEmpty title="No broadcast currently scheduled." />
           )}
           {slug === TAHTI_RADIO_SLUG ? <RadioProgrammingGrid /> : null}
           <Link
@@ -314,10 +312,10 @@ export function renderChannelBlock(
         return editing ? (
           <div className="px-4 py-3 text-sm">
             <h2 className="text-sm font-bold tracking-tight">Live shows</h2>
-            <p className="text-foreground-secondary mt-1 text-xs">
-              No scheduled or past broadcasts yet — this block shows once there
-              are some.
-            </p>
+            <PageEmpty
+              title="No scheduled or past broadcasts yet"
+              description="This block shows once there are some."
+            />
           </div>
         ) : null;
       }
@@ -392,10 +390,10 @@ export function renderChannelBlock(
             {activeLabels.length > 0 ? ` — ${activeLabels.join(', ')}` : ''} (
             {item.feedDisplay ?? 'tracklist'} display).
           </p>
-          <p className="text-foreground-secondary text-xs italic">
-            No live update source is wired in yet — nothing to show until one
-            exists.
-          </p>
+          <PageEmpty
+            title="No live update source is wired in yet"
+            description="Nothing to show until one exists."
+          />
         </section>
       );
     }

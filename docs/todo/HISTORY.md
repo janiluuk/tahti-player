@@ -1,3 +1,9 @@
+## 2026-10-20 — UX batch 84 forty slices (folded)
+
+Folded `batch-84-forty-slices.md`. Partial-fail banners, Favorites ambient,
+settings hide-on-fail → PageError, admin breadcrumbs, chrome testids, light
+de-green. Shipped as `0.0.238` (worklog already noted).
+
 # docs/todo history
 
 ## 2026-10-20 — UX batch 83 forty slices (tahti-player #1440)

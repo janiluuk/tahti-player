@@ -8,8 +8,8 @@
 
 ## 1. Governance / Transparency sub-routes — back arrows point to root (OK) but no "← Close" from tabbed children
 
-### 1a. `PublicGovernanceHistoryView` → `/transparency` instead of `/governance`
-**File:** `src/views/PublicGovernanceHistoryView.tsx:32-34` — the back arrow says "Transparency overview" and links to `/transparency`. Semantically this is a governance sub-page; the label is confusing for a governance reader.
+### 1a. `PublicGovernanceHistoryView` → `/governance` ✅
+**Done:** back link is `← Governance` → `/governance` (was Transparency overview).
 
 ### 1b. No explicit exit from tabbed governance children (`/governance/meetings/$id`, `/governance/motions/$id`)
 `GovernanceMeetingDetailView.tsx:57` and `GovernanceMotionDetailView.tsx:75` correctly link back to `/governance`. Good. But the feature-requests child (`FeatureRequestsView.tsx:83`) renders its "← Governance" link **only when `embedded=false`**; in embedded mode inside `StudioGovernanceView` there is no visible exit — the user must use browser back or the left sidebar. That's intentional (embedded sub-tab) but worth noting as a discoverability gap on wide screens.

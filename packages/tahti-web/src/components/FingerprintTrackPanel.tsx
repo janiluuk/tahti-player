@@ -5,6 +5,7 @@ import { Button } from '@tahti-player/ui';
 
 import type { FingerprintMatch, StudioReleaseTrack } from '../api/studio-types';
 import { acoustIdProvider } from '../plugins/fingerprinting';
+import { PageEmpty } from './PageStates';
 
 function MatchSummary({ match }: { match: FingerprintMatch }) {
   return (
@@ -99,9 +100,7 @@ export function FingerprintTrackPanel({
       </div>
 
       {checkResult === 'none' && (
-        <p className="text-foreground-secondary text-sm">
-          No match found. Nothing was changed.
-        </p>
+        <PageEmpty title="No match found. Nothing was changed." />
       )}
       {checkResult && checkResult !== 'none' && (
         <div className="border-border bg-background rounded-md border-(length:--border-width) p-3">

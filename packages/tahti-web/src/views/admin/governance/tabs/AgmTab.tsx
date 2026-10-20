@@ -533,9 +533,7 @@ export function AgmTab() {
             Loading motions…
           </p>
         ) : motions.length === 0 ? (
-          <p className="text-foreground-secondary py-4 text-center text-sm">
-            No open or draft motions.
-          </p>
+          <PageEmpty title="No open or draft motions." />
         ) : (
           <ul className="divide-border divide-y">
             {motions.map((m) => (

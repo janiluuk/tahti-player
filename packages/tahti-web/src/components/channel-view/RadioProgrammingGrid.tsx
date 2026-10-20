@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Badge } from '@tahti-player/ui';
 
 import { fetchPublicRadioSlots, type PublicRadioSlot } from '../../api/shows';
+import { PageEmpty, PageError } from '../PageStates';
 
 export const PROGRAMMING_DAYS = 7;
 
@@ -93,17 +94,13 @@ export function RadioProgrammingGrid({ nowMs }: { nowMs?: number }) {
     );
   }
   if (state.status === 'error') {
-    return (
-      <p className="text-foreground-secondary text-sm">
-        This week&apos;s shows couldn&apos;t be loaded.
-      </p>
-    );
+    return <PageError title="This week's shows couldn't be loaded." />;
   }
   if (state.days.length === 0) {
     return (
-      <p className="text-foreground-secondary text-sm">
-        No live shows booked in the next {PROGRAMMING_DAYS} days.
-      </p>
+      <PageEmpty
+        title={`No live shows booked in the next ${PROGRAMMING_DAYS} days.`}
+      />
     );
   }
   return (

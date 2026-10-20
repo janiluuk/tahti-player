@@ -90,9 +90,7 @@ export function GovernanceSection({ state }: { state: StudioHomeState }) {
               Ongoing discussions
             </p>
             {discussionUpdates.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No unresolved discussion updates.
-              </p>
+              <PageEmpty title="No unresolved discussion updates." />
             ) : (
               <ul className="divide-border divide-y">
                 {discussionUpdates.map((item) => (
