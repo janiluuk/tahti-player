@@ -1,5 +1,18 @@
 # docs/todo history
 
+## 2026-10-20 — UX batch 80 forty slices (tahti-player #1433)
+
+Folded `batch-80-forty-slices.md`. `failMeta` ≡ `apiErrorMeta`; intentional
+mock fixtures use `mockFallbackMeta`; Listen gateway background; playback
+Try again; Library Embeds/SmartLinks + MyVenues filters; AdminNav tab-only
+route map; Feature Requests embedded exit.
+
+## 2026-10-20 — UX batch 79 thirty slices (tahti-player #1432)
+
+Folded `batch-79-thirty-slices.md`. Collections private/Edit, ConfirmDialog +
+StatChip upstream, queue collapse, MusicBrainz re-enable, ReleasesPanel clear
+filter, DownloadGates empty/loading, MediaArtwork loading play.
+
 ## 2026-10-20 — Settings × close + tooltip (tahti-player #1430)
 
 Folded `settings-close-tooltip.md`. Dropped Floating UI Tooltip on

@@ -24,7 +24,7 @@ import {
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
 import { PageFrame } from '../components/PageHeader';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { RadioShowEpisodeList } from '../components/RadioShowEpisodeList';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { usePolling } from '../hooks/usePolling';
@@ -108,20 +108,33 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
   const [upcomingTracks, setUpcomingTracks] = useState<
     RadioShowUpcomingTrack[]
   >([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     setLoading(true);
     void fetchPublicRadioShow(channelSlug).then((result) => {
       setShow(result.data);
+      setLoadError(
+        result.data === null && result.meta.source === 'api'
+          ? (result.meta.reason ?? null)
+          : null,
+      );
       setLoading(false);
     });
-  }, [channelSlug]);
+  }, [channelSlug, reloadKey]);
 
   const reloadNowPlaying = () => {
     void fetchRadioShowNowPlaying(channelSlug).then((result) => {
+      if (result.meta.source === 'api' && result.meta.reason) {
+        return;
+      }
       setNowPlayingTrack(result.data);
     });
     void fetchRadioShowUpcoming(channelSlug).then((result) => {
+      if (result.meta.source === 'api' && result.meta.reason) {
+        return;
+      }
       setUpcomingTracks(result.data);
     });
   };
@@ -134,6 +147,16 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
 
   if (loading) {
     return <PageLoading label="Loading show…" />;
+  }
+
+  if (!show && loadError) {
+    return (
+      <PageError
+        title="Could not load show"
+        description={loadError}
+        onRetry={() => setReloadKey((key) => key + 1)}
+      />
+    );
   }
 
   if (!show) {

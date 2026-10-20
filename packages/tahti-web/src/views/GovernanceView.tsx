@@ -297,7 +297,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
           <GovernancePanel
             title="Needs your attention"
             icon={VoteIcon}
-            variant="primary"
+            variant="secondary"
           >
             <p className="text-sm opacity-90">
               {openMotionsCount === 1

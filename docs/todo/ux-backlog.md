@@ -29,7 +29,8 @@ new surface, one PR per row.
 ## Liveliness
 
 - [ ] De-green `Button` (primary-heavy everywhere; Cards and the MediaArtwork
-  overlay were already neutralised).
+  overlay were already neutralised). Partial: Governance attention panel +
+  stream PlaylistDialog selected row (batch 81).
 - [x] Optional `DiscoverGatewayBackground` on flat Listen surfaces (batch 80).
 - [ ] Verify Card / Badge / CardsRow / MediaArtwork / ListenSection stories in
   all five stock themes (incl. `tahti-blue`, `spotify-dark-theme`).
@@ -46,7 +47,8 @@ new surface, one PR per row.
 - [ ] Library trio (`LibraryMediaView` / `LibraryEmbedsView` /
   `LibrarySmartLinksView`): converge on a shared library row with FilterChips +
   sort (pattern: `studio/sounds/SoundFilters.tsx`). Partial: Embeds FilterChips +
-  SmartLinks search (batch 80).
+  SmartLinks search (batch 80); Media kind chips + SmartLinks DSP chips + load
+  `PageError` (batch 81). Shared row still open.
 
 ## Shared surfaces (de-duplication)
 

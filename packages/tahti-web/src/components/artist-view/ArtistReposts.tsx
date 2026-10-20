@@ -6,22 +6,39 @@ import { MediaArtwork } from '@tahti-player/ui';
 
 import { fetchUserReposts, type RepostedTrack } from '../../api/user-reposts';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
+import { PageError } from '../PageStates';
 import { Eyebrow } from '../tahti/Eyebrow';
 
 export function ArtistReposts({ username }: { username: string }) {
   const [items, setItems] = useState<RepostedTrack[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    setLoadError(null);
     void fetchUserReposts(username).then((result) => {
       if (!cancelled) {
+        setLoadError(
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+        );
         setItems(result.data);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [username]);
+  }, [username, reloadKey]);
+
+  if (loadError) {
+    return (
+      <PageError
+        title="Could not load reposts"
+        description={loadError}
+        onRetry={() => setReloadKey((key) => key + 1)}
+      />
+    );
+  }
 
   if (items.length === 0) {
     return null;

@@ -40,6 +40,7 @@ function hasDetails(profile: AssociationProfile): boolean {
 export function AssociationPanel() {
   const [profile, setProfile] = useState<AssociationProfile | null>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'failed'>('loading');
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -50,6 +51,9 @@ export function AssociationPanel() {
         return;
       }
       setProfile(result.data);
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setState(result.data ? 'ready' : 'failed');
     });
     return () => {
@@ -64,6 +68,7 @@ export function AssociationPanel() {
       ) : state === 'failed' || !profile ? (
         <PageError
           title="Could not load the association's details"
+          description={loadError ?? undefined}
           onRetry={() => setAttempt((n) => n + 1)}
         />
       ) : (

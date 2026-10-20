@@ -29,6 +29,7 @@ import {
 import type { StudioCollection, StudioSound } from '../api/studio-types';
 import { usePlayerStore } from '../stores/playerStore';
 import { ConfirmDialog } from './ConfirmDialog';
+import { PageError } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 const EXPIRY_OPTIONS = [1, 3, 7, 30, 0] as const;
@@ -67,24 +68,44 @@ export const StashFilesPanel = ({
   const [soundItems, setSoundItems] = useState<StudioSound[]>([]);
   const [collections, setCollections] = useState<StudioCollection[]>([]);
   const [pendingDelete, setPendingDelete] = useState<StashFile | null>(null);
+  const [filesError, setFilesError] = useState<string | null>(null);
+  const [moveListsError, setMoveListsError] = useState<string | null>(null);
+  const [moveListsAttempt, setMoveListsAttempt] = useState(0);
 
   const reload = () =>
     fetchStashFiles().then((result) => {
       setFiles(result.data);
+      setFilesError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
     });
 
   useEffect(() => {
     void reload();
+  }, []);
+
+  useEffect(() => {
     if (filesOnly) {
       return;
     }
+    let cancelled = false;
     void Promise.all([fetchStudioSounds(), fetchStudioCollections()]).then(
       ([soundResult, collectionResult]) => {
+        if (cancelled) {
+          return;
+        }
         setSoundItems(soundResult.data);
         setCollections(collectionResult.data);
+        const failed = [soundResult.meta, collectionResult.meta].find(
+          (meta) => meta.source === 'api' && meta.reason,
+        );
+        setMoveListsError(failed?.reason ?? null);
       },
     );
-  }, [filesOnly]);
+    return () => {
+      cancelled = true;
+    };
+  }, [filesOnly, moveListsAttempt]);
 
   const moveTrackToStash = async (item: StudioSound) => {
     setBusy(true);
@@ -201,7 +222,15 @@ export const StashFilesPanel = ({
           title="Add from your library"
           description="Move tracks and collections into your private stash. Private items are removed from public listings."
         >
-          {soundItems.length === 0 && collections.length === 0 ? (
+          {moveListsError &&
+          soundItems.length === 0 &&
+          collections.length === 0 ? (
+            <PageError
+              title="Could not load your library"
+              description={moveListsError}
+              onRetry={() => setMoveListsAttempt((current) => current + 1)}
+            />
+          ) : soundItems.length === 0 && collections.length === 0 ? (
             <EmptyState
               size="sm"
               title="Nothing to move"
@@ -258,7 +287,13 @@ export const StashFilesPanel = ({
       ) : null}
 
       <StudioPanel>
-        {files.length === 0 ? (
+        {filesError && files.length === 0 ? (
+          <PageError
+            title="Could not load stash files"
+            description={filesError}
+            onRetry={() => void reload()}
+          />
+        ) : files.length === 0 ? (
           <EmptyState size="sm" title="No stash files yet" />
         ) : (
           <ul className="divide-border divide-y">

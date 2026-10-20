@@ -76,4 +76,14 @@ describe('ArtistLikes', () => {
     await renderLikes({ showLikes: true, data: [], meta: { source: 'api' } });
     expect(screen.queryByText('Liked tracks')).toBeNull();
   });
+
+  it('shows an error instead of hiding when the likes fail to load', async () => {
+    await renderLikes({
+      showLikes: false,
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    expect(await screen.findByText('Could not load liked tracks')).toBeTruthy();
+    expect(screen.getByText('HTTP 502')).toBeTruthy();
+  });
 });

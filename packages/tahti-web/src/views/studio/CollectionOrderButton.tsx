@@ -12,11 +12,14 @@ export function CollectionOrderButton() {
   const [open, setOpen] = useState(false);
 
   const load = useCallback(async () => {
-    const { data } = await fetchStudioCollections();
-    return publicCollectionsInProfileOrder(data).map((c) => ({
-      id: c.slug,
-      title: c.name,
-    }));
+    const { data, meta } = await fetchStudioCollections();
+    return {
+      items: publicCollectionsInProfileOrder(data).map((c) => ({
+        id: c.slug,
+        title: c.name,
+      })),
+      error: meta.source === 'api' ? (meta.reason ?? null) : null,
+    };
   }, []);
 
   return (

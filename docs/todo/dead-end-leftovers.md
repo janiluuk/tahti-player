@@ -37,22 +37,14 @@ that tahti-web can fix on its own (see HISTORY). These need someone else first.
 
 ## Left after batch 76 (failed loads still shown as empty)
 
-Low-impact or owned by another session's open work; same `meta.reason` → `PageError` fix:
-
-- `useStudioHome` (motions / feature requests / broadcasts), `PlayableTrackContextMenu`,
-  `ChannelPlaylistPicker`, `CollectionOrderButton`, `HearthisCard`, `StashFilesPanel`
-  collections and sounds, `ReleaseOpsPanel` royalties, `RecordedAtVenuePicker`.
-- `MeetingAgendaItems` falls back to the legacy agenda on any failure (keep the fallback for
-  servers without the route; only show an error for non-404 failures).
-- `RadioShowView` now-playing / upcoming (polled; hides on failure), `ArtistLikes` and
-  `SubscribedCollections` (hidden on failure), `DeliveryTab` platform modes.
+- [x] Batch 81: `useStudioHome` section errors, pickers (`PlayableTrackContextMenu`,
+  `ChannelPlaylistPicker`, `CollectionOrderButton`), `HearthisCard`, `StashFilesPanel`,
+  `ReleaseOpsPanel` royalties, `RecordedAtVenuePicker`, `MeetingAgendaItems` (non-404),
+  `RadioShowView` initial vs poll, `ArtistLikes` / upcoming / reposts / news,
+  `SubscribedCollections`, `DeliveryTab` platform modes, ArtistPanel Connections,
+  `NotificationsVisibilityPanel`, StudioCollections Play toast, stream Apply refetch.
 - `show-detail/useShowDetail.ts` episodes and bookings — another session's batch 4 edits
-  `EpisodesTab` / `OverviewTab`.
-- `ArtistPanel` social connections and `NotificationsVisibilityPanel` (profile toggles show
-  off on failure).
-- `StudioCollectionsView` row Play says "Nothing in this collection can play yet" when the
-  fetch failed; stream manager "Apply to rotation" refetch says "no tracks" (it aborts, so
-  no data loss).
+  `EpisodesTab` / `OverviewTab` (still open if those tabs hide failures).
 
 ## Checked and fine
 

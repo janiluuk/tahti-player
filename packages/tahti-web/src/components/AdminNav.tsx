@@ -364,7 +364,7 @@ export function AdminNav({
       {menu}
     </>
   ) : (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3" data-testid="admin-page-layout">
       {tabs}
       {menu}
     </div>

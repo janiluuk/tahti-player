@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { toast } from 'sonner';
 
 import {
   fetchRecentBroadcasts,
@@ -9,6 +8,7 @@ import {
   fetchFeatureRequests,
   fetchGovernanceMotions,
 } from '../../../api/client';
+import type { FetchMeta } from '../../../api/mode';
 import { fetchShowSchedule, type ScheduledShow } from '../../../api/shows';
 import {
   fetchStudioCollectionCount,
@@ -24,6 +24,10 @@ import { hasStudioAccess } from '../../../lib/accountRoles';
 import { useAuthStore } from '../../../stores/authStore';
 import { useChannelSetupModalStore } from '../../../stores/channelSetupModalStore';
 import { Counts, EMPTY_STATS } from './home-helpers';
+
+function apiErrorReason(meta: FetchMeta): string | null {
+  return meta.source === 'api' ? (meta.reason ?? null) : null;
+}
 
 /** Loads and derives every number/list shown on the Studio home dashboard. */
 export function useStudioHome() {
@@ -47,6 +51,12 @@ export function useStudioHome() {
     FeatureRequest[]
   >([]);
   const [discographyLoaded, setDiscographyLoaded] = useState(false);
+  const [broadcastsError, setBroadcastsError] = useState<string | null>(null);
+  const [scheduleError, setScheduleError] = useState<string | null>(null);
+  const [statsError, setStatsError] = useState<string | null>(null);
+  const [governanceError, setGovernanceError] = useState<string | null>(null);
+  const [overviewAttempt, setOverviewAttempt] = useState(0);
+  const [governanceAttempt, setGovernanceAttempt] = useState(0);
   const autoPromptedChannelSetup = useRef(false);
 
   useEffect(() => {
@@ -104,25 +114,57 @@ export function useStudioHome() {
               ),
           );
           setRecentBroadcasts(broadcasts.data);
-          // Only after a successful load: a failure must not look like an empty
-          // discography.
-          setDiscographyLoaded(true);
+          setStatsError(apiErrorReason(summary.meta));
+          setScheduleError(apiErrorReason(showSchedule.meta));
+          setBroadcastsError(apiErrorReason(broadcasts.meta));
+          setDiscographyLoaded(
+            !apiErrorReason(soundCount.meta) &&
+              !apiErrorReason(collectionCount.meta) &&
+              !apiErrorReason(releases.meta),
+          );
         },
       )
-      // The dashboard still renders its tiles if a summary request fails.
-      .catch(() => toast.error('Could not load your studio overview.'));
-    Promise.all([fetchGovernanceMotions({ limit: 10 }), fetchFeatureRequests()])
-      .then(([motionsResult, requestsResult]) => {
-        if (!cancelled) {
-          setGovernanceMotions(motionsResult.data);
-          setGovernanceRequests(requestsResult.data);
+      .catch(() => {
+        if (cancelled) {
+          return;
         }
-      })
-      .catch(() => undefined);
+        const message = 'Could not load your studio overview.';
+        setStatsError(message);
+        setScheduleError(message);
+        setBroadcastsError(message);
+        setDiscographyLoaded(false);
+      });
     return () => {
       cancelled = true;
     };
-  }, [user?.channel]);
+  }, [user?.channel, overviewAttempt]);
+
+  useEffect(() => {
+    if (!user?.channel) {
+      return;
+    }
+    let cancelled = false;
+    Promise.all([fetchGovernanceMotions({ limit: 10 }), fetchFeatureRequests()])
+      .then(([motionsResult, requestsResult]) => {
+        if (cancelled) {
+          return;
+        }
+        setGovernanceMotions(motionsResult.data);
+        setGovernanceRequests(requestsResult.data);
+        setGovernanceError(
+          apiErrorReason(motionsResult.meta) ??
+            apiErrorReason(requestsResult.meta),
+        );
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setGovernanceError('Could not load governance.');
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.channel, governanceAttempt]);
 
   const channel = user?.channel;
   const hasEmptyDiscography =
@@ -166,6 +208,12 @@ export function useStudioHome() {
     governanceVotes,
     unresolvedRequests,
     discussionUpdates,
+    broadcastsError,
+    scheduleError,
+    statsError,
+    governanceError,
+    reloadOverview: () => setOverviewAttempt((attempt) => attempt + 1),
+    reloadGovernance: () => setGovernanceAttempt((attempt) => attempt + 1),
   };
 }
 

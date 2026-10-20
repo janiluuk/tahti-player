@@ -20,7 +20,7 @@ function formatDay(iso: string): string {
 /** Who sits on the board today, chair first (GET /api/v1/governance/board). */
 export function CurrentBoardPanel() {
   const [seats, setSeats] = useState<BoardSeat[] | null>(null);
-  const [failed, setFailed] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -30,7 +30,9 @@ export function CurrentBoardPanel() {
         return;
       }
       setSeats(result.data);
-      setFailed(result.meta.source === 'api' && Boolean(result.meta.reason));
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
     });
     return () => {
       cancelled = true;
@@ -41,9 +43,10 @@ export function CurrentBoardPanel() {
     <GovernancePanel title="Board" icon={ShieldCheckIcon}>
       {seats === null ? (
         <p className="text-foreground-secondary text-sm">Loading the board…</p>
-      ) : failed ? (
+      ) : loadError ? (
         <PageError
           title="Could not load the board"
+          description={loadError}
           onRetry={() => setAttempt((n) => n + 1)}
         />
       ) : seats.length === 0 ? (

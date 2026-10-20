@@ -31,7 +31,7 @@ function reportDetails(report: PublishedAnnualReport): string {
  * (GET /api/v1/governance/annual-reports). */
 export function AnnualReportsPanel() {
   const [reports, setReports] = useState<PublishedAnnualReport[] | null>(null);
-  const [failed, setFailed] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -41,7 +41,9 @@ export function AnnualReportsPanel() {
         return;
       }
       setReports(result.data);
-      setFailed(result.meta.source === 'api' && Boolean(result.meta.reason));
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
     });
     return () => {
       cancelled = true;
@@ -54,9 +56,10 @@ export function AnnualReportsPanel() {
         <p className="text-foreground-secondary text-sm">
           Loading annual reports…
         </p>
-      ) : failed ? (
+      ) : loadError ? (
         <PageError
           title="Could not load the annual reports"
+          description={loadError}
           onRetry={() => setAttempt((n) => n + 1)}
         />
       ) : reports.length === 0 ? (

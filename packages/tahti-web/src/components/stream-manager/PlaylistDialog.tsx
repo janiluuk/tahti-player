@@ -40,10 +40,10 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
                 size="flexible"
                 key={collection.slug}
                 type="button"
-                className={`inline-block rounded-md px-3 py-2 text-left text-sm whitespace-normal active:scale-100 ${
+                className={`inline-block rounded-md border px-3 py-2 text-left text-sm whitespace-normal active:scale-100 ${
                   selectedCollectionSlug === collection.slug
-                    ? 'bg-primary text-primary-foreground'
-                    : 'hover:bg-background-secondary'
+                    ? 'border-accent-cyan bg-foreground/10'
+                    : 'hover:bg-background-secondary border-transparent'
                 }`}
                 onClick={() => void previewCollection(collection.slug)}
               >

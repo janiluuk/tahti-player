@@ -1,3 +1,10 @@
+## 2026-10-20 — UX batch 81 (dead-end honesty + library chips)
+
+Studio home / pickers / artist satellites / governance panels show `PageError`
+instead of empty-or-hidden on API fail; Library Media + SmartLinks FilterChips;
+Admin grant breadcrumb + chrome `data-testid`s; light de-green. Bumped to
+`0.0.235`.
+
 ## 2026-10-20 — AmbientTrackList on Library Sounds
 
 `AmbientTrackList` listing with Large/Medium/Small size control (persisted)

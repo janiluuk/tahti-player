@@ -124,10 +124,17 @@ export function NotificationsPanel() {
 export function NotificationsVisibilityPanel() {
   const [profile, setProfile] = useState<ProfileFields | null>(null);
   const [savingKey, setSavingKey] = useState<keyof ProfileFields | null>(null);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [profileAttempt, setProfileAttempt] = useState(0);
 
   useEffect(() => {
-    void fetchMeProfile().then((result) => setProfile(result.data));
-  }, []);
+    void fetchMeProfile().then((result) => {
+      const reason =
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
+      setProfileError(reason);
+      setProfile(reason ? null : result.data);
+    });
+  }, [profileAttempt]);
 
   const updateVisibility = (
     key:
@@ -190,7 +197,16 @@ export function NotificationsVisibilityPanel() {
           Choose what appears publicly on your profile and channel.
         </p>
       </div>
-      {!profile ? (
+      {!profile && profileError ? (
+        <PageError
+          title="Could not load your visibility settings"
+          description={profileError}
+          onRetry={() => {
+            setProfileError(null);
+            setProfileAttempt((n) => n + 1);
+          }}
+        />
+      ) : !profile ? (
         <SettingsHint>Loading…</SettingsHint>
       ) : (
         <div className="flex flex-col gap-4">

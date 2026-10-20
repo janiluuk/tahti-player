@@ -522,6 +522,16 @@ export function StudioCollectionsView() {
                           setPlayingSlug(c.slug);
                           void fetchStudioCollection(c.slug).then((res) => {
                             setPlayingSlug(null);
+                            const loadReason =
+                              res.meta.source === 'api'
+                                ? (res.meta.reason ?? null)
+                                : null;
+                            if (loadReason) {
+                              toast.error(
+                                `Could not load collection: ${loadReason}`,
+                              );
+                              return;
+                            }
                             const playables = (res.data.items ?? [])
                               .map((item) =>
                                 collectionItemPlayable(item, 'You'),

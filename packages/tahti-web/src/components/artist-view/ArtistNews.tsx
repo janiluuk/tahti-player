@@ -7,6 +7,7 @@ import {
   fetchArtistNewsFeed,
   type ArtistNewsItem,
 } from '../../api/artist-news';
+import { PageError } from '../PageStates';
 import { Eyebrow } from '../tahti/Eyebrow';
 
 const formatDate = (iso: string) => {
@@ -28,18 +29,34 @@ export function ArtistNews({
   username: string;
 }) {
   const [feed, setFeed] = useState<ArtistNewsItem[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    setLoadError(null);
     void fetchArtistNewsFeed(username).then((result) => {
       if (!cancelled) {
+        setLoadError(
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+        );
         setFeed(result.data);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [username]);
+  }, [username, reloadKey]);
+
+  if (loadError && news.length === 0 && feed.length === 0) {
+    return (
+      <PageError
+        title="Could not load news"
+        description={loadError}
+        onRetry={() => setReloadKey((key) => key + 1)}
+      />
+    );
+  }
 
   if (news.length === 0 && feed.length === 0) {
     return null;

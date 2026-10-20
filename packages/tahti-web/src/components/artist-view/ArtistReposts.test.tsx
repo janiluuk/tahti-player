@@ -68,4 +68,25 @@ describe('ArtistReposts', () => {
     await renderReposts([]);
     expect(screen.queryByText('Reposts')).toBeNull();
   });
+
+  it('shows an error instead of hiding when reposts fail to load', async () => {
+    vi.mocked(fetchUserReposts).mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await act(async () => {
+      render(
+        <RouterProvider
+          router={createRouter({
+            routeTree: createRootRoute({
+              component: () => <ArtistReposts username="selector" />,
+            }),
+            history: createMemoryHistory({ initialEntries: ['/'] }),
+          })}
+        />,
+      );
+    });
+    expect(screen.getByText('Could not load reposts')).toBeTruthy();
+    expect(screen.getByText('HTTP 502')).toBeTruthy();
+  });
 });

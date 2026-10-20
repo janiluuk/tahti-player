@@ -594,7 +594,10 @@ export function AppShell() {
 
   return (
     <HearthisEmbedHostProvider>
-      <PlayerShell className={isMobile ? 'tahti-mobile-shell' : undefined}>
+      <PlayerShell
+        data-testid="listen-shell"
+        className={isMobile ? 'tahti-mobile-shell' : undefined}
+      >
         <SkipToContent />
         {!fullScreenPlayerOpen && (
           <AppTopNav

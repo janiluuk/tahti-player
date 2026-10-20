@@ -46,12 +46,18 @@ export function RecordedAtVenuePicker({
     venueOptions([], current),
   );
 
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   useEffect(() => {
     let cancelled = false;
     void Promise.all([fetchVenues(), fetchMyVenues()]).then(
       ([publicVenues, myVenues]) => {
         if (!cancelled) {
           setOptions(venueOptions([publicVenues.data, myVenues.data], current));
+          const failed = [publicVenues.meta, myVenues.meta].find(
+            (meta) => meta.source === 'api' && meta.reason,
+          );
+          setLoadError(failed?.reason ?? null);
         }
       },
     );
@@ -69,6 +75,11 @@ export function RecordedAtVenuePicker({
         onValueChange={(next) => onChange(next === NONE ? null : next)}
         options={[{ id: NONE, label: 'No venue' }, ...options]}
       />
+      {loadError ? (
+        <p className="text-accent-red-strong mt-1 text-xs" role="status">
+          Could not load all venues: {loadError}
+        </p>
+      ) : null}
     </div>
   );
 }

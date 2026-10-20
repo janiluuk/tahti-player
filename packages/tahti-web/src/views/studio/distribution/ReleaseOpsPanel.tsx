@@ -56,6 +56,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
   const [billing, setBilling] = useState<RevelatorBillingStatus | null>(null);
   const [royalties, setRoyalties] = useState<RevelatorRoyaltyReportRow[]>([]);
   const [royaltiesLoaded, setRoyaltiesLoaded] = useState(false);
+  const [royaltiesError, setRoyaltiesError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [confirmSubmit, setConfirmSubmit] = useState(false);
@@ -122,6 +123,9 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
     }
     void fetchReleaseRoyalties(release.id).then((r) => {
       setRoyalties(r.data);
+      setRoyaltiesError(
+        r.meta.source === 'api' ? (r.meta.reason ?? null) : null,
+      );
       setRoyaltiesLoaded(true);
     });
   }, [open, showRoyalties, royaltiesLoaded, release.id]);
@@ -432,6 +436,8 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
       showRoyalties={showRoyalties}
       royaltiesLoaded={royaltiesLoaded}
       royalties={royalties}
+      royaltiesError={royaltiesError}
+      onRetryRoyalties={() => setRoyaltiesLoaded(false)}
     />
   );
 

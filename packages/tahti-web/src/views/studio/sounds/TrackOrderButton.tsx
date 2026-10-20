@@ -14,10 +14,13 @@ export function TrackOrderButton() {
 
   const load = useCallback(async () => {
     if (!username) {
-      return [];
+      return { items: [], error: null };
     }
-    const { data } = await fetchProfile(username);
-    return data.tracks.map((track) => ({ id: track.id, title: track.title }));
+    const { data, meta } = await fetchProfile(username);
+    return {
+      items: data.tracks.map((track) => ({ id: track.id, title: track.title })),
+      error: meta.source === 'api' ? (meta.reason ?? null) : null,
+    };
   }, [username]);
 
   if (!username) {

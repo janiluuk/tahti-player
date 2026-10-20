@@ -1,11 +1,29 @@
 import { Link } from '@tanstack/react-router';
 
-import { PageEmpty } from '../../../components/PageStates';
+import { PageEmpty, PageError } from '../../../components/PageStates';
 import { Group } from './HomeTiles';
 import type { StudioHomeState } from './useStudioHome';
 
 export function GovernanceSection({ state }: { state: StudioHomeState }) {
-  const { governanceVotes, unresolvedRequests, discussionUpdates } = state;
+  const {
+    governanceVotes,
+    unresolvedRequests,
+    discussionUpdates,
+    governanceError,
+    reloadGovernance,
+  } = state;
+
+  if (governanceError) {
+    return (
+      <Group title="Governance">
+        <PageError
+          title="Could not load governance"
+          description={governanceError}
+          onRetry={reloadGovernance}
+        />
+      </Group>
+    );
+  }
 
   return (
     <Group title="Governance">

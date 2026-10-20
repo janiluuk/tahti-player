@@ -34,6 +34,7 @@ import {
 import type { StudioCollection, StudioRelease } from '../api/studio-types';
 import { usePlayerStore } from '../stores/playerStore';
 import { ChannelRotationEditor } from './ChannelRotationEditor';
+import { PageError } from './PageStates';
 import { ReleaseTracksToRotation } from './ReleaseTracksToRotation';
 
 const isPlaylist = (collection: StudioCollection) =>
@@ -43,6 +44,7 @@ const isPlaylist = (collection: StudioCollection) =>
 
 export const ChannelRadioPlaylistPanel: FC = () => {
   const [programme, setProgramme] = useState<ProgrammeView | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [playlists, setPlaylists] = useState<StudioCollection[]>([]);
   const [selectedSlug, setSelectedSlug] = useState('');
   const [fallbackEnabled, setFallbackEnabled] = useState(false);
@@ -87,6 +89,16 @@ export const ChannelRadioPlaylistPanel: FC = () => {
       fetchStudioReleases(),
     ]).then(
       ([programmeResult, collectionResult, soundResult, releaseResult]) => {
+        const reason =
+          [programmeResult, collectionResult, soundResult, releaseResult]
+            .map((result) =>
+              result.meta.source === 'api' ? result.meta.reason : undefined,
+            )
+            .find(Boolean) ?? null;
+        setLoadError(reason);
+        if (reason) {
+          return;
+        }
         applyProgramme(programmeResult.data);
         setLibraryItems(
           soundResult.data
@@ -319,6 +331,16 @@ export const ChannelRadioPlaylistPanel: FC = () => {
     setPendingAdd(null);
     await saveRotation(next);
   };
+
+  if (loadError && !programme) {
+    return (
+      <PageError
+        title="Could not load the 24/7 programme"
+        description={loadError}
+        onRetry={reload}
+      />
+    );
+  }
 
   return (
     <section className="border-border bg-background-secondary/40 overflow-hidden rounded-xl border shadow-sm">
