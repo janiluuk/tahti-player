@@ -9,8 +9,16 @@ vi.mock('@tanstack/react-router', () => ({
   useRouterState: ({
     select,
   }: {
-    select: (state: { location: { searchStr: string } }) => string;
-  }) => select({ location: { searchStr: window.location.search } }),
+    select: (state: {
+      location: { searchStr: string; pathname: string };
+    }) => string;
+  }) =>
+    select({
+      location: {
+        searchStr: window.location.search,
+        pathname: window.location.pathname,
+      },
+    }),
 }));
 
 describe('SettingsView', () => {
@@ -19,6 +27,7 @@ describe('SettingsView', () => {
     window.history.replaceState(null, '', '/');
     useSettingsModalStore.setState({
       isOpen: false,
+      dismissRouteOpen: false,
       artistSection: null,
       accountSection: null,
     });
@@ -58,5 +67,20 @@ describe('SettingsView', () => {
     expect(state.isOpen).toBe(true);
     expect(state.activeTab).toBe('artist');
     expect(state.artistSection).toBe('connections');
+  });
+
+  it('does not reopen while a close is navigating away from /settings', () => {
+    window.history.replaceState(null, '', '/');
+    render(<SettingsView sectionId="account" />);
+
+    expect(useSettingsModalStore.getState().isOpen).toBe(false);
+  });
+
+  it('stays closed after Close while the URL is still /settings', () => {
+    window.history.replaceState(null, '', '/settings/account');
+    useSettingsModalStore.getState().close();
+    render(<SettingsView sectionId="account" />);
+
+    expect(useSettingsModalStore.getState().isOpen).toBe(false);
   });
 });
