@@ -1,7 +1,8 @@
 /// <reference types="vite/client" />
 import type { Decorator, Preview } from '@storybook/react-vite';
-import { MotionConfig } from 'motion/react';
+import { MotionConfig, MotionGlobalConfig } from 'motion/react';
 import { createElement } from 'react';
+import { configure } from 'storybook/test';
 
 import '@fontsource/dm-sans/400.css';
 import '@fontsource/dm-sans/700.css';
@@ -34,6 +35,12 @@ if (import.meta.env.VITEST) {
   style.textContent =
     '*,*::before,*::after{transition-duration:0s!important;transition-delay:0s!important;animation-duration:0s!important;animation-delay:0s!important;animation-iteration-count:1!important;}';
   document.head.appendChild(style);
+  // MotionConfig reducedMotion only drops transforms, and components that
+  // read useReducedMotion() ignore it, so opacity fades still started at 0.
+  MotionGlobalConfig.skipAnimations = true;
+  // Two story files share a busy runner; the 1s default made findBy*
+  // time out on data that was a moment away.
+  configure({ asyncUtilTimeout: 5000 });
 }
 
 const withReducedMotion: Decorator = (Story) =>
