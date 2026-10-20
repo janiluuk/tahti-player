@@ -1,20 +1,27 @@
 import { useRouterState } from '@tanstack/react-router';
 import {
+  BarChart3Icon,
+  BookOpenIcon,
   CalendarDaysIcon,
   CalendarIcon,
   CastIcon,
   CreditCardIcon,
   Disc3Icon,
+  FileTextIcon,
   HeartIcon,
   KeyRoundIcon,
   LandmarkIcon,
   LayersIcon,
+  LayoutDashboardIcon,
   LayoutGridIcon,
+  LightbulbIcon,
   ListMusicIcon,
+  ListOrderedIcon,
   MicIcon,
   NewspaperIcon,
   RadioIcon,
   RadioTowerIcon,
+  SendIcon,
   Settings2Icon,
   Share2Icon,
   SlidersHorizontalIcon,
@@ -169,6 +176,106 @@ export const AUDIENCE_SUBNAV_ITEMS = [
     stripeOnly: true,
   },
 ] as const;
+
+/** Stats, Governance and Posts keep their page tabs in `?tab=`, so they sit
+ * in the same nested strip as Broadcast and Audience instead of in-page. */
+export const STATS_SUBNAV_ITEMS = [
+  {
+    to: '/studio/stats',
+    labelKey: 'studio.overview' as const,
+    icon: <LayoutDashboardIcon size={16} />,
+  },
+  {
+    to: '/studio/stats?tab=plays',
+    labelKey: 'studio.playsListeners' as const,
+    icon: <BarChart3Icon size={16} />,
+  },
+  {
+    to: '/studio/stats?tab=top-lists',
+    labelKey: 'studio.topLists' as const,
+    icon: <ListOrderedIcon size={16} />,
+  },
+] as const;
+
+export const GOVERNANCE_SUBNAV_ITEMS = [
+  {
+    to: '/studio/governance',
+    labelKey: 'studio.motions' as const,
+    icon: <LandmarkIcon size={16} />,
+  },
+  {
+    to: '/studio/governance?tab=topics',
+    labelKey: 'studio.topics' as const,
+    icon: <LightbulbIcon size={16} />,
+  },
+  {
+    to: '/studio/governance?tab=documents',
+    labelKey: 'studio.documents' as const,
+    icon: <FileTextIcon size={16} />,
+  },
+  {
+    to: '/studio/governance?tab=guide',
+    labelKey: 'studio.guide' as const,
+    icon: <BookOpenIcon size={16} />,
+  },
+] as const;
+
+export const UPDATES_SUBNAV_ITEMS = [
+  {
+    to: '/studio/updates',
+    labelKey: 'studio.posts' as const,
+    icon: <NewspaperIcon size={16} />,
+  },
+  {
+    to: '/studio/updates?tab=newsletter',
+    labelKey: 'studio.newsletter' as const,
+    icon: <SendIcon size={16} />,
+  },
+] as const;
+
+const TAB_SUBNAV_GROUPS = [
+  { path: '/studio/stats', label: 'Stats pages', items: STATS_SUBNAV_ITEMS },
+  {
+    path: '/studio/governance',
+    label: 'Governance pages',
+    items: GOVERNANCE_SUBNAV_ITEMS,
+  },
+  {
+    path: '/studio/updates',
+    label: 'Posts pages',
+    items: UPDATES_SUBNAV_ITEMS,
+  },
+] as const;
+
+const tabParam = (url: string | undefined) => {
+  const tab = new URLSearchParams(url?.split('?')[1] ?? '').get('tab');
+  return tab === 'feature-requests' ? 'topics' : tab;
+};
+
+export const isTabSubnavActive = (current: string | undefined, to: string) =>
+  current?.split('?')[0] === to.split('?')[0] &&
+  tabParam(current) === tabParam(to);
+
+function TabSubNav({ current }: { current?: string }) {
+  const { t } = useTranslation('web');
+  const pathname = current?.split('?')[0];
+  const group = TAB_SUBNAV_GROUPS.find((item) => item.path === pathname);
+  if (!group) {
+    return null;
+  }
+  return (
+    <SectionTabs
+      aria-label={group.label}
+      items={group.items.map((item) => ({
+        id: item.to,
+        to: item.to,
+        label: t(item.labelKey),
+        icon: item.icon,
+        active: isTabSubnavActive(current, item.to),
+      }))}
+    />
+  );
+}
 
 export const STUDIO_NAV_TOUR_STEPS: TourStep[] = PRIMARY.map(
   (item): TourStep => ({
@@ -535,6 +642,7 @@ function StudioNavigation({ current }: { current?: string }) {
           <BroadcastSubNav current={current} />
         ) : null}
         {showAudience ? <AudienceSubNav current={current} /> : null}
+        <TabSubNav current={current} />
       </div>
     </div>
   );

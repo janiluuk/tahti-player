@@ -1,7 +1,6 @@
 import {
   CalendarClockIcon,
   EyeIcon,
-  NewspaperIcon,
   PencilIcon,
   PlusIcon,
   SendIcon,
@@ -15,8 +14,6 @@ import {
   Dialog,
   EmptyState,
   ImageReveal,
-  TabLabel,
-  Tabs,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -41,10 +38,13 @@ import { NewsletterSubscriberStats } from './updates/NewsletterSubscriberStats';
 import { PostDialog } from './updates/PostDialog';
 import { PostPreview } from './updates/PostPreview';
 
-type Tab = 'posts' | 'newsletter';
+export type StudioUpdatesTab = 'posts' | 'newsletter';
 
-export function StudioUpdatesView() {
-  const [tab, setTab] = useState<Tab>('posts');
+export function StudioUpdatesView({
+  tab = 'posts',
+}: {
+  tab?: StudioUpdatesTab;
+}) {
   const [posts, setPosts] = useState<ArtistPost[]>([]);
   const [drafts, setDrafts] = useState<NewsletterDraft[]>([]);
   const [msg, setMsg] = useState<string | null>(null);
@@ -134,19 +134,6 @@ export function StudioUpdatesView() {
             onRetry={reload}
           />
         ) : null}
-        <Tabs.Root
-          selectedIndex={tab === 'posts' ? 0 : 1}
-          onChange={(index) => setTab(index === 0 ? 'posts' : 'newsletter')}
-        >
-          <Tabs.List>
-            <Tabs.Tab>
-              <TabLabel icon={<NewspaperIcon size={14} />}>Posts</TabLabel>
-            </Tabs.Tab>
-            <Tabs.Tab>
-              <TabLabel icon={<SendIcon size={14} />}>Newsletter</TabLabel>
-            </Tabs.Tab>
-          </Tabs.List>
-        </Tabs.Root>
         <ViewShell
           title="Updates"
           classes={{ root: 'px-0 pt-0' }}

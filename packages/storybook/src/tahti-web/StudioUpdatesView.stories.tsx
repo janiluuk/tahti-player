@@ -4,7 +4,7 @@ import { expect, userEvent, within } from 'storybook/test';
 
 import { withToaster } from './_fixtures/track-release';
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
-import { expectNoDialog, findToast, selectTab, withinBody } from './_lib/play';
+import { expectNoDialog, findToast, withinBody } from './_lib/play';
 
 const meta: Meta<typeof StudioUpdatesView> = {
   title: 'Tahti/Studio/StudioUpdatesView',
@@ -32,9 +32,9 @@ export const Default: Story = {};
 
 export const NewsletterSendConfirmation: Story = {
   name: 'Newsletter send confirmation (mock toast)',
+  args: { tab: 'newsletter' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await selectTab(canvas, 'Newsletter');
     const send = await canvas.findByRole('button', { name: /^Send$/ });
     await userEvent.click(send);
     const body = withinBody(canvasElement);
