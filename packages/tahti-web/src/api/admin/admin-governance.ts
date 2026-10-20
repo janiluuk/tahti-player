@@ -5,6 +5,7 @@ import {
   apiErrorMeta,
   failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '../mode';
 import type {
   BoardResolution,
@@ -65,7 +66,7 @@ export async function fetchAdminGovernanceOverview(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockGovernanceOverview(), meta: failMeta(err) };
+      return { data: mockGovernanceOverview(), meta: mockFallbackMeta(err) };
     }
     return {
       data: {

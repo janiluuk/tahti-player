@@ -1847,7 +1847,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
       {
         id: 'artist-money-tiers',
         title: 'Fan tiers / money',
-        viewName: 'Money',
+        viewName: 'Revenue',
         caption: 'Configure fan subscription tiers + Connect.',
         actions: [
           'Create/edit a fan tier',

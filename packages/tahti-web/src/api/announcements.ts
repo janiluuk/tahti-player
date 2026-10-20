@@ -4,7 +4,12 @@ import {
 } from '../lib/audioFileDuration';
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
-import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import {
+  allowMockFallback,
+  apiErrorMeta,
+  isForceMock,
+  mockFallbackMeta,
+} from './mode';
 import { requestJson as requestApiJson } from './request-json';
 
 export type AnnouncementClip = {
@@ -149,7 +154,7 @@ export async function fetchAnnouncementClips(): Promise<{
     return { data: data.clips, meta: { source: 'api' } };
   } catch (error) {
     if (allowMockFallback()) {
-      return { data: [...mockClips], meta: failMeta(error) };
+      return { data: [...mockClips], meta: mockFallbackMeta(error) };
     }
     return { data: [], meta: apiErrorMeta(error) };
   }

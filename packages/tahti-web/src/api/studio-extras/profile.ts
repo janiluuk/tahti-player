@@ -4,8 +4,8 @@ import { setMockFreeSubscriptionsEnabled } from '.././mock-profile-preferences';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
 
@@ -94,7 +94,7 @@ export async function fetchMeProfile(): Promise<{
     if (allowMockFallback()) {
       return {
         data: { ...mockProfile, username: 'unknown' },
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     return {

@@ -1,8 +1,8 @@
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
   type FetchMeta,
 } from './mode';
 import { requestJson } from './request-json';
@@ -44,7 +44,7 @@ type ActionResult<T = void> =
   { error: null; data: T } | { error: string; data?: undefined };
 
 function emptyMeta(err: unknown): FetchMeta {
-  return allowMockFallback() ? failMeta(err) : apiErrorMeta(err);
+  return allowMockFallback() ? mockFallbackMeta(err) : apiErrorMeta(err);
 }
 
 export async function fetchDiscoWidgetStore(scope: DiscoWidgetScope): Promise<{

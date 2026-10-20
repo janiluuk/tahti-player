@@ -1,6 +1,11 @@
 import type { FetchMeta } from './client';
 import { mockFixture } from './mock-overrides';
-import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import {
+  allowMockFallback,
+  apiErrorMeta,
+  isForceMock,
+  mockFallbackMeta,
+} from './mode';
 import { requestJson, RequestJsonError } from './request-json';
 
 export type ChannelStaffRole = 'owner' | 'moderator';
@@ -160,7 +165,7 @@ export async function fetchConversations(): Promise<{
     if (allowMockFallback()) {
       return {
         data: mockFixture('conversations', [...mockConversations]),
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     return { data: [], meta: apiErrorMeta(err) };
@@ -195,7 +200,7 @@ export async function fetchConversation(
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockConversationDetail(id), meta: failMeta(err) };
+      return { data: mockConversationDetail(id), meta: mockFallbackMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
   }
@@ -360,7 +365,7 @@ export async function searchUsers(q: string): Promise<{
     if (allowMockFallback()) {
       return {
         data: mockSearchUsers(q),
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     return { data: [], meta: apiErrorMeta(err) };

@@ -11,6 +11,7 @@ import {
   apiErrorMeta,
   failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '../mode';
 
 // ── Radio ops ───────────────────────────────────────────────────────────────
@@ -195,7 +196,7 @@ export async function fetchAdminRadio(): Promise<{
     };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockRadioAdmin(), meta: failMeta(err) };
+      return { data: mockRadioAdmin(), meta: mockFallbackMeta(err) };
     }
     return {
       data: {

@@ -15,7 +15,12 @@ import {
   setMockLiveSlug,
   mockSimulateSignal as writeMockSimulateSignal,
 } from './mock-live-session';
-import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import {
+  allowMockFallback,
+  apiErrorMeta,
+  isForceMock,
+  mockFallbackMeta,
+} from './mode';
 import { requestJson } from './request-json';
 import type { TahtiPlayable } from './types';
 
@@ -224,7 +229,7 @@ export async function fetchStreamSettings(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: MOCK_SETTINGS, meta: failMeta(err) };
+      return { data: MOCK_SETTINGS, meta: mockFallbackMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
   }
@@ -355,7 +360,7 @@ export async function fetchBroadcastUsage(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: MOCK_USAGE, meta: failMeta(err) };
+      return { data: MOCK_USAGE, meta: mockFallbackMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
   }
@@ -520,7 +525,7 @@ export async function fetchRtmpTargets(scope: RtmpTargetScope = 'me'): Promise<{
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: [...readMockTargets(scope)], meta: failMeta(err) };
+      return { data: [...readMockTargets(scope)], meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }
@@ -689,7 +694,7 @@ export async function fetchStreamOverlay(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: { ...mockStreamOverlay }, meta: failMeta(err) };
+      return { data: { ...mockStreamOverlay }, meta: mockFallbackMeta(err) };
     }
     return { data: { ...EMPTY_STREAM_OVERLAY }, meta: apiErrorMeta(err) };
   }
@@ -792,7 +797,7 @@ export async function fetchRecentBroadcasts(
     return { data: data.broadcasts ?? [], meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockRecordings, meta: failMeta(err) };
+      return { data: mockRecordings, meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }

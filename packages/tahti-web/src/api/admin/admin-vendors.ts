@@ -3,8 +3,8 @@ import { getJson } from '../http';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '../mode';
 
 // ── Vendors ─────────────────────────────────────────────────────────────────
@@ -54,7 +54,7 @@ export async function fetchAdminIntegrationStatus(): Promise<{
     };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockIntegrationStatus(), meta: failMeta(err) };
+      return { data: mockIntegrationStatus(), meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }

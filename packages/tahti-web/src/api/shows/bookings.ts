@@ -3,8 +3,8 @@ import { mockFixture } from '.././mock-overrides';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
 import { mockBookings, setMockBookings } from './mock';
@@ -36,7 +36,7 @@ export async function fetchShowBookings(
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockBookings, meta: failMeta(err) };
+      return { data: mockBookings, meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }

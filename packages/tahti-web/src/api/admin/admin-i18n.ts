@@ -3,8 +3,8 @@ import { apiBase, getJson, sendJson } from '../http';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '../mode';
 
 // ── i18n / Languages ─────────────────────────────────────────────────────
@@ -83,7 +83,7 @@ export async function fetchAdminLanguages(): Promise<{
       return { data: [], meta: apiErrorMeta(err), unavailable: true };
     }
     if (allowMockFallback()) {
-      return { data: mockLanguages(), meta: failMeta(err) };
+      return { data: mockLanguages(), meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }

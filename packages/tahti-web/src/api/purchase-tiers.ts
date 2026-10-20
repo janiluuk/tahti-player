@@ -10,7 +10,12 @@ import {
 } from './mock-commerce-ledger';
 import { getMockSessionUser, mockRecordPurchase } from './mock-session';
 import { patchMockUploadedSound } from './mock-uploads';
-import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import {
+  allowMockFallback,
+  apiErrorMeta,
+  isForceMock,
+  mockFallbackMeta,
+} from './mode';
 import { requestJson } from './request-json';
 import { setMockSoundPurchaseAccess } from './studio';
 
@@ -83,7 +88,7 @@ export async function fetchMyPurchaseTiers(): Promise<{
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: [], meta: failMeta(err) };
+      return { data: [], meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }

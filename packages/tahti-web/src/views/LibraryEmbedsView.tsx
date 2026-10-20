@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { Button, FilterChips } from '@tahti-player/ui';
+
 import type { IntegrationId } from '../api/sources';
 import { fetchStudioSounds } from '../api/studio';
 import type { StudioSound } from '../api/studio-types';
@@ -32,6 +34,7 @@ export function LibraryEmbedsView() {
   const [items, setItems] = useState<StudioSound[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
+  const [providerFilter, setProviderFilter] = useState<string>('ALL');
 
   useEffect(() => {
     let cancelled = false;
@@ -54,6 +57,9 @@ export function LibraryEmbedsView() {
       if (!isEmbedItem(item)) {
         continue;
       }
+      if (providerFilter !== 'ALL' && item.embedProvider !== providerFilter) {
+        continue;
+      }
       const list = byProvider.get(item.embedProvider) ?? [];
       list.push(item);
       byProvider.set(item.embedProvider, list);
@@ -61,16 +67,43 @@ export function LibraryEmbedsView() {
     return [...byProvider.entries()].sort(([a], [b]) =>
       EMBED_PROVIDER_LABEL[a].localeCompare(EMBED_PROVIDER_LABEL[b]),
     );
+  }, [items, providerFilter]);
+
+  const providerChips = useMemo(() => {
+    const ids = new Set<EmbedProvider>();
+    for (const item of items ?? []) {
+      if (isEmbedItem(item)) {
+        ids.add(item.embedProvider);
+      }
+    }
+    return [
+      { id: 'ALL', label: 'All' },
+      ...[...ids]
+        .sort((a, b) =>
+          EMBED_PROVIDER_LABEL[a].localeCompare(EMBED_PROVIDER_LABEL[b]),
+        )
+        .map((id) => ({ id, label: EMBED_PROVIDER_LABEL[id] })),
+    ];
   }, [items]);
 
   if (items === null) {
     return <PageLoading label="Loading embeds…" />;
   }
 
+  const hasAnyEmbeds = (items ?? []).some(isEmbedItem);
+
   return (
     <div className="flex flex-col gap-8">
       <SoundCloudEmbedsPanel />
-      {loadError && groups.length === 0 ? (
+      {hasAnyEmbeds && providerChips.length > 2 ? (
+        <FilterChips
+          items={providerChips}
+          selected={providerFilter}
+          onChange={setProviderFilter}
+          aria-label="Filter embeds by provider"
+        />
+      ) : null}
+      {loadError && !hasAnyEmbeds ? (
         <PageError
           title="Could not load your imported embeds"
           description={loadError}
@@ -81,8 +114,27 @@ export function LibraryEmbedsView() {
         />
       ) : groups.length === 0 ? (
         <PageEmpty
-          title="No imported embeds yet"
-          description="Tracks imported from hearthis.at, Mixcloud, Spotify, or Bandcamp show up here, grouped by provider, once you import some from Settings → Add-ons → Import."
+          title={
+            hasAnyEmbeds
+              ? 'No embeds match this filter'
+              : 'No imported embeds yet'
+          }
+          description={
+            hasAnyEmbeds
+              ? undefined
+              : 'Tracks imported from hearthis.at, Mixcloud, Spotify, or Bandcamp show up here, grouped by provider, once you import some from Settings → Add-ons → Import.'
+          }
+          action={
+            hasAnyEmbeds ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setProviderFilter('ALL')}
+              >
+                Clear filter
+              </Button>
+            ) : undefined
+          }
         />
       ) : null}
       {groups.map(([provider, providerItems]) => (

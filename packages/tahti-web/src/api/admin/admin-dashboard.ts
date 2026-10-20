@@ -3,8 +3,8 @@ import { getJson, mutate } from '../http';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '../mode';
 
 // ── Dashboard ───────────────────────────────────────────────────────────────
@@ -227,7 +227,7 @@ export async function fetchAdminContentOverview(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockContentOverview(), meta: failMeta(err) };
+      return { data: mockContentOverview(), meta: mockFallbackMeta(err) };
     }
     return {
       data: {
@@ -406,7 +406,7 @@ export async function fetchAdminDashboard(): Promise<{
     };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockDashboard(), meta: failMeta(err) };
+      return { data: mockDashboard(), meta: mockFallbackMeta(err) };
     }
     return {
       data: {

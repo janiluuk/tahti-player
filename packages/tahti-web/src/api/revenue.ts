@@ -9,7 +9,12 @@ import {
   getMockSessionUser,
   mockCompleteConnectOnboard,
 } from './mock-session';
-import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import {
+  allowMockFallback,
+  apiErrorMeta,
+  isForceMock,
+  mockFallbackMeta,
+} from './mode';
 import { requestJson } from './request-json';
 
 export type FanConnectStatus = {
@@ -188,7 +193,7 @@ export async function fetchFanPayoutStats(): Promise<{
     };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockFanPayoutStats(), meta: failMeta(err) };
+      return { data: mockFanPayoutStats(), meta: mockFallbackMeta(err) };
     }
     return { data: emptyFanPayoutStats(), meta: apiErrorMeta(err) };
   }
@@ -211,7 +216,7 @@ export async function fetchFanConnectStatus(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: getMockConnectStatus(), meta: failMeta(err) };
+      return { data: getMockConnectStatus(), meta: mockFallbackMeta(err) };
     }
     return { data: emptyConnect(), meta: apiErrorMeta(err) };
   }
@@ -299,7 +304,7 @@ export async function fetchMyGrants(): Promise<{
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockGrants(), meta: failMeta(err) };
+      return { data: mockGrants(), meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }
@@ -322,7 +327,7 @@ export async function fetchGrantEstimate(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockEstimate(), meta: failMeta(err) };
+      return { data: mockEstimate(), meta: mockFallbackMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
   }

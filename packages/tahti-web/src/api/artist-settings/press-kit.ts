@@ -3,8 +3,8 @@ import { apiBase } from '.././http';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
 import { mockPress, setMockPress } from './mock';
@@ -48,7 +48,7 @@ export async function fetchPressKitMeta(): Promise<{
     if (allowMockFallback()) {
       return {
         data: { ...mockPress, hasZip: false, downloadPath: null },
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     return {

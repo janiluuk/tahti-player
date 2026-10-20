@@ -24,7 +24,7 @@ export function BroadcastRecordingToggles() {
       if (cancelled) {
         return;
       }
-      if (!record.meta.reason || record.meta.source === 'mock') {
+      if (!record.meta.reason || record.meta.reason === 'VITE_FORCE_MOCK') {
         setAutoRecord(record.data);
       }
       if (publish.ok) {

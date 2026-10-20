@@ -1,14 +1,7 @@
 import type { FetchMeta } from './client';
 import { mockFixture } from './mock-overrides';
-import { isForceMock } from './mode';
+import { failMeta, isForceMock } from './mode';
 import { requestJson } from './request-json';
-
-function failMeta(err: unknown): FetchMeta {
-  return {
-    source: 'mock',
-    reason: err instanceof Error ? err.message : 'fetch failed',
-  };
-}
 
 export type ArtistEvent = {
   id: string;

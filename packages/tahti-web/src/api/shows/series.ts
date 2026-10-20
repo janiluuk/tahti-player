@@ -3,8 +3,8 @@ import { mockFixture } from '.././mock-overrides';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
 import { seedEpisodes, seedSeries, SERIES_KEY, writeJson } from './mock';
@@ -41,7 +41,7 @@ export async function fetchShowSeries(): Promise<{
     return { data: data.series.map(seriesFromWire), meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: seedSeries(), meta: failMeta(err) };
+      return { data: seedSeries(), meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }
@@ -73,7 +73,7 @@ export async function fetchShowSchedule(): Promise<{
     if (allowMockFallback()) {
       return {
         data: { series: seedSeries(), scheduledShows: [] },
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     return {
@@ -407,7 +407,7 @@ export async function fetchEpisodesForShow(
         data: all
           .filter((e) => e.showId === showId)
           .sort((a, b) => b.episodeNumber - a.episodeNumber),
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     return { data: [], meta: apiErrorMeta(err) };

@@ -5,8 +5,8 @@ import { mockFixture } from './mock-overrides';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
   type FetchMeta,
 } from './mode';
 import { requestJson } from './request-json';
@@ -59,7 +59,7 @@ export type TahtiNotification = {
 };
 
 function emptyMeta(err: unknown): FetchMeta {
-  return allowMockFallback() ? failMeta(err) : apiErrorMeta(err);
+  return allowMockFallback() ? mockFallbackMeta(err) : apiErrorMeta(err);
 }
 
 function mockNotifications(includeInboxExtras: boolean): TahtiNotification[] {

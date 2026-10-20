@@ -29,8 +29,8 @@ import { ensureMockUploadedSound, getMockUploadedSound } from './mock-uploads';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
   withMockFallback,
   type FetchMeta,
 } from './mode';
@@ -147,7 +147,11 @@ export async function fetchChannel(slug: string): Promise<{
   } catch (err) {
     if (allowMockFallback()) {
       const data = normalizePublicChannel(mockChannel(slug));
-      return { data, meta: failMeta(err), playable: channelToPlayable(data) };
+      return {
+        data,
+        meta: mockFallbackMeta(err),
+        playable: channelToPlayable(data),
+      };
     }
     throw err instanceof Error ? err : new Error('Channel fetch failed');
   }
@@ -344,7 +348,7 @@ export async function fetchProfile(username: string): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockProfile(username), meta: failMeta(err) };
+      return { data: mockProfile(username), meta: mockFallbackMeta(err) };
     }
     throw err instanceof Error ? err : new Error('Profile fetch failed');
   }
@@ -394,7 +398,7 @@ export async function fetchCollection(slug: string): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockCollection(slug), meta: failMeta(err) };
+      return { data: mockCollection(slug), meta: mockFallbackMeta(err) };
     }
     throw err instanceof Error ? err : new Error('Collection fetch failed');
   }
@@ -454,7 +458,10 @@ export async function fetchSmartLink(smartLinkSlug: string): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockSmartLink(smartLinkSlug), meta: failMeta(err) };
+      return {
+        data: mockSmartLink(smartLinkSlug),
+        meta: mockFallbackMeta(err),
+      };
     }
     throw err instanceof Error ? err : new Error('Smart link fetch failed');
   }
@@ -772,7 +779,7 @@ export async function fetchTransparencyYtd(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockTransparencyYtd(), meta: failMeta(err) };
+      return { data: mockTransparencyYtd(), meta: mockFallbackMeta(err) };
     }
     throw err instanceof Error ? err : new Error('Transparency YTD failed');
   }
@@ -796,7 +803,7 @@ export async function fetchTransparencyGrants(year?: number): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockTransparencyGrants(y), meta: failMeta(err) };
+      return { data: mockTransparencyGrants(y), meta: mockFallbackMeta(err) };
     }
     throw err instanceof Error ? err : new Error('Transparency grants failed');
   }

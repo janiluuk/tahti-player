@@ -3,8 +3,8 @@ import { mockFixture } from '.././mock-overrides';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
 import { type ChannelVisualPatch } from './visual-api';
@@ -39,7 +39,7 @@ export async function fetchChannelVisualPresets(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: [...mockVisualPresets], meta: failMeta(err) };
+      return { data: [...mockVisualPresets], meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }
