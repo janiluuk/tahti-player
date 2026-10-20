@@ -70,7 +70,8 @@ const PERSIST_NAME = 'tahti-web-theme';
  * rules the injected custom-theme CSS can override; other basic themes use
  * `[data-theme-id=...]` selectors that outrank it. */
 const BASE_THEME_ID = 'nuclear:default';
-const DEFAULT_THEME_ID = NUCLEAR_GREEN_THEME_ID;
+/** New visitors get Gruvbox in light mode (the default `colorMode`). */
+const DEFAULT_THEME_ID = GRUVBOX_THEME_ID;
 
 export type ColorMode = 'light' | 'dark' | 'dynamic';
 
@@ -409,10 +410,8 @@ export const useThemeStore = create<ThemeState>()(
         }
         if (colorMode == null) {
           // Preserve an existing explicit dark/light choice as-is. A
-          // first-ever load starts dark: the default theme is dark-only, so
-          // following a light OS setting would pair its dark palette with
-          // light-mode styles.
-          colorMode = dark == null ? 'dark' : dark ? 'dark' : 'light';
+          // first-ever load starts light: the default theme is Gruvbox Light.
+          colorMode = dark == null ? 'light' : dark ? 'dark' : 'light';
         }
         const customThemes = p.customThemes ?? {};
         return {

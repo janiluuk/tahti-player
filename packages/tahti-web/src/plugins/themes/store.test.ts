@@ -18,20 +18,20 @@ describe('isDynamicDark', () => {
 });
 
 describe('first-run theme', () => {
-  it('defaults to Nuclear Green in dark mode when nothing is stored', async () => {
+  it('defaults to Gruvbox in light mode when nothing is stored', async () => {
     localStorage.clear();
     const { useThemeStore } = await import('./store');
     await useThemeStore.persist.rehydrate();
     useThemeStore.getState().init();
     const state = useThemeStore.getState();
-    expect(state.themeId).toBe('custom:nuclear-green');
-    expect(state.colorMode).toBe('dark');
+    expect(state.themeId).toBe('custom:gruvbox');
+    expect(state.colorMode).toBe('light');
     expect(document.documentElement.getAttribute('data-theme-id')).toBe(
       'nuclear:default',
     );
     expect(document.getElementById('advanced-theme')?.textContent).toContain(
-      '#0c1915',
+      'oklch(0.96 0.055 96)',
     );
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+    expect(document.documentElement.getAttribute('data-theme')).toBeNull();
   });
 });

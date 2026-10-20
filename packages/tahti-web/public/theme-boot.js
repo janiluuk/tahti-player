@@ -34,10 +34,10 @@
       var hour = new Date().getHours();
       dark = hour < 7 || hour >= 19;
     } else if (dark == null) {
-      dark = true;
+      dark = false;
     }
     if (!themeId || themeId.indexOf('custom:') === 0) {
-      themeId = 'nuclear:tahti-dark';
+      themeId = 'nuclear:default';
     }
     document.documentElement.setAttribute('data-theme-id', themeId);
     if (dark) {
