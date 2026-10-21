@@ -194,6 +194,12 @@ tahti-web feels closer to the desktop player.
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-11 — Accurate listener world map (v0.0.242)
+
+Replaced crude hand-drawn continent blobs in `ListenerWorldMap` (Studio Stats +
+track insights) with Natural Earth 110m country outlines, choropleth fills, and
+centroid markers. Vendored `worldCountryPaths.json`; Storybook Compact story +
+component test added. Live geo fetch/ranking list unchanged.
 
 ## 2026-10-18 — Todo INDEX cleanup (fold shipped / intentional deferrals)
 
