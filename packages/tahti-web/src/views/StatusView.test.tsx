@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as client from '../api/client';
+import { renderWithRouter } from '../test/renderWithRouter';
 import { StatusView } from './StatusView';
 
 vi.stubGlobal('__APP_VERSION__', '0.0.0');
@@ -20,7 +21,7 @@ describe('StatusView', () => {
       data: { status: 'down', checks: {}, ts: '2026-10-19T00:00:00Z' },
       meta: { source: 'api' },
     });
-    render(<StatusView />);
+    await renderWithRouter(<StatusView />);
     expect(await screen.findByText('No health checks reported')).toBeTruthy();
     expect(screen.queryByRole('table')).toBeNull();
     fetch.mockResolvedValue({
@@ -32,5 +33,15 @@ describe('StatusView', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByText('postgres *')).toBeTruthy();
+  });
+
+  it('links back to the Help center', async () => {
+    vi.spyOn(client, 'fetchPlatformStatus').mockResolvedValue({
+      data: { status: 'ok', checks: {}, ts: '2026-10-19T00:00:00Z' },
+      meta: { source: 'api' },
+    });
+    await renderWithRouter(<StatusView />, { paths: ['/help'] });
+    fireEvent.click(screen.getByRole('link', { name: 'Help center' }));
+    expect(await screen.findByTestId('routed-to')).toHaveTextContent('/help');
   });
 });

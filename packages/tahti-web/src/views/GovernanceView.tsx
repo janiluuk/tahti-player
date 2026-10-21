@@ -49,6 +49,7 @@ import { CurrentBoardPanel } from '../components/governance/CurrentBoardPanel';
 import { ElectionsPanel } from '../components/governance/ElectionsPanel';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
 import { MotionCard } from '../components/governance/MotionCard';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { hasAccountRole } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
@@ -740,6 +741,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
         content: 'gap-6',
       }}
     >
+      <PageBackLink to="/what-is-it" label="What is Tahti" />
       {body}
     </ViewShell>
   );

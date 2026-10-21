@@ -6,6 +6,7 @@ import { Button, cn, ImageReveal, ViewShell } from '@tahti-player/ui';
 
 import { fetchAnnouncements } from '../api/client';
 import type { Announcement } from '../api/types';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 
 function TimelineNode({ isLatest }: { isLatest?: boolean }) {
@@ -143,6 +144,7 @@ export function NewsView() {
 
   return (
     <ViewShell title="Platform news">
+      <PageBackLink to="/help" label="Help center" />
       <div className="mx-auto flex w-full max-w-2xl flex-col">
         <p className="text-foreground-secondary mb-4 text-sm">
           News, service updates, and posts from the Tahti team.{' '}

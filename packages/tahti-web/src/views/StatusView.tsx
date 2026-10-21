@@ -4,6 +4,7 @@ import { ViewShell } from '@tahti-player/ui';
 
 import { fetchPlatformStatus } from '../api/client';
 import type { PlatformStatus } from '../api/types';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageError, PageLoading } from '../components/PageStates';
 
 function stateClass(state: string): string {
@@ -47,6 +48,7 @@ export function StatusView() {
       title="Status"
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', content: 'gap-4' }}
     >
+      <PageBackLink to="/help" label="Help center" />
       {loading && <PageLoading label="Checking…" />}
       {!loading && !data && (
         <PageError

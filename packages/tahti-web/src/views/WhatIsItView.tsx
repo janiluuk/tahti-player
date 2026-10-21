@@ -27,6 +27,7 @@ import {
 import type { ReactNode } from 'react';
 
 import { LegalHubLinks } from '../components/LegalHubLinks';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageFrame, PageHeader } from '../components/PageHeader';
 import { PlatformStatsStrip } from '../components/PlatformStatsStrip';
 import { StarRating } from '../components/StarRating';
@@ -276,6 +277,7 @@ export function WhatIsItView() {
   return (
     <PageFrame maxWidth="5xl" className="pb-16">
       <PageHeader
+        back={<PageBackLink to="/" label="Listen" />}
         title="What is tahti.live"
         subtitle="Nonprofit broadcasting for independent artists — built to support artists, not algorithms."
       />
