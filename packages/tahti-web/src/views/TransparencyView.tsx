@@ -3,6 +3,12 @@ import { useEffect, useState } from 'react';
 
 import {
   Box,
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableHead,
+  DataTableHeaderCell,
+  DataTableRow,
   HorizontalScroll,
   SectionShell,
   ViewShell,
@@ -150,22 +156,24 @@ export function TransparencyView() {
                 label={`Spending ${ytd.year} by category`}
                 className="mt-3"
               >
-                <table className="w-full border-collapse text-left text-sm">
-                  <thead>
-                    <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-                      <th className="py-2 pr-3 font-medium">Category</th>
-                      <th className="py-2 font-medium">Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <DataTable>
+                  <DataTableHead>
+                    <DataTableRow>
+                      <DataTableHeaderCell>Category</DataTableHeaderCell>
+                      <DataTableHeaderCell>Amount</DataTableHeaderCell>
+                    </DataTableRow>
+                  </DataTableHead>
+                  <DataTableBody>
                     {Object.entries(ytd.byCategory).map(([cat, amt]) => (
-                      <tr key={cat} className="border-border border-b">
-                        <td className="py-2 pr-3 font-mono text-xs">{cat}</td>
-                        <td className="py-2">{centsLabel(amt)}</td>
-                      </tr>
+                      <DataTableRow key={cat}>
+                        <DataTableCell className="font-mono text-xs">
+                          {cat}
+                        </DataTableCell>
+                        <DataTableCell>{centsLabel(amt)}</DataTableCell>
+                      </DataTableRow>
                     ))}
-                  </tbody>
-                </table>
+                  </DataTableBody>
+                </DataTable>
               </HorizontalScroll>
             </SectionShell>
           )}
@@ -196,31 +204,28 @@ export function TransparencyView() {
                 label={`Grants ${grants.year}`}
                 className="mt-3"
               >
-                <table className="w-full border-collapse text-left text-sm">
-                  <thead>
-                    <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-                      <th className="py-2 pr-3 font-medium">Published as</th>
-                      <th className="py-2 pr-3 font-medium">Amount</th>
-                      <th className="py-2 font-medium">State</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <DataTable>
+                  <DataTableHead>
+                    <DataTableRow>
+                      <DataTableHeaderCell>Published as</DataTableHeaderCell>
+                      <DataTableHeaderCell>Amount</DataTableHeaderCell>
+                      <DataTableHeaderCell>State</DataTableHeaderCell>
+                    </DataTableRow>
+                  </DataTableHead>
+                  <DataTableBody>
                     {grants.grants.map((g) => (
-                      <tr
-                        key={`${g.publishedAs}-${g.amountCents}`}
-                        className="border-border border-b"
-                      >
-                        <td className="py-2 pr-3">{g.publishedAs}</td>
-                        <td className="py-2 pr-3">
+                      <DataTableRow key={`${g.publishedAs}-${g.amountCents}`}>
+                        <DataTableCell>{g.publishedAs}</DataTableCell>
+                        <DataTableCell>
                           {centsLabel(g.amountCents)}
-                        </td>
-                        <td className="text-foreground-secondary py-2 text-xs">
+                        </DataTableCell>
+                        <DataTableCell className="text-foreground-secondary text-xs">
                           {g.state}
-                        </td>
-                      </tr>
+                        </DataTableCell>
+                      </DataTableRow>
                     ))}
-                  </tbody>
-                </table>
+                  </DataTableBody>
+                </DataTable>
               </HorizontalScroll>
               <div className="mt-3 flex flex-wrap gap-2 text-xs">
                 {Array.from(
@@ -251,32 +256,32 @@ export function TransparencyView() {
               <PageEmpty title="No ledger entries yet" />
             ) : (
               <HorizontalScroll label="Latest ledger">
-                <table className="w-full border-collapse text-left text-sm">
-                  <thead>
-                    <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-                      <th className="py-2 pr-3 font-medium">When</th>
-                      <th className="py-2 pr-3 font-medium">Category</th>
-                      <th className="py-2 pr-3 font-medium">Description</th>
-                      <th className="py-2 font-medium">Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <DataTable>
+                  <DataTableHead>
+                    <DataTableRow>
+                      <DataTableHeaderCell>When</DataTableHeaderCell>
+                      <DataTableHeaderCell>Category</DataTableHeaderCell>
+                      <DataTableHeaderCell>Description</DataTableHeaderCell>
+                      <DataTableHeaderCell>Amount</DataTableHeaderCell>
+                    </DataTableRow>
+                  </DataTableHead>
+                  <DataTableBody>
                     {ledger.map((e) => (
-                      <tr key={e.id} className="border-border border-b">
-                        <td className="text-foreground-secondary py-2 pr-3 text-xs whitespace-nowrap">
+                      <DataTableRow key={e.id}>
+                        <DataTableCell className="text-foreground-secondary text-xs whitespace-nowrap">
                           {e.createdAt.slice(0, 10)}
-                        </td>
-                        <td className="py-2 pr-3 font-mono text-xs">
+                        </DataTableCell>
+                        <DataTableCell className="font-mono text-xs">
                           {e.category}
-                        </td>
-                        <td className="py-2 pr-3">{e.description}</td>
-                        <td className="py-2 whitespace-nowrap">
+                        </DataTableCell>
+                        <DataTableCell>{e.description}</DataTableCell>
+                        <DataTableCell className="whitespace-nowrap">
                           {centsLabel(e.amountCents)}
-                        </td>
-                      </tr>
+                        </DataTableCell>
+                      </DataTableRow>
                     ))}
-                  </tbody>
-                </table>
+                  </DataTableBody>
+                </DataTable>
               </HorizontalScroll>
             )}
           </SectionShell>

@@ -3,13 +3,12 @@ import {
   BellIcon,
   FolderIcon,
   HardDriveIcon,
-  LoaderCircleIcon,
   MessageSquareIcon,
   MusicIcon,
 } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
-import { BottomBar, cn, Tooltip } from '@tahti-player/ui';
+import { BottomBar, cn, Loader, Tooltip } from '@tahti-player/ui';
 
 import { fetchConversations } from '../api/messages';
 import { fetchStudioSounds } from '../api/studio';
@@ -168,11 +167,7 @@ export function StatusBarContent({
               role="status"
               aria-label={encodingLabel}
             >
-              <LoaderCircleIcon
-                size={16}
-                aria-hidden
-                className="shrink-0 animate-spin"
-              />
+              <Loader size="sm" shape="circle" />
               <span className="truncate">{encodingLabel}</span>
             </span>
           </Tooltip>

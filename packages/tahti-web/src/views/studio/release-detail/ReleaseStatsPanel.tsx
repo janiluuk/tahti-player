@@ -1,7 +1,13 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button, EmptyState, TopList } from '@tahti-player/ui';
+import {
+  EmptyState,
+  SegmentedControl,
+  StatTile,
+  TopList,
+  type SegmentedControlOption,
+} from '@tahti-player/ui';
 
 import type { StudioReleaseTrack } from '../../../api/studio-types';
 import {
@@ -12,11 +18,14 @@ import {
 import { ListenerWorldMap } from '../../../components/ListenerWorldMap';
 import { PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
-import { Eyebrow } from '../../../components/tahti/Eyebrow';
 import { StatNumber } from '../../../components/tahti/StatNumber';
 import { formatPlayCount } from '../../../lib/topListEntries';
 
-const PERIODS: InsightsPeriod[] = ['7d', '30d', 'all'];
+const PERIOD_OPTIONS: SegmentedControlOption<InsightsPeriod>[] = [
+  { id: '7d', label: '7d' },
+  { id: '30d', label: '30d' },
+  { id: 'all', label: 'All time' },
+];
 
 type TrackStats = { track: StudioReleaseTrack; insights: TrackInsights | null };
 
@@ -94,17 +103,13 @@ export function ReleaseStatsPanel({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap justify-end gap-1.5">
-        {PERIODS.map((value) => (
-          <Button
-            key={value}
-            size="sm"
-            variant={value === period ? undefined : 'text'}
-            onClick={() => setPeriod(value)}
-          >
-            {value === 'all' ? 'All time' : value}
-          </Button>
-        ))}
+      <div className="flex justify-end">
+        <SegmentedControl
+          aria-label="Period"
+          options={PERIOD_OPTIONS}
+          value={period}
+          onChange={setPeriod}
+        />
       </div>
 
       {stats === null ? (
@@ -112,18 +117,22 @@ export function ReleaseStatsPanel({
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <div className="border-border rounded-lg border p-4">
-              <Eyebrow>Plays</Eyebrow>
-              <StatNumber className="mt-1 block text-2xl">
-                {totals.plays.toLocaleString()}
-              </StatNumber>
-            </div>
-            <div className="border-border rounded-lg border p-4">
-              <Eyebrow>Downloads</Eyebrow>
-              <StatNumber className="mt-1 block text-2xl">
-                {totals.downloads.toLocaleString()}
-              </StatNumber>
-            </div>
+            <StatTile
+              label="Plays"
+              value={
+                <StatNumber className="text-2xl">
+                  {totals.plays.toLocaleString()}
+                </StatNumber>
+              }
+            />
+            <StatTile
+              label="Downloads"
+              value={
+                <StatNumber className="text-2xl">
+                  {totals.downloads.toLocaleString()}
+                </StatNumber>
+              }
+            />
           </div>
 
           <StudioPanel>

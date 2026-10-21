@@ -3,12 +3,12 @@ import { MapPinIcon, SearchIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
-  Badge,
   Box,
   Button,
   ButtonLink,
   EmptyState,
   Input,
+  SectionTitle,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -30,12 +30,12 @@ function VenueCard({
   const [editing, setEditing] = useState(false);
   return (
     <Box variant="tertiary" className="flex flex-col gap-2">
-      <div className="flex flex-wrap items-center gap-2">
-        <h2 className="text-lg font-bold">{venue.name}</h2>
-        <Badge variant="pill" color={verified ? 'green' : 'yellow'}>
-          {verified ? 'Verified' : 'Waiting for board verification'}
-        </Badge>
-      </div>
+      <SectionTitle
+        wrap
+        title={venue.name}
+        badge={verified ? 'Verified' : 'Waiting for board verification'}
+        badgeColor={verified ? 'green' : 'yellow'}
+      />
       <p className="text-foreground-secondary flex items-center gap-1.5 text-sm">
         <MapPinIcon size={14} aria-hidden />
         {venue.address}, {venue.city}

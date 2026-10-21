@@ -4,12 +4,11 @@ import {
   DownloadIcon,
   HistoryIcon,
   ImageIcon,
-  LoaderCircleIcon,
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button } from '@tahti-player/ui';
+import { Button, Loader } from '@tahti-player/ui';
 
 import type { TahtiNativeLibrary } from '../lib/nativeLibrary';
 import { BackupRestoreDialog } from './BackupRestoreDialog';
@@ -98,11 +97,7 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
             onClick={() => void artwork.start()}
           >
             {artwork.running ? (
-              <LoaderCircleIcon
-                size={14}
-                className="animate-spin"
-                aria-hidden
-              />
+              <Loader size="inline" shape="circle" />
             ) : (
               <ImageIcon size={14} aria-hidden />
             )}
@@ -117,7 +112,7 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
           onClick={() => void backUp()}
         >
           {backingUp ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+            <Loader size="inline" shape="circle" />
           ) : (
             <DownloadIcon size={14} aria-hidden />
           )}

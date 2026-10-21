@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  Alert,
   Badge,
   Button,
   CopyButton,
@@ -139,10 +140,11 @@ export function ApiTokensPanel() {
       ) : (
         <div className="flex flex-col gap-4">
           {revealedToken ? (
-            <div className="border-accent-yellow/40 bg-accent-yellow/10 rounded-lg border p-3">
-              <p className="text-sm font-medium">
-                New token — copy it now; it will not be shown again.
-              </p>
+            <Alert
+              tone="warning"
+              className="text-foreground"
+              title="New token — copy it now; it will not be shown again."
+            >
               <div className="mt-2 flex flex-wrap gap-2">
                 <Input
                   aria-label="New API token"
@@ -165,7 +167,7 @@ export function ApiTokensPanel() {
                   Dismiss
                 </Button>
               </div>
-            </div>
+            </Alert>
           ) : null}
 
           {loadError && tokens.length === 0 ? (

@@ -45,7 +45,7 @@ function healthChip(ok: boolean): { label: string; color: 'green' | 'orange' } {
 export function AdminDashboardView() {
   const [data, setData] = useState<AdminDashboard | null>(null);
   const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [moreOpen, setMoreOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState<
@@ -55,26 +55,16 @@ export function AdminDashboardView() {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    setLoadError(null);
-    fetchAdminDashboard()
-      .then((res) => {
-        if (cancelled) {
-          return;
-        }
-        setData(res.data);
-        setLoadError(
-          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
-        );
-        setLoading(false);
-      })
-      .catch((err: unknown) => {
-        if (cancelled) {
-          return;
-        }
-        setData(null);
-        setLoadError(err instanceof Error ? err.message : 'fetch failed');
-        setLoading(false);
-      });
+    void fetchAdminDashboard().then((res) => {
+      if (cancelled) {
+        return;
+      }
+      const reason = res.meta.source === 'api' ? res.meta.reason : undefined;
+      // The failure payload is zeroed KPIs and "down" health; never show it.
+      setData(reason ? null : res.data);
+      setError(reason ?? null);
+      setLoading(false);
+    });
     return () => {
       cancelled = true;
     };
@@ -103,11 +93,11 @@ export function AdminDashboardView() {
                 <StudioPanel>
                   <PageLoading label="Loading dashboard…" />
                 </StudioPanel>
-              ) : loadError || !data ? (
+              ) : !data ? (
                 <StudioPanel>
                   <PageError
-                    title="Couldn’t load the dashboard"
-                    description={loadError ?? undefined}
+                    title="Couldn't load the dashboard"
+                    description={error ?? undefined}
                     onRetry={() => setAttempt((n) => n + 1)}
                   />
                 </StudioPanel>

@@ -1,4 +1,4 @@
-import { Badge } from '@tahti-player/ui';
+import { Badge, ExternalLink } from '@tahti-player/ui';
 
 import type { AdminAnnualReport } from '../../../../api/admin';
 import type { GovernanceMeeting } from '../../../../api/types';
@@ -68,14 +68,12 @@ export function AnnualReportRow({
           </Badge>
         ) : null}
         {report.downloadUrl ? (
-          <a
+          <ExternalLink
             href={report.downloadUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="ml-auto text-xs underline-offset-2 hover:underline"
+            className="ml-auto text-xs no-underline underline-offset-2 hover:underline"
           >
             Download
-          </a>
+          </ExternalLink>
         ) : null}
       </div>
       <p className="text-foreground-secondary text-xs">

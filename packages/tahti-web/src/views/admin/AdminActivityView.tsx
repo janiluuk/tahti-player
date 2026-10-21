@@ -18,7 +18,11 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageLoading } from '../../components/PageStates';
+import {
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { usePolling } from '../../hooks/usePolling';
 
@@ -170,6 +174,8 @@ export function AdminActivityView({
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [topic, setTopic] = useState<AdminAuditTopicId | 'ALL'>('ALL');
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const res = await fetchAdminActivity({
@@ -177,8 +183,16 @@ export function AdminActivityView({
       limit: PAGE_LIMIT,
       topic: topic === 'ALL' ? undefined : topic,
     });
-    setEntries(res.data);
-    setTotal(res.total);
+    const reason = res.meta.source === 'api' ? res.meta.reason : undefined;
+    if (reason) {
+      // A failed poll keeps what is already on screen.
+      setError(reason);
+    } else {
+      setEntries(res.data);
+      setTotal(res.total);
+      setLoaded(true);
+      setError(null);
+    }
     setLoading(false);
   }, [page, topic]);
 
@@ -232,8 +246,24 @@ export function AdminActivityView({
 
       {loading ? (
         <PageLoading label="Loading activity…" />
+      ) : error && !loaded ? (
+        <PageError
+          title="Couldn't load activity"
+          description={error}
+          onRetry={() => {
+            setLoading(true);
+            void load();
+          }}
+        />
       ) : (
         <div className="flex flex-col gap-3">
+          {error ? (
+            <PageErrorBanner
+              title="Couldn't refresh activity"
+              description="Showing the last loaded entries."
+              onRetry={() => void load()}
+            />
+          ) : null}
           <div className="h-[60vh]">
             <LogViewer.Root
               logs={logs}

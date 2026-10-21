@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import { ViewShell } from '@tahti-player/ui';
+import {
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableHead,
+  DataTableHeaderCell,
+  DataTableRow,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchTransparencyGrants } from '../api/client';
 import type { TransparencyGrantReport } from '../api/types';
@@ -72,31 +80,30 @@ export function TransparencyGrantYearView({ year }: { year: number }) {
           {report.grants.length === 0 ? (
             <PageEmpty title="No grants were made this year." />
           ) : (
-            <table className="w-full border-collapse text-left text-sm">
-              <thead>
-                <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-                  <th className="py-2 pr-3 font-medium">Published as</th>
-                  <th className="py-2 pr-3 font-medium">Amount</th>
-                  <th className="py-2 font-medium">State</th>
-                </tr>
-              </thead>
-              <tbody>
+            <DataTable>
+              <DataTableHead>
+                <DataTableRow>
+                  <DataTableHeaderCell>Published as</DataTableHeaderCell>
+                  <DataTableHeaderCell>Amount</DataTableHeaderCell>
+                  <DataTableHeaderCell>State</DataTableHeaderCell>
+                </DataTableRow>
+              </DataTableHead>
+              <DataTableBody>
                 {report.grants.map((grant) => (
-                  <tr
+                  <DataTableRow
                     key={`${grant.publishedAs}-${grant.amountCents}`}
-                    className="border-border border-b"
                   >
-                    <td className="py-2 pr-3">{grant.publishedAs}</td>
-                    <td className="py-2 pr-3">
+                    <DataTableCell>{grant.publishedAs}</DataTableCell>
+                    <DataTableCell>
                       {centsLabel(grant.amountCents)}
-                    </td>
-                    <td className="text-foreground-secondary py-2 text-xs">
+                    </DataTableCell>
+                    <DataTableCell className="text-foreground-secondary text-xs">
                       {grant.state}
-                    </td>
-                  </tr>
+                    </DataTableCell>
+                  </DataTableRow>
                 ))}
-              </tbody>
-            </table>
+              </DataTableBody>
+            </DataTable>
           )}
         </section>
       )}

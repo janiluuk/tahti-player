@@ -33,7 +33,7 @@ import {
   MulticastConfigureDialog,
   type MulticastConfiguring,
 } from '../MulticastConfigureDialog';
-import { PageLoading } from '../PageStates';
+import { PageError, PageLoading } from '../PageStates';
 import { AudioPluginToggleRow } from './shared';
 
 // ── Multicast / Audio tools ─────────────────────────────────────────────────
@@ -44,13 +44,16 @@ export function MulticastCategory() {
     null,
   );
 
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   const reload = () => {
-    void fetchRtmpTargets().then((r) => setTargets(r.data));
+    void fetchRtmpTargets().then((r) => {
+      setTargets(r.data);
+      setLoadError(r.meta.source === 'api' ? (r.meta.reason ?? null) : null);
+    });
   };
 
-  useEffect(() => {
-    void fetchRtmpTargets().then((r) => setTargets(r.data));
-  }, []);
+  useEffect(reload, []);
 
   return (
     <div className="flex flex-col gap-3">
@@ -59,6 +62,12 @@ export function MulticastCategory() {
       </h3>
       {targets == null ? (
         <PageLoading label="Loading multistream destinations…" />
+      ) : loadError && targets.length === 0 ? (
+        <PageError
+          title="Could not load stream destinations"
+          description={loadError}
+          onRetry={reload}
+        />
       ) : (
         <ul className="flex flex-col gap-2">
           {multicastProviders.map((destination) => {

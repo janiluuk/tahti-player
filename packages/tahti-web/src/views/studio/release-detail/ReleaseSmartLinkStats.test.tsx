@@ -37,7 +37,7 @@ describe('ReleaseSmartLinkStats', () => {
     expect(rows[1]!.textContent).toBe('Bandcamp10');
   });
 
-  it('renders nothing when the stats fail to load', async () => {
+  it('renders nothing when there are no stats', async () => {
     vi.spyOn(api, 'fetchReleaseSmartLinkAnalytics').mockResolvedValue({
       data: null,
       meta: { source: 'api' },
@@ -46,5 +46,20 @@ describe('ReleaseSmartLinkStats', () => {
       render(<ReleaseSmartLinkStats releaseId="r1" />),
     );
     expect(container.textContent).toBe('');
+  });
+
+  it('shows an error with Retry when the stats fail to load', async () => {
+    const fetch = vi
+      .spyOn(api, 'fetchReleaseSmartLinkAnalytics')
+      .mockResolvedValue({
+        data: null,
+        meta: { source: 'api', reason: 'HTTP 502' },
+      });
+    await act(async () => render(<ReleaseSmartLinkStats releaseId="r1" />));
+    expect(screen.getByText("Couldn't load smart link stats")).toBeTruthy();
+    await act(async () => {
+      screen.getByRole('button', { name: 'Retry' }).click();
+    });
+    expect(fetch).toHaveBeenCalledTimes(2);
   });
 });

@@ -1,6 +1,12 @@
-import { LoaderCircleIcon } from 'lucide-react';
-
-import { Alert, Badge, Button, Dialog, Input, Toggle } from '@tahti-player/ui';
+import {
+  Alert,
+  Badge,
+  Button,
+  Dialog,
+  Input,
+  Loader,
+  Toggle,
+} from '@tahti-player/ui';
 
 import type { NativeProviderImport } from '../../lib/nativeLibrary';
 import { formatBytes } from '../../lib/storageFormat';
@@ -85,7 +91,7 @@ function SpaceLine({
   if (space.status === 'checking') {
     return (
       <p className="text-foreground-secondary flex items-center gap-2 text-xs">
-        <LoaderCircleIcon size={12} className="animate-spin" aria-hidden />
+        <Loader size="xs" shape="circle" />
         Checking file sizes…
       </p>
     );
@@ -261,7 +267,7 @@ export function ProviderSetImportDialog({
 
       {state.phase === 'loading' ? (
         <p className="text-foreground-secondary flex items-center gap-2 py-2 text-sm">
-          <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+          <Loader size="inline" shape="circle" />
           Loading the set…
         </p>
       ) : null}
@@ -346,7 +352,7 @@ export function ProviderSetImportDialog({
         ) : null}
         {state.phase === 'running' ? (
           <Button className="gap-1.5" disabled>
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+            <Loader size="inline" shape="circle" />
             Downloading…
           </Button>
         ) : null}

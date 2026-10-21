@@ -10,6 +10,7 @@ import {
   type DiscoWidgetRenderItem,
 } from '../../api/disco-widgets';
 import type { FetchMeta } from '../../api/mode';
+import { RequestJsonError } from '../../api/request-json';
 import { fetchPublicRadioShow, type PublicRadioShow } from '../../api/shows';
 import type { ChannelSoundItem, PublicChannel } from '../../api/types';
 import { syncDocumentMetadata } from '../../lib/seo';
@@ -87,6 +88,8 @@ export function useChannelData(slug: string, refreshKey: number) {
     Record<string, string>
   >({});
   const [loading, setLoading] = useState(true);
+  const [channelFailed, setChannelFailed] = useState(false);
+  const [channelAttempt, setChannelAttempt] = useState(0);
   const [reloadKeys, setReloadKeys] = useState<Record<ChannelSection, number>>({
     sounds: 0,
     widgets: 0,
@@ -95,6 +98,7 @@ export function useChannelData(slug: string, refreshKey: number) {
 
   useEffect(() => {
     setLoading(true);
+    setChannelFailed(false);
   }, [slug]);
 
   useEffect(() => {
@@ -104,6 +108,7 @@ export function useChannelData(slug: string, refreshKey: number) {
         if (cancelled) {
           return;
         }
+        setChannelFailed(false);
         // Keep the follower count while the profile lookup below refreshes.
         setChannel((prev) => ({
           ...ch.data,
@@ -140,9 +145,14 @@ export function useChannelData(slug: string, refreshKey: number) {
           })
           .catch(() => {});
       })
-      .catch(() => {
-        // Leaves the previous data in place; a first load with no data
-        // falls through to "Channel not found".
+      .catch((err: unknown) => {
+        // Only a 404 means the channel does not exist; anything else is a
+        // failed load worth retrying.
+        if (!cancelled) {
+          setChannelFailed(
+            !(err instanceof RequestJsonError && err.status === 404),
+          );
+        }
       })
       .finally(() => {
         if (!cancelled) {
@@ -152,7 +162,12 @@ export function useChannelData(slug: string, refreshKey: number) {
     return () => {
       cancelled = true;
     };
-  }, [slug, refreshKey]);
+  }, [slug, refreshKey, channelAttempt]);
+
+  const retryChannel = useCallback(() => {
+    setLoading(true);
+    setChannelAttempt((attempt) => attempt + 1);
+  }, []);
 
   const sounds = useChannelSection(
     slug,
@@ -184,6 +199,8 @@ export function useChannelData(slug: string, refreshKey: number) {
     liveShows: shows.data,
     artistSocialLinks,
     loading,
+    channelFailed,
+    retryChannel,
     sectionStatus: {
       sounds: sounds.status,
       widgets: widgets.status,

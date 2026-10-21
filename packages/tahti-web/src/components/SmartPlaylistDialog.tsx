@@ -1,8 +1,15 @@
-import { LoaderCircleIcon, PlusIcon, TrashIcon } from 'lucide-react';
+import { PlusIcon, TrashIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, FilterChips, Input, Select } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  FilterChips,
+  Input,
+  Loader,
+  Select,
+} from '@tahti-player/ui';
 
 import type {
   NativeSmartDefinition,
@@ -266,9 +273,7 @@ export function SmartPlaylistDialog({
           disabled={saving || problem !== null || draft.name.trim() === ''}
           onClick={() => void save()}
         >
-          {saving ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
-          ) : null}
+          {saving ? <Loader size="inline" shape="circle" /> : null}
           Save
         </Button>
       </Dialog.Actions>

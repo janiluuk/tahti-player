@@ -1,9 +1,11 @@
+import { ExternalLink } from '@tahti-player/ui';
+
 import { LegalDocSection, LegalDocShell } from '../components/LegalDocShell';
 
 const p = 'text-foreground-secondary text-sm leading-relaxed';
 const ul = 'text-foreground-secondary list-disc space-y-1 pl-5 text-sm';
 const ol = 'text-foreground-secondary list-decimal space-y-1 pl-5 text-sm';
-const link = 'underline-offset-2 hover:underline';
+const link = 'no-underline underline-offset-2 hover:underline';
 
 export function AgplView() {
   return (
@@ -18,28 +20,24 @@ export function AgplView() {
           infrastructure, the worker services, and the governance tooling.
         </p>
         <p className={p}>
-          <a
+          <ExternalLink
             href="https://github.com/tahti-live/tahti-org"
-            target="_blank"
-            rel="noopener noreferrer"
             className={link}
           >
             github.com/tahti-live/tahti-org →
-          </a>
+          </ExternalLink>
         </p>
       </LegalDocSection>
 
       <LegalDocSection title="What AGPL-3.0 means">
         <p className={p}>
           The{' '}
-          <a
+          <ExternalLink
             href="https://www.gnu.org/licenses/agpl-3.0.en.html"
-            target="_blank"
-            rel="noopener noreferrer"
             className={link}
           >
             AGPL-3.0 licence
-          </a>{' '}
+          </ExternalLink>{' '}
           is a strong copyleft licence. In short:
         </p>
         <ul className={ul}>
@@ -107,14 +105,12 @@ export function AgplView() {
       <LegalDocSection title="Licence text">
         <p className={p}>
           The full licence text is in the repository at{' '}
-          <a
+          <ExternalLink
             href="https://github.com/tahti-live/tahti-org/blob/main/LICENCE"
-            target="_blank"
-            rel="noopener noreferrer"
             className={link}
           >
             LICENCE
-          </a>
+          </ExternalLink>
           . The short version: GNU AGPL version 3, no additional terms.
         </p>
       </LegalDocSection>

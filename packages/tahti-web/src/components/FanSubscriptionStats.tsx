@@ -7,7 +7,16 @@ import {
 } from 'lucide-react';
 import type { FC, ReactNode } from 'react';
 
-import { Badge, HorizontalScroll } from '@tahti-player/ui';
+import {
+  Badge,
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableHead,
+  DataTableHeaderCell,
+  DataTableRow,
+  HorizontalScroll,
+} from '@tahti-player/ui';
 
 import type { FanPayoutStats } from '../api/revenue';
 import type { RevenueOrderRow } from '../lib/revenueOrders';
@@ -120,48 +129,48 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
     <div data-tour-id="revenue-orders" data-testid="fan-order-list">
       <h3 className="mb-2 text-sm font-bold">Payout history</h3>
       <HorizontalScroll label="Payout history">
-        <table className="w-full min-w-[430px] text-left text-sm">
-          <thead className="text-foreground-secondary text-[11px] tracking-wide uppercase">
-            <tr className="border-border border-b">
-              <th className="px-2 py-2 font-semibold">Date</th>
-              <th className="px-2 py-2 font-semibold">Description</th>
-              <th className="px-2 py-2 font-semibold">Gross</th>
-              <th className="px-2 py-2 font-semibold">Net to you</th>
-              <th className="px-2 py-2 font-semibold">State</th>
-            </tr>
-          </thead>
-          <tbody className="divide-border divide-y">
+        <DataTable className="min-w-[430px]">
+          <DataTableHead>
+            <DataTableRow>
+              <DataTableHeaderCell>Date</DataTableHeaderCell>
+              <DataTableHeaderCell>Description</DataTableHeaderCell>
+              <DataTableHeaderCell>Gross</DataTableHeaderCell>
+              <DataTableHeaderCell>Net to you</DataTableHeaderCell>
+              <DataTableHeaderCell>State</DataTableHeaderCell>
+            </DataTableRow>
+          </DataTableHead>
+          <DataTableBody>
             {orders.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-2 py-4">
+              <DataTableRow>
+                <DataTableCell colSpan={5} className="py-4">
                   <PageEmpty title="No payouts yet." />
-                </td>
-              </tr>
+                </DataTableCell>
+              </DataTableRow>
             ) : (
               orders.map((order) => (
-                <tr key={order.id}>
-                  <td className="text-foreground-secondary px-2 py-2.5">
+                <DataTableRow key={order.id}>
+                  <DataTableCell className="text-foreground-secondary">
                     {order.date.toLocaleDateString()}
-                  </td>
-                  <td className="px-2 py-2.5 font-medium">
+                  </DataTableCell>
+                  <DataTableCell className="font-medium">
                     {order.description}
-                  </td>
-                  <td className="px-2 py-2.5 tabular-nums">
+                  </DataTableCell>
+                  <DataTableCell className="tabular-nums">
                     {order.grossCents == null ? '—' : euros(order.grossCents)}
-                  </td>
-                  <td className="px-2 py-2.5 font-semibold tabular-nums">
+                  </DataTableCell>
+                  <DataTableCell className="font-semibold tabular-nums">
                     {order.state === 'PENDING' ? '—' : euros(order.netCents)}
-                  </td>
-                  <td className="px-2 py-2.5">
+                  </DataTableCell>
+                  <DataTableCell>
                     <Badge variant="pill" color={payoutStateColor(order.state)}>
                       {order.state}
                     </Badge>
-                  </td>
-                </tr>
+                  </DataTableCell>
+                </DataTableRow>
               ))
             )}
-          </tbody>
-        </table>
+          </DataTableBody>
+        </DataTable>
       </HorizontalScroll>
       {footnote ? (
         <p className="text-foreground-secondary mt-3 text-xs">{footnote}</p>

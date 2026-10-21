@@ -1,10 +1,5 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  LoaderCircleIcon,
-  Settings2Icon,
-} from 'lucide-react';
+import { ArrowDownIcon, ArrowUpIcon, Settings2Icon } from 'lucide-react';
 import {
   useEffect,
   useId,
@@ -17,6 +12,7 @@ import {
 
 import { cn } from '../../utils';
 import { Button } from '../Button';
+import { Loader } from '../Loader';
 import { Tooltip } from '../Tooltip';
 import {
   CatalogTableSettingsDialog,
@@ -394,13 +390,7 @@ export function CatalogTable<T>({
                   disabled={selectingAll}
                   onClick={onSelectAllMatching}
                 >
-                  {selectingAll ? (
-                    <LoaderCircleIcon
-                      size={12}
-                      className="animate-spin"
-                      aria-hidden
-                    />
-                  ) : null}
+                  {selectingAll ? <Loader size="xs" shape="circle" /> : null}
                   Select all {total.toLocaleString('en-US')}
                 </Button>
               ) : null}
@@ -421,10 +411,11 @@ export function CatalogTable<T>({
           )}
         </div>
         {loading ? (
-          <LoaderCircleIcon
-            size={14}
-            className="animate-spin opacity-60"
-            aria-label="Loading"
+          <Loader
+            size="inline"
+            shape="circle"
+            className="opacity-60"
+            label="Loading"
           />
         ) : null}
         {toolbar}

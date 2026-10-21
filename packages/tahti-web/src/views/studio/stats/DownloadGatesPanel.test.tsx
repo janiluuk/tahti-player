@@ -44,13 +44,28 @@ describe('DownloadGatesPanel', () => {
     expect(rows[1]!.textContent).not.toContain('Follow');
   });
 
-  it('renders nothing when the stats fail to load', async () => {
+  it('shows Retry when the stats fail to load', async () => {
+    const fetch = vi.spyOn(gates, 'fetchDownloadGateStats').mockResolvedValue({
+      data: null,
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await act(async () => {
+      render(<DownloadGatesPanel active />);
+    });
+    expect(screen.getByText('Could not load download gates')).toBeTruthy();
+    await act(async () => {
+      screen.getByRole('button', { name: 'Retry' }).click();
+    });
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('renders nothing on a failed load while the tab is hidden', async () => {
     vi.spyOn(gates, 'fetchDownloadGateStats').mockResolvedValue({
       data: null,
-      meta: { source: 'api' },
+      meta: { source: 'api', reason: 'HTTP 502' },
     });
     const { container } = await act(async () =>
-      render(<DownloadGatesPanel active />),
+      render(<DownloadGatesPanel active={false} />),
     );
     expect(container.textContent).toBe('');
   });

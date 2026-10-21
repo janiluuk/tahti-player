@@ -1,3 +1,26 @@
+## 2026-10-21 - UX batch 88 (Loader, load honesty leftovers, clear filters)
+
+`Loader` gains `className`, `xs`/`inline` sizes, `shape="circle"`, `label`
+and reduced-motion; 51 hand-rolled spinners in 33 files move to it.
+ChannelView tells a 404 from a failed load (Retry); admin dashboard and
+activity, stats detail, Selects picker, meeting conflicts, multistream
+status, smart-link and newsletter stats show `PageError` instead of zeros or
+nothing (failed polls keep what is on screen). `SectionTitle` `wrap`,
+`CopyButton` `icon` (My Venues, RSS button); Clear search / filters on seven
+filtered-empty lists. Bumped to `0.0.242`.
+
+## 2026-10-21 - UX batch 87 (DataTable, load honesty, library swaps)
+
+New `DataTable` family in `@tahti-player/ui` (story + test) replaces eleven
+hand-rolled tables (payouts, port inventory, releases, transparency, grant
+year, status, help, fan-sub artists, grant cycle). Account subscriptions and
+purchases, fan subscriptions, multistream targets, recent social posts,
+feature-request threads, radio bookings and shows, stem jobs, admin grants and
+download gates show `PageError` + Retry instead of an empty or vanished panel.
+Period / show-format switches -> `SegmentedControl`, stat tiles -> `StatTile`,
+bars -> `Meter`, warnings -> `Alert`, headings -> `SectionTitle`, external
+links -> `ExternalLink`. Bumped to `0.0.243`.
+
 ## 2026-09-11 — v0.0.242: accurate listener world map
 
 Studio Stats and track insights `ListenerWorldMap` now renders Natural Earth

@@ -1,8 +1,8 @@
-import { LoaderCircleIcon, StarIcon, XIcon } from 'lucide-react';
+import { StarIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Input } from '@tahti-player/ui';
+import { Button, Dialog, Input, Loader } from '@tahti-player/ui';
 
 import {
   TRACK_COLORS,
@@ -144,7 +144,7 @@ export function TrackOrganizeDialog({
       </Dialog.Description>
       {!data ? (
         <p className="text-foreground-secondary flex items-center gap-2 text-sm">
-          <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+          <Loader size="inline" shape="circle" />
           Loading…
         </p>
       ) : (

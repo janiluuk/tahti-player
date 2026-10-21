@@ -1,6 +1,5 @@
 import {
   CopyIcon,
-  LoaderCircleIcon,
   PencilIcon,
   PlayIcon,
   PlusIcon,
@@ -11,7 +10,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, Loader, Tooltip } from '@tahti-player/ui';
 
 import type {
   NativeSmartDefinition,
@@ -180,10 +179,11 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                 </span>
               </span>
               {busyId === list.id ? (
-                <LoaderCircleIcon
-                  size={14}
-                  className="mx-2 animate-spin"
-                  aria-label="Working"
+                <Loader
+                  size="inline"
+                  shape="circle"
+                  className="mx-2"
+                  label="Working"
                 />
               ) : (
                 <>

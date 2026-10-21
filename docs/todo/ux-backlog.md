@@ -70,3 +70,8 @@ new surface, one PR per row.
 - [ ] Delete a release — needs a tahti-org `DELETE` route for releases first.
 - [ ] Add selected Sounds to a release (bulk action; needs a picker).
 - [ ] Undo for publish / create flows (none in Studio).
+
+## Leftovers from batch 88
+
+- [ ] `Loader` numeric `size` so the last four spinners can move (PlayerBarControls,
+  MediaArtwork, TrackProcessing, ConnectedPlayerBar 28px).

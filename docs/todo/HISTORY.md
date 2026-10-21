@@ -1,3 +1,19 @@
+## 2026-10-21 - UX batch 88 thirty slices
+
+Folded `ux-batch-88-thirty.md`. `Loader` API (className, small sizes, circle
+shape, label) + 51 spinners migrated; 9 load-honesty leftovers fixed
+(MessageContacts and ArtistSoundCloudTracks deliberately stay hidden on
+failure); `SectionTitle` `wrap`, `CopyButton` `icon`; seven clear-filter
+slices. Shipped as `0.0.242`.
+
+## 2026-10-21 - UX batch 87 thirty slices
+
+Folded `ux-batch-87-thirty.md`. `DataTable` primitive in `@tahti-player/ui`
++ 9 files of raw tables migrated; 10 load-honesty fixes (`PageError` + Retry;
+`fetchAdminGrants` now reports per-year failures in `meta`); 10 library swaps
+(`SegmentedControl`, `StatTile`, `Meter`, `Alert`, `SectionTitle`,
+`ExternalLink`). Shipped as `0.0.241`.
+
 ## 2026-10-21 — UX batch 86 twenty slices
 
 Folded `ux-batch-86-twenty.md`. Load-failure honesty (`PageError` + Retry)

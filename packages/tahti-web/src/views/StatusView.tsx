@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import { ViewShell } from '@tahti-player/ui';
+import {
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableHead,
+  DataTableHeaderCell,
+  DataTableRow,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchPlatformStatus } from '../api/client';
 import type { PlatformStatus } from '../api/types';
@@ -96,37 +104,39 @@ export function StatusView() {
             />
           ) : (
             <>
-              <table className="w-full border-collapse text-left text-sm">
-                <thead>
-                  <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-                    <th className="py-2 pr-3 font-medium">Check</th>
-                    <th className="py-2 pr-3 font-medium">State</th>
-                    <th className="py-2 pr-3 font-medium">Latency</th>
-                    <th className="py-2 font-medium">Detail</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <DataTable>
+                <DataTableHead>
+                  <DataTableRow>
+                    <DataTableHeaderCell>Check</DataTableHeaderCell>
+                    <DataTableHeaderCell>State</DataTableHeaderCell>
+                    <DataTableHeaderCell>Latency</DataTableHeaderCell>
+                    <DataTableHeaderCell>Detail</DataTableHeaderCell>
+                  </DataTableRow>
+                </DataTableHead>
+                <DataTableBody>
                   {Object.entries(data.checks).map(([id, check]) => (
-                    <tr key={id} className="border-border border-b">
-                      <td className="py-2 pr-3 font-medium">
+                    <DataTableRow key={id}>
+                      <DataTableCell className="font-medium">
                         {id}
                         {check.critical ? ' *' : ''}
-                      </td>
-                      <td className={`py-2 pr-3 ${stateClass(check.state)}`}>
+                      </DataTableCell>
+                      <DataTableCell
+                        className={`py-2 pr-3 ${stateClass(check.state)}`}
+                      >
                         {check.state}
-                      </td>
-                      <td className="text-foreground-secondary py-2 pr-3">
+                      </DataTableCell>
+                      <DataTableCell className="text-foreground-secondary">
                         {typeof check.latencyMs === 'number'
                           ? `${check.latencyMs} ms`
                           : '—'}
-                      </td>
-                      <td className="text-foreground-secondary py-2 text-xs">
+                      </DataTableCell>
+                      <DataTableCell className="text-foreground-secondary text-xs">
                         {check.detail ?? ''}
-                      </td>
-                    </tr>
+                      </DataTableCell>
+                    </DataTableRow>
                   ))}
-                </tbody>
-              </table>
+                </DataTableBody>
+              </DataTable>
               <p className="text-foreground-secondary text-xs">
                 * Critical dependency
               </p>

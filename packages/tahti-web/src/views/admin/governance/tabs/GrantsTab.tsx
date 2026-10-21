@@ -6,7 +6,12 @@ import {
   fetchAdminGrants,
   type AdminGrantYearSummary,
 } from '../../../../api/admin';
-import { PageEmpty, PageLoading } from '../../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 
 function formatEur(cents: number): string {
@@ -16,50 +21,72 @@ function formatEur(cents: number): string {
 export function GrantsTab() {
   const [history, setHistory] = useState<AdminGrantYearSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const reload = () => {
+    setLoading(true);
     void fetchAdminGrants().then((res) => {
       setHistory(res.data);
+      setLoadError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
-  }, []);
+  };
+
+  useEffect(reload, []);
 
   return (
     <>
       <StudioPanel title="Disbursement history">
         {loading ? (
           <PageLoading label="Loading grant cycles…" />
+        ) : loadError && history.length === 0 ? (
+          <PageError
+            title="Could not load grant cycles"
+            description={loadError}
+            onRetry={reload}
+          />
         ) : history.length === 0 ? (
           <PageEmpty title="No grant cycles have been run yet." />
         ) : (
-          <ul className="divide-border divide-y">
-            {history.map((row) => (
-              <li
-                key={row.year}
-                className="flex items-center justify-between gap-2 py-3 text-sm first:pt-0 last:pb-0"
-              >
-                <div className="font-medium">{row.year}</div>
-                <div className="text-foreground-secondary text-xs">
-                  {row.grantCount} recipients
-                </div>
-                <div className="text-sm font-medium">
-                  {formatEur(row.totalCents)}
-                </div>
-                <Tooltip content={`View ${row.year} grants`} side="top">
-                  <ButtonLink
-                    to="/admin/grants/$year"
-                    params={{ year: String(row.year) }}
+          <>
+            {loadError ? (
+              <PageErrorBanner
+                title="Some years could not be loaded"
+                description={loadError}
+                onRetry={reload}
+              />
+            ) : null}
+            <ul className="divide-border divide-y">
+              {history.map((row) => (
+                <li
+                  key={row.year}
+                  className="flex items-center justify-between gap-2 py-3 text-sm first:pt-0 last:pb-0"
+                >
+                  <div className="font-medium">{row.year}</div>
+                  <div className="text-foreground-secondary text-xs">
+                    {row.grantCount} recipients
+                  </div>
+                  <div className="text-sm font-medium">
+                    {formatEur(row.totalCents)}
+                  </div>
+                  <Tooltip content={`View ${row.year} grants`} side="top">
+                    <ButtonLink
+                      to="/admin/grants/$year"
+                      params={{ year: String(row.year) }}
 
-                    size="icon-sm"
-                    variant="text"
-                    aria-label={`View ${row.year} grants`}
-                  >
-                    →
-                  </ButtonLink>
-                </Tooltip>
-              </li>
-            ))}
-          </ul>
+                      size="icon-sm"
+                      variant="text"
+                      aria-label={`View ${row.year} grants`}
+                    >
+                      →
+                    </ButtonLink>
+                  </Tooltip>
+                </li>
+              ))}
+            </ul>
+          </>
         )}
       </StudioPanel>
       <StudioPanel title="Preview a grant cycle">

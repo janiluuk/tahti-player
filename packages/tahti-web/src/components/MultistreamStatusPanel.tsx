@@ -7,6 +7,7 @@ import {
   type RtmpTargetLiveStatus,
 } from '../api/rtmp-status';
 import { usePolling } from '../hooks/usePolling';
+import { PageErrorBanner } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 const REFRESH_MS = 15_000;
@@ -24,17 +25,24 @@ const STATUS_BADGE: Record<
 /** Whether each multistream destination is receiving the stream right now. */
 export function MultistreamStatusPanel({ slug }: { slug: string }) {
   const [targets, setTargets] = useState<RtmpTargetLiveStatus[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(() => {
     void fetchRtmpTargetStatuses(slug).then((result) => {
-      setTargets(result.data);
+      const reason =
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
+      setError(reason);
+      // A failed poll keeps the last known statuses on screen.
+      if (!reason) {
+        setTargets(result.data);
+      }
     });
   }, [slug]);
 
   useEffect(load, [load]);
   usePolling(load, REFRESH_MS, Boolean(targets?.length));
 
-  if (!targets || targets.length === 0) {
+  if (!error && (!targets || targets.length === 0)) {
     return null;
   }
 
@@ -53,11 +61,20 @@ export function MultistreamStatusPanel({ slug }: { slug: string }) {
         </ButtonLink>
       }
     >
+      {error ? (
+        <PageErrorBanner
+          title="Couldn't check multistream status"
+          description={
+            targets?.length ? 'Showing the last known status.' : error
+          }
+          onRetry={load}
+        />
+      ) : null}
       <ul
         className="divide-border divide-y text-sm"
         data-testid="multistream-status"
       >
-        {targets.map((target) => {
+        {(targets ?? []).map((target) => {
           const badge = STATUS_BADGE[target.status];
           return (
             <li key={target.id} className="flex flex-col gap-1 py-2">

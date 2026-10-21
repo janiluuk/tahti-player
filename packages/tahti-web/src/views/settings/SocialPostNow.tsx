@@ -11,7 +11,7 @@ import {
   type SocialPostLog,
   type SocialPostPlatform,
 } from '../../api/social-autopost';
-import { PageEmpty } from '../../components/PageStates';
+import { PageEmpty, PageError } from '../../components/PageStates';
 
 const PLATFORM_NAMES: Record<SocialPostPlatform, string> = {
   MASTODON: 'Mastodon',
@@ -63,9 +63,15 @@ export function SocialPostNow({
   const [message, setMessage] = useState('');
   const [posting, setPosting] = useState(false);
   const [posts, setPosts] = useState<SocialPostLog[] | null>(null);
+  const [postsError, setPostsError] = useState<string | null>(null);
 
   const loadPosts = () => {
-    void fetchSocialPosts().then((result) => setPosts(result.data));
+    void fetchSocialPosts().then((result) => {
+      setPosts(result.data);
+      setPostsError(
+        result.data === null ? (result.meta.reason ?? 'fetch failed') : null,
+      );
+    });
   };
 
   useEffect(loadPosts, []);
@@ -162,6 +168,12 @@ export function SocialPostNow({
             ))}
           </ul>
         </div>
+      ) : postsError ? (
+        <PageError
+          title="Could not load recent posts"
+          description={postsError}
+          onRetry={loadPosts}
+        />
       ) : posts && selected ? (
         <PageEmpty
           title="Nothing posted yet."

@@ -35,4 +35,13 @@ describe('SectionTitle', () => {
 
     expect(screen.queryByTestId('section-title-badge')).not.toBeInTheDocument();
   });
+
+  it('wraps long titles when asked', () => {
+    render(
+      <SectionTitle title="A very long venue name" badge="Verified" wrap />,
+    );
+
+    expect(screen.getByTestId('section-title')).toHaveClass('flex-wrap');
+    expect(screen.getByRole('heading')).not.toHaveClass('whitespace-nowrap');
+  });
 });

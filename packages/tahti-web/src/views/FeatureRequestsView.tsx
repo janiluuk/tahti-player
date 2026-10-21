@@ -49,6 +49,7 @@ export function FeatureRequestsView({
   const [loadError, setLoadError] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [comments, setComments] = useState<MotionComment[]>([]);
+  const [commentsError, setCommentsError] = useState<string | null>(null);
   const [commentBody, setCommentBody] = useState('');
   const [actionMsg, setActionMsg] = useState<string | null>(null);
   const [votingId, setVotingId] = useState<string | null>(null);
@@ -88,7 +89,13 @@ export function FeatureRequestsView({
   const openThread = (id: string) => {
     setExpandedId(id);
     setCommentBody('');
-    void fetchFeatureRequestComments(id).then((res) => setComments(res.data));
+    setCommentsError(null);
+    void fetchFeatureRequestComments(id).then((res) => {
+      setComments(res.data);
+      setCommentsError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
+    });
   };
 
   const body = (
@@ -308,7 +315,13 @@ export function FeatureRequestsView({
 
                 {expandedId === r.id && (
                   <div className="border-border mt-3 flex flex-col gap-2 border-t pt-3">
-                    {comments.length === 0 ? (
+                    {commentsError && comments.length === 0 ? (
+                      <PageError
+                        title="Could not load comments"
+                        description={commentsError}
+                        onRetry={() => openThread(r.id)}
+                      />
+                    ) : comments.length === 0 ? (
                       <PageEmpty
                         title="No comments yet."
                         description="Be the first to comment."

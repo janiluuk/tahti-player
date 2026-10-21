@@ -347,6 +347,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/ClampedText` | `ClampedText.stories.tsx` |
 | `Components/Combobox` | `Combobox.stories.tsx` |
 | `Components/CopyButton` | `CopyButton.stories.tsx` |
+| `Components/DataTable` | `DataTable.stories.tsx` |
 | `Components/HistoryCharts/DayOfWeekChart` | `DayOfWeekChart.stories.tsx` |
 | `Components/Dialog` | `Dialog.stories.tsx` |
 | `Components/DonutChart` | `DonutChart.stories.tsx` |

@@ -1,8 +1,8 @@
-import { FolderOpenIcon, LoaderCircleIcon } from 'lucide-react';
+import { FolderOpenIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Input, Toggle } from '@tahti-player/ui';
+import { Button, Dialog, Input, Loader, Toggle } from '@tahti-player/ui';
 
 import type {
   NativeOrganizeOptions,
@@ -204,11 +204,7 @@ export function OrganizeFilesDialog({
             </p>
           ) : checking ? (
             <p className="text-foreground-secondary flex items-center gap-2">
-              <LoaderCircleIcon
-                size={14}
-                className="animate-spin"
-                aria-hidden
-              />
+              <Loader size="inline" shape="circle" />
               Checking…
             </p>
           ) : plan ? (
@@ -252,13 +248,7 @@ export function OrganizeFilesDialog({
             disabled={!canRun}
             onClick={() => (move ? setConfirmingMove(true) : void run())}
           >
-            {busy ? (
-              <LoaderCircleIcon
-                size={14}
-                className="animate-spin"
-                aria-hidden
-              />
-            ) : null}
+            {busy ? <Loader size="inline" shape="circle" /> : null}
             {move ? 'Move files' : 'Copy files'}
           </Button>
         </Dialog.Actions>

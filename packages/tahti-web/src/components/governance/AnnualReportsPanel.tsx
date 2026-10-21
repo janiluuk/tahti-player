@@ -1,6 +1,8 @@
 import { BookOpenIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { ExternalLink } from '@tahti-player/ui';
+
 import {
   fetchAnnualReports,
   type PublishedAnnualReport,
@@ -69,14 +71,12 @@ export function AnnualReportsPanel() {
           {reports.map((report) => (
             <li key={report.year} className="py-2 text-sm first:pt-0 last:pb-0">
               {report.downloadUrl ? (
-                <a
+                <ExternalLink
                   href={report.downloadUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-medium underline-offset-2 hover:underline"
+                  className="font-medium no-underline underline-offset-2 hover:underline"
                 >
                   Annual report {report.year}
-                </a>
+                </ExternalLink>
               ) : (
                 <span className="font-medium">Annual report {report.year}</span>
               )}

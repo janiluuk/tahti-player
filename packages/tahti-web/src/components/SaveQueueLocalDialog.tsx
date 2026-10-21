@@ -1,8 +1,7 @@
-import { LoaderCircleIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Input } from '@tahti-player/ui';
+import { Button, Dialog, Input, Loader } from '@tahti-player/ui';
 
 import type { TahtiNativeLibrary } from '../lib/nativeLibrary';
 import { usePlayerStore } from '../stores/playerStore';
@@ -94,9 +93,7 @@ export function SaveQueueLocalDialog({ isOpen, onClose, library }: Props) {
           disabled={busy || !name.trim() || trackIds.length === 0}
           onClick={() => void save()}
         >
-          {busy ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
-          ) : null}
+          {busy ? <Loader size="inline" shape="circle" /> : null}
           Save local playlist
         </Button>
       </Dialog.Actions>

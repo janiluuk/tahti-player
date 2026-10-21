@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { Badge, type CardsRowBadgeColor } from '@tahti-player/ui';
+import { SectionTitle, type CardsRowBadgeColor } from '@tahti-player/ui';
 
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
 import type { ListenSectionStatus } from './useListenSections';
@@ -46,16 +46,7 @@ export function ListenSection({
       data-status={status}
       aria-busy={status === 'loading'}
     >
-      <div className="flex items-center gap-2">
-        <h2 className="text-foreground text-lg font-bold whitespace-nowrap">
-          {title}
-        </h2>
-        {badge && (
-          <Badge variant="pill" color={badgeColor}>
-            {badge}
-          </Badge>
-        )}
-      </div>
+      <SectionTitle title={title} badge={badge} badgeColor={badgeColor} />
       {status === 'loading' ? (
         <PageLoading label={`Loading ${title.toLowerCase()}…`} />
       ) : status === 'error' ? (

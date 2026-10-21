@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Badge, Box, Button } from '@tahti-player/ui';
+import { Alert, Badge, Box, Button } from '@tahti-player/ui';
 
 import {
   resendVerificationEmail,
@@ -111,10 +111,10 @@ export function MembershipStatusPanel({
           lossless streaming for listeners and unlimited live broadcasting.
         </p>
         {membership.subscriptionMigrationRequired && (
-          <p className="border-accent-yellow/40 bg-accent-yellow/10 text-foreground rounded-lg border px-3 py-2 text-sm">
+          <Alert tone="warning" className="text-foreground">
             Your membership uses the legacy one-time path. Subscribe via Stripe
             for automatic annual renewal and billing receipts.
-          </p>
+          </Alert>
         )}
         {dueLabel &&
           !membership.hasStripeSubscription &&

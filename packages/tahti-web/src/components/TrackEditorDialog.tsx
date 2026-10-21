@@ -1,8 +1,8 @@
-import { LoaderCircleIcon, Undo2Icon } from 'lucide-react';
+import { Undo2Icon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Input } from '@tahti-player/ui';
+import { Button, Dialog, Input, Loader } from '@tahti-player/ui';
 
 import type {
   NativeEditField,
@@ -206,7 +206,7 @@ export function TrackEditorDialog({
         </p>
       ) : !summary ? (
         <p className="text-foreground-secondary flex items-center gap-2 text-sm">
-          <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+          <Loader size="inline" shape="circle" />
           Loading…
         </p>
       ) : (
@@ -310,9 +310,7 @@ export function TrackEditorDialog({
           disabled={!canApply}
           onClick={() => void apply()}
         >
-          {busy ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
-          ) : null}
+          {busy ? <Loader size="inline" shape="circle" /> : null}
           Apply
         </Button>
       </Dialog.Actions>

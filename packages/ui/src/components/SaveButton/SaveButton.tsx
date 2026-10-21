@@ -1,7 +1,8 @@
-import { LoaderCircleIcon, SaveIcon } from 'lucide-react';
+import { SaveIcon } from 'lucide-react';
 import { ComponentProps, FC } from 'react';
 
 import { Button } from '../Button';
+import { Loader } from '../Loader';
 
 export type SaveButtonProps = Omit<
   ComponentProps<typeof Button>,
@@ -40,11 +41,7 @@ export const SaveButton: FC<SaveButtonProps> = ({
       {...props}
     >
       {saving ? (
-        <LoaderCircleIcon
-          size={14}
-          aria-hidden
-          className="mr-1.5 animate-spin"
-        />
+        <Loader size="inline" shape="circle" className="mr-1.5" />
       ) : (
         <SaveIcon size={14} aria-hidden className="mr-1.5" />
       )}
