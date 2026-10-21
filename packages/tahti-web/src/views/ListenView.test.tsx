@@ -102,6 +102,17 @@ describe('ListenView sections', () => {
     expect(screen.queryByText("Live now couldn't load")).toBeNull();
   });
 
+  it('lists new tracks in the ambient list with its sort menu', async () => {
+    await renderListen();
+
+    const tracks = await screen.findByTestId('listen-new-tracks');
+    await waitFor(() =>
+      expect(
+        within(tracks).getByRole('button', { name: 'Sort tracks' }),
+      ).toBeTruthy(),
+    );
+  });
+
   it('shows an empty state, not an error, when nothing is on air', async () => {
     vi.spyOn(listen, 'fetchOnAirChannels').mockResolvedValue({
       data: { live: [], replaying: [], recent: [] },

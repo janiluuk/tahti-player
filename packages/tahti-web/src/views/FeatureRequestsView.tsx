@@ -1,7 +1,14 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Badge, Button, Input, Textarea, ViewShell } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  ButtonLink,
+  Input,
+  Textarea,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   createFeatureRequest,
@@ -103,12 +110,13 @@ export function FeatureRequestsView({
             ← Governance
           </Link>
         ) : (
-          <Link
+          <ButtonLink
             to="/governance/feature-requests"
-            className="text-foreground-secondary text-xs hover:underline"
+            size="sm"
+            variant="secondary"
           >
-            Open full page →
-          </Link>
+            Open full page
+          </ButtonLink>
         )}
         {user && !forbidden ? (
           <Button size="sm" onClick={() => setComposerOpen((v) => !v)}>

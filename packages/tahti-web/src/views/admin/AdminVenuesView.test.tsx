@@ -1,26 +1,11 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as admin from '../../api/admin';
+import { renderWithRouter } from '../../test/renderWithRouter';
 import { AdminVenuesView } from './AdminVenuesView';
 
-vi.mock('@tanstack/react-router', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@tanstack/react-router')>()),
-  Link: ({
-    children,
-    params,
-    className,
-  }: {
-    children: React.ReactNode;
-    params: { username: string };
-    className?: string;
-  }) => (
-    <a href={`/u/${params.username}`} className={className}>
-      {children}
-    </a>
-  ),
-}));
 vi.mock('../../components/AdminGate', () => ({
   AdminGate: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
@@ -62,8 +47,23 @@ vi.mock('../../api/admin', () => ({
 describe('admin venues list', () => {
   afterEach(cleanup);
 
+  it('shows the Admin → Venues breadcrumb', async () => {
+    await renderWithRouter(<AdminVenuesView />, {
+      paths: ['/u/$username'],
+    });
+    const nav = await screen.findByRole('navigation', { name: 'Breadcrumb' });
+    expect(nav.textContent).toContain('Admin');
+    expect(nav.textContent).toContain('Venues');
+    expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute(
+      'href',
+      '/admin',
+    );
+  });
+
   it('shows when a venue was submitted, not the submitter account id', async () => {
-    render(<AdminVenuesView />);
+    await renderWithRouter(<AdminVenuesView />, {
+      paths: ['/u/$username'],
+    });
     const name = await screen.findByText('Northern Lights Hall');
     const row = name.closest('li') ?? name.parentElement?.parentElement;
     expect(row?.textContent).toContain(
@@ -74,7 +74,9 @@ describe('admin venues list', () => {
   });
 
   it("links the submitter's profile when the API names them", async () => {
-    render(<AdminVenuesView />);
+    await renderWithRouter(<AdminVenuesView />, {
+      paths: ['/u/$username'],
+    });
     const link = await screen.findByRole('link', { name: 'Nightdrive' });
     expect(link).toHaveAttribute('href', '/u/nightdrive');
     expect(link.parentElement?.textContent).toContain(
@@ -88,7 +90,9 @@ describe('admin venues list', () => {
       data: [],
       meta: { source: 'api', reason: 'HTTP 502' },
     });
-    render(<AdminVenuesView />);
+    await renderWithRouter(<AdminVenuesView />, {
+      paths: ['/u/$username'],
+    });
     expect(await screen.findByText('Could not load venues')).toBeTruthy();
     expect(screen.queryByText('No venues found')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
@@ -96,7 +100,9 @@ describe('admin venues list', () => {
   });
 
   it('clears a search that matches no venues', async () => {
-    render(<AdminVenuesView />);
+    await renderWithRouter(<AdminVenuesView />, {
+      paths: ['/u/$username'],
+    });
     await screen.findByText('Northern Lights Hall');
     fireEvent.change(screen.getByLabelText('Search venues'), {
       target: { value: 'polka' },

@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as admin from '../../api/admin';
 import { fetchAdminLanguages } from '../../api/admin';
+import { renderWithRouter } from '../../test/renderWithRouter';
 import { AdminI18nView } from './AdminI18nView';
 
 vi.mock('../../components/AdminGate', () => ({
@@ -35,7 +36,7 @@ describe('admin languages without a translation API', () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response('Not Found', { status: 404 }),
     );
-    render(<AdminI18nView />);
+    await renderWithRouter(<AdminI18nView />);
     expect(await screen.findByText(/Not available yet/)).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'New language' })).toBeNull();
     expect(screen.queryByRole('button', { name: /Import CSV/ })).toBeNull();
@@ -59,7 +60,7 @@ describe('admin languages without a translation API', () => {
         { status: 200 },
       ),
     );
-    render(<AdminI18nView />);
+    await renderWithRouter(<AdminI18nView />);
     expect(await screen.findByText('Swedish')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'New language' })).toBeTruthy();
     expect(screen.getByRole('button', { name: /Import CSV/ })).toBeTruthy();
@@ -70,7 +71,7 @@ describe('admin languages without a translation API', () => {
       data: [],
       meta: { source: 'api', reason: 'HTTP 502' },
     });
-    render(<AdminI18nView />);
+    await renderWithRouter(<AdminI18nView />);
     expect(await screen.findByText('Could not load languages')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Retry' })).toBeTruthy();
   });

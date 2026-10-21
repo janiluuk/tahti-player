@@ -29,7 +29,7 @@ import {
 } from '../../api/studio-extras';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ImageLightbox } from '../../components/ImageLightbox';
-import { PageError } from '../../components/PageStates';
+import { PageError, PageErrorBanner } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { newsletterDeliverySummary } from '../../lib/newsletterDelivery';
@@ -130,6 +130,13 @@ export function StudioUpdatesView({
         {loaded && loadError && isEmpty ? (
           <PageError
             title="Could not load posts and newsletters"
+            description={loadError}
+            onRetry={reload}
+          />
+        ) : null}
+        {loaded && loadError && !isEmpty ? (
+          <PageErrorBanner
+            title="Could not refresh posts and newsletters"
             description={loadError}
             onRetry={reload}
           />

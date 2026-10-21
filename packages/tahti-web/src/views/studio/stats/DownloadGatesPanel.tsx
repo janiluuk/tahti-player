@@ -16,8 +16,8 @@ import { StudioPanel } from '../../../components/StudioPanel';
 export function DownloadGatesPanel({ active }: { active: boolean }) {
   const [stats, setStats] = useState<DownloadGateStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -25,8 +25,8 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
     void fetchDownloadGateStats().then((result) => {
       if (!cancelled) {
         setStats(result.data);
-        setLoadError(
-          result.data ? null : (result.meta.reason ?? 'fetch failed'),
+        setError(
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
         );
         setLoading(false);
       }
@@ -34,7 +34,7 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
     return () => {
       cancelled = true;
     };
-  }, [attempt]);
+  }, [reloadKey]);
 
   if (loading) {
     return active ? (
@@ -45,12 +45,12 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
   }
 
   if (!stats) {
-    return active ? (
+    return error && active ? (
       <StudioPanel title="Download gates">
         <PageError
           title="Could not load download gates"
-          description={loadError ?? undefined}
-          onRetry={() => setAttempt((n) => n + 1)}
+          description={error}
+          onRetry={() => setReloadKey((key) => key + 1)}
         />
       </StudioPanel>
     ) : null;
