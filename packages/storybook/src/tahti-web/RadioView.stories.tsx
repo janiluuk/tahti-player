@@ -97,6 +97,23 @@ export const BookASlot: Story = {
   },
 };
 
+export const UpNextRotation: Story = {
+  name: 'Up next: rotation tracks',
+  decorators: [withMockAuth(MOCK_USERS.listener)],
+  parameters: {
+    mockData: mockData({
+      radio: () => ({ live: false, channel: null }),
+    }),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const rotation = await canvas.findByTestId('radio-up-next-rotation');
+    await expect(rotation).toBeVisible();
+    await expect(within(rotation).getByText('Aurora Drift')).toBeVisible();
+    await expect(within(rotation).getAllByRole('listitem')).toHaveLength(3);
+  },
+};
+
 export const Offline: Story = {
   name: 'Station offline, no member relay',
   decorators: [withMockAuth(MOCK_USERS.listener)],
