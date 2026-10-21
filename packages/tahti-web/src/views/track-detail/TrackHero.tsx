@@ -26,8 +26,8 @@ import {
 } from '@tahti-player/ui';
 
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
+import { PlayerWaveform } from '../../components/PlayerWaveform';
 import { ReportButton } from '../../components/ReportButton';
-import { WaveformSeekbar } from '../../components/tahti/WaveformSeekbar';
 import { TimelineReactionBar } from '../../components/TimelineReactionBar';
 import { useSoundEngagement } from '../../hooks/useSoundEngagement';
 import { resolveArtworkVisualizerPreset } from '../../lib/artworkVisualizer';
@@ -37,7 +37,7 @@ import { formatDuration } from '../../lib/playableToTrack';
 import { useAuthModalStore } from '../../stores/authModalStore';
 import { AiGeneratedBadge } from './AiGeneratedBadge';
 import { type TrackPage } from './buildTrackPage';
-import { formatReleasedOn, WAVEFORM_BARS } from './helpers';
+import { formatReleasedOn } from './helpers';
 import { TrackAccessGate } from './TrackAccessGate';
 import { mixVersionLabel } from './trackDetails';
 
@@ -66,7 +66,6 @@ export function TrackHero({ page }: { page: TrackPage }) {
     playable,
     isPlaying,
     totalDuration,
-    progress,
     favorited,
     canPlay,
     embedProvider,
@@ -245,13 +244,12 @@ export function TrackHero({ page }: { page: TrackPage }) {
                   <div className="mb-1 flex justify-end text-xs text-white/70 tabular-nums">
                     {clock} / {formatDuration(totalDuration) || '0:00'}
                   </div>
-                  <WaveformSeekbar
+                  <PlayerWaveform
                     trackId={playable.id}
-                    progress={progress}
                     peaks={detail?.peaks}
-                    bars={detail?.peaks?.length || WAVEFORM_BARS}
+                    durationSec={totalDuration}
                     markers={commentMarkers}
-                    className="h-28"
+                    height={112}
                     onSeek={seekFraction}
                   />
                   <TimelineReactionBar

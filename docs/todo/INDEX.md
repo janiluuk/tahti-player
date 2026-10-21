@@ -22,7 +22,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [batch-87-forty-slices.md](batch-87-forty-slices.md) | Forty slices: admin breadcrumbs, partial-fail banners, Listen ambient, library sort, News/Radio de-green |
+| open    | [batch-88-wavesurfer-thirty.md](batch-88-wavesurfer-thirty.md) | Thirty slices: wavesurfer.js Waveform in ui, large preview migration, editor shell plugins |
 | open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |
 | open    | [studio-usability-audit.md](studio-usability-audit.md) | Studio uses shared components; 3 actionable findings |
@@ -38,7 +38,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
 | blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
 | blocked | [listening-party.md](listening-party.md) | Needs user go-ahead for tahti-org work |
-| blocked | [wavesurfer-waveforms.md](wavesurfer-waveforms.md) | wavesurfer.js for the audio editor + preview waveforms; 4 of 7 options decided; waiting on editor plugins, desktop files, old-code removal |
+| partial | [wavesurfer-waveforms.md](wavesurfer-waveforms.md) | wavesurfer.js: decisions locked; batch 88 ships ui Waveform + large previews + editor shell; desktop / full ProWaveform delete remain |
 | blocked | [ai-dj-radio-dj-port.md](ai-dj-radio-dj-port.md) | POC not committed; no prod ship without go-ahead |
 | blocked | [track-visualizer-video-editor.md](track-visualizer-video-editor.md) | PulseForge licence / port decision |
 | blocked | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Multi-phase 13-category project not started |

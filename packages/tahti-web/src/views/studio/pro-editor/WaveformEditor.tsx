@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -16,6 +17,7 @@ import { useAudioPreviewGraph } from '../../../lib/audioPreviewGraph';
 import { keptDuration, mergeCuts, trimToRange } from './editCuts';
 import { RegionList } from './RegionList';
 import { formatClock, type TimeView } from './waveform/draw';
+import { EditorWaveSurfer } from './waveform/EditorWaveSurfer';
 import {
   audibleRange,
   nearestListedCrossing,
@@ -97,6 +99,13 @@ export function WaveformEditor({
   const [snapToZero, setSnapToZero] = useState(true);
   const [skipCuts, setSkipCuts] = useState(true);
   const [confirm, setConfirm] = useState<Confirm | null>(null);
+  const [useWavesurfer, setUseWavesurfer] = useState(true);
+  const [audioEl, setAudioEl] = useState<HTMLAudioElement | null>(null);
+  const bindAudio = useCallback((element: HTMLAudioElement | null) => {
+    audioRef.current = element;
+    setAudioEl(element);
+  }, []);
+  const fallbackToCanvas = useCallback(() => setUseWavesurfer(false), []);
 
   const { effectsBlocked } = useAudioPreviewGraph(audioRef, editList);
   const duration = editList.sourceDuration;
@@ -489,38 +498,60 @@ export function WaveformEditor({
         />
 
         <div className="p-5 sm:p-6">
-          <ProWaveform
-            ref={waveRef}
-            data={data}
-            durationSec={duration}
-            view={view}
-            minSpan={minSpan}
-            onViewChange={setView}
-            overlay={{
-              cuts: editList.cuts,
-              fades: editList.fades,
-              selection,
-              markers,
-            }}
-            playhead={pausedAt}
-            onSeek={seek}
-            onSelect={setSelection}
-            snap={snap}
-            onKeyDown={onKeyDown}
-          />
-
-          <div className="mt-2">
-            <ProMinimap
-              ref={minimapRef}
+          {useWavesurfer ? (
+            <EditorWaveSurfer
+              peaks={data}
+              durationSec={duration}
+              media={audioEl}
+              playhead={pausedAt}
+              selection={selection}
+              onSeek={seek}
+              onSelect={setSelection}
+              view={view}
+              onViewChange={setView}
+              snap={snap}
+              cuts={editList.cuts}
+              fades={editList.fades}
+              markers={markers}
+              onKeyDown={onKeyDown}
+              onFallback={fallbackToCanvas}
+            />
+          ) : (
+            <ProWaveform
+              ref={waveRef}
               data={data}
               durationSec={duration}
               view={view}
               minSpan={minSpan}
-              cuts={editList.cuts}
-              playhead={pausedAt}
               onViewChange={setView}
+              overlay={{
+                cuts: editList.cuts,
+                fades: editList.fades,
+                selection,
+                markers,
+              }}
+              playhead={pausedAt}
+              onSeek={seek}
+              onSelect={setSelection}
+              snap={snap}
+              onKeyDown={onKeyDown}
             />
-          </div>
+          )}
+
+          {useWavesurfer ? null : (
+            <div className="mt-2">
+              <ProMinimap
+                ref={minimapRef}
+                data={data}
+                durationSec={duration}
+                view={view}
+                minSpan={minSpan}
+                cuts={editList.cuts}
+                playhead={pausedAt}
+                onViewChange={setView}
+              />
+            </div>
+          )}
 
           <div className="text-foreground-secondary mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs">
             <span>
@@ -624,7 +655,7 @@ export function WaveformEditor({
           />
         </div>
       </StudioPanel>
-      <audio ref={audioRef} preload="metadata" className="hidden" />
+      <audio ref={bindAudio} preload="metadata" className="hidden" />
       <ConfirmDialog
         isOpen={confirm !== null}
         title={confirm?.title ?? ''}

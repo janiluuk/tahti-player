@@ -422,6 +422,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/TrackTable` | `TrackTable.stories.tsx` |
 | `Components/ViewShell` | `ViewShell.stories.tsx` |
 | `Audio/VisualizerHost` | `VisualizerHost.stories.tsx` |
+| `Components/Waveform` | `Waveform.stories.tsx` |
 | `Welcome` | `Welcome.stories.tsx` |
 
 If nothing matches: add a story with today’s states, flag `Missing states:` / `Orphan:`.
