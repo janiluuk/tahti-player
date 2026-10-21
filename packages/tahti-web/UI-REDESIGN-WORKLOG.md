@@ -10,6 +10,14 @@ Period / show-format switches -> `SegmentedControl`, stat tiles -> `StatTile`,
 bars -> `Meter`, warnings -> `Alert`, headings -> `SectionTitle`, external
 links -> `ExternalLink`. Bumped to `0.0.241`.
 
+## 2026-10-21 — Wavesurfer waveforms (batch 88)
+
+`@tahti-player/ui` `Waveform` (lazy wavesurfer.js) for large previews;
+`PlayerWaveform` bound to the global player audio on TrackHero, SoundHeader,
+and edit AudioTab; pro-editor `EditorWaveSurfer` with Regions / Timeline /
+Minimap / Zoom / Hover and ProWaveform fallback. Ambient rows and player-bar
+seekbar unchanged. Bumped ui `0.0.19`, tahti-web `0.0.241`.
+
 ## 2026-10-21 — UX batch 86 (load honesty + PageEmpty leftovers)
 
 Admin Beta / Radio submissions / Support tickets, track insights and Blocked

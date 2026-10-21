@@ -36,9 +36,12 @@ export const Owner: Story = {
 export const SignedOut: Story = {
   decorators: [withMockAuth(null)],
   play: async ({ canvasElement }) => {
-    await expect(
-      await within(canvasElement).findByText('Sign in to manage your venues'),
-    ).toBeVisible();
+    const canvas = within(canvasElement);
+    await waitFor(async () => {
+      await expect(
+        canvas.getByRole('heading', { name: 'Sign in to manage your venues' }),
+      ).toBeVisible();
+    });
   },
 };
 

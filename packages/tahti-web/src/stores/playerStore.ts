@@ -63,6 +63,9 @@ type PlayerState = {
   /** Shared Web Audio analyser for channel visualizers (set by AudioEngine). */
   analyser: AnalyserNode | null;
   setAnalyser: (analyser: AnalyserNode | null) => void;
+  /** Global hidden `<audio>` element (set by AudioEngine) for waveform binding. */
+  audioElement: HTMLAudioElement | null;
+  setAudioElement: (el: HTMLAudioElement | null) => void;
   /** Cache waveform peaks for a playable id; updates currentPeaks when that id is playing. */
   cachePeaks: (id: string, peaks: number[]) => void;
   play: (item: TahtiPlayable, opts?: { enqueueRest?: TahtiPlayable[] }) => void;
@@ -211,8 +214,11 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   currentPeaks: null,
   peaksById: {},
   analyser: null,
+  audioElement: null,
 
   setAnalyser: (analyser) => set({ analyser }),
+
+  setAudioElement: (audioElement) => set({ audioElement }),
 
   cachePeaks: (id, peaks) => {
     if (!peaks.length) {

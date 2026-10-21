@@ -80,6 +80,7 @@ export * from './TopBarNavigation';
 export * from './TopList';
 export * from './TrackContextMenu';
 export * from './ViewShell';
+export * from './Waveform';
 export * from '../providers/PlatformProvider';
 export * from '../utils/time';
 export * from './TrackTable';

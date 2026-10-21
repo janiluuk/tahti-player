@@ -1,10 +1,12 @@
 # Waveforms with wavesurfer.js (audio editor + previews)
 
-**Status:** blocked — on decisions 4, 6 and 7 below (user asked: ask before starting).
+**Status:** partial — batch 88 implements foundation + large previews + editor
+shell; desktop / full ProWaveform deletion remain.
 
 Requested 2026-10-21: integrate [wavesurfer.js](https://github.com/katspaugh/wavesurfer.js)
 ([wavesurfer.xyz](https://wavesurfer.xyz/)) and use it for the waveforms in the
-audio editor and in previews. Not started.
+audio editor and in previews. Unblocked 2026-10-21 (“go with the waveform
+migration”).
 
 ## Today
 
@@ -48,27 +50,16 @@ audio editor and in previews. Not started.
 - **Look:** rounded bars mirrored around the centre, progress in the theme's
   `--primary`.
 
-## Decisions needed (ask the user)
+## Decisions
 
-1. ~~**Which previews**~~ (decided above): all of track rows (ambient lists), track page hero,
-   player-bar seekbar, Studio sound header, upload / edit dialog, channel
-   stage — or only the large ones (hero, Studio header) while list rows keep
-   the light canvas for performance (dozens of instances per page)?
-2. ~~**Peaks source**~~ (decided above): keep the stored `[0..255]` buckets for previews
-   (fast, no decode) and decode the audio in the browser only in the editor;
-   or add a higher-resolution peaks endpoint in tahti-org for editor zoom
-   (needs API + worker work)?
-3. ~~**Playback**~~ (decided above): wavesurfer as display + seek only, bound to the global
-   player's audio element (one source of truth, music keeps playing across
-   pages); or let wavesurfer own playback inside the editor only (separate
-   preview audio while editing)?
-4. **Editor plugins**: Regions, Timeline, Minimap, Zoom, Hover are assumed.
-   Also Envelope (fade / gain curves), Spectrogram, Record (record into the
-   editor)?
-5. ~~**Look**~~ (decided above): bars vs continuous line; bar width / gap / radius; mirrored
-   (centre) vs bottom-aligned; progress colour from `--primary` or the
-   track's artwork / ambient colour (as `AmbientTrackRow` does today)?
-6. **Desktop app**: same component for native library files (decode local
-   files, or reuse the desktop analysis peaks)?
-7. **Old code**: delete `WaveformCanvas` / `ProWaveform` / `ProMinimap` /
-   `WaveformSeekbar` once replaced, or keep them as a lightweight fallback?
+1. ~~**Which previews**~~ — large only (hero, Studio header, edit dialog).
+2. ~~**Peaks source**~~ — stored `[0..255]` for previews; decode in editor.
+3. ~~**Playback**~~ — display + seek bound to global player `media`.
+4. ~~**Editor plugins**~~ (batch 88) — Regions, Timeline, Minimap, Zoom, Hover.
+   No Envelope / Spectrogram / Record in v1.
+5. ~~**Look**~~ — rounded mirrored bars; progress `--primary`.
+6. ~~**Desktop app**~~ (batch 88) — deferred; reuse `@tahti-player/ui` `Waveform`
+   later.
+7. ~~**Old code**~~ (batch 88) — keep ambient canvas + player-bar
+   `WaveformSeekbar`; replace large preview call sites; ProWaveform remains
+   fallback until editor parity is done.
