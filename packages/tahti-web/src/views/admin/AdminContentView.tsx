@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import {
   Clock3Icon,
   FileAudioIcon,
@@ -52,144 +53,158 @@ export function AdminContentView() {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/content">
-          <ViewShell
-            title="Content"
-            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
-          >
-            <div>
-              <ButtonLink
-                className="gap-1.5"
-                to="/admin/top-lists"
-                size="sm"
-                variant="secondary"
-              >
-                <ListMusicIcon size={15} aria-hidden /> Top lists
-              </ButtonLink>
-            </div>
-            {!data ? (
-              <StudioPanel>
-                <PageLoading label="Loading content overview…" />
-              </StudioPanel>
-            ) : loadError ? (
-              <StudioPanel>
-                <PageError
-                  title="Could not load the content overview"
-                  description={loadError}
-                  onRetry={() => {
-                    setData(null);
-                    setAttempt((n) => n + 1);
-                  }}
-                />
-              </StudioPanel>
-            ) : (
-              <>
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {(
-                    [
-                      ['Tracks', data.counts.tracks, FileAudioIcon],
-                      ['Shows', data.counts.shows, RadioTowerIcon],
-                      ['Uploads', data.counts.uploads, FileAudioIcon],
-                      ['Listens', data.counts.listens, Clock3Icon],
-                    ] as const
-                  ).map(([label, value, Icon]) => (
-                    <StudioPanel key={label} className="!p-4 sm:!p-5">
-                      <div className="text-foreground-secondary flex items-center gap-1.5 text-xs tracking-wide uppercase">
-                        <Icon size={14} aria-hidden />
-                        {label}
-                      </div>
-                      <StatNumber className="mt-2 block text-3xl">
-                        {value.toLocaleString()}
-                      </StatNumber>
+          <div className="flex flex-col gap-6">
+            <nav
+              aria-label="Breadcrumb"
+              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
+            >
+              <Link to="/admin" className="hover:underline">
+                Admin
+              </Link>
+              <span aria-hidden>→</span>
+              <span aria-current="page">Content</span>
+            </nav>
+            <ViewShell
+              title="Content"
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+            >
+              <div>
+                <ButtonLink
+                  className="gap-1.5"
+                  to="/admin/top-lists"
+                  size="sm"
+                  variant="secondary"
+                >
+                  <ListMusicIcon size={15} aria-hidden /> Top lists
+                </ButtonLink>
+              </div>
+              {!data ? (
+                <StudioPanel>
+                  <PageLoading label="Loading content overview…" />
+                </StudioPanel>
+              ) : loadError ? (
+                <StudioPanel>
+                  <PageError
+                    title="Could not load the content overview"
+                    description={loadError}
+                    onRetry={() => {
+                      setData(null);
+                      setAttempt((n) => n + 1);
+                    }}
+                  />
+                </StudioPanel>
+              ) : (
+                <>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    {(
+                      [
+                        ['Tracks', data.counts.tracks, FileAudioIcon],
+                        ['Shows', data.counts.shows, RadioTowerIcon],
+                        ['Uploads', data.counts.uploads, FileAudioIcon],
+                        ['Listens', data.counts.listens, Clock3Icon],
+                      ] as const
+                    ).map(([label, value, Icon]) => (
+                      <StudioPanel key={label} className="!p-4 sm:!p-5">
+                        <div className="text-foreground-secondary flex items-center gap-1.5 text-xs tracking-wide uppercase">
+                          <Icon size={14} aria-hidden />
+                          {label}
+                        </div>
+                        <StatNumber className="mt-2 block text-3xl">
+                          {value.toLocaleString()}
+                        </StatNumber>
+                      </StudioPanel>
+                    ))}
+                  </div>
+                  <div className="grid gap-6 lg:grid-cols-2">
+                    <StudioPanel
+                      title="Latest content"
+                      description="The newest tracks, shows, releases, and other catalog items."
+                    >
+                      {data.latestContent.length === 0 ? (
+                        <PageEmpty title="No content has been added yet." />
+                      ) : (
+                        <ul className="divide-border divide-y">
+                          {data.latestContent.map((item) => (
+                            <li
+                              key={item.id}
+                              className="flex flex-wrap items-center gap-3 py-3 first:pt-0 last:pb-0"
+                            >
+                              <FileAudioIcon
+                                size={18}
+                                className="text-foreground-secondary shrink-0"
+                                aria-hidden
+                              />
+                              <div className="min-w-0 flex-1">
+                                <p
+                                  className="truncate text-sm font-medium"
+                                  title={item.title}
+                                >
+                                  {item.title}
+                                </p>
+                                <p className="text-foreground-secondary text-xs">
+                                  {item.type}
+                                  {item.artistName
+                                    ? ` · ${item.artistName}`
+                                    : ''}
+                                </p>
+                              </div>
+                              <time
+                                className="text-foreground-secondary text-xs"
+                                dateTime={item.createdAt}
+                              >
+                                {formatDate(item.createdAt)}
+                              </time>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </StudioPanel>
-                  ))}
-                </div>
-                <div className="grid gap-6 lg:grid-cols-2">
-                  <StudioPanel
-                    title="Latest content"
-                    description="The newest tracks, shows, releases, and other catalog items."
-                  >
-                    {data.latestContent.length === 0 ? (
-                      <PageEmpty title="No content has been added yet." />
-                    ) : (
-                      <ul className="divide-border divide-y">
-                        {data.latestContent.map((item) => (
-                          <li
-                            key={item.id}
-                            className="flex flex-wrap items-center gap-3 py-3 first:pt-0 last:pb-0"
-                          >
-                            <FileAudioIcon
-                              size={18}
-                              className="text-foreground-secondary shrink-0"
-                              aria-hidden
-                            />
-                            <div className="min-w-0 flex-1">
-                              <p
-                                className="truncate text-sm font-medium"
-                                title={item.title}
-                              >
-                                {item.title}
-                              </p>
-                              <p className="text-foreground-secondary text-xs">
-                                {item.type}
-                                {item.artistName ? ` · ${item.artistName}` : ''}
-                              </p>
-                            </div>
-                            <time
-                              className="text-foreground-secondary text-xs"
-                              dateTime={item.createdAt}
+                    <StudioPanel
+                      title="Latest recorded broadcasts"
+                      description="Recent broadcasts captured by the platform recorder."
+                    >
+                      {data.latestBroadcasts.length === 0 ? (
+                        <PageEmpty title="No recorded broadcasts yet." />
+                      ) : (
+                        <ul className="divide-border divide-y">
+                          {data.latestBroadcasts.map((broadcast) => (
+                            <li
+                              key={broadcast.id}
+                              className="flex flex-wrap items-center gap-3 py-3 first:pt-0 last:pb-0"
                             >
-                              {formatDate(item.createdAt)}
-                            </time>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </StudioPanel>
-                  <StudioPanel
-                    title="Latest recorded broadcasts"
-                    description="Recent broadcasts captured by the platform recorder."
-                  >
-                    {data.latestBroadcasts.length === 0 ? (
-                      <PageEmpty title="No recorded broadcasts yet." />
-                    ) : (
-                      <ul className="divide-border divide-y">
-                        {data.latestBroadcasts.map((broadcast) => (
-                          <li
-                            key={broadcast.id}
-                            className="flex flex-wrap items-center gap-3 py-3 first:pt-0 last:pb-0"
-                          >
-                            <RadioTowerIcon
-                              size={18}
-                              className="text-foreground-secondary shrink-0"
-                              aria-hidden
-                            />
-                            <div className="min-w-0 flex-1">
-                              <p
-                                className="truncate text-sm font-medium"
-                                title={broadcast.title}
+                              <RadioTowerIcon
+                                size={18}
+                                className="text-foreground-secondary shrink-0"
+                                aria-hidden
+                              />
+                              <div className="min-w-0 flex-1">
+                                <p
+                                  className="truncate text-sm font-medium"
+                                  title={broadcast.title}
+                                >
+                                  {broadcast.title}
+                                </p>
+                                <p className="text-foreground-secondary text-xs">
+                                  {broadcast.artistName ?? 'Unknown artist'} ·{' '}
+                                  {formatDuration(broadcast.durationSec)}
+                                </p>
+                              </div>
+                              <time
+                                className="text-foreground-secondary text-xs"
+                                dateTime={broadcast.recordedAt}
                               >
-                                {broadcast.title}
-                              </p>
-                              <p className="text-foreground-secondary text-xs">
-                                {broadcast.artistName ?? 'Unknown artist'} ·{' '}
-                                {formatDuration(broadcast.durationSec)}
-                              </p>
-                            </div>
-                            <time
-                              className="text-foreground-secondary text-xs"
-                              dateTime={broadcast.recordedAt}
-                            >
-                              {formatDate(broadcast.recordedAt)}
-                            </time>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </StudioPanel>
-                </div>
-              </>
-            )}
-          </ViewShell>
+                                {formatDate(broadcast.recordedAt)}
+                              </time>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </StudioPanel>
+                  </div>
+                </>
+              )}
+            </ViewShell>
+          </div>
         </AdminPageLayout>
       </div>
     </AdminGate>

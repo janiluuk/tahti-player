@@ -18,7 +18,12 @@ import {
   fetchStudioSounds,
 } from '../../api/studio';
 import type { EditorProjectRow, StudioSound } from '../../api/studio-types';
-import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { contentTypeLabel } from '../../content/contentTypes';
@@ -190,6 +195,13 @@ export function StudioEditorListView() {
           </Dialog.Root>
 
           <StudioPanel title="Projects">
+            {loadError && projects.length > 0 ? (
+              <PageErrorBanner
+                title="Could not refresh your editor projects"
+                description={loadError}
+                onRetry={reload}
+              />
+            ) : null}
             {loading ? (
               <PageLoading label="Loading…" />
             ) : loadError && projects.length === 0 ? (
@@ -319,6 +331,13 @@ export function StudioEditorListView() {
                   placeholder="Search library…"
                   aria-label="Search library"
                 />
+                {soundsError && sounds.length > 0 ? (
+                  <PageErrorBanner
+                    title="Could not refresh your library"
+                    description={soundsError}
+                    onRetry={reload}
+                  />
+                ) : null}
                 {soundsError && sounds.length === 0 ? (
                   <PageError
                     title="Could not load your library"

@@ -1,7 +1,12 @@
 import { Button, EmptyState, ViewShell } from '@tahti-player/ui';
 
 import { AddToMusicActions } from '../../components/AddToMusicActions';
-import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { LibrarySectionTabs } from '../LibraryView';
@@ -28,6 +33,13 @@ export function StudioSoundsView() {
 
           <StudioPanel>
             <SoundFilters state={state} />
+            {loadError && items.length > 0 ? (
+              <PageErrorBanner
+                title="Could not refresh your sounds"
+                description={loadError}
+                onRetry={reload}
+              />
+            ) : null}
             {loading ? (
               <PageLoading label="Loading…" />
             ) : loadError && items.length === 0 ? (

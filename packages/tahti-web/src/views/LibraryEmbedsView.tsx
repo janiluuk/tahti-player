@@ -7,10 +7,12 @@ import { fetchStudioSounds } from '../api/studio';
 import type { StudioSound } from '../api/studio-types';
 import { EmbedTrackRow } from '../components/EmbedTrackRow';
 import { LibrarySectionToolbar } from '../components/library/LibrarySectionToolbar';
+import { LibrarySortSelect } from '../components/library/LibrarySortSelect';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { SoundCloudEmbedsPanel } from '../components/SoundCloudEmbedsPanel';
 import { SourceServiceIcon } from '../components/SourceServiceIcon';
 import { EMBED_PROVIDER_LABEL, type EmbedProvider } from '../lib/embedSrc';
+import { sortLibraryItems, type LibrarySort } from '../lib/librarySort';
 
 const PROVIDER_SOURCE_ICON_ID: Record<EmbedProvider, IntegrationId> = {
   HEARTHIS: 'hearthis',
@@ -36,6 +38,7 @@ export function LibraryEmbedsView() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [providerFilter, setProviderFilter] = useState<string>('ALL');
+  const [sort, setSort] = useState<LibrarySort>('newest');
 
   useEffect(() => {
     let cancelled = false;
@@ -65,10 +68,23 @@ export function LibraryEmbedsView() {
       list.push(item);
       byProvider.set(item.embedProvider, list);
     }
-    return [...byProvider.entries()].sort(([a], [b]) =>
-      EMBED_PROVIDER_LABEL[a].localeCompare(EMBED_PROVIDER_LABEL[b]),
-    );
-  }, [items, providerFilter]);
+    return [...byProvider.entries()]
+      .sort(([a], [b]) =>
+        EMBED_PROVIDER_LABEL[a].localeCompare(EMBED_PROVIDER_LABEL[b]),
+      )
+      .map(
+        ([provider, list]) =>
+          [
+            provider,
+            sortLibraryItems(
+              list,
+              sort,
+              (item) => item.title,
+              (item) => item.createdAt,
+            ),
+          ] as [EmbedProvider, EmbedItem[]],
+      );
+  }, [items, providerFilter, sort]);
 
   const providerChips = useMemo(() => {
     const ids = new Set<EmbedProvider>();
@@ -96,13 +112,20 @@ export function LibraryEmbedsView() {
   return (
     <div className="flex flex-col gap-8">
       <SoundCloudEmbedsPanel />
-      {hasAnyEmbeds && providerChips.length > 2 ? (
+      {hasAnyEmbeds ? (
         <LibrarySectionToolbar>
-          <FilterChips
-            items={providerChips}
-            selected={providerFilter}
-            onChange={setProviderFilter}
-            aria-label="Filter embeds by provider"
+          {providerChips.length > 2 ? (
+            <FilterChips
+              items={providerChips}
+              selected={providerFilter}
+              onChange={setProviderFilter}
+              aria-label="Filter embeds by provider"
+            />
+          ) : null}
+          <LibrarySortSelect
+            value={sort}
+            onChange={setSort}
+            label="Sort embeds"
           />
         </LibrarySectionToolbar>
       ) : null}

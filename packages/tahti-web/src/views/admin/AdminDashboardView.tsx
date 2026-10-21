@@ -15,7 +15,7 @@ import {
 import { fetchAdminDashboard, type AdminDashboard } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageEmpty, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
 import {
@@ -45,17 +45,40 @@ function healthChip(ok: boolean): { label: string; color: 'green' | 'orange' } {
 export function AdminDashboardView() {
   const [data, setData] = useState<AdminDashboard | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [moreOpen, setMoreOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState<
     AdminDashboard['actionRows'][number] | null
   >(null);
 
   useEffect(() => {
-    void fetchAdminDashboard().then((res) => {
-      setData(res.data);
-      setLoading(false);
-    });
-  }, []);
+    let cancelled = false;
+    setLoading(true);
+    setLoadError(null);
+    fetchAdminDashboard()
+      .then((res) => {
+        if (cancelled) {
+          return;
+        }
+        setData(res.data);
+        setLoadError(
+          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+        );
+        setLoading(false);
+      })
+      .catch((err: unknown) => {
+        if (cancelled) {
+          return;
+        }
+        setData(null);
+        setLoadError(err instanceof Error ? err.message : 'fetch failed');
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [attempt]);
 
   return (
     <AdminGate>
@@ -76,9 +99,17 @@ export function AdminDashboardView() {
               title="Dashboard"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
-              {loading || !data ? (
+              {loading ? (
                 <StudioPanel>
                   <PageLoading label="Loading dashboard…" />
+                </StudioPanel>
+              ) : loadError || !data ? (
+                <StudioPanel>
+                  <PageError
+                    title="Couldn’t load the dashboard"
+                    description={loadError ?? undefined}
+                    onRetry={() => setAttempt((n) => n + 1)}
+                  />
                 </StudioPanel>
               ) : (
                 <>

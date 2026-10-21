@@ -1,4 +1,4 @@
-import { useSearch } from '@tanstack/react-router';
+import { Link, useSearch } from '@tanstack/react-router';
 import {
   ActivityIcon,
   ContainerIcon,
@@ -31,6 +31,12 @@ import { ContainerLogsPanel } from './monitoring/ContainerLogsPanel';
 
 const TAB_IDS = ['activity', 'containers', 'recent-audit'] as const;
 type LogsTabId = (typeof TAB_IDS)[number];
+
+const LOGS_TAB_LABELS: Record<LogsTabId, string> = {
+  activity: 'Audit events',
+  containers: 'Container logs',
+  'recent-audit': 'Recent audit',
+};
 
 function toAuditLogEntry(entry: AdminAuditRow): LogEntryData {
   return {
@@ -174,6 +180,22 @@ export function AdminLogsView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/logs">
           <div className="flex max-w-6xl flex-col gap-6">
+            <nav
+              aria-label="Breadcrumb"
+              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
+            >
+              <Link to="/admin" className="hover:underline">
+                Admin
+              </Link>
+              <span aria-hidden>→</span>
+              <Link to="/admin/logs" className="hover:underline">
+                Logs
+              </Link>
+              <span aria-hidden>→</span>
+              <span aria-current="page">
+                {LOGS_TAB_LABELS[TAB_IDS[selectedIndex] ?? 'activity']}
+              </span>
+            </nav>
             <ViewShell
               title="Logs"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}

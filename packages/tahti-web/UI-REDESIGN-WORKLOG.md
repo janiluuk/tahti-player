@@ -1,3 +1,10 @@
+## 2026-10-21 — UX batch 87 (admin breadcrumbs + Listen ambient + library sort)
+
+Admin dashboards/content/users/… breadcrumbs; dashboard PageError; soft
+banners on studio/radio partial fails; Listen + artist popular ambient
+lists; library Media/Embeds/SmartLinks sort; News/Radio de-green. Bumped
+to `0.0.241`.
+
 ## 2026-10-21 — UX batch 86 (load honesty + PageEmpty leftovers)
 
 Admin Beta / Radio submissions / Support tickets, track insights and Blocked

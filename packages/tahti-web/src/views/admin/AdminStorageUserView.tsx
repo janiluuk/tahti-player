@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { ArrowLeftIcon, PlayIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -44,6 +45,28 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
   return (
     <AdminGate>
       <div className="admin-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
+        <nav
+          aria-label="Breadcrumb"
+          className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
+        >
+          <Link to="/admin" className="hover:underline">
+            Admin
+          </Link>
+          <span aria-hidden>→</span>
+          <Link to="/admin/storage" className="hover:underline">
+            Storage
+          </Link>
+          <span aria-hidden>→</span>
+          <Link
+            to="/admin/storage"
+            search={{ tab: 'files' }}
+            className="hover:underline"
+          >
+            Files
+          </Link>
+          <span aria-hidden>→</span>
+          <span aria-current="page">{detail?.displayName ?? 'User'}</span>
+        </nav>
         <ButtonLink
           className="w-fit"
           to="/admin/storage"

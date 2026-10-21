@@ -55,4 +55,49 @@ describe('LibraryMediaView', () => {
     expect(screen.queryByText('bg.png')).toBeNull();
     expect(screen.getByText('loop.mp4')).toBeTruthy();
   });
+
+  it('sorts media files by name and newest from the toolbar', async () => {
+    vi.spyOn(userMedia, 'fetchUserMedia').mockResolvedValue({
+      data: [
+        {
+          id: '1',
+          filename: 'b-old.png',
+          url: 'https://x/b.png',
+          contentType: 'image/png',
+          sizeBytes: 1024,
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        {
+          id: '2',
+          filename: 'c-new.png',
+          url: 'https://x/c.png',
+          contentType: 'image/png',
+          sizeBytes: 1024,
+          createdAt: '2026-06-01T00:00:00.000Z',
+        },
+        {
+          id: '3',
+          filename: 'a-mid.png',
+          url: 'https://x/a.png',
+          contentType: 'image/png',
+          sizeBytes: 1024,
+          createdAt: '2026-03-01T00:00:00.000Z',
+        },
+      ],
+      meta: { source: 'api' },
+    });
+    render(<LibraryMediaView />);
+    await screen.findByText('b-old.png');
+
+    const names = () =>
+      screen
+        .getAllByText(/\.png$/)
+        .filter((node) => node.tagName === 'P')
+        .map((node) => node.textContent);
+    expect(names()).toEqual(['c-new.png', 'a-mid.png', 'b-old.png']);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Sort media files' }));
+    fireEvent.click(await screen.findByRole('option', { name: 'Name A–Z' }));
+    expect(names()).toEqual(['a-mid.png', 'b-old.png', 'c-new.png']);
+  });
 });

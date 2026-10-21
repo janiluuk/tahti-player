@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import { PencilIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 import { Select } from '@tahti-player/ui';
@@ -28,12 +29,14 @@ export function PlayableAmbientTrackList({
   getAnnotation,
   compactActions,
   playAll = false,
+  onEdit,
 }: {
   items: TahtiPlayable[];
   emptyMessage?: string;
   getAnnotation?: (item: TahtiPlayable) => ReactNode;
   compactActions?: boolean;
   playAll?: boolean;
+  onEdit?: (item: TahtiPlayable) => void;
 }) {
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
@@ -97,7 +100,20 @@ export function PlayableAmbientTrackList({
             queued: queue.some((queued) => queued.id === item.id),
             onFavorite: () => toggleFavoriteTrack(item),
             favorited: favoriteTracks.some((fav) => fav.id === item.id),
-          }).filter((action) => action.id !== 'play')}
+          })
+            .filter((action) => action.id !== 'play')
+            .concat(
+              onEdit
+                ? [
+                    {
+                      id: 'edit',
+                      label: 'Edit',
+                      icon: <PencilIcon size={16} />,
+                      onClick: () => onEdit(item),
+                    },
+                  ]
+                : [],
+            )}
         />
       ),
     };
@@ -126,6 +142,7 @@ export function PlayableAmbientTrackList({
           playAll={playAll}
           compactActions={compactActions}
           getAnnotation={getAnnotation}
+          onEdit={onEdit}
         />
       )}
     />

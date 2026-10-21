@@ -5,7 +5,7 @@ import { Button, MediaArtwork } from '@tahti-player/ui';
 
 import type { RadioShowUpcomingTrack, StudioShowBooking } from '../api/shows';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
-import { PageEmpty, PageError } from './PageStates';
+import { PageEmpty, PageError, PageErrorBanner } from './PageStates';
 
 export function formatUpcoming(iso: string): string {
   const d = new Date(iso);
@@ -60,6 +60,13 @@ export function RadioUpNextPanel({
           data-testid="radio-up-next-rotation"
         >
           <h3 className={HEADING_CLASS}>Next in rotation</h3>
+          {rotationError && rotation.length > 0 ? (
+            <PageErrorBanner
+              title="Could not refresh the rotation"
+              description={rotationError}
+              onRetry={onRetryRotation}
+            />
+          ) : null}
           {rotationError && rotation.length === 0 ? (
             <PageError
               title="Could not load the rotation"
@@ -111,6 +118,13 @@ export function RadioUpNextPanel({
         data-testid="radio-up-next-shows"
       >
         <h3 className={HEADING_CLASS}>Booked shows</h3>
+        {bookingsError && bookings.length > 0 ? (
+          <PageErrorBanner
+            title="Could not refresh the schedule"
+            description={bookingsError}
+            onRetry={onRetryBookings}
+          />
+        ) : null}
         {bookingsError && bookings.length === 0 ? (
           <PageError
             title="Could not load the schedule"

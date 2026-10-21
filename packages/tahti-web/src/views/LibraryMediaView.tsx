@@ -17,8 +17,10 @@ import {
 } from '../api/user-media';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { LibrarySectionToolbar } from '../components/library/LibrarySectionToolbar';
+import { LibrarySortSelect } from '../components/library/LibrarySortSelect';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { StudioPanel } from '../components/StudioPanel';
+import { sortLibraryItems, type LibrarySort } from '../lib/librarySort';
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024 * 1024) {
@@ -35,6 +37,7 @@ export function LibraryMediaView() {
     null,
   );
   const [kindFilter, setKindFilter] = useState<string>('ALL');
+  const [sort, setSort] = useState<LibrarySort>('newest');
 
   const reload = async () => {
     setLoading(true);
@@ -61,15 +64,21 @@ export function LibraryMediaView() {
   }, [files]);
 
   const visibleFiles = useMemo(() => {
-    if (kindFilter === 'ALL') {
-      return files;
-    }
-    return files.filter((f) =>
-      kindFilter === 'VIDEO'
-        ? f.contentType.startsWith('video/')
-        : !f.contentType.startsWith('video/'),
+    const filtered =
+      kindFilter === 'ALL'
+        ? files
+        : files.filter((f) =>
+            kindFilter === 'VIDEO'
+              ? f.contentType.startsWith('video/')
+              : !f.contentType.startsWith('video/'),
+          );
+    return sortLibraryItems(
+      filtered,
+      sort,
+      (f) => f.filename,
+      (f) => f.createdAt,
     );
-  }, [files, kindFilter]);
+  }, [files, kindFilter, sort]);
 
   const remove = async (file: UserMediaFile) => {
     const previous = files;
@@ -100,16 +109,23 @@ export function LibraryMediaView() {
         <PageEmpty title="No media files yet. Add background images or a Video loop backdrop from Artist → Branding." />
       ) : (
         <div className="flex flex-col gap-4">
-          {kindChips.length > 2 ? (
-            <LibrarySectionToolbar>
+          <LibrarySectionToolbar>
+            {kindChips.length > 2 ? (
               <FilterChips
                 items={kindChips}
                 selected={kindFilter}
                 onChange={setKindFilter}
                 aria-label="Filter media by type"
               />
-            </LibrarySectionToolbar>
-          ) : null}
+            ) : null}
+            {files.length > 1 ? (
+              <LibrarySortSelect
+                value={sort}
+                onChange={setSort}
+                label="Sort media files"
+              />
+            ) : null}
+          </LibrarySectionToolbar>
           {visibleFiles.length === 0 ? (
             <PageEmpty
               title="No media files match this filter"
