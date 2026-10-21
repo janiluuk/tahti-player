@@ -14,7 +14,7 @@ import {
   type StatsPlays,
   type StatsPlaysRange,
 } from '../../api/studio-extras';
-import { PageEmpty, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
@@ -42,6 +42,8 @@ export function StudioStatsDetailView() {
   const [range, setRange] = useState<StatsPlaysRange>('30');
   const [data, setData] = useState<StatsPlays | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -50,13 +52,15 @@ export function StudioStatsDetailView() {
       if (cancelled) {
         return;
       }
-      setData(r.data);
+      const reason = r.meta.source === 'api' ? r.meta.reason : undefined;
+      setData(reason ? null : r.data);
+      setError(reason ?? null);
       setLoading(false);
     });
     return () => {
       cancelled = true;
     };
-  }, [range]);
+  }, [range, attempt]);
 
   const label =
     range === '1'
@@ -102,9 +106,17 @@ export function StudioStatsDetailView() {
             aria-label="Plays time range"
           />
 
-          {loading || !data ? (
+          {loading ? (
             <StudioPanel>
               <PageLoading label="Loading plays…" />
+            </StudioPanel>
+          ) : !data ? (
+            <StudioPanel>
+              <PageError
+                title="Couldn't load plays"
+                description={error ?? undefined}
+                onRetry={() => setAttempt((n) => n + 1)}
+              />
             </StudioPanel>
           ) : (
             <>

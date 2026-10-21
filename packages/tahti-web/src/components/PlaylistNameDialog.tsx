@@ -1,7 +1,6 @@
-import { LoaderCircleIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, Input } from '@tahti-player/ui';
+import { Button, Dialog, Input, Loader } from '@tahti-player/ui';
 
 type Props = {
   isOpen: boolean;
@@ -73,9 +72,7 @@ export function PlaylistNameDialog({
           disabled={!name.trim() || busy}
           onClick={() => void submit()}
         >
-          {busy ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
-          ) : null}
+          {busy ? <Loader size="inline" shape="circle" /> : null}
           {confirmLabel}
         </Button>
       </Dialog.Actions>

@@ -2,7 +2,13 @@ import { useNavigate } from '@tanstack/react-router';
 import { ListFilterIcon, SearchIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { FilterChips, Input, TopList, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  FilterChips,
+  Input,
+  TopList,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchAdminTopLists,
@@ -145,6 +151,17 @@ export function AdminTopListsView() {
                     normalizedQuery
                       ? 'Try another search, period, or grouping.'
                       : 'No listens recorded for this period yet.'
+                  }
+                  action={
+                    normalizedQuery ? (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => setQuery('')}
+                      >
+                        Clear search
+                      </Button>
+                    ) : undefined
                   }
                 />
               </StudioPanel>

@@ -2,7 +2,6 @@ import {
   ActivityIcon,
   FolderTreeIcon,
   ListPlusIcon,
-  LoaderCircleIcon,
   PencilIcon,
   PlayIcon,
   SaveIcon,
@@ -10,7 +9,7 @@ import {
   TrashIcon,
 } from 'lucide-react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, Loader } from '@tahti-player/ui';
 
 type Props = {
   /** Number of selected rows; the toolbar acts on the whole view when 0. */
@@ -61,7 +60,7 @@ export function SelectionToolbar({
         onClick={() => onPlayAll()}
       >
         {selectionBusy ? (
-          <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+          <Loader size="inline" shape="circle" />
         ) : (
           <PlayIcon size={14} aria-hidden />
         )}
@@ -88,7 +87,7 @@ export function SelectionToolbar({
         onClick={() => onPlay()}
       >
         {selectionBusy ? (
-          <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+          <Loader size="inline" shape="circle" />
         ) : (
           <PlayIcon size={14} aria-hidden />
         )}
@@ -148,7 +147,7 @@ export function SelectionToolbar({
         onClick={() => onAnalyze()}
       >
         {analyzing ? (
-          <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+          <Loader size="inline" shape="circle" />
         ) : (
           <ActivityIcon size={14} aria-hidden />
         )}

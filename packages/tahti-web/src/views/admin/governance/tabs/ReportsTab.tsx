@@ -1,7 +1,7 @@
-import { FileTextIcon, LoaderCircleIcon } from 'lucide-react';
+import { FileTextIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, Input, Loader } from '@tahti-player/ui';
 
 import {
   fetchAdminAnnualReports,
@@ -65,11 +65,7 @@ export function ReportsTab() {
             }}
           >
             {busy ? (
-              <LoaderCircleIcon
-                size={14}
-                aria-hidden
-                className="mr-1.5 animate-spin"
-              />
+              <Loader size="inline" shape="circle" className="mr-1.5" />
             ) : (
               <FileTextIcon size={14} aria-hidden className="mr-1.5" />
             )}

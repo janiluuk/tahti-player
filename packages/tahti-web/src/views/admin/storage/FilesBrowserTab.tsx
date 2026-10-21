@@ -191,6 +191,12 @@ export function FilesBrowserTab() {
 
   const filters: AdminFileFilters = { q: query, userId, genre, contentType };
   const filtered = Boolean(query.trim() || userId || genre || contentType);
+  const clearFilters = () => {
+    setQuery('');
+    setUserId('');
+    setGenre('');
+    setContentType('');
+  };
 
   const reload = (next: AdminFileFilters = filters) => {
     setLoading(true);
@@ -316,16 +322,7 @@ export function FilesBrowserTab() {
           className="min-w-36"
         />
         {filtered ? (
-          <Button
-            size="sm"
-            variant="text"
-            onClick={() => {
-              setQuery('');
-              setUserId('');
-              setGenre('');
-              setContentType('');
-            }}
-          >
+          <Button size="sm" variant="text" onClick={clearFilters}>
             Clear filters
           </Button>
         ) : null}
@@ -423,6 +420,13 @@ export function FilesBrowserTab() {
           ) : groupedRows.length === 0 ? (
             <PageEmpty
               title={filtered ? 'No files match these filters' : 'No files yet'}
+              action={
+                filtered ? (
+                  <Button size="sm" variant="secondary" onClick={clearFilters}>
+                    Clear filters
+                  </Button>
+                ) : undefined
+              }
             />
           ) : (
             <div className="flex flex-col gap-5">
@@ -471,6 +475,13 @@ export function FilesBrowserTab() {
           ) : files.length === 0 ? (
             <PageEmpty
               title={filtered ? 'No files match these filters' : 'No files yet'}
+              action={
+                filtered ? (
+                  <Button size="sm" variant="secondary" onClick={clearFilters}>
+                    Clear filters
+                  </Button>
+                ) : undefined
+              }
             />
           ) : (
             <ul className="divide-border [&>li:nth-child(even)]:bg-background-secondary/40 divide-y">

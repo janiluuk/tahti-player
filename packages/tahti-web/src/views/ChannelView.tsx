@@ -50,7 +50,7 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
-import { PageLoading } from '../components/PageStates';
+import { PageError, PageLoading } from '../components/PageStates';
 import { StreamManagerPanel } from '../components/StreamManagerPanel';
 import { listenerWidgetType } from '../content/listenerWidgets';
 import { useChannelAutoplay } from '../hooks/useChannelAutoplay';
@@ -114,6 +114,8 @@ export function ChannelView({ slug }: { slug: string }) {
     liveShows,
     artistSocialLinks,
     loading,
+    channelFailed,
+    retryChannel,
     sectionStatus,
     retrySection,
   } = useChannelData(slug, lookTick);
@@ -273,6 +275,16 @@ export function ChannelView({ slug }: { slug: string }) {
 
   if (loading) {
     return <PageLoading label="Loading channel…" />;
+  }
+
+  if (!channel && channelFailed) {
+    return (
+      <PageError
+        title="Couldn't load this channel"
+        description="Check your connection and try again."
+        onRetry={retryChannel}
+      />
+    );
   }
 
   if (!channel) {

@@ -1,8 +1,8 @@
-import { FolderOpenIcon, LoaderCircleIcon } from 'lucide-react';
+import { FolderOpenIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog } from '@tahti-player/ui';
+import { Button, Dialog, Loader } from '@tahti-player/ui';
 
 import type {
   NativeRestorePreview,
@@ -147,7 +147,7 @@ export function BackupRestoreDialog({
         </p>
       ) : !preview ? (
         <p className="text-foreground-secondary flex items-center gap-2 text-sm">
-          <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+          <Loader size="inline" shape="circle" />
           Reading the backup…
         </p>
       ) : (
@@ -217,9 +217,7 @@ export function BackupRestoreDialog({
           onClick={() => void restore()}
           className="gap-1.5"
         >
-          {busy ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
-          ) : null}
+          {busy ? <Loader size="inline" shape="circle" /> : null}
           Restore
         </Button>
       </Dialog.Actions>

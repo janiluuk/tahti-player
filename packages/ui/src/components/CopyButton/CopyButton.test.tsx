@@ -37,6 +37,28 @@ describe('CopyButton', () => {
     expect(iconAfter).not.toBe(iconBefore);
   });
 
+  it('shows a custom icon until copied, then the check', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue();
+
+    render(
+      <CopyButton
+        text="https://example.com/feed.xml"
+        icon={<span data-testid="custom-icon" />}
+        data-testid="copy-btn"
+      />,
+    );
+
+    expect(screen.getByTestId('custom-icon')).toBeInTheDocument();
+
+    await user.click(screen.getByTestId('copy-btn'));
+
+    expect(screen.queryByTestId('custom-icon')).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId('copy-btn').querySelector('.lucide-check'),
+    ).not.toBeNull();
+  });
+
   it('renders a visible label and swaps it to "Copied" after copying', async () => {
     const user = userEvent.setup();
     vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue();

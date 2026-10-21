@@ -1,8 +1,7 @@
-import { LoaderCircleIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Input, Toggle } from '@tahti-player/ui';
+import { Button, Dialog, Input, Loader, Toggle } from '@tahti-player/ui';
 
 import type {
   NativeEntryStatus,
@@ -184,11 +183,7 @@ export function PlaylistImportDialog({
                 onClick={() => void chooseFolder()}
               >
                 {busy === 'scan' ? (
-                  <LoaderCircleIcon
-                    size={14}
-                    className="animate-spin"
-                    aria-hidden
-                  />
+                  <Loader size="inline" shape="circle" />
                 ) : null}
                 Find missing files in a folder…
               </Button>
@@ -243,9 +238,7 @@ export function PlaylistImportDialog({
           disabled={!preview || !name.trim() || busy !== null}
           onClick={() => void commit()}
         >
-          {busy === 'import' ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
-          ) : null}
+          {busy === 'import' ? <Loader size="inline" shape="circle" /> : null}
           Import playlist
         </Button>
       </Dialog.Actions>

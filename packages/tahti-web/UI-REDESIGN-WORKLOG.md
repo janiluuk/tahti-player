@@ -1,3 +1,14 @@
+## 2026-10-21 - UX batch 88 (Loader, load honesty leftovers, clear filters)
+
+`Loader` gains `className`, `xs`/`inline` sizes, `shape="circle"`, `label`
+and reduced-motion; 51 hand-rolled spinners in 33 files move to it.
+ChannelView tells a 404 from a failed load (Retry); admin dashboard and
+activity, stats detail, Selects picker, meeting conflicts, multistream
+status, smart-link and newsletter stats show `PageError` instead of zeros or
+nothing (failed polls keep what is on screen). `SectionTitle` `wrap`,
+`CopyButton` `icon` (My Venues, RSS button); Clear search / filters on seven
+filtered-empty lists. Bumped to `0.0.242`.
+
 ## 2026-10-21 - UX batch 87 (DataTable, load honesty, library swaps)
 
 New `DataTable` family in `@tahti-player/ui` (story + test) replaces eleven

@@ -472,6 +472,18 @@ export function StudioCollectionsView() {
               <EmptyState
                 size="sm"
                 title="No collections match these filters."
+                action={
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      setQuery('');
+                      setFilter('ALL');
+                    }}
+                  >
+                    Clear filters
+                  </Button>
+                }
               />
             ) : (
               <ul className="divide-border divide-y">

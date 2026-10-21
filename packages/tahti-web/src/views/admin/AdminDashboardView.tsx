@@ -15,7 +15,7 @@ import {
 import { fetchAdminDashboard, type AdminDashboard } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageEmpty, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
 import {
@@ -45,17 +45,30 @@ function healthChip(ok: boolean): { label: string; color: 'green' | 'orange' } {
 export function AdminDashboardView() {
   const [data, setData] = useState<AdminDashboard | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [moreOpen, setMoreOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState<
     AdminDashboard['actionRows'][number] | null
   >(null);
 
   useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
     void fetchAdminDashboard().then((res) => {
-      setData(res.data);
+      if (cancelled) {
+        return;
+      }
+      const reason = res.meta.source === 'api' ? res.meta.reason : undefined;
+      // The failure payload is zeroed KPIs and "down" health; never show it.
+      setData(reason ? null : res.data);
+      setError(reason ?? null);
       setLoading(false);
     });
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [attempt]);
 
   return (
     <AdminGate>
@@ -76,9 +89,17 @@ export function AdminDashboardView() {
               title="Dashboard"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
-              {loading || !data ? (
+              {loading ? (
                 <StudioPanel>
                   <PageLoading label="Loading dashboard…" />
+                </StudioPanel>
+              ) : !data ? (
+                <StudioPanel>
+                  <PageError
+                    title="Couldn't load the dashboard"
+                    description={error ?? undefined}
+                    onRetry={() => setAttempt((n) => n + 1)}
+                  />
                 </StudioPanel>
               ) : (
                 <>

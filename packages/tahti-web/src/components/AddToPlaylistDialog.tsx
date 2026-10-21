@@ -1,8 +1,8 @@
-import { ListPlusIcon, LoaderCircleIcon } from 'lucide-react';
+import { ListPlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Input } from '@tahti-player/ui';
+import { Button, Dialog, Input, Loader } from '@tahti-player/ui';
 
 import { formatTotalDuration, pluralTracks } from '../lib/libraryFormat';
 import type {
@@ -129,11 +129,7 @@ export function AddToPlaylistDialog({
               }
             >
               {busy === playlist.id ? (
-                <LoaderCircleIcon
-                  size={14}
-                  className="animate-spin"
-                  aria-hidden
-                />
+                <Loader size="inline" shape="circle" />
               ) : (
                 <ListPlusIcon size={14} aria-hidden />
               )}
@@ -166,9 +162,7 @@ export function AddToPlaylistDialog({
           }
           className="gap-1.5"
         >
-          {busy === 'new' ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
-          ) : null}
+          {busy === 'new' ? <Loader size="inline" shape="circle" /> : null}
           Create and add
         </Button>
       </div>

@@ -1,4 +1,4 @@
-import { LoaderCircleIcon, PlusIcon } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
@@ -7,6 +7,7 @@ import {
   ButtonAnchor,
   CopyButton,
   Input,
+  Loader,
   Select,
   Toggle,
   Tooltip,
@@ -352,11 +353,7 @@ export function AgmTab() {
             }}
           >
             {meetingSaving ? (
-              <LoaderCircleIcon
-                size={14}
-                aria-hidden
-                className="mr-1.5 animate-spin"
-              />
+              <Loader size="inline" shape="circle" className="mr-1.5" />
             ) : (
               <PlusIcon size={14} aria-hidden className="mr-1.5" />
             )}
@@ -659,11 +656,7 @@ export function AgmTab() {
               }}
             >
               {documentSaving ? (
-                <LoaderCircleIcon
-                  size={14}
-                  aria-hidden
-                  className="mr-1.5 animate-spin"
-                />
+                <Loader size="inline" shape="circle" className="mr-1.5" />
               ) : (
                 <PlusIcon size={14} aria-hidden className="mr-1.5" />
               )}

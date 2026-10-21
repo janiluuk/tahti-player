@@ -24,7 +24,11 @@ import {
   type AdminSelectsItem,
   type AdminSelectsStream,
 } from '../../../../api/admin';
-import { PageEmpty, PageLoading } from '../../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { TahtiRotationPlaylistEditor } from '../../../../components/TahtiRotationPlaylistEditor';
 import { usePolling } from '../../../../hooks/usePolling';
@@ -57,6 +61,8 @@ export function SelectsTab() {
   const [streamBusy, setStreamBusy] = useState(false);
   const [query, setQuery] = useState('');
   const [browse, setBrowse] = useState<AdminSelectsBrowseItem[]>([]);
+  const [browseError, setBrowseError] = useState<string | null>(null);
+  const [browseAttempt, setBrowseAttempt] = useState(0);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [generateOpen, setGenerateOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -105,13 +111,26 @@ export function SelectsTab() {
   useEffect(() => {
     if (!pickerOpen) {
       setBrowse([]);
+      setBrowseError(null);
       return;
     }
+    let cancelled = false;
     const handle = setTimeout(() => {
-      void searchAdminSelectsBrowse(query).then((res) => setBrowse(res.data));
+      void searchAdminSelectsBrowse(query).then((res) => {
+        if (cancelled) {
+          return;
+        }
+        setBrowse(res.data);
+        setBrowseError(
+          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+        );
+      });
     }, 250);
-    return () => clearTimeout(handle);
-  }, [pickerOpen, query]);
+    return () => {
+      cancelled = true;
+      clearTimeout(handle);
+    };
+  }, [pickerOpen, query, browseAttempt]);
 
   const inRotationIds = new Set(items.map((i) => i.soundId));
 
@@ -383,7 +402,13 @@ export function SelectsTab() {
               endAddon={<SearchIcon size={16} aria-hidden />}
             />
             <div className="border-border min-h-0 overflow-auto rounded-md border">
-              {browse.length === 0 ? (
+              {browseError ? (
+                <PageError
+                  title="Couldn't load archive tracks"
+                  description={browseError}
+                  onRetry={() => setBrowseAttempt((n) => n + 1)}
+                />
+              ) : browse.length === 0 ? (
                 <PageEmpty
                   title={
                     query.trim()

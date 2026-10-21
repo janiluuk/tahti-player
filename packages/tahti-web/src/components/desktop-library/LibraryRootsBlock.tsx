@@ -1,12 +1,11 @@
 import {
   FolderPlusIcon,
   Link2Icon,
-  LoaderCircleIcon,
   RefreshCwIcon,
   TrashIcon,
 } from 'lucide-react';
 
-import { Button, Toggle, Tooltip } from '@tahti-player/ui';
+import { Button, Loader, Toggle, Tooltip } from '@tahti-player/ui';
 
 import type { NativeLibraryRoot } from '../../lib/nativeLibrary';
 import { basename } from './pathLabels';
@@ -54,7 +53,7 @@ export function LibraryRootsBlock({
           disabled={loading || rootBusy !== null}
         >
           {rootBusy === 'add' ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+            <Loader size="inline" shape="circle" />
           ) : (
             <FolderPlusIcon size={14} aria-hidden />
           )}
@@ -76,11 +75,7 @@ export function LibraryRootsBlock({
             disabled={loading || rootBusy !== null}
           >
             {rootBusy === 'rescan' ? (
-              <LoaderCircleIcon
-                size={14}
-                className="animate-spin"
-                aria-hidden
-              />
+              <Loader size="inline" shape="circle" />
             ) : (
               <RefreshCwIcon size={14} aria-hidden />
             )}
@@ -126,11 +121,7 @@ export function LibraryRootsBlock({
                   disabled={loading || rootBusy !== null}
                 >
                   {rootBusy === root.id ? (
-                    <LoaderCircleIcon
-                      size={14}
-                      className="animate-spin"
-                      aria-hidden
-                    />
+                    <Loader size="inline" shape="circle" />
                   ) : (
                     <Link2Icon size={14} aria-hidden />
                   )}
