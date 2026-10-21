@@ -11,7 +11,7 @@ import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 
 function TimelineNode({ isLatest }: { isLatest?: boolean }) {
   return isLatest ? (
-    <div className="bg-accent-green border-foreground flex size-7 shrink-0 items-center justify-center rounded-full border-(length:--border-width)">
+    <div className="bg-accent-yellow border-foreground flex size-7 shrink-0 items-center justify-center rounded-full border-(length:--border-width)">
       <SparklesIcon className="text-foreground size-4" strokeWidth={2.5} />
     </div>
   ) : (

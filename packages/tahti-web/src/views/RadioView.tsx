@@ -49,7 +49,12 @@ import {
   MediaIconActions,
   playQueueFavoriteActions,
 } from '../components/MediaIconActions';
-import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../components/PageStates';
 import { RadioBookingCalendar } from '../components/RadioBookingCalendar';
 import { RadioUpNextPanel } from '../components/RadioUpNextPanel';
 import { Eyebrow } from '../components/tahti/Eyebrow';
@@ -498,109 +503,119 @@ export function RadioView() {
                     ) : recent.length === 0 ? (
                       <PageEmpty title="No recent plays logged yet." />
                     ) : (
-                      <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
-                        {recent.map((item) => {
-                          const playable: TahtiPlayable | null =
-                            item.audioUrl && item.soundId
-                              ? {
-                                  id: `sound:${item.soundId}`,
-                                  kind: 'sound',
-                                  title: item.title,
-                                  artist: item.artistName,
-                                  coverUrl: item.artworkUrl ?? undefined,
-                                  streamUrl: item.audioUrl,
-                                  protocol: 'https',
-                                }
-                              : null;
-                          const isPlaying = Boolean(
-                            playable && playable.id === currentId,
-                          );
-                          const isActivelyPlaying =
-                            isPlaying &&
-                            (playerStatus === 'playing' ||
-                              playerStatus === 'loading');
-                          return (
-                            <li
-                              key={item.id}
-                              className={`flex items-center gap-3 border-l-4 px-3 py-2 transition-colors ${
-                                isPlaying
-                                  ? 'border-l-accent-green bg-accent-green/10'
-                                  : 'border-l-transparent'
-                              }`}
-                            >
-                              <Button
-                                type="button"
-                                variant="text"
-                                size="flexible"
-                                onClick={() =>
-                                  setInfoTrack({
+                      <div className="flex flex-col gap-3">
+                        {sectionErrors.recent ? (
+                          <PageErrorBanner
+                            title="Could not refresh recent plays"
+                            description={sectionErrors.recent}
+                            onRetry={reload}
+                          />
+                        ) : null}
+                        <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
+                          {recent.map((item) => {
+                            const playable: TahtiPlayable | null =
+                              item.audioUrl && item.soundId
+                                ? {
+                                    id: `sound:${item.soundId}`,
+                                    kind: 'sound',
                                     title: item.title,
-                                    artistName: item.artistName,
-                                    artistUsername: item.artistUsername,
-                                    artworkUrl: item.artworkUrl,
-                                    meta: formatAgo(item.playedAt),
-                                    playable,
-                                  })
-                                }
-                                aria-label={`Track info for ${item.title}`}
-                                className="shrink-0 p-0"
+                                    artist: item.artistName,
+                                    coverUrl: item.artworkUrl ?? undefined,
+                                    streamUrl: item.audioUrl,
+                                    protocol: 'https',
+                                  }
+                                : null;
+                            const isPlaying = Boolean(
+                              playable && playable.id === currentId,
+                            );
+                            const isActivelyPlaying =
+                              isPlaying &&
+                              (playerStatus === 'playing' ||
+                                playerStatus === 'loading');
+                            return (
+                              <li
+                                key={item.id}
+                                className={`flex items-center gap-3 border-l-4 px-3 py-2 transition-colors ${
+                                  isPlaying
+                                    ? 'border-l-accent-cyan bg-accent-cyan/10'
+                                    : 'border-l-transparent'
+                                }`}
                               >
-                                <MediaArtwork
-                                  size="sm"
-                                  src={item.artworkUrl}
-                                  alt=""
-                                  className="bg-surface-secondary rounded-md text-[10px] font-bold"
-                                  placeholder={item.title
-                                    .slice(0, 2)
-                                    .toUpperCase()}
-                                />
-                              </Button>
-                              <div className="min-w-0 flex-1">
-                                <Link
-                                  to="/t/$id"
-                                  params={{ id: item.id }}
-                                  className={`block truncate text-sm leading-6 font-medium underline-offset-2 hover:underline ${
-                                    isPlaying ? 'text-accent-green-strong' : ''
-                                  }`}
+                                <Button
+                                  type="button"
+                                  variant="text"
+                                  size="flexible"
+                                  onClick={() =>
+                                    setInfoTrack({
+                                      title: item.title,
+                                      artistName: item.artistName,
+                                      artistUsername: item.artistUsername,
+                                      artworkUrl: item.artworkUrl,
+                                      meta: formatAgo(item.playedAt),
+                                      playable,
+                                    })
+                                  }
+                                  aria-label={`Track info for ${item.title}`}
+                                  className="shrink-0 p-0"
                                 >
-                                  {item.title}
-                                </Link>
-                                <div className="text-foreground-secondary truncate text-xs">
-                                  {item.artistName}
+                                  <MediaArtwork
+                                    size="sm"
+                                    src={item.artworkUrl}
+                                    alt=""
+                                    className="bg-surface-secondary rounded-md text-[10px] font-bold"
+                                    placeholder={item.title
+                                      .slice(0, 2)
+                                      .toUpperCase()}
+                                  />
+                                </Button>
+                                <div className="min-w-0 flex-1">
+                                  <Link
+                                    to="/t/$id"
+                                    params={{ id: item.id }}
+                                    className={`block truncate text-sm leading-6 font-medium underline-offset-2 hover:underline ${
+                                      isPlaying ? 'text-accent-cyan-strong' : ''
+                                    }`}
+                                  >
+                                    {item.title}
+                                  </Link>
+                                  <div className="text-foreground-secondary truncate text-xs">
+                                    {item.artistName}
+                                  </div>
                                 </div>
-                              </div>
-                              <span className="text-foreground-secondary hidden shrink-0 text-xs sm:inline">
-                                {formatAgo(item.playedAt)}
-                              </span>
-                              <MediaIconActions
-                                actions={playQueueFavoriteActions({
-                                  onPlay: () => playable && play(playable),
-                                  onTogglePause: () =>
-                                    setPlayerStatus(
-                                      playerStatus === 'playing' ||
-                                        playerStatus === 'loading'
-                                        ? 'paused'
-                                        : 'playing',
+                                <span className="text-foreground-secondary hidden shrink-0 text-xs sm:inline">
+                                  {formatAgo(item.playedAt)}
+                                </span>
+                                <MediaIconActions
+                                  actions={playQueueFavoriteActions({
+                                    onPlay: () => playable && play(playable),
+                                    onTogglePause: () =>
+                                      setPlayerStatus(
+                                        playerStatus === 'playing' ||
+                                          playerStatus === 'loading'
+                                          ? 'paused'
+                                          : 'playing',
+                                      ),
+                                    isPlaying: isActivelyPlaying,
+                                    onQueue: () =>
+                                      playable && enqueue(playable),
+                                    playDisabled: !playable,
+                                    queueDisabled: !playable,
+                                    playLabel: `Play ${item.title}`,
+                                    queueLabel: `Queue ${item.title}`,
+                                    queued: Boolean(
+                                      playable &&
+                                      queue.some(
+                                        (queueItem) =>
+                                          queueItem.id === playable.id,
+                                      ),
                                     ),
-                                  isPlaying: isActivelyPlaying,
-                                  onQueue: () => playable && enqueue(playable),
-                                  playDisabled: !playable,
-                                  queueDisabled: !playable,
-                                  playLabel: `Play ${item.title}`,
-                                  queueLabel: `Queue ${item.title}`,
-                                  queued: Boolean(
-                                    playable &&
-                                    queue.some(
-                                      (queueItem) =>
-                                        queueItem.id === playable.id,
-                                    ),
-                                  ),
-                                })}
-                              />
-                            </li>
-                          );
-                        })}
-                      </ul>
+                                  })}
+                                />
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
                     ),
                 },
                 {

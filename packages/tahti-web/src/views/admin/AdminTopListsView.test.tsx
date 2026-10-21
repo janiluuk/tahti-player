@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { renderWithRouter } from '../../test/renderWithRouter';
 import { AdminTopListsView } from './AdminTopListsView';
 
 const { fetchAdminTopLists } = vi.hoisted(() => ({
@@ -33,7 +34,7 @@ describe('AdminTopListsView', () => {
       data: [],
       meta: { source: 'api', reason: 'HTTP 500' },
     });
-    render(<AdminTopListsView />);
+    await renderWithRouter(<AdminTopListsView />);
     expect(
       await screen.findByText('Could not load top lists'),
     ).toBeInTheDocument();

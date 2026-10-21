@@ -1,9 +1,8 @@
-import { Newspaper, XIcon } from 'lucide-react';
+import { XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
   Button,
-  EmptyState,
   Loader,
   NewsWidget,
   Tooltip,
@@ -14,6 +13,7 @@ import { fetchRssArticles } from '../api/rss-feed';
 import type { RssArticle } from '../lib/parseRss';
 import type { ListenerWidgetInstance } from '../stores/listenerWidgetsStore';
 import { NewsArticleDialog } from './NewsArticleDialog';
+import { PageError } from './PageStates';
 
 const LABELS = {
   nothingFound: 'No articles in this feed right now.',
@@ -29,6 +29,7 @@ export function NewsFeedWidget({
   const [items, setItems] = useState<ArticleCardItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [openArticle, setOpenArticle] = useState<RssArticle | null>(null);
 
   useEffect(() => {
@@ -54,7 +55,7 @@ export function NewsFeedWidget({
     return () => {
       cancelled = true;
     };
-  }, [instance.input, instance.thumbnailUrl]);
+  }, [instance.input, instance.thumbnailUrl, reloadKey]);
 
   return (
     <div className="relative" data-testid="news-feed-widget">
@@ -79,11 +80,10 @@ export function NewsFeedWidget({
           </span>
         </div>
       ) : failed ? (
-        <EmptyState
-          size="sm"
-          icon={<Newspaper size={32} className="opacity-40" />}
+        <PageError
           title="Couldn’t load this feed"
           description="Check the RSS URL and try again."
+          onRetry={() => setReloadKey((key) => key + 1)}
         />
       ) : (
         <NewsWidget

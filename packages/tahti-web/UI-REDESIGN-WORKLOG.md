@@ -1,3 +1,10 @@
+## 2026-10-21 — UX batch 87 (admin breadcrumbs + Listen ambient + library sort)
+
+Admin dashboards/content/users/… breadcrumbs; dashboard PageError; soft
+banners on studio/radio partial fails; Listen + artist popular ambient
+lists; library Media/Embeds/SmartLinks sort; News/Radio de-green. Bumped
+to `0.0.242`.
+
 ## 2026-10-21 — Wavesurfer waveforms (batch 88)
 
 `@tahti-player/ui` `Waveform` (lazy wavesurfer.js) for large previews;

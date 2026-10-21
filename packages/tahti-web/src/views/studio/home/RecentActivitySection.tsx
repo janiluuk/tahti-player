@@ -7,6 +7,7 @@ import {
   fetchRecentSounds,
   type RecentSound,
 } from '../../../api/studio/studio-recent';
+import { PageError, PageErrorBanner } from '../../../components/PageStates';
 import { Group } from './HomeTiles';
 
 const money = new Intl.NumberFormat(undefined, {
@@ -37,30 +38,53 @@ const labelClass =
 export function RecentActivitySection() {
   const [sounds, setSounds] = useState<RecentSound[]>([]);
   const [incomeCents, setIncomeCents] = useState<number | null>(null);
+  const [soundsError, setSoundsError] = useState<string | null>(null);
+  const [incomeError, setIncomeError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
-    void fetchRecentSounds().then(({ data }) => {
+    void fetchRecentSounds().then(({ data, meta }) => {
       if (!cancelled) {
         setSounds(data);
+        setSoundsError(meta.source === 'api' ? (meta.reason ?? null) : null);
       }
     });
-    void fetchFanPayoutSummary().then(({ data }) => {
+    void fetchFanPayoutSummary().then(({ data, meta }) => {
       if (!cancelled) {
         setIncomeCents(data?.thisMonthNetCents ?? null);
+        setIncomeError(meta.source === 'api' ? (meta.reason ?? null) : null);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reloadKey]);
+
+  const error = soundsError ?? incomeError;
+  const retry = () => setReloadKey((key) => key + 1);
 
   if (sounds.length === 0 && incomeCents == null) {
-    return null;
+    return error ? (
+      <Group title="Recent activity">
+        <PageError
+          title="Could not load recent activity"
+          description={error}
+          onRetry={retry}
+        />
+      </Group>
+    ) : null;
   }
 
   return (
     <Group title="Recent activity">
+      {error ? (
+        <PageErrorBanner
+          title="Could not refresh recent activity"
+          description={error}
+          onRetry={retry}
+        />
+      ) : null}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {sounds.length > 0 ? (
           <section aria-label="Recent uploads" className={cardClass}>

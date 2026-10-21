@@ -1,4 +1,4 @@
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { ListFilterIcon, SearchIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -79,111 +79,123 @@ export function AdminTopListsView() {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/top-lists">
-          <ViewShell
-            title="Top lists"
-            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
-          >
-            <div className="flex flex-col gap-3">
-              <Input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search title, artist, or channel…"
-                aria-label="Search top lists"
-                className="max-w-xl"
-                startAddon={
-                  <SearchIcon size={16} aria-hidden className="opacity-70" />
-                }
-              />
-              <div className="flex flex-wrap items-center gap-2">
-                <ListFilterIcon
-                  size={15}
-                  aria-hidden
-                  className="text-foreground-secondary"
+          <div className="flex flex-col gap-6">
+            <nav
+              aria-label="Breadcrumb"
+              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
+            >
+              <Link to="/admin" className="hover:underline">
+                Admin
+              </Link>
+              <span aria-hidden>→</span>
+              <span aria-current="page">Top lists</span>
+            </nav>
+            <ViewShell
+              title="Top lists"
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+            >
+              <div className="flex flex-col gap-3">
+                <Input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search title, artist, or channel…"
+                  aria-label="Search top lists"
+                  className="max-w-xl"
+                  startAddon={
+                    <SearchIcon size={16} aria-hidden className="opacity-70" />
+                  }
                 />
-                <FilterChips
-                  items={PERIODS}
-                  selected={period}
-                  onChange={(id) => setPeriod(id as AdminTopListPeriod)}
-                  aria-label="Top list period"
-                />
-                <FilterChips
-                  items={DIMENSIONS}
-                  selected={dimension}
-                  onChange={(id) => setDimension(id as AdminTopListDimension)}
-                  aria-label="Top list grouping"
-                />
-                <FilterChips
-                  items={SORTS}
-                  selected={sort}
-                  onChange={(id) => setSort(id as AdminTopListSort)}
-                  aria-label="Top list order"
-                />
+                <div className="flex flex-wrap items-center gap-2">
+                  <ListFilterIcon
+                    size={15}
+                    aria-hidden
+                    className="text-foreground-secondary"
+                  />
+                  <FilterChips
+                    items={PERIODS}
+                    selected={period}
+                    onChange={(id) => setPeriod(id as AdminTopListPeriod)}
+                    aria-label="Top list period"
+                  />
+                  <FilterChips
+                    items={DIMENSIONS}
+                    selected={dimension}
+                    onChange={(id) => setDimension(id as AdminTopListDimension)}
+                    aria-label="Top list grouping"
+                  />
+                  <FilterChips
+                    items={SORTS}
+                    selected={sort}
+                    onChange={(id) => setSort(id as AdminTopListSort)}
+                    aria-label="Top list order"
+                  />
+                </div>
               </div>
-            </div>
 
-            {loading ? (
-              <StudioPanel>
-                <PageLoading label="Loading top lists…" />
-              </StudioPanel>
-            ) : loadError && buckets.length === 0 ? (
-              <StudioPanel>
-                <PageError
-                  title="Could not load top lists"
-                  description={loadError}
-                  onRetry={() => setAttempt((n) => n + 1)}
-                />
-              </StudioPanel>
-            ) : visibleBuckets.length === 0 ? (
-              <StudioPanel>
-                <PageEmpty
-                  title={
-                    normalizedQuery
-                      ? 'No matching top-list entries'
-                      : 'No listens yet'
-                  }
-                  description={
-                    normalizedQuery
-                      ? 'Try another search, period, or grouping.'
-                      : 'No listens recorded for this period yet.'
-                  }
-                />
-              </StudioPanel>
-            ) : (
-              visibleBuckets.map((bucket) => (
-                <StudioPanel key={bucket.bucket}>
-                  <TopList
-                    title={rankingBucketTitle(bucket.bucket)}
-                    headingLevel={2}
-                    formatValue={formatListenCount}
-                    entries={bucket.entries.map((entry) => ({
-                      id: entry.soundId,
-                      label: entry.title,
-                      sublabel: entry.artistName,
-                      value: entry.listens,
-                      onClick: () => {
-                        if (entry.audioUrl) {
-                          play({
-                            id: `sound:${entry.soundId}`,
-                            kind: 'sound',
-                            title: entry.title,
-                            artist: entry.artistName,
-                            streamUrl: entry.audioUrl,
-                            protocol: 'https',
-                            channelSlug: entry.channelSlug,
-                          });
-                          return;
-                        }
-                        void navigate({
-                          to: '/studio/sounds/$id',
-                          params: { id: entry.soundId },
-                        });
-                      },
-                    }))}
+              {loading ? (
+                <StudioPanel>
+                  <PageLoading label="Loading top lists…" />
+                </StudioPanel>
+              ) : loadError && buckets.length === 0 ? (
+                <StudioPanel>
+                  <PageError
+                    title="Could not load top lists"
+                    description={loadError}
+                    onRetry={() => setAttempt((n) => n + 1)}
                   />
                 </StudioPanel>
-              ))
-            )}
-          </ViewShell>
+              ) : visibleBuckets.length === 0 ? (
+                <StudioPanel>
+                  <PageEmpty
+                    title={
+                      normalizedQuery
+                        ? 'No matching top-list entries'
+                        : 'No listens yet'
+                    }
+                    description={
+                      normalizedQuery
+                        ? 'Try another search, period, or grouping.'
+                        : 'No listens recorded for this period yet.'
+                    }
+                  />
+                </StudioPanel>
+              ) : (
+                visibleBuckets.map((bucket) => (
+                  <StudioPanel key={bucket.bucket}>
+                    <TopList
+                      title={rankingBucketTitle(bucket.bucket)}
+                      headingLevel={2}
+                      formatValue={formatListenCount}
+                      entries={bucket.entries.map((entry) => ({
+                        id: entry.soundId,
+                        label: entry.title,
+                        sublabel: entry.artistName,
+                        value: entry.listens,
+                        onClick: () => {
+                          if (entry.audioUrl) {
+                            play({
+                              id: `sound:${entry.soundId}`,
+                              kind: 'sound',
+                              title: entry.title,
+                              artist: entry.artistName,
+                              streamUrl: entry.audioUrl,
+                              protocol: 'https',
+                              channelSlug: entry.channelSlug,
+                            });
+                            return;
+                          }
+                          void navigate({
+                            to: '/studio/sounds/$id',
+                            params: { id: entry.soundId },
+                          });
+                        },
+                      }))}
+                    />
+                  </StudioPanel>
+                ))
+              )}
+            </ViewShell>
+          </div>
         </AdminPageLayout>
       </div>
     </AdminGate>

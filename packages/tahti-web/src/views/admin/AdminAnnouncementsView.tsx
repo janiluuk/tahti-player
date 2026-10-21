@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { PlayIcon, ScissorsIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -78,227 +79,239 @@ export function AdminAnnouncementsView() {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/announcements">
-          <ViewShell
-            title="Announcements"
-            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
-          >
-            {msg && (
-              <p className="text-foreground-secondary text-sm" role="status">
-                {msg}
-              </p>
-            )}
+          <div className="flex flex-col gap-6">
+            <nav
+              aria-label="Breadcrumb"
+              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
+            >
+              <Link to="/admin" className="hover:underline">
+                Admin
+              </Link>
+              <span aria-hidden>→</span>
+              <span aria-current="page">Announcements</span>
+            </nav>
+            <ViewShell
+              title="Announcements"
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+            >
+              {msg && (
+                <p className="text-foreground-secondary text-sm" role="status">
+                  {msg}
+                </p>
+              )}
 
-            <StudioPanel
-              title="System announcements"
-              action={
-                <Toggle
-                  label="System announcements"
-                  checked={systemEnabled}
-                  onChange={(checked) => {
-                    void setAnnouncementsSystemEnabled(checked).then((r) => {
-                      if (!r.ok) {
-                        setMsg(r.error);
+              <StudioPanel
+                title="System announcements"
+                action={
+                  <Toggle
+                    label="System announcements"
+                    checked={systemEnabled}
+                    onChange={(checked) => {
+                      void setAnnouncementsSystemEnabled(checked).then((r) => {
+                        if (!r.ok) {
+                          setMsg(r.error);
+                        } else {
+                          setSystemEnabled(checked);
+                        }
+                      });
+                    }}
+                  />
+                }
+              >
+                <p className="text-foreground-secondary text-sm">
+                  Turning this off stops all system announcements everywhere,
+                  instantly — each clip below still keeps its own on/off and
+                  schedule.
+                </p>
+              </StudioPanel>
+
+              <StudioPanel title="Clips">
+                <FilePicker
+                  accept="audio/*"
+                  disabled={uploading}
+                  labels={{
+                    title: uploading
+                      ? 'Uploading announcement…'
+                      : 'Announcement clip',
+                    description: 'Choose a short MP3, WAV, FLAC, or AIFF clip.',
+                    browse: uploading ? 'Uploading…' : 'Choose audio',
+                  }}
+                  onFiles={(files) => {
+                    const file = files[0];
+                    if (!file) {
+                      return;
+                    }
+                    setUploading(true);
+                    void uploadAnnouncementClip(file).then((result) => {
+                      setUploading(false);
+                      if (!result.ok) {
+                        setMsg(result.error);
                       } else {
-                        setSystemEnabled(checked);
+                        reload();
                       }
                     });
                   }}
                 />
-              }
-            >
-              <p className="text-foreground-secondary text-sm">
-                Turning this off stops all system announcements everywhere,
-                instantly — each clip below still keeps its own on/off and
-                schedule.
-              </p>
-            </StudioPanel>
-
-            <StudioPanel title="Clips">
-              <FilePicker
-                accept="audio/*"
-                disabled={uploading}
-                labels={{
-                  title: uploading
-                    ? 'Uploading announcement…'
-                    : 'Announcement clip',
-                  description: 'Choose a short MP3, WAV, FLAC, or AIFF clip.',
-                  browse: uploading ? 'Uploading…' : 'Choose audio',
-                }}
-                onFiles={(files) => {
-                  const file = files[0];
-                  if (!file) {
-                    return;
-                  }
-                  setUploading(true);
-                  void uploadAnnouncementClip(file).then((result) => {
-                    setUploading(false);
-                    if (!result.ok) {
-                      setMsg(result.error);
-                    } else {
-                      reload();
-                    }
-                  });
-                }}
-              />
-              {loading ? (
-                <PageLoading label="Loading announcements…" />
-              ) : clips.length === 0 ? (
-                <PageEmpty title="No system announcement clips yet." />
-              ) : (
-                <ul className="divide-border divide-y">
-                  {clips.map((clip) => (
-                    <li
-                      key={clip.id}
-                      className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm first:pt-0 last:pb-0"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Toggle
-                          label={`Enable ${clip.title}`}
-                          checked={clip.isEnabled}
-                          onChange={(checked) =>
-                            patch(clip.id, { isEnabled: checked })
-                          }
-                        />
-                        <div>
-                          <div className="font-medium">{clip.title}</div>
-                          <div className="text-foreground-secondary flex items-center gap-2 text-xs">
-                            {fmtDuration(clip.durationSec)}
-                            {clip.renderStatus === 'PROCESSING' ? (
-                              <Badge variant="pill" color="cyan">
-                                Rendering
-                              </Badge>
-                            ) : clip.renderStatus === 'ERROR' ? (
-                              <Badge variant="pill" color="red">
-                                Render failed
-                              </Badge>
-                            ) : null}
+                {loading ? (
+                  <PageLoading label="Loading announcements…" />
+                ) : clips.length === 0 ? (
+                  <PageEmpty title="No system announcement clips yet." />
+                ) : (
+                  <ul className="divide-border divide-y">
+                    {clips.map((clip) => (
+                      <li
+                        key={clip.id}
+                        className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm first:pt-0 last:pb-0"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Toggle
+                            label={`Enable ${clip.title}`}
+                            checked={clip.isEnabled}
+                            onChange={(checked) =>
+                              patch(clip.id, { isEnabled: checked })
+                            }
+                          />
+                          <div>
+                            <div className="font-medium">{clip.title}</div>
+                            <div className="text-foreground-secondary flex items-center gap-2 text-xs">
+                              {fmtDuration(clip.durationSec)}
+                              {clip.renderStatus === 'PROCESSING' ? (
+                                <Badge variant="pill" color="cyan">
+                                  Rendering
+                                </Badge>
+                              ) : clip.renderStatus === 'ERROR' ? (
+                                <Badge variant="pill" color="red">
+                                  Render failed
+                                </Badge>
+                              ) : null}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="flex min-w-48 flex-wrap items-center gap-2">
-                        <Select
-                          label="Schedule"
-                          value={clip.scheduleMode}
-                          onValueChange={(value) => {
-                            const scheduleMode =
-                              value as AdminAnnouncementScheduleMode;
-                            patch(clip.id, {
-                              scheduleMode,
-                              everyNth:
-                                scheduleMode === 'EVERY_NTH'
-                                  ? (clip.everyNth ?? 4)
-                                  : null,
-                            });
-                          }}
-                          options={[
-                            {
-                              id: 'AFTER_EVERY',
-                              label: 'After every clip',
-                            },
-                            { id: 'EVERY_NTH', label: 'Every Nth clip' },
-                            { id: 'RANDOM', label: 'Randomly' },
-                          ]}
-                        />
-                        {clip.scheduleMode === 'EVERY_NTH' && (
-                          <Input
-                            type="number"
-                            variant="number"
-                            size="sm"
-                            min={2}
-                            max={100}
-                            label="Every Nth"
-                            value={clip.everyNth ?? 4}
-                            onChange={(event) =>
+                        <div className="flex min-w-48 flex-wrap items-center gap-2">
+                          <Select
+                            label="Schedule"
+                            value={clip.scheduleMode}
+                            onValueChange={(value) => {
+                              const scheduleMode =
+                                value as AdminAnnouncementScheduleMode;
                               patch(clip.id, {
-                                everyNth: Number(event.target.value),
-                              })
-                            }
-                            className="w-24"
+                                scheduleMode,
+                                everyNth:
+                                  scheduleMode === 'EVERY_NTH'
+                                    ? (clip.everyNth ?? 4)
+                                    : null,
+                              });
+                            }}
+                            options={[
+                              {
+                                id: 'AFTER_EVERY',
+                                label: 'After every clip',
+                              },
+                              { id: 'EVERY_NTH', label: 'Every Nth clip' },
+                              { id: 'RANDOM', label: 'Randomly' },
+                            ]}
                           />
-                        )}
-                        {clip.audioUrl && (
-                          <Tooltip content="Preview" side="top">
-                            <Button
-                              size="icon-sm"
-                              variant="text"
-                              aria-label="Preview"
-                              onClick={() => {
-                                play({
-                                  id: `announcement:${clip.id}`,
-                                  kind: 'sound',
-                                  title: clip.title,
-                                  artist: 'System announcement',
-                                  streamUrl: clip.audioUrl!,
-                                  protocol: 'https',
-                                });
-                              }}
-                            >
-                              <PlayIcon size={16} aria-hidden />
-                            </Button>
-                          </Tooltip>
-                        )}
-                        <Button
-                          size="sm"
-                          variant="text"
-                          disabled={clip.renderStatus === 'PROCESSING'}
-                          onClick={() => setTrimming(clip)}
-                        >
-                          <ScissorsIcon
-                            size={14}
-                            aria-hidden
-                            className="mr-1.5"
-                          />
-                          Trim
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="text"
-                          onClick={() => setPendingDelete(clip)}
-                        >
-                          <Trash2Icon
-                            size={14}
-                            aria-hidden
-                            className="mr-1.5"
-                          />
-                          Delete
-                        </Button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </StudioPanel>
-          </ViewShell>
-          <AnnouncementTrimDialog
-            clip={trimming}
-            onClose={() => setTrimming(null)}
-            onRendered={() => {
-              setTrimming(null);
-              setMsg('Rendering the trimmed clip…');
-              reload();
-            }}
-          />
-          <ConfirmDialog
-            isOpen={pendingDelete !== null}
-            title={`Delete "${pendingDelete?.title ?? ''}"?`}
-            description="This announcement clip will be removed from the schedule for everyone."
-            confirmLabel="Delete"
-            onCancel={() => setPendingDelete(null)}
-            onConfirm={() => {
-              const clip = pendingDelete;
-              setPendingDelete(null);
-              if (!clip) {
-                return;
-              }
-              void deleteAnnouncementClip(clip.id).then((r) => {
-                if (!r.ok) {
-                  setMsg(r.error);
-                } else {
-                  reload();
+                          {clip.scheduleMode === 'EVERY_NTH' && (
+                            <Input
+                              type="number"
+                              variant="number"
+                              size="sm"
+                              min={2}
+                              max={100}
+                              label="Every Nth"
+                              value={clip.everyNth ?? 4}
+                              onChange={(event) =>
+                                patch(clip.id, {
+                                  everyNth: Number(event.target.value),
+                                })
+                              }
+                              className="w-24"
+                            />
+                          )}
+                          {clip.audioUrl && (
+                            <Tooltip content="Preview" side="top">
+                              <Button
+                                size="icon-sm"
+                                variant="text"
+                                aria-label="Preview"
+                                onClick={() => {
+                                  play({
+                                    id: `announcement:${clip.id}`,
+                                    kind: 'sound',
+                                    title: clip.title,
+                                    artist: 'System announcement',
+                                    streamUrl: clip.audioUrl!,
+                                    protocol: 'https',
+                                  });
+                                }}
+                              >
+                                <PlayIcon size={16} aria-hidden />
+                              </Button>
+                            </Tooltip>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="text"
+                            disabled={clip.renderStatus === 'PROCESSING'}
+                            onClick={() => setTrimming(clip)}
+                          >
+                            <ScissorsIcon
+                              size={14}
+                              aria-hidden
+                              className="mr-1.5"
+                            />
+                            Trim
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="text"
+                            onClick={() => setPendingDelete(clip)}
+                          >
+                            <Trash2Icon
+                              size={14}
+                              aria-hidden
+                              className="mr-1.5"
+                            />
+                            Delete
+                          </Button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </StudioPanel>
+            </ViewShell>
+            <AnnouncementTrimDialog
+              clip={trimming}
+              onClose={() => setTrimming(null)}
+              onRendered={() => {
+                setTrimming(null);
+                setMsg('Rendering the trimmed clip…');
+                reload();
+              }}
+            />
+            <ConfirmDialog
+              isOpen={pendingDelete !== null}
+              title={`Delete "${pendingDelete?.title ?? ''}"?`}
+              description="This announcement clip will be removed from the schedule for everyone."
+              confirmLabel="Delete"
+              onCancel={() => setPendingDelete(null)}
+              onConfirm={() => {
+                const clip = pendingDelete;
+                setPendingDelete(null);
+                if (!clip) {
+                  return;
                 }
-              });
-            }}
-          />
+                void deleteAnnouncementClip(clip.id).then((r) => {
+                  if (!r.ok) {
+                    setMsg(r.error);
+                  } else {
+                    reload();
+                  }
+                });
+              }}
+            />
+          </div>
         </AdminPageLayout>
       </div>
     </AdminGate>

@@ -24,7 +24,12 @@ import {
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
 import { PageFrame } from '../components/PageHeader';
-import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../components/PageStates';
 import { RadioShowEpisodeList } from '../components/RadioShowEpisodeList';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { usePolling } from '../hooks/usePolling';
@@ -36,17 +41,32 @@ const NOW_PLAYING_POLL_MS = 30_000;
 function NowPlayingSection({
   track,
   upcoming,
+  pollError,
+  onRetry,
 }: {
   track: RadioShowNowPlayingTrack | null;
   upcoming: RadioShowUpcomingTrack[];
+  pollError: string | null;
+  onRetry: () => void;
 }) {
-  if (!track && upcoming.length === 0) {
+  if (!track && upcoming.length === 0 && !pollError) {
     return null;
   }
 
   return (
     <SectionShell title="Now playing">
       <div className="flex flex-col gap-3">
+        {pollError ? (
+          <PageErrorBanner
+            title={
+              track || upcoming.length > 0
+                ? 'Could not refresh now playing'
+                : 'Could not load now playing'
+            }
+            description={pollError}
+            onRetry={onRetry}
+          />
+        ) : null}
         {track ? (
           <div className="flex min-w-0 items-center gap-3">
             <MediaArtwork
@@ -109,6 +129,10 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
     RadioShowUpcomingTrack[]
   >([]);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [pollErrors, setPollErrors] = useState<{
+    track: string | null;
+    upcoming: string | null;
+  }>({ track: null, upcoming: null });
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
@@ -127,14 +151,24 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
   const reloadNowPlaying = () => {
     void fetchRadioShowNowPlaying(channelSlug).then((result) => {
       if (result.meta.source === 'api' && result.meta.reason) {
+        setPollErrors((current) => ({
+          ...current,
+          track: result.meta.reason ?? null,
+        }));
         return;
       }
+      setPollErrors((current) => ({ ...current, track: null }));
       setNowPlayingTrack(result.data);
     });
     void fetchRadioShowUpcoming(channelSlug).then((result) => {
       if (result.meta.source === 'api' && result.meta.reason) {
+        setPollErrors((current) => ({
+          ...current,
+          upcoming: result.meta.reason ?? null,
+        }));
         return;
       }
+      setPollErrors((current) => ({ ...current, upcoming: null }));
       setUpcomingTracks(result.data);
     });
   };
@@ -253,7 +287,12 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
         data-testid="radio-show-social-header"
       />
 
-      <NowPlayingSection track={nowPlayingTrack} upcoming={upcomingTracks} />
+      <NowPlayingSection
+        track={nowPlayingTrack}
+        upcoming={upcomingTracks}
+        pollError={pollErrors.track ?? pollErrors.upcoming}
+        onRetry={reloadNowPlaying}
+      />
 
       <SectionShell title="Episodes">
         <Tabs

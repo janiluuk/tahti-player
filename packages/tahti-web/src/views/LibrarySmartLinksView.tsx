@@ -13,9 +13,11 @@ import {
 import { fetchStudioReleases } from '../api/studio';
 import type { StudioRelease } from '../api/studio-types';
 import { LibrarySectionToolbar } from '../components/library/LibrarySectionToolbar';
+import { LibrarySortSelect } from '../components/library/LibrarySortSelect';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { StudioGate } from '../components/StudioGate';
 import { StudioPanel } from '../components/StudioPanel';
+import { sortLibraryItems, type LibrarySort } from '../lib/librarySort';
 
 const DSP_LABELS: Record<string, string> = {
   apple: 'Apple Music',
@@ -47,6 +49,7 @@ export function LibrarySmartLinksView() {
   const [attempt, setAttempt] = useState(0);
   const [query, setQuery] = useState('');
   const [dspFilter, setDspFilter] = useState<string>('ALL');
+  const [sort, setSort] = useState<LibrarySort>('newest');
 
   useEffect(() => {
     let cancelled = false;
@@ -82,7 +85,7 @@ export function LibrarySmartLinksView() {
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return releases.filter((release) => {
+    const matching = releases.filter((release) => {
       if (
         dspFilter !== 'ALL' &&
         !releaseTargets(release).some(([provider]) => provider === dspFilter)
@@ -91,7 +94,13 @@ export function LibrarySmartLinksView() {
       }
       return !needle || release.title.toLowerCase().includes(needle);
     });
-  }, [releases, query, dspFilter]);
+    return sortLibraryItems(
+      matching,
+      sort,
+      (release) => release.title,
+      (release) => release.releaseDate,
+    );
+  }, [releases, query, dspFilter, sort]);
 
   return (
     <StudioGate requireChannel={false} embedded>
@@ -144,6 +153,13 @@ export function LibrarySmartLinksView() {
                     selected={dspFilter}
                     onChange={setDspFilter}
                     aria-label="Filter smartlinks by platform"
+                  />
+                ) : null}
+                {releases.length > 1 ? (
+                  <LibrarySortSelect
+                    value={sort}
+                    onChange={setSort}
+                    label="Sort smartlinks"
                   />
                 ) : null}
               </LibrarySectionToolbar>

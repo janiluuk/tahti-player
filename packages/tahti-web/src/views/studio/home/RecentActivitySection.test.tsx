@@ -34,7 +34,7 @@ describe('RecentActivitySection', () => {
     expect(income.textContent).toMatch(/12[.,]40/);
   });
 
-  it('renders nothing when both reads fail', async () => {
+  it('shows PageError with Retry when both reads fail', async () => {
     vi.spyOn(recent, 'fetchRecentSounds').mockResolvedValue({
       data: [],
       meta: { source: 'api', reason: 'HTTP 500' },
@@ -44,8 +44,12 @@ describe('RecentActivitySection', () => {
       meta: { source: 'api', reason: 'HTTP 500' },
     });
 
-    const { container } = await renderWithRouter(<RecentActivitySection />);
+    await renderWithRouter(<RecentActivitySection />);
 
-    expect(container.textContent).not.toContain('Recent activity');
+    expect(
+      await screen.findByText('Could not load recent activity'),
+    ).toBeVisible();
+    expect(screen.getByText('HTTP 500')).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeVisible();
   });
 });
