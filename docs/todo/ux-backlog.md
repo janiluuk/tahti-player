@@ -71,13 +71,7 @@ new surface, one PR per row.
 - [ ] Add selected Sounds to a release (bulk action; needs a picker).
 - [ ] Undo for publish / create flows (none in Studio).
 
-## Load honesty leftovers (from batch 87 sweep)
+## Leftovers from batch 88
 
-- [ ] ChannelView shows "Channel not found" on a network/5xx error (`useChannelData` swallows `fetchChannel`).
-- [ ] AdminDashboard renders zeroed KPIs and "down" health on failure.
-- [ ] AdminActivity: one failed poll wipes already-loaded entries.
-- [ ] StudioStatsDetailView shows zeros on failure; admin SelectsTab picker says "no tracks".
-- [ ] Hide-on-fail panels: MessageContacts, ArtistSoundCloudTracks, MeetingConflicts,
-  MultistreamStatusPanel, ReleaseSmartLinkStats, NewsletterSubscriberStats.
-- [ ] `Loader` needs `className` / aria / small sizes before ~50 hand-rolled
-  `LoaderCircleIcon animate-spin` spinners can move to it.
+- [ ] `Loader` numeric `size` so the last four spinners can move (PlayerBarControls,
+  MediaArtwork, TrackProcessing, ConnectedPlayerBar 28px).

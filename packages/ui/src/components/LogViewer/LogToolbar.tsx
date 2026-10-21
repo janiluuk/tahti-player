@@ -1,7 +1,8 @@
-import { FolderOpen, Loader2, Trash2, Upload } from 'lucide-react';
+import { FolderOpen, Trash2, Upload } from 'lucide-react';
 import { FC, useState } from 'react';
 
 import { Button } from '../Button';
+import { Loader } from '../Loader';
 import { useLogViewerContext } from './context';
 
 export const LogToolbar: FC = () => {
@@ -27,7 +28,7 @@ export const LogToolbar: FC = () => {
       </Button>
       <Button size="sm" onClick={handleExport} disabled={isExporting}>
         {isExporting ? (
-          <Loader2 className="mr-1 size-4 animate-spin" />
+          <Loader size="sm" shape="circle" className="mr-1" />
         ) : (
           <Upload className="mr-1 size-4" />
         )}

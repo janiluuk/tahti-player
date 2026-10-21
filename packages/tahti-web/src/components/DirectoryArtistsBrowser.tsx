@@ -1,7 +1,7 @@
 import { SlidersHorizontalIcon } from 'lucide-react';
 import { useMemo, useState, type FC } from 'react';
 
-import { FilterChips, Input } from '@tahti-player/ui';
+import { Button, FilterChips, Input } from '@tahti-player/ui';
 
 import {
   isDirectoryArtistActive,
@@ -205,6 +205,20 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
         <PageEmpty
           title="No artists match"
           description={`${query ? `“${query}”` : 'Try another filter'}${genre !== 'all' ? ` in ${genre}` : ''}.`}
+          action={
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => {
+                setQuery('');
+                setGenre('all');
+                setArtistType('all');
+                setActiveOnly(false);
+              }}
+            >
+              Clear filters
+            </Button>
+          }
         />
       ) : (
         <DirectoryArtistCardGrid

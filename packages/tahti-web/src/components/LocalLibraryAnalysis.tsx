@@ -1,14 +1,8 @@
-import {
-  ActivityIcon,
-  LoaderCircleIcon,
-  PauseIcon,
-  PlayIcon,
-  XIcon,
-} from 'lucide-react';
+import { ActivityIcon, PauseIcon, PlayIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button } from '@tahti-player/ui';
+import { Button, Loader } from '@tahti-player/ui';
 
 import type {
   NativeAnalysisProgress,
@@ -188,11 +182,7 @@ export function LocalLibraryAnalysis({ library, onChanged }: Props) {
         </Button>
       )}
       {starting && !progress ? (
-        <LoaderCircleIcon
-          size={14}
-          className="animate-spin"
-          aria-label="Starting"
-        />
+        <Loader size="inline" shape="circle" label="Starting" />
       ) : null}
     </div>
   );

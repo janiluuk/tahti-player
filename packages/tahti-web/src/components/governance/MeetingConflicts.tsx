@@ -7,24 +7,43 @@ import {
   fetchMeetingConflicts,
   type MemberConflictDeclaration,
 } from '../../api/governance-meeting-conflicts';
+import { PageErrorBanner } from '../PageStates';
 import { GovernancePanel } from './GovernancePanel';
 
 /** Conflicts of interest declared at the meeting, as the published minutes
- * record them. Hidden until there is something to show. */
+ * record them. Hidden until there is something to show; a failed load is
+ * shown, since hiding it would read as "no conflicts declared". */
 export function MeetingConflicts({ meetingId }: { meetingId: string }) {
   const [records, setRecords] = useState<MemberConflictDeclaration[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     void fetchMeetingConflicts(meetingId).then((result) => {
       if (!cancelled) {
         setRecords(result.data);
+        setError(
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+        );
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [meetingId]);
+  }, [meetingId, attempt]);
+
+  if (error) {
+    return (
+      <GovernancePanel title="Conflicts of interest" icon={ScaleIcon}>
+        <PageErrorBanner
+          title="Couldn't load declared conflicts"
+          description={error}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
+      </GovernancePanel>
+    );
+  }
 
   if (records.length === 0) {
     return null;

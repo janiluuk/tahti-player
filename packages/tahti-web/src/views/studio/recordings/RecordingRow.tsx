@@ -1,12 +1,7 @@
 import { Link } from '@tanstack/react-router';
-import {
-  CheckIcon,
-  LoaderCircleIcon,
-  PencilIcon,
-  RadioIcon,
-} from 'lucide-react';
+import { CheckIcon, PencilIcon, RadioIcon } from 'lucide-react';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, Loader, Tooltip } from '@tahti-player/ui';
 
 import type { RecentBroadcast } from '../../../api/broadcast';
 import { formatDate, formatDuration, isPublished } from './helpers';
@@ -69,13 +64,7 @@ export function RecordingRow({
           }`}
         >
           {published && <CheckIcon size={11} aria-hidden />}
-          {processing && (
-            <LoaderCircleIcon
-              size={11}
-              aria-hidden
-              className="motion-safe:animate-spin"
-            />
-          )}
+          {processing && <Loader size="xs" shape="circle" />}
           {published ? 'Published' : processing ? 'Processing' : 'Draft'}
         </span>
         {processing ? (

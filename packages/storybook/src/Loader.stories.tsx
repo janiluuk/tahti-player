@@ -18,3 +18,11 @@ export const LG: Story = {
 export const XL: Story = {
   args: { size: 'xl' },
 };
+
+export const InlineCircle: Story = {
+  args: { size: 'inline', shape: 'circle' },
+};
+
+export const Labelled: Story = {
+  args: { size: 'sm', shape: 'circle', label: 'Loading tracks' },
+};

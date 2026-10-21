@@ -1,8 +1,7 @@
-import { LoaderCircleIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Toggle } from '@tahti-player/ui';
+import { Button, Dialog, Loader, Toggle } from '@tahti-player/ui';
 
 import type {
   NativeWriteTagsPreview,
@@ -111,7 +110,7 @@ export function WriteTagsDialog({
         </p>
       ) : !preview ? (
         <p className="text-foreground-secondary flex items-center gap-2 text-sm">
-          <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+          <Loader size="inline" shape="circle" />
           Checking…
         </p>
       ) : (
@@ -149,9 +148,7 @@ export function WriteTagsDialog({
           disabled={busy || !preview || preview.writable === 0}
           onClick={() => void write()}
         >
-          {busy ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
-          ) : null}
+          {busy ? <Loader size="inline" shape="circle" /> : null}
           Write to files
         </Button>
       </Dialog.Actions>

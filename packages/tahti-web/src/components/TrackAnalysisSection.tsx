@@ -1,8 +1,8 @@
-import { ActivityIcon, LoaderCircleIcon, Undo2Icon } from 'lucide-react';
+import { ActivityIcon, Undo2Icon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, Input, Loader } from '@tahti-player/ui';
 
 import type {
   NativeAnalysisDetail,
@@ -255,9 +255,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
           onClick={() => void save()}
           className="gap-1.5"
         >
-          {busy === 'save' ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
-          ) : null}
+          {busy === 'save' ? <Loader size="inline" shape="circle" /> : null}
           Save correction
         </Button>
         <Button
@@ -268,7 +266,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
           className="gap-1.5"
         >
           {busy === 'analyze' ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+            <Loader size="inline" shape="circle" />
           ) : detail?.analyzed ? (
             <Undo2Icon size={14} aria-hidden />
           ) : (

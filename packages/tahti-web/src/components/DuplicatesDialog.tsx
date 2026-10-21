@@ -1,8 +1,8 @@
-import { FolderOpenIcon, LoaderCircleIcon, TrashIcon } from 'lucide-react';
+import { FolderOpenIcon, TrashIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog } from '@tahti-player/ui';
+import { Button, Dialog, Loader } from '@tahti-player/ui';
 
 import { formatLibrarySize } from '../lib/libraryFormat';
 import type {
@@ -177,13 +177,7 @@ export function DuplicatesDialog({
             disabled={hashing !== null}
             onClick={() => void compare()}
           >
-            {hashing ? (
-              <LoaderCircleIcon
-                size={14}
-                className="animate-spin"
-                aria-hidden
-              />
-            ) : null}
+            {hashing ? <Loader size="inline" shape="circle" /> : null}
             Compare file contents
           </Button>
           {hashing ? (
@@ -215,11 +209,7 @@ export function DuplicatesDialog({
             </p>
           ) : groups === null ? (
             <p className="text-foreground-secondary flex items-center gap-2 text-sm">
-              <LoaderCircleIcon
-                size={14}
-                className="animate-spin"
-                aria-hidden
-              />
+              <Loader size="inline" shape="circle" />
               Looking…
             </p>
           ) : groups.length === 0 ? (

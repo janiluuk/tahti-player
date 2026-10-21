@@ -37,3 +37,16 @@ export const AllVariants: Story = {
     </div>
   ),
 };
+
+export const Wrapping: Story = {
+  render: () => (
+    <div className="w-64 p-4">
+      <SectionTitle
+        wrap
+        title="Kulttuuritalo Helsinki main hall"
+        badge="Waiting for board verification"
+        badgeColor="yellow"
+      />
+    </div>
+  ),
+};

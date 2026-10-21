@@ -1,5 +1,13 @@
 import { Check, Copy } from 'lucide-react';
-import { ComponentProps, FC, memo, useEffect, useRef, useState } from 'react';
+import {
+  ComponentProps,
+  FC,
+  memo,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '../Button';
@@ -20,6 +28,8 @@ export type CopyButtonProps = Omit<
   toastMessage?: string | boolean;
   /** Shown via toast if the clipboard write fails. Defaults to a generic message. */
   errorMessage?: string;
+  /** Replaces the Copy icon until copied (e.g. an RSS icon); Check still confirms. */
+  icon?: ReactNode;
 };
 
 const CopyButtonImpl: FC<CopyButtonProps> = ({
@@ -29,6 +39,7 @@ const CopyButtonImpl: FC<CopyButtonProps> = ({
   feedbackDurationMs = COPY_FEEDBACK_DURATION_MS,
   toastMessage,
   errorMessage = 'Could not copy to clipboard',
+  icon,
   'aria-label': ariaLabel,
   title,
   ...props
@@ -78,7 +89,7 @@ const CopyButtonImpl: FC<CopyButtonProps> = ({
         {copied ? (
           <Check className="size-3.5" />
         ) : (
-          <Copy className="size-3.5" />
+          (icon ?? <Copy className="size-3.5" />)
         )}
         {label && <span className="ml-1.5">{copied ? 'Copied' : label}</span>}
       </Button>

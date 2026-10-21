@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as client from '../../api/client';
 import * as discoWidgets from '../../api/disco-widgets';
+import { RequestJsonError } from '../../api/request-json';
 import * as shows from '../../api/shows';
 import { useChannelData } from './useChannelData';
 
@@ -111,5 +112,30 @@ describe('useChannelData', () => {
     expect(soundSpy).toHaveBeenCalledTimes(1);
     expect(widgetsSpy).toHaveBeenCalledTimes(1);
     expect(showsSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('treats a 404 as not found, not as a failed load', async () => {
+    vi.spyOn(client, 'fetchChannel').mockRejectedValue(
+      new RequestJsonError('Not found', 404),
+    );
+    const { result } = renderHook(() => useChannelData('gone', 0));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.channel).toBeNull();
+    expect(result.current.channelFailed).toBe(false);
+  });
+
+  it('reports a network failure and retries the channel', async () => {
+    const fetchSpy = vi
+      .spyOn(client, 'fetchChannel')
+      .mockRejectedValueOnce(new TypeError('Failed to fetch'));
+    const { result } = renderHook(() => useChannelData('tahti-radio', 0));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.channel).toBeNull();
+    expect(result.current.channelFailed).toBe(true);
+
+    act(() => result.current.retryChannel());
+    await waitFor(() => expect(result.current.channel).not.toBeNull());
+    expect(result.current.channelFailed).toBe(false);
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
   });
 });
