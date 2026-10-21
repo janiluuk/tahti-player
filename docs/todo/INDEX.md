@@ -37,7 +37,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
 | blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
 | blocked | [listening-party.md](listening-party.md) | Needs user go-ahead for tahti-org work |
-| blocked | [wavesurfer-waveforms.md](wavesurfer-waveforms.md) | wavesurfer.js for the audio editor + preview waveforms; waiting on 7 option decisions (previews scope, peaks source, playback, plugins, look, desktop, old code) |
+| blocked | [wavesurfer-waveforms.md](wavesurfer-waveforms.md) | wavesurfer.js for the audio editor + preview waveforms; 4 of 7 options decided; waiting on editor plugins, desktop files, old-code removal |
 | blocked | [ai-dj-radio-dj-port.md](ai-dj-radio-dj-port.md) | POC not committed; no prod ship without go-ahead |
 | blocked | [track-visualizer-video-editor.md](track-visualizer-video-editor.md) | PulseForge licence / port decision |
 | blocked | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Multi-phase 13-category project not started |
