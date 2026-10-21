@@ -322,7 +322,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Discover/VenueDetailView` | `tahti-web/VenueDetailView.stories.tsx` |
 | `Tahti/Auth/VerifyView` | `tahti-web/VerifyView.stories.tsx` |
 | `Tahti/Player/VisualizerModeMenu` | `tahti-web/VisualizerModeMenu.stories.tsx` |
-| `Components/Waveform` | `Waveform.stories.tsx` (wavesurfer.js large preview) |
 | `Tahti/Player/WaveformCanvas` | `tahti-web/WaveformCanvas.stories.tsx` |
 | `Tahti/Widgets/WaveformMinimap` | `tahti-web/WaveformMinimap.stories.tsx` |
 | `Tahti/Player/WaveformSeekbar` | `tahti-web/WaveformSeekbar.stories.tsx` |
@@ -423,6 +422,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/TrackTable` | `TrackTable.stories.tsx` |
 | `Components/ViewShell` | `ViewShell.stories.tsx` |
 | `Audio/VisualizerHost` | `VisualizerHost.stories.tsx` |
+| `Components/Waveform` | `Waveform.stories.tsx` |
 | `Welcome` | `Welcome.stories.tsx` |
 
 If nothing matches: add a story with today’s states, flag `Missing states:` / `Orphan:`.
