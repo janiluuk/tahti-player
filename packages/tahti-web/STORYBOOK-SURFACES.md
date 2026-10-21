@@ -223,6 +223,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Page/PageStates` | `tahti-web/PageStates.stories.tsx` |
 | `Tahti/Widgets/PageTourSpotlight` | `tahti-web/PageTourSpotlight.stories.tsx` |
 | `Tahti/Studio/PinnedAnnouncementsPanel` | `tahti-web/PinnedAnnouncementsPanel.stories.tsx` |
+| `Tahti/Library/PlayableAmbientTrackList` | `tahti-web/PlayableAmbientTrackList.stories.tsx` |
 | `Tahti/Track/PlayableTrackContextMenu` | `tahti-web/PlayableTrackContextMenu.stories.tsx` |
 | `Tahti/Track/PlayableTrackTable` | `tahti-web/PlayableTrackTable.stories.tsx` |
 | `Tahti/Widgets/PluginStorePanel` | `tahti-web/PluginStorePanel.stories.tsx` |

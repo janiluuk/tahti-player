@@ -42,6 +42,8 @@ export type SelectProps = VariantProps<typeof selectVariants> & {
   defaultValue?: string;
   onValueChange?: (value: string) => void;
   className?: string;
+  /** Accessible name when there is no visible `label` (e.g. a toolbar). */
+  'aria-label'?: string;
 };
 
 type SelectComponent = FC<SelectProps> & {
@@ -67,6 +69,7 @@ const SelectImpl: FC<SelectProps> = ({
   size,
   className,
   disabled,
+  'aria-label': ariaLabel,
 }) => {
   return (
     <div className="relative flex w-full flex-col gap-2">
@@ -85,7 +88,7 @@ const SelectImpl: FC<SelectProps> = ({
         disabled={disabled}
       >
         <SelectLabel label={label} />
-        <SelectButton />
+        <SelectButton aria-label={label ? undefined : ariaLabel} />
         <SelectOptions>
           {options.map((opt) => (
             <SelectOptionComponent

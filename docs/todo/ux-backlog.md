@@ -42,6 +42,11 @@ new surface, one PR per row.
   persisted (pattern: player `usePlaylistSort`). Fixes ListenView,
   CollectionView, SmartLinkView, FavoritesView, ChannelViewBlocks,
   TagSearchView, BrowserLocalFiles at once.
+  Partial: `PlayableAmbientTrackList` (Collection, SmartLink, Favorites)
+  has a persisted Sort menu (title, artist, newest, duration) on top of its
+  existing size / List switcher (2026-10-21). Left: grid mode and the views
+  still on a bare `PlayableTrackTable` (Listen new tracks, channel blocks,
+  artist sections, local files).
 - [x] `StudioShowsView` search + clear (already); `MyVenuesView` search + clear (batch 80).
 - [ ] Library trio (`LibraryMediaView` / `LibraryEmbedsView` /
   `LibrarySmartLinksView`): converge on a shared library row with FilterChips +
