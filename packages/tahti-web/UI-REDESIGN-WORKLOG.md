@@ -1,3 +1,12 @@
+## 2026-10-21 — UX batch 86 (load honesty + PageEmpty leftovers)
+
+Admin Beta / Radio submissions / Support tickets, track insights and Blocked
+accounts show `PageError` + Retry when the load fails instead of "nothing
+here"; fourteen bare empties (feature requests, ledger, channel tracks and
+rotation, support requests, user adjustments and restrictions, add-tracks
+search, stats detail, playlist editor, mentions, release tracklist, page
+comments, subscriptions / purchases) → `PageEmpty`. Bumped to `0.0.240`.
+
 ## 2026-10-20 — UX batch 85 (PageEmpty leftovers + ambient + Embeds toolbar)
 
 Studio editor / admin dashboard / channel blocks / AGM / fingerprint / plays /

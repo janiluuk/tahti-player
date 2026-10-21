@@ -1,4 +1,4 @@
-import { isForceMock } from './mode';
+import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 import { requestJson } from './request-json';
 
 /** An account the signed-in user has blocked from messaging them. */
@@ -11,18 +11,30 @@ export type BlockedUser = {
 
 let mockBlocked: BlockedUser[] = [];
 
-export async function fetchBlockedUsers(): Promise<BlockedUser[]> {
+/** The blocked list with fetch meta, so a failed request isn't read as
+ * "nobody blocked". */
+export async function fetchBlockedUsersResult(): Promise<{
+  data: BlockedUser[];
+  meta: FetchMeta;
+}> {
   if (isForceMock()) {
-    return mockBlocked;
+    return { data: mockBlocked, meta: { source: 'mock' } };
   }
   try {
     const { data } = await requestJson<{ blocked: BlockedUser[] }>(
       '/api/me/blocks',
     );
-    return Array.isArray(data.blocked) ? data.blocked : [];
-  } catch {
-    return [];
+    return {
+      data: Array.isArray(data.blocked) ? data.blocked : [],
+      meta: { source: 'api' },
+    };
+  } catch (err) {
+    return { data: [], meta: apiErrorMeta(err) };
   }
+}
+
+export async function fetchBlockedUsers(): Promise<BlockedUser[]> {
+  return (await fetchBlockedUsersResult()).data;
 }
 
 export async function blockUser(

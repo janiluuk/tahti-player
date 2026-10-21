@@ -68,7 +68,7 @@ describe('AdminUserRestrictionsPanel', () => {
       .spyOn(admin, 'createAccountRestriction')
       .mockResolvedValue({ ok: false, error: 'User not found' });
     render(<AdminUserRestrictionsPanel userId="u1" />);
-    expect(await screen.findByText('No active restrictions.')).toBeTruthy();
+    expect(await screen.findByText('No active restrictions')).toBeTruthy();
 
     const add = screen.getByRole('button', { name: 'Add restriction' });
     expect((add as HTMLButtonElement).disabled).toBe(true);

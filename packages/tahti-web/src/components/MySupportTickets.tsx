@@ -146,10 +146,10 @@ export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
       ) : tickets === null ? (
         <p className="text-foreground-secondary text-sm">Loading…</p>
       ) : tickets.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          You haven't contacted support while signed in yet. Requests you send
-          below, and our replies, appear here.
-        </p>
+        <PageEmpty
+          title="No support requests yet"
+          description="Requests you send below while signed in, and our replies, appear here."
+        />
       ) : (
         <ul className="divide-border divide-y">
           {tickets.map((ticket) => {

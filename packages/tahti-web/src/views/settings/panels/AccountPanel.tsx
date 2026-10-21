@@ -52,7 +52,11 @@ import { DevicesSessionsPanel } from '../../../components/DevicesSessionsPanel';
 import { FanSubscriptionsBillingButton } from '../../../components/FanSubscriptionsBillingButton';
 import { MembershipInvoices } from '../../../components/MembershipInvoices';
 import { MembershipStatusPanel } from '../../../components/MembershipStatusPanel';
-import { PageError, PageLoading } from '../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../components/PageStates';
 import { SecurityTotpPanel } from '../../../components/SecurityTotpPanel';
 import {
   fanSubscriptionStatusLabel,
@@ -242,7 +246,7 @@ export function AccountPanel() {
       content: (
         <div className="flex flex-col gap-4">
           {subscriptions.length === 0 ? (
-            <SettingsHint>No fan subscriptions on this account.</SettingsHint>
+            <PageEmpty title="No fan subscriptions on this account" />
           ) : (
             <ul className="flex flex-col gap-2">
               {subscriptions.map((subscription) => (
@@ -317,7 +321,7 @@ export function AccountPanel() {
       icon: <CreditCardIcon size={14} />,
       content:
         purchases.length === 0 ? (
-          <SettingsHint>No track purchases on this account.</SettingsHint>
+          <PageEmpty title="No track purchases on this account" />
         ) : (
           <ul className="flex flex-col gap-2">
             {purchases.map((purchase) => (

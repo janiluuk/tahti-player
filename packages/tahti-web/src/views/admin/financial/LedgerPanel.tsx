@@ -18,6 +18,7 @@ import {
   ledgerYears,
   type AdminLedgerEntry,
 } from '../../../api/admin';
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 
 export function formatEur(cents: number): string {
@@ -199,9 +200,7 @@ export function LedgerPanel({
       )}
 
       {entries.length === 0 ? (
-        <p className="text-foreground-secondary py-4 text-center text-sm">
-          No ledger entries for {year}.
-        </p>
+        <PageEmpty title={`No ledger entries for ${year}`} />
       ) : (
         <ul className="divide-border divide-y">
           {entries.map((entry) => {

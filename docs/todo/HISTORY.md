@@ -1,3 +1,11 @@
+## 2026-10-21 — UX batch 86 twenty slices
+
+Folded `ux-batch-86-twenty.md`. Load-failure honesty (`PageError` + Retry)
+on admin Beta, Radio submissions and Support tabs, `TrackInsightsPanel` and
+`BlockedAccounts` (new `fetchBlockedUsersResult` with meta); fourteen bare
+empties → `PageEmpty` (Add tracks and admin Support get Clear search).
+Shipped as `0.0.240`.
+
 ## 2026-10-20 — UX batch 85 twenty slices (tahti-player #1444)
 
 Folded `ux-batch-85-twenty.md`. PageEmpty leftovers (studio editor, admin

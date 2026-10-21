@@ -11,7 +11,11 @@ import {
   type AdminRadioSubmission,
   type AdminRadioSubmissionStatus,
 } from '../../../../api/admin';
-import { PageLoading } from '../../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { usePlayerStore } from '../../../../stores/playerStore';
 
@@ -43,6 +47,7 @@ export function RadioSubmissionsTab() {
   const play = usePlayerStore((s) => s.play);
   const [items, setItems] = useState<AdminRadioSubmission[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -51,6 +56,9 @@ export function RadioSubmissionsTab() {
   const reload = () => {
     void fetchAdminRadioSubmissions().then((res) => {
       setItems(res.data);
+      setLoadError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
       setLoading(false);
       setActiveId((prev) => prev ?? res.data[0]?.id ?? null);
     });
@@ -96,11 +104,20 @@ export function RadioSubmissionsTab() {
         <StudioPanel>
           <PageLoading label="Loading radio submissions…" />
         </StudioPanel>
+      ) : loadError && items.length === 0 ? (
+        <StudioPanel>
+          <PageError
+            title="Could not load radio submissions"
+            description={loadError}
+            onRetry={() => {
+              setLoading(true);
+              reload();
+            }}
+          />
+        </StudioPanel>
       ) : items.length === 0 ? (
         <StudioPanel>
-          <p className="text-foreground-secondary py-4 text-center text-sm">
-            No unaudited radio submissions.
-          </p>
+          <PageEmpty title="No unaudited radio submissions" />
         </StudioPanel>
       ) : (
         <>

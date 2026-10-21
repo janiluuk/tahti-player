@@ -10,7 +10,7 @@ import {
   type AccountRestriction,
   type AccountRestrictionType,
 } from '../../api/admin';
-import { PageError, PageLoading } from '../PageStates';
+import { PageEmpty, PageError, PageLoading } from '../PageStates';
 import { StudioPanel } from '../StudioPanel';
 
 const TYPE_LABELS: Record<AccountRestrictionType, string> = {
@@ -127,9 +127,7 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
       ) : (
         <div className="flex flex-col gap-4" data-testid="admin-restrictions">
           {active.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              No active restrictions.
-            </p>
+            <PageEmpty title="No active restrictions" />
           ) : (
             <ul className="divide-border divide-y text-sm">
               {active.map((item) => (

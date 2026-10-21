@@ -29,15 +29,33 @@ describe('BlockedAccounts', () => {
   });
 
   it('says when nobody is blocked', async () => {
-    vi.spyOn(api, 'fetchBlockedUsers').mockResolvedValue([]);
+    vi.spyOn(api, 'fetchBlockedUsersResult').mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    });
     await act(async () => {
       render(<BlockedAccounts />);
     });
-    expect(screen.getByText("You haven't blocked anyone.")).toBeTruthy();
+    expect(screen.getByText("You haven't blocked anyone")).toBeTruthy();
+  });
+
+  it('says the list failed to load instead of "nobody blocked"', async () => {
+    vi.spyOn(api, 'fetchBlockedUsersResult').mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 500' },
+    });
+    await act(async () => {
+      render(<BlockedAccounts />);
+    });
+    expect(screen.getByText('Could not load blocked accounts')).toBeTruthy();
+    expect(screen.queryByText("You haven't blocked anyone")).toBeNull();
   });
 
   it('lists blocked accounts and unblocks one', async () => {
-    vi.spyOn(api, 'fetchBlockedUsers').mockResolvedValue([AINO]);
+    vi.spyOn(api, 'fetchBlockedUsersResult').mockResolvedValue({
+      data: [AINO],
+      meta: { source: 'api' },
+    });
     const unblock = vi
       .spyOn(api, 'unblockUser')
       .mockResolvedValue({ ok: true });
@@ -50,11 +68,14 @@ describe('BlockedAccounts', () => {
     });
     expect(unblock).toHaveBeenCalledWith('aino');
     expect(screen.queryByText('@aino')).toBeNull();
-    expect(screen.getByText("You haven't blocked anyone.")).toBeTruthy();
+    expect(screen.getByText("You haven't blocked anyone")).toBeTruthy();
   });
 
   it('keeps the row and shows why when unblocking fails', async () => {
-    vi.spyOn(api, 'fetchBlockedUsers').mockResolvedValue([AINO]);
+    vi.spyOn(api, 'fetchBlockedUsersResult').mockResolvedValue({
+      data: [AINO],
+      meta: { source: 'api' },
+    });
     vi.spyOn(api, 'unblockUser').mockResolvedValue({
       ok: false,
       error: 'Network error',

@@ -269,9 +269,7 @@ export function FeatureRequestsTab() {
         {loading ? (
           <PageLoading label="Loading feature requests…" />
         ) : rows.length === 0 ? (
-          <p className="text-foreground-secondary py-4 text-center text-sm">
-            No feature requests in this view.
-          </p>
+          <PageEmpty title="No feature requests in this view" />
         ) : (
           <ul className="divide-border divide-y">
             {rows.map((r) => {

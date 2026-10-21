@@ -16,7 +16,7 @@ import {
   type Mention,
   type MentionSettings,
 } from '../../../api/me-mentions';
-import { PageError } from '../../../components/PageStates';
+import { PageEmpty, PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { humanizePastDate } from '../../../lib/humanizeDate';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
@@ -156,7 +156,7 @@ export function MentionsPanel() {
             onRetry={load}
           />
         ) : mentions.length === 0 ? (
-          <SettingsHint>Nobody has mentioned you yet.</SettingsHint>
+          <PageEmpty title="Nobody has mentioned you yet" />
         ) : (
           <ul className="divide-border divide-y">
             {mentions.map((mention) => (
