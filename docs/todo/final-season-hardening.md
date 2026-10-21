@@ -8,6 +8,18 @@ NPM UI at `http://pi4.local:81` (no agent credentials on hand to edit hosts).
 
 ## DNS / NPM cutover map (you flip DNS; NPM forwards)
 
+**2026-10-21 NPM flip done (by the agent, at the user's request):** `app.tahti.live`
+(#48) and the `*.tahti.live` wildcard (#55) now forward to `192.168.2.100:15180`,
+the same `tahti-beta-web` container as `beta.` (#61) and the apex (#47, already
+there). Smoke: 200 on all four, `/tahti-api/health` 200 on each host (same-origin
+proxy in the container), `<slug>.tahti.live/` opens `/channel/<slug>` and
+`radio.tahti.live/` opens `/radio` (tahti-player #1456). The old Next app
+(`:17777`) has no tahti.live host left. Still open from the map below: the
+upstream is the beta container, not a Swarm/prod SPA image; the apex serves the
+SPA instead of the marketing site; board admin on `app.` is now the SPA admin,
+not Next. Rollback backups are in the NPM container's `/data`
+(`database.sqlite.bak-*`, `nginx/proxy_host/{48,55}.conf.bak-*`).
+
 Public edge today: DNS → `91.152.54.76` (same box as `tahti.live`), then
 **Pi4 Nginx Proxy Manager** (`pi4.local:81`) → LAN upstreams. Prefer
 **upstream switch in NPM** over DNS TTL games (CUTOVER §8.4).
@@ -35,9 +47,9 @@ Public edge today: DNS → `91.152.54.76` (same box as `tahti.live`), then
    chat WS to `chat.tahti.live`.
 5. Leave `beta.tahti.live` #61 alone until soak ends.
 
-Agent cannot apply NPM edits without Proxy Manager admin login (email +
-password or API token). Paste credentials (or a short-lived token) when you
-want the host updated automatically.
+The agent can edit NPM over `ssh pi4.local` (the NPM SQLite DB plus the
+generated `proxy_host/<id>.conf`, then `nginx -t` and reload), with a backup
+of both first.
 
 Batch A org (#866–#871) and Batch B player (#1072–#1078) are on `master`. First-100 code PRs #872/#873/#1079 merged; remaining work is L ops only (see blocker + [`first-100-users-infra.md`](first-100-users-infra.md)).
 

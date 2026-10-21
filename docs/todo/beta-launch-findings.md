@@ -19,7 +19,12 @@ How these were found:
 ## Blocking the switch (ops)
 
 - [ ] **Domain switch** — beta.tahti.live becomes the main site. DNS map and
-  runbook: [final-season-hardening.md](final-season-hardening.md).
+  runbook: [final-season-hardening.md](final-season-hardening.md). Partial
+  2026-10-21: `app.tahti.live` and the `*.tahti.live` channel wildcard now
+  forward to the beta SPA container (`:15180`), like the apex; channel
+  subdomains open their channel (#1456). Left: a prod SPA image instead of the
+  beta container, the apex vs marketing-site decision, and board admin on
+  Next vs the SPA admin.
 - [ ] **Tahti Radio does not play.** `cdn.tahti.live/hls-live/tahti-radio/master.m3u8`
   lists `stream-mp3-192.m3u8` and `stream-aac-320.m3u8`; both 404 (rechecked
   2026-10-20). The rotation encoder isn't writing HLS.
