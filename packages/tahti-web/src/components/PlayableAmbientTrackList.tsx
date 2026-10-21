@@ -1,9 +1,17 @@
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 
+import { Select } from '@tahti-player/ui';
+
 import type { TahtiPlayable } from '../api/types';
 import { formatDuration } from '../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../lib/soundId';
+import {
+  sortTracks,
+  TRACK_SORT_OPTIONS,
+  useTrackSort,
+  type TrackSort,
+} from '../lib/trackSort';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 import {
@@ -38,13 +46,15 @@ export function PlayableAmbientTrackList({
   const setStatus = usePlayerStore((s) => s.setStatus);
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
+  const [sort, setSort] = useTrackSort();
+  const sorted = sortTracks(items, sort);
 
-  const listItems: AmbientTrackListItem[] = items.map((item) => {
+  const listItems: AmbientTrackListItem[] = sorted.map((item) => {
     const isCurrent = currentId === item.id;
     const isPlaying =
       isCurrent && (status === 'playing' || status === 'loading');
     const soundId = soundIdFromPlayableId(item.id);
-    const rest = items.filter((other) => other.id !== item.id);
+    const rest = sorted.filter((other) => other.id !== item.id);
     const annotation = getAnnotation?.(item);
     return {
       id: item.id,
@@ -98,9 +108,20 @@ export function PlayableAmbientTrackList({
       items={listItems}
       defaultDensity="compact"
       emptyMessage={emptyMessage}
+      toolbarEnd={
+        items.length > 1 ? (
+          <Select
+            className="w-44"
+            aria-label="Sort tracks"
+            options={TRACK_SORT_OPTIONS}
+            value={sort}
+            onValueChange={(value) => setSort(value as TrackSort)}
+          />
+        ) : undefined
+      }
       renderList={() => (
         <PlayableTrackTable
-          items={items}
+          items={sorted}
           emptyMessage={emptyMessage}
           playAll={playAll}
           compactActions={compactActions}
