@@ -1,3 +1,9 @@
+## 2026-09-11 — v0.0.242: accurate listener world map
+
+Studio Stats and track insights `ListenerWorldMap` now renders Natural Earth
+110m country outlines with choropleth fills and centroid markers instead of
+the old hand-drawn continent blobs. Live geo data and ranking list unchanged.
+
 ## 2026-10-21 — UX batch 87 (admin breadcrumbs + Listen ambient + library sort)
 
 Admin dashboards/content/users/… breadcrumbs; dashboard PageError; soft
@@ -5835,6 +5841,7 @@ items, and remove items without changing runtime navigation.
 The shared frontend now knows when it is running inside the Tahti Player Tauri
 runtime. Local files surfaces the native catalog in the desktop runtime and
 keeps the browser File API fallback for web sessions.
+
 ## 2026-09-11 — v0.0.111: native desktop library bridge
 
 The desktop runtime now exposes its typed native library commands to the
