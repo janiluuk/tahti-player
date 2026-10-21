@@ -1,10 +1,5 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import {
-  ArrowLeftIcon,
-  CalendarPlusIcon,
-  LoaderCircleIcon,
-  SaveIcon,
-} from 'lucide-react';
+import { ArrowLeftIcon, CalendarPlusIcon, SaveIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -12,6 +7,7 @@ import {
   Button,
   ButtonLink,
   Input,
+  Loader,
   Select,
   Textarea,
   ViewShell,
@@ -234,11 +230,7 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                     }}
                   >
                     {busy ? (
-                      <LoaderCircleIcon
-                        size={16}
-                        aria-hidden
-                        className="mr-1.5 animate-spin"
-                      />
+                      <Loader size="sm" shape="circle" className="mr-1.5" />
                     ) : editing ? (
                       <SaveIcon size={16} aria-hidden className="mr-1.5" />
                     ) : (

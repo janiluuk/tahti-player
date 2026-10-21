@@ -2,6 +2,7 @@ import { DownloadIcon, SearchIcon, UserRoundIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
+  Button,
   ButtonAnchor,
   Input,
   Select,
@@ -124,7 +125,26 @@ export const AdminUsersView = () => {
                       onRetry={() => setAttempt((n) => n + 1)}
                     />
                   ) : users.length === 0 ? (
-                    <PageEmpty title="No users match these filters" />
+                    query.trim() || role || isMember ? (
+                      <PageEmpty
+                        title="No users match these filters"
+                        action={
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => {
+                              setQuery('');
+                              setRole('');
+                              setIsMember('');
+                            }}
+                          >
+                            Clear filters
+                          </Button>
+                        }
+                      />
+                    ) : (
+                      <PageEmpty title="No users yet" />
+                    )
                   ) : (
                     <SelectableList
                       items={users.map((user): SelectableListItem => ({

@@ -1,8 +1,8 @@
-import { LoaderCircleIcon, UploadCloudIcon } from 'lucide-react';
+import { UploadCloudIcon } from 'lucide-react';
 import { useEffect, useRef, useState, type FC, type RefObject } from 'react';
 import { toast } from 'sonner';
 
-import { Button, ImageReveal } from '@tahti-player/ui';
+import { Button, ImageReveal, Loader } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 import { IMAGE_UPLOAD_ACCEPT_ATTR } from '../lib/imageUploadContentType';
@@ -125,7 +125,7 @@ export const RadioStationCoverEditButton: FC<
         }}
       >
         {busy ? (
-          <LoaderCircleIcon size={18} aria-hidden className="animate-spin" />
+          <Loader size="sm" shape="circle" />
         ) : (
           <UploadCloudIcon size={18} aria-hidden />
         )}

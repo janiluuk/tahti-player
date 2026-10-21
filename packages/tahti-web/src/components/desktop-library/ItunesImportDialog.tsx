@@ -1,9 +1,4 @@
-import {
-  FolderOpenIcon,
-  LoaderCircleIcon,
-  PlusIcon,
-  XIcon,
-} from 'lucide-react';
+import { FolderOpenIcon, PlusIcon, XIcon } from 'lucide-react';
 
 import {
   Alert,
@@ -11,6 +6,7 @@ import {
   CopyButton,
   Dialog,
   Input,
+  Loader,
   Meter,
 } from '@tahti-player/ui';
 
@@ -157,7 +153,7 @@ function CommitProgress({
         className="text-foreground-secondary flex items-center gap-2 py-2 text-sm"
         role="status"
       >
-        <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+        <Loader size="inline" shape="circle" />
         Importing… Large libraries can take a few minutes.
       </p>
     );
@@ -168,7 +164,7 @@ function CommitProgress({
         className="text-foreground-secondary flex items-center gap-2 text-sm"
         role="status"
       >
-        <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+        <Loader size="inline" shape="circle" />
         {STAGES[progress.stage]}… {n(progress.done)} of {n(progress.total)}
       </p>
       <Meter
@@ -361,7 +357,7 @@ export function ItunesImportDialog({
 
       {state.phase === 'previewing' && !state.preview ? (
         <p className="text-foreground-secondary flex items-center gap-2 py-2 text-sm">
-          <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+          <Loader size="inline" shape="circle" />
           Reading the library…
         </p>
       ) : null}
@@ -437,11 +433,7 @@ export function ItunesImportDialog({
                 onClick={state.refresh}
               >
                 {state.phase === 'previewing' ? (
-                  <LoaderCircleIcon
-                    size={14}
-                    className="animate-spin"
-                    aria-hidden
-                  />
+                  <Loader size="inline" shape="circle" />
                 ) : null}
                 Preview again
               </Button>
@@ -487,11 +479,7 @@ export function ItunesImportDialog({
             onClick={() => void state.commit()}
           >
             {state.phase === 'committing' ? (
-              <LoaderCircleIcon
-                size={14}
-                className="animate-spin"
-                aria-hidden
-              />
+              <Loader size="inline" shape="circle" />
             ) : null}
             Import
           </Button>

@@ -323,7 +323,7 @@ exports[`PluginStoreItem > (Snapshot) renders installing state 1`] = `
     >
       <svg
         aria-hidden="true"
-        class="lucide lucide-loader-pinwheel animate-spin"
+        class="lucide lucide-loader-pinwheel shrink-0 animate-spin motion-reduce:animate-none"
         data-testid="loader"
         fill="none"
         height="16"

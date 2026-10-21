@@ -1,8 +1,7 @@
-import { LoaderCircleIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog } from '@tahti-player/ui';
+import { Button, Dialog, Loader } from '@tahti-player/ui';
 
 import type {
   NativePlayLogEntry,
@@ -117,7 +116,7 @@ export function PlayHistoryDialog({
             </p>
           ) : null}
           {loading ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+            <Loader size="inline" shape="circle" />
           ) : entries.length < total ? (
             <Button
               size="sm"

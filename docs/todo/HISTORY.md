@@ -1,3 +1,11 @@
+## 2026-10-21 - UX batch 88 thirty slices
+
+Folded `ux-batch-88-thirty.md`. `Loader` API (className, small sizes, circle
+shape, label) + 51 spinners migrated; 9 load-honesty leftovers fixed
+(MessageContacts and ArtistSoundCloudTracks deliberately stay hidden on
+failure); `SectionTitle` `wrap`, `CopyButton` `icon`; seven clear-filter
+slices. Shipped as `0.0.242`.
+
 ## 2026-10-21 - UX batch 87 thirty slices
 
 Folded `ux-batch-87-thirty.md`. `DataTable` primitive in `@tahti-player/ui`

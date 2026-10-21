@@ -139,6 +139,15 @@ export function BrowserLocalFiles() {
                 title="No local files found"
                 description={`Nothing matches “${query.trim()}”.`}
                 className="flex-1"
+                action={
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setQuery('')}
+                  >
+                    Clear search
+                  </Button>
+                }
               />
             ) : null
           ) : (

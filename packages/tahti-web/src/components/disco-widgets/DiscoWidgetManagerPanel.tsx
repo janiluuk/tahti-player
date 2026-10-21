@@ -284,6 +284,17 @@ export function DiscoWidgetManagerPanel({
                     ? 'Nothing in this store yet.'
                     : 'Try a different search.'
                 }
+                action={
+                  widgets.length > 0 ? (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => setSearch('')}
+                    >
+                      Clear search
+                    </Button>
+                  ) : undefined
+                }
               />
             ) : (
               <div

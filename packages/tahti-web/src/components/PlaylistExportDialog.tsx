@@ -1,8 +1,7 @@
-import { LoaderCircleIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, FilterChips } from '@tahti-player/ui';
+import { Button, Dialog, FilterChips, Loader } from '@tahti-player/ui';
 
 import type {
   NativeExportResult,
@@ -102,9 +101,7 @@ export function PlaylistExportDialog({ playlist, library, onClose }: Props) {
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
         <Button className="gap-1.5" disabled={busy} onClick={() => void run()}>
-          {busy ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
-          ) : null}
+          {busy ? <Loader size="inline" shape="circle" /> : null}
           Choose where to save…
         </Button>
       </Dialog.Actions>

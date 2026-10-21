@@ -1,8 +1,8 @@
-import { LayersIcon, LoaderCircleIcon, SplitIcon } from 'lucide-react';
+import { LayersIcon, SplitIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, TabLabel, Tabs } from '@tahti-player/ui';
+import { Button, Loader, TabLabel, Tabs } from '@tahti-player/ui';
 
 import {
   fetchSoundStems,
@@ -148,11 +148,7 @@ export function StemsPanel({
             onClick={() => void requestSplit()}
           >
             {busyStem ? (
-              <LoaderCircleIcon
-                size={14}
-                aria-hidden
-                className="mr-1.5 animate-spin"
-              />
+              <Loader size="inline" shape="circle" className="mr-1.5" />
             ) : (
               <SplitIcon size={14} aria-hidden className="mr-1.5" />
             )}
@@ -213,10 +209,10 @@ export function StemsPanel({
                       onClick={() => void sendJob(job)}
                     >
                       {sendingSet === job.stemSet ? (
-                        <LoaderCircleIcon
-                          size={14}
-                          aria-hidden
-                          className="mr-1.5 animate-spin"
+                        <Loader
+                          size="inline"
+                          shape="circle"
+                          className="mr-1.5"
                         />
                       ) : (
                         <LayersIcon size={14} aria-hidden className="mr-1.5" />

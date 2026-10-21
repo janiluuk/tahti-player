@@ -2,7 +2,6 @@ import {
   CopyIcon,
   DownloadIcon,
   ListMusicIcon,
-  LoaderCircleIcon,
   PencilIcon,
   PlayIcon,
   PlusIcon,
@@ -13,7 +12,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, EmptyState, Tooltip } from '@tahti-player/ui';
+import { Button, EmptyState, Loader, Tooltip } from '@tahti-player/ui';
 
 import type {
   NativeImportPreview,
@@ -111,7 +110,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
           onClick={() => void startImport()}
         >
           {choosing ? (
-            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+            <Loader size="inline" shape="circle" />
           ) : (
             <UploadIcon size={14} aria-hidden />
           )}
@@ -179,10 +178,11 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                 </span>
               </Button>
               {busyId === playlist.id ? (
-                <LoaderCircleIcon
-                  size={14}
-                  className="mx-2 animate-spin"
-                  aria-label="Working"
+                <Loader
+                  size="inline"
+                  shape="circle"
+                  className="mx-2"
+                  label="Working"
                 />
               ) : (
                 <>

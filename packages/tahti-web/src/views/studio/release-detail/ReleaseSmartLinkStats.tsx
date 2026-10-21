@@ -6,23 +6,41 @@ import {
   fetchReleaseSmartLinkAnalytics,
   type ReleaseSmartLinkAnalytics,
 } from '../../../api/release-analytics';
+import { PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { dspServiceLabel } from '../../../lib/dspServices';
 
 export function ReleaseSmartLinkStats({ releaseId }: { releaseId: string }) {
   const [stats, setStats] = useState<ReleaseSmartLinkAnalytics | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     void fetchReleaseSmartLinkAnalytics(releaseId).then((result) => {
       if (!cancelled) {
         setStats(result.data);
+        setError(
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+        );
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [releaseId]);
+  }, [releaseId, attempt]);
+
+  if (error) {
+    return (
+      <StudioPanel title="Smart link stats">
+        <PageError
+          title="Couldn't load smart link stats"
+          description={error}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
+      </StudioPanel>
+    );
+  }
 
   if (!stats) {
     return null;

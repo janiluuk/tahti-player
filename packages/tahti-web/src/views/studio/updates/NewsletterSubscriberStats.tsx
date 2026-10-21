@@ -6,22 +6,40 @@ import {
   fetchNewsletterSubscriberStats,
   type NewsletterSubscriberStats as Stats,
 } from '../../../api/studio-extras';
+import { PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 
 export function NewsletterSubscriberStats() {
   const [stats, setStats] = useState<Stats | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     void fetchNewsletterSubscriberStats().then((result) => {
       if (!cancelled) {
         setStats(result.data);
+        setError(
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+        );
       }
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
+
+  if (error) {
+    return (
+      <StudioPanel title="Subscribers">
+        <PageError
+          title="Couldn't load subscriber stats"
+          description={error}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
+      </StudioPanel>
+    );
+  }
 
   if (!stats) {
     return null;

@@ -77,12 +77,23 @@ describe('MultistreamStatusPanel', () => {
     expect(spy).toHaveBeenCalledTimes(2);
   });
 
-  it('renders nothing without destinations or on failure', async () => {
+  it('renders nothing without destinations', async () => {
     vi.spyOn(api, 'fetchRtmpTargetStatuses').mockResolvedValue({
       data: null,
       meta: { source: 'api' },
     });
     const { container } = await act(async () => renderPanel('night-drive'));
     expect(container.textContent).toBe('');
+  });
+
+  it('says when the status check fails', async () => {
+    vi.spyOn(api, 'fetchRtmpTargetStatuses').mockResolvedValue({
+      data: null,
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await act(async () => renderPanel('night-drive'));
+    expect(
+      await screen.findByText("Couldn't check multistream status"),
+    ).toBeTruthy();
   });
 });
