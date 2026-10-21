@@ -15,7 +15,10 @@ vi.mock('../../api/channel-schedule', () => ({
 }));
 
 async function renderShows(schedule: PublicChannelSchedule) {
-  vi.mocked(fetchChannelSchedule).mockResolvedValue(schedule);
+  vi.mocked(fetchChannelSchedule).mockResolvedValue({
+    data: schedule,
+    meta: { source: 'api' },
+  });
   let result: ReturnType<typeof render> | undefined;
   await act(async () => {
     result = render(<ChannelUpcomingShows slug="night-drive" />);

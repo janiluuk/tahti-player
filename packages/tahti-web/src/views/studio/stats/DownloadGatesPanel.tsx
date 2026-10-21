@@ -6,25 +6,35 @@ import {
   fetchDownloadGateStats,
   type DownloadGateStats,
 } from '../../../api/studio-extras/download-gates';
-import { PageEmpty, PageLoading } from '../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 
 export function DownloadGatesPanel({ active }: { active: boolean }) {
   const [stats, setStats] = useState<DownloadGateStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    setLoading(true);
     void fetchDownloadGateStats().then((result) => {
       if (!cancelled) {
         setStats(result.data);
+        setError(
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+        );
         setLoading(false);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reloadKey]);
 
   if (loading) {
     return active ? (
@@ -35,7 +45,15 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
   }
 
   if (!stats) {
-    return null;
+    return error && active ? (
+      <StudioPanel title="Download gates">
+        <PageError
+          title="Could not load download gates"
+          description={error}
+          onRetry={() => setReloadKey((key) => key + 1)}
+        />
+      </StudioPanel>
+    ) : null;
   }
 
   return (

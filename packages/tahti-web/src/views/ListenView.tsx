@@ -57,7 +57,7 @@ import { WelcomeStrip } from '../components/listen-view/WelcomeStrip';
 import { useListenerWidgetBlocks } from '../components/ListenerWidgetsSection';
 import { ListenWidgetStoreDialog } from '../components/ListenWidgetStoreDialog';
 import { PageError, PageLoading } from '../components/PageStates';
-import { PlayableTrackTable } from '../components/PlayableTrackTable';
+import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
 import { RadioListItem } from '../components/RadioListItem';
 import { RemoveWidgetDialog } from '../components/RemoveWidgetDialog';
 import {
@@ -596,7 +596,10 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               className="border-accent-purple/40 border-l-4 pl-3"
             />
             <div className="shadow-float rounded-[var(--radius-card)]">
-              <PlayableTrackTable items={sections.latestTracks.data} />
+              <PlayableAmbientTrackList
+                items={sections.latestTracks.data}
+                playAll
+              />
             </div>
           </section>
         </ListenSection>

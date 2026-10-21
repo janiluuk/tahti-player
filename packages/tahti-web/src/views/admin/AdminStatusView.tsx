@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 import { Badge, Button, ViewShell } from '@tahti-player/ui';
@@ -60,146 +61,158 @@ export function AdminStatusView() {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/status">
-          <ViewShell
-            title="Status"
-            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
-          >
-            <StudioPanel>
-              {loading ? (
-                <PageLoading label="Loading service status…" />
-              ) : !data ? (
-                <PageError description="Could not load status." />
-              ) : (
-                <>
-                  <div className="mb-4 flex flex-wrap items-center gap-3 text-sm">
-                    <Badge
-                      variant="pill"
-                      color={
-                        overallStatus === 'operational' ||
-                        overallStatus === 'ok'
-                          ? 'green'
-                          : 'orange'
-                      }
-                    >
-                      {overallStatus}
-                    </Badge>
-                    <span className="text-foreground-secondary text-xs">
-                      {platform?.version
-                        ? `Version ${platform.version} · `
-                        : ''}
-                      Uptime{' '}
-                      {Math.floor(
-                        (platform?.uptimeSec ?? data.uptimeSec) / 3600,
-                      )}
-                      h{' · checked '}
-                      <time
-                        dateTime={platform?.ts ?? data.ts}
-                        title={new Date(
-                          platform?.ts ?? data.ts,
-                        ).toLocaleString()}
+          <div className="flex flex-col gap-6">
+            <nav
+              aria-label="Breadcrumb"
+              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
+            >
+              <Link to="/admin" className="hover:underline">
+                Admin
+              </Link>
+              <span aria-hidden>→</span>
+              <span aria-current="page">Status</span>
+            </nav>
+            <ViewShell
+              title="Status"
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+            >
+              <StudioPanel>
+                {loading ? (
+                  <PageLoading label="Loading service status…" />
+                ) : !data ? (
+                  <PageError description="Could not load status." />
+                ) : (
+                  <>
+                    <div className="mb-4 flex flex-wrap items-center gap-3 text-sm">
+                      <Badge
+                        variant="pill"
+                        color={
+                          overallStatus === 'operational' ||
+                          overallStatus === 'ok'
+                            ? 'green'
+                            : 'orange'
+                        }
                       >
-                        {humanizePastDate(platform?.ts ?? data.ts)}
-                      </time>
-                    </span>
-                  </div>
-                  <ul className="divide-border divide-y">
-                    {Object.entries(mergedChecks).map(([id, check]) => (
-                      <li
-                        key={id}
-                        className="flex flex-wrap items-center justify-between gap-2 py-2.5 text-sm first:pt-0 last:pb-0"
-                      >
-                        <div className="min-w-0 flex-1">
-                          <div className="font-medium">{id}</div>
-                          {check.detail && (
-                            <div className="text-foreground-secondary text-xs">
-                              {check.detail}
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex shrink-0 items-center gap-2">
-                          {check.latencyMs != null && (
-                            <span className="text-foreground-secondary text-xs">
-                              {check.latencyMs} ms
-                            </span>
-                          )}
-                          <Badge
-                            variant="pill"
-                            color={check.state === 'up' ? 'green' : 'orange'}
-                          >
-                            {check.state}
-                          </Badge>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              )}
-            </StudioPanel>
-            {dashboard && (
-              <div className="grid gap-6 md:grid-cols-2">
-                <StudioPanel title="Queue health">
-                  <ul className="divide-border divide-y">
-                    {dashboard.queues.map((queue) => (
-                      <li
-                        key={queue.name}
-                        className="flex items-center justify-between py-2 text-sm first:pt-0 last:pb-0"
-                      >
-                        <span>{queue.name}</span>
-                        <span className="text-foreground-secondary text-xs">
-                          {queue.waiting} waiting
-                          {queue.failed > 0 ? `, ${queue.failed} failed` : ''}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </StudioPanel>
-                <StudioPanel title="Cron jobs">
-                  <ul className="divide-border divide-y">
-                    {dashboard.cronJobs.map((job) => (
-                      <li
-                        key={job.jobName}
-                        className="flex items-center justify-between py-2 text-sm first:pt-0 last:pb-0"
-                      >
-                        <Button
-                          size="flexible"
-                          variant="text"
-                          className="p-0 text-sm underline-offset-2 hover:underline"
-                          title={job.description}
-                          aria-label={`${job.jobName} run history`}
-                          onClick={() => setCronJob(job.jobName)}
+                        {overallStatus}
+                      </Badge>
+                      <span className="text-foreground-secondary text-xs">
+                        {platform?.version
+                          ? `Version ${platform.version} · `
+                          : ''}
+                        Uptime{' '}
+                        {Math.floor(
+                          (platform?.uptimeSec ?? data.uptimeSec) / 3600,
+                        )}
+                        h{' · checked '}
+                        <time
+                          dateTime={platform?.ts ?? data.ts}
+                          title={new Date(
+                            platform?.ts ?? data.ts,
+                          ).toLocaleString()}
                         >
-                          {job.jobName}
-                        </Button>
-                        <span className="text-foreground-secondary text-xs">
-                          {job.lastRun ? (
-                            <>
-                              {job.lastRun.outcome ?? '—'}
-                              {' · '}
-                              <time
-                                dateTime={job.lastRun.startedAt}
-                                title={new Date(
-                                  job.lastRun.startedAt,
-                                ).toLocaleString()}
-                              >
-                                {humanizePastDate(job.lastRun.startedAt)}
-                              </time>
-                            </>
-                          ) : (
-                            '—'
-                          )}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </StudioPanel>
-              </div>
-            )}
-            <WorkersPanel />
-            <CronHistoryDialog
-              jobName={cronJob}
-              onClose={() => setCronJob(null)}
-            />
-          </ViewShell>
+                          {humanizePastDate(platform?.ts ?? data.ts)}
+                        </time>
+                      </span>
+                    </div>
+                    <ul className="divide-border divide-y">
+                      {Object.entries(mergedChecks).map(([id, check]) => (
+                        <li
+                          key={id}
+                          className="flex flex-wrap items-center justify-between gap-2 py-2.5 text-sm first:pt-0 last:pb-0"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="font-medium">{id}</div>
+                            {check.detail && (
+                              <div className="text-foreground-secondary text-xs">
+                                {check.detail}
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex shrink-0 items-center gap-2">
+                            {check.latencyMs != null && (
+                              <span className="text-foreground-secondary text-xs">
+                                {check.latencyMs} ms
+                              </span>
+                            )}
+                            <Badge
+                              variant="pill"
+                              color={check.state === 'up' ? 'green' : 'orange'}
+                            >
+                              {check.state}
+                            </Badge>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </StudioPanel>
+              {dashboard && (
+                <div className="grid gap-6 md:grid-cols-2">
+                  <StudioPanel title="Queue health">
+                    <ul className="divide-border divide-y">
+                      {dashboard.queues.map((queue) => (
+                        <li
+                          key={queue.name}
+                          className="flex items-center justify-between py-2 text-sm first:pt-0 last:pb-0"
+                        >
+                          <span>{queue.name}</span>
+                          <span className="text-foreground-secondary text-xs">
+                            {queue.waiting} waiting
+                            {queue.failed > 0 ? `, ${queue.failed} failed` : ''}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </StudioPanel>
+                  <StudioPanel title="Cron jobs">
+                    <ul className="divide-border divide-y">
+                      {dashboard.cronJobs.map((job) => (
+                        <li
+                          key={job.jobName}
+                          className="flex items-center justify-between py-2 text-sm first:pt-0 last:pb-0"
+                        >
+                          <Button
+                            size="flexible"
+                            variant="text"
+                            className="p-0 text-sm underline-offset-2 hover:underline"
+                            title={job.description}
+                            aria-label={`${job.jobName} run history`}
+                            onClick={() => setCronJob(job.jobName)}
+                          >
+                            {job.jobName}
+                          </Button>
+                          <span className="text-foreground-secondary text-xs">
+                            {job.lastRun ? (
+                              <>
+                                {job.lastRun.outcome ?? '—'}
+                                {' · '}
+                                <time
+                                  dateTime={job.lastRun.startedAt}
+                                  title={new Date(
+                                    job.lastRun.startedAt,
+                                  ).toLocaleString()}
+                                >
+                                  {humanizePastDate(job.lastRun.startedAt)}
+                                </time>
+                              </>
+                            ) : (
+                              '—'
+                            )}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </StudioPanel>
+                </div>
+              )}
+              <WorkersPanel />
+              <CronHistoryDialog
+                jobName={cronJob}
+                onClose={() => setCronJob(null)}
+              />
+            </ViewShell>
+          </div>
         </AdminPageLayout>
       </div>
     </AdminGate>

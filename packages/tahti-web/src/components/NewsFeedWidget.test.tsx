@@ -73,4 +73,59 @@ describe('NewsFeedWidget', () => {
     fireEvent.keyDown(card, { key: 'Enter' });
     expect(await screen.findByTestId('news-article')).toBeTruthy();
   });
+
+  it('retries a failed feed from the error state', async () => {
+    const fetch = vi.spyOn(rss, 'fetchRssArticles');
+    fetch.mockResolvedValueOnce({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    fetch.mockResolvedValue({
+      data: [
+        {
+          id: 'a1',
+          title: 'Warehouse season opens',
+          teaser: 'Short teaser',
+          link: 'https://mixmag.net/read/warehouse',
+          publishedAt: '2026-10-20T09:30:00.000Z',
+          paragraphs: ['First paragraph.'],
+        },
+      ],
+      meta: { source: 'api' },
+    });
+    render(<NewsFeedWidget instance={instance} />);
+
+    expect(await screen.findByText('Couldn’t load this feed')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(
+      await screen.findByRole('button', { name: /Warehouse season opens/ }),
+    ).toBeTruthy();
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('explains when an article has no readable body', async () => {
+    vi.spyOn(rss, 'fetchRssArticles').mockResolvedValue({
+      data: [
+        {
+          id: 'a2',
+          title: 'Headline only',
+          teaser: '   ',
+          link: 'https://mixmag.net/read/headline',
+          publishedAt: 'not-a-date',
+          paragraphs: ['', '  '],
+        },
+      ],
+      meta: { source: 'api' },
+    });
+    render(<NewsFeedWidget instance={instance} />);
+    fireEvent.click(
+      await screen.findByRole('button', { name: /Headline only/ }),
+    );
+
+    const fallback = await screen.findByTestId('news-article-fallback');
+    expect(fallback.textContent).toContain('mixmag.net');
+    expect(screen.getByTestId('news-article').textContent).not.toContain(
+      'Invalid Date',
+    );
+  });
 });

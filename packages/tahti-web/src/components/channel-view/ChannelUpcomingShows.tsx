@@ -5,6 +5,7 @@ import {
   fetchChannelSchedule,
   type PublicChannelSchedule,
 } from '../../api/channel-schedule';
+import { PageError } from '../PageStates';
 import { Eyebrow } from '../tahti/Eyebrow';
 
 const MAX_VISIBLE = 10;
@@ -29,21 +30,33 @@ export function formatShowDuration(minutes: number): string {
 
 export function ChannelUpcomingShows({ slug }: { slug: string }) {
   const [schedule, setSchedule] = useState<PublicChannelSchedule | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
-    void fetchChannelSchedule(slug).then((result) => {
+    void fetchChannelSchedule(slug).then(({ data, meta }) => {
       if (!cancelled) {
-        setSchedule(result);
+        setSchedule(data);
+        setError(meta.source === 'api' ? (meta.reason ?? null) : null);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, reloadKey]);
 
   if (!schedule) {
     return null;
+  }
+  if (error && schedule.shows.length === 0) {
+    return (
+      <PageError
+        title="Could not load the schedule"
+        description={error}
+        onRetry={() => setReloadKey((key) => key + 1)}
+      />
+    );
   }
   if (schedule.shows.length === 0) {
     return (

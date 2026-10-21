@@ -11,7 +11,7 @@ import { isPinned } from '../../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../../lib/soundId';
-import { PlayableTrackTable } from '../PlayableTrackTable';
+import { PlayableAmbientTrackList } from '../PlayableAmbientTrackList';
 import { releasePlayables } from '../ReleaseTracklistDialog';
 import { TopListRankBadges } from './TopListRankBadges';
 
@@ -33,8 +33,9 @@ export function ArtistPopularTracks({
     <section className="flex min-w-0 flex-col" data-testid="artist-popular">
       <SectionTitle title="Popular tracks" />
       <TopListRankBadges items={items} />
-      <PlayableTrackTable
+      <PlayableAmbientTrackList
         items={items}
+        playAll
         emptyMessage="No playable tracks on this profile."
         onEdit={
           isOwner

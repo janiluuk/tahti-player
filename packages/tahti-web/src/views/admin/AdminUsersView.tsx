@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { DownloadIcon, SearchIcon, UserRoundIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -59,135 +60,151 @@ export const AdminUsersView = () => {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/users">
-          <ViewShell
-            title="Users"
-            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
-          >
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-foreground-secondary text-sm">
-                {total} accounts
-              </p>
-              <ButtonAnchor
-                href={adminUsersExportCsvUrl({ q: query, role, isMember })}
-                download
-                size="sm"
-                variant="secondary"
-                data-testid="admin-users-export"
-              >
-                <DownloadIcon size={14} aria-hidden className="mr-1.5" />
-                Export CSV
-              </ButtonAnchor>
-            </div>
+          <div className="flex flex-col gap-6">
+            <nav
+              aria-label="Breadcrumb"
+              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
+            >
+              <Link to="/admin" className="hover:underline">
+                Admin
+              </Link>
+              <span aria-hidden>→</span>
+              <span aria-current="page">Users</span>
+            </nav>
+            <ViewShell
+              title="Users"
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-foreground-secondary text-sm">
+                  {total} accounts
+                </p>
+                <ButtonAnchor
+                  href={adminUsersExportCsvUrl({ q: query, role, isMember })}
+                  download
+                  size="sm"
+                  variant="secondary"
+                  data-testid="admin-users-export"
+                >
+                  <DownloadIcon size={14} aria-hidden className="mr-1.5" />
+                  Export CSV
+                </ButtonAnchor>
+              </div>
 
-            <div className="grid min-h-[36rem] grid-cols-1 gap-4 lg:grid-cols-[20rem_minmax(0,1fr)]">
-              <StudioPanel className="flex min-h-0 flex-col gap-3">
-                <Input
-                  aria-label="Search users"
-                  placeholder="Name, email, or username"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  startAddon={
-                    <SearchIcon size={15} aria-hidden className="opacity-70" />
-                  }
-                />
-                <div className="grid grid-cols-2 gap-2">
-                  <Select
-                    label="Filter by role"
-                    value={role}
-                    onValueChange={setRole}
-                    options={ROLES.map((value) => ({
-                      id: value,
-                      label: value
-                        ? value.charAt(0) + value.slice(1).toLowerCase()
-                        : 'All roles',
-                    }))}
+              <div className="grid min-h-[36rem] grid-cols-1 gap-4 lg:grid-cols-[20rem_minmax(0,1fr)]">
+                <StudioPanel className="flex min-h-0 flex-col gap-3">
+                  <Input
+                    aria-label="Search users"
+                    placeholder="Name, email, or username"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    startAddon={
+                      <SearchIcon
+                        size={15}
+                        aria-hidden
+                        className="opacity-70"
+                      />
+                    }
                   />
-                  <Select
-                    label="Filter by membership"
-                    value={isMember}
-                    onValueChange={setIsMember}
-                    options={[
-                      { id: '', label: 'All accounts' },
-                      { id: 'true', label: 'Members' },
-                      { id: 'false', label: 'Non-members' },
-                    ]}
-                  />
-                </div>
-
-                <div className="min-h-0 flex-1 overflow-y-auto">
-                  {loading ? (
-                    <PageLoading label="Loading users…" />
-                  ) : loadError && users.length === 0 ? (
-                    <PageError
-                      title="Could not load users"
-                      description={loadError}
-                      onRetry={() => setAttempt((n) => n + 1)}
-                    />
-                  ) : users.length === 0 ? (
-                    <PageEmpty title="No users match these filters" />
-                  ) : (
-                    <SelectableList
-                      items={users.map((user): SelectableListItem => ({
-                        id: user.id,
-                        title: user.displayName,
-                        subtitle: `@${user.username}${user.suspendedAt ? ' · suspended' : ''}`,
-                        meta:
-                          user.role.charAt(0) +
-                          user.role.slice(1).toLowerCase(),
+                  <div className="grid grid-cols-2 gap-2">
+                    <Select
+                      label="Filter by role"
+                      value={role}
+                      onValueChange={setRole}
+                      options={ROLES.map((value) => ({
+                        id: value,
+                        label: value
+                          ? value.charAt(0) + value.slice(1).toLowerCase()
+                          : 'All roles',
                       }))}
-                      selected={selectedId}
-                      onChange={setSelectedId}
+                    />
+                    <Select
+                      label="Filter by membership"
+                      value={isMember}
+                      onValueChange={setIsMember}
+                      options={[
+                        { id: '', label: 'All accounts' },
+                        { id: 'true', label: 'Members' },
+                        { id: 'false', label: 'Non-members' },
+                      ]}
+                    />
+                  </div>
+
+                  <div className="min-h-0 flex-1 overflow-y-auto">
+                    {loading ? (
+                      <PageLoading label="Loading users…" />
+                    ) : loadError && users.length === 0 ? (
+                      <PageError
+                        title="Could not load users"
+                        description={loadError}
+                        onRetry={() => setAttempt((n) => n + 1)}
+                      />
+                    ) : users.length === 0 ? (
+                      <PageEmpty title="No users match these filters" />
+                    ) : (
+                      <SelectableList
+                        items={users.map((user): SelectableListItem => ({
+                          id: user.id,
+                          title: user.displayName,
+                          subtitle: `@${user.username}${user.suspendedAt ? ' · suspended' : ''}`,
+                          meta:
+                            user.role.charAt(0) +
+                            user.role.slice(1).toLowerCase(),
+                        }))}
+                        selected={selectedId}
+                        onChange={setSelectedId}
+                      />
+                    )}
+                  </div>
+                </StudioPanel>
+
+                <div className="min-w-0">
+                  {!selectedId ? (
+                    <StudioPanel className="flex min-h-72 items-center justify-center">
+                      <div className="text-center">
+                        <UserRoundIcon
+                          size={28}
+                          aria-hidden
+                          className="text-foreground-secondary mx-auto mb-2"
+                        />
+                        <p className="text-foreground-secondary text-sm">
+                          Select a user to view and edit their account.
+                        </p>
+                      </div>
+                    </StudioPanel>
+                  ) : (
+                    <AdminUserEditPanel
+                      key={selectedId}
+                      userId={selectedId}
+                      onUserDeleted={(id) => {
+                        setUsers((current) =>
+                          current.filter((row) => row.id !== id),
+                        );
+                        setTotal((current) => Math.max(0, current - 1));
+                      }}
+                      onUserUpdated={(user) =>
+                        setUsers((current) =>
+                          current.map((row) =>
+                            row.id === user.id
+                              ? {
+                                  ...row,
+                                  role: user.role,
+                                  tier: user.tier,
+                                  isMember: user.isMember,
+                                  isBoard: user.isBoard,
+                                  memberNumber: user.memberNumber,
+                                  suspendedAt: user.suspendedAt,
+                                }
+                              : row,
+                          ),
+                        )
+                      }
                     />
                   )}
                 </div>
-              </StudioPanel>
-
-              <div className="min-w-0">
-                {!selectedId ? (
-                  <StudioPanel className="flex min-h-72 items-center justify-center">
-                    <div className="text-center">
-                      <UserRoundIcon
-                        size={28}
-                        aria-hidden
-                        className="text-foreground-secondary mx-auto mb-2"
-                      />
-                      <p className="text-foreground-secondary text-sm">
-                        Select a user to view and edit their account.
-                      </p>
-                    </div>
-                  </StudioPanel>
-                ) : (
-                  <AdminUserEditPanel
-                    key={selectedId}
-                    userId={selectedId}
-                    onUserDeleted={(id) => {
-                      setUsers((current) =>
-                        current.filter((row) => row.id !== id),
-                      );
-                      setTotal((current) => Math.max(0, current - 1));
-                    }}
-                    onUserUpdated={(user) =>
-                      setUsers((current) =>
-                        current.map((row) =>
-                          row.id === user.id
-                            ? {
-                                ...row,
-                                role: user.role,
-                                tier: user.tier,
-                                isMember: user.isMember,
-                                isBoard: user.isBoard,
-                                memberNumber: user.memberNumber,
-                                suspendedAt: user.suspendedAt,
-                              }
-                            : row,
-                        ),
-                      )
-                    }
-                  />
-                )}
               </div>
-            </div>
-          </ViewShell>
+            </ViewShell>
+          </div>
         </AdminPageLayout>
       </div>
     </AdminGate>

@@ -37,16 +37,16 @@ new surface, one PR per row.
 
 - [ ] Wire `AmbientTrackRow` / `AmbientTrackList` beyond Library → Sounds
   (Listen, Favorites, Collections…); prefer real `peaks` from the list API.
-  Partial: Favorites (batch 84); CollectionView + SmartLinkView (batch 85).
+  Partial: Favorites (batch 84); CollectionView + SmartLinkView (batch 85);
+  Listen new tracks + artist popular (batch 87).
 - [ ] `PlayableTrackTable` view mode (dense / expanded / grid) + client sort,
   persisted (pattern: player `usePlaylistSort`). Fixes ListenView,
   CollectionView, SmartLinkView, FavoritesView, ChannelViewBlocks,
   TagSearchView, BrowserLocalFiles at once.
-  Partial: `PlayableAmbientTrackList` (Collection, SmartLink, Favorites)
-  has a persisted Sort menu (title, artist, newest, duration) on top of its
-  existing size / List switcher (2026-10-21). Left: grid mode and the views
-  still on a bare `PlayableTrackTable` (Listen new tracks, channel blocks,
-  artist sections, local files).
+  Partial: `PlayableAmbientTrackList` (Collection, SmartLink, Favorites,
+  Listen new tracks, artist popular) has a persisted Sort menu (title,
+  artist, newest, duration) on top of its existing size / List switcher
+  (2026-10-21 / batch 87). Left: grid mode and channel blocks / local files.
 - [x] `StudioShowsView` search + clear (already); `MyVenuesView` search + clear (batch 80).
 - [ ] Library trio (`LibraryMediaView` / `LibraryEmbedsView` /
   `LibrarySmartLinksView`): converge on a shared library row with FilterChips +
@@ -54,7 +54,7 @@ new surface, one PR per row.
   SmartLinks search (batch 80); Media kind chips + SmartLinks DSP chips + load
   `PageError` (batch 81); Embeds PageError even with partial data (batch 82);
   shared `LibrarySectionToolbar` on Media + SmartLinks (batch 83); Embeds
-  (batch 85). Sort still open.
+  (batch 85); client sort Select on Media/Embeds/SmartLinks (batch 87).
 
 ## Shared surfaces (de-duplication)
 

@@ -12,12 +12,17 @@ const hostOf = (link: string) => {
   }
 };
 
-const dateLabel = (iso: string) =>
-  new Date(iso).toLocaleDateString(undefined, {
+const dateLabel = (iso: string) => {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+  return date.toLocaleDateString(undefined, {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
   });
+};
 
 /** Reads an RSS article inside Tahti. Opening the source site in a new tab
  * left no way back, so the full text shows here with Close, and the
@@ -35,8 +40,12 @@ export function NewsArticleDialog({
 }) {
   const host = article?.link ? hostOf(article.link) : null;
   const imageUrl = article?.imageUrl ?? fallbackImageUrl;
-  const paragraphs =
+  const rawParagraphs =
     article?.paragraphs ?? (article?.teaser ? [article.teaser] : []);
+  const paragraphs = rawParagraphs.filter(
+    (paragraph) => typeof paragraph === 'string' && paragraph.trim() !== '',
+  );
+  const canOpenSource = Boolean(article?.link && host);
 
   return (
     <Dialog.Root
@@ -52,7 +61,7 @@ export function NewsArticleDialog({
             <Dialog.Description>
               {[
                 feedLabel,
-                article.publishedAt && dateLabel(article.publishedAt),
+                article.publishedAt ? dateLabel(article.publishedAt) : null,
               ]
                 .filter(Boolean)
                 .join(' · ')}
@@ -72,8 +81,13 @@ export function NewsArticleDialog({
                 <p key={index}>{paragraph}</p>
               ))
             ) : (
-              <p className="text-foreground-secondary">
-                This feed only shares the headline.
+              <p
+                className="text-foreground-secondary"
+                data-testid="news-article-fallback"
+              >
+                {canOpenSource
+                  ? `This feed only shares the headline, or the article text could not be read. Read the full story on ${host}.`
+                  : 'This feed only shares the headline, and the article text could not be read.'}
               </p>
             )}
           </div>
