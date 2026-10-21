@@ -23,6 +23,7 @@ import {
   Button,
   ButtonAnchor,
   ButtonLink,
+  Meter,
   Tabs,
   Textarea,
   toast,
@@ -94,14 +95,31 @@ export function AccountPanel() {
   const [membershipError, setMembershipError] = useState<string | null>(null);
   const [membershipAttempt, setMembershipAttempt] = useState(0);
   const [subscriptions, setSubscriptions] = useState<FanSubscriptionRow[]>([]);
+  const [subscriptionsError, setSubscriptionsError] = useState<string | null>(
+    null,
+  );
   const [purchases, setPurchases] = useState<PurchaseRow[]>([]);
+  const [purchasesError, setPurchasesError] = useState<string | null>(null);
   const [pendingCancel, setPendingCancel] = useState<FanSubscriptionRow | null>(
     null,
   );
   const [cancelBusy, setCancelBusy] = useState(false);
 
   const reloadSubscriptions = () =>
-    fetchMySubscriptions().then((r) => setSubscriptions(r.data));
+    fetchMySubscriptions().then((r) => {
+      setSubscriptions(r.data);
+      setSubscriptionsError(
+        r.meta.source === 'api' ? (r.meta.reason ?? null) : null,
+      );
+    });
+
+  const reloadPurchases = () =>
+    fetchMyPurchases().then((r) => {
+      setPurchases(r.data);
+      setPurchasesError(
+        r.meta.source === 'api' ? (r.meta.reason ?? null) : null,
+      );
+    });
 
   useEffect(() => {
     if (!user) {
@@ -117,7 +135,7 @@ export function AccountPanel() {
 
   useEffect(() => {
     void reloadSubscriptions();
-    void fetchMyPurchases().then((r) => setPurchases(r.data));
+    void reloadPurchases();
   }, []);
 
   if (!user) {
@@ -245,7 +263,13 @@ export function AccountPanel() {
       icon: <Wallet size={14} />,
       content: (
         <div className="flex flex-col gap-4">
-          {subscriptions.length === 0 ? (
+          {subscriptionsError && subscriptions.length === 0 ? (
+            <PageError
+              title="Could not load your fan subscriptions"
+              description={subscriptionsError}
+              onRetry={() => void reloadSubscriptions()}
+            />
+          ) : subscriptions.length === 0 ? (
             <PageEmpty title="No fan subscriptions on this account" />
           ) : (
             <ul className="flex flex-col gap-2">
@@ -320,7 +344,13 @@ export function AccountPanel() {
       label: 'Purchases',
       icon: <CreditCardIcon size={14} />,
       content:
-        purchases.length === 0 ? (
+        purchasesError && purchases.length === 0 ? (
+          <PageError
+            title="Could not load your purchases"
+            description={purchasesError}
+            onRetry={() => void reloadPurchases()}
+          />
+        ) : purchases.length === 0 ? (
           <PageEmpty title="No track purchases on this account" />
         ) : (
           <ul className="flex flex-col gap-2">
@@ -456,12 +486,12 @@ function AccountStoragePanel() {
       </div>
       {!storage.unlimited && storage.quotaBytes ? (
         <div className="flex flex-col gap-2">
-          <div className="bg-background-secondary h-2 overflow-hidden rounded-full">
-            <div
-              className="bg-primary h-full rounded-full transition-[width]"
-              style={{ width: `${usedPercent}%` }}
-            />
-          </div>
+          <Meter
+            value={usedPercent}
+            className="h-2"
+            barClassName="transition-[width]"
+            aria-label="Storage used"
+          />
           <p className="text-foreground-secondary text-xs">
             {Math.round(usedPercent)}% of your available storage is in use.
           </p>

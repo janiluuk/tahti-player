@@ -1,6 +1,12 @@
 import { MessageCircleIcon, MicIcon } from 'lucide-react';
 
-import { Button, FilterChips, Input, Select, Textarea } from '@tahti-player/ui';
+import {
+  FilterChips,
+  Input,
+  SegmentedControl,
+  Select,
+  Textarea,
+} from '@tahti-player/ui';
 
 import type { ShowType, StudioShowSeries } from '../api/shows';
 import { ShowImagePicker } from './ShowImagePicker';
@@ -82,19 +88,15 @@ export function BroadcastDetailsFields({
             onChange({ ...values, durationHours: Number(id) as 1 | 2 })
           }
         />
-        <div className="flex gap-1">
-          {(['SERIES', 'SINGLE'] as const).map((mode) => (
-            <Button
-              key={mode}
-              type="button"
-              size="sm"
-              variant={values.mode === mode ? undefined : 'text'}
-              onClick={() => onChange({ ...values, mode })}
-            >
-              {mode === 'SERIES' ? 'Continuous show' : 'Single show'}
-            </Button>
-          ))}
-        </div>
+        <SegmentedControl
+          aria-label="Show format"
+          options={[
+            { id: 'SERIES', label: 'Continuous show' },
+            { id: 'SINGLE', label: 'Single show' },
+          ]}
+          value={values.mode}
+          onChange={(mode) => onChange({ ...values, mode })}
+        />
         {values.mode === 'SERIES' ? (
           <span className="text-foreground-secondary text-xs">
             Episode #{episodeNumber}

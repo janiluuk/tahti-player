@@ -1,3 +1,5 @@
+import { ExternalLink } from '@tahti-player/ui';
+
 import { LegalHubLinks } from '../components/LegalHubLinks';
 import { PageBackLink } from '../components/PageBackLink';
 import { PageHeader } from '../components/PageHeader';
@@ -23,14 +25,12 @@ export function LegalView({ slug }: { slug: string }) {
         title={page.title}
         subtitle={page.description}
         meta={
-          <a
+          <ExternalLink
             href={`${PRODUCTION}${page.productionPath}`}
-            target="_blank"
-            rel="noreferrer"
-            className="underline-offset-2 hover:underline"
+            className="no-underline underline-offset-2 hover:underline"
           >
             Full page on tahti.live{page.productionPath}
-          </a>
+          </ExternalLink>
         }
       />
       {page.sections.map((section) => (

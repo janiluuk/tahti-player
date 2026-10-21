@@ -277,6 +277,7 @@ export async function fetchAdminGrants(): Promise<{
   try {
     const currentYear = new Date().getUTCFullYear();
     const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
+    let firstError: unknown = null;
     const results = await Promise.all(
       years.map(async (year) => {
         try {
@@ -286,14 +287,15 @@ export async function fetchAdminGrants(): Promise<{
             totalCents: number;
           }>(`/api/v1/transparency/grants/${year}`);
           return data.grantCount > 0 ? data : null;
-        } catch {
+        } catch (err) {
+          firstError ??= err;
           return null;
         }
       }),
     );
     return {
       data: results.filter((r): r is AdminGrantYearSummary => r !== null),
-      meta: { source: 'api' },
+      meta: firstError ? apiErrorMeta(firstError) : { source: 'api' },
     };
   } catch (err) {
     return { data: [], meta: failMeta(err) };

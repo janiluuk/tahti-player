@@ -1,3 +1,15 @@
+## 2026-10-21 - UX batch 87 (DataTable, load honesty, library swaps)
+
+New `DataTable` family in `@tahti-player/ui` (story + test) replaces eleven
+hand-rolled tables (payouts, port inventory, releases, transparency, grant
+year, status, help, fan-sub artists, grant cycle). Account subscriptions and
+purchases, fan subscriptions, multistream targets, recent social posts,
+feature-request threads, radio bookings and shows, stem jobs, admin grants and
+download gates show `PageError` + Retry instead of an empty or vanished panel.
+Period / show-format switches -> `SegmentedControl`, stat tiles -> `StatTile`,
+bars -> `Meter`, warnings -> `Alert`, headings -> `SectionTitle`, external
+links -> `ExternalLink`. Bumped to `0.0.241`.
+
 ## 2026-10-21 — UX batch 86 (load honesty + PageEmpty leftovers)
 
 Admin Beta / Radio submissions / Support tickets, track insights and Blocked

@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import {
+  SegmentedControl,
+  StatTile,
+  type SegmentedControlOption,
+} from '@tahti-player/ui';
 
 import {
   fetchTrackInsights,
@@ -11,10 +15,13 @@ import {
 import { ListenerWorldMap } from './ListenerWorldMap';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
-import { Eyebrow } from './tahti/Eyebrow';
 import { StatNumber } from './tahti/StatNumber';
 
-const PERIODS: InsightsPeriod[] = ['7d', '30d', 'all'];
+const PERIOD_OPTIONS: SegmentedControlOption<InsightsPeriod>[] = [
+  { id: '7d', label: '7d' },
+  { id: '30d', label: '30d' },
+  { id: 'all', label: 'All time' },
+];
 
 export function TrackInsightsPanel({
   kind,
@@ -53,17 +60,13 @@ export function TrackInsightsPanel({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap justify-end gap-1.5">
-        {PERIODS.map((value) => (
-          <Button
-            key={value}
-            size="sm"
-            variant={value === period ? undefined : 'text'}
-            onClick={() => setPeriod(value)}
-          >
-            {value === 'all' ? 'All time' : value}
-          </Button>
-        ))}
+      <div className="flex justify-end">
+        <SegmentedControl
+          aria-label="Period"
+          options={PERIOD_OPTIONS}
+          value={period}
+          onChange={setPeriod}
+        />
       </div>
 
       {loading ? (
@@ -79,18 +82,22 @@ export function TrackInsightsPanel({
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <div className="border-border rounded-lg border p-4">
-              <Eyebrow>Plays</Eyebrow>
-              <StatNumber className="mt-1 block text-2xl">
-                {insights.totalPlays.toLocaleString()}
-              </StatNumber>
-            </div>
-            <div className="border-border rounded-lg border p-4">
-              <Eyebrow>Downloads</Eyebrow>
-              <StatNumber className="mt-1 block text-2xl">
-                {insights.totalDownloads.toLocaleString()}
-              </StatNumber>
-            </div>
+            <StatTile
+              label="Plays"
+              value={
+                <StatNumber className="text-2xl">
+                  {insights.totalPlays.toLocaleString()}
+                </StatNumber>
+              }
+            />
+            <StatTile
+              label="Downloads"
+              value={
+                <StatNumber className="text-2xl">
+                  {insights.totalDownloads.toLocaleString()}
+                </StatNumber>
+              }
+            />
           </div>
 
           <StudioPanel title="Listener map">

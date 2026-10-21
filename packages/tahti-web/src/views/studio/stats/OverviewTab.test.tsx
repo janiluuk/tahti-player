@@ -7,6 +7,7 @@ import type { StatsData } from './useStatsData';
 
 vi.mock('@tanstack/react-router', () => ({
   Link: ({ children }: { children: React.ReactNode }) => <a>{children}</a>,
+  createLink: () => () => null,
 }));
 
 const state = {

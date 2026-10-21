@@ -27,6 +27,7 @@ export function AccountView() {
   const [subs, setSubs] = useState<FanSubscriptionRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [membershipError, setMembershipError] = useState<string | null>(null);
+  const [subsError, setSubsError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export function AccountView() {
       setMembership(null);
       setMembershipError(null);
       setSubs([]);
+      setSubsError(null);
       return;
     }
     let cancelled = false;
@@ -47,6 +49,7 @@ export function AccountView() {
         const reason = m.meta.source === 'api' ? (m.meta.reason ?? null) : null;
         setMembershipError(reason);
         setSubs(s.data);
+        setSubsError(s.meta.source === 'api' ? (s.meta.reason ?? null) : null);
         setLoading(false);
       },
     );
@@ -155,7 +158,13 @@ export function AccountView() {
             icon: <HeartHandshakeIcon size={14} />,
             count: subs.length,
             content:
-              subs.length === 0 ? (
+              subsError && subs.length === 0 ? (
+                <PageError
+                  title="Could not load your fan subscriptions"
+                  description={subsError}
+                  onRetry={() => setAttempt((n) => n + 1)}
+                />
+              ) : subs.length === 0 ? (
                 <PageEmpty title="No fan subscriptions on this account. Support an artist from their profile." />
               ) : (
                 <div className="flex flex-col gap-3">

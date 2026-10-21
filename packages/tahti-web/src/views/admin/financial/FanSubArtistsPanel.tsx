@@ -1,7 +1,16 @@
 import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Badge, HorizontalScroll } from '@tahti-player/ui';
+import {
+  Badge,
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableHead,
+  DataTableHeaderCell,
+  DataTableRow,
+  HorizontalScroll,
+} from '@tahti-player/ui';
 
 import { fetchFanSubArtists, type AdminFanSubArtist } from '../../../api/admin';
 import {
@@ -46,22 +55,26 @@ export function FanSubArtistsPanel() {
         <PageEmpty title="No active fan subscriptions" />
       ) : (
         <HorizontalScroll label="Fan subscriptions by artist">
-          <table className="w-full text-sm" data-testid="fansub-artists">
-            <thead>
-              <tr className="text-foreground-secondary text-left text-xs">
-                <th className="py-2 pr-3 font-semibold">Artist</th>
-                <th className="py-2 pr-3 text-right font-semibold">
+          <DataTable data-testid="fansub-artists">
+            <DataTableHead>
+              <DataTableRow>
+                <DataTableHeaderCell>Artist</DataTableHeaderCell>
+                <DataTableHeaderCell className="text-right">
                   Subscribers
-                </th>
-                <th className="py-2 pr-3 text-right font-semibold">MRR</th>
-                <th className="py-2 pr-3 text-right font-semibold">Paid out</th>
-                <th className="py-2 font-semibold">Stripe</th>
-              </tr>
-            </thead>
-            <tbody className="divide-border divide-y">
+                </DataTableHeaderCell>
+                <DataTableHeaderCell className="text-right">
+                  MRR
+                </DataTableHeaderCell>
+                <DataTableHeaderCell className="text-right">
+                  Paid out
+                </DataTableHeaderCell>
+                <DataTableHeaderCell>Stripe</DataTableHeaderCell>
+              </DataTableRow>
+            </DataTableHead>
+            <DataTableBody>
               {rows.map((row) => (
-                <tr key={row.artistUserId}>
-                  <td className="py-2 pr-3">
+                <DataTableRow key={row.artistUserId}>
+                  <DataTableCell>
                     <Link
                       to="/u/$username"
                       params={{ username: row.username }}
@@ -69,17 +82,17 @@ export function FanSubArtistsPanel() {
                     >
                       {row.displayName || row.username}
                     </Link>
-                  </td>
-                  <td className="py-2 pr-3 text-right tabular-nums">
+                  </DataTableCell>
+                  <DataTableCell className="text-right tabular-nums">
                     {row.activeSubscriberCount}
-                  </td>
-                  <td className="py-2 pr-3 text-right tabular-nums">
+                  </DataTableCell>
+                  <DataTableCell className="text-right tabular-nums">
                     {formatEur(row.mrrCents)}
-                  </td>
-                  <td className="py-2 pr-3 text-right tabular-nums">
+                  </DataTableCell>
+                  <DataTableCell className="text-right tabular-nums">
                     {formatEur(row.totalPaidCents)}
-                  </td>
-                  <td className="py-2">
+                  </DataTableCell>
+                  <DataTableCell>
                     {row.stripeConnectChargesEnabled ? (
                       <Badge variant="pill" color="green">
                         Ready
@@ -91,11 +104,11 @@ export function FanSubArtistsPanel() {
                           : 'Not connected'}
                       </Badge>
                     )}
-                  </td>
-                </tr>
+                  </DataTableCell>
+                </DataTableRow>
               ))}
-            </tbody>
-          </table>
+            </DataTableBody>
+          </DataTable>
         </HorizontalScroll>
       )}
     </StudioPanel>

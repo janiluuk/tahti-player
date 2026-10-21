@@ -31,6 +31,9 @@ async function renderSubscriptionsTab(
   subscriptions: Awaited<
     ReturnType<typeof client.fetchMySubscriptions>
   >['data'],
+  meta: Awaited<ReturnType<typeof client.fetchMySubscriptions>>['meta'] = {
+    source: 'api',
+  },
 ) {
   useAuthStore.setState({ user: { username: 'fan' } as AuthUser });
   vi.spyOn(client, 'fetchMembership').mockResolvedValue({
@@ -43,7 +46,7 @@ async function renderSubscriptionsTab(
   });
   vi.spyOn(client, 'fetchMySubscriptions').mockResolvedValue({
     data: subscriptions,
-    meta: { source: 'api' },
+    meta,
   });
   const router = createRouter({
     routeTree: createRootRoute({ component: () => <AccountPanel /> }),
@@ -115,5 +118,26 @@ describe('AccountPanel fan subscriptions', () => {
       ),
     ).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Manage' })).toBeNull();
+  });
+
+  it('shows Retry instead of "No fan subscriptions" when the load fails', async () => {
+    await renderSubscriptionsTab([], { source: 'api', reason: 'HTTP 502' });
+
+    expect(
+      screen.getByText('Could not load your fan subscriptions'),
+    ).toBeTruthy();
+    expect(
+      screen.queryByText('No fan subscriptions on this account'),
+    ).toBeNull();
+    vi.mocked(client.fetchMySubscriptions).mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(
+      screen.getByText('No fan subscriptions on this account'),
+    ).toBeTruthy();
   });
 });

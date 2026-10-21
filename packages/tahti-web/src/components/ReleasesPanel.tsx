@@ -1,7 +1,18 @@
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-import { Button, ButtonLink, Input, MediaArtwork } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableHead,
+  DataTableHeaderCell,
+  DataTableRow,
+  Input,
+  MediaArtwork,
+} from '@tahti-player/ui';
 
 import type { PublicProfileRelease } from '../api/types';
 import { usePlayerStore } from '../stores/playerStore';
@@ -152,11 +163,11 @@ export function ReleasesPanel({
         />
       ) : (
         <div className="border-border overflow-hidden rounded-lg border">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-border bg-background-secondary border-b">
-                <th className="w-12 px-3 py-2" />
-                <th className="px-3 py-2 text-left">
+          <DataTable>
+            <DataTableHead>
+              <DataTableRow className="bg-background-secondary">
+                <DataTableHeaderCell className="w-12" />
+                <DataTableHeaderCell>
                   <SortHeader
                     label="Title"
                     sortKey="title"
@@ -164,8 +175,8 @@ export function ReleasesPanel({
                     dir={sortDir}
                     onClick={setSort}
                   />
-                </th>
-                <th className="hidden px-3 py-2 text-left sm:table-cell">
+                </DataTableHeaderCell>
+                <DataTableHeaderCell className="hidden sm:table-cell">
                   <SortHeader
                     label="Type"
                     sortKey="type"
@@ -173,8 +184,8 @@ export function ReleasesPanel({
                     dir={sortDir}
                     onClick={setSort}
                   />
-                </th>
-                <th className="hidden px-3 py-2 text-left md:table-cell">
+                </DataTableHeaderCell>
+                <DataTableHeaderCell className="hidden md:table-cell">
                   <SortHeader
                     label="Released"
                     sortKey="date"
@@ -182,21 +193,21 @@ export function ReleasesPanel({
                     dir={sortDir}
                     onClick={setSort}
                   />
-                </th>
-                <th className="w-24 px-3 py-2" />
-              </tr>
-            </thead>
-            <tbody>
+                </DataTableHeaderCell>
+                <DataTableHeaderCell className="w-24" />
+              </DataTableRow>
+            </DataTableHead>
+            <DataTableBody>
               {sortedReleases.map((rel, i) => {
                 const playables = releasePlayables(rel, artist, slug);
                 return (
-                  <tr
+                  <DataTableRow
                     key={rel.id}
-                    className={`border-border border-b last:border-b-0 ${
-                      i % 2 === 1 ? 'bg-background-secondary/40' : ''
-                    }`}
+                    className={
+                      i % 2 === 1 ? 'bg-background-secondary/40' : undefined
+                    }
                   >
-                    <td className="px-3 py-2">
+                    <DataTableCell>
                       <MediaArtwork
                         size="sm"
                         src={rel.artworkUrl}
@@ -204,8 +215,8 @@ export function ReleasesPanel({
                         className="bg-surface-secondary rounded-md text-[10px] font-bold"
                         placeholder={rel.title.slice(0, 2).toUpperCase()}
                       />
-                    </td>
-                    <td className="px-3 py-2">
+                    </DataTableCell>
+                    <DataTableCell>
                       <Button
                         variant="plain"
                         size="flexible"
@@ -215,14 +226,14 @@ export function ReleasesPanel({
                       >
                         {rel.title}
                       </Button>
-                    </td>
-                    <td className="text-foreground-secondary hidden px-3 py-2 sm:table-cell">
+                    </DataTableCell>
+                    <DataTableCell className="text-foreground-secondary hidden sm:table-cell">
                       {rel.type ?? 'Release'}
-                    </td>
-                    <td className="text-foreground-secondary hidden px-3 py-2 md:table-cell">
+                    </DataTableCell>
+                    <DataTableCell className="text-foreground-secondary hidden md:table-cell">
                       {formatReleaseDate(rel.releaseDate)}
-                    </td>
-                    <td className="px-3 py-2">
+                    </DataTableCell>
+                    <DataTableCell>
                       <MediaIconActions
                         actions={playQueueFavoriteActions({
                           onPlay: () => {
@@ -260,12 +271,12 @@ export function ReleasesPanel({
                             ),
                         })}
                       />
-                    </td>
-                  </tr>
+                    </DataTableCell>
+                  </DataTableRow>
                 );
               })}
-            </tbody>
-          </table>
+            </DataTableBody>
+          </DataTable>
         </div>
       )}
 

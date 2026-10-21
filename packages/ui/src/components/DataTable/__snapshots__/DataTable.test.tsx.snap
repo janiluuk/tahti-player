@@ -1,0 +1,49 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DataTable > (Snapshot) renders head and body rows 1`] = `
+<div>
+  <table
+    class="w-full border-collapse text-left text-sm"
+    data-testid="data-table"
+  >
+    <thead
+      class="text-foreground-secondary text-[11px] tracking-wide uppercase"
+    >
+      <tr
+        class="border-border border-b"
+      >
+        <th
+          class="px-3 py-2 font-semibold"
+          scope="col"
+        >
+          Date
+        </th>
+        <th
+          class="px-3 py-2 font-semibold"
+          scope="col"
+        >
+          Amount
+        </th>
+      </tr>
+    </thead>
+    <tbody
+      class="[&>tr:last-child]:border-b-0"
+    >
+      <tr
+        class="border-border border-b"
+      >
+        <td
+          class="px-3 py-2.5 align-top"
+        >
+          2026-10-21
+        </td>
+        <td
+          class="px-3 py-2.5 align-top"
+        >
+          €12.00
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+`;

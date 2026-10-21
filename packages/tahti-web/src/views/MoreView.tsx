@@ -1,4 +1,4 @@
-import { ButtonAnchor, ViewShell } from '@tahti-player/ui';
+import { ButtonAnchor, ExternalLink, ViewShell } from '@tahti-player/ui';
 
 import { E2eRunGallery } from '../components/E2eRunGallery';
 import { FlowGallery } from '../components/FlowGallery';
@@ -124,14 +124,12 @@ export function MoreView() {
 
       <p className="text-foreground-secondary text-xs">
         Production site:{' '}
-        <a
+        <ExternalLink
           href="https://tahti.live"
-          target="_blank"
-          rel="noreferrer"
-          className="underline-offset-2 hover:underline"
+          className="no-underline underline-offset-2 hover:underline"
         >
           tahti.live
-        </a>
+        </ExternalLink>
       </p>
     </ViewShell>
   );

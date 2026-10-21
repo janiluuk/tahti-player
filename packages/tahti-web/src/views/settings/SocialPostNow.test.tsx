@@ -96,4 +96,21 @@ describe('SocialPostNow', () => {
     expect(screen.queryByText('Post now')).toBeNull();
     expect(screen.queryByText('Nothing posted yet.')).toBeNull();
   });
+
+  it('shows Retry when recent posts fail to load', async () => {
+    const fetch = vi.spyOn(api, 'fetchSocialPosts').mockResolvedValue({
+      data: null,
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await act(async () => {
+      render(<SocialPostNow settings={settings(true, false)} />);
+    });
+    expect(screen.getByText('Could not load recent posts')).toBeTruthy();
+    expect(screen.queryByText('Nothing posted yet.')).toBeNull();
+    fetch.mockResolvedValue({ data: [], meta: { source: 'api' } });
+    await act(async () => {
+      screen.getByRole('button', { name: 'Retry' }).click();
+    });
+    expect(screen.getByText('Nothing posted yet.')).toBeTruthy();
+  });
 });

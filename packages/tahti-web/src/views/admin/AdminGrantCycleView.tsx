@@ -6,6 +6,12 @@ import {
   Button,
   ButtonAnchor,
   ButtonLink,
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableHead,
+  DataTableHeaderCell,
+  DataTableRow,
   HorizontalScroll,
   SectionShell,
   ViewShell,
@@ -173,22 +179,28 @@ export function AdminGrantCycleView() {
                       />
                     ) : (
                       <HorizontalScroll label="Per-artist allocation preview">
-                        <table className="w-full text-left text-sm">
-                          <thead className="text-foreground-secondary border-border border-b text-xs">
-                            <tr>
-                              <th className="px-2 py-2">Artist</th>
-                              <th className="px-2 py-2">Downloads</th>
-                              <th className="px-2 py-2">Fan subs</th>
-                              <th className="px-2 py-2">Units</th>
-                              <th className="px-2 py-2 text-right">Grant</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-border divide-y">
+                        <DataTable>
+                          <DataTableHead>
+                            <DataTableRow>
+                              <DataTableHeaderCell>Artist</DataTableHeaderCell>
+                              <DataTableHeaderCell>
+                                Downloads
+                              </DataTableHeaderCell>
+                              <DataTableHeaderCell>
+                                Fan subs
+                              </DataTableHeaderCell>
+                              <DataTableHeaderCell>Units</DataTableHeaderCell>
+                              <DataTableHeaderCell className="text-right">
+                                Grant
+                              </DataTableHeaderCell>
+                            </DataTableRow>
+                          </DataTableHead>
+                          <DataTableBody>
                             {[...preview.artists]
                               .sort((left, right) => right.units - left.units)
                               .map((artist) => (
-                                <tr key={artist.userId}>
-                                  <td className="px-2 py-2">
+                                <DataTableRow key={artist.userId}>
+                                  <DataTableCell>
                                     <Link
                                       to="/u/$username"
                                       params={{ username: artist.username }}
@@ -199,25 +211,25 @@ export function AdminGrantCycleView() {
                                     <div className="text-foreground-secondary text-xs">
                                       @{artist.username}
                                     </div>
-                                  </td>
-                                  <td className="px-2 py-2">
+                                  </DataTableCell>
+                                  <DataTableCell>
                                     {artist.freeDownloads} +{' '}
                                     {artist.paidDownloads}
                                     ×5
-                                  </td>
-                                  <td className="px-2 py-2">
+                                  </DataTableCell>
+                                  <DataTableCell>
                                     €{artist.fanSubEuros}
-                                  </td>
-                                  <td className="px-2 py-2">
+                                  </DataTableCell>
+                                  <DataTableCell>
                                     {artist.units.toLocaleString()}
-                                  </td>
-                                  <td className="px-2 py-2 text-right font-medium">
+                                  </DataTableCell>
+                                  <DataTableCell className="text-right font-medium">
                                     {formatEur(artist.amountCents)}
-                                  </td>
-                                </tr>
+                                  </DataTableCell>
+                                </DataTableRow>
                               ))}
-                          </tbody>
-                        </table>
+                          </DataTableBody>
+                        </DataTable>
                       </HorizontalScroll>
                     )}
                     <p className="text-foreground-secondary mt-3 text-xs">

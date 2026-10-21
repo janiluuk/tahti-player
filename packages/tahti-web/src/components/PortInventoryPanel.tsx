@@ -1,6 +1,15 @@
 import type { ComponentProps } from 'react';
 
-import { Badge, HorizontalScroll } from '@tahti-player/ui';
+import {
+  Badge,
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableHead,
+  DataTableHeaderCell,
+  DataTableRow,
+  HorizontalScroll,
+} from '@tahti-player/ui';
 
 import {
   countByStatus,
@@ -54,20 +63,22 @@ function InventoryTable({
         </p>
       </div>
       <HorizontalScroll label={title}>
-        <table className="w-full min-w-[560px] border-collapse text-left text-sm">
-          <thead>
-            <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-              <th className="py-2 pr-3 font-medium">Surface</th>
-              <th className="py-2 pr-3 font-medium">POC route</th>
-              <th className="py-2 pr-3 font-medium">Status</th>
-              <th className="py-2 font-medium">Detail</th>
-            </tr>
-          </thead>
-          <tbody>
+        <DataTable className="min-w-[560px]">
+          <DataTableHead>
+            <DataTableRow>
+              <DataTableHeaderCell>Surface</DataTableHeaderCell>
+              <DataTableHeaderCell>POC route</DataTableHeaderCell>
+              <DataTableHeaderCell>Status</DataTableHeaderCell>
+              <DataTableHeaderCell>Detail</DataTableHeaderCell>
+            </DataTableRow>
+          </DataTableHead>
+          <DataTableBody>
             {rows.map((row) => (
-              <tr key={row.id} className="border-border border-b align-top">
-                <td className="py-3 pr-3 font-medium">{row.surface}</td>
-                <td className="text-foreground-secondary py-3 pr-3 font-mono text-xs">
+              <DataTableRow key={row.id} className="align-top">
+                <DataTableCell className="font-medium">
+                  {row.surface}
+                </DataTableCell>
+                <DataTableCell className="text-foreground-secondary font-mono text-xs">
                   {row.route ? (
                     row.route.includes('$') ? (
                       row.route
@@ -82,17 +93,17 @@ function InventoryTable({
                   ) : (
                     '—'
                   )}
-                </td>
-                <td className="py-3 pr-3">
+                </DataTableCell>
+                <DataTableCell>
                   <StatusBadge status={row.status} />
-                </td>
-                <td className="text-foreground-secondary py-3 text-xs">
+                </DataTableCell>
+                <DataTableCell className="text-foreground-secondary text-xs">
                   {row.detail}
-                </td>
-              </tr>
+                </DataTableCell>
+              </DataTableRow>
             ))}
-          </tbody>
-        </table>
+          </DataTableBody>
+        </DataTable>
       </HorizontalScroll>
     </section>
   );

@@ -20,7 +20,14 @@ import {
   Box,
   Button,
   ButtonLink,
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableHead,
+  DataTableHeaderCell,
+  DataTableRow,
   EmptyState,
+  ExternalLink,
   HorizontalScroll,
   Input,
   SectionShell,
@@ -357,14 +364,12 @@ export function HelpHubView() {
 
       <p className="text-foreground-secondary border-border border-t pt-5 text-xs">
         Looking for the latest public version?{' '}
-        <a
+        <ExternalLink
           href={`${PRODUCTION}/help`}
-          target="_blank"
-          rel="noreferrer"
-          className="underline-offset-2 hover:underline"
+          className="no-underline underline-offset-2 hover:underline"
         >
           Open tahti.live/help
-        </a>
+        </ExternalLink>
         .
       </p>
     </ViewShell>
@@ -420,14 +425,12 @@ export function HelpArticleView({ slug }: { slug: string }) {
         }
         meta={
           article.productionPath ? (
-            <a
+            <ExternalLink
               href={`${PRODUCTION}${article.productionPath}`}
-              target="_blank"
-              rel="noreferrer"
-              className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
+              className="text-foreground-secondary text-xs no-underline underline-offset-2 hover:underline"
             >
               Open on tahti.live{article.productionPath}
-            </a>
+            </ExternalLink>
           ) : null
         }
       />
@@ -508,40 +511,37 @@ export function HelpArticleView({ slug }: { slug: string }) {
                           label={section.heading}
                           className="mt-4"
                         >
-                          <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
+                          <DataTable className="min-w-[40rem]">
                             <caption className="sr-only">
                               {section.heading}
                             </caption>
-                            <thead>
-                              <tr className="border-border border-b">
+                            <DataTableHead>
+                              <DataTableRow>
                                 {section.table.columns.map((column) => (
-                                  <th
+                                  <DataTableHeaderCell
                                     key={column}
-                                    className="text-foreground px-2 py-2 font-semibold"
+                                    className="text-foreground"
                                   >
                                     {column}
-                                  </th>
+                                  </DataTableHeaderCell>
                                 ))}
-                              </tr>
-                            </thead>
-                            <tbody>
+                              </DataTableRow>
+                            </DataTableHead>
+                            <DataTableBody>
                               {section.table.rows.map((row) => (
-                                <tr
-                                  key={row.join('|')}
-                                  className="border-border border-b last:border-b-0"
-                                >
+                                <DataTableRow key={row.join('|')}>
                                   {row.map((cell, cellIndex) => (
-                                    <td
+                                    <DataTableCell
                                       key={`${row[0]}-${cellIndex}`}
-                                      className="text-foreground-secondary px-2 py-2 align-top leading-relaxed"
+                                      className="text-foreground-secondary leading-relaxed"
                                     >
                                       {cell}
-                                    </td>
+                                    </DataTableCell>
                                   ))}
-                                </tr>
+                                </DataTableRow>
                               ))}
-                            </tbody>
-                          </table>
+                            </DataTableBody>
+                          </DataTable>
                         </HorizontalScroll>
                       ) : null}
                     </div>

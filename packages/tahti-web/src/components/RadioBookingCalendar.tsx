@@ -33,7 +33,12 @@ import {
   BroadcastDetailsFields,
   type BroadcastDetailsValues,
 } from './BroadcastDetailsFields';
-import { PageEmpty, PageLoading } from './PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from './PageStates';
 
 const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -104,6 +109,8 @@ export function RadioBookingCalendar({
   const [newShowMode, setNewShowMode] = useState<'SINGLE' | 'SERIES'>('SERIES');
   const [showType, setShowType] = useState<ShowType>('LIVE_SET');
   const [shows, setShows] = useState<StudioShowSeries[]>([]);
+  const [showsError, setShowsError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [selectedShowId, setSelectedShowId] = useState('');
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -121,7 +128,17 @@ export function RadioBookingCalendar({
     ).toISOString();
     void fetchShowBookings(from, to).then((r) => {
       setBookings(scope === 'mine' ? r.data.filter((b) => b.isMine) : r.data);
+      setLoadError(r.meta.source === 'api' ? (r.meta.reason ?? null) : null);
       setLoading(false);
+    });
+  };
+
+  const loadShows = () => {
+    void fetchShowSeries().then((result) => {
+      setShows(result.data);
+      setShowsError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
     });
   };
 
@@ -129,7 +146,7 @@ export function RadioBookingCalendar({
     if (isOpen) {
       reload();
       if (user?.channel) {
-        void fetchShowSeries().then((result) => setShows(result.data));
+        loadShows();
       }
     }
   }, [isOpen, monthCursor, scope, user?.channel]);
@@ -388,6 +405,12 @@ export function RadioBookingCalendar({
 
           {loading ? (
             <PageLoading label="Loading…" />
+          ) : loadError && bookings.length === 0 ? (
+            <PageError
+              title="Could not load bookings"
+              description={loadError}
+              onRetry={reload}
+            />
           ) : selectedBookings.length === 0 ? (
             <PageEmpty title="No slots booked yet." />
           ) : (
@@ -572,6 +595,13 @@ export function RadioBookingCalendar({
             value={startTime}
             onChange={(event) => setStartTime(event.target.value)}
           />
+          {showsError ? (
+            <PageErrorBanner
+              title="Could not load your shows"
+              description={showsError}
+              onRetry={loadShows}
+            />
+          ) : null}
           <BroadcastDetailsFields
             values={
               {

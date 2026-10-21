@@ -1,5 +1,7 @@
 import { Link } from '@tanstack/react-router';
 
+import { Meter } from '@tahti-player/ui';
+
 import { StudioPanel } from '../../../components/StudioPanel';
 import { Eyebrow } from '../../../components/tahti/Eyebrow';
 import { StatNumber } from '../../../components/tahti/StatNumber';
@@ -26,15 +28,12 @@ function EngagementUnitList({
               {entry.value.toLocaleString()}
             </strong>
           </div>
-          <div
+          <Meter
             aria-hidden
-            className="bg-background-secondary h-1.5 overflow-hidden rounded-full"
-          >
-            <div
-              className="bg-primary/60 h-full rounded-full"
-              style={{ width: `${(entry.value / most) * 100}%` }}
-            />
-          </div>
+            value={entry.value}
+            max={most}
+            barClassName="bg-primary/60"
+          />
         </li>
       ))}
     </ul>

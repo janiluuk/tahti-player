@@ -11,7 +11,7 @@ import {
   type StemJob,
   type StemSet,
 } from '../../../api/studio';
-import { PageEmpty } from '../../../components/PageStates';
+import { PageEmpty, PageError } from '../../../components/PageStates';
 import { StemMixer } from '../../../components/StemMixer';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { usePolling } from '../../../hooks/usePolling';
@@ -30,6 +30,8 @@ export function StemsPanel({
   onSendToMultitrack?: (job: StemJob) => void | Promise<void>;
 }) {
   const [stems, setStems] = useState<StemJob[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [activeStemSet, setActiveStemSet] = useState<StemSet>('TWO_STEM');
   const [requesting, setRequesting] = useState(false);
   const stemsRef = useRef(stems);
@@ -38,17 +40,17 @@ export function StemsPanel({
   useEffect(() => {
     let cancelled = false;
     setStems([]);
-    fetchSoundStems(soundId)
-      .then((r) => {
-        if (!cancelled) {
-          setStems(r.data);
-        }
-      })
-      .catch(() => undefined);
+    setLoadError(null);
+    void fetchSoundStems(soundId).then((r) => {
+      if (!cancelled) {
+        setStems(r.data);
+        setLoadError(r.meta.source === 'api' ? (r.meta.reason ?? null) : null);
+      }
+    });
     return () => {
       cancelled = true;
     };
-  }, [soundId]);
+  }, [soundId, loadAttempt]);
 
   // Separation runs on a GPU worker and can take a while — poll until every
   // requested job has left PENDING/PROCESSING rather than making the user
@@ -168,7 +170,13 @@ export function StemsPanel({
         </div>
       </div>
 
-      {stems.length === 0 ? (
+      {loadError && stems.length === 0 ? (
+        <PageError
+          title="Could not load stem jobs"
+          description={loadError}
+          onRetry={() => setLoadAttempt((n) => n + 1)}
+        />
+      ) : stems.length === 0 ? (
         <PageEmpty
           title="No stem jobs yet — request a split above."
           description="Splits are cached for 7 days, then cleared automatically."
