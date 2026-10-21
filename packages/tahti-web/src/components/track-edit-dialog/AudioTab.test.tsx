@@ -9,7 +9,7 @@ import type { TrackEditDialogState } from './useTrackEditDialog';
 
 vi.mock('../AudioRevisionList', () => ({ AudioRevisionList: () => null }));
 vi.mock('./StationIdClipForm', () => ({ StationIdClipForm: () => null }));
-vi.mock('../tahti/WaveformSeekbar', () => ({ WaveformSeekbar: () => null }));
+vi.mock('../PlayerWaveform', () => ({ PlayerWaveform: () => null }));
 
 const ITEM: StudioSound = { id: 's1', title: 'Night Drive', status: 'READY' };
 

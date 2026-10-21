@@ -54,6 +54,7 @@ export function AudioEngine() {
   const seekBy = usePlayerStore((s) => s.seekBy);
   const skipSeconds = usePlaybackPrefsStore((s) => s.skipSeconds);
   const setAnalyser = usePlayerStore((s) => s.setAnalyser);
+  const setAudioElement = usePlayerStore((s) => s.setAudioElement);
   const normalizationMode = usePlaybackPrefsStore((s) => s.normalization);
 
   const playable = useMemo(
@@ -62,6 +63,11 @@ export function AudioEngine() {
   );
 
   useEffect(() => scheduleIdleHlsPrefetch(), []);
+
+  useEffect(() => {
+    setAudioElement(audioRef.current);
+    return () => setAudioElement(null);
+  }, [setAudioElement]);
 
   const currentIsHls =
     playable != null && !playable.embed && isHlsStream(playable);
