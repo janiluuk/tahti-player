@@ -22,7 +22,7 @@ import {
 } from '@tahti-player/ui';
 
 import { EntitySocialHeader } from '../../../components/EntitySocialHeader';
-import { WaveformSeekbar } from '../../../components/tahti/WaveformSeekbar';
+import { PlayerWaveform } from '../../../components/PlayerWaveform';
 import type { SoundEditorState } from './useSoundEditor';
 
 export function SoundHeader({
@@ -57,7 +57,6 @@ export function SoundHeader({
     startPlayback,
     peaks,
     isCurrent,
-    playerDuration,
     currentTime,
     editList,
   } = state;
@@ -198,16 +197,11 @@ export function SoundHeader({
           </div>
         ) : (
           <div className="min-w-0 flex-1">
-            <WaveformSeekbar
-              trackId={id}
+            <PlayerWaveform
+              trackId={`sound:${id}`}
               peaks={peaks}
-              bars={peaks.length || 180}
-              progress={
-                isCurrent && playerDuration > 0
-                  ? currentTime / playerDuration
-                  : 0
-              }
-              className="h-14"
+              durationSec={editList?.sourceDuration ?? item.durationSec ?? 0}
+              height={56}
               onSeek={(fraction) =>
                 void startPlayback(
                   fraction *

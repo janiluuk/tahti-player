@@ -322,6 +322,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Discover/VenueDetailView` | `tahti-web/VenueDetailView.stories.tsx` |
 | `Tahti/Auth/VerifyView` | `tahti-web/VerifyView.stories.tsx` |
 | `Tahti/Player/VisualizerModeMenu` | `tahti-web/VisualizerModeMenu.stories.tsx` |
+| `Components/Waveform` | `Waveform.stories.tsx` (wavesurfer.js large preview) |
 | `Tahti/Player/WaveformCanvas` | `tahti-web/WaveformCanvas.stories.tsx` |
 | `Tahti/Widgets/WaveformMinimap` | `tahti-web/WaveformMinimap.stories.tsx` |
 | `Tahti/Player/WaveformSeekbar` | `tahti-web/WaveformSeekbar.stories.tsx` |

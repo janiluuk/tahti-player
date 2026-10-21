@@ -11,7 +11,7 @@ import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../api/studio-types';
 import { AudioRevisionList } from '../AudioRevisionList';
-import { WaveformSeekbar } from '../tahti/WaveformSeekbar';
+import { PlayerWaveform } from '../PlayerWaveform';
 import { StationIdClipForm } from './StationIdClipForm';
 import type { TrackEditDialogState } from './useTrackEditDialog';
 
@@ -44,7 +44,6 @@ export function AudioTab({
     isCurrentPlayable,
     isPlaying,
     currentTime,
-    playerDuration,
     startPlayback,
     setPlayerStatus,
     onNormalize,
@@ -196,16 +195,11 @@ export function AudioTab({
           </div>
 
           <div className="flex flex-col gap-2">
-            <WaveformSeekbar
-              trackId={item.id}
+            <PlayerWaveform
+              trackId={`sound:${item.id}`}
               peaks={peaks}
-              bars={peaks.length || 180}
-              progress={
-                isCurrentPlayable && playerDuration > 0
-                  ? currentTime / playerDuration
-                  : 0
-              }
-              className="h-16"
+              durationSec={editList?.sourceDuration ?? item.durationSec ?? 0}
+              height={64}
               onSeek={(fraction) =>
                 void startPlayback(
                   fraction *
