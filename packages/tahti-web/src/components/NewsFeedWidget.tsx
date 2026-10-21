@@ -11,7 +11,9 @@ import {
 } from '@tahti-player/ui';
 
 import { fetchRssArticles } from '../api/rss-feed';
+import type { RssArticle } from '../lib/parseRss';
 import type { ListenerWidgetInstance } from '../stores/listenerWidgetsStore';
+import { NewsArticleDialog } from './NewsArticleDialog';
 
 const LABELS = {
   nothingFound: 'No articles in this feed right now.',
@@ -27,6 +29,7 @@ export function NewsFeedWidget({
   const [items, setItems] = useState<ArticleCardItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
+  const [openArticle, setOpenArticle] = useState<RssArticle | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -44,9 +47,7 @@ export function NewsFeedWidget({
           title: article.title,
           teaser: article.teaser,
           imageUrl: article.imageUrl ?? instance.thumbnailUrl,
-          onClick: article.link
-            ? () => window.open(article.link, '_blank', 'noopener,noreferrer')
-            : undefined,
+          onClick: () => setOpenArticle(article),
         })),
       );
     });
@@ -92,6 +93,12 @@ export function NewsFeedWidget({
           labels={LABELS}
         />
       )}
+      <NewsArticleDialog
+        article={openArticle}
+        feedLabel={instance.label}
+        fallbackImageUrl={instance.thumbnailUrl}
+        onClose={() => setOpenArticle(null)}
+      />
     </div>
   );
 }

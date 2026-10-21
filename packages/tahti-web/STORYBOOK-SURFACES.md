@@ -214,6 +214,8 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Misc/MySupportTickets` | `tahti-web/MySupportTickets.stories.tsx` |
 | `Tahti/Discover/MyVenuesView` | `tahti-web/MyVenuesView.stories.tsx` |
 | `Tahti/Studio/Updates/NewDraftDialog` | `tahti-web/NewDraftDialog.stories.tsx` |
+| `Tahti/Widgets/NewsFeedSuggestions` | `tahti-web/NewsFeedSuggestions.stories.tsx` |
+| `Tahti/Widgets/NewsFeedWidget` | `tahti-web/NewsFeedWidget.stories.tsx` |
 | `Tahti/Misc/NewsletterSubscribeToggle` | `tahti-web/NewsletterSubscribeToggle.stories.tsx` |
 | `Tahti/Misc/NotificationToasts` | `tahti-web/NotificationToasts.stories.tsx` |
 | `Tahti/Studio/CollectionEdit/NowPlayingBar` | `tahti-web/NowPlayingBar.stories.tsx` |

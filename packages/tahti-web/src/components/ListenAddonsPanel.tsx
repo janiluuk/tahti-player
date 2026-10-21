@@ -31,6 +31,7 @@ import {
 } from '../stores/listenerWidgetsStore';
 import { ImageUploadField } from './ImageUploadField';
 import { ListenerWidgetEmbed } from './ListenerWidgetEmbed';
+import { NewsFeedSuggestions } from './NewsFeedSuggestions';
 import { NewsFeedWidget } from './NewsFeedWidget';
 import { PageEmpty } from './PageStates';
 import { SourceServiceIcon } from './SourceServiceIcon';
@@ -426,6 +427,14 @@ export function ListenAddonsPanel({
                     onRemove={() => removeInstance(instance.id)}
                   />
                 ))}
+                <NewsFeedSuggestions
+                  addedUrls={
+                    new Set(newsInstances.map((instance) => instance.input))
+                  }
+                  onAdd={(feed) =>
+                    addInstance(NEWS_WIDGET_TYPE_ID, feed.url, feed.title)
+                  }
+                />
                 <form
                   className="flex flex-col gap-3"
                   onSubmit={(event) => {
