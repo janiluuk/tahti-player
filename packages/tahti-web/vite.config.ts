@@ -6,9 +6,31 @@ import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
+import { generateAdvancedThemeCSS } from '../themes/src/advanced/generator';
 import pkg from './package.json';
 import { validateProductionBuildEnvironment } from './src/lib/buildPolicy';
 import { sandboxDocumentHtml } from './src/lib/disco-widget-sandbox';
+import {
+  GRUVBOX_THEME,
+  GRUVBOX_THEME_ID,
+} from './src/plugins/themes/presets-community-claude-to-neon';
+
+function defaultThemeBootStylePlugin(): Plugin {
+  return {
+    name: 'tahti-default-theme-boot-style',
+    transformIndexHtml: () => [
+      {
+        tag: 'style',
+        attrs: {
+          id: 'advanced-theme-boot',
+          'data-theme-for': GRUVBOX_THEME_ID,
+        },
+        children: generateAdvancedThemeCSS(GRUVBOX_THEME),
+        injectTo: 'head-prepend',
+      },
+    ],
+  };
+}
 
 const commitHash = (() => {
   try {
@@ -145,6 +167,7 @@ export default defineConfig(({ command, mode }) => {
       svgr(),
       reviewStateApiPlugin(),
       discoWidgetSandboxPlugin(),
+      defaultThemeBootStylePlugin(),
     ],
     clearScreen: false,
     server: {
@@ -155,21 +178,30 @@ export default defineConfig(({ command, mode }) => {
         '/tahti-api': {
           target: tahtiApi,
           changeOrigin: true,
+          // Production scopes the session cookie to `.tahti.live`; drop the
+          // domain so it attaches to the dev origin instead of being rejected.
+          cookieDomainRewrite: '',
           rewrite: (path) => path.replace(/^\/tahti-api/, ''),
         },
         '/widget-sandbox/bundle': {
           target: tahtiApi,
           changeOrigin: true,
           rewrite: (path) =>
-            path.replace(
-              /^\/widget-sandbox\/bundle/,
-              '/api/v1/disco-widgets/bundle',
-            ),
+            path.replace(/^\/widget-sandbox\/bundle/, '/api/v1/addons/bundle'),
         },
       },
     },
     preview: {
       port: 5180,
+    },
+    test: {
+      globals: true,
+      clearMocks: true,
+      environment: 'jsdom',
+      // Node 25+ ships a global localStorage without getItem unless given
+      // --localstorage-file; it shadows jsdom's Storage.
+      execArgv: ['--no-experimental-webstorage'],
+      setupFiles: ['./src/test/setup.ts'],
     },
   };
 });

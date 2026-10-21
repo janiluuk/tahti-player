@@ -17,6 +17,7 @@ import { defaultDisplay, defaultFeatures } from './defaults';
 import { useColumns } from './hooks/useColumns';
 import { useGlobalFilter } from './hooks/useGlobalFilter';
 import { useReorder } from './hooks/useReorder';
+import { useRowSelection } from './hooks/useRowSelection';
 import { useSorting } from './hooks/useSorting';
 import { useVirtualRows } from './hooks/useVirtualRows';
 import { ReorderLayer } from './ReorderLayer';
@@ -24,6 +25,7 @@ import { SortableRow } from './SortableRow';
 import { Toolbar } from './Toolbar';
 import { TrackTableProvider } from './TrackTableContext';
 import { TrackTableProps } from './types';
+import { getActionsColumn } from './utils/columns';
 import { DEFAULT_OVERSCAN, DEFAULT_ROW_HEIGHT } from './utils/constants';
 import { VirtualizedBody } from './VirtualizedBody';
 
@@ -62,12 +64,28 @@ export function TrackTable<T extends Track = Track>({
   });
   const { globalFilter, setGlobalFilter, globalFilterFn, hasFilter } =
     useGlobalFilter<T>();
+  const rowSelection = useRowSelection(itemIds);
 
-  const columns: ColumnDef<T>[] = useColumns<T>({
-    display: resolvedDisplay,
-    labels,
-    actions,
-  });
+  const actionsColumn = useMemo(
+    () =>
+      getActionsColumn({
+        tracks,
+        displayQueueControls: resolvedDisplay.displayQueueControls,
+        actions,
+        meta,
+      }),
+    [tracks, resolvedDisplay.displayQueueControls, actions, meta],
+  );
+
+  const columns: ColumnDef<T>[] = useColumns<T>(
+    {
+      display: resolvedDisplay,
+      labels,
+      actions,
+      features: resolvedFeatures,
+    },
+    actionsColumn,
+  );
 
   const table = useReactTable({
     columns,
@@ -94,7 +112,12 @@ export function TrackTable<T extends Track = Track>({
       isTrackQueued: meta?.isTrackQueued,
       canEditTrack: meta?.canEditTrack,
       canOpenDetail: meta?.canOpenDetail,
+      getTrackAnnotation: meta?.getTrackAnnotation,
       ContextMenuWrapper: meta?.ContextMenuWrapper,
+      actionsWidthClass: actionsColumn.className,
+      isRowSelected: rowSelection.isSelected,
+      onToggleRowSelected: rowSelection.toggle,
+      onToggleAllRows: rowSelection.toggleAll,
     },
   });
 
@@ -124,12 +147,15 @@ export function TrackTable<T extends Track = Track>({
         features: resolvedFeatures,
         actions,
         labels,
+        getItemId,
       }}
     >
-      <div className="flex h-full flex-col">
+      <div className="@container flex h-full flex-col">
         <Toolbar
           filterValue={globalFilter}
           onFilterChange={setGlobalFilter}
+          selectedIds={rowSelection.selectedIds}
+          onClearSelection={rowSelection.clear}
           className="mb-2 shrink-0"
         />
         <ScrollableArea
@@ -146,7 +172,7 @@ export function TrackTable<T extends Track = Track>({
             <table
               role="table"
               className={cn(
-                'border-border relative w-full table-fixed border-(length:--border-width)',
+                'border-border text-foreground relative w-full table-fixed border-(length:--border-width)',
                 classes?.root,
               )}
             >
@@ -156,7 +182,10 @@ export function TrackTable<T extends Track = Track>({
                     <tr
                       key={headerGroup.id}
                       role="row"
-                      className="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+                      className={cn(
+                        'border-border border-b-(length:--border-width)',
+                        classes?.header ?? 'bg-primary text-primary-foreground',
+                      )}
                     >
                       {headerGroup.headers.map((header) =>
                         flexRender(header.column.columnDef.header, {

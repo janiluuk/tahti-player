@@ -18,6 +18,13 @@ export type MapShot = {
    * Prefer setting `parity` on the case; this marks the empty pane.
    */
   absent?: boolean;
+  /**
+   * YYYY-MM-DD this specific `image` was captured, when known — shots get
+   * refreshed individually (not as one bulk sweep), so this is per-shot,
+   * not a single global date. Omit rather than guess; `ShotPane` falls back
+   * to a generic label when unset instead of claiming a date.
+   */
+  capturedAt?: string;
 };
 
 /** Whether both surfaces implement the view, or only one (parity gap). */
@@ -52,7 +59,41 @@ export type MapCase = {
   new: MapShot;
   /** Explicit parity; inferred from shot.absent when omitted */
   parity?: MapParity;
+  /**
+   * Deep link to the Storybook story for the `new` (Nuclear/tahti-web)
+   * view's underlying component, when one exists — verified against the
+   * actual `title:` + exported story name in `packages/storybook/src/
+   * tahti-web/*.stories.tsx`, not guessed from the component name. Never
+   * set for `old` (legacy Tahti chrome isn't in this Storybook).
+   */
+  storybookUrl?: string;
 };
+
+const STORYBOOK_BASE = 'https://storybook.tahti.live';
+
+function storyKebab(segment: string): string {
+  return segment
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
+/** Storybook derives a story's display name from its export identifier by
+ * splitting camelCase into words first (`ThirtyDays` → `Thirty Days`) —
+ * unlike the `title:` path segments, which kebab straight from the raw
+ * string with no word-splitting (`AdminNewsView` → `adminnewsview`, one
+ * word). Confirmed against the live index (`/index.json`) at
+ * storybook.tahti.live, not assumed. */
+function storyNameKebab(exportName: string): string {
+  return storyKebab(exportName.replace(/([a-z0-9])([A-Z])/g, '$1-$2'));
+}
+
+/** Builds a Storybook story deep link from its `title:` (e.g.
+ * `'Tahti/Admin/AdminNewsView'`) and exported story name (e.g. `'Default'`). */
+function storybookStory(title: string, story: string): string {
+  const id = `${title.split('/').map(storyKebab).join('-')}--${storyNameKebab(story)}`;
+  return `${STORYBOOK_BASE}/?path=/story/${id}`;
+}
 
 function mermaidEscape(text: string): string {
   return text.replace(/"/g, '&quot;').replace(/\n/g, ' ');
@@ -194,6 +235,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/listen.png',
           route: '/',
           caption: 'Nuclear Listen hub',
+          capturedAt: '2026-10-04',
         },
       },
       {
@@ -234,6 +276,8 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Post a chat message (anonymous handle)',
           'Browse pinned tracks',
           'Open the archive/catalog tab',
+          'See the channel’s upcoming shows',
+          'Report the channel to the board',
         ],
         goesTo: [
           {
@@ -241,6 +285,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
             to: '/subscribe/$username',
           },
           { label: 'Open the artist profile', to: '/u/$username' },
+          { label: 'Open chat as its own page', to: '/chat/$slug' },
           { label: 'Back to Listen', to: '/' },
         ],
         old: {
@@ -251,18 +296,24 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         new: {
           image: '/map/nuclear/channel.png',
           route: '/channel/$slug',
-          caption: 'Nuclear channel (live or archive)',
+          caption:
+            'Nuclear channel (live or archive) — current shot happens to show an offline demo channel; see the offline case below for the intended state.',
+          capturedAt: '2026-10-04',
         },
+        storybookUrl: storybookStory('Tahti/Channel/ChannelView', 'Visitor'),
       },
       {
         id: 'anon-channel-offline',
         title: 'Channel offline / archive',
         viewName: 'Channel',
-        caption: 'Not live — rotation / archive VOD, seekable player.',
+        caption:
+          'Not live - 24/7 rotation / archive VOD, seekable player. The stage shows time left and the up-next track.',
         actions: [
           'Play an archive/rotation track',
           'Seek within the archive player',
+          'See time left and the up-next track on the stage',
           'Browse the catalog tab',
+          'See the channel’s upcoming shows',
           'Read chat',
         ],
         goesTo: [
@@ -271,6 +322,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
             to: '/subscribe/$username',
           },
           { label: 'Open the artist profile', to: '/u/$username' },
+          { label: 'Open the public programme', to: '/schedule' },
           { label: 'Back to Listen', to: '/' },
         ],
         old: {
@@ -282,7 +334,9 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/channel.png',
           route: '/channel/$slug',
           caption: 'Same route; archive library tab',
+          capturedAt: '2026-10-04',
         },
+        storybookUrl: storybookStory('Tahti/Channel/ChannelView', 'Visitor'),
       },
       {
         id: 'anon-chat-join',
@@ -294,12 +348,12 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Set a nickname / captcha to join',
           'Post a message',
           'React to a message',
+          'See a plain-words notice when chat is off or fails',
         ],
         goesTo: [
-          {
-            label: 'Open chat in sidebar toggles the rail — no route change',
-            to: '/channel/$slug',
-          },
+          { label: 'Back to the channel page', to: '/channel/$slug' },
+          { label: 'Switch to another channel’s chat', to: '/chat/$slug' },
+          { label: 'Open the chat index', to: '/chat' },
         ],
         old: {
           image: '/map/listen/channel-live.png',
@@ -308,24 +362,32 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/channel-chat.png',
-          route: '/chat/$slug / channel Chat tab',
-          caption: 'Nuclear chat rail',
+          route: '/chat/$slug',
+          caption:
+            'Nuclear chat page - chat is a top-bar control and its own route, not a right-rail view.',
         },
       },
       {
         id: 'anon-profile',
         title: 'Artist profile',
         viewName: 'Profile',
-        caption: 'Bio, tracks, collections — entry to subscribe and channel.',
+        caption:
+          'Bio, tracks, collections - entry to subscribe and channel. Shows the Tahti ry member badge, a pinned release, liked tracks (when the artist shares them) and the tip jar link.',
         actions: [
           'Read bio + socials',
           'Switch profile section tabs (Catalog / Latest releases / Pinned)',
           'Follow the artist',
           'Play the featured track (hero player, with audio visualizer while playing)',
+          'Play the artist’s background music',
+          'Open the tip jar link and compare fan tier perks',
+          'Browse liked tracks',
+          'Download the press kit',
+          'Report the artist page to the board',
         ],
         goesTo: [
           { label: 'View channel (header text link)', to: '/channel/$slug' },
           { label: 'Open Subscribe', to: '/subscribe/$username' },
+          { label: 'Open a track page', to: '/t/$id' },
           { label: 'Open a collection', to: '/u/$username/c/$slug' },
           { label: 'Open a release smart link', to: '/r/$slug' },
           {
@@ -343,6 +405,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/profile.png',
           route: '/u/$username',
           caption: 'Nuclear profile tabs',
+          capturedAt: '2026-10-04',
         },
       },
       {
@@ -371,14 +434,22 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         id: 'anon-smart-link',
         title: 'Smart link release',
         viewName: 'Smart link',
-        caption: 'DSP landing for a release slug.',
+        caption:
+          'DSP landing for a release slug - release details (genre, credits), every release track playable, and Listen-on links including Deezer, Amazon Music and Mixcloud.',
         actions: [
-          'Browse the release tracklist',
+          'Browse the release tracklist and details',
+          'Play every release track',
           'Click through to a DSP ("Listen on…")',
+          'Report the release to the board',
         ],
         goesTo: [
           { label: 'Open the artist profile', to: '/u/$username' },
+          { label: 'Open a release track page', to: '/t/$id' },
           { label: 'Open the linked collection', to: '/u/$username/c/$slug' },
+          {
+            label: 'Powered by Tahti footer, when the artist turns it on',
+            to: '/',
+          },
         ],
         old: {
           image: '/map/listen/smart-link.png',
@@ -400,10 +471,15 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Browse the tracklist',
           'Play the whole collection',
           'Play one track',
+          'See who added a track to a collaborative playlist, and their note',
+          'Subscribe to the collection',
+          'Start a Jam from a playlist',
           'Open "Elsewhere" / "Linked releases" out-links',
+          'Report the collection to the board',
         ],
         goesTo: [
           { label: 'Back to the artist profile', to: '/u/$username' },
+          { label: 'Open the Jam you started', to: '/jam/$code' },
           { label: 'Open a linked release smart link', to: '/r/$slug' },
           { label: 'Back to Listen', to: '/' },
         ],
@@ -446,14 +522,14 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
       },
       {
         id: 'anon-venues',
-        title: 'Venues calendar',
-        viewName: 'Venues',
-        caption: 'Public venue list (register is a separate flow).',
-        actions: ['Browse the venue directory'],
+        title: 'Venues directory',
+        viewName: 'Discover · Venues',
+        caption:
+          'Public venue list, now the Venues tab on Discover - /venues redirects there. Register is a separate flow.',
+        actions: ['Browse the venue directory', 'Switch Discover tabs'],
         goesTo: [
           { label: 'Open a venue detail page', to: '/v/$slug' },
           { label: 'Register a venue', to: '/venues/register' },
-          { label: 'Back to the map hub', to: '/more' },
         ],
         old: {
           image: '/map/listen/venues.png',
@@ -462,8 +538,115 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/venues.png',
-          route: '/venues',
-          caption: 'Nuclear venues',
+          route: '/discover?tab=venues',
+          caption: 'Nuclear Discover Venues tab - /venues redirects here.',
+        },
+      },
+      {
+        id: 'anon-venue-detail',
+        title: 'Venue page',
+        viewName: 'Venue',
+        caption:
+          'One venue: address, upcoming broadcasts, calendar feed, and "Recorded here" - public tracks whose artist linked this venue.',
+        actions: [
+          'Read venue details and upcoming broadcasts',
+          'Copy the calendar feed link',
+          'Open the venue website',
+          'Browse tracks recorded here',
+        ],
+        goesTo: [
+          { label: 'Open a track recorded here', to: '/t/$id' },
+          { label: 'Back to the venue directory', to: '/discover' },
+        ],
+        old: {
+          route: '/v/[slug]',
+          caption: 'Prod venue page - not captured in the atlas',
+        },
+        new: {
+          route: '/v/$slug',
+          caption: 'Nuclear venue page - shot pending',
+        },
+      },
+      {
+        id: 'anon-track-page',
+        title: 'Track page',
+        viewName: 'Track',
+        caption:
+          'Public track page: genre, tempo, key, licence, credits, notes, tags, recorded-at venue and the AI-generated label, with like, repost, timed comments and download.',
+        actions: [
+          'Play the track',
+          'Like or repost it',
+          'Write a timed comment',
+          'Download it (unless the artist switched downloads off)',
+          'Follow or repost to unlock a gated download',
+          'Report the track to the board',
+          "Report someone else's comment to the board",
+        ],
+        goesTo: [
+          { label: 'Browse tracks with the same tag', to: '/search?tag=' },
+          { label: 'Open the venue it was recorded at', to: '/v/$slug' },
+          { label: 'Open the artist profile', to: '/u/$username' },
+          { label: 'Open the collection it is in', to: '/u/$username/c/$slug' },
+          {
+            label: 'Subscribe when the track is fan-subscribers only',
+            to: '/subscribe/$username',
+          },
+          { label: 'Sign in to comment', to: '/login' },
+        ],
+        old: {
+          route: '—',
+          caption: 'Prod equivalent not checked or captured',
+        },
+        new: {
+          route: '/t/$id',
+          caption: 'Nuclear track page - shot pending',
+        },
+        storybookUrl: storybookStory('Tahti/Track/TrackDetailView', 'Owner'),
+      },
+      {
+        id: 'anon-tag-search',
+        title: 'Tracks by tag',
+        viewName: 'Tag search',
+        caption:
+          'Every public track with one tag, reached from a tag chip on a track page.',
+        actions: ['Browse tracks with this tag'],
+        goesTo: [{ label: 'Open a track page', to: '/t/$id' }],
+        old: {
+          route: '—',
+          caption: 'Prod equivalent not checked or captured',
+        },
+        new: {
+          route: '/search?tag=',
+          caption: 'Nuclear tag search - shot pending',
+        },
+      },
+      {
+        id: 'anon-radio-show',
+        title: 'Radio show page',
+        viewName: 'Radio show',
+        caption:
+          'Public page for a recurring radio show: now playing, upcoming slots, and past episodes with their name, artwork and recording.',
+        actions: [
+          'See what is playing now',
+          'Browse upcoming slots',
+          'Play a past episode recording',
+        ],
+        goesTo: [
+          { label: 'Back to Radio', to: '/radio' },
+          { label: 'Open the host’s profile', to: '/u/$username' },
+          { label: 'Open an episode recording', to: '/t/$id' },
+          {
+            label: 'Open the green room before the show',
+            to: '/u/$username/green-room',
+          },
+        ],
+        old: {
+          route: '/radio/show/[channelSlug]',
+          caption: 'Prod radio show page - not captured in the atlas',
+        },
+        new: {
+          route: '/radio/show/$channelSlug',
+          caption: 'Nuclear radio show page - shot pending',
         },
       },
       {
@@ -502,6 +685,8 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Search help articles',
           'Browse help categories',
           'Open a help article',
+          'Contact support and read your support requests and replies (signed in)',
+          'Reply on your own support request; replying to a resolved one reopens it',
         ],
         goesTo: [
           { label: 'Open a specific article', to: '/help/$slug' },
@@ -590,6 +775,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/join',
           caption: 'Nuclear join',
         },
+        storybookUrl: storybookStory('Tahti/Auth/AuthDialog', 'Join'),
       },
       {
         id: 'auth-verify',
@@ -637,6 +823,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/login',
           caption: 'Nuclear login',
         },
+        storybookUrl: storybookStory('Tahti/Auth/AuthDialog', 'Login'),
       },
       {
         id: 'auth-totp',
@@ -656,6 +843,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           caption:
             'Nuclear TOTP step — lives in the AuthDialog modal (opened by /login), not a full-page route.',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Auth/AuthDialog',
+          'Two Factor Challenge',
+        ),
       },
     ],
   },
@@ -670,14 +861,14 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Library / follows',
         viewName: 'Library',
         caption:
-          'Follows and owned sounds after login — Favorites/History live under Listen, not Library.',
+          'Follows and owned tracks after login — Favorites/History live under Listen, not Library.',
         actions: [
-          'Search every owned/followed sound',
+          'Search every owned/followed track',
           'Filter by visibility or processing state',
           'Play a track',
           'Edit metadata',
           'Open the audio editor',
-          'Switch Overview / Sounds / Collections / Recordings / Media / Stash / Embeds / Smart links / Local files tabs',
+          'Switch Overview / Tracks / Collections / Recordings / Media / Stash / Embeds / Smart links tabs (Local files is desktop-only)',
         ],
         goesTo: [
           {
@@ -696,7 +887,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/library.png',
           route: '/library',
           caption:
-            'You can search every owned sound, filter by visibility or processing state, play it, edit metadata, or open the audio editor.',
+            'You can search every owned track, filter by visibility or processing state, play it, edit metadata, or open the audio editor.',
         },
       },
       {
@@ -721,8 +912,14 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         id: 'listener-dms',
         title: 'DMs / messages',
         viewName: 'Messages',
-        caption: 'Inbox + thread for artist ↔ fan messages.',
-        actions: ['Read a message thread', 'Send a reply'],
+        caption:
+          'Inbox + thread for artist ↔ fan messages. Artist and Moderator badges mark who you are talking to, here and in the top-bar messages popover.',
+        actions: [
+          'Read a message thread',
+          'Send a reply',
+          'See Artist / Moderator role badges',
+          'See when a recipient’s account is no longer available',
+        ],
         goesTo: [{ label: 'Open a specific thread', to: '/messages/$id' }],
         old: {
           image: '/map/auth/listener-dashboard.png',
@@ -756,7 +953,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
             to: '/governance/history',
           },
           { label: 'Open transparency ledger', to: '/transparency' },
-          { label: 'Open governance help', to: '/help/governance' },
+          {
+            label: 'Open governance help',
+            to: '/studio/governance?tab=guide',
+          },
         ],
         old: {
           image: '/map/auth/governance-member.png',
@@ -818,6 +1018,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/listen.png',
           route: '/',
           caption: 'Nuclear defaults to Listen shell',
+          capturedAt: '2026-10-04',
         },
       },
       {
@@ -871,13 +1072,17 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/favorites',
           caption: 'Nuclear Favorites (sidebar page)',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Library/FavoritesView',
+          'Radio Channels And Tracks',
+        ),
       },
       {
         id: 'listener-history',
         title: 'Listening history',
         viewName: 'History',
         caption:
-          'Recently played plus listening stats. Listen tab, not Library.',
+          'Listening stats plus day-by-day play history. Listen tab, not Library.',
         actions: [
           'Replay a recently played track',
           'Review listening stats',
@@ -917,8 +1122,14 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         ],
         goesTo: [
           { label: 'Go Live', to: '/studio/go-live' },
-          { label: 'Open Sounds', to: '/studio/sounds' },
-          { label: 'Open Channel Designer', to: '/studio/branding' },
+          { label: 'Open Schedule', to: '/studio/schedule' },
+          { label: 'Open Tracks', to: '/studio/sounds' },
+          { label: 'Upload a track', to: '/library/upload' },
+          { label: 'Open Collections', to: '/studio/collections' },
+          { label: 'Open Releases', to: '/studio/releases' },
+          { label: 'Open an upcoming show', to: '/studio/shows/$id' },
+          { label: 'Open Posts', to: '/studio/updates' },
+          { label: 'Open recordings', to: '/library/recordings' },
           {
             label: 'If no channel yet, land on setup',
             to: '/studio/channel?tab=setup',
@@ -932,7 +1143,9 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         new: {
           image: '/map/nuclear/studio.png',
           route: '/studio',
-          caption: 'Nuclear studio hub',
+          caption:
+            'Nuclear studio hub — shot from a real beta admin account with no content yet, so plays/broadcasts read zero.',
+          capturedAt: '2026-10-04',
         },
       },
       {
@@ -958,6 +1171,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/studio/channel?tab=setup',
           caption: 'Nuclear combines channel setup and design',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Studio/StudioGate',
+          'No Channel Yet',
+        ),
       },
       {
         id: 'artist-go-live',
@@ -994,6 +1211,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           caption:
             'You can monitor the signal, go live, record the broadcast, copy encoder credentials, and manage multistream destinations.',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Studio/StudioGoLiveView',
+          'Default',
+        ),
       },
       {
         id: 'artist-upload',
@@ -1007,14 +1228,11 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         ],
         goesTo: [
           {
-            label:
-              "On success, navigates straight to the new track's detail page (as of this session — previously stayed on this form)",
+            label: "On success, opens the new track's detail page",
             to: '/studio/sounds/$id',
           },
-          {
-            label: 'Open Add-ons → Import for cloud imports instead',
-            to: '/settings/plugin-store?category=import',
-          },
+          { label: 'Organise into collections', to: '/studio/collections' },
+          { label: 'Go live to record a broadcast', to: '/studio/go-live' },
         ],
         old: {
           image: '/map/studio/upload.png',
@@ -1023,14 +1241,14 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/upload.png',
-          route: '/studio/upload',
-          caption: 'Nuclear upload',
+          route: '/library/upload',
+          caption: 'Nuclear upload - /studio/upload redirects here.',
         },
       },
       {
         id: 'artist-archive',
-        title: 'Music / Sounds',
-        viewName: 'Sounds',
+        title: 'Music / Tracks',
+        viewName: 'Tracks',
         caption: 'Catalog list — play, meta, delete, open editor.',
         actions: [
           'Search / sort the track list',
@@ -1055,19 +1273,21 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/studio/sounds',
           caption: 'Nuclear archive',
         },
+        storybookUrl: storybookStory('Tahti/Studio/StudioSoundsView', 'Tracks'),
       },
       {
         id: 'artist-archive-item',
         title: 'Music / track detail',
-        viewName: 'Sound',
+        viewName: 'Track',
         caption:
-          'Single-track page reached from Upload or Sounds — polls PENDING/PROCESSING until READY (added this session), then unlocks playback and editing; ERROR shows a banner instead.',
+          'Single-track page reached from Upload or Tracks — polls PENDING/PROCESSING until READY (added this session), then unlocks playback and editing; ERROR shows a banner instead.',
         actions: [
           'Play / pause the track (disabled until READY)',
           'Add to or remove from 24/7 rotation',
           'Pin to page, up to the pinned-track limit',
           'Switch between the Details and Playlists tabs',
-          'Edit title, description, genre, visibility, downloads/comments toggles',
+          'Edit title, description, genre, visibility, comments toggle',
+          'Switch downloads off for this track',
           'Save changes',
           'Normalize the waveform (disabled until READY)',
           'Auto-trim silence (disabled until READY)',
@@ -1078,7 +1298,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Add the track to one or more playlists',
         ],
         goesTo: [
-          { label: 'Back to Sounds list', to: '/studio/sounds' },
+          { label: 'Back to Tracks list', to: '/studio/sounds' },
           {
             label: 'Open track insights',
             to: '/studio/insights/$kind/$id',
@@ -1098,6 +1318,44 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/archive-item.png',
           route: '/studio/sounds/$id',
           caption: 'Nuclear track detail',
+        },
+        storybookUrl: storybookStory('Tahti/Track/TrackDetailView', 'Owner'),
+      },
+      {
+        id: 'artist-track-editor',
+        title: 'Track editor dialog',
+        viewName: 'Edit track',
+        caption:
+          'The Edit dialog opened from Tracks, the track page or the artist page. Tabs: Basics, Tracklist, Audio, Sharing, Export, Advanced.',
+        action: 'Edit on a track row or on the owner’s track page',
+        actions: [
+          'Basics: title, content type, description, genre, tags, release date, cover art',
+          'Audio: normalize, trim silence',
+          'Sharing: comments, channel rotation, downloads switch, download gate, top lists, Tahti Selects',
+          'Advanced: licence, BPM, key, version, AI label, recorded-at venue',
+          'Save changes',
+        ],
+        goesTo: [
+          {
+            label: 'Open the full audio editor',
+            to: '/studio/sounds/$id/editor',
+          },
+          {
+            label: 'Match to a reference track',
+            to: '/studio/mastering/$id',
+          },
+          {
+            label: 'Publish the track to a release',
+            to: '/studio/releases/$id',
+          },
+        ],
+        old: {
+          route: '/dashboard/archive',
+          caption: 'Prod edits inline in the archive list - not captured',
+        },
+        new: {
+          route: '/studio/sounds · Edit (TrackEditDialog)',
+          caption: 'Nuclear track editor - shot pending',
         },
       },
       {
@@ -1161,6 +1419,8 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Create a release',
           'Add tracks',
           'Set smart-link DSP targets',
+          'Copy a release smart link',
+          'Pin a release to the top of the artist profile',
           'Open the public link',
           'Open distribution status',
         ],
@@ -1178,6 +1438,45 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/releases.png',
           route: '/studio/releases',
           caption: 'Nuclear releases',
+        },
+      },
+      {
+        id: 'artist-release-detail',
+        title: 'Release detail',
+        viewName: 'Release',
+        caption:
+          'One release: artwork, tracks, smart-link destinations and stats, credits, track versions, fingerprinting and export.',
+        actions: [
+          'Publish the release',
+          'Change the artwork (upload, from URL or generate)',
+          'Play or download a release track',
+          'Upload audio straight to a release track that has none, or add a new track by uploading audio',
+          'Upload a new audio version of a release track',
+          'Set smart-link destinations and the smart-link playlist',
+          'Show or hide the "Powered by Tahti" footer on the smart link',
+          'Review smart-link views, clicks and click-through',
+          'Edit track credits',
+          'Export the release',
+        ],
+        goesTo: [
+          { label: 'Back to Releases', to: '/studio/releases' },
+          { label: 'Open the public smart link', to: '/r/$slug' },
+          {
+            label: 'Open a track in the audio editor',
+            to: '/studio/sounds/$id/editor',
+          },
+          {
+            label: 'Open Add-ons for more smart-link services',
+            to: '/settings/plugin-store',
+          },
+        ],
+        old: {
+          route: '/dashboard/releases/[id]',
+          caption: 'Prod release detail - not captured in the atlas',
+        },
+        new: {
+          route: '/studio/releases/$id',
+          caption: 'Nuclear release detail - shot pending',
         },
       },
       {
@@ -1223,7 +1522,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'See its audience on the listener world map',
         ],
         goesTo: [
-          { label: 'Back to Sounds', to: '/studio/sounds' },
+          { label: 'Back to Tracks', to: '/studio/sounds' },
           {
             label: 'Back to Releases (when the source is a release track)',
             to: '/studio/releases',
@@ -1240,6 +1539,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           caption:
             'You can compare a track’s plays and downloads over time and see its audience on the listener world map.',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Studio/TrackInsightsPanel',
+          'ThirtyDays',
+        ),
       },
       {
         id: 'artist-sources',
@@ -1255,7 +1558,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         ],
         goesTo: [
           {
-            label: 'Land in Sounds once an import completes',
+            label: 'Land in Tracks once an import completes',
             to: '/studio/sounds/$id',
           },
           {
@@ -1329,13 +1632,17 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/studio/stripe',
           caption: 'Nuclear Stripe dashboard',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Studio/StudioStripeView',
+          'Dashboard',
+        ),
       },
       {
         id: 'artist-channel-design',
         title: 'Channel design',
         viewName: 'Channel design',
         caption:
-          'Look, presets, accent — Studio → Branding → Channel Designer.',
+          'Look, presets, accent — Settings → Channel & chat → Channel Designer.',
         actions: [
           'Pick a visual preset',
           'Pick a brand accent',
@@ -1356,9 +1663,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/channel-design.png',
-          route: '/studio/branding?tab=channel-designer',
+          route: '/studio/channel',
           caption: 'Nuclear channel designer',
         },
+        storybookUrl: storybookStory('Tahti/Channel/Designer', 'Full'),
       },
       {
         id: 'artist-schedule',
@@ -1374,7 +1682,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Open Channel Designer for rotation/fallback settings',
-            to: '/studio/branding?tab=channel-designer',
+            to: '/studio/channel',
           },
         ],
         old: {
@@ -1392,11 +1700,15 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         id: 'artist-updates',
         title: 'Updates / newsletter',
         viewName: 'Updates',
-        caption: 'Posts + compose/send newsletter.',
+        caption:
+          'Posts + compose/send newsletter. Posts can be edited and scheduled; each newsletter shows how it was delivered.',
         actions: [
           'Create a new post or draft',
+          'Edit a post',
+          'Schedule a post with "Publish at"',
           'Delete a post',
           'Compose/send a newsletter',
+          'Review newsletter subscribers and delivery',
         ],
         old: {
           image: '/map/studio/updates.png',
@@ -1422,7 +1734,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Save a draft or render a new version',
         ],
         goesTo: [
-          { label: 'Back to Sounds', to: '/studio/sounds' },
+          { label: 'Back to Tracks', to: '/studio/sounds' },
           {
             label: "Open a specific track's standalone editor route",
             to: '/studio/sounds/$id/editor',
@@ -1443,11 +1755,12 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         id: 'artist-settings',
         title: 'Settings (account / artist / money)',
         viewName: 'Settings',
-        caption: 'Account, artist info, fan tiers, connections.',
+        caption:
+          'Account, Artist, Channel and chat, Broadcast, Playback and Integrations, plus the App group (Themes, Add-ons, Logs, What’s new). Fan tiers moved to Studio → Audience.',
         actions: [
           'Edit account details',
-          'Edit artist profile (bio/socials/avatar)',
-          'Manage fan tiers in Audience',
+          'Edit artist profile (identity, story, people, connections, branding)',
+          'Connect X and Instagram for auto-posting (Artist → Connections)',
           'Browse Add-ons',
           'Switch settings sections',
         ],
@@ -1468,6 +1781,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/settings/$section',
           caption: 'Nuclear settings modal (About removed from footer)',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Player/ConnectedSettingsModal',
+          'Signed In Account',
+        ),
       },
       {
         id: 'settings-themes',
@@ -1490,6 +1807,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/settings/themes',
           caption: 'Nuclear Themes modal',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Player/ConnectedSettingsModal',
+          'Themes Tab',
+        ),
       },
       {
         id: 'settings-addons',
@@ -1518,11 +1839,15 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/settings/plugin-store',
           caption: 'Nuclear Add-ons modal',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Widgets/PluginStorePanel',
+          'Default',
+        ),
       },
       {
         id: 'artist-money-tiers',
         title: 'Fan tiers / money',
-        viewName: 'Money',
+        viewName: 'Revenue',
         caption: 'Configure fan subscription tiers + Connect.',
         actions: [
           'Create/edit a fan tier',
@@ -1546,6 +1871,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/studio/audience',
           caption: 'Nuclear Audience · fan tiers',
         },
+        storybookUrl: storybookStory('Tahti/Studio/FanTiersEditor', 'Default'),
       },
       {
         id: 'artist-money-fan-subs',
@@ -1575,6 +1901,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/studio/audience',
           caption: 'Nuclear Audience · fan subscription performance',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Studio/FanSubscriptionStats',
+          'Default',
+        ),
       },
     ],
   },
@@ -1597,9 +1927,12 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Submit up to five tracks to Tahti Radio',
         ],
         goesTo: [
-          { label: 'Open Channel Designer', to: '/studio/branding' },
+          {
+            label: 'Open Channel Designer',
+            to: '/settings/artist?tab=branding',
+          },
           { label: 'Open Go Live', to: '/studio/go-live' },
-          { label: 'Open the Sounds library', to: '/studio/sounds' },
+          { label: 'Open the Tracks library', to: '/studio/sounds' },
         ],
         old: {
           absent: true,
@@ -1640,6 +1973,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/studio/channel?tab=announcements',
           caption: 'Announcements editor',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Studio/PinnedAnnouncementsPanel',
+          'Default',
+        ),
       },
       {
         id: 'artist-channel-tahti-radio',
@@ -1654,7 +1991,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Review pending, approved, or rejected results',
         ],
         goesTo: [
-          { label: 'Browse Sounds', to: '/studio/sounds' },
+          { label: 'Browse Tracks', to: '/studio/sounds' },
           {
             label: 'Return to Radio controls',
             to: '/studio/channel?tab=radio',
@@ -1705,17 +2042,16 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Artist events',
         viewName: 'Studio Events',
         caption:
-          'Review scheduled events, see venue details, and open the dedicated event creation flow.',
+          'Review upcoming and past events, then add a new one or edit an existing one in place.',
         actions: [
-          'Browse event cards and thumbnails',
-          'Open event details',
-          'Open a venue from the directory',
-          'Create a new event',
+          'Browse upcoming and past event cards',
+          'Edit an event',
+          'Remove an event',
+          'Add a new event',
         ],
         goesTo: [
           { label: 'Open the new event page', to: '/studio/events/new' },
-          { label: 'Open Schedule', to: '/studio/schedule' },
-          { label: 'Open venues', to: '/venues' },
+          { label: 'Edit an event', to: '/studio/events/$eventId/edit' },
         ],
         old: {
           absent: true,
@@ -1742,7 +2078,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         ],
         goesTo: [
           { label: 'Return to Events', to: '/studio/events' },
-          { label: 'Open Schedule', to: '/studio/schedule' },
+          {
+            label: 'Register a venue that is not listed',
+            to: '/venues/register',
+          },
         ],
         old: {
           absent: true,
@@ -1753,6 +2092,108 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/studio-event-new.png',
           route: '/studio/events/new',
           caption: 'Dedicated event form',
+        },
+      },
+      {
+        id: 'artist-event-edit',
+        title: 'Edit an event',
+        viewName: 'Edit Event',
+        caption:
+          'The same event form, filled in from the existing event, so artists change details instead of removing and re-adding the event.',
+        actions: [
+          'Change title, place, venue, location, ticket link and start time',
+          'Save the event',
+          'Cancel back to Events',
+        ],
+        goesTo: [
+          { label: 'Return to Events', to: '/studio/events' },
+          {
+            label: 'Register a venue that is not listed',
+            to: '/venues/register',
+          },
+        ],
+        old: {
+          absent: true,
+          route: '—',
+          caption: 'No direct production equivalent',
+        },
+        new: {
+          route: '/studio/events/$eventId/edit',
+          caption: 'Event edit form - shot pending',
+        },
+      },
+      {
+        id: 'artist-show-detail',
+        title: 'Show detail',
+        viewName: 'Studio Show',
+        caption:
+          'One recurring show: defaults (title, tagline, artwork, visibility Public or Fans only, auto-publish recordings, automatic episode numbering), schedule, episodes and recordings.',
+        actions: [
+          'Edit the show defaults and save them',
+          'Set visibility to Public or Fans only',
+          'Number episodes automatically and set the next episode number',
+          'Add a new episode from an upload or a broadcast recording',
+          'Switch Overview / Episodes / Recordings tabs',
+        ],
+        goesTo: [
+          { label: 'Back to Shows', to: '/studio/shows' },
+          {
+            label: 'Review an episode',
+            to: '/studio/shows/episodes/$episodeId',
+          },
+          { label: 'Open a recording in Tracks', to: '/studio/sounds/$id' },
+          { label: 'Go live for the next slot', to: '/studio/go-live' },
+        ],
+        old: {
+          absent: true,
+          route: '—',
+          caption: 'No direct production equivalent',
+        },
+        new: {
+          route: '/studio/shows/$id',
+          caption: 'Show detail - shot pending',
+        },
+      },
+      {
+        id: 'artist-studio-branding',
+        title: 'Studio branding',
+        viewName: 'Studio Branding',
+        caption:
+          'Profile picture (animated GIFs allowed), avatar colour when there is no picture, backdrop and logo. The same panel is Settings → Artist → Branding.',
+        actions: [
+          'Upload a profile picture, including an animated GIF',
+          'Pick an avatar colour when there is no picture',
+          'Set the profile backdrop and logo',
+          'Switch Branding / Gallery / Press kit / Channel Designer tabs',
+        ],
+        old: {
+          route: '/dashboard/settings/branding',
+          caption: 'Prod branding settings - not captured in the atlas',
+        },
+        new: {
+          route: '/studio/branding',
+          caption: 'Studio branding - shot pending',
+        },
+      },
+      {
+        id: 'settings-artist-connections',
+        title: 'Artist connections and auto-post',
+        viewName: 'Settings · Artist · Connections',
+        caption:
+          'Social links plus X and Instagram connections for auto-posting. The OAuth return lands on /settings/artist?tab=connections&social= and shows the result as a toast.',
+        actions: [
+          'Edit social links',
+          'Set the news feed shown on the artist page',
+          'Connect or disconnect X',
+          'Connect or disconnect Instagram',
+        ],
+        old: {
+          route: '/dashboard/settings/connections',
+          caption: 'Prod connections - not captured for auto-post',
+        },
+        new: {
+          route: '/settings/artist?tab=connections',
+          caption: 'Artist connections - shot pending',
         },
       },
       {
@@ -1781,11 +2222,12 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/admin/vendors',
           caption: 'Vendor and DPA overview',
         },
+        storybookUrl: storybookStory('Tahti/Admin/AdminVendorsView', 'Default'),
       },
       {
         id: 'admin-disco-widgets',
-        title: 'Admin widget catalog',
-        viewName: 'Admin · Disco Widgets',
+        title: 'Admin add-ons catalog',
+        viewName: 'Admin · Add-ons',
         caption:
           'Manage the available discovery widgets and their parameters, artwork, placement, and lifecycle.',
         actions: [
@@ -1805,9 +2247,11 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/admin-disco-widgets.png',
-          route: '/admin/disco-widgets',
-          caption: 'Widget catalog and editor',
+          route: '/admin/addons',
+          caption:
+            'Add-ons catalog and editor - /admin/disco-widgets redirects here.',
         },
+        storybookUrl: storybookStory('Tahti/Admin/AdminAddonsView', 'Catalog'),
       },
       {
         id: 'admin-status',
@@ -1836,17 +2280,21 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/admin/status',
           caption: 'Platform and service status',
         },
+        storybookUrl: storybookStory('Tahti/Admin/AdminStatusView', 'Default'),
       },
       {
         id: 'account-notifications',
         title: 'Account notifications',
         viewName: 'Settings · Notifications',
         caption:
-          'Control notification delivery and profile visibility without leaving Account settings.',
+          'Control notification delivery and profile visibility without leaving Account settings - including whether liked tracks show on your profile and whether your name appears in the annual grant report.',
         actions: [
           'Toggle money-movement notifications',
           'Toggle listener-activity and weekly recap notifications',
           'Control follower, following, listener, and chat visibility',
+          'Show or hide liked tracks on your public profile',
+          'Keep your name out of the annual grant report',
+          'Set the comments default for a new channel',
           'Save notification preferences',
         ],
         goesTo: [
@@ -1860,7 +2308,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/settings-notifications.png',
-          route: '/settings/account · Notifications tab',
+          route: '/settings/account · Notifications & visibility tab',
           caption: 'Account notification and visibility controls',
         },
       },
@@ -1869,17 +2317,20 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Tahti Jam',
         viewName: 'Jam',
         caption:
-          'Host-authoritative synced group listening — join a playlist jam by code or link, see who else is jamming, and hear the same track at the same position as the host.',
+          'Host-authoritative synced group listening - join a playlist jam by code or link, see who else is jamming, and hear the same track at the same position as the host. The host can give individual guests control of playback.',
         actions: [
           'Start a Jam from a playlist (host)',
           'Join a Jam by code or shared link',
           'Copy the invite link',
           'See the live participant list',
+          'Let a guest control playback (host)',
+          'Play or pause for everyone (host and guests with control)',
           'Leave the Jam',
           'End the Jam for everyone (host only)',
         ],
         goesTo: [
           { label: 'Start a Jam from a playlist', to: '/u/$username/c/$slug' },
+          { label: 'Back to Listen when the Jam ends', to: '/' },
         ],
         old: {
           absent: true,
@@ -1927,7 +2378,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Review platform KPIs',
           'Open a shortcut to another admin page',
         ],
-        goesTo: [{ label: 'Open Admin logs', to: '/admin/logs' }],
+        goesTo: [
+          { label: 'Open Admin logs', to: '/admin/logs' },
+          { label: 'Open Monitoring hub', to: '/admin/monitoring' },
+        ],
         old: {
           absent: true,
           route: '—',
@@ -1936,8 +2390,45 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         new: {
           image: '/map/nuclear/admin.png',
           route: '/admin',
-          caption: 'Nuclear Admin dashboard',
+          caption:
+            'Nuclear Admin dashboard — real beta admin session, live platform KPIs.',
+          capturedAt: '2026-10-04',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Admin/AdminDashboardView',
+          'Default',
+        ),
+      },
+      {
+        id: 'admin-monitoring',
+        title: 'Admin monitoring',
+        viewName: 'Admin · Monitoring',
+        caption:
+          'Embedded Grafana vital services plus live Loki container logs, with outbound links to infrastructure dashboards and Explore.',
+        actions: [
+          'Review vital service gauges in Grafana',
+          'Open a service Grafana dashboard',
+          'Filter container logs by service',
+          'Open Grafana Explore for Loki',
+        ],
+        goesTo: [
+          { label: 'Return to Admin overview', to: '/admin' },
+          { label: 'Open Admin logs', to: '/admin/logs' },
+          { label: 'Open platform status', to: '/admin/status' },
+        ],
+        old: {
+          absent: true,
+          route: '—',
+          caption: 'No direct Nuclear-era capture',
+        },
+        new: {
+          route: '/admin/monitoring',
+          caption: 'Grafana vitals embed and container logs hub',
+        },
+        storybookUrl: storybookStory(
+          'Tahti/Admin/AdminMonitoringView',
+          'Default',
+        ),
       },
       {
         id: 'admin-users',
@@ -1954,8 +2445,11 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         new: {
           image: '/map/nuclear/admin-users.png',
           route: '/admin/users',
-          caption: 'Nuclear user admin',
+          caption:
+            'Nuclear user admin — real beta admin session, real (beta-seeded) accounts.',
+          capturedAt: '2026-10-04',
         },
+        storybookUrl: storybookStory('Tahti/Admin/AdminUsersView', 'Default'),
       },
       {
         id: 'admin-content',
@@ -1992,6 +2486,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/admin/radio',
           caption: 'Nuclear radio admin',
         },
+        storybookUrl: storybookStory('Tahti/Admin/AdminRadioView', 'Default'),
       },
       {
         id: 'admin-streams',
@@ -2010,6 +2505,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/admin/streams',
           caption: 'Nuclear stream monitor',
         },
+        storybookUrl: storybookStory('Tahti/Admin/AdminStreamsView', 'Default'),
       },
       {
         id: 'admin-moderation-queue',
@@ -2017,7 +2513,12 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         viewName: 'Admin · Moderation',
         caption:
           'Support, beta, radio submissions, Selects, reports, and feature requests in one tabbed queue.',
-        actions: ['Switch moderation tabs', 'Review a queue item'],
+        actions: [
+          'Switch moderation tabs',
+          'Review a queue item',
+          'Open the page a content report is about, or read the reported comment',
+          'Reply to a support request (the requester gets a notification and an email)',
+        ],
         goesTo: [
           { label: 'Open a moderation tab', to: '/admin/moderation/$tab' },
         ],
@@ -2031,6 +2532,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/admin/moderation',
           caption: 'Nuclear moderation queue',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Admin/AdminModerationView',
+          'Default',
+        ),
       },
       {
         id: 'admin-governance-board',
@@ -2043,9 +2548,12 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Record a board resolution',
         ],
         goesTo: [
-          { label: 'Open AGM', to: '/admin/agm' },
-          { label: 'Open annual reports', to: '/admin/reports' },
-          { label: 'Open grants', to: '/admin/grants' },
+          {
+            label: 'Switch Overview / Annual reports / Grants / AGM tabs',
+            to: '/admin/governance/$tab',
+          },
+          { label: 'Open a grant year', to: '/admin/grants/$year' },
+          { label: 'Open member governance', to: '/governance' },
           { label: 'Open Admin logs', to: '/admin/logs' },
           { label: 'Open users', to: '/admin/users' },
           { label: 'Open venues', to: '/admin/venues' },
@@ -2060,6 +2568,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/admin/governance',
           caption: 'Nuclear board governance',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Admin/AdminGovernanceView',
+          'Default',
+        ),
       },
       {
         id: 'admin-agm',
@@ -2067,7 +2579,9 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         viewName: 'Admin · AGM',
         caption: 'Annual general meeting scheduling and records.',
         actions: ['Review AGM records', 'Schedule or update a meeting'],
-        goesTo: [{ label: 'Open Admin governance', to: '/admin/governance' }],
+        goesTo: [
+          { label: 'Switch governance tabs', to: '/admin/governance/$tab' },
+        ],
         old: {
           absent: true,
           route: '—',
@@ -2075,9 +2589,13 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/admin-agm.png',
-          route: '/admin/agm',
-          caption: 'Nuclear AGM',
+          route: '/admin/governance/agm',
+          caption: 'Nuclear AGM tab - /admin/agm redirects here.',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Admin/AdminGovernanceView',
+          'Default',
+        ),
       },
       {
         id: 'admin-storage',
@@ -2098,6 +2616,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/admin/storage',
           caption: 'Nuclear storage admin',
         },
+        storybookUrl: storybookStory('Tahti/Admin/AdminStorageView', 'Default'),
       },
       {
         id: 'admin-news',
@@ -2116,6 +2635,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/admin/news',
           caption: 'Nuclear news admin',
         },
+        storybookUrl: storybookStory('Tahti/Admin/AdminNewsView', 'Default'),
       },
     ],
   },
@@ -2151,9 +2671,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         id: 'edge-studio-logged-out',
         title: 'Studio while not logged in',
         viewName: 'Studio gate',
-        caption: 'Visiting /studio without session → login / join prompt.',
-        actions: ['Redirected straight to the login form'],
-        goesTo: [{ label: 'After login, returns to Studio', to: '/studio' }],
+        caption:
+          'Visiting /studio without a session shows the StudioGate sign-in prompt in place; Log in opens the auth dialog without leaving the page.',
+        actions: ['Open the login dialog from the sign-in prompt'],
+        goesTo: [{ label: 'After login, stays on Studio', to: '/studio' }],
         old: {
           image: '/map/auth/login.png',
           route: '/dashboard → /login',
@@ -2161,8 +2682,33 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/login.png',
-          route: '/studio → /login',
-          caption: 'Nuclear gate → login',
+          route: '/studio (signed out)',
+          caption:
+            'Nuclear gate - current image is the login screen, recapture as /studio signed out.',
+        },
+        storybookUrl: storybookStory('Tahti/Studio/StudioGate', 'Signed Out'),
+      },
+      {
+        id: 'edge-track-gated',
+        title: 'Gated track page',
+        viewName: 'Track (gated)',
+        caption:
+          'A fan-subscribers-only or purchase-only track shows a locked state instead of the player; a follow / repost download gate opens an unlock dialog.',
+        actions: [
+          'See the "Fan subscribers only" or "Buy to listen" state',
+          'Follow the artist or repost the track to unlock a gated download',
+        ],
+        goesTo: [
+          { label: 'Subscribe to the artist', to: '/subscribe/$username' },
+        ],
+        old: {
+          route: '—',
+          caption: 'Prod equivalent not checked or captured',
+        },
+        new: {
+          route: '/t/northern-lights-archive-6',
+          caption:
+            'Mock fan-subscribers gate; purchase gate at /t/northern-lights-archive-7 (VITE_FORCE_MOCK=1).',
         },
       },
       {
@@ -2213,6 +2759,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/more, /admin/map',
           caption: 'Nuclear Tahti map',
         },
+        storybookUrl: storybookStory('Tahti/Misc/ScreenAtlas', 'Default'),
       },
     ],
   },

@@ -1,8 +1,8 @@
 import { LoaderCircleIcon, UploadCloudIcon } from 'lucide-react';
-import { useRef, useState, type FC, type RefObject } from 'react';
+import { useEffect, useRef, useState, type FC, type RefObject } from 'react';
 import { toast } from 'sonner';
 
-import { ImageReveal } from '@tahti-player/ui';
+import { Button, ImageReveal } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 import { IMAGE_UPLOAD_ACCEPT_ATTR } from '../lib/imageUploadContentType';
@@ -12,6 +12,7 @@ import {
   uploadRadioCoverFile,
 } from '../lib/radioStationCover';
 import { useAuthStore } from '../stores/authStore';
+import { ImageSlotPreviewDialog } from './imageSlot/ImageSlotPreviewDialog';
 
 type RadioStationCoverProps = {
   src: string;
@@ -26,6 +27,11 @@ type RadioStationCoverProps = {
 
 type RadioStationCoverEditButtonProps = Omit<RadioStationCoverProps, 'src'> & {
   className?: string;
+  /** Lets a parent that renders its own click target (e.g.
+   * RadioStationCover's preview modal "Change" button) trigger this
+   * button's file picker imperatively, without reaching into its
+   * internal `inputRef`. */
+  onRegisterOpenPicker?: (open: () => void) => void;
 };
 
 const openCoverPicker = (
@@ -80,11 +86,16 @@ export const RadioStationCoverEditButton: FC<
   className,
   persist = true,
   onCoverChange,
+  onRegisterOpenPicker,
 }) => {
   const user = useAuthStore((state) => state.user);
   const canEdit = canEditRadioStationCover(user);
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    onRegisterOpenPicker?.(() => openCoverPicker(inputRef, busy));
+  }, [busy, onRegisterOpenPicker]);
 
   if (!canEdit) {
     return null;
@@ -92,14 +103,16 @@ export const RadioStationCoverEditButton: FC<
 
   return (
     <>
-      <button
+      <Button
+        variant="text"
+        size="icon-sm"
         type="button"
         disabled={busy}
         title={`Edit ${label} cover`}
         aria-label={`Edit ${label} cover`}
         data-testid="radio-station-cover-edit"
         className={cn(
-          'flex cursor-pointer items-center justify-center border-0 p-0',
+          'p-0',
           'bg-background/80 hover:bg-background/90 disabled:cursor-wait',
           'opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100',
           'size-8 rounded-full',
@@ -116,13 +129,15 @@ export const RadioStationCoverEditButton: FC<
         ) : (
           <UploadCloudIcon size={18} aria-hidden />
         )}
-      </button>
+      </Button>
       <input
         ref={inputRef}
         type="file"
         accept={IMAGE_UPLOAD_ACCEPT_ATTR}
         disabled={busy}
         className="sr-only"
+        tabIndex={-1}
+        aria-hidden
         onChange={(event) => {
           const file = event.target.files?.[0];
           event.target.value = '';
@@ -154,30 +169,66 @@ export const RadioStationCover: FC<RadioStationCoverProps> = ({
 }) => {
   const user = useAuthStore((state) => state.user);
   const canEdit = canEditRadioStationCover(user);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const openPickerRef = useRef<(() => void) | null>(null);
+
+  const coverImage = (
+    <div data-testid="radio-station-cover-image" className="size-full">
+      <ImageReveal
+        src={src || undefined}
+        alt=""
+        className="size-full"
+        placeholder={<div className="bg-background-secondary size-full" />}
+      />
+    </div>
+  );
 
   return (
     <div
       data-testid="radio-station-cover"
       className={cn('group relative size-full', className)}
     >
-      <div data-testid="radio-station-cover-image" className="size-full">
-        <ImageReveal
-          src={src || undefined}
-          alt=""
-          className="size-full"
-          placeholder={<div className="bg-background-secondary size-full" />}
-        />
-      </div>
       {canEdit ? (
-        <RadioStationCoverEditButton
-          label={label}
-          stationName={stationName}
-          catalogStationId={catalogStationId}
-          presetId={presetId}
-          persist={persist}
-          onCoverChange={onCoverChange}
-          className="absolute inset-0 size-full rounded-[inherit]"
-        />
+        <Button
+          variant="text"
+          size="flexible"
+          type="button"
+          title={`Preview ${label} cover`}
+          aria-label={`Preview ${label} cover`}
+          className="block size-full rounded-none p-0 text-left hover:bg-transparent active:scale-100"
+          onClick={() => setPreviewOpen(true)}
+        >
+          {coverImage}
+        </Button>
+      ) : (
+        coverImage
+      )}
+      {canEdit ? (
+        <>
+          <RadioStationCoverEditButton
+            label={label}
+            stationName={stationName}
+            catalogStationId={catalogStationId}
+            presetId={presetId}
+            persist={persist}
+            onCoverChange={onCoverChange}
+            onRegisterOpenPicker={(open) => {
+              openPickerRef.current = open;
+            }}
+            className="absolute top-1 right-1 z-10 size-8 rounded-full"
+          />
+          <ImageSlotPreviewDialog
+            isOpen={previewOpen}
+            onClose={() => setPreviewOpen(false)}
+            label={`${label} cover`}
+            src={src}
+            hideDelete
+            onChangeClick={() => {
+              setPreviewOpen(false);
+              openPickerRef.current?.();
+            }}
+          />
+        </>
       ) : null}
     </div>
   );

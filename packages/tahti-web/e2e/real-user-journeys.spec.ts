@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { E2E_EMAIL, E2E_PASSWORD, signIn } from './helpers/auth';
+
 // Covers the real, UI-complete journeys behind the "signup + governance
 // voting + stats" request: full registration -> login, governance voting
 // mechanics (including the closed-motion history/decision log, which is
@@ -11,32 +13,12 @@ import { expect, test } from '@playwright/test';
 // artist (followArtist/unfollowArtist/fetchFollowing exist in api/client.ts
 // but are not called from any view -- no Follow button exists anywhere).
 
-async function signIn(
-  page: import('@playwright/test').Page,
-  email = 'artist@tahti.live',
-): Promise<void> {
-  await page.goto('/login');
-  await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password').fill('demo-password');
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await expect(
-    page.getByRole('button', { name: /^Signed in as/ }),
-  ).toBeVisible();
-  await page.evaluate(() => {
-    const raw = localStorage.getItem('tahti-web-auth');
-    const userId = raw ? JSON.parse(raw)?.state?.user?.id : null;
-    if (typeof userId === 'string') {
-      localStorage.setItem(`tahti-web-onboarded:${userId}`, '1');
-    }
-  });
-}
-
 test('login form submits on pressing Enter, not just clicking Sign in', async ({
   page,
 }) => {
   await page.goto('/login');
-  await page.getByLabel('Email').fill('artist@tahti.live');
-  await page.getByLabel('Password').fill('demo-password');
+  await page.getByLabel('Email').fill(E2E_EMAIL);
+  await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByLabel('Password').press('Enter');
 
   await expect(
@@ -52,7 +34,6 @@ test('a new account can complete registration and immediately log in with it', a
   await page.goto('/join');
   await expect(page.getByLabel('Artist name')).toBeVisible();
   await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Username').fill(`newartist${Date.now()}`);
   await page.getByLabel('Artist name').fill('New Test Artist');
   await page.getByLabel('Password', { exact: true }).fill('secure-password');
   await page.getByLabel('Confirm password').fill('secure-password');
@@ -76,7 +57,6 @@ test('registration edge case: an empty artist name keeps the submit button disab
 }) => {
   await page.goto('/join');
   await page.getByLabel('Email').fill('edge-case@example.com');
-  await page.getByLabel('Username').fill('edgecase');
   await page.getByLabel('Password', { exact: true }).fill('secure-password');
   await page.getByLabel('Confirm password').fill('secure-password');
 
@@ -175,40 +155,37 @@ test('governance navigation keeps member, artist, and board entries reachable an
   ).toHaveAttribute('aria-selected', 'true');
 });
 
-test('library is a Studio tab and keeps /library routes selected on Studio', async ({
+test('library is its own sidebar section with Library tabs, not a Studio tab', async ({
   page,
 }) => {
   await signIn(page);
 
   await page.goto('/library');
-  const studioPages = page.getByRole('navigation', { name: 'Studio pages' });
-  await expect(studioPages).toBeVisible();
   await expect(
-    studioPages.getByRole('link', { name: 'Library' }),
-  ).toHaveAttribute('aria-current', 'page');
-  await expect(studioPages.getByRole('link', { name: 'Sounds' })).toBeVisible();
-  await expect(
-    studioPages.getByRole('link', { name: 'Collections' }),
-  ).toBeVisible();
-  await expect(
-    page.getByTestId('sidebar-navigation-item').filter({ hasText: 'Studio' }),
-  ).toHaveClass(/bg-primary/);
+    page.getByRole('navigation', { name: 'Studio pages' }),
+  ).toHaveCount(0);
   await expect(
     page
       .getByTestId('sidebar-navigation-item')
       .filter({ hasText: /^Library$/ }),
-  ).toHaveCount(0);
+  ).toHaveClass(/bg-primary/);
+  await expect(page.getByRole('tab', { name: 'Overview' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+  await expect(page.getByRole('tab', { name: 'Sounds' })).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Collections' })).toBeVisible();
 
-  await studioPages.getByRole('link', { name: 'Sounds' }).click();
+  await page.getByRole('tab', { name: 'Sounds' }).click();
   await expect(page).toHaveURL(/\/library\/sounds$/);
+  await expect(page.getByRole('tab', { name: 'Sounds' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
   await expect(
-    studioPages.getByRole('link', { name: 'Sounds' }),
-  ).toHaveAttribute('aria-current', 'page');
-  await expect(
-    studioPages.getByRole('link', { name: 'Library' }),
-  ).not.toHaveAttribute('aria-current', 'page');
-  await expect(
-    page.getByTestId('sidebar-navigation-item').filter({ hasText: 'Studio' }),
+    page
+      .getByTestId('sidebar-navigation-item')
+      .filter({ hasText: /^Library$/ }),
   ).toHaveClass(/bg-primary/);
 
   await page.setViewportSize({ width: 390, height: 844 });
@@ -220,9 +197,7 @@ test('library is a Studio tab and keeps /library routes selected on Studio', asy
   await mobilePrimary.getByRole('button', { name: 'More' }).click();
   await page.getByRole('dialog').getByRole('link', { name: 'Library' }).click();
   await expect(page).toHaveURL(/\/library$/);
-  await expect(
-    page.getByRole('navigation', { name: 'Studio pages' }),
-  ).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Overview' })).toBeVisible();
 
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto('/library/favorites');
@@ -354,6 +329,7 @@ test('artist stats show real listen minutes and the listener geography map', asy
 
   await expect(page.getByRole('heading', { name: 'Stats' })).toBeVisible();
   await expect(page.getByText('Minutes listened')).toBeVisible();
+  await page.getByRole('tab', { name: 'Plays & listeners' }).click();
   await expect(page.getByLabel('Listener world map')).toBeVisible();
   // Edge case worth documenting in the test itself: there is no "likes"
   // metric anywhere on this page -- favoriting a track never leaves the
@@ -362,27 +338,24 @@ test('artist stats show real listen minutes and the listener geography map', asy
   await expect(page.getByText(/^Likes$/)).toHaveCount(0);
 });
 
-test('stream manager: stopping a live broadcast requires confirmation, and the rotation controls (irrelevant while live) are replaced by it', async ({
+test('stream manager: stopping a live broadcast requires confirmation after encoder signal', async ({
   page,
 }) => {
   await signIn(page);
   await page.goto('/studio/go-live');
 
-  // Before any signal: the fallback-rotation transport controls are the
-  // relevant thing to show (a live broadcast always takes priority over
-  // them anyway, so they'd previously still render, pointlessly, once live).
+  // Prep no longer hosts rotation transport controls — those live in the
+  // top-nav 24/7 rotation stream manager.
   await expect(
     page.getByRole('button', { name: 'Start rotation' }),
-  ).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Stop stream' })).toHaveCount(
-    0,
-  );
+  ).toHaveCount(0);
 
   await page.getByRole('button', { name: 'Test connection' }).click();
-  await expect(page.getByText('Connected')).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByText(/connected/i)).toBeVisible({ timeout: 10_000 });
 
-  // Once live, "Start rotation" (which only ever controlled the rotation, not the
-  // broadcast) is gone, replaced by a real "Stop stream" action.
+  await page.getByRole('button', { name: /Open live panel/ }).click();
+  await page.getByRole('menuitem', { name: '24/7 rotation' }).click();
+
   await expect(
     page.getByRole('button', { name: 'Start rotation' }),
   ).toHaveCount(0);
@@ -390,8 +363,7 @@ test('stream manager: stopping a live broadcast requires confirmation, and the r
 
   const dialog = page.getByRole('dialog');
   await expect(dialog).toContainText('Stop your live stream?');
-  // Edge case: cancelling the confirm dialog doesn't end the broadcast.
   await dialog.getByRole('button', { name: 'Cancel' }).click();
   await expect(dialog).toBeHidden();
-  await expect(page.getByText('Connected')).toBeVisible();
+  await expect(page.getByText(/connected/i)).toBeVisible();
 });

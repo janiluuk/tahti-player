@@ -17,59 +17,6 @@ export type RadioStation = {
   source: 'radio-browser' | 'm3u' | 'manual' | 'unknown';
 };
 
-/** A curated list of well-known, freely streamable public stations —
- * used as a manual fallback when a pasted URL can't be resolved. */
-export const COMMON_STATIONS: RadioStation[] = [
-  {
-    id: 'https://ice1.somafm.com/groovesalad-256-mp3',
-    name: 'SomaFM: Groove Salad',
-    streamUrl: 'https://ice1.somafm.com/groovesalad-256-mp3',
-    homepage: 'https://somafm.com/groovesalad/',
-    tags: ['ambient', 'downtempo'],
-    codec: 'MP3',
-    bitrateKbps: 256,
-    source: 'manual',
-  },
-  {
-    id: 'https://ice1.somafm.com/dronezone-256-mp3',
-    name: 'SomaFM: Drone Zone',
-    streamUrl: 'https://ice1.somafm.com/dronezone-256-mp3',
-    homepage: 'https://somafm.com/dronezone/',
-    tags: ['ambient', 'space'],
-    codec: 'MP3',
-    bitrateKbps: 256,
-    source: 'manual',
-  },
-  {
-    id: 'https://ice1.somafm.com/beatblender-256-mp3',
-    name: 'SomaFM: Beat Blender',
-    streamUrl: 'https://ice1.somafm.com/beatblender-256-mp3',
-    homepage: 'https://somafm.com/beatblender/',
-    tags: ['electronic', 'downtempo'],
-    codec: 'MP3',
-    bitrateKbps: 256,
-    source: 'manual',
-  },
-  {
-    id: 'https://ice1.somafm.com/indiepop-128-mp3',
-    name: 'SomaFM: Indie Pop Rocks!',
-    streamUrl: 'https://ice1.somafm.com/indiepop-128-mp3',
-    homepage: 'https://somafm.com/indiepop/',
-    tags: ['indie', 'pop'],
-    codec: 'MP3',
-    bitrateKbps: 128,
-    source: 'manual',
-  },
-  {
-    id: 'https://stream.wqxr.org/wqxr',
-    name: 'WQXR (Classical, NYC)',
-    streamUrl: 'https://stream.wqxr.org/wqxr',
-    homepage: 'https://www.wqxr.org/',
-    tags: ['classical'],
-    source: 'manual',
-  },
-];
-
 /** True if the resolved content looks like an M3U/M3U8 playlist rather than raw audio. */
 function looksLikeM3u(text: string, contentType: string | null): boolean {
   if (contentType && /mpegurl|m3u/i.test(contentType)) {
@@ -180,33 +127,11 @@ export async function lookupStationByUrl(
       return null;
     }
     const data = (await res.json()) as
-      | RadioBrowserStation[]
-      | RadioBrowserStation;
+      RadioBrowserStation[] | RadioBrowserStation;
     const first = Array.isArray(data) ? data[0] : data;
     return first ? fromRadioBrowser(first) : null;
   } catch {
     return null;
-  }
-}
-
-/** Searches the Radio Browser directory by name — used when a URL lookup misses. */
-export async function searchStationsByName(
-  query: string,
-): Promise<RadioStation[]> {
-  if (!query.trim()) {
-    return [];
-  }
-  try {
-    const res = await fetch(
-      `${RADIO_BROWSER_BASE}/stations/search?name=${encodeURIComponent(query)}&limit=10&hidebroken=true`,
-    );
-    if (!res.ok) {
-      return [];
-    }
-    const data = (await res.json()) as RadioBrowserStation[];
-    return data.map(fromRadioBrowser);
-  } catch {
-    return [];
   }
 }
 
@@ -398,19 +323,39 @@ export async function testRadioStream(
  * can't work from a browser — callers should treat a null result as normal,
  * not an error, and fall back to static station info.
  */
+const unreadableIcyStreams = new Set<string>();
+
+/** Forgets which streams turned out to have no readable ICY metadata. */
+export function clearUnreadableIcyStreams() {
+  unreadableIcyStreams.clear();
+}
+
 export async function readIcyStreamTitle(
   streamUrl: string,
   timeoutMs = 4000,
 ): Promise<string | null> {
+  if (unreadableIcyStreams.has(streamUrl)) {
+    return null;
+  }
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetch(streamUrl, {
-      headers: { 'Icy-MetaData': '1' },
-      signal: controller.signal,
-    });
+    let res: Response;
+    try {
+      res = await fetch(streamUrl, {
+        headers: { 'Icy-MetaData': '1' },
+        signal: controller.signal,
+      });
+    } catch (error) {
+      if (!controller.signal.aborted) {
+        unreadableIcyStreams.add(streamUrl);
+      }
+      throw error;
+    }
     const metaint = Number(res.headers.get('icy-metaint'));
     if (!res.body || !Number.isFinite(metaint) || metaint <= 0) {
+      unreadableIcyStreams.add(streamUrl);
+      void res.body?.cancel().catch(() => {});
       return null;
     }
     const reader = res.body.getReader();

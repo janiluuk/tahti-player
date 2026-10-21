@@ -1,4 +1,5 @@
 import { LegalHubLinks } from '../components/LegalHubLinks';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageHeader } from '../components/PageHeader';
 import { PageEmpty } from '../components/PageStates';
 import { getLegalPage } from '../content/legal';
@@ -18,6 +19,7 @@ export function LegalView({ slug }: { slug: string }) {
   return (
     <article className="mx-auto flex max-w-3xl flex-col gap-6">
       <PageHeader
+        back={<PageBackLink to="/what-is-it" label="What is Tahti" />}
         title={page.title}
         subtitle={page.description}
         meta={

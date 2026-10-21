@@ -11,7 +11,9 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { AuthUser } from '../api/types';
 import { parseDiscoverSearch } from '../lib/discoverTabs';
+import { useAuthStore } from '../stores/authStore';
 import { DEFAULT_WIDGETS, useDiscoverStore } from '../stores/discoverStore';
 import { DiscoverView } from './DiscoverView';
 
@@ -30,6 +32,11 @@ function createDiscoverRouter(initialEntry: string) {
     path: '/venues/register',
     component: () => null,
   });
+  const myVenuesRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/venues/mine',
+    component: () => null,
+  });
   const venueRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/v/$slug',
@@ -45,6 +52,7 @@ function createDiscoverRouter(initialEntry: string) {
     routeTree: rootRoute.addChildren([
       discoverRoute,
       registerRoute,
+      myVenuesRoute,
       venueRoute,
       artistRoute,
     ]),
@@ -63,9 +71,10 @@ async function renderDiscover(path: string): Promise<{
   await act(async () => {
     root.render(<RouterProvider router={router} />);
   });
+  // Drain the mock fetch chains (a macrotask outlasts any microtask chain) so
+  // no state update lands outside act() once the test body has run.
   await act(async () => {
-    await Promise.resolve();
-    await Promise.resolve();
+    await new Promise((resolve) => setTimeout(resolve, 0));
   });
   return { container, root };
 }
@@ -115,12 +124,9 @@ describe('DiscoverView', () => {
     vi.unstubAllGlobals();
   });
 
-  it('puts add-widget in the header and does not render the hero tile', async () => {
+  it('does not render the hero tile', async () => {
     const { container } = await renderDiscover('/discover');
 
-    expect(
-      container.querySelector('header [data-testid="discover-add-widget"]'),
-    ).not.toBeNull();
     expect(container.textContent).not.toContain('Add a widget');
     expect(container.textContent).toContain('This week: most played');
     expect(
@@ -139,6 +145,24 @@ describe('DiscoverView', () => {
     ).toBeNull();
     expect(container.textContent).toContain('Kuudes Linja');
     expect(container.textContent).toContain('Register a venue');
+  });
+
+  it('links a signed-in visitor to their own venues', async () => {
+    const { container } = await renderDiscover('/discover?tab=venues');
+    expect(container.textContent).not.toContain('My venues');
+
+    act(() => {
+      useAuthStore.setState({
+        user: { id: 'u1', username: 'venue-owner' } as AuthUser,
+      });
+    });
+    const link = Array.from(container.querySelectorAll('a')).find(
+      (a) => a.textContent === 'My venues',
+    );
+    expect(link?.getAttribute('href')).toBe('/venues/mine');
+    act(() => {
+      useAuthStore.setState({ user: null });
+    });
   });
 
   it('keeps filters on artists browse and hides widget add control', async () => {

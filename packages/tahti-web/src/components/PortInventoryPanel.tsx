@@ -1,3 +1,7 @@
+import type { ComponentProps } from 'react';
+
+import { Badge, HorizontalScroll } from '@tahti-player/ui';
+
 import {
   countByStatus,
   PORT_BACKLOG,
@@ -8,33 +12,23 @@ import {
   type PortStatus,
 } from '../content/portInventory';
 
-function statusClass(status: PortStatus): string {
-  switch (status) {
-    case 'done':
-      return 'bg-primary text-primary-foreground';
-    case 'partial':
-      return 'border-border text-foreground border';
-    case 'missing':
-    case 'unwired':
-      return 'bg-accent-red/20 text-foreground border-accent-red/40 border';
-    case 'mock-only':
-      return 'bg-background-secondary text-foreground-secondary';
-    case 'link-out':
-      return 'border-border text-foreground-secondary border';
-    case 'out-of-scope':
-      return 'bg-background-secondary text-foreground-secondary opacity-80';
-    default:
-      return '';
-  }
-}
+type BadgeColor = NonNullable<ComponentProps<typeof Badge>['color']>;
+
+const STATUS_COLOR: Record<PortStatus, BadgeColor> = {
+  done: 'green',
+  partial: 'yellow',
+  missing: 'red',
+  unwired: 'red',
+  'mock-only': 'secondary',
+  'link-out': 'blue',
+  'out-of-scope': 'secondary',
+};
 
 function StatusBadge({ status }: { status: PortStatus }) {
   return (
-    <span
-      className={`inline-block rounded px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${statusClass(status)}`}
-    >
+    <Badge variant="pill" color={STATUS_COLOR[status]}>
       {PORT_STATUS_LABEL[status]}
-    </span>
+    </Badge>
   );
 }
 
@@ -59,7 +53,7 @@ function InventoryTable({
           {description}
         </p>
       </div>
-      <div className="overflow-x-auto">
+      <HorizontalScroll label={title}>
         <table className="w-full min-w-[560px] border-collapse text-left text-sm">
           <thead>
             <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
@@ -99,7 +93,7 @@ function InventoryTable({
             ))}
           </tbody>
         </table>
-      </div>
+      </HorizontalScroll>
     </section>
   );
 }
@@ -124,7 +118,6 @@ export function PortInventoryPanel() {
         <p className="text-foreground-secondary max-w-2xl text-sm">
           Living inventory of what is wired vs mock / missing in this Nuclear
           client. Source of truth:{' '}
-          <code className="text-foreground">TAHTI-PORT-CHECKLIST.md</code>,{' '}
           <code className="text-foreground">FEATURES.md</code>,{' '}
           <code className="text-foreground">MOCKS.md</code>.
         </p>
@@ -151,7 +144,10 @@ export function PortInventoryPanel() {
             ) : null,
           )}
         </div>
-        <nav className="flex flex-wrap gap-2 pt-1 text-xs">
+        <nav
+          aria-label="Jump to section"
+          className="flex flex-wrap gap-2 pt-1 text-xs"
+        >
           <a
             href="#port-backlog"
             className="border-border hover:text-foreground rounded border px-2.5 py-1 tracking-wide uppercase"

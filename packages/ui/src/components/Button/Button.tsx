@@ -4,8 +4,8 @@ import { ComponentPropsWithoutRef, forwardRef } from 'react';
 
 import { cn } from '../../utils';
 
-const buttonVariants = cva(
-  'inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none',
+export const buttonVariants = cva(
+  'focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none',
   {
     variants: {
       variant: {
@@ -20,6 +20,7 @@ const buttonVariants = cva(
         text: 'text-foreground bg-transparent hover:bg-black/5 active:bg-black/10',
         ghost:
           'border border-current bg-transparent hover:bg-black/10 active:bg-black/15',
+        plain: '',
       },
       size: {
         default: 'h-10 px-4 py-2',
@@ -41,8 +42,9 @@ const buttonVariants = cva(
   },
 );
 
-type ButtonProps = ComponentPropsWithoutRef<'button'> &
-  VariantProps<typeof buttonVariants>;
+export type ButtonVariantProps = VariantProps<typeof buttonVariants>;
+
+type ButtonProps = ComponentPropsWithoutRef<'button'> & ButtonVariantProps;
 
 export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
   { variant, size, intent, className, children, type, ...rest },

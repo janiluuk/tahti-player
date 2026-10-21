@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { PlugIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Badge, Button, ViewShell } from '@tahti-player/ui';
+import { Badge, Button, ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchFanConnectPortal,
@@ -15,7 +15,6 @@ import {
 import { FanSubscriptionStats } from '../../components/FanSubscriptionStats';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { AudienceSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { mergeRevenueOrders } from '../../lib/revenueOrders';
 
@@ -48,7 +47,6 @@ export function StudioStripeView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-4 px-1 py-2">
-        <AudienceSubNav current="/studio/stripe" />
         <ViewShell title="Stripe" classes={{ root: 'px-0 pt-0' }}>
           {message ? (
             <p className="text-foreground-secondary text-sm" role="status">
@@ -67,11 +65,14 @@ export function StudioStripeView() {
                 Fan-sub orders still appear under Audience. Turn Stripe on to
                 connect a payout account and open the Express dashboard.
               </p>
-              <Link to="/studio/audience" className="mt-3 inline-block">
-                <Button size="sm" variant="secondary">
-                  Back to Audience
-                </Button>
-              </Link>
+              <ButtonLink
+                to="/studio/audience"
+                size="sm"
+                variant="secondary"
+                className="mt-3"
+              >
+                Back to Audience
+              </ButtonLink>
             </StudioPanel>
           ) : (
             <>
@@ -114,6 +115,7 @@ export function StudioStripeView() {
                     {!connect.paymentsReady ? (
                       <Button
                         size="sm"
+                        className="h-auto min-h-9 py-1.5 text-left whitespace-normal"
                         onClick={() => {
                           void startFanConnectOnboard().then((result) => {
                             if (!result.ok) {
@@ -135,7 +137,11 @@ export function StudioStripeView() {
                           });
                         }}
                       >
-                        <PlugIcon size={15} aria-hidden className="mr-1.5" />
+                        <PlugIcon
+                          size={15}
+                          aria-hidden
+                          className="mr-1.5 shrink-0"
+                        />
                         Start / resume onboarding
                       </Button>
                     ) : null}
@@ -189,7 +195,7 @@ export function StudioStripeView() {
                 A paid order here means Tahti booked the period.{' '}
                 <Link
                   to="/studio/audience"
-                  className="text-foreground underline-offset-2 hover:underline"
+                  className="text-foreground underline underline-offset-2"
                 >
                   Order flow and grants live on Audience
                 </Link>

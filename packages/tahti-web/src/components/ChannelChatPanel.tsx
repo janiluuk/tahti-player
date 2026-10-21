@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { Button, EmptyState, Input } from '@tahti-player/ui';
+import { Button, ButtonLink, EmptyState, Input } from '@tahti-player/ui';
 
 import {
   fetchChatAccess,
@@ -8,26 +8,23 @@ import {
   requestChatToken,
   requestChatViewerToken,
 } from '../api/client';
-import { postChatReaction } from '../api/studio-extras';
+import { appendMockChatMessage } from '../api/mock-chat-store';
 import type { ChatMessage } from '../api/types';
+import { centrifugoWsUrl } from '../lib/centrifugoWsUrl';
+import {
+  CHAT_OFF_MESSAGE,
+  chatErrorFor,
+  isKnownChatError,
+  type ChatErrorAction,
+} from '../lib/chatErrors';
 import { useHcaptcha } from '../lib/useHcaptcha';
 import { useAuthStore } from '../stores/authStore';
-import { Eyebrow } from './tahti/Eyebrow';
-
-// Must match the backend's CHAT_REACTION_EMOJIS whitelist exactly
-// (packages/shared/src/dto/chat.ts in the main tahti repo) -- anything
-// outside this set gets rejected server-side with "Invalid emoji".
-const REACTION_EMOJIS = ['💜', '🔥', '🎶', '🎵', '🌟', '👏', '✨'] as const;
-const REACTION_EMOJI_LABELS: Record<(typeof REACTION_EMOJIS)[number], string> =
-  {
-    '💜': 'purple heart',
-    '🔥': 'fire',
-    '🎶': 'musical notes',
-    '🎵': 'musical note',
-    '🌟': 'glowing star',
-    '👏': 'clapping hands',
-    '✨': 'sparkles',
-  };
+import { ChatAvatar } from './ChatAvatar';
+import { ChatDailyListeners } from './ChatDailyListeners';
+import { ChatListeningNow } from './ChatListeningNow';
+import { ChatNotice } from './ChatNotice';
+import { ChatReactionBar } from './ChatReactionBar';
+import { FanChatRoom } from './FanChatRoom';
 
 const HANDLE_KEY = 'tahti-web-chat-handle';
 const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
@@ -39,54 +36,7 @@ const DISCONNECT_GRACE_MS = 8000;
 const RECONNECT_DELAY_MS = 2000;
 const MAX_RECONNECT_ATTEMPTS = 5;
 
-// Chat is anonymous/handle-based -- there's no avatarUrl to show, so each
-// handle gets a deterministic initial-letter avatar instead. Cycling through
-// theme accent tokens (not arbitrary hex) keeps it consistent with the rest
-// of the app's palette.
-const AVATAR_COLORS = [
-  'var(--accent-red)',
-  'var(--accent-green)',
-  'var(--accent-blue)',
-  'var(--accent-purple)',
-  'var(--accent-cyan)',
-  'var(--accent-yellow)',
-  'var(--accent-orange)',
-  'var(--primary)',
-] as const;
-
-function avatarColorFor(handle: string): string {
-  let hash = 0;
-  for (let i = 0; i < handle.length; i++) {
-    hash = (hash * 31 + handle.charCodeAt(i)) >>> 0;
-  }
-  return AVATAR_COLORS[hash % AVATAR_COLORS.length]!;
-}
-
-function ChatAvatar({ handle }: { handle: string }) {
-  return (
-    <span
-      className="mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-black/80"
-      style={{ background: avatarColorFor(handle) }}
-      aria-hidden
-    >
-      {handle.trim().charAt(0).toUpperCase() || '?'}
-    </span>
-  );
-}
-
 type LiveMode = 'live' | 'rest' | 'mock';
-
-function centrifugoWsUrl(): string | null {
-  const fromEnv = import.meta.env.VITE_CENTRIFUGO_WS;
-  if (fromEnv) {
-    return fromEnv;
-  }
-  // Dev: local Centrifugo. Prod/beta builds: public chat host.
-  if (import.meta.env.DEV) {
-    return 'ws://localhost:8000/connection/websocket';
-  }
-  return 'wss://chat.tahti.live/connection/websocket';
-}
 
 type Props = {
   slug: string;
@@ -99,10 +49,15 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
   const user = useAuthStore((s) => s.user);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [accessNote, setAccessNote] = useState<string | null>(null);
+  const [chatOff, setChatOff] = useState(false);
+  const [artistUsername, setArtistUsername] = useState<string | null>(null);
+  const [canJoinFanChat, setCanJoinFanChat] = useState(false);
+  const [inFanRoom, setInFanRoom] = useState(false);
   const [handle, setHandle] = useState('');
   const [pendingHandle, setPendingHandle] = useState('');
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [errorAction, setErrorAction] = useState<ChatErrorAction>(null);
   const [joining, setJoining] = useState(false);
   const [mode, setMode] = useState<LiveMode>('rest');
   const [wsStatus, setWsStatus] = useState<'off' | 'connecting' | 'connected'>(
@@ -114,10 +69,6 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
     null,
   );
   const [countryCode, setCountryCode] = useState<string | null>(null);
-  const [floatingReact, setFloatingReact] = useState<
-    (typeof REACTION_EMOJIS)[number] | null
-  >(null);
-  const [reactBusy, setReactBusy] = useState(false);
 
   // Anonymous join needs hCaptcha when site key is set (signed-in skips captcha server-side).
   const captchaNeeded = !user && !forceMock();
@@ -130,6 +81,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
 
   const wsRef = useRef<WebSocket | null>(null);
   const msgIdRef = useRef(1);
+  const publishIdsRef = useRef(new Set<number>());
   const scrollRef = useRef<HTMLDivElement>(null);
   const badgesRef = useRef({
     supporter: false,
@@ -174,9 +126,13 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         } else {
           setMode('rest');
         }
+        setCanJoinFanChat(access.data.canJoinFanChat);
+        // Older APIs omit chatEnabled; only an explicit false hides the join form.
+        setChatOff(access.data.chatEnabled === false);
+        setArtistUsername(access.data.artistUsername || null);
         if (access.data.subscribersOnly && !access.data.canPostInChat) {
           setAccessNote(
-            'Subscribers-only chat — you can read; posting needs a fan sub + login.',
+            'Only fan subscribers can post here. You can still read along.',
           );
         }
       },
@@ -199,7 +155,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
       if (cancelled || !token || modeRef.current === 'mock') {
         return;
       }
-      connectWs(token, false);
+      connectWs(token, null);
     });
     return () => {
       cancelled = true;
@@ -258,10 +214,9 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
   }, []);
 
   // Retries a dropped socket in the background instead of leaving chat
-  // silently dead until the listener manually rejoins. `token` is the one
-  // this specific connection was opened with, closed over per-call so a
-  // publisher's retry doesn't depend on state that may have moved on.
-  function scheduleReconnect(token: string, canPublish: boolean) {
+  // silently dead until the listener manually rejoins. `publishAs` is the
+  // handle this connection posts under, or null for a read-only viewer.
+  function scheduleReconnect(token: string, publishAs: string | null) {
     if (intentionalCloseRef.current) {
       // We closed this ourselves (slug change / unmount) -- not a drop.
       intentionalCloseRef.current = false;
@@ -276,19 +231,67 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
     }
     reconnectTimerRef.current = setTimeout(() => {
       reconnectTimerRef.current = null;
-      if (canPublish) {
-        connectWs(token, true);
-      } else {
+      if (publishAs === null) {
         void requestChatViewerToken(slug).then((freshToken) => {
           if (freshToken) {
-            connectWs(freshToken, false);
+            connectWs(freshToken, null);
           }
         });
+        return;
       }
+      void rejoin(token, publishAs);
     }, RECONNECT_DELAY_MS * reconnectAttemptsRef.current);
   }
 
-  function connectWs(token: string, canPublish: boolean) {
+  // A chat token lasts an hour and the server drops the connection when it
+  // runs out, so reconnecting with the old one fails every time. Ask for a
+  // new one first; signed-in listeners and recently verified anonymous ones
+  // get it without a captcha.
+  async function rejoin(staleToken: string, publishAs: string) {
+    try {
+      const { data } = await requestChatToken(slug, publishAs, undefined);
+      if (!data.token || data.token === 'mock-token') {
+        return;
+      }
+      setPublishToken(data.token);
+      setSupporter(Boolean(data.supporter));
+      setChannelRole(data.channelRole ?? null);
+      setCountryCode(data.countryCode ?? null);
+      connectWs(data.token, publishAs);
+    } catch (err) {
+      if (isKnownChatError(err)) {
+        // The server has a reason (captcha again, banned, chat switched
+        // off, subscribers only): say so instead of retrying into it.
+        showChatError(err);
+        return;
+      }
+      connectWs(staleToken, publishAs);
+    }
+  }
+
+  function showError(message: string | null, action: ChatErrorAction = null) {
+    setError(message);
+    setErrorAction(action);
+  }
+
+  function showChatError(err: unknown, fallback?: string) {
+    const { message, action } = chatErrorFor(err, fallback);
+    if (action === 'chat_off') {
+      setChatOff(true);
+      showError(null);
+      return;
+    }
+    if (action === 'captcha') {
+      // Only the join form can collect a fresh captcha solve; pendingHandle
+      // still holds the joined handle, so the form comes back prefilled.
+      setHandle('');
+      setPublishToken(null);
+    }
+    showError(message, action);
+  }
+
+  function connectWs(token: string, publishAs: string | null) {
+    const canPublish = publishAs !== null;
     const url = centrifugoWsUrl();
     if (!url) {
       return;
@@ -308,6 +311,8 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
           }
           try {
             const data = JSON.parse(line) as {
+              id?: number;
+              error?: { code?: number; message?: string };
               connect?: { client: string };
               push?: {
                 pub?: {
@@ -319,10 +324,21 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
                     channelRole?: 'owner' | 'moderator' | null;
                     countryCode?: string | null;
                     system?: boolean;
+                    messageId?: string;
+                    removedMessageId?: string;
                   };
                 };
               };
             };
+            if (data.id != null && publishIdsRef.current.delete(data.id)) {
+              if (data.error) {
+                showChatError(
+                  data.error.message,
+                  'Your message was not sent. Try again in a moment.',
+                );
+              }
+              continue;
+            }
             if (data.connect) {
               ws.send(
                 JSON.stringify({
@@ -336,13 +352,18 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
                 setMode('live');
               }
             }
+            const removedId = data.push?.pub?.data?.removedMessageId;
+            if (removedId) {
+              setMessages((prev) => prev.filter((m) => m.id !== removedId));
+              continue;
+            }
             if (data.push?.pub?.data?.text) {
               const msg = data.push.pub.data;
               setMessages((prev) =>
                 [
                   ...prev,
                   {
-                    id: `${Date.now()}-${Math.random()}`,
+                    id: msg.messageId ?? `${Date.now()}-${Math.random()}`,
                     handle: msg.handle ?? 'anon',
                     text: msg.text!,
                     ts: msg.ts ?? Date.now(),
@@ -370,7 +391,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         if (canPublish) {
           setMode((m) => (m === 'live' ? 'rest' : m));
         }
-        scheduleReconnect(token, canPublish);
+        scheduleReconnect(token, publishAs);
       };
     } catch {
       setWsStatus('off');
@@ -380,17 +401,17 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
   async function join() {
     const h = pendingHandle.trim().slice(0, 32);
     if (!h) {
-      setError('Pick a handle to join.');
+      showError('Pick a handle to join.');
       return;
     }
     const hcaptchaToken =
       captchaNeeded && captchaConfigured ? getToken() : undefined;
     if (captchaNeeded && captchaConfigured && !hcaptchaToken) {
-      setError('Complete hCaptcha before joining.');
+      showError('Complete hCaptcha before joining.', 'captcha');
       return;
     }
     setJoining(true);
-    setError(null);
+    showError(null);
     try {
       const { data, meta: joinMeta } = await requestChatToken(
         slug,
@@ -407,7 +428,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
       if (joinMeta.source === 'mock') {
         setMode('mock');
       } else if (data.token && data.token !== 'mock-token') {
-        connectWs(data.token, true);
+        connectWs(data.token, data.handle);
         setMode('rest');
       } else {
         setMode('mock');
@@ -418,11 +439,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
       // locally — that reads as sent but nobody else ever sees it. Stay on
       // the join form and let the user retry once the real thing works.
       resetCaptcha();
-      setError(
-        err instanceof Error
-          ? `${err.message} — try again in a moment.`
-          : 'Could not join live chat — try again in a moment.',
-      );
+      showChatError(err, 'Could not join chat. Try again in a moment.');
     } finally {
       setJoining(false);
     }
@@ -441,9 +458,11 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
       wsStatus === 'connected'
     ) {
       const badges = badgesRef.current;
+      const publishId = msgIdRef.current++;
+      publishIdsRef.current.add(publishId);
       wsRef.current.send(
         JSON.stringify({
-          id: msgIdRef.current++,
+          id: publishId,
           publish: {
             channel: `channel:${slug}`,
             data: {
@@ -465,23 +484,28 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
     // can't actually reach the live channel must not be echoed locally as
     // if it had — that looks sent but nobody else ever sees it.
     if (mode !== 'mock') {
-      setError('Not connected — message not sent. Try again in a moment.');
+      showError('Not connected - message not sent. Try again in a moment.');
       return;
     }
 
-    setMessages((prev) =>
-      [
-        ...prev,
-        {
-          id: `local-${Date.now()}`,
-          handle,
-          text,
-          ts: Date.now(),
-          system: false,
-        },
-      ].slice(-100),
-    );
+    const saved = appendMockChatMessage(slug, {
+      handle,
+      text,
+      ts: Date.now(),
+      system: false,
+    });
+    setMessages((prev) => [...prev, saved].slice(-100));
     setInput('');
+  }
+
+  if (inFanRoom) {
+    return (
+      <FanChatRoom
+        slug={slug}
+        rail={rail}
+        onLeave={() => setInFanRoom(false)}
+      />
+    );
   }
 
   return (
@@ -491,7 +515,29 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
       }`}
     >
       <div className="border-border flex items-center justify-between gap-2 border-b px-3 py-2">
-        <div className="font-display text-sm font-bold">Chat</div>
+        <div className="flex min-w-0 items-center gap-2">
+          <div className="font-display text-sm font-bold">Chat</div>
+          <ChatDailyListeners slug={slug} />
+          {channelRole && (
+            <ButtonLink
+              to="/moderate/$slug"
+              params={{ slug }}
+              size="xs"
+              variant="ghost"
+            >
+              Moderate
+            </ButtonLink>
+          )}
+          {canJoinFanChat && (
+            <Button
+              size="xs"
+              variant="ghost"
+              onClick={() => setInFanRoom(true)}
+            >
+              Fan room
+            </Button>
+          )}
+        </div>
         {liveDisplay && (
           <div className="text-foreground-secondary flex items-center gap-1.5 font-mono text-[10px] tracking-wide uppercase">
             <span
@@ -499,50 +545,38 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
               aria-hidden
             />
             Live
+            <ChatListeningNow slug={slug} />
           </div>
         )}
       </div>
 
-      <div className="border-border flex flex-wrap items-center gap-1 border-b px-3 py-2">
-        <Eyebrow className="mr-1">React</Eyebrow>
-        {REACTION_EMOJIS.map((emoji) => (
-          <button
-            key={emoji}
-            type="button"
-            disabled={reactBusy}
-            aria-label={`React with ${REACTION_EMOJI_LABELS[emoji]}`}
-            className="hover:bg-background-secondary rounded px-1.5 py-0.5 text-sm"
-            onClick={() => {
-              setReactBusy(true);
-              void postChatReaction(slug, emoji).then((r) => {
-                setReactBusy(false);
-                if (r.ok) {
-                  setFloatingReact(emoji);
-                  window.setTimeout(() => setFloatingReact(null), 1200);
-                } else {
-                  setError(r.error);
-                }
-              });
-            }}
-          >
-            {emoji}
-          </button>
-        ))}
-        {floatingReact && (
-          <span className="text-foreground-secondary text-xs" role="status">
-            Sent {floatingReact}
-            <span className="sr-only">
-              {' '}
-              ({REACTION_EMOJI_LABELS[floatingReact]})
-            </span>
-          </span>
-        )}
-      </div>
+      {!chatOff && (
+        <ChatReactionBar
+          slug={slug}
+          onError={(m) =>
+            showChatError(
+              m,
+              'Your reaction was not sent. Try again in a moment.',
+            )
+          }
+        />
+      )}
 
-      {(error || accessNote) && (
-        <div className="text-foreground-secondary border-border border-b px-3 py-2 text-xs">
-          {error ?? accessNote}
-        </div>
+      {error ? (
+        <ChatNotice
+          message={error}
+          action={errorAction}
+          artistUsername={artistUsername}
+        />
+      ) : (
+        accessNote &&
+        !chatOff && (
+          <ChatNotice
+            message={accessNote}
+            action="subscribe"
+            artistUsername={artistUsername}
+          />
+        )
       )}
 
       <div
@@ -567,7 +601,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
               <span
                 className={
                   m.channelRole === 'owner'
-                    ? 'text-primary font-semibold'
+                    ? 'text-primary-strong font-semibold'
                     : m.supporter
                       ? 'text-foreground font-semibold'
                       : 'text-foreground-secondary font-medium'
@@ -581,7 +615,14 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         ))}
       </div>
 
-      {!handle ? (
+      {chatOff ? (
+        <p
+          role="status"
+          className="border-border text-foreground-secondary border-t p-3 text-sm"
+        >
+          {CHAT_OFF_MESSAGE}
+        </p>
+      ) : !handle ? (
         <div className="border-border flex flex-col gap-2 border-t p-3">
           <Input
             label="Handle"
@@ -595,7 +636,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
           )}
           {user && (
             <p className="text-foreground-secondary text-[10px]">
-              Signed in as @{user.username} — captcha not required.
+              Signed in as @{user.username} - captcha not required.
             </p>
           )}
           <Button size="sm" disabled={joining} onClick={() => void join()}>

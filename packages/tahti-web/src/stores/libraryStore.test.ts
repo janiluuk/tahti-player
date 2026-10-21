@@ -1,10 +1,12 @@
 // @vitest-environment jsdom
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import * as follows from '../api/follows';
 import {
   playableFromRadioStation,
   type RadioStation,
 } from '../api/radio-sources';
+import type { TahtiPlayable } from '../api/types';
 import { rehydrateLibraryForUser, useLibraryStore } from './libraryStore';
 
 const STATION: RadioStation = {
@@ -83,5 +85,92 @@ describe('libraryStore + internet radio stations', () => {
 
     await rehydrateLibraryForUser('user-radio-fan');
     expect(useLibraryStore.getState().isFavoriteTrack(playable.id)).toBe(true);
+  });
+
+  it("keeps a local track's streamUrl in memory but strips it before persisting history", () => {
+    const local: TahtiPlayable = {
+      id: 'local:abc123',
+      kind: 'sound',
+      title: 'Local Track',
+      artist: 'Local Artist',
+      streamUrl: 'blob:tahti-web/dead-after-reload',
+      protocol: 'https',
+      sourceProvider: 'local',
+    };
+    useLibraryStore.getState().pushHistory(local);
+
+    // In-memory state keeps the live URL for this session's own replay.
+    expect(useLibraryStore.getState().history[0]?.playable.streamUrl).toBe(
+      local.streamUrl,
+    );
+
+    // The persisted copy must not carry the ephemeral URL — it would be
+    // dead (revoked blob:, or an asset:// scope reset) by the time a future
+    // session reads it back.
+    const stored = JSON.parse(
+      localStorage.getItem('tahti-web:library:anon') ?? '{}',
+    );
+    expect(stored.state.history[0].playable.streamUrl).toBe('');
+    expect(stored.state.history[0].playable.id).toBe(local.id);
+  });
+
+  it('does not redact streamUrl for non-local history entries', () => {
+    const playable = playableFromRadioStation(STATION);
+    useLibraryStore.getState().pushHistory(playable);
+
+    const stored = JSON.parse(
+      localStorage.getItem('tahti-web:library:anon') ?? '{}',
+    );
+    expect(stored.state.history[0].playable.streamUrl).toBe(playable.streamUrl);
+  });
+});
+
+describe('libraryStore favorite artists follow on the server', () => {
+  beforeEach(async () => {
+    localStorage.clear();
+    vi.restoreAllMocks();
+    await rehydrateLibraryForUser('library-store-test-reset');
+    await rehydrateLibraryForUser('library-store-follow-user');
+  });
+
+  it('follows by the artist username, not the channel slug', async () => {
+    const follow = vi
+      .spyOn(follows, 'followArtist')
+      .mockResolvedValue({ ok: true, followerCount: 5 });
+    const result = await useLibraryStore.getState().toggleFavoriteChannel({
+      slug: 'nl-live',
+      username: 'northern-lights',
+      displayName: 'Northern Lights',
+    });
+    expect(follow).toHaveBeenCalledWith('northern-lights');
+    expect(result).toEqual({ ok: true, followerCount: 5 });
+    expect(useLibraryStore.getState().isFavoriteChannel('nl-live')).toBe(true);
+  });
+
+  it('undoes the favorite when the server refuses the follow', async () => {
+    vi.spyOn(follows, 'followArtist').mockResolvedValue({
+      ok: false,
+      error: 'Artist not found',
+    });
+    await useLibraryStore.getState().toggleFavoriteChannel({
+      slug: 'nl-live',
+      username: 'northern-lights',
+      displayName: 'Northern Lights',
+    });
+    expect(useLibraryStore.getState().isFavoriteChannel('nl-live')).toBe(false);
+  });
+
+  it('keeps a favorite without a known artist when the follow fails', async () => {
+    vi.spyOn(follows, 'followArtist').mockResolvedValue({
+      ok: false,
+      error: 'Artist not found',
+    });
+    await useLibraryStore.getState().toggleFavoriteChannel({
+      slug: 'tahti-radio',
+      displayName: 'Tahti Radio',
+    });
+    expect(useLibraryStore.getState().isFavoriteChannel('tahti-radio')).toBe(
+      true,
+    );
   });
 });

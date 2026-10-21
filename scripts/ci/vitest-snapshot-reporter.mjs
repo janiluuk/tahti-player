@@ -4,6 +4,7 @@ import path from 'node:path';
 /**
  * Vitest 4 reporter: write snapshot mismatches for the CI digest job.
  * Output: <package>/snapshot-digest/failures.json
+ *         <package>/snapshot-digest/run-summary.json (snapshot vs other fails)
  */
 export default class SnapshotDigestReporter {
   onTestRunEnd(testModules = []) {
@@ -12,6 +13,7 @@ export default class SnapshotDigestReporter {
     }
 
     const failures = [];
+    let otherFailures = 0;
     for (const testModule of testModules) {
       const tests =
         testModule?.children?.allTests?.() ??
@@ -26,13 +28,13 @@ export default class SnapshotDigestReporter {
           continue;
         }
         const errors = result.errors ?? [];
+        let snapshotError = false;
         for (const error of errors) {
-          const message = String(
-            error?.message ?? error?.stack ?? error ?? '',
-          );
+          const message = String(error?.message ?? error?.stack ?? error ?? '');
           if (!isSnapshotMismatch(message)) {
             continue;
           }
+          snapshotError = true;
           const { expected, received } = extractExpectedReceived(
             error,
             message,
@@ -43,24 +45,37 @@ export default class SnapshotDigestReporter {
               testModule.filepath ??
               testCase.module?.moduleId ??
               'unknown',
-            testName:
-              testCase.fullName ??
-              testCase.name ??
-              'unknown',
+            testName: testCase.fullName ?? testCase.name ?? 'unknown',
             message: stripAnsi(message).slice(0, 20_000),
             expectedHtml: expected,
             receivedHtml: received,
           });
         }
+        if (!snapshotError && errors.length > 0) {
+          otherFailures += 1;
+        }
       }
     }
+
+    const outDir = path.join(process.cwd(), 'snapshot-digest');
+    mkdirSync(outDir, { recursive: true });
+    writeFileSync(
+      path.join(outDir, 'run-summary.json'),
+      JSON.stringify(
+        {
+          packageName: path.basename(process.cwd()),
+          snapshotFailures: failures.length,
+          otherFailures,
+        },
+        null,
+        2,
+      ),
+    );
 
     if (failures.length === 0) {
       return;
     }
 
-    const outDir = path.join(process.cwd(), 'snapshot-digest');
-    mkdirSync(outDir, { recursive: true });
     writeFileSync(
       path.join(outDir, 'failures.json'),
       JSON.stringify(
@@ -84,7 +99,10 @@ function isSnapshotMismatch(message) {
 }
 
 function extractExpectedReceived(error, message) {
-  if (typeof error?.expected === 'string' || typeof error?.actual === 'string') {
+  if (
+    typeof error?.expected === 'string' ||
+    typeof error?.actual === 'string'
+  ) {
     return {
       expected: normalizeHtmlCandidate(error.expected),
       received: normalizeHtmlCandidate(error.actual),

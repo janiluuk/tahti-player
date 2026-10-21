@@ -1,5 +1,5 @@
-import { PowerIcon, SettingsIcon } from 'lucide-react';
-import { useState } from 'react';
+import { SettingsIcon } from 'lucide-react';
+import { createContext, useContext, useState } from 'react';
 
 import {
   Button,
@@ -12,6 +12,13 @@ import {
 } from '@tahti-player/ui';
 
 import { usePluginInstallStore } from '../../stores/pluginInstallStore';
+
+/** Set by a page that wants a plugin's configure dialog on its own, without
+ * the store card around it: the card then renders only its dialog, already
+ * open, and closing it calls `onClose`. */
+export const ConfigureDialogHost = createContext<{
+  onClose: () => void;
+} | null>(null);
 
 /** Fold-out shell shared by every configurable plugin card: a gear toggle
  * next to the card that reveals an inline settings form below it (tabs
@@ -36,6 +43,23 @@ export function ConfigurableCard({
   dialogClassName?: string;
 }) {
   const [open, setOpen] = useState(defaultOpen);
+  const host = useContext(ConfigureDialogHost);
+  const dialog = (
+    <Dialog.Root
+      isOpen={host ? true : open}
+      onClose={host ? host.onClose : () => setOpen(false)}
+      className={dialogClassName}
+    >
+      <Dialog.Title>Configure {title}</Dialog.Title>
+      <div className="mt-4 flex flex-col gap-4">{children}</div>
+      <Dialog.Actions>
+        <Dialog.Close>Done</Dialog.Close>
+      </Dialog.Actions>
+    </Dialog.Root>
+  );
+  if (host) {
+    return dialog;
+  }
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
@@ -53,17 +77,7 @@ export function ConfigurableCard({
           </Button>
         </Tooltip>
       </div>
-      <Dialog.Root
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        className={dialogClassName}
-      >
-        <Dialog.Title>Configure {title}</Dialog.Title>
-        <div className="mt-4 flex flex-col gap-4">{children}</div>
-        <Dialog.Actions>
-          <Dialog.Close>Done</Dialog.Close>
-        </Dialog.Actions>
-      </Dialog.Root>
+      {dialog}
     </div>
   );
 }
@@ -89,19 +103,6 @@ export function AudioPluginToggleRow({
       isInstalled={enabled}
       onInstall={onToggle}
       labels={{ install: 'Activate', installed: 'Active' }}
-      accessory={
-        <Tooltip content={enabled ? `Deactivate ${name}` : `Activate ${name}`}>
-          <Button
-            size="icon-sm"
-            variant={enabled ? 'default' : 'secondary'}
-            onClick={() => onToggle()}
-            aria-label={enabled ? `Deactivate ${name}` : `Activate ${name}`}
-            aria-pressed={enabled}
-          >
-            <PowerIcon size={16} aria-hidden />
-          </Button>
-        </Tooltip>
-      }
     />
   );
 }

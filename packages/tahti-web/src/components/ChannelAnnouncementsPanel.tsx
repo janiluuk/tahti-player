@@ -1,4 +1,4 @@
-import { PlayIcon, Trash2Icon } from 'lucide-react';
+import { PlayIcon, ScissorsIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -9,11 +9,16 @@ import {
   fetchAnnouncementClips,
   fetchAnnouncementPreview,
   patchAnnouncementClip,
+  renderAnnouncementTrim,
   setProfileBackgroundClip,
   uploadAnnouncementClip,
   type AnnouncementClip,
+  type AnnouncementTrim,
 } from '../api/announcements';
+import { usePolling } from '../hooks/usePolling';
+import { AnnouncementTrimDialog } from './AnnouncementTrimDialog';
 import { ConfirmDialog } from './ConfirmDialog';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 const formatDuration = (seconds: number | null) => {
   if (seconds == null) {
@@ -22,24 +27,58 @@ const formatDuration = (seconds: number | null) => {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 };
 
+const RENDER_POLL_MS = 5_000;
+
 export function ChannelAnnouncementsPanel() {
   const [clips, setClips] = useState<AnnouncementClip[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<AnnouncementClip | null>(
     null,
   );
+  const [trimClip, setTrimClip] = useState<AnnouncementClip | null>(null);
+  const [trimming, setTrimming] = useState(false);
 
   const reload = () => {
     void fetchAnnouncementClips().then((result) => {
-      setClips(result.data);
+      const reason =
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
+      setLoadError(reason);
+      if (!reason) {
+        setClips(result.data);
+      }
       setLoading(false);
     });
   };
 
   useEffect(reload, []);
+  usePolling(
+    reload,
+    RENDER_POLL_MS,
+    clips.some((clip) => clip.renderStatus === 'PROCESSING'),
+  );
+
+  const trim = async (clip: AnnouncementClip, values: AnnouncementTrim) => {
+    setTrimming(true);
+    const result = await renderAnnouncementTrim(clip.id, values);
+    setTrimming(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setTrimClip(null);
+    setClips((current) =>
+      current.map((item) =>
+        item.id === clip.id
+          ? { ...item, renderStatus: result.renderStatus }
+          : item,
+      ),
+    );
+    toast.success('Trimming — the clip updates when it is done.');
+  };
 
   const toggle = (clip: AnnouncementClip) => {
     const next = !clip.isEnabled;
@@ -144,13 +183,15 @@ export function ChannelAnnouncementsPanel() {
         }}
       />
       {loading ? (
-        <p className="text-foreground-secondary text-sm">
-          Loading announcements…
-        </p>
+        <PageLoading label="Loading announcements…" />
+      ) : loadError && clips.length === 0 ? (
+        <PageError
+          title="Could not load your announcement clips"
+          description={loadError}
+          onRetry={reload}
+        />
       ) : clips.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No announcement clips yet.
-        </p>
+        <PageEmpty title="No announcement clips yet" />
       ) : (
         <ul className="border-border divide-border divide-y rounded-lg border">
           {clips.map((clip) => (
@@ -190,6 +231,17 @@ export function ChannelAnnouncementsPanel() {
                   ? 'Page music on'
                   : 'Use as page music'}
               </Button>
+              <Tooltip content="Trim" side="top">
+                <Button
+                  size="icon-sm"
+                  variant="text"
+                  aria-label={`Trim ${clip.title}`}
+                  disabled={clip.renderStatus === 'PROCESSING'}
+                  onClick={() => setTrimClip(clip)}
+                >
+                  <ScissorsIcon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
               <Tooltip content="Delete" side="top">
                 <Button
                   size="icon-sm"
@@ -212,6 +264,12 @@ export function ChannelAnnouncementsPanel() {
           ))}
         </ul>
       )}
+      <AnnouncementTrimDialog
+        clip={trimClip}
+        busy={trimming}
+        onClose={() => setTrimClip(null)}
+        onSubmit={(clip, values) => void trim(clip, values)}
+      />
       <ConfirmDialog
         isOpen={pendingDelete !== null}
         title={

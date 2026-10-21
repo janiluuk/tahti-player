@@ -22,6 +22,25 @@ describe('Slider (composed)', () => {
     expect(screen.getByText('25 %')).toBeInTheDocument();
   });
 
+  it('shows formatValue output in the header, footer and aria-valuetext', () => {
+    render(
+      <Slider
+        label="Freq"
+        value={500}
+        min={0}
+        max={1000}
+        formatValue={(v) => `${v * 2} Hz`}
+      />,
+    );
+    expect(screen.getByText('1000 Hz')).toBeInTheDocument();
+    expect(screen.getByText('0 Hz')).toBeInTheDocument();
+    expect(screen.getByText('2000 Hz')).toBeInTheDocument();
+    expect(screen.getByRole('slider')).toHaveAttribute(
+      'aria-valuetext',
+      '1000 Hz',
+    );
+  });
+
   it('calls onValueChange when moved via keyboard', async () => {
     const onChange = vi.fn();
     render(

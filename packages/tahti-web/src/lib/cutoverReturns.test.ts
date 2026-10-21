@@ -12,7 +12,10 @@ describe('resolveDashboardCallbackRedirect', () => {
       '/settings/plugin-store?status=connected&category=import',
     ],
     [{ fanConnect: 'return' }, '/studio/stripe?fanConnect=return'],
-    [{ fansubs: 'portal' }, '/studio/audience?fansubs=portal'],
+    [
+      { fansubs: 'portal' },
+      '/settings/account?tab=subscriptions&fansubs=portal',
+    ],
     [{ membership: 'success' }, '/settings/account?membership=success'],
     [
       { distribution: 'success', releaseId: 'release-1' },
@@ -20,7 +23,7 @@ describe('resolveDashboardCallbackRedirect', () => {
     ],
     [
       { social: 'instagram_connected' },
-      '/settings/connections?social=instagram_connected',
+      '/settings/artist?tab=connections&social=instagram_connected',
     ],
   ])('maps %o to %s', (search, expected) => {
     expect(resolveDashboardCallbackRedirect(search)).toBe(expected);

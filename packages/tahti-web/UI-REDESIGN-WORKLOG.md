@@ -1,9 +1,169 @@
-## 2026-09-11 — v0.0.115: accurate listener world map
+## 2026-09-11 — v0.0.242: accurate listener world map
 
 Studio Stats and track insights `ListenerWorldMap` now renders Natural Earth
 110m country outlines with choropleth fills and centroid markers instead of
 the old hand-drawn continent blobs. Live geo data and ranking list unchanged.
 
+## 2026-10-21 — Wavesurfer waveforms (batch 88)
+
+`@tahti-player/ui` `Waveform` (lazy wavesurfer.js) for large previews;
+`PlayerWaveform` bound to the global player audio on TrackHero, SoundHeader,
+and edit AudioTab; pro-editor `EditorWaveSurfer` with Regions / Timeline /
+Minimap / Zoom / Hover and ProWaveform fallback. Ambient rows and player-bar
+seekbar unchanged. Bumped ui `0.0.19`, tahti-web `0.0.241`.
+
+## 2026-10-21 — UX batch 86 (load honesty + PageEmpty leftovers)
+
+Admin Beta / Radio submissions / Support tickets, track insights and Blocked
+accounts show `PageError` + Retry when the load fails instead of "nothing
+here"; fourteen bare empties (feature requests, ledger, channel tracks and
+rotation, support requests, user adjustments and restrictions, add-tracks
+search, stats detail, playlist editor, mentions, release tracklist, page
+comments, subscriptions / purchases) → `PageEmpty`. Bumped to `0.0.240`.
+
+## 2026-10-20 — UX batch 85 (PageEmpty leftovers + ambient + Embeds toolbar)
+
+Studio editor / admin dashboard / channel blocks / AGM / fingerprint / plays /
+streams / vendors / programming grid → `PageEmpty`/`PageError`; Library Embeds
+adopts `LibrarySectionToolbar`; Collection + SmartLink use
+`PlayableAmbientTrackList`; folded batch 84. Bumped to `0.0.239`.
+
+## 2026-10-20 — UX batch 84 (partial-fail banners + Favorites ambient)
+
+Soft `PageErrorBanner` when API fails but data remains; Favorites
+`PlayableAmbientTrackList`; settings hide-on-fail → PageError; admin
+Governance/Financial/Storage/Dashboard/Radio breadcrumbs; chrome testids;
+light de-green. Bumped to `0.0.238`.
+
+## 2026-10-20 — UX batch 82 (show-detail / Feed / SmartLink honesty)
+
+Show detail, Feed, SmartLink, Artist, Mastering, Multistream, Updates, and
+channel playlist blocks surface `PageError` on API fail; Admin Moderation /
+Orphan breadcrumbs; `/settings/money` → Revenue. Bumped to `0.0.236`.
+
+## 2026-10-20 — UX batch 83 (entity/admin/Discover PageError)
+
+Collection/Search/Subscribe/embeds/admin governance/Discover/stats show
+`PageError` instead of not-found or empty; LibrarySectionToolbar; TrackHero
+artist back link; light de-green. Bumped to `0.0.237`.
+
+## 2026-10-20 — UX batch 81 (dead-end honesty + library chips)
+
+Studio home / pickers / artist satellites / governance panels show `PageError`
+instead of empty-or-hidden on API fail; Library Media + SmartLinks FilterChips;
+Admin grant breadcrumb + chrome `data-testid`s; light de-green. Bumped to
+`0.0.235`.
+
+## 2026-10-20 — AmbientTrackList on Library Sounds
+
+`AmbientTrackList` listing with Large/Medium/Small size control (persisted)
+and ambient+waveform rows. Library → Sounds uses it instead of the dense
+`SoundRow` list. Storybook: `Tahti/Media/AmbientTrackList`. Bumped to
+`0.0.227`.
+
+## 2026-10-19 — Spotify Listen widget → track table
+
+Spotify Listen add-on loads a public playlist via
+`GET /api/v1/imports/spotify/by-playlist-url` and renders
+`PlayableTrackTable` (player-bar Spotify embed) instead of an iframe.
+Compact “Add Listen widgets” rows keep the configure gear inside
+`PluginStoreItem` accessory. Needs the matching tahti-org route deployed.
+Bumped `packages/tahti-web/package.json` to `0.0.226`. Requires tahti-org #876
+(merged) deployed for playlist track fetch.
+
+## 2026-10-19 — Distribution StudioNav + Chat via More
+
+Product flags: Distribution is a Studio sibling tab next to Releases; Chat hub lives in the sidebar footer (phone More). Favorites / Library / Help stay out of the mobile primary bar.
+
+## 2026-10-19 — UX sweep batch 3 (PageEmpty)
+
+Thirty more bare empty strings → `PageEmpty` across governance, studio, add-ons, hearthis, and shared `PlayableTrackTable` / radio episode lists.
+
+
+## 2026-10-18 — CSP unblock external radio streams
+
+PR 1078's starter CSP limited `media-src` (and `connect-src`) to Tahti CDN /
+stream hosts, so Finnish curated stations and other HTTPS radio could not
+play on beta. Widened both to `https:` (mirrors `img-src`); tahti-radio on
+`stream.tahti.live` remains allowed. Requires beta redeploy for the nginx
+header.
+
+## 2026-10-19 — E2E findings batch 2 (~30 slices)
+
+Join validation shows Zod field issues; sticky policy toasts sit top-center; empty queue starts collapsed; SoundCloud toast is provider-aware; Subscribe has a real heading and buttons; motion drafts show DRAFT; Alt+2 reaches Radio; Record broadcast uses the auto-record API; uploads drop the file extension from the title; Description/Release date polish; mock audio properties fill; moderation subjects wrap; Add-ons drops the redundant Power toggle. Stale Playwright specs updated for Settings modal designer, Studio/Library chrome, purchase copy, and rotation totals. Bumped `packages/tahti-web/package.json` to `0.0.216`.
+
+## 2026-10-19 — E2E finding fixes (fullscreen, join, /more, DSP cover)
+
+Queue and player-bar expand controls share the accessible name "Open full-screen player". Join shows a labelled Account type row. `/more` and `/admin/map` stay open for signed-out visitors. DSP landing artwork exposes "{title} cover". ScreenAtlas shots use ImageReveal. E2E auth helpers read TAHTI_E2E_EMAIL/PASSWORD. Bumped `packages/tahti-web/package.json` to `0.0.215`.
+
+## 2026-10-19 — E2E run gallery on the Tahti map
+
+`/more` now has an E2E runs section with step screenshots from the 2026-10-19 beta and mock Playwright runs, triage badges for findings, and a Storybook story. Jump nav uses `ButtonAnchor`. Listener library empty copy no longer prompts non-artists to upload; mock press-kit ZIP meta stays in sync after gallery edits. Findings tracked in `docs/todo/e2e-run-findings.md`. Bumped `packages/tahti-web/package.json` to `0.0.214`.
+
+## 2026-10-17 — Distribution discoverability + chat docs
+
+Studio home shows a Distribution tile when the artist has releases; Releases
+header links to `/studio/distribution`. Help + GitBook clarify channel chat
+vs Messages (no chrome Chat hub). Batch 71 slice 15.
+
+## 2026-09-18 — Root README screenshots refreshed to dark/amber theme
+
+`scripts/capture-tahti-dark-refresh.mjs` (previously not actually setting
+any theme override, despite the name) now seeds `nuclear:tahti-dark` before
+every capture, matching `capture-map-screens.mjs`'s existing pattern.
+Regenerated all 67 `docs/redesign-shots/*.png` it covers, including the 7
+root `README.md` "Screenshots" section images (`listen-home-v1`,
+`listen-channel-v1`, `subscribe-v1`, `studio-home-v1`, `studio-go-live-v1`,
+`studio-playlists-v1`, `studio-channel-v1`) plus a new
+`admin-dashboard-current-v1.png` capture added to this script so the 8th
+README image (previously only produced by `capture-atlas-shots.mjs`) stays
+in sync too. No README.md text changes needed — same filenames, refreshed
+content.
+
+Extended to the rest of the docs image pipeline the same way:
+
+- `scripts/capture-readme-guide.mjs` (drives `packages/tahti-web/README.md`'s
+  "View guide" section + `docs/VIEW-GUIDE.md`) hardcoded `nuclear:default`
+  light theme — switched to `nuclear:tahti-dark`; regenerated all 83
+  `docs/readme-shots/*.png`. Both markdown files are fully regenerated by
+  the script each run, but their text/route content was already correct —
+  only image bytes changed, no diff on the `.md` files themselves.
+- Tahti map (`/more`, `public/map/nuclear/*.png`, driven by
+  `src/content/mapScreens.ts`): of the ~1,210 files in that directory, only
+  69 are actually referenced by `mapScreens.ts` — the rest are orphaned
+  artifacts from a defunct, no-longer-present capture tool (no script in
+  this repo reproduces their `--0-themes`/`--1-what-s-new`-style suffixes,
+  and `mapScreens.ts` never references a suffixed filename). Of those 69,
+  only 6 "hero" shots were dark-amber as of 2026-09-18's earlier pass;
+  re-ran `capture-map-screens.mjs` against a local `VITE_FORCE_MOCK=1` dev
+  server (not production) with `MAP_CHANNEL=demo MAP_USER=demo` to refresh
+  the other 63. Also added a `more` shot entry to the script (previously
+  missing — the Tahti map had no screenshot of itself) and captured it.
+  67/69 referenced images are now dark-amber. The remaining 2 —
+  `studio-channel-announcements.png` / `studio-channel-tahti-radio.png` —
+  are a **pre-existing, unrelated bug**: `mapScreens.ts` points them at
+  `/studio/channel?tab=announcements` / `?tab=tahti-radio`, but
+  `StudioChannelView.tsx`'s top-level `tab` search param only accepts
+  `setup`/`radio`/`green-room`/`selects` — Announcements/Tahti Radio are a
+  `radioTab` sub-state nested under `tab=radio` with no URL sync, so those
+  query strings silently no-op today. Not fixed here (would mean adding
+  URL-sync to `StudioChannelView.tsx`, a real code change, not a capture
+  fix) — flagging for a follow-up.
+
+## 2026-09-11 — v0.0.113: Studio nav origin + stable chrome slots
+
+Studio section menu and nested Broadcast/Audience tabs mount in AppShell
+with reserved height so route switches stop jumping vertically. Studio page
+shells left-align (no mx-auto/max-w origin shift). Continues v0.0.112
+designer rail / Broadcast menu / tahti-dark fixes.
+
+## 2026-09-11 — v0.0.112: designer right rail, Broadcast menu, tahti-dark surfaces
+
+Channel edit / designer tools dock into the Nuclear right rail on desktop
+(no fixed overlay). Tahti dark ambient surfaces use solid `--background`
+again. Top Broadcast menu: booking calendar modal, 24/7 rotation → Stream
+Manager dialog, Broadcast Studio + duplicate Stream Manager entries
+removed; Go Live panel no longer embeds Stream Manager.
 ## 2026-09-11 — v0.0.113: shared apiBase + remaining visibility-aware polls
 
 API modules share `apiBase` from `api/http.ts`. Pro Editor, Jam, notification
@@ -1776,7 +1936,7 @@ brand slot.
 ## 2026-09-01 — Mobile usability audit; Channel Designer preview fix
 
 Phone-width audit of listener/artist surfaces — see
-[MOBILE-USABILITY-AUDIT.md](MOBILE-USABILITY-AUDIT.md) for the full method
+[MOBILE-USABILITY-AUDIT.md](../../docs/ARCHIVE.md) for the full method
 and findings table. No real horizontal-overflow bugs found at 400px across
 Listen, Radio, Discover, a channel page, Library, or Studio home; the
 earlier-flagged `WORKPLAN.md` item about unstyled native controls in
@@ -5682,3 +5842,116 @@ shared Local files surface. Desktop users can import through the native file
 picker, search the SQLite catalog, play resolved asset URLs, remove catalog
 entries, and load larger collections in bounded pages. The browser File API
 remains the web fallback.
+
+## 2026-09-11 — Finnish internet radio presets (artwork, streams, defaults)
+
+Curated Listen radio feed now seeds six Finnish stations (YleX, Radio Helsinki, Radio Rock, Suomipop, NRJ, Radio Nova) with self-hosted logos, verified stream/playlist URLs, schedule links, and ICY now-playing subtitles when the stream exposes them. All six are enabled by default for every visitor (API seed + listener widget store defaults).
+
+## 2026-09-12 — Branding moved to Settings → Artist
+
+Studio → Branding is removed from Studio nav. Branding, Gallery, Press kit, and Channel Designer now live under Settings → Artist. Legacy `/studio/branding` opens the Artist settings modal on the matching tab.
+
+## 2026-09-12 — Fix mobile play button hidden under Android's bottom bar
+
+`PlayerShell` used `h-screen` (`100vh`), which Android Chrome sizes against the theoretical full viewport rather than the space actually visible once its dynamic bottom bar is showing — pushing the bottom of the app (mobile play bar + bottom nav) partly offscreen. Switched to `h-dvh`. Also enlarged the mobile play/pause button (`size-12`→`size-16`, icon 22→28) and added `env(safe-area-inset-bottom)` padding to the mobile play bar row for pages where it's the last element (no bottom nav, e.g. artist pages). Bumped `packages/tahti-web/package.json` to `0.0.116`.
+
+## 2026-09-14 — Radio Browser play-state, add-widget button placement, Channel Designer moved again, governance dup header
+
+Four small fixes: (1) Radio Browser directory rows (both saved stations and search results in `RadioCategory.tsx`) now show Play/Pause correctly and toggle in place instead of always re-triggering play — they'd never been wired to `currentId`/`playbackStatus`. (2) The Listen page's and Discover page's "Add widget" buttons now render via `ViewShell`'s `actions` slot (top-right, next to the title) instead of as a left-aligned row under it. (3) Channel Designer moves again — from Settings → Artist to Settings → Channel & design, replacing that section's old "Appearance" tab (which only linked back to Artist). All hardcoded copy/routes pointing at the old location were updated; the legacy `/studio/branding?tab=channel-designer` redirect now opens the Channel & design section. (4) Settings → Account → Governance was missing the `embedded` prop, so it rendered its own `ViewShell` title under the Settings tab's title — Governance pages are otherwise correctly split across member-facing `/governance*`, `/admin/governance*`, and `/studio/governance`, not solely under Studio. Bumped `packages/tahti-web/package.json` to `0.0.117`.
+
+A fifth report — "radio page should show upcoming items, not just live shows, plus now-playing for radio channels" — is only partly actionable: the footer text on `/radio` (RadioView) was removed, but `tahti-org`'s `/api/v1/radio/show/:channelSlug` route has no now-playing or track-level upcoming/queue data for a channel's radio (only booking-slot schedule; "there's no separate Show entity" per that route's own comment) — only the Tahti Radio station itself (`/radio`) has real now-playing/recently-played track data. Left open pending a scope decision rather than inventing a backend shape; see `docs/todo/listen-bugs-batch-2026-09-14.md`.
+
+## 2026-09-14 — Storybook input/pill/chip sweep: fix pass
+
+Actioned the punch list from the full-app Storybook unification sweep: ~21 call sites across `tahti-web` and `player` swapped from hand-rolled markup to `Badge`, `FilterChips`, `Input`, or `Textarea` (year/show-type/weekday/style/episode-source pickers, live/on-air/private/embed-provider pills, artist bio/social tags). `FilterChips` gained a `disabled` prop and a per-item `icon` slot to make several of these swaps possible without losing behavior (both covered by new tests + a Storybook example). `StudioToggleChip` and `FanTiersEditor`'s `PerkChip` were deleted entirely — their call sites now use `FilterChips` directly. A few flagged "duplicates" turned out not to be on closer inspection (action buttons, a curve-preview picker, icon+description tile grids, an i18n `Trans`-bound wrapper) and were either fixed differently (`Button` instead of `Badge`) or left as-is; see `docs/todo/storybook-theme-unification-sweep.md` for the full breakdown. Bumped `packages/tahti-web/package.json` to `0.0.118`.
+
+## 2026-09-18 — Desktop library missing-file recovery
+
+Local files now lists persisted missing entries, checks whether their original files have returned, and lets desktop users locate a replacement file while preserving the catalog track ID. Relinking refreshes extracted metadata and rejects paths already owned by another catalog row. Added generated Tauri bindings, native and rendered-state tests, and a Storybook missing-file state. Bumped `packages/tahti-web/package.json` to `0.0.123`.
+
+## 2026-09-18 — Recursive desktop library folder import
+
+Local files now offers a native folder picker that recursively imports regular FLAC/WAV files in stable order while ignoring unsupported files and directory symlinks. It reuses the existing per-file error reporting and catalog upsert behavior. Progress, cancellation, drag-drop, watched roots, and background indexing remain open. Bumped `packages/tahti-web/package.json` to `0.0.124`.
+
+## 2026-09-21 — Bloat sweep flagged (no code changed)
+
+Swept the repo for oversized non-test modules. Worst offenders: `local_library/mod.rs` (1693 LOC, mixes types, query builder, import pipeline, roots, facets, commands and state) and `catalog.rs` (1222), `DesktopLibraryPanel.tsx` (1702), `ChannelDesigner.tsx` (1800), `ChannelView.tsx` (1576), `StudioProEditorView.tsx` (1497), `ArtistView.tsx` (1408), `ServiceCategory.tsx` (1400), `RadioCategory.tsx` (1264), plus several 1000-1300 LOC `api/*.ts` files and studio views. Full table and plan in `docs/todo/god-module-restructure.md`; `mod.rs` is first.
+
+## 2026-09-21 — Desktop library Phase 5: analysis and smart playlists
+
+Local files can now analyze audio in the background (waveform, BS.1770 loudness and true peak, BPM, musical key), one file at a time with pause/stop and per-track saved results, from a selection or the whole library. The track details show the waveform and each value's origin (your correction, the file's tag, or an estimate with its confidence); BPM and key can be corrected and undone, and re-analysis never overwrites a correction. BPM, Key and Loudness are sortable columns with matching filters. Smart playlists (all/any rules, sort, limit) are re-evaluated on every use, show a live match count while editing, and can be saved as a fixed playlist; rules and corrections are in the catalog backup. Real-music accuracy and normalization playback remain open; see `docs/todo/desktop-pro-library.md`.
+
+## 2026-09-21 — Desktop library Phase 6: watched folders
+
+Library roots are now watched for changes: files added, removed or returned outside the app are picked up after a short quiet period (only the affected folder is re-checked), the list refreshes and a toast reports what changed. A slow background rescan every 10 minutes catches anything the OS missed, including drives that were unplugged and reconnected. A file moved or renamed to a different folder keeps its identity, playlists and edits, and files edited outside the app (such as tag changes) are re-read on the next check. Folder watching can be paused from the Watched folders block (manual Rescan still works). Renaming a file's own name still shows as one missing and one new file; along with that, still open are the performance and platform-validation items of Phase 6.
+
+Sorting Local files by artist or album is now about thirty times faster on a 100,000-track library (roughly 0.4 s down to about 10 ms per page), and very long queues no longer lay out rows that are off screen. Real CPU/memory profiling, the 30-minute soak and target-platform validation still need a desktop run and remain open.
+
+## 2026-09-25 — Nuclear reference port: dashboard, history, artist, settings
+
+Ported six surfaces toward the original Nuclear screenshots. Listen (`/`) now stacks full-width card rows (Recently played, Radio, On air), each with a source badge, filter and prev/next, above a "New tracks" table, and the right rail opens on Queue instead of the empty chat state. History has Stats / Listening history tabs with side-by-side top lists, time-of-day clock, day-of-week bars and a 12-month calendar; the old nested scroll that rendered Stats as an empty strip is gone. The artist page leads with a header card (location, stat chips, favorite heart), then Popular tracks beside Related artists (from tagged-in credits, as there is no similar-artists API), releases and playlists grids; the Releases and Collections tabs were folded into those sections. Settings gained Playback (volume, mute, shuffle, repeat, skip duration with Shift+Arrow and media-key seek; crossfade shown as not supported), Integrations (ListenBrainz and Last.fm toggles moved from Add-ons; Jam/MCP/MPD/Discord marked desktop-only) and Logs (in-memory client log buffer with search, level/scope chips, clear and export). Bumped `packages/tahti-web/package.json` to `0.0.140`. Follow-ups: the settings sidebar is split into Settings and App groups (new optional `group` on the shared `SettingsTab`), volume/mute/shuffle/repeat are remembered across reloads, the page tour no longer steals Shift+Arrow, the `/admin/logs` date-range button no longer covers the search box, and the three new panels have Storybook stories.
+Signed-in check against the production API also fixed the artist page dropping hearthis embed-only tracks and showing no durations, and the dev proxy now rewrites the session cookie domain so local sign-in works.
+
+## 2026-09-25 — Nuclear Green default theme; header and tile fixes
+
+New visitors now get Nuclear Green (`custom:nuclear-green`, the original Nuclear player's dark green and teal) in dark mode instead of `tahti-dark`; saved theme choices are kept. Custom themes now layer on the stock `nuclear:default` basic theme: over `tahti-dark`, its `[data-theme-id]` selectors outranked the injected custom-theme CSS, so no custom theme (Nuclear Green, Tahti Blue, Dracula, …) had actually been applying. Entity headers (track editor, artist page, …) no longer let their action buttons overlap the title, and Studio quick-link tiles no longer hide their icon under the title band. Bumped `packages/tahti-web/package.json` to `0.0.141`.
+
+## 2026-09-25 — Screenshots in the Spotify theme, dark and light
+
+README, redesign and atlas screenshots are recaptured in the Spotify theme, once in dark and once in light (light files carry a `--light` suffix), signed in as the board (admin) user with no notification badges, message counts or toasts, and with a seeded listening history. Both READMEs use `<picture>` so GitHub shows the capture matching the viewer's theme, and the screen atlas (`/more`) has a Dark / Light toggle that falls back to the dark shot when an older shot has no light capture. The Spotify theme gained a Spotify-style light palette (the registry theme only shipped a dark one) and neutral secondary colours in both modes. Shared capture setup lives in `scripts/lib/captureSetup.mjs` (`CAPTURE_THEME_MODE=dark|light`); mock messages now honour a read-state localStorage key, like mock notifications.
+## 2026-09-25 — Nuclear queue bar replaces the tabbed right rail
+
+The right rail now follows the Nuclear desktop queue bar: collapse button, Chat and Notifications toggles, then clear queue and a "more" menu (save as playlist, save locally on desktop, randomize order) in the header, with the queue filling the rest. Chat and notifications open in the same rail from their toggles; pressing the active one goes back to the queue. Collapsed, the rail shows queue artwork plus chat and notification buttons. The header is the shared `QueueHeaderActions` from `@tahti-player/ui`, also used by the desktop player. Bumped `packages/tahti-web/package.json` to `0.0.141`.
+
+## 2026-09-25 — Full-screen player "More options" sheet
+
+The full-screen player has a "More options" button in the top-right. It opens an action sheet: a bottom sheet on mobile and a centered panel on desktop. The sheet lists Go to channel, Share, favorites, Add to playlist and Open in Pro Editor, each shown only when it applies to the current item. New `ActionSheet` component in `@tahti-player/ui`. The add-to-playlist dialog now opens above the full-screen player instead of behind it.
+
+## 2026-10-16 — Channel designer Show more not nested under Edit backdrop (0.0.147)
+
+In Channel Designer, the identity pad no longer wraps bio ClampedText as role=button. Only the name/handle area is the "Edit backdrop design" control, so "Show more" is not a nested interactive. Bumped `packages/tahti-web/package.json` to `0.0.147`.
+
+## 2026-10-16 — Channel block rhythm and quiet Pinned eyebrow
+
+Channel page column and track-block gaps are slightly tighter (`gap-2` / `gap-4`), and comments no longer add an extra `mt-8`, so stage, tracks, upcoming and comments read as one scroll. Pinned and Catalog use a new muted `Eyebrow` tone (`text-foreground-secondary`). Bumped `packages/tahti-web/package.json` to `0.0.147`.
+
+## 2026-10-16 — hearthis embed in the track play-control box (0.0.149)
+
+Playing a hearthis.at track no longer mounts a full-width strip above the
+bottom player bar. The compact widget lives next to the Library row play
+button (`SoundRow`) or inside an `EmbedTrackRow` card; a
+`HearthisEmbedHost` claim keeps a single iframe. When no row hosts it,
+a contained fallback sits in the PlayerBar left cluster. Bumped
+`packages/tahti-web/package.json` to `0.0.149`.
+
+## 2026-10-16 — hearthis embed stays in the row action box (0.0.150)
+
+Library Tracks mounts the hearthis widget inside `sound-row-actions` (play
+and the other row controls), with a capped width and paint containment so
+it cannot expand into a full-width band. Claim registration uses
+`useLayoutEffect` so the PlayerBar fallback never paints first. Bumped
+`packages/tahti-web/package.json` to `0.0.150`.
+
+## 2026-10-18 — Embedded tracks play like native tracks everywhere
+
+Spotify, Mixcloud, Bandcamp and hearthis.at embeds now behave the same as Tahti-hosted tracks: they show in the same track tables (playlists and artist profiles no longer push them into a separate "Elsewhere" section), they play in the shared player bar and the full-screen player the exact same way (a new provider-agnostic `EmbedSurface` widget stands in for the hearthis-only one in the bar and full-screen player, while rows keep their inline hearthis widget and single-iframe claim), and you can favorite any of them — favorited or queued embedded tracks replay from Favorites, History and the queue bar instead of silently doing nothing (mixcloud/spotify/bandcamp ones were previously dead entries once favorited). The track detail page keeps its own inline provider player as before. Embeds stay out of the 24/7 radio fallback rotation, where they can't play unattended. Bumped `packages/tahti-web/package.json` to `0.0.211`.
+
+
+## 2026-10-20 — Admin Grafana monitoring hub (0.0.230)
+
+Admin dashboard Monitoring panel links to Grafana (vital services, lab overview, infrastructure, Docker/OS) and container logs. New `/admin/monitoring` embeds the vital-services dashboard (kiosk iframe) and live Loki container logs, with per-service Grafana + app-log shortcuts. Bumped `packages/tahti-web/package.json` to `0.0.230`.
+
+
+## 2026-10-20 — What's New biweekly cycles + full-update modal (0.0.231)
+
+What's New is rebuilt as ~two-week cycles with Listen / Studio / Library / Admin / Settings / Desktop / Platform sections, filled from merged feature PRs since early September. Long cycles show four bullets on the timeline; click opens a modal with the full list. Bumped `packages/tahti-web/package.json` to `0.0.231`.
+
+
+## 2026-10-20 — Settings Logs board-only + dialog click fix (0.0.232)
+
+Settings → Logs is board-only, with links to Admin container logs and Monitoring. DialogRoot lets backdrop clicks through (`pointer-events-none` on the centering layer) and SettingsPanel forces `overflow-hidden` so Chromium does not double-scroll the pane. Bumped `packages/tahti-web/package.json` to `0.0.232`.
+
+
+## 2026-10-20 — Admin page comments + atlas CSV export (0.0.233)
+
+Board members open **Page comments** from the right-rail header (same `tahti-web-map-notes` store as the Tahti atlas). Multiple comments per page, edit, resolve/reopen. Atlas **Saved comments** and Screen atlas header both **Export CSV** (status, route, commentary) for handing off fixes. Bumped to `0.0.233`.

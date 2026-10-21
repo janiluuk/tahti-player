@@ -84,6 +84,20 @@ function nonEmpty(values: Record<string, string>): Record<string, string> {
   );
 }
 
+type ThemeDraftSnapshot = {
+  name: string;
+  lightValues: Record<string, string>;
+  darkValues: Record<string, string>;
+};
+
+function draftsEqual(a: ThemeDraftSnapshot, b: ThemeDraftSnapshot): boolean {
+  return (
+    a.name === b.name &&
+    JSON.stringify(a.lightValues) === JSON.stringify(b.lightValues) &&
+    JSON.stringify(a.darkValues) === JSON.stringify(b.darkValues)
+  );
+}
+
 function colorToHex(value: string): string {
   const trimmed = value.trim();
   if (/^#[0-9a-f]{6}$/i.test(trimmed)) {
@@ -196,9 +210,11 @@ function ColorTokenRow({
       className="border-border rounded-md border"
       data-testid={`theme-editor-token-${field.key}`}
     >
-      <button
+      <Button
+        variant="plain"
+        size="flexible"
         type="button"
-        className="hover:bg-background-secondary/60 flex w-full items-center gap-2 px-2 py-1.5 text-left"
+        className="hover:bg-background-secondary/60 flex w-full items-center gap-2 rounded-none px-2 py-1.5 text-left whitespace-normal active:scale-100"
         aria-expanded={expanded}
         onClick={() => (expanded ? onCollapse() : onExpand())}
       >
@@ -222,15 +238,15 @@ function ColorTokenRow({
             expanded ? 'rotate-180' : ''
           }`}
         />
-      </button>
+      </Button>
       {expanded ? (
         <div className="border-border flex flex-col gap-2 border-t px-2 py-2">
           <div className="flex items-center gap-2">
-            <input
+            <Input
               type="color"
               value={colorToHex(display)}
               onChange={(event) => onChange(event.target.value)}
-              className="border-border size-8 shrink-0 cursor-pointer rounded-md border bg-transparent p-0.5"
+              className="border-border size-8 rounded-md border p-0.5"
               aria-label={`Pick ${field.label}`}
             />
             <Input
@@ -305,6 +321,12 @@ export function ThemeEditor() {
   const [name, setName] = useState('My theme');
   const [lightValues, setLightValues] = useState<Record<string, string>>({});
   const [darkValues, setDarkValues] = useState<Record<string, string>>({});
+  const [savedDraft, setSavedDraft] = useState<ThemeDraftSnapshot>(() => ({
+    name: 'My theme',
+    lightValues: {},
+    darkValues: {},
+  }));
+  const [nameError, setNameError] = useState<string | undefined>();
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [importOpen, setImportOpen] = useState(false);
@@ -334,9 +356,40 @@ export function ThemeEditor() {
     setExpandedKey(null);
   }, [dark]);
 
+  const currentDraft = useMemo<ThemeDraftSnapshot>(
+    () => ({ name, lightValues, darkValues }),
+    [name, lightValues, darkValues],
+  );
+  const hasUnsavedChanges = !draftsEqual(currentDraft, savedDraft);
+
   const save = () => {
-    const result = importCustomTheme(draft);
-    setSaveMsg(result.ok ? 'Saved and applied.' : result.error);
+    const trimmed = name.trim();
+    if (!trimmed) {
+      setNameError('Theme name is required.');
+      setSaveMsg(null);
+      return;
+    }
+    setNameError(undefined);
+    const result = importCustomTheme({ ...draft, name: trimmed });
+    if (!result.ok) {
+      setSaveMsg(result.error);
+      return;
+    }
+    setSaveMsg('Saved and applied.');
+    setSavedDraft({
+      name: trimmed,
+      lightValues: { ...lightValues },
+      darkValues: { ...darkValues },
+    });
+  };
+
+  const discard = () => {
+    setName(savedDraft.name);
+    setLightValues({ ...savedDraft.lightValues });
+    setDarkValues({ ...savedDraft.darkValues });
+    setNameError(undefined);
+    setSaveMsg(null);
+    setExpandedKey(null);
   };
 
   const importTheme = () => {
@@ -367,9 +420,20 @@ export function ThemeEditor() {
           <Input
             label="Name"
             value={name}
-            onChange={(event) => setName(event.target.value)}
+            error={nameError}
+            onChange={(event) => {
+              setName(event.target.value);
+              if (nameError && event.target.value.trim()) {
+                setNameError(undefined);
+              }
+            }}
           />
         </div>
+        {hasUnsavedChanges ? (
+          <Button size="sm" variant="secondary" onClick={discard}>
+            Discard
+          </Button>
+        ) : null}
         <Button size="sm" onClick={save}>
           Save
         </Button>
@@ -463,7 +527,7 @@ export function ThemeEditor() {
           aria-label="Theme JSON"
         />
         {importMsg ? (
-          <p className="text-accent-red text-xs">{importMsg}</p>
+          <p className="text-accent-red-strong text-xs">{importMsg}</p>
         ) : null}
         <Dialog.Actions>
           <Dialog.Close>Cancel</Dialog.Close>

@@ -1,6 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { fn } from 'storybook/test';
+import {
+  expect,
+  fireEvent,
+  fn,
+  userEvent,
+  waitFor,
+  within,
+} from 'storybook/test';
 
 import { Track } from '@tahti-player/model';
 import {
@@ -237,6 +244,45 @@ export const WithFavorites: Story = {
       />
     );
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const [first] = canvas.getAllByRole('button', { name: 'Add to favorites' });
+    await userEvent.click(first!);
+    await expect(
+      canvas.getAllByRole('button', { name: 'Remove from favorites' }),
+    ).toHaveLength(1);
+  },
+};
+
+/** A secondary line under the title, as shared playlists credit who added
+ * a track (tahti-web passes CollectionContribution here). */
+export const WithAnnotation: Story = {
+  args: {
+    tracks,
+    labels,
+    rowHeight: 68,
+    display: {
+      displayPosition: true,
+      displayThumbnail: true,
+      displayArtist: true,
+      displayDuration: true,
+    },
+    meta: {
+      getTrackAnnotation: (track: Track) =>
+        track.source.id === '1'
+          ? 'Added by @kaamos-mod · “Opener for Friday”'
+          : null,
+    },
+  },
+  render: (args) => <TrackTable {...(args as TrackTableProps)} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const annotations = canvas.getAllByTestId('track-annotation');
+    await expect(annotations).toHaveLength(1);
+    await expect(annotations[0]).toHaveTextContent(
+      'Added by @kaamos-mod · “Opener for Friday”',
+    );
+  },
 };
 
 export const LongTitle: Story = {
@@ -333,4 +379,123 @@ export const ToolbarButtons: Story = {
     },
   },
   render: (args) => <TrackTable {...(args as TrackTableProps)} />,
+};
+
+const shiftPlayNow = fn();
+const shiftAddToQueue = fn();
+
+/** Thumbnail play wires MediaArtwork `onQueue` from `onAddToQueue`: Shift
+ * swaps the icon, Shift+click queues, plain click plays. */
+export const ShiftClickQueuesFromThumbnail: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'When both `onPlayNow` and `onAddToQueue` are set, the thumbnail play control shows “Play … · Shift+click to queue”. Holding Shift shows the queue icon; Shift+click calls `onAddToQueue`.',
+      },
+    },
+  },
+  args: {
+    tracks: tracks.slice(0, 1),
+    labels,
+    display: {
+      displayThumbnail: true,
+      displayArtist: true,
+      displayDuration: true,
+    },
+    actions: {
+      onPlayNow: shiftPlayNow,
+      onAddToQueue: shiftAddToQueue,
+    },
+  },
+  render: (args) => <TrackTable {...(args as TrackTableProps)} />,
+  play: async ({ canvasElement }) => {
+    shiftPlayNow.mockClear();
+    shiftAddToQueue.mockClear();
+    const canvas = within(canvasElement);
+    const art = canvas.getByTestId('media-artwork');
+    await userEvent.hover(art);
+    const play = await canvas.findByTestId('media-artwork-play');
+    const title = tracks[0]!.title;
+    await expect(play).toHaveAttribute(
+      'aria-label',
+      `Play ${title} · Shift+click to queue`,
+    );
+
+    fireEvent.keyDown(window, { key: 'Shift', shiftKey: true });
+    await waitFor(() =>
+      expect(play).toHaveAttribute('aria-label', `Add to queue ${title}`),
+    );
+    fireEvent.click(play, { shiftKey: true });
+    await expect(shiftAddToQueue).toHaveBeenCalledOnce();
+    await expect(shiftPlayNow).not.toHaveBeenCalled();
+
+    fireEvent.keyUp(window, { key: 'Shift', shiftKey: false });
+    await waitFor(() =>
+      expect(play).toHaveAttribute(
+        'aria-label',
+        `Play ${title} · Shift+click to queue`,
+      ),
+    );
+    fireEvent.click(play);
+    await expect(shiftPlayNow).toHaveBeenCalledOnce();
+  },
+};
+
+const ResponsiveTable = ({
+  width,
+  ...args
+}: TrackTableProps & { width: number }) => {
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  return (
+    <div style={{ width }} className="p-4">
+      <TrackTable
+        {...args}
+        actions={{
+          onPlayNow: fn(),
+          onAddToQueue: fn(),
+          onToggleFavorite: (track) =>
+            setFavorites((prev) => {
+              const next = new Set(prev);
+              if (!next.delete(track.source.id)) {
+                next.add(track.source.id);
+              }
+              return next;
+            }),
+        }}
+        meta={{ isTrackFavorite: (track) => favorites.has(track.source.id) }}
+      />
+    </div>
+  );
+};
+
+const responsiveArgs = {
+  tracks,
+  labels,
+  display: {
+    displayThumbnail: true,
+    displayFavorite: true,
+    displayArtist: true,
+    displayAlbum: true,
+    displayDuration: true,
+    displayQueueControls: true,
+  },
+};
+
+/** Phone width (375px): artist, album and duration fold away and the artist
+ * shows under the title. The table responds to its own width, so the same
+ * layout applies in narrow side panels. */
+export const MobileView: Story = {
+  args: responsiveArgs,
+  render: (args) => (
+    <ResponsiveTable {...(args as TrackTableProps)} width={375} />
+  ),
+};
+
+/** Desktop browser width (1280px): every column is shown. */
+export const BrowserView: Story = {
+  args: responsiveArgs,
+  render: (args) => (
+    <ResponsiveTable {...(args as TrackTableProps)} width={1280} />
+  ),
 };

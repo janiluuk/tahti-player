@@ -1,15 +1,11 @@
 import type { ReactNode } from 'react';
 
 export type CapabilityKind =
-  | 'not-in-client'
-  | 'coming-soon'
-  | 'partial'
-  | 'link-out'
-  | 'mock-only';
+  'not-in-client' | 'coming-soon' | 'partial' | 'link-out' | 'mock-only';
 
 const KIND_LABEL: Record<CapabilityKind, string> = {
   'not-in-client': 'Not available in this client',
-  'coming-soon': 'Coming soon',
+  'coming-soon': 'Not available yet',
   partial: 'Partial',
   'link-out': 'Opens tahti.live',
   'mock-only': 'Preview only',

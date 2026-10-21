@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import {
   BellIcon,
+  FolderIcon,
   HardDriveIcon,
   LoaderCircleIcon,
   MessageSquareIcon,
@@ -15,6 +16,8 @@ import { fetchStudioSounds } from '../api/studio';
 import { fetchStorageUsage } from '../api/studio-extras';
 import type { StudioSound } from '../api/studio-types';
 import { usePolling } from '../hooks/usePolling';
+import { hasNativePlayer } from '../lib/nativeCapabilities';
+import { getNativeLibrary } from '../lib/nativeLibrary';
 import {
   encodingStatusLabel,
   mergeProcessingItems,
@@ -26,7 +29,7 @@ import { useNotificationInboxStore } from '../stores/notificationInboxStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { useProcessingJobsStore } from '../stores/processingJobsStore';
 
-const POLL_MS = 5000;
+const POLL_MS = 15_000;
 
 function formatStorageBytes(bytes: number): string {
   if (bytes < 1024) {
@@ -47,6 +50,8 @@ export type StatusBarContentProps = {
   unreadMessages: number;
   encodingLabel: string | null;
   storageUsedLabel?: string | null;
+  /** Desktop (Tauri) only — total tracks in the native local library. */
+  localTrackCount?: number | null;
   className?: string;
 };
 
@@ -57,9 +62,10 @@ export function StatusBarContent({
   unreadMessages,
   encodingLabel,
   storageUsedLabel,
+  localTrackCount,
   className,
 }: StatusBarContentProps) {
-  const soundsLabel = `${soundCount.toLocaleString()} sound${soundCount === 1 ? '' : 's'}`;
+  const soundsLabel = `${soundCount.toLocaleString()} track${soundCount === 1 ? '' : 's'}`;
   const notificationsLabel =
     unreadNotifications === 0
       ? 'No new notifications'
@@ -93,6 +99,7 @@ export function StatusBarContent({
           <span
             className="text-foreground-secondary inline-flex items-center gap-1.5 px-1.5 py-1"
             data-testid="status-bar-notifications"
+            role="img"
             aria-label={notificationsLabel}
           >
             <BellIcon size={16} aria-hidden />
@@ -131,6 +138,24 @@ export function StatusBarContent({
             </Link>
           </Tooltip>
         ) : null}
+        {localTrackCount != null ? (
+          <Tooltip
+            content={`Local library: ${localTrackCount.toLocaleString()} track${localTrackCount === 1 ? '' : 's'} on this device`}
+            side="top"
+          >
+            <span
+              className="text-foreground-secondary inline-flex items-center gap-1.5 px-1.5 py-1"
+              data-testid="status-bar-local-library"
+              role="img"
+              aria-label={`Local library: ${localTrackCount.toLocaleString()} tracks on this device`}
+            >
+              <FolderIcon size={16} aria-hidden />
+              <span className="tabular-nums">
+                {localTrackCount.toLocaleString()}
+              </span>
+            </span>
+          </Tooltip>
+        ) : null}
       </div>
       {encodingLabel ? (
         <div
@@ -140,6 +165,7 @@ export function StatusBarContent({
           <Tooltip content={encodingLabel} side="top">
             <span
               className="text-foreground-secondary inline-flex max-w-48 items-center gap-1.5 truncate sm:max-w-xs"
+              role="status"
               aria-label={encodingLabel}
             >
               <LoaderCircleIcon
@@ -164,7 +190,7 @@ export function StatusBarContent({
   );
 }
 
-/** Bottom Status Bar when the compact player is not showing (signed-in). */
+/** Desktop app only: bottom Status Bar when the compact player is not showing (signed-in). */
 export function ConnectedStatusBar() {
   const user = useAuthStore((state) => state.user);
   const queue = usePlayerStore((state) => state.queue);
@@ -175,16 +201,20 @@ export function ConnectedStatusBar() {
   );
   const localProcessingJobs = useProcessingJobsStore((state) => state.jobs);
   const settleProcessingJobs = useProcessingJobsStore((state) => state.settle);
-  const notifications = useNotificationInboxStore((state) => state.items);
+  const unreadNotifications = useNotificationInboxStore(
+    (state) => state.unreadCount,
+  );
 
   const [archiveItems, setArchiveItems] = useState<StudioSound[]>([]);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [storageUsedLabel, setStorageUsedLabel] = useState<string | null>(null);
+  const [localTrackCount, setLocalTrackCount] = useState<number | null>(null);
 
   const current = queue.find((item) => item.id === currentId);
   const playable = current ? playableFromQueueItem(current) : null;
 
   const visible = shouldShowConnectedStatusBar({
+    desktopApp: hasNativePlayer(),
     signedIn: Boolean(user),
     playerBarVisible,
     hasPlayable: Boolean(playable),
@@ -214,6 +244,12 @@ export function ConnectedStatusBar() {
     void fetchStorageUsage().then((result) => {
       setStorageUsedLabel(formatStorageBytes(result.data.usedBytes));
     });
+    const nativeLibrary = getNativeLibrary();
+    if (nativeLibrary) {
+      void nativeLibrary.list('', 0).then((page) => {
+        setLocalTrackCount(page.total);
+      });
+    }
   }, [user, visible, settleProcessingJobs]);
 
   usePolling(load, POLL_MS, Boolean(user && visible));
@@ -226,9 +262,6 @@ export function ConnectedStatusBar() {
     localProcessingJobs,
     archiveItems,
   );
-  const unreadNotifications = notifications.filter(
-    (notification) => !notification.readAt,
-  ).length;
 
   return (
     <BottomBar className="px-5">
@@ -239,6 +272,7 @@ export function ConnectedStatusBar() {
           unreadMessages={unreadMessages}
           encodingLabel={encodingStatusLabel(processingItems)}
           storageUsedLabel={storageUsedLabel}
+          localTrackCount={localTrackCount}
         />
       </div>
     </BottomBar>

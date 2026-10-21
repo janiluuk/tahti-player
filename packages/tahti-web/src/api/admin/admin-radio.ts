@@ -11,6 +11,7 @@ import {
   apiErrorMeta,
   failMeta,
   isForceMock,
+  mockFallbackMeta,
 } from '../mode';
 
 // ── Radio ops ───────────────────────────────────────────────────────────────
@@ -195,7 +196,7 @@ export async function fetchAdminRadio(): Promise<{
     };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockRadioAdmin(), meta: failMeta(err) };
+      return { data: mockRadioAdmin(), meta: mockFallbackMeta(err) };
     }
     return {
       data: {
@@ -214,7 +215,7 @@ export function radioMoveToFront(channelId: string) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
-    `/api/admin/radio/${encodeURIComponent(channelId)}/reset-rotation`,
+    `/api/admin/radio/reset-rotation/${encodeURIComponent(channelId)}`,
     'POST',
   );
 }
@@ -224,7 +225,7 @@ export function radioOptOut(channelId: string) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
-    `/api/admin/radio/${encodeURIComponent(channelId)}/opt-out`,
+    `/api/admin/radio/opt-out/${encodeURIComponent(channelId)}`,
     'POST',
   );
 }
@@ -234,7 +235,7 @@ export function radioRemoveOptOut(channelId: string) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
-    `/api/admin/radio/${encodeURIComponent(channelId)}/opt-out`,
+    `/api/admin/radio/opt-out/${encodeURIComponent(channelId)}`,
     'DELETE',
   );
 }
@@ -508,9 +509,7 @@ export function rejectRadioSubmission(id: string, note?: string) {
 // tracks submitted for Tahti's own co-op radio rotation.
 
 export type AdminRadioStationSuggestionStatus =
-  | 'PENDING'
-  | 'APPROVED'
-  | 'REJECTED';
+  'PENDING' | 'APPROVED' | 'REJECTED';
 
 export type AdminRadioStationSuggestion = {
   id: string;
@@ -612,19 +611,12 @@ export async function submitRadioStationSuggestion(
   if (isForceMock()) {
     return { ok: true };
   }
-  try {
-    await mutate('/api/me/radio-station-suggestions', 'POST', {
-      name: input.name,
-      logoUrl: input.logoUrl || null,
-      language: input.language,
-      bitrateKbps: input.bitrateKbps ? Number(input.bitrateKbps) : null,
-      streamUrl: input.streamUrl,
-    });
-    return { ok: true };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Could not submit suggestion',
-    };
-  }
+  const result = await mutate('/api/me/radio-station-suggestions', 'POST', {
+    name: input.name,
+    logoUrl: input.logoUrl || null,
+    language: input.language,
+    bitrateKbps: input.bitrateKbps ? Number(input.bitrateKbps) : null,
+    streamUrl: input.streamUrl,
+  });
+  return result.ok ? { ok: true } : { ok: false, error: result.error };
 }

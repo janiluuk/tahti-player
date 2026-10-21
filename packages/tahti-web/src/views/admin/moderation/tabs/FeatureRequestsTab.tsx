@@ -20,7 +20,7 @@ import {
   type AdminFeatureRequestStatus,
 } from '../../../../api/admin';
 import type { GovernanceQuarterlyReport } from '../../../../api/types';
-import { PageLoading } from '../../../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { ModerationTabs } from '../ModerationTabs';
 
@@ -49,10 +49,11 @@ function QuarterlyReportsPanel() {
   return (
     <StudioPanel>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="font-display text-sm font-bold">
+        <h2 className="font-display text-sm font-bold">
           Quarterly review reports
-        </h3>
+        </h2>
         <Button
+          className="gap-1.5"
           size="sm"
           variant="secondary"
           disabled={generating}
@@ -70,18 +71,14 @@ function QuarterlyReportsPanel() {
           }}
         >
           <FileTextIcon size={14} aria-hidden />
-          {generating
-            ? 'Generating…'
-            : `Generate ${currentQuarterLabel()} report`}
+          {generating ? 'Generating…' : `Generate ${currentQuarterLabel()}`}
         </Button>
       </div>
-      {error && <p className="text-accent-red mt-2 text-xs">{error}</p>}
+      {error && <p className="text-accent-red-strong mt-2 text-xs">{error}</p>}
       {loading ? (
         <PageLoading label="Loading reports…" />
       ) : reports.length === 0 ? (
-        <p className="text-foreground-secondary mt-2 text-sm">
-          No quarterly reports generated yet.
-        </p>
+        <PageEmpty title="No quarterly reports generated yet." />
       ) : (
         <ul className="divide-border mt-2 divide-y">
           {reports.map((report) => (
@@ -172,6 +169,7 @@ function RowActions({
   if (terminal) {
     return (
       <Button
+        className="gap-1.5"
         size="sm"
         variant="text"
         disabled={pending}
@@ -186,6 +184,7 @@ function RowActions({
   return (
     <div className="flex flex-wrap gap-1.5">
       <Button
+        className="gap-1.5"
         size="sm"
         variant="secondary"
         disabled={pending}
@@ -195,6 +194,7 @@ function RowActions({
         Plan
       </Button>
       <Button
+        className="gap-1.5"
         size="sm"
         variant="secondary"
         disabled={pending}
@@ -203,11 +203,17 @@ function RowActions({
         <LoaderCircleIcon size={14} aria-hidden />
         In progress
       </Button>
-      <Button size="sm" disabled={pending} onClick={() => apply('DONE')}>
+      <Button
+        className="gap-1.5"
+        size="sm"
+        disabled={pending}
+        onClick={() => apply('DONE')}
+      >
         <CheckCircle2Icon size={14} aria-hidden />
         Done
       </Button>
       <Button
+        className="gap-1.5"
         size="sm"
         variant="text"
         disabled={pending}
@@ -263,9 +269,7 @@ export function FeatureRequestsTab() {
         {loading ? (
           <PageLoading label="Loading feature requests…" />
         ) : rows.length === 0 ? (
-          <p className="text-foreground-secondary py-4 text-center text-sm">
-            No feature requests in this view.
-          </p>
+          <PageEmpty title="No feature requests in this view" />
         ) : (
           <ul className="divide-border divide-y">
             {rows.map((r) => {

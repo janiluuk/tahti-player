@@ -42,12 +42,28 @@ describe('PlayerBar', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  it('shows a spinner on the play button while loading and keeps the pause action', () => {
+    const { getByTestId, queryByTestId, rerender } = render(
+      <PlayerBar.Controls isPlaying isLoading />,
+    );
+    const button = getByTestId('player-pause-button');
+    expect(button.getAttribute('aria-busy')).toBe('true');
+    expect(button.getAttribute('aria-label')).toBe('Pause');
+    expect(getByTestId('player-loading-spinner')).toBeTruthy();
+
+    rerender(<PlayerBar.Controls isPlaying />);
+    expect(queryByTestId('player-loading-spinner')).toBeNull();
+    expect(getByTestId('player-pause-button').hasAttribute('aria-busy')).toBe(
+      false,
+    );
+  });
+
   it('(Snapshot) long metadata truncation', () => {
     const longTitle =
       'An Incredibly, Ridiculously Long Song Title That Should Truncate Nicely';
     const longArtist =
       'A Very Long Artist Name Featuring Another Long Artist With Even More Characters';
-    const { asFragment } = render(
+    const { asFragment, getByTestId } = render(
       <div style={{ width: 420 }}>
         <PlayerBar
           left={
@@ -61,6 +77,14 @@ describe('PlayerBar', () => {
           right={<PlayerBar.Volume defaultValue={50} />}
         />
       </div>,
+    );
+    expect(getByTestId('now-playing-title')).toHaveAttribute(
+      'title',
+      longTitle,
+    );
+    expect(getByTestId('player-now-playing-artist')).toHaveAttribute(
+      'title',
+      longArtist,
     );
     expect(asFragment()).toMatchSnapshot();
   });

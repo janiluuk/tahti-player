@@ -1,8 +1,8 @@
 import { apiBase } from './http';
 import {
   allowMockFallback,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
   type FetchMeta,
 } from './mode';
 
@@ -57,10 +57,26 @@ export async function searchMentionUsers(query: string): Promise<{
     return {
       data: [],
       meta: allowMockFallback()
-        ? failMeta(error)
+        ? mockFallbackMeta(error)
         : { source: 'api', reason: String(error) },
     };
   }
+}
+
+function mockPublicMentions(username: string): PublicMention[] {
+  const mentioners = [
+    { username: 'midnight-cartography', displayName: 'Midnight Cartography' },
+    { username: 'northern-lights', displayName: 'Northern Lights' },
+    { username: 'aurora-drift', displayName: 'Aurora Drift' },
+  ];
+  return mentioners
+    .filter((mentioner) => mentioner.username !== username)
+    .map((mentioner, i) => ({
+      id: `mock-mention-${i}`,
+      surface: i % 2 === 0 ? 'TRACKLIST' : 'DESCRIPTION',
+      createdAt: '2026-08-01T12:00:00.000Z',
+      mentioner,
+    }));
 }
 
 export async function fetchPublicMentions(username: string): Promise<{
@@ -68,7 +84,10 @@ export async function fetchPublicMentions(username: string): Promise<{
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
-    return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
+    return {
+      data: mockPublicMentions(username),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
   }
   try {
     const data = await requestJson<PublicMention[]>(
@@ -79,7 +98,7 @@ export async function fetchPublicMentions(username: string): Promise<{
     return {
       data: [],
       meta: allowMockFallback()
-        ? failMeta(error)
+        ? mockFallbackMeta(error)
         : { source: 'api', reason: String(error) },
     };
   }

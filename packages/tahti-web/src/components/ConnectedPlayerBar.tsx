@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import {
   ListMusicIcon,
+  LoaderCircleIcon,
   Maximize2Icon,
   PauseIcon,
   PlayIcon,
@@ -8,15 +9,27 @@ import {
 import { useEffect, useRef, useState } from 'react';
 
 import { formatArtistNames } from '@tahti-player/model';
-import { Badge, Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  cn,
+  MediaArtwork,
+  PlayerBar,
+  Tooltip,
+} from '@tahti-player/ui';
 
+import { TAHTI_RADIO_SLUG } from '../api/client';
+import { radioStationIdForPlayable } from '../content/radioStations';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { usePlaybackErrorToast } from '../hooks/usePlaybackErrorToast';
+import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { useAuthStore } from '../stores/authStore';
 import { useLayoutStore } from '../stores/layoutStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
-import { HearthisEmbedSurface } from './HearthisEmbedSurface';
+import { EmbedSurface } from './EmbedSurface';
+import { useHearthisEmbedClaimed } from './HearthisEmbedHost';
 import { PlayerLiveBadge } from './PlayerSeekBar';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
 import { WaveformSeekbar } from './tahti/WaveformSeekbar';
@@ -61,6 +74,8 @@ export function ConnectedPlayerBar() {
   const [waveformExpanded, setWaveformExpanded] = useState(false);
   const [signedOutPopoverOpen, setSignedOutPopoverOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const playerBarEnterPlayedRef = useRef(false);
+  const [playerBarEnterClass, setPlayerBarEnterClass] = useState('');
 
   const canUseRightRail = Boolean(userId) && !isMobile;
   const queueRailActive =
@@ -73,8 +88,22 @@ export function ConnectedPlayerBar() {
 
   const current = queue.find((q) => q.id === currentId);
   const playable = current ? playableFromQueueItem(current) : null;
+  usePlaybackErrorToast(playable?.title);
   const isPlaying = status === 'playing' || status === 'loading';
-  const hearthisEmbed = playable?.embed;
+  const isLoading = status === 'loading';
+  const embed = playable?.embed;
+  const hearthisHostedInRow = useHearthisEmbedClaimed();
+
+  useEffect(() => {
+    if (playerBarEnterPlayedRef.current || queue.length === 0) {
+      return;
+    }
+    if (!playerBarVisible || !playable) {
+      return;
+    }
+    playerBarEnterPlayedRef.current = true;
+    setPlayerBarEnterClass('tahti-player-bar-enter motion-reduce:animate-none');
+  }, [playerBarVisible, playable, queue.length]);
 
   useEffect(() => {
     if (!signedOutPopoverOpen) {
@@ -92,11 +121,17 @@ export function ConnectedPlayerBar() {
     return () => document.removeEventListener('pointerdown', onPointerDown);
   }, [signedOutPopoverOpen]);
 
+  // A catalog radio station is queued under its own name; while it plays the
+  // title shows what the station says is on, and the name moves to the
+  // second line.
+  const stationNowPlaying = usePlayerStationNowPlaying(playable);
+
   if (!playerBarVisible || !playable) {
     return null;
   }
 
-  const title = playable?.title ?? 'Nothing playing';
+  const title =
+    stationNowPlaying?.title ?? playable?.title ?? 'Nothing playing';
   const provider =
     playable?.sourceProvider && playable.sourceProvider !== 'tahti'
       ? playable.sourceProvider
@@ -105,13 +140,29 @@ export function ConnectedPlayerBar() {
         ? current.track.source.provider
         : null;
   const artistBase =
+    stationNowPlaying?.artist ??
     playable?.artist ??
     (current
       ? formatArtistNames(current.track.artists)
       : 'Pick a channel to listen');
-  const artist = provider ? `${artistBase}, ${provider}` : artistBase;
+  // "internet-radio" is an internal provider id, not a source worth naming.
+  const artist =
+    provider && provider !== 'internet-radio'
+      ? `${artistBase}, ${provider}`
+      : artistBase;
   const soundId = soundIdFromPlayableId(playable?.id ?? currentId);
   const artistSlug = playable?.channelSlug;
+  const radioStationId = playable
+    ? radioStationIdForPlayable(playable)
+    : undefined;
+  const openRadioStation = radioStationId
+    ? () => {
+        void navigate({
+          to: '/radio/station/$stationId',
+          params: { stationId: radioStationId },
+        });
+      }
+    : undefined;
   const progress = duration > 0 ? currentTime / duration : 0;
   const coverUrl = playable?.coverUrl ?? current?.track.artwork?.items[0]?.url;
 
@@ -138,6 +189,7 @@ export function ConnectedPlayerBar() {
     <div className="flex flex-col items-center gap-1">
       <PlayerBar.Controls
         isPlaying={isPlaying}
+        isLoading={isLoading}
         isShuffleActive={!isLive && shuffle}
         repeatMode={isLive ? 'off' : repeatMode}
         showDiscovery={false}
@@ -154,9 +206,12 @@ export function ConnectedPlayerBar() {
         onShuffleToggle={toggleShuffle}
         onRepeatToggle={cycleRepeat}
       />
-      {isLive && status === 'error' ? (
-        <div className="text-foreground-secondary text-xs tracking-wide uppercase">
-          Error
+      {status === 'error' ? (
+        <div
+          className="text-accent-red-strong text-xs"
+          data-testid="player-error-note"
+        >
+          {isLive ? 'Can’t connect — press play to retry' : 'Can’t play this'}
         </div>
       ) : null}
     </div>
@@ -167,18 +222,26 @@ export function ConnectedPlayerBar() {
       size="icon"
       onClick={onPlayPause}
       className={cn(
-        'size-12 shrink-0 rounded-full shadow-md',
+        'size-16 shrink-0 rounded-full shadow-md',
         isPlaying &&
           'bg-accent-green active:bg-accent-green text-black active:text-black',
       )}
       aria-label={isPlaying ? 'Pause' : 'Play'}
       aria-pressed={isPlaying}
+      aria-busy={isLoading || undefined}
       data-testid={isPlaying ? 'player-pause-button' : 'player-play-button'}
     >
-      {isPlaying ? (
-        <PauseIcon size={22} />
+      {isLoading ? (
+        <LoaderCircleIcon
+          size={28}
+          className="animate-spin motion-reduce:animate-none"
+          data-testid="player-loading-spinner"
+          aria-hidden
+        />
+      ) : isPlaying ? (
+        <PauseIcon size={28} />
       ) : (
-        <PlayIcon size={22} className="ml-0.5" />
+        <PlayIcon size={28} className="ml-0.5" />
       )}
     </Button>
   );
@@ -217,71 +280,88 @@ export function ConnectedPlayerBar() {
     </div>
   );
 
-  const waveform = isLive ? null : (
-    <div className="px-4 pt-1">
-      <WaveformSeekbar
-        trackId={playable?.id ?? currentId ?? 'none'}
-        progress={progress}
-        peaks={currentPeaks}
-        bars={currentPeaks?.length || 64}
-        onSeek={(fraction) => {
-          if (duration <= 0) {
-            return;
-          }
-          seekTo(fraction * duration);
-        }}
-        className={cn(
-          'w-full transition-[height] duration-200',
-          waveformExpanded ? WAVEFORM_EXPANDED : WAVEFORM_COMPACT,
-        )}
-      />
-    </div>
-  );
+  // Embed-only tracks have no seekable stream — the provider widget is the
+  // transport. Skip the Tahti waveform so the bottom chrome stays a slim
+  // strip instead of waveform + full widget stacking into the workspace.
+  const waveform =
+    isLive || embed ? null : (
+      <div className="px-4 pt-1">
+        <WaveformSeekbar
+          trackId={playable?.id ?? currentId ?? 'none'}
+          progress={progress}
+          peaks={currentPeaks}
+          bars={currentPeaks?.length || 64}
+          onSeek={(fraction) => {
+            if (duration <= 0) {
+              return;
+            }
+            seekTo(fraction * duration);
+          }}
+          className={cn(
+            'w-full transition-[height] duration-200',
+            waveformExpanded ? WAVEFORM_EXPANDED : WAVEFORM_COMPACT,
+          )}
+        />
+      </div>
+    );
 
-  const hearthisPanel = hearthisEmbed ? (
-    <div className="bg-background-secondary px-4 py-2">
-      <HearthisEmbedSurface
-        embedUri={hearthisEmbed.embedUri}
-        title={title}
-        autoplay={isPlaying}
-        compact
-      />
-      <p className="text-foreground-secondary mt-1 text-center text-[11px]">
-        Playback is controlled by the hearthis.at widget.
-      </p>
-    </div>
-  ) : null;
+  const embedHostedInRow =
+    embed?.provider === 'hearthis' && hearthisHostedInRow;
+  const embedPanel =
+    embed && !embedHostedInRow ? (
+      <div
+        className="border-border max-h-28 w-[min(100%,20rem)] shrink-0 overflow-hidden rounded-lg border"
+        data-testid="hearthis-player-embed"
+      >
+        <EmbedSurface
+          provider={embed.provider}
+          embedUri={embed.embedUri}
+          title={title}
+          autoplay={isPlaying}
+          compact
+        />
+      </div>
+    ) : null;
+
+  const barShellClass = cn(
+    'flex w-full shrink-0 flex-col',
+    playerBarEnterClass,
+  );
 
   if (isMobile) {
     return (
-      <div className="flex w-full flex-col">
+      <div className={barShellClass}>
         {waveform}
-        {hearthisPanel}
-        <div className="flex w-full items-center gap-3 px-4 py-2">
-          <button
+        <div className="flex w-full items-center gap-3 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+          {embedPanel}
+          <Button
+            variant="text"
+            size="flexible"
             type="button"
-            className="flex min-w-0 flex-1 items-center gap-3 text-left"
+            className="flex min-w-0 flex-1 items-center gap-3 text-left hover:bg-transparent"
             onClick={() => setFullScreenPlayerOpen(true)}
             aria-label="Open full-screen player"
             data-testid="expand-full-screen-player"
           >
-            {coverUrl ? (
-              <img
-                src={coverUrl}
-                alt=""
-                className="size-10 shrink-0 rounded-md object-cover"
-              />
+            {!embedPanel && coverUrl ? (
+              <MediaArtwork src={coverUrl} size="sm" className="shrink-0" />
             ) : null}
             <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold">
+              <span
+                className="block truncate text-sm font-semibold"
+                title={title}
+              >
                 {title}
               </span>
-              <span className="text-foreground-secondary block truncate text-xs">
+              <span
+                className="text-foreground-secondary block truncate text-xs"
+                title={artist}
+              >
                 {artist}
               </span>
             </span>
             {isRealLive ? <PlayerLiveBadge /> : null}
-          </button>
+          </Button>
           {mobilePlayPauseButton}
           {queueButton}
         </div>
@@ -290,33 +370,64 @@ export function ConnectedPlayerBar() {
   }
 
   return (
-    <div className="flex w-full flex-col">
+    <div className={barShellClass}>
       {waveform}
-      {hearthisPanel}
       <PlayerBar
         left={
           <div className="flex min-w-0 items-center gap-2">
-            <PlayerBar.NowPlaying
-              title={title}
-              artist={artist}
-              coverUrl={coverUrl}
-              action={isRealLive ? <PlayerLiveBadge /> : undefined}
-              onTitleClick={
-                isLive
-                  ? undefined
-                  : () => setWaveformExpanded((expanded) => !expanded)
-              }
-              onArtistClick={
-                artistSlug
-                  ? () => {
-                      void navigate({
-                        to: '/u/$username',
-                        params: { username: artistSlug },
-                      });
-                    }
-                  : undefined
-              }
-            />
+            {embedPanel ? (
+              <div className="flex min-w-0 items-center gap-2">
+                {embedPanel}
+                <div className="min-w-0">
+                  <div
+                    className="truncate text-sm font-semibold tracking-tight"
+                    title={title}
+                  >
+                    {title}
+                  </div>
+                  <div
+                    className="text-foreground-secondary truncate text-xs"
+                    title={artist}
+                  >
+                    {artist}
+                  </div>
+                </div>
+                {isRealLive ? <PlayerLiveBadge /> : null}
+              </div>
+            ) : (
+              <PlayerBar.NowPlaying
+                title={title}
+                artist={artist}
+                coverUrl={coverUrl}
+                action={isRealLive ? <PlayerLiveBadge /> : undefined}
+                onTitleClick={
+                  openRadioStation ??
+                  (isLive
+                    ? undefined
+                    : () => setWaveformExpanded((expanded) => !expanded))
+                }
+                onArtistClick={
+                  openRadioStation ??
+                  (playable?.kind === 'radio'
+                    ? artistSlug === TAHTI_RADIO_SLUG
+                      ? () => {
+                          void navigate({
+                            to: '/channel/$slug',
+                            params: { slug: artistSlug },
+                          });
+                        }
+                      : undefined
+                    : artistSlug
+                      ? () => {
+                          void navigate({
+                            to: '/u/$username',
+                            params: { username: artistSlug },
+                          });
+                        }
+                      : undefined)
+                }
+              />
+            )}
             {soundId && playable && (
               <AddToPlaylistButton
                 soundId={soundId}
@@ -333,13 +444,13 @@ export function ConnectedPlayerBar() {
         }
         right={
           <div className="flex items-center gap-2">
-            <Tooltip content="Full screen" side="top">
+            <Tooltip content="Open full-screen player" side="top">
               <Button
                 size="icon-sm"
                 variant="text"
                 disabled={!playable}
                 onClick={() => setFullScreenPlayerOpen(true)}
-                aria-label="Full screen"
+                aria-label="Open full-screen player"
                 data-testid="expand-full-screen-player"
               >
                 <Maximize2Icon size={16} />
@@ -350,6 +461,7 @@ export function ConnectedPlayerBar() {
               onValueChange={(v) => setVolume(v / 100)}
               muted={muted}
               onMuteToggle={toggleMute}
+              hideSlider={isMobile}
             />
             {!canUseRightRail && !isMobile ? (
               <div className="relative" ref={popoverRef}>

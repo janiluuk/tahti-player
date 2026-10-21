@@ -5,6 +5,7 @@ import { Button } from '@tahti-player/ui';
 
 import type { FingerprintMatch, StudioReleaseTrack } from '../api/studio-types';
 import { acoustIdProvider } from '../plugins/fingerprinting';
+import { PageEmpty } from './PageStates';
 
 function MatchSummary({ match }: { match: FingerprintMatch }) {
   return (
@@ -61,7 +62,7 @@ export function FingerprintTrackPanel({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-sm font-semibold">{track.title}</span>
         {track.fingerprintMatch ? (
-          <span className="text-accent-yellow flex items-center gap-1.5 text-xs">
+          <span className="text-accent-yellow-strong flex items-center gap-1.5 text-xs">
             <FingerprintIcon size={14} aria-hidden />
             Match on file
           </span>
@@ -99,9 +100,7 @@ export function FingerprintTrackPanel({
       </div>
 
       {checkResult === 'none' && (
-        <p className="text-foreground-secondary text-sm">
-          No match found. Nothing was changed.
-        </p>
+        <PageEmpty title="No match found. Nothing was changed." />
       )}
       {checkResult && checkResult !== 'none' && (
         <div className="border-border bg-background rounded-md border-(length:--border-width) p-3">
@@ -112,7 +111,7 @@ export function FingerprintTrackPanel({
         </div>
       )}
       {error && (
-        <p className="text-accent-red text-sm" role="alert">
+        <p className="text-accent-red-strong text-sm" role="alert">
           {error}
         </p>
       )}

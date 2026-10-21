@@ -10,6 +10,7 @@ export {
 } from './oauth';
 export {
   hearthisSourceAdapter,
+  mixcloudEmbedSourceAdapter,
   searchSourceAdapter,
   searchSourceAdapters,
   spotifySourceAdapter,
@@ -25,6 +26,7 @@ export type {
   BandcampSourceAdapter,
   HearthisSourceAdapter,
   ImportSourcePlugin,
+  MixcloudEmbedSourceAdapter,
   OAuthSourceAdapter,
   SearchSourceAdapter,
   SoundcloudSourceAdapter,

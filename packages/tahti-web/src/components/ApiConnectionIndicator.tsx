@@ -5,11 +5,19 @@ import { Badge } from '@tahti-player/ui';
 import { apiBase } from '../api/client';
 import { isForceMock } from '../api/mode';
 
-export function ApiConnectionIndicator() {
-  const [failed, setFailed] = useState(false);
+export function ApiConnectionIndicator({
+  previewFailed,
+}: {
+  /** Storybook-only override to preview the disconnected pill without a
+   * real health probe -- `isForceMock()` is always true in Storybook (see
+   * .storybook/main.ts), which would otherwise make the probe below a
+   * permanent no-op and this component always render null there. */
+  previewFailed?: boolean;
+} = {}) {
+  const [failed, setFailed] = useState(previewFailed ?? false);
 
   useEffect(() => {
-    if (isForceMock()) {
+    if (previewFailed !== undefined || isForceMock()) {
       return;
     }
     let active = true;
@@ -48,7 +56,7 @@ export function ApiConnectionIndicator() {
       controller?.abort();
       window.clearInterval(interval);
     };
-  }, []);
+  }, [previewFailed]);
 
   return failed ? (
     <span role="status">

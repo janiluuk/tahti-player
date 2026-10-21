@@ -3,7 +3,7 @@
 exports[`TrackTable > (Snapshot) Basic 1`] = `
 <DocumentFragment>
   <div
-    class="flex h-full flex-col"
+    class="@container flex h-full flex-col"
   >
     <div
       class="flex items-center gap-2 mb-2 shrink-0"
@@ -15,10 +15,11 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
           class="flex w-full flex-col gap-2"
         >
           <div
-            class="border-border inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-black has-[:focus-visible]:ring-offset-2"
+            class="border-border has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-background inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2"
           >
             <input
-              class="border-border text-foreground placeholder:text-foreground-secondary w-full px-3 transition-colors focus-visible:ring-black focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              aria-label="Filter tracks"
+              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               data-headlessui-state=""
               id="input-:r0:"
               placeholder="Filter tracks"
@@ -59,16 +60,16 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
         style="scrollbar-width: none;"
       >
         <table
-          class="border-border relative w-full table-fixed border-(length:--border-width)"
+          class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
           role="table"
         >
           <thead>
             <tr
-              class="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+              class="border-border border-b-(length:--border-width) bg-primary text-primary-foreground"
               role="row"
             >
               <th
-                class="w-10 text-center cursor-pointer"
+                class="text-center w-10 cursor-pointer"
                 role="columnheader"
               >
                 <span
@@ -112,10 +113,15 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                       y2="21"
                     />
                   </svg>
+                  <span
+                    class="sr-only"
+                  >
+                    Track number
+                  </span>
                 </span>
               </th>
               <th
-                class="w-10 text-center"
+                class="text-center w-14"
                 role="columnheader"
               >
                 <span
@@ -151,10 +157,15 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                       d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"
                     />
                   </svg>
+                  <span
+                    class="sr-only"
+                  >
+                    Artwork
+                  </span>
                 </span>
               </th>
               <th
-                class="px-2 text-left cursor-pointer"
+                class="px-2 text-left cursor-pointer @max-md:hidden"
                 role="columnheader"
               >
                 <span
@@ -174,7 +185,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                 </span>
               </th>
               <th
-                class="px-2 text-left cursor-pointer"
+                class="px-2 text-left cursor-pointer @max-md:hidden"
                 role="columnheader"
               >
                 <span
@@ -184,7 +195,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                 </span>
               </th>
               <th
-                class="px-2 text-left cursor-pointer"
+                class="px-2 text-left cursor-pointer @max-xl:hidden"
                 role="columnheader"
               >
                 <span
@@ -193,56 +204,13 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                   Duration
                 </span>
               </th>
-              <th
-                class="w-28 text-center"
-                role="columnheader"
-              >
-                <span
-                  class="flex w-full items-center justify-center"
-                >
-                  <svg
-                    aria-hidden="true"
-                    class="lucide lucide-ellipsis-vertical h-4 w-4"
-                    fill="none"
-                    height="24"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="5"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="19"
-                      r="1"
-                    />
-                  </svg>
-                </span>
-              </th>
             </tr>
           </thead>
           <tbody>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
               data-testid="track-row"
-              role="button"
               style="height: 52px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -250,7 +218,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                 1
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -268,10 +236,11 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -281,41 +250,42 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 1"
                 >
                   Track 1
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:30"
                 >
                   0:30
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background"
               data-testid="track-row"
-              role="button"
               style="height: 52px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -323,7 +293,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                 2
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -341,10 +311,11 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -354,41 +325,42 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 2"
                 >
                   Track 2
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:31"
                 >
                   0:31
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
               data-testid="track-row"
-              role="button"
               style="height: 52px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -396,7 +368,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                 3
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -414,10 +386,11 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -427,31 +400,37 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 3"
                 >
                   Track 3
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:32"
                 >
                   0:32
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
           </tbody>
         </table>
@@ -464,7 +443,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
 exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
 <DocumentFragment>
   <div
-    class="flex h-full flex-col"
+    class="@container flex h-full flex-col"
   >
     <div
       class="flex items-center gap-2 mb-2 shrink-0"
@@ -476,10 +455,11 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
           class="flex w-full flex-col gap-2"
         >
           <div
-            class="border-border inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-black has-[:focus-visible]:ring-offset-2"
+            class="border-border has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-background inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2"
           >
             <input
-              class="border-border text-foreground placeholder:text-foreground-secondary w-full px-3 transition-colors focus-visible:ring-black focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              aria-label="Filter tracks"
+              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               data-headlessui-state=""
               id="input-:r2:"
               placeholder="Filter tracks"
@@ -520,16 +500,16 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
         style="scrollbar-width: none;"
       >
         <table
-          class="border-border relative w-full table-fixed border-(length:--border-width)"
+          class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
           role="table"
         >
           <thead>
             <tr
-              class="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+              class="border-border border-b-(length:--border-width) bg-primary text-primary-foreground"
               role="row"
             >
               <th
-                class="w-10 text-center cursor-pointer"
+                class="text-center w-10 cursor-pointer"
                 role="columnheader"
               >
                 <span
@@ -573,10 +553,15 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                       y2="21"
                     />
                   </svg>
+                  <span
+                    class="sr-only"
+                  >
+                    Track number
+                  </span>
                 </span>
               </th>
               <th
-                class="w-10 text-center"
+                class="text-center w-14"
                 role="columnheader"
               >
                 <span
@@ -612,10 +597,15 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                       d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"
                     />
                   </svg>
+                  <span
+                    class="sr-only"
+                  >
+                    Artwork
+                  </span>
                 </span>
               </th>
               <th
-                class="px-2 text-left cursor-pointer"
+                class="px-2 text-left cursor-pointer @max-md:hidden"
                 role="columnheader"
               >
                 <span
@@ -635,7 +625,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                 </span>
               </th>
               <th
-                class="px-2 text-left cursor-pointer"
+                class="px-2 text-left cursor-pointer @max-md:hidden"
                 role="columnheader"
               >
                 <span
@@ -645,51 +635,13 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                 </span>
               </th>
               <th
-                class="px-2 text-left cursor-pointer"
+                class="px-2 text-left cursor-pointer @max-xl:hidden"
                 role="columnheader"
               >
                 <span
                   class="flex items-center"
                 >
                   Duration
-                </span>
-              </th>
-              <th
-                class="w-28 text-center"
-                role="columnheader"
-              >
-                <span
-                  class="flex w-full items-center justify-center"
-                >
-                  <svg
-                    aria-hidden="true"
-                    class="lucide lucide-ellipsis-vertical h-4 w-4"
-                    fill="none"
-                    height="24"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="5"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="19"
-                      r="1"
-                    />
-                  </svg>
                 </span>
               </th>
             </tr>
@@ -701,7 +653,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary cursor-grab"
               data-testid="track-row"
-              role="button"
+              role="row"
               style="height: 52px;"
               tabindex="0"
             >
@@ -711,7 +663,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                 1
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -729,10 +681,11 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -742,31 +695,37 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 1"
                 >
                   Track 1
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:30"
                 >
                   0:30
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby="DndDescribedBy-0"
@@ -774,7 +733,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background cursor-grab"
               data-testid="track-row"
-              role="button"
+              role="row"
               style="height: 52px;"
               tabindex="0"
             >
@@ -784,7 +743,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                 2
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -802,10 +761,11 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -815,31 +775,37 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 2"
                 >
                   Track 2
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:31"
                 >
                   0:31
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby="DndDescribedBy-0"
@@ -847,7 +813,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary cursor-grab"
               data-testid="track-row"
-              role="button"
+              role="row"
               style="height: 52px;"
               tabindex="0"
             >
@@ -857,7 +823,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                 3
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -875,10 +841,11 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -888,31 +855,37 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 3"
                 >
                   Track 3
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:32"
                 >
                   0:32
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby="DndDescribedBy-0"
@@ -920,7 +893,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background cursor-grab"
               data-testid="track-row"
-              role="button"
+              role="row"
               style="height: 52px;"
               tabindex="0"
             >
@@ -930,7 +903,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                 4
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -948,10 +921,11 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -961,31 +935,37 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 4"
                 >
                   Track 4
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:33"
                 >
                   0:33
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby="DndDescribedBy-0"
@@ -993,7 +973,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary cursor-grab"
               data-testid="track-row"
-              role="button"
+              role="row"
               style="height: 52px;"
               tabindex="0"
             >
@@ -1003,7 +983,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                 5
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -1021,10 +1001,11 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1034,31 +1015,37 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 5"
                 >
                   Track 5
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:34"
                 >
                   0:34
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
           </tbody>
         </table>
@@ -1088,7 +1075,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
 exports[`TrackTable > (Snapshot) Filtering 1`] = `
 <DocumentFragment>
   <div
-    class="flex h-full flex-col"
+    class="@container flex h-full flex-col"
   >
     <div
       class="flex items-center gap-2 mb-2 shrink-0"
@@ -1100,10 +1087,11 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
           class="flex w-full flex-col gap-2"
         >
           <div
-            class="border-border inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-black has-[:focus-visible]:ring-offset-2"
+            class="border-border has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-background inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2"
           >
             <input
-              class="border-border text-foreground placeholder:text-foreground-secondary w-full px-3 transition-colors focus-visible:ring-black focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              aria-label="Filter tracks"
+              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               data-headlessui-state=""
               id="input-:r4:"
               placeholder="Filter tracks"
@@ -1144,16 +1132,16 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
         style="scrollbar-width: none;"
       >
         <table
-          class="border-border relative w-full table-fixed border-(length:--border-width)"
+          class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
           role="table"
         >
           <thead>
             <tr
-              class="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+              class="border-border border-b-(length:--border-width) bg-primary text-primary-foreground"
               role="row"
             >
               <th
-                class="w-10 text-center cursor-pointer"
+                class="text-center w-10 cursor-pointer"
                 role="columnheader"
               >
                 <span
@@ -1197,10 +1185,15 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                       y2="21"
                     />
                   </svg>
+                  <span
+                    class="sr-only"
+                  >
+                    Track number
+                  </span>
                 </span>
               </th>
               <th
-                class="w-10 text-center"
+                class="text-center w-14"
                 role="columnheader"
               >
                 <span
@@ -1236,10 +1229,15 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                       d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"
                     />
                   </svg>
+                  <span
+                    class="sr-only"
+                  >
+                    Artwork
+                  </span>
                 </span>
               </th>
               <th
-                class="px-2 text-left cursor-pointer"
+                class="px-2 text-left cursor-pointer @max-md:hidden"
                 role="columnheader"
               >
                 <span
@@ -1259,7 +1257,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                 </span>
               </th>
               <th
-                class="px-2 text-left cursor-pointer"
+                class="px-2 text-left cursor-pointer @max-md:hidden"
                 role="columnheader"
               >
                 <span
@@ -1269,7 +1267,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                 </span>
               </th>
               <th
-                class="px-2 text-left cursor-pointer"
+                class="px-2 text-left cursor-pointer @max-xl:hidden"
                 role="columnheader"
               >
                 <span
@@ -1278,56 +1276,13 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                   Duration
                 </span>
               </th>
-              <th
-                class="w-28 text-center"
-                role="columnheader"
-              >
-                <span
-                  class="flex w-full items-center justify-center"
-                >
-                  <svg
-                    aria-hidden="true"
-                    class="lucide lucide-ellipsis-vertical h-4 w-4"
-                    fill="none"
-                    height="24"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="5"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="19"
-                      r="1"
-                    />
-                  </svg>
-                </span>
-              </th>
             </tr>
           </thead>
           <tbody>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
               data-testid="track-row"
-              role="button"
               style="height: 52px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -1335,7 +1290,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                 1
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -1353,10 +1308,11 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1366,41 +1322,42 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 1"
                 >
                   Track 1
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:30"
                 >
                   0:30
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background"
               data-testid="track-row"
-              role="button"
               style="height: 52px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -1408,7 +1365,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                 2
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -1426,10 +1383,11 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1439,41 +1397,42 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 2"
                 >
                   Track 2
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:31"
                 >
                   0:31
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
               data-testid="track-row"
-              role="button"
               style="height: 52px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -1481,7 +1440,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                 3
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -1499,10 +1458,11 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1512,41 +1472,42 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 3"
                 >
                   Track 3
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:32"
                 >
                   0:32
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background"
               data-testid="track-row"
-              role="button"
               style="height: 52px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -1554,7 +1515,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                 4
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -1572,10 +1533,11 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1585,41 +1547,42 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 4"
                 >
                   Track 4
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:33"
                 >
                   0:33
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
               data-testid="track-row"
-              role="button"
               style="height: 52px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -1627,7 +1590,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                 5
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -1645,10 +1608,11 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1658,31 +1622,37 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 5"
                 >
                   Track 5
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:34"
                 >
                   0:34
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
           </tbody>
         </table>
@@ -1698,7 +1668,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
     style="height: 400px;"
   >
     <div
-      class="flex h-full flex-col"
+      class="@container flex h-full flex-col"
     >
       <div
         class="flex items-center gap-2 mb-2 shrink-0"
@@ -1710,10 +1680,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
             class="flex w-full flex-col gap-2"
           >
             <div
-              class="border-border inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-black has-[:focus-visible]:ring-offset-2"
+              class="border-border has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-background inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2"
             >
               <input
-                class="border-border text-foreground placeholder:text-foreground-secondary w-full px-3 transition-colors focus-visible:ring-black focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                aria-label="Filter tracks"
+                class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                 data-headlessui-state=""
                 id="input-:r6:"
                 placeholder="Filter tracks"
@@ -1754,16 +1725,16 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
           style="scrollbar-width: none;"
         >
           <table
-            class="border-border relative w-full table-fixed border-(length:--border-width)"
+            class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
             role="table"
           >
             <thead>
               <tr
-                class="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+                class="border-border border-b-(length:--border-width) bg-primary text-primary-foreground"
                 role="row"
               >
                 <th
-                  class="w-10 text-center cursor-pointer"
+                  class="text-center w-10 cursor-pointer"
                   role="columnheader"
                 >
                   <span
@@ -1807,10 +1778,15 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                         y2="21"
                       />
                     </svg>
+                    <span
+                      class="sr-only"
+                    >
+                      Track number
+                    </span>
                   </span>
                 </th>
                 <th
-                  class="w-10 text-center"
+                  class="text-center w-14"
                   role="columnheader"
                 >
                   <span
@@ -1846,10 +1822,15 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                         d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"
                       />
                     </svg>
+                    <span
+                      class="sr-only"
+                    >
+                      Artwork
+                    </span>
                   </span>
                 </th>
                 <th
-                  class="px-2 text-left cursor-pointer"
+                  class="px-2 text-left cursor-pointer @max-md:hidden"
                   role="columnheader"
                 >
                   <span
@@ -1869,7 +1850,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </span>
                 </th>
                 <th
-                  class="px-2 text-left cursor-pointer"
+                  class="px-2 text-left cursor-pointer @max-md:hidden"
                   role="columnheader"
                 >
                   <span
@@ -1879,7 +1860,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </span>
                 </th>
                 <th
-                  class="px-2 text-left cursor-pointer"
+                  class="px-2 text-left cursor-pointer @max-xl:hidden"
                   role="columnheader"
                 >
                   <span
@@ -1888,56 +1869,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     Duration
                   </span>
                 </th>
-                <th
-                  class="w-28 text-center"
-                  role="columnheader"
-                >
-                  <span
-                    class="flex w-full items-center justify-center"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      class="lucide lucide-ellipsis-vertical h-4 w-4"
-                      fill="none"
-                      height="24"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <circle
-                        cx="12"
-                        cy="12"
-                        r="1"
-                      />
-                      <circle
-                        cx="12"
-                        cy="5"
-                        r="1"
-                      />
-                      <circle
-                        cx="12"
-                        cy="19"
-                        r="1"
-                      />
-                    </svg>
-                  </span>
-                </th>
               </tr>
             </thead>
             <tbody>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -1945,7 +1883,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   1
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -1963,10 +1901,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -1976,41 +1915,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 1"
                   >
                     Track 1
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:30"
                   >
                     0:30
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2018,7 +1958,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   2
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -2036,10 +1976,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2049,41 +1990,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 2"
                   >
                     Track 2
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:31"
                   >
                     0:31
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2091,7 +2033,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   3
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -2109,10 +2051,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2122,41 +2065,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 3"
                   >
                     Track 3
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:32"
                   >
                     0:32
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2164,7 +2108,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   4
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -2182,10 +2126,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2195,41 +2140,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 4"
                   >
                     Track 4
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:33"
                   >
                     0:33
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2237,7 +2183,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   5
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -2255,10 +2201,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2268,41 +2215,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 5"
                   >
                     Track 5
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:34"
                   >
                     0:34
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2310,7 +2258,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   6
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -2328,10 +2276,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2341,41 +2290,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 6"
                   >
                     Track 6
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:35"
                   >
                     0:35
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2383,7 +2333,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   7
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -2401,10 +2351,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2414,41 +2365,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 7"
                   >
                     Track 7
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:36"
                   >
                     0:36
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2456,7 +2408,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   8
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -2474,10 +2426,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2487,41 +2440,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 8"
                   >
                     Track 8
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:37"
                   >
                     0:37
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2529,7 +2483,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   9
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -2547,10 +2501,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2560,41 +2515,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 9"
                   >
                     Track 9
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:38"
                   >
                     0:38
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2602,7 +2558,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   10
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -2620,10 +2576,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2633,41 +2590,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 10"
                   >
                     Track 10
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:39"
                   >
                     0:39
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2675,7 +2633,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   11
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -2693,10 +2651,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2706,41 +2665,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 11"
                   >
                     Track 11
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:40"
                   >
                     0:40
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2748,7 +2708,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   12
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -2766,10 +2726,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2779,41 +2740,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 12"
                   >
                     Track 12
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:41"
                   >
                     0:41
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2821,7 +2783,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   13
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -2839,10 +2801,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2852,41 +2815,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 13"
                   >
                     Track 13
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:42"
                   >
                     0:42
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2894,7 +2858,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   14
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -2912,10 +2876,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2925,41 +2890,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 14"
                   >
                     Track 14
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:43"
                   >
                     0:43
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2967,7 +2933,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   15
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -2985,10 +2951,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2998,41 +2965,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 15"
                   >
                     Track 15
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:44"
                   >
                     0:44
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -3040,7 +3008,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   16
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -3058,10 +3026,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -3071,41 +3040,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 16"
                   >
                     Track 16
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:45"
                   >
                     0:45
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -3113,7 +3083,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   17
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -3131,10 +3101,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -3144,41 +3115,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 17"
                   >
                     Track 17
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:46"
                   >
                     0:46
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -3186,7 +3158,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   18
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -3204,10 +3176,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -3217,41 +3190,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 18"
                   >
                     Track 18
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:47"
                   >
                     0:47
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -3259,7 +3233,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   19
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -3277,10 +3251,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -3290,41 +3265,42 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 19"
                   >
                     Track 19
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:48"
                   >
                     0:48
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 52px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -3332,7 +3308,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   20
                 </td>
                 <td
-                  class="w-12 text-center"
+                  class="w-14 text-center"
                 >
                   <div
                     class="flex w-full justify-center"
@@ -3350,10 +3326,11 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -3363,38 +3340,44 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 20"
                   >
                     Track 20
                   </button>
+                  <div
+                    class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
+                  >
+                    Frank Zappa
+                  </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-md:hidden"
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
                 </td>
                 <td
-                  class="cursor-default truncate px-2"
+                  class="cursor-default truncate px-2 @max-xl:hidden"
                 >
                   <div
                     class="truncate"
+                    title="0:49"
                   >
                     0:49
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 class="border-none"
                 style="height: 20160px;"
               >
                 <td
-                  colspan="7"
+                  colspan="6"
                 />
               </tr>
             </tbody>
@@ -3409,7 +3392,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
 exports[`TrackTable > (Snapshot) Toolbar 1`] = `
 <DocumentFragment>
   <div
-    class="flex h-full flex-col"
+    class="@container flex h-full flex-col"
   >
     <div
       class="flex items-center gap-2 mb-2 shrink-0"
@@ -3417,7 +3400,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
       <div>
         <button
           aria-label="Play all"
-          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-10 justify-center"
+          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-10 justify-center"
           data-headlessui-state=""
           data-testid="play-all-button"
           type="button"
@@ -3444,7 +3427,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
       <div>
         <button
           aria-label="Add all to queue"
-          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none size-10 justify-center"
+          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none size-10 justify-center"
           data-headlessui-state=""
           data-testid="add-all-to-queue-button"
           type="button"
@@ -3478,10 +3461,11 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
           class="flex w-full flex-col gap-2"
         >
           <div
-            class="border-border inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-black has-[:focus-visible]:ring-offset-2"
+            class="border-border has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-background inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2"
           >
             <input
-              class="border-border text-foreground placeholder:text-foreground-secondary w-full px-3 transition-colors focus-visible:ring-black focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              aria-label="Filter tracks"
+              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               data-headlessui-state=""
               id="input-:r8:"
               placeholder="Filter tracks"
@@ -3522,16 +3506,16 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
         style="scrollbar-width: none;"
       >
         <table
-          class="border-border relative w-full table-fixed border-(length:--border-width)"
+          class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
           role="table"
         >
           <thead>
             <tr
-              class="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+              class="border-border border-b-(length:--border-width) bg-primary text-primary-foreground"
               role="row"
             >
               <th
-                class="w-10 text-center cursor-pointer"
+                class="text-center w-10 cursor-pointer"
                 role="columnheader"
               >
                 <span
@@ -3575,10 +3559,15 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                       y2="21"
                     />
                   </svg>
+                  <span
+                    class="sr-only"
+                  >
+                    Track number
+                  </span>
                 </span>
               </th>
               <th
-                class="w-10 text-center"
+                class="text-center w-14"
                 role="columnheader"
               >
                 <span
@@ -3614,10 +3603,15 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                       d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"
                     />
                   </svg>
+                  <span
+                    class="sr-only"
+                  >
+                    Artwork
+                  </span>
                 </span>
               </th>
               <th
-                class="px-2 text-left cursor-pointer"
+                class="px-2 text-left cursor-pointer @max-md:hidden"
                 role="columnheader"
               >
                 <span
@@ -3637,7 +3631,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                 </span>
               </th>
               <th
-                class="px-2 text-left cursor-pointer"
+                class="px-2 text-left cursor-pointer @max-md:hidden"
                 role="columnheader"
               >
                 <span
@@ -3647,7 +3641,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                 </span>
               </th>
               <th
-                class="px-2 text-left cursor-pointer"
+                class="px-2 text-left cursor-pointer @max-xl:hidden"
                 role="columnheader"
               >
                 <span
@@ -3656,56 +3650,13 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                   Duration
                 </span>
               </th>
-              <th
-                class="w-28 text-center"
-                role="columnheader"
-              >
-                <span
-                  class="flex w-full items-center justify-center"
-                >
-                  <svg
-                    aria-hidden="true"
-                    class="lucide lucide-ellipsis-vertical h-4 w-4"
-                    fill="none"
-                    height="24"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="5"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="19"
-                      r="1"
-                    />
-                  </svg>
-                </span>
-              </th>
             </tr>
           </thead>
           <tbody>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
               data-testid="track-row"
-              role="button"
               style="height: 52px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -3713,7 +3664,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                 1
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -3731,10 +3682,11 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -3744,41 +3696,42 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 1"
                 >
                   Track 1
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:30"
                 >
                   0:30
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background"
               data-testid="track-row"
-              role="button"
               style="height: 52px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -3786,7 +3739,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                 2
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -3804,10 +3757,11 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -3817,41 +3771,42 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 2"
                 >
                   Track 2
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:31"
                 >
                   0:31
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
               data-testid="track-row"
-              role="button"
               style="height: 52px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -3859,7 +3814,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                 3
               </td>
               <td
-                class="w-12 text-center"
+                class="w-14 text-center"
               >
                 <div
                   class="flex w-full justify-center"
@@ -3877,10 +3832,11 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -3890,31 +3846,37 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 3"
                 >
                   Track 3
                 </button>
+                <div
+                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
+                >
+                  Frank Zappa
+                </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-md:hidden"
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
               </td>
               <td
-                class="cursor-default truncate px-2"
+                class="cursor-default truncate px-2 @max-xl:hidden"
               >
                 <div
                   class="truncate"
+                  title="0:32"
                 >
                   0:32
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
           </tbody>
         </table>

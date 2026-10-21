@@ -1,10 +1,11 @@
 import { useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
 import type { Track } from '@tahti-player/model';
 import { Button, Dialog, TrackTable } from '@tahti-player/ui';
 
+import { ANNOTATED_ROW_HEIGHT } from '../api/collection-contribution';
 import type { TahtiPlayable } from '../api/types';
 import { playableToTrack } from '../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../lib/soundId';
@@ -12,25 +13,55 @@ import { trackTableLabels } from '../lib/trackTableLabels';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useTrackDetailStore } from '../stores/trackDetailStore';
+import { PageEmpty } from './PageStates';
 import { PlayableTrackContextMenu } from './PlayableTrackContextMenu';
 
 type Props = {
   items: TahtiPlayable[];
   emptyMessage?: string;
   playAll?: boolean;
+  /** Off for a secondary table on the same page (e.g. channel Pinned above Catalog). */
+  filterable?: boolean;
+  addAllToQueue?: boolean;
+  quietHeader?: boolean;
   compactActions?: boolean;
   /** Present only when the caller has already decided the viewer can
    * edit these tracks (e.g. their own catalog) -- omit entirely to keep
    * the edit icon off tables of other people's/aggregated tracks. */
   onEdit?: (item: TahtiPlayable) => void;
+  /** Present only when the caller owns these items outright and deletion
+   * needs no confirmation dialog of its own (e.g. the local library panel,
+   * where "remove" just forgets a file reference) -- omit to keep the
+   * delete icon off tables where removal isn't a thing (most callers). */
+  onRemove?: (item: TahtiPlayable) => void;
+  /** Turns on checkbox multi-select + a bulk-action toolbar (select-all,
+   * "N selected", bulk queue/remove). "Add selected to queue" needs no
+   * caller callback -- queueing is generic, handled here directly, same
+   * as the existing addAllToQueue confirm flow -- but bulk remove only
+   * appears when `onBulkRemove` is provided, same convention as `onRemove`. */
+  selectable?: boolean;
+  onBulkRemove?: (items: TahtiPlayable[]) => void;
+  /** Secondary line under a row's title, e.g. who added it to a shared
+   * playlist. Rows grow taller only when some item has one. */
+  getAnnotation?: (item: TahtiPlayable) => ReactNode;
+  /** Hide the Artist column (e.g. own channel where every row is the owner). */
+  hideArtist?: boolean;
 };
 
 export function PlayableTrackTable({
   items,
   emptyMessage = 'No tracks yet.',
   playAll = true,
+  filterable = true,
+  addAllToQueue: showAddAllToQueue = true,
+  quietHeader = false,
   compactActions = false,
   onEdit,
+  onRemove,
+  selectable = false,
+  onBulkRemove,
+  getAnnotation,
+  hideArtist = false,
 }: Props) {
   const navigate = useNavigate();
   const play = usePlayerStore((s) => s.play);
@@ -45,14 +76,30 @@ export function PlayableTrackTable({
   const rememberTrackDetail = useTrackDetailStore((s) => s.remember);
 
   if (items.length === 0) {
-    return <p className="text-foreground-secondary text-sm">{emptyMessage}</p>;
+    return <PageEmpty title={emptyMessage} />;
   }
 
   const tracks: Track[] = items.map(playableToTrack);
-  const byId = new Map(items.map((i) => [i.id, i]));
+  // Keyed the same way `playableToTrack` sets `source.id` -- an embed
+  // item's source.id is its `embedUri`, not `item.id` -- so lookups from
+  // both a `Track` (via `resolve`) and a raw id string (bulk actions) hit
+  // the same map instead of silently missing for embed-only tracks.
+  const byId = new Map(items.map((i) => [i.embed?.embedUri ?? i.id, i]));
 
   const resolve = (track: Track): TahtiPlayable | null =>
     byId.get(track.source.id) ?? null;
+
+  const annotations = getAnnotation
+    ? new Map(items.map((i) => [i.embed?.embedUri ?? i.id, getAnnotation(i)]))
+    : null;
+  const hasAnnotations = annotations
+    ? [...annotations.values()].some(Boolean)
+    : false;
+
+  const resolveSelection = (ids: string[]): TahtiPlayable[] =>
+    ids
+      .map((id) => byId.get(id))
+      .filter((item): item is TahtiPlayable => item !== undefined);
 
   // The listener-facing track page (waveform, artwork, comments — see
   // TrackDetailView) is the default destination for both the title text
@@ -104,20 +151,29 @@ export function PlayableTrackTable({
         <TrackTable
           tracks={tracks}
           labels={trackTableLabels}
+          rowHeight={hasAnnotations ? ANNOTATED_ROW_HEIGHT : undefined}
+          classes={
+            quietHeader
+              ? {
+                  header: 'bg-foreground/10 text-inherit border-border/50',
+                }
+              : undefined
+          }
           features={{
             header: true,
-            filterable: true,
+            filterable,
             sortable: true,
             favorites: true,
             playAll,
-            addAllToQueue: true,
+            addAllToQueue: showAddAllToQueue,
             reorderable: false,
             contextMenu: true,
+            selectable,
           }}
           display={{
             displayThumbnail: true,
             displayFavorite: true,
-            displayArtist: true,
+            displayArtist: !hideArtist,
             displayDuration: true,
             displayAlbum: items.some((i) =>
               Boolean(i.sourceProvider && i.sourceProvider !== 'tahti'),
@@ -125,6 +181,7 @@ export function PlayableTrackTable({
             displayReleaseDate: items.some((i) => Boolean(i.releaseDate)),
             displayQueueControls: !compactActions,
             displayPosition: false,
+            displayDeleteButton: Boolean(onRemove),
           }}
           actions={{
             onPlayNow: (track) => {
@@ -169,6 +226,14 @@ export function PlayableTrackTable({
                 toggleFavoriteTrack(item);
               }
             },
+            onRemove: onRemove
+              ? (track) => {
+                  const item = resolve(track);
+                  if (item) {
+                    onRemove(item);
+                  }
+                }
+              : undefined,
             onEdit: onEdit
               ? (track) => {
                   const item = resolve(track);
@@ -176,6 +241,24 @@ export function PlayableTrackTable({
                     onEdit(item);
                   }
                 }
+              : undefined,
+            onAddSelectedToQueue: (ids) => {
+              const selected = resolveSelection(ids);
+              const queuedIds = new Set(queue.map((q) => q.id));
+              const newItems = selected.filter(
+                (item) => !queuedIds.has(item.id),
+              );
+              for (const item of newItems) {
+                enqueue(item);
+              }
+              if (newItems.length > 0) {
+                toast.success(
+                  `Added ${newItems.length} track${newItems.length === 1 ? '' : 's'} to the queue.`,
+                );
+              }
+            },
+            onRemoveSelected: onBulkRemove
+              ? (ids) => onBulkRemove(resolveSelection(ids))
               : undefined,
           }}
           meta={{
@@ -193,6 +276,9 @@ export function PlayableTrackTable({
             // rendering a dead link.
             canOpenDetail: (track) =>
               Boolean(soundIdFromPlayableId(track.source.id)),
+            getTrackAnnotation: annotations
+              ? (track) => annotations.get(track.source.id)
+              : undefined,
             ContextMenuWrapper: PlayableTrackContextMenu,
           }}
         />

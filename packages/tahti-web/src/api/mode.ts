@@ -28,16 +28,27 @@ export function allowMockFallback(): boolean {
   return Boolean(import.meta.env.DEV);
 }
 
-export function failMeta(err: unknown): FetchMeta {
+/** API failed and the caller is returning empty/null stand-in data — not a
+ * successful mock fixture. Views that check `meta.source === 'api'` can show
+ * PageError / Retry instead of treating the empty stand-in as a real empty. */
+export function apiErrorMeta(err: unknown): FetchMeta {
   return {
-    source: 'mock',
+    source: 'api',
     reason: err instanceof Error ? err.message : 'fetch failed',
   };
 }
 
-export function apiErrorMeta(err: unknown): FetchMeta {
+/** @deprecated Use `apiErrorMeta` for empty stand-ins, or `mockFallbackMeta`
+ * when returning intentional mock fixture data after an API failure. */
+export function failMeta(err: unknown): FetchMeta {
+  return apiErrorMeta(err);
+}
+
+/** API failed but the caller is returning mock fixture data (dev fallback or
+ * an explicit mock stand-in). `source: 'mock'` so listeners can tell. */
+export function mockFallbackMeta(err: unknown): FetchMeta {
   return {
-    source: 'api',
+    source: 'mock',
     reason: err instanceof Error ? err.message : 'fetch failed',
   };
 }
@@ -49,7 +60,7 @@ export function withMockFallback<T>(
   empty: () => T,
 ): { data: T; meta: FetchMeta } {
   if (allowMockFallback()) {
-    return { data: mock(), meta: failMeta(err) };
+    return { data: mock(), meta: mockFallbackMeta(err) };
   }
   return { data: empty(), meta: apiErrorMeta(err) };
 }

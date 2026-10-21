@@ -4,10 +4,10 @@ import path from 'node:path';
 import process from 'node:process';
 
 const scriptDirectory = path.dirname(new URL(import.meta.url).pathname);
-const openApiPath = path.resolve(
-  scriptDirectory,
-  '../../../../tahti-org/openapi.json',
-);
+// TAHTI_OPENAPI points at an export elsewhere, e.g. from a git worktree.
+const openApiPath =
+  process.env.TAHTI_OPENAPI ??
+  path.resolve(scriptDirectory, '../../../../tahti-org/openapi.json');
 const referencePath = path.resolve(scriptDirectory, '../docs/API-REFERENCE.md');
 
 const openApi = JSON.parse(fs.readFileSync(openApiPath, 'utf8'));
@@ -25,4 +25,4 @@ if (marker !== expectedHash) {
   process.exit(1);
 }
 
-console.log(`API docs match ../tahti-org/openapi.json (${expectedHash}).`);
+console.log(`API docs match ${openApiPath} (${expectedHash}).`);

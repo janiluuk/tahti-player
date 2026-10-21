@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AddToMusicActions } from '@tahti-web/components/AddToMusicActions';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 
@@ -18,6 +19,17 @@ export const Default: Story = {
   args: {},
 };
 
+export const UploadHint: Story = {
+  args: {},
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.hover(canvas.getByRole('button', { name: 'Upload' }));
+    await expect(
+      await within(document.body).findByRole('tooltip'),
+    ).toHaveTextContent('Library → Upload');
+  },
+};
+
 export const Centered: Story = {
   args: {
     align: 'center',
@@ -28,5 +40,17 @@ export const Compact: Story = {
   args: {
     size: 'sm',
     align: 'start',
+  },
+};
+
+export const EmptyArchiveUploadPage: Story = {
+  args: {
+    align: 'center',
+    uploadTo: '/library/upload',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const upload = canvas.getByRole('link', { name: 'Upload' });
+    await expect(upload).toHaveAttribute('href', '/library/upload');
   },
 };

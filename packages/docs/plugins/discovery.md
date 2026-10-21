@@ -4,6 +4,10 @@ description: Recommend tracks based on the user's listening context
 
 # Discovery
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 ## Discovery providers
 
 Discovery providers recommend tracks based on what the user is listening to. When the user reaches the last track in their queue, Tahti Player asks the active discovery provider for recommendations and appends them automatically.

@@ -13,6 +13,7 @@ import { PlaylistsWrapper } from './Playlists.test-wrapper';
 const toastError = vi.fn();
 const toastSuccess = vi.fn();
 vi.mock('sonner', () => ({
+  Toaster: () => null,
   toast: {
     error: (...args: unknown[]) => toastError(...args),
     success: (...args: unknown[]) => toastSuccess(...args),
@@ -142,7 +143,7 @@ describe('import from URL', () => {
 
     await vi.waitFor(() => {
       expect(toastError).toHaveBeenCalledWith(
-        'No plugin can handle this URL. Install a plugin that supports this service.',
+        'No add-on can handle this URL. Install an add-on that supports this service.',
       );
     });
     expect(PlaylistsWrapper.importView).not.toBeInTheDocument();
@@ -161,7 +162,7 @@ describe('import from URL', () => {
 
     await vi.waitFor(() => {
       expect(toastError).toHaveBeenCalledWith(
-        'No plugin can handle this URL. Install a plugin that supports this service.',
+        'No add-on can handle this URL. Install an add-on that supports this service.',
       );
     });
     expect(PlaylistsWrapper.importView).not.toBeInTheDocument();

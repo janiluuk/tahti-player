@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
+import { E2E_EMAIL, E2E_PASSWORD } from './helpers/auth';
+
 const PNG_1X1 = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
   'base64',
@@ -11,8 +13,8 @@ async function signIn(
 ): Promise<void> {
   await page.goto('/login');
   await expect(page.getByLabel('Email')).toBeVisible({ timeout: 20_000 });
-  await page.getByLabel('Email').fill('artist@tahti.live');
-  await page.getByLabel('Password').fill('demo-password');
+  await page.getByLabel('Email').fill(E2E_EMAIL);
+  await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign in' }).click();
   await expect(
     page.getByRole('button', { name: /^Signed in as/ }),

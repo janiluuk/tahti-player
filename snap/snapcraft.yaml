@@ -38,12 +38,12 @@ parts:
   build-app:
     plugin: dump
     build-snaps:
-      - node/22/stable
       - rustup/latest/stable
     build-packages:
       - libwebkit2gtk-4.1-dev
       - build-essential
       - curl
+      - xz-utils
       - wget
       - file
       - libxdo-dev
@@ -61,8 +61,20 @@ parts:
 
       rustup default stable
 
-      npm install -g pnpm
-      pnpm approve-builds
+      # The node/24 snap needs glibc 2.38; core22 has 2.35. The nodejs.org
+      # binaries only need glibc 2.28.
+      NODE_BASE=https://nodejs.org/dist/latest-v24.x
+      curl -fsSL "$NODE_BASE/SHASUMS256.txt" -o node-shasums.txt
+      NODE_FILE=$(awk '/linux-x64\.tar\.xz$/ {print $2}' node-shasums.txt)
+      curl -fsSLO "$NODE_BASE/$NODE_FILE"
+      grep " $NODE_FILE\$" node-shasums.txt | sha256sum -c -
+      mkdir -p "$SNAPCRAFT_PART_BUILD/.node"
+      tar -xJf "$NODE_FILE" -C "$SNAPCRAFT_PART_BUILD/.node" --strip-components=1
+      rm "$NODE_FILE" node-shasums.txt
+      export PATH="$SNAPCRAFT_PART_BUILD/.node/bin:$PATH"
+
+      PNPM_VERSION=$(sed -n 's/.*"packageManager": "pnpm@\([0-9.]*\).*/\1/p' package.json)
+      npm install -g "pnpm@$PNPM_VERSION"
       pnpm install --frozen-lockfile
 
       cd packages/player
@@ -70,6 +82,13 @@ parts:
 
       dpkg -x src-tauri/target/release/bundle/deb/*.deb $SNAPCRAFT_PART_INSTALL/
 
+      # Tauri names the deb's desktop file after productName ("Tahti Player"),
+      # so install the repo's own desktop file and icon, as packaging/flatpak/ does.
+      install -Dm644 "$SNAPCRAFT_PART_BUILD/packages/player/src-tauri/resources/live.tahti.player.desktop" \
+        "$SNAPCRAFT_PART_INSTALL/usr/share/applications/live.tahti.player.desktop"
+      install -Dm644 "$SNAPCRAFT_PART_BUILD/packaging/flatpak/icons/512x512.png" \
+        "$SNAPCRAFT_PART_INSTALL/usr/share/icons/hicolor/512x512/apps/live.tahti.player.png"
+
       sed -i \
         "s|Icon=live.tahti.player|Icon=/usr/share/icons/hicolor/512x512/apps/live.tahti.player.png|g" \
-        $SNAPCRAFT_PART_INSTALL/usr/share/applications/live.tahti.player.desktop
+        "$SNAPCRAFT_PART_INSTALL/usr/share/applications/live.tahti.player.desktop"

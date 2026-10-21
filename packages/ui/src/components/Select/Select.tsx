@@ -10,7 +10,7 @@ import { SelectOptions } from './SelectOptions';
 import { SelectRoot } from './SelectRoot';
 
 export const selectVariants = cva(
-  'border-border bg-background-input text-foreground relative flex w-full items-center justify-between rounded-md border-(length:--border-width) px-3 pr-8 text-left transition-colors focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+  'border-border bg-background-input text-foreground focus-visible:ring-primary focus-visible:ring-offset-background relative flex w-full items-center justify-between rounded-md border-(length:--border-width) px-3 pr-8 text-left transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
   {
     variants: {
       size: {
@@ -42,6 +42,8 @@ export type SelectProps = VariantProps<typeof selectVariants> & {
   defaultValue?: string;
   onValueChange?: (value: string) => void;
   className?: string;
+  /** Accessible name when there is no visible `label` (e.g. a toolbar). */
+  'aria-label'?: string;
 };
 
 type SelectComponent = FC<SelectProps> & {
@@ -67,6 +69,7 @@ const SelectImpl: FC<SelectProps> = ({
   size,
   className,
   disabled,
+  'aria-label': ariaLabel,
 }) => {
   return (
     <div className="relative flex w-full flex-col gap-2">
@@ -85,7 +88,7 @@ const SelectImpl: FC<SelectProps> = ({
         disabled={disabled}
       >
         <SelectLabel label={label} />
-        <SelectButton />
+        <SelectButton aria-label={label ? undefined : ariaLabel} />
         <SelectOptions>
           {options.map((opt) => (
             <SelectOptionComponent

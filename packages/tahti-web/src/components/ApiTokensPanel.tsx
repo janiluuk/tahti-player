@@ -2,21 +2,40 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  Badge,
   Button,
   CopyButton,
   Input,
   SectionShell,
+  Select,
   Toggle,
 } from '@tahti-player/ui';
 
 import {
   createApiToken,
   fetchApiTokens,
+  mcpEndpointUrl,
   revokeApiToken,
   type ApiToken,
 } from '../api/api-tokens';
 import { ConfirmDialog } from './ConfirmDialog';
-import { PageLoading } from './PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from './PageStates';
+
+const EXPIRY_OPTIONS = [
+  { id: 'never', label: 'Never' },
+  { id: '30', label: '30 days' },
+  { id: '90', label: '90 days' },
+  { id: '365', label: '1 year' },
+];
+
+function isExpired(token: ApiToken): boolean {
+  return Boolean(token.expiresAt && new Date(token.expiresAt) <= new Date());
+}
 
 function formatDate(value: string | null): string {
   if (!value) {
@@ -35,17 +54,23 @@ export function ApiTokensPanel() {
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState('');
   const [canWrite, setCanWrite] = useState(false);
+  const [expiry, setExpiry] = useState('never');
   const [saving, setSaving] = useState(false);
   const [revealedToken, setRevealedToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pendingRevoke, setPendingRevoke] = useState<ApiToken | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     void fetchApiTokens().then((result) => {
       setTokens(result.data);
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
-  }, []);
+  }, [attempt]);
 
   const createToken = () => {
     const trimmedName = name.trim();
@@ -57,6 +82,7 @@ export function ApiTokensPanel() {
     void createApiToken(
       trimmedName,
       canWrite ? ['read', 'write'] : ['read'],
+      expiry === 'never' ? undefined : Number(expiry),
     ).then((result) => {
       setSaving(false);
       if (!result.ok) {
@@ -69,6 +95,7 @@ export function ApiTokensPanel() {
       setAdding(false);
       setName('');
       setCanWrite(false);
+      setExpiry('never');
       toast.success('API token created.');
     });
   };
@@ -90,6 +117,23 @@ export function ApiTokensPanel() {
         Personal tokens for scripts and third-party integrations. Each token is
         shown only once when created.
       </p>
+      <div className="mb-4 flex flex-col gap-2" data-testid="api-tokens-mcp">
+        <p className="text-foreground-secondary text-sm">
+          AI tools such as Claude Code or Cursor can use a token with Tahti’s
+          MCP server: search, your likes and playlists, and with write access
+          liking, following and adding to playlists.
+        </p>
+        <div className="flex items-center gap-2">
+          <code className="border-border bg-background-secondary min-w-0 flex-1 overflow-x-auto rounded-md border px-3 py-2 text-sm whitespace-nowrap">
+            {mcpEndpointUrl()}
+          </code>
+          <CopyButton
+            text={mcpEndpointUrl()}
+            aria-label="Copy MCP server URL"
+            toastMessage="URL copied."
+          />
+        </div>
+      </div>
       {loading ? (
         <PageLoading label="Loading API tokens…" />
       ) : (
@@ -124,43 +168,72 @@ export function ApiTokensPanel() {
             </div>
           ) : null}
 
-          {tokens.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              No API tokens yet. Create one for scripted access to the Tahti
-              API.
-            </p>
+          {loadError && tokens.length === 0 ? (
+            <PageError
+              title="Could not load your API tokens"
+              description={loadError}
+              onRetry={() => {
+                setLoading(true);
+                setAttempt((n) => n + 1);
+              }}
+            />
+          ) : tokens.length === 0 ? (
+            <PageEmpty
+              title="No API tokens yet"
+              description="Create one for scripted access to the Tahti API."
+            />
           ) : (
-            <ul className="divide-border divide-y">
-              {tokens.map((token) => (
-                <li
-                  key={token.id}
-                  className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
-                >
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium">
-                      {token.name}{' '}
-                      <span className="text-foreground-secondary font-mono text-xs">
-                        {token.tokenPrefix}…
-                      </span>
-                    </p>
-                    <p className="text-foreground-secondary text-xs">
-                      {token.scopes.includes('write')
-                        ? 'Read / write'
-                        : 'Read-only'}{' '}
-                      · last used {formatDate(token.lastUsedAt)} · created{' '}
-                      {formatDate(token.createdAt)}
-                    </p>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => setPendingRevoke(token)}
+            <>
+              {loadError ? (
+                <PageErrorBanner
+                  title="Could not refresh your API tokens"
+                  description={loadError}
+                  onRetry={() => {
+                    setLoading(true);
+                    setAttempt((n) => n + 1);
+                  }}
+                />
+              ) : null}
+              <ul className="divide-border divide-y">
+                {tokens.map((token) => (
+                  <li
+                    key={token.id}
+                    className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
                   >
-                    Revoke
-                  </Button>
-                </li>
-              ))}
-            </ul>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium">
+                        {token.name}{' '}
+                        <span className="text-foreground-secondary font-mono text-xs">
+                          {token.tokenPrefix}…
+                        </span>
+                        {isExpired(token) ? (
+                          <Badge variant="pill" color="red">
+                            Expired
+                          </Badge>
+                        ) : null}
+                      </p>
+                      <p className="text-foreground-secondary text-xs">
+                        {token.scopes.includes('write')
+                          ? 'Read / write'
+                          : 'Read-only'}{' '}
+                        · last used {formatDate(token.lastUsedAt)} · created{' '}
+                        {formatDate(token.createdAt)}
+                        {token.expiresAt
+                          ? ` · ${isExpired(token) ? 'expired' : 'expires'} ${formatDate(token.expiresAt)}`
+                          : ''}
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => setPendingRevoke(token)}
+                    >
+                      Revoke
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
 
           {!adding ? (
@@ -174,7 +247,7 @@ export function ApiTokensPanel() {
           ) : (
             <div className="border-border flex flex-col gap-3 border-t pt-4">
               {error ? (
-                <p className="text-accent-red text-sm" role="alert">
+                <p className="text-accent-red-strong text-sm" role="alert">
                   {error}
                 </p>
               ) : null}
@@ -196,6 +269,12 @@ export function ApiTokensPanel() {
                   onChange={setCanWrite}
                 />
               </div>
+              <Select
+                label="Expires"
+                value={expiry}
+                onValueChange={setExpiry}
+                options={EXPIRY_OPTIONS}
+              />
               <div className="flex flex-wrap gap-2">
                 <Button
                   size="sm"

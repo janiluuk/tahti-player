@@ -7,6 +7,7 @@ license = "AGPL-3.0-only"
 repository = "https://github.com/janiluuk/tahti-player"
 edition = "2021"
 rust-version = "1.77.2"
+default-run = "player"
 
 [lib]
 name = "app_lib"
@@ -29,6 +30,7 @@ tauri-plugin-upload = "2"
 zip = "2.1"
 reqwest = { version = "0.13", features = ["json", "cookies", "stream"] }
 futures = "0.3"
+notify = "8"
 tokio = { version = "1", features = ["full"] }
 base64 = "0.22"
 http = "1.0"
@@ -44,6 +46,7 @@ rust-embed = "8"
 mime_guess = "2"
 tokio-util = { version = "0.7", features = ["rt"] }
 uuid = { version = "1.20.0", features = ["v4"] }
+sha2 = "0.10"
 discord-rich-presence = "1.1.0"
 libc = "0.2.183"
 tauri-plugin-os = "2"
@@ -52,11 +55,17 @@ specta = { version = "=2.0.0-rc.25", features = ["derive"] }
 specta-typescript = "0.0.12"
 tauri-specta = { version = "=2.0.0-rc.25", features = ["derive", "typescript"] }
 
-symphonia = { version = "0.5.5", default-features = false, features = ["flac", "pcm", "wav"] }
+symphonia = { version = "0.5.5", default-features = false, features = ["aac", "aiff", "flac", "isomp4", "mp3", "ogg", "pcm", "vorbis", "wav"] }
+lofty = "0.22"
+quick-xml = "0.38"
+unicode-normalization = "0.1"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-updater = "2"
 tauri-plugin-process = "2"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = ["Win32_Storage_FileSystem"] }
 
 [target.'cfg(any(target_os = "macos", windows, target_os = "linux"))'.dependencies]
 tauri-plugin-window-state = "2.4.1"

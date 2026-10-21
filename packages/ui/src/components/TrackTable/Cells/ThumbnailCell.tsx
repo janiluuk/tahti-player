@@ -22,7 +22,7 @@ export const ThumbnailCell = <T extends Track>({
   const isPlaying = meta?.isTrackPlaying?.(track) ?? false;
 
   return (
-    <td className="w-12 text-center">
+    <td className="w-14 text-center">
       <div className="flex w-full justify-center">
         <MediaArtwork
           size="thumb"
@@ -36,6 +36,14 @@ export const ThumbnailCell = <T extends Track>({
                 }
               : undefined
           }
+          onQueue={
+            actions.onAddToQueue
+              ? () => {
+                  actions.onAddToQueue?.(track);
+                }
+              : undefined
+          }
+          queueLabel={`${labels.addToQueue} ${track.title}`}
           playLabel={`${labels.play} ${track.title}`}
           pauseLabel={`${labels.pause} ${track.title}`}
           isPlaying={isPlaying}

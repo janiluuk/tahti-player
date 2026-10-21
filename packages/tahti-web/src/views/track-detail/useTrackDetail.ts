@@ -1,0 +1,239 @@
+import { useRouter } from '@tanstack/react-router';
+import { useEffect, useMemo, useState } from 'react';
+
+import {
+  fetchChannel,
+  fetchProfile,
+  fetchTrackComments,
+  fetchTrackDetail,
+} from '../../api/client';
+import { listMockCommerceFanSubs } from '../../api/mock-commerce-ledger';
+import { listMockSubscriptions } from '../../api/mock-session';
+import { isForceMock } from '../../api/mode';
+import { mockOwnsPurchaseTier } from '../../api/purchase-tiers';
+import type { DownloadGateStatus } from '../../api/sound-download-gates';
+import {
+  type PublicChannel,
+  type PublicProfile,
+  type PublicTrackDetail,
+  type TrackComment,
+} from '../../api/types';
+import { parsePublicTracklist } from '../../lib/publicTracklist';
+import { syncDocumentMetadata } from '../../lib/seo';
+import { useDominantColor } from '../../lib/useDominantColor';
+import { useAuthStore } from '../../stores/authStore';
+import { useLibraryStore } from '../../stores/libraryStore';
+import {
+  playableFromQueueItem,
+  usePlayerStore,
+} from '../../stores/playerStore';
+import { useTrackDetailStore } from '../../stores/trackDetailStore';
+import { playableFromDetail } from './helpers';
+
+export function useTrackDetail(id: string, shareKey?: string) {
+  const router = useRouter();
+  const user = useAuthStore((s) => s.user);
+  const playableId = `sound:${id}`;
+  const remembered = useTrackDetailStore((s) => s.cache[playableId]);
+  const queueItem = usePlayerStore((s) =>
+    s.queue.find((q) => q.id === playableId),
+  );
+  const fastPath =
+    remembered ?? (queueItem ? playableFromQueueItem(queueItem) : null);
+
+  const [detail, setDetail] = useState<PublicTrackDetail | null>(null);
+  const [channel, setChannel] = useState<PublicChannel | null>(null);
+  const [profile, setProfile] = useState<PublicProfile | null>(null);
+  const [comments, setComments] = useState<TrackComment[]>([]);
+  const [commentsEnabled, setCommentsEnabled] = useState(true);
+  const [commentBody, setCommentBody] = useState('');
+  const [commentBusy, setCommentBusy] = useState(false);
+  const [commentError, setCommentError] = useState<string | null>(null);
+  const [commentComposerOpen, setCommentComposerOpen] = useState(false);
+  const [deletingCommentId, setDeletingCommentId] = useState<string | null>(
+    null,
+  );
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
+  const [playlistOpen, setPlaylistOpen] = useState(false);
+  const [downloadBusy, setDownloadBusy] = useState(false);
+  const [downloadGates, setDownloadGates] = useState<DownloadGateStatus | null>(
+    null,
+  );
+  const [buyBusy, setBuyBusy] = useState(false);
+  const [pwywOpen, setPwywOpen] = useState(false);
+  const [pwywAmt, setPwywAmt] = useState('');
+  const [purchaseBump, setPurchaseBump] = useState(0);
+  const [editOpen, setEditOpen] = useState(false);
+
+  const reloadDetail = () => {
+    void fetchTrackDetail(id, shareKey).then(({ data }) => {
+      setDetail(data);
+    });
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setLoadError(null);
+    void fetchTrackDetail(id, shareKey)
+      .then(({ data, meta }) => {
+        if (cancelled) {
+          return;
+        }
+        setDetail(data);
+        setLoadError(meta.source === 'api' ? (meta.reason ?? null) : null);
+        if (data) {
+          syncDocumentMetadata(window.location.pathname, {
+            title: `${data.title} by ${data.artistName} on Tahti`,
+            image: data.bannerUrl ?? undefined,
+          });
+          void fetchChannel(data.channelSlug).then((result) =>
+            setChannel(result.data),
+          );
+          void fetchProfile(data.channel.username).then((result) =>
+            setProfile(result.data),
+          );
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setLoadError(
+            err instanceof Error ? err.message : 'Could not load this track.',
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [id, shareKey, attempt]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetchTrackComments(id, shareKey).then((result) => {
+      if (!cancelled) {
+        setComments(result.data.comments);
+        setCommentsEnabled(result.data.commentsEnabled);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [id, shareKey]);
+
+  const play = usePlayerStore((s) => s.play);
+  const setStatus = usePlayerStore((s) => s.setStatus);
+  const seekTo = usePlayerStore((s) => s.seekTo);
+  const currentId = usePlayerStore((s) => s.currentId);
+  const status = usePlayerStore((s) => s.status);
+  const currentTime = usePlayerStore((s) => s.currentTime);
+  const duration = usePlayerStore((s) => s.duration);
+  const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
+  const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
+
+  const playable = detail ? playableFromDetail(id, detail) : fastPath;
+  const rgb = useDominantColor(playable?.coverUrl);
+  const tracklist = useMemo(
+    () => parsePublicTracklist(detail?.tracklist),
+    [detail?.tracklist],
+  );
+  const purchaseEntitled = useMemo(() => {
+    if (!detail || detail.accessMode !== 'PURCHASE' || !detail.purchaseTierId) {
+      return true;
+    }
+    if (user?.username === detail.channel.username) {
+      return true;
+    }
+    if (!isForceMock()) {
+      return detail.gate === null;
+    }
+    const subscribedInSession = listMockSubscriptions().some(
+      (row) =>
+        row.artist.username === detail.channel.username &&
+        row.state === 'ACTIVE',
+    );
+    const subscribedInLedger = listMockCommerceFanSubs().some(
+      (sub) =>
+        Boolean(user?.username) &&
+        sub.fanUsername === user?.username &&
+        sub.artistUsername === detail.channel.username,
+    );
+    if (subscribedInSession || subscribedInLedger) {
+      return true;
+    }
+    return mockOwnsPurchaseTier(detail.purchaseTierId);
+  }, [detail, user?.id, user?.username, purchaseBump]);
+
+  return {
+    id,
+    shareKey,
+    router,
+    user,
+    playableId,
+    remembered,
+    queueItem,
+    fastPath,
+    detail,
+    setDetail,
+    channel,
+    setChannel,
+    profile,
+    setProfile,
+    comments,
+    setComments,
+    commentsEnabled,
+    setCommentsEnabled,
+    commentBody,
+    setCommentBody,
+    commentBusy,
+    setCommentBusy,
+    commentError,
+    setCommentError,
+    commentComposerOpen,
+    setCommentComposerOpen,
+    deletingCommentId,
+    setDeletingCommentId,
+    loading,
+    setLoading,
+    loadError,
+    retryLoad: () => setAttempt((n) => n + 1),
+    playlistOpen,
+    setPlaylistOpen,
+    downloadBusy,
+    setDownloadBusy,
+    downloadGates,
+    setDownloadGates,
+    buyBusy,
+    setBuyBusy,
+    pwywOpen,
+    setPwywOpen,
+    pwywAmt,
+    setPwywAmt,
+    purchaseBump,
+    setPurchaseBump,
+    editOpen,
+    setEditOpen,
+    reloadDetail,
+    play,
+    setStatus,
+    seekTo,
+    currentId,
+    status,
+    currentTime,
+    duration,
+    toggleFavoriteTrack,
+    favoriteTracks,
+    playable,
+    rgb,
+    tracklist,
+    purchaseEntitled,
+  };
+}
+
+export type TrackDetailState = ReturnType<typeof useTrackDetail>;

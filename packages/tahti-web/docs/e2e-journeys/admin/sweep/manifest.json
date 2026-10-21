@@ -1,0 +1,146 @@
+[
+  {
+    "file": "admin-dashboard.png",
+    "label": "admin-dashboard"
+  },
+  {
+    "file": "admin-logs.png",
+    "label": "admin-logs"
+  },
+  {
+    "file": "admin-logs-containers.png",
+    "label": "admin-logs-containers"
+  },
+  {
+    "file": "admin-logs-recent-audit.png",
+    "label": "admin-logs-recent-audit"
+  },
+  {
+    "file": "admin-status.png",
+    "label": "admin-status"
+  },
+  {
+    "file": "admin-moderation.png",
+    "label": "admin-moderation"
+  },
+  {
+    "file": "admin-moderation-support.png",
+    "label": "admin-moderation-support"
+  },
+  {
+    "file": "admin-moderation-beta.png",
+    "label": "admin-moderation-beta"
+  },
+  {
+    "file": "admin-moderation-radio-submissions.png",
+    "label": "admin-moderation-radio-submissions"
+  },
+  {
+    "file": "admin-moderation-content-reports.png",
+    "label": "admin-moderation-content-reports"
+  },
+  {
+    "file": "admin-moderation-feature-requests.png",
+    "label": "admin-moderation-feature-requests"
+  },
+  {
+    "file": "admin-moderation-missed-shows.png",
+    "label": "admin-moderation-missed-shows"
+  },
+  {
+    "file": "admin-users.png",
+    "label": "admin-users"
+  },
+  {
+    "file": "admin-radio.png",
+    "label": "admin-radio"
+  },
+  {
+    "file": "admin-news.png",
+    "label": "admin-news"
+  },
+  {
+    "file": "admin-streams.png",
+    "label": "admin-streams"
+  },
+  {
+    "file": "admin-top-lists.png",
+    "label": "admin-top-lists"
+  },
+  {
+    "file": "admin-announcements.png",
+    "label": "admin-announcements"
+  },
+  {
+    "file": "admin-storage.png",
+    "label": "admin-storage"
+  },
+  {
+    "file": "admin-storage-files.png",
+    "label": "admin-storage-files"
+  },
+  {
+    "file": "admin-financial.png",
+    "label": "admin-financial"
+  },
+  {
+    "file": "admin-governance.png",
+    "label": "admin-governance"
+  },
+  {
+    "file": "admin-grants.png",
+    "label": "admin-grants"
+  },
+  {
+    "file": "admin-agm.png",
+    "label": "admin-agm"
+  },
+  {
+    "file": "admin-missed-shows.png",
+    "label": "admin-missed-shows"
+  },
+  {
+    "file": "admin-vendors.png",
+    "label": "admin-vendors"
+  },
+  {
+    "file": "admin-i18n.png",
+    "label": "admin-i18n"
+  },
+  {
+    "file": "admin-selects.png",
+    "label": "admin-selects"
+  },
+  {
+    "file": "admin-beta.png",
+    "label": "admin-beta"
+  },
+  {
+    "file": "admin-orphan-pages.png",
+    "label": "admin-orphan-pages"
+  },
+  {
+    "file": "admin-content.png",
+    "label": "admin-content"
+  },
+  {
+    "file": "admin-content-reports.png",
+    "label": "admin-content-reports"
+  },
+  {
+    "file": "admin-reports.png",
+    "label": "admin-reports"
+  },
+  {
+    "file": "admin-feature-requests.png",
+    "label": "admin-feature-requests"
+  },
+  {
+    "file": "admin-artwork-presets.png",
+    "label": "admin-artwork-presets"
+  },
+  {
+    "file": "admin-files.png",
+    "label": "admin-files"
+  }
+]

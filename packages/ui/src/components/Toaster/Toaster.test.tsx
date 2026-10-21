@@ -1,9 +1,18 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { showNotificationToast, toast, Toaster } from './Toaster';
 
 describe('Toaster', () => {
+  // Sonner removes a closed toast on a 200ms timer; flush it while the
+  // Toaster is still mounted, or it fires after jsdom has been torn down.
+  afterEach(async () => {
+    act(() => {
+      toast.dismiss();
+    });
+    await act(() => new Promise((resolve) => setTimeout(resolve, 300)));
+  });
+
   it('(Snapshot) renders the host', () => {
     const { container } = render(<Toaster />);
     expect(container).toMatchSnapshot();

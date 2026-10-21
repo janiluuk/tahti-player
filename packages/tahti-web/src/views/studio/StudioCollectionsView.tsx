@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import {
   Disc3Icon,
   DiscAlbumIcon,
@@ -6,16 +6,20 @@ import {
   LibraryIcon,
   ListMusicIcon,
   Mic2Icon,
+  PlayIcon,
   PlusIcon,
   RadioTowerIcon,
   SearchIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
+  ButtonLink,
   Dialog,
   EmptyState,
+  FilterChips,
   ImageReveal,
   Input,
   Select,
@@ -28,17 +32,30 @@ import {
 
 import {
   createStudioCollection,
+  fetchStudioCollection,
   fetchStudioCollections,
 } from '../../api/studio';
-import type { StudioCollection } from '../../api/studio-types';
-import { PageLoading } from '../../components/PageStates';
+import type {
+  StudioCollection,
+  StudioCollectionItem,
+} from '../../api/studio-types';
+import type { TahtiPlayable } from '../../api/types';
+import { SubscribedCollections } from '../../components/library/SubscribedCollections';
+import { PageError, PageLoading } from '../../components/PageStates';
+import { StudioCollectionMoreMenu } from '../../components/StudioCollectionMoreMenu';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
-import { StudioPanel, StudioToggleChip } from '../../components/StudioPanel';
+import { StudioPanel } from '../../components/StudioPanel';
 import {
   collectionStyleLabel,
   normalizeCollectionStyle,
 } from '../../content/collectionStyles';
+import { hasStudioAccess } from '../../lib/accountRoles';
+import { toEmbedPlaybackProvider } from '../../lib/embedSrc';
+import { placeholderArtworkUrl } from '../../lib/placeholderArt';
+import { useAuthStore } from '../../stores/authStore';
+import { usePlayerStore } from '../../stores/playerStore';
+import { LibrarySectionTabs } from '../LibraryView';
+import { CollectionOrderButton } from './CollectionOrderButton';
 
 /** Styles this quick-create dialog and the filter tabs offer — a subset of
  * CollectionStyleId (no SINGLE; those come from linking a release, not from
@@ -80,9 +97,59 @@ const editorRouteFor = (collection: StudioCollection) =>
     ? '/studio/playlists/$slug'
     : '/studio/collections/$slug';
 
+function menuKindLabel(c: StudioCollection) {
+  const label = collectionStyleLabel(collectionStyle(c));
+  return label === 'EP' ? label : label.toLowerCase();
+}
+
+function collectionItemPlayable(
+  item: StudioCollectionItem,
+  fallbackArtist: string,
+): TahtiPlayable | null {
+  const sound = item.sound;
+  if (!sound) {
+    return null;
+  }
+  const artist = sound.artist?.displayName ?? fallbackArtist;
+  const coverUrl = placeholderArtworkUrl(sound.id);
+  const audio = sound.audioUrl ?? item.audioUrl;
+  if (audio) {
+    return {
+      id: `sound:${sound.id}`,
+      kind: 'sound',
+      title: sound.title,
+      artist,
+      coverUrl,
+      streamUrl: audio,
+      protocol: audio.includes('.m3u8') ? 'hls' : 'https',
+    };
+  }
+  if (sound.embedProvider && sound.embedUri) {
+    const provider = toEmbedPlaybackProvider(sound.embedProvider);
+    return {
+      id: `sound:${sound.id}`,
+      kind: 'sound',
+      title: sound.title,
+      artist,
+      coverUrl,
+      streamUrl: '',
+      protocol: 'https',
+      sourceProvider: provider,
+      embed: { provider, embedUri: sound.embedUri },
+    };
+  }
+  return null;
+}
+
 export function StudioCollectionsView() {
+  const user = useAuthStore((s) => s.user);
+  const play = usePlayerStore((s) => s.play);
+  const [playingSlug, setPlayingSlug] = useState<string | null>(null);
+  const canCreate = hasStudioAccess(user);
+  const navigate = useNavigate();
   const [rows, setRows] = useState<StudioCollection[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [name, setName] = useState('');
   const [style, setStyle] = useState<CreateStyle>('ALBUM');
@@ -90,16 +157,18 @@ export function StudioCollectionsView() {
   const [query, setQuery] = useState('');
   const [visibility, setVisibility] = useState<
     'PUBLIC' | 'UNLISTED' | 'PRIVATE'
-  >('PUBLIC');
+  >('PRIVATE');
   const [releaseDate, setReleaseDate] = useState('');
   const [genres, setGenres] = useState('');
   const [collaborative, setCollaborative] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const reload = () => {
     void fetchStudioCollections().then((res) => {
       setRows(res.data);
+      setLoadError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
   };
@@ -112,7 +181,7 @@ export function StudioCollectionsView() {
     setCreateOpen(false);
     setName('');
     setStyle('ALBUM');
-    setVisibility('PUBLIC');
+    setVisibility('PRIVATE');
     setReleaseDate('');
     setGenres('');
     setCollaborative(false);
@@ -124,7 +193,6 @@ export function StudioCollectionsView() {
       return;
     }
     setBusy(true);
-    setMsg(null);
     void createStudioCollection({
       name: name.trim(),
       style,
@@ -138,27 +206,42 @@ export function StudioCollectionsView() {
         .slice(0, 5),
       collaborative:
         style === 'PLAYLIST' && visibility === 'PUBLIC' && collaborative,
-    }).then((r) => {
-      setBusy(false);
-      if (!r.ok) {
-        setMsg(r.error);
-        return;
-      }
-      setMsg(`Created ${r.data.name} — open designer to add tracks.`);
-      closeCreate();
-      reload();
-    });
+    })
+      .then((r) => {
+        setBusy(false);
+        if (!r.ok) {
+          toast.error(r.error);
+          return;
+        }
+        closeCreate();
+        reload();
+        void navigate({
+          to: editorRouteFor(r.data),
+          params: { slug: r.data.slug },
+        });
+      })
+      .catch(() => {
+        setBusy(false);
+        toast.error('Could not create the collection.');
+      });
   };
 
   const filteredRows = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    return rows.filter(
-      (collection) =>
-        (filter === 'ALL' || collectionStyle(collection) === filter) &&
-        (!normalizedQuery ||
-          collection.name.toLowerCase().includes(normalizedQuery) ||
-          collection.description?.toLowerCase().includes(normalizedQuery)),
-    );
+    const collectionTime = (collection: StudioCollection) => {
+      const raw = collection.createdAt ?? collection.releaseDate ?? '';
+      const ms = Date.parse(raw);
+      return Number.isFinite(ms) ? ms : 0;
+    };
+    return rows
+      .filter(
+        (collection) =>
+          (filter === 'ALL' || collectionStyle(collection) === filter) &&
+          (!normalizedQuery ||
+            collection.name.toLowerCase().includes(normalizedQuery) ||
+            collection.description?.toLowerCase().includes(normalizedQuery)),
+      )
+      .sort((a, b) => collectionTime(b) - collectionTime(a));
   }, [filter, query, rows]);
 
   const counts = useMemo(
@@ -176,27 +259,29 @@ export function StudioCollectionsView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/collections" />
+        <LibrarySectionTabs active="collections" />
         <ViewShell
           title="Collections"
           classes={{ root: 'px-0 pt-0' }}
           actions={
-            <Tooltip content="New collection" side="top">
-              <Button
-                size="icon-sm"
-                onClick={() => {
-                  setMsg(null);
-                  setCreateOpen(true);
-                }}
-                aria-label="New collection"
-              >
-                <PlusIcon size={16} aria-hidden />
-              </Button>
-            </Tooltip>
+            canCreate ? (
+              <div className="flex items-center gap-2">
+                <CollectionOrderButton />
+                <Tooltip content="New collection" side="top">
+                  <Button
+                    size="icon-sm"
+                    onClick={() => {
+                      setCreateOpen(true);
+                    }}
+                    aria-label="New collection"
+                  >
+                    <PlusIcon size={16} aria-hidden />
+                  </Button>
+                </Tooltip>
+              </div>
+            ) : undefined
           }
         >
-          {msg && <p className="mb-4 text-sm">{msg}</p>}
-
           <Dialog.Root isOpen={createOpen} onClose={closeCreate}>
             <form
               onSubmit={(e) => {
@@ -220,17 +305,23 @@ export function StudioCollectionsView() {
                   onChange={(e) => setName(e.target.value)}
                   autoFocus
                 />
-                <div className="flex flex-wrap gap-2">
-                  {CREATE_STYLES.map((s) => (
-                    <StudioToggleChip
-                      key={s.id}
-                      selected={style === s.id}
-                      icon={s.icon}
-                      label={s.label}
-                      onClick={() => setStyle(s.id)}
-                    />
-                  ))}
-                </div>
+                <FilterChips
+                  items={CREATE_STYLES}
+                  selected={style}
+                  onChange={(id) => {
+                    const next = id as CreateStyle;
+                    setStyle(next);
+                    // Release-like collections stay private until the artist
+                    // publishes; playlists/sets default to public.
+                    setVisibility(
+                      next === 'ALBUM' || next === 'EP' ? 'PRIVATE' : 'PUBLIC',
+                    );
+                    if (next !== 'PLAYLIST') {
+                      setCollaborative(false);
+                    }
+                  }}
+                  aria-label="Collection style"
+                />
                 {style === 'ALBUM' || style === 'EP' ? (
                   <div className="grid gap-3 sm:grid-cols-2">
                     <Input
@@ -252,9 +343,7 @@ export function StudioCollectionsView() {
                   value={visibility}
                   onValueChange={(value) => {
                     const nextVisibility = value as
-                      | 'PUBLIC'
-                      | 'UNLISTED'
-                      | 'PRIVATE';
+                      'PUBLIC' | 'UNLISTED' | 'PRIVATE';
                     setVisibility(nextVisibility);
                     if (nextVisibility !== 'PUBLIC') {
                       setCollaborative(false);
@@ -341,21 +430,42 @@ export function StudioCollectionsView() {
             </div>
             {loading ? (
               <PageLoading label="Loading…" />
+            ) : loadError && rows.length === 0 ? (
+              <PageError
+                title="Could not load your collections"
+                description={loadError}
+                onRetry={() => {
+                  setLoading(true);
+                  reload();
+                }}
+              />
             ) : rows.length === 0 ? (
               <EmptyState
                 size="sm"
-                title="No collections yet"
-                description="Create an album, EP, DJ set, podcast, or playlist."
+                title={
+                  canCreate ? 'No collections yet' : 'No collections saved yet'
+                }
+                description={
+                  canCreate
+                    ? 'Create an album, EP, DJ set, podcast, or playlist.'
+                    : 'Follow public playlists from artist pages, or browse Discover for collections to save.'
+                }
                 action={
-                  <Tooltip content="New collection" side="top">
-                    <Button
-                      size="icon-sm"
-                      onClick={() => setCreateOpen(true)}
-                      aria-label="New collection"
-                    >
-                      <PlusIcon size={16} aria-hidden />
-                    </Button>
-                  </Tooltip>
+                  canCreate ? (
+                    <Tooltip content="New collection" side="top">
+                      <Button
+                        size="icon-sm"
+                        onClick={() => setCreateOpen(true)}
+                        aria-label="New collection"
+                      >
+                        <PlusIcon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                  ) : (
+                    <ButtonLink to="/discover" size="sm" variant="secondary">
+                      Browse Discover
+                    </ButtonLink>
+                  )
                 }
               />
             ) : filteredRows.length === 0 ? (
@@ -399,18 +509,87 @@ export function StudioCollectionsView() {
                         {`, ${(c.visibility ?? (c.isPublic === false ? 'PRIVATE' : 'PUBLIC')).toLowerCase()}`}
                       </p>
                     </div>
-                    <Link to={editorRouteFor(c)} params={{ slug: c.slug }}>
-                      <Button size="sm">
-                        {['ALBUM', 'EP'].includes(collectionStyle(c))
-                          ? 'Design'
-                          : 'Edit'}
+                    <Tooltip content="Play" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="secondary"
+                        aria-label={`Play ${c.name}`}
+                        disabled={playingSlug === c.slug}
+                        onClick={() => {
+                          if (playingSlug) {
+                            return;
+                          }
+                          setPlayingSlug(c.slug);
+                          void fetchStudioCollection(c.slug).then((res) => {
+                            setPlayingSlug(null);
+                            const loadReason =
+                              res.meta.source === 'api'
+                                ? (res.meta.reason ?? null)
+                                : null;
+                            if (loadReason) {
+                              toast.error(
+                                `Could not load collection: ${loadReason}`,
+                              );
+                              return;
+                            }
+                            const playables = (res.data.items ?? [])
+                              .map((item) =>
+                                collectionItemPlayable(item, 'You'),
+                              )
+                              .filter(
+                                (item): item is TahtiPlayable => item !== null,
+                              );
+                            if (playables.length === 0) {
+                              toast.error(
+                                'Nothing in this collection can play yet.',
+                              );
+                              return;
+                            }
+                            const [head, ...rest] = playables;
+                            if (head) {
+                              play(head, { enqueueRest: rest });
+                            }
+                          });
+                        }}
+                      >
+                        <PlayIcon size={16} aria-hidden />
                       </Button>
-                    </Link>
+                    </Tooltip>
+                    <ButtonLink
+                      to={editorRouteFor(c)}
+                      params={{ slug: c.slug }}
+                      size="sm"
+                    >
+                      Edit
+                    </ButtonLink>
+                    <StudioCollectionMoreMenu
+                      col={c}
+                      kindLabel={menuKindLabel(c)}
+                      onDeleted={() =>
+                        setRows((current) =>
+                          current.filter((row) => row.slug !== c.slug),
+                        )
+                      }
+                      onChanged={(next) =>
+                        setRows((current) =>
+                          current.map((row) =>
+                            row.slug === next.slug
+                              ? {
+                                  ...row,
+                                  visibility: next.visibility,
+                                  isPublic: next.isPublic,
+                                }
+                              : row,
+                          ),
+                        )
+                      }
+                    />
                   </li>
                 ))}
               </ul>
             )}
           </StudioPanel>
+          <SubscribedCollections />
         </ViewShell>
       </div>
     </StudioGate>

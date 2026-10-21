@@ -32,7 +32,9 @@ export const AlbumHeader: FC<AlbumHeaderProps> = ({ providerId, albumId }) => {
   if (isError) {
     return (
       <div className="flex h-100 w-full flex-col items-center justify-center gap-3 p-6">
-        <div className="text-accent-red">{t('errors.failedToLoadDetails')}</div>
+        <div className="text-accent-red-strong">
+          {t('errors.failedToLoadDetails')}
+        </div>
       </div>
     );
   }

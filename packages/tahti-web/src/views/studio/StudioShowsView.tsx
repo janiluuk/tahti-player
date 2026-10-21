@@ -1,9 +1,17 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import { MicIcon, PlusIcon, RadioIcon, UploadIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import {
+  MicIcon,
+  PlusIcon,
+  RadioIcon,
+  SearchIcon,
+  UploadIcon,
+} from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
+  ButtonLink,
   Dialog,
   EmptyState,
   FilterChips,
@@ -15,6 +23,7 @@ import {
   ViewShell,
 } from '@tahti-player/ui';
 
+import { patchBroadcastPreflight } from '../../api/broadcast';
 import {
   createShowSeries,
   fetchEpisodesForShow,
@@ -23,10 +32,9 @@ import {
   type StudioEpisode,
   type StudioShowSeries,
 } from '../../api/shows';
-import { PageLoading } from '../../components/PageStates';
+import { PageError, PageLoading } from '../../components/PageStates';
 import { ShowImagePicker } from '../../components/ShowImagePicker';
 import { StudioGate } from '../../components/StudioGate';
-import { BroadcastSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 
 export function StudioShowsView() {
@@ -36,6 +44,7 @@ export function StudioShowsView() {
     {},
   );
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -47,12 +56,27 @@ export function StudioShowsView() {
   const [mode, setMode] = useState<ShowMode>('SERIES');
   const [autoPublish, setAutoPublish] = useState(true);
   const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
+
+  const filteredShows = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) {
+      return shows;
+    }
+    return shows.filter((show) =>
+      [show.title, show.description, show.scheduleNote].some((text) =>
+        text?.toLowerCase().includes(normalizedQuery),
+      ),
+    );
+  }, [query, shows]);
 
   const reload = () => {
     setLoading(true);
     void fetchShowSeries().then(async (res) => {
       setShows(res.data);
+      setLoadError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
       const counts: Record<string, number> = {};
       await Promise.all(
         res.data.map(async (s) => {
@@ -74,7 +98,6 @@ export function StudioShowsView() {
       return;
     }
     setBusy(true);
-    setMsg(null);
     const r = await createShowSeries({
       title: title.trim(),
       description: description.trim(),
@@ -86,8 +109,11 @@ export function StudioShowsView() {
     });
     setBusy(false);
     if (!r.ok) {
-      setMsg(r.error);
+      toast.error(r.error);
       return;
+    }
+    if (r.data.mode === 'SERIES') {
+      await patchBroadcastPreflight({ seriesId: r.data.id });
     }
     setCreateOpen(false);
     setTitle('');
@@ -103,7 +129,6 @@ export function StudioShowsView() {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <BroadcastSubNav current="/studio/shows" />
         <ViewShell
           title="Shows"
           classes={{ root: 'px-0 pt-0' }}
@@ -119,10 +144,6 @@ export function StudioShowsView() {
             </Tooltip>
           }
         >
-          {msg && (
-            <p className="text-foreground-secondary mb-4 text-sm">{msg}</p>
-          )}
-
           <Dialog.Root isOpen={createOpen} onClose={() => setCreateOpen(false)}>
             <form
               onSubmit={(e) => {
@@ -230,6 +251,12 @@ export function StudioShowsView() {
           <StudioPanel>
             {loading ? (
               <PageLoading label="Loading…" />
+            ) : loadError && shows.length === 0 ? (
+              <PageError
+                title="Could not load your shows"
+                description={loadError}
+                onRetry={reload}
+              />
             ) : shows.length === 0 ? (
               <EmptyState
                 size="sm"
@@ -248,15 +275,43 @@ export function StudioShowsView() {
                 }
               />
             ) : (
-              <ul className="divide-border divide-y">
-                {shows.map((s) => (
-                  <ShowRow
-                    key={s.id}
-                    show={s}
-                    episodeCount={episodeCounts[s.id] ?? 0}
+              <>
+                <Input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search shows…"
+                  aria-label="Search shows"
+                  className="mb-4"
+                  startAddon={
+                    <SearchIcon size={14} aria-hidden className="opacity-70" />
+                  }
+                />
+                {filteredShows.length === 0 ? (
+                  <EmptyState
+                    size="sm"
+                    title="No shows match this search."
+                    action={
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => setQuery('')}
+                      >
+                        Clear search
+                      </Button>
+                    }
                   />
-                ))}
-              </ul>
+                ) : (
+                  <ul className="divide-border divide-y">
+                    {filteredShows.map((s) => (
+                      <ShowRow
+                        key={s.id}
+                        show={s}
+                        episodeCount={episodeCounts[s.id] ?? 0}
+                      />
+                    ))}
+                  </ul>
+                )}
+              </>
             )}
           </StudioPanel>
         </ViewShell>
@@ -281,7 +336,7 @@ function ShowRow({
         className="border-border bg-background-secondary size-20 rounded-lg border"
         placeholder={<RadioIcon size={28} className="opacity-40" aria-hidden />}
       />
-      <div className="min-w-0 flex-1">
+      <div className="min-w-40 flex-1">
         <Link
           to="/studio/shows/$id"
           params={{ id: show.id }}
@@ -291,17 +346,22 @@ function ShowRow({
         </Link>
         <p className="text-foreground-secondary text-xs">
           Next episode #{show.nextEpisodeNumber}
-          {episodeCount ? `, ${episodeCount} episodes` : ''}
+          {episodeCount
+            ? `, ${episodeCount} ${episodeCount === 1 ? 'episode' : 'episodes'}`
+            : ''}
           {`, ${show.intervalHours}h slots`}
           {show.scheduleNote ? `, ${show.scheduleNote}` : ''}
           {show.mode === 'SINGLE' ? ', single show' : ', continuing series'}
         </p>
       </div>
-      <Link to="/studio/shows/$id" params={{ id: show.id }}>
-        <Button size="sm" variant="secondary">
-          Manage
-        </Button>
-      </Link>
+      <ButtonLink
+        to="/studio/shows/$id"
+        params={{ id: show.id }}
+        size="sm"
+        variant="secondary"
+      >
+        Manage
+      </ButtonLink>
     </li>
   );
 }

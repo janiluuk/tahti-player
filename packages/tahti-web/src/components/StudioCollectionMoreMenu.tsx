@@ -1,28 +1,63 @@
 import { useNavigate } from '@tanstack/react-router';
-import { MoreVerticalIcon, Share2Icon, Trash2Icon } from 'lucide-react';
+import {
+  GlobeIcon,
+  LockIcon,
+  MoreVerticalIcon,
+  Share2Icon,
+  Trash2Icon,
+} from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Popover, Tooltip } from '@tahti-player/ui';
+import { Button, Popover } from '@tahti-player/ui';
 
-import { deleteStudioCollection } from '../api/studio';
+import { deleteStudioCollection, patchStudioCollection } from '../api/studio';
 import type { StudioCollection } from '../api/studio-types';
 import { ConfirmDialog } from './ConfirmDialog';
 
 /** "⋮" more-options menu shared by the Collection and Playlist editors —
  * both edit the same `StudioCollection` entity via the same delete
- * endpoint. Export is client-side JSON (no export API exists). */
+ * endpoint. Export is client-side JSON (no export API exists). The
+ * Collections list reuses it per row with `onDeleted` / `onChanged`. */
 export function StudioCollectionMoreMenu({
   col,
   kindLabel,
+  onDeleted,
+  onChanged,
 }: {
   col: StudioCollection;
   /** e.g. "collection", "playlist", "DJ set" — used in labels/toasts. */
   kindLabel: string;
+  /** Replaces the default "go back to /studio/collections" after a delete. */
+  onDeleted?: () => void;
+  /** Shows a public/private switch and receives the saved collection. */
+  onChanged?: (col: StudioCollection) => void;
 }) {
   const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const isPrivate =
+    (col.visibility ?? (col.isPublic === false ? 'PRIVATE' : 'PUBLIC')) ===
+    'PRIVATE';
+
+  const toggleVisibility = () => {
+    const visibility = isPrivate ? 'PUBLIC' : 'PRIVATE';
+    void patchStudioCollection(col.slug, {
+      visibility,
+      isPublic: visibility === 'PUBLIC',
+    }).then((result) => {
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      onChanged?.(result.data);
+      toast.success(
+        visibility === 'PUBLIC'
+          ? `“${col.name}” is public.`
+          : `“${col.name}” is private.`,
+      );
+    });
+  };
 
   const exportAsJson = () => {
     const payload = {
@@ -62,33 +97,57 @@ export function StudioCollectionMoreMenu({
       toast.success(
         `${kindLabel.charAt(0).toUpperCase()}${kindLabel.slice(1)} deleted.`,
       );
-      void navigate({ to: '/studio/collections' });
+      if (onDeleted) {
+        onDeleted();
+      } else {
+        void navigate({ to: '/library/collections' });
+      }
     });
   };
 
   return (
     <>
       <Popover
-        className="relative"
         anchor="bottom end"
+        tooltip={{ content: 'More options', side: 'top' }}
         trigger={
-          <Tooltip content="More options" side="top">
-            <Button
-              variant="secondary"
-              size="icon"
-              aria-label={`More options for ${kindLabel}`}
-            >
-              <MoreVerticalIcon size={16} aria-hidden />
-            </Button>
-          </Tooltip>
+          <Button
+            variant="secondary"
+            size="icon"
+            aria-label={
+              onDeleted
+                ? `More options for ${col.name}`
+                : `More options for ${kindLabel}`
+            }
+          >
+            <MoreVerticalIcon size={16} aria-hidden />
+          </Button>
         }
         panelClassName="min-w-48"
       >
         <Popover.Menu>
-          <Popover.Item icon={<Share2Icon size={16} />} onClick={exportAsJson}>
-            Export as JSON
-          </Popover.Item>
+          {onChanged ? (
+            <Popover.Item
+              closeOnClick
+              icon={
+                isPrivate ? <GlobeIcon size={16} /> : <LockIcon size={16} />
+              }
+              onClick={toggleVisibility}
+            >
+              {isPrivate ? 'Make public' : 'Make private'}
+            </Popover.Item>
+          ) : null}
+          {col.items ? (
+            <Popover.Item
+              closeOnClick
+              icon={<Share2Icon size={16} />}
+              onClick={exportAsJson}
+            >
+              Export as JSON
+            </Popover.Item>
+          ) : null}
           <Popover.Item
+            closeOnClick
             intent="danger"
             icon={<Trash2Icon size={16} />}
             onClick={() => setConfirmOpen(true)}

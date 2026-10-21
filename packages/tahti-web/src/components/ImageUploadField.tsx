@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { FilePicker } from '@tahti-player/ui';
+import { Button, FilePicker } from '@tahti-player/ui';
 
 import { uploadUserMediaFile } from '../api/user-media';
 import { IMAGE_UPLOAD_ACCEPT_ATTR } from '../lib/imageUploadContentType';
@@ -63,23 +63,27 @@ export function ImageUploadField({
       />
       {value ? (
         <div className="group relative mt-2 inline-block">
-          <button
+          <Button
+            variant="plain"
+            size="flexible"
             type="button"
             onClick={chrome.openPreview}
             aria-label={`Preview ${label.toLowerCase()}`}
             title={`Preview ${label.toLowerCase()}`}
-            className="block"
+            className="block rounded-none whitespace-normal active:scale-100"
           >
             <img
               src={value}
               alt={`${label} preview`}
               className="h-20 w-20 rounded-md object-cover"
             />
-          </button>
+          </Button>
           <ImageSlotDeleteBadge label={label} onClick={chrome.requestDelete} />
         </div>
       ) : null}
-      {error ? <p className="text-accent-red mt-1 text-xs">{error}</p> : null}
+      {error ? (
+        <p className="text-accent-red-strong mt-1 text-xs">{error}</p>
+      ) : null}
       <ImageSlotPreviewDialog
         isOpen={chrome.previewOpen}
         onClose={chrome.closePreview}

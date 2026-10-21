@@ -3,6 +3,13 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { chromium } from '@playwright/test';
 
+import {
+  CAPTURE_THEME_MODE,
+  CAPTURE_THEME_STATE,
+  prepareCapturePage,
+  withThemeSuffix,
+} from './lib/captureSetup.mjs';
+
 const BASE = process.env.README_GUIDE_BASE_URL || 'http://127.0.0.1:5180';
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const packageRoot = join(scriptDirectory, '..');
@@ -75,6 +82,7 @@ const auth = {
       email: 'board@tahti.live',
       username: 'board',
       displayName: 'Board Member',
+      role: 'BOARD',
       isBoard: true,
       membershipStatus: 'ACTIVE',
       channel: { slug: 'demo', state: 'OFFLINE' },
@@ -602,10 +610,11 @@ const routes = [
 const VIEWPORT = { width: 1680, height: 1050 };
 
 let browser = await chromium.launch({
-  executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium',
+  executablePath: process.env.CHROMIUM_PATH || undefined,
   args: ['--no-sandbox', '--disable-dev-shm-usage'],
 });
 let page = await browser.newPage({ viewport: VIEWPORT });
+await prepareCapturePage(page);
 await page.emulateMedia({ reducedMotion: 'reduce' });
 
 async function seedSession() {
@@ -614,33 +623,21 @@ async function seedSession() {
     timeout: 30000,
   });
   await page.evaluate(
-    ({ authState, layoutState }) => {
+    ({ authState, layoutState, themeState }) => {
       localStorage.setItem('tahti-web-auth', JSON.stringify(authState));
       localStorage.setItem('tahti-web-layout', JSON.stringify(layoutState));
       localStorage.setItem('tahti-web-onboarded:mock-board-1', '1');
-      localStorage.setItem('tahti-nuclear-theme-id', 'nuclear:default');
-      localStorage.setItem('tahti-nuclear-dark', '0');
-      localStorage.setItem(
-        'tahti-web-theme',
-        JSON.stringify({
-          state: {
-            themeId: 'nuclear:default',
-            dark: false,
-            colorMode: 'light',
-            customThemes: {},
-          },
-          version: 0,
-        }),
-      );
+      // Spotify theme in CAPTURE_THEME_MODE (see lib/captureSetup.mjs).
+      localStorage.setItem('tahti-web-theme', JSON.stringify(themeState));
     },
-    { authState: auth, layoutState: layout },
+    { authState: auth, layoutState: layout, themeState: CAPTURE_THEME_STATE },
   );
 }
 
 async function recreatePage() {
   if (!browser.isConnected()) {
     browser = await chromium.launch({
-      executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium',
+      executablePath: process.env.CHROMIUM_PATH || undefined,
       args: ['--no-sandbox', '--disable-dev-shm-usage'],
     });
   }
@@ -648,8 +645,25 @@ async function recreatePage() {
     await page.close().catch(() => {});
   }
   page = await browser.newPage({ viewport: VIEWPORT });
+  await prepareCapturePage(page);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await seedSession();
+}
+
+/** Waits until the page has real content and no loading placeholder, so a
+ * slow first paint is not captured as a blank or "Loading…" screen. */
+async function waitForSettled() {
+  await page
+    .waitForFunction(
+      () => {
+        const text = document.body.innerText.trim();
+        return text.length > 40 && !/Loading\b/.test(text);
+      },
+      undefined,
+      { timeout: 12000 },
+    )
+    .catch(() => {});
+  await page.waitForTimeout(800);
 }
 
 async function captureShot(imagePath) {
@@ -675,60 +689,87 @@ async function captureShot(imagePath) {
 await seedSession();
 
 const results = [];
+// Chromium sometimes dies mid-run on the heavier pages; a shot that fails
+// outright gets one more go in a fresh browser before it is recorded as failed.
+const SHOT_ATTEMPTS = 2;
+
 for (const [path, file, title, narration] of routes) {
-  const errors = [];
-  const onConsole = (message) => {
-    if (message.type() === 'error') {
-      errors.push(message.text());
-    }
-  };
-  try {
-    if (page.isClosed()) {
-      await recreatePage();
-    }
-    page.on('console', onConsole);
-    await page.goto(`${BASE}${path}`, {
-      waitUntil: 'domcontentloaded',
-      timeout: 30000,
-    });
-    await page.waitForTimeout(800);
-    const bodyText = await page.locator('body').innerText();
-    const imagePath = join(outputDirectory, `${file}.png`);
-    const ok = await captureShot(imagePath);
-    if (!ok) {
-      await recreatePage();
+  for (let attempt = 1; attempt <= SHOT_ATTEMPTS; attempt += 1) {
+    const errors = [];
+    const onConsole = (message) => {
+      if (message.type() === 'error') {
+        errors.push(message.text());
+      }
+    };
+    try {
+      if (page.isClosed()) {
+        await recreatePage();
+      }
+      page.on('console', onConsole);
       await page.goto(`${BASE}${path}`, {
         waitUntil: 'domcontentloaded',
         timeout: 30000,
       });
-      await page.waitForTimeout(800);
-      await captureShot(imagePath);
+      await waitForSettled();
+      const bodyText = await page.locator('body').innerText();
+      if (bodyText.trim().length <= 40 && attempt < SHOT_ATTEMPTS) {
+        // A blank page here is a renderer that died without closing the tab.
+        console.error(`retry ${file}: page stayed blank`);
+        await browser.close().catch(() => {});
+        await recreatePage().catch(() => {});
+        continue;
+      }
+      const imagePath = join(outputDirectory, withThemeSuffix(`${file}.png`));
+      const ok = await captureShot(imagePath);
+      if (!ok) {
+        await recreatePage();
+        await page.goto(`${BASE}${path}`, {
+          waitUntil: 'domcontentloaded',
+          timeout: 30000,
+        });
+        await waitForSettled();
+        await captureShot(imagePath);
+      }
+      results.push({
+        path,
+        file: `${file}.png`,
+        id: file,
+        title,
+        narration,
+        hasContent: bodyText.trim().length > 40,
+        errors: errors.slice(0, 3),
+      });
+      console.log(`${file}: ${bodyText.trim().length} chars`);
+      break;
+    } catch (error) {
+      if (attempt < SHOT_ATTEMPTS) {
+        console.error(`retry ${file}: ${error.message.split('\n')[0]}`);
+        await recreatePage().catch(() => {});
+        continue;
+      }
+      console.error(`fail ${file}: ${error.message}`);
+      results.push({
+        path,
+        file: `${file}.png`,
+        id: file,
+        title,
+        narration,
+        hasContent: false,
+        errors: [error.message],
+      });
+      await recreatePage().catch(() => {});
+    } finally {
+      page.off('console', onConsole);
     }
-    results.push({
-      path,
-      file: `${file}.png`,
-      id: file,
-      title,
-      narration,
-      hasContent: bodyText.trim().length > 40,
-      errors: errors.slice(0, 3),
-    });
-    console.log(`${file}: ${bodyText.trim().length} chars`);
-  } catch (error) {
-    console.error(`fail ${file}: ${error.message}`);
-    results.push({
-      path,
-      file: `${file}.png`,
-      id: file,
-      title,
-      narration,
-      hasContent: false,
-      errors: [error.message],
-    });
-    await recreatePage();
-  } finally {
-    page.off('console', onConsole);
   }
+}
+
+if (CAPTURE_THEME_MODE === 'light') {
+  // The light run only adds `--light` images; the dark run writes the docs,
+  // which reference both variants.
+  await browser.close();
+  console.log(`Captured ${results.length} light screenshots`);
+  process.exit(0);
 }
 
 writeFileSync(
@@ -768,8 +809,11 @@ for (const result of results) {
   gallerySections.get(sectionFor(result.title)).push(result);
 }
 
+/** Dark capture by default; GitHub swaps in the `--light` capture for
+ * viewers using a light theme. */
 function largeImage(alt, relativePath) {
-  return `<img src="${relativePath}" alt="${alt}" width="1680" />`;
+  const lightPath = relativePath.replace(/\.png$/, '--light.png');
+  return `<picture><source media="(prefers-color-scheme: light)" srcset="${lightPath}" /><img src="${relativePath}" alt="${alt}" width="1680" /></picture>`;
 }
 
 const viewGuideLines = [

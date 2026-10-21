@@ -171,6 +171,27 @@ describe('TrackTable', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  it('gives cut-off titles, artists and albums their full text on hover', async () => {
+    const tracks = makeTracks(1);
+    tracks[0] = { ...tracks[0], title: 'A very long title that will not fit' };
+    render(
+      <TrackTable
+        tracks={tracks}
+        labels={labels}
+        display={{ displayArtist: true, displayAlbum: true }}
+      />,
+    );
+    const title = await screen.findByRole('button', {
+      name: 'A very long title that will not fit',
+    });
+    expect(title).toHaveAttribute(
+      'title',
+      'A very long title that will not fit',
+    );
+    expect(screen.getAllByTitle('Frank Zappa').length).toBeGreaterThan(0);
+    expect(screen.getByTitle('Album')).toHaveTextContent('Album');
+  });
+
   it('shows queued feedback and disables repeated queue clicks', async () => {
     const track = makeTracks(1)[0]!;
     const QueueHarness: FC = () => {
@@ -305,9 +326,110 @@ describe('TrackTable', () => {
     // icon-only favorite/actions cluster, not after it.
     expect(durationIndex).toBeGreaterThan(-1);
     const trailing = headerCells.slice(durationIndex + 1);
-    expect(trailing.length).toBe(2);
-    for (const cell of trailing) {
-      expect(cell.textContent?.trim()).toBe('');
-    }
+    expect(trailing.map((cell) => cell.textContent?.trim())).toEqual([
+      'Favorite',
+      'Actions',
+    ]);
+  });
+
+  it('selects rows via checkboxes and runs a bulk action on the selection', async () => {
+    const tracks = makeTracks(2);
+    const onRemoveSelected = vi.fn();
+    const onAddSelectedToQueue = vi.fn();
+
+    render(
+      <TrackTable
+        tracks={tracks}
+        labels={labels}
+        features={{ selectable: true }}
+        display={{ displayThumbnail: false }}
+        actions={{ onRemoveSelected, onAddSelectedToQueue }}
+      />,
+    );
+
+    await screen.findByText('Track 1');
+    await userEvent.click(
+      screen.getByRole('checkbox', { name: 'Select Track 1' }),
+    );
+    expect(screen.getByText('1 selected')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByTestId('add-selected-to-queue-button'));
+    expect(onAddSelectedToQueue).toHaveBeenCalledWith(['t-1']);
+    expect(onRemoveSelected).not.toHaveBeenCalled();
+    // A bulk action clears the selection afterward.
+    expect(screen.queryByText('1 selected')).not.toBeInTheDocument();
+  });
+
+  it('select-all header toggles every visible row', async () => {
+    const tracks = makeTracks(3);
+    const onRemoveSelected = vi.fn();
+
+    render(
+      <TrackTable
+        tracks={tracks}
+        labels={labels}
+        features={{ selectable: true }}
+        display={{ displayThumbnail: false }}
+        actions={{ onRemoveSelected }}
+      />,
+    );
+
+    await screen.findByText('Track 1');
+    await userEvent.click(
+      screen.getByRole('checkbox', { name: 'Select all rows' }),
+    );
+    expect(screen.getByText('3 selected')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByTestId('remove-selected-button'));
+    expect(onRemoveSelected).toHaveBeenCalledWith(['t-1', 't-2', 't-3']);
+  });
+
+  it('does not render the selection column or toolbar when selectable is off', async () => {
+    render(
+      <TrackTable
+        tracks={makeTracks(1)}
+        labels={labels}
+        display={{ displayThumbnail: false }}
+      />,
+    );
+
+    await screen.findByText('Track 1');
+    expect(
+      screen.queryByRole('checkbox', { name: 'Select Track 1' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders a per-row annotation under the title only where one is given', async () => {
+    render(
+      <TrackTable
+        tracks={makeTracks(2)}
+        labels={labels}
+        display={{ displayThumbnail: false }}
+        meta={{
+          getTrackAnnotation: (track) =>
+            track.source.id === 't-1' ? 'Added by @mira' : null,
+        }}
+      />,
+    );
+
+    await screen.findByText('Track 1');
+    const annotations = screen.getAllByTestId('track-annotation');
+    expect(annotations).toHaveLength(1);
+    expect(annotations[0]).toHaveTextContent('Added by @mira');
+  });
+
+  it('applies a custom header class when classes.header is set', async () => {
+    render(
+      <TrackTable
+        tracks={makeTracks(1)}
+        labels={labels}
+        classes={{ header: 'bg-foreground/10 text-inherit' }}
+        display={{ displayThumbnail: false }}
+      />,
+    );
+    await screen.findByText('Track 1');
+    const headerRow = screen.getByRole('row', { name: /Title/i });
+    expect(headerRow.className).toContain('bg-foreground/10');
+    expect(headerRow.className).not.toContain('bg-primary');
   });
 });

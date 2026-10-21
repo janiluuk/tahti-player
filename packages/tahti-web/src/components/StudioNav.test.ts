@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
+import { i18n } from '@tahti-player/i18n';
+
+import {
+  GO_LIVE_TABS,
+  goLiveTabPath,
+  isGoLiveSessionRoute,
+  isGoLiveSessionTabActive,
+} from '../views/studio/go-live/goLiveTabs';
 import {
   AUDIENCE_SUBNAV_ITEMS,
   BROADCAST_SUBNAV_ITEMS,
@@ -7,6 +15,8 @@ import {
   getStudioSubmenuItems,
   isAudienceSubnavActive,
   isBroadcastSubnavActive,
+  isStudioAudienceGroup,
+  isStudioBroadcastGroup,
   litStudioSubmenuDestinations,
   SUBMENUS,
 } from './StudioNav';
@@ -45,25 +55,25 @@ describe('StudioNav section coverage', () => {
     expect(destinations).toEqual(
       expect.arrayContaining([
         '/studio/releases',
+        '/studio/distribution',
         '/studio/editor',
         '/studio/go-live',
       ]),
     );
     expect(getStudioPrimaryRoute('/studio/releases')).toBe('/studio');
+    expect(getStudioPrimaryRoute('/studio/distribution')).toBe('/studio');
     expect(getStudioPrimaryRoute('/studio/go-live')).toBe('/studio');
   });
 
   it('lights exactly one Studio submenu item on covered catalog routes, folding Perform/go-live pages into the single Broadcast tab', () => {
     const covered: [string, string][] = [
       ['/studio', '/studio'],
-      ['/studio/branding', '/studio/branding'],
-      ['/studio/setup-channel', '/studio/branding'],
       ['/studio/stats', '/studio/stats'],
       ['/studio/insights', '/studio/stats'],
       ['/studio/editor', '/studio/editor'],
       ['/studio/mastering/arch-1', '/studio/editor'],
       ['/studio/releases', '/studio/releases'],
-      ['/studio/distribution', '/studio/releases'],
+      ['/studio/distribution', '/studio/distribution'],
       ['/studio/go-live', '/studio/go-live'],
       ['/studio/info', '/studio/go-live'],
       ['/studio/schedule', '/studio/go-live'],
@@ -104,6 +114,55 @@ describe('StudioNav section coverage', () => {
     }
   });
 
+  it('lights Go live, and only Go live, on the green-room tab of /studio/go-live', () => {
+    for (const location of [
+      '/studio/go-live?tab=green-room',
+      '/studio/go-live?tab=prep',
+    ]) {
+      const lit = BROADCAST_SUBNAV_ITEMS.filter((item) =>
+        isBroadcastSubnavActive(location, item.to),
+      ).map((item) => item.to);
+      expect(lit, location).toEqual(['/studio/go-live']);
+      expect(litStudioSubmenuDestinations(location), location).toEqual([
+        '/studio/go-live',
+      ]);
+      expect(isStudioBroadcastGroup(location), location).toBe(true);
+      expect(isGoLiveSessionRoute(location), location).toBe(true);
+    }
+  });
+
+  it('on go-live session chrome, lights exactly one Prep tab from the URL', () => {
+    expect(isGoLiveSessionTabActive('/studio/go-live', 'prep')).toBe(true);
+    expect(
+      isGoLiveSessionTabActive(
+        '/studio/go-live?tab=credentials',
+        'credentials',
+      ),
+    ).toBe(true);
+    expect(
+      isGoLiveSessionTabActive('/studio/go-live?tab=green-room', 'green-room'),
+    ).toBe(true);
+    expect(
+      isGoLiveSessionTabActive('/studio/go-live?tab=credentials', 'prep'),
+    ).toBe(false);
+    expect(isGoLiveSessionRoute('/studio/schedule')).toBe(false);
+    expect(GO_LIVE_TABS.map(goLiveTabPath)).toEqual([
+      '/studio/go-live',
+      '/studio/go-live?tab=credentials',
+      '/studio/go-live?tab=recording',
+      '/studio/go-live?tab=destinations',
+      '/studio/go-live?tab=green-room',
+    ]);
+  });
+
+  it('keeps Go live unlit on the Channel green-room tab', () => {
+    const location = '/studio/channel?tab=green-room';
+    const lit = BROADCAST_SUBNAV_ITEMS.filter((item) =>
+      isBroadcastSubnavActive(location, item.to),
+    ).map((item) => item.to);
+    expect(lit).toEqual(['/studio/channel']);
+  });
+
   it('lights the right Audience sub-tab for overview, tiers, and Stripe', () => {
     const covered: [string, string][] = [
       ['/studio/audience', '/studio/audience'],
@@ -117,6 +176,15 @@ describe('StudioNav section coverage', () => {
       ).map((item) => item.to);
       expect(lit, location).toEqual([expectedTo]);
     }
+  });
+
+  it('classifies Broadcast and Audience route groups for nested chrome', () => {
+    expect(isStudioBroadcastGroup('/studio/go-live')).toBe(true);
+    expect(isStudioBroadcastGroup('/studio/shows/abc')).toBe(true);
+    expect(isStudioBroadcastGroup('/studio')).toBe(false);
+    expect(isStudioAudienceGroup('/studio/audience?tab=tiers')).toBe(true);
+    expect(isStudioAudienceGroup('/studio/stripe')).toBe(true);
+    expect(isStudioAudienceGroup('/studio/branding')).toBe(false);
   });
 
   it('keeps Stripe out of the Studio submenu (nested under Audience instead)', () => {
@@ -137,14 +205,19 @@ describe('StudioNav section coverage', () => {
     for (const location of [
       '/library',
       '/library/sounds',
+      '/studio/sounds',
+      '/studio/sounds/arch-1',
       '/studio/archive/arch-1',
       '/library/collections',
+      '/studio/collections',
       '/studio/playlists',
       '/studio/stash',
       '/library/smartlinks',
       '/library/media',
+      '/library/upload',
     ]) {
       expect(litStudioSubmenuDestinations(location), location).toEqual([]);
+      expect(getStudioPrimaryRoute(location), location).toBeNull();
     }
   });
 
@@ -157,8 +230,44 @@ describe('StudioNav section coverage', () => {
       '/library/smartlinks',
       '/library/upload',
       '/library/media',
+      '/studio/sounds',
+      '/studio/collections',
     ]) {
       expect(getStudioPrimaryRoute(location), location).toBeNull();
     }
+  });
+});
+
+describe('StudioNav Broadcast labels', () => {
+  const studioLabel = (to: string) => {
+    const item = SUBMENUS['/studio'].find((entry) => entry.to === to);
+    return item ? i18n.t(`web:${item.labelKey}`) : undefined;
+  };
+  const subnavLabel = (to: string) => {
+    const item = BROADCAST_SUBNAV_ITEMS.find((entry) => entry.to === to);
+    return item ? i18n.t(`web:${item.labelKey}`) : undefined;
+  };
+
+  it('calls the Studio submenu entry for /studio/go-live "Broadcast"', () => {
+    expect(studioLabel('/studio/go-live')).toBe('Broadcast');
+  });
+
+  it('calls the first Broadcast subnav entry for /studio/go-live "Go live"', () => {
+    expect(BROADCAST_SUBNAV_ITEMS[0]?.to).toBe('/studio/go-live');
+    expect(subnavLabel('/studio/go-live')).toBe('Go live');
+  });
+
+  it('keeps the two labels distinct so the nested strip does not repeat its parent tab', () => {
+    expect(studioLabel('/studio/go-live')).not.toBe(
+      subnavLabel('/studio/go-live'),
+    );
+  });
+
+  it('never shows "Go live" as a Studio submenu label', () => {
+    const labels = SUBMENUS['/studio'].map((item) =>
+      i18n.t(`web:${item.labelKey}`),
+    );
+    expect(labels).toContain('Broadcast');
+    expect(labels).not.toContain('Go live');
   });
 });

@@ -3,47 +3,21 @@
  */
 
 import type { FetchMeta } from './client';
-import { apiBase } from './http';
 import {
+  listMockCommerceTrackOrders,
   mockUserOwnsPurchaseTier,
   recordMockTrackPurchase,
 } from './mock-commerce-ledger';
 import { getMockSessionUser, mockRecordPurchase } from './mock-session';
 import { patchMockUploadedSound } from './mock-uploads';
-import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import {
+  allowMockFallback,
+  apiErrorMeta,
+  isForceMock,
+  mockFallbackMeta,
+} from './mode';
+import { requestJson } from './request-json';
 import { setMockSoundPurchaseAccess } from './studio';
-
-async function requestJson<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<{ data: T; status: number }> {
-  const { headers: initHeaders, ...rest } = init ?? {};
-  const res = await fetch(`${apiBase()}${path}`, {
-    credentials: 'include',
-    ...rest,
-    headers: {
-      Accept: 'application/json',
-      ...(rest.body ? { 'Content-Type': 'application/json' } : {}),
-      ...initHeaders,
-    },
-  });
-  if (!res.ok) {
-    let detail = `${path} → ${res.status}`;
-    try {
-      const body = (await res.json()) as { error?: string; message?: string };
-      if (body.error || body.message) {
-        detail = body.error ?? body.message ?? detail;
-      }
-    } catch {
-      // ignore
-    }
-    throw new Error(detail);
-  }
-  if (res.status === 204) {
-    return { data: undefined as T, status: res.status };
-  }
-  return { data: (await res.json()) as T, status: res.status };
-}
 
 export type PurchaseTierRow = {
   id: string;
@@ -114,7 +88,7 @@ export async function fetchMyPurchaseTiers(): Promise<{
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: [], meta: failMeta(err) };
+      return { data: [], meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }
@@ -172,15 +146,27 @@ export async function createPurchaseTier(input: {
   }
 }
 
-/** Pass a tier id to gate the track behind that purchase tier, or `null`
- * to clear the gate back to FREE. Matches the real `PATCH
- * /api/me/sound/:id/access` contract (accessMode + optional purchaseTierId). */
-export async function setSoundPurchaseAccess(
+export type SoundAccessMode = 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
+
+/** Who can play a track: anyone, any active fan subscriber, or buyers of
+ * one purchase tier. Matches the real `PATCH /api/me/sound/:id/access`
+ * contract, where `purchaseTierId` only counts for PURCHASE. */
+export type SoundAccess = {
+  accessMode: SoundAccessMode;
+  purchaseTierId: string | null;
+};
+
+export async function setSoundAccess(
   soundId: string,
-  purchaseTierId: string | null,
+  access: SoundAccess,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  const accessMode =
+    access.accessMode === 'PURCHASE' && !access.purchaseTierId
+      ? 'FREE'
+      : access.accessMode;
+  const purchaseTierId =
+    accessMode === 'PURCHASE' ? access.purchaseTierId : null;
   if (isForceMock()) {
-    const accessMode = purchaseTierId ? 'PURCHASE' : 'FREE';
     // Two disconnected mock stores back this one sound: mockSoundStore
     // (studio.ts, read by the Studio editor) and the mock-uploads.ts store
     // (read by the public track-detail page) — keep both in sync, same as
@@ -193,17 +179,14 @@ export async function setSoundPurchaseAccess(
     await requestJson(`/api/me/sound/${encodeURIComponent(soundId)}/access`, {
       method: 'PATCH',
       body: JSON.stringify(
-        purchaseTierId
-          ? { accessMode: 'PURCHASE', purchaseTierId }
-          : { accessMode: 'FREE' },
+        purchaseTierId ? { accessMode, purchaseTierId } : { accessMode },
       ),
     });
     return { ok: true };
   } catch (err) {
     return {
       ok: false,
-      error:
-        err instanceof Error ? err.message : 'Could not set purchase access',
+      error: err instanceof Error ? err.message : 'Could not set track access',
     };
   }
 }
@@ -324,3 +307,100 @@ export function findMockPurchaseTier(
       ?.tiers.find((tier) => tier.id === tierId) ?? null
   );
 }
+
+export type PurchaseOrderRow = {
+  id: string;
+  amountCents: number;
+  createdAt: string;
+  tier: { id: string; name: string };
+  buyer: { username: string; displayName: string; avatarUrl: string | null };
+};
+
+export async function fetchMyPurchaseOrders(): Promise<{
+  data: PurchaseOrderRow[] | null;
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    const artist = artistKey();
+    return {
+      data: listMockCommerceTrackOrders()
+        .filter((order) => order.artistUsername === artist)
+        .map((order) => ({
+          id: order.id,
+          amountCents: order.amountCents,
+          createdAt: order.createdAt,
+          tier: { id: order.id, name: order.title },
+          buyer: {
+            username: order.fanUsername,
+            displayName: order.fanDisplayName,
+            avatarUrl: null,
+          },
+        }))
+        .reverse(),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<PurchaseOrderRow[]>(
+      '/api/me/purchase-tiers/orders',
+    );
+    return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
+  } catch (err) {
+    return { data: null, meta: apiErrorMeta(err) };
+  }
+}
+
+let mockStoreEnabled = false;
+
+export async function fetchStoreSettings(): Promise<
+  { ok: true; storeEnabled: boolean } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    return { ok: true, storeEnabled: mockStoreEnabled };
+  }
+  try {
+    const { data } = await requestJson<{ storeEnabled: boolean }>(
+      '/api/me/store-settings',
+    );
+    return { ok: true, storeEnabled: data.storeEnabled === true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not load the store',
+    };
+  }
+}
+
+export async function setStoreEnabled(
+  storeEnabled: boolean,
+): Promise<{ ok: true; storeEnabled: boolean } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    mockStoreEnabled = storeEnabled;
+    return { ok: true, storeEnabled };
+  }
+  try {
+    const { data } = await requestJson<{ storeEnabled: boolean }>(
+      '/api/me/store-settings',
+      { method: 'PATCH', body: JSON.stringify({ storeEnabled }) },
+    );
+    return { ok: true, storeEnabled: data.storeEnabled === true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not update the store',
+    };
+  }
+}
+
+export type PublicStoreTier = {
+  id: string;
+  name: string;
+  description: string | null;
+  priceCents: number;
+  priceOptional: boolean;
+};
+
+export type ProfileStore = {
+  purchaseTiers?: PublicStoreTier[];
+  storePaymentsReady?: boolean;
+};

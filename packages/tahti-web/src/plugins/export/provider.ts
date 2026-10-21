@@ -1,6 +1,5 @@
 export type ExportSubmitResult =
-  | { ok: true; status: string }
-  | { ok: false; error: string };
+  { ok: true; status: string } | { ok: false; error: string };
 
 export type ExportStatusResult =
   | {

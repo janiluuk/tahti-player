@@ -120,8 +120,10 @@ export class PluginLoader {
     Logger.plugins.debug('Evaluating plugin code');
     const exports = {} as Record<string, unknown>;
     const module = { exports } as { exports: unknown };
-    // Both scopes are kept so plugins published before the Tahti rebrand
-    // (require('@nuclearplayer/...')) keep working at runtime.
+    // Intentional permanent compat aliases — not leftover rename debt.
+    // Marketplace plugins published before the Tahti rebrand still
+    // `require('@nuclearplayer/...')`; removing these breaks installed
+    // plugins. Prefer `@tahti-player/*` for new plugin code.
     const sdkExports = { TahtiPluginAPI, NuclearPluginAPI: TahtiPluginAPI };
     const ALLOWED_MODULES: Record<string, unknown> = {
       '@tahti-player/plugin-sdk': sdkExports,

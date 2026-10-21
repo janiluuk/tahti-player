@@ -2,14 +2,15 @@ import { Link, useRouterState } from '@tanstack/react-router';
 import {
   CompassIcon,
   EllipsisIcon,
-  GaugeIcon,
   LayoutDashboardIcon,
+  ListMusicIcon,
   RadioIcon,
   XIcon,
 } from 'lucide-react';
-import { useEffect, useRef, type ReactNode } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, Tooltip, useSkipEnterMotion } from '@tahti-player/ui';
 
 import { hasAccountRole } from '../lib/accountRoles';
 import { cn } from '../lib/cn';
@@ -18,14 +19,17 @@ import {
   isMobileMoreRoute,
   type MobileItemId,
 } from '../lib/navigationActive';
+import { navigationPathname } from '../lib/navigationPathname';
 import { useAuthStore } from '../stores/authStore';
+
+const DRAWER_SPRING = { type: 'spring', stiffness: 420, damping: 40 } as const;
 
 const PRIMARY = [
   {
     to: '/',
     id: 'listen' as const satisfies MobileItemId,
     label: 'Listen',
-    icon: GaugeIcon,
+    icon: ListMusicIcon,
   },
   {
     to: '/discover',
@@ -57,7 +61,7 @@ export function MobileBottomNav({
   onOpenMore,
   moreOpen = false,
 }: MobileBottomNavProps) {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathname = useRouterState({ select: navigationPathname });
   const user = useAuthStore((state) => state.user);
   const showStudio =
     hasAccountRole(user, 'ARTIST') || hasAccountRole(user, 'BOARD');
@@ -84,7 +88,7 @@ export function MobileBottomNav({
             className={cn(
               'flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide',
               active
-                ? 'text-primary'
+                ? 'text-primary-strong'
                 : 'text-foreground-secondary hover:text-foreground',
             )}
           >
@@ -93,15 +97,17 @@ export function MobileBottomNav({
           </Link>
         );
       })}
-      <button
+      <Button
+        variant="text"
+        size="flexible"
         type="button"
         onClick={onOpenMore}
         aria-label="More"
         aria-expanded={moreOpen}
         className={cn(
-          'flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide',
+          'flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide hover:bg-transparent',
           moreActive || moreOpen
-            ? 'text-primary'
+            ? 'text-primary-strong'
             : 'text-foreground-secondary hover:text-foreground',
         )}
       >
@@ -110,7 +116,7 @@ export function MobileBottomNav({
           strokeWidth={moreActive || moreOpen ? 2.5 : 2}
         />
         <span className="truncate">More</span>
-      </button>
+      </Button>
     </nav>
   );
 }
@@ -129,6 +135,8 @@ type MobileDrawerProps = {
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+const CLOSE_TOOLTIP_ARM_MS = 400;
+
 export function MobileDrawer({
   open,
   title,
@@ -138,18 +146,27 @@ export function MobileDrawer({
   fullScreen = false,
 }: MobileDrawerProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const [closeTooltipArmed, setCloseTooltipArmed] = useState(false);
+  const reducedMotion = useSkipEnterMotion();
+  const offScreenX = side === 'left' ? '-100%' : '100%';
 
   useEffect(() => {
     if (!open) {
+      setCloseTooltipArmed(false);
       return;
     }
+    setCloseTooltipArmed(false);
+    const arm = window.setTimeout(
+      () => setCloseTooltipArmed(true),
+      CLOSE_TOOLTIP_ARM_MS,
+    );
     const previouslyFocused = document.activeElement as HTMLElement | null;
     const panel = panelRef.current;
     const focusables = () =>
       panel
         ? Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
         : [];
-    focusables()[0]?.focus();
+    panel?.focus();
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -165,7 +182,10 @@ export function MobileDrawer({
       }
       const first = items[0]!;
       const last = items[items.length - 1]!;
-      if (e.shiftKey && document.activeElement === first) {
+      if (
+        e.shiftKey &&
+        (document.activeElement === first || document.activeElement === panel)
+      ) {
         e.preventDefault();
         last.focus();
       } else if (!e.shiftKey && document.activeElement === last) {
@@ -175,55 +195,87 @@ export function MobileDrawer({
     };
     document.addEventListener('keydown', onKeyDown);
     return () => {
+      window.clearTimeout(arm);
       document.removeEventListener('keydown', onKeyDown);
       previouslyFocused?.focus();
     };
   }, [open, onClose]);
 
-  if (!open) {
-    return null;
-  }
-
   return (
-    <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal>
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/50"
-        aria-label="Close"
-        onClick={onClose}
-      />
-      <div
-        ref={panelRef}
-        className={cn(
-          'border-border bg-background absolute inset-y-0 flex flex-col border shadow-lg',
-          fullScreen
-            ? 'inset-x-0 w-full'
-            : cn('w-[min(100%,20rem)]', side === 'left' ? 'left-0' : 'right-0'),
-        )}
-      >
-        <div className="border-border flex items-center justify-between border-b px-3 py-2">
-          {title ? (
-            <h2 className="font-display text-sm font-bold tracking-tight">
-              {title}
-            </h2>
-          ) : (
-            <span />
-          )}
-          <Tooltip content="Close" side="top">
+    <AnimatePresence>
+      {open ? (
+        <div
+          key="mobile-drawer"
+          className="fixed inset-0 z-50 md:hidden"
+          role="dialog"
+          aria-modal
+          aria-label={title}
+        >
+          <motion.div
+            className="absolute inset-0"
+            initial={{ opacity: reducedMotion ? 1 : 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: reducedMotion ? 1 : 0 }}
+            transition={
+              reducedMotion
+                ? { duration: 0 }
+                : { duration: 0.18, ease: 'easeOut' }
+            }
+          >
             <Button
-              size="icon-sm"
-              variant="text"
+              variant="plain"
+              size="flexible"
+              tabIndex={-1}
+              aria-hidden
+              data-testid="mobile-drawer-scrim"
+              className="absolute inset-0 rounded-none bg-black/50 active:scale-100"
               onClick={onClose}
-              aria-label="Close"
-            >
-              <XIcon size={16} />
-            </Button>
-          </Tooltip>
+            />
+          </motion.div>
+          <motion.div
+            ref={panelRef}
+            tabIndex={-1}
+            className={cn(
+              'border-border bg-background absolute inset-y-0 flex flex-col border shadow-lg outline-none',
+              fullScreen
+                ? 'inset-x-0 w-full'
+                : cn(
+                    'w-[min(100%,20rem)]',
+                    side === 'left' ? 'left-0' : 'right-0',
+                  ),
+            )}
+            initial={reducedMotion ? false : { x: offScreenX, opacity: 0.98 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={
+              reducedMotion ? { opacity: 0 } : { x: offScreenX, opacity: 0.98 }
+            }
+            transition={reducedMotion ? { duration: 0 } : DRAWER_SPRING}
+          >
+            <div className="border-border flex items-center justify-between border-b px-3 py-2">
+              {title ? (
+                <h2 className="font-display text-sm font-bold tracking-tight">
+                  {title}
+                </h2>
+              ) : (
+                <span />
+              )}
+              <Tooltip content="Close" side="top" disabled={!closeTooltipArmed}>
+                <Button
+                  size="icon-sm"
+                  variant="text"
+                  onClick={onClose}
+                  aria-label="Close"
+                >
+                  <XIcon size={16} />
+                </Button>
+              </Tooltip>
+            </div>
+            <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-auto p-3">
+              {children}
+            </div>
+          </motion.div>
         </div>
-        <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-auto p-3">
-          {children}
-        </div>
-      </div>
-    </div>
+      ) : null}
+    </AnimatePresence>
   );
 }

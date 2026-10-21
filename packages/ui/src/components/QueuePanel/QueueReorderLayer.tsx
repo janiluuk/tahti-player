@@ -1,4 +1,4 @@
-import type { DragEndEvent } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import {
   DndContext,
   PointerSensor,
@@ -13,11 +13,17 @@ import { FC, ReactNode } from 'react';
 
 const DRAG_ACTIVATION_DISTANCE_PX = 5;
 
+/** Module-level so `useSensors` keeps its identity and sortable rows skip re-rendering. */
+const POINTER_SENSOR_OPTIONS = {
+  activationConstraint: { distance: DRAG_ACTIVATION_DISTANCE_PX },
+};
+
 type QueueReorderLayerProps = {
   enabled: boolean;
   items: string[];
-  onDragStart?: () => void;
+  onDragStart?: (evt: DragStartEvent) => void;
   onDragEnd?: (evt: DragEndEvent) => void;
+  onDragCancel?: () => void;
   children: ReactNode;
 };
 
@@ -26,13 +32,10 @@ export const QueueReorderLayer: FC<QueueReorderLayerProps> = ({
   items,
   onDragStart,
   onDragEnd,
+  onDragCancel,
   children,
 }) => {
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: DRAG_ACTIVATION_DISTANCE_PX },
-    }),
-  );
+  const sensors = useSensors(useSensor(PointerSensor, POINTER_SENSOR_OPTIONS));
 
   if (!enabled) {
     return <>{children}</>;
@@ -43,6 +46,7 @@ export const QueueReorderLayer: FC<QueueReorderLayerProps> = ({
       sensors={sensors}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
+      onDragCancel={onDragCancel}
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
         {children}

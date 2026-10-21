@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Button,
+  ButtonLink,
   EmptyState,
   Tooltip,
   ViewShell,
@@ -26,9 +27,10 @@ import {
 import { FanSubOrderBreakdown } from '../../components/FanSubOrderBreakdown';
 import { FanSubscriptionStats } from '../../components/FanSubscriptionStats';
 import { FanTiersEditor } from '../../components/FanTiersEditor';
+import { PageError } from '../../components/PageStates';
+import { PurchaseOrdersList } from '../../components/PurchaseOrdersList';
 import { PurchaseTiersEditor } from '../../components/PurchaseTiersEditor';
 import { StudioGate } from '../../components/StudioGate';
-import { AudienceSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
 import { mergeRevenueOrders } from '../../lib/revenueOrders';
@@ -50,6 +52,8 @@ export function StudioRevenueView() {
   const [connect, setConnect] = useState<FanConnectStatus | null>(null);
   const [fanPayouts, setFanPayouts] = useState<FanPayoutStats | null>(null);
   const [hasFanTiers, setHasFanTiers] = useState<boolean | null>(null);
+  const [tiersError, setTiersError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [grants, setGrants] = useState<GrantRow[]>([]);
   const [estimate, setEstimate] = useState<GrantEstimate | null>(null);
   const [mergedOrders, setMergedOrders] = useState(mergeRevenueOrders([], []));
@@ -73,7 +77,16 @@ export function StudioRevenueView() {
       ]) => {
         setConnect(connectResult.data);
         setFanPayouts(payoutsResult.data);
-        setHasFanTiers(tiersResult.data.length > 0);
+        const tiersReason =
+          tiersResult.meta.source === 'api'
+            ? (tiersResult.meta.reason ?? null)
+            : null;
+        setTiersError(tiersReason);
+        setHasFanTiers(
+          tiersReason && tiersResult.data.length === 0
+            ? null
+            : tiersResult.data.length > 0,
+        );
         setMergedOrders(
           mergeRevenueOrders(payoutsResult.data.recent, royaltiesResult.data),
         );
@@ -81,7 +94,7 @@ export function StudioRevenueView() {
         setEstimate(estimateResult.data);
       },
     );
-  }, []);
+  }, [attempt]);
 
   const showConnectWarning = useMemo(
     () =>
@@ -99,22 +112,20 @@ export function StudioRevenueView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-4 px-1 py-2">
-        <AudienceSubNav
-          current={
-            showTiers ? '/studio/audience?tab=tiers' : '/studio/audience'
-          }
-        />
         <ViewShell
           title={showTiers ? 'Tiers' : 'Audience'}
-          classes={{ root: 'px-0 pt-0' }}
+          classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
           {!showTiers ? (
             <div className="flex items-center gap-2">
-              <Link to="/help/$slug" params={{ slug: 'earnings' }}>
-                <Button size="sm" variant="secondary">
-                  Earnings guide
-                </Button>
-              </Link>
+              <ButtonLink
+                to="/help/$slug"
+                params={{ slug: 'earnings' }}
+                size="sm"
+                variant="secondary"
+              >
+                Earnings guide
+              </ButtonLink>
               <Tooltip content="Help" side="top">
                 <Button
                   size="icon-sm"
@@ -142,7 +153,35 @@ export function StudioRevenueView() {
               >
                 <PurchaseTiersEditor />
               </StudioPanel>
+              <StudioPanel
+                title="Track sales"
+                description="Paid one-time purchases, newest first."
+              >
+                <PurchaseOrdersList />
+              </StudioPanel>
             </div>
+          ) : connect && !connect.stripeConfigured ? (
+            <StudioPanel title="Payments">
+              <EmptyState
+                size="sm"
+                data-testid="revenue-stripe-disconnected"
+                title="Stripe is not connected"
+                description="Connect Stripe before fan subscriptions, track sales, or grant payouts can reach you."
+                action={
+                  <ButtonLink to="/studio/stripe" size="sm">
+                    Open Stripe setup
+                  </ButtonLink>
+                }
+              />
+            </StudioPanel>
+          ) : tiersError && hasFanTiers === null ? (
+            <StudioPanel title="Fan subscriptions">
+              <PageError
+                title="Could not load your fan tiers"
+                description={tiersError}
+                onRetry={() => setAttempt((n) => n + 1)}
+              />
+            </StudioPanel>
           ) : hasFanTiers === false ? (
             <StudioPanel title="Fan subscriptions">
               <EmptyState
@@ -178,7 +217,7 @@ export function StudioRevenueView() {
               ) : null}
 
               {fanPayouts ? (
-                <div className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(16rem,1fr)]">
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(16rem,1fr)]">
                   <StudioPanel
                     title="Order management"
                     description="Subscribers, net revenue, payout health, and recent fan-sub plus distribution payouts."
@@ -204,11 +243,13 @@ export function StudioRevenueView() {
                   description="Payout account and Express dashboard — only listed in Studio when Stripe is enabled."
                 >
                   <div data-tour-id="revenue-connect">
-                    <Link to="/studio/stripe">
-                      <Button size="sm" variant="secondary">
-                        Open Stripe dashboard
-                      </Button>
-                    </Link>
+                    <ButtonLink
+                      to="/studio/stripe"
+                      size="sm"
+                      variant="secondary"
+                    >
+                      Open Stripe dashboard
+                    </ButtonLink>
                   </div>
                 </StudioPanel>
               ) : null}

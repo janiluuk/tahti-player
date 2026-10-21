@@ -3,8 +3,10 @@ import { describe, expect, it } from 'vitest';
 import type { EditList } from '../../api/studio-types';
 import {
   addPluginToChain,
+  chainForRender,
   removePluginFromChain,
   reorderPluginChain,
+  withLegacyChain,
 } from './chain';
 
 const editList = {
@@ -30,5 +32,27 @@ describe('audio FX chain host operations', () => {
     const next = reorderPluginChain(editList, 'comp', 'eq');
     expect(next.pluginChain).toEqual(['comp', 'eq']);
     expect(editList.pluginChain).toEqual(['eq', 'comp']);
+  });
+});
+
+describe('withLegacyChain / chainForRender', () => {
+  it('rebuilds a missing chain from enabled plugins, in the old render order', () => {
+    const legacy = {
+      eq: { enabled: true, bands: [] },
+      comp: { enabled: false },
+      limiter: { enabled: true },
+      filter: { enabled: true },
+    } as unknown as EditList;
+    expect(withLegacyChain(legacy).pluginChain).toEqual([
+      'filter',
+      'eq',
+      'limiter',
+    ]);
+    expect(withLegacyChain(editList)).toBe(editList);
+  });
+
+  it('renders only chained plugins whose add-on is installed', () => {
+    expect(chainForRender(editList, ['comp']).pluginChain).toEqual(['comp']);
+    expect(chainForRender(editList, []).pluginChain).toEqual([]);
   });
 });

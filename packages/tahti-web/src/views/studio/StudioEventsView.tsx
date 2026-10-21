@@ -1,20 +1,27 @@
-import { Link } from '@tanstack/react-router';
 import {
   CalendarClockIcon,
   CalendarDaysIcon,
   HistoryIcon,
+  PencilIcon,
   PlusIcon,
   Trash2Icon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, EmptyState, Tabs, Tooltip, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  EmptyState,
+  ExternalLink,
+  Tabs,
+  Tooltip,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { deleteEvent, fetchMyEvents, type ArtistEvent } from '../../api/events';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { BroadcastSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 
 export function StudioEventsView() {
@@ -50,8 +57,8 @@ export function StudioEventsView() {
           >
             <div className="flex min-w-0 items-center gap-3">
               <div
-                className="bg-primary/15 text-primary flex size-14 shrink-0 items-center justify-center rounded-md"
-                aria-label={`${event.title} thumbnail`}
+                className="bg-primary/15 text-primary-strong flex size-14 shrink-0 items-center justify-center rounded-md"
+                aria-hidden
               >
                 <CalendarDaysIcon size={24} aria-hidden />
               </div>
@@ -67,33 +74,42 @@ export function StudioEventsView() {
                   </p>
                 )}
                 {event.eventUrl && (
-                  <a
+                  <ExternalLink
                     href={event.eventUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-primary text-xs hover:underline"
+                    className="text-primary-strong text-xs"
                   >
                     Tickets / event link
-                  </a>
+                  </ExternalLink>
                 )}
               </div>
             </div>
-            <Button
-              size="sm"
-              variant="text"
-              onClick={() => {
-                void deleteEvent(event.id).then((result) => {
-                  if (!result.ok) {
-                    toast.error(result.error);
-                  } else {
-                    reload();
-                  }
-                });
-              }}
-            >
-              <Trash2Icon size={14} aria-hidden className="mr-1.5" />
-              Remove
-            </Button>
+            <div className="flex flex-wrap gap-1">
+              <ButtonLink
+                to="/studio/events/$eventId/edit"
+                params={{ eventId: event.id }}
+                size="sm"
+                variant="text"
+              >
+                <PencilIcon size={14} aria-hidden className="mr-1.5" />
+                Edit
+              </ButtonLink>
+              <Button
+                size="sm"
+                variant="text"
+                onClick={() => {
+                  void deleteEvent(event.id).then((result) => {
+                    if (!result.ok) {
+                      toast.error(result.error);
+                    } else {
+                      reload();
+                    }
+                  });
+                }}
+              >
+                <Trash2Icon size={14} aria-hidden className="mr-1.5" />
+                Remove
+              </Button>
+            </div>
           </li>
         ))}
       </ul>
@@ -102,17 +118,18 @@ export function StudioEventsView() {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
-        <BroadcastSubNav current="/studio/events" />
         <ViewShell
           title="Events"
           classes={{ root: 'px-0 pt-0' }}
           actions={
             <Tooltip content="Add event" side="top">
-              <Link to="/studio/events/new">
-                <Button size="icon-sm" aria-label="Add event">
-                  <PlusIcon size={16} aria-hidden />
-                </Button>
-              </Link>
+              <ButtonLink
+                to="/studio/events/new"
+                size="icon-sm"
+                aria-label="Add event"
+              >
+                <PlusIcon size={16} aria-hidden />
+              </ButtonLink>
             </Tooltip>
           }
         >

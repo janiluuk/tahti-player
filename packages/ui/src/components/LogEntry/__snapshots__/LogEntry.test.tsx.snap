@@ -2,7 +2,7 @@
 
 exports[`LogEntry > (Snapshot) renders core log entry 1`] = `
 <div
-  class="group border-border/50 relative grid grid-cols-[auto_auto_auto_auto_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-cyan"
+  class="group border-border/50 relative grid grid-cols-[auto_auto_auto_minmax(0,auto)_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-cyan"
 >
   <div
     class="flex w-4 items-center justify-center pt-0.5"
@@ -25,14 +25,14 @@ exports[`LogEntry > (Snapshot) renders core log entry 1`] = `
     INFO
   </button>
   <button
-    class="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
+    class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
     data-testid="log-scope"
     type="button"
   >
     app
   </button>
   <span
-    class="text-foreground break-all whitespace-pre-wrap"
+    class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
     data-testid="log-message"
   >
     Application started
@@ -44,7 +44,7 @@ exports[`LogEntry > (Snapshot) renders core log entry 1`] = `
     <div>
       <button
         aria-label="Copy"
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
         data-headlessui-state=""
         data-testid="log-copy-button"
         type="button"
@@ -82,7 +82,7 @@ exports[`LogEntry > (Snapshot) renders core log entry 1`] = `
 
 exports[`LogEntry > (Snapshot) renders plugin log entry 1`] = `
 <div
-  class="group border-border/50 relative grid grid-cols-[auto_auto_auto_auto_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-cyan"
+  class="group border-border/50 relative grid grid-cols-[auto_auto_auto_minmax(0,auto)_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-cyan"
 >
   <div
     class="flex w-4 items-center justify-center pt-0.5"
@@ -105,14 +105,14 @@ exports[`LogEntry > (Snapshot) renders plugin log entry 1`] = `
     INFO
   </button>
   <button
-    class="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium bg-accent-orange/50 text-accent-foreground cursor-pointer hover:opacity-80"
+    class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-accent-orange/50 text-accent-foreground cursor-pointer hover:opacity-80"
     data-testid="log-scope"
     type="button"
   >
     youtube-music
   </button>
   <span
-    class="text-foreground break-all whitespace-pre-wrap"
+    class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
     data-testid="log-message"
   >
     Application started
@@ -124,7 +124,7 @@ exports[`LogEntry > (Snapshot) renders plugin log entry 1`] = `
     <div>
       <button
         aria-label="Copy"
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
         data-headlessui-state=""
         data-testid="log-copy-button"
         type="button"

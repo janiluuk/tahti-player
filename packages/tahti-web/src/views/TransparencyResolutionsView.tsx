@@ -1,11 +1,11 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Badge, SectionShell, ViewShell } from '@tahti-player/ui';
+import { Badge, FilterChips, SectionShell, ViewShell } from '@tahti-player/ui';
 
 import { fetchTransparencyResolutions } from '../api/client';
 import type { BoardResolution } from '../api/types';
-import { PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEAR_OPTIONS = Array.from({ length: 5 }, (_, i) => CURRENT_YEAR - i);
@@ -27,6 +27,8 @@ export function TransparencyResolutionsView() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const [resolutions, setResolutions] = useState<BoardResolution[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -36,19 +38,22 @@ export function TransparencyResolutionsView() {
         return;
       }
       setResolutions(result.data);
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
     return () => {
       cancelled = true;
     };
-  }, [year]);
+  }, [year, attempt]);
 
   return (
     <ViewShell
       title="Board resolutions"
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-3xl',
-        scrollableArea: 'gap-6',
+        content: 'gap-6',
       }}
     >
       <Link
@@ -58,29 +63,23 @@ export function TransparencyResolutionsView() {
         ← Back to transparency
       </Link>
 
-      <div className="flex flex-wrap gap-2 text-xs">
-        {YEAR_OPTIONS.map((y) => (
-          <button
-            key={y}
-            type="button"
-            onClick={() => setYear(y)}
-            className={
-              y === year
-                ? 'bg-primary text-primary-foreground border-primary rounded-full border px-3 py-1 font-medium'
-                : 'border-border hover:bg-background-secondary rounded-full border px-3 py-1'
-            }
-          >
-            {y}
-          </button>
-        ))}
-      </div>
+      <FilterChips
+        aria-label="Year"
+        items={YEAR_OPTIONS.map((y) => ({ id: String(y), label: String(y) }))}
+        selected={String(year)}
+        onChange={(id) => setYear(Number(id))}
+      />
 
       {loading ? (
         <PageLoading label="Loading resolutions…" />
+      ) : loadError && resolutions.length === 0 ? (
+        <PageError
+          title="Could not load the resolutions"
+          description={loadError}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
       ) : resolutions.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No published resolutions for {year}.
-        </p>
+        <PageEmpty title={`No published resolutions for ${year}.`} />
       ) : (
         <SectionShell title={`Resolutions ${year}`}>
           <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
@@ -102,16 +101,16 @@ export function TransparencyResolutionsView() {
                   <p className="mt-2 text-sm leading-relaxed">
                     {resolution.body}
                   </p>
-                  <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                    <span className="border-border rounded border px-2 py-1">
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Badge variant="pill" color="secondary">
                       YES {resolution.voteFor}
-                    </span>
-                    <span className="border-border rounded border px-2 py-1">
+                    </Badge>
+                    <Badge variant="pill" color="secondary">
                       NO {resolution.voteAgainst}
-                    </span>
-                    <span className="border-border rounded border px-2 py-1">
+                    </Badge>
+                    <Badge variant="pill" color="secondary">
                       ABSTAIN {resolution.voteAbstain}
-                    </span>
+                    </Badge>
                   </div>
                 </li>
               );

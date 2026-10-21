@@ -4,8 +4,8 @@ import { useEffect, useState, type ReactNode } from 'react';
 import {
   Box,
   Button,
-  Dialog,
   Input,
+  MediaArtwork,
   PluginStoreItem,
   TabLabel,
   Tabs,
@@ -31,8 +31,36 @@ import {
 } from '../stores/listenerWidgetsStore';
 import { ImageUploadField } from './ImageUploadField';
 import { ListenerWidgetEmbed } from './ListenerWidgetEmbed';
+import { NewsFeedSuggestions } from './NewsFeedSuggestions';
 import { NewsFeedWidget } from './NewsFeedWidget';
+import { PageEmpty } from './PageStates';
 import { SourceServiceIcon } from './SourceServiceIcon';
+
+function ConfigureGear({
+  title,
+  open,
+  onToggle,
+}: {
+  title: string;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <Tooltip
+      content={open ? `Hide ${title} configuration` : `Configure ${title}`}
+      side="top"
+    >
+      <Button
+        size="icon-sm"
+        variant="secondary"
+        onClick={onToggle}
+        aria-label={open ? `Hide ${title} configuration` : `Configure ${title}`}
+      >
+        <SettingsIcon size={15} aria-hidden />
+      </Button>
+    </Tooltip>
+  );
+}
 
 function ConfigurableCard({
   header,
@@ -41,61 +69,30 @@ function ConfigurableCard({
   open,
   onOpenChange,
   className,
-  asModal = false,
 }: {
-  header: ReactNode | ((open: () => void) => ReactNode);
+  /** Render the store row; pass configure gear into PluginStoreItem `accessory`
+   * so compact dialogs don't overflow a side-by-side gear outside the card. */
+  header: (gear: ReactNode) => ReactNode;
   children: ReactNode;
   title: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   className?: string;
-  /** Show the config panel in a Dialog instead of expanding inline — for
-   * configs too tall/rich to sit comfortably inside the addon list. */
-  asModal?: boolean;
 }) {
   return (
-    <div className={cn('flex flex-col gap-2', className)}>
-      <div className="flex items-center gap-2">
-        <div className="min-w-0 flex-1">
-          {typeof header === 'function'
-            ? header(() => onOpenChange(true))
-            : header}
-        </div>
-        <Tooltip
-          content={open ? `Hide ${title} configuration` : `Configure ${title}`}
-          side="top"
-        >
-          <Button
-            size="icon-sm"
-            variant="secondary"
-            onClick={() => onOpenChange(!open)}
-            aria-label={
-              open ? `Hide ${title} configuration` : `Configure ${title}`
-            }
-          >
-            <SettingsIcon size={15} aria-hidden />
-          </Button>
-        </Tooltip>
-      </div>
-      {asModal ? (
-        <Dialog.Root
-          isOpen={open}
-          onClose={() => onOpenChange(false)}
-          className="max-w-lg"
-        >
-          <Dialog.Title>{title} configuration</Dialog.Title>
-          <div
-            className="mt-4 flex flex-col gap-4"
-            data-testid={`listen-addon-config-${title}`}
-          >
-            {children}
-          </div>
-        </Dialog.Root>
-      ) : open ? (
+    <div className={cn('flex min-w-0 flex-col gap-2', className)}>
+      {header(
+        <ConfigureGear
+          title={title}
+          open={open}
+          onToggle={() => onOpenChange(!open)}
+        />,
+      )}
+      {open ? (
         <Box
           variant="tertiary"
           shadow="none"
-          className="gap-4 p-3"
+          className="h-auto w-auto gap-4 p-3"
           data-testid={`listen-addon-config-${title}`}
         >
           {children}
@@ -355,7 +352,7 @@ export function ListenAddonsPanel({
             title="Favorites"
             open={configuringId === 'favorites'}
             onOpenChange={(open) => setConfiguringId(open ? 'favorites' : null)}
-            header={
+            header={(gear) => (
               <PluginStoreItem
                 icon={listenAddonIcon('favorites')}
                 name="Favorites"
@@ -365,21 +362,26 @@ export function ListenAddonsPanel({
                 isInstalled={favoritesInstalled}
                 onInstall={() => handleInstall('favorites')}
                 compact={compact}
+                accessory={
+                  <>
+                    {favoritesInstalled ? (
+                      <Button
+                        size="sm"
+                        variant="text"
+                        onClick={() => handleUninstall('favorites')}
+                      >
+                        Uninstall
+                      </Button>
+                    ) : null}
+                    {gear}
+                  </>
+                }
               />
-            }
+            )}
           >
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-foreground-secondary text-sm">
-                Enabled favorites appear on the Listen page.
-              </p>
-              <Button
-                size="sm"
-                variant="text"
-                onClick={() => handleUninstall('favorites')}
-              >
-                Uninstall
-              </Button>
-            </div>
+            <p className="text-foreground-secondary text-sm">
+              Enabled favorites appear on the Listen page.
+            </p>
           </ConfigurableCard>
         )}
         {newsInstalled === (installTab === 'installed') && (
@@ -389,7 +391,7 @@ export function ListenAddonsPanel({
             onOpenChange={(open) =>
               setConfiguringId(open ? NEWS_WIDGET_TYPE_ID : null)
             }
-            header={
+            header={(gear) => (
               <PluginStoreItem
                 icon={listenAddonIcon(NEWS_WIDGET_TYPE_ID)}
                 name="News"
@@ -399,8 +401,22 @@ export function ListenAddonsPanel({
                 isInstalled={newsInstalled}
                 onInstall={() => handleInstall(NEWS_WIDGET_TYPE_ID)}
                 compact={compact}
+                accessory={
+                  <>
+                    {newsInstalled ? (
+                      <Button
+                        size="sm"
+                        variant="text"
+                        onClick={() => handleUninstall(NEWS_WIDGET_TYPE_ID)}
+                      >
+                        Uninstall
+                      </Button>
+                    ) : null}
+                    {gear}
+                  </>
+                }
               />
-            }
+            )}
           >
             {newsInstalled ? (
               <div className="flex flex-col gap-3">
@@ -411,6 +427,14 @@ export function ListenAddonsPanel({
                     onRemove={() => removeInstance(instance.id)}
                   />
                 ))}
+                <NewsFeedSuggestions
+                  addedUrls={
+                    new Set(newsInstances.map((instance) => instance.input))
+                  }
+                  onAdd={(feed) =>
+                    addInstance(NEWS_WIDGET_TYPE_ID, feed.url, feed.title)
+                  }
+                />
                 <form
                   className="flex flex-col gap-3"
                   onSubmit={(event) => {
@@ -467,19 +491,10 @@ export function ListenAddonsPanel({
                     {newsError}
                   </p>
                 ) : null}
-                <div className="flex items-center justify-between">
-                  <p className="text-foreground-secondary text-xs">
-                    Paste a public RSS 2.0 or Atom URL. Articles open in a new
-                    tab.
-                  </p>
-                  <Button
-                    size="sm"
-                    variant="text"
-                    onClick={() => handleUninstall(NEWS_WIDGET_TYPE_ID)}
-                  >
-                    Uninstall
-                  </Button>
-                </div>
+                <p className="text-foreground-secondary text-xs">
+                  Paste a public RSS 2.0 or Atom URL. Articles open in a new
+                  tab.
+                </p>
               </div>
             ) : (
               <p className="text-foreground-secondary text-sm">
@@ -500,8 +515,7 @@ export function ListenAddonsPanel({
               title={type.name}
               open={configuringId === type.id}
               onOpenChange={(open) => setConfiguringId(open ? type.id : null)}
-              asModal={type.id === 'hearthis'}
-              header={
+              header={(gear) => (
                 <PluginStoreItem
                   icon={listenAddonIcon(type.id)}
                   name={type.name}
@@ -511,8 +525,22 @@ export function ListenAddonsPanel({
                   isInstalled={isInstalled}
                   onInstall={() => handleInstall(type.id)}
                   compact={compact}
+                  accessory={
+                    <>
+                      {isInstalled ? (
+                        <Button
+                          size="sm"
+                          variant="text"
+                          onClick={() => handleUninstall(type.id)}
+                        >
+                          Uninstall
+                        </Button>
+                      ) : null}
+                      {gear}
+                    </>
+                  }
                 />
-              }
+              )}
             >
               {isInstalled ? (
                 <div className="flex flex-col gap-3">
@@ -623,13 +651,13 @@ export function ListenAddonsPanel({
                               key={set.id}
                               className="border-border bg-background-secondary flex items-center gap-2 rounded-md border p-2"
                             >
-                              {set.thumbUrl ? (
-                                <img
-                                  src={set.thumbUrl}
-                                  alt=""
-                                  className="size-8 shrink-0 rounded object-cover"
-                                />
-                              ) : null}
+                              <MediaArtwork
+                                size="thumb"
+                                src={set.thumbUrl}
+                                alt=""
+                                className="shrink-0 rounded"
+                                imageReveal={Boolean(set.thumbUrl)}
+                              />
                               <div className="min-w-0 flex-1">
                                 <p className="truncate text-sm font-medium">
                                   {set.title}
@@ -655,18 +683,9 @@ export function ListenAddonsPanel({
                       ) : null}
                     </div>
                   )}
-                  <div className="flex items-center justify-between">
-                    <p className="text-foreground-secondary text-xs">
-                      {type.helpText}
-                    </p>
-                    <Button
-                      size="sm"
-                      variant="text"
-                      onClick={() => handleUninstall(type.id)}
-                    >
-                      Uninstall
-                    </Button>
-                  </div>
+                  <p className="text-foreground-secondary text-xs">
+                    {type.helpText}
+                  </p>
                 </div>
               ) : (
                 <p className="text-foreground-secondary text-sm">
@@ -678,9 +697,7 @@ export function ListenAddonsPanel({
         })}
       </div>
       {installTab === 'installed' && installedCount === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          Nothing installed yet — check Available.
-        </p>
+        <PageEmpty title="Nothing installed yet — check Available." />
       ) : null}
       {installTab === 'available' && availableCount === 0 ? (
         <p className="text-foreground-secondary text-sm">

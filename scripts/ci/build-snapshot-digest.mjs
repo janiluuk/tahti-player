@@ -2,27 +2,59 @@ import { createHash } from 'node:crypto';
 import {
   existsSync,
   mkdirSync,
-  readFileSync,
   readdirSync,
+  readFileSync,
   writeFileSync,
 } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import pixelmatch from 'pixelmatch';
+import { PNG } from 'pngjs';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../..',
+);
 const OUT_DIR = path.join(ROOT, 'snapshot-digest');
 
-const failures = collectFailures(ROOT);
+// Public base URL where this run's PNGs are hosted (e.g. raw.githubusercontent.com
+// on a dedicated orphan branch — see .github/workflows/ci.yml's "Publish visual
+// snapshot diffs" step). Without it, the digest just names the file (local/
+// non-CI runs, or a run with nothing to publish).
+const PUBLIC_BASE_URL = process.env.SNAPSHOT_DIFF_PUBLIC_BASE_URL?.replace(
+  /\/$/,
+  '',
+);
+
+const cssCache = new Map();
+const APP_BUNDLES = ['player', 'tahti-web'];
+
+const allFailures = collectFailures(ROOT);
+const baseline = loadBaseline();
+const failures = [];
+const standing = [];
+for (const failure of allFailures) {
+  failure.fingerprint = fingerprintOf(failure);
+  (baseline && isInBaseline(baseline, failure) ? standing : failures).push(
+    failure,
+  );
+}
 
 mkdirSync(OUT_DIR, { recursive: true });
 
-if (failures.length === 0) {
+if (allFailures.length === 0) {
   const empty = {
     generatedAt: new Date().toISOString(),
     count: 0,
+    newCount: 0,
+    standingCount: 0,
     items: [],
+    standing: [],
   };
-  writeFileSync(path.join(OUT_DIR, 'digest.json'), JSON.stringify(empty, null, 2));
+  writeFileSync(
+    path.join(OUT_DIR, 'digest.json'),
+    JSON.stringify(empty, null, 2),
+  );
   writeFileSync(
     path.join(OUT_DIR, 'digest.md'),
     [
@@ -49,14 +81,21 @@ for (const [index, failure] of failures.entries()) {
   const receivedPath = path.join(OUT_DIR, `${slug}.received.html`);
 
   if (expectedHtml) {
-    writeFileSync(expectedPath, wrapHtmlDocument(expectedHtml, 'Expected'));
+    writeFileSync(
+      expectedPath,
+      wrapHtmlDocument(expectedHtml, 'Expected', failure.packageName),
+    );
   }
   if (receivedHtml) {
-    writeFileSync(receivedPath, wrapHtmlDocument(receivedHtml, 'Received'));
+    writeFileSync(
+      receivedPath,
+      wrapHtmlDocument(receivedHtml, 'Received', failure.packageName),
+    );
   }
 
   items.push({
     id: slug,
+    fingerprint: failure.fingerprint,
     packageName: failure.packageName,
     file: relativize(failure.file),
     testName: failure.testName,
@@ -65,39 +104,114 @@ for (const [index, failure] of failures.entries()) {
     receivedHtmlPath: receivedHtml ? path.basename(receivedPath) : null,
     expectedPng: null,
     receivedPng: null,
+    diffPng: null,
+    diffPixels: null,
     messageExcerpt: excerpt(failure.message, 6000),
   });
 }
 
 await maybeScreenshot(items);
+maybeDiffImages(items);
 
 const digest = {
   generatedAt: new Date().toISOString(),
-  count: items.length,
+  // `count` is every mismatch in the run (CI uses it to tell snapshot-only
+  // failures from other test failures); `items` and the markdown cover only
+  // the ones this PR introduced or changed.
+  count: allFailures.length,
+  newCount: items.length,
+  standingCount: standing.length,
+  baselineAvailable: baseline !== null,
   items,
+  standing: standing.map((failure) => ({
+    fingerprint: failure.fingerprint,
+    packageName: failure.packageName,
+    file: relativize(failure.file),
+    testName: failure.testName,
+  })),
 };
 
-writeFileSync(path.join(OUT_DIR, 'digest.json'), JSON.stringify(digest, null, 2));
+writeFileSync(
+  path.join(OUT_DIR, 'digest.json'),
+  JSON.stringify(digest, null, 2),
+);
 writeFileSync(path.join(OUT_DIR, 'digest.md'), renderMarkdown(digest));
-console.log(`snapshot-digest: wrote ${items.length} item(s) to ${OUT_DIR}`);
+console.log(
+  `snapshot-digest: wrote ${items.length} new and ${standing.length} standing item(s) to ${OUT_DIR}`,
+);
+
+/** Identifies a mismatch across runs: package, file, test and a hash of what
+ * was received (so the same test failing in a *different* way still counts
+ * as new). Absolute checkout paths and ANSI codes are normalized away. */
+function fingerprintOf(failure) {
+  const received = stripAnsi(failure.receivedHtml ?? failure.message ?? '')
+    .replaceAll(ROOT, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return createHash('sha1')
+    .update(
+      [
+        failure.packageName,
+        relativize(failure.file),
+        failure.testName,
+        received,
+      ].join('\0'),
+    )
+    .digest('hex');
+}
+
+/** The base branch's mismatches, from its own `digest.json` (downloaded by
+ * CI into `snapshot-baseline/`). `null` when there is none, in which case
+ * every mismatch is treated as new. Entries from before fingerprints existed
+ * match on package + file + test name only. */
+function loadBaseline() {
+  const file =
+    process.env.SNAPSHOT_BASELINE_JSON ||
+    path.join(ROOT, 'snapshot-baseline', 'digest.json');
+  if (!existsSync(file)) {
+    return null;
+  }
+  try {
+    const payload = JSON.parse(readFileSync(file, 'utf8'));
+    const entries = [...(payload.items ?? []), ...(payload.standing ?? [])];
+    const strong = new Set();
+    const loose = new Set();
+    for (const entry of entries) {
+      if (entry.fingerprint) {
+        strong.add(entry.fingerprint);
+      } else {
+        loose.add(looseKey(entry));
+      }
+    }
+    return { strong, loose };
+  } catch (error) {
+    console.warn(
+      `snapshot-digest: ignoring baseline ${file}: ${error.message}`,
+    );
+    return null;
+  }
+}
+
+function looseKey(entry) {
+  return [entry.packageName, relativize(entry.file), entry.testName].join('\0');
+}
+
+function isInBaseline(baseline, failure) {
+  return (
+    baseline.strong.has(failure.fingerprint) ||
+    baseline.loose.has(looseKey(failure))
+  );
+}
 
 async function loadChromium() {
   const candidates = [
     'playwright',
+    pathToFileURL(path.join(ROOT, 'node_modules/playwright/index.mjs')).href,
     pathToFileURL(
-      path.join(ROOT, 'node_modules/playwright/index.mjs'),
+      path.join(ROOT, 'packages/tahti-web/node_modules/playwright/index.mjs'),
     ).href,
     pathToFileURL(
-      path.join(
-        ROOT,
-        'packages/tahti-web/node_modules/playwright/index.mjs',
-      ),
-    ).href,
-    pathToFileURL(
-      path.join(
-        ROOT,
-        'node_modules/.pnpm/node_modules/playwright/index.mjs',
-      ),
+      path.join(ROOT, 'node_modules/.pnpm/node_modules/playwright/index.mjs'),
     ).href,
   ];
 
@@ -149,44 +263,202 @@ function collectFailures(root) {
   return collected;
 }
 
-function wrapHtmlDocument(fragment, title) {
+/** Real app CSS (Tailwind utilities + @tahti-player/ui + theme tokens) from
+ * a built bundle, so a snapshot's rendered PNG looks like the app instead of
+ * unstyled HTML. Each package's snapshots render with the bundle of the app
+ * that owns them (`packages/<name>/dist/assets`, e.g. the player's own
+ * Tailwind build — not tahti-web's, which has a different class/theme set);
+ * falls back to any other built app bundle, then to a plain dark stub. Both
+ * app builds run before the digest step in CI. */
+
+function readBundleCss(name) {
+  const assetsDir = path.join(ROOT, 'packages', name, 'dist/assets');
+  if (!existsSync(assetsDir)) {
+    return null;
+  }
+  const cssFiles = readdirSync(assetsDir)
+    .filter((f) => f.endsWith('.css'))
+    .sort();
+  if (cssFiles.length === 0) {
+    return null;
+  }
+  return cssFiles
+    .map((f) => readFileSync(path.join(assetsDir, f), 'utf8'))
+    .join('\n');
+}
+
+function loadAppCss(packageName) {
+  const order = [packageName, ...APP_BUNDLES].filter(
+    (name, i, all) => name && all.indexOf(name) === i,
+  );
+  for (const name of order) {
+    if (!cssCache.has(name)) {
+      cssCache.set(name, readBundleCss(name));
+    }
+    const css = cssCache.get(name);
+    if (css) {
+      return css;
+    }
+  }
+  console.warn(
+    `snapshot-digest: no built app CSS found for ${packageName} (looked in ${order
+      .map((n) => `packages/${n}/dist/assets`)
+      .join(', ')}); rendering unstyled`,
+  );
+  return null;
+}
+
+function assetsDirFor(packageName) {
+  const order = [packageName, ...APP_BUNDLES].filter(
+    (name, i, all) => name && all.indexOf(name) === i,
+  );
+  for (const name of order) {
+    const dir = path.join(ROOT, 'packages', name, 'dist/assets');
+    if (existsSync(dir)) {
+      return dir;
+    }
+  }
+  return null;
+}
+
+function wrapHtmlDocument(fragment, title, packageName) {
+  const appCss = loadAppCss(packageName);
+  // Full-window app roots use h-screen/w-screen: pin them to the capture
+  // viewport (900x700). The label is out-of-flow so it does not push the
+  // snapshot fragment down (that was reading as a vertical offset).
+  // Theme id matches the player default so --background / --foreground and
+  // friends resolve; without it the CSS vars stay unset and rem/layout drift.
+  const baseStyle = appCss
+    ? `html { font-size: 16px; }
+    body { margin: 0; padding: 0; }
+    .h-screen { height: 700px; }
+    .w-screen { width: 100%; }
+    .tahti-snapshot-root { min-height: 100%; }`
+    : `:root { color-scheme: dark; }
+    html { font-size: 16px; }
+    body { margin: 0; padding: 24px 24px 48px; font-family: ui-sans-serif, system-ui, sans-serif; background: #0b1220; color: #f8fafc; }`;
+  const labelStyle =
+    '.tahti-snapshot-label { position: absolute; top: 0; left: 0; z-index: 2147483647; font-size: 11px; line-height: 1; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.55; padding: 6px 10px; pointer-events: none; background: rgba(0,0,0,0.45); color: #f8fafc; }';
+
   return `<!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark" data-theme-id="nuclear:tahti-dark">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${escapeHtml(title)}</title>
-  <style>
-    :root { color-scheme: dark; }
-    body {
-      margin: 0;
-      padding: 24px;
-      font-family: ui-sans-serif, system-ui, sans-serif;
-      background: #0b1220;
-      color: #f8fafc;
-    }
-    .label {
-      font-size: 12px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      opacity: 0.7;
-      margin-bottom: 12px;
-    }
-    .frame {
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 16px;
-      background: #111827;
-    }
-  </style>
+  <style>${appCss ?? ''}
+${baseStyle}
+${labelStyle}</style>
 </head>
-<body>
-  <div class="label">${escapeHtml(title)}</div>
-  <div class="frame">
-${fragment}
-  </div>
+<body class="bg-background text-foreground">
+  <div class="tahti-snapshot-label">${escapeHtml(title)}</div>
+  <div class="tahti-snapshot-root">${fragment}</div>
 </body>
 </html>
 `;
+}
+
+/** Built CSS references fonts as url(/assets/….woff2). file:// pages cannot
+ * resolve those, so Playwright fell back to system fonts (larger metrics,
+ * layout shift). Serve the digest HTML + matching dist/assets over HTTP. */
+function startDigestAssetServer(assetDirs) {
+  const roots = assetDirs.filter(Boolean);
+  return new Promise((resolve, reject) => {
+    import('node:http')
+      .then(({ createServer }) => {
+        const mime = {
+          '.html': 'text/html; charset=utf-8',
+          '.css': 'text/css; charset=utf-8',
+          '.js': 'text/javascript; charset=utf-8',
+          '.woff': 'font/woff',
+          '.woff2': 'font/woff2',
+          '.ttf': 'font/ttf',
+          '.otf': 'font/otf',
+          '.png': 'image/png',
+          '.svg': 'image/svg+xml',
+          '.jpg': 'image/jpeg',
+          '.jpeg': 'image/jpeg',
+          '.webp': 'image/webp',
+        };
+
+        function resolveAsset(rel) {
+          for (const dir of roots) {
+            const candidate = path.join(dir, rel);
+            if (
+              candidate.startsWith(dir + path.sep) &&
+              existsSync(candidate)
+            ) {
+              return candidate;
+            }
+          }
+          return null;
+        }
+
+        const server = createServer((req, res) => {
+          try {
+            const urlPath = decodeURIComponent((req.url ?? '/').split('?')[0]);
+            let filePath = null;
+            if (urlPath.startsWith('/assets/')) {
+              filePath = resolveAsset(urlPath.slice('/assets/'.length));
+            } else if (urlPath === '/' || urlPath.endsWith('.html')) {
+              const name =
+                urlPath === '/' ? 'index.html' : path.basename(urlPath);
+              const candidate = path.join(OUT_DIR, name);
+              if (candidate.startsWith(OUT_DIR + path.sep) && existsSync(candidate)) {
+                filePath = candidate;
+              }
+            }
+            if (!filePath) {
+              res.writeHead(404);
+              res.end('not found');
+              return;
+            }
+            const ext = path.extname(filePath).toLowerCase();
+            res.writeHead(200, {
+              'Content-Type': mime[ext] ?? 'application/octet-stream',
+              'Cache-Control': 'no-store',
+            });
+            res.end(readFileSync(filePath));
+          } catch (error) {
+            res.writeHead(500);
+            res.end(String(error?.message ?? error));
+          }
+        });
+        server.listen(0, '127.0.0.1', () => {
+          const { port } = server.address();
+          resolve({
+            origin: `http://127.0.0.1:${port}`,
+            close: () =>
+              new Promise((done) => {
+                server.close(() => done());
+              }),
+          });
+        });
+        server.on('error', reject);
+      })
+      .catch(reject);
+  });
+}
+
+async function screenshotHtml(page, origin, htmlName, pngName) {
+  await page.goto(`${origin}/${htmlName}`, {
+    waitUntil: 'networkidle',
+  });
+  try {
+    await page.evaluate(async () => {
+      if (document.fonts?.ready) {
+        await document.fonts.ready;
+      }
+    });
+  } catch {
+    // fonts API unavailable — still capture
+  }
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  await page.screenshot({
+    path: path.join(OUT_DIR, pngName),
+    fullPage: true,
+    animations: 'disabled',
+  });
 }
 
 async function maybeScreenshot(digestItems) {
@@ -196,52 +468,155 @@ async function maybeScreenshot(digestItems) {
     return;
   }
 
-  const browser = await chromium.launch({ headless: true });
+  const assetDirs = [
+    ...new Set(
+      digestItems
+        .map((item) => assetsDirFor(item.packageName))
+        .concat(APP_BUNDLES.map((name) => assetsDirFor(name))),
+    ),
+  ].filter(Boolean);
+  if (assetDirs.length === 0) {
+    console.warn(
+      'snapshot-digest: no dist/assets to serve fonts from; PNGs may use fallback fonts',
+    );
+  }
+
+  const server = await startDigestAssetServer(assetDirs);
+  let browser;
+  try {
+    browser = await chromium.launch({ headless: true });
+  } catch (error) {
+    console.warn(
+      `snapshot-digest: chromium launch failed (${error.message}); skipping PNGs`,
+    );
+    await server.close();
+    return;
+  }
   try {
     const page = await browser.newPage({
       viewport: { width: 900, height: 700 },
+      deviceScaleFactor: 1,
     });
     for (const item of digestItems) {
       if (item.expectedHtmlPath) {
         const png = `${item.id}.expected.png`;
-        await page.goto(`file://${path.join(OUT_DIR, item.expectedHtmlPath)}`);
-        await page.screenshot({
-          path: path.join(OUT_DIR, png),
-          fullPage: true,
-        });
+        await screenshotHtml(page, server.origin, item.expectedHtmlPath, png);
         item.expectedPng = png;
       }
       if (item.receivedHtmlPath) {
         const png = `${item.id}.received.png`;
-        await page.goto(`file://${path.join(OUT_DIR, item.receivedHtmlPath)}`);
-        await page.screenshot({
-          path: path.join(OUT_DIR, png),
-          fullPage: true,
-        });
+        await screenshotHtml(page, server.origin, item.receivedHtmlPath, png);
         item.receivedPng = png;
       }
     }
   } finally {
     await browser.close();
+    await server.close();
   }
 }
 
+/** Pixel-diffs expected vs. received PNGs (odiff/pixelmatch-style: same idea
+ * as getsentry/action-visual-snapshot uses internally, run locally instead
+ * of against a proprietary API). Mismatched dimensions are padded onto a
+ * shared canvas first — pixelmatch requires equal width/height — with an
+ * unmissable magenta fill so a size change (not just a content change) is
+ * obvious in the diff image rather than silently cropped. */
+function maybeDiffImages(digestItems) {
+  for (const item of digestItems) {
+    if (!item.expectedPng || !item.receivedPng) {
+      continue;
+    }
+    try {
+      const expected = PNG.sync.read(
+        readFileSync(path.join(OUT_DIR, item.expectedPng)),
+      );
+      const received = PNG.sync.read(
+        readFileSync(path.join(OUT_DIR, item.receivedPng)),
+      );
+      const width = Math.max(expected.width, received.width);
+      const height = Math.max(expected.height, received.height);
+      const a = padPng(expected, width, height);
+      const b = padPng(received, width, height);
+      const diff = new PNG({ width, height });
+      const changedPixels = pixelmatch(
+        a.data,
+        b.data,
+        diff.data,
+        width,
+        height,
+        {
+          threshold: 0.1,
+        },
+      );
+      const diffName = `${item.id}.diff.png`;
+      writeFileSync(path.join(OUT_DIR, diffName), PNG.sync.write(diff));
+      item.diffPng = diffName;
+      item.diffPixels = changedPixels;
+    } catch (error) {
+      console.warn(
+        `snapshot-digest: diff failed for ${item.id}: ${error.message}`,
+      );
+    }
+  }
+}
+
+function padPng(png, width, height) {
+  if (png.width === width && png.height === height) {
+    return png;
+  }
+  const padded = new PNG({ width, height });
+  for (let i = 0; i < padded.data.length; i += 4) {
+    padded.data[i] = 255;
+    padded.data[i + 1] = 0;
+    padded.data[i + 2] = 255;
+    padded.data[i + 3] = 255;
+  }
+  PNG.bitblt(png, padded, 0, 0, png.width, png.height, 0, 0);
+  return padded;
+}
+
+/** Builds an `owner/repo@branch/path` raw URL for an image published by the
+ * "Publish visual snapshot diffs" CI step, or null when there's nowhere
+ * public to point at (no PUBLIC_BASE_URL — local run, or nothing to
+ * publish this time). */
+function imageUrl(fileName) {
+  if (!PUBLIC_BASE_URL || !fileName) {
+    return null;
+  }
+  return `${PUBLIC_BASE_URL}/${fileName}`;
+}
+
 function renderMarkdown(digest) {
-  const rows = digest.items.map(
-    (item) =>
-      `| \`${item.packageName}\` | ${escapeMd(item.testName)} | ${escapeMd(item.likelyCause)} |`,
-  );
+  const rows = digest.items.map((item) => {
+    const diffNote =
+      item.diffPixels != null ? `${item.diffPixels} px changed` : '—';
+    return `| \`${item.packageName}\` | ${escapeMd(item.testName)} | ${escapeMd(item.likelyCause)} | ${diffNote} |`;
+  });
 
   const details = digest.items
     .map((item) => {
+      const expectedUrl = imageUrl(item.expectedPng);
+      const receivedUrl = imageUrl(item.receivedPng);
+      const diffUrl = imageUrl(item.diffPng);
+      const images = [expectedUrl, receivedUrl, diffUrl].some(Boolean)
+        ? [
+            '',
+            '| Expected | Received | Diff |',
+            '| --- | --- | --- |',
+            `| ${expectedUrl ? `![Expected](${expectedUrl})` : '_(none)_'} | ${receivedUrl ? `![Received](${receivedUrl})` : '_(none)_'} | ${diffUrl ? `![Diff](${diffUrl})` : '_(none)_'} |`,
+          ]
+        : [
+            item.expectedPng ? `- Expected PNG: \`${item.expectedPng}\`` : null,
+            item.receivedPng ? `- Received PNG: \`${item.receivedPng}\`` : null,
+          ].filter((line) => line != null);
+
       const lines = [
         `<details>`,
         `<summary><code>${escapeHtml(item.packageName)}</code> — ${escapeHtml(item.testName)}</summary>`,
         '',
         `- File: \`${item.file}\``,
         `- Likely cause: ${item.likelyCause}`,
-        item.expectedPng ? `- Expected PNG: \`${item.expectedPng}\`` : null,
-        item.receivedPng ? `- Received PNG: \`${item.receivedPng}\`` : null,
+        ...images,
         '',
         item.messageExcerpt
           ? ['```diff', item.messageExcerpt, '```'].join('\n')
@@ -254,22 +629,59 @@ function renderMarkdown(digest) {
     })
     .join('\n');
 
+  const imagesNote = PUBLIC_BASE_URL
+    ? 'Expected/received/diff screenshots are rendered with the real app CSS and embedded inline below.'
+    : 'PNG screenshots (and full HTML) are in this run’s **snapshot-digest** artifact — no public image host configured for this run, so they aren’t inlined.';
+
+  const standingNote = renderStanding(digest);
+
+  if (digest.items.length === 0) {
+    return [
+      '## Snapshot digest',
+      '',
+      '_No new snapshot differences in this PR._',
+      '',
+      standingNote,
+    ].join('\n');
+  }
+
   return [
     '## Snapshot digest',
     '',
-    `${digest.count} Vitest snapshot mismatch(es). Review the list, then update with:`,
+    `${digest.items.length} new Vitest snapshot mismatch(es) in this PR. Review the list, then update with:`,
     '',
     '```bash',
     'pnpm --filter <package> test -- -u -- <test-file>',
     '```',
     '',
-    'The diff for each mismatch below is the real Vitest expected/received output. PNG screenshots (and full HTML) are in this run’s **snapshot-digest** artifact for anything too large to inline here.',
+    `The diff for each mismatch below is the real Vitest expected/received output. ${imagesNote}`,
     '',
-    '| Package | Snapshot | Likely cause |',
-    '| --- | --- | --- |',
+    '| Package | Snapshot | Likely cause | Diff |',
+    '| --- | --- | --- | --- |',
     ...rows,
     '',
     details,
+    standingNote,
+  ].join('\n');
+}
+
+/** One collapsed block for mismatches that already fail on the base branch. */
+function renderStanding(digest) {
+  if (!digest.standing?.length) {
+    return digest.baselineAvailable
+      ? ''
+      : '_No master baseline was available, so every mismatch is listed as new._\n';
+  }
+  return [
+    '<details>',
+    `<summary>${digest.standing.length} mismatch(es) already failing on master (not from this PR)</summary>`,
+    '',
+    ...digest.standing.map(
+      (entry) => `- \`${entry.packageName}\` — ${escapeMd(entry.testName)}`,
+    ),
+    '',
+    '</details>',
+    '',
   ].join('\n');
 }
 
@@ -332,5 +744,7 @@ function escapeHtml(value) {
 }
 
 function escapeMd(value) {
-  return String(value ?? '').replaceAll('|', '\\|').replaceAll('\n', ' ');
+  return String(value ?? '')
+    .replaceAll('|', '\\|')
+    .replaceAll('\n', ' ');
 }

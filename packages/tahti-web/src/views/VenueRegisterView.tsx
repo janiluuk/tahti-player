@@ -47,8 +47,15 @@ export function VenueRegisterView() {
       >
         <p className="text-foreground-secondary text-sm">
           <code>{doneSlug}</code> is pending board verification before it
-          appears in the public directory.
+          appears in the public directory. You can edit it and book shows there
+          from My venues meanwhile.
         </p>
+        <Link
+          to="/venues/mine"
+          className="text-sm font-medium underline-offset-2 hover:underline"
+        >
+          Go to My venues
+        </Link>
         <Link
           to="/discover"
           search={{ tab: 'venues' }}
@@ -186,7 +193,7 @@ export function VenueRegisterView() {
         >
           {pending ? 'Submitting…' : 'Submit for review'}
         </Button>
-        {error && <p className="text-accent-red text-sm">{error}</p>}
+        {error && <p className="text-accent-red-strong text-sm">{error}</p>}
       </form>
     </ViewShell>
   );

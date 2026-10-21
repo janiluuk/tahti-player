@@ -2,13 +2,45 @@
  * Sticky PR comment for Vitest snapshot digest.
  * Expects SNAPSHOT_DIGEST_MD env (path) and GITHUB_* from Actions.
  */
-import { readFileSync, existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const MARKER = '<!-- tahti-snapshot-digest -->';
 
 export default async function commentSnapshotDigest({ github, context, core }) {
   if (context.eventName !== 'pull_request') {
     core.info('Not a pull_request event; skipping snapshot digest comment');
+    return;
+  }
+
+  // Tests passed: don't leave last push's mismatches on the PR. Only touches
+  // a digest comment that already exists.
+  if (process.env.SNAPSHOT_DIGEST_CLEAR === '1') {
+    const { data: existingComments } = await github.rest.issues.listComments({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      issue_number: context.issue.number,
+      per_page: 100,
+    });
+    const stale = existingComments.find((comment) =>
+      String(comment.body ?? '').includes(MARKER),
+    );
+    if (!stale) {
+      return;
+    }
+    await github.rest.issues.updateComment({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      comment_id: stale.id,
+      body: [
+        MARKER,
+        '## Snapshot digest',
+        '',
+        '_No snapshot mismatches in the latest run._',
+        '',
+        `_Updated from ${context.workflow} / ${context.job} @ \`${context.sha.slice(0, 7)}\`._`,
+      ].join('\n'),
+    });
+    core.info(`Cleared snapshot digest comment ${stale.id}`);
     return;
   }
 

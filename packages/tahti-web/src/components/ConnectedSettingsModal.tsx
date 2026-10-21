@@ -1,15 +1,18 @@
+import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { BookOpenIcon, GithubIcon, LogInIcon } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { Button, SettingsPanel } from '@tahti-player/ui';
 
+import { hasAccountRole } from '../lib/accountRoles';
+import { buildSettingsPath } from '../lib/settingsUrl';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import {
-  DEFAULT_PUBLIC_SETTINGS_SECTION,
-  isPublicSettingsSection,
-  settingsNavForAuth,
+  fallbackSettingsSection,
+  isSettingsSectionAvailable,
+  settingsNavFor,
   type SettingsSectionId,
 } from '../views/settings/settingsNav';
 import { SettingsSectionBody } from '../views/settings/SettingsPanels';
@@ -42,29 +45,111 @@ function DiscordIcon({ size = 18 }: { size?: number }) {
 
 /** Nuclear SettingsPanel modal wrapping Tahti settings sections. */
 export function ConnectedSettingsModal() {
+  const navigate = useNavigate();
+  const locationHref = useRouterState({
+    select: (state) => state.location.pathname + state.location.searchStr,
+  });
   const isOpen = useSettingsModalStore((s) => s.isOpen);
   const close = useSettingsModalStore((s) => s.close);
+  const clearDismissRouteOpen = useSettingsModalStore(
+    (s) => s.clearDismissRouteOpen,
+  );
   const activeTab = useSettingsModalStore((s) => s.activeTab);
   const setActiveTab = useSettingsModalStore((s) => s.setActiveTab);
+  const openedToSection = useSettingsModalStore((s) => s.openedToSection);
+  const artistSection = useSettingsModalStore((s) => s.artistSection);
+  const accountSection = useSettingsModalStore((s) => s.accountSection);
+  const pluginCategory = useSettingsModalStore((s) => s.pluginCategory);
   const user = useAuthStore((s) => s.user);
   const openAuth = useAuthModalStore((s) => s.open);
   const signedIn = Boolean(user);
+  const isBoard = hasAccountRole(user, 'BOARD');
+  const returnPathRef = useRef<string | null>(null);
 
-  const nav = settingsNavForAuth(signedIn);
+  const profileLoaded = useAuthStore((s) => s.profileLoaded);
+  const hasChannel = Boolean(user?.channel) || !profileLoaded;
+
+  const audience = { signedIn, hasChannel, isBoard };
+  const nav = settingsNavFor(audience);
+  const available = isSettingsSectionAvailable(activeTab, audience);
+  const fallbackTab = fallbackSettingsSection(audience);
 
   useEffect(() => {
-    if (!isOpen || signedIn) {
+    if (isOpen && !available) {
+      setActiveTab(fallbackTab);
+    }
+  }, [available, fallbackTab, isOpen, setActiveTab]);
+
+  const resolvedTab = available ? activeTab : fallbackTab;
+
+  useEffect(() => {
+    if (!locationHref.startsWith('/settings')) {
+      clearDismissRouteOpen();
+    }
+  }, [clearDismissRouteOpen, locationHref]);
+
+  useEffect(() => {
+    if (!isOpen) {
       return;
     }
-    if (!isPublicSettingsSection(activeTab)) {
-      setActiveTab(DEFAULT_PUBLIC_SETTINGS_SECTION);
+    // Close sets dismissRouteOpen before navigation leaves /settings; do not
+    // push a settings URL again or the route effect re-opens the modal.
+    if (useSettingsModalStore.getState().dismissRouteOpen) {
+      return;
     }
-  }, [activeTab, isOpen, setActiveTab, signedIn]);
+    const path = buildSettingsPath({
+      section: resolvedTab,
+      artistSection,
+      accountSection,
+      pluginCategory,
+    });
+    if (!locationHref.startsWith('/settings')) {
+      returnPathRef.current = locationHref;
+    }
+    if (locationHref !== path) {
+      void navigate({ href: path, replace: true });
+    }
+  }, [
+    accountSection,
+    artistSection,
+    isOpen,
+    locationHref,
+    navigate,
+    pluginCategory,
+    resolvedTab,
+  ]);
 
-  const resolvedTab =
-    !signedIn && !isPublicSettingsSection(activeTab)
-      ? DEFAULT_PUBLIC_SETTINGS_SECTION
-      : activeTab;
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    const reduceMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    const frame = window.requestAnimationFrame(() => {
+      document
+        .querySelector('[data-settings-panel-content]')
+        ?.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [isOpen, resolvedTab]);
+
+  const handleClose = () => {
+    const onSettingsRoute = locationHref.startsWith('/settings');
+    const returnTo = returnPathRef.current;
+    returnPathRef.current = null;
+    close();
+    if (!onSettingsRoute) {
+      return;
+    }
+    // Prefer a real non-settings destination. history.back() can land on
+    // another /settings URL and fight dismissRouteOpen on slow navigations.
+    if (returnTo && !returnTo.startsWith('/settings')) {
+      void navigate({ href: returnTo, replace: true });
+      return;
+    }
+    void navigate({ to: '/', replace: true });
+  };
 
   const tabs = nav.map((item) => {
     const Icon = item.Icon;
@@ -72,10 +157,14 @@ export function ConnectedSettingsModal() {
       id: item.id,
       label: item.label,
       icon: <Icon size={16} />,
+      group: item.group,
       // Settings dialog is p-0; pad sections. `min-w-0` + slightly tighter
       // mobile padding keep wide Add-ons / Themes bodies inside the pane.
       content: () => (
-        <div className={`min-w-0 p-4 md:p-6 lg:p-8`}>
+        <div
+          className={`min-w-0 p-4 md:p-6 lg:p-8`}
+          data-settings-panel-content
+        >
           <SettingsSectionBody section={item.id} />
         </div>
       ),
@@ -85,10 +174,11 @@ export function ConnectedSettingsModal() {
   return (
     <SettingsPanel
       isOpen={isOpen}
-      onClose={close}
+      onClose={handleClose}
       tabs={tabs}
       activeTab={resolvedTab}
       onTabChange={(tabId) => setActiveTab(tabId as SettingsSectionId)}
+      startOnContent={openedToSection}
       navFooter={
         <div className="flex flex-col gap-2">
           {!signedIn ? (

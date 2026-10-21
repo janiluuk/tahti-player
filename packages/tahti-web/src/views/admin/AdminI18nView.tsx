@@ -1,4 +1,4 @@
-import { PlusIcon } from 'lucide-react';
+import { PlusIcon, UploadIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
@@ -7,6 +7,7 @@ import {
   Dialog,
   FilePicker,
   Input,
+  Meter,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -19,12 +20,14 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageLoading } from '../../components/PageStates';
+import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 
 export function AdminI18nView() {
   const [languages, setLanguages] = useState<AdminLanguage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [unavailable, setUnavailable] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [newOpen, setNewOpen] = useState(false);
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
@@ -37,6 +40,12 @@ export function AdminI18nView() {
     setLoading(true);
     void fetchAdminLanguages().then((res) => {
       setLanguages(res.data);
+      setUnavailable(res.unavailable === true);
+      setLoadError(
+        res.unavailable !== true && res.meta.source === 'api'
+          ? (res.meta.reason ?? null)
+          : null,
+      );
       setLoading(false);
     });
   };
@@ -91,17 +100,19 @@ export function AdminI18nView() {
           <div className="flex max-w-4xl flex-col gap-6">
             <ViewShell
               title="Languages"
-              classes={{ root: 'px-0 pt-0' }}
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
               actions={
-                <Tooltip content="New language" side="top">
-                  <Button
-                    size="icon-sm"
-                    onClick={() => setNewOpen(true)}
-                    aria-label="New language"
-                  >
-                    <PlusIcon size={16} aria-hidden />
-                  </Button>
-                </Tooltip>
+                unavailable ? undefined : (
+                  <Tooltip content="New language" side="top">
+                    <Button
+                      size="icon-sm"
+                      onClick={() => setNewOpen(true)}
+                      aria-label="New language"
+                    >
+                      <PlusIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
+                )
               }
             >
               {msg && (
@@ -113,6 +124,18 @@ export function AdminI18nView() {
               <StudioPanel>
                 {loading ? (
                   <PageLoading label="Loading languages…" />
+                ) : unavailable ? (
+                  <p className="text-foreground-secondary text-sm">
+                    Not available yet. This server has no translation
+                    management, so languages cannot be added or imported here.
+                    The app&apos;s translations ship with each release.
+                  </p>
+                ) : loadError && languages.length === 0 ? (
+                  <PageError
+                    title="Could not load languages"
+                    description={loadError}
+                    onRetry={reload}
+                  />
                 ) : (
                   <ul className="divide-border divide-y">
                     {languages.map((lang) => {
@@ -139,12 +162,11 @@ export function AdminI18nView() {
                               )}
                             </div>
                             <div className="mt-1.5 flex items-center gap-2">
-                              <div className="bg-background-secondary h-1.5 w-32 overflow-hidden rounded-full">
-                                <div
-                                  className="bg-primary h-full"
-                                  style={{ width: `${pct}%` }}
-                                />
-                              </div>
+                              <Meter
+                                value={pct}
+                                aria-label={`${lang.name} translated`}
+                                className="w-32"
+                              />
                               <span className="text-foreground-secondary text-xs">
                                 {lang.translatedKeys}/{lang.totalKeys} ({pct}%)
                               </span>
@@ -157,6 +179,11 @@ export function AdminI18nView() {
                               disabled={busy}
                               onClick={() => triggerImport(lang.code)}
                             >
+                              <UploadIcon
+                                size={14}
+                                aria-hidden
+                                className="mr-1.5"
+                              />
                               Import CSV
                             </Button>
                           )}

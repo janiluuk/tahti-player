@@ -1,9 +1,14 @@
 import { useNavigate } from '@tanstack/react-router';
-import { EllipsisIcon, Trash2Icon } from 'lucide-react';
-import { FC, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, Dialog, Input, Popover, QueuePanel } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  Input,
+  QueueHeaderActions as QueueHeaderActionsView,
+  QueuePanel,
+} from '@tahti-player/ui';
 
 import { useCurrentQueueItem } from '../hooks/useCurrentQueueItem';
 import { useQueue } from '../hooks/useQueue';
@@ -20,19 +25,24 @@ export const ConnectedQueuePanel: FC<ConnectedQueuePanelProps> = ({
   const { t } = useTranslation('queue');
   const queue = useQueue();
   const currentItem = useCurrentQueueItem();
-  const actions = useQueueActions();
+  const { goToId, removeByIds, reorder, selectCandidate } = useQueueActions();
 
-  const handleReorder = (fromIndex: number, toIndex: number) => {
-    actions.reorder(fromIndex, toIndex);
-  };
+  const handleRemoveItem = useCallback(
+    (itemId: string) => removeByIds([itemId]),
+    [removeByIds],
+  );
 
-  const handleSelectItem = (itemId: string) => {
-    actions.goToId(itemId);
-  };
-
-  const handleRemoveItem = (itemId: string) => {
-    actions.removeByIds([itemId]);
-  };
+  const labels = useMemo(
+    () => ({
+      emptyTitle: t('empty.title'),
+      emptySubtitle: t('empty.subtitle'),
+      removeButton: t('actions.remove'),
+      playbackError: t('errors.playback'),
+      noCandidates: t('candidates.empty'),
+      candidateFailed: t('candidates.failed'),
+    }),
+    [t],
+  );
 
   return (
     <QueuePanel
@@ -40,18 +50,11 @@ export const ConnectedQueuePanel: FC<ConnectedQueuePanelProps> = ({
       currentItemId={currentItem?.id}
       isCollapsed={isCollapsed}
       reorderable={!isCollapsed}
-      onReorder={handleReorder}
-      onSelectItem={handleSelectItem}
+      onReorder={reorder}
+      onSelectItem={goToId}
       onRemoveItem={handleRemoveItem}
-      onSelectCandidate={actions.selectCandidate}
-      labels={{
-        emptyTitle: t('empty.title'),
-        emptySubtitle: t('empty.subtitle'),
-        removeButton: t('actions.remove'),
-        playbackError: t('errors.playback'),
-        noCandidates: t('candidates.empty'),
-        candidateFailed: t('candidates.failed'),
-      }}
+      onSelectCandidate={selectCandidate}
+      labels={labels}
     />
   );
 };
@@ -85,27 +88,16 @@ export const QueueHeaderActions: FC = () => {
 
   return (
     <>
-      <Button size="icon" data-testid="clear-queue-button" onClick={clearQueue}>
-        <Trash2Icon />
-      </Button>
-      <Popover
-        className="relative"
-        trigger={
-          <Button size="icon" data-testid="queue-more-button">
-            <EllipsisIcon />
-          </Button>
-        }
-        anchor="bottom end"
-      >
-        <Popover.Menu>
-          <Popover.Item
-            onClick={() => setSaveDialogOpen(true)}
-            data-testid="save-queue-as-playlist"
-          >
-            {t('actions.saveAsPlaylist')}
-          </Popover.Item>
-        </Popover.Menu>
-      </Popover>
+      <QueueHeaderActionsView
+        onClearQueue={clearQueue}
+        menuItems={[
+          {
+            id: 'save-as-playlist',
+            label: t('actions.saveAsPlaylist'),
+            onClick: () => setSaveDialogOpen(true),
+          },
+        ]}
+      />
       <Dialog.Root
         isOpen={saveDialogOpen}
         onClose={() => setSaveDialogOpen(false)}

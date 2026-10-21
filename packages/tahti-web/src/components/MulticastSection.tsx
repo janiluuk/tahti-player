@@ -20,11 +20,17 @@ import {
   patchRtmpTarget,
   testRtmpTarget,
   type RtmpTarget,
+  type RtmpTargetScope,
 } from '../api/broadcast';
 import {
   multicastProviders,
   type MulticastProviderId,
 } from '../plugins/multicast';
+import { PageError, PageErrorBanner, PageLoading } from './PageStates';
+import {
+  RotationMirrorToggle,
+  useRotationMirror,
+} from './RotationMirrorToggle';
 
 const PROVIDER_ICON: Record<MulticastProviderId, LucideIcon> = {
   YOUTUBE: Youtube,
@@ -82,12 +88,14 @@ type EditingState = {
 };
 
 function DestinationDialog({
+  scope,
   state,
   existingTargets,
   onClose,
   onSaved,
   onDeleted,
 }: {
+  scope: RtmpTargetScope;
   state: EditingState;
   existingTargets: RtmpTarget[];
   onClose: () => void;
@@ -113,24 +121,36 @@ function DestinationDialog({
   >(null);
   const [error, setError] = useState<string | null>(null);
   const [savedTarget, setSavedTarget] = useState(state.target);
+  const mirror = useRotationMirror(state.target, scope);
 
   const save = () => {
     setSaving(true);
     setError(null);
     if (savedTarget) {
-      void patchRtmpTarget(savedTarget.id, {
-        label: label.trim() || undefined,
-        ...(streamKey.trim() ? { streamKey: streamKey.trim() } : {}),
-      }).then((result) => {
+      const mirrorField = mirror.field();
+      void patchRtmpTarget(
+        savedTarget.id,
+        {
+          label: label.trim() || undefined,
+          ...(streamKey.trim() ? { streamKey: streamKey.trim() } : {}),
+          ...mirrorField,
+        },
+        scope,
+      ).then((result) => {
         setSaving(false);
         if (!result.ok) {
           setError(result.error);
+          if ('alwaysMirror' in mirrorField) {
+            mirror.refuse();
+          }
           return;
         }
         const updated = {
           ...savedTarget,
+          ...mirrorField,
           label: label.trim() || savedTarget.label,
         };
+        mirror.commit(updated.alwaysMirror);
         setSavedTarget(updated);
         setStreamKey('');
         onSaved(updated);
@@ -141,17 +161,22 @@ function DestinationDialog({
       setSaving(false);
       return;
     }
-    void createRtmpTarget({
-      provider: providerId,
-      label: label.trim(),
-      streamKey: streamKey.trim(),
-      rtmpUrl: isCustom ? rtmpUrl.trim() : undefined,
-    }).then((result) => {
+    void createRtmpTarget(
+      {
+        provider: providerId,
+        label: label.trim(),
+        streamKey: streamKey.trim(),
+        rtmpUrl: isCustom ? rtmpUrl.trim() : undefined,
+        ...mirror.field(),
+      },
+      scope,
+    ).then((result) => {
       setSaving(false);
       if (!result.ok) {
         setError(result.error);
         return;
       }
+      mirror.commit(result.target.alwaysMirror);
       setSavedTarget(result.target);
       setStreamKey('');
       onSaved(result.target);
@@ -164,7 +189,7 @@ function DestinationDialog({
     }
     setTesting(true);
     setTestResult(null);
-    void testRtmpTarget(savedTarget.id).then((result) => {
+    void testRtmpTarget(savedTarget.id, scope).then((result) => {
       setTesting(false);
       setTestResult(result);
     });
@@ -201,14 +226,15 @@ function DestinationDialog({
                   ),
               )
               .map((option) => (
-                <button
+                <Button
                   key={option.id}
-                  type="button"
+                  variant="text"
+                  size="flexible"
                   onClick={() => {
                     setProviderId(option.id);
                     setLabel(option.label);
                   }}
-                  className="border-border bg-background-secondary hover:border-primary flex flex-col items-center gap-1.5 rounded-lg border p-2 text-center transition-colors"
+                  className="border-border bg-background-secondary hover:border-primary flex flex-col items-center gap-1.5 rounded-lg border p-2 text-center whitespace-normal transition-colors"
                 >
                   <div className="size-9 shrink-0">
                     <ProviderTile providerId={option.id} size={16} />
@@ -216,7 +242,7 @@ function DestinationDialog({
                   <span className="text-foreground truncate text-xs font-medium">
                     {option.label}
                   </span>
-                </button>
+                </Button>
               ))}
           </div>
         ) : (
@@ -232,7 +258,7 @@ function DestinationDialog({
               </Button>
             )}
             {error && (
-              <p className="text-accent-red text-sm" role="alert">
+              <p className="text-accent-red-strong text-sm" role="alert">
                 {error}
               </p>
             )}
@@ -263,6 +289,13 @@ function DestinationDialog({
                 disabled={Boolean(savedTarget)}
               />
             )}
+            {mirror.visible && (
+              <RotationMirrorToggle
+                checked={mirror.checked}
+                onChange={mirror.setChecked}
+                disabled={saving}
+              />
+            )}
             {savedTarget && (
               <div className="border-border flex flex-wrap items-center gap-2 rounded-md border p-3">
                 <Button
@@ -277,9 +310,11 @@ function DestinationDialog({
                   size="sm"
                   variant={savedTarget.enabled ? 'secondary' : undefined}
                   onClick={() => {
-                    void patchRtmpTarget(savedTarget.id, {
-                      enabled: !savedTarget.enabled,
-                    }).then((result) => {
+                    void patchRtmpTarget(
+                      savedTarget.id,
+                      { enabled: !savedTarget.enabled },
+                      scope,
+                    ).then((result) => {
                       if (!result.ok) {
                         setError(result.error);
                         return;
@@ -299,8 +334,8 @@ function DestinationDialog({
                   <p
                     className={
                       testResult.ok && testResult.reachable
-                        ? 'text-accent-green w-full text-xs'
-                        : 'text-accent-red w-full text-xs'
+                        ? 'text-accent-green-strong w-full text-xs'
+                        : 'text-accent-red-strong w-full text-xs'
                     }
                     role="status"
                   >
@@ -326,7 +361,7 @@ function DestinationDialog({
             disabled={deleting}
             onClick={() => {
               setDeleting(true);
-              void deleteRtmpTarget(savedTarget.id).then((result) => {
+              void deleteRtmpTarget(savedTarget.id, scope).then((result) => {
                 setDeleting(false);
                 if (!result.ok) {
                   setError(result.error);
@@ -360,26 +395,32 @@ function DestinationDialog({
   );
 }
 
-function DestinationsGrid() {
+function DestinationsGrid({
+  scope,
+  description,
+}: {
+  scope: RtmpTargetScope;
+  description: string;
+}) {
   const [targets, setTargets] = useState<RtmpTarget[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [editing, setEditing] = useState<EditingState | null>(null);
 
   const reload = () => {
-    void fetchRtmpTargets().then((r) => {
+    void fetchRtmpTargets(scope).then((r) => {
       setTargets(r.data);
+      setLoadError(r.meta.source === 'api' ? (r.meta.reason ?? null) : null);
       setLoading(false);
     });
   };
 
-  useEffect(reload, []);
+  useEffect(reload, [scope]);
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-foreground-secondary text-sm">
-          Configure the destinations that should receive your live broadcast.
-        </p>
+        <p className="text-foreground-secondary text-sm">{description}</p>
         <Tooltip content="Add multicast source" side="top">
           <Button
             size="icon-sm"
@@ -392,11 +433,30 @@ function DestinationsGrid() {
         </Tooltip>
       </div>
       {loading ? (
-        <p className="text-foreground-secondary text-sm">
-          Loading destinations…
-        </p>
+        <PageLoading label="Loading destinations…" />
+      ) : loadError && targets.length === 0 ? (
+        <PageError
+          title="Could not load your destinations"
+          description={loadError}
+          onRetry={() => {
+            setLoading(true);
+            reload();
+          }}
+        />
       ) : (
         <div className="border-border rounded-xl border p-3">
+          {loadError ? (
+            <div className="mb-3">
+              <PageErrorBanner
+                title="Could not refresh your destinations"
+                description={loadError}
+                onRetry={() => {
+                  setLoading(true);
+                  reload();
+                }}
+              />
+            </div>
+          ) : null}
           <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8">
             {multicastProviders.map((provider) => {
               const target = targets.find(
@@ -404,9 +464,10 @@ function DestinationsGrid() {
               );
               const active = target?.enabled ?? false;
               return (
-                <button
+                <Button
                   key={provider.id}
-                  type="button"
+                  variant="text"
+                  size="flexible"
                   onClick={() =>
                     setEditing({
                       providerId: provider.id,
@@ -418,7 +479,7 @@ function DestinationsGrid() {
                       ? `${target.label || provider.label} · ${active ? 'enabled' : 'disabled'}`
                       : `${provider.label} · not configured`
                   }
-                  className={`border-border hover:border-primary/60 relative flex flex-col items-center gap-1.5 rounded-lg border p-2 text-center transition-colors ${
+                  className={`border-border hover:border-primary/60 relative flex flex-col items-center gap-1.5 rounded-lg border p-2 text-center whitespace-normal transition-colors ${
                     !target
                       ? 'border-dashed opacity-70'
                       : !active
@@ -444,7 +505,7 @@ function DestinationsGrid() {
                   <span className="text-foreground w-full truncate text-[11px] font-medium">
                     {provider.label}
                   </span>
-                </button>
+                </Button>
               );
             })}
           </div>
@@ -453,6 +514,7 @@ function DestinationsGrid() {
 
       {editing && (
         <DestinationDialog
+          scope={scope}
           state={editing}
           existingTargets={targets}
           onClose={() => setEditing(null)}
@@ -470,6 +532,12 @@ function DestinationsGrid() {
 /** Manage → Multicast: destinations as thumbnails (Sources-style) plus the
  * shared stream-overlay editor, replacing the old always-visible
  * add-destination form + plain provider list. */
-export function MulticastSection() {
-  return <DestinationsGrid />;
+export function MulticastSection({
+  scope = 'me',
+  description = 'Configure the destinations that should receive your live broadcast.',
+}: {
+  scope?: RtmpTargetScope;
+  description?: string;
+}) {
+  return <DestinationsGrid scope={scope} description={description} />;
 }

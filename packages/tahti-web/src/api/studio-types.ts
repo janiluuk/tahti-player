@@ -1,5 +1,9 @@
 /** Artist studio / catalog / editor types (mirrors Tahti /api/me/*). */
 
+import type { SerializedAutomation } from '@tahti-player/audio-editor';
+
+import type { CollectionItemContribution } from './collection-contribution';
+
 export type StudioChannel = {
   slug: string;
   state: string;
@@ -12,6 +16,8 @@ export type StudioSound = {
   id: string;
   title: string;
   status: string;
+  /** Why processing failed, in plain words. Absent from APIs that predate it. */
+  processingError?: string | null;
   durationSec?: number | null;
   sourceFormat?: string | null;
   sourceBitrateKbps?: number | null;
@@ -22,6 +28,17 @@ export type StudioSound = {
   artistName?: string | null;
   genre?: string | null;
   subGenres?: string[];
+  /** Free-form artist labels (mood, series...), case kept as typed. */
+  tags?: string[];
+  /** Structured "recorded at" venue; `venue` is its summary. */
+  venueId?: string | null;
+  venue?: {
+    id: string;
+    slug: string;
+    name: string;
+    city: string | null;
+    countryCode: string | null;
+  } | null;
   /** Role-based credits when this track differs from the channel's
    * Members/Credits roster — same role vocabulary as release credits. */
   credits?: ReleaseCredit[] | null;
@@ -32,15 +49,27 @@ export type StudioSound = {
   selectsOptIn?: boolean;
   topListsEligible?: boolean;
   commentsEnabled?: boolean;
+  /** Absent from APIs older than tahti-org#659, so callers must not assume a default. */
   downloadsEnabled?: boolean;
+  followToDownload?: boolean;
+  repostToDownload?: boolean;
+  /** Mock-only; the API stores just `isPublic`. */
   visibility?: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'STASH';
-  fanTierIds?: string[];
-  /** One-time-purchase gate — set via `setSoundPurchaseAccess`, not part
+  /** Playback gate — set via `setSoundAccess`, not part
    * of the general `patchStudioSound` body. */
   accessMode?: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
   purchaseTierId?: string | null;
-  releaseDate?: string | null;
+  releasedAt?: string | null;
   pinnedAt?: string | null;
+  /** Manually entered values; `effectiveBpm`/`effectiveKey` resolve these
+   * against the detected ones when `useDetectedBpmKey` is on. */
+  bpm?: number | null;
+  musicalKey?: string | null;
+  bpmDetected?: number | null;
+  keyDetected?: string | null;
+  useDetectedBpmKey?: boolean;
+  mixVersion?: string | null;
+  isAiGenerated?: boolean;
   effectiveBpm?: number | null;
   effectiveKey?: string | null;
   createdAt?: string;
@@ -55,10 +84,12 @@ export type StudioSound = {
    * through the provider's own widget, not the normal editor-source stream. */
   embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
   embedUri?: string | null;
+  /** Copy pushed to the artist's own hearthis.at account, if any. */
+  hearthisExportStatus?:
+    'pending' | 'submitted' | 'delivered' | 'failed' | null;
   /** [0..255] amplitude buckets for the real waveform — null/absent when not yet decoded. */
   peaks?: number[] | null;
   tracklist?: TracklistEntry[] | null;
-  tracklistOverlay?: TracklistOverlaySettings | null;
 };
 
 export type TracklistEntry = {
@@ -70,18 +101,15 @@ export type TracklistEntry = {
   startSec?: number | null;
 };
 
-export type TracklistOverlaySettings = {
-  enabled: boolean;
-  preset: 'minimal' | 'cards' | 'ticker';
-};
-
 export type StudioSoundPatch = {
   title?: string;
   description?: string;
   artistName?: string | null;
   genre?: string | null;
   subGenres?: string[];
+  tags?: string[];
   credits?: ReleaseCredit[] | null;
+  venueId?: string | null;
   contentType?: string;
   license?: string;
   isPublic?: boolean;
@@ -90,15 +118,20 @@ export type StudioSoundPatch = {
   topListsEligible?: boolean;
   commentsEnabled?: boolean;
   downloadsEnabled?: boolean;
-  visibility?: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'STASH';
-  fanTierIds?: string[];
-  releaseDate?: string | null;
+  followToDownload?: boolean;
+  repostToDownload?: boolean;
+  bpm?: number | null;
+  musicalKey?: string | null;
+  useDetectedBpmKey?: boolean;
+  mixVersion?: string | null;
+  isAiGenerated?: boolean;
+  /** ISO datetime; the API rejects null, so omit it to keep the stored date. */
+  releasedAt?: string;
   pinned?: boolean;
   bannerUrl?: string | null;
   backgroundUrl?: string | null;
   replaceFallbackItemId?: string;
   tracklist?: TracklistEntry[] | null;
-  tracklistOverlay?: TracklistOverlaySettings | null;
 };
 
 export type FingerprintMatch = {
@@ -118,6 +151,32 @@ export type StudioReleaseTrack = {
   soundId?: string | null;
   sourceKey?: string | null;
   fingerprintMatch?: FingerprintMatch | null;
+  credits?: TrackCredit[] | null;
+};
+
+export const TRACK_CREDIT_ROLES = [
+  'vocals',
+  'guitars',
+  'bass',
+  'drums',
+  'keys',
+  'synths',
+  'strings',
+  'brass',
+  'programming',
+  'writer',
+  'composer',
+  'producer',
+  'mixing',
+  'mastering',
+  'engineer',
+  'featuring',
+] as const;
+
+export type TrackCredit = {
+  role: string;
+  name: string;
+  artistUsername?: string;
 };
 
 export type StudioRelease = {
@@ -133,11 +192,15 @@ export type StudioRelease = {
   smartLinkSlug: string;
   smartLinkViewCount?: number;
   smartLinkTargets?: Record<string, string> | null;
+  /** Absent until the API returns it; the studio hides the toggle then. */
+  showPoweredByFooter?: boolean;
   tracks?: StudioReleaseTrack[];
   _count?: { tracks: number };
   upc?: string | null;
   revelatorId?: string | null;
   revelatorStatus?: string | null;
+  /** Set while the release is pinned to the top of the artist's public profile. */
+  pinnedAt?: string | null;
 };
 
 export type StudioReleaseList = {
@@ -161,13 +224,23 @@ export type StudioCollectionItem = {
      * provider's widget is the only way to play them. */
     embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
     embedUri?: string | null;
+    artist?: { username: string; displayName: string } | null;
+    /** Gated playback link from the collection route; the editor's own
+     * source route only serves the owner's tracks. */
+    audioUrl?: string | null;
   } | null;
+  audioUrl?: string | null;
   release?: {
     id: string;
     title: string;
     smartLinkSlug?: string;
   } | null;
-};
+  /** Another artist's track that has since gone private. */
+  unavailable?: boolean;
+} & CollectionItemContribution;
+
+/** MANUAL = drag order; TIME = oldest first (track upload or release date); NAME = A-Z by title. */
+export type CollectionTrackSortMode = 'MANUAL' | 'TIME' | 'NAME';
 
 export type StudioCollection = {
   id?: string;
@@ -182,10 +255,15 @@ export type StudioCollection = {
   genres?: string[];
   /** Public playlists only — logged-in listeners can add catalog tracks. */
   collaborative?: boolean;
+  /** How the public page orders tracks; the owner GET always returns drag order. */
+  trackSortMode?: CollectionTrackSortMode;
   coverUrl?: string | null;
   backdropUrl?: string | null;
   items?: StudioCollectionItem[];
   itemCount?: number;
+  isFeatured?: boolean;
+  publicProfileOrder?: number;
+  createdAt?: string;
 };
 
 export type EditorProjectRow = {
@@ -222,6 +300,9 @@ export type EditorTimeline = {
   version: 1;
   durationSec: number;
   tracks: EditorTimelineTrack[];
+  /** Multitrack automation lanes. The API stores `timeline` as free-form JSON
+   * (capped at 500 kB), so this rides along without its own field. */
+  automation?: SerializedAutomation;
 };
 
 export type EditCut = { start: number; end: number };
@@ -268,6 +349,9 @@ export type EditList = {
   loudnorm: { enabled: boolean; targetLufs: number; targetTp: number };
   highPassHz: number;
   lowPassHz: number;
+  /** Editor markers; saved with the draft, not rendered. Absent on older
+   * drafts. */
+  markers?: Array<{ at: number; label?: string }>;
 };
 
 export type EditorDraft = {
@@ -278,6 +362,16 @@ export type EditorDraft = {
     sampleRate: number;
     durationSec: number;
     levels: number[][];
+    zeroCrossingsSec?: number[];
+    silenceRegionsSec?: Array<{ start: number; end: number }>;
+    /** Long sources: signed URL to min/max int8 pairs per channel, every
+     * 1/bucketsPerSec seconds. */
+    fine?: {
+      url: string;
+      bucketsPerSec: number;
+      channels: number;
+      bucketCount: number;
+    };
   } | null;
 };
 
@@ -434,5 +528,6 @@ export function createDefaultEditList(sourceDuration: number): EditList {
     loudnorm: { enabled: false, targetLufs: -14, targetTp: -1.5 },
     highPassHz: 0,
     lowPassHz: 0,
+    markers: [],
   };
 }

@@ -25,14 +25,22 @@ export const HELP_ARTICLES: HelpArticle[] = [
       'A simple map of Listen, Library, Studio, Settings, and the player controls.',
     sections: [
       {
+        heading: 'What is tahti.live?',
+        body: [
+          'tahti.live is a nonprofit broadcasting platform for independent artists — built to support artists, not algorithms. Listening is free and lossless on member channels; artist membership is €40/year and funds your own channel, releases, and live shows.',
+          'One member, one vote: proposals and the AGM govern the platform, not a company board. Nearly all fan-support money goes to the artist, and the code is open source under AGPL.',
+          'See the full pitch — plans, funding, and governance — at /what-is-it.',
+        ],
+      },
+      {
         heading: 'The main areas',
         body: [
           'Listen is the starting point for finding music, channels, radio, and public pages. It is available without an account.',
           'Radio and Discover sit next to Listen in the sidebar. Favorites is its own sidebar item for saved channels and tracks.',
           'Library (signed in) holds sounds, collections, recordings, uploads, and related catalogue work under Studio.',
-          'Studio is for artists: overview, branding, stats, posts, audience, go live, broadcast schedule, and channel controls.',
+          'Studio is for artists: overview, stats, posts, audience, go live, broadcast schedule, and channel controls.',
           'Help center and Settings live at the bottom of the sidebar. Settings covers account, themes, add-ons, and preferences.',
-          'The right rail is queue, chat, and notifications. Local audio import lives under Library → Local files. The player appears only after a track is loaded.',
+          'The right rail is queue, chat, and notifications. Local audio from disk is desktop-only (Library → Local files in the Tahti Player app). The player appears only after a track is loaded.',
         ],
       },
       {
@@ -40,7 +48,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Listen is home for continue-listening, community radio, and who’s on air. Feed shows posts from artists you follow; History is what you played recently.',
           'Discover has widgets, an artists directory (search and filters), and venues. Favorites holds saved channels, radio, and tracks.',
-          'Studio section tabs (Overview, Branding, Stats, …) stay under the Studio nav. On pages with their own subtabs — Stats, Sounds, Branding, Updates, Channel, and similar — those subtabs sit directly under Studio’s nav row, above the page title.',
+          'Studio section tabs (Overview, Stats, …) stay under the Studio nav. On pages with their own subtabs — Stats, Tracks, Updates, Channel, and similar — those subtabs sit directly under Studio’s nav row, above the page title. Branding, gallery, and press kit live under Settings → Artist; Channel Designer lives under Settings → Channel & chat.',
           'Press H for a guided tour of the controls on the current page. Longer how-tos live in this Help center.',
         ],
       },
@@ -65,8 +73,9 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Browse who’s on air from Listen, or open a channel at /channel/$slug.',
           'When an artist is offline, their channel still plays archive items.',
-          'Tahti Radio (/radio) is a fair-rotation stream across the community.',
+          'Tahti Radio (/radio) is a fair-rotation stream across the community. Open the calendar on Radio for the full programme schedule (/schedule), or book a slot when you are signed in.',
           'Discover has widgets, artists, and venues. Open Discover → Venues to browse verified venues, or Discover → Artists for the directory.',
+          'Run a venue? Register it from Discover → Venues. My venues (/venues/mine) shows whether the board has verified it, and lets you edit its details and book or cancel shows there.',
           'Signed-in listeners can install Disco-widgets on Listen from Settings → Add-ons → Discovery.',
         ],
       },
@@ -80,8 +89,16 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Chat',
         body: [
-          'Chat is open on live channels. Anonymous joining may require hCaptcha.',
-          'Moderators can mute or remove disruptive messages.',
+          'Live chat lives on each channel page (and at /chat/$slug for that channel). Open Chat from the sidebar footer (phone: More) to pick a channel, or open a channel that is on air or has chat enabled.',
+          'Messages (under Library) are private direct messages between accounts, not channel chat.',
+          'Anonymous joining on a live channel may require hCaptcha. Moderators can mute or remove disruptive messages.',
+        ],
+      },
+      {
+        heading: 'Listen together',
+        body: [
+          'On a public playlist or collection page, choose Start a Jam to open a shared listening session and invite others with the link.',
+          'This is different from the desktop Tahti Jam remote (Settings → Integrations), which controls the desktop player from your phone.',
         ],
       },
     ],
@@ -148,6 +165,29 @@ export const HELP_ARTICLES: HelpArticle[] = [
     ],
   },
   {
+    slug: 'shared-jam',
+    title: 'Shared listening (Jam)',
+    description:
+      'Start a Jam from a playlist so guests hear the same queue in sync.',
+    productionPath: '/help/shared-jam',
+    sections: [
+      {
+        heading: 'Start a Jam',
+        body: [
+          'Open a public playlist or collection (Library → Collections, or someone else’s public collection page). Choose Start a Jam.',
+          'Share the /jam/$code link. Guests join in the browser; the host keeps control of play, pause, and the queue unless co-control is enabled for a guest.',
+          'When the Jam ends, everyone returns to Listen. Invalid or ended codes show a clear error on the Jam page.',
+        ],
+      },
+      {
+        heading: 'Not the desktop remote',
+        body: [
+          'Desktop Tahti Jam (Settings → Integrations → Tahti Jam) is a phone remote for the desktop player on your LAN. Shared listening Jams are separate web sessions on beta.tahti.live / tahti.live.',
+        ],
+      },
+    ],
+  },
+  {
     slug: 'for-artists',
     title: 'Artist guide',
     description:
@@ -166,12 +206,13 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Copy RTMP or Icecast credentials from the broadcast studio, then stream from OBS, Mixxx, or Traktor.',
           'Upload archive sets and releases from the studio; they appear on your channel and profile.',
+          'Distribution is a Studio tab next to Releases — delivery status and royalties. Studio home and the Releases page also link there when you have releases.',
         ],
       },
       {
         heading: 'Artist gallery',
         body: [
-          'Open Studio → Branding → Gallery to add photos to your public artist page. Use the plus icon in the gallery header to upload — there is no separate Add images button.',
+          'Open Settings → Artist → Gallery to add photos to your public artist page. Use the plus icon in the gallery header to upload — there is no separate Add images button.',
           'Turn Public on so the gallery appears on your profile, or leave it off while you arrange photos.',
           'Drag a photo to reorder it, or use the arrows on hover. Check photos to select them, then remove the ones you do not want.',
           'Photos you include can also appear in your press kit. Channel backdrops and slideshows are covered in Design your channel.',
@@ -181,7 +222,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: 'Studio pages',
         body: [
           'Subtabs for a Studio page sit under the Studio navigation row and above the page title — the same layout as Stats (Overview / Plays / Top lists).',
-          'Sounds holds your archive and files. Branding covers profile picture, gallery, press kit, and Channel Designer. Updates is posts and newsletter. Channel covers stream keys, radio settings, and multicast.',
+          'Tracks holds your archive and files. Branding covers profile picture, gallery, and press kit under Settings → Artist (Channel Designer lives under Settings → Channel & chat). Updates is posts and newsletter. Channel covers stream keys, radio settings, and multicast.',
           'Admin Moderation queues (support, beta, radio, reports) use the same pattern under Admin nav.',
         ],
       },
@@ -203,7 +244,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Choose a look',
         body: [
-          'Open Studio → Branding → Channel Designer. The preview shows what listeners see on your public channel and artist page.',
+          'Open Settings → Channel & chat → Channel Designer. The preview shows what listeners see on your public channel and artist page.',
           'Pick a block from the element menu: releases, tracks, latest, feed, news, player, or backdrop. Hide a block with the eye button.',
           'Player controls the stage, visualizer, gradient, and overlay. Backdrop controls header style, slideshow, and page colors.',
         ],
@@ -226,16 +267,15 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Local files',
         body: [
-          'Library → Local files lets you pick audio from this device and play it in the shared Tahti player. It uses the browser file picker, so it works in any browser session — not only a desktop app shell.',
-          'Those files stay on this device for this browser session. Reloading the page clears the list. Uploading into your Tahti archive is still Studio → Upload.',
-          'The Tahti Player desktop app (separate from this website) will later add deeper local-library and Soulseek bridges; until then, Local files stays available here without a fake “desktop-only” gate.',
+          'Library → Local files is part of the Tahti Player desktop app. It indexes folders on your machine and plays them in the shared Tahti player.',
+          'On the website (beta.tahti.live) that tab is hidden — use Studio → Upload to put audio into your Tahti archive instead.',
         ],
       },
       {
         heading: 'Soulseek',
         body: [
           'Soulseek is peer-to-peer. Tahti does not search or transfer files through its servers. A later desktop add-on will connect with your own Soulseek account from the Tahti Player app.',
-          'Until that native bridge ships, Settings → Add-ons → Import shows a Configure dialog that explains the limit. Use Library → Local files to import files you already have.',
+          'Until that native bridge ships, Settings → Add-ons → Import shows a Configure dialog that explains the limit.',
           'You are responsible for what you share and download. Only use material you have the rights to.',
         ],
       },
@@ -403,6 +443,8 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Unlimited live time and cooperative support (€40/year membership).',
           'Membership is support for the org, not a consumer “plan”.',
+          'Members see more on Governance (/governance): the current board, board elections (stand for election or withdraw while nominations are open), the published annual reports, and the association’s registered details and auditors.',
+          'Something wrong in your member details or a published record? Use Request a correction on Governance; the board’s answer appears there, and you can withdraw a request while it waits.',
         ],
       },
     ],
@@ -424,7 +466,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: 'The money flow',
         body: [
           'A listener pays you monthly through Stripe. On a €5 order, Stripe keeps about €0.45 (2.9% + €0.30), Tahti keeps €0.10 as a 2% operational fee, and you receive €4.45 via Stripe Connect in the ledger model.',
-          'That split is what Audience and this guide show. The sibling payout runbook (`../tahti-org/docs/flows/payouts.md`) still tracks whether the live Stripe balance transaction always matches €4.45 — treat the on-screen number as the documented flow, not a guaranteed bank deposit until that check closes.',
+          'That split is what Audience and this guide show. We are still checking that every live Stripe payout matches €4.45, so treat the on-screen number as the documented split, not a guaranteed bank deposit. Your Stripe dashboard shows what actually reached you.',
           'The 2% fee covers Connect platform costs, billing support, disputes, and GDPR work. It is operational, not org profit — leftover from that line rolls into the next artist grant pool.',
         ],
       },
@@ -468,19 +510,19 @@ export const HELP_ARTICLES: HelpArticle[] = [
   },
   {
     slug: 'add-ons',
-    title: 'Add-ons and plugins',
+    title: 'Add-ons',
     description:
       'What is ready today in Settings → Add-ons, and how to turn each one on.',
     sections: [
       {
         heading: 'Where add-ons live',
         body: [
-          'Open Settings → Add-ons. Categories match the table below: Themes, Visualizers, Import, Multicast, Fingerprinting, Audio plugins, Radio, Embed, Discovery, Channel, Playback, and Scrobbling.',
+          'Open Settings → Add-ons. Categories match the table below: Themes, Visualizers, Import, Multicast, Fingerprinting, Audio tools, Radio, Embed, Discovery, Channel, and Playback. Scrobbling lives in Settings → Integrations.',
           'Only integrations you can use now are listed. ListenBrainz and Last.fm scrobbling are ready (submit-listens / track.scrobble only). Planned Nuclear registry items such as ListenBrainz charts, OmniSource, KHInsider, and NetEase stay out of this guide until they have a Tahti contract.',
         ],
       },
       {
-        heading: 'Ready plugins',
+        heading: 'Ready add-ons',
         body: [
           'State Ready means the path works end to end, including in-app playback where the row says so. Importer ready or Search ready means the connect/search half works, but the remaining piece — usually a server-side import contract — is still pending; check the “How to use it” column for the exact limit.',
           'hearthis.at, Mixcloud, Spotify, and Bandcamp tracks are referenced rather than hosted: Tahti keeps only a link, and that provider’s own widget supplies the audio when you press play on one of their tracks, including on a track’s own page.',
@@ -490,7 +532,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'If something is missing',
         body: [
-          'Export destinations such as Spotify or Apple Music are release-delivery links in Studio → Distribution, not installable plugins yet.',
+          'Export destinations such as Spotify or Apple Music are release-delivery links in Studio → Distribution, not installable add-ons yet.',
           'Import sources are managed from Add-ons → Import. Only sources with a working Tahti runtime are shown there.',
         ],
       },
@@ -498,23 +540,31 @@ export const HELP_ARTICLES: HelpArticle[] = [
   },
   {
     slug: 'desktop-mcp',
-    title: 'Desktop app & AI tools (MCP)',
+    title: 'AI tools (MCP)',
     description:
-      'Control playback from Claude, Cursor, or another AI tool using the separate Tahti Player desktop app.',
+      'Let Claude, Cursor or another AI tool search Tahti and manage your likes, follows and playlists, or control the desktop app.',
     sections: [
       {
-        heading: 'This is a separate app, not this website',
+        heading: 'Two ways to connect',
         body: [
-          'AI-tool control uses the Model Context Protocol (MCP) and only runs inside the Tahti Player desktop app (Tauri), not on this website — a browser tab can’t host the local server an AI tool connects to.',
-          'If you only use tahti.live in a browser, this feature isn’t available to you yet; everything else in this guide still applies to the web app as usual.',
+          'Your Tahti account: an AI tool connects to the Tahti API with a personal API token. This works wherever you use Tahti, including this website.',
+          'The desktop app: an AI tool connects to the Tahti Player app on your computer and controls what it plays, its queue, your desktop library and radio.',
+        ],
+      },
+      {
+        heading: 'Connect your Tahti account',
+        body: [
+          'Create a token in Settings → Account → Sign-in & security → API tokens. A read-only token can search and list your likes and playlists; give it write access if the tool should also like tracks, follow artists and create or fill playlists.',
+          'Point your AI tool at the MCP server URL shown above the token list, with the Streamable HTTP transport, and send the token as a bearer token. For Claude Code: claude mcp add tahti-account --transport http <URL> --header "Authorization: Bearer <token>".',
+          'Anything the tool does is done as you, with the same rules as the website. Revoke the token to cut it off at once.',
         ],
       },
       {
         heading: 'Turn it on in the desktop app',
         body: [
-          'Open the Tahti Player desktop app → Settings → Integrations, then toggle Enable MCP Server on.',
-          'The server starts at http://127.0.0.1:8800/mcp (localhost only, never exposed to the network). If that port is busy it tries the next one up to 8809 — the exact URL is shown in the MCP Server URL field, with a copy button.',
-          'Point your AI tool at that URL using the Streamable HTTP transport. It can then control queue, playback, favorites, playlists, and more — the same things you can do by hand in the app.',
+          'Open the Tahti Player desktop app → Settings → Integrations and turn on MCP server. The switch is remembered, so the server starts again with the app.',
+          'The server starts at http://127.0.0.1:8800/mcp. If that port is busy it tries the next one up to 8809; the row shows the exact URL with a copy button. It only answers requests from this computer.',
+          'Point your AI tool at that URL with the Streamable HTTP transport, for example claude mcp add tahti --transport http http://127.0.0.1:8800/mcp. It can then play, pause and skip, change the queue, search and play your desktop library and its playlists, tune in to radio, and search Tahti.',
         ],
       },
     ],
@@ -547,6 +597,11 @@ export const HELP_ARTICLES: HelpArticle[] = [
           'Dashboard and Status show platform health. Logs show service activity. Moderation handles support, beta, radio, reports, and feature queues.',
           'Users, Content, Radio, Streams, Storage, News, Venues, Top lists, and Announcements manage the everyday platform surfaces.',
           'Governance and AGM hold member records. Disco-widgets manages approved add-ons. Artwork presets manages the abstract defaults used for artwork-free uploads.',
+          'Governance → Annual reports takes a yearly report from draft to approved, published to members and filed with the register; an approved report is corrected (earlier versions are kept), and any report can be put on legal hold.',
+          'Governance → Board records board terms (add one, end one early) and runs board elections: call one, edit or cancel it, see and nominate candidates, and record the result, which gives each elected member a board term.',
+          'Governance → Records holds members’ correction requests (answer each with a note the member reads), the association’s registered details and auditors, and one list of everything on legal hold.',
+          'Governance → AGM keeps each meeting’s agenda as numbered items (add, edit, reorder, remove, and record what was decided), conflicts of interest, legal holds on meetings and documents, document archiving, and a searchable member register.',
+          'On a motion’s page the board can circulate a draft for seconds, put the motion on a meeting and one of its agenda items, and append a correction to a closed motion’s result certificate.',
           'Orphan pages (/admin/orphan-pages) gathers real admin pages that shipped without a menu entry of their own — each is its own tab there rather than lost at an unlinked URL.',
         ],
       },

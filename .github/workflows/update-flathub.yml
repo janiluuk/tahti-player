@@ -1,54 +1,78 @@
 name: Update Flathub
 
+# Called by release-player.yml once the GitHub Release is published, or run by
+# hand for an existing player@ tag.
 on:
-  workflow_run:
-    workflows: ['Release Player']
-    types: [completed]
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Tag or version to publish, e.g. player@1.47.112 or 1.47.112'
+        required: true
+        type: string
+    secrets:
+      FLATHUB_TOKEN:
+        required: false
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version to publish (e.g., 1.38.0)'
+      tag:
+        description: 'Tag or version to publish, e.g. player@1.47.112 or 1.47.112'
         required: true
+        type: string
 
 permissions:
   contents: read
 
 jobs:
   update:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
+      - name: Resolve version
+        id: version
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          VERSION="${INPUT_TAG#player@}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=player@$VERSION" >> "$GITHUB_OUTPUT"
+
+      # The secret is checked in the shell because a step-level `if:` on
+      # secrets.* makes GitHub reject the whole workflow file.
+      - name: Check Flathub credentials
+        id: store
+        env:
+          FLATHUB_TOKEN: ${{ secrets.FLATHUB_TOKEN }}
+        run: |
+          if [ -z "$FLATHUB_TOKEN" ]; then
+            echo "::warning::FLATHUB_TOKEN secret is not set, skipping Flathub update."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # The source generators read the lockfiles, so they must match the tag.
       - name: Checkout code
+        if: steps.store.outputs.enabled == 'true'
         uses: actions/checkout@v7
         with:
+          ref: refs/tags/${{ steps.version.outputs.tag }}
           fetch-tags: true
           fetch-depth: 0
 
-      - name: Resolve version
-        id: version
-        shell: bash
-        run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            VERSION="${{ github.event.inputs.version }}"
-          else
-            TAG="${{ github.event.workflow_run.head_branch }}"
-            VERSION="${TAG#player@}"
-          fi
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-
       - name: Setup Node.js
+        if: steps.store.outputs.enabled == 'true'
         uses: actions/setup-node@v7
         with:
           node-version: '24'
 
       - name: Install source generators
+        if: steps.store.outputs.enabled == 'true'
         run: |
           pip install --force-reinstall --no-cache-dir git+https://github.com/flatpak/flatpak-builder-tools.git#subdirectory=node
           pip install tomlkit aiohttp toml
 
       - name: Open Flathub update PR
+        if: steps.store.outputs.enabled == 'true'
         env:
           GH_TOKEN: ${{ secrets.FLATHUB_TOKEN }}
-        run: ./scripts/flatpak-update-flathub.sh "${{ steps.version.outputs.version }}"
+          VERSION: ${{ steps.version.outputs.version }}
+        run: ./scripts/flatpak-update-flathub.sh "$VERSION"

@@ -12,7 +12,14 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Button, Dialog, ImageReveal, Loader, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonAnchor,
+  Dialog,
+  ImageReveal,
+  Loader,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   fetchAdminStreams,
@@ -28,7 +35,7 @@ import {
   type ChannelManageStats,
 } from '../api/broadcast';
 import { ConfirmDialog } from './ConfirmDialog';
-import { PageLoading } from './PageStates';
+import { PageEmpty, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 type StreamAction = (
@@ -135,9 +142,7 @@ export function AdminStreamManagerPanel({
   const streamList = loading ? (
     <PageLoading label="Loading streams…" />
   ) : streams.length === 0 ? (
-    <p className="text-foreground-secondary py-4 text-center text-sm">
-      No channels are live right now.
-    </p>
+    <PageEmpty title="No channels are live right now." />
   ) : (
     <ul className="divide-border divide-y">
       {streams.map((stream) => (
@@ -184,22 +189,28 @@ export function AdminStreamManagerPanel({
                           {stats.listeners.toLocaleString()} listeners
                         </span>
                         <span>{stats.listenerPeak.toLocaleString()} peak</span>
+                        {stats.rotationTrackCount === 0 ? (
+                          <span className="text-accent-yellow-strong">
+                            24/7 rotation empty
+                          </span>
+                        ) : null}
                       </div>
                     ) : null}
                   </div>
                   <div className="ml-auto flex shrink-0 items-center gap-1">
                     {stream.hlsUrl ? (
-                      <a href={stream.hlsUrl} target="_blank" rel="noreferrer">
-                        <Tooltip content="Listen" side="top">
-                          <Button
-                            size="icon-sm"
-                            variant="text"
-                            aria-label={`Listen to ${stream.artistName}`}
-                          >
-                            <ExternalLinkIcon size={14} aria-hidden />
-                          </Button>
-                        </Tooltip>
-                      </a>
+                      <Tooltip content="Listen" side="top">
+                        <ButtonAnchor
+                          href={stream.hlsUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          size="icon-sm"
+                          variant="text"
+                          aria-label={`Listen to ${stream.artistName}`}
+                        >
+                          <ExternalLinkIcon size={14} aria-hidden />
+                        </ButtonAnchor>
+                      </Tooltip>
                     ) : null}
                     <Tooltip content="Details" side="top">
                       <Button
@@ -421,13 +432,14 @@ export function AdminStreamManagerPanel({
             </dl>
             <Dialog.Actions>
               <Dialog.Close>Close</Dialog.Close>
-              <a
+              <ButtonAnchor
                 href={`/c/${detailsStream.slug}`}
                 target="_blank"
                 rel="noreferrer"
+                variant="secondary"
               >
-                <Button variant="secondary">Open channel</Button>
-              </a>
+                Open channel
+              </ButtonAnchor>
             </Dialog.Actions>
           </>
         ) : null}

@@ -1,9 +1,10 @@
-import { PlusIcon } from 'lucide-react';
+import { LoaderCircleIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
   Badge,
   Button,
+  ButtonAnchor,
   CopyButton,
   Input,
   Select,
@@ -29,7 +30,18 @@ import type {
   GovernanceDocument,
   GovernanceMeeting,
 } from '../../../../api/types';
+import { PageEmpty } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { isSafeHref } from '../../../../lib/safeHref';
+import { GovernanceDocumentRow } from '../records/GovernanceDocumentRow';
+import { LegalHoldControl } from '../records/LegalHoldControl';
+import { MemberRegisterPanel } from '../records/MemberRegisterPanel';
+import { AgendaItemsPanel } from './AgendaItemsPanel';
+import {
+  CollapsibleRecord,
+  ConflictsPanel,
+  NoticeDeliveriesPanel,
+} from './MeetingRecordPanels';
 
 const DEFAULT_AGENDA = [
   'Call to order',
@@ -63,72 +75,77 @@ function AgendaBuilder() {
         />
       }
     >
-      <ol className="grid gap-2 sm:grid-cols-2">
-        {items.map((item, i) => (
-          <li key={i} className="flex items-center gap-2">
-            <span className="text-foreground-secondary w-5 shrink-0 text-right text-xs">
-              {i + 1}.
-            </span>
-            <Input
-              value={item}
-              onChange={(e) =>
-                setItems((prev) =>
-                  prev.map((it, idx) => (idx === i ? e.target.value : it)),
-                )
-              }
-              className="h-8 flex-1 text-sm"
-            />
-            <div className="flex shrink-0 gap-0.5">
-              <Tooltip content="Move up" side="top">
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  aria-label="Move up"
-                  disabled={i === 0}
-                  onClick={() =>
-                    setItems((prev) => {
-                      const next = [...prev];
-                      [next[i - 1], next[i]] = [next[i]!, next[i - 1]!];
-                      return next;
-                    })
+      <div className="@container">
+        <ol className="grid gap-2 @2xl:grid-cols-2">
+          {items.map((item, i) => (
+            <li key={i} className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <span className="text-foreground-secondary w-5 shrink-0 text-right text-xs">
+                {i + 1}.
+              </span>
+              <div className="min-w-0 flex-1 basis-60">
+                <Input
+                  value={item}
+                  aria-label={`Agenda item ${i + 1}`}
+                  onChange={(e) =>
+                    setItems((prev) =>
+                      prev.map((it, idx) => (idx === i ? e.target.value : it)),
+                    )
                   }
-                >
-                  ↑
-                </Button>
-              </Tooltip>
-              <Tooltip content="Move down" side="top">
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  aria-label="Move down"
-                  disabled={i === items.length - 1}
-                  onClick={() =>
-                    setItems((prev) => {
-                      const next = [...prev];
-                      [next[i], next[i + 1]] = [next[i + 1]!, next[i]!];
-                      return next;
-                    })
-                  }
-                >
-                  ↓
-                </Button>
-              </Tooltip>
-              <Tooltip content="Remove item" side="top">
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  aria-label="Remove item"
-                  onClick={() =>
-                    setItems((prev) => prev.filter((_, idx) => idx !== i))
-                  }
-                >
-                  ×
-                </Button>
-              </Tooltip>
-            </div>
-          </li>
-        ))}
-      </ol>
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="ml-auto flex shrink-0 gap-0.5">
+                <Tooltip content="Move up" side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    aria-label="Move up"
+                    disabled={i === 0}
+                    onClick={() =>
+                      setItems((prev) => {
+                        const next = [...prev];
+                        [next[i - 1], next[i]] = [next[i]!, next[i - 1]!];
+                        return next;
+                      })
+                    }
+                  >
+                    ↑
+                  </Button>
+                </Tooltip>
+                <Tooltip content="Move down" side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    aria-label="Move down"
+                    disabled={i === items.length - 1}
+                    onClick={() =>
+                      setItems((prev) => {
+                        const next = [...prev];
+                        [next[i], next[i + 1]] = [next[i + 1]!, next[i]!];
+                        return next;
+                      })
+                    }
+                  >
+                    ↓
+                  </Button>
+                </Tooltip>
+                <Tooltip content="Remove item" side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    aria-label="Remove item"
+                    onClick={() =>
+                      setItems((prev) => prev.filter((_, idx) => idx !== i))
+                    }
+                  >
+                    ×
+                  </Button>
+                </Tooltip>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
       <Tooltip content="Add agenda item" side="top">
         <Button
           size="icon-sm"
@@ -182,84 +199,74 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
   }, [open, meeting.id]);
 
   return (
-    <div className="border-border mt-2 rounded-md border">
-      <button
-        type="button"
-        className="text-foreground-secondary hover:text-foreground flex w-full items-center justify-between px-3 py-2 text-xs"
-        onClick={() => setOpen((prev) => !prev)}
-      >
-        <span>Attendance ({meeting.attendanceCount} recorded)</span>
-        <span>{open ? '▲' : '▼'}</span>
-      </button>
-      {open && (
-        <div className="border-border border-t p-3">
-          {loading ? (
-            <p className="text-foreground-secondary text-xs">Loading…</p>
-          ) : records.length === 0 ? (
-            <p className="text-foreground-secondary text-xs">
-              No attendance recorded yet.
-            </p>
-          ) : (
-            <ul className="divide-border mb-3 divide-y text-sm">
-              {records.map((record) => (
-                <li
-                  key={record.id}
-                  className="flex items-center justify-between gap-2 py-1.5"
-                >
-                  <span>{record.displayName}</span>
-                  <Badge
-                    variant="pill"
-                    color={ATTENDANCE_BADGE_COLOR[record.status]}
-                  >
-                    {record.status}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
-          )}
-          <div className="flex flex-wrap items-end gap-2">
-            <Input
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              placeholder="Member name"
-              aria-label="Member name"
-              className="min-w-[160px] flex-1"
-            />
-            <Select
-              label="Status"
-              value={status}
-              onValueChange={(value) =>
-                setStatus(value as GovernanceAttendanceStatus)
-              }
-              options={[
-                { id: 'PRESENT', label: 'Present' },
-                { id: 'ABSENT', label: 'Absent' },
-                { id: 'EXCUSED', label: 'Excused' },
-              ]}
-            />
-            <Button
-              size="sm"
-              disabled={saving || !name.trim()}
-              onClick={() => {
-                setSaving(true);
-                void upsertAdminGovernanceAttendance(meeting.id, {
-                  displayName: name.trim(),
-                  status,
-                }).then((result) => {
-                  setSaving(false);
-                  if (result.data) {
-                    setRecords((current) => [...current, result.data!]);
-                    setName('');
-                  }
-                });
-              }}
+    <CollapsibleRecord
+      label={`Attendance (${meeting.attendanceCount} recorded)`}
+      open={open}
+      onToggle={() => setOpen((prev) => !prev)}
+    >
+      {loading ? (
+        <p className="text-foreground-secondary text-xs">Loading…</p>
+      ) : records.length === 0 ? (
+        <PageEmpty title="No attendance recorded yet." />
+      ) : (
+        <ul className="divide-border mb-3 divide-y text-sm">
+          {records.map((record) => (
+            <li
+              key={record.id}
+              className="flex items-center justify-between gap-2 py-1.5"
             >
-              {saving ? 'Recording…' : 'Record'}
-            </Button>
-          </div>
-        </div>
+              <span>{record.displayName}</span>
+              <Badge
+                variant="pill"
+                color={ATTENDANCE_BADGE_COLOR[record.status]}
+              >
+                {record.status}
+              </Badge>
+            </li>
+          ))}
+        </ul>
       )}
-    </div>
+      <div className="flex flex-wrap items-end gap-2">
+        <Input
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Member name"
+          aria-label="Member name"
+          className="min-w-[160px] flex-1"
+        />
+        <Select
+          label="Status"
+          value={status}
+          onValueChange={(value) =>
+            setStatus(value as GovernanceAttendanceStatus)
+          }
+          options={[
+            { id: 'PRESENT', label: 'Present' },
+            { id: 'ABSENT', label: 'Absent' },
+            { id: 'EXCUSED', label: 'Excused' },
+          ]}
+        />
+        <Button
+          size="sm"
+          disabled={saving || !name.trim()}
+          onClick={() => {
+            setSaving(true);
+            void upsertAdminGovernanceAttendance(meeting.id, {
+              displayName: name.trim(),
+              status,
+            }).then((result) => {
+              setSaving(false);
+              if (result.data) {
+                setRecords((current) => [...current, result.data!]);
+                setName('');
+              }
+            });
+          }}
+        >
+          {saving ? 'Recording…' : 'Record'}
+        </Button>
+      </div>
+    </CollapsibleRecord>
   );
 }
 
@@ -344,14 +351,20 @@ export function AgmTab() {
               });
             }}
           >
+            {meetingSaving ? (
+              <LoaderCircleIcon
+                size={14}
+                aria-hidden
+                className="mr-1.5 animate-spin"
+              />
+            ) : (
+              <PlusIcon size={14} aria-hidden className="mr-1.5" />
+            )}
             {meetingSaving ? 'Creating…' : 'Create meeting'}
           </Button>
         </div>
         {meetings.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">
-            No persisted meeting records yet. Create the meeting record before
-            publishing notice or minutes.
-          </p>
+          <PageEmpty title="No persisted meeting records yet. Create the meeting record before publishing notice or minutes." />
         ) : (
           <ul className="divide-border divide-y">
             {meetings.map((meeting) => (
@@ -417,7 +430,7 @@ export function AgmTab() {
                         ? 'Uploaded, pending approval'
                         : 'Not uploaded'}
                   </span>
-                  {meeting.minutesUrl && (
+                  {meeting.minutesUrl && isSafeHref(meeting.minutesUrl) && (
                     <a
                       href={meeting.minutesUrl}
                       target="_blank"
@@ -427,7 +440,7 @@ export function AgmTab() {
                       Download
                     </a>
                   )}
-                  <label className="text-primary cursor-pointer underline-offset-2 hover:underline">
+                  <label className="text-primary-strong cursor-pointer underline-offset-2 hover:underline">
                     {minutesUploading === meeting.id
                       ? 'Uploading…'
                       : meeting.minutesKey
@@ -493,11 +506,21 @@ export function AgmTab() {
                   )}
                 </div>
                 {minutesError?.meetingId === meeting.id && (
-                  <p className="text-accent-red mt-1 text-xs">
+                  <p className="text-accent-red-strong mt-1 text-xs">
                     {minutesError.message}
                   </p>
                 )}
+                <AgendaItemsPanel meetingId={meeting.id} />
                 <AttendancePanel meeting={meeting} />
+                <ConflictsPanel meetingId={meeting.id} />
+                <NoticeDeliveriesPanel meetingId={meeting.id} />
+                <LegalHoldControl
+                  kind="meeting"
+                  id={meeting.id}
+                  title={meeting.title}
+                  legalHoldAt={meeting.legalHoldAt}
+                  legalHoldReason={meeting.legalHoldReason}
+                />
               </li>
             ))}
           </ul>
@@ -510,9 +533,7 @@ export function AgmTab() {
             Loading motions…
           </p>
         ) : motions.length === 0 ? (
-          <p className="text-foreground-secondary py-4 text-center text-sm">
-            No open or draft motions.
-          </p>
+          <PageEmpty title="No open or draft motions." />
         ) : (
           <ul className="divide-border divide-y">
             {motions.map((m) => (
@@ -520,7 +541,7 @@ export function AgmTab() {
                 key={m.id}
                 className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm first:pt-0 last:pb-0"
               >
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 basis-56">
                   <div className="font-medium">{m.title}</div>
                   <div className="text-foreground-secondary text-xs">
                     {m.advisory ? 'Advisory' : 'Binding'} ·{' '}
@@ -568,17 +589,18 @@ export function AgmTab() {
           and member register.
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
-          <a href="/tahti-api/api/admin/members/export.csv">
-            <Button size="sm" variant="secondary">
-              Export member register
-            </Button>
-          </a>
-          <a href="/admin/logs">
-            <Button size="sm" variant="secondary">
-              Open audit log
-            </Button>
-          </a>
+          <ButtonAnchor
+            href="/tahti-api/api/admin/members/export.csv"
+            size="sm"
+            variant="secondary"
+          >
+            Export member register
+          </ButtonAnchor>
+          <ButtonAnchor href="/admin/logs" size="sm" variant="secondary">
+            Open audit log
+          </ButtonAnchor>
         </div>
+        <MemberRegisterPanel />
         <div className="border-border mt-4 border-t pt-3">
           <h3 className="text-sm font-semibold">Published documents</h3>
           <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_minmax(12rem,auto)]">
@@ -636,6 +658,15 @@ export function AgmTab() {
                 });
               }}
             >
+              {documentSaving ? (
+                <LoaderCircleIcon
+                  size={14}
+                  aria-hidden
+                  className="mr-1.5 animate-spin"
+                />
+              ) : (
+                <PlusIcon size={14} aria-hidden className="mr-1.5" />
+              )}
               {documentSaving ? 'Publishing…' : 'Add document'}
             </Button>
           </div>
@@ -650,32 +681,21 @@ export function AgmTab() {
             />
           </div>
           {documents.length === 0 ? (
-            <p className="text-foreground-secondary mt-1 text-xs">
-              No governance documents yet.
-            </p>
+            <PageEmpty title="No governance documents yet." />
           ) : (
             <ul className="mt-2 space-y-1 text-xs">
               {documents.map((document) => (
-                <li key={document.id}>
-                  {document.downloadUrl || document.externalUrl ? (
-                    <a
-                      href={
-                        document.downloadUrl ??
-                        document.externalUrl ??
-                        undefined
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline-offset-2 hover:underline"
-                    >
-                      {document.title}
-                    </a>
-                  ) : (
-                    document.title
-                  )}{' '}
-                  · v{document.version} ·{' '}
-                  {document.publishedAt ? 'Published' : 'Draft'}
-                </li>
+                <GovernanceDocumentRow
+                  key={document.id}
+                  document={document}
+                  onChanged={(next) =>
+                    setDocuments((current) =>
+                      current.map((item) =>
+                        item.id === next.id ? next : item,
+                      ),
+                    )
+                  }
+                />
               ))}
             </ul>
           )}

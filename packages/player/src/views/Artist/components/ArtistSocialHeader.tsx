@@ -10,7 +10,7 @@ import { FC } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { pickArtwork } from '@tahti-player/model';
-import { Loader, StatChip } from '@tahti-player/ui';
+import { Badge, Loader, StatChip } from '@tahti-player/ui';
 
 import { ConnectedFavoriteButton } from '../../../components/ConnectedFavoriteButton';
 import { useArtistSocialStats } from '../hooks/useArtistSocialStats';
@@ -63,7 +63,7 @@ export const ArtistSocialHeader: FC<ArtistSocialHeaderProps> = ({
         className="m-4 flex flex-col items-start gap-3"
         data-testid="artist-social-header"
       >
-        <div className="text-accent-red">
+        <div className="text-accent-red-strong">
           {t('errors.failedToLoadSocialStats')}
         </div>
       </div>
@@ -132,10 +132,14 @@ export const ArtistSocialHeader: FC<ArtistSocialHeaderProps> = ({
             {stats.name}
           </h2>
           {location && (
-            <span className="bg-accent-orange border-border inline-flex w-fit items-center gap-1 rounded-md border px-2 py-0.5 text-sm font-bold">
+            <Badge
+              variant="pill"
+              color="orange"
+              className="w-fit gap-1 py-0.5 text-sm font-bold"
+            >
               <MapPin size={14} />
               {location}
-            </span>
+            </Badge>
           )}
         </div>
       </div>

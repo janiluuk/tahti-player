@@ -1,15 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminStorageUserView } from '@tahti-web/views/admin/AdminStorageUserView';
+import { expect, waitFor, within } from 'storybook/test';
 
-import { withMockAuth, withTahtiRouter } from './_lib/decorators';
+import {
+  storyRouterSettled,
+  withMockAuth,
+  withTahtiRouter,
+} from './_lib/decorators';
 
 const meta: Meta<typeof AdminStorageUserView> = {
   title: 'Tahti/Admin/AdminStorageUserView',
   component: AdminStorageUserView,
   parameters: { layout: 'fullscreen' },
-  // Route param — the mock API layer's fixture data is keyed generically
-  // rather than per-id, so any plausible-looking user id resolves.
-  decorators: [withTahtiRouter('/admin/storage/mock-user-1'), withMockAuth()],
+  // Route param — the mock storage fixture (admin-storage.ts) is keyed by
+  // specific ids ('u-1'/'u-2'/'u-3'), not any plausible-looking string; an
+  // unknown id resolves to null and renders the "Could not load" error.
+  decorators: [withTahtiRouter('/admin/storage/u-1'), withMockAuth()],
 };
 
 export default meta;
@@ -18,7 +24,21 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <div className="p-6">
-      <AdminStorageUserView userId="mock-user-1" />
+      <AdminStorageUserView userId="u-1" />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    await storyRouterSettled();
+    const canvas = within(canvasElement);
+    await waitFor(async () => {
+      await expect(
+        canvas.getByRole('heading', { name: 'DJ Moonlight' }),
+      ).toBeVisible();
+    });
+    await expect(canvas.getByRole('heading', { name: 'Files' })).toBeVisible();
+    await expect(canvas.getByText('Moonlight Drive')).toBeVisible();
+    await expect(
+      canvas.getByRole('link', { name: 'Back to Storage' }),
+    ).toHaveAttribute('href', '/admin/storage');
+  },
 };

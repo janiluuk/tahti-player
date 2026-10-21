@@ -7,10 +7,12 @@ const alertVariants = cva('rounded-lg border px-4 py-3 text-sm', {
   variants: {
     tone: {
       neutral: 'border-border bg-background-secondary/30 text-foreground',
-      info: 'border-accent-blue/40 bg-accent-blue/10 text-accent-blue',
-      warning: 'border-accent-yellow/40 bg-accent-yellow/10 text-accent-yellow',
-      success: 'border-accent-green/40 bg-accent-green/10 text-accent-green',
-      error: 'border-accent-red/40 bg-accent-red/10 text-accent-red',
+      info: 'border-accent-blue/40 bg-accent-blue/10 text-accent-blue-strong',
+      warning:
+        'border-accent-yellow/40 bg-accent-yellow/10 text-accent-yellow-strong',
+      success:
+        'border-accent-green/40 bg-accent-green/10 text-accent-green-strong',
+      error: 'border-accent-red/40 bg-accent-red/10 text-accent-red-strong',
     },
   },
   defaultVariants: {

@@ -5,10 +5,355 @@ import { invoke as __TAURI_INVOKE } from "@tauri-apps/api/core";
 
 /** Commands */
 export const commands = {
-	libraryList: (search: string, offset: number) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset })),
+	libraryList: (search: string, offset: number, filter: {
+	kind: FacetKind,
+	value: string,
+	/**  Album artist, for `Albums`. */
+	secondary: string | null,
+} | null, filters: {
+	yearMin: number | null,
+	yearMax: number | null,
+	/**  Seconds. */
+	durationMin: number | null,
+	durationMax: number | null,
+	bitrateMin: number | null,
+	formats?: string[],
+	rootId: string | null,
+	/**  `YYYY-MM-DD`; tracks added on or after this day. */
+	addedSince: string | null,
+	availability: Availability | null,
+	/**  At least this many stars (1-5). */
+	ratingMin: number | null,
+	/**  One of `catalog::COLORS`. */
+	color: string | null,
+	/**  Tracks carrying this tag (case-insensitive). */
+	tag: string | null,
+	/**  Effective BPM (user correction, else tag, else estimate). */
+	bpmMin: number | null,
+	bpmMax: number | null,
+	/**  Effective key in `analysis_dsp::key_name` form, e.g. `Am`. */
+	key: string | null,
+	/**  Integrated loudness in LUFS. */
+	loudnessMin: number | null,
+	loudnessMax: number | null,
+	analysis: AnalysisState | null,
+} | null, sort: {
+	column: SortColumn,
+	descending: boolean,
+} | null) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset, filter, filters, sort })),
+	playlistList: () => typedError<PlaylistSummary[], string>(__TAURI_INVOKE("playlist_list")),
+	playlistCreate: (name: string) => typedError<PlaylistSummary, string>(__TAURI_INVOKE("playlist_create", { name })),
+	playlistRename: (id: string, name: string) => typedError<PlaylistSummary, string>(__TAURI_INVOKE("playlist_rename", { id, name })),
+	playlistDuplicate: (id: string) => typedError<PlaylistSummary, string>(__TAURI_INVOKE("playlist_duplicate", { id })),
+	playlistDelete: (id: string) => typedError<null, string>(__TAURI_INVOKE("playlist_delete", { id })),
+	playlistAddTracks: (id: string, trackIds: string[], at: number | null) => typedError<number, string>(__TAURI_INVOKE("playlist_add_tracks", { id, trackIds, at })),
+	playlistEntries: (id: string, offset: number) => typedError<PlaylistPage, string>(__TAURI_INVOKE("playlist_entries", { id, offset })),
+	playlistEntryIds: (id: string) => typedError<string[], string>(__TAURI_INVOKE("playlist_entry_ids", { id })),
+	playlistMoveEntries: (id: string, entryIds: string[], toIndex: number) => typedError<null, string>(__TAURI_INVOKE("playlist_move_entries", { id, entryIds, toIndex })),
+	playlistRemoveEntries: (id: string, entryIds: string[]) => typedError<RawEntry[], string>(__TAURI_INVOKE("playlist_remove_entries", { id, entryIds })),
+	playlistRestoreEntries: (id: string, entries: RawEntry[], order: string[]) => typedError<null, string>(__TAURI_INVOKE("playlist_restore_entries", { id, entries, order })),
+	playlistSetOrder: (id: string, order: string[]) => typedError<null, string>(__TAURI_INVOKE("playlist_set_order", { id, order })),
+	playlistTrackIds: (id: string) => typedError<string[], string>(__TAURI_INVOKE("playlist_track_ids", { id })),
+	playlistExport: (id: string, style: ExportStyle) => typedError<{
+	path: string,
+	written: number,
+	/**  Relative mode: files outside the export folder, written with `../`. */
+	outsideRoot: number,
+	/**
+	 *  Relative mode: files that share no root with the export folder
+	 *  (another drive), written as absolute paths.
+	 */
+	absoluteFallback: number,
+} | null, string>(__TAURI_INVOKE("playlist_export", { id, style })),
+	playlistImportPreview: (sourcePath: string | null, relinkRoot: string | null) => typedError<{
+	sourcePath: string,
+	suggestedName: string,
+	total: number,
+	linked: number,
+	needsImport: number,
+	missing: number,
+	unsupported: number,
+	remote: number,
+	/**  The first entries that are not already in the library. */
+	unresolved: UnresolvedEntry[],
+} | null, string>(__TAURI_INVOKE("playlist_import_preview", { sourcePath, relinkRoot })),
+	playlistPickRelinkFolder: () => typedError<string | null, string>(__TAURI_INVOKE("playlist_pick_relink_folder")),
+	playlistImportCommit: (sourcePath: string, name: string, importMissingFiles: boolean, relinkRoot: string | null) => typedError<ImportOutcome, string>(__TAURI_INVOKE("playlist_import_commit", { sourcePath, name, importMissingFiles, relinkRoot })),
+	/**  Lets the user pick the file an unavailable entry should point at. */
+	playlistRelinkEntry: (id: string, entryId: string) => typedError<boolean, string>(__TAURI_INVOKE("playlist_relink_entry", { id, entryId })),
+	libraryFacets: (kind: FacetKind) => typedError<FacetGroup[], string>(__TAURI_INVOKE("library_facets", { kind })),
+	libraryMatchingIds: (search: string, filter: {
+	kind: FacetKind,
+	value: string,
+	/**  Album artist, for `Albums`. */
+	secondary: string | null,
+} | null, filters: {
+	yearMin: number | null,
+	yearMax: number | null,
+	/**  Seconds. */
+	durationMin: number | null,
+	durationMax: number | null,
+	bitrateMin: number | null,
+	formats?: string[],
+	rootId: string | null,
+	/**  `YYYY-MM-DD`; tracks added on or after this day. */
+	addedSince: string | null,
+	availability: Availability | null,
+	/**  At least this many stars (1-5). */
+	ratingMin: number | null,
+	/**  One of `catalog::COLORS`. */
+	color: string | null,
+	/**  Tracks carrying this tag (case-insensitive). */
+	tag: string | null,
+	/**  Effective BPM (user correction, else tag, else estimate). */
+	bpmMin: number | null,
+	bpmMax: number | null,
+	/**  Effective key in `analysis_dsp::key_name` form, e.g. `Am`. */
+	key: string | null,
+	/**  Integrated loudness in LUFS. */
+	loudnessMin: number | null,
+	loudnessMax: number | null,
+	analysis: AnalysisState | null,
+} | null, sort: {
+	column: SortColumn,
+	descending: boolean,
+} | null) => typedError<string[], string>(__TAURI_INVOKE("library_matching_ids", { search, filter, filters, sort })),
+	libraryOrderIds: (ids: string[], sort: {
+	column: SortColumn,
+	descending: boolean,
+} | null) => typedError<string[], string>(__TAURI_INVOKE("library_order_ids", { ids, sort })),
+	libraryFilterOptions: () => typedError<FilterOptions, string>(__TAURI_INVOKE("library_filter_options")),
+	/**
+	 *  Verifies and orders a batch of tracks for the player and grants the
+	 *  asset protocol access to each file (same as `library_resolve`, in bulk).
+	 */
+	libraryPreparePlayback: (ids: string[]) => typedError<PlaybackBatch, string>(__TAURI_INVOKE("library_prepare_playback", { ids })),
+	libraryTotals: () => typedError<LibraryTotals, string>(__TAURI_INVOKE("library_totals")),
 	libraryImport: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import")),
+	libraryImportFolder: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import_folder")),
+	/**
+	 *  Imports an explicit list of files/folders -- the entry point for native
+	 *  drag-drop, which hands over absolute paths directly rather than going
+	 *  through a picker dialog. Directories are walked the same way folder
+	 *  import does; unsupported files are counted as skipped, not errored.
+	 */
+	libraryImportPaths: (paths: string[]) => typedError<ImportResult, string>(__TAURI_INVOKE("library_import_paths", { paths })),
+	/**
+	 *  Interrupts the in-flight import loop before its next file. Checked
+	 *  cooperatively, so a file already being read/inserted still completes.
+	 */
+	libraryImportCancel: () => typedError<null, string>(__TAURI_INVOKE("library_import_cancel")),
+	/**  How many unfinished imports are waiting (files and jobs), or `None`. */
+	libraryImportPending: () => typedError<{
+	/**  Files not yet reached. */
+	files: number,
+	jobs: number,
+} | null, string>(__TAURI_INVOKE("library_import_pending")),
+	/**
+	 *  Continues every unfinished import with the files it had not reached, with
+	 *  the usual progress events and cancellation.
+	 */
+	libraryImportResume: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import_resume")),
+	/**  Forgets unfinished imports. Tracks they already imported stay. */
+	libraryImportDiscard: () => typedError<null, string>(__TAURI_INVOKE("library_import_discard")),
+	/**
+	 *  Downloads a provider set into the library, emitting
+	 *  `library://provider-import-progress` per entry.
+	 */
+	libraryProviderImport: (request: ProviderImportRequest) => typedError<ProviderImportResult, string>(__TAURI_INVOKE("library_provider_import", { request })),
+	libraryProviderImportCancel: () => typedError<null, string>(__TAURI_INVOKE("library_provider_import_cancel")),
+	/**  The folder a set is saved in unless the user picks another one. */
+	libraryProviderImportDestination: (provider: string, setTitle: string) => typedError<string, string>(__TAURI_INVOKE("library_provider_import_destination", { provider, setTitle })),
+	/**  How much space the set needs against what the destination has free. */
+	libraryProviderImportSpace: (request: ProviderImportRequest) => typedError<ProviderImportSpace, string>(__TAURI_INVOKE("library_provider_import_space", { request })),
 	libraryResolve: (id: string) => typedError<string, string>(__TAURI_INVOKE("library_resolve", { id })),
 	libraryRemove: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_remove", { id })),
+	libraryRemoveMany: (ids: string[]) => typedError<number, string>(__TAURI_INVOKE("library_remove_many", { ids })),
+	/**
+	 *  Reveals a track's original file in the OS file manager. Calls the
+	 *  opener plugin's Rust API directly (`app.opener()`, bypassing the
+	 *  IPC-scoped `reveal-item-in-dir` permission the same way `library_resolve`
+	 *  bypasses the asset-protocol scope with a per-path `allow_file`) since the
+	 *  user already granted access to this exact file by importing it -- a
+	 *  static allow-list can't cover arbitrary import locations.
+	 */
+	libraryReveal: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_reveal", { id })),
+	/**
+	 *  The artwork cache folder with a trailing separator, so the frontend can
+	 *  append an `artworkKey` to build a file path.
+	 */
+	libraryArtworkDir: () => typedError<string, string>(__TAURI_INVOKE("library_artwork_dir")),
+	/**  Looks for embedded artwork in tracks that have none yet. */
+	libraryArtworkBackfill: () => typedError<ArtworkBackfillResult, string>(__TAURI_INVOKE("library_artwork_backfill")),
+	libraryArtworkBackfillCancel: () => typedError<null, string>(__TAURI_INVOKE("library_artwork_backfill_cancel")),
+	libraryListUnavailable: () => typedError<LibraryTrack[], string>(__TAURI_INVOKE("library_list_unavailable")),
+	libraryRescan: () => typedError<LibraryTrack[], string>(__TAURI_INVOKE("library_rescan")),
+	libraryRelink: (id: string) => typedError<{
+	id: string,
+	path: string,
+	title: string,
+	artist: string,
+	album: string,
+	format: string,
+	duration: number | null,
+	sampleRate: number,
+	channels: number,
+	bitsPerSample: number | null,
+	sizeBytes: number,
+	available: boolean,
+	unavailableSince: string | null,
+	albumArtist: string,
+	trackNo: number | null,
+	discNo: number | null,
+	year: number | null,
+	genre: string,
+	/**  Empty when the file has no composer tag. */
+	composer: string,
+	comment: string,
+	bitrateKbps: number | null,
+	/**
+	 *  When the track first entered the catalog (UTC, `YYYY-MM-DD HH:MM:SS`).
+	 *  Filled by the database, so extraction leaves it empty.
+	 */
+	addedAt: string,
+	/**  0 = unrated, 1-5 stars. User data, never read from files. */
+	rating: number,
+	/**  One of `catalog::COLORS`, or empty. */
+	color: string,
+	playCount: number,
+	/**  Times a listen was abandoned early; see `catalog::plays::record_skip`. */
+	skipCount: number,
+	lastPlayedAt: string | null,
+	/**
+	 *  Effective BPM and key (user correction > file tag > estimate); see
+	 *  `analysis.rs`. Empty until known.
+	 */
+	bpm: number | null,
+	musicalKey: string | null,
+	loudnessLufs: number | null,
+	analyzed: boolean,
+	/**
+	 *  File name of the embedded cover in the artwork cache (see
+	 *  `artwork.rs`); `None` when the file has no usable picture.
+	 */
+	artworkKey: string | null,
+} | null, string>(__TAURI_INVOKE("library_relink", { id })),
+	libraryListRoots: () => typedError<LibraryRoot[], string>(__TAURI_INVOKE("library_list_roots")),
+	/**
+	 *  Folder picker -> register as root -> initial scan (imports everything
+	 *  under it, tagged to the root).
+	 */
+	libraryAddRoot: () => typedError<{
+	imported: number,
+	skipped: number,
+	/**  Known tracks whose file is no longer there. */
+	missing: number,
+	/**  Previously-missing tracks whose file is back. */
+	recovered: number,
+	/**  Renamed/moved files re-pointed at their new path (ID kept). */
+	moved: number,
+	/**  Known files changed on disk and re-read (external tag edits). */
+	updated: number,
+	errors: ImportFailure[],
+	cancelled: boolean,
+} | null, string>(__TAURI_INVOKE("library_add_root")),
+	libraryRemoveRoot: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_remove_root", { id })),
+	/**
+	 *  Re-scans every root: imports files that appeared since the last scan and
+	 *  refreshes missing/recovered state. Idempotent -- a second run with no
+	 *  filesystem changes imports and changes nothing.
+	 */
+	libraryRescanRoots: () => typedError<RootScanResult, string>(__TAURI_INVOKE("library_rescan_roots")),
+	libraryRelinkRoot: (id: string) => typedError<{
+	root: LibraryRoot,
+	/**  Tracks re-pointed at the new folder (same relative path and size). */
+	relinked: number,
+	/**  Tracks with no proven match in the new folder; left untouched. */
+	unmatched: number,
+} | null, string>(__TAURI_INVOKE("library_relink_root", { id })),
+	/**
+	 *  Set when the catalog file was damaged and replaced at startup; the value
+	 *  is where the damaged file was kept. Returned once, then cleared.
+	 */
+	libraryTakeRecoveryNotice: () => typedError<string | null, string>(__TAURI_INVOKE("library_take_recovery_notice")),
+	/**
+	 *  The current counter, so a view can tell whether what it shows is stale.
+	 */
+	libraryChangeVersion: () => typedError<LibraryChangeVersion, string>(__TAURI_INVOKE("library_change_version")),
+	libraryWatching: () => typedError<boolean, string>(__TAURI_INVOKE("library_watching")),
+	/**  Turns folder watching on or off (persisted); manual rescan always works. */
+	librarySetWatching: (enabled: boolean) => typedError<null, string>(__TAURI_INVOKE("library_set_watching", { enabled })),
+	smartList: () => typedError<SmartPlaylist[], string>(__TAURI_INVOKE("smart_list")),
+	smartSave: (id: string | null, definition: SmartDefinition) => typedError<SmartPlaylist, string>(__TAURI_INVOKE("smart_save", { id, definition })),
+	smartDelete: (id: string) => typedError<null, string>(__TAURI_INVOKE("smart_delete", { id })),
+	/**
+	 *  Evaluates a saved smart playlist, or an unsaved draft when `definition`
+	 *  is given (live preview while editing rules).
+	 */
+	smartEvaluate: (id: string | null, definition: {
+	name: string,
+	/**  All rules must match (true) or any of them (false). */
+	matchAll: boolean,
+	rules: SmartRule[],
+	sort: SortColumn,
+	descending: boolean,
+	/**  Keep only the first N tracks in that sort. */
+	limit: number | null,
+} | null, offset: number) => typedError<LibraryPage, string>(__TAURI_INVOKE("smart_evaluate", { id, definition, offset })),
+	smartTrackIds: (id: string) => typedError<string[], string>(__TAURI_INVOKE("smart_track_ids", { id })),
+	smartSnapshot: (id: string, name: string) => typedError<PlaylistSummary, string>(__TAURI_INVOKE("smart_snapshot", { id, name })),
+	libraryAnalyzeTracks: (ids: string[], force: boolean) => typedError<AnalysisResult, string>(__TAURI_INVOKE("library_analyze_tracks", { ids, force })),
+	libraryAnalysisCancel: () => typedError<null, string>(__TAURI_INVOKE("library_analysis_cancel")),
+	libraryAnalysisPause: (paused: boolean) => typedError<null, string>(__TAURI_INVOKE("library_analysis_pause", { paused })),
+	libraryAnalysisSummary: () => typedError<AnalysisSummary, string>(__TAURI_INVOKE("library_analysis_summary")),
+	libraryAnalysisDetail: (id: string) => typedError<AnalysisDetail, string>(__TAURI_INVOKE("library_analysis_detail", { id })),
+	librarySetCorrections: (ids: string[], bpm: number | null, key: string | null) => typedError<CorrectionSnapshot[], string>(__TAURI_INVOKE("library_set_corrections", { ids, bpm, key })),
+	libraryRestoreCorrections: (snapshots: CorrectionSnapshot[]) => typedError<number, string>(__TAURI_INVOKE("library_restore_corrections", { snapshots })),
+	libraryClearAnalysis: (ids: string[]) => typedError<null, string>(__TAURI_INVOKE("library_clear_analysis", { ids })),
+	libraryEditPreview: (ids: string[], edits: FieldEdit[]) => typedError<EditPreview, string>(__TAURI_INVOKE("library_edit_preview", { ids, edits })),
+	libraryEditTracks: (ids: string[], edits: FieldEdit[]) => typedError<EditOutcome, string>(__TAURI_INVOKE("library_edit_tracks", { ids, edits })),
+	libraryRestoreEdits: (snapshots: FieldSnapshot[]) => typedError<number, string>(__TAURI_INVOKE("library_restore_edits", { snapshots })),
+	libraryFieldSummary: (ids: string[]) => typedError<FieldSummary[], string>(__TAURI_INVOKE("library_field_summary", { ids })),
+	libraryProvenance: (id: string) => typedError<FieldProvenance[], string>(__TAURI_INVOKE("library_provenance", { id })),
+	libraryUserData: (ids: string[]) => typedError<UserDataSnapshot[], string>(__TAURI_INVOKE("library_user_data", { ids })),
+	librarySetRating: (ids: string[], rating: number) => typedError<UserDataSnapshot[], string>(__TAURI_INVOKE("library_set_rating", { ids, rating })),
+	librarySetColor: (ids: string[], color: string) => typedError<UserDataSnapshot[], string>(__TAURI_INVOKE("library_set_color", { ids, color })),
+	libraryAddTag: (ids: string[], name: string) => typedError<UserDataSnapshot[], string>(__TAURI_INVOKE("library_add_tag", { ids, name })),
+	libraryRemoveTag: (ids: string[], name: string) => typedError<UserDataSnapshot[], string>(__TAURI_INVOKE("library_remove_tag", { ids, name })),
+	libraryRestoreUserData: (snapshots: UserDataSnapshot[]) => typedError<number, string>(__TAURI_INVOKE("library_restore_user_data", { snapshots })),
+	libraryListTags: () => typedError<TagCount[], string>(__TAURI_INVOKE("library_list_tags")),
+	libraryRecordPlay: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_record_play", { id })),
+	libraryRecordSkip: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_record_skip", { id })),
+	libraryHashTracks: (ids: string[]) => typedError<HashResult, string>(__TAURI_INVOKE("library_hash_tracks", { ids })),
+	libraryHashCancel: () => typedError<null, string>(__TAURI_INVOKE("library_hash_cancel")),
+	libraryDuplicates: () => typedError<DuplicateGroup[], string>(__TAURI_INVOKE("library_duplicates")),
+	libraryMergeTracks: (keepId: string, removeIds: string[]) => typedError<MergeResult, string>(__TAURI_INVOKE("library_merge_tracks", { keepId, removeIds })),
+	libraryPlayHistory: (offset: number) => typedError<PlayLogPage, string>(__TAURI_INVOKE("library_play_history", { offset })),
+	libraryClearPlayHistory: () => typedError<null, string>(__TAURI_INVOKE("library_clear_play_history")),
+	libraryWriteTagsPreview: (ids: string[]) => typedError<WriteTagsPreview, string>(__TAURI_INVOKE("library_write_tags_preview", { ids })),
+	libraryWriteTags: (ids: string[], keepBackup: boolean) => typedError<WriteTagsResult, string>(__TAURI_INVOKE("library_write_tags", { ids, keepBackup })),
+	/**  Asks for the destination folder; `None` if cancelled. */
+	libraryOrganizePickDestination: () => typedError<string | null, string>(__TAURI_INVOKE("library_organize_pick_destination")),
+	libraryOrganizePreview: (ids: string[], destination: string, template: string, collision: Collision, mode: OrganizeMode) => typedError<OrganizePlan, string>(__TAURI_INVOKE("library_organize_preview", { ids, destination, template, collision, mode })),
+	libraryOrganizeApply: (ids: string[], destination: string, template: string, collision: Collision, mode: OrganizeMode, confirmed: boolean) => typedError<OrganizeResult, string>(__TAURI_INVOKE("library_organize_apply", { ids, destination, template, collision, mode, confirmed })),
+	libraryBackupExport: () => typedError<{
+	path: string,
+	tracks: number,
+	roots: number,
+	playlists: number,
+	/**  Hand-edited tag values included. */
+	edits: number,
+} | null, string>(__TAURI_INVOKE("library_backup_export")),
+	/**
+	 *  Lets the user choose a backup file; the path comes back so the following
+	 *  preview/restore calls (which re-read it) can refer to the same file.
+	 */
+	libraryBackupPick: () => typedError<string | null, string>(__TAURI_INVOKE("library_backup_pick")),
+	libraryBackupPreview: (sourcePath: string, mappings: RootMapping[]) => typedError<RestorePreview, string>(__TAURI_INVOKE("library_backup_preview", { sourcePath, mappings })),
+	libraryBackupRestore: (sourcePath: string, mappings: RootMapping[]) => typedError<RestoreResult, string>(__TAURI_INVOKE("library_backup_restore", { sourcePath, mappings })),
+	libraryItunesPick: () => typedError<string | null, string>(__TAURI_INVOKE("library_itunes_pick")),
+	libraryItunesPreview: (sourcePath: string, mappings: RootMapping[]) => typedError<ItunesPreview, string>(__TAURI_INVOKE("library_itunes_preview", { sourcePath, mappings })),
+	libraryItunesCommit: (sourcePath: string, mappings: RootMapping[]) => typedError<ItunesImportResult, string>(__TAURI_INVOKE("library_itunes_commit", { sourcePath, mappings })),
 	isFlatpak: () => __TAURI_INVOKE<boolean>("is_flatpak"),
 	copyDirRecursive: (from: string, to: string) => typedError<null, string>(__TAURI_INVOKE("copy_dir_recursive", { from, to })),
 	extractZip: (zipPath: string, destPath: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, destPath })),
@@ -20,7 +365,7 @@ export const commands = {
 	getStartupLogs: () => __TAURI_INVOKE<StartupLogEntry[]>("get_startup_logs"),
 	mcpStart: () => typedError<number, string>(__TAURI_INVOKE("mcp_start")),
 	mcpStop: () => typedError<null, string>(__TAURI_INVOKE("mcp_stop")),
-	httpApiStart: () => typedError<HttpApiStartResult, string>(__TAURI_INVOKE("http_api_start")),
+	httpApiStart: (pairingToken: string) => typedError<HttpApiStartResult, string>(__TAURI_INVOKE("http_api_start", { pairingToken })),
 	httpApiStop: () => typedError<null, string>(__TAURI_INVOKE("http_api_stop")),
 	mpdStart: () => typedError<number, string>(__TAURI_INVOKE("mpd_start")),
 	mpdStop: () => typedError<null, string>(__TAURI_INVOKE("mpd_stop")),
@@ -46,6 +391,73 @@ export const commands = {
 };
 
 /* Types */
+export type AnalysisDetail = {
+	analyzed: boolean,
+	/**  Analysis was made by an older algorithm or the file changed since. */
+	stale: boolean,
+	/**  `PEAK_BUCKETS` values 0-255 (empty until analyzed). */
+	peaks: number[],
+	loudnessLufs: number | null,
+	truePeakDbtp: number | null,
+	tagBpm: number | null,
+	tagKey: string | null,
+	bpmEstimate: number | null,
+	bpmConfidence: number | null,
+	keyEstimate: string | null,
+	keyConfidence: number | null,
+	userBpm: number | null,
+	userKey: string | null,
+	/**  What filters and sorting use: user > tag > estimate. */
+	bpm: number | null,
+	key: string | null,
+	analyzedAt: string | null,
+	/**
+	 *  ReplayGain as the file's tags state it (dB and linear peak); stored
+	 *  only, playback does not apply it.
+	 */
+	replaygainTrackGain: number | null,
+	replaygainTrackPeak: number | null,
+	replaygainAlbumGain: number | null,
+	replaygainAlbumPeak: number | null,
+};
+
+export type AnalysisResult = {
+	analyzed: number,
+	/**  Already analyzed by this algorithm version and unchanged since. */
+	reused: number,
+	failed: number,
+	cancelled: boolean,
+};
+
+export type AnalysisState = "analyzed" | "unanalyzed";
+
+export type AnalysisSummary = {
+	analyzed: number,
+	total: number,
+	running: boolean,
+	paused: boolean,
+};
+
+export type ArtworkBackfillResult = {
+	checked: number,
+	/**  Tracks that now have artwork. */
+	found: number,
+	/**  Tracks whose picture was not stored because the cache is full. */
+	cacheFull: number,
+	cancelled: boolean,
+};
+
+export type Availability = "available" | "missing";
+
+export type BackupSummary = {
+	path: string,
+	tracks: number,
+	roots: number,
+	playlists: number,
+	/**  Hand-edited tag values included. */
+	edits: number,
+};
+
 export type BridgeNotification = {
 	subsystem: string,
 };
@@ -56,13 +468,177 @@ export type BridgeResponse = {
 
 export type BridgeResponseBody = { status: "success"; data: unknown } | { status: "error"; error: string };
 
+export type Collision = 
+/**  Leave a track alone when its target already exists. */
+"skip" | 
+/**  Keep both: append " (2)", " (3)"… to the new file name. */
+"suffix";
+
+/**  What one track's correction looked like, for undo. */
+export type CorrectionSnapshot = {
+	id: string,
+	bpm: number | null,
+	key: string | null,
+};
+
 export type DailyListeningTime = {
 	date: string,
 	value: number,
 };
 
+export type DuplicateGroup = {
+	kind: DuplicateKind,
+	tracks: LibraryTrack[],
+	/**
+	 *  Similar groups only: every file has been hashed and the contents
+	 *  differ, so these are confirmed *different* files with the same name.
+	 */
+	confirmedDifferent: boolean,
+};
+
+export type DuplicateKind = 
+/**  Byte-identical files (same SHA-256). */
+"exact" | 
+/**
+ *  Same title and artist and nearly the same length; the files differ or
+ *  have not been compared. A suggestion, never a conclusion.
+ */
+"similar";
+
+export type EditExample = {
+	trackId: string,
+	title: string,
+	field: EditField,
+	before: string,
+	after: string,
+};
+
+/**
+ *  Tag fields the user can edit. A closed enum: the column name is chosen
+ *  from fixed SQL, never from user text.
+ */
+export type EditField = "title" | "artist" | "album" | "albumArtist" | "genre" | "composer" | "comment" | "year" | "trackNo" | "discNo";
+
+export type EditOutcome = {
+	tracksChanged: number,
+	undo: FieldSnapshot[],
+};
+
+export type EditPreview = {
+	/**  Tracks that would actually change. */
+	tracksChanged: number,
+	/**  Tracks the edit would leave as they are. */
+	tracksUnchanged: number,
+	fieldsChanged: number,
+	/**  First few changes, for the "affected tracks" preview. */
+	examples: EditExample[],
+};
+
+export type EntryStatus = 
+/**  Already a track in the library. */
+"linked" | 
+/**  A supported file that exists but is not in the library yet. */
+"needsImport" | 
+/**  The file is not where the list says (and was not found by relinking). */
+"missing" | 
+/**  Exists, but not a format the library can import. */
+"unsupported" | 
+/**  A URL (stream), which local playlists cannot hold. */
+"remote";
+
+export type ExportResult = {
+	path: string,
+	written: number,
+	/**  Relative mode: files outside the export folder, written with `../`. */
+	outsideRoot: number,
+	/**
+	 *  Relative mode: files that share no root with the export folder
+	 *  (another drive), written as absolute paths.
+	 */
+	absoluteFallback: number,
+};
+
+export type ExportStyle = "absolute" | "relative";
+
+/**  Narrows the track list to one group from `library_facets`. */
+export type FacetFilter = {
+	kind: FacetKind,
+	value: string,
+	/**  Album artist, for `Albums`. */
+	secondary: string | null,
+};
+
+/**  One group in a browse tab. For albums `secondary` is the album artist. */
+export type FacetGroup = {
+	name: string,
+	secondary: string,
+	year: number | null,
+	trackCount: number,
+	durationSec: number | null,
+	sizeBytes: number,
+};
+
+/**  What a browse tab groups by. */
+export type FacetKind = "artists" | "albums" | "genres" | "composers" | "folders";
+
+/**  One requested change. `value: None` puts the file's own tag back. */
+export type FieldEdit = {
+	field: EditField,
+	value: string | null,
+};
+
+/**  Where one field's current value came from. */
+export type FieldProvenance = {
+	field: EditField,
+	value: string,
+	/**  True when the user set it by hand. */
+	edited: boolean,
+	/**  What the file's own tag says (equals `value` when not edited). */
+	fileValue: string,
+	editedAt: string | null,
+};
+
+/**
+ *  What one field of one track looked like before an edit; enough to undo it
+ *  exactly, including whether it was an override and what the file's tag said.
+ */
+export type FieldSnapshot = {
+	trackId: string,
+	field: EditField,
+	value: string,
+	extracted: string | null,
+};
+
+/**  A field across a selection, for mixed-value indicators in the editor. */
+export type FieldSummary = {
+	field: EditField,
+	/**
+	 *  The shared value when every selected track agrees ('' when they all
+	 *  agree on empty); meaningless when `distinct > 1`.
+	 */
+	value: string,
+	distinct: number,
+	/**  How many of the selected tracks hold a hand-edited value here. */
+	edited: number,
+};
+
+/**  Values available to build filter controls from the current catalog. */
+export type FilterOptions = {
+	formats: string[],
+	yearMin: number | null,
+	yearMax: number | null,
+};
+
 export type FirstPlay = {
 	at: number,
+};
+
+export type HashResult = {
+	hashed: number,
+	/**  Already hashed and unchanged since. */
+	alreadyCurrent: number,
+	failed: number,
+	cancelled: boolean,
 };
 
 export type HistoryEntry = {
@@ -107,14 +683,157 @@ export type ImportFailure = {
 	error: string,
 };
 
+export type ImportOutcome = {
+	playlist: PlaylistSummary,
+	/**  Entries now pointing at a library track. */
+	linked: number,
+	/**  Files added to the library because the list referenced them. */
+	imported: number,
+	/**  Entries kept as unavailable (missing, unsupported, or streams). */
+	unresolved: number,
+};
+
+export type ImportPreview = {
+	sourcePath: string,
+	suggestedName: string,
+	total: number,
+	linked: number,
+	needsImport: number,
+	missing: number,
+	unsupported: number,
+	remote: number,
+	/**  The first entries that are not already in the library. */
+	unresolved: UnresolvedEntry[],
+};
+
 export type ImportResult = {
 	imported: number,
+	/**
+	 *  Files walked (folder import / drag-drop) that were neither imported
+	 *  nor errored -- unsupported extensions, silently ignored before this
+	 *  counter existed.
+	 */
+	skipped: number,
+	errors: ImportFailure[],
+	/**
+	 *  True when `library_import_cancel` interrupted the loop before every
+	 *  path was processed. Paths not yet reached are neither imported,
+	 *  skipped nor counted as errors.
+	 */
+	cancelled: boolean,
+};
+
+export type ItunesImportResult = {
+	/**  XML tracks linked to a track that was already in the catalog. */
+	tracksLinked: number,
+	/**  Files imported into the catalog by this run. */
+	tracksImported: number,
+	tracksFailed: number,
+	tracksMissing: number,
+	tracksUnsupported: number,
+	tracksNotLocal: number,
+	duplicateTracks: number,
+	/**  Plays added to local play counts (growth since the last import only). */
+	playsAdded: number,
+	skipsAdded: number,
+	ratingsApplied: number,
+	lovedTagged: number,
+	/**  Empty tag fields filled from the XML. */
+	fieldsFilled: number,
+	/**  Fields where the file's own tag differs from the XML and was kept. */
+	fieldsKeptFromFile: number,
+	bpmApplied: number,
+	playlistsCreated: number,
+	/**  Created under a new name because the name was taken. */
+	playlistsRenamed: number,
+	playlistsAlreadyImported: number,
+	playlistEntries: number,
+	/**
+	 *  Entries kept but not linked to a catalog track (file missing or not
+	 *  importable); they link up by path when the file joins the catalog.
+	 */
+	playlistEntriesUnavailable: number,
+	/**  Entries with no local file at all, left out. */
+	playlistEntriesSkipped: number,
+	/**  First import failures (the rest are only counted). */
 	errors: ImportFailure[],
 };
+
+export type ItunesPreview = {
+	/**
+	 *  The library's `Music Folder`, as a local path: the prefix to remap
+	 *  when the music has moved since the export.
+	 */
+	musicFolder: string | null,
+	tracks: number,
+	/**
+	 *  Per file: an XML track pointing at a file an earlier one already
+	 *  points at is only counted in `duplicate_tracks`.
+	 *  Found in the catalog by path; will be linked, nothing imported.
+	 */
+	tracksInCatalog: number,
+	/**  On disk but not in the catalog yet; will be imported. */
+	tracksToImport: number,
+	tracksMissing: number,
+	/**  A file the importer cannot read (protected AAC, video, ...). */
+	tracksUnsupported: number,
+	/**  No local file at all (streams, cloud-only items). */
+	tracksNotLocal: number,
+	/**  XML tracks pointing at a file another XML track already points at. */
+	duplicateTracks: number,
+	/**  XML tracks a previous import already linked. */
+	previouslyImported: number,
+	playlists: number,
+	playlistEntries: number,
+	playlistFolders: number,
+	playlistsAlreadyImported: number,
+	/**  Library, Music, Podcasts and the other lists Music.app makes itself. */
+	builtinPlaylistsSkipped: number,
+	/**
+	 *  Every XML track that will not be linked or imported (duplicates
+	 *  excluded), in XML order, up to `itunes_import::UNRESOLVED_KEPT`.
+	 */
+	unresolved: ItunesUnresolved[],
+};
+
+export type ItunesUnresolved = {
+	name: string,
+	artist: string,
+	/**  The local path it points at after remapping; `None` when not local. */
+	path: string | null,
+	reason: UnresolvedReason,
+};
+
+export type LibraryChangeVersion = { version: number };
 
 export type LibraryPage = {
 	tracks: LibraryTrack[],
 	total: number,
+};
+
+/**
+ *  A folder the user asked the library to keep in sync. `track_count` /
+ *  `missing_count` are aggregated on read; `available` is whether the folder
+ *  itself currently exists on disk (false for a disconnected drive).
+ */
+export type LibraryRoot = {
+	id: string,
+	path: string,
+	createdAt: string,
+	lastScannedAt: string | null,
+	trackCount: number,
+	missingCount: number,
+	available: boolean,
+};
+
+/**
+ *  Everything in the catalog, for the "on this device" totals line --
+ *  deliberately separate from cloud storage usage.
+ */
+export type LibraryTotals = {
+	trackCount: number,
+	durationSec: number | null,
+	sizeBytes: number,
 };
 
 export type LibraryTrack = {
@@ -129,7 +848,89 @@ export type LibraryTrack = {
 	channels: number,
 	bitsPerSample: number | null,
 	sizeBytes: number,
+	available: boolean,
+	unavailableSince: string | null,
+	albumArtist: string,
+	trackNo: number | null,
+	discNo: number | null,
+	year: number | null,
+	genre: string,
+	/**  Empty when the file has no composer tag. */
+	composer: string,
+	comment: string,
+	bitrateKbps: number | null,
+	/**
+	 *  When the track first entered the catalog (UTC, `YYYY-MM-DD HH:MM:SS`).
+	 *  Filled by the database, so extraction leaves it empty.
+	 */
+	addedAt: string,
+	/**  0 = unrated, 1-5 stars. User data, never read from files. */
+	rating: number,
+	/**  One of `catalog::COLORS`, or empty. */
+	color: string,
+	playCount: number,
+	/**  Times a listen was abandoned early; see `catalog::plays::record_skip`. */
+	skipCount: number,
+	lastPlayedAt: string | null,
+	/**
+	 *  Effective BPM and key (user correction > file tag > estimate); see
+	 *  `analysis.rs`. Empty until known.
+	 */
+	bpm: number | null,
+	musicalKey: string | null,
+	loudnessLufs: number | null,
+	analyzed: boolean,
+	/**
+	 *  File name of the embedded cover in the artwork cache (see
+	 *  `artwork.rs`); `None` when the file has no usable picture.
+	 */
+	artworkKey: string | null,
 };
+
+export type MergeResult = {
+	removed: number,
+	playlistEntriesMoved: number,
+};
+
+export type OrganizeItem = {
+	id: string,
+	from: string,
+	to: string,
+	status: OrganizeStatus,
+};
+
+export type OrganizeMode = 
+/**  Copy the file into the destination; the catalog then points at the copy. */
+"copy" | 
+/**  Move the file (changes the original location). */
+"move";
+
+export type OrganizePlan = {
+	items: OrganizeItem[],
+	ready: number,
+	unchanged: number,
+	collisions: number,
+	missing: number,
+	/**
+	 *  Copy only: originals inside a watched folder would be picked up again
+	 *  by the next scan as new tracks.
+	 */
+	originalsInWatchedFolders: number,
+};
+
+export type OrganizeResult = {
+	done: number,
+	skipped: number,
+	errors: string[],
+};
+
+export type OrganizeStatus = "ready" | 
+/**  Already at its target path. */
+"unchanged" | 
+/**  Target exists (on disk or planned for another track). */
+"collision" | 
+/**  The source file is not there. */
+"missing";
 
 export type Page<T> = {
 	items: T[],
@@ -139,6 +940,13 @@ export type Page<T> = {
 export type PageRequest = {
 	limit: number,
 	offset: number,
+};
+
+/**  Unfinished imports waiting to be resumed. */
+export type PendingImport = {
+	/**  Files not yet reached. */
+	files: number,
+	jobs: number,
 };
 
 export type PlayEndReason = "finished" | "skipped" | "stopped";
@@ -154,10 +962,279 @@ export type PlayEvent = {
 
 export type PlayEventKind = "started" | "paused" | "resumed" | "seeked" | "finished" | "skipped" | "stopped";
 
+export type PlayLogEntry = {
+	id: number,
+	trackId: string | null,
+	title: string,
+	artist: string,
+	/**  UTC `YYYY-MM-DD HH:MM:SS`. */
+	playedAt: string,
+};
+
+export type PlayLogPage = {
+	entries: PlayLogEntry[],
+	total: number,
+};
+
+export type PlaybackBatch = {
+	/**  Playable tracks, in the order the ids were given. */
+	items: PlaybackItem[],
+	/**  Requested tracks whose file is missing (now persisted as unavailable). */
+	unavailable: number,
+};
+
+/**  A track ready to hand to the player: its row plus the verified file path. */
+export type PlaybackItem = {
+	track: LibraryTrack,
+	path: string,
+};
+
+export type PlaylistEntry = {
+	entryId: string,
+	position: number,
+	/**  The catalog row, when the entry still points at one. */
+	track: LibraryTrack | null,
+	/**  From the track when linked, otherwise the snapshot taken when added. */
+	title: string,
+	artist: string,
+	path: string,
+	duration: number | null,
+	/**  No linked track, or its file is missing. Never a reason to drop the entry. */
+	unavailable: boolean,
+};
+
+export type PlaylistPage = {
+	entries: PlaylistEntry[],
+	total: number,
+};
+
+export type PlaylistSummary = {
+	id: string,
+	name: string,
+	trackCount: number,
+	durationSec: number | null,
+	/**  Entries whose file is missing or whose track left the catalog. */
+	unavailableCount: number,
+	createdAt: string,
+	updatedAt: string,
+};
+
+export type ProviderImportEntry = {
+	remoteId: string,
+	title: string,
+	artist: string,
+	downloadUrl: string,
+	/**  The provider's suggested file name; only its extension is used. */
+	fileName: string | null,
+};
+
+export type ProviderImportFailure = {
+	remoteId: string,
+	title: string,
+	error: string,
+};
+
+export type ProviderImportRequest = {
+	provider: string,
+	setId: string,
+	setTitle: string,
+	/**
+	 *  Folder the files are saved in, usually from
+	 *  `library_provider_import_destination`.
+	 */
+	destination: string,
+	/**  Set order. Only entries the provider marks as downloadable belong here. */
+	entries: ProviderImportEntry[],
+	/**
+	 *  Native playlist to hold the set in order. Reused (and re-ordered to the
+	 *  set) when a playlist with this name already exists.
+	 */
+	playlistName: string | null,
+};
+
+export type ProviderImportResult = {
+	imported: number,
+	skipped: number,
+	failures: ProviderImportFailure[],
+	cancelled: boolean,
+	playlistId: string | null,
+	/**  Library ids of the imported and skipped tracks, in set order. */
+	trackIds: string[],
+};
+
+export type ProviderImportSpace = {
+	/**  Sum of the sizes the provider reported for the entries still to download. */
+	neededBytes: number,
+	/**  Entries still to download whose size is known. */
+	sized: number,
+	/**  Entries still to download whose size the provider did not report. */
+	unknownSize: number,
+	/**  Entries already in the library, which will be skipped. */
+	alreadyImported: number,
+	/**  Space available to this user on the destination volume. */
+	freeBytes: number | null,
+	verdict: SpaceVerdict,
+};
+
+/**
+ *  Enough to recreate an entry exactly: used for undo and for M3U import of
+ *  files that are not in the catalog yet.
+ */
+export type RawEntry = {
+	entryId: string,
+	trackId: string | null,
+	path: string,
+	title: string,
+	artist: string,
+	duration: number | null,
+};
+
+export type RelinkRootResult = {
+	root: LibraryRoot,
+	/**  Tracks re-pointed at the new folder (same relative path and size). */
+	relinked: number,
+	/**  Tracks with no proven match in the new folder; left untouched. */
+	unmatched: number,
+};
+
+export type RestorePreview = {
+	createdAt: string,
+	roots: RootPreview[],
+	tracks: number,
+	filesFound: number,
+	filesMissing: number,
+	edits: number,
+	playlists: number,
+	playlistEntries: number,
+	/**  A few files that could not be found at their mapped location. */
+	missingExamples: string[],
+};
+
+export type RestoreResult = {
+	tracksRestored: number,
+	/**
+	 *  Backed-up tracks whose file was not at the mapped location: not
+	 *  restored, and their ratings/edits are not either.
+	 */
+	tracksMissing: number,
+	tracksFailed: number,
+	rootsAdded: number,
+	playlistsCreated: number,
+	/**  Playlists whose name was already taken and were restored under a new name. */
+	playlistsRenamed: number,
+	editsApplied: number,
+};
+
+/**
+ *  Old folder -> new folder. Applied to a path when it starts with `from`
+ *  (on a folder boundary); the longest matching `from` wins.
+ */
+export type RootMapping = {
+	from: string,
+	to: string,
+};
+
+export type RootPreview = {
+	/**  The folder as recorded in the backup. */
+	from: string,
+	/**  Where it maps to now (equal to `from` when unmapped). */
+	to: string,
+	exists: boolean,
+	tracks: number,
+};
+
+/**
+ *  Outcome of scanning one or more roots: new files imported, plus how many
+ *  already-known tracks changed availability.
+ */
+export type RootScanResult = {
+	imported: number,
+	skipped: number,
+	/**  Known tracks whose file is no longer there. */
+	missing: number,
+	/**  Previously-missing tracks whose file is back. */
+	recovered: number,
+	/**  Renamed/moved files re-pointed at their new path (ID kept). */
+	moved: number,
+	/**  Known files changed on disk and re-read (external tag edits). */
+	updated: number,
+	errors: ImportFailure[],
+	cancelled: boolean,
+};
+
+export type RuleField = "title" | "artist" | "album" | "genre" | "composer" | "format" | "tag" | "year" | "rating" | "playCount" | "duration" | "bpm" | "key" | "loudness" | 
+/**  Days since last played; a track never played counts as "not played". */
+"lastPlayed" | 
+/**  Days since the track was added. */
+"added" | 
+/**  Whether analysis has run (`isSet` / `isNotSet`). */
+"analyzed";
+
+export type RuleOp = "is" | "isNot" | "contains" | "notContains" | "atLeast" | "atMost" | 
+/**  Numbers: strictly greater than `value`. */
+"above" | 
+/**  Numbers: strictly less than `value`. */
+"below" | 
+/**  Text: begins with `value` (case-insensitive). */
+"startsWith" | "between" | 
+/**  Dates: within the last `value` days. */
+"inLastDays" | 
+/**  Dates: not within the last `value` days (never-played included). */
+"notInLastDays" | 
+/**  Dates: before the day `value` (`YYYY-MM-DD`). */
+"before" | 
+/**  Dates: after the day `value` (`YYYY-MM-DD`). */
+"after" | "isSet" | "isNotSet";
+
+export type SmartDefinition = {
+	name: string,
+	/**  All rules must match (true) or any of them (false). */
+	matchAll: boolean,
+	rules: SmartRule[],
+	sort: SortColumn,
+	descending: boolean,
+	/**  Keep only the first N tracks in that sort. */
+	limit: number | null,
+};
+
+export type SmartPlaylist = {
+	id: string,
+	createdAt: string,
+} & SmartDefinition;
+
+export type SmartRule = {
+	field: RuleField,
+	op: RuleOp,
+	value?: string,
+	/**  Upper bound for `between`. */
+	value2?: string,
+};
+
+/**
+ *  Sortable track-table columns. A closed enum, never user text, so the
+ *  ORDER BY below is assembled from fixed SQL only.
+ */
+export type SortColumn = "title" | "artist" | "album" | "genre" | "composer" | "year" | "trackNo" | "duration" | "format" | "size" | "bitrate" | "added" | "rating" | "plays" | "skips" | "lastPlayed" | "bpm" | "key" | "loudness";
+
+export type SpaceVerdict = 
+/**  Known sizes plus the margin fit. */
+"fits" | 
+/**  Known sizes fit, but not with the margin. */
+"tight" | 
+/**  Known sizes alone need more than the free space. */
+"notEnough" | 
+/**  The free space could not be read. */
+"unknown";
+
 export type StartupLogEntry = {
 	timestamp: string,
 	level: string,
 	message: string,
+};
+
+export type TagCount = {
+	name: string,
+	tracks: number,
 };
 
 export type TimeRange = {
@@ -188,6 +1265,39 @@ export type TopTrack = {
 	plays: number,
 };
 
+/**
+ *  Range and attribute filters that combine with search and a browse group.
+ *  Every field is optional; an unset field never restricts anything.
+ */
+export type TrackFilters = {
+	yearMin: number | null,
+	yearMax: number | null,
+	/**  Seconds. */
+	durationMin: number | null,
+	durationMax: number | null,
+	bitrateMin: number | null,
+	formats?: string[],
+	rootId: string | null,
+	/**  `YYYY-MM-DD`; tracks added on or after this day. */
+	addedSince: string | null,
+	availability: Availability | null,
+	/**  At least this many stars (1-5). */
+	ratingMin: number | null,
+	/**  One of `catalog::COLORS`. */
+	color: string | null,
+	/**  Tracks carrying this tag (case-insensitive). */
+	tag: string | null,
+	/**  Effective BPM (user correction, else tag, else estimate). */
+	bpmMin: number | null,
+	bpmMax: number | null,
+	/**  Effective key in `analysis_dsp::key_name` form, e.g. `Am`. */
+	key: string | null,
+	/**  Integrated loudness in LUFS. */
+	loudnessMin: number | null,
+	loudnessMax: number | null,
+	analysis: AnalysisState | null,
+};
+
 export type TrackPresence = {
 	title: string,
 	artist: string,
@@ -205,6 +1315,62 @@ export type TrackSnapshot = {
 	artworkUrl: string | null,
 	provider: string,
 	providerId: string,
+};
+
+export type TrackSort = {
+	column: SortColumn,
+	descending: boolean,
+};
+
+export type UnresolvedEntry = {
+	line: number,
+	path: string,
+	title: string,
+	status: EntryStatus,
+};
+
+export type UnresolvedReason = "missing" | "unsupported" | "notLocal";
+
+/**  Enough to put a track's user data back exactly (undo). */
+export type UserDataSnapshot = {
+	trackId: string,
+	rating: number,
+	color: string,
+	tags: string[],
+};
+
+export type WriteSkip = {
+	path: string,
+	reason: string,
+};
+
+export type WriteTagsPreview = {
+	/**  Files that would be written. */
+	writable: number,
+	/**  Selected tracks with no hand-edited fields. */
+	noEdits: number,
+	skipped: WriteSkip[],
+	/**  Formats this can write, for the "supported formats" note. */
+	formats: string[],
+};
+
+export type WriteTagsResult = {
+	written: number,
+	skipped: WriteSkip[],
+	failed: WriteSkip[],
+	/**
+	 *  Edits the app's own reader now sees in the file, so they no longer
+	 *  need to be kept as overrides.
+	 */
+	editsSettled: number,
+	/**
+	 *  Edits written to the file but not visible to the app's reader (for
+	 *  example WAV INFO stored after the audio); kept as overrides so the
+	 *  library still shows them.
+	 */
+	editsKept: number,
+	/**  Edited fields the file format has no place for (kept in the library only). */
+	fieldsUnsupported: number,
 };
 
 export type YtdlpPlaylistEntry = {

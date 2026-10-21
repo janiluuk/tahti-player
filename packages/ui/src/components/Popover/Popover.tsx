@@ -5,10 +5,10 @@ import {
   PopoverPanelProps,
 } from '@headlessui/react';
 import { AnimatePresence, motion } from 'motion/react';
-import { FC, ReactNode } from 'react';
+import { FC, ReactElement, ReactNode } from 'react';
 
 import { cn } from '../../utils';
-import { ClickTrigger } from './ClickTrigger';
+import { ClickTrigger, PopoverTooltip } from './ClickTrigger';
 import { ContextMenuTrigger } from './ContextMenuTrigger';
 import { PopoverFooter } from './PopoverFooter';
 import { PopoverItem } from './PopoverItem';
@@ -16,7 +16,8 @@ import { PopoverMenu } from './PopoverMenu';
 import { PopoverSection } from './PopoverSection';
 
 export type PopoverProps = {
-  trigger: ReactNode;
+  trigger: ReactElement;
+  tooltip?: PopoverTooltip;
   children: ReactNode;
   className?: string;
   panelClassName?: string;
@@ -40,15 +41,17 @@ const PopoverImpl: FC<PopoverProps> = ({
   anchor,
   backdrop,
   triggerOn = 'click',
+  tooltip,
 }) => {
-  const Trigger =
-    triggerOn === 'contextmenu' ? ContextMenuTrigger : ClickTrigger;
-
   return (
-    <HeadlessPopover className={cn('absolute', className)}>
+    <HeadlessPopover className={cn('relative', className)}>
       {({ open }) => (
         <>
-          <Trigger>{trigger}</Trigger>
+          {triggerOn === 'contextmenu' ? (
+            <ContextMenuTrigger>{trigger}</ContextMenuTrigger>
+          ) : (
+            <ClickTrigger tooltip={tooltip}>{trigger}</ClickTrigger>
+          )}
           <AnimatePresence>
             {open && (
               <>

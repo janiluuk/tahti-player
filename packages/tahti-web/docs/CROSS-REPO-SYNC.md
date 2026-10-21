@@ -15,7 +15,7 @@ Canonical pointers when both checkouts are open:
 
 ## Checkout names
 
-This monorepo directory may be `tahti-nuclear` or `tahti-player`. Sibling production stack is always **`../tahti-org`** (GitHub `janiluuk/tahti-org`). Official Store catalog is **`../tahti-registry`** (GitHub `janiluuk/tahti-registry`). Older ops docs still say `tahti-player` — use the path that exists on disk.
+This monorepo checkout is `tahti-player`. Sibling production stack is always **`../tahti-org`** (GitHub `janiluuk/tahti-org`). Official Store catalog is **`../tahti-registry`** (GitHub `janiluuk/tahti-registry`).
 
 ## Route aliases (prod → beta)
 
@@ -30,7 +30,7 @@ Production documents member governance as `/governance` and `/dashboard/governan
 
 ## Live feature status in this package
 
-Use **`FEATURES.md`** and **`WORKPLAN.md`** for shipped vs partial. **`CONVERSION-QUEUE.md`** is archived — do not treat its admin `missing` rows as current.
+Use **`FEATURES.md`** and **`WORKPLAN.md`** for shipped vs partial.
 
 ## Money-flow UI copy
 

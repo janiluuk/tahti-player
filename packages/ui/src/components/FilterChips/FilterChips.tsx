@@ -1,11 +1,11 @@
 import { cva } from 'class-variance-authority';
-import { ComponentProps, FC } from 'react';
+import { ComponentProps, FC, ReactNode } from 'react';
 
 import { cn } from '../../utils';
 import { useFilterChips, UseFilterChipsConfig } from './useFilterChips';
 
 const chipVariants = cva(
-  'inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors',
+  'inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
   {
     variants: {
       selected: {
@@ -23,10 +23,13 @@ const chipVariants = cva(
 export type FilterChip = {
   id: string;
   label: string;
+  /** Optional leading icon, e.g. a lucide icon element — not for images/photos. */
+  icon?: ReactNode;
 };
 
 type BaseProps = Omit<ComponentProps<'div'>, 'onChange'> & {
-  items: FilterChip[];
+  items: readonly FilterChip[];
+  disabled?: boolean;
 };
 
 type SingleSelectProps = BaseProps & {
@@ -44,7 +47,8 @@ type MultiSelectProps = BaseProps & {
 export type FilterChipsProps = SingleSelectProps | MultiSelectProps;
 
 export const FilterChips: FC<FilterChipsProps> = (props) => {
-  const { items, className, multiple, selected, onChange, ...rest } = props;
+  const { items, className, multiple, selected, onChange, disabled, ...rest } =
+    props;
 
   const hookConfig: UseFilterChipsConfig = multiple
     ? { multiple: true, selected, onChange }
@@ -71,9 +75,11 @@ export const FilterChips: FC<FilterChipsProps> = (props) => {
             type="button"
             role={multiple ? 'checkbox' : 'radio'}
             aria-checked={checked}
+            disabled={disabled}
             className={chipVariants({ selected: checked })}
             onClick={() => handleClick(item.id)}
           >
+            {item.icon}
             {item.label}
           </button>
         );

@@ -29,6 +29,7 @@ import {
 import type { StudioCollection, StudioSound } from '../api/studio-types';
 import { usePlayerStore } from '../stores/playerStore';
 import { ConfirmDialog } from './ConfirmDialog';
+import { PageError } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 const EXPIRY_OPTIONS = [1, 3, 7, 30, 0] as const;
@@ -50,7 +51,12 @@ const formatExpiry = (expiresAt: string | null) => {
   return `${remainingDays} day${remainingDays === 1 ? '' : 's'} left`;
 };
 
-export const StashFilesPanel = () => {
+export const StashFilesPanel = ({
+  filesOnly = false,
+}: {
+  /** Listener Library Stash: upload/share files only, no catalog move. */
+  filesOnly?: boolean;
+} = {}) => {
   const play = usePlayerStore((state) => state.play);
   const [files, setFiles] = useState<StashFile[]>([]);
   const [busy, setBusy] = useState(false);
@@ -62,28 +68,48 @@ export const StashFilesPanel = () => {
   const [soundItems, setSoundItems] = useState<StudioSound[]>([]);
   const [collections, setCollections] = useState<StudioCollection[]>([]);
   const [pendingDelete, setPendingDelete] = useState<StashFile | null>(null);
+  const [filesError, setFilesError] = useState<string | null>(null);
+  const [moveListsError, setMoveListsError] = useState<string | null>(null);
+  const [moveListsAttempt, setMoveListsAttempt] = useState(0);
 
   const reload = () =>
     fetchStashFiles().then((result) => {
       setFiles(result.data);
+      setFilesError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
     });
 
   useEffect(() => {
     void reload();
+  }, []);
+
+  useEffect(() => {
+    if (filesOnly) {
+      return;
+    }
+    let cancelled = false;
     void Promise.all([fetchStudioSounds(), fetchStudioCollections()]).then(
       ([soundResult, collectionResult]) => {
+        if (cancelled) {
+          return;
+        }
         setSoundItems(soundResult.data);
         setCollections(collectionResult.data);
+        const failed = [soundResult.meta, collectionResult.meta].find(
+          (meta) => meta.source === 'api' && meta.reason,
+        );
+        setMoveListsError(failed?.reason ?? null);
       },
     );
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [filesOnly, moveListsAttempt]);
 
   const moveTrackToStash = async (item: StudioSound) => {
     setBusy(true);
-    const result = await patchStudioSound(item.id, {
-      visibility: 'PRIVATE',
-      isPublic: false,
-    });
+    const result = await patchStudioSound(item.id, { isPublic: false });
     setBusy(false);
     if (!result.ok) {
       setMessage(result.error);
@@ -124,49 +150,32 @@ export const StashFilesPanel = () => {
     setBusy(false);
     if (!result.ok) {
       setMessage(result.error);
+      toast.error(result.error);
       return;
     }
-    setFiles((current) =>
-      current.map((candidate) =>
-        candidate.id === file.id
-          ? {
-              ...candidate,
-              shareCount: candidate.shareCount + 1,
-              shares: [...candidate.shares, result.data],
-            }
-          : candidate,
-      ),
-    );
     setSharingFileId(null);
     setGranteeUsername('');
-    setMessage(
-      username
-        ? `Shared ${file.filename} with @${username}.`
-        : `Created access for ${file.filename}.`,
-    );
+    const okMessage = username
+      ? `Shared ${file.filename} with @${username}.`
+      : `Created access for ${file.filename}.`;
+    setMessage(okMessage);
+    toast.success(okMessage);
+    await reload();
   };
 
-  const revokeShare = async (fileId: string, shareId: string) => {
+  const revokeShare = async (_fileId: string, shareId: string) => {
     setBusy(true);
     setMessage(null);
     const result = await revokeStashShare(shareId);
     setBusy(false);
     if (!result.ok) {
       setMessage(result.error);
+      toast.error(result.error);
       return;
     }
-    setFiles((current) =>
-      current.map((file) =>
-        file.id === fileId
-          ? {
-              ...file,
-              shareCount: Math.max(0, file.shareCount - 1),
-              shares: file.shares.filter((share) => share.id !== shareId),
-            }
-          : file,
-      ),
-    );
     setMessage('Share access revoked.');
+    toast.success('Share access revoked.');
+    await reload();
   };
 
   const uploadFile = (file: File) => {
@@ -208,67 +217,83 @@ export const StashFilesPanel = () => {
         </p>
       ) : null}
 
-      <StudioPanel
-        title="Add from your library"
-        description="Move tracks and collections into your private stash. Private items are removed from public listings."
-      >
-        {soundItems.length === 0 && collections.length === 0 ? (
-          <EmptyState
-            size="sm"
-            title="Nothing to move"
-            description="Everything in your library is already private or there is nothing to move."
-          />
-        ) : (
-          <div className="flex flex-col gap-2">
-            {soundItems
-              .filter(
-                (item) =>
-                  item.visibility !== 'PRIVATE' && item.isPublic !== false,
-              )
-              .map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between gap-2 text-sm"
-                >
-                  <span className="min-w-0 truncate">{item.title}</span>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    disabled={busy}
-                    onClick={() => void moveTrackToStash(item)}
+      {!filesOnly ? (
+        <StudioPanel
+          title="Add from your library"
+          description="Move tracks and collections into your private stash. Private items are removed from public listings."
+        >
+          {moveListsError &&
+          soundItems.length === 0 &&
+          collections.length === 0 ? (
+            <PageError
+              title="Could not load your library"
+              description={moveListsError}
+              onRetry={() => setMoveListsAttempt((current) => current + 1)}
+            />
+          ) : soundItems.length === 0 && collections.length === 0 ? (
+            <EmptyState
+              size="sm"
+              title="Nothing to move"
+              description="Everything in your library is already private or there is nothing to move."
+            />
+          ) : (
+            <div className="flex flex-col gap-2">
+              {soundItems
+                .filter(
+                  (item) =>
+                    item.visibility !== 'PRIVATE' && item.isPublic !== false,
+                )
+                .map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between gap-2 text-sm"
                   >
-                    Move track
-                  </Button>
-                </div>
-              ))}
-            {collections
-              .filter(
-                (collection) =>
-                  collection.visibility !== 'PRIVATE' &&
-                  collection.isPublic !== false,
-              )
-              .map((collection) => (
-                <div
-                  key={collection.slug}
-                  className="flex items-center justify-between gap-2 text-sm"
-                >
-                  <span className="min-w-0 truncate">{collection.name}</span>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    disabled={busy}
-                    onClick={() => void moveCollectionToStash(collection)}
+                    <span className="min-w-0 truncate">{item.title}</span>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={busy}
+                      onClick={() => void moveTrackToStash(item)}
+                    >
+                      Move track
+                    </Button>
+                  </div>
+                ))}
+              {collections
+                .filter(
+                  (collection) =>
+                    collection.visibility !== 'PRIVATE' &&
+                    collection.isPublic !== false,
+                )
+                .map((collection) => (
+                  <div
+                    key={collection.slug}
+                    className="flex items-center justify-between gap-2 text-sm"
                   >
-                    Move collection
-                  </Button>
-                </div>
-              ))}
-          </div>
-        )}
-      </StudioPanel>
+                    <span className="min-w-0 truncate">{collection.name}</span>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={busy}
+                      onClick={() => void moveCollectionToStash(collection)}
+                    >
+                      Move collection
+                    </Button>
+                  </div>
+                ))}
+            </div>
+          )}
+        </StudioPanel>
+      ) : null}
 
       <StudioPanel>
-        {files.length === 0 ? (
+        {filesError && files.length === 0 ? (
+          <PageError
+            title="Could not load stash files"
+            description={filesError}
+            onRetry={() => void reload()}
+          />
+        ) : files.length === 0 ? (
           <EmptyState size="sm" title="No stash files yet" />
         ) : (
           <ul className="divide-border divide-y">

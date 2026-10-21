@@ -1,3 +1,9 @@
+import type {
+  ChannelNowPlaying,
+  ChannelNowPlayingNext,
+} from './channel-now-playing-types';
+import type { PublicProfileArtist } from './public-profile-artist';
+
 export type ChannelDirectoryItem = {
   slug: string;
   username: string;
@@ -24,33 +30,17 @@ export type ChannelDirectoryResponse = {
   items: ChannelDirectoryItem[];
 };
 
-export type OnAirChannel = {
-  slug: string;
-  state: string;
-  fallbackEnabled: boolean;
-  user: {
-    username: string;
-    displayName: string;
-    avatarUrl: string | null;
-  };
-};
-
-export type OnAirChannelResponse = {
-  live: OnAirChannel[];
-  replaying: OnAirChannel[];
-  recent: OnAirChannel[];
-};
-
-export type ChannelNowPlaying = {
-  title: string;
-  artistName: string;
-  artistUsername: string | null;
-  artworkUrl: string | null;
-};
-
 export type PublicChannel = {
   slug: string;
   state: 'LIVE' | 'OFFLINE' | string;
+  /** ARTIST (default) or RADIO — a radio-station page hides bio/links/
+   * subscribe CTA and shows programming instead. Only ever RADIO on
+   * system-owned rows like tahti-radio today. */
+  channelKind?: 'ARTIST' | 'RADIO';
+  /** LISTENER-002: optional next scheduled broadcast, shown on the
+   * programming block for RADIO channels. */
+  nextBroadcastAt?: string | null;
+  nextBroadcastNote?: string | null;
   hlsUrl: string | null;
   /** True only when there's a real ingest signal on the live mount right
    * now — `state === 'LIVE'` alone doesn't distinguish an actual human
@@ -73,6 +63,9 @@ export type PublicChannel = {
   slideshowIntervalSeconds?: number;
   slideshowTransitionMs?: number;
   slideshowAutoplay?: boolean;
+  /** PLAT-086: the artist lets the channel page start playing on its own.
+   * Missing from an API that predates the setting. */
+  autoplayEnabled?: boolean;
   colorSchemeJson?: string | null;
   colorScheme?: {
     accent?: string;
@@ -88,6 +81,8 @@ export type PublicChannel = {
   /** Channel Designer brand accent id (aurora/ember/…) — drives GRADIENT
    * header wash when present on the public channel DTO. */
   brandAccentPreset?: string | null;
+  /** Short line shown in a strip across the top of the channel hero. */
+  topBarText?: string | null;
   /** Now-playing title/artist overlay layout — see
    * content/nowPlayingOverlayPresets.ts. Defaults to 'classic' when unset. */
   nowPlayingOverlayStyle?: string | null;
@@ -116,8 +111,17 @@ export type PublicChannel = {
     displayName: string;
     bio: string | null;
     avatarUrl: string | null;
+    /** Still first frame when `avatarUrl` is an animated GIF. */
+    avatarPosterUrl?: string | null;
+    /** False hides the header card (avatar, name, stats) on the channel page. */
+    showPageHero?: boolean;
+    /** False when the artist turned the channel's share button off. */
+    showShareButton?: boolean;
+    /** True when the artist is a Tahti ry (association) member. */
+    isMember?: boolean;
   };
   nowPlaying: ChannelNowPlaying | null;
+  nowPlayingNext?: ChannelNowPlayingNext | null;
   /** Public follower count for the channel's Stats block — sourced from the
    * artist profile (GET /api/v1/u/:username/profile), fetched alongside the
    * channel so the backdrop's Stats element has something real to show. */
@@ -136,17 +140,7 @@ export type RadioNowPlaying = {
   };
 };
 
-/** GET /api/v1/radio/recently-played — track history on Tahti Radio. */
-export type RadioRecentlyPlayedItem = {
-  id: string;
-  title: string;
-  artistName: string;
-  artistUsername: string | null;
-  artworkUrl: string | null;
-  playedAt: string;
-  /** Present when the track is independently replayable from the archive. */
-  audioUrl?: string | null;
-};
+export type { RadioRecentlyPlayedItem } from './radio-public';
 
 /** Public archive row from GET /api/channels/:slug/items */
 export type ChannelSoundItem = {
@@ -169,60 +163,6 @@ export type ChannelSoundItem = {
   embedUri?: string | null;
 };
 
-/** GET /api/tracks/:id — full detail for a standalone track page, reached
- * only by track id (favorites, an artist's catalog, a shared link) rather
- * than a page already scoped to the owning channel. */
-export type PublicTrackDetail = {
-  id: string;
-  title: string;
-  artistName: string;
-  channelSlug: string;
-  channel: {
-    username: string;
-    displayName: string;
-    avatarUrl: string | null;
-    bio: string | null;
-  };
-  durationSec: number | null;
-  audioUrl: string | null;
-  /** Set for items Tahti references but never hosts (EMBED_ONLY) — the
-   * provider's widget is the only way to play them. */
-  embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
-  embedUri?: string | null;
-  bannerUrl: string | null;
-  /** Wide backdrop image set in Studio's track editor — shown behind the
-   * player hero when present; falls back to a gradient built from the
-   * cover art otherwise. */
-  backgroundUrl?: string | null;
-  /** Gallery images for the track page backdrop when `galleryMode` is
-   * STATIC_SLIDESHOW — same shape as the channel page's own gallery. */
-  slideshowUrls?: string[];
-  galleryMode?: string | null;
-  genre: string | null;
-  subGenres: string[];
-  contentType: string;
-  mixVersion: string | null;
-  description: string | null;
-  commentary: string | null;
-  tracklist?: unknown;
-  license: string;
-  releasedAt: string;
-  effectiveBpm: number | null;
-  effectiveKey: string | null;
-  /** [0..255] amplitude buckets for the real waveform — null when not yet decoded. */
-  peaks: number[] | null;
-  commentCount: number;
-  downloadCount: number;
-  accessMode?: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
-  purchaseTierId?: string | null;
-  purchaseTierName?: string | null;
-  purchaseTierPriceCents?: number | null;
-  /** True = buyer may enter any amount >= 0 ("pay what you want", incl.
-   * free) instead of paying purchaseTierPriceCents exactly. */
-  purchaseTierPriceOptional?: boolean;
-  downloadsEnabled?: boolean;
-};
-
 export type TrackComment = {
   id: string;
   body: string;
@@ -232,21 +172,7 @@ export type TrackComment = {
   createdAt: string;
 };
 
-export type PublicProfileArtist = {
-  username: string;
-  displayName: string;
-  bio: string | null;
-  /** Optional longer-form history, shown expanded below the short bio. */
-  fullBio: string | null;
-  avatarUrl: string | null;
-  tipJarUrl?: string | null;
-  tier?: string;
-  pronouns?: string | null;
-  followerCount?: number | null;
-  followingCount?: number | null;
-  freeSubscriptionsEnabled?: boolean;
-  socialLinks?: Record<string, string> | null;
-};
+export type { PublicProfileArtist } from './public-profile-artist';
 
 export type PublicProfileTrack = {
   id: string;
@@ -255,6 +181,9 @@ export type PublicProfileTrack = {
   durationSec?: number | null;
   bannerUrl?: string | null;
   playUrl?: string | null;
+  /** Embed-only tracks have no `playUrl`; the provider widget plays them. */
+  embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
+  embedUri?: string | null;
   releaseSlug?: string | null;
   /** Same field as ChannelSoundItem.createdAt -- carried onto the profile track
    * DTO so the catalog table can show a release date. */
@@ -301,12 +230,12 @@ export type PublicProfileCollection = {
   rssUrl: string;
 };
 
-export type PublicProfile = {
+export type PublicProfile = import('./purchase-tiers').ProfileStore & {
   artist: PublicProfileArtist;
   channel: { slug: string; state: string; artistKind?: string } | null;
   releases: PublicProfileRelease[];
   tracks: PublicProfileTrack[];
-  fanTiers: Array<{ id: string; name: string; amountCents: number }>;
+  fanTiers: import('./fan-tiers').PublicFanTier[];
   collections: PublicProfileCollection[];
   links: {
     channel: string | null;
@@ -361,39 +290,6 @@ export type PublicCollection = {
   links: { page: string; rss: string };
 };
 
-export type SmartLinkView = {
-  release: {
-    id: string;
-    title: string;
-    type?: string;
-    artworkUrl?: string | null;
-    visualPreset?: string | null;
-    slideshowImages?: string[];
-    galleryMode?: string | null;
-    releaseDate?: string | null;
-    genre?: string | null;
-    description?: string | null;
-    smartLinkSlug?: string;
-    tracks?: Array<{ title: string; position: number; isrc?: string | null }>;
-  };
-  artist: {
-    username: string;
-    displayName: string;
-    avatarUrl: string | null;
-  };
-  featuredCollections: Array<{
-    slug: string;
-    name: string;
-    coverUrl?: string | null;
-    itemCount?: number;
-    url?: string;
-  }>;
-  profileUrl: string;
-  releaseUrl: string;
-  targets: Record<string, string>;
-  embedUrl: string;
-};
-
 export type VenueDirectoryItem = {
   id: string;
   slug: string;
@@ -411,6 +307,17 @@ export type VenueUpcomingBroadcast = {
   startAt: string;
   endAt: string | null;
   description: string | null;
+  state?: 'SCHEDULED' | 'LIVE' | 'COMPLETED' | 'CANCELED';
+};
+
+export type VenueRecording = {
+  id: string;
+  title: string;
+  artistName: string;
+  channelSlug: string;
+  durationSec: number | null;
+  coverUrl: string | null;
+  releasedAt: string;
 };
 
 export type VenueProfile = VenueDirectoryItem & {
@@ -418,7 +325,15 @@ export type VenueProfile = VenueDirectoryItem & {
   latitude: number | null;
   longitude: number | null;
   broadcasts: VenueUpcomingBroadcast[];
+  /** Absent from APIs that predate venue recordings. */
+  recordings?: VenueRecording[];
 };
+
+/** Provider whose own widget plays an EMBED_ONLY track through the shared
+ * player (lowercase, matching `TahtiPlayable.sourceProvider`); mirrors the
+ * uppercase `EmbedProvider` in lib/embedSrc that the API surfaces carry. */
+export type EmbedPlaybackProvider =
+  'hearthis' | 'mixcloud' | 'spotify' | 'bandcamp';
 
 /** Playable item in the Tahti listen client (live channel, radio, or archive URL). */
 export type TahtiPlayable = {
@@ -430,7 +345,7 @@ export type TahtiPlayable = {
   streamUrl: string;
   protocol: 'hls' | 'https';
   embed?: {
-    provider: 'hearthis';
+    provider: EmbedPlaybackProvider;
     embedUri: string;
   };
   channelSlug?: string;
@@ -462,6 +377,9 @@ export type ChatMessage = {
 };
 
 export type ChatAccess = {
+  /** Missing on APIs older than the chat-off flag; treat as on. */
+  chatEnabled?: boolean;
+  artistUsername?: string;
   fanChatEnabled: boolean;
   isSupporter: boolean;
   canJoinFanChat: boolean;
@@ -554,67 +472,6 @@ export type FollowListUser = {
   avatarUrl: string | null;
 };
 
-export type ChannelEmbedView = {
-  slug: string;
-  state: string;
-  artist: { username: string; displayName: string; avatarUrl: string | null };
-  embedUrl?: string;
-  profileUrl?: string;
-  hlsUrl: string | null;
-};
-
-export type ReleaseEmbedTrack = {
-  id: string;
-  position: number;
-  title: string;
-  durationSec?: number | null;
-  hasStream?: boolean;
-};
-
-export type ReleaseEmbedView = {
-  id: string;
-  title: string;
-  type?: string;
-  artworkUrl?: string | null;
-  smartLinkSlug?: string | null;
-  artist: { username: string; displayName: string };
-  tracks: ReleaseEmbedTrack[];
-  embedUrl?: string;
-  profileUrl?: string;
-};
-
-export type CollectionEmbedTrack = {
-  id: string;
-  title: string;
-  durationSec?: number | null;
-  hasStream?: boolean;
-};
-
-export type CollectionEmbedView = {
-  slug: string;
-  name: string;
-  coverUrl?: string | null;
-  embedUrl?: string;
-  profileUrl?: string;
-  artist: { username: string; displayName: string };
-  tracks: CollectionEmbedTrack[];
-};
-
-export type PlatformStatusCheck = {
-  state: 'ok' | 'degraded' | 'down' | string;
-  critical?: boolean;
-  latencyMs?: number;
-  detail?: string;
-};
-
-export type PlatformStatus = {
-  status: 'ok' | 'degraded' | 'down' | string;
-  version?: string;
-  uptimeSec?: number;
-  checks: Record<string, PlatformStatusCheck>;
-  ts?: string;
-};
-
 export type MembershipStatus = {
   status: string;
   isMember: boolean;
@@ -659,6 +516,10 @@ export type GovernanceMotion = {
   youVoted?: boolean;
   yourChoice?: string | null;
   commentCount?: number;
+  eligibleMemberCount?: number | null;
+  secondCount?: number;
+  youSeconded?: boolean;
+  circulatedAt?: string | null;
   tally?: { YES: number; NO: number; ABSTAIN: number };
 };
 
@@ -669,6 +530,8 @@ export type GovernanceMotionDraft = {
 
 export type GovernanceMotionDetail = GovernanceMotion & {
   description: string;
+  meeting?: { id: string; title: string; scheduledAt: string | null } | null;
+  agendaItem?: { id: string; position: number; title: string } | null;
 };
 
 export type PublicGovernanceMotion = {
@@ -687,12 +550,7 @@ export type GovernanceMeeting = {
   title: string;
   type: 'GENERAL' | 'EXTRAORDINARY_GENERAL' | 'BOARD';
   state:
-    | 'DRAFT'
-    | 'SCHEDULED'
-    | 'HELD'
-    | 'MINUTES_DRAFT'
-    | 'APPROVED'
-    | 'CANCELLED';
+    'DRAFT' | 'SCHEDULED' | 'HELD' | 'MINUTES_DRAFT' | 'APPROVED' | 'CANCELLED';
   scheduledAt: string | null;
   location: string | null;
   remoteUrl: string | null;
@@ -701,6 +559,8 @@ export type GovernanceMeeting = {
   minutesKey: string | null;
   minutesUrl?: string | null;
   minutesApprovedAt: string | null;
+  legalHoldAt?: string | null;
+  legalHoldReason?: string | null;
   eligibleMemberCount: number | null;
   quorumRequired: number | null;
   attendanceCount: number;
@@ -769,6 +629,9 @@ export type GovernanceDocument = {
   meetingId: string | null;
   downloadUrl: string | null;
   externalUrl: string | null;
+  archivedAt?: string | null;
+  legalHoldAt?: string | null;
+  legalHoldReason?: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -785,15 +648,12 @@ export type BoardResolution = {
   publishedAt?: string | null;
   createdAt?: string;
   createdByDisplayName?: string | null;
+  legalHoldAt?: string | null;
+  legalHoldReason?: string | null;
 };
 
 export type FeatureRequestStatus =
-  | 'OPEN'
-  | 'PLANNED'
-  | 'IN_PROGRESS'
-  | 'DONE'
-  | 'DECLINED'
-  | 'DUPLICATE';
+  'OPEN' | 'PLANNED' | 'IN_PROGRESS' | 'DONE' | 'DECLINED' | 'DUPLICATE';
 
 /** Member-suggested feature board — GET/POST /api/v1/governance/feature-requests. */
 export type FeatureRequest = {
@@ -887,30 +747,6 @@ export type DiscoverTrackItem = {
   loves?: number;
 };
 
-export type SearchTrackResult = {
-  id: string;
-  title: string;
-  artistName: string;
-  channelSlug: string;
-  durationSec: number | null;
-  coverUrl: string | null;
-};
-
-export type SearchArtistResult = {
-  username: string;
-  displayName: string;
-  avatarUrl: string | null;
-  channelSlug: string | null;
-};
-
-export type SearchCollectionResult = {
-  slug: string;
-  name: string;
-  coverUrl: string | null;
-  ownerUsername: string;
-  ownerDisplayName: string;
-};
-
 export type DiscoverCollection = {
   slug: string;
   name: string;
@@ -921,49 +757,10 @@ export type DiscoverCollection = {
   ownerDisplayName: string;
 };
 
-export type SearchResponse = {
-  tracks: SearchTrackResult[];
-  artists: SearchArtistResult[];
-  collections: SearchCollectionResult[];
-};
-
-export type JamParticipant = {
-  userId: string;
-  username: string;
-  displayName: string;
-  avatarUrl: string | null;
-  role: 'HOST' | 'GUEST';
-  canControl: boolean;
-  joinedAt: string;
-};
-
-export type JamTrack = {
-  id: string;
-  title: string;
-  artistName: string;
-  coverUrl: string | null;
-  /** Null for embed-only tracks (Mixcloud/Hearthis/Spotify) — guests see
-   * "now playing" for those but can't auto-play them, same as elsewhere. */
-  streamUrl: string | null;
-  protocol: 'hls' | 'https' | null;
-  channelSlug: string | null;
-  durationSec: number | null;
-};
-
-export type JamSession = {
-  id: string;
-  code: string;
-  hostUserId: string;
-  collectionId: string | null;
-  isPlaying: boolean;
-  currentTrack: JamTrack | null;
-  positionSec: number;
-  positionUpdatedAt: string;
-  createdAt: string;
-  endedAt: string | null;
-  participants: JamParticipant[];
-};
-
-export type JamEvent =
-  | { type: 'state'; session: JamSession }
-  | { type: 'ended' };
+export * from './channel-now-playing-types';
+export * from './embed-types';
+export * from './status-types';
+export * from './smart-link-types';
+export * from './jam-types';
+export * from './track-detail-types';
+export * from './search-types';

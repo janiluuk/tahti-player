@@ -1,45 +1,7 @@
 import type { FetchMeta } from './client';
-import { apiBase } from './http';
-import { isForceMock } from './mode';
-
-async function requestJson<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<{ data: T; status: number }> {
-  const { headers: initHeaders, ...rest } = init ?? {};
-  const res = await fetch(`${apiBase()}${path}`, {
-    credentials: 'include',
-    ...rest,
-    headers: {
-      Accept: 'application/json',
-      ...(rest.body ? { 'Content-Type': 'application/json' } : {}),
-      ...initHeaders,
-    },
-  });
-  if (!res.ok) {
-    let detail = `${path} → ${res.status}`;
-    try {
-      const body = (await res.json()) as { error?: string; message?: string };
-      if (body.error || body.message) {
-        detail = body.error ?? body.message ?? detail;
-      }
-    } catch {
-      // ignore
-    }
-    throw new Error(detail);
-  }
-  if (res.status === 204) {
-    return { data: undefined as T, status: res.status };
-  }
-  return { data: (await res.json()) as T, status: res.status };
-}
-
-function failMeta(err: unknown): FetchMeta {
-  return {
-    source: 'mock',
-    reason: err instanceof Error ? err.message : 'fetch failed',
-  };
-}
+import { mockFixture } from './mock-overrides';
+import { failMeta, isForceMock } from './mode';
+import { requestJson } from './request-json';
 
 export type ArtistEvent = {
   id: string;
@@ -130,7 +92,7 @@ export async function fetchMyEvents(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: [...mockEvents],
+      data: mockFixture('myEvents', [...mockEvents]),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -182,6 +144,40 @@ export async function createEvent(
   }
 }
 
+/** `PATCH /api/me/events/:id`. An empty `eventUrl` or `description` clears it.
+ * Unlike `createEvent`, followers are not notified again. */
+export async function updateEvent(
+  id: string,
+  input: Partial<CreateArtistEventInput>,
+): Promise<{ ok: true; data: ArtistEvent } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    const row = mockEvents.find((e) => e.id === id);
+    if (!row) {
+      return { ok: false, error: 'Event not found' };
+    }
+    Object.assign(row, {
+      ...input,
+      ...(input.eventUrl !== undefined
+        ? { eventUrl: input.eventUrl || null }
+        : {}),
+    });
+    mockEvents.sort((a, b) => a.startAt.localeCompare(b.startAt));
+    return { ok: true, data: { ...row } };
+  }
+  try {
+    const { data } = await requestJson<ArtistEvent>(
+      `/api/me/events/${encodeURIComponent(id)}`,
+      { method: 'PATCH', body: JSON.stringify(input) },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not save event',
+    };
+  }
+}
+
 export async function deleteEvent(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
@@ -202,5 +198,31 @@ export async function deleteEvent(
       ok: false,
       error: err instanceof Error ? err.message : 'Could not delete event',
     };
+  }
+}
+
+/** Upcoming events on an artist's channel (`GET /api/channels/:slug/events`). */
+export async function fetchChannelEvents(slug: string): Promise<{
+  data: ArtistEvent[];
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    const now = new Date().toISOString();
+    return {
+      data: mockFixture(
+        'channelEvents',
+        mockEvents.filter((e) => e.startAt >= now),
+        slug,
+      ),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<ArtistEvent[]>(
+      `/api/channels/${encodeURIComponent(slug)}/events`,
+    );
+    return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
   }
 }

@@ -1,10 +1,14 @@
 import { useNavigate } from '@tanstack/react-router';
 import {
   MapPinIcon,
+  MoonIcon,
   MusicIcon,
   PaletteIcon,
   Settings2Icon,
+  SunIcon,
+  SunMoonIcon,
   UserIcon,
+  UsersIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -13,19 +17,21 @@ import {
   Button,
   Input,
   Select,
+  SelectableTiles,
   Tabs,
   Textarea,
   Toggle,
   ViewShell,
+  type SelectableTile,
 } from '@tahti-player/ui';
 
 import {
-  fetchDiscoveryPrefs,
-  patchDiscoveryPrefs,
+  AVATAR_UPLOAD_ACCEPT,
   uploadProfileAvatar,
 } from '../api/artist-settings';
 import { checkSlugAvailable, updateChannelSlug } from '../api/channel-design';
 import { provisionChannel } from '../api/channel-provision';
+import { isForceMock } from '../api/mode';
 import { fetchMeProfile, patchMeProfile } from '../api/studio-extras';
 import { GenrePicker } from '../components/GenrePicker';
 import { PageLoading } from '../components/PageStates';
@@ -37,69 +43,44 @@ import {
   normalizeGenresForPicker,
   parseGenreTags,
 } from '../lib/genres';
+import { markOnboardingSeen } from '../lib/onboardingPrompt';
 import { takePendingArtistKind } from '../lib/pendingArtistKind';
 import { useThemeStore, type ColorMode } from '../plugins/themes';
 import { useAuthStore } from '../stores/authStore';
 
-const APPEARANCE_OPTIONS: Array<{
-  id: ColorMode;
-  label: string;
-  hint: string;
-}> = [
-  { id: 'light', label: 'Light', hint: 'Bright background, always on.' },
-  { id: 'dark', label: 'Dark', hint: 'Dim background, always on.' },
+const APPEARANCE_OPTIONS: SelectableTile[] = [
+  {
+    id: 'light',
+    label: 'Light',
+    description: 'Bright background, always on.',
+    icon: <SunIcon size={18} aria-hidden />,
+  },
+  {
+    id: 'dark',
+    label: 'Dark',
+    description: 'Dim background, always on.',
+    icon: <MoonIcon size={18} aria-hidden />,
+  },
   {
     id: 'dynamic',
     label: 'Dynamic',
-    hint: 'Light by day, dark by night — switches with the clock.',
+    description: 'Light by day, dark by night — switches with the clock.',
+    icon: <SunMoonIcon size={18} aria-hidden />,
   },
 ];
 
-const ONBOARDED_KEY_PREFIX = 'tahti-web-onboarded:';
-/** Session-only: toast was already offered (or deferred) this browser
- * session — survives reload, resets when the tab/session ends. */
-const ONBOARDING_DEFERRED_PREFIX = 'tahti-web-onboarding-deferred:';
-
-export function markOnboardingSeen(userId: string) {
-  try {
-    localStorage.setItem(`${ONBOARDED_KEY_PREFIX}${userId}`, '1');
-  } catch {
-    // Private-browsing/storage-disabled — worst case onboarding shows again.
-  }
-  try {
-    sessionStorage.setItem(`${ONBOARDING_DEFERRED_PREFIX}${userId}`, '1');
-  } catch {
-    // ignore
-  }
-}
-
-/** Soft-suppress for the rest of this browser session (toast timed out or
- * was shown once). Does not permanently skip onboarding. */
-export function deferOnboardingPrompt(userId: string) {
-  try {
-    sessionStorage.setItem(`${ONBOARDING_DEFERRED_PREFIX}${userId}`, '1');
-  } catch {
-    // ignore
-  }
-}
-
-export function hasSeenOnboarding(userId: string): boolean {
-  try {
-    return localStorage.getItem(`${ONBOARDED_KEY_PREFIX}${userId}`) === '1';
-  } catch {
-    return true;
-  }
-}
-
-export function hasDeferredOnboardingPrompt(userId: string): boolean {
-  try {
-    return (
-      sessionStorage.getItem(`${ONBOARDING_DEFERRED_PREFIX}${userId}`) === '1'
-    );
-  } catch {
-    return false;
-  }
-}
+const ARTIST_KIND_OPTIONS: SelectableTile[] = [
+  {
+    id: 'SINGLE',
+    label: 'Solo artist',
+    icon: <UserIcon size={18} aria-hidden />,
+  },
+  {
+    id: 'COLLECTIVE',
+    label: 'Band / collective',
+    icon: <UsersIcon size={18} aria-hidden />,
+  },
+];
 
 type SlugStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid';
 
@@ -126,37 +107,40 @@ export function OnboardingView() {
   const [slugStatus, setSlugStatus] = useState<SlugStatus>('idle');
 
   const [genres, setGenres] = useState<string[]>([]);
+  const [socialLinks, setSocialLinks] = useState<Record<string, string> | null>(
+    null,
+  );
 
   const [showFollowers, setShowFollowers] = useState(true);
   const [showFollowing, setShowFollowing] = useState(true);
-  const [showFavorites, setShowFavorites] = useState(true);
-  const [announceReleases, setAnnounceReleases] = useState(true);
 
   useEffect(() => {
     if (!user) {
       return;
     }
-    void Promise.all([fetchMeProfile(), fetchDiscoveryPrefs()]).then(
-      ([profile, discovery]) => {
-        setDisplayName(profile.data.displayName || user.displayName || '');
-        setBio(profile.data.bio ?? '');
-        setAvatarUrl(profile.data.avatarUrl ?? user.avatarUrl ?? null);
-        setArtistKind(
-          takePendingArtistKind() ?? profile.data.artistKind ?? 'SINGLE',
-        );
-        setCountryCode(profile.data.countryCode ?? '');
-        setDefaultLocation(profile.data.defaultLocation ?? '');
-        setShowFollowers(profile.data.showFollowers ?? true);
-        setShowFollowing(profile.data.showFollowing ?? true);
-        setSlug(user.channel?.slug ?? user.username);
-        setGenres(
-          normalizeGenresForPicker(parseGenreTags(discovery.data.genreTags)),
-        );
-        setShowFavorites(discovery.data.showFavorites ?? true);
-        setAnnounceReleases(discovery.data.announceReleases ?? true);
-        setLoading(false);
-      },
-    );
+    void fetchMeProfile().then((profile) => {
+      setDisplayName(profile.data.displayName || user.displayName || '');
+      setBio(profile.data.bio ?? '');
+      setAvatarUrl(profile.data.avatarUrl ?? user.avatarUrl ?? null);
+      setArtistKind(
+        takePendingArtistKind() ?? profile.data.artistKind ?? 'SINGLE',
+      );
+      setCountryCode(profile.data.countryCode ?? '');
+      setDefaultLocation(profile.data.defaultLocation ?? '');
+      setShowFollowers(profile.data.showFollowers ?? true);
+      setShowFollowing(profile.data.showFollowing ?? true);
+      setSlug(user.channel?.slug ?? user.username);
+      // socialLinks is replaced wholesale on save, so a profile that failed
+      // to load must not be written back over the stored links.
+      const loaded = !profile.meta.reason || isForceMock();
+      setSocialLinks(loaded ? (profile.data.socialLinks ?? {}) : null);
+      setGenres(
+        normalizeGenresForPicker(
+          parseGenreTags(profile.data.socialLinks?.genres),
+        ),
+      );
+      setLoading(false);
+    });
   }, [user]);
 
   const slugChanged = slug.trim() !== (user?.channel?.slug ?? user?.username);
@@ -194,7 +178,15 @@ export function OnboardingView() {
     }
     setSaving(true);
     try {
-      if (!user.channel) {
+      if (!useAuthStore.getState().profileLoaded) {
+        await useAuthStore.getState().refresh();
+      }
+      const known = useAuthStore.getState();
+      if (!known.profileLoaded) {
+        toast.error('Could not load your account. Try again in a moment.');
+        return;
+      }
+      if (!known.user?.channel) {
         const provisioned = await provisionChannel();
         if (!provisioned.ok) {
           toast.error(provisioned.error || 'Could not create your channel.');
@@ -215,19 +207,12 @@ export function OnboardingView() {
         defaultLocation: defaultLocation.trim() || null,
         showFollowers,
         showFollowing,
+        ...(socialLinks
+          ? { socialLinks: { ...socialLinks, genres: formatGenreTags(genres) } }
+          : {}),
       });
       if (!profileResult.ok) {
         toast.error(profileResult.error || 'Could not save your profile.');
-      }
-      const discoveryResult = await patchDiscoveryPrefs({
-        genreTags: formatGenreTags(genres),
-        showFavorites,
-        announceReleases,
-      });
-      if (!discoveryResult.ok) {
-        toast.error(
-          discoveryResult.error || 'Could not save your preferences.',
-        );
       }
       await refresh();
       markOnboardingSeen(user.id);
@@ -277,6 +262,7 @@ export function OnboardingView() {
                         label="Profile photo"
                         value={avatarUrl}
                         sizeClassName="h-16 w-16"
+                        accept={AVATAR_UPLOAD_ACCEPT}
                         upload={(file) =>
                           uploadProfileAvatar(file).then((r) =>
                             r.ok
@@ -300,28 +286,14 @@ export function OnboardingView() {
                       <span className="text-foreground-secondary text-xs uppercase">
                         I am a…
                       </span>
-                      <div className="flex gap-2">
-                        {(
-                          [
-                            ['SINGLE', 'Solo artist'],
-                            ['COLLECTIVE', 'Band / collective'],
-                          ] as const
-                        ).map(([kind, label]) => (
-                          <button
-                            key={kind}
-                            type="button"
-                            aria-pressed={artistKind === kind}
-                            onClick={() => setArtistKind(kind)}
-                            className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
-                              artistKind === kind
-                                ? 'border-primary bg-primary/10 text-primary'
-                                : 'border-border text-foreground-secondary hover:text-foreground'
-                            }`}
-                          >
-                            {label}
-                          </button>
-                        ))}
-                      </div>
+                      <SelectableTiles
+                        items={ARTIST_KIND_OPTIONS}
+                        selected={artistKind}
+                        onChange={(id) =>
+                          setArtistKind(id as 'SINGLE' | 'COLLECTIVE')
+                        }
+                        className="grid-cols-2"
+                      />
                       {artistKind === 'COLLECTIVE' && (
                         <p className="text-foreground-secondary text-xs">
                           You can invite full band members later from Studio →
@@ -394,10 +366,10 @@ export function OnboardingView() {
                         <p
                           className={`text-xs ${
                             slugStatus === 'available'
-                              ? 'text-accent-green'
+                              ? 'text-accent-green-strong'
                               : slugStatus === 'taken' ||
                                   slugStatus === 'invalid'
-                                ? 'text-accent-red'
+                                ? 'text-accent-red-strong'
                                 : 'text-foreground-secondary'
                           }`}
                         >
@@ -447,26 +419,12 @@ export function OnboardingView() {
                       Light or dark? We started you off matching your device —
                       change it any time in Settings.
                     </p>
-                    <div className="grid gap-2 sm:grid-cols-3">
-                      {APPEARANCE_OPTIONS.map((option) => (
-                        <button
-                          key={option.id}
-                          type="button"
-                          aria-pressed={colorMode === option.id}
-                          onClick={() => setColorMode(option.id)}
-                          className={`flex flex-col gap-1 rounded-lg border px-3 py-2.5 text-left text-sm font-medium transition-colors ${
-                            colorMode === option.id
-                              ? 'border-primary bg-primary/10 text-primary'
-                              : 'border-border text-foreground-secondary hover:text-foreground'
-                          }`}
-                        >
-                          {option.label}
-                          <span className="text-foreground-secondary text-xs font-normal">
-                            {option.hint}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
+                    <SelectableTiles
+                      items={APPEARANCE_OPTIONS}
+                      selected={colorMode}
+                      onChange={(id) => setColorMode(id as ColorMode)}
+                      className="sm:grid-cols-3"
+                    />
                   </div>
                 ),
               },
@@ -489,18 +447,6 @@ export function OnboardingView() {
                           'Who you follow is visible on your public profile.',
                           showFollowing,
                           setShowFollowing,
-                        ],
-                        [
-                          'Show favourites',
-                          'Your favourited tracks and channels are visible on your public profile.',
-                          showFavorites,
-                          setShowFavorites,
-                        ],
-                        [
-                          'Announce releases',
-                          'Followers get a notification (and optional email) when you publish a release.',
-                          announceReleases,
-                          setAnnounceReleases,
                         ],
                       ] as const
                     ).map(([label, hint, checked, setter]) => (

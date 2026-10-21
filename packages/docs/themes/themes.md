@@ -1,14 +1,16 @@
 ---
-description: Overview of theme types in Tahti Player.
+description: Change how Tahti Player looks.
 ---
 
 # Themes
 
-## Basic themes
-[Basic themes](themes-basic.md) are presets that come with Tahti Player. You'll find them in Preferences > Themes as clickable buttons. They adjust the app's core colors, backgrounds, and text contrast. You can't create your own basic themes.
+Open **Settings → Themes**.
 
-## Advanced themes
-Advanced themes give you complete creative control through JSON files. You can customize colors, accents, fonts, corner radii, border width, and shadows. They work in both light and dark modes, and you can see your changes live as you edit. Drop your JSON files in the themes folder and pick them from the Advanced themes dropdown. See [Advanced themes](themes-advanced.md) for details.
+<figure><img src="../.gitbook/assets/my-themes.png" alt="Settings Themes with light/dark switch and theme browser"><figcaption><p>Settings → Themes</p></figcaption></figure>
 
-## Theme store
-The theme store lets you browse and install community-created themes from within Tahti Player. You can install them with a single click, and contribute yours. See [Theme store](theme-store.md) for details.
+- The **light / dark** switch at the top changes the mode. **Dynamic** switches by itself: dark from 7 pm to 7 am, light the rest of the day.
+- **Browse** lists the themes you can apply: the [built-in themes](themes-basic.md) and the community themes that ship with the app. Click one to apply it.
+- **Editor** builds a theme from colours, fonts, corners, borders and shadows, with a live preview.
+- **Import JSON** adds a theme from a JSON file; see [Advanced themes](themes-advanced.md) for the format.
+
+Themes you import or make appear under **Your imported themes**, where you can rename, configure or delete them, or [submit one to the community catalogue](theme-store.md).

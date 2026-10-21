@@ -37,10 +37,107 @@ fn typescript_export_config() -> specta_typescript::Typescript {
 
 fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
     tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_specta::collect_commands![
-        local_library::library_list,
-        local_library::library_import,
-        local_library::library_resolve,
-        local_library::library_remove,
+        local_library::query::library_list,
+        local_library::playlists::playlist_list,
+        local_library::playlists::playlist_create,
+        local_library::playlists::playlist_rename,
+        local_library::playlists::playlist_duplicate,
+        local_library::playlists::playlist_delete,
+        local_library::playlists::playlist_add_tracks,
+        local_library::playlists::playlist_entries,
+        local_library::playlists::playlist_entry_ids,
+        local_library::playlists::playlist_move_entries,
+        local_library::playlists::playlist_remove_entries,
+        local_library::playlists::playlist_restore_entries,
+        local_library::playlists::playlist_set_order,
+        local_library::playlists::playlist_track_ids,
+        local_library::m3u::playlist_export,
+        local_library::m3u::playlist_import_preview,
+        local_library::m3u::playlist_pick_relink_folder,
+        local_library::m3u::playlist_import_commit,
+        local_library::m3u::playlist_relink_entry,
+        local_library::query::library_facets,
+        local_library::query::library_matching_ids,
+        local_library::query::library_order_ids,
+        local_library::query::library_filter_options,
+        local_library::query::library_prepare_playback,
+        local_library::query::library_totals,
+        local_library::import::library_import,
+        local_library::import::library_import_folder,
+        local_library::import::library_import_paths,
+        local_library::import::library_import_cancel,
+        local_library::import_jobs::library_import_pending,
+        local_library::import_jobs::library_import_resume,
+        local_library::import_jobs::library_import_discard,
+        local_library::provider_import::library_provider_import,
+        local_library::provider_import::library_provider_import_cancel,
+        local_library::provider_import::library_provider_import_destination,
+        local_library::provider_space::library_provider_import_space,
+        local_library::tracks::library_resolve,
+        local_library::tracks::library_remove,
+        local_library::tracks::library_remove_many,
+        local_library::tracks::library_reveal,
+        local_library::artwork::library_artwork_dir,
+        local_library::artwork_backfill::library_artwork_backfill,
+        local_library::artwork_backfill::library_artwork_backfill_cancel,
+        local_library::tracks::library_list_unavailable,
+        local_library::tracks::library_rescan,
+        local_library::tracks::library_relink,
+        local_library::roots::library_list_roots,
+        local_library::roots::library_add_root,
+        local_library::roots::library_remove_root,
+        local_library::roots::library_rescan_roots,
+        local_library::roots::library_relink_root,
+        local_library::library_take_recovery_notice,
+        local_library::changes::library_change_version,
+        local_library::watcher::library_watching,
+        local_library::watcher::library_set_watching,
+        local_library::smart_playlists::smart_list,
+        local_library::smart_playlists::smart_save,
+        local_library::smart_playlists::smart_delete,
+        local_library::smart_playlists::smart_evaluate,
+        local_library::smart_playlists::smart_track_ids,
+        local_library::smart_playlists::smart_snapshot,
+        local_library::analysis::library_analyze_tracks,
+        local_library::analysis::library_analysis_cancel,
+        local_library::analysis::library_analysis_pause,
+        local_library::analysis::library_analysis_summary,
+        local_library::analysis::library_analysis_detail,
+        local_library::analysis::library_set_corrections,
+        local_library::analysis::library_restore_corrections,
+        local_library::analysis::library_clear_analysis,
+        local_library::catalog::edits::library_edit_preview,
+        local_library::catalog::edits::library_edit_tracks,
+        local_library::catalog::edits::library_restore_edits,
+        local_library::catalog::edits::library_field_summary,
+        local_library::catalog::edits::library_provenance,
+        local_library::catalog::user_data::library_user_data,
+        local_library::catalog::user_data::library_set_rating,
+        local_library::catalog::user_data::library_set_color,
+        local_library::catalog::user_data::library_add_tag,
+        local_library::catalog::user_data::library_remove_tag,
+        local_library::catalog::user_data::library_restore_user_data,
+        local_library::catalog::user_data::library_list_tags,
+        local_library::catalog::plays::library_record_play,
+        local_library::catalog::plays::library_record_skip,
+        local_library::catalog::duplicates::library_hash_tracks,
+        local_library::catalog::duplicates::library_hash_cancel,
+        local_library::catalog::duplicates::library_duplicates,
+        local_library::catalog::duplicates::library_merge_tracks,
+        local_library::catalog::plays::library_play_history,
+        local_library::catalog::plays::library_clear_play_history,
+        local_library::tag_writer::library_write_tags_preview,
+        local_library::tag_writer::library_write_tags,
+        local_library::organize::library_organize_pick_destination,
+        local_library::organize::library_organize_preview,
+        local_library::organize::library_organize_apply,
+        local_library::backup::library_backup_export,
+        local_library::backup::library_backup_pick,
+        local_library::backup::library_backup_preview,
+        local_library::backup::library_backup_restore,
+        local_library::itunes_import::library_itunes_pick,
+        local_library::itunes_import::library_itunes_preview,
+        local_library::itunes_import::library_itunes_commit,
         commands::is_flatpak,
         commands::copy_dir_recursive,
         commands::extract_zip,
@@ -76,14 +173,8 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
     ])
 }
 
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() {
-    let is_flatpak = std::env::var("FLATPAK_ID").is_ok();
-
-    let specta_builder = specta_builder();
-
-    #[cfg(debug_assertions)]
-    specta_builder
+pub fn export_bindings() -> Result<(), String> {
+    specta_builder()
         .export(
             typescript_export_config(),
             concat!(
@@ -91,7 +182,17 @@ pub fn run() {
                 "/../src/services/tauri/bindings.ts"
             ),
         )
-        .expect("failed to export typescript bindings");
+        .map_err(|err| err.to_string())
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    let is_flatpak = std::env::var("FLATPAK_ID").is_ok();
+
+    let specta_builder = specta_builder();
+
+    #[cfg(debug_assertions)]
+    export_bindings().expect("failed to export typescript bindings");
 
     let mut builder = tauri::Builder::default()
         .manage(local_library::LibraryState::default())
@@ -121,6 +222,10 @@ pub fn run() {
             stream_server::init_stream_server(app.handle().clone());
             discord::init_discord(app.handle().clone());
             history::init_history(app.handle().clone());
+            let library_app = app.handle().clone();
+            tauri::async_runtime::spawn(async move {
+                local_library::watcher::restart(&library_app).await;
+            });
 
             #[cfg(target_os = "linux")]
             maximize_for_gamescope(app);

@@ -187,7 +187,30 @@ describe('App plugin hydration', () => {
     spy.mockRestore();
   });
 
-  it.todo(
-    '(Hydration) toggling enable/disable persists to registry and is respected on next startup',
-  );
+  it('(Hydration) toggling enable/disable persists to registry and is respected on next startup', async () => {
+    createPluginFolder(
+      '/home/user/.local/share/com.nuclearplayer/plugins/toggle/1.0.0',
+      { id: 'toggle', version: '1.0.0' },
+    );
+    await seedRegistryEntry({ id: 'toggle', version: '1.0.0', enabled: false });
+
+    await hydratePluginsFromRegistry();
+    const firstMount = await PluginsWrapper.mount();
+    expect(PluginsWrapper.getPlugins()[0].enabled).toBe(false);
+
+    await usePluginStore.getState().enablePlugin('toggle');
+
+    // Simulate an app restart: unmount the rendered tree and drop the
+    // in-memory runtime state, but keep the persisted registry (unlike
+    // beforeEach's resetInMemoryTauriStore, which would also wipe it).
+    firstMount.unmount();
+    usePluginStore.setState({ plugins: {} });
+
+    await hydratePluginsFromRegistry();
+    await PluginsWrapper.mount();
+
+    const plugins = PluginsWrapper.getPlugins();
+    expect(plugins).toHaveLength(1);
+    expect(plugins[0].enabled).toBe(true);
+  });
 });

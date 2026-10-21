@@ -1,10 +1,23 @@
 import { mkdirSync, readdirSync, writeFileSync } from 'fs';
-import { basename, dirname, join } from 'path';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { chromium } from '@playwright/test';
 
+import {
+  CAPTURE_THEME_STATE,
+  prepareCapturePage,
+  withThemeSuffix,
+} from './lib/captureSetup.mjs';
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const outRoot = join(__dirname, '../public/map/nuclear');
+// MAP_ACCOUNT=listener signs in as the mock `listener@tahti.live` account
+// (no channel, no Studio or Admin role) and captures only what a listener
+// can reach. Its shots go to their own folder, outside the /more atlas, so
+// they never replace or mix with the artist shots.
+const LISTENER_PASS = process.env.MAP_ACCOUNT === 'listener';
+const outRoot = LISTENER_PASS
+  ? join(__dirname, '../docs/listener-shots')
+  : join(__dirname, '../public/map/nuclear');
 mkdirSync(outRoot, { recursive: true });
 
 const BASE = process.env.MAP_BASE_URL || 'https://beta.tahti.live';
@@ -12,10 +25,16 @@ const CHANNEL = process.env.MAP_CHANNEL || 'liis-kask-ee';
 // username often equals slug prefix before -ee/-fi
 const USER =
   process.env.MAP_USER || CHANNEL.replace(/-(ee|fi|vn|lv|se|no|dk)$/, '');
+// Defaults are the mock fixtures (VITE_FORCE_MOCK=1): the `demo` channel has
+// radio show bookings, `kuudes-linja` is the mock venue and `evt-mock-1` the
+// first mock event.
+const RADIO_SHOW = process.env.MAP_RADIO_SHOW || 'demo';
+const VENUE = process.env.MAP_VENUE || 'kuudes-linja';
+const EVENT_ID = process.env.MAP_EVENT_ID || 'evt-mock-1';
+const TAG = process.env.MAP_TAG || 'ambient';
 
 /** @type {{ id: string; path: string; wait?: number; auth?: boolean }[]} */
-const shots = [
-  // ── Anonymous / public ──────────────────────────────────────────────────
+const PUBLIC_SHOTS = [
   { id: 'listen', path: '/', auth: false },
   { id: 'radio', path: '/radio', auth: false },
   { id: 'discover', path: '/discover', auth: false },
@@ -68,11 +87,14 @@ const shots = [
   { id: 'status', path: '/status', auth: false },
   { id: 'transparency', path: '/transparency', auth: false },
   { id: 'transparency-methodology', path: '/transparency/methodology' },
-  { id: 't-shortlink', path: `/t/${CHANNEL}-archive-1`, auth: false },
-  { id: 'v-shortlink', path: '/v/demo-release', auth: false },
+  { id: 'track-page', path: `/t/${CHANNEL}-archive-1`, auth: false },
+  { id: 'tag-search', path: `/search?tag=${TAG}`, auth: false },
+  { id: 'venue-detail', path: `/v/${VENUE}`, auth: false },
+  { id: 'studio-signed-out', path: '/studio', auth: false },
   { id: 'c-shortlink', path: `/c/${CHANNEL}`, auth: false },
+];
 
-  // ── Listener / member ────────────────────────────────────────────────────
+const MEMBER_SHOTS = [
   { id: 'library', path: '/library' },
   { id: 'library-sounds', path: '/library/sounds' },
   { id: 'library-collections', path: '/library/collections' },
@@ -91,8 +113,11 @@ const shots = [
   { id: 'listener-dashboard', path: '/dashboard' },
   { id: 'account', path: '/account' },
   { id: 'messages', path: '/messages' },
-  { id: 'messages-thread', path: '/messages/demo-thread' },
+  { id: 'messages-thread', path: '/messages/conv-mock-1' },
   { id: 'schedule-page', path: '/schedule' },
+  // The Tahti map itself (this script's own output) -- referenced by
+  // mapScreens.ts as its own node, previously never in this shot list.
+  { id: 'more', path: '/more' },
   { id: 'settings', path: '/settings' },
   { id: 'settings-section', path: '/settings/artist' },
   { id: 'settings-themes', path: '/settings/themes' },
@@ -102,13 +127,18 @@ const shots = [
   { id: 'money-fan-subs', path: '/settings/audience' },
   { id: 'settings-account', path: '/settings/account' },
   {
+    id: 'settings-artist-connections',
+    path: '/settings/artist?tab=connections',
+  },
+  {
     id: 'settings-notifications',
     path: '/settings/account?tab=notifications',
   },
   { id: 'sources', path: '/settings/plugin-store?category=import' },
-  { id: 'radio-show', path: `/radio/show/${CHANNEL}` },
+  { id: 'radio-show', path: `/radio/show/${RADIO_SHOW}` },
+];
 
-  // ── Artist / Studio ──────────────────────────────────────────────────────
+const STUDIO_SHOTS = [
   { id: 'studio', path: '/studio' },
   { id: 'go-live', path: '/studio/go-live' },
   { id: 'archive', path: '/studio/sounds' },
@@ -121,12 +151,12 @@ const shots = [
   { id: 'editor', path: '/studio/editor' },
   { id: 'editor-track', path: '/studio/editor/arch-mock-1' },
   { id: 'mastering', path: '/studio/mastering/arch-mock-1' },
-  { id: 'upload', path: '/studio/upload' },
+  { id: 'upload', path: '/library/upload' },
   { id: 'stash', path: '/studio/stash' },
   { id: 'schedule', path: '/studio/schedule' },
   { id: 'shows', path: '/studio/shows' },
-  { id: 'show-detail', path: '/studio/shows/show-mock-1' },
-  { id: 'show-episode', path: '/studio/shows/episodes/ep-mock-1' },
+  { id: 'show-detail', path: '/studio/shows/show-series-demo' },
+  { id: 'show-episode', path: '/studio/shows/episodes/ep-demo-1' },
   { id: 'stats', path: '/studio/stats' },
   { id: 'stats-detail-alias', path: '/studio/stats/detail' },
   { id: 'stats-detail', path: '/studio/insights/archive/arch-mock-1' },
@@ -140,6 +170,7 @@ const shots = [
   { id: 'studio-governance', path: '/studio/governance' },
   { id: 'studio-events', path: '/studio/events' },
   { id: 'studio-event-new', path: '/studio/events/new' },
+  { id: 'studio-event-edit', path: `/studio/events/${EVENT_ID}/edit` },
   { id: 'studio-branding', path: '/studio/branding' },
   { id: 'studio-recordings', path: '/studio/recordings' },
   { id: 'studio-moderation', path: '/studio/moderation' },
@@ -148,8 +179,9 @@ const shots = [
   { id: 'revenue', path: '/studio/revenue' },
   { id: 'stripe', path: '/studio/stripe' },
   { id: 'distribution', path: '/studio/distribution' },
+];
 
-  // ── Admin ────────────────────────────────────────────────────────────────
+const ADMIN_SHOTS = [
   { id: 'admin', path: '/admin' },
   { id: 'admin-financial', path: '/admin/financial' },
   { id: 'admin-storage', path: '/admin/storage' },
@@ -161,7 +193,7 @@ const shots = [
   { id: 'admin-streams', path: '/admin/streams' },
   { id: 'admin-vendors', path: '/admin/vendors' },
   { id: 'admin-venues', path: '/admin/venues' },
-  { id: 'admin-disco-widgets', path: '/admin/disco-widgets' },
+  { id: 'admin-disco-widgets', path: '/admin/addons' },
   { id: 'admin-status', path: '/admin/status' },
   { id: 'admin-users', path: '/admin/users' },
   { id: 'admin-radio', path: '/admin/radio' },
@@ -173,7 +205,7 @@ const shots = [
   { id: 'admin-artwork-presets', path: '/admin/artwork-presets' },
   { id: 'admin-grants', path: '/admin/grants' },
   { id: 'admin-grants-year', path: '/admin/grants/2026' },
-  { id: 'admin-agm', path: '/admin/agm' },
+  { id: 'admin-agm', path: '/admin/governance/agm' },
   { id: 'admin-i18n', path: '/admin/i18n' },
   { id: 'admin-map', path: '/admin/map' },
   { id: 'admin-tahti-selects', path: '/admin/tahti-selects' },
@@ -182,6 +214,38 @@ const shots = [
     path: '/admin/radio-station-suggestions',
   },
 ];
+
+const LISTENER_USERNAME = 'listener';
+
+/** What a listener meets on their own profile and on artist or board pages. */
+const LISTENER_GATE_SHOTS = [
+  { id: 'own-profile', path: `/u/${LISTENER_USERNAME}` },
+  { id: 'studio', path: '/studio' },
+  { id: 'go-live', path: '/studio/go-live' },
+  { id: 'releases', path: '/studio/releases' },
+  { id: 'upload', path: '/library/upload' },
+  { id: 'admin', path: '/admin' },
+];
+
+const shots = LISTENER_PASS
+  ? [...PUBLIC_SHOTS, ...MEMBER_SHOTS, ...LISTENER_GATE_SHOTS]
+  : [...PUBLIC_SHOTS, ...MEMBER_SHOTS, ...STUDIO_SHOTS, ...ADMIN_SHOTS];
+
+/** Auth-flow pages only make sense signed out; everything else is captured
+ * as the board (admin) user. */
+const SIGNED_OUT_SHOT_IDS = new Set([
+  'studio-signed-out',
+  'login',
+  'login-totp',
+  'join',
+  'apply',
+  'signup',
+  'signup-payment',
+  'forgot-password',
+  'reset-password',
+  'setup-password',
+  'verify',
+]);
 
 const requestedShotIds = new Set(
   (process.env.MAP_SHOT_IDS || '')
@@ -203,33 +267,66 @@ const shotsToCapture = requestedShotIds.size
   ? selectedShots
   : shots.slice(startIndex);
 
+// MAP_VIEWPORT=mobile switches every capture in this run to a phone
+// viewport and suffixes output filenames with `--mobile` so desktop shots
+// are never overwritten -- run the script twice (default, then
+// MAP_VIEWPORT=mobile) to get both.
+const MOBILE = process.env.MAP_VIEWPORT === 'mobile';
+const VIEWPORT = MOBILE
+  ? { width: 390, height: 844 }
+  : { width: 1280, height: 800 };
+const DEVICE_SCALE_FACTOR = MOBILE ? 2 : 1;
+
 let browser = await chromium.launch({
   headless: true,
   executablePath: process.env.CHROMIUM_PATH || undefined,
   args: ['--no-sandbox', '--disable-setuid-sandbox'],
 });
 let page = await browser.newPage({
-  viewport: { width: 1280, height: 800 },
-  deviceScaleFactor: 1,
+  viewport: VIEWPORT,
+  deviceScaleFactor: DEVICE_SCALE_FACTOR,
+  isMobile: MOBILE,
+  hasTouch: MOBILE,
 });
+await prepareCapturePage(page);
 
 // Pitch-quality captures: a named, populated artist (not generic "Demo
 // Artist"), and LIVE so the go-live/studio shots show the real on-air
 // state instead of an empty connect flow.
+const ARTIST_USER = {
+  id: 'mock-1',
+  email: 'demo@tahti.live',
+  username: USER,
+  displayName: 'Mart Saar',
+  role: 'BOARD',
+  isBoard: true,
+  membershipStatus: 'ACTIVE',
+  channel: { slug: CHANNEL, state: 'LIVE' },
+};
+
+/** The account `listener@tahti.live` signs in as in the mock app
+ * (`buildMockLoginUser` in src/api/mock-session.ts). */
+const LISTENER_USER = {
+  id: 'mock-listener@tahti.live',
+  email: 'listener@tahti.live',
+  username: LISTENER_USERNAME,
+  displayName: 'Demo Listener',
+  role: 'LISTENER',
+  roles: ['LISTENER'],
+  tier: 'FREE',
+  avatarUrl: null,
+  isMember: false,
+  isBoard: false,
+  channel: null,
+};
+
 const AUTH_STATE = {
-  state: {
-    user: {
-      id: 'mock-1',
-      email: 'demo@tahti.live',
-      username: USER,
-      displayName: 'Mart Saar',
-      isBoard: true,
-      membershipStatus: 'ACTIVE',
-      channel: { slug: CHANNEL, state: 'LIVE' },
-    },
-  },
+  state: { user: LISTENER_PASS ? LISTENER_USER : ARTIST_USER },
   version: 0,
 };
+
+// Spotify theme in CAPTURE_THEME_MODE (see lib/captureSetup.mjs).
+const THEME_STATE = CAPTURE_THEME_STATE;
 
 /** Keep the right rail closed in the map: these are page/surface references,
  * not chat screenshots. This also prevents a page mount from reopening chat
@@ -239,7 +336,7 @@ async function setLocalStorage(p, signedIn = true) {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
       await p.evaluate(
-        ({ auth, rightCollapsed, signedIn: shouldSignIn }) => {
+        ({ auth, theme, rightCollapsed, signedIn: shouldSignIn }) => {
           if (shouldSignIn) {
             localStorage.setItem('tahti-web-auth', JSON.stringify(auth));
           } else {
@@ -264,8 +361,14 @@ async function setLocalStorage(p, signedIn = true) {
               version: 3,
             }),
           );
+          localStorage.setItem('tahti-web-theme', JSON.stringify(theme));
         },
-        { auth: AUTH_STATE, rightCollapsed: true, signedIn },
+        {
+          auth: AUTH_STATE,
+          theme: THEME_STATE,
+          rightCollapsed: true,
+          signedIn,
+        },
       );
       return;
     } catch (error) {
@@ -291,9 +394,12 @@ async function ensurePage() {
   }
   if (page.isClosed()) {
     page = await browser.newPage({
-      viewport: { width: 1280, height: 800 },
-      deviceScaleFactor: 1,
+      viewport: VIEWPORT,
+      deviceScaleFactor: DEVICE_SCALE_FACTOR,
+      isMobile: MOBILE,
+      hasTouch: MOBILE,
     });
+    await prepareCapturePage(page);
     try {
       await page.goto(BASE, { waitUntil: 'domcontentloaded', timeout: 45000 });
     } catch {
@@ -358,9 +464,13 @@ const IN_PAGE_TAB_SHOT_IDS = new Set([
   'admin-moderation',
   'admin-moderation-tab',
   'archive-item',
+  'release-detail',
+  'show-detail',
+  'studio-branding',
+  'settings-artist-connections',
 ]);
 
-async function captureInPageTabs(out, shotId) {
+async function captureInPageTabs(baseName, shotId) {
   if (!IN_PAGE_TAB_SHOT_IDS.has(shotId)) {
     return;
   }
@@ -383,7 +493,7 @@ async function captureInPageTabs(out, shotId) {
     await ensureChatClosed();
     await waitForContent();
     await page.screenshot({
-      path: join(outRoot, `${basename(out, '.png')}--${key}.png`),
+      path: join(outRoot, withThemeSuffix(`${baseName}--${key}.png`)),
       fullPage: false,
     });
   }
@@ -392,9 +502,10 @@ async function captureInPageTabs(out, shotId) {
 for (const s of shotsToCapture) {
   await ensurePage();
   const url = `${BASE}${s.path}`;
-  const out = join(outRoot, `${s.id}.png`);
+  const baseName = MOBILE ? `${s.id}--mobile` : s.id;
+  const out = join(outRoot, withThemeSuffix(`${baseName}.png`));
   try {
-    await setLocalStorage(page, s.auth !== false);
+    await setLocalStorage(page, !SIGNED_OUT_SHOT_IDS.has(s.id));
     // Re-apply layout state per shot (some pages reset chatSlug/rightCollapsed
     // on mount) -- keep chat open only for the one demo shot.
     await page.evaluate((rightCollapsed) => {
@@ -410,8 +521,9 @@ for (const s of shotsToCapture) {
       await page.getByRole('button', { name: 'Sign in' }).click();
       await page.getByLabel('Authentication code').waitFor({ timeout: 3000 });
     }
-    if (s.id === 'money-fan-subs') {
-      await page.getByRole('tab', { name: 'Fan subs' }).click();
+    if (s.id === 'money-fan-subs' && !LISTENER_PASS) {
+      // /settings/audience redirects to Studio → Audience, whose Overview
+      // tab carries the fan subscription summary.
       await page
         .getByRole('region', { name: 'Fan subscription summary' })
         .waitFor();
@@ -434,13 +546,13 @@ for (const s of shotsToCapture) {
     await waitForContent();
     // Hide cookie/noise if any; capture main viewport
     await page.screenshot({ path: out, fullPage: false });
-    await captureInPageTabs(out, s.id);
+    await captureInPageTabs(baseName, s.id);
     console.log('ok', s.id, s.path);
   } catch (err) {
     console.error('fail', s.id, err.message);
     await ensurePage();
     try {
-      await setLocalStorage(page, s.auth !== false);
+      await setLocalStorage(page, !SIGNED_OUT_SHOT_IDS.has(s.id));
       await page.goto(url, { waitUntil: 'commit', timeout: 5000 });
       await page.waitForTimeout(500);
       await waitForContent();
@@ -454,6 +566,10 @@ for (const s of shotsToCapture) {
 }
 
 await browser.close();
+if (LISTENER_PASS) {
+  console.log('done', outRoot);
+  process.exit(0);
+}
 const imageFiles = readdirSync(outRoot)
   .filter((fileName) => fileName.endsWith('.png'))
   .sort();
@@ -462,7 +578,7 @@ writeFileSync(
   `${JSON.stringify(
     {
       surface: 'nuclear',
-      capturedAt: '2026-09-04',
+      capturedAt: new Date().toISOString().slice(0, 10),
       baseUrl: BASE,
       images: imageFiles.map((fileName) => ({
         file: fileName,

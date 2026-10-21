@@ -1,0 +1,143 @@
+import { fireEvent, render, screen } from '@testing-library/react';
+import { useState } from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { DeliveryTab } from './DeliveryTab';
+
+vi.mock('../../../api/distribution', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('../../../api/distribution')>();
+  return {
+    ...actual,
+    fetchDistributionStatus: vi.fn(async () => ({
+      data: [
+        {
+          id: 'revelator' as const,
+          label: 'Revelator',
+          configured: true,
+          mode: 'live' as const,
+          detail: 'ok',
+        },
+      ],
+      meta: { source: 'api' as const },
+    })),
+  };
+});
+
+function ControlledDeliveryTab({ onSubmit }: { onSubmit: () => void }) {
+  const [confirmSubmit, setConfirmSubmit] = useState(false);
+  return (
+    <DeliveryTab
+      revelatorStatus={null}
+      revelatorId={null}
+      billing={null}
+      busy={false}
+      canSubmit
+      confirmSubmit={confirmSubmit}
+      setConfirmSubmit={setConfirmSubmit}
+      onSubmit={onSubmit}
+      showRoyalties={false}
+      royaltiesLoaded={false}
+      royalties={[]}
+    />
+  );
+}
+
+describe('DeliveryTab royalty reports', () => {
+  it('shows an error with retry instead of an empty state', async () => {
+    const onRetryRoyalties = vi.fn();
+    render(
+      <DeliveryTab
+        revelatorStatus="delivered"
+        revelatorId={null}
+        billing={null}
+        busy={false}
+        canSubmit={false}
+        confirmSubmit={false}
+        setConfirmSubmit={vi.fn()}
+        onSubmit={vi.fn()}
+        showRoyalties
+        royaltiesLoaded
+        royalties={[]}
+        royaltiesError="Server unavailable"
+        onRetryRoyalties={onRetryRoyalties}
+      />,
+    );
+    expect(await screen.findByText('Server unavailable')).toBeInTheDocument();
+    expect(screen.queryByText('No reports yet')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(onRetryRoyalties).toHaveBeenCalled();
+  });
+});
+
+describe('DeliveryTab submit-to-Revelator confirmation', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('asks for confirmation before paying and submitting to stores', async () => {
+    const onSubmit = vi.fn();
+    render(<ControlledDeliveryTab onSubmit={onSubmit} />);
+
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Submit to Revelator' }),
+    );
+
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(screen.getByText('Submit to Revelator?')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+  });
+
+  it('submits nothing when the confirmation is cancelled', async () => {
+    const onSubmit = vi.fn();
+    render(<ControlledDeliveryTab onSubmit={onSubmit} />);
+
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Submit to Revelator' }),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it('disables the button while busy or when submission is not allowed', async () => {
+    const { rerender } = render(
+      <DeliveryTab
+        revelatorStatus={null}
+        revelatorId={null}
+        billing={null}
+        busy={false}
+        canSubmit={false}
+        confirmSubmit={false}
+        setConfirmSubmit={() => {}}
+        onSubmit={() => {}}
+        showRoyalties={false}
+        royaltiesLoaded={false}
+        royalties={[]}
+      />,
+    );
+    expect(
+      await screen.findByRole('button', { name: 'Submit to Revelator' }),
+    ).toBeDisabled();
+
+    rerender(
+      <DeliveryTab
+        revelatorStatus={null}
+        revelatorId={null}
+        billing={null}
+        busy
+        canSubmit
+        confirmSubmit={false}
+        setConfirmSubmit={() => {}}
+        onSubmit={() => {}}
+        showRoyalties={false}
+        royaltiesLoaded={false}
+        royalties={[]}
+      />,
+    );
+    expect(screen.getByRole('button', { name: /Submitting/ })).toBeDisabled();
+  });
+});

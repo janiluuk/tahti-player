@@ -24,6 +24,18 @@ describe('SaveButton', () => {
     expect(button).toBeDisabled();
   });
 
+  it('swaps the icon to a spinner while saving', () => {
+    const { rerender } = render(<SaveButton label="Save profile" />);
+    expect(
+      screen.getByRole('button').querySelector('svg.animate-spin'),
+    ).toBeFalsy();
+
+    rerender(<SaveButton label="Save profile" saving />);
+    expect(
+      screen.getByRole('button').querySelector('svg.animate-spin'),
+    ).toBeTruthy();
+  });
+
   it('calls onClick when clicked', async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();

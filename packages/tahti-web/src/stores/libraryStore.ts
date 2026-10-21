@@ -1,13 +1,19 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { fetchFollowing, followArtist, unfollowArtist } from '../api/client';
+import {
+  fetchFollowing,
+  followArtist,
+  unfollowArtist,
+  type FollowResult,
+} from '../api/follows';
 import type { TahtiPlayable } from '../api/types';
 
 export type FavoriteChannel = {
   slug: string;
   displayName: string;
   avatarUrl?: string | null;
+  username?: string;
 };
 
 export type FavoritePlaylist = {
@@ -22,6 +28,22 @@ export type HistoryEntry = {
   playedAt: string;
 };
 
+/**
+ * Local-sourced tracks carry an ephemeral `streamUrl` (a `blob:` object URL
+ * from the browser File-API fallback, or a Tauri `asset://` URL scoped to
+ * the current app session) that stops resolving once the tab reloads or the
+ * app restarts. Persisting it anyway would let "Play now" from history
+ * silently fail against a dead URL, so it's dropped before it reaches
+ * storage; playing a local entry again re-resolves via its id instead (see
+ * `HistoryListSection`).
+ */
+function redactEphemeralStreamUrl(playable: TahtiPlayable): TahtiPlayable {
+  if (playable.sourceProvider !== 'local' || !playable.streamUrl) {
+    return playable;
+  }
+  return { ...playable, streamUrl: '' };
+}
+
 export type LibraryState = {
   /** Current storage scope: `anon` or user id. */
   scopeKey: string;
@@ -35,7 +57,10 @@ export type LibraryState = {
   heardFavoritePlaylists: string[];
   heardFavoriteArtists: string[];
   history: HistoryEntry[];
-  toggleFavoriteChannel: (channel: FavoriteChannel) => void;
+  toggleFavoriteChannel: (
+    channel: FavoriteChannel,
+  ) => Promise<FollowResult | null>;
+  setFavoriteChannel: (channel: FavoriteChannel, favorite: boolean) => void;
   isFavoriteChannel: (slug: string) => boolean;
   toggleFavoriteTrack: (track: TahtiPlayable) => void;
   toggleFavoritePlaylist: (playlist: FavoritePlaylist) => void;
@@ -99,30 +124,45 @@ export const useLibraryStore = create<LibraryState>()(
 
       setScopeKey: (key) => set({ scopeKey: key }),
 
-      toggleFavoriteChannel: (channel) => {
+      toggleFavoriteChannel: async (channel) => {
         const exists = get().favoriteChannels.some(
           (c) => c.slug === channel.slug,
         );
+        get().setFavoriteChannel(channel, !exists);
+        if (activeScope === 'anon') {
+          return null;
+        }
+        const username = channel.username ?? channel.slug;
+        const result = await (exists
+          ? unfollowArtist(username)
+          : followArtist(username));
+        if (!result.ok && channel.username) {
+          get().setFavoriteChannel(channel, exists);
+        }
+        return result;
+      },
+
+      setFavoriteChannel: (channel, favorite) => {
         set((s) => {
+          const exists = s.favoriteChannels.some(
+            (c) => c.slug === channel.slug,
+          );
+          if (exists === favorite) {
+            return s;
+          }
           const favoriteChannelDates = { ...s.favoriteChannelDates };
-          if (exists) {
-            delete favoriteChannelDates[channel.slug];
-          } else {
+          if (favorite) {
             favoriteChannelDates[channel.slug] = new Date().toISOString();
+          } else {
+            delete favoriteChannelDates[channel.slug];
           }
           return {
-            favoriteChannels: exists
-              ? s.favoriteChannels.filter((c) => c.slug !== channel.slug)
-              : [channel, ...s.favoriteChannels],
+            favoriteChannels: favorite
+              ? [channel, ...s.favoriteChannels]
+              : s.favoriteChannels.filter((c) => c.slug !== channel.slug),
             favoriteChannelDates,
           };
         });
-        // Best-effort server sync via artist follows (username ≈ channel slug).
-        if (activeScope !== 'anon') {
-          void (exists
-            ? unfollowArtist(channel.slug)
-            : followArtist(channel.slug));
-        }
       },
 
       isFavoriteChannel: (slug) =>
@@ -197,14 +237,18 @@ export const useLibraryStore = create<LibraryState>()(
 
       mergeServerFollowing: async (username) => {
         const { data, meta } = await fetchFollowing(username);
-        if (meta.source === 'mock' && import.meta.env.VITE_FORCE_MOCK !== '1') {
+        if (
+          meta.reason &&
+          meta.reason !== 'VITE_FORCE_MOCK' &&
+          import.meta.env.VITE_FORCE_MOCK !== '1'
+        ) {
           set({
             syncNote:
               'Following could not be synced. Your saved artists remain available on this device.',
           });
           return;
         }
-        if (data.length === 0 && meta.source !== 'api') {
+        if (data.length === 0 && meta.source === 'mock') {
           set({
             syncNote: 'Saved tracks and listening history stay on this device.',
           });
@@ -215,6 +259,7 @@ export const useLibraryStore = create<LibraryState>()(
           for (const u of data) {
             bySlug.set(u.username, {
               slug: u.username,
+              username: u.username,
               displayName: u.displayName,
               avatarUrl: u.avatarUrl,
             });
@@ -242,7 +287,10 @@ export const useLibraryStore = create<LibraryState>()(
         favoritePlaylistDates: s.favoritePlaylistDates,
         heardFavoritePlaylists: s.heardFavoritePlaylists,
         heardFavoriteArtists: s.heardFavoriteArtists,
-        history: s.history,
+        history: s.history.map((entry) => ({
+          ...entry,
+          playable: redactEphemeralStreamUrl(entry.playable),
+        })),
         scopeKey: s.scopeKey,
       }),
     },

@@ -11,6 +11,44 @@ Building those per-screen diagrams required grep-verifying every real
 out of scope here). Findings below are real, source-grounded gaps in the
 **Nuclear (this client)** navigation graph, not documentation drift.
 
+## 2026-10-03 - Atlas refresh: redirect targets and resolved orphans
+
+Re-checked the route tree (`src/router/routes-*.tsx`), chrome, and the
+`/dashboard/*` redirect table (`lib/prodPathRedirects.ts`) while refreshing
+the `/more` atlas graphs. [NAVIGATION-SITEMAP.md](NAVIGATION-SITEMAP.md) has
+the current menus.
+
+### Resolved since 2026-09-03
+
+- `/venues` is no longer an orphan: it redirects to `/discover?tab=venues`,
+  and venue pages (`/v/$slug`) are linked from the directory and from
+  "Recorded at" on track pages.
+- `/library/smartlinks` is a Library tab.
+- `/jam/$code` is opened by "Start a Jam" on a collection page.
+- `/schedule` is linked from the channel page programme block and from
+  the Radio hub (programme schedule + booking calendar actions).
+
+### Redirects that land somewhere unexpected
+
+| Old path | Goes to | What actually happens |
+| --- | --- | --- |
+| `/dashboard/settings/connections`, `/dashboard/settings/api` | `/settings/connections` | `connections` is not a Settings section, so the modal opens Account. Social links live in Settings → Artist → Connections (`/settings/artist?tab=connections`); API tokens in Account → Security. |
+| `/dashboard/settings/discovery`, `/dashboard/settings/internet-radio` | `/settings/widgets` | `widgets` is not a section either - opens Account. Discovery is Settings → Channel & design → Discovery. |
+| `/studio/channel?tab=design` / `?tab=profile` | `/settings/artist?tab=channel-designer` | `channel-designer` is not an Artist tab (`ARTIST_SECTIONS` in `SettingsView.tsx`), so Artist opens on its default tab. The Channel Designer is Settings → Channel & design, or `/studio/branding?tab=channel-designer` (which `/dashboard/channel/edit` already uses). |
+| `/studio/venues`, `/dashboard/venues` | `/admin/venues` | Board-only page. Artists hit the AdminGate "Board admin" message. |
+| `/dashboard/upload`, `/dashboard/settings/moderators` | `/studio/upload`, `/studio/moderation` | Two redirect hops (`/library/upload`, `/settings/channel`). Works, but the table could point at the final route. |
+
+### Not route-addressable (atlas and capture limits)
+
+- The track editor (`TrackEditDialog`) opens in place from Tracks, the
+  track page and the artist page; there is no URL for it, so the atlas card
+  has no screenshot and capture needs a click step.
+- Gated track pages (fan subscribers only, purchase, download gate) have no
+  mock fixture, so mock-mode capture cannot show them yet.
+- `/search?tag=` mock path derives tracks from latest/search fixtures that
+  match the tag (genre or title); tags with no fixture match still empty.
+- ~~`/jam/$code` has no mock session~~ — resolved: mock mode accepts `AURORA42` only (invalid codes show the empty state).
+
 ## 2026-09-03 — Chrome vs sitemap vs inbound links
 
 Re-audited persistent chrome (`AppShell`, `StudioNav`, `AdminNav`,
@@ -33,22 +71,25 @@ now lists chrome separately from routes it does not actually own.
    Broadcast page (Perform submenu; nav label Broadcast since 2026-09-03) —
    a different page from public `/schedule`.
 
-3. **Library submenu does not include Smart links or Distribution as
-   first-class items.** `/library/smartlinks` is a real `LibraryView` tab
-   with zero production inbound links. `/studio/distribution` is a
-   Releases-row + export-add-on deep link. (Stash has its own
-   `LIBRARY_SECTION_TABS` entry, `/library/stash` — `/studio/stash` is
-   just a redirect to it, not a separate discoverability gap.)
+3. **Library submenu / Distribution.** `/library/smartlinks` is a Library
+   tab (resolved). `/studio/distribution` is reachable from Studio home
+   (when the artist has releases), the Releases header, release-row More
+   menu, and export add-ons — still not a StudioNav sibling (product call).
+   (Stash has its own `LIBRARY_SECTION_TABS` entry, `/library/stash` —
+   `/studio/stash` is just a redirect to it, not a separate discoverability
+   gap.)
 
 ### Still open (production orphans)
 
+Rows marked resolved were re-checked 2026-10-03 (see above).
+
 | Gap | Why it matters |
 | --- | --- |
-| `/venues` not in Listen/mobile chrome | Public directory is easy to miss; sitemap and Listen flow diagrams still imply it is a discovery sibling of Radio. |
-| `/schedule` buried in booking UI | Listeners on Radio cannot see the programme without opening the calendar dialog. |
-| `/library/smartlinks` unlinked | Smart-link manager exists but cannot be chosen from Library Overview / Sounds / Collections. |
-| `/studio/distribution` Releases-only | Artists who are not on the releases list have no StudioNav path to delivery status. |
-| `/jam/$code` unlinked | Join-by-code route has no in-app entry besides the atlas. |
+| ~~`/venues` not in Listen/mobile chrome~~ | Resolved: redirects to the Discover Venues tab. |
+| ~~`/schedule` not linked from Radio~~ | Resolved: Radio header links to `/schedule` (full programme); booking calendar stays a separate signed-in control. |
+| ~~`/library/smartlinks` unlinked~~ | Resolved: Library tab. |
+| ~~`/studio/distribution` Releases-only~~ | Resolved for discoverability: Studio home shows a Distribution tile when the artist has releases; Releases header links to delivery status. Still not a StudioNav sibling (product call). |
+| ~~`/jam/$code` unlinked~~ | Resolved: "Start a Jam" on a collection page. |
 
 ### Checked this pass, not orphans
 

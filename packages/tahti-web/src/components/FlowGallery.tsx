@@ -85,15 +85,20 @@ export function FlowGallery() {
       </p>
 
       <div className="flex flex-col gap-4 lg:flex-row">
-        <nav className="border-border flex max-h-64 flex-col gap-1 overflow-y-auto lg:max-h-[28rem] lg:w-64 lg:shrink-0 lg:border-r lg:pr-3">
+        <nav
+          aria-label="Diagrams"
+          className="border-border flex max-h-64 flex-col gap-1 overflow-y-auto lg:max-h-[28rem] lg:w-64 lg:shrink-0 lg:border-r lg:pr-3"
+        >
           {diagrams.map((d, i) => {
             const active = d.id === selected?.id;
             return (
-              <button
+              <Button
+                variant="plain"
+                size="flexible"
                 key={d.id}
                 type="button"
                 onClick={() => setSelectedId(d.id)}
-                className={`rounded-md px-3 py-2 text-left text-sm transition-colors ${
+                className={`inline-block rounded-md px-3 py-2 text-left text-sm whitespace-normal transition-colors active:scale-100 ${
                   active
                     ? 'bg-primary text-primary-foreground'
                     : 'text-foreground-secondary hover:text-foreground hover:bg-background-secondary'
@@ -103,7 +108,7 @@ export function FlowGallery() {
                   {i + 1}
                 </span>
                 {d.title}
-              </button>
+              </Button>
             );
           })}
         </nav>
@@ -145,7 +150,11 @@ export function FlowGallery() {
                 </div>
               </div>
               <Box variant="tertiary" className="h-auto rounded-lg p-3">
-                <MermaidDiagram key={selected.id} chart={selected.mermaid} />
+                <MermaidDiagram
+                  key={selected.id}
+                  chart={selected.mermaid}
+                  label={`${selected.title} diagram`}
+                />
               </Box>
               <MapCommentForm
                 kind="flow"

@@ -6,7 +6,7 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   '': '/studio',
   broadcast: '/studio/go-live',
   archive: '/studio/sounds',
-  upload: '/studio/upload',
+  upload: '/library/upload',
   releases: '/studio/releases',
   collections: '/studio/collections',
   distribution: '/studio/distribution',
@@ -21,8 +21,9 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   stats: '/studio/stats',
   channel: '/studio/channel',
   'channel/edit': '/studio/branding?tab=channel-designer',
-  'settings/media': '/studio/branding',
-  'settings/presskit': '/studio/branding',
+  'settings/media': '/settings/artist',
+  'settings/presskit': '/studio/branding?tab=press-kit',
+  'settings/branding': '/settings/artist',
   'tahti-radio-slots': '/studio/shows',
   shows: '/studio/shows',
   playlists: '/studio/collections',
@@ -32,6 +33,7 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   revenue: '/studio/audience',
   audience: '/studio/audience',
   messages: '/messages',
+  sound: '/studio/sounds',
   'setup-channel': '/studio/channel?tab=setup',
   settings: '/settings',
   'settings/account': '/settings/account',
@@ -40,17 +42,19 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   'settings/fan-subs': '/studio/audience',
   'settings/money': '/studio/audience',
   'settings/audience': '/studio/audience',
-  'settings/connections': '/settings/connections',
-  'settings/api': '/settings/connections',
+  'settings/connections': '/settings/artist?tab=connections',
+  'settings/api': '/settings/account?tab=api-tokens',
   'settings/notifications': '/settings/account',
   'settings/domain': '/settings/channel',
-  'settings/discovery': '/settings/widgets',
-  'settings/internet-radio': '/settings/widgets',
+  'settings/discovery': '/settings/channel?tab=discovery',
+  'settings/internet-radio': '/settings/plugin-store?category=radio',
   'settings/themes': '/settings/themes',
   'settings/announcements': '/settings/broadcast',
   'settings/green-room': '/settings/broadcast',
-  'settings/distribution': '/studio/distribution',
-  'settings/moderators': '/studio/moderation',
+  // Tahti Radio opt-in and submissions (incl. board rejection notes) live on
+  // the channel's Tahti Radio tab, not the royalties Distribution page.
+  'settings/distribution': '/studio/channel?tab=tahti-radio',
+  'settings/moderators': '/settings/channel?tab=moderators',
   'settings/multistream': '/studio/channel?tab=multicast',
   'upload/from-broadcast': '/library/recordings',
 };
@@ -69,6 +73,11 @@ export function resolveDashboardRedirect(rest: string | undefined): string {
       return `/studio/sounds/${id}/editor`;
     }
     return id ? `/studio/sounds/${id}` : '/studio/sounds';
+  }
+  if ((first === 'sound' || first === 'messages') && key.includes('/')) {
+    const id = key.split('/')[1];
+    const base = first === 'sound' ? '/studio/sounds' : '/messages';
+    return id ? `${base}/${id}` : base;
   }
   if (first === 'releases' && key.includes('/')) {
     const id = key.split('/')[1];

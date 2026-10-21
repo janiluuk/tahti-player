@@ -10,7 +10,7 @@ import {
 import { cn } from '../../utils';
 
 const inputVariants = cva(
-  'border-border text-foreground placeholder:text-foreground-secondary w-full px-3 transition-colors focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-none',
+  'border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
   {
     variants: {
       variant: {
@@ -19,6 +19,8 @@ const inputVariants = cva(
         password: '',
         borderless:
           'border-b-border !rounded-none rounded-none !border-r-0 !border-l-0 border-t-transparent px-6 outline-none focus-visible:ring-0 focus-visible:ring-offset-0',
+        color:
+          'h-9 w-11 cursor-pointer rounded border-0 bg-transparent p-0 focus-visible:ring-offset-0',
       },
       tone: {
         primary: 'bg-background-input',
@@ -57,7 +59,8 @@ type InputProps = Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'size'> &
       | 'password'
       | 'date'
       | 'time'
-      | 'datetime-local';
+      | 'datetime-local'
+      | 'color';
     label?: string;
     description?: string;
     error?: string;
@@ -71,7 +74,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     label,
     description,
     error,
-    variant = 'text',
+    variant,
     type,
     tone = 'primary',
     size,
@@ -96,7 +99,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     .join(' ');
 
   const state = error ? 'error' : 'normal';
-  const inputType = type ?? variant ?? 'text';
+  const resolvedVariant = variant ?? (type === 'color' ? 'color' : 'text');
+  const inputType = type ?? resolvedVariant;
   const hasAddon = Boolean(startAddon || endAddon);
 
   const field = (
@@ -109,11 +113,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       aria-describedby={describedBy || undefined}
       aria-invalid={!!error || undefined}
       aria-errormessage={error ? errorId : undefined}
-      inputMode={variant === 'number' ? 'numeric' : undefined}
+      inputMode={resolvedVariant === 'number' ? 'numeric' : undefined}
       invalid={!!error}
       className={cn(
         inputVariants({
-          variant,
+          variant: resolvedVariant,
           size,
           tone,
           state,
@@ -126,7 +130,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   );
 
   return (
-    <div className="flex w-full flex-col gap-2">
+    <div
+      className={
+        resolvedVariant === 'color'
+          ? 'flex shrink-0 flex-col gap-2'
+          : 'flex w-full flex-col gap-2'
+      }
+    >
       {label && (
         <label
           htmlFor={inputId}
@@ -137,7 +147,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         </label>
       )}
       {hasAddon ? (
-        <div className="border-border inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-black has-[:focus-visible]:ring-offset-2">
+        <div className="border-border has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-background inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2">
           {startAddon ? (
             <div className="bg-background-secondary text-foreground-secondary border-border flex max-w-[55%] min-w-0 items-center border-r-(length:--border-width) px-3 text-xs">
               {startAddon}
@@ -162,7 +172,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         </p>
       )}
       {error && (
-        <p id={errorId} className="text-accent-red text-xs select-none">
+        <p id={errorId} className="text-accent-red-strong text-xs select-none">
           {error}
         </p>
       )}

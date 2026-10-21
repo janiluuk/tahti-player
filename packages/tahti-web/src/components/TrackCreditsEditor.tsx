@@ -9,6 +9,7 @@ import {
   type ReleaseCreditRole,
 } from '../api/studio-types';
 import { cn } from '../lib/cn';
+import { PageEmpty } from './PageStates';
 
 type Props = {
   value: ReleaseCredit[];
@@ -25,11 +26,13 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
 
   return (
     <div className="border-border rounded-xl border">
-      <button
+      <Button
+        variant="plain"
+        size="flexible"
         type="button"
         onClick={() => setExpanded((current) => !current)}
         aria-expanded={expanded}
-        className="flex w-full items-center justify-between gap-3 p-4 text-left"
+        className="flex w-full items-center justify-between gap-3 rounded-none p-4 text-left whitespace-normal active:scale-100"
       >
         <span>
           <span className="block font-medium">
@@ -46,14 +49,10 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
           aria-hidden
           className={cn('transition-transform', expanded && 'rotate-180')}
         />
-      </button>
+      </Button>
       {expanded && (
         <div className="border-border border-t p-4 pt-3">
-          {value.length === 0 && (
-            <p className="text-foreground-secondary mb-2 text-xs">
-              No extra credits yet.
-            </p>
-          )}
+          {value.length === 0 && <PageEmpty title="No extra credits yet." />}
           <ul className="flex flex-col gap-2">
             {value.map((credit, index) => (
               <li

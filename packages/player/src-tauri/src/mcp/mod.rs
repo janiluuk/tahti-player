@@ -1,4 +1,4 @@
-pub mod metadata;
+mod origin;
 pub mod tools;
 
 use std::sync::Arc;
@@ -10,17 +10,17 @@ use rmcp::{model::*, tool_handler, ServerHandler};
 use tauri::{AppHandle, Manager};
 use tokio::sync::{oneshot, Mutex};
 use tokio_util::sync::CancellationToken;
-use tools::NuclearMcpServer;
+use tools::TahtiMcpServer;
 
 const MCP_PORT_START: u16 = 8800;
 const MCP_PORT_END: u16 = 8809;
 
 #[tool_handler]
-impl ServerHandler for NuclearMcpServer {
+impl ServerHandler for TahtiMcpServer {
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
             instructions: Some(
-                "Tahti Player MCP server. Use list_methods to discover domains, method_details for parameter info, describe_type for data type shapes, and call to execute methods.".into(),
+                "Tahti Player MCP server. Call list_methods with no domain to see the domains, list_methods with a domain for its methods, method_details for parameters, describe_type for data shapes, and call to run a method.".into(),
             ),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
             ..Default::default()
@@ -52,7 +52,7 @@ async fn start_server(
     ready: oneshot::Sender<Result<u16, String>>,
 ) {
     let service = StreamableHttpService::new(
-        move || Ok(NuclearMcpServer::new(bridge.clone())),
+        move || Ok(TahtiMcpServer::new(bridge.clone())),
         LocalSessionManager::default().into(),
         StreamableHttpServerConfig {
             cancellation_token: ct.child_token(),
@@ -60,7 +60,9 @@ async fn start_server(
         },
     );
 
-    let router = axum::Router::new().nest_service("/mcp", service);
+    let router = axum::Router::new()
+        .nest_service("/mcp", service)
+        .layer(axum::middleware::from_fn(origin::loopback_only));
 
     let tcp_listener = match crate::net::bind_first_available_port(
         "127.0.0.1",

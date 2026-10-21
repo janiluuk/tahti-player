@@ -5,21 +5,63 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  workflow_dispatch:
+    inputs:
+      run_e2e:
+        description: 'Run the Playwright e2e suite (against beta.tahti.live)'
+        required: false
+        default: false
+        type: boolean
+      web_base_url:
+        description: 'Base URL the e2e suite should run against'
+        required: false
+        default: https://beta.tahti.live
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
+  actions: read # snapshot baseline: list/download master's digest artifact
 
 env:
   DO_NOT_TRACK: 1
 
 jobs:
-  ci:
+  # What the change touches. A docs-only PR (Markdown, docs/, packages/docs/,
+  # images) skips every job below except the CI gate. Pushes to master and
+  # manual runs always run everything.
+  changes:
+    name: Changes
     runs-on: ubuntu-latest
+    outputs:
+      code: ${{ github.event_name != 'pull_request' || steps.filter.outputs.code == 'true' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Filter paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          predicate-quantifier: every
+          filters: |
+            code:
+              - '**'
+              - '!**/*.md'
+              - '!docs/**'
+              - '!packages/docs/**'
+              - '!**/*.png'
+              - '!**/*.jpg'
+
+  build-player:
+    name: Build player + size guard
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
 
     steps:
       - name: Checkout code
@@ -35,42 +77,15 @@ jobs:
               - '**/Cargo.lock'
               - '**/Cargo.toml'
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: "24"
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v5
-
-      - name: Get PNPM store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup PNPM cache
-        uses: actions/cache@v6
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
       - name: Setup Rust
         if: steps.rust-changes.outputs.rust == 'true'
         uses: dtolnay/rust-toolchain@stable
 
       - name: Cache cargo dependencies
         if: steps.rust-changes.outputs.rust == 'true'
-        uses: actions/cache@v6
+        uses: Swatinem/rust-cache@v2
         with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            packages/player/src-tauri/target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          workspaces: packages/player/src-tauri
 
       - name: Install system dependencies
         if: steps.rust-changes.outputs.rust == 'true'
@@ -78,20 +93,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          turbo-cache: 'true'
 
-      - name: Build upstream packages
-        run: pnpm turbo build --filter='!@tahti-player/player'
+      - name: File size guard
+        run: pnpm check:file-size
 
-      - name: Lint
-        run: pnpm turbo lint
-
-      - name: Test
-        id: test
-        continue-on-error: true
-        run: pnpm turbo test
-
+      # Builds every workspace package the player depends on (which is all of
+      # them), so this job is also the "everything builds" check.
       - name: Build player (frontend-only)
         if: steps.rust-changes.outputs.rust != 'true'
         run: pnpm turbo build:frontend --filter=@tahti-player/player
@@ -103,16 +114,128 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
 
-      - name: Install Playwright Chromium
+  # On pull requests only the packages the change affects (and their
+  # dependents) are linted; master runs every package.
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Lint
+        run: pnpm turbo lint ${{ github.event_name == 'pull_request' && '--affected' || '' }}
+        env:
+          TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || '' }}
+
+  # tahti-web's Vitest suite is the slowest step in CI, so it runs in three
+  # shards. Workspace packages export their sources, so no build is needed.
+  test-web:
+    name: Test (tahti-web ${{ matrix.shard }}/3)
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Test
+        run: pnpm --filter @tahti-player/tahti-web exec vitest run --exclude 'e2e/**' --shard=${{ matrix.shard }}/3
+
+  # Every package except tahti-web and storybook. On pull requests only the
+  # affected packages run. These packages write snapshot mismatches
+  # (scripts/ci/vitest-snapshot-reporter.mjs), and a failure posts the visual
+  # snapshot digest to the PR.
+  test-core:
+    name: Test (core packages) + snapshot digest
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          turbo-cache: 'true'
+
+      - name: Test
+        id: test
+        continue-on-error: true
+        run: pnpm turbo test --filter='!@tahti-player/tahti-web' --filter='!@tahti-player/storybook' --continue ${{ github.event_name == 'pull_request' && '--affected' || '' }}
+        env:
+          TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || '' }}
+
+      # The digest renders mismatches with the built app CSS.
+      - name: Build app bundles for snapshot digest CSS
         if: steps.test.outcome == 'failure'
+        continue-on-error: true
+        run: |
+          pnpm turbo build:frontend --filter=@tahti-player/player
+          pnpm turbo build --filter=@tahti-player/tahti-web
+
+      - name: Get installed Playwright version
+        if: steps.test.outcome == 'failure'
+        id: playwright-version
+        run: echo "version=$(pnpm --filter @tahti-player/tahti-web exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        if: steps.test.outcome == 'failure'
+        uses: actions/cache@v6
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+
+      - name: Install Playwright Chromium
+        if: steps.test.outcome == 'failure' && steps.playwright-cache.outputs.cache-hit != 'true'
         run: pnpm --filter @tahti-player/tahti-web exec playwright install chromium --with-deps
+
+      - name: Install Playwright OS dependencies only
+        if: steps.test.outcome == 'failure' && steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @tahti-player/tahti-web exec playwright install-deps chromium
+
+      # The digest should list only what this PR changed: take the latest
+      # finished master run's digest as the baseline (see the script header).
+      - name: Fetch master snapshot baseline
+        if: steps.test.outcome == 'failure' && github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/ci/fetch-snapshot-baseline.sh ci.yml snapshot-digest
 
       - name: Build snapshot digest
         if: steps.test.outcome == 'failure'
+        continue-on-error: true
         run: node scripts/ci/build-snapshot-digest.mjs
+        env:
+          SNAPSHOT_DIFF_PUBLIC_BASE_URL: >-
+            ${{ github.event_name == 'pull_request' &&
+            format('https://raw.githubusercontent.com/{0}/visual-snapshot-diffs/pr-{1}', github.repository, github.event.pull_request.number) || '' }}
 
       - name: Write snapshot digest to job summary
         if: steps.test.outcome == 'failure'
+        continue-on-error: true
         run: |
           if [ -f snapshot-digest/digest.md ]; then
             cat snapshot-digest/digest.md >> "$GITHUB_STEP_SUMMARY"
@@ -120,6 +243,7 @@ jobs:
 
       - name: Upload snapshot digest artifact
         if: steps.test.outcome == 'failure'
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: snapshot-digest
@@ -127,8 +251,17 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
+      - name: Publish visual snapshot diffs
+        if: steps.test.outcome == 'failure' && github.event_name == 'pull_request'
+        continue-on-error: true
+        run: node scripts/ci/publish-visual-snapshot-diffs.mjs
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ github.token }}
+
       - name: Comment snapshot digest on PR
         if: steps.test.outcome == 'failure' && github.event_name == 'pull_request'
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           SNAPSHOT_DIGEST_MD: snapshot-digest/digest.md
@@ -140,12 +273,187 @@ jobs:
             );
             await mod.default({ github, context, core });
 
-      - name: Fail job if tests failed (non-snapshot)
+      - name: Clear stale snapshot digest comment
+        if: steps.test.outcome == 'success' && github.event_name == 'pull_request'
+        continue-on-error: true
+        uses: actions/github-script@v7
+        env:
+          SNAPSHOT_DIGEST_CLEAR: '1'
+        with:
+          script: |
+            const { pathToFileURL } = require('node:url');
+            const mod = await import(
+              pathToFileURL(`${process.env.GITHUB_WORKSPACE}/scripts/ci/comment-snapshot-digest.mjs`).href
+            );
+            await mod.default({ github, context, core });
+
+      - name: Fail job if tests failed
         if: steps.test.outcome == 'failure'
         run: |
-          if [ -f snapshot-digest/digest.json ] && node -e "const d=require('./snapshot-digest/digest.json'); process.exit(d.count > 0 ? 0 : 1)"; then
-            echo "Snapshot mismatches detected — see snapshot digest artifact / PR comment. Not failing CI."
-          else
-            echo "Tests failed (non-snapshot). See test logs above."
+          if node scripts/ci/should-fail-core-tests.mjs; then
+            echo "::warning::Core tests soft-passed: only standing snapshot mismatches (already on master)."
+            exit 0
+          fi
+          echo "Tests failed (core packages). See the test logs and the snapshot digest above."
+          exit 1
+
+  # Fails when tahti-web calls an API path the API does not serve. The spec is
+  # openapi.json from the latest tahti-org release (what production runs);
+  # tahti-org does not commit it, and generating it needs Postgres + Redis.
+  # Known gaps live in packages/tahti-web/scripts/api-routes-allowlist.json.
+  api-routes:
+    name: API routes exist
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Download the API's OpenAPI export
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download --repo janiluuk/tahti-org --pattern openapi.json --dir "$RUNNER_TEMP"
+          gh release view --repo janiluuk/tahti-org --json tagName,publishedAt --jq '"Checking against tahti-org release \(.tagName) (\(.publishedAt))"'
+
+      - name: Check API routes
+        run: node packages/tahti-web/scripts/check-api-routes.mjs
+        env:
+          TAHTI_OPENAPI: ${{ runner.temp }}/openapi.json
+
+  # Storybook stories as browser tests (render smoke + `play` assertions)
+  # via @storybook/addon-vitest.
+  storybook:
+    name: Storybook (plays ${{ matrix.shard }}/6)
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        # One Chromium page serves a whole shard, and past roughly 100 story
+        # files its renderer gets killed ("Browser connection was closed").
+        # Six shards keep each near 65 of the ~400 files.
+        shard: [1, 2, 3, 4, 5, 6]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Get installed Playwright version
+        id: playwright-version
+        run: echo "version=$(pnpm --filter @tahti-player/storybook exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v6
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+
+      - name: Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @tahti-player/storybook exec playwright install chromium --with-deps
+
+      - name: Install Playwright OS dependencies only
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @tahti-player/storybook exec playwright install-deps chromium
+
+      - name: Story surfaces cheat sheet is current
+        if: matrix.shard == 1
+        run: node scripts/generate-storybook-surfaces.mjs --check
+
+      - name: Run stories as tests
+        run: pnpm --filter @tahti-player/storybook test --shard=${{ matrix.shard }}/6
+
+  # Manual-only e2e run: dispatch the workflow with run_e2e=true. Runs the
+  # Playwright suite against the deployed site (beta.tahti.live by default).
+  e2e:
+    name: E2E (manual)
+    if: github.event_name == 'workflow_dispatch' && inputs.run_e2e == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Install Playwright Chromium
+        run: pnpm --filter @tahti-player/tahti-web exec playwright install chromium --with-deps
+
+      - name: Resolve Playwright Chromium path
+        run: |
+          CHROMIUM_PATH="$(find "$HOME/.cache/ms-playwright" -type f -path '*/chrome-linux/chrome' 2>/dev/null | head -1)"
+          echo "PLAYWRIGHT_CHROMIUM_PATH=${CHROMIUM_PATH}" >> "$GITHUB_ENV"
+          echo "Using Chromium at: ${CHROMIUM_PATH}"
+
+      - name: Playwright e2e suite (manual)
+        id: e2e
+        continue-on-error: true
+        run: pnpm --filter @tahti-player/tahti-web exec playwright test
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ inputs.web_base_url }}
+          PLAYWRIGHT_CHROMIUM_PATH: ${{ env.PLAYWRIGHT_CHROMIUM_PATH }}
+          TAHTI_E2E_PASSWORD: ${{ secrets.TAHTI_E2E_PASSWORD }}
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: packages/tahti-web/playwright-report/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: packages/tahti-web/test-results/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Fail job if e2e suite failed
+        if: steps.e2e.outcome == 'failure'
+        run: |
+          echo "E2E suite failed. See the playwright-report / playwright-test-results artifacts."
+          exit 1
+
+  # Aggregate gate (keeps the historical required `CI` check name working and
+  # gives a single pass/fail node). A job skipped because the change is
+  # docs-only counts as passed. The e2e job is manual-only and excluded.
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    needs:
+      [changes, build-player, lint, test-web, test-core, storybook, api-routes]
+    if: always()
+    steps:
+      - name: Check required jobs
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "changes=${{ needs.changes.result }} build-player=${{ needs.build-player.result }} lint=${{ needs.lint.result }} test-web=${{ needs.test-web.result }} test-core=${{ needs.test-core.result }} storybook=${{ needs.storybook.result }} api-routes=${{ needs.api-routes.result }}"
+          for result in $RESULTS; do
+            if [ "$result" != success ] && [ "$result" != skipped ]; then
+              echo "::error::A required job ended as $result"
+              exit 1
+            fi
+          done
+          if [ "${{ needs.changes.result }}" != success ]; then
+            echo "::error::The change filter did not run"
             exit 1
           fi

@@ -60,4 +60,24 @@ describe('CreatableCombobox', () => {
     );
     expect(screen.getByRole('combobox')).toHaveValue('Techno');
   });
+
+  it('names the button that opens the options', () => {
+    const { rerender } = render(
+      <CreatableCombobox
+        label="Genre"
+        options={OPTIONS}
+        value=""
+        onValueChange={vi.fn()}
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Show Genre options' }),
+    ).toBeInTheDocument();
+    rerender(
+      <CreatableCombobox options={OPTIONS} value="" onValueChange={vi.fn()} />,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Show options' }),
+    ).toBeInTheDocument();
+  });
 });

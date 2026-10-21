@@ -1,0 +1,313 @@
+// @vitest-environment jsdom
+import {
+  createMemoryHistory,
+  createRootRoute,
+  createRoute,
+  createRouter,
+  Outlet,
+  RouterProvider,
+} from '@tanstack/react-router';
+import { act, fireEvent, screen } from '@testing-library/react';
+import { createRoot, type Root } from 'react-dom/client';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import type { BroadcastPreflight } from '../../api/broadcast';
+import { useAuthStore } from '../../stores/authStore';
+import { signalAnnouncement } from './go-live/SignalPanel';
+import { StudioGoLiveView } from './StudioGoLiveView';
+
+const postGoLive = vi.fn();
+const preflightState = vi.hoisted(() => ({
+  current: null as BroadcastPreflight | null,
+}));
+
+vi.mock('../../api/broadcast', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../api/broadcast')>();
+  return {
+    ...actual,
+    fetchStreamSettings: async () => ({
+      data: {
+        rtmp: { server: 'rtmp://x', streamKey: 'k' },
+        icecast: { server: 'icecast://x', mount: '/m', password: 'p' },
+        hlsUrl: 'https://x/live.m3u8',
+      },
+      meta: { source: 'mock' as const },
+    }),
+    fetchBroadcastUsage: async () => ({
+      data: {
+        unlimited: true,
+        secondsUsed: 0,
+        secondsRemaining: null,
+        weeklyCapSeconds: 0,
+        blocked: false,
+      },
+      meta: { source: 'mock' as const },
+    }),
+    fetchRtmpTargets: async () => ({
+      data: [],
+      meta: { source: 'mock' as const },
+    }),
+    fetchBroadcastPreflight: async () => ({
+      data: preflightState.current,
+      meta: { source: 'mock' as const },
+    }),
+    patchBroadcastPreflight: async (patch: Partial<BroadcastPreflight>) => {
+      preflightState.current = {
+        ...(preflightState.current ?? {
+          title: null,
+          visibility: 'PUBLIC' as const,
+          autoPublish: true,
+          showType: 'LIVE_SET' as const,
+          episodeNumber: null,
+          tagline: null,
+          plannedRadioShow: null,
+          plannedLiveShow: null,
+        }),
+        ...patch,
+      };
+      return { data: preflightState.current };
+    },
+    fetchSignalStatus: async () => ({
+      data: {
+        connected: true,
+        codec: 'aac',
+        bitrateKbps: 192,
+        listeners: 0,
+      },
+      meta: { source: 'mock' as const },
+    }),
+    postGoLive: (...args: unknown[]) => postGoLive(...args),
+  };
+});
+
+function createRouterFor() {
+  const rootRoute = createRootRoute({ component: () => <Outlet /> });
+  const route = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/studio/go-live',
+    component: StudioGoLiveView,
+  });
+  return createRouter({
+    routeTree: rootRoute.addChildren([route]),
+    history: createMemoryHistory({ initialEntries: ['/studio/go-live'] }),
+  });
+}
+
+let container: HTMLDivElement;
+let root: Root;
+
+beforeEach(() => {
+  vi.stubEnv('VITE_FORCE_MOCK', '1');
+  preflightState.current = null;
+  postGoLive.mockResolvedValue({ ok: true });
+  container = document.createElement('div');
+  document.body.appendChild(container);
+  root = createRoot(container);
+});
+
+afterEach(() => {
+  act(() => root.unmount());
+  container.remove();
+  vi.unstubAllEnvs();
+  vi.clearAllMocks();
+  useAuthStore.setState({ user: null, hydrated: true, loading: false });
+});
+
+async function renderView() {
+  useAuthStore.setState({
+    user: {
+      id: 'user-1',
+      email: 'artist@tahti.live',
+      username: 'artist',
+      displayName: 'An Artist',
+      role: 'ARTIST',
+      isBoard: false,
+      isMember: true,
+      channel: { slug: 'artist', state: 'OFFLINE' },
+    },
+    hydrated: true,
+    loading: false,
+  });
+  const router = createRouterFor();
+  await act(async () => {
+    root.render(<RouterProvider router={router} />);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+}
+
+describe('StudioGoLiveView go-live confirmation', () => {
+  it('confirms before handing the rotation to the broadcast', async () => {
+    await renderView();
+
+    const goLiveButton = screen.getByRole('button', { name: /Go Live/ });
+    await act(async () => fireEvent.click(goLiveButton));
+
+    expect(postGoLive).not.toHaveBeenCalled();
+    expect(screen.getByText('Go live now?')).toBeInTheDocument();
+
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Go live' })),
+    );
+
+    expect(postGoLive).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not go live when the confirmation is cancelled', async () => {
+    await renderView();
+
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: /Go Live/ })),
+    );
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Cancel' })),
+    );
+
+    expect(postGoLive).not.toHaveBeenCalled();
+  });
+});
+
+describe('StudioGoLiveView with a planned series episode', () => {
+  beforeEach(() => {
+    preflightState.current = {
+      title: 'Friday Frequency — Episode 4',
+      visibility: 'PUBLIC',
+      autoPublish: true,
+      showType: 'LIVE_SET',
+      episodeNumber: 4,
+      tagline: null,
+      plannedRadioShow: null,
+      plannedLiveShow: { seriesId: 'show-series-demo', episodeNumber: 4 },
+    };
+  });
+
+  it('shows the planned episode and the title as ready on the prep tab', async () => {
+    await renderView();
+
+    expect(
+      screen.getByRole('list', { name: 'Prep checklist' }).textContent,
+    ).toContain('✓ Show title ready');
+    expect((screen.getByLabelText('Episode') as HTMLInputElement).value).toBe(
+      '4',
+    );
+    expect(
+      screen.getByRole('button', { name: 'Series episode' }),
+    ).toBeDisabled();
+  });
+
+  it('goes live once the planned episode is confirmed', async () => {
+    await renderView();
+
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: /Go Live/ })),
+    );
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Go live' })),
+    );
+
+    expect(postGoLive).toHaveBeenCalledTimes(1);
+    expect(
+      screen.getByText(
+        'You’re live. The rotation has handed over to your broadcast.',
+      ),
+    ).toBeInTheDocument();
+  });
+});
+
+describe('StudioGoLiveView show title checklist', () => {
+  beforeEach(() => {
+    preflightState.current = {
+      title: null,
+      visibility: 'PUBLIC',
+      autoPublish: true,
+      showType: 'LIVE_SET',
+      episodeNumber: null,
+      tagline: null,
+      plannedRadioShow: null,
+      plannedLiveShow: null,
+    };
+  });
+
+  it('marks Show title ready after saving a show name', async () => {
+    await renderView();
+
+    expect(
+      screen.getByRole('list', { name: 'Prep checklist' }).textContent,
+    ).toContain('○ Show title ready');
+
+    const title = screen.getByLabelText('Show name') as HTMLInputElement;
+    await act(async () => {
+      fireEvent.change(title, { target: { value: 'Friday Frequency' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Save show info' }));
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(
+      screen.getByRole('list', { name: 'Prep checklist' }).textContent,
+    ).toContain('✓ Show title ready');
+  });
+});
+
+describe('StudioGoLiveView status banner', () => {
+  async function goLive() {
+    await renderView();
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: /Go Live/ })),
+    );
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Go live' })),
+    );
+  }
+
+  it('announces a failed go-live as an alert', async () => {
+    postGoLive.mockResolvedValue({
+      ok: false,
+      error: 'No signal from your encoder yet',
+    });
+    await goLive();
+
+    const banner = screen
+      .getAllByText('No signal from your encoder yet')
+      .find((node) => node.getAttribute('role') === 'alert');
+    expect(banner).toBeDefined();
+  });
+
+  it('reports going live as a status, even though the text has no error words', async () => {
+    await goLive();
+
+    const banner = screen.getByText(
+      'You’re live. The rotation has handed over to your broadcast.',
+    );
+    expect(banner.getAttribute('role')).toBe('status');
+  });
+});
+
+describe('StudioGoLiveView signal announcement', () => {
+  it('tells screen readers the encoder signal is in and Go Live is available', async () => {
+    await renderView();
+
+    expect(screen.getByTestId('signal-announcement').textContent).toBe(
+      'Signal received. You can go live.',
+    );
+    expect(
+      screen.getByRole('button', { name: /Show info/ }).textContent,
+    ).toMatch(/not confirmed yet/);
+    expect(
+      screen.getByRole('list', { name: 'Prep checklist' }),
+    ).toBeInTheDocument();
+  });
+
+  it('words each signal state', () => {
+    expect(signalAnnouncement(true, true, false)).toBe(
+      'Your broadcast is on air.',
+    );
+    expect(signalAnnouncement(false, false, false)).toBe(
+      'No signal from your encoder.',
+    );
+    expect(signalAnnouncement(false, true, true)).toMatch(/used up/);
+  });
+});

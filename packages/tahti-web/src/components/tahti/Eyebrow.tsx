@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react';
 
 const TONE_CLASS = {
-  primary: 'text-primary',
-  green: 'text-accent-green',
-  blue: 'text-accent-blue',
-  red: 'text-accent-red',
+  primary: 'text-primary-strong',
+  green: 'text-accent-green-strong',
+  blue: 'text-accent-blue-strong',
+  red: 'text-accent-red-strong',
+  muted: 'text-foreground-secondary',
 } as const;
 
 /** Mono, uppercase, wide-tracked label — section labels and technical

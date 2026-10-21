@@ -9,7 +9,7 @@ import {
 import userEvent from '@testing-library/user-event';
 
 import type { QueueItem } from '@tahti-player/model';
-import { DialogWrapper } from '@tahti-player/ui';
+import { DialogWrapper } from '@tahti-player/ui/test';
 
 import App from '../App';
 import { routeTree } from '../routeTree.gen';
@@ -180,7 +180,7 @@ export const QueueWrapper = {
 
   moreMenu: {
     get saveAsPlaylistOption() {
-      return screen.getByTestId('save-queue-as-playlist');
+      return screen.getByTestId('queue-menu-save-as-playlist');
     },
     async clickSaveAsPlaylist() {
       await user.click(this.saveAsPlaylistOption);

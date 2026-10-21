@@ -1,0 +1,194 @@
+import { SendIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+import { Button, EmptyState } from '@tahti-player/ui';
+
+import {
+  fetchDistributionStatus,
+  type DistributionPlatformMode,
+} from '../../../api/distribution';
+import type {
+  RevelatorBillingStatus,
+  RevelatorRoyaltyReportRow,
+} from '../../../api/studio-types';
+import { ConfirmDialog } from '../../../components/ConfirmDialog';
+import { PageError, PageLoading } from '../../../components/PageStates';
+import { euros } from './distribution-helpers';
+
+export function DeliveryTab({
+  revelatorStatus,
+  revelatorId,
+  billing,
+  busy,
+  canSubmit,
+  confirmSubmit,
+  setConfirmSubmit,
+  onSubmit,
+  showRoyalties,
+  royaltiesLoaded,
+  royalties,
+  royaltiesError = null,
+  onRetryRoyalties,
+}: {
+  revelatorStatus: string | null;
+  revelatorId: string | null;
+  billing: RevelatorBillingStatus | null;
+  busy: boolean;
+  canSubmit: boolean;
+  confirmSubmit: boolean;
+  setConfirmSubmit: (open: boolean) => void;
+  onSubmit: () => void;
+  showRoyalties: boolean;
+  royaltiesLoaded: boolean;
+  royalties: RevelatorRoyaltyReportRow[];
+  royaltiesError?: string | null;
+  onRetryRoyalties?: () => void;
+}) {
+  const [platforms, setPlatforms] = useState<DistributionPlatformMode[]>([]);
+  const [platformsError, setPlatformsError] = useState<string | null>(null);
+  const [platformsAttempt, setPlatformsAttempt] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetchDistributionStatus().then((result) => {
+      if (!cancelled) {
+        setPlatformsError(
+          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+        );
+        setPlatforms(result.data);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [platformsAttempt]);
+
+  const stubPlatforms = platforms.filter((row) => row.mode === 'stub');
+  const revelatorStub = stubPlatforms.some((row) => row.id === 'revelator');
+
+  return (
+    <div className="flex flex-col gap-3">
+      {platformsError ? (
+        <PageError
+          title="Could not check platform status"
+          description={platformsError}
+          onRetry={() => setPlatformsAttempt((n) => n + 1)}
+        />
+      ) : null}
+      {stubPlatforms.length > 0 ? (
+        <div
+          role="status"
+          className="border-accent-amber bg-accent-amber/10 text-foreground rounded-md border px-3 py-2 text-xs"
+        >
+          Platform stub mode —{' '}
+          {stubPlatforms
+            .map((row) => `${row.label} (${row.detail})`)
+            .join('; ')}
+          . DSP submit is refused in production until keys are configured.
+        </div>
+      ) : null}
+      <p className="text-foreground-secondary text-xs">
+        Submits catalog metadata to Revelator (Spotify, Apple, etc.). Requires
+        UPC or ISRC on every track.
+      </p>
+      {revelatorStatus && (
+        <p className="text-xs">
+          Status: <strong>{revelatorStatus}</strong>
+          {revelatorId && (
+            <span className="text-foreground-secondary">
+              {' '}
+              · id {revelatorId}
+            </span>
+          )}
+        </p>
+      )}
+      {billing && !billing.paid && (
+        <p className="text-foreground-secondary text-xs">
+          {billing.feeCents === 0 && billing.studioIncludedRemaining != null
+            ? `Studio included slot (${billing.studioIncludedRemaining} left this year)`
+            : `Distribution fee: ${euros(billing.feeCents)}`}
+        </p>
+      )}
+      {billing?.paid && (
+        <p className="text-foreground-secondary text-xs">
+          {billing.waived
+            ? 'Fee waived (Studio included)'
+            : `Distribution fee paid${
+                billing.distributionPaidAt
+                  ? ` on ${new Date(billing.distributionPaidAt).toLocaleDateString()}`
+                  : ''
+              }`}
+        </p>
+      )}
+      <Button
+        size="sm"
+        className="self-start"
+        disabled={busy || !canSubmit || revelatorStub}
+        onClick={() => setConfirmSubmit(true)}
+      >
+        {!busy && <SendIcon size={14} aria-hidden className="mr-1.5" />}
+        {busy
+          ? 'Submitting…'
+          : revelatorStub
+            ? 'Revelator stub — configure keys'
+            : billing && !billing.paid && billing.feeCents > 0
+              ? `Pay ${euros(billing.feeCents)} & submit`
+              : 'Submit to Revelator'}
+      </Button>
+
+      <ConfirmDialog
+        isOpen={confirmSubmit}
+        title="Submit to Revelator?"
+        description={
+          billing && !billing.paid && billing.feeCents > 0
+            ? `You will be taken to checkout to pay ${euros(billing.feeCents)}. Submitting sends this release to stores.`
+            : 'This sends the release to Revelator for distribution to stores.'
+        }
+        confirmLabel="Submit"
+        onCancel={() => setConfirmSubmit(false)}
+        onConfirm={() => {
+          setConfirmSubmit(false);
+          onSubmit();
+        }}
+      />
+
+      {showRoyalties && (
+        <div className="border-border border-t pt-3">
+          <p className="mb-1 text-xs font-medium">Royalty reports</p>
+          {!royaltiesLoaded ? (
+            <PageLoading label="Loading…" />
+          ) : royaltiesError && royalties.length === 0 ? (
+            <PageError
+              title="Could not load royalty reports"
+              description={royaltiesError}
+              onRetry={onRetryRoyalties}
+            />
+          ) : royalties.length === 0 ? (
+            <EmptyState
+              size="sm"
+              title="No reports yet"
+              description="Synced monthly after DSP delivery."
+            />
+          ) : (
+            <ul className="divide-border divide-y text-xs">
+              {royalties.map((row) => (
+                <li
+                  key={row.id}
+                  className="flex flex-wrap items-center justify-between gap-2 py-1.5"
+                >
+                  <span>{row.periodStart.slice(0, 7)}</span>
+                  <span className="text-foreground-secondary">
+                    {row.streams != null
+                      ? `${row.streams.toLocaleString()} streams · `
+                      : ''}
+                    {euros(row.amountCents)} {row.currency}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

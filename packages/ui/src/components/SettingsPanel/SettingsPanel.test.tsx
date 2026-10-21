@@ -71,6 +71,26 @@ describe('SettingsPanel', () => {
     );
   });
 
+  it('starts on the content when asked to, for a link to one section', () => {
+    render(
+      <SettingsPanel
+        isOpen
+        onClose={() => {}}
+        tabs={TABS}
+        activeTab="themes"
+        onTabChange={() => {}}
+        startOnContent
+      />,
+    );
+
+    expect(classTokens(screen.getByTestId('settings-panel-nav'))).toContain(
+      'hidden',
+    );
+    expect(classTokens(screen.getByTestId('settings-panel-content'))).toContain(
+      'flex',
+    );
+  });
+
   it('enters detail mode after a tab click and returns to list on Back', async () => {
     const user = userEvent.setup();
     const onTabChange = vi.fn();
@@ -123,5 +143,23 @@ describe('SettingsPanel', () => {
     const navClass = screen.getByTestId('settings-panel-nav').className;
     expect(navClass.split(/\s+/)).not.toContain('flex!');
     expect(navClass).toMatch(/sm:flex!/);
+  });
+
+  it('renders a nav heading where the tab group changes', () => {
+    const grouped = TABS.map((tab, index) => ({
+      ...tab,
+      group: index < 2 ? 'Settings' : 'App',
+    }));
+    render(
+      <SettingsPanel
+        isOpen
+        onClose={() => {}}
+        tabs={grouped}
+        activeTab="general"
+        onTabChange={() => {}}
+      />,
+    );
+    const headings = screen.getAllByRole('heading', { level: 2 });
+    expect(headings.map((h) => h.textContent)).toEqual(['Settings', 'App']);
   });
 });

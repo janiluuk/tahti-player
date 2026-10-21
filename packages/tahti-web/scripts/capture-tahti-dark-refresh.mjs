@@ -1,7 +1,13 @@
 import { mkdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { chromium } from 'playwright';
+import { chromium } from '@playwright/test';
+
+import {
+  CAPTURE_THEME_STATE,
+  prepareCapturePage,
+  withThemeSuffix,
+} from './lib/captureSetup.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outDir = join(__dirname, '../docs/redesign-shots');
@@ -24,11 +30,22 @@ const layoutClosed = {
   version: 3,
 };
 
+// Spotify theme in CAPTURE_THEME_MODE (see lib/captureSetup.mjs).
+const THEME_STATE = CAPTURE_THEME_STATE;
+
+async function setDarkTheme() {
+  await page.evaluate((theme) => {
+    localStorage.setItem('tahti-web-theme', JSON.stringify(theme));
+  }, THEME_STATE);
+}
+
 let browser = await chromium.launch({
   channel: 'chromium',
+  executablePath: process.env.CHROMIUM_PATH || undefined,
   args: ['--disable-dev-shm-usage', '--disable-gpu'],
 });
 let page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+await prepareCapturePage(page);
 let authed = false;
 
 async function ensureChatClosed() {
@@ -54,9 +71,11 @@ async function relaunch() {
   }
   browser = await chromium.launch({
     channel: 'chromium',
+    executablePath: process.env.CHROMIUM_PATH || undefined,
     args: ['--disable-dev-shm-usage', '--disable-gpu'],
   });
   page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  await prepareCapturePage(page);
   if (boardAuthed) {
     boardAuthed = false;
     authed = false;
@@ -83,6 +102,7 @@ async function authAs() {
             email: 'board@tahti.live',
             username: 'board',
             displayName: 'Board Member',
+            role: 'BOARD',
             isBoard: true,
             membershipStatus: 'ACTIVE',
             channel: { slug: 'demo', state: 'OFFLINE' },
@@ -94,6 +114,7 @@ async function authAs() {
     localStorage.setItem('tahti-web-onboarded:mock-board-1', '1');
     localStorage.setItem('tahti-web-layout', JSON.stringify(layout));
   }, layoutClosed);
+  await setDarkTheme();
 }
 
 let boardAuthed = false;
@@ -112,6 +133,7 @@ async function boardAuthAs() {
             email: 'board@tahti.live',
             username: 'board',
             displayName: 'Board Member',
+            role: 'BOARD',
             isBoard: true,
             membershipStatus: 'ACTIVE',
             channel: { slug: 'demo', state: 'OFFLINE' },
@@ -123,6 +145,7 @@ async function boardAuthAs() {
     localStorage.setItem('tahti-web-onboarded:mock-board-1', '1');
     localStorage.setItem('tahti-web-layout', JSON.stringify(layout));
   }, layoutClosed);
+  await setDarkTheme();
 }
 
 // [path, output filename] pairs — authenticated as the mock demo artist.
@@ -179,6 +202,8 @@ const authedShots = [
 // dynamic-state shots below.
 const adminShots = [
   ['/admin', 'admin-dashboard-v1.png'],
+  // Root README.md's Screenshots section links this exact filename.
+  ['/admin', 'admin-dashboard-current-v1.png'],
   ['/admin/beta', 'admin-beta-v1.png'],
   ['/admin/users', 'admin-users-v1.png'],
   ['/admin/radio', 'admin-radio-v1.png'],
@@ -219,7 +244,7 @@ async function captureOnce(path, out) {
   await page.waitForTimeout(1200);
   await ensureChatClosed();
   const text = await page.locator('body').innerText();
-  const outPath = join(outDir, out);
+  const outPath = join(outDir, withThemeSuffix(out));
   await page.screenshot({ path: outPath, fullPage: true });
   return text.slice(0, 120).replace(/\n/g, ' ');
 }
@@ -240,6 +265,9 @@ async function capture(path, out, retried = false) {
     results.push({ path, out, ok: false });
   }
 }
+
+await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
+await setDarkTheme();
 
 for (const [path, out] of loggedOutShots) {
   await capture(path, out);

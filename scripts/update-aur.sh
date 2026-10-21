@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-TEMPLATE="${REPO_ROOT}/aur/tahti-player-bin/PKGBUILD.template"
+TEMPLATE="${REPO_ROOT}/packaging/aur/tahti-player-bin/PKGBUILD.template"
 WORK_DIR="/tmp/tahti-aur-bin"
 
 VERSION=""

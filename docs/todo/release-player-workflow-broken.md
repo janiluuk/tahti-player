@@ -1,6 +1,54 @@
 # Release Player workflow (`release-player.yml`) is broken — 0 jobs on every run
 
-**Status:** partial
+**Status:** blocked
+
+**Blocker:** CI wiring shipped; blocked on user-held store secrets (`NPM_TOKEN`, `SNAPCRAFT_STORE_CREDENTIALS`, etc.) and first real release run.
+
+## Update 2026-09-25 — second root cause: tags from GITHUB_TOKEN never trigger
+
+The file parsed fine after 2026-09-07, yet no run ever started and there are
+zero GitHub Releases despite 100+ `player@*` tags. `bump-and-tag-player.yml`
+pushes the tag with `GITHUB_TOKEN`, and GitHub never starts other workflows
+from events that token creates.
+
+Fix (branch `fix/release-workflows`):
+- `release-player.yml` also accepts `workflow_call` / `workflow_dispatch` with a
+  `tag` input, checks out that tag, and uses it for version and release name.
+- `bump-and-tag-player.yml` has a `release` job calling it with the new tag.
+- Existing tags can be released by hand: Actions → Release Player → Run
+  workflow → `tag: player@1.47.112`.
+
+`release-plugin-sdk.yml` never ran either (nothing creates `plugin-sdk@*`
+tags, no `NPM_TOKEN` secret). It now has `workflow_dispatch`, tags the
+`package.json` version, attaches the `npm pack` tarball to a non-latest GitHub
+Release (so it can't replace the player's `releases/latest/download/latest.json`
+updater endpoint), and only publishes to npm when `NPM_TOKEN` is set. Publish
+prep adds `zod` (bundled types import it) and drops the `./mcp` export (points
+at unpublished `src/`). Local `build:npm` + `pnpm pack` verified.
+
+Still open:
+- [ ] Merge, then run Release Player for an existing tag and confirm all four
+      desktop builds and `latest.json` land on the release.
+- [ ] Run Release Plugin SDK once; add `NPM_TOKEN` and own the `@tahti-player`
+      npm scope if npm publishing is wanted.
+- [ ] User: set the store secrets if these channels are wanted (`AUR_SSH_KEY` +
+      `AUR_KNOWN_HOSTS`, `FLATHUB_TOKEN` with push to `flathub/live.tahti.player`,
+      `WINGET_TOKEN` with a `winget-pkgs` fork). Since #169 the three updaters are
+      called from Release Player after `release-desktop` and skip with a warning
+      while their secret is missing; the first real run should confirm that.
+
+Snap (same branch): `release-snap.yml` is now called by `release-player.yml`
+after `release-desktop` (`workflow_run` removed), checks out the `player@` tag,
+uploads the `.snap` to the GitHub Release, and publishes to the Snap Store
+`stable` channel only when `SNAPCRAFT_STORE_CREDENTIALS` is set. PRs touching
+`snap/**` run a build-only check. `snap/snapcraft.yaml`: dropped the
+interactive `pnpm approve-builds`, Node 22 → 24 (repo `engines`), pnpm pinned
+to `packageManager`.
+
+- [ ] Confirm the PR snap build passes.
+- [ ] User: `snapcraft register tahti-player`, then
+      `snapcraft export-login --snaps=tahti-player --channels=stable -` →
+      `gh secret set SNAPCRAFT_STORE_CREDENTIALS`.
 
 ## Update 2026-09-07 — root cause found and fixed
 
@@ -24,14 +72,19 @@ fixed a latent bug found along the way: the heredoc terminator
 (`cat > keystore.properties <<EOF`) had indented `EOF` with no `-`,
 which bash requires for an indented terminator — changed to `<<-EOF`.
 
-**Not yet done:** `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` secret still
-missing. Generated a fresh Tauri signing keypair locally (safe to
-rotate — `gh release list` confirms this repo has **zero** published
-releases, so no existing installed app depends on the old key for
-auto-update verification) but setting the actual repo secrets via
-`gh secret set` was blocked by the Claude Code auto-mode classifier
-(sensitive account-modifying action). Handed the generated key/password
-to the user directly to set themselves.
+**Update 2026-09-21 — done:** the original keypair handed to the user was
+lost, so generated a fresh one (same rationale still holds — zero
+published releases, safe to rotate). This time, with the user's explicit
+go-ahead, ran `gh secret set TAURI_SIGNING_PRIVATE_KEY` /
+`gh secret set TAURI_SIGNING_PRIVATE_KEY_PASSWORD` directly (piped from
+local files, values never printed to chat) — not blocked this time (the
+2026-09-07 block was likely because permission hadn't been explicitly
+granted for this specific action yet). `gh secret list` confirms both are
+now set as a matched pair; local key files deleted after. **Not yet
+done:** an actual end-to-end verification via a real `player@*.*.*` tag
+push — that triggers a real CI release build and, if it succeeds,
+publishes to GitHub Releases, so it needs the user's explicit go-ahead
+before attempting (out of scope for this pass).
 
 ## Symptom
 
@@ -76,7 +129,7 @@ secrets together so they're always a matched pair.
       rejecting — done, see "root cause found and fixed" above.
 - [x] Fix `release-player.yml` so a normal `player@*.*.*` tag push
       actually dispatches the `release-desktop` matrix jobs.
-- [ ] User needs to run the two `gh secret set` commands handed to them
-      (Claude Code blocked setting repo secrets directly) to finish
-      pairing `TAURI_SIGNING_PRIVATE_KEY` / `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`.
-- [ ] Verify end-to-end with a real tag push once the secrets are set.
+- [x] Set `TAURI_SIGNING_PRIVATE_KEY` / `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`
+      as a matched pair of repo secrets — done 2026-09-21.
+- [ ] Verify end-to-end with a real tag push once the secrets are set —
+      needs the user's go-ahead, since it triggers a real release build.

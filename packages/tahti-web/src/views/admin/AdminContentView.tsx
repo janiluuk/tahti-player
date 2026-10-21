@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import {
   Clock3Icon,
   FileAudioIcon,
@@ -7,7 +6,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, ViewShell } from '@tahti-player/ui';
+import { ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchAdminContentOverview,
@@ -15,7 +14,7 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
 
@@ -37,25 +36,50 @@ function formatDate(value: string): string {
 export function AdminContentView() {
   const [data, setData] = useState<AdminContentOverview | null>(null);
 
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
+
   useEffect(() => {
-    void fetchAdminContentOverview().then((result) => setData(result.data));
-  }, []);
+    void fetchAdminContentOverview().then((result) => {
+      const reason =
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
+      setLoadError(reason);
+      setData(result.data);
+    });
+  }, [attempt]);
 
   return (
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/content">
-          <ViewShell title="Content" classes={{ root: 'px-0 pt-0' }}>
+          <ViewShell
+            title="Content"
+            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+          >
             <div>
-              <Link to="/admin/top-lists">
-                <Button size="sm" variant="secondary">
-                  <ListMusicIcon size={15} aria-hidden /> Top lists
-                </Button>
-              </Link>
+              <ButtonLink
+                className="gap-1.5"
+                to="/admin/top-lists"
+                size="sm"
+                variant="secondary"
+              >
+                <ListMusicIcon size={15} aria-hidden /> Top lists
+              </ButtonLink>
             </div>
             {!data ? (
               <StudioPanel>
                 <PageLoading label="Loading content overview…" />
+              </StudioPanel>
+            ) : loadError ? (
+              <StudioPanel>
+                <PageError
+                  title="Could not load the content overview"
+                  description={loadError}
+                  onRetry={() => {
+                    setData(null);
+                    setAttempt((n) => n + 1);
+                  }}
+                />
               </StudioPanel>
             ) : (
               <>
@@ -85,9 +109,7 @@ export function AdminContentView() {
                     description="The newest tracks, shows, releases, and other catalog items."
                   >
                     {data.latestContent.length === 0 ? (
-                      <p className="text-foreground-secondary text-sm">
-                        No content has been added yet.
-                      </p>
+                      <PageEmpty title="No content has been added yet." />
                     ) : (
                       <ul className="divide-border divide-y">
                         {data.latestContent.map((item) => (
@@ -101,7 +123,10 @@ export function AdminContentView() {
                               aria-hidden
                             />
                             <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-medium">
+                              <p
+                                className="truncate text-sm font-medium"
+                                title={item.title}
+                              >
                                 {item.title}
                               </p>
                               <p className="text-foreground-secondary text-xs">
@@ -125,9 +150,7 @@ export function AdminContentView() {
                     description="Recent broadcasts captured by the platform recorder."
                   >
                     {data.latestBroadcasts.length === 0 ? (
-                      <p className="text-foreground-secondary text-sm">
-                        No recorded broadcasts yet.
-                      </p>
+                      <PageEmpty title="No recorded broadcasts yet." />
                     ) : (
                       <ul className="divide-border divide-y">
                         {data.latestBroadcasts.map((broadcast) => (
@@ -141,7 +164,10 @@ export function AdminContentView() {
                               aria-hidden
                             />
                             <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-medium">
+                              <p
+                                className="truncate text-sm font-medium"
+                                title={broadcast.title}
+                              >
                                 {broadcast.title}
                               </p>
                               <p className="text-foreground-secondary text-xs">

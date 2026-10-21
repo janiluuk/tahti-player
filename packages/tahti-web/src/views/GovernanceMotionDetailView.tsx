@@ -1,11 +1,17 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Button, ViewShell } from '@tahti-player/ui';
+import { Box, Button, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMembers, fetchGovernanceMotion } from '../api/client';
 import type { GovernanceMember, GovernanceMotionDetail } from '../api/types';
+import { MotionAgendaItemControl } from '../components/governance/MotionAgendaItemControl';
 import { MotionCard } from '../components/governance/MotionCard';
+import { MotionCertificatePanel } from '../components/governance/MotionCertificatePanel';
+import { MotionCirculateControl } from '../components/governance/MotionCirculateControl';
+import { MotionMeetingLinkControl } from '../components/governance/MotionMeetingLinkControl';
+import { MotionMeetingNote } from '../components/governance/MotionMeetingNote';
+import { MotionSeconders } from '../components/governance/MotionSeconders';
 import { PageLoading } from '../components/PageStates';
 import { hasAccountRole } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
@@ -25,7 +31,6 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
     if (!user) {
       return;
     }
-    setLoading(true);
     void Promise.all([
       fetchGovernanceMotion(id),
       fetchGovernanceMembers(),
@@ -51,6 +56,7 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
       setForbidden(true);
       return;
     }
+    setLoading(true);
     reload();
   }, [user, id]);
 
@@ -59,7 +65,7 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
       title={motion?.title ?? 'Motion'}
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-3xl',
-        scrollableArea: 'gap-6',
+        content: 'gap-6',
       }}
     >
       <Link
@@ -70,23 +76,24 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
       </Link>
 
       {!user && (
-        <div className="border-border flex flex-col gap-3 rounded-lg border p-4">
+        <Box variant="secondary" className="flex flex-col gap-3">
           <p className="text-sm">
             Sign in with a cooperative membership account to view this motion.
           </p>
           <Button
             size="sm"
+            className="w-fit"
             onClick={() => useAuthModalStore.getState().open('login')}
           >
             Log in
           </Button>
-        </div>
+        </Box>
       )}
 
       {user && loading && <PageLoading label="Loading motion…" />}
 
       {user && !loading && forbidden && (
-        <div className="border-border flex flex-col gap-3 rounded-lg border p-4">
+        <Box variant="secondary" className="flex flex-col gap-3">
           <p className="text-sm">
             Motions are gated to active Tahti ry members. Signed in as @
             {user.username}.
@@ -94,11 +101,12 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
           <Button
             size="sm"
             variant="secondary"
+            className="w-fit"
             onClick={() => useSettingsModalStore.getState().open('account')}
           >
             Manage membership
           </Button>
-        </div>
+        </Box>
       )}
 
       {user && !loading && !forbidden && !motion && (
@@ -118,6 +126,40 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
             onChanged={reload}
           />
         </ul>
+      )}
+
+      {user && !loading && !forbidden && motion && (
+        <MotionMeetingNote
+          meeting={motion.meeting}
+          agendaItem={motion.agendaItem}
+        />
+      )}
+
+      {user && !loading && !forbidden && motion && isBoard && (
+        <MotionMeetingLinkControl motion={motion} onChanged={reload} />
+      )}
+
+      {user && !loading && !forbidden && motion && isBoard && (
+        <MotionAgendaItemControl motion={motion} onChanged={reload} />
+      )}
+
+      {user &&
+        !loading &&
+        !forbidden &&
+        motion?.state === 'DRAFT' &&
+        isBoard && (
+          <MotionCirculateControl
+            motionId={motion.id}
+            circulatedAt={motion.circulatedAt}
+          />
+        )}
+
+      {user && !loading && !forbidden && motion && (
+        <MotionSeconders motionId={motion.id} refreshKey={motion} />
+      )}
+
+      {user && !loading && !forbidden && motion?.state === 'CLOSED' && (
+        <MotionCertificatePanel motionId={motion.id} isBoard={isBoard} />
       )}
     </ViewShell>
   );

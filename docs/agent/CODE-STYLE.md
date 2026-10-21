@@ -86,6 +86,28 @@ When adding a new component to `@tahti-player/ui`:
 - Fonts are design-system defaults (`font-sans`, `font-heading`). You rarely need to set fonts by hand.
 - Use `cn()` for conditional classes, `cva()` for variants
 
+### Accessibility
+
+The 2026-10 axe and keyboard sweeps (`docs/todo/HISTORY.md`, batch 59) settled these. Check new UI against them:
+
+- **Focus:** library `Button`, `ButtonLink` and `ButtonAnchor` draw a `focus-visible` ring; don't add `outline-none` to anything focusable without a replacement ring. A focusable container inside an `overflow-hidden` parent uses `focus-visible:ring-inset`.
+- **Popover triggers:** pass the trigger as a single element that forwards its ref (the library `Button`). For a tooltip on the trigger use `Popover`'s `tooltip={{ content, side }}`; never wrap the trigger in `Tooltip`, which drops the props the popover adds.
+- **Names:** every dialog has a `Dialog.Title` or an `aria-label` on `Dialog.Root`. `aria-label` only goes on an element with a role (`role="img"` for an icon-plus-text summary like a star rating, `role="group"` for a cluster of controls); a decorative placeholder next to its own text is `aria-hidden`. Icon-only table headers carry an `sr-only` label.
+- **Roles:** don't add `role="grid"`/`"list"`/`"button"` unless children and keyboard behaviour match. Only reorderable `TrackTable` rows get dnd-kit's attributes.
+- **Structure:** one `h1` per page, no skipped levels (`EmptyState` titles are `h2`). Landmarks come from the shell (`header`, sidebar `nav` "Main", `main#main-content`, queue `aside`); a page section is not an `aside`, and a second `nav` on a page needs an `aria-label`.
+- **Text:** links inside running text are underlined, not set apart by colour alone. Small text needs 4.5:1 against its background, so don't fade `text-*-foreground` with `opacity-*`; `readableMuted()` picks a readable colour-scheme tone.
+- **Wide content on phones:** wrap a table or chart that scrolls sideways in `HorizontalScroll` with a `label`, so keyboard users can reach and scroll it.
+- **Touch targets:** at least 24 px tall for links and buttons in lists.
+- **Checking:** the mock app plus axe-core (`addScriptTag` with `axe.min.js`, then `axe.run`) on the routes you touched, at 390 and 1280 px; a Tab-through for focus.
+
+### Layout
+
+- Grids and rows inside a card or side column use container queries (`@container` on the parent, `@md:`/`@4xl:` on the child), not viewport breakpoints; check with the queue panel open at 1366 px.
+- A grid with no `grid-cols-*` grows to its widest child on a phone: give it `grid-cols-1`. A `shrink-0 flex-wrap` group never wraps: drop `shrink-0`.
+- Text beside buttons: `min-w-0 flex-1 basis-*` on the text and `flex-wrap` on the row, so the buttons drop below instead of squeezing the text into a column.
+- Join classes with `cn()`, never a template string, so callers' overrides win.
+- Check new layouts at 320, 390, 768 and 1280 px.
+
 ### State Management
 
 - **Zustand** - persistent UI state
@@ -101,9 +123,13 @@ When adding a new component to `@tahti-player/ui`:
 - **Utilities**: lodash-es (use individual imports: `import isEqual from 'lodash-es/isEqual'`)
 - **HTTP**: Native fetch via ApiClient base class (no axios)
 
-### Adding New Domains
+### Desktop features (where new work goes)
 
-A "domain" is a feature area exposed to plugins (e.g., settings, queue, favorites). When adding a new domain:
+Since 2026-09-01 the desktop app mounts tahti-web (`packages/player/src/main.tsx` → `mountTahtiApp`); Nuclear's `initPlayerApp`, its stores, hosts and bridge no longer run. Desktop features belong in `packages/tahti-web`, using natives the Tauri shell hands over as `globalThis.__TAHTI_NATIVE_*__` (examples: MCP `src/lib/mcp/`, MPD `src/lib/mpd/`, Discord `src/lib/discord/`, Tahti Jam `src/lib/jam/`, updates `src/lib/updates/`, wired from `packages/player/src/desktop*.ts`). Before touching anything under `packages/player/src`, check it is reachable from `main.tsx`.
+
+### Adding New Domains (legacy Nuclear plugin SDK)
+
+Kept for the legacy SDK only; the shipped app does not load these plugins. A "domain" is a feature area exposed to plugins (e.g., settings, queue, favorites). When adding a new domain:
 
 1. **Types** (`packages/plugin-sdk/src/types/myDomain.ts`)
    - Define the `MyDomainHost` interface (the contract between player and SDK)
@@ -124,7 +150,7 @@ A "domain" is a feature area exposed to plugins (e.g., settings, queue, favorite
 
 ### External API Clients
 
-Live in `packages/player/src/apis/`. Use `ApiClient` base class (fetch→json→Zod).
+In tahti-web, API modules live in `packages/tahti-web/src/api/` and use `requestJson` / `getJson` (credentials included, API `issues`/`error` become the thrown message). Legacy player clients live in `packages/player/src/apis/` (`ApiClient` base class, fetch→json→Zod).
 
 - Validate external data with Zod schemas
 - Export singleton instances

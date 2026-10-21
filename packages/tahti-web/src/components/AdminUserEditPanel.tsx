@@ -1,17 +1,17 @@
-import { Link } from '@tanstack/react-router';
 import {
   ExternalLinkIcon,
   MessageSquareIcon,
   SendIcon,
   ShieldAlertIcon,
-  UserRoundIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
   Badge,
   Button,
+  ButtonLink,
   Input,
+  MediaArtwork,
   SaveButton,
   Select,
   Textarea,
@@ -34,8 +34,13 @@ import {
   type ChatDm,
 } from '../api/messages';
 import type { AccountRole, PublicProfile } from '../api/types';
+import { useAuthStore } from '../stores/authStore';
+import { AdminChannelKindControl } from './admin-user/AdminChannelKindControl';
+import { AdminUserDeletePanel } from './admin-user/AdminUserDeletePanel';
+import { AdminUserEngagementPanel } from './admin-user/AdminUserEngagementPanel';
+import { AdminUserRestrictionsPanel } from './admin-user/AdminUserRestrictionsPanel';
 import { ImageLightbox } from './ImageLightbox';
-import { PageLoading } from './PageStates';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 const ROLES = ['BOARD', 'ARTIST', 'LISTENER'] as const;
@@ -47,10 +52,13 @@ const ROLES = ['BOARD', 'ARTIST', 'LISTENER'] as const;
 export function AdminUserEditPanel({
   userId,
   onUserUpdated,
+  onUserDeleted,
 }: {
   userId: string;
   onUserUpdated?: (user: AdminUserDetail) => void;
+  onUserDeleted?: (userId: string) => void;
 }) {
+  const me = useAuthStore((s) => s.user);
   const [detail, setDetail] = useState<AdminUserDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [editRole, setEditRole] = useState<AccountRole>('LISTENER');
@@ -67,6 +75,8 @@ export function AdminUserEditPanel({
     null,
   );
   const [avatarOpen, setAvatarOpen] = useState(false);
+  const [detailError, setDetailError] = useState<string | null>(null);
+  const [detailAttempt, setDetailAttempt] = useState(0);
 
   const syncDetail = (user: AdminUserDetail) => {
     setDetail(user);
@@ -93,9 +103,10 @@ export function AdminUserEditPanel({
       } else {
         setDetail(null);
       }
+      setDetailError(result.data ? null : (result.meta.reason ?? null));
       setDetailLoading(false);
     });
-  }, [userId]);
+  }, [userId, detailAttempt]);
 
   const saveUser = async () => {
     if (!detail) {
@@ -199,40 +210,32 @@ export function AdminUserEditPanel({
   if (!detail) {
     return (
       <StudioPanel className="flex min-h-72 items-center justify-center">
-        <div className="text-center">
-          <UserRoundIcon
-            size={28}
-            aria-hidden
-            className="text-foreground-secondary mx-auto mb-2"
-          />
-          <p className="text-foreground-secondary text-sm">
-            Could not load this account.
-          </p>
-        </div>
+        <PageError
+          title="Could not load this account"
+          description={detailError ?? undefined}
+          onRetry={() => setDetailAttempt((n) => n + 1)}
+        />
       </StudioPanel>
     );
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="@container flex flex-col gap-4">
       <StudioPanel>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="flex min-w-0 items-start gap-4">
             {publicProfile?.artist.avatarUrl ? (
-              <button
-                type="button"
-                className="border-border size-20 shrink-0 overflow-hidden rounded-xl border shadow-md"
+              <Button
+                variant="text"
+                size="flexible"
+                className="border-border relative size-20 shrink-0 overflow-hidden rounded-xl border p-0 shadow-md"
                 aria-label={`View ${detail.displayName} profile picture`}
                 onClick={() => setAvatarOpen(true)}
               >
-                <img
-                  src={publicProfile.artist.avatarUrl}
-                  alt=""
-                  className="size-full object-cover"
-                />
-              </button>
+                <MediaArtwork src={publicProfile.artist.avatarUrl} alt="" />
+              </Button>
             ) : (
-              <span className="bg-primary/15 text-primary flex size-20 shrink-0 items-center justify-center rounded-xl text-2xl font-bold">
+              <span className="bg-primary/15 text-primary-strong flex size-20 shrink-0 items-center justify-center rounded-xl text-2xl font-bold">
                 {detail.displayName.slice(0, 1).toUpperCase()}
               </span>
             )}
@@ -250,7 +253,7 @@ export function AdminUserEditPanel({
                   </Badge>
                 ) : null}
               </div>
-              <p className="text-foreground-secondary text-sm">
+              <p className="text-foreground-secondary text-sm break-words">
                 @{detail.username} · {detail.email}
               </p>
               {publicProfile?.artist.pronouns ? (
@@ -272,17 +275,17 @@ export function AdminUserEditPanel({
                 <MessageSquareIcon size={15} aria-hidden />
               </Button>
             </Tooltip>
-            <Link to="/u/$username" params={{ username: detail.username }}>
-              <Tooltip content="View profile" side="top">
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  aria-label={`View ${detail.displayName}'s profile`}
-                >
-                  <ExternalLinkIcon size={15} aria-hidden />
-                </Button>
-              </Tooltip>
-            </Link>
+            <Tooltip content="View profile" side="top">
+              <ButtonLink
+                to="/u/$username"
+                params={{ username: detail.username }}
+                size="icon-sm"
+                variant="secondary"
+                aria-label={`View ${detail.displayName}'s profile`}
+              >
+                <ExternalLinkIcon size={15} aria-hidden />
+              </ButtonLink>
+            </Tooltip>
           </div>
         </div>
 
@@ -292,7 +295,7 @@ export function AdminUserEditPanel({
           </p>
         ) : null}
 
-        <dl className="border-border mt-4 grid gap-3 border-t pt-4 text-sm sm:grid-cols-2 lg:grid-cols-4">
+        <dl className="border-border mt-4 grid gap-3 border-t pt-4 text-sm @sm:grid-cols-2 @2xl:grid-cols-4">
           <div>
             <dt className="text-foreground-secondary text-xs uppercase">
               Member since
@@ -332,7 +335,7 @@ export function AdminUserEditPanel({
           </div>
         </dl>
 
-        <dl className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <dl className="mt-5 grid gap-3 @sm:grid-cols-2 @2xl:grid-cols-4">
           <div className="bg-background-secondary rounded-lg p-3">
             <dt className="text-foreground-secondary text-xs uppercase">
               Engagement
@@ -363,6 +366,15 @@ export function AdminUserEditPanel({
                 ? `${detail.channel.totalLiveHours.toFixed(1)} live hours`
                 : 'Listener account'}
             </dd>
+            {detail.channel ? (
+              <dd className="mt-2">
+                <AdminChannelKindControl
+                  key={detail.channel.slug}
+                  slug={detail.channel.slug}
+                  initialKind={detail.channel.channelKind ?? 'ARTIST'}
+                />
+              </dd>
+            ) : null}
           </div>
           <div className="bg-background-secondary rounded-lg p-3">
             <dt className="text-foreground-secondary text-xs uppercase">
@@ -377,7 +389,7 @@ export function AdminUserEditPanel({
         </dl>
       </StudioPanel>
 
-      <div className="grid gap-4 xl:grid-cols-2">
+      <div className="grid gap-4 @3xl:grid-cols-2">
         <StudioPanel
           title="Account details"
           description="Edit access, membership, and governance roles."
@@ -449,7 +461,7 @@ export function AdminUserEditPanel({
             className={
               detail.suspendedAt
                 ? 'mt-3'
-                : 'text-accent-red hover:text-accent-red mt-3'
+                : 'text-accent-red-strong hover:text-accent-red-strong mt-3'
             }
             onClick={() => void toggleSuspension()}
           >
@@ -459,6 +471,17 @@ export function AdminUserEditPanel({
         </StudioPanel>
       </div>
 
+      <div className="grid gap-4 @3xl:grid-cols-2">
+        <AdminUserEngagementPanel userId={detail.id} />
+        <AdminUserRestrictionsPanel userId={detail.id} />
+      </div>
+
+      <AdminUserDeletePanel
+        user={detail}
+        isSelf={me?.id === detail.id}
+        onDeleted={() => onUserDeleted?.(detail.id)}
+      />
+
       {messageOpen ? (
         <StudioPanel
           title={`Message ${detail.displayName}`}
@@ -466,9 +489,7 @@ export function AdminUserEditPanel({
         >
           <div className="border-border bg-background flex max-h-64 min-h-36 flex-col gap-2 overflow-y-auto rounded-lg border p-3">
             {messages.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No messages yet. Start the conversation below.
-              </p>
+              <PageEmpty title="No messages yet. Start the conversation below." />
             ) : (
               messages.map((message) => (
                 <div

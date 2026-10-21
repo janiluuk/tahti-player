@@ -30,12 +30,14 @@ import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ImageUploadField } from '../../components/ImageUploadField';
-import { PageEmpty, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { AdminTestNotificationPanel } from './AdminTestNotificationPanel';
 
 export function AdminNewsView() {
   const [posts, setPosts] = useState<AdminNewsPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [composeOpen, setComposeOpen] = useState(false);
   const [headline, setHeadline] = useState('');
   const [summary, setSummary] = useState('');
@@ -56,6 +58,9 @@ export function AdminNewsView() {
   const reload = () => {
     void fetchAdminNews().then((res) => {
       setPosts(res.data);
+      setLoadError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
   };
@@ -87,7 +92,7 @@ export function AdminNewsView() {
         <AdminPageLayout current="/admin/news">
           <ViewShell
             title="News"
-            classes={{ root: 'px-0 pt-0' }}
+            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             actions={
               <Tooltip content="Write post" side="top">
                 <Button
@@ -109,6 +114,15 @@ export function AdminNewsView() {
             <StudioPanel>
               {loading ? (
                 <PageLoading label="Loading news…" />
+              ) : loadError && posts.length === 0 ? (
+                <PageError
+                  title="Could not load news posts"
+                  description={loadError}
+                  onRetry={() => {
+                    setLoading(true);
+                    reload();
+                  }}
+                />
               ) : posts.length === 0 ? (
                 <PageEmpty
                   title="No news posts yet"
@@ -205,20 +219,20 @@ export function AdminNewsView() {
                         key={post.id}
                         className="flex flex-wrap items-start justify-between gap-3 py-3 first:pt-0 last:pb-0"
                       >
-                        <div className="min-w-0 flex-1">
+                        <div className="min-w-0 flex-1 basis-64">
                           <div className="flex items-center gap-2 font-medium">
                             {post.imageUrl ? (
                               <ImageIcon
                                 size={14}
                                 aria-label="Includes image"
-                                className="text-primary"
+                                className="text-primary-strong"
                               />
                             ) : null}
                             {post.linkUrl ? (
                               <ExternalLinkIcon
                                 size={14}
                                 aria-label="Includes link"
-                                className="text-primary"
+                                className="text-primary-strong"
                               />
                             ) : null}
                             {post.headline}
@@ -231,7 +245,7 @@ export function AdminNewsView() {
                           </p>
                           <p className="mt-1 text-sm">{post.summary}</p>
                         </div>
-                        <div className="flex shrink-0 flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2">
                           <Button
                             size="sm"
                             variant="text"
@@ -293,6 +307,7 @@ export function AdminNewsView() {
                 </ul>
               )}
             </StudioPanel>
+            <AdminTestNotificationPanel />
           </ViewShell>
 
           <Dialog.Root isOpen={composeOpen} onClose={closeCompose}>

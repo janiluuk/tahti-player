@@ -38,8 +38,20 @@ export const KEYBOARD_NAVIGATION_SECTIONS: KeyboardShortcutSection[] = [
     heading: 'Player',
     rows: [
       {
+        label: 'Play / pause (when a track is loaded)',
+        shortcut: 'space',
+      },
+      {
         label: 'Toggle the full-screen player (when a track is loaded)',
         shortcut: 'v',
+      },
+      {
+        label: 'Skip backward (Settings → Playback sets the duration)',
+        shortcut: 'shift+left',
+      },
+      {
+        label: 'Skip forward',
+        shortcut: 'shift+right',
       },
     ],
   },

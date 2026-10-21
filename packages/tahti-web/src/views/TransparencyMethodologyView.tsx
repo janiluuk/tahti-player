@@ -33,7 +33,7 @@ export function TransparencyMethodologyView() {
   return (
     <ViewShell
       title="Transparency methodology"
-      classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', scrollableArea: 'gap-8' }}
+      classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', content: 'gap-8' }}
     >
       <Link
         to="/transparency"

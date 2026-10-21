@@ -18,7 +18,7 @@ import {
   type RadioSubmission,
 } from '../api/studio';
 import type { StudioSound } from '../api/studio-types';
-import { PageLoading } from './PageStates';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 const MAX_TRACKS = 5;
@@ -37,6 +37,7 @@ export function StudioRadioSubmissionPanel() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [optedOut, setOptedOut] = useState(false);
+  const [submissionsError, setSubmissionsError] = useState<string | null>(null);
 
   const reload = () => {
     void Promise.all([
@@ -46,6 +47,11 @@ export function StudioRadioSubmissionPanel() {
     ]).then(([soundResult, submissionResult, preference]) => {
       setSounds(soundResult.data);
       setSubmissions(submissionResult.data);
+      setSubmissionsError(
+        submissionResult.meta.source === 'api'
+          ? (submissionResult.meta.reason ?? null)
+          : null,
+      );
       setOptedOut(preference.data.metaStreamOptOut);
       setLoading(false);
     });
@@ -98,8 +104,9 @@ export function StudioRadioSubmissionPanel() {
             />{' '}
             Include my channel in Tahti Radio
           </label>
-          <Button onClick={() => setOpen(true)}>
-            <SendIcon size={16} aria-hidden /> Select tracks
+          <Button className="gap-1.5" onClick={() => setOpen(true)}>
+            <SendIcon size={16} aria-hidden />
+            Select tracks
           </Button>
         </div>
       </StudioPanel>
@@ -109,10 +116,17 @@ export function StudioRadioSubmissionPanel() {
       >
         {loading ? (
           <PageLoading label="Loading submissions…" />
+        ) : submissionsError && submissions.length === 0 ? (
+          <PageError
+            title="Could not load your submissions"
+            description={submissionsError}
+            onRetry={() => {
+              setLoading(true);
+              reload();
+            }}
+          />
         ) : submissions.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">
-            No submissions yet.
-          </p>
+          <PageEmpty title="No submissions yet" />
         ) : (
           <ul className="border-border divide-border divide-y rounded-lg border">
             {submissions.map((submission) => (
@@ -199,9 +213,13 @@ const statusLabel = (status: RadioSubmission['status']) =>
       : 'Pending review';
 const StatusIcon = ({ status }: { status: RadioSubmission['status'] }) =>
   status === 'APPROVED' ? (
-    <CheckCircle2Icon className="text-accent-green" size={18} aria-hidden />
+    <CheckCircle2Icon
+      className="text-accent-green-strong"
+      size={18}
+      aria-hidden
+    />
   ) : status === 'REJECTED' ? (
-    <XCircleIcon className="text-accent-red" size={18} aria-hidden />
+    <XCircleIcon className="text-accent-red-strong" size={18} aria-hidden />
   ) : (
-    <Clock3Icon className="text-accent-yellow" size={18} aria-hidden />
+    <Clock3Icon className="text-accent-yellow-strong" size={18} aria-hidden />
   );

@@ -3,22 +3,17 @@ import {
   PauseIcon,
   PencilIcon,
   PlayIcon,
-  PlugIcon,
   RadioIcon,
   UploadIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
-  Badge,
   Button,
-  Card,
-  CardGrid,
-  Dialog,
+  ButtonLink,
   EmptyState,
   FilePicker,
   Loader,
-  Toggle,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -27,193 +22,18 @@ import {
   fetchRecentBroadcasts,
   type RecentBroadcast,
 } from '../../api/broadcast';
-import type { MockOauthId } from '../../api/mock-session';
-import { connectIntegrationMock, type IntegrationId } from '../../api/sources';
 import { fetchEditorSource, uploadSoundFile } from '../../api/studio';
-import { SourceServiceIcon } from '../../components/SourceServiceIcon';
+import { ImportJobsPanel } from '../../components/ImportJobsPanel';
+import { PageError } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { WaveformSeekbar } from '../../components/tahti/WaveformSeekbar';
 import {
-  importSourcePlugins,
-  type ImportSourcePlugin,
-} from '../../plugins/import-sources';
-import { useAuthStore } from '../../stores/authStore';
+  UPLOAD_AUDIO_ACCEPT,
+  UPLOAD_AUDIO_FORMATS_LABEL,
+} from '../../lib/uploadAudioFormats';
 import { usePlayerStore } from '../../stores/playerStore';
-
-const ENABLED_SOURCES_STORAGE_KEY = 'tahti-web-enabled-sources';
-const UPLOAD_SOURCES = importSourcePlugins.filter(
-  (source) => source.id !== 'upload' && source.id !== 'stash',
-);
-
-function UploadSourceWidgets() {
-  const user = useAuthStore((state) => state.user);
-  const [statuses, setStatuses] = useState<
-    Partial<
-      Record<
-        IntegrationId,
-        Awaited<ReturnType<ImportSourcePlugin['checkStatus']>>
-      >
-    >
-  >({});
-  const [enabledIds, setEnabledIds] = useState<Set<IntegrationId>>(new Set());
-  const [selectedId, setSelectedId] = useState<IntegrationId | null>(null);
-
-  useEffect(() => {
-    void Promise.all(
-      UPLOAD_SOURCES.map(
-        async (source) => [source.id, await source.checkStatus()] as const,
-      ),
-    ).then((entries) => setStatuses(Object.fromEntries(entries)));
-    const storageKey = user
-      ? `${ENABLED_SOURCES_STORAGE_KEY}:${user.id}`
-      : ENABLED_SOURCES_STORAGE_KEY;
-    const stored =
-      typeof localStorage === 'undefined'
-        ? null
-        : localStorage.getItem(storageKey);
-    if (stored) {
-      try {
-        const ids = JSON.parse(stored) as unknown;
-        setEnabledIds(new Set(Array.isArray(ids) ? ids : []));
-      } catch {
-        setEnabledIds(new Set());
-      }
-    }
-  }, [user]);
-
-  const selected = UPLOAD_SOURCES.find((source) => source.id === selectedId);
-  const selectedStatus = selectedId ? statuses[selectedId]?.data : undefined;
-  const toggleEnabled = (id: IntegrationId) => {
-    setEnabledIds((current) => {
-      const next = new Set(current);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      const storageKey = user
-        ? `${ENABLED_SOURCES_STORAGE_KEY}:${user.id}`
-        : ENABLED_SOURCES_STORAGE_KEY;
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(storageKey, JSON.stringify([...next]));
-      }
-      return next;
-    });
-  };
-
-  return (
-    <section aria-labelledby="source-widgets-title">
-      <h2
-        id="source-widgets-title"
-        className="text-foreground-secondary mb-3 text-xs font-semibold tracking-wide uppercase"
-      >
-        Import sources
-      </h2>
-      <CardGrid className="grid-cols-[repeat(auto-fit,minmax(12rem,1fr))]">
-        {UPLOAD_SOURCES.map((source) => {
-          const status = statuses[source.id]?.data;
-          const enabled = enabledIds.has(source.id);
-          const configured = Boolean(status?.configured);
-          return (
-            <Card
-              key={source.id}
-              title={source.name}
-              subtitle={
-                enabled && configured
-                  ? 'Enabled'
-                  : !configured
-                    ? 'Needs setup'
-                    : 'Disabled'
-              }
-              image={<SourceServiceIcon id={source.id} />}
-              className={
-                !enabled || !configured ? 'opacity-60 grayscale' : undefined
-              }
-              onClick={() => setSelectedId(source.id)}
-            />
-          );
-        })}
-      </CardGrid>
-      {selected && (
-        <Dialog.Root
-          isOpen
-          onClose={() => setSelectedId(null)}
-          className="max-w-lg"
-        >
-          <Dialog.Title>Configure {selected.name}</Dialog.Title>
-          <Dialog.Description>{selected.description}</Dialog.Description>
-          <div className="mt-4 flex flex-col gap-3">
-            <div className="border-border flex items-center justify-between rounded-lg border p-3">
-              <div className="flex items-center gap-2">
-                <Badge
-                  variant="pill"
-                  color={selectedStatus?.configured ? 'green' : 'secondary'}
-                >
-                  {selectedStatus?.configured ? 'Configured' : 'Needs setup'}
-                </Badge>
-                <span className="text-foreground-secondary text-sm">
-                  {enabledIds.has(selected.id) ? 'Enabled' : 'Disabled'}
-                </span>
-              </div>
-              <Toggle
-                label={
-                  enabledIds.has(selected.id)
-                    ? 'Disable source'
-                    : 'Enable source'
-                }
-                checked={enabledIds.has(selected.id)}
-                disabled={!selectedStatus?.configured}
-                onChange={(checked) => {
-                  if (checked !== enabledIds.has(selected.id)) {
-                    toggleEnabled(selected.id);
-                  }
-                }}
-              />
-            </div>
-            {selected.kind === 'oauth' && selected.oauthUrl ? (
-              import.meta.env.VITE_FORCE_MOCK === '1' ? (
-                <Button
-                  size="sm"
-                  disabled={!user}
-                  onClick={() => {
-                    void connectIntegrationMock(
-                      selected.id as MockOauthId,
-                    ).then(() => {
-                      void selected.checkStatus().then((result) =>
-                        setStatuses((current) => ({
-                          ...current,
-                          [selected.id]: result,
-                        })),
-                      );
-                    });
-                  }}
-                >
-                  <PlugIcon size={16} aria-hidden className="mr-1.5" />
-                  {selectedStatus?.connected ? 'Reconnect' : 'Connect'}
-                </Button>
-              ) : (
-                <a href={selected.oauthUrl}>
-                  <Button size="sm" disabled={!user}>
-                    <PlugIcon size={16} aria-hidden className="mr-1.5" />
-                    {selectedStatus?.connected ? 'Reconnect' : 'Connect'}
-                  </Button>
-                </a>
-              )
-            ) : (
-              <p className="text-foreground-secondary text-sm">
-                This source is ready without an external connection.
-              </p>
-            )}
-          </div>
-          <Dialog.Actions>
-            <Dialog.Close>Done</Dialog.Close>
-          </Dialog.Actions>
-        </Dialog.Root>
-      )}
-    </section>
-  );
-}
+import { LibrarySectionTabs } from '../LibraryView';
+import { UploadSourceWidgets } from './upload/UploadSourceWidgets';
 
 function formatRecordingDate(iso: string): string {
   return new Date(iso).toLocaleString(undefined, {
@@ -285,19 +105,20 @@ function RecordedBroadcastCard({
           <div className="text-foreground-secondary truncate text-xs">
             {formatRecordingDate(broadcast.startedAt)} ·{' '}
             {formatRecordingDuration(broadcast.durationSec)}
+            {broadcast.soundId ? '' : ' · still processing'}
           </div>
         </div>
         {broadcast.soundId ? (
           <Tooltip content="Edit recording" side="top">
-            <Link to="/studio/sounds/$id" params={{ id: broadcast.soundId }}>
-              <Button
-                size="icon-sm"
-                variant="text"
-                aria-label={`Edit ${title}`}
-              >
-                <PencilIcon size={14} aria-hidden />
-              </Button>
-            </Link>
+            <ButtonLink
+              to="/studio/sounds/$id"
+              params={{ id: broadcast.soundId }}
+              size="icon-sm"
+              variant="text"
+              aria-label={`Edit ${title}`}
+            >
+              <PencilIcon size={14} aria-hidden />
+            </ButtonLink>
           </Tooltip>
         ) : null}
       </div>
@@ -328,16 +149,28 @@ export function StudioUploadView() {
   const [message, setMessage] = useState<string | null>(null);
   const [recordings, setRecordings] = useState<RecentBroadcast[]>([]);
   const [recordingsLoading, setRecordingsLoading] = useState(true);
+  const [recordingsError, setRecordingsError] = useState<string | null>(null);
+  const [recordingsAttempt, setRecordingsAttempt] = useState(0);
   const [recordingLoadingId, setRecordingLoadingId] = useState<string | null>(
     null,
   );
 
   useEffect(() => {
+    let cancelled = false;
     void fetchRecentBroadcasts(5).then((result) => {
+      if (cancelled) {
+        return;
+      }
       setRecordings(result.data);
+      setRecordingsError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setRecordingsLoading(false);
     });
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [recordingsAttempt]);
 
   const playRecording = async (recording: RecentBroadcast) => {
     const playableId = `broadcast:${recording.id}`;
@@ -369,32 +202,40 @@ export function StudioUploadView() {
     }
     setBusy(true);
     setMessage(null);
-    const result = await uploadSoundFile({ file });
-    setBusy(false);
-    if (!result.ok) {
-      setMessage(result.error);
-      return;
+    try {
+      const result = await uploadSoundFile({ file });
+      if (!result.ok) {
+        setMessage(result.error);
+        return;
+      }
+      // Land on the durable /studio/sounds/$id route rather than staying here —
+      // that page polls and shows processing state, so it survives a refresh or
+      // a share/bookmark of the URL in a way this ephemeral form state can't.
+      void navigate({
+        to: '/studio/sounds/$id',
+        params: { id: result.itemId },
+      });
+    } catch {
+      setMessage('Could not upload the file.');
+    } finally {
+      setBusy(false);
     }
-    // Land on the durable /studio/sounds/$id route rather than staying here —
-    // that page polls and shows processing state, so it survives a refresh or
-    // a share/bookmark of the URL in a way this ephemeral form state can't.
-    void navigate({ to: '/studio/sounds/$id', params: { id: result.itemId } });
   };
 
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6">
-        <StudioNav current="/library/upload" />
+        <LibrarySectionTabs active="upload" />
         <ViewShell title="Upload" classes={{ root: 'px-0 pt-0' }}>
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 min-[391px]:grid-cols-2">
             <div className="border-accent-cyan flex min-h-48 flex-col justify-center rounded-xl border border-dashed p-5 sm:p-6">
               <FilePicker
                 labels={{
                   title: 'Choose audio file',
-                  description: 'FLAC · WAV · AIFF · MP3 · M4A · OGG · max 4 GB',
+                  description: UPLOAD_AUDIO_FORMATS_LABEL,
                   browse: file ? 'Choose another file' : 'Choose audio',
                 }}
-                accept="audio/*,.flac,.wav,.mp3,.aiff"
+                accept={UPLOAD_AUDIO_ACCEPT}
                 selectedFiles={file ? [file] : []}
                 onFiles={(files) => setFile(files[0] ?? null)}
               />
@@ -404,7 +245,7 @@ export function StudioUploadView() {
                 name it in the editor afterwards.
               </p>
               {message && (
-                <p className="text-accent-red text-sm" role="alert">
+                <p className="text-accent-red-strong text-sm" role="alert">
                   {message}
                 </p>
               )}
@@ -420,7 +261,7 @@ export function StudioUploadView() {
               </div>
             </div>
 
-            <div className="border-accent-green rounded-xl border p-5 sm:p-6">
+            <div className="border-border bg-background-secondary/40 rounded-xl border p-5 sm:p-6">
               <div className="flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
                 <RadioIcon size={15} aria-hidden />
                 Last recorded broadcasts
@@ -432,6 +273,15 @@ export function StudioUploadView() {
                     Loading recordings…
                   </span>
                 </div>
+              ) : recordingsError && recordings.length === 0 ? (
+                <PageError
+                  title="Could not load recent recordings"
+                  description={recordingsError}
+                  onRetry={() => {
+                    setRecordingsLoading(true);
+                    setRecordingsAttempt((n) => n + 1);
+                  }}
+                />
               ) : recordings.length === 0 ? (
                 <EmptyState
                   size="sm"
@@ -440,7 +290,7 @@ export function StudioUploadView() {
                   action={
                     <Link
                       to="/studio/go-live"
-                      className="text-accent-cyan text-sm underline-offset-2 hover:underline"
+                      className="text-accent-cyan-strong text-sm underline-offset-2 hover:underline"
                     >
                       Go live to record one.
                     </Link>
@@ -470,11 +320,13 @@ export function StudioUploadView() {
             </div>
           </div>
 
+          <ImportJobsPanel />
+
           <UploadSourceWidgets />
 
           <Link
             to="/studio/collections"
-            className="text-accent-cyan text-sm underline-offset-2 hover:underline"
+            className="text-accent-cyan-strong text-sm underline-offset-2 hover:underline"
           >
             Organise into collections →
           </Link>

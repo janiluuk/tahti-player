@@ -1,15 +1,29 @@
 import { useRouterState } from '@tanstack/react-router';
 import {
+  BarChart3Icon,
+  BookOpenIcon,
+  CalendarDaysIcon,
+  CalendarIcon,
+  CastIcon,
   CreditCardIcon,
+  Disc3Icon,
+  FileTextIcon,
   HeartIcon,
+  KeyRoundIcon,
   LandmarkIcon,
   LayersIcon,
+  LayoutDashboardIcon,
   LayoutGridIcon,
+  LightbulbIcon,
   ListMusicIcon,
-  PaletteIcon,
+  ListOrderedIcon,
+  MicIcon,
+  NewspaperIcon,
   RadioIcon,
   RadioTowerIcon,
+  SendIcon,
   Settings2Icon,
+  Share2Icon,
   SlidersHorizontalIcon,
   TrendingUpIcon,
 } from 'lucide-react';
@@ -21,6 +35,14 @@ import { SidebarNavigationItem } from '@tahti-player/ui';
 import { useStripeConfigured } from '../hooks/useStripeConfigured';
 import type { TourStep } from '../lib/pageTour';
 import { matchesSectionRoute } from '../lib/sectionNavigation';
+import {
+  GO_LIVE_TAB_LABELS,
+  GO_LIVE_TABS,
+  goLiveTabPath,
+  isGoLiveSessionRoute,
+  isGoLiveSessionTabActive,
+  type GoLiveTabId,
+} from '../views/studio/go-live/goLiveTabs';
 import { SectionTabs } from './SectionTabs';
 
 type StudioSubmenuLabelKey =
@@ -54,11 +76,6 @@ export const SUBMENUS = {
       icon: <LayoutGridIcon size={16} />,
     },
     {
-      to: '/studio/branding',
-      labelKey: 'studio.branding',
-      icon: <PaletteIcon size={16} />,
-    },
-    {
       to: '/studio/stats',
       labelKey: 'studio.stats',
       icon: <TrendingUpIcon size={16} />,
@@ -71,7 +88,7 @@ export const SUBMENUS = {
     {
       to: '/studio/updates',
       labelKey: 'studio.posts',
-      icon: <TrendingUpIcon size={16} />,
+      icon: <NewspaperIcon size={16} />,
     },
     {
       to: '/studio/audience',
@@ -82,6 +99,11 @@ export const SUBMENUS = {
       to: '/studio/releases',
       labelKey: 'studio.releases',
       icon: <ListMusicIcon size={16} />,
+    },
+    {
+      to: '/studio/distribution',
+      labelKey: 'studio.distribution',
+      icon: <Share2Icon size={16} />,
     },
     {
       to: '/studio/editor',
@@ -103,23 +125,23 @@ export const SUBMENUS = {
 export const BROADCAST_SUBNAV_ITEMS = [
   {
     to: '/studio/go-live',
-    labelKey: 'studio.goLive' as const,
+    labelKey: 'studio.onAir' as const,
     icon: <RadioTowerIcon size={16} />,
   },
   {
     to: '/studio/schedule',
     labelKey: 'studio.schedule' as const,
-    icon: <RadioIcon size={16} />,
+    icon: <CalendarDaysIcon size={16} />,
   },
   {
     to: '/studio/events',
     labelKey: 'studio.events' as const,
-    icon: <RadioIcon size={16} />,
+    icon: <CalendarIcon size={16} />,
   },
   {
     to: '/studio/shows',
     labelKey: 'studio.shows' as const,
-    icon: <RadioIcon size={16} />,
+    icon: <MicIcon size={16} />,
   },
   {
     to: '/studio/channel',
@@ -155,6 +177,106 @@ export const AUDIENCE_SUBNAV_ITEMS = [
   },
 ] as const;
 
+/** Stats, Governance and Posts keep their page tabs in `?tab=`, so they sit
+ * in the same nested strip as Broadcast and Audience instead of in-page. */
+export const STATS_SUBNAV_ITEMS = [
+  {
+    to: '/studio/stats',
+    labelKey: 'studio.overview' as const,
+    icon: <LayoutDashboardIcon size={16} />,
+  },
+  {
+    to: '/studio/stats?tab=plays',
+    labelKey: 'studio.playsListeners' as const,
+    icon: <BarChart3Icon size={16} />,
+  },
+  {
+    to: '/studio/stats?tab=top-lists',
+    labelKey: 'studio.topLists' as const,
+    icon: <ListOrderedIcon size={16} />,
+  },
+] as const;
+
+export const GOVERNANCE_SUBNAV_ITEMS = [
+  {
+    to: '/studio/governance',
+    labelKey: 'studio.motions' as const,
+    icon: <LandmarkIcon size={16} />,
+  },
+  {
+    to: '/studio/governance?tab=topics',
+    labelKey: 'studio.topics' as const,
+    icon: <LightbulbIcon size={16} />,
+  },
+  {
+    to: '/studio/governance?tab=documents',
+    labelKey: 'studio.documents' as const,
+    icon: <FileTextIcon size={16} />,
+  },
+  {
+    to: '/studio/governance?tab=guide',
+    labelKey: 'studio.guide' as const,
+    icon: <BookOpenIcon size={16} />,
+  },
+] as const;
+
+export const UPDATES_SUBNAV_ITEMS = [
+  {
+    to: '/studio/updates',
+    labelKey: 'studio.posts' as const,
+    icon: <NewspaperIcon size={16} />,
+  },
+  {
+    to: '/studio/updates?tab=newsletter',
+    labelKey: 'studio.newsletter' as const,
+    icon: <SendIcon size={16} />,
+  },
+] as const;
+
+const TAB_SUBNAV_GROUPS = [
+  { path: '/studio/stats', label: 'Stats pages', items: STATS_SUBNAV_ITEMS },
+  {
+    path: '/studio/governance',
+    label: 'Governance pages',
+    items: GOVERNANCE_SUBNAV_ITEMS,
+  },
+  {
+    path: '/studio/updates',
+    label: 'Posts pages',
+    items: UPDATES_SUBNAV_ITEMS,
+  },
+] as const;
+
+const tabParam = (url: string | undefined) => {
+  const tab = new URLSearchParams(url?.split('?')[1] ?? '').get('tab');
+  return tab === 'feature-requests' ? 'topics' : tab;
+};
+
+export const isTabSubnavActive = (current: string | undefined, to: string) =>
+  current?.split('?')[0] === to.split('?')[0] &&
+  tabParam(current) === tabParam(to);
+
+function TabSubNav({ current }: { current?: string }) {
+  const { t } = useTranslation('web');
+  const pathname = current?.split('?')[0];
+  const group = TAB_SUBNAV_GROUPS.find((item) => item.path === pathname);
+  if (!group) {
+    return null;
+  }
+  return (
+    <SectionTabs
+      aria-label={group.label}
+      items={group.items.map((item) => ({
+        id: item.to,
+        to: item.to,
+        label: t(item.labelKey),
+        icon: item.icon,
+        active: isTabSubnavActive(current, item.to),
+      }))}
+    />
+  );
+}
+
 export const STUDIO_NAV_TOUR_STEPS: TourStep[] = PRIMARY.map(
   (item): TourStep => ({
     id: `nav-item-${item.to}`,
@@ -166,25 +288,18 @@ export const STUDIO_NAV_TOUR_STEPS: TourStep[] = PRIMARY.map(
 const SECTION_PREFIXES: Record<string, readonly string[]> = {
   '/studio': [
     '/studio',
-    '/studio/branding',
     '/studio/stats',
+    '/studio/insights',
     '/studio/governance',
     '/studio/updates',
     '/studio/audience',
     '/studio/revenue',
     '/studio/stripe',
-    '/studio/sounds',
     '/studio/releases',
     '/studio/distribution',
-    '/studio/collections',
-    '/studio/recordings',
     '/studio/editor',
     '/studio/mastering',
-    '/studio/stash',
-    '/studio/playlists',
-    '/studio/insights',
     '/studio/setup-channel',
-    '/studio/archive',
     '/studio/go-live',
     '/studio/info',
     '/studio/schedule',
@@ -238,11 +353,6 @@ const isSubmenuActive = (current: string | undefined, to: string) => {
       pathname === '/studio/channel'
     );
   }
-  if (to === '/studio/branding') {
-    return (
-      pathname === '/studio/branding' || pathname === '/studio/setup-channel'
-    );
-  }
   // Audience parent tab stays lit for Overview, Tiers, and Stripe.
   if (to === '/studio/audience') {
     return (
@@ -273,7 +383,6 @@ const isSubmenuActive = (current: string | undefined, to: string) => {
       : to === '/library' || to === '/studio'
         ? pathname === to
         : pathname === to || pathname?.startsWith(`${to}/`) === true) ||
-    (to === '/studio/releases' && pathname === '/studio/distribution') ||
     (to === '/library/sounds' &&
       (pathname?.startsWith('/studio/sounds') === true ||
         pathname?.startsWith('/studio/archive') === true)) ||
@@ -328,29 +437,87 @@ export const isBroadcastSubnavActive = (
   return pathname === to || pathname?.startsWith(`${to}/`) === true;
 };
 
+export function isStudioBroadcastGroup(current: string | undefined): boolean {
+  const pathname = current?.split('?')[0] ?? '';
+  return (
+    pathname === '/studio/go-live' ||
+    pathname === '/studio/info' ||
+    pathname === '/studio/schedule' ||
+    pathname === '/studio/events' ||
+    pathname.startsWith('/studio/events/') ||
+    pathname === '/studio/shows' ||
+    pathname.startsWith('/studio/shows/') ||
+    pathname === '/studio/channel'
+  );
+}
+
+export function isStudioAudienceGroup(current: string | undefined): boolean {
+  const pathname = current?.split('?')[0] ?? '';
+  return (
+    pathname === '/studio/audience' ||
+    pathname === '/studio/revenue' ||
+    pathname === '/studio/stripe'
+  );
+}
+
 /** Second-level tab strip nested inside every Broadcast-group page
  * (go-live, schedule, events, shows, channel) — Studio's own submenu only
  * shows one "Broadcast" tab for all of these (see `isSubmenuActive`
  * above), so this is where Schedule/Events/Shows/Channel/Radio become
- * reachable. */
+ * reachable. Prefer mounting via `StudioNav` (global chrome) rather than
+ * duplicating this inside each page. */
 export function BroadcastSubNav({ current }: { current?: string }) {
   const { t } = useTranslation('web');
   return (
-    <div
-      className="border-border min-w-0 border-b pb-2"
-      data-broadcast-navigation
-    >
-      <SectionTabs
-        aria-label="Broadcast pages"
-        items={BROADCAST_SUBNAV_ITEMS.map((item) => ({
-          id: item.to,
-          to: item.to,
-          label: t(item.labelKey),
-          icon: item.icon,
-          active: isBroadcastSubnavActive(current, item.to),
-        }))}
-      />
-    </div>
+    <SectionTabs
+      aria-label="Broadcast pages"
+      items={BROADCAST_SUBNAV_ITEMS.map((item) => ({
+        id: item.to,
+        to: item.to,
+        label: t(item.labelKey),
+        icon: item.icon,
+        active: isBroadcastSubnavActive(current, item.to),
+      }))}
+    />
+  );
+}
+
+const GO_LIVE_SESSION_ICONS: Record<GoLiveTabId, ReactNode> = {
+  prep: <RadioTowerIcon size={16} />,
+  credentials: <KeyRoundIcon size={16} />,
+  recording: <Disc3Icon size={16} />,
+  destinations: <CastIcon size={16} />,
+  'green-room': <MicIcon size={16} />,
+};
+
+/**
+ * On `/studio/go-live`, replace BroadcastSubNav with Prep session tabs plus
+ * Schedule/Events/Shows/Channel/Radio as siblings — one nested strip instead
+ * of Broadcast pages + in-page Prep tabs (artist-lifecycle P2).
+ */
+export function GoLiveSessionSubNav({ current }: { current?: string }) {
+  const { t } = useTranslation('web');
+  const sessionItems = GO_LIVE_TABS.map((tab) => ({
+    id: goLiveTabPath(tab),
+    to: goLiveTabPath(tab),
+    label: GO_LIVE_TAB_LABELS[tab],
+    icon: GO_LIVE_SESSION_ICONS[tab],
+    active: isGoLiveSessionTabActive(current, tab),
+  }));
+  const siblingItems = BROADCAST_SUBNAV_ITEMS.filter(
+    (item) => item.to !== '/studio/go-live',
+  ).map((item) => ({
+    id: item.to,
+    to: item.to,
+    label: t(item.labelKey),
+    icon: item.icon,
+    active: isBroadcastSubnavActive(current, item.to),
+  }));
+  return (
+    <SectionTabs
+      aria-label="Go live session"
+      items={[...sessionItems, ...siblingItems]}
+    />
   );
 }
 
@@ -379,7 +546,8 @@ export const isAudienceSubnavActive = (
 };
 
 /** Second-level tab strip for Audience-group pages (overview, tiers, Stripe).
- * Studio's submenu only shows one "Audience" tab for all of these. */
+ * Studio's submenu only shows one "Audience" tab for all of these. Prefer
+ * mounting via `StudioNav` (global chrome). */
 export function AudienceSubNav({ current }: { current?: string }) {
   const { t } = useTranslation('web');
   const stripeConfigured = useStripeConfigured();
@@ -388,31 +556,22 @@ export function AudienceSubNav({ current }: { current?: string }) {
   );
 
   return (
-    <div
-      className="border-border min-w-0 border-b pb-2"
-      data-audience-navigation
-    >
-      <SectionTabs
-        aria-label="Audience pages"
-        items={items.map((item) => ({
-          id: item.to,
-          to: item.to,
-          label: t(item.labelKey),
-          icon: item.icon,
-          active: isAudienceSubnavActive(current, item.to),
-        }))}
-      />
-    </div>
+    <SectionTabs
+      aria-label="Audience pages"
+      items={items.map((item) => ({
+        id: item.to,
+        to: item.to,
+        label: t(item.labelKey),
+        icon: item.icon,
+        active: isAudienceSubnavActive(current, item.to),
+      }))}
+    />
   );
 }
 
-export const StudioNav = ({
-  current,
-  global = false,
-}: {
-  current?: string;
-  global?: boolean;
-}) => (global ? <StudioNavigation current={current} /> : null);
+export const StudioNav = ({ current }: { current?: string }) => (
+  <StudioNavigation current={current} />
+);
 
 export function StudioMainNavItems() {
   const { t } = useTranslation('web');
@@ -435,6 +594,10 @@ export function StudioMainNavItems() {
   );
 }
 
+const STUDIO_SECTION_MENU_SLOT = 'border-border min-h-7 min-w-0 border-b pb-2';
+const STUDIO_NESTED_NAV_SLOT =
+  'border-border flex min-h-10 w-full min-w-0 flex-nowrap items-end gap-y-1 overflow-x-auto border-b pb-2';
+
 function StudioNavigation({ current }: { current?: string }) {
   const { t } = useTranslation('web');
   const selectedSection = getStudioPrimaryRoute(current) ?? '/studio';
@@ -450,18 +613,37 @@ function StudioNavigation({ current }: { current?: string }) {
     return null;
   }
 
+  const showBroadcast = isStudioBroadcastGroup(current);
+  const showGoLiveSession = isGoLiveSessionRoute(current);
+  const showAudience = isStudioAudienceGroup(current);
+
   return (
-    <div className="border-border min-w-0 border-b pb-2" data-studio-navigation>
-      <SectionTabs
-        aria-label={`${t(sectionLabel)} pages`}
-        items={submenu.map((item) => ({
-          id: item.to,
-          to: item.to,
-          label: t(item.labelKey),
-          icon: item.icon,
-          active: isSubmenuActive(current, item.to),
-        }))}
-      />
+    <div
+      className="flex min-w-0 flex-col"
+      data-studio-navigation
+      data-testid="studio-navigation"
+    >
+      <div className={STUDIO_SECTION_MENU_SLOT} data-studio-section-menu>
+        <SectionTabs
+          aria-label={`${t(sectionLabel)} pages`}
+          items={submenu.map((item) => ({
+            id: item.to,
+            to: item.to,
+            label: t(item.labelKey),
+            icon: item.icon,
+            active: isSubmenuActive(current, item.to),
+          }))}
+        />
+      </div>
+      <div className={STUDIO_NESTED_NAV_SLOT} data-studio-nested-nav>
+        {showGoLiveSession ? (
+          <GoLiveSessionSubNav current={current} />
+        ) : showBroadcast ? (
+          <BroadcastSubNav current={current} />
+        ) : null}
+        {showAudience ? <AudienceSubNav current={current} /> : null}
+        <TabSubNav current={current} />
+      </div>
     </div>
   );
 }

@@ -1,16 +1,21 @@
 import { BlocksIcon, UploadIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { UploadTrackDialog } from './UploadTrackDialog';
+
+const UPLOAD_HINT =
+  'Quick upload in a dialog. For the full journey, use Library → Upload.';
 
 type Props = {
   size?: 'sm' | 'default';
   /** Center actions (e.g. empty state). */
   align?: 'start' | 'center';
   onUploaded?: () => void;
+  /** When set, Upload navigates here instead of opening the quick dialog. */
+  uploadTo?: '/library/upload';
 };
 
 /** Upload + Import — entry points for adding tracks to the Music archive.
@@ -19,6 +24,7 @@ export function AddToMusicActions({
   size = 'sm',
   align = 'start',
   onUploaded,
+  uploadTo,
 }: Props) {
   const [uploadOpen, setUploadOpen] = useState(false);
 
@@ -27,15 +33,23 @@ export function AddToMusicActions({
       <div
         className={`flex flex-wrap gap-2 ${align === 'center' ? 'justify-center' : ''}`}
       >
-        <Button
-          size={size}
-          onClick={() => setUploadOpen(true)}
-          aria-label="Upload"
-          title="Upload"
-        >
-          <UploadIcon size={16} aria-hidden className="mr-1.5" />
-          Upload
-        </Button>
+        {uploadTo ? (
+          <ButtonLink to={uploadTo} size={size} aria-label="Upload">
+            <UploadIcon size={16} aria-hidden className="mr-1.5" />
+            Upload
+          </ButtonLink>
+        ) : (
+          <Tooltip content={UPLOAD_HINT} side="top">
+            <Button
+              size={size}
+              onClick={() => setUploadOpen(true)}
+              aria-label="Upload"
+            >
+              <UploadIcon size={16} aria-hidden className="mr-1.5" />
+              Upload
+            </Button>
+          </Tooltip>
+        )}
         <Button
           size={size}
           variant="secondary"
@@ -48,11 +62,13 @@ export function AddToMusicActions({
           Import
         </Button>
       </div>
-      <UploadTrackDialog
-        isOpen={uploadOpen}
-        onClose={() => setUploadOpen(false)}
-        onUploaded={() => onUploaded?.()}
-      />
+      {uploadTo ? null : (
+        <UploadTrackDialog
+          isOpen={uploadOpen}
+          onClose={() => setUploadOpen(false)}
+          onUploaded={() => onUploaded?.()}
+        />
+      )}
     </>
   );
 }

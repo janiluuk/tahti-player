@@ -1,4 +1,5 @@
 import { apiBase } from './http';
+import { mockFixture } from './mock-overrides';
 import { isForceMock } from './mode';
 
 async function requestJson<T>(
@@ -57,7 +58,7 @@ export async function fetchMeIntegrations(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: [
+      data: mockFixture('meIntegrations', [
         {
           slug: 'listenbrainz',
           name: 'ListenBrainz',
@@ -78,7 +79,7 @@ export async function fetchMeIntegrations(): Promise<{
           installed: false,
           connected: mockInstalled.has('lastfm'),
         },
-      ],
+      ]),
       source: 'mock',
     };
   }
@@ -135,6 +136,36 @@ export async function uninstallMeIntegration(
     return {
       ok: false,
       error: err instanceof Error ? err.message : 'Uninstall failed',
+    };
+  }
+}
+
+/** Start Last.fm auth with the artist's own API key and shared secret, for
+ * servers without LASTFM_API_KEY. Returns the Last.fm authorisation URL to
+ * send the browser to; the callback returns to `returnTo`. */
+export async function prepareLastFmWithOwnKey(input: {
+  apiKey: string;
+  apiSecret: string;
+  returnTo: string;
+}): Promise<{ ok: true; authUrl: string } | { ok: false; error: string }> {
+  try {
+    const { data } = await requestJson<{ authUrl: string }>(
+      '/api/me/integrations/lastfm/prepare',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          apiKey: input.apiKey.trim(),
+          apiSecret: input.apiSecret.trim(),
+          returnTo: input.returnTo,
+        }),
+      },
+    );
+    return { ok: true, authUrl: data.authUrl };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not start Last.fm sign-in',
     };
   }
 }

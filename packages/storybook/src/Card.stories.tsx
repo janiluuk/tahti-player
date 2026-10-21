@@ -14,6 +14,10 @@ const meta = {
     title: { control: 'text' },
     subtitle: { control: 'text' },
     imageReveal: { control: 'boolean' },
+    surface: {
+      control: 'inline-radio',
+      options: ['brand', 'neutral'],
+    },
   },
 } satisfies Meta<typeof Card>;
 
@@ -27,6 +31,16 @@ export const Default: Story = {
     src: cover,
     title: 'Random Album',
     subtitle: 'Some Artist',
+    surface: 'brand',
+  },
+};
+
+export const NeutralSurface: Story = {
+  args: {
+    src: cover,
+    title: 'Random Album',
+    subtitle: 'Some Artist',
+    surface: 'neutral',
   },
 };
 
@@ -74,7 +88,7 @@ export const WithAmbientGlow: Story = {
   args: {
     src: cover,
     title: 'Ambient wash (grid technique)',
-    subtitle: 'See Discover Artists for the live grid wash',
+    subtitle: 'See AmbientCard for per-card glass',
   },
   decorators: [
     (Story) => (
@@ -102,7 +116,7 @@ export const WithAmbientGlow: Story = {
     docs: {
       description: {
         story:
-          'Opaque Card chrome cannot host a per-card blur bleed. DirectoryArtistCardGrid paints a soft avatar collage behind the whole grid with a wider gap instead.',
+          'Opaque Card chrome cannot host a per-card blur bleed. Use `AmbientCard` for glass + cover-ambient chrome; DirectoryArtistCardGrid still paints a soft collage behind the whole grid.',
       },
     },
   },

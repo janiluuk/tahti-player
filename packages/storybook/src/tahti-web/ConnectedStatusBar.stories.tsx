@@ -3,7 +3,7 @@ import { StatusBarContent } from '@tahti-web/components/ConnectedStatusBar';
 
 import { BottomBar } from '@tahti-player/ui';
 
-import { withPageSurface } from './_lib/decorators';
+import { withPageSurface, withTahtiRouter } from './_lib/decorators';
 
 const meta: Meta = {
   title: 'Tahti/Layout/ConnectedStatusBar',
@@ -16,7 +16,8 @@ const meta: Meta = {
       },
     },
   },
-  decorators: [withPageSurface()],
+  // StatusBarContent renders several <Link>s, which need a router context.
+  decorators: [withPageSurface(), withTahtiRouter('/')],
 };
 
 export default meta;
@@ -43,6 +44,29 @@ export const Encoding: Story = {
         unreadNotifications={3}
         unreadMessages={1}
         encodingLabel="Encoding “Midnight Drift”…"
+      />
+    </BottomBar>
+  ),
+};
+
+export const Desktop: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Desktop (Tauri) build adds a local-library track count beside cloud storage usage.',
+      },
+    },
+  },
+  render: () => (
+    <BottomBar className="px-5">
+      <StatusBarContent
+        soundCount={42}
+        unreadNotifications={0}
+        unreadMessages={0}
+        encodingLabel={null}
+        storageUsedLabel="1.2 GB"
+        localTrackCount={3841}
       />
     </BottomBar>
   ),

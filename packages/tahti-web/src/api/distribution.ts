@@ -1,5 +1,10 @@
 import { apiBase } from './http';
-import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import {
+  allowMockFallback,
+  apiErrorMeta,
+  isForceMock,
+  mockFallbackMeta,
+} from './mode';
 import type {
   ReleaseCatalog,
   ReleaseCatalogPatch,
@@ -247,7 +252,7 @@ export async function fetchRevelatorStatus(releaseId: string): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockStatus(releaseId), meta: failMeta(err) };
+      return { data: mockStatus(releaseId), meta: mockFallbackMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
   }
@@ -270,7 +275,7 @@ export async function fetchRevelatorBilling(releaseId: string): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockBilling(releaseId), meta: failMeta(err) };
+      return { data: mockBilling(releaseId), meta: mockFallbackMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
   }
@@ -396,7 +401,7 @@ export async function fetchReleaseRoyalties(releaseId: string): Promise<{
     return { data: data.reports, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockRoyalties(), meta: failMeta(err) };
+      return { data: mockRoyalties(), meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }
@@ -419,7 +424,7 @@ export async function fetchAllRoyalties(): Promise<{
     return { data: data.reports ?? [], meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockRoyalties(), meta: failMeta(err) };
+      return { data: mockRoyalties(), meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }
@@ -442,7 +447,7 @@ export async function fetchReleaseCatalog(releaseId: string): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockCatalog(releaseId), meta: failMeta(err) };
+      return { data: mockCatalog(releaseId), meta: mockFallbackMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
   }
@@ -529,7 +534,7 @@ export async function fetchSpotifyArtistProfile(): Promise<{
     if (allowMockFallback()) {
       return {
         data: { configured: true, profile: mockSpotifyProfile },
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     return {
@@ -607,4 +612,54 @@ export function parseCredits(value: unknown): ReleaseCredit[] {
       typeof (row as ReleaseCredit).name === 'string' &&
       roles.has((row as ReleaseCredit).role),
   );
+}
+
+export type DistributionPlatformMode = {
+  id: 'mixcloud' | 'revelator';
+  label: string;
+  configured: boolean;
+  mode: 'live' | 'stub';
+  detail: string;
+};
+
+/** Artist-safe live/stub modes (no secrets) for Studio Distribution banners. */
+export async function fetchDistributionStatus(): Promise<{
+  data: DistributionPlatformMode[];
+  meta: { source: 'api' | 'mock'; reason?: string };
+}> {
+  if (isForceMock()) {
+    return {
+      data: [
+        {
+          id: 'revelator',
+          label: 'Revelator',
+          configured: true,
+          mode: 'live',
+          detail: 'mock',
+        },
+        {
+          id: 'mixcloud',
+          label: 'Mixcloud',
+          configured: true,
+          mode: 'live',
+          detail: 'mock',
+        },
+      ],
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<{
+      integrations: DistributionPlatformMode[];
+    }>('/api/me/distribution/status');
+    return {
+      data: Array.isArray(data.integrations) ? data.integrations : [],
+      meta: { source: 'api' },
+    };
+  } catch (err) {
+    if (allowMockFallback()) {
+      return { data: [], meta: mockFallbackMeta(err) };
+    }
+    return { data: [], meta: apiErrorMeta(err) };
+  }
 }

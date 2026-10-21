@@ -1,16 +1,32 @@
+import type { EmbedPlaybackProvider } from '../api/types';
+
 /** Providers whose tracks are referenced, never re-hosted: the backend
  * stores only an embedUri and marks the archive item EMBED_ONLY, so the
  * audio and artwork have to come from the provider's own widget. */
 export type EmbedProvider = 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP';
 
+/** Lowercase playback key used on `TahtiPlayable.embed.provider`; the
+ * lowercase of the API's `EmbedProvider` is itself the playback form. */
+export function toEmbedPlaybackProvider(
+  p: EmbedProvider,
+): EmbedPlaybackProvider {
+  return p.toLowerCase() as EmbedPlaybackProvider;
+}
+
 /** Mirrors hearthisEmbedSrc in the main tahti repo (packages/shared).
  * waveform/cover stay on: the widget hides its play control until that
- * UI initializes, so turning both off leaves nothing clickable. */
-export function hearthisEmbedSrc(trackId: string): string {
+ * UI initializes, so turning both off leaves nothing clickable.
+ * `compact` drops the tall style-2 chrome so the player-bar strip stays
+ * short enough that Library Tracks still shows its list. */
+export function hearthisEmbedSrc(
+  trackId: string,
+  options?: { compact?: boolean },
+): string {
+  const compact = options?.compact === true;
   const params = new URLSearchParams({
     hcolor: '55acee',
     color: '',
-    style: '2',
+    style: compact ? '1' : '2',
     block_size: '2',
     block_space: '2',
     background: '1',
@@ -47,10 +63,11 @@ export function bandcampEmbedSrc(uri: string): string {
 export function embedSrcFor(
   provider: EmbedProvider,
   uri: string,
+  options?: { compact?: boolean },
 ): string | null {
   switch (provider) {
     case 'HEARTHIS':
-      return hearthisEmbedSrc(uri);
+      return hearthisEmbedSrc(uri, options);
     case 'MIXCLOUD':
       return mixcloudEmbedSrc(uri);
     case 'SPOTIFY':
@@ -75,4 +92,17 @@ export const EMBED_PROVIDER_HEIGHT: Record<EmbedProvider, number> = {
   MIXCLOUD: 120,
   SPOTIFY: 152,
   BANDCAMP: 120,
+};
+
+/** Display name keyed by the lowercase playback form found on
+ * `TahtiPlayable.embed.provider`; derived from the uppercase map so the two
+ * never drift. */
+export const EMBED_PLAYBACK_PROVIDER_LABEL: Record<
+  EmbedPlaybackProvider,
+  string
+> = {
+  hearthis: EMBED_PROVIDER_LABEL.HEARTHIS,
+  mixcloud: EMBED_PROVIDER_LABEL.MIXCLOUD,
+  spotify: EMBED_PROVIDER_LABEL.SPOTIFY,
+  bandcamp: EMBED_PROVIDER_LABEL.BANDCAMP,
 };

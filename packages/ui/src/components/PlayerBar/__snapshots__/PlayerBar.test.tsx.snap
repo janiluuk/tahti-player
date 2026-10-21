@@ -30,12 +30,14 @@ exports[`PlayerBar > (Snapshot) active states render 1`] = `
             <div
               class="text-foreground truncate text-sm font-semibold tracking-tight"
               data-testid="now-playing-title"
+              title="Crystalized"
             >
               Crystalized
             </div>
             <div
               class="text-foreground-secondary truncate text-xs"
               data-testid="player-now-playing-artist"
+              title="XX"
             >
               XX
             </div>
@@ -51,7 +53,7 @@ exports[`PlayerBar > (Snapshot) active states render 1`] = `
           <div>
             <button
               aria-pressed="true"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-10 justify-center rounded-full"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-10 justify-center rounded-full"
               data-headlessui-state=""
               data-testid="player-shuffle-button"
               type="button"
@@ -90,7 +92,7 @@ exports[`PlayerBar > (Snapshot) active states render 1`] = `
           <div>
             <button
               aria-label="Previous"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
               data-headlessui-state=""
               type="button"
             >
@@ -120,7 +122,7 @@ exports[`PlayerBar > (Snapshot) active states render 1`] = `
             <button
               aria-label="Pause"
               aria-pressed="true"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green size-10 rounded-full shadow-md active:text-black bg-accent-green text-black"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green rounded-full shadow-md active:text-black size-10 bg-accent-green text-black"
               data-headlessui-state=""
               data-testid="player-pause-button"
               type="button"
@@ -158,7 +160,7 @@ exports[`PlayerBar > (Snapshot) active states render 1`] = `
           <div>
             <button
               aria-label="Next"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
               data-headlessui-state=""
               data-testid="player-next-button"
               type="button"
@@ -188,7 +190,7 @@ exports[`PlayerBar > (Snapshot) active states render 1`] = `
           <div>
             <button
               aria-pressed="true"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-10 justify-center rounded-full"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-10 justify-center rounded-full"
               data-headlessui-state=""
               data-testid="player-repeat-button"
               type="button"
@@ -233,7 +235,7 @@ exports[`PlayerBar > (Snapshot) active states render 1`] = `
             <button
               aria-label="Mute"
               aria-pressed="false"
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
               data-headlessui-state=""
               type="button"
             >
@@ -298,8 +300,8 @@ exports[`PlayerBar > (Snapshot) active states render 1`] = `
                       style="width: 60%;"
                     />
                     <div
-                      class="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-                      style="left: 60%;"
+                      class="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+                      style="left: calc(60% - 12px);"
                     />
                   </div>
                 </div>
@@ -357,12 +359,14 @@ exports[`PlayerBar > (Snapshot) default render 1`] = `
             <div
               class="text-foreground truncate text-sm font-semibold tracking-tight"
               data-testid="now-playing-title"
+              title="Song Title"
             >
               Song Title
             </div>
             <div
               class="text-foreground-secondary truncate text-xs"
               data-testid="player-now-playing-artist"
+              title="Artist Name"
             >
               Artist Name
             </div>
@@ -378,7 +382,7 @@ exports[`PlayerBar > (Snapshot) default render 1`] = `
           <div>
             <button
               aria-pressed="false"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
               data-headlessui-state=""
               data-testid="player-shuffle-button"
               type="button"
@@ -417,7 +421,7 @@ exports[`PlayerBar > (Snapshot) default render 1`] = `
           <div>
             <button
               aria-label="Previous"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
               data-headlessui-state=""
               type="button"
             >
@@ -447,7 +451,7 @@ exports[`PlayerBar > (Snapshot) default render 1`] = `
             <button
               aria-label="Play"
               aria-pressed="false"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green size-10 rounded-full shadow-md active:text-black"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green rounded-full shadow-md active:text-black size-10"
               data-headlessui-state=""
               data-testid="player-play-button"
               type="button"
@@ -474,7 +478,7 @@ exports[`PlayerBar > (Snapshot) default render 1`] = `
           <div>
             <button
               aria-label="Next"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
               data-headlessui-state=""
               data-testid="player-next-button"
               type="button"
@@ -504,7 +508,7 @@ exports[`PlayerBar > (Snapshot) default render 1`] = `
           <div>
             <button
               aria-pressed="false"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
               data-headlessui-state=""
               data-testid="player-repeat-button"
               type="button"
@@ -549,7 +553,7 @@ exports[`PlayerBar > (Snapshot) default render 1`] = `
             <button
               aria-label="Mute"
               aria-pressed="false"
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
               data-headlessui-state=""
               type="button"
             >
@@ -614,8 +618,8 @@ exports[`PlayerBar > (Snapshot) default render 1`] = `
                       style="width: 75%;"
                     />
                     <div
-                      class="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-                      style="left: 75%;"
+                      class="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+                      style="left: calc(75% - 15px);"
                     />
                   </div>
                 </div>
@@ -676,12 +680,14 @@ exports[`PlayerBar > (Snapshot) long metadata truncation 1`] = `
               <div
                 class="text-foreground truncate text-sm font-semibold tracking-tight"
                 data-testid="now-playing-title"
+                title="An Incredibly, Ridiculously Long Song Title That Should Truncate Nicely"
               >
                 An Incredibly, Ridiculously Long Song Title That Should Truncate Nicely
               </div>
               <div
                 class="text-foreground-secondary truncate text-xs"
                 data-testid="player-now-playing-artist"
+                title="A Very Long Artist Name Featuring Another Long Artist With Even More Characters"
               >
                 A Very Long Artist Name Featuring Another Long Artist With Even More Characters
               </div>
@@ -697,7 +703,7 @@ exports[`PlayerBar > (Snapshot) long metadata truncation 1`] = `
             <div>
               <button
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-shuffle-button"
                 type="button"
@@ -736,7 +742,7 @@ exports[`PlayerBar > (Snapshot) long metadata truncation 1`] = `
             <div>
               <button
                 aria-label="Previous"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 type="button"
               >
@@ -766,7 +772,7 @@ exports[`PlayerBar > (Snapshot) long metadata truncation 1`] = `
               <button
                 aria-label="Play"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green size-10 rounded-full shadow-md active:text-black"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green rounded-full shadow-md active:text-black size-10"
                 data-headlessui-state=""
                 data-testid="player-play-button"
                 type="button"
@@ -793,7 +799,7 @@ exports[`PlayerBar > (Snapshot) long metadata truncation 1`] = `
             <div>
               <button
                 aria-label="Next"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-next-button"
                 type="button"
@@ -823,7 +829,7 @@ exports[`PlayerBar > (Snapshot) long metadata truncation 1`] = `
             <div>
               <button
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-repeat-button"
                 type="button"
@@ -868,7 +874,7 @@ exports[`PlayerBar > (Snapshot) long metadata truncation 1`] = `
               <button
                 aria-label="Mute"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
                 data-headlessui-state=""
                 type="button"
               >
@@ -933,8 +939,8 @@ exports[`PlayerBar > (Snapshot) long metadata truncation 1`] = `
                         style="width: 50%;"
                       />
                       <div
-                        class="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-                        style="left: 50%;"
+                        class="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+                        style="left: calc(50% - 10px);"
                       />
                     </div>
                   </div>
@@ -1014,12 +1020,14 @@ exports[`PlayerBar > (Snapshot) no artwork fallback 1`] = `
             <div
               class="text-foreground truncate text-sm font-semibold tracking-tight"
               data-testid="now-playing-title"
+              title="Untitled Track"
             >
               Untitled Track
             </div>
             <div
               class="text-foreground-secondary truncate text-xs"
               data-testid="player-now-playing-artist"
+              title="Unknown Artist"
             >
               Unknown Artist
             </div>
@@ -1035,7 +1043,7 @@ exports[`PlayerBar > (Snapshot) no artwork fallback 1`] = `
           <div>
             <button
               aria-pressed="false"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
               data-headlessui-state=""
               data-testid="player-shuffle-button"
               type="button"
@@ -1074,7 +1082,7 @@ exports[`PlayerBar > (Snapshot) no artwork fallback 1`] = `
           <div>
             <button
               aria-label="Previous"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
               data-headlessui-state=""
               type="button"
             >
@@ -1104,7 +1112,7 @@ exports[`PlayerBar > (Snapshot) no artwork fallback 1`] = `
             <button
               aria-label="Play"
               aria-pressed="false"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green size-10 rounded-full shadow-md active:text-black"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green rounded-full shadow-md active:text-black size-10"
               data-headlessui-state=""
               data-testid="player-play-button"
               type="button"
@@ -1131,7 +1139,7 @@ exports[`PlayerBar > (Snapshot) no artwork fallback 1`] = `
           <div>
             <button
               aria-label="Next"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
               data-headlessui-state=""
               data-testid="player-next-button"
               type="button"
@@ -1161,7 +1169,7 @@ exports[`PlayerBar > (Snapshot) no artwork fallback 1`] = `
           <div>
             <button
               aria-pressed="false"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
               data-headlessui-state=""
               data-testid="player-repeat-button"
               type="button"
@@ -1206,7 +1214,7 @@ exports[`PlayerBar > (Snapshot) no artwork fallback 1`] = `
             <button
               aria-label="Mute"
               aria-pressed="false"
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
               data-headlessui-state=""
               type="button"
             >
@@ -1271,8 +1279,8 @@ exports[`PlayerBar > (Snapshot) no artwork fallback 1`] = `
                       style="width: 30%;"
                     />
                     <div
-                      class="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-                      style="left: 30%;"
+                      class="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+                      style="left: calc(30% - 6px);"
                     />
                   </div>
                 </div>

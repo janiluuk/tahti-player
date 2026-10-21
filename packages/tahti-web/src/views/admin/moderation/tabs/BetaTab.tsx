@@ -17,7 +17,11 @@ import {
   type AdminBetaApplication,
   type AdminBetaStatus,
 } from '../../../../api/admin';
-import { PageLoading } from '../../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { ModerationTabs } from '../ModerationTabs';
 
@@ -68,6 +72,7 @@ export function BetaTab() {
   const [filter, setFilter] = useState<AdminBetaStatus | 'all'>('PENDING');
   const [apps, setApps] = useState<AdminBetaApplication[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [approveTarget, setApproveTarget] =
     useState<AdminBetaApplication | null>(null);
   const [username, setUsername] = useState('');
@@ -81,6 +86,9 @@ export function BetaTab() {
     void fetchAdminBetaApplications(filter === 'all' ? undefined : filter).then(
       (res) => {
         setApps(res.data);
+        setLoadError(
+          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+        );
         setLoading(false);
       },
     );
@@ -126,10 +134,14 @@ export function BetaTab() {
       <StudioPanel>
         {loading ? (
           <PageLoading label="Loading applications…" />
+        ) : loadError && apps.length === 0 ? (
+          <PageError
+            title="Could not load beta applications"
+            description={loadError}
+            onRetry={reload}
+          />
         ) : apps.length === 0 ? (
-          <p className="text-foreground-secondary py-4 text-center text-sm">
-            No applications in this view.
-          </p>
+          <PageEmpty title="No applications in this view" />
         ) : (
           <ul className="divide-border divide-y">
             {apps.map((app) => {
@@ -139,14 +151,14 @@ export function BetaTab() {
                   key={app.id}
                   className="flex flex-wrap items-start justify-between gap-3 py-3 first:pt-0 last:pb-0"
                 >
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 basis-64">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-sm font-medium">{app.name}</span>
                       <Badge variant="pill" color={badge.color}>
                         {badge.label}
                       </Badge>
                     </div>
-                    <p className="text-foreground-secondary text-xs">
+                    <p className="text-foreground-secondary text-xs break-words">
                       {app.email} · {app.artistType} ·{' '}
                       {new Date(app.createdAt).toLocaleDateString()}
                     </p>
@@ -167,11 +179,16 @@ export function BetaTab() {
                   <div className="flex shrink-0 flex-wrap gap-2">
                     {app.status === 'PENDING' && (
                       <>
-                        <Button size="sm" onClick={() => openApprove(app)}>
+                        <Button
+                          className="gap-1.5"
+                          size="sm"
+                          onClick={() => openApprove(app)}
+                        >
                           <CheckCircle2Icon size={14} aria-hidden />
                           Approve
                         </Button>
                         <Button
+                          className="gap-1.5"
                           size="sm"
                           variant="text"
                           onClick={() => {
@@ -193,6 +210,7 @@ export function BetaTab() {
                       app.userId &&
                       !app.hasPassword && (
                         <Button
+                          className="gap-1.5"
                           size="sm"
                           variant="secondary"
                           onClick={() => {
@@ -226,7 +244,7 @@ export function BetaTab() {
             </p>
             <a
               href={setupUrl}
-              className="text-primary text-sm break-all underline-offset-2 hover:underline"
+              className="text-primary-strong text-sm break-all underline-offset-2 hover:underline"
             >
               {setupUrl}
             </a>
@@ -272,6 +290,7 @@ export function BetaTab() {
             <Dialog.Actions>
               <Dialog.Close>Cancel</Dialog.Close>
               <Button
+                className="gap-1.5"
                 type="submit"
                 disabled={busy || !username.trim() || !displayName.trim()}
               >

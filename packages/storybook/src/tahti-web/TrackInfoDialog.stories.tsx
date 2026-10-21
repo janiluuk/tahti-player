@@ -4,8 +4,10 @@ import {
   TrackInfoDialog,
   type TrackInfo,
 } from '@tahti-web/components/TrackInfoDialog';
+import { expect, fn, userEvent } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
+import { findDialog } from './_lib/play';
 
 const meta: Meta<typeof TrackInfoDialog> = {
   title: 'Tahti/Track/TrackInfoDialog',
@@ -15,9 +17,11 @@ const meta: Meta<typeof TrackInfoDialog> = {
   decorators: [withTahtiRouter('/u/northern-lights')],
   args: {
     isOpen: true,
-    onClose: () => {},
+    onClose: fn(),
   },
 };
+
+const selectFrostLine = fn();
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -47,7 +51,11 @@ export const WithArtistTools: Story = {
       playable,
       tracklist: [
         { id: 'archive-item-1', title: 'Aurora', active: true },
-        { id: 'archive-item-2', title: 'Frost Line', onSelect: () => {} },
+        {
+          id: 'archive-item-2',
+          title: 'Frost Line',
+          onSelect: selectFrostLine,
+        },
         {
           id: 'archive-item-3',
           title: 'Aurora (Reprise)',
@@ -55,6 +63,24 @@ export const WithArtistTools: Story = {
         },
       ],
     } satisfies TrackInfo,
+  },
+  play: async ({ canvasElement }) => {
+    const dialog = await findDialog(canvasElement, 'Track info');
+    await expect(
+      dialog.getByRole('link', { name: 'Artist page' }),
+    ).toHaveAttribute('href', '/u/northern-lights');
+    // The playing entry can't be re-selected; another one can.
+    await expect(
+      dialog.getByRole('button', { name: /Aurora$/ }),
+    ).toBeDisabled();
+    await userEvent.click(dialog.getByRole('button', { name: /Frost Line/ }));
+    await expect(selectFrostLine).toHaveBeenCalled();
+    const love = dialog.getByRole('button', { name: 'Love' });
+    await userEvent.click(love);
+    await expect(
+      await dialog.findByRole('button', { name: 'Loved' }),
+    ).toHaveAttribute('aria-pressed', 'true');
+    await userEvent.click(dialog.getByRole('button', { name: 'Loved' }));
   },
 };
 
@@ -71,5 +97,13 @@ export const LiveSignalNoCatalogEntry: Story = {
       meta: 'Live now',
       playable: null,
     } satisfies TrackInfo,
+  },
+  play: async ({ canvasElement }) => {
+    const dialog = await findDialog(canvasElement, 'Track info');
+    await expect(dialog.queryByRole('button', { name: 'Love' })).toBeNull();
+    await expect(dialog.queryByText('Tracklist')).toBeNull();
+    await expect(
+      dialog.queryByRole('link', { name: 'Artist page' }),
+    ).toBeNull();
   },
 };

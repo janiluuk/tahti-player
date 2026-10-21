@@ -3,7 +3,7 @@
 exports[`Album view > (Snapshot) renders the album view 1`] = `
 <DocumentFragment>
   <div
-    class="grid h-screen w-screen grid-rows-[auto_1fr_auto] overflow-hidden"
+    class="grid h-dvh w-screen grid-rows-[auto_1fr_auto] overflow-hidden"
   >
     <div>
       <header
@@ -41,11 +41,6 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                   />
                 </svg>
               </span>
-              <span
-                class="leading-none uppercase"
-              >
-                TAHTI
-              </span>
             </span>
           </div>
           <div
@@ -54,7 +49,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
             <div>
               <button
                 aria-label="Back"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-headlessui-state=""
                 type="button"
               >
@@ -80,7 +75,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
             <div>
               <button
                 aria-label="Forward"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-disabled=""
                 data-headlessui-state="disabled"
                 disabled=""
@@ -136,7 +131,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
             class="flex w-full flex-col gap-2"
           >
             <input
-              class="border-border text-foreground placeholder:text-foreground-secondary w-full transition-colors focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-none bg-background rounded-md border-(length:--border-width) h-8 px-8"
+              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none bg-background rounded-md border-(length:--border-width) h-8 px-8"
               data-headlessui-state=""
               data-testid="search-box"
               id="input-:r0:"
@@ -146,7 +141,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
             />
           </div>
           <button
-            class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 absolute top-1/2 right-1 size-6 -translate-y-1/2 justify-center p-0"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 absolute top-1/2 right-1 size-6 -translate-y-1/2 justify-center p-0"
             data-headlessui-state=""
             data-testid="search-box-clear"
             type="button"
@@ -179,7 +174,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
           <button
             aria-checked="false"
             aria-label="Toggle theme"
-            class="border-border relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full border-(length:--border-width) transition-all focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-none data-checked:bg-primary bg-white data-disabled:cursor-not-allowed data-disabled:opacity-50 group justify-self-end"
+            class="border-border focus:ring-primary focus:ring-offset-background relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-(length:--border-width) transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none data-checked:bg-primary bg-background-secondary data-disabled:cursor-not-allowed data-disabled:opacity-50 group justify-self-end"
             data-headlessui-state=""
             id="headlessui-switch-:r2:"
             role="switch"
@@ -246,13 +241,13 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
         transition="[object Object]"
       >
         <span
-          class="flex flex-row items-center mb-2 justify-end"
+          class="flex shrink-0 flex-row items-center mb-3 justify-end"
         >
           <div>
             <button
               aria-label="Collapse panel"
               aria-pressed="true"
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
               data-headlessui-state=""
               data-testid="sidebar-toggle-left"
               type="button"
@@ -285,9 +280,10 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
           </div>
         </span>
         <div
-          class="flex flex-1 flex-col overflow-hidden"
+          class="flex min-h-0 flex-1 flex-col overflow-hidden pt-1"
         >
-          <div
+          <nav
+            aria-label="Main"
             class="flex flex-1 flex-col"
             data-testid="sidebar-navigation"
           >
@@ -654,7 +650,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                 </span>
               </div>
             </div>
-          </div>
+          </nav>
         </div>
         <div
           class="absolute top-0 bottom-0 w-1 cursor-col-resize transition-colors right-0"
@@ -686,7 +682,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                 >
                   <button
                     aria-label="Add to favorites"
-                    class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground hover:bg-black/5 active:bg-black/10 size-10 justify-center bg-background border-border absolute top-4 right-4 z-10 rounded-md border-(length:--border-width)"
+                    class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground hover:bg-black/5 active:bg-black/10 size-10 justify-center bg-background border-border absolute top-4 right-4 z-10 rounded-md border-(length:--border-width)"
                     data-headlessui-state=""
                     data-testid="album-favorite-button"
                     type="button"
@@ -736,7 +732,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                       class="flex flex-wrap gap-3"
                     >
                       <div
-                        class="border-border bg-background shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
+                        class="border-border bg-background text-foreground shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
                       >
                         <span
                           class="font-heading text-lg font-extrabold"
@@ -750,7 +746,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                         </span>
                       </div>
                       <div
-                        class="border-border bg-background shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
+                        class="border-border bg-background text-foreground shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
                       >
                         <span
                           class="font-heading text-lg font-extrabold"
@@ -764,7 +760,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                         </span>
                       </div>
                       <div
-                        class="border-border bg-background shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
+                        class="border-border bg-background text-foreground shadow-shadow flex items-center gap-2 rounded-md border-(length:--border-width) px-2 py-1"
                       >
                         <span
                           class="font-heading text-lg font-extrabold"
@@ -784,7 +780,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                   class="h-full p-6"
                 >
                   <div
-                    class="flex h-full flex-col"
+                    class="@container flex h-full flex-col"
                   >
                     <div
                       class="flex items-center gap-2 mb-2 shrink-0"
@@ -792,7 +788,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                       <div>
                         <button
                           aria-label="Play all"
-                          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-10 justify-center"
+                          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-10 justify-center"
                           data-headlessui-state=""
                           data-testid="play-all-button"
                           type="button"
@@ -819,7 +815,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                       <div>
                         <button
                           aria-label="Add all to queue"
-                          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none size-10 justify-center"
+                          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none size-10 justify-center"
                           data-headlessui-state=""
                           data-testid="add-all-to-queue-button"
                           type="button"
@@ -856,16 +852,16 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                         style="scrollbar-width: none;"
                       >
                         <table
-                          class="border-border relative w-full table-fixed border-(length:--border-width)"
+                          class="border-border text-foreground relative w-full table-fixed border-(length:--border-width)"
                           role="table"
                         >
                           <thead>
                             <tr
-                              class="border-border bg-primary text-primary-foreground border-b-(length:--border-width)"
+                              class="border-border border-b-(length:--border-width) bg-primary text-primary-foreground"
                               role="row"
                             >
                               <th
-                                class="px-2 text-left cursor-pointer"
+                                class="px-2 text-left cursor-pointer @max-md:hidden"
                                 role="columnheader"
                               >
                                 <span
@@ -885,7 +881,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                                 </span>
                               </th>
                               <th
-                                class="w-10 text-center"
+                                class="text-center w-10"
                                 role="columnheader"
                               >
                                 <span
@@ -908,10 +904,15 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                                       d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
                                     />
                                   </svg>
+                                  <span
+                                    class="sr-only"
+                                  >
+                                    Favorite
+                                  </span>
                                 </span>
                               </th>
                               <th
-                                class="w-28 text-center"
+                                class="w-20 @max-md:w-10 text-center"
                                 role="columnheader"
                               >
                                 <span
@@ -946,26 +947,27 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                                       r="1"
                                     />
                                   </svg>
+                                  <span
+                                    class="sr-only"
+                                  >
+                                    Actions
+                                  </span>
                                 </span>
                               </th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr
-                              aria-describedby=""
-                              aria-disabled="true"
-                              aria-roledescription="sortable"
                               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                               data-testid="track-row"
-                              role="button"
                               style="height: 52px;"
-                              tabindex="0"
                             >
                               <td
-                                class="cursor-default truncate px-2"
+                                class="cursor-default truncate px-2 @max-md:hidden"
                               >
                                 <div
                                   class="truncate"
+                                  title="John Butler"
                                 >
                                   John Butler
                                 </div>
@@ -975,16 +977,23 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                               >
                                 <button
                                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                                  title="Going Solo"
                                 >
                                   Going Solo
                                 </button>
+                                <div
+                                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                                  title="John Butler"
+                                >
+                                  John Butler
+                                </div>
                               </td>
                               <td
                                 class="w-10 text-center"
                               >
                                 <button
                                   aria-label="Add to favorites"
-                                  class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
+                                  class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
                                   data-headlessui-state=""
                                   type="button"
                                 >
@@ -1008,16 +1017,18 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                                 </button>
                               </td>
                               <td
-                                class="w-28 px-1"
+                                class="w-20 @max-md:w-10 px-1"
                               >
                                 <div
                                   class="flex items-center justify-end gap-1"
                                 >
-                                  <div>
+                                  <div
+                                    class="@max-md:hidden"
+                                  >
                                     <button
                                       aria-label="Add to queue"
                                       aria-pressed="false"
-                                      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 justify-center size-7 opacity-100 transition-colors [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
+                                      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 justify-center size-7 opacity-100 transition-colors [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
                                       data-headlessui-state=""
                                       data-testid="add-to-queue-button"
                                       type="button"
@@ -1058,7 +1069,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                                       aria-expanded="false"
                                       aria-haspopup="menu"
                                       aria-label="Track options"
-                                      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
+                                      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
                                       data-headlessui-state=""
                                       data-state="closed"
                                       data-testid="track-context-menu-button"
@@ -1100,20 +1111,16 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                               </td>
                             </tr>
                             <tr
-                              aria-describedby=""
-                              aria-disabled="true"
-                              aria-roledescription="sortable"
                               class="border-border group border-b-(length:--border-width) select-none bg-background"
                               data-testid="track-row"
-                              role="button"
                               style="height: 52px;"
-                              tabindex="0"
                             >
                               <td
-                                class="cursor-default truncate px-2"
+                                class="cursor-default truncate px-2 @max-md:hidden"
                               >
                                 <div
                                   class="truncate"
+                                  title="John Butler"
                                 >
                                   John Butler
                                 </div>
@@ -1123,16 +1130,23 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                               >
                                 <button
                                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                                  title="King of California"
                                 >
                                   King of California
                                 </button>
+                                <div
+                                  class="text-foreground-secondary truncate text-xs @md:hidden"
+                                  title="John Butler"
+                                >
+                                  John Butler
+                                </div>
                               </td>
                               <td
                                 class="w-10 text-center"
                               >
                                 <button
                                   aria-label="Add to favorites"
-                                  class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
+                                  class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
                                   data-headlessui-state=""
                                   type="button"
                                 >
@@ -1156,16 +1170,18 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                                 </button>
                               </td>
                               <td
-                                class="w-28 px-1"
+                                class="w-20 @max-md:w-10 px-1"
                               >
                                 <div
                                   class="flex items-center justify-end gap-1"
                                 >
-                                  <div>
+                                  <div
+                                    class="@max-md:hidden"
+                                  >
                                     <button
                                       aria-label="Add to queue"
                                       aria-pressed="false"
-                                      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 justify-center size-7 opacity-100 transition-colors [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
+                                      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 justify-center size-7 opacity-100 transition-colors [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
                                       data-headlessui-state=""
                                       data-testid="add-to-queue-button"
                                       type="button"
@@ -1206,7 +1222,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                                       aria-expanded="false"
                                       aria-haspopup="menu"
                                       aria-label="Track options"
-                                      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
+                                      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
                                       data-headlessui-state=""
                                       data-state="closed"
                                       data-testid="track-context-menu-button"
@@ -1264,13 +1280,13 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
         transition="[object Object]"
       >
         <span
-          class="flex flex-row items-center mb-2 justify-start"
+          class="flex shrink-0 flex-row items-center mb-3 justify-start"
         >
           <div>
             <button
               aria-label="Collapse panel"
               aria-pressed="true"
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
               data-headlessui-state=""
               data-testid="sidebar-toggle-right"
               type="button"
@@ -1306,7 +1322,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
           />
         </span>
         <div
-          class="flex flex-1 flex-col overflow-hidden"
+          class="flex min-h-0 flex-1 flex-col overflow-hidden pt-1"
         >
           <div
             class="flex h-full min-h-0 flex-col items-center justify-center gap-4 p-8 text-center transition-opacity duration-150 opacity-100"
@@ -1446,12 +1462,14 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
               <div
                 class="text-foreground truncate text-sm font-semibold tracking-tight"
                 data-testid="now-playing-title"
+                title="No track playing"
               >
                 No track playing
               </div>
               <div
                 class="text-foreground-secondary truncate text-xs"
                 data-testid="player-now-playing-artist"
+                title=""
               />
             </div>
           </div>
@@ -1466,7 +1484,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
               <button
                 aria-label="Shuffle: off"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-shuffle-button"
                 type="button"
@@ -1505,7 +1523,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
             <div>
               <button
                 aria-label="Previous"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 type="button"
               >
@@ -1535,7 +1553,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
               <button
                 aria-label="Play"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green size-10 rounded-full shadow-md active:text-black"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green rounded-full shadow-md active:text-black size-10"
                 data-headlessui-state=""
                 data-testid="player-play-button"
                 type="button"
@@ -1562,7 +1580,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
             <div>
               <button
                 aria-label="Next"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-next-button"
                 type="button"
@@ -1593,7 +1611,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
               <button
                 aria-label="Repeat: off"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-repeat-button"
                 type="button"
@@ -1638,7 +1656,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
               <button
                 aria-label="Mute"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
                 data-headlessui-state=""
                 type="button"
               >
@@ -1703,8 +1721,8 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                         style="width: 100%;"
                       />
                       <div
-                        class="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-                        style="left: 100%;"
+                        class="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+                        style="left: calc(100% - 20px);"
                       />
                     </div>
                   </div>
@@ -1734,6 +1752,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
       aria-label="Notifications alt+T"
       aria-live="polite"
       aria-relevant="additions text"
+      data-react-aria-top-layer="true"
       tabindex="-1"
     />
   </div>

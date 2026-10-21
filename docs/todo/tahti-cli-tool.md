@@ -1,6 +1,8 @@
 # tahti-cli — CLI tool using the tahti-api client
 
-**Status:** open
+**Status:** blocked
+
+**Blocker:** CLI features largely shipped; blocked on `@tahti/api-client` npm publish (`NPM_TOKEN`) for the standalone repo.
 
 Roadmap item (2026-09-07). Inspiration: [antiwork/gumroad-cli](https://github.com/antiwork/gumroad-cli)
 — a thin CLI wrapping a product's API client for scriptable, terminal-first
@@ -12,13 +14,116 @@ list library items, search, maybe queue/play. Possibly a CLI UI (TUI) for
 the player itself — not just a scripting wrapper.
 
 Not scoped or designed yet:
-- Where it lives (new package in `tahti-nuclear`, e.g. `packages/tahti-cli`,
-  vs. its own repo).
-- Auth story for a CLI (token file? device-code flow against tahti-org?).
-- Scope of v1 commands — start with read-only listing (library items) per
-  the ask; playback/TUI is explicitly a stretch goal ("perhaps even").
+- Auth story beyond the simple env-var token below (a config-file/device-
+  code flow is still open if that turns out to be worth it).
+- Scope beyond v1's single read-only command; playback/TUI is explicitly a
+  stretch goal ("perhaps even"), not started.
 - Relationship to [[desktop-pro-library]] (`docs/todo/desktop-pro-library.md`)
-  — that's a GUI desktop player (Tauri), this is a terminal tool; likely
-  share the same `api-client` but are otherwise independent efforts.
+  — that's a GUI desktop player (Tauri), this is a terminal tool; independent
+  efforts that happen to talk to the same API.
 
-No implementation started.
+## v1 shipped (2026-09-18): package scaffold + `library list`
+
+**Where it lives:** `packages/tahti-cli` in this workspace —
+picked over "its own repo" since it needs no build coordination with
+anything else here and a new pnpm workspace package costs nothing to split
+out later if that ever matters.
+
+**Consumes the generated `api-client` SDK — corrected, this premise was
+wrong.** Checked `../tahti-org/packages/api-client`: it exists
+(`@tahti/api-client`, `openapi-fetch`-based), but it's `private: true` and
+lives in a separate repo/pnpm workspace with no publish step — not
+importable from here without publishing it or vendoring its generated
+types, which is real, out-of-scope repo-boundary work, not a CLI decision.
+Checked how `packages/tahti-web` itself talks to the API and found it
+**doesn't use `@tahti/api-client` either** — it hand-writes `fetch` wrappers
+(`api/http.ts`'s `getJson`/`sendJson`). So the CLI does the same: plain
+`fetch` against the real public HTTP API, no generated-client dependency at
+all. This also sidesteps "where it lives" mattering as much as it seemed to.
+
+**Auth story — used what already exists, didn't invent one.** `../tahti-org`
+already has a personal-API-token mechanism
+(`Authorization: Bearer tahti_...`, read/write scopes,
+`apps/api/src/plugins/auth.ts` + `GET/POST /api/me/api-tokens`, with an
+existing tahti-web UI at Settings → Account). v1 reads one from
+`TAHTI_API_TOKEN` (env var) — the simplest possible integration with a
+mechanism that was already fully built, not a new auth flow.
+
+**v1 command:** `tahti library list [--json]` → `GET /api/me/sound` (the
+artist's own uploaded library sounds — literally "list library items" from
+the ask). Table or JSON output, `TAHTI_API_URL` override for
+staging/local API testing.
+
+**Structure:** `.mjs` runtime files (no build step) + a `.ts` test file per
+file, matching `packages/tools`'s existing convention exactly (that
+package also has `.mjs` sources + `.test.ts` files, no `type-check` script,
+`tsconfig.json` scoped to `include: ["src/**/*.ts"]` only — `tsc --noEmit`
+on a `.mjs`→`.ts` import boundary errors there too; this is an accepted
+pre-existing repo pattern, not something this pass needed to fix).
+`node:util`'s `parseArgs` for the one flag (`--json`) instead of adding a
+CLI-framework dependency for a single command.
+
+Verified: `pnpm --filter @tahti-player/tahti-cli test` (11/11), `lint`
+clean, manual smoke test of `--help` / no-token error / unknown-command
+error (all correct, see `packages/tahti-cli/README.md` for the exact
+commands). Not tested against the real live API (no token available in
+this environment) — the token-required path is covered by tests mocking
+`fetch`, not a live call.
+
+## Read-only commands (2026-09-26, #173)
+
+`tahti whoami` (`GET /api/auth/me`; table shows username and display name, never the email, username fallback when the display name is empty or email-like; `--json` is the raw response), `tahti library show <id>` (`GET /api/me/sound/:id`), `tahti releases list [--page] [--limit]` (`GET /api/me/releases`) and `library list --sort` (`SOUND_LIST_SORTS`). Every command has `--json` and `--help`; 401/403 -> "Token invalid or missing scope", 404 shows the API message, network errors name the API URL. All are GET routes behind `requireAuth`, so a read-only personal token works. 59 tests with mocked fetch; not run against the live API. Next candidates: write commands (need a `write` token), playback/TUI (stretch).
+
+## 2026-09-26: releases show, search, and the move to its own repo
+
+- **Shipped (#181):** `tahti releases show <id>` (`GET /api/me/releases/:id`, tracklist, no presigned audio URLs in the table) and `tahti search <query> [--page] [--limit]` (public `GET /api/v1/search/tracks`, never sends the token; the route has a fixed page of 20, so `--limit` trims it). `releases show` has only been tested with mocked responses.
+- **User decision (2026-09-26):** move the CLI to its own public repo, [janiluuk/tahti-cli](https://github.com/janiluuk/tahti-cli), and build it on the real `@tahti/api-client` SDK, always taking the newest SDK at build time. Chosen distribution: tahti-org publishes the SDK to npm on every release.
+- **In progress (drafts, WIP):**
+  - `janiluuk/tahti-cli` exists; `main` holds the split history of `packages/tahti-cli` (4 commits). Draft tahti-cli#1: standalone TS/ESLint/Prettier setup, `@tahti/api-client@latest` with `sdk:latest`/`prebuild`, and CI running on push/PR/manual, on an `api-client-published` repository_dispatch and daily. **Left:** convert `src/*.mjs` to TypeScript on `createTahtiClient` (tests must switch from `fetch(url, init)` to openapi-fetch's `fetch(Request)`), commit a lockfile after the first publish, update the README.
+  - Draft tahti-org#564: `@tahti/api-client` builds to `dist/` and a `publish-api-client` job publishes `0.<YYYYMMDD>.<N>` after each release, then sends the dispatch. **Left:** the 2026-09-26-2 release has no `openapi.json` asset, so check that the job generates the spec itself when the artifact is missing; actionlint; local pack smoke test.
+  - **User actions:** `NPM_TOKEN` secret in tahti-org (publish rights on the `@tahti` npm scope; scope ownership not checked), optionally `TAHTI_CLI_DISPATCH_TOKEN` (Contents: write on tahti-cli).
+- **After the new repo builds:** remove `packages/tahti-cli` from this repo and move this todo to tahti-cli.
+
+
+## 2026-10-04: status check and `tahti import <folder>`
+
+- **Shipped:** `tahti import <folder> [--recursive] [--dry-run] [--force] [--json]` uploads each audio file in a folder as a new library sound through `POST /api/uploads/prepare`, the presigned storage `PUT` and `POST /api/uploads/complete`. Titles come from file names, titles already in the library are skipped, a failed file does not stop the rest, and the exit code is 1 when any file failed. It is the first write command, so it needs a token with the `write` scope. Tested with a temp folder and mocked `fetch`; not run against the live API or real storage.
+- **Standalone repo status:** `janiluuk/tahti-cli` `main` still equals `packages/tahti-cli` here and cannot install on its own (it depends on the workspace eslint config). Draft tahti-cli#1 is unchanged since 2026-09-26.
+- **Still blocked on the user:** tahti-org#564 is merged, but `@tahti/api-client` is not on npm yet (`npm view` returns 404). The publish job needs the `NPM_TOKEN` secret and the `@tahti` npm scope. Until the first publish, tahti-cli#1 cannot install or build.
+- **Left to port, in order:** (1) after the first SDK publish, finish tahti-cli#1: convert `src/*.mjs` to TypeScript on `createTahtiClient`, commit a lockfile, update the README; (2) carry `import` over to the standalone repo (opened as a PR against its `main` so it does not fall behind); (3) remove `packages/tahti-cli` from this repo and move this todo.
+- **Not done in `import`:** reading tags or artwork from the files, resumable or parallel uploads, adding the uploads to a release or collection.
+
+## 2026-10-05: `tahti shell` TUI (library + radio + play)
+
+- **Shipped (this branch / #508):** interactive `tahti shell` using **blessed**
+  (nav / list / now-playing) and external **mpv** over JSON IPC. Scope is
+  listener shell: Library (`GET /api/me/sound` + `editor/source` play URL),
+  Search (`GET /api/v1/search/tracks` — play only when a stream URL is present),
+  Radio (`GET /api/channels/tahti-radio` HLS + `GET /api/v1/internet-radio/presets/enabled`),
+  and an in-memory queue. Keys: Tab, Enter, Space, n/p, seek, `/`, a/c, ?, q.
+- **Deps:** runtime `blessed`; host must provide `mpv` on PATH. Unit tests cover
+  state, key routing, IPC message builders, and radio/library API mapping (no
+  real TTY/mpv in CI).
+- **Out of this slice:** studio/dashboard, hearthis download inside the TUI,
+  favorites/history accounts, pure-Node decoding.
+
+## 2026-10-15: twenty commands, saved login, import tags, shell Likes
+
+- **Merged:** `notifications list` (#818), and `notifications read`, `stats`, `collections list|show`, `channel` re-landed together in #827 after the stacked #819-#826 were closed when their base branches were deleted mid-merge.
+- **Open, one stacked chain (#828 → #846):** `library edit` (PATCH, field flags; `apiPost` became `apiSendJson`), `library delete --yes`, `library download` (signed link, `.partial` then rename), `library processing --wait`, `collections add|remove` (by the `#` shown in `collections show`), `purchases` (EUR), `blocks list|add|remove`, `mentions`, `messages list|send` (a 403 not about the token now shows the API's message), `feed`, `stash list` (no share tokens in the table), `login`/`logout` (#839), `import` reading title/artist/genre/BPM from ID3v2 and FLAC tags (#840), a manual page `packages/docs/user-manual/reference/command-line.md` (#841), `likes` (#842) and a Likes pane in `tahti shell` (#846).
+- **Auth (the open item above):** `tahti login` checks the token with `GET /api/auth/me` and saves it to `$XDG_CONFIG_HOME/tahti/config.json` (mode 600); `TAHTI_API_TOKEN` still wins. No device-code flow, since the API has none.
+- **Import:** uploads are public by default and auto-join the rotation when that channel setting is on (`uploads/complete.ts` on tahti-org `main`), which the manual page now says. `import --collection` was not added: the items route accepts only READY sounds; `library processing --wait` then `collections add` covers it.
+- **Standalone repo:** tahti-cli#4 merged (identical to tahti-player master); tahti-cli#5 copies `src/` from #846 and updates its README. `@tahti/api-client` is still not on npm, so tahti-cli#1 stays a draft.
+- **Left:** the SDK publish and port (needs `NPM_TOKEN`), adding tracks to an existing release, album/artwork tags, OGG/M4A tags. None of the new commands was run against the live API.
+
+## 2026-10-16: release write commands, shell history
+
+- **`tahti releases create <title>` (#858):** `POST /api/me/releases` with `--type`, `--date` (default today), `--description`, `--genre` and repeatable `--sound <id>`; each sound is looked up with `GET /api/me/sound/:id` and becomes a track titled after it. Creates a draft. Mocked `fetch` only, not run against the live API.
+- **`tahti releases edit <id>` (#862):** `PATCH /api/me/releases/:id` with `--state draft|published|archived`, `--description`, `--date`, `--pin`/`--unpin`, `--footer on|off` and repeatable `--link <service>=<url>`. The API replaces all smart links at once, so `--link` first reads the release and merges (an empty URL removes a service). `releases show` now lists the services that have a store link. Mocked `fetch` only, not run against the live API.
+- **History and previous in `tahti shell` (#864):** a History pane lists the tracks played this session, newest first (at most 100, live streams left out, in memory only); `p` restarts the current track once it is past 3 s, otherwise plays the previous history entry and puts the current track at the front of the queue so `n` returns to it. State logic is unit tested; not tried in a real terminal with mpv.
+
+## 2026-10-16 (batch 65)
+
+- **`tahti releases add-tracks <id> --sound <id>...`:** reads the release (`GET /api/me/releases/:id`), looks up each sound and adds it with `POST /api/me/releases/:id/tracks` (route and `ReleaseTrackInputSchema` checked on tahti-org `main`), after the existing tracks, titled after the sound. A failure part-way says how many were added. `releases edit` now reuses `parseReleaseDate` from `releases create`. Mocked `fetch` only, not run against the live API.
+- **`tahti import` reads OGG, Opus and M4A tags:** Vorbis comments from Ogg Vorbis and Opus (the comment packet is joined across pages; pages of other streams are skipped) and `©nam`/`©ART`/`©gen`/`tmpo` from an M4A's `moov/udta/meta/ilst`, found by walking boxes with file reads (`moov` after `mdat` works). Numeric `gnre` genres are not mapped. Album and artwork are not read: `CompleteUploadSchema`/`SoundUploadMetadataSchema` on tahti-org `main` have no album or artwork field. Unit tests with built files, plus a local check on ffmpeg-written `.ogg`/`.opus`/`.m4a`; not run against the live API.
+- **`tahti shell` keeps History between sessions:** saved to `shell-history.json` next to `config.json` (mode 600) whenever the history changes and on quit, with the track that was playing at the top. At most 100 tracks; live streams are left out and library tracks are saved without their signed play link (fetched again on play). Only history saved against the same `TAHTI_API_URL` is loaded; a missing, broken or unwritable file never stops the shell. File handling is unit tested; not tried in a real terminal with mpv.

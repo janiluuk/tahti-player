@@ -2,19 +2,24 @@ import { useNavigate } from '@tanstack/react-router';
 import {
   ActivityIcon,
   BanknoteIcon,
+  BlocksIcon,
+  Building2Icon,
+  Disc3Icon,
   FileTextIcon,
-  FlagIcon,
   GaugeIcon,
+  HardDriveIcon,
   ImageIcon,
+  LandmarkIcon,
   LanguagesIcon,
   LibraryIcon,
+  LineChartIcon,
   MapIcon,
   MapPinIcon,
   MegaphoneIcon,
+  NewspaperIcon,
   PuzzleIcon,
   RadioIcon,
-  ServerIcon,
-  SettingsIcon,
+  RadioTowerIcon,
   ShieldCheckIcon,
   TrophyIcon,
   UsersIcon,
@@ -26,6 +31,26 @@ import { TabLabel, Tabs } from '@tahti-player/ui';
 import type { TourStep } from '../lib/pageTour';
 import { matchesSectionRoute } from '../lib/sectionNavigation';
 import { SectionTabs } from './SectionTabs';
+
+/**
+ * Admin chrome (`PRIMARY` below) is not exhaustive. These paths are still
+ * routable but only via redirects, deep links, or a parent tab’s search —
+ * see `NAVIGATION-SITEMAP.md` / navigation-flow-audit. Keep this list in
+ * sync when adding a redirect-only admin URL.
+ */
+export const ADMIN_TAB_ONLY_ROUTES = [
+  '/admin/activity', // → /admin/logs
+  '/admin/disco-widgets', // → /admin/addons
+  '/admin/grants/$year', // governance grants child
+  '/admin/moderation/$tab', // moderation search tabs
+  '/admin/orphan-pages/$tab', // orphan-pages search tabs
+  '/admin/support', // → /admin/moderation?tab=support
+  '/admin/reports', // moderation / content-reports
+  '/admin/feature-requests', // moderation feature-requests tab
+  '/admin/content-reports', // moderation content-reports tab
+  '/admin/radio-submissions',
+  '/admin/radio-station-suggestions',
+] as const;
 
 export const PRIMARY = [
   {
@@ -40,6 +65,13 @@ export const PRIMARY = [
     icon: <FileTextIcon size={16} aria-hidden />,
     description:
       'Live container logs from every service in the production stack.',
+  },
+  {
+    to: '/admin/monitoring',
+    label: 'Monitoring',
+    icon: <LineChartIcon size={16} aria-hidden />,
+    description:
+      'Grafana vital stats embed, service dashboards, and container logs.',
   },
   {
     to: '/admin/moderation',
@@ -71,13 +103,13 @@ export const PRIMARY = [
   {
     to: '/admin/news',
     label: 'News',
-    icon: <FileTextIcon size={16} aria-hidden />,
+    icon: <NewspaperIcon size={16} aria-hidden />,
     description: 'Publish platform-wide news posts.',
   },
   {
     to: '/admin/streams',
     label: 'Streams',
-    icon: <ServerIcon size={16} aria-hidden />,
+    icon: <RadioTowerIcon size={16} aria-hidden />,
     description: 'Monitor live ingest and stream health across channels.',
   },
   {
@@ -101,7 +133,7 @@ export const PRIMARY = [
   {
     to: '/admin/storage',
     label: 'Storage',
-    icon: <ServerIcon size={16} aria-hidden />,
+    icon: <HardDriveIcon size={16} aria-hidden />,
     description:
       'Disk/object storage space, quotas, and every uploaded file across the platform.',
   },
@@ -121,14 +153,14 @@ export const PRIMARY = [
   {
     to: '/admin/governance',
     label: 'Governance',
-    icon: <FlagIcon size={16} aria-hidden />,
+    icon: <LandmarkIcon size={16} aria-hidden />,
     description:
       'Member votes, annual reports, grants, and AGM — one tabbed hub.',
   },
   {
     to: '/admin/addons',
     label: 'Add-ons',
-    icon: <SettingsIcon size={16} aria-hidden />,
+    icon: <BlocksIcon size={16} aria-hidden />,
     description:
       'Register and manage available listener, artist, and admin add-ons.',
   },
@@ -141,7 +173,7 @@ export const PRIMARY = [
   {
     to: '/admin/vendors',
     label: 'Vendors',
-    icon: <SettingsIcon size={16} aria-hidden />,
+    icon: <Building2Icon size={16} aria-hidden />,
     description: 'Track vendors, integrations, launch checks, and DPAs.',
   },
   {
@@ -153,7 +185,7 @@ export const PRIMARY = [
   {
     to: '/admin/tahti-selects',
     label: 'Tahti Selects',
-    icon: <RadioIcon size={16} aria-hidden />,
+    icon: <Disc3Icon size={16} aria-hidden />,
     description: 'Manage the Tahti Selects editorial stream and rotation.',
   },
   {
@@ -181,6 +213,7 @@ export const ADMIN_SECTIONS = [
       '/admin/storage',
       '/admin/artwork-presets',
       '/admin/logs',
+      '/admin/monitoring',
       '/admin/status',
       '/admin/vendors',
     ].map((to) => PRIMARY.find((item) => item.to === to)!),
@@ -331,7 +364,7 @@ export function AdminNav({
       {menu}
     </>
   ) : (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3" data-testid="admin-page-layout">
       {tabs}
       {menu}
     </div>

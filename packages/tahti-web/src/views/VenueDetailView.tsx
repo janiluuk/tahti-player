@@ -1,50 +1,78 @@
 import { Link } from '@tanstack/react-router';
-import { ArrowLeftIcon, UsersIcon } from 'lucide-react';
+import {
+  ArrowLeftIcon,
+  CalendarPlusIcon,
+  MapPinIcon,
+  UsersIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { EmptyState } from '@tahti-player/ui';
+import {
+  Badge,
+  ButtonAnchor,
+  ClampedText,
+  CopyButton,
+  EmptyState,
+  ExternalLink,
+} from '@tahti-player/ui';
 
-import { fetchVenues } from '../api/client';
-import type { VenueDirectoryItem } from '../api/types';
+import { fetchVenueProfile, venueCalendarFeedUrl } from '../api/client';
+import type { VenueProfile, VenueUpcomingBroadcast } from '../api/types';
 import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
 import { PageFrame } from '../components/PageHeader';
-import { PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import { VenueRecordings } from '../components/VenueRecordings';
 import { countryFlagAndName } from '../lib/countries';
 import { syncDocumentMetadata } from '../lib/seo';
 
 export function VenueDetailView({ slug }: { slug: string }) {
-  const [venue, setVenue] = useState<VenueDirectoryItem | null | undefined>(
+  const [venue, setVenue] = useState<VenueProfile | null | undefined>(
     undefined,
   );
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     setVenue(undefined);
-    void fetchVenues().then((res) => {
-      if (cancelled) {
-        return;
-      }
-      const found = res.data.find((v) => v.slug === slug) ?? null;
-      setVenue(found);
-      if (found) {
-        const place = [found.city, found.countryCode]
-          .filter(Boolean)
-          .join(', ');
-        syncDocumentMetadata(window.location.pathname, {
-          title: `${found.name} on Tahti`,
-          description:
-            found.description ??
-            `${found.name}${place ? ` — ${place}` : ''} is a verified venue on Tahti.`,
-        });
-      }
-    });
+    setLoadError(null);
+    void fetchVenueProfile(slug)
+      .then((res) => {
+        if (cancelled) {
+          return;
+        }
+        const found = res.data;
+        setVenue(found);
+        setLoadError(
+          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+        );
+        if (found) {
+          const place = [found.city, found.countryCode]
+            .filter(Boolean)
+            .join(', ');
+          syncDocumentMetadata(window.location.pathname, {
+            title: `${found.name} on Tahti`,
+            description:
+              found.description ??
+              `${found.name}${place ? ` — ${place}` : ''} is a verified venue on Tahti.`,
+          });
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setVenue(null);
+          setLoadError(
+            err instanceof Error ? err.message : 'Could not load this venue.',
+          );
+        }
+      });
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, attempt]);
 
   const backLink = (
     <Link
@@ -62,6 +90,19 @@ export function VenueDetailView({ slug }: { slug: string }) {
       <PageFrame maxWidth="3xl">
         {backLink}
         <PageLoading label="Loading venue…" />
+      </PageFrame>
+    );
+  }
+
+  if (venue === null && loadError) {
+    return (
+      <PageFrame maxWidth="3xl">
+        {backLink}
+        <PageError
+          title="Could not load this venue"
+          description={loadError}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
       </PageFrame>
     );
   }
@@ -115,9 +156,9 @@ export function VenueDetailView({ slug }: { slug: string }) {
         location={placeLabel || null}
         description={
           venue.description ? (
-            <p className="line-clamp-3 whitespace-pre-line">
+            <ClampedText lines={3} className="whitespace-pre-line">
               {venue.description}
-            </p>
+            </ClampedText>
           ) : (
             <p className="text-foreground-secondary">
               This venue hasn&apos;t added a description yet.
@@ -131,16 +172,104 @@ export function VenueDetailView({ slug }: { slug: string }) {
         data-testid="venue-social-header"
       >
         {venue.externalLinks?.website ? (
-          <a
+          <ExternalLink
             href={venue.externalLinks.website}
-            target="_blank"
-            rel="noreferrer"
-            className="text-sm font-medium underline-offset-2 hover:underline"
+            className="text-sm font-medium"
           >
-            Venue website →
-          </a>
+            Venue website
+          </ExternalLink>
         ) : null}
       </EntitySocialHeader>
+      {venue.address ? (
+        <p className="text-foreground-secondary flex items-center gap-1.5 text-sm">
+          <MapPinIcon size={14} aria-hidden />
+          {venue.address}
+        </p>
+      ) : null}
+      <VenueUpcomingShows slug={venue.slug} broadcasts={venue.broadcasts} />
+      <VenueRecordings recordings={venue.recordings} />
     </PageFrame>
+  );
+}
+
+function formatShowTime(show: VenueUpcomingBroadcast): string {
+  const start = new Date(show.startAt);
+  const date = start.toLocaleDateString(undefined, {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+  });
+  const time = start.toLocaleTimeString(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  if (!show.endAt) {
+    return `${date} ${time}`;
+  }
+  const end = new Date(show.endAt).toLocaleTimeString(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  return `${date} ${time}–${end}`;
+}
+
+function VenueUpcomingShows({
+  slug,
+  broadcasts,
+}: {
+  slug: string;
+  broadcasts: VenueUpcomingBroadcast[];
+}) {
+  const feedUrl = venueCalendarFeedUrl(slug);
+  return (
+    <section
+      aria-labelledby="venue-upcoming-title"
+      className="border-border rounded-xl border p-4"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2
+          id="venue-upcoming-title"
+          className="font-display text-lg font-bold"
+        >
+          Upcoming shows
+        </h2>
+        <div className="flex items-center gap-1.5">
+          <ButtonAnchor href={feedUrl} size="sm" variant="secondary" download>
+            <CalendarPlusIcon size={14} aria-hidden className="mr-1.5" />
+            Add to calendar
+          </ButtonAnchor>
+          <CopyButton
+            text={feedUrl}
+            aria-label="Copy calendar feed link"
+            toastMessage="Calendar feed link copied. Subscribe to it in your calendar app to keep it up to date."
+          />
+        </div>
+      </div>
+      {broadcasts.length === 0 ? (
+        <PageEmpty title="No shows booked here yet." />
+      ) : (
+        <ul className="divide-border mt-2 divide-y">
+          {broadcasts.map((show) => (
+            <li key={show.id} className="flex flex-col gap-0.5 py-2 text-sm">
+              <span className="flex flex-wrap items-center gap-2">
+                <time dateTime={show.startAt} className="font-medium">
+                  {formatShowTime(show)}
+                </time>
+                {show.state === 'LIVE' ? (
+                  <Badge variant="pill" color="red">
+                    Live now
+                  </Badge>
+                ) : null}
+              </span>
+              {show.description ? (
+                <span className="text-foreground-secondary">
+                  {show.description}
+                </span>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }

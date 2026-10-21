@@ -4,9 +4,9 @@ import {
   XIcon,
   type LucideIcon,
 } from 'lucide-react';
-import type { CSSProperties, ReactNode } from 'react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
 
-import { StatChip } from '@tahti-player/ui';
+import { Button, MediaArtwork, StatChip } from '@tahti-player/ui';
 
 import {
   isHeaderImageUrl,
@@ -17,9 +17,12 @@ import { cn } from '../lib/cn';
 import {
   colorSchemeCssVars,
   normalizeColorScheme,
+  readableMuted,
   type LooseColorScheme,
 } from '../lib/colorScheme';
 import { ChannelVisualizer } from './ChannelVisualizer';
+import { Nameplate } from './Nameplate';
+import { TahtiMemberBadge } from './TahtiMemberBadge';
 
 const VIDEO_BACKDROP_PATTERN = /\.(mp4|webm)(\?|$)/i;
 
@@ -44,13 +47,27 @@ export type EntitySocialStat = {
   label: string;
   value: number;
   icon: LucideIcon;
+  onClick?: () => void;
 };
 
 export type EntitySocialHeaderProps = {
   title: string;
+  /** Coloured pill beside the title (artist profile nameplate). */
+  nameplate?: {
+    nameplateText?: string | null;
+    nameplateColor?: string | null;
+  } | null;
+  /** Shows the Tahti ry member badge beside the title. */
+  isMember?: boolean;
   /** Square cover / avatar shown beside the title. */
   imageUrl?: string | null;
   imageAlt?: string;
+  /** Still first frame of an animated `imageUrl`, shown until the image is
+   * hovered or focused (and always under reduced motion). */
+  imagePosterUrl?: string | null;
+  /** CSS `background` drawn when there is no `imageUrl` (artist avatar
+   * theme), with the title's initial on top. */
+  imageFallback?: string | null;
   /** When true, image is a circle (artist); otherwise rounded square (collection). */
   roundImage?: boolean;
   /** Optional location / place badge under the title. */
@@ -64,6 +81,8 @@ export type EntitySocialHeaderProps = {
   stats?: EntitySocialStat[];
   /** Backdrop image / video poster under the primary scrim. */
   backdropUrl?: string | null;
+  /** Transparent artist logo over the avatar, the cover, or both. */
+  logo?: { url: string; placement: 'AVATAR' | 'COVER' | 'BOTH' } | null;
   /**
    * Channel Designer header treatment — GRADIENT / SOLID / VIDEO_LOOP.
    * When unset, falls back to image blur or visualizer.
@@ -99,8 +118,12 @@ export type EntitySocialHeaderProps = {
  */
 export function EntitySocialHeader({
   title,
+  nameplate,
+  isMember,
   imageUrl,
   imageAlt = '',
+  imagePosterUrl,
+  imageFallback,
   roundImage = false,
   location,
   subtitle,
@@ -108,6 +131,7 @@ export function EntitySocialHeader({
   actions,
   stats = [],
   backdropUrl,
+  logo,
   headerStyle,
   videoBackgroundUrl,
   gradientOverride,
@@ -121,6 +145,7 @@ export function EntitySocialHeader({
   children,
   'data-testid': dataTestId = 'entity-social-header',
 }: EntitySocialHeaderProps) {
+  const [imageFocused, setImageFocused] = useState(false);
   const scheme = colorScheme ? normalizeColorScheme(colorScheme) : null;
   const mediaUrl = videoBackgroundUrl ?? backdropUrl;
   const showVideo =
@@ -172,7 +197,7 @@ export function EntitySocialHeader({
     <div
       className={cn(
         'border-border shadow-shadow relative isolate flex flex-col gap-5 overflow-hidden rounded-md border-(length:--border-width) p-6',
-        !scheme && !hasDesignedBackdrop && 'bg-primary',
+        !scheme && !hasDesignedBackdrop && 'bg-primary text-primary-foreground',
         className,
       )}
       style={schemeStyle}
@@ -248,86 +273,141 @@ export function EntitySocialHeader({
         style={scrimStyle}
       />
 
-      {actions ? (
-        <div className="absolute top-4 right-4 z-10 flex flex-wrap items-center justify-end gap-2">
-          {actions}
-        </div>
+      {logo && logo.placement !== 'AVATAR' ? (
+        <img
+          src={logo.url}
+          alt=""
+          data-testid="header-logo-cover"
+          className="pointer-events-none absolute top-4 right-4 max-h-16 max-w-40 object-contain drop-shadow"
+        />
       ) : null}
-
       <div className="flex flex-wrap items-center gap-5">
-        {imageUrl ? (
-          onImageClick ? (
-            <div className="group relative size-24 shrink-0">
-              <button
-                type="button"
-                onClick={onImageClick}
+        <div className="relative shrink-0">
+          {imageUrl ? (
+            onImageClick ? (
+              <div className="group relative size-24 shrink-0">
+                <Button
+                  variant="plain"
+                  size="flexible"
+                  type="button"
+                  onClick={onImageClick}
+                  className={cn(
+                    'border-border shadow-shadow relative inline-block size-24 overflow-hidden border-(length:--border-width) p-0 whitespace-normal active:scale-100',
+                    roundImage ? 'rounded-full' : 'rounded-md',
+                  )}
+                  aria-label={`Change ${title} artwork`}
+                  onFocus={() => setImageFocused(true)}
+                  onBlur={() => setImageFocused(false)}
+                >
+                  <MediaArtwork
+                    src={imageUrl}
+                    posterSrc={imagePosterUrl}
+                    animate={imageFocused}
+                    alt={imageAlt}
+                    imageReveal={false}
+                  />
+                </Button>
+                {onImageDelete ? (
+                  <Button
+                    variant="plain"
+                    size="flexible"
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onImageDelete();
+                    }}
+                    aria-label={`Remove ${title} artwork`}
+                    title="Remove artwork"
+                    className="border-border bg-background text-accent-red-strong shadow-shadow hover:bg-background-secondary absolute -top-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full border-(length:--border-width) whitespace-normal opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 active:scale-100"
+                  >
+                    <XIcon size={12} aria-hidden />
+                  </Button>
+                ) : null}
+              </div>
+            ) : (
+              <MediaArtwork
+                src={imageUrl}
+                posterSrc={imagePosterUrl}
+                alt={imageAlt}
+                size="lg"
+                imageReveal={false}
                 className={cn(
-                  'border-border shadow-shadow size-24 overflow-hidden border-(length:--border-width) p-0',
+                  'border-border shadow-shadow size-24 min-w-24 shrink-0 border-(length:--border-width)',
                   roundImage ? 'rounded-full' : 'rounded-md',
                 )}
-                aria-label={`Change ${title} artwork`}
-              >
-                <img
-                  src={imageUrl}
-                  alt={imageAlt}
-                  className="size-full object-cover"
-                />
-              </button>
-              {onImageDelete ? (
-                <button
-                  type="button"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    onImageDelete();
-                  }}
-                  aria-label={`Remove ${title} artwork`}
-                  title="Remove artwork"
-                  className="border-border bg-background text-accent-red shadow-shadow hover:bg-background-secondary absolute -top-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full border-(length:--border-width) opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100"
-                >
-                  <XIcon size={12} aria-hidden />
-                </button>
-              ) : null}
-            </div>
-          ) : (
-            <img
-              src={imageUrl}
-              alt={imageAlt}
+              />
+            )
+          ) : onImageClick ? (
+            <Button
+              variant="plain"
+              size="flexible"
+              type="button"
+              onClick={onImageClick}
               className={cn(
-                'border-border shadow-shadow size-24 shrink-0 border-(length:--border-width) object-cover',
+                'border-border bg-background-secondary/40 text-foreground-secondary shadow-shadow flex size-24 shrink-0 items-center justify-center border-(length:--border-width) whitespace-normal active:scale-100',
+                roundImage ? 'rounded-full' : 'rounded-md',
+              )}
+              aria-label={`Upload ${title} artwork`}
+            >
+              <UploadCloudIcon size={22} aria-hidden />
+            </Button>
+          ) : imageFallback ? (
+            <MediaArtwork
+              src={null}
+              fallbackBackground={imageFallback}
+              size="lg"
+              placeholder={
+                <span className="font-heading text-4xl font-extrabold text-white drop-shadow">
+                  {title.trim().charAt(0).toUpperCase()}
+                </span>
+              }
+              className={cn(
+                'border-border shadow-shadow size-24 min-w-24 border-(length:--border-width)',
                 roundImage ? 'rounded-full' : 'rounded-md',
               )}
             />
-          )
-        ) : onImageClick ? (
-          <button
-            type="button"
-            onClick={onImageClick}
-            className={cn(
-              'border-border bg-background-secondary/40 text-foreground-secondary shadow-shadow flex size-24 shrink-0 items-center justify-center border-(length:--border-width)',
-              roundImage ? 'rounded-full' : 'rounded-md',
-            )}
-            aria-label={`Upload ${title} artwork`}
-          >
-            <UploadCloudIcon size={22} aria-hidden />
-          </button>
-        ) : (
-          <div
-            className={cn(
-              'border-border bg-background-secondary/40 shadow-shadow size-24 shrink-0 border-(length:--border-width)',
-              roundImage ? 'rounded-full' : 'rounded-md',
-            )}
-            aria-hidden
-          />
-        )}
-        <div className="flex min-w-0 flex-1 flex-col gap-1 pr-12">
-          <h1 className="font-heading text-3xl font-extrabold tracking-tight">
-            {title}
-          </h1>
+          ) : (
+            <MediaArtwork
+              src={null}
+              size="lg"
+              placeholder={
+                <span className="font-heading text-foreground-secondary text-4xl font-extrabold">
+                  {title.trim().charAt(0).toUpperCase()}
+                </span>
+              }
+              className={cn(
+                'border-border shadow-shadow size-24 min-w-24 border-(length:--border-width)',
+                roundImage ? 'rounded-full' : 'rounded-md',
+              )}
+            />
+          )}
+          {logo && logo.placement !== 'COVER' ? (
+            <img
+              src={logo.url}
+              alt=""
+              data-testid="header-logo-avatar"
+              className="pointer-events-none absolute -right-2 -bottom-2 size-10 object-contain drop-shadow"
+            />
+          ) : null}
+        </div>
+        <div className="flex min-w-0 flex-1 basis-56 flex-col gap-1 break-words">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <h1 className="font-heading text-3xl font-extrabold tracking-tight">
+              {title}
+            </h1>
+            <Nameplate
+              text={nameplate?.nameplateText}
+              color={nameplate?.nameplateColor}
+              fallbackColor={scheme?.accent}
+            />
+            <TahtiMemberBadge isMember={isMember} />
+          </div>
           {location ? (
             <span
               className={cn(
                 'inline-flex w-fit items-center gap-1 rounded-md border px-2 py-0.5 text-sm font-bold',
-                !scheme && 'bg-accent-orange border-border',
+                !scheme &&
+                  'bg-accent-orange border-border text-accent-foreground',
               )}
               style={
                 scheme
@@ -345,8 +425,15 @@ export function EntitySocialHeader({
           ) : null}
           {subtitle ? (
             <div
-              className={cn('text-sm', !scheme && 'text-foreground-secondary')}
-              style={scheme ? { color: scheme.muted } : undefined}
+              className={cn(
+                'text-sm',
+                !scheme &&
+                  (hasDesignedBackdrop
+                    ? 'text-foreground-secondary'
+                    : 'text-primary-foreground'),
+              )}
+              style={scheme ? { color: readableMuted(scheme) } : undefined}
+              data-testid="entity-social-header-subtitle"
             >
               {subtitle}
             </div>
@@ -360,18 +447,40 @@ export function EntitySocialHeader({
             </div>
           ) : null}
         </div>
+        {actions ? (
+          <div className="z-10 flex max-w-full shrink-0 flex-wrap items-center gap-2 self-start sm:justify-end">
+            {actions}
+          </div>
+        ) : null}
       </div>
 
       {activeStats.length > 0 ? (
         <div className="flex flex-wrap gap-3">
-          {activeStats.map((stat) => (
-            <StatChip
-              key={stat.key}
-              icon={<stat.icon size={14} aria-hidden />}
-              label={stat.label}
-              value={formatCompactStat(stat.value)}
-            />
-          ))}
+          {activeStats.map((stat) => {
+            const chip = (
+              <StatChip
+                key={stat.key}
+                icon={<stat.icon size={14} aria-hidden />}
+                label={stat.label}
+                value={formatCompactStat(stat.value)}
+              />
+            );
+            return stat.onClick ? (
+              <Button
+                key={stat.key}
+                variant="text"
+                size="flexible"
+                className="p-0"
+                aria-haspopup="dialog"
+                onClick={stat.onClick}
+                data-testid={`stat-${stat.key}`}
+              >
+                {chip}
+              </Button>
+            ) : (
+              chip
+            );
+          })}
         </div>
       ) : null}
 

@@ -8,7 +8,7 @@ Read this first. Open one more file only if the table says so. Stop when you hav
 | --- | --- | --- |
 | API + legacy `apps/web` | **`../tahti-org`** | Fastify API, Prisma, `@tahti/shared`, production Next client |
 | Marketplace catalog | `../tahti-registry` | Store `plugins.json` / themes |
-| This player fork | `.` (`tahti-nuclear`) | Nuclear player + `packages/tahti-web` |
+| This player fork | `.` (`tahti-player`) | Player fork + `packages/tahti-web` |
 
 Do not invent sibling API shapes. Inspect `../tahti-org` routes/DTOs first. Do not commit/push/deploy the sibling unless the user asks. Before every push of this repo, rebase onto the latest PR base (usually `origin/master`).
 
@@ -23,10 +23,14 @@ Do not invent sibling API shapes. Inspect `../tahti-org` routes/DTOs first. Do n
 | Cutover / beta vs prod | [`packages/tahti-web/CUTOVER.md`](packages/tahti-web/CUTOVER.md) | Only if cutover/deploy scope |
 | Listener/artist/admin gap ledger | [`packages/tahti-web/GAP-MAPPING.md`](packages/tahti-web/GAP-MAPPING.md) | Only if parity vs `apps/web` |
 | Player core / plugins / themes | Root [`AGENTS.md`](AGENTS.md) + [`docs/agent/`](docs/agent/) | Matching on-demand file only |
+| How the system fits together (repos, infra, request flow) | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) + [`docs/DATA-FLOW.md`](docs/DATA-FLOW.md) | Have the "why does X talk to Y" answer |
 | Settled forks / “already decided” | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Matching decision |
 | Storybook surface lookup | [`packages/tahti-web/STORYBOOK-SURFACES.md`](packages/tahti-web/STORYBOOK-SURFACES.md) | Matching row |
 | View catalog / Storybook coverage | [`docs/VIEW-CATALOG.md`](docs/VIEW-CATALOG.md) | Cross-check after adding/removing views, stories, or nav items |
 | Fork / API relationship | [`TAHTI.md`](TAHTI.md) | Path + ownership split |
+| Accessibility / responsive layout rules | [`docs/agent/CODE-STYLE.md`](docs/agent/CODE-STYLE.md) → Accessibility, Layout | The matching bullet |
+| User-facing docs site (GitBook) | [`packages/docs/SUMMARY.md`](packages/docs/SUMMARY.md) | Matching page; see `docs/todo/user-manual-refresh.md` for which pages are stale |
+| A doc that used to exist | [`docs/ARCHIVE.md`](docs/ARCHIVE.md) | Its replacement, or the `git show` path |
 | Ship loop (bump / deploy) | Skill `tahti-web-ship-loop` | Checklist |
 
 ## Do not scan (unless the user names them)
@@ -59,6 +63,9 @@ Status values: `open` | `blocked` | `partial` | (file deleted when done — neve
 | `UI-REDESIGN-WORKLOG.md` | Chronological ship diary (append only) |
 | `docs/DECISIONS.md` | Settled design forks |
 | `docs/VIEW-CATALOG.md` | View index with Storybook coverage and unification candidates |
+| `docs/ARCHITECTURE.md` | System overview: repos, infra, diagram |
+| `docs/DATA-FLOW.md` | Same system, traced through 3 concrete request flows |
+| `docs/ARCHIVE.md` | Docs removed as finished or superseded, and where their content went |
 
 ## Always-on rules (pointers)
 

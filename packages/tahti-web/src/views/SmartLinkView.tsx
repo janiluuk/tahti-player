@@ -1,119 +1,103 @@
 import { Link } from '@tanstack/react-router';
 import { ExternalLinkIcon, MusicIcon, PlayIcon } from 'lucide-react';
-import { useEffect, useState, type FC } from 'react';
+import { useEffect, useMemo, useState, type FC } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonAnchor,
+  ButtonLink,
+  ClampedText,
+  ExternalLink,
+} from '@tahti-player/ui';
 
-import { fetchChannelSound, fetchProfile, fetchSmartLink } from '../api/client';
-import type {
-  SmartLinkView as SmartLinkData,
-  TahtiPlayable,
-} from '../api/types';
+import { fetchSmartLink } from '../api/client';
+import { recordSmartLinkClick } from '../api/smart-link-clicks';
+import type { SmartLinkView as SmartLinkData } from '../api/types';
 import { EmbedButton } from '../components/EmbedButton';
 import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
-import { PageEmpty, PageLoading } from '../components/PageStates';
-import { PlayableTrackTable } from '../components/PlayableTrackTable';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
+import { ReleaseTrackDownloads } from '../components/ReleaseTrackDownloads';
+import { ReportButton } from '../components/ReportButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
+import { dspServiceLabel } from '../lib/dspServices';
 import { syncDocumentMetadata } from '../lib/seo';
+import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
-
-const DSP_LABELS: Record<string, string> = {
-  apple: 'Apple Music',
-  amazon: 'Amazon Music',
-  bandcamp: 'Bandcamp',
-  deezer: 'Deezer',
-  soundcloud: 'SoundCloud',
-  spotify: 'Spotify',
-  tahti: 'Tahti',
-  tidal: 'Tidal',
-  youtube: 'YouTube Music',
-};
+import {
+  SmartLinkLockedTracks,
+  SmartLinkReleaseCredits,
+} from './smart-link/SmartLinkReleaseDetails';
+import { smartLinkPlayables } from './smart-link/smartLinkTracks';
 
 type SmartLinkViewProps = { slug: string };
 
 export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
   const [data, setData] = useState<SmartLinkData | null>(null);
-  const [playables, setPlayables] = useState<TahtiPlayable[]>([]);
-  const [genre, setGenre] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const play = usePlayerStore((state) => state.play);
+  const me = useAuthStore((state) => state.user);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    void fetchSmartLink(slug).then(async (result) => {
-      if (cancelled) {
-        return;
-      }
-      setData(result.data);
-      setGenre(result.data.release.genre ?? null);
-
-      const { release, artist } = result.data;
-      syncDocumentMetadata(window.location.pathname, {
-        title: `${release.title} by ${artist.displayName} on Tahti`,
-        description:
-          release.description ??
-          `Listen to ${release.title} and find its official links on Tahti.`,
-        image: release.artworkUrl ?? artist.avatarUrl ?? undefined,
-      });
-
-      try {
-        const profile = await fetchProfile(result.data.artist.username);
-        const matched = profile.data.releases.find(
-          (release) =>
-            release.smartLinkSlug === slug ||
-            release.id === result.data.release.id,
-        );
-        const fromRelease =
-          matched?.tracks
-            ?.filter((track) => track.playUrl)
-            .map(
-              (track): TahtiPlayable => ({
-                id: `sound:${track.soundId ?? `${matched.id}-${track.position}`}`,
-                kind: 'sound',
-                title: track.title,
-                artist: result.data.artist.displayName,
-                coverUrl: matched.artworkUrl ?? undefined,
-                streamUrl: track.playUrl!,
-                protocol: track.playUrl!.includes('.m3u8') ? 'hls' : 'https',
-                channelSlug: profile.data.channel?.slug,
-              }),
-            ) ?? [];
-        let soundGenre = matched?.genre ?? null;
-        if (!soundGenre && profile.data.channel?.slug && matched?.tracks) {
-          const sound = await fetchChannelSound(profile.data.channel.slug);
-          const soundIds = new Set(
-            matched.tracks
-              .map((track) => track.soundId)
-              .filter((id): id is string => Boolean(id)),
+    setLoadError(null);
+    fetchSmartLink(slug)
+      .then((result) => {
+        if (cancelled) {
+          return;
+        }
+        setData(result.data);
+        const { release, artist } = result.data;
+        syncDocumentMetadata(window.location.pathname, {
+          title: `${release.title} by ${artist.displayName} on Tahti`,
+          description:
+            release.description ??
+            `Listen to ${release.title} and find its official links on Tahti.`,
+          image: release.artworkUrl ?? artist.avatarUrl ?? undefined,
+        });
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setData(null);
+          setLoadError(
+            err instanceof Error ? err.message : 'Could not load this release.',
           );
-          soundGenre =
-            sound.data.find((item) => soundIds.has(item.id))?.genre ?? null;
         }
+      })
+      .finally(() => {
         if (!cancelled) {
-          setPlayables(fromRelease);
-          setGenre(result.data.release.genre ?? soundGenre);
+          setLoading(false);
         }
-      } catch {
-        if (!cancelled) {
-          setPlayables([]);
-        }
-      }
-      if (!cancelled) {
-        setLoading(false);
-      }
-    });
+      });
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, attempt]);
+
+  const playables = useMemo(
+    () => (data ? smartLinkPlayables(data) : []),
+    [data],
+  );
 
   if (loading) {
     return <PageLoading label="Loading release…" />;
+  }
+
+  if (loadError) {
+    return (
+      <PageError
+        title="Could not load this release"
+        description={loadError}
+        onRetry={() => setAttempt((n) => n + 1)}
+      />
+    );
   }
 
   if (!data) {
@@ -125,11 +109,12 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
     );
   }
 
+  const isOwner = Boolean(me && me.username === data.artist.username);
   const targets = Object.entries(data.targets).filter(([, url]) => url?.trim());
   const releaseYear = data.release.releaseDate
     ? new Date(data.release.releaseDate).getFullYear()
     : null;
-  const metadata = [releaseYear, genre, data.release.type]
+  const metadata = [releaseYear, data.release.genre, data.release.type]
     .filter(Boolean)
     .join(' · ');
   const backdropUrl =
@@ -165,6 +150,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
       <EntitySocialHeader
         title={data.release.title}
         imageUrl={data.release.artworkUrl}
+        imageAlt={`${data.release.title} cover`}
         subtitle={
           <Link
             to="/u/$username"
@@ -178,9 +164,13 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
           <>
             {metadata ? <p className="capitalize">{metadata}</p> : null}
             {data.release.description ? (
-              <p className="mt-1 line-clamp-3 whitespace-pre-wrap">
+              <ClampedText
+                lines={3}
+                wrapperClassName="mt-1"
+                className="whitespace-pre-wrap"
+              >
                 {data.release.description}
-              </p>
+              </ClampedText>
             ) : null}
           </>
         }
@@ -191,7 +181,16 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
         }
         stats={headerStats}
         actions={
-          <EmbedButton target={{ kind: 'release', id: data.release.id }} />
+          <>
+            <EmbedButton target={{ kind: 'release', id: data.release.id }} />
+            {isOwner ? null : (
+              <ReportButton
+                targetType="RELEASE"
+                targetId={data.release.id}
+                label={data.release.title}
+              />
+            )}
+          </>
         }
         data-testid="release-social-header"
       >
@@ -216,38 +215,50 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
       {playables.length > 0 ? (
         <section className="flex flex-col gap-3">
           <Eyebrow>Tracks</Eyebrow>
-          <PlayableTrackTable items={playables} />
+          <PlayableAmbientTrackList items={playables} />
         </section>
       ) : null}
+
+      <SmartLinkLockedTracks data={data} />
+
+      <ReleaseTrackDownloads
+        smartLinkSlug={slug}
+        tracks={data.release.tracks ?? []}
+      />
 
       <section className="flex flex-col gap-2" aria-label="Listen on">
         <Eyebrow>Listen on</Eyebrow>
         {targets.length === 0 ? (
-          <a
+          <ButtonAnchor
             href={data.releaseUrl}
-            className="border-border hover:bg-background-secondary flex items-center justify-between rounded-lg border px-4 py-3 font-semibold transition-colors"
+            variant="text"
+            size="flexible"
+            className="border-border hover:bg-background-secondary flex items-center justify-between rounded-lg border px-4 py-3 font-semibold transition-colors active:scale-100"
           >
             Tahti
             <ExternalLinkIcon size={16} aria-hidden />
-          </a>
+          </ButtonAnchor>
         ) : (
           targets.map(([name, url]) => (
-            <a
+            <ExternalLink
               key={name}
               href={url}
-              target="_blank"
-              rel="noreferrer"
-              className="border-border hover:bg-background-secondary flex items-center justify-between rounded-lg border px-4 py-3 font-semibold transition-colors"
+              onClick={() =>
+                recordSmartLinkClick(data.release.smartLinkSlug ?? slug, name)
+              }
+              className="border-border hover:bg-background-secondary flex items-center justify-between rounded-lg border px-4 py-3 font-semibold no-underline transition-colors"
             >
-              <span>{DSP_LABELS[name.toLowerCase()] ?? name}</span>
+              <span>{dspServiceLabel(name)}</span>
               <span className="text-foreground-secondary flex items-center gap-2 text-xs font-normal">
                 Listen
                 <ExternalLinkIcon size={15} aria-hidden />
               </span>
-            </a>
+            </ExternalLink>
           ))
         )}
       </section>
+
+      <SmartLinkReleaseCredits data={data} />
 
       {data.featuredCollections.length > 0 ? (
         <section className="flex flex-col gap-2">
@@ -269,6 +280,19 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
             </Link>
           ))}
         </section>
+      ) : null}
+
+      {data.release.showPoweredByFooter === true ? (
+        <footer className="text-foreground-secondary pt-4 text-center text-xs">
+          <ButtonLink
+            to="/"
+            variant="text"
+            size="xs"
+            className="text-foreground-secondary hover:text-foreground text-xs"
+          >
+            Powered by Tahti
+          </ButtonLink>
+        </footer>
       ) : null}
     </div>
   );

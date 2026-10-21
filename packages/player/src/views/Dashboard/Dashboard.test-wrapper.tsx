@@ -103,7 +103,7 @@ export const DashboardWrapper = {
   },
 
   async pluginsHeading() {
-    return screen.findByRole('heading', { name: 'Plugins' });
+    return screen.findByRole('heading', { name: 'Add-ons' });
   },
 
   topTracks: {

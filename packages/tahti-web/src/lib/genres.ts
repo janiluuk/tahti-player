@@ -1,7 +1,7 @@
 /** Preset genre list — mirrors ARCHIVE_GENRES in the main tahti repo
  * (packages/shared/src/dto/archive-metadata.ts), the same set archive
- * items pick from. Genres are stored as a comma-joined string (see
- * DiscoveryPrefs.genreTags / the backend's socialLinks.genres bag). */
+ * items pick from. Genres are stored as a comma-joined string in the
+ * profile's socialLinks.genres bag, which the channel directory reads. */
 export const PRESET_GENRES = [
   'Electronic',
   'House',

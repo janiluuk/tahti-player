@@ -1,12 +1,20 @@
 import type { ReactNode } from 'react';
 
 import {
+  Button,
+  ButtonLink,
+  ClampedText,
+  MediaArtwork,
+} from '@tahti-player/ui';
+
+import {
   isHeaderImageUrl,
   isValidHeaderBackdropUrl,
   resolvePublicVisualizerPreset,
 } from '../api/channel-design';
 import { ChannelSlideshowBackdrop } from './ChannelSlideshowBackdrop';
 import { ChannelVisualizer, type VisualColorScheme } from './ChannelVisualizer';
+import { TahtiMemberBadge } from './TahtiMemberBadge';
 
 export type ChannelBackdropNavItem = {
   id: string;
@@ -23,12 +31,27 @@ export type ChannelBackdropQuickAdd = {
 
 export type ChannelBackdropCardProps = {
   displayName: string;
+  nameAsHeading?: boolean;
   username: string;
+  /** Shows the Tahti ry member badge beside the name. */
+  isMember?: boolean;
   channelSlug?: string;
   avatarUrl?: string | null;
+  /** Still first frame of an animated `avatarUrl`. */
+  avatarPosterUrl?: string | null;
   bio?: string | null;
+  /** Backdrop toggles (Channel Designer → Backdrop settings) — bio/CTA
+   * folded into the backdrop instead of being separate draggable page
+   * blocks; avatar was always shown before this toggle existed, so it
+   * defaults true. */
+  avatarVisible?: boolean;
+  bioVisible?: boolean;
+  subscribeVisible?: boolean;
+  subscribeLabel?: string;
 
   headerStyle: string;
+  /** Optional short line in a strip across the top of the hero. */
+  topBarText?: string | null;
   videoBackgroundUrl?: string | null;
   muted?: boolean;
   accent: string;
@@ -64,6 +87,7 @@ export type ChannelBackdropCardProps = {
   visualSettingsJson?: string | null;
 
   badge?: ReactNode;
+  identityActions?: ReactNode;
   navItems?: ChannelBackdropNavItem[];
   quickAdd?: ChannelBackdropQuickAdd[];
   onEditIdentity?: () => void;
@@ -95,11 +119,19 @@ const DEFAULT_NAV_ITEMS: ChannelBackdropNavItem[] = [
  * else → dimmed artwork + live visualizer. */
 export function ChannelBackdropCard({
   displayName,
+  nameAsHeading = false,
   username,
+  isMember,
   channelSlug,
   avatarUrl,
+  avatarPosterUrl,
   bio,
+  avatarVisible = true,
+  bioVisible = true,
+  subscribeVisible = false,
+  subscribeLabel = 'Subscribe',
   headerStyle,
+  topBarText,
   videoBackgroundUrl,
   muted = true,
   accent,
@@ -123,6 +155,7 @@ export function ChannelBackdropCard({
   visualizerSettings,
   visualSettingsJson,
   badge,
+  identityActions,
   navItems = DEFAULT_NAV_ITEMS,
   quickAdd,
   onEditIdentity,
@@ -134,6 +167,7 @@ export function ChannelBackdropCard({
   bottomSlot,
   className,
 }: ChannelBackdropCardProps) {
+  const NameTag = nameAsHeading ? 'h1' : 'div';
   const showVideo =
     showVideoOverride ??
     (headerStyle === 'VIDEO_LOOP' &&
@@ -141,13 +175,14 @@ export function ChannelBackdropCard({
   const backdropIsImage =
     isImageOverride ?? isHeaderImageUrl(videoBackgroundUrl);
   const showSolid = headerStyle === 'SOLID';
-  const showGradient = headerStyle === 'GRADIENT';
+  // The designer's "Slideshow" header mode saves headerStyle GRADIENT plus a
+  // gallery mode, so a gallery with images wins over the plain gradient.
   const showSlideshow =
     !showVideo &&
     !showSolid &&
-    !showGradient &&
     galleryMode === 'STATIC_SLIDESHOW' &&
     Boolean(slideshowImages?.[0]);
+  const showGradient = headerStyle === 'GRADIENT' && !showSlideshow;
 
   return (
     <div
@@ -223,35 +258,22 @@ export function ChannelBackdropCard({
 
       <div className="absolute inset-0 bg-black/25" aria-hidden />
 
+      {topBarText?.trim() ? (
+        <div
+          data-testid="channel-backdrop-top-bar"
+          className="relative z-[1] truncate bg-black/40 px-4 py-1.5 text-center text-xs font-semibold tracking-wide backdrop-blur-sm sm:text-sm"
+          style={{ color: fg }}
+        >
+          {topBarText.trim()}
+        </div>
+      ) : null}
+
       <div
-        role={onEditIdentity ? 'button' : undefined}
-        tabIndex={onEditIdentity ? 0 : undefined}
-        aria-label={onEditIdentity ? 'Edit backdrop design' : undefined}
-        title={onEditIdentity ? 'Edit backdrop design' : undefined}
-        onClick={
-          onEditIdentity
-            ? (event) => {
-                event.stopPropagation();
-                onEditIdentity();
-              }
-            : undefined
-        }
-        onKeyDown={
-          onEditIdentity
-            ? (event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  onEditIdentity();
-                }
-              }
-            : undefined
-        }
-        className={`relative z-[1] p-4 pr-24 outline-none sm:p-6 sm:pr-40 ${
-          onEditIdentity ? 'cursor-pointer' : ''
+        className={`relative z-[1] p-4 outline-none sm:p-6 sm:pr-40 ${
+          editable ? 'pr-12' : ''
         } ${
           editable
-            ? `rounded-lg transition-shadow hover:ring-2 hover:ring-white/40 focus-visible:ring-2 focus-visible:ring-white/70 ${
+            ? `rounded-lg transition-shadow hover:ring-2 hover:ring-white/40 ${
                 identitySelected ? 'ring-primary ring-2' : ''
               }`
             : ''
@@ -259,34 +281,101 @@ export function ChannelBackdropCard({
         style={{ color: fg }}
       >
         <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-          <div
-            className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 text-3xl font-bold sm:size-32 sm:text-4xl"
-            style={{ borderColor: accent, background: bg }}
-          >
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="" className="size-full object-cover" />
-            ) : (
-              displayName.slice(0, 1).toUpperCase()
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
+          {avatarVisible ? (
             <div
-              data-testid="channel-backdrop-card-name"
-              className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl"
+              className="relative flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 text-3xl font-bold sm:size-32 sm:text-4xl"
+              style={{ borderColor: accent, background: bg }}
             >
-              {displayName}
+              {avatarUrl ? (
+                <MediaArtwork
+                  src={avatarUrl}
+                  posterSrc={avatarPosterUrl}
+                  imageReveal={false}
+                />
+              ) : (
+                displayName.slice(0, 1).toUpperCase()
+              )}
             </div>
+          ) : null}
+          <div className="min-w-36 flex-1">
             <div
-              data-testid="channel-backdrop-card-handle"
-              className="text-sm opacity-80"
+              role={onEditIdentity ? 'button' : undefined}
+              tabIndex={onEditIdentity ? 0 : undefined}
+              aria-label={onEditIdentity ? 'Edit backdrop design' : undefined}
+              title={onEditIdentity ? 'Edit backdrop design' : undefined}
+              onClick={
+                onEditIdentity
+                  ? (event) => {
+                      event.stopPropagation();
+                      onEditIdentity();
+                    }
+                  : undefined
+              }
+              onKeyDown={
+                onEditIdentity
+                  ? (event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        onEditIdentity();
+                      }
+                    }
+                  : undefined
+              }
+              className={`outline-none ${
+                onEditIdentity
+                  ? 'cursor-pointer rounded-sm focus-visible:ring-2 focus-visible:ring-white/70'
+                  : ''
+              }`}
             >
-              @{username}
-              {channelSlug ? ` · /${channelSlug}` : ''}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <NameTag
+                  data-testid="channel-backdrop-card-name"
+                  className="font-display text-2xl font-extrabold tracking-tight break-words sm:text-3xl"
+                >
+                  {displayName}
+                </NameTag>
+                <TahtiMemberBadge isMember={isMember} />
+              </div>
+              <div
+                data-testid="channel-backdrop-card-handle"
+                className="text-sm opacity-80"
+              >
+                @{username}
+                {channelSlug ? ` · /${channelSlug}` : ''}
+              </div>
             </div>
-            {bio ? (
-              <p className="mt-1 line-clamp-2 text-sm opacity-90">{bio}</p>
+            {bioVisible && bio ? (
+              <ClampedText
+                wrapperClassName="mt-1"
+                className="text-sm whitespace-pre-wrap opacity-90"
+              >
+                {bio}
+              </ClampedText>
             ) : null}
           </div>
+          {identityActions ? (
+            <div
+              className="flex min-w-0 flex-wrap items-center gap-2"
+              data-testid="channel-backdrop-identity-actions"
+              onClick={(event) => event.stopPropagation()}
+            >
+              {identityActions}
+            </div>
+          ) : null}
+          {subscribeVisible ? (
+            <ButtonLink
+              to="/subscribe/$username"
+              params={{ username }}
+              onClick={(event) => event.stopPropagation()}
+              size="sm"
+              variant="secondary"
+              data-testid="channel-backdrop-subscribe-cta"
+              className="shrink-0"
+            >
+              {subscribeLabel}
+            </ButtonLink>
+          ) : null}
           {badge}
         </div>
         {navItems.length > 0 ? (
@@ -296,18 +385,24 @@ export function ChannelBackdropCard({
           >
             {navItems.map((navItem) =>
               navItem.onClick ? (
-                <button
+                <Button
                   key={navItem.id}
                   type="button"
+                  variant="text"
+                  size="flexible"
                   onClick={(event) => {
                     event.stopPropagation();
                     navItem.onClick?.();
                   }}
-                  className={navItem.active ? 'border-b-2 pb-2' : 'pb-2'}
-                  style={navItem.active ? { borderColor: accent } : undefined}
+                  className={`rounded-none text-xs font-semibold uppercase hover:bg-transparent ${navItem.active ? 'border-b-2 pb-2' : 'pb-2'}`}
+                  style={
+                    navItem.active
+                      ? { borderColor: accent, color: 'inherit' }
+                      : { color: 'inherit' }
+                  }
                 >
                   {navItem.label}
-                </button>
+                </Button>
               ) : (
                 <span
                   key={navItem.id}
@@ -319,9 +414,11 @@ export function ChannelBackdropCard({
               ),
             )}
             {quickAdd?.map((chip) => (
-              <button
+              <Button
                 key={chip.id}
                 type="button"
+                variant="text"
+                size="flexible"
                 onClick={(event) => {
                   event.stopPropagation();
                   chip.onClick();
@@ -329,7 +426,7 @@ export function ChannelBackdropCard({
                 className="ml-auto rounded-full border border-white/30 px-2.5 py-1 text-[10px] normal-case opacity-90 hover:bg-white/10 hover:opacity-100"
               >
                 + {chip.label}
-              </button>
+              </Button>
             ))}
           </nav>
         ) : null}

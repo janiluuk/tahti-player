@@ -110,9 +110,9 @@ export function AdminMissedShowsPanel() {
                 <AlertTriangleIcon
                   size={17}
                   aria-hidden
-                  className="text-accent-orange mt-0.5 shrink-0"
+                  className="text-accent-orange-strong mt-0.5 shrink-0"
                 />
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 basis-40">
                   <div className="font-medium">
                     {flag.scheduledLiveShow.title}
                   </div>

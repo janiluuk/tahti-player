@@ -8,6 +8,7 @@ import {
   FilePicker,
   Input,
   SaveButton,
+  Select,
   Toggle,
   Tooltip,
 } from '@tahti-player/ui';
@@ -17,14 +18,26 @@ import {
   fetchStreamOverlay,
   patchStreamOverlay,
 } from '../api/broadcast';
+import {
+  STORED_VISUAL_PRESET_LABELS,
+  STORED_VISUAL_PRESETS,
+  type StoredVisualPreset,
+} from '../api/channel-design/presets';
 import { fetchChannel } from '../api/client';
 import { fetchMeProfile } from '../api/studio-extras';
 import { uploadUserMediaFile } from '../api/user-media';
 import { useAuthStore } from '../stores/authStore';
+import { BackdropUploadButton } from './BackdropUploadButton';
 import { HelpLayer } from './HelpLayer';
 import { ImageSlotDeleteBadge } from './imageSlot/ImageSlotDeleteBadge';
 import { ImageSlotPreviewDialog } from './imageSlot/ImageSlotPreviewDialog';
 import { useImageSlotChrome } from './imageSlot/useImageSlotChrome';
+import { PageError, PageLoading } from './PageStates';
+
+const VISUAL_PRESET_OPTIONS = STORED_VISUAL_PRESETS.map((id) => ({
+  id,
+  label: STORED_VISUAL_PRESET_LABELS[id],
+}));
 
 /** The composited 1280×720 video frame's text placement (see
  * buildRtmpMirrorOutput in the sibling orchestrator) — title near the
@@ -84,8 +97,13 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
     streamOverlayTextColor: '',
     streamOverlayScrimEnabled: false,
     streamOverlayCoverUrl: '',
+    streamOverlayBackdropUrl: '',
+    streamOverlayVisualPreset: 'MINIMAL' as StoredVisualPreset,
   });
   const [saving, setSaving] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [coverUploadOpen, setCoverUploadOpen] = useState(false);
   const [coverUploading, setCoverUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -109,6 +127,12 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       channelSlug ? fetchChannel(channelSlug) : null,
     ]).then(
       ([overlayResult, preflightResult, profileResult, channelResult]) => {
+        setLoaded(true);
+        if (overlayResult.meta.source === 'api' && overlayResult.meta.reason) {
+          setLoadError(overlayResult.meta.reason);
+          return;
+        }
+        setLoadError(null);
         const preflight = preflightResult.data;
         setOverlay({
           streamOverlayTitle:
@@ -123,6 +147,10 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
           streamOverlayScrimEnabled:
             overlayResult.data.streamOverlayScrimEnabled,
           streamOverlayCoverUrl: overlayResult.data.streamOverlayCoverUrl ?? '',
+          streamOverlayBackdropUrl:
+            overlayResult.data.streamOverlayBackdropUrl ?? '',
+          streamOverlayVisualPreset:
+            overlayResult.data.streamOverlayVisualPreset ?? 'MINIMAL',
         });
         setAvatarUrl(profileResult.data.avatarUrl ?? null);
         setNowPlayingArtworkUrl(
@@ -130,7 +158,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
         );
       },
     );
-  }, [channelSlug]);
+  }, [channelSlug, attempt]);
 
   const save = () => {
     setSaving(true);
@@ -142,6 +170,8 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       streamOverlayTextColor: overlay.streamOverlayTextColor.trim(),
       streamOverlayScrimEnabled: overlay.streamOverlayScrimEnabled,
       streamOverlayCoverUrl: overlay.streamOverlayCoverUrl.trim(),
+      streamOverlayBackdropUrl: overlay.streamOverlayBackdropUrl.trim(),
+      streamOverlayVisualPreset: overlay.streamOverlayVisualPreset,
     }).then((result) => {
       setSaving(false);
       if (!result.ok) {
@@ -180,6 +210,23 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
   const hasOverlayText =
     overlay.streamOverlayTitle.trim() || overlay.streamOverlaySubtitle.trim();
 
+  if (!loaded) {
+    return <PageLoading label="Loading overlay…" />;
+  }
+
+  if (loadError) {
+    return (
+      <PageError
+        title="Could not load your stream overlay"
+        description={loadError}
+        onRetry={() => {
+          setLoaded(false);
+          setAttempt((n) => n + 1);
+        }}
+      />
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <HelpLayer title="How the stream overlay works">
@@ -191,13 +238,15 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
         </p>
       </HelpLayer>
       {error && (
-        <p className="text-accent-red text-sm" role="alert">
+        <p className="text-accent-red-strong text-sm" role="alert">
           {error}
         </p>
       )}
 
       <div className="group relative aspect-video w-full max-w-xs">
-        <button
+        <Button
+          variant="plain"
+          size="flexible"
           type="button"
           onClick={() =>
             !coverUploading &&
@@ -216,7 +265,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
               ? 'Preview overlay cover'
               : 'Change overlay cover'
           }
-          className="border-border bg-background-secondary relative flex size-full items-center justify-center overflow-hidden rounded-xl border"
+          className="border-border bg-background-secondary relative flex size-full items-center justify-center overflow-hidden rounded-xl border whitespace-normal active:scale-100"
         >
           {overlay.streamOverlayCoverUrl ? (
             <img
@@ -256,7 +305,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
               scrimEnabled={overlay.streamOverlayScrimEnabled}
             />
           ) : null}
-        </button>
+        </Button>
         {overlay.streamOverlayCoverUrl ? (
           <ImageSlotDeleteBadge
             label="overlay cover"
@@ -309,6 +358,33 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
         </div>
       </Dialog.Root>
 
+      <div className="flex flex-col gap-1.5">
+        <p className="text-sm font-medium">Overlay backdrop</p>
+        <BackdropUploadButton
+          label="Overlay backdrop"
+          value={overlay.streamOverlayBackdropUrl}
+          onChange={(url) =>
+            setOverlay((current) => ({
+              ...current,
+              streamOverlayBackdropUrl: url,
+            }))
+          }
+          className="max-w-xs"
+        />
+      </div>
+
+      <Select
+        label="Overlay visualizer"
+        value={overlay.streamOverlayVisualPreset}
+        onValueChange={(value) =>
+          setOverlay((current) => ({
+            ...current,
+            streamOverlayVisualPreset: value as StoredVisualPreset,
+          }))
+        }
+        options={VISUAL_PRESET_OPTIONS}
+      />
+
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-sm font-medium">Show overlay title</p>
@@ -355,7 +431,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
             }
           />
           <label className="border-border bg-background-secondary/40 flex items-center gap-3 rounded-lg border p-2.5 text-sm">
-            <input
+            <Input
               type="color"
               value={overlay.streamOverlayTextColor || '#ffffff'}
               onChange={(event) =>
@@ -364,7 +440,6 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
                   streamOverlayTextColor: event.target.value,
                 }))
               }
-              className="h-9 w-11 cursor-pointer rounded border-0 bg-transparent"
               aria-label="Overlay text color"
             />
             <span className="min-w-0 flex-1">

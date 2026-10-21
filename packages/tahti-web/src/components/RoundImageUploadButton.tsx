@@ -2,6 +2,8 @@ import { ImageIcon, UploadCloudIcon } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { Button, MediaArtwork } from '@tahti-player/ui';
+
 import { uploadUserMediaFile } from '../api/user-media';
 import { cn } from '../lib/cn';
 import { IMAGE_UPLOAD_ACCEPT_ATTR } from '../lib/imageUploadContentType';
@@ -10,8 +12,7 @@ import { ImageSlotPreviewDialog } from './imageSlot/ImageSlotPreviewDialog';
 import { useImageSlotChrome } from './imageSlot/useImageSlotChrome';
 
 type UploadResult =
-  | { ok: true; data: { url: string } }
-  | { ok: false; error: string };
+  { ok: true; data: { url: string } } | { ok: false; error: string };
 
 type Props = {
   value?: string | null;
@@ -24,6 +25,8 @@ type Props = {
   /** Overrides the default generic media upload — e.g. a track's own
    * banner-upload endpoint instead of the shared user-media bucket. */
   upload?: (file: File) => Promise<UploadResult>;
+  /** File input `accept`; defaults to the user-media image types. */
+  accept?: string;
 };
 
 /** A single round, clickable image slot — shows the uploaded image (or a
@@ -39,6 +42,7 @@ export function RoundImageUploadButton({
   sizeClassName = 'h-16 w-16',
   className,
   upload = uploadUserMediaFile,
+  accept = IMAGE_UPLOAD_ACCEPT_ATTR,
 }: Props) {
   const [busy, setBusy] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -50,20 +54,26 @@ export function RoundImageUploadButton({
       return;
     }
     setBusy(true);
-    const result = await upload(file);
-    setBusy(false);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
+    try {
+      const result = await upload(file);
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      onChange(result.data.url);
+      toast.success(`${label} updated.`);
+    } catch {
+      toast.error(`Could not upload the ${label.toLowerCase()}.`);
+    } finally {
+      setBusy(false);
     }
-    onChange(result.data.url);
-    toast.success(`${label} updated.`);
   };
 
   return (
     <div className={cn('group relative inline-flex', className)}>
-      <button
-        type="button"
+      <Button
+        variant="text"
+        size="flexible"
         onClick={() =>
           !busy && (value ? chrome.openPreview() : inputRef.current?.click())
         }
@@ -79,12 +89,12 @@ export function RoundImageUploadButton({
             : `Change ${label.toLowerCase()}`
         }
         className={cn(
-          'border-border bg-background-secondary flex items-center justify-center overflow-hidden rounded-full border-2',
+          'border-border bg-background-secondary hover:bg-background-secondary relative justify-center overflow-hidden rounded-full border-2 p-0',
           sizeClassName,
         )}
       >
         {value ? (
-          <img src={value} alt="" className="h-full w-full object-cover" />
+          <MediaArtwork src={value} imageReveal={false} />
         ) : (
           <ImageIcon
             size={20}
@@ -92,7 +102,7 @@ export function RoundImageUploadButton({
             className="text-foreground-secondary"
           />
         )}
-      </button>
+      </Button>
       {value ? (
         <ImageSlotDeleteBadge label={label} onClick={chrome.requestDelete} />
       ) : (
@@ -100,12 +110,17 @@ export function RoundImageUploadButton({
           <UploadCloudIcon size={18} aria-hidden />
         </div>
       )}
+      {/* No @tahti-player/ui component fits: FilePicker is a labelled
+          dropzone, while this slot and the preview's Change action open
+          the OS picker from their own controls. */}
       <input
         ref={inputRef}
         type="file"
-        accept={IMAGE_UPLOAD_ACCEPT_ATTR}
+        accept={accept}
         disabled={busy}
         className="sr-only"
+        tabIndex={-1}
+        aria-hidden
         onChange={(e) => {
           void handleFiles(e.target.files);
           e.target.value = '';

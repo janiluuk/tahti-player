@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
+import { signIn } from './helpers/auth';
+
 /** Mock-mode recurring "finish your profile" toasts float over the header
  * and reappear across navigations -- unrelated to what this test covers. */
 async function clearToasts(page: Page): Promise<void> {
@@ -23,13 +25,7 @@ async function clearToasts(page: Page): Promise<void> {
 test('full player view: back arrow actually minimizes the player', async ({
   page,
 }) => {
-  await page.goto('/login');
-  await page.getByLabel('Email').fill('artist@tahti.live');
-  await page.getByLabel('Password').fill('demo-password');
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await expect(
-    page.getByRole('button', { name: /^Signed in as/ }),
-  ).toBeVisible();
+  await signIn(page);
   await page.goto('/library/sounds');
   await clearToasts(page);
   await page
@@ -39,7 +35,7 @@ test('full player view: back arrow actually minimizes the player', async ({
   await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible();
 
   await clearToasts(page);
-  await page.getByRole('button', { name: 'Full screen' }).click();
+  await page.getByTestId('expand-full-screen-player').click();
 
   const minimize = page.getByRole('button', { name: 'Minimize player' });
   await expect(minimize).toBeVisible();

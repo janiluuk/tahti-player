@@ -28,7 +28,7 @@ Implementation may be sequenced after P0/P1; product approach is locked. Stub ad
 
 | # | Topic | Recommendation | Status |
 |---|--------|----------------|--------|
-| 1 | Monorepo placement | Move `tahti-web` into `tahti` monorepo as `apps/listen` (or `apps/nuclear-web`); keep `tahti-nuclear` as upstream sync fork short-term | Proposed |
+| 1 | Monorepo placement | Move `tahti-web` into `tahti` monorepo as `apps/listen` (or `apps/nuclear-web`); keep `tahti-player` as upstream sync fork short-term | Proposed |
 | 2 | Admin host | Keep board `/admin/*` on Next initially **or** port into Nuclear admin shell later; cutover listen/studio first | Proposed |
 | 3 | Marketing `website/` | Stay separate static site (already off-limits to agents by default) | Proposed |
 | 4 | Route aliases | Serve prod paths via redirects: `/c/:slug`→`/channel/:slug`, `/dashboard/*`→studio map, `/u/:user/subscribe`→`/subscribe/:user`, `/listen`→`/` — **implemented on beta** | Approved (implemented) |

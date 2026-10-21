@@ -37,8 +37,8 @@ export function StudioSoundRowMenu({
 
   return (
     <TrackContextMenu>
-      <TrackContextMenu.Trigger>
-        <Tooltip content="More" side="top">
+      <Tooltip content="More" side="top">
+        <TrackContextMenu.Trigger>
           <Button
             size="icon-sm"
             variant="text"
@@ -46,8 +46,8 @@ export function StudioSoundRowMenu({
           >
             <MoreHorizontalIcon size={16} aria-hidden />
           </Button>
-        </Tooltip>
-      </TrackContextMenu.Trigger>
+        </TrackContextMenu.Trigger>
+      </Tooltip>
       <TrackContextMenu.Content>
         <TrackContextMenu.Header title={item.title} subtitle={item.status} />
         <TrackContextMenu.Action

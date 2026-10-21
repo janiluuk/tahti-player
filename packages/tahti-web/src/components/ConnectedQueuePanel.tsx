@@ -1,29 +1,50 @@
-import { QueuePanel } from '@tahti-player/ui';
+import { useMemo } from 'react';
 
+import { ButtonLink, QueuePanel } from '@tahti-player/ui';
+
+import { queueWithPlaybackStatus } from '../lib/queueItemStatus';
 import { usePlayerStore } from '../stores/playerStore';
+
+const QUEUE_LABELS = {
+  emptyTitle: 'Queue empty',
+  emptySubtitle: 'Play a channel or radio to start listening',
+  removeButton: 'Remove',
+  playbackError: 'Could not play',
+  noCandidates: 'No stream',
+  candidateFailed: 'Stream failed',
+};
 
 export function ConnectedQueuePanel({ isCollapsed }: { isCollapsed: boolean }) {
   const queue = usePlayerStore((s) => s.queue);
   const currentId = usePlayerStore((s) => s.currentId);
+  const status = usePlayerStore((s) => s.status);
+  const playbackError = usePlayerStore((s) => s.error);
+  const rows = useMemo(
+    () => queueWithPlaybackStatus(queue, currentId, status, playbackError),
+    [queue, currentId, status, playbackError],
+  );
   const playQueueIndex = usePlayerStore((s) => s.playQueueIndex);
   const removeFromQueue = usePlayerStore((s) => s.removeFromQueue);
 
   return (
     <QueuePanel
-      items={queue}
+      items={rows}
       currentItemId={currentId ?? undefined}
       isCollapsed={isCollapsed}
       reorderable={false}
-      onSelectItem={(id) => playQueueIndex(id)}
-      onRemoveItem={(id) => removeFromQueue(id)}
-      labels={{
-        emptyTitle: 'Queue empty',
-        emptySubtitle: 'Play a channel or radio to start listening',
-        removeButton: 'Remove',
-        playbackError: 'Could not play',
-        noCandidates: 'No stream',
-        candidateFailed: 'Stream failed',
-      }}
+      onSelectItem={playQueueIndex}
+      onRemoveItem={removeFromQueue}
+      labels={QUEUE_LABELS}
+      emptyAction={
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <ButtonLink to="/discover" size="sm" variant="secondary">
+            Discover
+          </ButtonLink>
+          <ButtonLink to="/radio" size="sm" variant="secondary">
+            Radio
+          </ButtonLink>
+        </div>
+      }
     />
   );
 }

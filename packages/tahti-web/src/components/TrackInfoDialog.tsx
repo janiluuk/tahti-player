@@ -1,8 +1,13 @@
-import { Link } from '@tanstack/react-router';
 import { HeartIcon, ListMusicIcon, ListPlusIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Dialog, ImageReveal, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  Dialog,
+  ImageReveal,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
 import { soundIdFromPlayableId } from '../lib/soundId';
@@ -96,7 +101,7 @@ export function TrackInfoDialog({
                           size={16}
                           className={
                             favorited
-                              ? 'text-accent-red fill-current'
+                              ? 'text-accent-red-strong fill-current'
                               : undefined
                           }
                         />
@@ -128,13 +133,15 @@ export function TrackInfoDialog({
                 <ul className="flex max-h-48 flex-col overflow-y-auto">
                   {track.tracklist.map((entry, i) => (
                     <li key={entry.id}>
-                      <button
+                      <Button
+                        variant="text"
+                        size="flexible"
                         type="button"
                         disabled={!entry.onSelect}
                         onClick={entry.onSelect}
-                        className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm ${
+                        className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm disabled:cursor-default disabled:opacity-100 ${
                           entry.active
-                            ? 'text-primary font-semibold'
+                            ? 'text-primary-strong font-semibold'
                             : 'hover:bg-background-secondary'
                         }`}
                       >
@@ -142,7 +149,7 @@ export function TrackInfoDialog({
                           {i + 1}
                         </span>
                         <span className="truncate">{entry.title}</span>
-                      </button>
+                      </Button>
                     </li>
                   ))}
                 </ul>
@@ -152,13 +159,14 @@ export function TrackInfoDialog({
             <Dialog.Actions>
               <Dialog.Close>Close</Dialog.Close>
               {track.artistUsername ? (
-                <Link
+                <ButtonLink
                   to="/u/$username"
                   params={{ username: track.artistUsername }}
                   onClick={onClose}
+                  variant="secondary"
                 >
-                  <Button variant="secondary">Artist page</Button>
-                </Link>
+                  Artist page
+                </ButtonLink>
               ) : null}
             </Dialog.Actions>
           </>

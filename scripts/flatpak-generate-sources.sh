@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Generate offline dependency manifests for the Flatpak from-source build.
 #
-# Produces two files in the flatpak/ directory:
+# Produces two files in the packaging/flatpak/ directory:
 #   pnpm-sources.json   — npm packages referenced by pnpm-lock.yaml
 #   cargo-sources.json   — Rust crates referenced by Cargo.lock
 #
@@ -17,10 +17,10 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-OUTPUT_DIR="${1:-$REPO_ROOT/flatpak}"
+OUTPUT_DIR="${1:-$REPO_ROOT/packaging/flatpak}"
 
 CARGO_GENERATOR_URL="https://raw.githubusercontent.com/flatpak/flatpak-builder-tools/refs/heads/master/cargo/flatpak-cargo-generator.py"
-CARGO_GENERATOR="$REPO_ROOT/flatpak/.flatpak-cargo-generator.py"
+CARGO_GENERATOR="$REPO_ROOT/packaging/flatpak/.flatpak-cargo-generator.py"
 
 # --- preflight checks --------------------------------------------------------
 

@@ -18,6 +18,15 @@ Or:
 
 SSH target defaults to `vimage` (root@192.168.2.100). Override with `DEPLOY_HOST` / `REMOTE_PATH` / `HOST_PORT`.
 
+## Beta vs prod-shaped builds
+
+| Profile | How | Diagnostics (`VITE_ENABLE_DIAGNOSTICS`) |
+|---------|-----|----------------------------------------|
+| **beta** (default) | `pnpm deploy:tahti-beta` | On — `/more` + Screen atlas for review |
+| **prod** | `TAHTI_WEB_DEPLOY_PROFILE=prod pnpm deploy:tahti-beta` | Off — cutover / prod-shaped SPA |
+
+Pass `VITE_HCAPTCHA_SITEKEY` in the deploying shell when the API has `HCAPTCHA_SECRET` set; otherwise chat join fails closed. The script forwards the sitekey into the Vite build when present and warns when it is missing.
+
 ## What gets installed
 
 | Path / port | Role |

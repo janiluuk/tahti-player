@@ -2,7 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { AudioLinesIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, ViewShell } from '@tahti-player/ui';
+import { Button, ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import {
   deleteEditorProject,
@@ -22,7 +22,6 @@ import {
 } from '../../components/MultitrackTimeline';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 
 export function StudioEditorProjectView({ id }: { id: string }) {
@@ -98,7 +97,6 @@ export function StudioEditorProjectView({ id }: { id: string }) {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex w-full max-w-[1400px] flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/editor" />
         <p className="text-foreground-secondary -mb-2 text-xs">
           <Link
             to="/studio/editor"
@@ -126,27 +124,20 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                   Delete
                 </Button>
                 {project.soundId ? (
-                  <Link
+                  <ButtonLink
                     to="/studio/sounds/$id/editor"
                     params={{ id: project.soundId }}
+                    size="sm"
+                    aria-label="Open pro editor"
+                    title="Open pro editor"
                   >
-                    <Button
-                      size="sm"
-                      aria-label="Open pro editor"
-                      title="Open pro editor"
-                    >
-                      <AudioLinesIcon
-                        size={16}
-                        aria-hidden
-                        className="mr-1.5"
-                      />
-                      Pro editor
-                    </Button>
-                  </Link>
+                    <AudioLinesIcon size={16} aria-hidden className="mr-1.5" />
+                    Pro editor
+                  </ButtonLink>
                 ) : null}
               </div>
               {error && (
-                <p className="text-accent-red text-sm" role="alert">
+                <p className="text-accent-red-strong text-sm" role="alert">
                   {error}
                 </p>
               )}

@@ -1,4 +1,4 @@
-import { SaveIcon } from 'lucide-react';
+import { LoaderCircleIcon, SaveIcon } from 'lucide-react';
 import { ComponentProps, FC } from 'react';
 
 import { Button } from '../Button';
@@ -39,7 +39,15 @@ export const SaveButton: FC<SaveButtonProps> = ({
       className={`!bg-accent-orange !text-accent-foreground ${className ?? ''}`}
       {...props}
     >
-      <SaveIcon size={14} aria-hidden className="mr-1.5" />
+      {saving ? (
+        <LoaderCircleIcon
+          size={14}
+          aria-hidden
+          className="mr-1.5 animate-spin"
+        />
+      ) : (
+        <SaveIcon size={14} aria-hidden className="mr-1.5" />
+      )}
       {saving ? savingLabel : label}
     </Button>
   );

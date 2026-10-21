@@ -16,9 +16,14 @@ packages/*/snapshot-digest
 # Local Tahti fit planning (not part of upstream Nuclear)
 tahti-fit/
 
-flatpak/pnpm-sources.json
-flatpak/cargo-sources.json
-flatpak/.flatpak-cargo-generator.py
+packaging/flatpak/pnpm-sources.json
+packaging/flatpak/cargo-sources.json
+packaging/flatpak/.flatpak-cargo-generator.py
 
 # Local signing key material — never commit
 .keys/
+
+snapshot-baseline/
+
+# Listener capture pass output (scripts/capture-map-screens.mjs, MAP_ACCOUNT=listener)
+packages/tahti-web/docs/listener-shots/

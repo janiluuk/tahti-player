@@ -1,6 +1,6 @@
 /* tahti-dark — the tahti.live pitch interface as a first-class theme.
  * Values converted from the pitch's hex palette (culori, see
- * TAHTI-DARK-THEME-WORKLOG.md Phase 2) onto this codebase's real semantic
+ * theme worklog, Phase 2; see docs/ARCHIVE.md) onto this codebase's real semantic
  * token names (Phase 1 discovery). Fixed dark identity — applies
  * regardless of the separate [data-theme] light/dark toggle, since the
  * pitch has no light variant. */
@@ -40,6 +40,15 @@
   --accent-red: oklch(0.7088 0.1839 29.06);
   /* Ink on teal / amber / coral fills — --foreground is near-white and fails 4.5:1. */
   --accent-foreground: oklch(0.1663 0.0262 269.37);
+  /* Always dark, whatever [data-theme] says: accents are readable as text. */
+  --primary-strong: var(--primary);
+  --accent-green-strong: var(--accent-green);
+  --accent-yellow-strong: var(--accent-yellow);
+  --accent-purple-strong: var(--accent-purple);
+  --accent-blue-strong: var(--accent-blue);
+  --accent-orange-strong: var(--accent-orange);
+  --accent-cyan-strong: var(--accent-cyan);
+  --accent-red-strong: var(--accent-red);
 
   /* Discover banners use the same cyan/violet energy as Tahti Live's
      artist surfaces. */
@@ -114,9 +123,5 @@
   color: var(--accent-foreground) !important;
 }
 
-/* Ambient motion should sit behind the interface, not turn every active
- * control into a neon amber block. */
-/* eslint-disable-next-line css/use-baseline */
-:root[data-theme-id='nuclear:tahti-dark']:has([data-ambient-background]) {
-  --accent-orange: oklch(0.56 0.13 58 / 0.78);
-}
+/* Ambient motion should sit behind the interface without remapping
+ * interactive accents — keep token colors stable like other themes. */

@@ -1,6 +1,13 @@
 import { useNavigate } from '@tanstack/react-router';
-import { LogOutIcon, PlayIcon, UsersIcon, XIcon } from 'lucide-react';
+import {
+  LogInIcon,
+  LogOutIcon,
+  PauseIcon,
+  PlayIcon,
+  XIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Badge,
@@ -10,13 +17,23 @@ import {
   TahtiJam,
 } from '@tahti-player/ui';
 
-import { endJam, joinJam, leaveJam } from '../api/jam';
-import { ChannelVisualizer } from '../components/ChannelVisualizer';
 import {
-  useJamGuestPlayback,
-  useJamHostSync,
-  useJamState,
-} from '../hooks/useJam';
+  endJam,
+  joinJam,
+  leaveJam,
+  pushJamState,
+  removeJamParticipant,
+  setJamParticipantControl,
+} from '../api/jam';
+import type { JamParticipant } from '../api/types';
+import { ChannelVisualizer } from '../components/ChannelVisualizer';
+import { ConfirmDialog } from '../components/ConfirmDialog';
+import { JamParticipantList } from '../components/JamParticipantList';
+import { useJamGuestPlayback, useJamState } from '../hooks/useJam';
+import { useJamCoControl, useJamHostSync } from '../hooks/useJamControl';
+import { canControlJam, toggledJamState } from '../lib/jamPlayback';
+import { syncDocumentMetadata } from '../lib/seo';
+import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
 /** A frosted glass panel whose glow tints toward the current track's own
@@ -41,11 +58,16 @@ function GlassPanel({
 export function JamView({ code }: { code: string }) {
   const navigate = useNavigate();
   const userId = useAuthStore((s) => s.user?.id);
+  const openAuth = useAuthModalStore((s) => s.open);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [joinError, setJoinError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!userId) {
+      return;
+    }
     let cancelled = false;
+    setJoinError(null);
     void joinJam(code)
       .then((session) => {
         if (!cancelled) {
@@ -60,13 +82,79 @@ export function JamView({ code }: { code: string }) {
     return () => {
       cancelled = true;
     };
-  }, [code]);
+  }, [code, userId]);
 
   const { session, connectionStatus, ended } = useJamState(sessionId);
   const isHost = Boolean(session && userId && session.hostUserId === userId);
+  const canControl = Boolean(session && canControlJam(session, userId));
   const [audioUnlocked, setAudioUnlocked] = useState(false);
-  useJamHostSync(sessionId, isHost && !ended);
-  useJamGuestPlayback(session, !isHost && audioUnlocked && !ended);
+  const [controlSupported, setControlSupported] = useState(true);
+  const [pendingControl, setPendingControl] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
+  const [removing, setRemoving] = useState<JamParticipant | null>(null);
+  const removed = Boolean(
+    session && userId && !session.participants.some((p) => p.userId === userId),
+  );
+  const live = !ended && !removed;
+  useJamHostSync(session, isHost && live);
+  useJamGuestPlayback(session, !isHost && audioUnlocked && live);
+  useJamCoControl(session, !isHost && canControl && audioUnlocked && live);
+
+  const host = session?.participants.find(
+    (p) => p.userId === session.hostUserId,
+  );
+  const hostName = host ? host.displayName.trim() || host.username : null;
+  useEffect(() => {
+    if (hostName) {
+      syncDocumentMetadata(window.location.pathname, {
+        title: `${hostName}'s Jam · Tahti`,
+      });
+    }
+  }, [hostName]);
+
+  const removeGuest = async (guest: JamParticipant) => {
+    setRemoving(null);
+    if (!sessionId) {
+      return;
+    }
+    setPendingControl((prev) => new Set(prev).add(guest.userId));
+    const updated = await removeJamParticipant(sessionId, guest.userId);
+    setPendingControl((prev) => {
+      const next = new Set(prev);
+      next.delete(guest.userId);
+      return next;
+    });
+    if (!updated) {
+      toast.error("Couldn't remove them from this Jam.");
+    }
+  };
+
+  const setGuestControl = async (guestId: string, allow: boolean) => {
+    if (!sessionId) {
+      return;
+    }
+    setPendingControl((prev) => new Set(prev).add(guestId));
+    const updated = await setJamParticipantControl(sessionId, guestId, allow);
+    setPendingControl((prev) => {
+      const next = new Set(prev);
+      next.delete(guestId);
+      return next;
+    });
+    if (!updated) {
+      setControlSupported(false);
+      toast.error("Couldn't change who controls this Jam.");
+    }
+  };
+
+  const togglePlaybackForEveryone = async () => {
+    if (!session) {
+      return;
+    }
+    await pushJamState(session.id, toggledJamState(session)).catch(() => {
+      toast.error("Couldn't change playback for the Jam.");
+    });
+  };
 
   const leave = async () => {
     if (sessionId) {
@@ -82,11 +170,42 @@ export function JamView({ code }: { code: string }) {
     void navigate({ to: '/' });
   };
 
+  if (!userId) {
+    return (
+      <TahtiJam data-testid="jam-view">
+        <EmptyState
+          icon={<LogInIcon size={48} />}
+          title="Log in to join this Jam"
+          description="A Jam plays the host's music in sync for everyone in it, so the host needs to see who joined."
+          action={<Button onClick={() => openAuth('login')}>Log in</Button>}
+          className="flex-1"
+        />
+      </TahtiJam>
+    );
+  }
+
+  const backToListen = (
+    <Button
+      size="sm"
+      variant="secondary"
+      onClick={() => void navigate({ to: '/' })}
+    >
+      Back to Listen
+    </Button>
+  );
+
   if (joinError) {
     return (
-      <TahtiJam>
-        <TahtiJam.Error
-          labels={{ title: 'Jam not found', subtitle: joinError }}
+      <TahtiJam data-testid="jam-view">
+        <EmptyState
+          icon={<XIcon size={48} />}
+          title="Jam not found"
+          description={
+            joinError ||
+            'That code is not an open Jam. Check the link, or go back to Listen.'
+          }
+          action={backToListen}
+          className="flex-1"
         />
       </TahtiJam>
     );
@@ -94,11 +213,26 @@ export function JamView({ code }: { code: string }) {
 
   if (ended) {
     return (
-      <TahtiJam>
+      <TahtiJam data-testid="jam-view">
         <EmptyState
           icon={<XIcon size={48} />}
           title="This Jam has ended"
           description="The host closed the session."
+          action={backToListen}
+          className="flex-1"
+        />
+      </TahtiJam>
+    );
+  }
+
+  if (removed) {
+    return (
+      <TahtiJam data-testid="jam-view">
+        <EmptyState
+          icon={<XIcon size={48} />}
+          title="You are no longer in this Jam"
+          description="The host removed you from the session."
+          action={backToListen}
           className="flex-1"
         />
       </TahtiJam>
@@ -107,7 +241,7 @@ export function JamView({ code }: { code: string }) {
 
   if (!session || connectionStatus === 'connecting') {
     return (
-      <TahtiJam>
+      <TahtiJam data-testid="jam-view">
         <TahtiJam.Connecting
           labels={{
             title: 'Joining the Jam…',
@@ -121,7 +255,7 @@ export function JamView({ code }: { code: string }) {
   const track = session.currentTrack;
 
   return (
-    <TahtiJam className="relative h-full">
+    <TahtiJam data-testid="jam-view" className="relative h-full">
       <div className="pointer-events-none absolute inset-0 opacity-50">
         <ChannelVisualizer
           artworkUrl={track?.coverUrl}
@@ -167,56 +301,88 @@ export function JamView({ code }: { code: string }) {
             artist={track?.artistName}
             coverUrl={track?.coverUrl ?? undefined}
           />
-          {!isHost && !audioUnlocked && track?.streamUrl ? (
-            <Button onClick={() => setAudioUnlocked(true)}>
-              <PlayIcon size={16} /> Play along
-            </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            {canControl && track ? (
+              <Button
+                className="gap-1.5"
+                variant="secondary"
+                onClick={() => void togglePlaybackForEveryone()}
+              >
+                {session.isPlaying ? (
+                  <>
+                    <PauseIcon size={16} /> Pause for everyone
+                  </>
+                ) : (
+                  <>
+                    <PlayIcon size={16} /> Play for everyone
+                  </>
+                )}
+              </Button>
+            ) : null}
+            {!isHost && !audioUnlocked && track?.streamUrl ? (
+              <Button
+                className="gap-1.5"
+                onClick={() => setAudioUnlocked(true)}
+              >
+                <PlayIcon size={16} /> Play along
+              </Button>
+            ) : null}
+          </div>
+          {!isHost && canControl ? (
+            <p className="text-foreground-secondary w-full text-xs">
+              The host has given you control of playback
+              {audioUnlocked
+                ? ' - pausing or resuming your player does it for everyone.'
+                : '.'}
+            </p>
           ) : null}
         </GlassPanel>
 
         <GlassPanel>
-          <div className="mb-3 flex items-center gap-2">
-            <UsersIcon size={16} className="text-foreground-secondary" />
-            <h2 className="text-sm font-bold tracking-tight">
-              {session.participants.length} jamming
-            </h2>
-          </div>
-          <ul className="flex flex-wrap gap-2">
-            {session.participants.map((p) => (
-              <li
-                key={p.userId}
-                className="border-border/60 bg-background-secondary/40 flex items-center gap-2 rounded-full border py-1 pr-3 pl-1"
-              >
-                <span className="bg-primary/20 text-primary flex size-6 items-center justify-center rounded-full text-xs font-bold">
-                  {p.displayName.slice(0, 1).toUpperCase()}
-                </span>
-                <span className="text-xs font-semibold">{p.displayName}</span>
-                {p.role === 'HOST' && (
-                  <Badge variant="pill" color="blue">
-                    Host
-                  </Badge>
-                )}
-              </li>
-            ))}
-          </ul>
+          <JamParticipantList
+            participants={session.participants}
+            onSetControl={
+              isHost && controlSupported
+                ? (guestId, allow) => void setGuestControl(guestId, allow)
+                : undefined
+            }
+            onRemove={isHost ? setRemoving : undefined}
+            pendingUserIds={pendingControl}
+          />
         </GlassPanel>
 
         <div className="mt-auto flex justify-end gap-2">
           {isHost ? (
             <Button
               variant="secondary"
-              className="text-accent-red border-accent-red/40 hover:bg-accent-red/10"
+              className="text-accent-red-strong border-accent-red/40 hover:bg-accent-red/10 gap-1.5"
               onClick={() => void endForEveryone()}
             >
               <XIcon size={16} /> End Jam for everyone
             </Button>
           ) : (
-            <Button variant="secondary" onClick={() => void leave()}>
+            <Button
+              className="gap-1.5"
+              variant="secondary"
+              onClick={() => void leave()}
+            >
               <LogOutIcon size={16} /> Leave Jam
             </Button>
           )}
         </div>
       </div>
+      <ConfirmDialog
+        isOpen={removing !== null}
+        title={`Remove ${removing?.displayName?.trim() || removing?.username || 'this guest'} from the Jam?`}
+        description="They stop hearing the Jam and can't rejoin it with this link."
+        confirmLabel="Remove"
+        onCancel={() => setRemoving(null)}
+        onConfirm={() => {
+          if (removing) {
+            void removeGuest(removing);
+          }
+        }}
+      />
     </TahtiJam>
   );
 }

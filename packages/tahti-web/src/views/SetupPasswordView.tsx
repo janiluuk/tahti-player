@@ -102,7 +102,7 @@ export function SetupPasswordView() {
         </Box>
       ) : infoError ? (
         <div className="flex flex-col gap-3">
-          <p className="text-accent-red text-sm">{infoError}</p>
+          <p className="text-accent-red-strong text-sm">{infoError}</p>
           <p className="text-foreground-secondary text-sm">
             Ask whoever invited you for a fresh link, or{' '}
             <Link to="/login" className="underline-offset-2 hover:underline">
@@ -123,7 +123,7 @@ export function SetupPasswordView() {
             autoFocus
           />
           {tooShort && (
-            <p className="text-accent-red text-sm">
+            <p className="text-accent-red-strong text-sm">
               Password must be at least 8 characters.
             </p>
           )}
@@ -135,11 +135,11 @@ export function SetupPasswordView() {
             autoComplete="new-password"
           />
           {mismatch && (
-            <p className="text-accent-red text-sm">
+            <p className="text-accent-red-strong text-sm">
               Passwords don&apos;t match.
             </p>
           )}
-          {error && <p className="text-accent-red text-sm">{error}</p>}
+          {error && <p className="text-accent-red-strong text-sm">{error}</p>}
           <Button disabled={!canSubmit} onClick={onSubmit}>
             {loading ? 'Setting password…' : 'Set password'}
           </Button>

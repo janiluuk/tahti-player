@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChannelPlaylistBlock } from '@tahti-web/components/ChannelPlaylistBlock';
 import { ChannelPlaylistPicker } from '@tahti-web/components/ChannelPlaylistPicker';
 import { useState } from 'react';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -19,8 +20,7 @@ export default meta;
 type Story = StoryObj;
 
 /**
- * Channel page playlist widget. Missing states: empty playlist, private /
- * 404 load failure (use a bad slug), long titles wrapping under Cards.
+ * Channel page playlist widget. Empty playlist covered by Block — Empty. Still missing: private / 404 load failure (use a bad slug), long titles wrapping under Cards.
  */
 export const BlockTracklist: Story = {
   name: 'Block — Tracklist',
@@ -32,6 +32,36 @@ export const BlockTracklist: Story = {
       />
     </div>
   ),
+};
+
+export const BlockEmpty: Story = {
+  name: 'Block — Empty',
+  render: () => (
+    <div className="max-w-3xl">
+      <ChannelPlaylistBlock playlistSlug="empty-vault" display="tracklist" />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const empty = await canvas.findByTestId('empty-state');
+    await expect(empty).toHaveTextContent('No playable tracks yet');
+    await expect(empty).toHaveTextContent(
+      'This playlist has no playable tracks yet.',
+    );
+  },
+};
+
+export const BlockEmptyCards: Story = {
+  name: 'Block — Empty (cards)',
+  render: () => (
+    <div className="max-w-3xl">
+      <ChannelPlaylistBlock playlistSlug="empty-vault" display="cards" />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByTestId('empty-state')).toBeVisible();
+  },
 };
 
 export const BlockCards: Story = {
@@ -64,6 +94,7 @@ export const PickerAdd: Story = {
       <div className="flex max-w-sm flex-col gap-3">
         <ChannelPlaylistPicker
           usedSlugs={['favorites-vault']}
+          confirmLabel="Add playlist"
           onPick={(slug) => setPicked(slug)}
         />
         {picked ? (
@@ -71,6 +102,31 @@ export const PickerAdd: Story = {
         ) : null}
       </div>
     );
+  },
+};
+
+export const PickerCustomConfirm: Story = {
+  name: 'Picker — custom confirm label',
+  render: () => {
+    const [picked, setPicked] = useState<string | null>(null);
+    return (
+      <div className="flex max-w-sm flex-col gap-3">
+        <ChannelPlaylistPicker
+          confirmLabel="Show on channel"
+          onPick={(slug) => setPicked(slug)}
+        />
+        {picked ? (
+          <p className="text-foreground-secondary text-xs">Picked: {picked}</p>
+        ) : null}
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      await canvas.findByRole('button', { name: 'Show on channel' }),
+    );
+    await expect(await canvas.findByText(/^Picked: /)).toBeVisible();
   },
 };
 

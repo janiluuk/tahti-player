@@ -233,7 +233,7 @@ export function SecurityTotpPanel() {
           </div>
         )}
 
-        {error && <p className="text-accent-red text-sm">{error}</p>}
+        {error && <p className="text-accent-red-strong text-sm">{error}</p>}
       </div>
     </SectionShell>
   );

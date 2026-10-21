@@ -4,20 +4,24 @@ import { ViewShell } from '@tahti-player/ui';
 
 import { fetchPlatformStatus } from '../api/client';
 import type { PlatformStatus } from '../api/types';
+import { PageBackLink } from '../components/PageBackLink';
+import { PageError, PageLoading } from '../components/PageStates';
 
 function stateClass(state: string): string {
   if (state === 'ok' || state === 'healthy') {
-    return 'text-primary';
+    return 'text-primary-strong';
   }
   if (state === 'degraded') {
     return 'text-foreground';
   }
-  return 'text-accent-red';
+  return 'text-accent-red-strong';
 }
 
 export function StatusView() {
   const [data, setData] = useState<PlatformStatus | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -26,18 +30,32 @@ export function StatusView() {
       if (cancelled) {
         return;
       }
-      setData(res.data);
+      const reason =
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null;
+      const unusable =
+        reason !== null && Object.keys(res.data.checks).length === 0;
+      setLoadError(unusable ? reason : null);
+      setData(unusable ? null : res.data);
       setLoading(false);
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   return (
-    <ViewShell title="Status" classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}>
-      {loading && (
-        <p className="text-foreground-secondary text-sm">Checking…</p>
+    <ViewShell
+      title="Status"
+      classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', content: 'gap-4' }}
+    >
+      <PageBackLink to="/help" label="Help center" />
+      {loading && <PageLoading label="Checking…" />}
+      {!loading && !data && (
+        <PageError
+          title="Could not load platform status"
+          description={loadError ?? undefined}
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
       )}
       {!loading && data && (
         <>
@@ -70,40 +88,50 @@ export function StatusView() {
               </div>
             )}
           </dl>
-          <table className="w-full border-collapse text-left text-sm">
-            <thead>
-              <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-                <th className="py-2 pr-3 font-medium">Check</th>
-                <th className="py-2 pr-3 font-medium">State</th>
-                <th className="py-2 pr-3 font-medium">Latency</th>
-                <th className="py-2 font-medium">Detail</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(data.checks).map(([id, check]) => (
-                <tr key={id} className="border-border border-b">
-                  <td className="py-2 pr-3 font-medium">
-                    {id}
-                    {check.critical ? ' *' : ''}
-                  </td>
-                  <td className={`py-2 pr-3 ${stateClass(check.state)}`}>
-                    {check.state}
-                  </td>
-                  <td className="text-foreground-secondary py-2 pr-3">
-                    {typeof check.latencyMs === 'number'
-                      ? `${check.latencyMs} ms`
-                      : '—'}
-                  </td>
-                  <td className="text-foreground-secondary py-2 text-xs">
-                    {check.detail ?? ''}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <p className="text-foreground-secondary text-xs">
-            * Critical dependency
-          </p>
+          {Object.keys(data.checks).length === 0 ? (
+            <PageError
+              title="No health checks reported"
+              description="The API did not answer."
+              onRetry={() => setAttempt((n) => n + 1)}
+            />
+          ) : (
+            <>
+              <table className="w-full border-collapse text-left text-sm">
+                <thead>
+                  <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
+                    <th className="py-2 pr-3 font-medium">Check</th>
+                    <th className="py-2 pr-3 font-medium">State</th>
+                    <th className="py-2 pr-3 font-medium">Latency</th>
+                    <th className="py-2 font-medium">Detail</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(data.checks).map(([id, check]) => (
+                    <tr key={id} className="border-border border-b">
+                      <td className="py-2 pr-3 font-medium">
+                        {id}
+                        {check.critical ? ' *' : ''}
+                      </td>
+                      <td className={`py-2 pr-3 ${stateClass(check.state)}`}>
+                        {check.state}
+                      </td>
+                      <td className="text-foreground-secondary py-2 pr-3">
+                        {typeof check.latencyMs === 'number'
+                          ? `${check.latencyMs} ms`
+                          : '—'}
+                      </td>
+                      <td className="text-foreground-secondary py-2 text-xs">
+                        {check.detail ?? ''}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="text-foreground-secondary text-xs">
+                * Critical dependency
+              </p>
+            </>
+          )}
         </>
       )}
 

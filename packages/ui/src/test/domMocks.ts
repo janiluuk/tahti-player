@@ -90,6 +90,10 @@ export const setupDomMocks = () => {
   Element.prototype.setPointerCapture = vi.fn();
   Element.prototype.releasePointerCapture = vi.fn();
   Element.prototype.scrollIntoView = vi.fn();
+  // Headless UI warns + polyfills getAnimations when jsdom lacks it.
+  Element.prototype.getAnimations = () => [];
+  // jsdom logs "Not implemented: window.scrollTo" on router scroll restoration.
+  window.scrollTo = vi.fn();
   globalThis.CSS = { supports: () => true } as unknown as typeof CSS;
   (SVGElement.prototype as SVGGraphicsElement).getBBox = vi
     .fn()

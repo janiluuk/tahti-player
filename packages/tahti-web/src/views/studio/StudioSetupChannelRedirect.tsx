@@ -2,7 +2,6 @@ import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
 import { PageLoading } from '../../components/PageStates';
-import { hasAccountRole } from '../../lib/accountRoles';
 import { useAuthStore } from '../../stores/authStore';
 import { useChannelSetupModalStore } from '../../stores/channelSetupModalStore';
 
@@ -16,7 +15,7 @@ export function StudioSetupChannelRedirect() {
     if (!hydrated) {
       return;
     }
-    if (!hasAccountRole(user, 'ARTIST') && !hasAccountRole(user, 'BOARD')) {
+    if (!user) {
       void navigate({ to: '/' });
       return;
     }

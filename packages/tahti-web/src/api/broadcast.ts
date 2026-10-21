@@ -1,41 +1,40 @@
-import type { MulticastProviderId } from '../plugins/multicast';
 import type { FetchMeta } from './client';
-import { apiBase } from './http';
 import { DEMO_MP3 } from './mock';
-import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import {
+  applyMockPreflightPatch,
+  endMockLiveEpisode,
+  startMockLiveEpisode,
+} from './mock-broadcast-preflight';
+import {
+  getMockSignalConnected,
+  getMockChannelState as readMockChannelState,
+  setMockChannelLive,
+  setMockChannelOffline,
+  setMockLiveSlug,
+  mockSimulateSignal as writeMockSimulateSignal,
+} from './mock-live-session';
+import {
+  allowMockFallback,
+  apiErrorMeta,
+  isForceMock,
+  mockFallbackMeta,
+} from './mode';
+import { requestJson } from './request-json';
 import type { TahtiPlayable } from './types';
 
-async function requestJson<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<{ data: T; status: number }> {
-  const { headers: initHeaders, ...rest } = init ?? {};
-  const res = await fetch(`${apiBase()}${path}`, {
-    credentials: 'include',
-    ...rest,
-    headers: {
-      Accept: 'application/json',
-      ...(rest.body ? { 'Content-Type': 'application/json' } : {}),
-      ...initHeaders,
-    },
-  });
-  if (!res.ok) {
-    let detail = `${path} → ${res.status}`;
-    try {
-      const body = (await res.json()) as { error?: string; message?: string };
-      if (body.error || body.message) {
-        detail = body.error ?? body.message ?? detail;
-      }
-    } catch {
-      // ignore
-    }
-    throw new Error(detail);
-  }
-  if (res.status === 204) {
-    return { data: undefined as T, status: res.status };
-  }
-  return { data: (await res.json()) as T, status: res.status };
-}
+export { setMockLiveSlug };
+export type { StreamOverlay } from './broadcast-overlay';
+export { fetchStreamOverlay, patchStreamOverlay } from './broadcast-overlay';
+export type { RecentBroadcast } from './broadcast-recordings';
+export { fetchRecentBroadcasts } from './broadcast-recordings';
+export type { RtmpTarget, RtmpTargetScope } from './broadcast-rtmp';
+export {
+  createRtmpTarget,
+  deleteRtmpTarget,
+  fetchRtmpTargets,
+  patchRtmpTarget,
+  testRtmpTarget,
+} from './broadcast-rtmp';
 
 export type StreamSettings = {
   rtmp: { server: string; streamKey: string; fallbackServers?: string[] };
@@ -71,22 +70,24 @@ export type BroadcastPreflight = {
   plannedLiveShow: { seriesId: string; episodeNumber: number | null } | null;
 };
 
+let mockPreflight: BroadcastPreflight = {
+  title: null,
+  visibility: 'PUBLIC',
+  autoPublish: true,
+  showType: 'LIVE_SET',
+  episodeNumber: null,
+  tagline: null,
+  plannedRadioShow: null,
+  plannedLiveShow: null,
+};
+
 export async function fetchBroadcastPreflight(): Promise<{
   data: BroadcastPreflight | null;
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
     return {
-      data: {
-        title: null,
-        visibility: 'PUBLIC',
-        autoPublish: true,
-        showType: 'LIVE_SET',
-        episodeNumber: null,
-        tagline: null,
-        plannedRadioShow: null,
-        plannedLiveShow: null,
-      },
+      data: mockPreflight,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -103,6 +104,13 @@ export async function fetchBroadcastPreflight(): Promise<{
 export async function patchBroadcastPreflight(
   patch: Partial<BroadcastPreflight> & { seriesId?: string },
 ): Promise<{ data: BroadcastPreflight } | { error: string }> {
+  if (isForceMock()) {
+    const result = applyMockPreflightPatch(mockPreflight, patch);
+    if ('data' in result) {
+      mockPreflight = result.data;
+    }
+    return result;
+  }
   try {
     const { data } = await requestJson<BroadcastPreflight>(
       '/api/me/channel/preflight',
@@ -123,57 +131,57 @@ export type ChannelManageStats = {
   /** All-time highest concurrent-listener count observed. */
   listenerPeak: number;
   liveDurationSec: number | null;
+  /** Tracks flagged for the 24/7 fallback rotation; 0 means nothing plays while offline. */
+  rotationTrackCount: number;
 };
+
+export type BroadcastWarningLevel =
+  'none' | '45m' | '55m' | 'grace' | 'blocked';
 
 export type BroadcastUsage = {
+  tier?: string;
   unlimited: boolean;
   secondsUsed: number;
+  /** Null on unlimited tiers. */
   secondsRemaining: number | null;
+  /** The free-tier cap; still sent on unlimited tiers, so check `unlimited` first. */
   weeklyCapSeconds: number;
-  warningLevel?: string;
+  /** Extra seconds a live set may run past the cap before it is cut. */
+  graceSeconds?: number;
+  /** Crossed warning thresholds in seconds (e.g. 2700), not display text. */
+  warnings?: (number | string)[];
+  warningLevel?: BroadcastWarningLevel;
+  inGrace?: boolean;
   atCap?: boolean;
   blocked?: boolean;
+  showUpgradeCta?: boolean;
 };
 
-export type RtmpTarget = {
-  id: string;
-  provider: MulticastProviderId;
-  label: string | null;
-  rtmpUrl: string;
-  alwaysMirror: boolean;
-  enabled: boolean;
-  keyLast4?: string;
-  createdAt?: string;
+const MOCK_USAGE: BroadcastUsage = {
+  tier: 'FREE',
+  unlimited: false,
+  secondsUsed: 12 * 60,
+  secondsRemaining: 48 * 60,
+  weeklyCapSeconds: 60 * 60,
+  graceSeconds: 60,
+  warnings: [],
+  warningLevel: 'none',
+  inGrace: false,
+  atCap: false,
+  blocked: false,
+  showUpgradeCta: false,
 };
 
 export type LiveChannelState = 'OFFLINE' | 'PREVIEW' | 'LIVE' | string;
 
-// ── Mock session state ──────────────────────────────────────────────────────
-
-let mockSignalConnected = false;
-let mockChannelState: LiveChannelState = 'OFFLINE';
 const MOCK_RECORDING_STORAGE_KEY = 'tahti-web-auto-record-broadcast';
-let mockTargets: RtmpTarget[] = [
-  {
-    id: 'rtmp-mock-yt',
-    provider: 'YOUTUBE',
-    label: 'YouTube',
-    rtmpUrl: 'rtmp://a.rtmp.youtube.com/live2',
-    alwaysMirror: false,
-    enabled: false,
-    keyLast4: 'demo',
-  },
-];
 
 export function mockSimulateSignal(connected = true) {
-  mockSignalConnected = connected;
-  if (connected && mockChannelState === 'OFFLINE') {
-    mockChannelState = 'PREVIEW';
-  }
+  writeMockSimulateSignal(connected);
 }
 
 export function getMockChannelState(): LiveChannelState {
-  return mockChannelState;
+  return readMockChannelState();
 }
 
 const MOCK_SETTINGS: StreamSettings = {
@@ -207,9 +215,58 @@ export async function fetchStreamSettings(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: MOCK_SETTINGS, meta: failMeta(err) };
+      return { data: MOCK_SETTINGS, meta: mockFallbackMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
+  }
+}
+
+let mockRotation = 0;
+
+export async function rotateRtmpStreamKey(): Promise<
+  { ok: true; streamKey: string } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    mockRotation += 1;
+    return {
+      ok: true,
+      streamKey: `demo-slug__mock-rotated-key-${mockRotation}`,
+    };
+  }
+  try {
+    const { data } = await requestJson<{ rtmpStreamKey: string }>(
+      '/api/me/stream-settings/rtmp/rotate',
+      { method: 'POST' },
+    );
+    return { ok: true, streamKey: data.rtmpStreamKey };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not make a new stream key',
+    };
+  }
+}
+
+export async function rotateIcecastPassword(): Promise<
+  { ok: true; password: string } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    mockRotation += 1;
+    return { ok: true, password: `mock-icecast-pass-${mockRotation}` };
+  }
+  try {
+    const { data } = await requestJson<{ liveSourcePass: string }>(
+      '/api/me/stream-settings/icecast/rotate',
+      { method: 'POST' },
+    );
+    return { ok: true, password: data.liveSourcePass };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not make a new password',
+    };
   }
 }
 
@@ -220,10 +277,10 @@ export async function fetchSignalStatus(): Promise<{
   if (isForceMock()) {
     return {
       data: {
-        connected: mockSignalConnected,
-        codec: mockSignalConnected ? 'aac' : null,
-        bitrateKbps: mockSignalConnected ? 160 : null,
-        listeners: mockSignalConnected ? 1 : null,
+        connected: getMockSignalConnected(),
+        codec: getMockSignalConnected() ? 'aac' : null,
+        bitrateKbps: getMockSignalConnected() ? 160 : null,
+        listeners: getMockSignalConnected() ? 1 : null,
       },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
@@ -252,11 +309,12 @@ export async function fetchChannelManageStats(
   if (isForceMock()) {
     return {
       data: {
-        audioBitrateKbps: mockSignalConnected ? 160 : 192,
-        signalConnected: mockSignalConnected,
-        listeners: mockSignalConnected ? 1 : 0,
+        audioBitrateKbps: getMockSignalConnected() ? 160 : 192,
+        signalConnected: getMockSignalConnected(),
+        listeners: getMockSignalConnected() ? 1 : 0,
         listenerPeak: 37,
-        liveDurationSec: mockChannelState === 'LIVE' ? 12 * 60 : null,
+        liveDurationSec: readMockChannelState() === 'LIVE' ? 12 * 60 : null,
+        rotationTrackCount: 3,
       },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
@@ -277,15 +335,7 @@ export async function fetchBroadcastUsage(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: {
-        unlimited: false,
-        secondsUsed: 12 * 60,
-        secondsRemaining: 48 * 60,
-        weeklyCapSeconds: 60 * 60,
-        warningLevel: 'none',
-        atCap: false,
-        blocked: false,
-      },
+      data: MOCK_USAGE,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -296,18 +346,7 @@ export async function fetchBroadcastUsage(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return {
-        data: {
-          unlimited: false,
-          secondsUsed: 12 * 60,
-          secondsRemaining: 48 * 60,
-          weeklyCapSeconds: 60 * 60,
-          warningLevel: 'none',
-          atCap: false,
-          blocked: false,
-        },
-        meta: failMeta(err),
-      };
+      return { data: MOCK_USAGE, meta: mockFallbackMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
   }
@@ -362,11 +401,8 @@ export async function postGoLive(): Promise<
   { ok: true } | { ok: false; error: string }
 > {
   if (isForceMock()) {
-    if (!mockSignalConnected && mockChannelState === 'OFFLINE') {
-      mockSignalConnected = true;
-      mockChannelState = 'PREVIEW';
-    }
-    mockChannelState = 'LIVE';
+    setMockChannelLive();
+    await startMockLiveEpisode(mockPreflight);
     return { ok: true };
   }
   try {
@@ -386,8 +422,8 @@ export async function postEndBroadcast(): Promise<
   { ok: true } | { ok: false; error: string }
 > {
   if (isForceMock()) {
-    mockChannelState = 'OFFLINE';
-    mockSignalConnected = false;
+    setMockChannelOffline();
+    mockPreflight = await endMockLiveEpisode(mockPreflight);
     return { ok: true };
   }
   try {
@@ -436,211 +472,6 @@ export const pauseChannelRotation = (slug: string) =>
 export const resumeChannelRotation = (slug: string) =>
   postChannelTransport(slug, 'resume');
 
-export async function fetchRtmpTargets(): Promise<{
-  data: RtmpTarget[];
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return {
-      data: [...mockTargets],
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const { data } = await requestJson<RtmpTarget[]>('/api/me/rtmp-targets');
-    return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
-  } catch (err) {
-    if (allowMockFallback()) {
-      return { data: [...mockTargets], meta: failMeta(err) };
-    }
-    return { data: [], meta: apiErrorMeta(err) };
-  }
-}
-
-export async function createRtmpTarget(input: {
-  provider: MulticastProviderId;
-  streamKey: string;
-  label?: string;
-  rtmpUrl?: string;
-  enabled?: boolean;
-}): Promise<{ ok: true; target: RtmpTarget } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    const target: RtmpTarget = {
-      id: `rtmp-mock-${Date.now()}`,
-      provider: input.provider,
-      // Matches tahti-org/apps/api/src/routes/me/rtmp-targets.ts: an unset
-      // label is stored as-is, not defaulted to the raw provider id -- the
-      // display label fallback (multicastProviderLabel) is what's meant to
-      // fill that in, in mock mode and prod alike.
-      label: input.label ?? null,
-      rtmpUrl: input.rtmpUrl ?? 'rtmp://custom.example/live',
-      alwaysMirror: false,
-      enabled: input.enabled ?? true,
-      keyLast4: input.streamKey.slice(-4),
-    };
-    mockTargets = [...mockTargets, target];
-    return { ok: true, target };
-  }
-  try {
-    const { data } = await requestJson<RtmpTarget>('/api/me/rtmp-targets', {
-      method: 'POST',
-      body: JSON.stringify(input),
-    });
-    return { ok: true, target: data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Create failed',
-    };
-  }
-}
-
-export async function patchRtmpTarget(
-  id: string,
-  patch: { enabled?: boolean; alwaysMirror?: boolean; label?: string },
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    mockTargets = mockTargets.map((t) =>
-      t.id === id ? { ...t, ...patch } : t,
-    );
-    return { ok: true };
-  }
-  try {
-    await requestJson(`/api/me/rtmp-targets/${encodeURIComponent(id)}`, {
-      method: 'PATCH',
-      body: JSON.stringify(patch),
-    });
-    return { ok: true };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Update failed',
-    };
-  }
-}
-
-export async function deleteRtmpTarget(
-  id: string,
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    mockTargets = mockTargets.filter((t) => t.id !== id);
-    return { ok: true };
-  }
-  try {
-    await requestJson(`/api/me/rtmp-targets/${encodeURIComponent(id)}`, {
-      method: 'DELETE',
-    });
-    return { ok: true };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Delete failed',
-    };
-  }
-}
-
-export async function testRtmpTarget(
-  id: string,
-): Promise<
-  | { ok: true; reachable: boolean; error?: string }
-  | { ok: false; error: string }
-> {
-  if (isForceMock()) {
-    return { ok: true, reachable: true };
-  }
-  try {
-    const { data } = await requestJson<{ ok: boolean; error?: string }>(
-      `/api/me/rtmp-targets/${encodeURIComponent(id)}/test`,
-      { method: 'POST' },
-    );
-    return { ok: true, reachable: data.ok, error: data.error };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Test failed',
-    };
-  }
-}
-
-export type StreamOverlay = {
-  streamOverlayTitle: string | null;
-  streamOverlaySubtitle: string | null;
-  streamOverlayShowTitle: boolean;
-  /** Hex "#RRGGBB", or null to use the default title/subtitle colors. */
-  streamOverlayTextColor: string | null;
-  /** Darkening rectangle behind the title/subtitle text in the RTMP mirror
-   * (video.add_rectangle) — improves legibility over busy cover art. */
-  streamOverlayScrimEnabled: boolean;
-  streamOverlayCoverUrl: string | null;
-};
-
-let mockStreamOverlay: StreamOverlay = {
-  streamOverlayTitle: null,
-  streamOverlaySubtitle: null,
-  streamOverlayShowTitle: false,
-  streamOverlayTextColor: null,
-  streamOverlayScrimEnabled: false,
-  streamOverlayCoverUrl: null,
-};
-
-export async function fetchStreamOverlay(): Promise<{
-  data: StreamOverlay;
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return {
-      data: { ...mockStreamOverlay },
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const { data } = await requestJson<StreamOverlay>(
-      '/api/me/channel/stream-overlay',
-    );
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    if (allowMockFallback()) {
-      return { data: { ...mockStreamOverlay }, meta: failMeta(err) };
-    }
-    return {
-      data: {
-        streamOverlayTitle: null,
-        streamOverlaySubtitle: null,
-        streamOverlayShowTitle: false,
-        streamOverlayTextColor: null,
-        streamOverlayScrimEnabled: false,
-        streamOverlayCoverUrl: null,
-      },
-      meta: apiErrorMeta(err),
-    };
-  }
-}
-
-export async function patchStreamOverlay(
-  patch: StreamOverlay,
-): Promise<{ ok: true; data: StreamOverlay } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    mockStreamOverlay = { ...patch };
-    return { ok: true, data: { ...mockStreamOverlay } };
-  }
-  try {
-    const { data } = await requestJson<StreamOverlay>(
-      '/api/me/channel/stream-overlay',
-      {
-        method: 'PATCH',
-        body: JSON.stringify(patch),
-      },
-    );
-    return { ok: true, data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Save failed',
-    };
-  }
-}
-
-/** Build a TahtiPlayable for the artist's own live channel after go-live. */
 export function liveChannelPlayable(
   slug: string,
   displayName: string,
@@ -657,80 +488,4 @@ export function liveChannelPlayable(
     channelSlug: slug,
     sourceProvider: 'tahti',
   };
-}
-
-export type RecentBroadcast = {
-  id: string;
-  title?: string | null;
-  source?: string;
-  startedAt: string;
-  endedAt?: string | null;
-  soundId: string | null;
-  soundTitle?: string;
-  soundStatus?: string;
-  durationSec?: number;
-};
-
-const mockRecordings: RecentBroadcast[] = [
-  {
-    id: 'rec-1',
-    title: 'Friday night set',
-    source: 'RTMP',
-    startedAt: new Date(Date.now() - 2 * 86_400_000).toISOString(),
-    endedAt: new Date(Date.now() - 2 * 86_400_000 + 3600_000).toISOString(),
-    soundId: 'arc-1',
-    soundTitle: 'Friday night set',
-    soundStatus: 'READY',
-    durationSec: 3600,
-  },
-  {
-    id: 'rec-2',
-    title: null,
-    source: 'BROWSER',
-    startedAt: new Date(Date.now() - 6 * 86_400_000).toISOString(),
-    endedAt: new Date(Date.now() - 6 * 86_400_000 + 1800_000).toISOString(),
-    soundId: null,
-    durationSec: 1800,
-  },
-];
-
-/** Every completed show recording, newest first — recordings made while
- * going live, whether or not they've been promoted into a published
- * archive item yet. */
-export async function fetchRecentBroadcasts(
-  limit = 50,
-): Promise<{ data: RecentBroadcast[]; meta: FetchMeta }> {
-  if (isForceMock()) {
-    return {
-      data: mockRecordings,
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const { data } = await requestJson<{ broadcasts?: RecentBroadcast[] }>(
-      `/api/me/broadcasts/recent?limit=${limit}`,
-    );
-    return { data: data.broadcasts ?? [], meta: { source: 'api' } };
-  } catch (err) {
-    if (allowMockFallback()) {
-      return { data: mockRecordings, meta: failMeta(err) };
-    }
-    return { data: [], meta: apiErrorMeta(err) };
-  }
-}
-
-export function formatUsageMinutes(usage: BroadcastUsage): string {
-  if (usage.unlimited) {
-    return 'Unlimited this week';
-  }
-  const used = Math.floor(usage.secondsUsed / 60);
-  const rem =
-    usage.secondsRemaining == null
-      ? null
-      : Math.floor(usage.secondsRemaining / 60);
-  const cap = Math.floor(usage.weeklyCapSeconds / 60);
-  if (rem == null) {
-    return `${used} / ${cap} min used`;
-  }
-  return `${used} min used, ${rem} min left (cap ${cap})`;
 }

@@ -1,0 +1,3403 @@
+{
+  "run": "mock",
+  "baseUrl": "localhost (VITE_FORCE_MOCK=1)",
+  "tests": [
+    {
+      "id": "channel-designer-artist-look-spec-a-saved-backdrop-design-change-shows",
+      "file": "channel-designer-artist-look.spec.ts",
+      "line": 26,
+      "title": "a saved backdrop design change shows up on the artist page header",
+      "status": "timedOut",
+      "durationMs": 30395,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/channel-designer-artist-look-spec-a-saved-backdrop-design-change-shows/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-artist-look-spec-a-saved-backdrop-design-change-shows/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-artist-look-spec-a-saved-backdrop-design-change-shows/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-artist-look-spec-a-saved-backdrop-design-change-shows/04.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-artist-look-spec-a-saved-backdrop-design-change-shows/05.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-artist-look-spec-a-saved-backdrop-design-change-shows/06.webp",
+          "caption": "Open /studio/branding?tab=channel-designer",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-artist-look-spec-a-saved-backdrop-design-change-shows/07.webp",
+          "caption": "Get attribute \"data-header-style\" \u00b7 getByTestId('channel-backdrop-card').first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-artist-look-spec-a-saved-backdrop-design-change-shows/08.webp",
+          "caption": "Click \u00b7 getByRole('tab', { name: 'SOLID' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-artist-look-spec-a-saved-backdrop-design-change-shows/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "channel-designer-elements-spec-studio-branding-designer-lists-usable-a",
+      "file": "channel-designer-elements.spec.ts",
+      "line": 20,
+      "title": "studio branding designer lists usable artist-page blocks",
+      "status": "timedOut",
+      "durationMs": 30396,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-studio-branding-designer-lists-usable-a/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-studio-branding-designer-lists-usable-a/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-studio-branding-designer-lists-usable-a/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-studio-branding-designer-lists-usable-a/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-studio-branding-designer-lists-usable-a/05.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-studio-branding-designer-lists-usable-a/06.webp",
+          "caption": "Open /studio/branding?tab=channel-designer",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-studio-branding-designer-lists-usable-a/07.webp",
+          "caption": "Expect be visible \u00b7 getByTestId('channel-element-editor')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-studio-branding-designer-lists-usable-a/08.webp",
+          "caption": "Click \u00b7 getByTestId('channel-element-editor').getByRole('button', { name: 'Section', exact: true })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-studio-branding-designer-lists-usable-a/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "channel-designer-elements-spec-artist-page-designer-uses-the-element-m",
+      "file": "channel-designer-elements.spec.ts",
+      "line": 39,
+      "title": "artist page designer uses the element menu",
+      "status": "failed",
+      "durationMs": 21854,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('option', { name: 'Backdrop' }) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-artist-page-designer-uses-the-element-m/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-artist-page-designer-uses-the-element-m/02.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-artist-page-designer-uses-the-element-m/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-artist-page-designer-uses-the-element-m/04.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-artist-page-designer-uses-the-element-m/05.webp",
+          "caption": "Click \u00b7 getByRole('tab', { name: 'Design' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-artist-page-designer-uses-the-element-m/06.webp",
+          "caption": "Expect have count \u00b7 getByText('Channel appearance')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-artist-page-designer-uses-the-element-m/07.webp",
+          "caption": "Click \u00b7 getByTestId('channel-element-editor').getByRole('button', { name: 'Section', exact: true })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-artist-page-designer-uses-the-element-m/08.webp",
+          "caption": "Expect be visible \u00b7 getByRole('option', { name: 'Backdrop' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-elements-spec-artist-page-designer-uses-the-element-m/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "channel-designer-parity-spec-channel-designer-preview-and-the-real-cha",
+      "file": "channel-designer-parity.spec.ts",
+      "line": 29,
+      "title": "channel designer preview and the real channel page render the same backdrop card",
+      "status": "passed",
+      "durationMs": 12299,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-channel-designer-preview-and-the-real-cha/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-channel-designer-preview-and-the-real-cha/02.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-channel-designer-preview-and-the-real-cha/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-channel-designer-preview-and-the-real-cha/04.webp",
+          "caption": "Evaluate \u2192 Open /studio/branding?tab=channel-designer",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-channel-designer-preview-and-the-real-cha/05.webp",
+          "caption": "Expect be visible \u00b7 getByTestId('channel-backdrop-card').first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-channel-designer-preview-and-the-real-cha/06.webp",
+          "caption": "Get text content \u00b7 getByTestId('channel-backdrop-card').first().getByTestId('channel-backdrop-card-handle') \u2192 Click \u00b7 getByRole('link', { name: /Open my channel/ }).first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-channel-designer-preview-and-the-real-cha/07.webp",
+          "caption": "Expect have url \u00b7 ",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-channel-designer-preview-and-the-real-cha/08.webp",
+          "caption": "Get text content \u00b7 getByTestId('channel-backdrop-card').first().getByTestId('channel-backdrop-card-handle') \u2192 Expect be \u00b7 ",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-channel-designer-preview-and-the-real-cha/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "channel-designer-parity-spec-a-saved-backdrop-design-change-shows-up-o",
+      "file": "channel-designer-parity.spec.ts",
+      "line": 68,
+      "title": "a saved backdrop design change shows up on the real channel page",
+      "status": "timedOut",
+      "durationMs": 30938,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-a-saved-backdrop-design-change-shows-up-o/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-a-saved-backdrop-design-change-shows-up-o/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-a-saved-backdrop-design-change-shows-up-o/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-a-saved-backdrop-design-change-shows-up-o/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-a-saved-backdrop-design-change-shows-up-o/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ }) \u2192 Evaluate \u2192 Open /studio/branding?tab=channel-designer",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-a-saved-backdrop-design-change-shows-up-o/06.webp",
+          "caption": "Get attribute \"data-header-style\" \u00b7 getByTestId('channel-backdrop-card').first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-a-saved-backdrop-design-change-shows-up-o/07.webp",
+          "caption": "Click \u00b7 getByRole('tab', { name: 'SOLID' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/channel-designer-parity-spec-a-saved-backdrop-design-change-shows-up-o/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-legacy-callbacks-land-on-the-matching-spa-surface",
+      "file": "cutover-vital.spec.ts",
+      "line": 24,
+      "title": "legacy callbacks land on the matching SPA surface",
+      "status": "failed",
+      "durationMs": 20637,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByText('SoundCloud connected.') Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-legacy-callbacks-land-on-the-matching-spa-surface/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-legacy-callbacks-land-on-the-matching-spa-surface/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-legacy-callbacks-land-on-the-matching-spa-surface/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-legacy-callbacks-land-on-the-matching-spa-surface/04.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-legacy-callbacks-land-on-the-matching-spa-surface/05.webp",
+          "caption": "Open /dashboard?membership=success",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-legacy-callbacks-land-on-the-matching-spa-surface/06.webp",
+          "caption": "Expect be visible \u00b7 getByRole('heading', { name: 'Account' }) \u2192 Open /dashboard?fanConnect=return",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-legacy-callbacks-land-on-the-matching-spa-surface/07.webp",
+          "caption": "Open /dashboard/upload/import/soundcloud?sc=connected",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-legacy-callbacks-land-on-the-matching-spa-surface/08.webp",
+          "caption": "Expect be visible \u00b7 getByText('SoundCloud connected.')",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-legacy-callbacks-land-on-the-matching-spa-surface/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-registration-asks-for-an-artist-name-and-matching-p",
+      "file": "cutover-vital.spec.ts",
+      "line": 37,
+      "title": "registration asks for an artist name and matching passwords",
+      "status": "timedOut",
+      "durationMs": 30450,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-registration-asks-for-an-artist-name-and-matching-p/01.webp",
+          "caption": "Open /join",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-registration-asks-for-an-artist-name-and-matching-p/02.webp",
+          "caption": "Expect be visible \u00b7 getByLabel('Artist name')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-registration-asks-for-an-artist-name-and-matching-p/03.webp",
+          "caption": "Expect have count \u00b7 getByLabel('Verification token')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-registration-asks-for-an-artist-name-and-matching-p/04.webp",
+          "caption": "Fill \"new-artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-registration-asks-for-an-artist-name-and-matching-p/05.webp",
+          "caption": "Fill \"new-artist\" \u00b7 getByLabel('Username')",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-registration-asks-for-an-artist-name-and-matching-p/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-artist-can-sign-in-and-reach-broadcast-and-upload-t",
+      "file": "cutover-vital.spec.ts",
+      "line": 61,
+      "title": "artist can sign in and reach broadcast and upload tools",
+      "status": "failed",
+      "durationMs": 17034,
+      "error": "Error: expect(locator).toHaveAttribute(expected) failed Locator: getByRole('switch', { name: 'Record broadcast' }) Expected: \"true\"",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-can-sign-in-and-reach-broadcast-and-upload-t/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-can-sign-in-and-reach-broadcast-and-upload-t/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-can-sign-in-and-reach-broadcast-and-upload-t/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-can-sign-in-and-reach-broadcast-and-upload-t/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-can-sign-in-and-reach-broadcast-and-upload-t/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-can-sign-in-and-reach-broadcast-and-upload-t/06.webp",
+          "caption": "Evaluate \u2192 Open /studio/go-live",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-can-sign-in-and-reach-broadcast-and-upload-t/07.webp",
+          "caption": "Expect be visible \u00b7 getByRole('heading', { name: 'Go Live' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-can-sign-in-and-reach-broadcast-and-upload-t/08.webp",
+          "caption": "Expect have attribute \u00b7 getByRole('switch', { name: 'Record broadcast' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-can-sign-in-and-reach-broadcast-and-upload-t/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-studio-dashboard-shows-clickable-summary-stats-and-",
+      "file": "cutover-vital.spec.ts",
+      "line": 92,
+      "title": "studio dashboard shows clickable summary stats and compact broadcast actions",
+      "status": "failed",
+      "durationMs": 15575,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('heading', { name: /Good (morning|afternoon|evening), artist/i }) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-studio-dashboard-shows-clickable-summary-stats-and-/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-studio-dashboard-shows-clickable-summary-stats-and-/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-studio-dashboard-shows-clickable-summary-stats-and-/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-studio-dashboard-shows-clickable-summary-stats-and-/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-studio-dashboard-shows-clickable-summary-stats-and-/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ }) \u2192 Evaluate \u2192 Open /studio",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-studio-dashboard-shows-clickable-summary-stats-and-/06.webp",
+          "caption": "Expect be visible \u00b7 getByRole('heading', { name: /Good (morning|afternoon|evening), artist/i })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-studio-dashboard-shows-clickable-summary-stats-and-/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-fan-subscriptions-show-subscriber-revenue-and-payou",
+      "file": "cutover-vital.spec.ts",
+      "line": 145,
+      "title": "fan subscriptions show subscriber, revenue, and payout statistics",
+      "status": "passed",
+      "durationMs": 5964,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-fan-subscriptions-show-subscriber-revenue-and-payou/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-fan-subscriptions-show-subscriber-revenue-and-payou/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-fan-subscriptions-show-subscriber-revenue-and-payou/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-fan-subscriptions-show-subscriber-revenue-and-payou/04.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ }) \u2192 Evaluate \u2192 Open /studio/audience",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-fan-subscriptions-show-subscriber-revenue-and-payou/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('region', { name: 'Fan subscription summary' }).getByRole('group', { name: 'This month: \u20ac128.40' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-fan-subscriptions-show-subscriber-revenue-and-payou/06.webp",
+          "caption": "Expect be visible \u00b7 getByRole('region', { name: 'Fan subscription summary' }).getByRole('group', { name: 'Paid out YTD: \u20ac842.10' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-fan-subscriptions-show-subscriber-revenue-and-payou/07.webp",
+          "caption": "Expect be visible \u00b7 getByText('Paid in the last 30 days: 8')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-fan-subscriptions-show-subscriber-revenue-and-payou/08.webp",
+          "caption": "Expect be visible \u00b7 getByText('Supporter').first() \u2192 Expect be visible \u00b7 getByRole('link', { name: 'Export subscribers' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-fan-subscriptions-show-subscriber-revenue-and-payou/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-artist-library-starts-with-a-searchable-archive-and",
+      "file": "cutover-vital.spec.ts",
+      "line": 173,
+      "title": "artist library starts with a searchable archive and track tools",
+      "status": "failed",
+      "durationMs": 14046,
+      "error": "Error: expect(locator).toHaveAttribute(expected) failed Locator: getByRole('link', { name: 'All sounds' }) Expected: \"page\"",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-library-starts-with-a-searchable-archive-and/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-library-starts-with-a-searchable-archive-and/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-library-starts-with-a-searchable-archive-and/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-library-starts-with-a-searchable-archive-and/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-library-starts-with-a-searchable-archive-and/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-library-starts-with-a-searchable-archive-and/06.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-library-starts-with-a-searchable-archive-and/07.webp",
+          "caption": "Open /library",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-library-starts-with-a-searchable-archive-and/08.webp",
+          "caption": "Expect have attribute \u00b7 getByRole('link', { name: 'All sounds' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-library-starts-with-a-searchable-archive-and/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-collections-combine-albums-eps-dj-sets-and-playlist",
+      "file": "cutover-vital.spec.ts",
+      "line": 228,
+      "title": "collections combine albums, EPs, DJ sets, and playlists",
+      "status": "failed",
+      "durationMs": 15209,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('button', { name: /Albums/ }) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-collections-combine-albums-eps-dj-sets-and-playlist/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-collections-combine-albums-eps-dj-sets-and-playlist/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-collections-combine-albums-eps-dj-sets-and-playlist/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-collections-combine-albums-eps-dj-sets-and-playlist/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-collections-combine-albums-eps-dj-sets-and-playlist/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-collections-combine-albums-eps-dj-sets-and-playlist/06.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-collections-combine-albums-eps-dj-sets-and-playlist/07.webp",
+          "caption": "Open /library/collections",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-collections-combine-albums-eps-dj-sets-and-playlist/08.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /Albums/ })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-collections-combine-albums-eps-dj-sets-and-playlist/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-artist-track-titles-open-details-while-row-controls",
+      "file": "cutover-vital.spec.ts",
+      "line": 284,
+      "title": "artist track titles open details while row controls handle playback and queueing",
+      "status": "failed",
+      "durationMs": 14784,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('dialog').getByText('Track info') Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-track-titles-open-details-while-row-controls/01.webp",
+          "caption": "Open /u/northern-lights",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-track-titles-open-details-while-row-controls/02.webp",
+          "caption": "Click \u00b7 getByTestId('track-row').filter({ hasText: 'Midnight Broadcast' }).getByRole('button', { name: 'Midnight Broadcast', exact: true })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-track-titles-open-details-while-row-controls/03.webp",
+          "caption": "Expect be visible \u00b7 getByRole('dialog').getByText('Track info')",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-track-titles-open-details-while-row-controls/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-free-artist-subscriptions-accept-listener-accounts-",
+      "file": "cutover-vital.spec.ts",
+      "line": 313,
+      "title": "free artist subscriptions accept listener accounts or a guest email",
+      "status": "timedOut",
+      "durationMs": 30305,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-free-artist-subscriptions-accept-listener-accounts-/01.webp",
+          "caption": "Open /u/northern-lights",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-free-artist-subscriptions-accept-listener-accounts-/02.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Subscribe free' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-free-artist-subscriptions-accept-listener-accounts-/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-queue-actions-show-queued-state-and-the-player-expa",
+      "file": "cutover-vital.spec.ts",
+      "line": 335,
+      "title": "queue actions show queued state and the player expands upward",
+      "status": "timedOut",
+      "durationMs": 30694,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-queue-actions-show-queued-state-and-the-player-expa/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-queue-actions-show-queued-state-and-the-player-expa/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-queue-actions-show-queued-state-and-the-player-expa/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-queue-actions-show-queued-state-and-the-player-expa/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-queue-actions-show-queued-state-and-the-player-expa/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ }) \u2192 Evaluate \u2192 Open /radio",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-queue-actions-show-queued-state-and-the-player-expa/06.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Queue', exact: true })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-queue-actions-show-queued-state-and-the-player-expa/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-sources-leaves-broadcast-captures-to-the-recordings",
+      "file": "cutover-vital.spec.ts",
+      "line": 358,
+      "title": "Sources leaves broadcast captures to the recordings flow",
+      "status": "passed",
+      "durationMs": 5499,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-sources-leaves-broadcast-captures-to-the-recordings/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-sources-leaves-broadcast-captures-to-the-recordings/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-sources-leaves-broadcast-captures-to-the-recordings/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-sources-leaves-broadcast-captures-to-the-recordings/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-sources-leaves-broadcast-captures-to-the-recordings/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-sources-leaves-broadcast-captures-to-the-recordings/06.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-sources-leaves-broadcast-captures-to-the-recordings/07.webp",
+          "caption": "Open /sources \u2192 Expect have count \u00b7 getByText('From broadcast')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-sources-leaves-broadcast-captures-to-the-recordings/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-hearthis-imports-report-completion-link-to-the-trac",
+      "file": "cutover-vital.spec.ts",
+      "line": 366,
+      "title": "hearthis imports report completion, link to the track, and prevent duplicates",
+      "status": "failed",
+      "durationMs": 15760,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByLabel('Import destination playlist') Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-hearthis-imports-report-completion-link-to-the-trac/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-hearthis-imports-report-completion-link-to-the-trac/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-hearthis-imports-report-completion-link-to-the-trac/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-hearthis-imports-report-completion-link-to-the-trac/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-hearthis-imports-report-completion-link-to-the-trac/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-hearthis-imports-report-completion-link-to-the-trac/06.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-hearthis-imports-report-completion-link-to-the-trac/07.webp",
+          "caption": "Open /sources/hearthis",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-hearthis-imports-report-completion-link-to-the-trac/08.webp",
+          "caption": "Expect be visible \u00b7 getByLabel('Import destination playlist')",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-hearthis-imports-report-completion-link-to-the-trac/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-board-news-supports-optional-images-and-links-witho",
+      "file": "cutover-vital.spec.ts",
+      "line": 391,
+      "title": "board news supports optional images and links without empty thumbnails",
+      "status": "timedOut",
+      "durationMs": 30452,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-board-news-supports-optional-images-and-links-witho/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-board-news-supports-optional-images-and-links-witho/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-board-news-supports-optional-images-and-links-witho/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-board-news-supports-optional-images-and-links-witho/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-board-news-supports-optional-images-and-links-witho/05.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Write post' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-board-news-supports-optional-images-and-links-witho/06.webp",
+          "caption": "Fill \"A linked announcement\" \u00b7 getByLabel('Headline')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-board-news-supports-optional-images-and-links-witho/07.webp",
+          "caption": "Fill \"Read the complete update.\" \u00b7 getByLabel('Short summary')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-board-news-supports-optional-images-and-links-witho/08.webp",
+          "caption": "Fill \"https://images.example.com/news.jpg\" \u00b7 getByLabel('Image URL')",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-board-news-supports-optional-images-and-links-witho/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-artist-stats-combine-audience-metrics-and-listener-",
+      "file": "cutover-vital.spec.ts",
+      "line": 437,
+      "title": "artist stats combine audience metrics and listener maps in one place",
+      "status": "failed",
+      "durationMs": 9218,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByText('Followers') Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-stats-combine-audience-metrics-and-listener-/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-stats-combine-audience-metrics-and-listener-/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-stats-combine-audience-metrics-and-listener-/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-stats-combine-audience-metrics-and-listener-/04.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-stats-combine-audience-metrics-and-listener-/05.webp",
+          "caption": "Open /studio/stats",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-stats-combine-audience-metrics-and-listener-/06.webp",
+          "caption": "Expect be visible \u00b7 getByRole('heading', { name: 'Stats' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-stats-combine-audience-metrics-and-listener-/07.webp",
+          "caption": "Expect be visible \u00b7 getByText('Minutes streamed')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-stats-combine-audience-metrics-and-listener-/08.webp",
+          "caption": "Expect be visible \u00b7 getByText('Followers')",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-stats-combine-audience-metrics-and-listener-/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-tahti-selects-recovers-offline-playback-and-shows-t",
+      "file": "cutover-vital.spec.ts",
+      "line": 460,
+      "title": "Tahti Selects recovers offline playback and shows the current stream",
+      "status": "passed",
+      "durationMs": 7341,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-tahti-selects-recovers-offline-playback-and-shows-t/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-tahti-selects-recovers-offline-playback-and-shows-t/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-tahti-selects-recovers-offline-playback-and-shows-t/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-tahti-selects-recovers-offline-playback-and-shows-t/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-tahti-selects-recovers-offline-playback-and-shows-t/05.webp",
+          "caption": "Expect be visible \u00b7 getByText('Stream live')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-tahti-selects-recovers-offline-playback-and-shows-t/06.webp",
+          "caption": "Expect be visible \u00b7 getByText('Aurora Drift').first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-tahti-selects-recovers-offline-playback-and-shows-t/07.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Play Tahti Selects stream' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-tahti-selects-recovers-offline-playback-and-shows-t/08.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: 'Pause Tahti Selects stream' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-tahti-selects-recovers-offline-playback-and-shows-t/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-admin-radio-recognises-rotation-playback-and-uses-t",
+      "file": "cutover-vital.spec.ts",
+      "line": 487,
+      "title": "admin radio recognises rotation playback and uses the standard playlist editor",
+      "status": "failed",
+      "durationMs": 16342,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByText('15:13 total') Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-radio-recognises-rotation-playback-and-uses-t/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-radio-recognises-rotation-playback-and-uses-t/02.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-radio-recognises-rotation-playback-and-uses-t/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-radio-recognises-rotation-playback-and-uses-t/04.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-radio-recognises-rotation-playback-and-uses-t/05.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-radio-recognises-rotation-playback-and-uses-t/06.webp",
+          "caption": "Expect be visible \u00b7 getByText('Rotation on air')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-radio-recognises-rotation-playback-and-uses-t/07.webp",
+          "caption": "Expect be visible \u00b7 getByText('Aurora Drift').first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-radio-recognises-rotation-playback-and-uses-t/08.webp",
+          "caption": "Expect be visible \u00b7 getByText('15:13 total')",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-radio-recognises-rotation-playback-and-uses-t/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-branding-workspace-manages-an-avatar-public-gallery",
+      "file": "cutover-vital.spec.ts",
+      "line": 513,
+      "title": "branding workspace manages an avatar, public gallery, press kit, and slideshow",
+      "status": "failed",
+      "durationMs": 14317,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('heading', { name: 'Artist branding' }) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-workspace-manages-an-avatar-public-gallery/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-workspace-manages-an-avatar-public-gallery/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-workspace-manages-an-avatar-public-gallery/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-workspace-manages-an-avatar-public-gallery/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-workspace-manages-an-avatar-public-gallery/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-workspace-manages-an-avatar-public-gallery/06.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-workspace-manages-an-avatar-public-gallery/07.webp",
+          "caption": "Open /studio/branding",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-workspace-manages-an-avatar-public-gallery/08.webp",
+          "caption": "Expect be visible \u00b7 getByRole('heading', { name: 'Artist branding' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-workspace-manages-an-avatar-public-gallery/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-help-center-documents-artist-gallery-upload-and-reo",
+      "file": "cutover-vital.spec.ts",
+      "line": 586,
+      "title": "help center documents artist gallery upload and reorder",
+      "status": "passed",
+      "durationMs": 2210,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-help-center-documents-artist-gallery-upload-and-reo/01.webp",
+          "caption": "Open /help/for-artists",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-help-center-documents-artist-gallery-upload-and-reo/02.webp",
+          "caption": "Expect have text \u00b7 getByTestId('page-title') \u2192 Expect be visible \u00b7 getByRole('heading', { name: 'Artist gallery' }) \u2192 Expect be visible \u00b7 getByText(/Drag a photo to reorder/) \u2192 Expect be visible \u00b7 getByText(/no separate Add images button/)",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-help-center-documents-artist-gallery-upload-and-reo/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-branding-and-radio-own-gallery-channel-designer-and",
+      "file": "cutover-vital.spec.ts",
+      "line": 598,
+      "title": "branding and radio own gallery, channel designer, and multicast",
+      "status": "failed",
+      "durationMs": 14858,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('tab', { name: 'Branding' }) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-and-radio-own-gallery-channel-designer-and/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-and-radio-own-gallery-channel-designer-and/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-and-radio-own-gallery-channel-designer-and/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-and-radio-own-gallery-channel-designer-and/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-and-radio-own-gallery-channel-designer-and/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ }) \u2192 Evaluate \u2192 Open /settings/artist \u2192 Expect have count \u00b7 getByRole('tab', { name: 'Gallery' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-and-radio-own-gallery-channel-designer-and/06.webp",
+          "caption": "Expect be visible \u00b7 getByRole('tab', { name: 'Branding' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-branding-and-radio-own-gallery-channel-designer-and/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-listen-chrome-lights-listen-on-child-tabs-and-favor",
+      "file": "cutover-vital.spec.ts",
+      "line": 638,
+      "title": "listen chrome lights Listen on child tabs and Favorites alone on favorites",
+      "status": "failed",
+      "durationMs": 5172,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('heading', { name: 'Favorites' }) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-listen-chrome-lights-listen-on-child-tabs-and-favor/01.webp",
+          "caption": "Open /",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-listen-chrome-lights-listen-on-child-tabs-and-favor/02.webp",
+          "caption": "Expect have attribute \u00b7 getByTestId('sidebar-navigation').getByRole('link', { name: 'Listen' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-listen-chrome-lights-listen-on-child-tabs-and-favor/03.webp",
+          "caption": "Open /listen/feed",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-listen-chrome-lights-listen-on-child-tabs-and-favor/04.webp",
+          "caption": "Expect have attribute \u00b7 getByTestId('sidebar-navigation').getByRole('link', { name: 'Listen' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-listen-chrome-lights-listen-on-child-tabs-and-favor/05.webp",
+          "caption": "Expect not to have attribute \u00b7 getByTestId('sidebar-navigation').getByRole('link', { name: 'Favorites' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-listen-chrome-lights-listen-on-child-tabs-and-favor/06.webp",
+          "caption": "Expect have attribute \u00b7 getByRole('tab', { name: 'Feed' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-listen-chrome-lights-listen-on-child-tabs-and-favor/07.webp",
+          "caption": "Expect have attribute \u00b7 getByTestId('sidebar-navigation').getByRole('link', { name: 'Favorites' }) \u2192 Expect not to have attribute \u00b7 getByTestId('sidebar-navigation').getByRole('link', { name: 'Listen' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-listen-chrome-lights-listen-on-child-tabs-and-favor/08.webp",
+          "caption": "Expect be visible \u00b7 getByRole('heading', { name: 'Favorites' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-listen-chrome-lights-listen-on-child-tabs-and-favor/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-artist-creates-a-four-image-promotion-kit-and-anoth",
+      "file": "cutover-vital.spec.ts",
+      "line": 677,
+      "title": "artist creates a four-image promotion kit and another user can download the same kit from the artist page",
+      "status": "failed",
+      "durationMs": 15766,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('heading', { name: 'Artist branding' }) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-creates-a-four-image-promotion-kit-and-anoth/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-creates-a-four-image-promotion-kit-and-anoth/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-creates-a-four-image-promotion-kit-and-anoth/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-creates-a-four-image-promotion-kit-and-anoth/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-creates-a-four-image-promotion-kit-and-anoth/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-creates-a-four-image-promotion-kit-and-anoth/06.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-creates-a-four-image-promotion-kit-and-anoth/07.webp",
+          "caption": "Open /studio/branding",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-creates-a-four-image-promotion-kit-and-anoth/08.webp",
+          "caption": "Expect be visible \u00b7 getByRole('heading', { name: 'Artist branding' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-artist-creates-a-four-image-promotion-kit-and-anoth/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-admin-user-profile-includes-identity-details-and-an",
+      "file": "cutover-vital.spec.ts",
+      "line": 753,
+      "title": "admin user profile includes identity details and an expandable avatar",
+      "status": "failed",
+      "durationMs": 15667,
+      "error": "Error: expect(locator).toBeAttached() failed Locator: getByLabel('Filter by role').getByRole('option', { name: 'Board' }) Expected: attached",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-user-profile-includes-identity-details-and-an/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-user-profile-includes-identity-details-and-an/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-user-profile-includes-identity-details-and-an/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-user-profile-includes-identity-details-and-an/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-user-profile-includes-identity-details-and-an/05.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-user-profile-includes-identity-details-and-an/06.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-user-profile-includes-identity-details-and-an/07.webp",
+          "caption": "Open /admin/users",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-user-profile-includes-identity-details-and-an/08.webp",
+          "caption": "Expect be attached \u00b7 getByLabel('Filter by role').getByRole('option', { name: 'Board' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-admin-user-profile-includes-identity-details-and-an/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-listener-can-open-a-fan-subscription-offer",
+      "file": "cutover-vital.spec.ts",
+      "line": 796,
+      "title": "listener can open a fan subscription offer",
+      "status": "failed",
+      "durationMs": 12129,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('heading', { name: /Subscribe to/ }) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-listener-can-open-a-fan-subscription-offer/01.webp",
+          "caption": "Open /subscribe/northern-lights",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-listener-can-open-a-fan-subscription-offer/02.webp",
+          "caption": "Expect be visible \u00b7 getByRole('heading', { name: /Subscribe to/ })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-listener-can-open-a-fan-subscription-offer/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-dsp-landing-page-leads-with-artwork-and-essential-r",
+      "file": "cutover-vital.spec.ts",
+      "line": 806,
+      "title": "DSP landing page leads with artwork and essential release metadata",
+      "status": "failed",
+      "durationMs": 11501,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('img', { name: 'First Light EP cover' }) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-dsp-landing-page-leads-with-artwork-and-essential-r/01.webp",
+          "caption": "Open /r/northern-lights-release-1",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-dsp-landing-page-leads-with-artwork-and-essential-r/02.webp",
+          "caption": "Expect be visible \u00b7 getByRole('img', { name: 'First Light EP cover' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-dsp-landing-page-leads-with-artwork-and-essential-r/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "cutover-vital-spec-keyboard-navigation-and-review-map-work-in-the-beta",
+      "file": "cutover-vital.spec.ts",
+      "line": 823,
+      "title": "keyboard navigation and review map work in the beta profile",
+      "status": "failed",
+      "durationMs": 11666,
+      "error": "Error: expect(page).toHaveURL(expected) failed Expected pattern: /\\/radio$/ Received string:  \"http://127.0.0.1:5199/\"",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-keyboard-navigation-and-review-map-work-in-the-beta/01.webp",
+          "caption": "Open / \u2192 Press \"Alt+Digit2\"",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-keyboard-navigation-and-review-map-work-in-the-beta/02.webp",
+          "caption": "Expect have url \u00b7 ",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/cutover-vital-spec-keyboard-navigation-and-review-map-work-in-the-beta/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "fan-sub-and-track-purchase-spec-subscriber-and-track-purchase-both-get",
+      "file": "fan-sub-and-track-purchase.spec.ts",
+      "line": 151,
+      "title": "subscriber and track purchase both get the original WAV; artist sees both orders; audit log records them",
+      "status": "timedOut",
+      "durationMs": 180479,
+      "error": "Test timeout of 180000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/fan-sub-and-track-purchase-spec-subscriber-and-track-purchase-both-get/01.webp",
+          "caption": "Route requests \u2192 Expect be \u00b7  \u2192 Open / \u2192 Evaluate \u2192 Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/fan-sub-and-track-purchase-spec-subscriber-and-track-purchase-both-get/02.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/fan-sub-and-track-purchase-spec-subscriber-and-track-purchase-both-get/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/fan-sub-and-track-purchase-spec-subscriber-and-track-purchase-both-get/04.webp",
+          "caption": "Evaluate \u2192 Open /studio/upload",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/fan-sub-and-track-purchase-spec-subscriber-and-track-purchase-both-get/05.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Upload file' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/fan-sub-and-track-purchase-spec-subscriber-and-track-purchase-both-get/06.webp",
+          "caption": "Expect have count \u00b7 getByText('Still processing')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/fan-sub-and-track-purchase-spec-subscriber-and-track-purchase-both-get/07.webp",
+          "caption": "Click \u00b7 getByLabel('Audience')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/fan-sub-and-track-purchase-spec-subscriber-and-track-purchase-both-get/08.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Save changes' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/fan-sub-and-track-purchase-spec-subscriber-and-track-purchase-both-get/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "fullscreen-player-minimize-spec-full-player-view-back-arrow-actually-m",
+      "file": "fullscreen-player-minimize.spec.ts",
+      "line": 23,
+      "title": "full player view: back arrow actually minimizes the player",
+      "status": "failed",
+      "durationMs": 7812,
+      "error": "Error: locator.click: Error: strict mode violation: getByRole('button', { name: 'Full screen' }) resolved to 2 elements: 1) <button type=\"button\" aria-label=\"Full screen\" data-headlessui-state=\"\" data-testid=\"queue-fullscreen-button\" class=\"focus-visible:ring-primary inline-flex cursor-pointer touch",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/fullscreen-player-minimize-spec-full-player-view-back-arrow-actually-m/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/fullscreen-player-minimize-spec-full-player-view-back-arrow-actually-m/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/fullscreen-player-minimize-spec-full-player-view-back-arrow-actually-m/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/fullscreen-player-minimize-spec-full-player-view-back-arrow-actually-m/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/fullscreen-player-minimize-spec-full-player-view-back-arrow-actually-m/05.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: /^Play / }).first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/fullscreen-player-minimize-spec-full-player-view-back-arrow-actually-m/06.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: 'Pause' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/fullscreen-player-minimize-spec-full-player-view-back-arrow-actually-m/07.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/fullscreen-player-minimize-spec-full-player-view-back-arrow-actually-m/08.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Full screen' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/fullscreen-player-minimize-spec-full-player-view-back-arrow-actually-m/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "layout-stability-spec-studio-shell-stays-full-width-and-keeps-navigati",
+      "file": "layout-stability.spec.ts",
+      "line": 131,
+      "title": "Studio shell stays full-width and keeps navigation geometry stable",
+      "status": "failed",
+      "durationMs": 16758,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: locator('[data-studio-section-menu]').first() Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-shell-stays-full-width-and-keeps-navigati/01.webp",
+          "caption": "Set viewport size \u2192 Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-shell-stays-full-width-and-keeps-navigati/02.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-shell-stays-full-width-and-keeps-navigati/03.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-shell-stays-full-width-and-keeps-navigati/04.webp",
+          "caption": "Expect be visible \u00b7 locator('[data-studio-shell]').first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-shell-stays-full-width-and-keeps-navigati/05.webp",
+          "caption": "Expect be visible \u00b7 locator('[data-studio-section-menu]').first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-shell-stays-full-width-and-keeps-navigati/06.webp",
+          "caption": "Evaluate \u00b7 locator('[data-studio-shell]').first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-shell-stays-full-width-and-keeps-navigati/07.webp",
+          "caption": "Wait for timeout",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-shell-stays-full-width-and-keeps-navigati/08.webp",
+          "caption": "Expect be visible \u00b7 locator('[data-studio-section-menu]').first()",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-shell-stays-full-width-and-keeps-navigati/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "layout-stability-spec-admin-shell-stays-full-width-and-keeps-navigatio",
+      "file": "layout-stability.spec.ts",
+      "line": 153,
+      "title": "Admin shell stays full-width and keeps navigation geometry stable",
+      "status": "timedOut",
+      "durationMs": 31484,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-admin-shell-stays-full-width-and-keeps-navigatio/01.webp",
+          "caption": "Set viewport size \u2192 Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-admin-shell-stays-full-width-and-keeps-navigatio/02.webp",
+          "caption": "Expect be visible \u00b7 locator('[data-admin-section-menu]').first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-admin-shell-stays-full-width-and-keeps-navigatio/03.webp",
+          "caption": "Evaluate \u00b7 locator('.admin-page-layout, .admin-moderation-layout').first() \u2192 /admin/moderation",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-admin-shell-stays-full-width-and-keeps-navigatio/04.webp",
+          "caption": "Wait for timeout",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-admin-shell-stays-full-width-and-keeps-navigatio/05.webp",
+          "caption": "Expect be visible \u00b7 locator('.admin-page-layout, .admin-moderation-layout').first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-admin-shell-stays-full-width-and-keeps-navigatio/06.webp",
+          "caption": "Evaluate \u00b7 locator('.admin-page-layout, .admin-moderation-layout').first() \u2192 /admin/top-lists",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-admin-shell-stays-full-width-and-keeps-navigatio/07.webp",
+          "caption": "Expect be visible \u00b7 locator('.admin-page-layout, .admin-moderation-layout').first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-admin-shell-stays-full-width-and-keeps-navigatio/08.webp",
+          "caption": "Open /admin/financial \u2192 Wait for timeout",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-admin-shell-stays-full-width-and-keeps-navigatio/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "layout-stability-spec-studio-and-admin-shells-remain-reachable-on-mobi",
+      "file": "layout-stability.spec.ts",
+      "line": 167,
+      "title": "Studio and Admin shells remain reachable on mobile without horizontal overflow",
+      "status": "failed",
+      "durationMs": 16717,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: locator('[data-studio-section-menu]').first() Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-and-admin-shells-remain-reachable-on-mobi/01.webp",
+          "caption": "Set viewport size \u2192 Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-and-admin-shells-remain-reachable-on-mobi/02.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-and-admin-shells-remain-reachable-on-mobi/03.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-and-admin-shells-remain-reachable-on-mobi/04.webp",
+          "caption": "Wait for timeout",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-and-admin-shells-remain-reachable-on-mobi/05.webp",
+          "caption": "Expect be visible \u00b7 locator('.studio-page-layout').first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-and-admin-shells-remain-reachable-on-mobi/06.webp",
+          "caption": "Evaluate \u2192 /studio",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-and-admin-shells-remain-reachable-on-mobi/07.webp",
+          "caption": "Wait for timeout",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-and-admin-shells-remain-reachable-on-mobi/08.webp",
+          "caption": "Expect be visible \u00b7 locator('[data-studio-section-menu]').first()",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/layout-stability-spec-studio-and-admin-shells-remain-reachable-on-mobi/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "listener-purchase-flow-spec-listener-buys-a-track-sees-it-in-purchases",
+      "file": "listener-purchase-flow.spec.ts",
+      "line": 135,
+      "title": "listener buys a track, sees it in Purchases, artist sees the order",
+      "status": "failed",
+      "durationMs": 9155,
+      "error": "Error: page.evaluate: TypeError: mod.setSoundPurchaseAccess is not a function at eval (eval at evaluate (:311:30), <anonymous>:14:30) at async <anonymous>:337:30",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-buys-a-track-sees-it-in-purchases/01.webp",
+          "caption": "Route requests \u2192 Open / \u2192 Evaluate \u2192 Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-buys-a-track-sees-it-in-purchases/02.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-buys-a-track-sees-it-in-purchases/03.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-buys-a-track-sees-it-in-purchases/04.webp",
+          "caption": "Open /studio/upload",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-buys-a-track-sees-it-in-purchases/05.webp",
+          "caption": "Expect have url \u00b7 ",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-buys-a-track-sees-it-in-purchases/06.webp",
+          "caption": "Click \u00b7 getByLabel('Audience')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-buys-a-track-sees-it-in-purchases/07.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Save', exact: true })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-buys-a-track-sees-it-in-purchases/08.webp",
+          "caption": "Evaluate",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-buys-a-track-sees-it-in-purchases/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "listener-purchase-flow-spec-listener-subscribes-sees-it-in-your-subs-c",
+      "file": "listener-purchase-flow.spec.ts",
+      "line": 200,
+      "title": "listener subscribes, sees it in Your subs, cancels it",
+      "status": "failed",
+      "durationMs": 25155,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: locator('li').filter({ has: locator('a[href=\"/u/demo\"]') }).getByText(/cancels/i) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-subscribes-sees-it-in-your-subs-c/01.webp",
+          "caption": "Route requests \u2192 Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-subscribes-sees-it-in-your-subs-c/02.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-subscribes-sees-it-in-your-subs-c/03.webp",
+          "caption": "Is visible \u00b7 getByRole('menuitem', { name: /^Log out$/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-subscribes-sees-it-in-your-subs-c/04.webp",
+          "caption": "Expect be visible \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-subscribes-sees-it-in-your-subs-c/05.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Create account' }) \u2192 Is visible \u00b7 getByRole('button', { name: /^Signed in as/ }) \u2192 Is visible \u00b7 getByRole('button', { name: 'Sign in' }) \u2192 Fill \"e2e-lpf-sub-1792362478254@example.com\" \u00b7 getByLabel('Email",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-subscribes-sees-it-in-your-subs-c/06.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Subscribe' }).first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-subscribes-sees-it-in-your-subs-c/07.webp",
+          "caption": "Expect be visible \u00b7 locator('li').filter({ has: locator('a[href=\"/u/demo\"]') }).getByText('Supporter')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-subscribes-sees-it-in-your-subs-c/08.webp",
+          "caption": "Expect be visible \u00b7 locator('li').filter({ has: locator('a[href=\"/u/demo\"]') }).getByText(/cancels/i)",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/listener-purchase-flow-spec-listener-subscribes-sees-it-in-your-subs-c/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "mastering-spec-reference-mastering-reached-from-the-audio-editor-match",
+      "file": "mastering.spec.ts",
+      "line": 41,
+      "title": "Reference mastering: reached from the audio editor, matches a reference track, and offers a download",
+      "status": "passed",
+      "durationMs": 11067,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-reached-from-the-audio-editor-match/01.webp",
+          "caption": "Route requests \u2192 Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-reached-from-the-audio-editor-match/02.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-reached-from-the-audio-editor-match/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-reached-from-the-audio-editor-match/04.webp",
+          "caption": "Open /studio/archive/arch-mock-1/editor",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-reached-from-the-audio-editor-match/05.webp",
+          "caption": "Fulfill request",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-reached-from-the-audio-editor-match/06.webp",
+          "caption": "Expect be visible \u00b7 getByRole('heading', { name: 'Reference mastering' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-reached-from-the-audio-editor-match/07.webp",
+          "caption": "Set input files \u00b7 locator('input[type=\"file\"]').first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-reached-from-the-audio-editor-match/08.webp",
+          "caption": "Expect be visible \u00b7 locator('audio[controls]') \u2192 Expect be visible \u00b7 getByRole('link', { name: 'Download WAV' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-reached-from-the-audio-editor-match/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "mastering-spec-reference-mastering-is-also-reachable-from-the-track-ed",
+      "file": "mastering.spec.ts",
+      "line": 71,
+      "title": "Reference mastering is also reachable from the track editor dialog",
+      "status": "timedOut",
+      "durationMs": 30491,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-is-also-reachable-from-the-track-ed/01.webp",
+          "caption": "Set viewport size \u2192 Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-is-also-reachable-from-the-track-ed/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-is-also-reachable-from-the-track-ed/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-is-also-reachable-from-the-track-ed/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-is-also-reachable-from-the-track-ed/05.webp",
+          "caption": "Open /studio/archive",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-is-also-reachable-from-the-track-ed/06.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: /edit/i }).first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-is-also-reachable-from-the-track-ed/07.webp",
+          "caption": "Click \u00b7 getByRole('tab', { name: 'Audio' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-is-also-reachable-from-the-track-ed/08.webp",
+          "caption": "Click \u00b7 getByRole('link', { name: 'Match to a reference track \u2192' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/mastering-spec-reference-mastering-is-also-reachable-from-the-track-ed/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "plugin-store-spec-studio-pro-editor-plugin-chain-add-configure-and-rem",
+      "file": "plugin-store.spec.ts",
+      "line": 25,
+      "title": "Studio Pro Editor plugin chain: add, configure, and remove a plugin",
+      "status": "timedOut",
+      "durationMs": 30838,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-pro-editor-plugin-chain-add-configure-and-rem/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-pro-editor-plugin-chain-add-configure-and-rem/02.webp",
+          "caption": "Expect be visible \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-pro-editor-plugin-chain-add-configure-and-rem/03.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-pro-editor-plugin-chain-add-configure-and-rem/04.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-pro-editor-plugin-chain-add-configure-and-rem/05.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-pro-editor-plugin-chain-add-configure-and-rem/06.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ }) \u2192 Evaluate \u2192 Open /studio/archive/arch-mock-1/editor",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-pro-editor-plugin-chain-add-configure-and-rem/07.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Expand mastering' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-pro-editor-plugin-chain-add-configure-and-rem/08.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Add plugin' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-pro-editor-plugin-chain-add-configure-and-rem/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "plugin-store-spec-studio-go-live-multistream-every-api-supported-provi",
+      "file": "plugin-store.spec.ts",
+      "line": 57,
+      "title": "Studio Go Live multistream: every API-supported provider is selectable, and an unlabeled destination falls back to the provider display name",
+      "status": "failed",
+      "durationMs": 16393,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByText('YouTube') Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-go-live-multistream-every-api-supported-provi/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-go-live-multistream-every-api-supported-provi/02.webp",
+          "caption": "Expect be visible \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-go-live-multistream-every-api-supported-provi/03.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-go-live-multistream-every-api-supported-provi/04.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-go-live-multistream-every-api-supported-provi/05.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-go-live-multistream-every-api-supported-provi/06.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ }) \u2192 Evaluate \u2192 Open /studio/go-live",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-go-live-multistream-every-api-supported-provi/07.webp",
+          "caption": "Expect be visible \u00b7 getByText('YouTube')",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-go-live-multistream-every-api-supported-provi/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "plugin-store-spec-settings-broadcast-multistream-provider-picker-and-e",
+      "file": "plugin-store.spec.ts",
+      "line": 90,
+      "title": "Settings > Broadcast > Multistream: provider picker and existing-target labels use the registry too",
+      "status": "timedOut",
+      "durationMs": 30890,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-broadcast-multistream-provider-picker-and-e/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-broadcast-multistream-provider-picker-and-e/02.webp",
+          "caption": "Expect be visible \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-broadcast-multistream-provider-picker-and-e/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-broadcast-multistream-provider-picker-and-e/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-broadcast-multistream-provider-picker-and-e/05.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-broadcast-multistream-provider-picker-and-e/06.webp",
+          "caption": "Open /settings/broadcast",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-broadcast-multistream-provider-picker-and-e/07.webp",
+          "caption": "Expect be visible \u00b7 getByText('YouTube', { exact: true }).first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-broadcast-multistream-provider-picker-and-e/08.webp",
+          "caption": "Click \u00b7 getByLabel('Provider')",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-broadcast-multistream-provider-picker-and-e/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "plugin-store-spec-settings-connections-export-targets-render-from-the-",
+      "file": "plugin-store.spec.ts",
+      "line": 122,
+      "title": "Settings connections: export targets render from the relocated plugin registry",
+      "status": "failed",
+      "durationMs": 17115,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('heading', { name: 'Export music' }).locator('..').getByText('Spotify') Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-connections-export-targets-render-from-the-/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-connections-export-targets-render-from-the-/02.webp",
+          "caption": "Expect be visible \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-connections-export-targets-render-from-the-/03.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-connections-export-targets-render-from-the-/04.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-connections-export-targets-render-from-the-/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-connections-export-targets-render-from-the-/06.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-connections-export-targets-render-from-the-/07.webp",
+          "caption": "Open /settings/connections",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-connections-export-targets-render-from-the-/08.webp",
+          "caption": "Expect be visible \u00b7 getByRole('heading', { name: 'Export music' }).locator('..').getByText('Spotify')",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-connections-export-targets-render-from-the-/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "plugin-store-spec-radio-visualizer-renders-through-the-registry-with-n",
+      "file": "plugin-store.spec.ts",
+      "line": 139,
+      "title": "Radio visualizer renders through the registry with no console errors",
+      "status": "passed",
+      "durationMs": 3022,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-radio-visualizer-renders-through-the-registry-with-n/01.webp",
+          "caption": "Open /radio",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-radio-visualizer-renders-through-the-registry-with-n/02.webp",
+          "caption": "Expect be visible \u00b7 locator('[data-visualizer-engine=\"three\"]')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-radio-visualizer-renders-through-the-registry-with-n/03.webp",
+          "caption": "Expect have attribute \u00b7 locator('[data-visualizer-engine=\"three\"]')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-radio-visualizer-renders-through-the-registry-with-n/04.webp",
+          "caption": "Wait for timeout \u2192 Expect equal \u00b7 ",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-radio-visualizer-renders-through-the-registry-with-n/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "plugin-store-spec-plugin-store-explains-categories-previews-themes-and",
+      "file": "plugin-store.spec.ts",
+      "line": 158,
+      "title": "Plugin store explains categories, previews themes, and labels audio-reactive visuals",
+      "status": "failed",
+      "durationMs": 15305,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByLabel('Theme color preview').first() Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-plugin-store-explains-categories-previews-themes-and/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-plugin-store-explains-categories-previews-themes-and/02.webp",
+          "caption": "Expect be visible \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-plugin-store-explains-categories-previews-themes-and/03.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-plugin-store-explains-categories-previews-themes-and/04.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-plugin-store-explains-categories-previews-themes-and/05.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-plugin-store-explains-categories-previews-themes-and/06.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ }) \u2192 Evaluate \u2192 Open /settings/plugin-store",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-plugin-store-explains-categories-previews-themes-and/07.webp",
+          "caption": "Expect be visible \u00b7 getByLabel('Theme color preview').first()",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-plugin-store-explains-categories-previews-themes-and/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "plugin-store-spec-listen-add-widget-dialog-lists-every-listen-store-ad",
+      "file": "plugin-store.spec.ts",
+      "line": 219,
+      "title": "Listen add-widget dialog lists every Listen store add-on",
+      "status": "failed",
+      "durationMs": 16890,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('dialog').getByRole('heading', { name: 'Listen add-ons' }) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-dialog-lists-every-listen-store-ad/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-dialog-lists-every-listen-store-ad/02.webp",
+          "caption": "Expect be visible \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-dialog-lists-every-listen-store-ad/03.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-dialog-lists-every-listen-store-ad/04.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-dialog-lists-every-listen-store-ad/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-dialog-lists-every-listen-store-ad/06.webp",
+          "caption": "Evaluate \u2192 Open /",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-dialog-lists-every-listen-store-ad/07.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Add Listen widgets' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-dialog-lists-every-listen-store-ad/08.webp",
+          "caption": "Expect be visible \u00b7 getByRole('dialog').getByRole('heading', { name: 'Listen add-ons' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-dialog-lists-every-listen-store-ad/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "plugin-store-spec-listen-add-widget-picker-installs-configures-and-uni",
+      "file": "plugin-store.spec.ts",
+      "line": 253,
+      "title": "Listen add-widget picker installs, configures, and uninstalls every Listen add-on without closing",
+      "status": "failed",
+      "durationMs": 19238,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('dialog').getByRole('heading', { name: 'Add Listen widgets' }) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-picker-installs-configures-and-uni/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-picker-installs-configures-and-uni/02.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-picker-installs-configures-and-uni/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Add Listen widgets' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-picker-installs-configures-and-uni/04.webp",
+          "caption": "Fill \"https://soundcloud.com/artist/track\" \u00b7 getByRole('dialog').getByLabel('Add a SoundCloud link')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-picker-installs-configures-and-uni/05.webp",
+          "caption": "Click \u00b7 getByRole('dialog').getByRole('tab', { name: /Available/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-picker-installs-configures-and-uni/06.webp",
+          "caption": "Click \u00b7 getByRole('dialog').getByRole('tab', { name: /Available/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-picker-installs-configures-and-uni/07.webp",
+          "caption": "Click \u00b7 getByRole('dialog').getByTestId('listen-addon-config-Spotify').getByRole('button', { name: 'Add', exact: true })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-picker-installs-configures-and-uni/08.webp",
+          "caption": "Expect be visible \u00b7 getByRole('dialog').getByRole('heading', { name: 'Add Listen widgets' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-listen-add-widget-picker-installs-configures-and-uni/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "plugin-store-spec-settings-add-ons-listen-tab-can-add-and-remove-a-wid",
+      "file": "plugin-store.spec.ts",
+      "line": 326,
+      "title": "Settings Add-ons Listen tab can add and remove a widget on Listen",
+      "status": "failed",
+      "durationMs": 16074,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('dialog').getByText(/listener widgets on your Listen page/i) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-add-ons-listen-tab-can-add-and-remove-a-wid/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-add-ons-listen-tab-can-add-and-remove-a-wid/02.webp",
+          "caption": "Expect be visible \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-add-ons-listen-tab-can-add-and-remove-a-wid/03.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-add-ons-listen-tab-can-add-and-remove-a-wid/04.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-add-ons-listen-tab-can-add-and-remove-a-wid/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ }) \u2192 Evaluate \u2192 Open /",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-add-ons-listen-tab-can-add-and-remove-a-wid/06.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: 'Add Listen widgets' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-add-ons-listen-tab-can-add-and-remove-a-wid/07.webp",
+          "caption": "Open /settings/plugin-store?category=listen",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-add-ons-listen-tab-can-add-and-remove-a-wid/08.webp",
+          "caption": "Expect be visible \u00b7 getByRole('dialog').getByText(/listener widgets on your Listen page/i)",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-settings-add-ons-listen-tab-can-add-and-remove-a-wid/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "plugin-store-spec-studio-release-fingerprinting-check-and-re-fingerpri",
+      "file": "plugin-store.spec.ts",
+      "line": 386,
+      "title": "Studio release fingerprinting: check and re-fingerprint a track through the AcoustID plugin",
+      "status": "passed",
+      "durationMs": 8303,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-release-fingerprinting-check-and-re-fingerpri/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-release-fingerprinting-check-and-re-fingerpri/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-release-fingerprinting-check-and-re-fingerpri/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-release-fingerprinting-check-and-re-fingerpri/04.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-release-fingerprinting-check-and-re-fingerpri/05.webp",
+          "caption": "Open /studio/releases/rel-mock-1",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-release-fingerprinting-check-and-re-fingerpri/06.webp",
+          "caption": "Expect be visible \u00b7 locator('div').filter({ has: getByText('Blue Hour', { exact: true }) }).filter({ has: getByRole('button', { name: 'Check for a match' }) }).",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-release-fingerprinting-check-and-re-fingerpri/07.webp",
+          "caption": "Expect be visible \u00b7 locator('div').filter({ has: getByText('Blue Hour', { exact: true }) }).filter({ has: getByRole('button', { name: 'Check for a match' }) }).",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-release-fingerprinting-check-and-re-fingerpri/08.webp",
+          "caption": "Expect be visible \u00b7 locator('div').filter({ has: getByText('Blue Hour', { exact: true }) }).filter({ has: getByRole('button', { name: 'Check for a match' }) }).",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-studio-release-fingerprinting-check-and-re-fingerpri/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "plugin-store-spec-radio-browser-directory-save-a-station-from-browser-",
+      "file": "plugin-store.spec.ts",
+      "line": 445,
+      "title": "Radio Browser directory: save a station from Browser and it shows on Listen",
+      "status": "timedOut",
+      "durationMs": 30690,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-radio-browser-directory-save-a-station-from-browser-/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-radio-browser-directory-save-a-station-from-browser-/02.webp",
+          "caption": "Expect be visible \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-radio-browser-directory-save-a-station-from-browser-/03.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-radio-browser-directory-save-a-station-from-browser-/04.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-radio-browser-directory-save-a-station-from-browser-/05.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-radio-browser-directory-save-a-station-from-browser-/06.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-radio-browser-directory-save-a-station-from-browser-/07.webp",
+          "caption": "Evaluate \u2192 Route requests \u2192 Open /settings/plugin-store?category=radio",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-radio-browser-directory-save-a-station-from-browser-/08.webp",
+          "caption": "Click \u00b7 getByRole('dialog').locator('div.flex.items-center.gap-2').filter({ has: getByRole('dialog').getByRole('switch', { name: /^(Activate|Deactivate) Radio B",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/plugin-store-spec-radio-browser-directory-save-a-station-from-browser-/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "radio-cover-spec-admin-can-replace-a-radio-cover-and-see-it-persist",
+      "file": "radio-cover.spec.ts",
+      "line": 91,
+      "title": "admin can replace a radio cover and see it persist",
+      "status": "timedOut",
+      "durationMs": 30480,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-admin-can-replace-a-radio-cover-and-see-it-persist/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-admin-can-replace-a-radio-cover-and-see-it-persist/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-admin-can-replace-a-radio-cover-and-see-it-persist/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-admin-can-replace-a-radio-cover-and-see-it-persist/04.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-admin-can-replace-a-radio-cover-and-see-it-persist/05.webp",
+          "caption": "Evaluate \u2192 Add init script \u2192 Reload",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-admin-can-replace-a-radio-cover-and-see-it-persist/06.webp",
+          "caption": "Open /settings/plugin-store?category=radio",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-admin-can-replace-a-radio-cover-and-see-it-persist/07.webp",
+          "caption": "Expect be visible \u00b7 getByRole('dialog').filter({ has: getByRole('heading', { name: 'Add-ons' }) }).getByRole('heading', { name: 'Add-ons' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-admin-can-replace-a-radio-cover-and-see-it-persist/08.webp",
+          "caption": "Get attribute \"aria-label\" \u00b7 getByRole('dialog').filter({ has: getByRole('heading', { name: 'Add-ons' }) }).locator('div.flex.items-center.gap-2').filter({ has:",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-admin-can-replace-a-radio-cover-and-see-it-persist/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "radio-cover-spec-non-admins-do-not-see-the-radio-cover-edit-control",
+      "file": "radio-cover.spec.ts",
+      "line": 165,
+      "title": "non-admins do not see the radio cover edit control",
+      "status": "timedOut",
+      "durationMs": 30425,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-non-admins-do-not-see-the-radio-cover-edit-control/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-non-admins-do-not-see-the-radio-cover-edit-control/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-non-admins-do-not-see-the-radio-cover-edit-control/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-non-admins-do-not-see-the-radio-cover-edit-control/04.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-non-admins-do-not-see-the-radio-cover-edit-control/05.webp",
+          "caption": "Reload",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-non-admins-do-not-see-the-radio-cover-edit-control/06.webp",
+          "caption": "Open /settings/plugin-store?category=radio",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-non-admins-do-not-see-the-radio-cover-edit-control/07.webp",
+          "caption": "Expect be visible \u00b7 getByRole('dialog').filter({ has: getByRole('heading', { name: 'Add-ons' }) }).getByRole('heading', { name: 'Add-ons' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-non-admins-do-not-see-the-radio-cover-edit-control/08.webp",
+          "caption": "Get attribute \"aria-label\" \u00b7 getByRole('dialog').filter({ has: getByRole('heading', { name: 'Add-ons' }) }).locator('div.flex.items-center.gap-2').filter({ has:",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/radio-cover-spec-non-admins-do-not-see-the-radio-cover-edit-control/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "real-user-journeys-spec-login-form-submits-on-pressing-enter-not-just-",
+      "file": "real-user-journeys.spec.ts",
+      "line": 34,
+      "title": "login form submits on pressing Enter, not just clicking Sign in",
+      "status": "passed",
+      "durationMs": 4085,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-login-form-submits-on-pressing-enter-not-just-/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-login-form-submits-on-pressing-enter-not-just-/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-login-form-submits-on-pressing-enter-not-just-/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-login-form-submits-on-pressing-enter-not-just-/04.webp",
+          "caption": "Press \"Enter\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-login-form-submits-on-pressing-enter-not-just-/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-login-form-submits-on-pressing-enter-not-just-/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "real-user-journeys-spec-a-new-account-can-complete-registration-and-im",
+      "file": "real-user-journeys.spec.ts",
+      "line": 47,
+      "title": "a new account can complete registration and immediately log in with it",
+      "status": "passed",
+      "durationMs": 7688,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-a-new-account-can-complete-registration-and-im/01.webp",
+          "caption": "Open /join",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-a-new-account-can-complete-registration-and-im/02.webp",
+          "caption": "Expect be visible \u00b7 getByLabel('Artist name')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-a-new-account-can-complete-registration-and-im/03.webp",
+          "caption": "Fill \"New Test Artist\" \u00b7 getByLabel('Artist name')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-a-new-account-can-complete-registration-and-im/04.webp",
+          "caption": "Fill \"secure-password\" \u00b7 getByLabel('Password', { exact: true })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-a-new-account-can-complete-registration-and-im/05.webp",
+          "caption": "Fill \"secure-password\" \u00b7 getByLabel('Confirm password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-a-new-account-can-complete-registration-and-im/06.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Create account' }) \u2192 Expect be visible \u00b7 getByRole('button', { name: 'Sign in' }) \u2192 Fill \"new-artist-1792362628540@example.com\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-a-new-account-can-complete-registration-and-im/07.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-a-new-account-can-complete-registration-and-im/08.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-a-new-account-can-complete-registration-and-im/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "real-user-journeys-spec-registration-edge-case-an-empty-artist-name-ke",
+      "file": "real-user-journeys.spec.ts",
+      "line": 73,
+      "title": "registration edge case: an empty artist name keeps the submit button disabled",
+      "status": "timedOut",
+      "durationMs": 30488,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-registration-edge-case-an-empty-artist-name-ke/01.webp",
+          "caption": "Open /join",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-registration-edge-case-an-empty-artist-name-ke/02.webp",
+          "caption": "Fill \"edge-case@example.com\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-registration-edge-case-an-empty-artist-name-ke/03.webp",
+          "caption": "Fill \"edgecase\" \u00b7 getByLabel('Username')",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-registration-edge-case-an-empty-artist-name-ke/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "real-user-journeys-spec-governance-a-signed-out-visitor-is-prompted-to",
+      "file": "real-user-journeys.spec.ts",
+      "line": 88,
+      "title": "governance: a signed-out visitor is prompted to log in, not shown motions",
+      "status": "passed",
+      "durationMs": 2597,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-a-signed-out-visitor-is-prompted-to/01.webp",
+          "caption": "Open /governance",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-a-signed-out-visitor-is-prompted-to/02.webp",
+          "caption": "Expect be visible \u00b7 getByText('Sign in with a cooperative membership account to vote.').first() \u2192 Expect have count \u00b7 getByRole('heading', { name: 'Approve 2026 grant formula' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-a-signed-out-visitor-is-prompted-to/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "real-user-journeys-spec-governance-navigation-keeps-member-artist-and-",
+      "file": "real-user-journeys.spec.ts",
+      "line": 103,
+      "title": "governance navigation keeps member, artist, and board entries reachable and highlighted",
+      "status": "timedOut",
+      "durationMs": 30375,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-navigation-keeps-member-artist-and-/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-navigation-keeps-member-artist-and-/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-navigation-keeps-member-artist-and-/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-navigation-keeps-member-artist-and-/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-navigation-keeps-member-artist-and-/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-navigation-keeps-member-artist-and-/06.webp",
+          "caption": "Evaluate \u2192 Open /settings/account",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-navigation-keeps-member-artist-and-/07.webp",
+          "caption": "Click \u00b7 getByRole('tab', { name: 'Governance' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-navigation-keeps-member-artist-and-/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "real-user-journeys-spec-library-is-a-studio-tab-and-keeps-library-rout",
+      "file": "real-user-journeys.spec.ts",
+      "line": 177,
+      "title": "library is a Studio tab and keeps /library routes selected on Studio",
+      "status": "failed",
+      "durationMs": 15785,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('navigation', { name: 'Studio pages' }) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-library-is-a-studio-tab-and-keeps-library-rout/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-library-is-a-studio-tab-and-keeps-library-rout/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-library-is-a-studio-tab-and-keeps-library-rout/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-library-is-a-studio-tab-and-keeps-library-rout/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-library-is-a-studio-tab-and-keeps-library-rout/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-library-is-a-studio-tab-and-keeps-library-rout/06.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-library-is-a-studio-tab-and-keeps-library-rout/07.webp",
+          "caption": "Open /library",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-library-is-a-studio-tab-and-keeps-library-rout/08.webp",
+          "caption": "Expect be visible \u00b7 getByRole('navigation', { name: 'Studio pages' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-library-is-a-studio-tab-and-keeps-library-rout/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "real-user-journeys-spec-governance-closed-motions-show-their-final-dec",
+      "file": "real-user-journeys.spec.ts",
+      "line": 231,
+      "title": "governance: closed motions show their final decision as a permanent history/decision log",
+      "status": "passed",
+      "durationMs": 7036,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-closed-motions-show-their-final-dec/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-closed-motions-show-their-final-dec/02.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-closed-motions-show-their-final-dec/03.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-closed-motions-show-their-final-dec/04.webp",
+          "caption": "Open /governance",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-closed-motions-show-their-final-dec/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('listitem').filter({ hasText: 'Confirm annual report' }).getByText('Closed')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-closed-motions-show-their-final-dec/06.webp",
+          "caption": "Expect be visible \u00b7 getByRole('listitem').filter({ hasText: 'Confirm annual report' }).getByText('YES', { exact: true })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-closed-motions-show-their-final-dec/07.webp",
+          "caption": "Expect be visible \u00b7 getByRole('listitem').filter({ hasText: 'Confirm annual report' }).getByText('NO 1')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-closed-motions-show-their-final-dec/08.webp",
+          "caption": "Expect have count \u00b7 getByRole('listitem').filter({ hasText: 'Confirm annual report' }).getByRole('button', { name: 'YES', exact: true })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-closed-motions-show-their-final-dec/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "real-user-journeys-spec-governance-voting-on-an-open-motion-records-th",
+      "file": "real-user-journeys.spec.ts",
+      "line": 252,
+      "title": "governance: voting on an open motion records the choice and updates the tally live",
+      "status": "passed",
+      "durationMs": 7157,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-voting-on-an-open-motion-records-th/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-voting-on-an-open-motion-records-th/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-voting-on-an-open-motion-records-th/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-voting-on-an-open-motion-records-th/04.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ }) \u2192 Evaluate \u2192 Open /governance",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-voting-on-an-open-motion-records-th/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('listitem').filter({ hasText: 'Approve 2026 grant formula' }).getByText('YES 1')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-voting-on-an-open-motion-records-th/06.webp",
+          "caption": "Expect have count \u00b7 getByRole('listitem').filter({ hasText: 'Approve 2026 grant formula' }).getByText('Your vote:')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-voting-on-an-open-motion-records-th/07.webp",
+          "caption": "Expect be visible \u00b7 getByRole('listitem').filter({ hasText: 'Approve 2026 grant formula' }).getByText('Your vote:')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-voting-on-an-open-motion-records-th/08.webp",
+          "caption": "Expect be visible \u00b7 getByRole('listitem').filter({ hasText: 'Approve 2026 grant formula' }).getByText('YES 2') \u2192 Expect have count \u00b7 getByRole('listitem').filter({ hasText: 'Approve 2026 grant formula' }).getByRole('button', { name: 'YES', ",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-voting-on-an-open-motion-records-th/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "real-user-journeys-spec-governance-motion-discussion-supports-reading-",
+      "file": "real-user-journeys.spec.ts",
+      "line": 279,
+      "title": "governance: motion discussion supports reading existing comments and posting a new one",
+      "status": "passed",
+      "durationMs": 8767,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-motion-discussion-supports-reading-/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-motion-discussion-supports-reading-/02.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-motion-discussion-supports-reading-/03.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-motion-discussion-supports-reading-/04.webp",
+          "caption": "Open /governance",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-motion-discussion-supports-reading-/05.webp",
+          "caption": "Fill \"Sounds good.\" \u00b7 getByRole('listitem').filter({ hasText: 'Approve 2026 grant formula' }).getByPlaceholder('Add a comment\u2026')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-motion-discussion-supports-reading-/06.webp",
+          "caption": "Expect be visible \u00b7 getByRole('listitem').filter({ hasText: 'Approve 2026 grant formula' }).getByText('Sounds good.')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-motion-discussion-supports-reading-/07.webp",
+          "caption": "Click \u00b7 getByRole('listitem').filter({ hasText: 'Approve 2026 grant formula' }).getByRole('button', { name: 'Hide discussion' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-motion-discussion-supports-reading-/08.webp",
+          "caption": "Expect have count \u00b7 getByRole('listitem').filter({ hasText: 'Confirm annual report' }).getByPlaceholder('Add a comment\u2026')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-motion-discussion-supports-reading-/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "real-user-journeys-spec-governance-a-member-can-submit-an-advisory-mot",
+      "file": "real-user-journeys.spec.ts",
+      "line": 309,
+      "title": "governance: a member can submit an advisory motion draft",
+      "status": "failed",
+      "durationMs": 17969,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByText('DRAFT', { exact: true }) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-a-member-can-submit-an-advisory-mot/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-a-member-can-submit-an-advisory-mot/02.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-a-member-can-submit-an-advisory-mot/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-a-member-can-submit-an-advisory-mot/04.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-a-member-can-submit-an-advisory-mot/05.webp",
+          "caption": "Fill \"Improve member notices\" \u00b7 getByPlaceholder('Motion title')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-a-member-can-submit-an-advisory-mot/06.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Submit draft' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-a-member-can-submit-an-advisory-mot/07.webp",
+          "caption": "Expect be visible \u00b7 getByText('Motion draft submitted for board review.')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-a-member-can-submit-an-advisory-mot/08.webp",
+          "caption": "Expect be visible \u00b7 getByText('DRAFT', { exact: true })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-a-member-can-submit-an-advisory-mot/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "real-user-journeys-spec-governance-public-history-and-historical-grant",
+      "file": "real-user-journeys.spec.ts",
+      "line": 330,
+      "title": "governance: public history and historical grant reports are reachable",
+      "status": "passed",
+      "durationMs": 4767,
+      "error": null,
+      "steps": [
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-public-history-and-historical-grant/01.webp",
+          "caption": "Open /governance/history",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-public-history-and-historical-grant/02.webp",
+          "caption": "Expect be visible \u00b7 getByRole('heading', { name: 'Governance history' }) \u2192 Expect be visible \u00b7 getByText('Confirm annual report') \u2192 Open /transparency",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-public-history-and-historical-grant/03.webp",
+          "caption": "Expect be visible \u00b7 getByRole('link', { name: /Grants 2025/ }) \u2192 Click \u00b7 getByRole('link', { name: /Grants 2025/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-public-history-and-historical-grant/04.webp",
+          "caption": "Expect have url \u00b7 ",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-public-history-and-historical-grant/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('heading', { name: 'Grant report 2025' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-governance-public-history-and-historical-grant/final.webp",
+          "caption": "Final state",
+          "failed": false
+        }
+      ]
+    },
+    {
+      "id": "real-user-journeys-spec-artist-stats-show-real-listen-minutes-and-the-",
+      "file": "real-user-journeys.spec.ts",
+      "line": 348,
+      "title": "artist stats show real listen minutes and the listener geography map",
+      "status": "failed",
+      "durationMs": 16508,
+      "error": "Error: expect(locator).toBeVisible() failed Locator:  getByLabel('Listener world map') Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-artist-stats-show-real-listen-minutes-and-the-/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-artist-stats-show-real-listen-minutes-and-the-/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-artist-stats-show-real-listen-minutes-and-the-/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-artist-stats-show-real-listen-minutes-and-the-/04.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-artist-stats-show-real-listen-minutes-and-the-/05.webp",
+          "caption": "Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-artist-stats-show-real-listen-minutes-and-the-/06.webp",
+          "caption": "Open /studio/stats",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-artist-stats-show-real-listen-minutes-and-the-/07.webp",
+          "caption": "Expect be visible \u00b7 getByText('Minutes listened')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-artist-stats-show-real-listen-minutes-and-the-/08.webp",
+          "caption": "Expect be visible \u00b7 getByLabel('Listener world map')",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-artist-stats-show-real-listen-minutes-and-the-/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "real-user-journeys-spec-stream-manager-stopping-a-live-broadcast-requi",
+      "file": "real-user-journeys.spec.ts",
+      "line": 364,
+      "title": "stream manager: stopping a live broadcast requires confirmation, and the rotation controls (irrelevant while live) are replaced by it",
+      "status": "failed",
+      "durationMs": 14473,
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('button', { name: 'Start rotation' }) Expected: visible",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-stream-manager-stopping-a-live-broadcast-requi/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-stream-manager-stopping-a-live-broadcast-requi/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-stream-manager-stopping-a-live-broadcast-requi/03.webp",
+          "caption": "Fill \"demo-password\" \u00b7 getByLabel('Password')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-stream-manager-stopping-a-live-broadcast-requi/04.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-stream-manager-stopping-a-live-broadcast-requi/05.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ }) \u2192 Evaluate",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-stream-manager-stopping-a-live-broadcast-requi/06.webp",
+          "caption": "Open /studio/go-live",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-stream-manager-stopping-a-live-broadcast-requi/07.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: 'Start rotation' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/real-user-journeys-spec-stream-manager-stopping-a-live-broadcast-requi/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "stash-and-subscriber-access-spec-a-public-sound-is-playable-and-downlo",
+      "file": "stash-and-subscriber-access.spec.ts",
+      "line": 79,
+      "title": "a public sound is playable and downloadable by another visitor, and its Insights panel is real",
+      "status": "timedOut",
+      "durationMs": 30364,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-public-sound-is-playable-and-downlo/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-public-sound-is-playable-and-downlo/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-public-sound-is-playable-and-downlo/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-public-sound-is-playable-and-downlo/04.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-public-sound-is-playable-and-downlo/05.webp",
+          "caption": "Open /studio/upload",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-public-sound-is-playable-and-downlo/06.webp",
+          "caption": "Set input files \u00b7 locator('input[type=\"file\"]')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-public-sound-is-playable-and-downlo/07.webp",
+          "caption": "Expect have url \u00b7 ",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-public-sound-is-playable-and-downlo/08.webp",
+          "caption": "Click \u00b7 getByRole('tab', { name: 'Sharing' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-public-sound-is-playable-and-downlo/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    },
+    {
+      "id": "stash-and-subscriber-access-spec-a-private-sound-is-hidden-from-the-pu",
+      "file": "stash-and-subscriber-access.spec.ts",
+      "line": 126,
+      "title": "a private sound is hidden from the public profile listing",
+      "status": "timedOut",
+      "durationMs": 30388,
+      "error": "Test timeout of 30000ms exceeded.",
+      "steps": [
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-private-sound-is-hidden-from-the-pu/01.webp",
+          "caption": "Open /login",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-private-sound-is-hidden-from-the-pu/02.webp",
+          "caption": "Fill \"artist@tahti.live\" \u00b7 getByLabel('Email')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-private-sound-is-hidden-from-the-pu/03.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Sign in' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-private-sound-is-hidden-from-the-pu/04.webp",
+          "caption": "Expect be visible \u00b7 getByRole('button', { name: /^Signed in as/ }) \u2192 Open /studio/upload",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-private-sound-is-hidden-from-the-pu/05.webp",
+          "caption": "Set input files \u00b7 locator('input[type=\"file\"]')",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-private-sound-is-hidden-from-the-pu/06.webp",
+          "caption": "Click \u00b7 getByRole('button', { name: 'Upload file' })",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-private-sound-is-hidden-from-the-pu/07.webp",
+          "caption": "Get text content \u00b7 getByRole('heading', { level: 1 }).first()",
+          "failed": false
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-private-sound-is-hidden-from-the-pu/08.webp",
+          "caption": "Click \u00b7 getByRole('tab', { name: 'Sharing' })",
+          "failed": true
+        },
+        {
+          "image": "/map/e2e/mock/stash-and-subscriber-access-spec-a-private-sound-is-hidden-from-the-pu/final.webp",
+          "caption": "Final state",
+          "failed": true
+        }
+      ]
+    }
+  ]
+}

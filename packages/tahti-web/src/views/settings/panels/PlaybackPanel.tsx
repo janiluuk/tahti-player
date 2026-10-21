@@ -1,0 +1,181 @@
+import { useEffect, useState } from 'react';
+
+import type { RepeatMode } from '@tahti-player/model';
+import {
+  Input,
+  SectionShell,
+  SegmentedControl,
+  Slider,
+} from '@tahti-player/ui';
+
+import { getNativeLibrary } from '../../../lib/nativeLibrary';
+import type { NormalizationMode } from '../../../lib/replayGain';
+import { useAuthStore } from '../../../stores/authStore';
+import {
+  clampSkipSeconds,
+  SKIP_SECONDS_MAX,
+  SKIP_SECONDS_MIN,
+  usePlaybackPrefsStore,
+} from '../../../stores/playbackPrefsStore';
+import { usePlayerStore } from '../../../stores/playerStore';
+import { MyRadioStations } from '../MyRadioStations';
+import { SettingsToggle } from '../SettingsFields';
+
+const REPEAT_OPTIONS = [
+  { id: 'off', label: 'Off' },
+  { id: 'all', label: 'Repeat queue' },
+  { id: 'one', label: 'Repeat track' },
+] as const satisfies readonly { id: RepeatMode; label: string }[];
+
+const NORMALIZATION_OPTIONS = [
+  { id: 'off', label: 'Off' },
+  { id: 'track', label: 'Track' },
+  { id: 'album', label: 'Album' },
+] as const satisfies readonly { id: NormalizationMode; label: string }[];
+
+function NormalizationField() {
+  const normalization = usePlaybackPrefsStore((s) => s.normalization);
+  const setNormalization = usePlaybackPrefsStore((s) => s.setNormalization);
+  return (
+    <div className="flex flex-col gap-2">
+      <span className="text-foreground text-sm font-semibold">
+        Volume normalization
+      </span>
+      <SegmentedControl
+        aria-label="Volume normalization"
+        options={NORMALIZATION_OPTIONS}
+        value={normalization}
+        onChange={setNormalization}
+        className="self-start"
+      />
+      <p className="text-foreground-secondary text-sm select-none">
+        Evens out loudness between local library files using their ReplayGain
+        tags, or the loudness measured by Audio analysis. Album keeps the level
+        differences within an album. Never raises a track past its peak. Streams
+        and radio are not changed.
+      </p>
+    </div>
+  );
+}
+
+const SECTION_DIVIDER = 'border-border border-t pt-6';
+
+function SkipDurationField() {
+  const skipSeconds = usePlaybackPrefsStore((s) => s.skipSeconds);
+  const setSkipSeconds = usePlaybackPrefsStore((s) => s.setSkipSeconds);
+  const [draft, setDraft] = useState(String(skipSeconds));
+
+  useEffect(() => {
+    setDraft(String(skipSeconds));
+  }, [skipSeconds]);
+
+  const commit = () => {
+    const next = clampSkipSeconds(Number(draft));
+    setSkipSeconds(next);
+    setDraft(String(next));
+  };
+
+  return (
+    <Input
+      variant="number"
+      min={SKIP_SECONDS_MIN}
+      max={SKIP_SECONDS_MAX}
+      label="Skip duration"
+      description={`Number of seconds to skip forward/backward with Shift+←/→ and media keys (${SKIP_SECONDS_MIN}–${SKIP_SECONDS_MAX}).`}
+      value={draft}
+      onChange={(event) => setDraft(event.target.value)}
+      onBlur={commit}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
+          commit();
+        }
+      }}
+    />
+  );
+}
+
+export function PlaybackPanel() {
+  const volume = usePlayerStore((s) => s.volume);
+  const muted = usePlayerStore((s) => s.muted);
+  const channelAutoplay = usePlaybackPrefsStore((s) => s.channelAutoplay);
+  const setChannelAutoplay = usePlaybackPrefsStore((s) => s.setChannelAutoplay);
+  const shuffle = usePlayerStore((s) => s.shuffle);
+  const repeatMode = usePlayerStore((s) => s.repeatMode);
+  const setVolume = usePlayerStore((s) => s.setVolume);
+  const toggleMute = usePlayerStore((s) => s.toggleMute);
+  const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
+  const setRepeatMode = usePlayerStore((s) => s.setRepeatMode);
+  const hasLocalAnalysis = Boolean(getNativeLibrary()?.analysis);
+  const signedIn = useAuthStore((s) => Boolean(s.user));
+
+  return (
+    <div className="flex w-full max-w-xl flex-col" data-testid="playback-panel">
+      <SectionShell title="Output">
+        <div className="flex flex-col gap-6">
+          <div className="px-2">
+            <Slider
+              label="Volume"
+              description="Output level for tracks, radio and live streams."
+              showFooter
+              unit="%"
+              min={0}
+              max={100}
+              step={1}
+              startLabel="Quiet"
+              endLabel="Loud"
+              value={Math.round(volume * 100)}
+              onValueChange={(value) => setVolume(value / 100)}
+            />
+          </div>
+          <SettingsToggle
+            label="Mute"
+            description="Silence playback without changing the volume level."
+            value={muted}
+            onChange={() => toggleMute()}
+          />
+          <SettingsToggle
+            label="Let channels start playing on their own"
+            description="A channel whose artist allows it starts muted when you open its page. Off means nothing plays until you press play."
+            value={channelAutoplay}
+            onChange={(value) => setChannelAutoplay(value)}
+          />
+          {hasLocalAnalysis ? <NormalizationField /> : null}
+        </div>
+      </SectionShell>
+      <SectionShell title="Queue" className={SECTION_DIVIDER}>
+        <div className="flex flex-col gap-6">
+          <SettingsToggle
+            label="Shuffle"
+            description="Pick the next queued track at random."
+            value={shuffle}
+            onChange={() => toggleShuffle()}
+          />
+          <div className="flex flex-col gap-2">
+            <span className="text-foreground text-sm font-semibold">
+              Repeat
+            </span>
+            <SegmentedControl
+              aria-label="Repeat"
+              options={REPEAT_OPTIONS}
+              value={repeatMode}
+              onChange={setRepeatMode}
+              className="self-start"
+            />
+            <p className="text-foreground-secondary text-sm select-none">
+              What happens when the queue reaches its last track. Radio and live
+              streams ignore this.
+            </p>
+          </div>
+        </div>
+      </SectionShell>
+      <SectionShell title="Skipping" className={SECTION_DIVIDER}>
+        <SkipDurationField />
+      </SectionShell>
+      {signedIn ? (
+        <SectionShell title="My radio stations" className={SECTION_DIVIDER}>
+          <MyRadioStations />
+        </SectionShell>
+      ) : null}
+    </div>
+  );
+}

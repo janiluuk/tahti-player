@@ -15,6 +15,7 @@ import { Button } from '../../Button';
 import { Tooltip } from '../../Tooltip';
 import { useTrackTableContext } from '../TrackTableContext';
 import { ContextMenuWrapperProps } from '../types';
+import { narrowHiddenClass } from '../utils/columns';
 
 type ActionsCellMeta = {
   displayQueueControls?: boolean;
@@ -25,6 +26,7 @@ type ActionsCellMeta = {
   canEditTrack?: (track: Track) => boolean;
   canOpenDetail?: (track: Track) => boolean;
   ContextMenuWrapper?: FC<ContextMenuWrapperProps>;
+  actionsWidthClass?: string;
 };
 
 type IconButtonProps = {
@@ -50,8 +52,12 @@ const EditButton: FC<IconButtonProps> = ({ label, onClick }) => (
   </Tooltip>
 );
 
-const OpenDetailButton: FC<IconButtonProps> = ({ label, onClick }) => (
-  <Tooltip content={label} side="top">
+const OpenDetailButton: FC<IconButtonProps & { className?: string }> = ({
+  label,
+  onClick,
+  className,
+}) => (
+  <Tooltip content={label} side="top" wrapperClassName={className}>
     <Button
       data-testid="open-track-detail-button"
       size="icon-sm"
@@ -72,6 +78,7 @@ type AddToQueueButtonProps = {
   label: string;
   queued: boolean;
   onClick: () => void;
+  className?: string;
 };
 
 const QUEUE_FEEDBACK_MS = 700;
@@ -80,6 +87,7 @@ const AddToQueueButton: FC<AddToQueueButtonProps> = ({
   label,
   queued,
   onClick,
+  className,
 }) => {
   const [flashing, setFlashing] = useState(false);
 
@@ -95,7 +103,7 @@ const AddToQueueButton: FC<AddToQueueButtonProps> = ({
   }, [flashing]);
 
   return (
-    <Tooltip content={label} side="top">
+    <Tooltip content={label} side="top" wrapperClassName={className}>
       <Button
         data-testid="add-to-queue-button"
         size="icon-sm"
@@ -104,7 +112,7 @@ const AddToQueueButton: FC<AddToQueueButtonProps> = ({
         className={cn(
           'size-7 opacity-100 transition-colors [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100',
           (queued || flashing) &&
-            'bg-primary/20 text-primary opacity-100! motion-safe:animate-pulse',
+            'bg-primary/20 text-primary-strong opacity-100! motion-safe:animate-pulse',
         )}
         onClick={(event) => {
           event.stopPropagation();
@@ -155,7 +163,7 @@ export const ActionsCell = <T extends Track>({
   table,
 }: CellContext<T, unknown>) => {
   const meta = table.options.meta as ActionsCellMeta | undefined;
-  const { labels } = useTrackTableContext<T>();
+  const { labels, actions } = useTrackTableContext<T>();
   const track = row.original;
   const showControls = meta?.displayQueueControls;
   const ContextMenuWrapper = meta?.ContextMenuWrapper;
@@ -170,17 +178,18 @@ export const ActionsCell = <T extends Track>({
   const isQueued = meta?.isTrackQueued?.(track) ?? false;
 
   if (!hasActions) {
-    return <td className="w-28" />;
+    return <td className={meta?.actionsWidthClass} />;
   }
 
   return (
-    <td className="w-28 px-1">
+    <td className={cn(meta?.actionsWidthClass, 'px-1')}>
       <div className="flex items-center justify-end gap-1">
         {showControls && hasAddToQueue && (
           <AddToQueueButton
             label={isQueued ? labels.inQueue : labels.addToQueue}
             queued={isQueued}
             onClick={() => meta?.onAddToQueue?.(track)}
+            className={hasContextMenu ? narrowHiddenClass : undefined}
           />
         )}
         {canEdit && (
@@ -198,6 +207,7 @@ export const ActionsCell = <T extends Track>({
           <OpenDetailButton
             label="Open track"
             onClick={() => meta?.onOpenDetail?.(track)}
+            className={actions.onOpenDetails ? narrowHiddenClass : undefined}
           />
         )}
       </div>

@@ -3,6 +3,7 @@ import {
   CircleDotIcon,
   Clock3Icon,
   ListFilterIcon,
+  ReplyIcon,
   SearchIcon,
   SendIcon,
 } from 'lucide-react';
@@ -19,7 +20,11 @@ import {
   type AdminSupportTicket,
   type AdminSupportTicketDetail,
 } from '../../../../api/admin';
-import { PageLoading } from '../../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { ModerationTabs } from '../ModerationTabs';
 
@@ -36,8 +41,11 @@ function statusBadge(status: AdminSupportStatus): {
   return { label: 'Resolved', color: 'green' };
 }
 
-const FILTERS: { id: AdminSupportStatus | 'all'; label: string }[] = [
+type SupportFilter = AdminSupportStatus | 'all' | 'awaiting';
+
+const FILTERS: { id: SupportFilter; label: string }[] = [
   { id: 'all', label: 'All' },
+  { id: 'awaiting', label: 'Needs reply' },
   { id: 'OPEN', label: 'Open' },
   { id: 'IN_PROGRESS', label: 'In progress' },
   { id: 'RESOLVED', label: 'Resolved' },
@@ -45,6 +53,7 @@ const FILTERS: { id: AdminSupportStatus | 'all'; label: string }[] = [
 
 const FILTER_TAB_ICONS = {
   all: ListFilterIcon,
+  awaiting: ReplyIcon,
   OPEN: CircleDotIcon,
   IN_PROGRESS: Clock3Icon,
   RESOLVED: CheckIcon,
@@ -63,10 +72,12 @@ function requesterLabel(t: {
  * (tahti-org 02beac67); a board reply is `kind: 'MESSAGE'`, an automatic
  * transition record is `kind: 'STATUS_CHANGE'`. */
 export function SupportTab() {
-  const [filter, setFilter] = useState<AdminSupportStatus | 'all'>('OPEN');
+  const [filter, setFilter] = useState<SupportFilter>('OPEN');
   const [query, setQuery] = useState('');
   const [tickets, setTickets] = useState<AdminSupportTicket[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detail, setDetail] = useState<AdminSupportTicketDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -74,11 +85,20 @@ export function SupportTab() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const applyTicketPatch = (updated: AdminSupportTicketDetail) => {
+  const applyTicketPatch = (
+    updated: AdminSupportTicketDetail,
+    answered = updated.status === 'RESOLVED',
+  ) => {
     setDetail(updated);
     setTickets((current) =>
       current.map((row) =>
-        row.id === updated.id ? { ...row, status: updated.status } : row,
+        row.id === updated.id
+          ? {
+              ...row,
+              status: updated.status,
+              awaitingReply: answered ? false : row.awaitingReply,
+            }
+          : row,
       ),
     );
   };
@@ -89,13 +109,18 @@ export function SupportTab() {
     const handle = setTimeout(
       () => {
         void fetchAdminSupportTickets({
-          status: filter === 'all' ? undefined : filter,
+          status:
+            filter === 'all' || filter === 'awaiting' ? undefined : filter,
+          awaitingReply: filter === 'awaiting',
           q: query.trim() || undefined,
         }).then((result) => {
           if (cancelled) {
             return;
           }
           setTickets(result.data);
+          setLoadError(
+            result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+          );
           setSelectedId((current) => {
             if (current && result.data.some((t) => t.id === current)) {
               return current;
@@ -111,7 +136,7 @@ export function SupportTab() {
       cancelled = true;
       clearTimeout(handle);
     };
-  }, [filter, query]);
+  }, [filter, query, attempt]);
 
   useEffect(() => {
     setMsg(null);
@@ -154,7 +179,7 @@ export function SupportTab() {
         setMsg(r.error);
         return;
       }
-      applyTicketPatch(r.data);
+      applyTicketPatch(r.data, true);
       setReply('');
     });
   };
@@ -169,7 +194,7 @@ export function SupportTab() {
             icon: FILTER_TAB_ICONS[item.id],
           }))}
           ariaLabel="Support ticket status"
-          onChange={(id) => setFilter(id as AdminSupportStatus | 'all')}
+          onChange={(id) => setFilter(id as SupportFilter)}
           className="min-w-0 flex-1"
         />
         <div className="w-full shrink-0 xl:max-w-sm">
@@ -184,40 +209,68 @@ export function SupportTab() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-[20rem_1fr]">
+      <div className="grid gap-4 lg:grid-cols-[20rem_minmax(0,1fr)]">
         <StudioPanel className="max-h-[32rem] overflow-y-auto p-0 sm:p-0">
           {loading ? (
             <PageLoading label="Loading support tickets…" />
+          ) : loadError && tickets.length === 0 ? (
+            <PageError
+              title="Could not load support tickets"
+              description={loadError}
+              onRetry={() => setAttempt((n) => n + 1)}
+            />
           ) : tickets.length === 0 ? (
-            <p className="text-foreground-secondary p-4 text-center text-sm">
-              No tickets in this view.
-            </p>
+            <PageEmpty
+              title="No tickets in this view"
+              action={
+                query.trim() ? (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setQuery('')}
+                  >
+                    Clear search
+                  </Button>
+                ) : undefined
+              }
+            />
           ) : (
             <ul className="divide-border divide-y">
               {tickets.map((t) => {
                 const badge = statusBadge(t.status);
                 return (
                   <li key={t.id}>
-                    <button
-                      type="button"
+                    <Button
+                      variant="text"
+                      size="flexible"
                       onClick={() => setSelectedId(t.id)}
-                      className={`w-full px-3 py-2.5 text-left text-sm ${
+                      className={`block w-full rounded-none px-3 py-2.5 text-left text-sm font-normal whitespace-normal active:scale-100 ${
                         selectedId === t.id ? 'bg-background-secondary' : ''
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <span className="min-w-0 truncate font-medium">
+                        <span
+                          className="line-clamp-2 min-w-0 font-medium break-words"
+                          title={t.subject}
+                        >
                           {t.subject}
                         </span>
-                        <Badge variant="pill" color={badge.color}>
-                          {badge.label}
-                        </Badge>
+                        <span className="flex shrink-0 items-center gap-1.5">
+                          {t.awaitingReply ? (
+                            <Badge variant="pill" color="red">
+                              Needs reply
+                            </Badge>
+                          ) : null}
+                          <Badge variant="pill" color={badge.color}>
+                            {badge.label}
+                          </Badge>
+                        </span>
                       </div>
                       <div className="text-foreground-secondary truncate text-xs">
                         {requesterLabel(t)} · {t.category} ·{' '}
                         {new Date(t.createdAt).toLocaleDateString()}
                       </div>
-                    </button>
+                    </Button>
                   </li>
                 );
               })}
@@ -225,7 +278,7 @@ export function SupportTab() {
           )}
         </StudioPanel>
 
-        <StudioPanel className="flex min-h-[24rem] flex-col p-0 sm:p-0">
+        <StudioPanel className="flex min-h-[24rem] min-w-0 flex-col p-0 sm:p-0">
           {!selectedId ? (
             <p className="text-foreground-secondary p-4 text-sm">
               Select a ticket.
@@ -235,9 +288,9 @@ export function SupportTab() {
           ) : (
             <>
               <div className="border-border flex flex-wrap items-start justify-between gap-3 border-b px-4 py-3">
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 basis-56">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-sm font-semibold">{detail.subject}</h3>
+                    <h2 className="text-sm font-semibold">{detail.subject}</h2>
                     <Badge
                       variant="pill"
                       color={statusBadge(detail.status).color}
@@ -250,9 +303,10 @@ export function SupportTab() {
                     {new Date(detail.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="flex shrink-0 flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1.5">
                   {detail.status === 'OPEN' && (
                     <Button
+                      className="gap-1.5"
                       size="sm"
                       variant="secondary"
                       disabled={busy}
@@ -264,6 +318,7 @@ export function SupportTab() {
                   )}
                   {detail.status !== 'RESOLVED' ? (
                     <Button
+                      className="gap-1.5"
                       size="sm"
                       disabled={busy}
                       onClick={() => setStatus('RESOLVED')}
@@ -273,6 +328,7 @@ export function SupportTab() {
                     </Button>
                   ) : (
                     <Button
+                      className="gap-1.5"
                       size="sm"
                       variant="text"
                       disabled={busy}
@@ -333,6 +389,7 @@ export function SupportTab() {
                     }}
                   />
                   <Button
+                    className="gap-1.5"
                     size="sm"
                     disabled={busy || !reply.trim()}
                     onClick={sendReply}

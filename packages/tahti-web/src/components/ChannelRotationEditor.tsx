@@ -5,6 +5,7 @@ import { Box, Button, Select, Tooltip } from '@tahti-player/ui';
 
 import type { ProgrammeItem } from '../api/studio-extras';
 import { cn } from '../lib/cn';
+import { PageEmpty } from './PageStates';
 
 const SECONDS_PER_MINUTE = 60;
 
@@ -128,17 +129,10 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
       ) : null}
 
       {items.length === 0 ? (
-        <div className="border-border rounded-lg border border-dashed px-4 py-8 text-center">
-          <ListMusicIcon
-            size={28}
-            className="text-foreground-secondary mx-auto opacity-50"
-            aria-hidden
-          />
-          <p className="mt-2 text-sm font-medium">Rotation is empty</p>
-          <p className="text-foreground-secondary mt-1 text-xs">
-            Choose a playlist above or add a ready archive track.
-          </p>
-        </div>
+        <PageEmpty
+          title="Rotation is empty"
+          description="Choose a playlist above or add a ready archive track."
+        />
       ) : (
         <ol className="border-border divide-border divide-y overflow-hidden rounded-lg border">
           {items.map((item, index) => {
@@ -198,7 +192,7 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
                       {item.title}
                     </div>
                     {isCurrent ? (
-                      <span className="text-primary shrink-0 text-[10px] font-semibold tracking-wide uppercase">
+                      <span className="text-primary-strong shrink-0 text-[10px] font-semibold tracking-wide uppercase">
                         Now
                       </span>
                     ) : null}

@@ -1,0 +1,152 @@
+import type { FetchMeta } from '../client';
+import { getJson, mutate } from '../http';
+import { failMeta, isForceMock } from '../mode';
+
+// ── Content reports ─────────────────────────────────────────────────────────
+
+export type AdminContentReportStatus =
+  'OPEN' | 'REVIEWING' | 'ACTIONED' | 'DISMISSED';
+
+export type AdminContentReportRow = {
+  id: string;
+  targetType:
+    | 'SOUND_ITEM'
+    | 'RELEASE'
+    | 'CHANNEL'
+    | 'COLLECTION'
+    | 'MOTION_COMMENT'
+    | 'COMMENT';
+  targetId: string;
+  /** Title of the reported thing, or who wrote the comment. Null once it's gone. */
+  targetLabel?: string | null;
+  targetUrl?: string | null;
+  /** The reported comment's text. */
+  targetExcerpt?: string | null;
+  reason: 'COPYRIGHT' | 'HARASSMENT' | 'SPAM' | 'ILLEGAL_CONTENT' | 'OTHER';
+  details: string | null;
+  status: AdminContentReportStatus;
+  resolvedByDisplayName: string | null;
+  resolutionNote: string | null;
+  createdAt: string;
+};
+
+function mockContentReports(): AdminContentReportRow[] {
+  return [
+    {
+      id: 'rep-1',
+      targetType: 'SOUND_ITEM',
+      targetId: 'arch-sub-1',
+      targetLabel: 'Night Drive',
+      targetUrl: '/t/arch-sub-1',
+      targetExcerpt: null,
+      reason: 'COPYRIGHT',
+      details: 'Uses an unlicensed sample around 1:40.',
+      status: 'OPEN',
+      resolvedByDisplayName: null,
+      resolutionNote: null,
+      createdAt: '2026-08-15T14:00:00.000Z',
+    },
+    {
+      id: 'rep-4',
+      targetType: 'COMMENT',
+      targetId: 'comment-mock-7',
+      targetLabel: 'Comment by @aurora-fan',
+      targetUrl: '/t/arch-sub-1',
+      targetExcerpt: 'Nobody wants to hear this, quit already.',
+      reason: 'HARASSMENT',
+      details: null,
+      status: 'OPEN',
+      resolvedByDisplayName: null,
+      resolutionNote: null,
+      createdAt: '2026-08-15T09:00:00.000Z',
+    },
+    {
+      id: 'rep-2',
+      targetType: 'CHANNEL',
+      targetId: 'kaiku-collective',
+      targetLabel: 'kaiku-collective',
+      targetUrl: '/channel/kaiku-collective',
+      targetExcerpt: null,
+      reason: 'SPAM',
+      details: null,
+      status: 'REVIEWING',
+      resolvedByDisplayName: null,
+      resolutionNote: null,
+      createdAt: '2026-08-14T11:00:00.000Z',
+    },
+    {
+      id: 'rep-3',
+      targetType: 'MOTION_COMMENT',
+      targetId: 'motion-3-comment-9',
+      targetLabel: null,
+      targetUrl: null,
+      targetExcerpt: null,
+      reason: 'HARASSMENT',
+      details: 'Personal attack in the comment thread.',
+      status: 'ACTIONED',
+      resolvedByDisplayName: 'Board — Aino',
+      resolutionNote: 'Comment removed, member warned.',
+      createdAt: '2026-08-10T08:00:00.000Z',
+    },
+  ];
+}
+
+let mockContentReportsState: AdminContentReportRow[] | null = null;
+
+export async function fetchAdminContentReports(
+  status?: AdminContentReportStatus,
+  targetType?: AdminContentReportRow['targetType'],
+): Promise<{ data: AdminContentReportRow[]; meta: FetchMeta }> {
+  if (isForceMock()) {
+    if (!mockContentReportsState) {
+      mockContentReportsState = mockContentReports();
+    }
+    const data = mockContentReportsState.filter(
+      (r) =>
+        (!status || r.status === status) &&
+        (!targetType || r.targetType === targetType),
+    );
+    return { data, meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
+  }
+  try {
+    const qs = new URLSearchParams({ limit: '50' });
+    if (status) {
+      qs.set('status', status);
+    }
+    if (targetType) {
+      qs.set('targetType', targetType);
+    }
+    const data = await getJson<{ reports: AdminContentReportRow[] }>(
+      `/api/admin/content-reports?${qs.toString()}`,
+    );
+    return { data: data.reports, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
+
+export function resolveContentReport(
+  id: string,
+  status: 'REVIEWING' | 'ACTIONED' | 'DISMISSED',
+  note?: string,
+) {
+  if (isForceMock()) {
+    const row = (mockContentReportsState ?? mockContentReports()).find(
+      (r) => r.id === id,
+    );
+    if (row) {
+      row.status = status;
+      row.resolutionNote = note ?? row.resolutionNote;
+      row.resolvedByDisplayName = 'You';
+    }
+    return Promise.resolve({ ok: true } as const);
+  }
+  return mutate(
+    `/api/admin/content-reports/${encodeURIComponent(id)}`,
+    'PATCH',
+    {
+      status,
+      resolutionNote: note,
+    },
+  );
+}

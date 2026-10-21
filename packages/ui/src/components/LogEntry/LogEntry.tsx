@@ -1,10 +1,10 @@
 import { cva } from 'class-variance-authority';
 import { ChevronRight } from 'lucide-react';
-import { DateTime } from 'luxon';
 import { ComponentProps, FC, memo } from 'react';
 
 import { useCollapsibleText } from '../../hooks';
 import { cn } from '../../utils';
+import { formatClockTime } from '../../utils/time';
 import { CopyButton } from '../CopyButton';
 
 export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error';
@@ -49,7 +49,7 @@ const levelBorderVariants = cva('border-l-[3px]', {
 });
 
 const sourceChipVariants = cva(
-  'inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium',
+  'block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium',
   {
     variants: {
       type: {
@@ -82,9 +82,7 @@ const LogEntryImpl: FC<LogEntryProps> = ({
   onClick,
   ...props
 }) => {
-  const formattedTime = DateTime.fromJSDate(entry.timestamp).toFormat(
-    'HH:mm:ss.SSS',
-  );
+  const formattedTime = formatClockTime(entry.timestamp);
 
   const displayLabel = entry.source.scope || entry.target;
 
@@ -97,7 +95,7 @@ const LogEntryImpl: FC<LogEntryProps> = ({
   return (
     <div
       className={cn(
-        'group border-border/50 relative grid grid-cols-[auto_auto_auto_auto_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm',
+        'group border-border/50 relative grid grid-cols-[auto_auto_auto_minmax(0,auto)_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm',
         levelBorderVariants({ level: entry.level }),
         index !== undefined && index % 2 === 1 ? 'bg-foreground/[0.03]' : '',
         onEntryClick && 'cursor-pointer',
@@ -176,7 +174,7 @@ const LogEntryImpl: FC<LogEntryProps> = ({
         ))}
       <span
         data-testid="log-message"
-        className="text-foreground break-all whitespace-pre-wrap"
+        className="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
       >
         {isExpanded ? entry.message : displayedText}
       </span>

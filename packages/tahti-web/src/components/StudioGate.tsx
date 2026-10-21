@@ -1,23 +1,30 @@
 import { LayoutDashboard, Lock } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button, EmptyState } from '@tahti-player/ui';
+import { Button } from '@tahti-player/ui';
 
-import { hasAccountRole } from '../lib/accountRoles';
+import { hasStudioAccess } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useChannelSetupModalStore } from '../stores/channelSetupModalStore';
-import { PageLoading } from './PageStates';
+import { PageGate, PageLoading } from './PageStates';
 
 type Props = {
   children: ReactNode;
   /** When true, require an artist channel (archive/upload). */
   requireChannel?: boolean;
+  /** Inside a page that already has its own `h1`, such as a Library tab. */
+  embedded?: boolean;
 };
 
-export function StudioGate({ children, requireChannel = true }: Props) {
+export function StudioGate({
+  children,
+  requireChannel = true,
+  embedded = false,
+}: Props) {
   const user = useAuthStore((s) => s.user);
   const hydrated = useAuthStore((s) => s.hydrated);
+  const profileLoaded = useAuthStore((s) => s.profileLoaded);
   const openAuth = useAuthModalStore((s) => s.open);
   const openChannelSetup = useChannelSetupModalStore((s) => s.open);
 
@@ -27,7 +34,8 @@ export function StudioGate({ children, requireChannel = true }: Props) {
 
   if (!user) {
     return (
-      <EmptyState
+      <PageGate
+        page={embedded ? null : 'Studio'}
         icon={<Lock size={40} className="opacity-40" />}
         title="Studio"
         description="Sign in to manage your catalog, uploads, and audio editor."
@@ -36,28 +44,39 @@ export function StudioGate({ children, requireChannel = true }: Props) {
     );
   }
 
-  if (!hasAccountRole(user, 'ARTIST') && !hasAccountRole(user, 'BOARD')) {
+  if (!hasStudioAccess(user) && !profileLoaded) {
+    return <PageLoading label="Loading your account…" />;
+  }
+
+  if (!hasStudioAccess(user)) {
     return (
-      <EmptyState
-        icon={<Lock size={40} className="opacity-40" />}
-        title="Artist access required"
-        description={`Signed in as @${user.username}, but this account does not have artist access.`}
+      <PageGate
+        page={embedded ? null : 'Studio'}
+        icon={<LayoutDashboard size={40} className="opacity-40" />}
+        title="Studio is for artists"
+        description={`@${user.username} is a listener account. Create your channel to upload, release and broadcast. Listening needs none of it.`}
         action={
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => openAuth('login')}
-          >
-            Switch account
-          </Button>
+          <div className="flex flex-wrap justify-center gap-2">
+            <Button size="sm" onClick={openChannelSetup}>
+              Create your channel
+            </Button>
+            <Button size="sm" variant="text" onClick={() => openAuth('login')}>
+              Switch account
+            </Button>
+          </div>
         }
       />
     );
   }
 
+  if (requireChannel && !user.channel && !profileLoaded) {
+    return <PageLoading label="Loading your channel…" />;
+  }
+
   if (requireChannel && !user.channel) {
     return (
-      <EmptyState
+      <PageGate
+        page={embedded ? null : 'Studio'}
         icon={<LayoutDashboard size={40} className="opacity-40" />}
         title="Artist channel required"
         description={`Signed in as @${user.username}, but this account has no channel yet.`}

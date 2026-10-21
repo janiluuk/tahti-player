@@ -1,3 +1,5 @@
+import { Input } from '@tahti-player/ui';
+
 import {
   DEFAULT_COLOR_SCHEME,
   type ColorScheme,
@@ -22,13 +24,13 @@ export function AccentPairFields({ scheme, onChange }: Props) {
           key={key}
           className="border-border bg-background-secondary/40 flex items-center gap-2 rounded-lg border p-2 text-sm"
         >
-          <input
+          <Input
             type="color"
             value={scheme[key] ?? DEFAULT_COLOR_SCHEME[key]}
             onChange={(event) =>
               onChange({ ...scheme, [key]: event.target.value })
             }
-            className="h-8 w-9 cursor-pointer rounded border-0 bg-transparent"
+            className="h-8 w-9"
             aria-label={label}
           />
           <span className="min-w-0 truncate text-xs font-semibold">

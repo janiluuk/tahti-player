@@ -4,6 +4,7 @@ import type { PublicProfileRelease, TahtiPlayable } from '../api/types';
 import { formatDuration } from '../lib/playableToTrack';
 import { usePlayerStore } from '../stores/playerStore';
 import { MediaIconActions, playQueueFavoriteActions } from './MediaIconActions';
+import { PageEmpty } from './PageStates';
 
 export function releaseTrackPlayable(
   track: NonNullable<PublicProfileRelease['tracks']>[number],
@@ -94,9 +95,7 @@ export function ReleaseTracklistDialog({
           </div>
 
           {tracks.length === 0 ? (
-            <p className="text-foreground-secondary mt-4 text-sm">
-              No tracklist available for this release.
-            </p>
+            <PageEmpty title="No tracklist for this release" />
           ) : (
             <ul className="divide-border mt-4 flex max-h-96 flex-col divide-y overflow-y-auto">
               {tracks.map((track) => {
@@ -123,7 +122,9 @@ export function ReleaseTracklistDialog({
                   >
                     <span
                       className={`min-w-0 flex-1 truncate text-sm ${
-                        isPlaying ? 'text-accent-green font-semibold' : ''
+                        isPlaying
+                          ? 'text-accent-green-strong font-semibold'
+                          : ''
                       }`}
                     >
                       {track.title}

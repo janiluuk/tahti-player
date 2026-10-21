@@ -14,11 +14,11 @@ exports[`LogViewer > (Snapshot) renders empty state 1`] = `
         class="flex w-full flex-col gap-2"
       >
         <div
-          class="border-border inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-black has-[:focus-visible]:ring-offset-2"
+          class="border-border has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-background inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2"
         >
           <input
             aria-label="Search logs"
-            class="border-border text-foreground placeholder:text-foreground-secondary w-full px-3 transition-colors focus-visible:ring-black focus-visible:outline-none bg-background-input h-10 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-10 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
             data-headlessui-state=""
             id="input-:r6:"
             placeholder="Search logs..."
@@ -56,62 +56,57 @@ exports[`LogViewer > (Snapshot) renders empty state 1`] = `
       </div>
     </div>
     <div
-      class="absolute"
+      class="relative shrink-0"
       data-headlessui-state=""
     >
-      <div
-        aria-expanded="false"
-        class="cursor-pointer"
-        data-headlessui-state=""
-        id="headlessui-popover-button-:ra:"
-      >
-        <div>
-          <button
-            aria-label="Date range"
-            class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
-            data-headlessui-state=""
-            data-testid="log-date-range-toggle"
-            type="button"
+      <div>
+        <button
+          aria-expanded="false"
+          aria-label="Date range"
+          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
+          data-headlessui-state=""
+          data-testid="log-date-range-toggle"
+          id="headlessui-popover-button-:ra:"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-calendar size-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              aria-hidden="true"
-              class="lucide lucide-calendar size-4"
-              fill="none"
-              height="24"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-              width="24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8 2v4"
-              />
-              <path
-                d="M16 2v4"
-              />
-              <rect
-                height="18"
-                rx="2"
-                width="18"
-                x="3"
-                y="4"
-              />
-              <path
-                d="M3 10h18"
-              />
-            </svg>
-          </button>
-        </div>
+            <path
+              d="M8 2v4"
+            />
+            <path
+              d="M16 2v4"
+            />
+            <rect
+              height="18"
+              rx="2"
+              width="18"
+              x="3"
+              y="4"
+            />
+            <path
+              d="M3 10h18"
+            />
+          </svg>
+        </button>
       </div>
     </div>
     <div
       class="flex gap-2"
     >
       <button
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
         data-headlessui-state=""
         type="button"
       >
@@ -147,7 +142,7 @@ exports[`LogViewer > (Snapshot) renders empty state 1`] = `
         Clear
       </button>
       <button
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
         data-headlessui-state=""
         type="button"
       >
@@ -177,7 +172,7 @@ exports[`LogViewer > (Snapshot) renders empty state 1`] = `
         Export
       </button>
       <button
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
         data-headlessui-state=""
         type="button"
       >
@@ -221,7 +216,7 @@ exports[`LogViewer > (Snapshot) renders empty state 1`] = `
       >
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -229,7 +224,7 @@ exports[`LogViewer > (Snapshot) renders empty state 1`] = `
         </button>
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -237,7 +232,7 @@ exports[`LogViewer > (Snapshot) renders empty state 1`] = `
         </button>
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -245,7 +240,7 @@ exports[`LogViewer > (Snapshot) renders empty state 1`] = `
         </button>
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -253,7 +248,7 @@ exports[`LogViewer > (Snapshot) renders empty state 1`] = `
         </button>
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -296,11 +291,11 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         class="flex w-full flex-col gap-2"
       >
         <div
-          class="border-border inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-black has-[:focus-visible]:ring-offset-2"
+          class="border-border has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-background inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2"
         >
           <input
             aria-label="Search logs"
-            class="border-border text-foreground placeholder:text-foreground-secondary w-full px-3 transition-colors focus-visible:ring-black focus-visible:outline-none bg-background-input h-10 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-10 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
             data-headlessui-state=""
             id="input-:r0:"
             placeholder="Search logs..."
@@ -338,62 +333,57 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
       </div>
     </div>
     <div
-      class="absolute"
+      class="relative shrink-0"
       data-headlessui-state=""
     >
-      <div
-        aria-expanded="false"
-        class="cursor-pointer"
-        data-headlessui-state=""
-        id="headlessui-popover-button-:r4:"
-      >
-        <div>
-          <button
-            aria-label="Date range"
-            class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
-            data-headlessui-state=""
-            data-testid="log-date-range-toggle"
-            type="button"
+      <div>
+        <button
+          aria-expanded="false"
+          aria-label="Date range"
+          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
+          data-headlessui-state=""
+          data-testid="log-date-range-toggle"
+          id="headlessui-popover-button-:r4:"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-calendar size-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              aria-hidden="true"
-              class="lucide lucide-calendar size-4"
-              fill="none"
-              height="24"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-              width="24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8 2v4"
-              />
-              <path
-                d="M16 2v4"
-              />
-              <rect
-                height="18"
-                rx="2"
-                width="18"
-                x="3"
-                y="4"
-              />
-              <path
-                d="M3 10h18"
-              />
-            </svg>
-          </button>
-        </div>
+            <path
+              d="M8 2v4"
+            />
+            <path
+              d="M16 2v4"
+            />
+            <rect
+              height="18"
+              rx="2"
+              width="18"
+              x="3"
+              y="4"
+            />
+            <path
+              d="M3 10h18"
+            />
+          </svg>
+        </button>
       </div>
     </div>
     <div
       class="flex gap-2"
     >
       <button
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
         data-headlessui-state=""
         type="button"
       >
@@ -429,7 +419,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         Clear
       </button>
       <button
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
         data-headlessui-state=""
         type="button"
       >
@@ -459,7 +449,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         Export
       </button>
       <button
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
         data-headlessui-state=""
         type="button"
       >
@@ -503,7 +493,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
       >
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -511,7 +501,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         </button>
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -519,7 +509,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         </button>
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -527,7 +517,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         </button>
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -535,7 +525,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         </button>
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -559,7 +549,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
       >
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -567,7 +557,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         </button>
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -575,7 +565,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         </button>
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -583,7 +573,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         </button>
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -591,7 +581,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         </button>
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -599,7 +589,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         </button>
         <button
           aria-checked="false"
-          class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
           role="checkbox"
           type="button"
         >
@@ -628,7 +618,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         style="transform: translateY(0px);"
       >
         <div
-          class="group border-border/50 relative grid grid-cols-[auto_auto_auto_auto_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-red cursor-pointer"
+          class="group border-border/50 relative grid grid-cols-[auto_auto_auto_minmax(0,auto)_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-red cursor-pointer"
         >
           <div
             class="flex w-4 items-center justify-center pt-0.5"
@@ -651,14 +641,14 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             ERROR
           </button>
           <button
-            class="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
+            class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
             data-testid="log-scope"
             type="button"
           >
             plugins
           </button>
           <span
-            class="text-foreground break-all whitespace-pre-wrap"
+            class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
             data-testid="log-message"
           >
             Plugin failed to load
@@ -670,7 +660,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             <div>
               <button
                 aria-label="Copy"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-headlessui-state=""
                 data-testid="log-copy-button"
                 type="button"
@@ -711,7 +701,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         style="transform: translateY(32px);"
       >
         <div
-          class="group border-border/50 relative grid grid-cols-[auto_auto_auto_auto_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-yellow bg-foreground/[0.03] cursor-pointer"
+          class="group border-border/50 relative grid grid-cols-[auto_auto_auto_minmax(0,auto)_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-yellow bg-foreground/[0.03] cursor-pointer"
         >
           <div
             class="flex w-4 items-center justify-center pt-0.5"
@@ -734,14 +724,14 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             WARN
           </button>
           <button
-            class="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
+            class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
             data-testid="log-scope"
             type="button"
           >
             http
           </button>
           <span
-            class="text-foreground break-all whitespace-pre-wrap"
+            class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
             data-testid="log-message"
           >
             Rate limited
@@ -753,7 +743,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             <div>
               <button
                 aria-label="Copy"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-headlessui-state=""
                 data-testid="log-copy-button"
                 type="button"
@@ -794,7 +784,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         style="transform: translateY(64px);"
       >
         <div
-          class="group border-border/50 relative grid grid-cols-[auto_auto_auto_auto_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-cyan cursor-pointer"
+          class="group border-border/50 relative grid grid-cols-[auto_auto_auto_minmax(0,auto)_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-cyan cursor-pointer"
         >
           <div
             class="flex w-4 items-center justify-center pt-0.5"
@@ -817,14 +807,14 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             INFO
           </button>
           <button
-            class="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
+            class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
             data-testid="log-scope"
             type="button"
           >
             app
           </button>
           <span
-            class="text-foreground break-all whitespace-pre-wrap"
+            class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
             data-testid="log-message"
           >
             Application started
@@ -836,7 +826,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             <div>
               <button
                 aria-label="Copy"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-headlessui-state=""
                 data-testid="log-copy-button"
                 type="button"
@@ -877,7 +867,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         style="transform: translateY(96px);"
       >
         <div
-          class="group border-border/50 relative grid grid-cols-[auto_auto_auto_auto_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-purple bg-foreground/[0.03] cursor-pointer"
+          class="group border-border/50 relative grid grid-cols-[auto_auto_auto_minmax(0,auto)_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-purple bg-foreground/[0.03] cursor-pointer"
         >
           <div
             class="flex w-4 items-center justify-center pt-0.5"
@@ -900,14 +890,14 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             DEBUG
           </button>
           <button
-            class="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
+            class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
             data-testid="log-scope"
             type="button"
           >
             streaming
           </button>
           <span
-            class="text-foreground break-all whitespace-pre-wrap"
+            class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
             data-testid="log-message"
           >
             Resolving stream
@@ -919,7 +909,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             <div>
               <button
                 aria-label="Copy"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-headlessui-state=""
                 data-testid="log-copy-button"
                 type="button"
@@ -960,7 +950,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         style="transform: translateY(128px);"
       >
         <div
-          class="group border-border/50 relative grid grid-cols-[auto_auto_auto_auto_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-foreground/30 cursor-pointer"
+          class="group border-border/50 relative grid grid-cols-[auto_auto_auto_minmax(0,auto)_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-foreground/30 cursor-pointer"
         >
           <div
             class="flex w-4 items-center justify-center pt-0.5"
@@ -983,14 +973,14 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             TRACE
           </button>
           <button
-            class="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
+            class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
             data-testid="log-scope"
             type="button"
           >
             playback
           </button>
           <span
-            class="text-foreground break-all whitespace-pre-wrap"
+            class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
             data-testid="log-message"
           >
             Buffer status
@@ -1002,7 +992,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             <div>
               <button
                 aria-label="Copy"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-headlessui-state=""
                 data-testid="log-copy-button"
                 type="button"
@@ -1043,7 +1033,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         style="transform: translateY(160px);"
       >
         <div
-          class="group border-border/50 relative grid grid-cols-[auto_auto_auto_auto_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-cyan bg-foreground/[0.03] cursor-pointer"
+          class="group border-border/50 relative grid grid-cols-[auto_auto_auto_minmax(0,auto)_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-cyan bg-foreground/[0.03] cursor-pointer"
         >
           <div
             class="flex w-4 items-center justify-center pt-0.5"
@@ -1066,14 +1056,14 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             INFO
           </button>
           <button
-            class="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium bg-accent-orange/50 text-accent-foreground cursor-pointer hover:opacity-80"
+            class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-accent-orange/50 text-accent-foreground cursor-pointer hover:opacity-80"
             data-testid="log-scope"
             type="button"
           >
             youtube-music
           </button>
           <span
-            class="text-foreground break-all whitespace-pre-wrap"
+            class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
             data-testid="log-message"
           >
             Searching...
@@ -1085,7 +1075,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             <div>
               <button
                 aria-label="Copy"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-headlessui-state=""
                 data-testid="log-copy-button"
                 type="button"

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
-import { Badge, Button } from '@tahti-player/ui';
+import { Badge, Button, ImageReveal, SegmentedControl } from '@tahti-player/ui';
 
 import {
   caseFlowchart,
@@ -11,10 +11,28 @@ import {
   type MapParity,
   type MapShot,
 } from '../content/mapScreens';
+import { downloadMapCommentsCsv } from '../lib/mapCommentsCsv';
 import { useMapNotesStore, type MapComment } from '../stores/mapNotesStore';
 import { MapCommentForm } from './MapCommentForm';
 import { MermaidDiagram } from './MermaidDiagram';
 import { NavigationStructureWidget } from './NavigationStructureWidget';
+
+type ShotTheme = 'dark' | 'light';
+
+const SHOT_THEME_OPTIONS = [
+  { id: 'dark', label: 'Dark' },
+  { id: 'light', label: 'Light' },
+] as const;
+
+const ShotThemeContext = createContext<ShotTheme>('dark');
+
+/** beta.tahti.live captures (`/map/nuclear/`) exist in both themes; the light
+ * one carries a `--light` suffix. Other shots only have one variant. */
+function themedShotImage(image: string, theme: ShotTheme): string {
+  return theme === 'light' && image.startsWith('/map/nuclear/')
+    ? image.replace(/\.png$/, '--light.png')
+    : image;
+}
 
 /** route (first alternative, no query/hash) -> case id, for turning a
  * `goesTo` target into a jump-to-card link when it lands on a documented
@@ -44,7 +62,7 @@ function ScreenNavigation({ c }: { c: MapCase }) {
         className="border-border bg-background border-t px-5 py-3 text-sm"
         role="note"
       >
-        <span className="text-accent-orange font-semibold">
+        <span className="text-accent-orange-strong font-semibold">
           Navigation gap:{' '}
         </span>
         no verified in-page actions or outbound links were found for this screen
@@ -80,7 +98,7 @@ function ScreenNavigation({ c }: { c: MapCase }) {
                     {targetCaseId ? (
                       <a
                         href={`#case-${targetCaseId}`}
-                        className="text-primary underline-offset-2 hover:underline"
+                        className="text-primary-strong underline-offset-2 hover:underline"
                       >
                         {link.label}
                       </a>
@@ -104,6 +122,7 @@ function ScreenNavigation({ c }: { c: MapCase }) {
         <MermaidDiagram
           key={c.id}
           chart={caseFlowchart(c)}
+          label={`${c.title} navigation flow`}
           className="mt-1.5"
         />
         <MapCommentForm
@@ -119,84 +138,22 @@ function ScreenNavigation({ c }: { c: MapCase }) {
   );
 }
 
-function csvCell(value: string): string {
-  return `"${value.replace(/"/g, '""')}"`;
-}
-
-/** Flat id → title/viewName lookup so the export can label rows without a note. */
-function caseLookup(): Record<string, { title: string; viewName: string }> {
-  const map: Record<string, { title: string; viewName: string }> = {};
-  for (const group of MAP_CASE_GROUPS) {
-    for (const c of group.cases) {
-      map[c.id] = { title: c.title, viewName: c.viewName };
-    }
-  }
-  return map;
-}
-
-function commentsToCsv(comments: MapComment[]): string {
-  const lookup = caseLookup();
-  const header = [
-    'kind',
-    'target_id',
-    'title',
-    'view_name',
-    'pack',
-    'feature',
-    'commentary',
-    'submitted_at',
-  ];
-  const rows = comments.map((c) => {
-    // 'flow' comments from ScreenNavigation are keyed by the same case id
-    // as 'case' comments (see caseFlowchart's per-screen comment box), so
-    // the same lookup resolves a view_name for both kinds. Flow comments
-    // from the top-level FlowGallery use flow-diagram ids instead, which
-    // this lookup has no entry for — view_name stays blank there, which is
-    // fine since `title` already carries a readable label.
-    const meta = lookup[c.targetId];
-    return [
-      c.kind,
-      c.targetId,
-      c.title,
-      meta?.viewName ?? '',
-      c.pack ?? '',
-      c.feature ?? '',
-      c.text,
-      c.submittedAt,
-    ];
-  });
-  return [header, ...rows]
-    .map((row) => row.map(csvCell).join(','))
-    .join('\r\n');
-}
-
 function ExportNotesButton() {
   const comments = useMapNotesStore((s) => s.comments);
   const count = comments.length;
-
-  const download = () => {
-    const csv = commentsToCsv(comments);
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const stamp = new Date().toISOString().slice(0, 10);
-    a.href = url;
-    a.download = `tahti-map-notes-${stamp}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  const openCount = comments.filter((c) => !c.resolvedAt).length;
 
   return (
     <Button
       size="sm"
       variant="secondary"
-      onClick={download}
+      onClick={() => downloadMapCommentsCsv(comments)}
       disabled={count === 0}
       aria-label="Export submitted comments as CSV"
       title={
         count === 0
           ? 'Submit a comment below to enable export'
-          : `Export ${count} comment${count === 1 ? '' : 's'} as CSV`
+          : `Export ${count} comment${count === 1 ? '' : 's'} (${openCount} open) as CSV for fixing`
       }
     >
       Export comments ({count}) as CSV
@@ -353,18 +310,28 @@ function ShotPane({
   viewName,
   action,
   absent,
+  storybookUrl,
 }: {
   label: 'Tahti' | 'beta.tahti.live';
   shot: MapShot;
   viewName: string;
   action: string;
   absent: boolean;
+  /** Deep link to this view's Storybook story — `new` (Nuclear/tahti-web)
+   * pane only, Storybook doesn't cover the legacy `old` chrome. */
+  storybookUrl?: string;
 }) {
-  const pending = !absent && !shot.image;
-  const screenshotUrl = shot.image
-    ? shot.image.startsWith('http')
-      ? shot.image
-      : `https://beta.tahti.live${shot.image}`
+  const shotTheme = useContext(ShotThemeContext);
+  const image = shot.image ? themedShotImage(shot.image, shotTheme) : undefined;
+  const [displaySrc, setDisplaySrc] = useState(image);
+  useEffect(() => {
+    setDisplaySrc(image);
+  }, [image]);
+  const pending = !absent && !image;
+  const screenshotUrl = image
+    ? image.startsWith('http')
+      ? image
+      : `https://beta.tahti.live${image}`
     : null;
   return (
     <div className="flex min-w-0 flex-1 flex-col">
@@ -414,32 +381,56 @@ function ShotPane({
             <span className="text-xs opacity-80">{viewName}</span>
           </div>
         ) : (
-          <img
-            src={shot.image}
+          <ImageReveal
+            src={displaySrc}
+            onError={() => {
+              if (shot.image && displaySrc !== shot.image) {
+                setDisplaySrc(shot.image);
+              }
+            }}
             alt={`${label}: ${viewName}`}
             loading="lazy"
-            className="h-full min-h-[14rem] w-full object-cover object-top sm:min-h-[18rem] lg:min-h-[22rem]"
+            className="h-full min-h-[14rem] w-full sm:min-h-[18rem] lg:min-h-[22rem]"
+            imgClassName="h-full min-h-[14rem] w-full object-cover object-top sm:min-h-[18rem] lg:min-h-[22rem]"
           />
         )}
       </div>
-      {screenshotUrl ? (
+      {screenshotUrl || storybookUrl ? (
         <div className="text-foreground-secondary flex flex-wrap items-center gap-x-2 gap-y-1 border-b px-4 py-2 text-[11px]">
-          <span>Screenshot captured 2026-08-31</span>
-          <a
-            href={screenshotUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="text-primary font-mono break-all underline-offset-2 hover:underline"
-          >
-            {screenshotUrl}
-          </a>
+          {screenshotUrl ? (
+            <>
+              <span>
+                {shot.capturedAt
+                  ? `Screenshot captured ${shot.capturedAt}`
+                  : 'Screenshot capture date unknown'}
+              </span>
+              <a
+                href={screenshotUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-primary-strong font-mono break-all underline-offset-2 hover:underline"
+              >
+                {screenshotUrl}
+              </a>
+            </>
+          ) : null}
+          {storybookUrl ? (
+            <a
+              href={storybookUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-primary-strong ml-auto font-semibold underline-offset-2 hover:underline"
+            >
+              Storybook →
+            </a>
+          ) : null}
         </div>
       ) : null}
       <p className="text-foreground-secondary px-4 py-3 text-sm leading-snug">
         {shot.caption}
       </p>
       <p className="border-border bg-background border-t px-4 py-3 text-sm leading-snug">
-        <span className="text-primary font-semibold">You can: </span>
+        <span className="text-primary-strong font-semibold">You can: </span>
         {action}
       </p>
     </div>
@@ -471,10 +462,12 @@ function ReviewCaseCard({ c }: { c: MapCase }) {
         }`}
       >
         <div className="flex flex-wrap items-start justify-between gap-3 p-5 pb-4">
-          <button
+          <Button
+            variant="plain"
+            size="flexible"
             type="button"
             onClick={() => setExpanded((v) => !v)}
-            className="flex min-w-0 flex-1 flex-col items-start gap-1 text-left"
+            className="flex min-w-0 flex-1 flex-col items-start gap-1 rounded-none text-left whitespace-normal active:scale-100"
             aria-expanded={expanded}
           >
             <span className="flex items-center gap-2">
@@ -495,8 +488,8 @@ function ReviewCaseCard({ c }: { c: MapCase }) {
               {' — '}
               {c.caption}
             </p>
-          </button>
-          <div className="flex flex-shrink-0 items-center gap-2">
+          </Button>
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
             <ParityBadges parity={parity} />
             <Button
               size="sm"
@@ -526,6 +519,7 @@ function ReviewCaseCard({ c }: { c: MapCase }) {
                   viewName={c.viewName}
                   action={c.action ?? c.caption}
                   absent={nuclearAbsent}
+                  storybookUrl={c.storybookUrl}
                 />
               </div>
             </div>
@@ -534,7 +528,7 @@ function ReviewCaseCard({ c }: { c: MapCase }) {
             {openHref && !nuclearAbsent ? (
               <a
                 href={openHref}
-                className="text-primary border-border border-t px-5 py-3 text-sm font-medium underline-offset-2 hover:underline"
+                className="text-primary-strong border-border border-t px-5 py-3 text-sm font-medium underline-offset-2 hover:underline"
               >
                 Open beta.tahti.live →
               </a>
@@ -548,11 +542,20 @@ function ReviewCaseCard({ c }: { c: MapCase }) {
 
 /** Dual Tahti | Nuclear atlas driven by concrete flow cases. */
 export function ScreenAtlas() {
+  const [shotTheme, setShotTheme] = useState<ShotTheme>('dark');
   const total = MAP_CASE_GROUPS.reduce((n, g) => n + g.cases.length, 0);
   const gaps = MAP_CASE_GROUPS.reduce(
     (n, g) => n + g.cases.filter((c) => resolveCaseParity(c) !== 'both').length,
     0,
   );
+  // Shots are refreshed individually, not as one bulk sweep -- report the
+  // most recent per-shot capturedAt rather than one (increasingly stale)
+  // fixed date for every screenshot.
+  const latestCapture = MAP_CASE_GROUPS.flatMap((g) => g.cases)
+    .flatMap((c) => [c.old.capturedAt, c.new.capturedAt])
+    .filter((d): d is string => Boolean(d))
+    .sort()
+    .at(-1);
 
   return (
     <section
@@ -568,6 +571,12 @@ export function ScreenAtlas() {
             Screen atlas
           </h2>
           <div className="flex flex-wrap items-center gap-2">
+            <SegmentedControl
+              aria-label="Screenshot theme"
+              options={SHOT_THEME_OPTIONS}
+              value={shotTheme}
+              onChange={setShotTheme}
+            />
             <ApplyReviewButton />
             <ExportNotesButton />
           </div>
@@ -586,32 +595,36 @@ export function ScreenAtlas() {
         </p>
         <p className="text-foreground-secondary mt-1 text-xs tracking-wide uppercase">
           {MAP_CASE_GROUPS.length} flows · {total} cases · {gaps} parity gap
-          {gaps === 1 ? '' : 's'} · Tahti | beta.tahti.live columns ·
-          screenshots captured 2026-09-03
+          {gaps === 1 ? '' : 's'} · Tahti | beta.tahti.live columns · shots
+          refreshed individually
+          {latestCapture ? ` (latest ${latestCapture})` : ''} — see each
+          shot&apos;s own capture date
         </p>
       </div>
 
       <NavigationStructureWidget />
 
-      {MAP_CASE_GROUPS.map((group) => (
-        <div
-          key={group.id}
-          id={`cases-${group.id}`}
-          className="flex flex-col gap-4"
-        >
-          <div>
-            <h3 className="font-display text-xl font-bold">{group.title}</h3>
-            <p className="text-foreground-secondary mt-0.5 text-sm">
-              {group.description}
-            </p>
+      <ShotThemeContext.Provider value={shotTheme}>
+        {MAP_CASE_GROUPS.map((group) => (
+          <div
+            key={group.id}
+            id={`cases-${group.id}`}
+            className="flex flex-col gap-4"
+          >
+            <div>
+              <h3 className="font-display text-xl font-bold">{group.title}</h3>
+              <p className="text-foreground-secondary mt-0.5 text-sm">
+                {group.description}
+              </p>
+            </div>
+            <ul className="flex flex-col gap-6">
+              {group.cases.map((c) => (
+                <ReviewCaseCard key={c.id} c={c} />
+              ))}
+            </ul>
           </div>
-          <ul className="flex flex-col gap-6">
-            {group.cases.map((c) => (
-              <ReviewCaseCard key={c.id} c={c} />
-            ))}
-          </ul>
-        </div>
-      ))}
+        ))}
+      </ShotThemeContext.Provider>
     </section>
   );
 }

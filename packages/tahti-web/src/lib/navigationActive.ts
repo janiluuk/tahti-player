@@ -7,17 +7,14 @@ export type SidebarItemId =
   | 'discover'
   | 'favorites'
   | 'library'
+  | 'chat'
   | 'studio'
   | 'admin'
   | 'help'
   | 'settings';
 
 export type MobileItemId =
-  | 'listen'
-  | 'radio'
-  | 'discover'
-  | 'library'
-  | 'studio';
+  'listen' | 'radio' | 'discover' | 'library' | 'studio';
 
 export type ListenTabId = 'listen' | 'feed' | 'history';
 
@@ -28,8 +25,12 @@ export function locationPathname(location: string | undefined): string {
 /** Desktop sidebar: exactly one item, or null when the route is contextual. */
 export function activeSidebarItem(
   location: string | undefined,
+  opts?: { settingsModalOpen?: boolean },
 ): SidebarItemId | null {
   const path = locationPathname(location);
+  if (opts?.settingsModalOpen) {
+    return 'settings';
+  }
   if (isFavoritesRoute(path)) {
     return 'favorites';
   }
@@ -39,8 +40,11 @@ export function activeSidebarItem(
   if (matchesSectionRoute(path, ['/discover'])) {
     return 'discover';
   }
-  if (matchesSectionRoute(path, ['/library'])) {
+  if (isLibrarySidebarRoute(path)) {
     return 'library';
+  }
+  if (isChatRoute(path)) {
+    return 'chat';
   }
   if (getStudioPrimaryRoute(path) === '/studio') {
     return 'studio';
@@ -71,7 +75,7 @@ export function activeMobileItem(
   if (matchesSectionRoute(path, ['/discover'])) {
     return 'discover';
   }
-  if (matchesSectionRoute(path, ['/library'])) {
+  if (isLibrarySidebarRoute(path)) {
     return 'library';
   }
   if (getStudioPrimaryRoute(path) === '/studio') {
@@ -95,13 +99,16 @@ export function isMobileMoreRoute(
     return true;
   }
   const path = locationPathname(location);
-  return matchesSectionRoute(path, [
-    '/settings',
-    '/account',
-    '/help',
-    '/admin',
-    '/governance',
-  ]);
+  return (
+    isChatRoute(path) ||
+    matchesSectionRoute(path, [
+      '/settings',
+      '/account',
+      '/help',
+      '/admin',
+      '/governance',
+    ])
+  );
 }
 
 export function activeListenTab(
@@ -128,6 +135,28 @@ function isFavoritesRoute(path: string): boolean {
   );
 }
 
+function isChatRoute(path: string): boolean {
+  return path === '/chat' || path.startsWith('/chat/');
+}
+
+/** Library main-menu routes, including catalog pages that still live under
+ * `/studio/...` until the full Studio→Library redirect lands. */
+export function isLibrarySidebarRoute(path: string): boolean {
+  return (
+    matchesSectionRoute(path, ['/library']) ||
+    path.startsWith('/studio/sounds') ||
+    path.startsWith('/studio/archive') ||
+    path === '/studio/collections' ||
+    path.startsWith('/studio/collections/') ||
+    path === '/studio/playlists' ||
+    path.startsWith('/studio/playlists/') ||
+    path === '/studio/stash' ||
+    path.startsWith('/studio/stash/') ||
+    path === '/studio/recordings' ||
+    path.startsWith('/studio/recordings/')
+  );
+}
+
 function isListenSidebarRoute(path: string): boolean {
   return (
     path === '/' ||
@@ -137,10 +166,13 @@ function isListenSidebarRoute(path: string): boolean {
     path === '/feed' ||
     path === '/history' ||
     path.startsWith('/channel/') ||
-    path.startsWith('/chat') ||
     path.startsWith('/t/') ||
     path.startsWith('/r/') ||
-    path.startsWith('/c/')
+    path.startsWith('/c/') ||
+    path.startsWith('/u/') ||
+    path === '/search' ||
+    path.startsWith('/search/') ||
+    path.startsWith('/v/')
   );
 }
 

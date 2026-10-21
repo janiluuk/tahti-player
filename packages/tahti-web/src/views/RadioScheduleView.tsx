@@ -11,8 +11,10 @@ import { Fragment, useEffect, useMemo, useState } from 'react';
 
 import {
   Button,
+  ButtonLink,
   Dialog,
   FilterChips,
+  HorizontalScroll,
   Input,
   SaveButton,
   TabLabel,
@@ -30,6 +32,7 @@ import {
   type ShowType,
   type StudioShowBooking,
 } from '../api/shows';
+import { PageEmpty, PageError } from '../components/PageStates';
 import { cn } from '../lib/cn';
 import {
   addDays,
@@ -74,6 +77,8 @@ export function RadioScheduleView() {
     [],
   );
   const [loading, setLoading] = useState(true);
+  const [weekError, setWeekError] = useState<string | null>(null);
+  const [weekAttempt, setWeekAttempt] = useState(0);
   const [selection, setSelection] = useState<ScheduleSelection | null>(null);
   const [note, setNote] = useState('');
   const [showType, setShowType] = useState<ShowType>('LIVE_SET');
@@ -105,12 +110,13 @@ export function RadioScheduleView() {
         return;
       }
       setBookings(r.data);
+      setWeekError(r.meta.source === 'api' ? (r.meta.reason ?? null) : null);
       setLoading(false);
     });
     return () => {
       cancelled = true;
     };
-  }, [weekStart]);
+  }, [weekStart, weekAttempt]);
 
   useEffect(() => {
     if (!ownChannelSlug) {
@@ -276,7 +282,10 @@ export function RadioScheduleView() {
   }
 
   return (
-    <ViewShell title="Schedule" classes={{ root: 'px-0 pt-0 max-w-5xl' }}>
+    <ViewShell
+      title="Schedule"
+      classes={{ root: 'px-0 pt-0 max-w-5xl', content: 'gap-4' }}
+    >
       {greenRoomBookings.length > 0 ? (
         <div className="border-border bg-primary/10 flex flex-col gap-2 rounded-lg border p-3">
           {greenRoomBookings.map((b) => (
@@ -291,18 +300,15 @@ export function RadioScheduleView() {
                   : 'starting soon'}
               </span>
               <Tooltip content="Green room" side="top">
-                <Link
+                <ButtonLink
                   to="/u/$username/green-room"
                   params={{ username: b.username }}
+                  size="icon-sm"
+                  variant="secondary"
+                  aria-label={`Open ${b.displayName}'s green room`}
                 >
-                  <Button
-                    size="icon-sm"
-                    variant="secondary"
-                    aria-label={`Open ${b.displayName}'s green room`}
-                  >
-                    <MicIcon size={16} aria-hidden />
-                  </Button>
-                </Link>
+                  <MicIcon size={16} aria-hidden />
+                </ButtonLink>
               </Tooltip>
             </div>
           ))}
@@ -316,16 +322,16 @@ export function RadioScheduleView() {
               Your next two weeks
             </div>
             {upcomingBookings.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No upcoming shows booked.
-              </p>
+              <PageEmpty title="No upcoming shows booked." />
             ) : (
               <ul className="flex flex-col gap-2">
                 {upcomingBookings.map((booking) => (
                   <li key={booking.id}>
-                    <button
+                    <Button
+                      variant="plain"
+                      size="flexible"
                       type="button"
-                      className="hover:bg-background-secondary w-full rounded-md p-2 text-left text-sm transition-colors"
+                      className="hover:bg-background-secondary inline-block w-full rounded-md p-2 text-left text-sm whitespace-normal transition-colors active:scale-100"
                       onClick={() => {
                         setSelectedBooking(booking);
                         setEditNote(booking.note ?? '');
@@ -349,7 +355,7 @@ export function RadioScheduleView() {
                       <span className="text-foreground-secondary block truncate text-xs">
                         {booking.channelSlug}
                       </span>
-                    </button>
+                    </Button>
                   </li>
                 ))}
               </ul>
@@ -426,99 +432,112 @@ export function RadioScheduleView() {
             </div>
           </div>
 
-          <div className="border-border overflow-x-auto rounded-xl border">
-            <div className="grid min-w-[46.5rem] grid-cols-[4.5rem_repeat(7,minmax(6rem,1fr))]">
-              <div className="border-border bg-background-secondary/40 border-r border-b" />
-              {days.map((day) => (
-                <div
-                  key={day.toISOString()}
-                  className="border-border bg-background-secondary/40 flex flex-col items-center border-b px-2 py-2 text-xs"
-                >
-                  <span className="font-semibold">
-                    {day.toLocaleDateString(undefined, { weekday: 'short' })}
-                  </span>
-                  <span className="text-foreground-secondary">
-                    {day.toLocaleDateString(undefined, {
-                      month: 'short',
-                      day: 'numeric',
-                    })}
-                  </span>
-                </div>
-              ))}
-
-              {SCHEDULE_HOURS.map((hour) => (
-                <Fragment key={hour}>
-                  <div className="border-border text-foreground-secondary flex items-center justify-end border-r px-2 py-1.5 text-xs tabular-nums">
-                    {formatHour(hour)}
+          {weekError ? (
+            <PageError
+              title="Could not load this week's bookings"
+              description={weekError}
+              onRetry={() => setWeekAttempt((n) => n + 1)}
+            />
+          ) : (
+            <HorizontalScroll
+              label="Weekly schedule"
+              className="border-border rounded-xl border"
+            >
+              <div className="grid min-w-[46.5rem] grid-cols-[4.5rem_repeat(7,minmax(6rem,1fr))]">
+                <div className="border-border bg-background-secondary/40 border-r border-b" />
+                {days.map((day) => (
+                  <div
+                    key={day.toISOString()}
+                    className="border-border bg-background-secondary/40 flex flex-col items-center border-b px-2 py-2 text-xs"
+                  >
+                    <span className="font-semibold">
+                      {day.toLocaleDateString(undefined, { weekday: 'short' })}
+                    </span>
+                    <span className="text-foreground-secondary">
+                      {day.toLocaleDateString(undefined, {
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </span>
                   </div>
-                  {days.map((day) => {
-                    const cellStart = atHour(day, hour);
-                    const isPast = cellStart.getTime() <= Date.now();
-                    const booking = bookingAt(day, hour);
-                    const isSelected = Boolean(
-                      selection &&
-                      selection.day.toDateString() === day.toDateString() &&
-                      hour >= selection.startHour &&
-                      hour < selection.startHour + selection.hours,
-                    );
-                    return (
-                      <button
-                        key={`${day.toISOString()}-${hour}`}
-                        type="button"
-                        disabled={loading || (isPast && !booking?.isMine)}
-                        onClick={() => onCellClick(day, hour)}
-                        aria-label={
-                          booking
-                            ? `${bookingTitle(booking)} by ${booking.displayName}${
-                                booking.isMine ? ' — click to view' : ''
-                              }`
-                            : `${day.toLocaleDateString(undefined, {
-                                weekday: 'long',
-                                month: 'long',
-                                day: 'numeric',
-                              })} at ${formatHour(hour)}${
-                                isPast ? ' — unavailable' : ' — available'
-                              }`
-                        }
-                        className={cn(
-                          'border-border h-8 border-r border-b px-1.5 text-left text-[11px] transition-colors',
-                          booking
-                            ? booking.isMine
-                              ? 'bg-primary/20 text-primary hover:bg-primary/30'
-                              : 'bg-background-secondary text-foreground-secondary cursor-default'
-                            : isPast
-                              ? 'bg-background-secondary/20 cursor-not-allowed'
-                              : 'hover:bg-background-secondary',
-                          isSelected && 'ring-primary ring-2 ring-inset',
-                        )}
-                      >
-                        {booking ? (
-                          <span className="flex items-center gap-1 truncate">
-                            {booking.showType === 'TALK' ? (
-                              <MessageCircleIcon
-                                size={11}
-                                aria-hidden
-                                className="shrink-0"
-                              />
-                            ) : (
-                              <MicIcon
-                                size={11}
-                                aria-hidden
-                                className="shrink-0"
-                              />
-                            )}
-                            <span className="truncate">
-                              {booking.displayName}
+                ))}
+
+                {SCHEDULE_HOURS.map((hour) => (
+                  <Fragment key={hour}>
+                    <div className="border-border text-foreground-secondary flex items-center justify-end border-r px-2 py-1.5 text-xs tabular-nums">
+                      {formatHour(hour)}
+                    </div>
+                    {days.map((day) => {
+                      const cellStart = atHour(day, hour);
+                      const isPast = cellStart.getTime() <= Date.now();
+                      const booking = bookingAt(day, hour);
+                      const isSelected = Boolean(
+                        selection &&
+                        selection.day.toDateString() === day.toDateString() &&
+                        hour >= selection.startHour &&
+                        hour < selection.startHour + selection.hours,
+                      );
+                      return (
+                        <Button
+                          variant="plain"
+                          size="flexible"
+                          key={`${day.toISOString()}-${hour}`}
+                          type="button"
+                          disabled={loading || (isPast && !booking?.isMine)}
+                          onClick={() => onCellClick(day, hour)}
+                          aria-label={
+                            booking
+                              ? `${bookingTitle(booking)} by ${booking.displayName}${
+                                  booking.isMine ? ' — click to view' : ''
+                                }`
+                              : `${day.toLocaleDateString(undefined, {
+                                  weekday: 'long',
+                                  month: 'long',
+                                  day: 'numeric',
+                                })} at ${formatHour(hour)}${
+                                  isPast ? ' — unavailable' : ' — available'
+                                }`
+                          }
+                          className={cn(
+                            'border-border inline-block h-8 rounded-none border-r border-b px-1.5 text-left text-[11px] whitespace-normal transition-colors active:scale-100 disabled:opacity-100',
+                            booking
+                              ? booking.isMine
+                                ? 'bg-primary/20 text-primary-strong hover:bg-primary/30'
+                                : 'bg-background-secondary text-foreground-secondary cursor-default'
+                              : isPast
+                                ? 'bg-background-secondary/20 cursor-not-allowed'
+                                : 'hover:bg-background-secondary',
+                            isSelected && 'ring-primary ring-2 ring-inset',
+                          )}
+                        >
+                          {booking ? (
+                            <span className="flex items-center gap-1 truncate">
+                              {booking.showType === 'TALK' ? (
+                                <MessageCircleIcon
+                                  size={11}
+                                  aria-hidden
+                                  className="shrink-0"
+                                />
+                              ) : (
+                                <MicIcon
+                                  size={11}
+                                  aria-hidden
+                                  className="shrink-0"
+                                />
+                              )}
+                              <span className="truncate">
+                                {booking.displayName}
+                              </span>
                             </span>
-                          </span>
-                        ) : null}
-                      </button>
-                    );
-                  })}
-                </Fragment>
-              ))}
-            </div>
-          </div>
+                          ) : null}
+                        </Button>
+                      );
+                    })}
+                  </Fragment>
+                ))}
+              </div>
+            </HorizontalScroll>
+          )}
         </div>
       </div>
 
@@ -617,7 +636,7 @@ export function RadioScheduleView() {
         </p>
       ) : null}
       {error ? (
-        <p className="text-accent-red text-sm" role="alert">
+        <p className="text-accent-red-strong text-sm" role="alert">
           {error}
         </p>
       ) : null}
@@ -694,36 +713,16 @@ export function RadioScheduleView() {
                       : ''}
                   </p>
                 )}
-                <div
-                  className="border-border flex w-fit gap-1 rounded-lg border p-1"
-                  role="radiogroup"
+                <FilterChips
+                  items={[
+                    { id: 'LIVE_SET', label: 'Live set' },
+                    { id: 'TALK', label: 'Talk' },
+                  ]}
+                  selected={editShowType}
+                  onChange={(id) => setEditShowType(id as ShowType)}
+                  disabled={busy}
                   aria-label="Show type"
-                >
-                  {(
-                    [
-                      ['LIVE_SET', 'Live set'],
-                      ['TALK', 'Talk'],
-                    ] as const
-                  ).map(([type, label]) => (
-                    <Button
-                      key={type}
-                      type="button"
-                      variant="text"
-                      size="flexible"
-                      onClick={() => setEditShowType(type)}
-                      aria-pressed={editShowType === type}
-                      disabled={busy}
-                      className={cn(
-                        'rounded-md px-2.5 py-1 text-xs font-semibold uppercase',
-                        editShowType === type
-                          ? 'bg-primary text-primary-foreground'
-                          : 'text-foreground-secondary hover:text-foreground',
-                      )}
-                    >
-                      {label}
-                    </Button>
-                  ))}
-                </div>
+                />
                 <Input
                   value={editNote}
                   onChange={(e) => setEditNote(e.target.value)}

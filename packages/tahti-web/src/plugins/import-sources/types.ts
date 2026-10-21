@@ -5,9 +5,10 @@ import type {
   HearthisLibrary,
   HearthisTrack,
   IntegrationId,
+  MixcloudCloudcast,
   SoundcloudTrack,
   SourceDef,
-  SpotifySearchTrack,
+  SpotifyTrack,
 } from '../../api/sources';
 
 /**
@@ -41,6 +42,7 @@ export type BandcampSourceAdapter = OAuthAdapterBase & {
     data: BandcampAlbum[];
     connected: boolean;
     message?: string;
+    importAvailable?: boolean;
     meta: FetchMeta;
   }>;
   importAlbum(
@@ -50,7 +52,11 @@ export type BandcampSourceAdapter = OAuthAdapterBase & {
 
 export type SoundcloudSourceAdapter = OAuthAdapterBase & {
   id: 'soundcloud';
-  listTracks(): Promise<{ data: SoundcloudTrack[]; meta: FetchMeta }>;
+  listTracks(): Promise<{
+    data: SoundcloudTrack[];
+    needsReconnect?: boolean;
+    meta: FetchMeta;
+  }>;
   importTracks(
     tracks: Array<{ trackId: string; title: string }>,
   ): Promise<{ ok: true; count: number } | { ok: false; error: string }>;
@@ -81,13 +87,15 @@ type SearchAdapterBase = ImportSourcePlugin & {
 
 export type SpotifySourceAdapter = SearchAdapterBase & {
   id: 'spotify';
-  search(query: string): Promise<{
-    data: SpotifySearchTrack[];
-    meta: FetchMeta;
-  }>;
-  importTracks(
-    tracks: Array<{ trackId: string; title: string; externalUrl?: string }>,
-  ): Promise<{ ok: true; count: number } | { ok: false; error: string }>;
+  search(
+    query: string,
+  ): Promise<{ ok: true; data: SpotifyTrack[] } | { ok: false; error: string }>;
+  addToCollection(
+    collectionId: string,
+    spotifyUri: string,
+  ): Promise<
+    { ok: true; data: { soundId: string } } | { ok: false; error: string }
+  >;
 };
 
 export type HearthisImportResult = {
@@ -108,13 +116,27 @@ export type HearthisSourceAdapter = SearchAdapterBase & {
   ): Promise<HearthisImportResult>;
 };
 
-export type SearchSourceAdapter = SpotifySourceAdapter | HearthisSourceAdapter;
+export type MixcloudEmbedSourceAdapter = SearchAdapterBase & {
+  id: 'mixcloud-embed';
+  search(
+    query: string,
+  ): Promise<
+    { ok: true; data: MixcloudCloudcast[] } | { ok: false; error: string }
+  >;
+  addToCollection(
+    collectionId: string,
+    cloudcastUrl: string,
+  ): Promise<
+    { ok: true; data: { soundId: string } } | { ok: false; error: string }
+  >;
+};
+
+export type SearchSourceAdapter =
+  SpotifySourceAdapter | HearthisSourceAdapter | MixcloudEmbedSourceAdapter;
 
 export type ToolSourceAdapter = ImportSourcePlugin & {
   kind: 'tool' | 'upload';
 };
 
 export type SourceAdapter =
-  | OAuthSourceAdapter
-  | SearchSourceAdapter
-  | ToolSourceAdapter;
+  OAuthSourceAdapter | SearchSourceAdapter | ToolSourceAdapter;

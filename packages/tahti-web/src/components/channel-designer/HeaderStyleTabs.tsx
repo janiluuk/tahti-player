@@ -1,3 +1,5 @@
+import { Tabs } from '@tahti-player/ui';
+
 import { HEADER_STYLES, type HeaderStyle } from '../../api/channel-design';
 
 export const HEADER_DESIGN_OPTIONS = [
@@ -6,12 +8,6 @@ export const HEADER_DESIGN_OPTIONS = [
   'VISUALIZATION',
 ] as const;
 export type HeaderDesignMode = (typeof HEADER_DESIGN_OPTIONS)[number];
-
-/** Exclusive header chrome modes — Visualization is a focus tab only. */
-export const HEADER_STYLE_MUTATING_MODES = [
-  ...HEADER_STYLES,
-  'SLIDESHOW',
-] as const satisfies readonly HeaderDesignMode[];
 
 type Props = {
   value: HeaderDesignMode;
@@ -31,43 +27,40 @@ function labelFor(mode: HeaderDesignMode): string {
   return mode.replace(/_/g, ' ');
 }
 
-/** Segmented Gradient / Solid / Video / Slideshow / Visualization control. */
 export function HeaderStyleTabs({ value, onChange }: Props) {
+  const selectedIndex = Math.max(0, HEADER_DESIGN_OPTIONS.indexOf(value));
+
   return (
-    <div
-      role="tablist"
-      aria-label="Header style"
-      className="border-border flex flex-wrap gap-1 rounded-lg border p-1"
+    <Tabs.Root
+      selectedIndex={selectedIndex}
+      onChange={(index) => {
+        const mode = HEADER_DESIGN_OPTIONS[index];
+        if (mode) {
+          onChange(mode);
+        }
+      }}
+      className="gap-0"
+      listClassName="border-border flex w-auto flex-wrap gap-1 rounded-lg border p-1"
+      tabClassName="rounded-md px-2.5 py-1.5 text-[10px] font-semibold tracking-wide whitespace-normal uppercase active:scale-100"
     >
-      {HEADER_DESIGN_OPTIONS.map((mode) => {
-        const selected = value === mode;
-        return (
-          <button
-            key={mode}
-            type="button"
-            role="tab"
-            aria-selected={selected}
-            onClick={() => onChange(mode)}
-            className={`rounded-md px-2.5 py-1.5 text-[10px] font-semibold tracking-wide uppercase ${
-              selected
-                ? 'bg-primary text-primary-foreground'
-                : 'text-foreground-secondary hover:text-foreground'
-            }`}
-          >
-            {labelFor(mode)}
-          </button>
-        );
-      })}
-    </div>
+      <Tabs.List aria-label="Header style">
+        {HEADER_DESIGN_OPTIONS.map((mode) => (
+          <Tabs.Tab key={mode}>{labelFor(mode)}</Tabs.Tab>
+        ))}
+      </Tabs.List>
+    </Tabs.Root>
   );
 }
 
 export function resolveHeaderDesignMode(
   headerStyle: string,
   slideshowSelected: boolean,
-): Exclude<HeaderDesignMode, 'VISUALIZATION'> {
+): HeaderDesignMode {
   if (slideshowSelected) {
     return 'SLIDESHOW';
+  }
+  if (headerStyle === 'VISUALIZATION') {
+    return 'VISUALIZATION';
   }
   if ((HEADER_STYLES as readonly string[]).includes(headerStyle)) {
     return headerStyle as HeaderStyle;

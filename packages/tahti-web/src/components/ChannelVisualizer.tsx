@@ -1,5 +1,17 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 
+import {
+  isAdvancedMode,
+  isCymaticsMode,
+  VisualizerHost,
+  type VisualizerMode,
+} from '@tahti-player/visualizer';
+
+import {
+  channelVizPackFromJson,
+  vizPackModeAt,
+  type ChannelVizPack,
+} from '../lib/channelVizPacks';
 import { supportsWebGL } from '../lib/webgl';
 import type { ThreeVisualizerProps } from './visuals/ThreeVisualizer';
 
@@ -20,6 +32,14 @@ type Props = {
   className?: string;
   artworkUrl?: string | null;
   audioReactive?: boolean;
+  /** Prefer theDAW-ported Advanced/Cymatics modes when the preset matches.
+   * Without one, a viz pack saved in `visualSettingsJson` picks the mode. */
+  engineMode?: VisualizerMode | null;
+  /** The visualizer's own O/S/R/Q mode chips and its kHz / RMS / PEAK strip
+   * with the fullscreen toggle. Turn off where the visualizer is a backdrop
+   * under other content and cannot be clicked. */
+  showModeButtons?: boolean;
+  onEngineModeChange?: (mode: VisualizerMode) => void;
 };
 
 const ThreeVisualizer = lazy(() =>
@@ -115,6 +135,45 @@ function parseStoredAudioReactive(
   return parsed[preset]?.audioReactive ?? DEFAULT_SETTINGS.audioReactive;
 }
 
+function resolveEngineMode(
+  engineMode: VisualizerMode | null | undefined,
+  preset: string,
+): VisualizerMode | null {
+  if (
+    engineMode &&
+    (isAdvancedMode(engineMode) || isCymaticsMode(engineMode))
+  ) {
+    return engineMode;
+  }
+  const lower = preset.toLowerCase();
+  if (
+    isAdvancedMode(lower as VisualizerMode) ||
+    isCymaticsMode(lower as VisualizerMode)
+  ) {
+    return lower as VisualizerMode;
+  }
+  return null;
+}
+
+function useVizPackMode(pack: ChannelVizPack | null): VisualizerMode | null {
+  const [elapsedMs, setElapsedMs] = useState(0);
+
+  useEffect(() => {
+    setElapsedMs(0);
+    if (!pack || pack.modes.length < 2) {
+      return;
+    }
+    const startedAt = Date.now();
+    const id = window.setInterval(
+      () => setElapsedMs(Date.now() - startedAt),
+      pack.rotateSeconds * 1000,
+    );
+    return () => window.clearInterval(id);
+  }, [pack]);
+
+  return pack ? vizPackModeAt(pack, elapsedMs) : null;
+}
+
 export const ChannelVisualizer = ({
   preset,
   colorScheme,
@@ -124,9 +183,20 @@ export const ChannelVisualizer = ({
   className,
   artworkUrl,
   audioReactive,
+  engineMode,
+  showModeButtons = true,
+  onEngineModeChange,
 }: Props) => {
   const [canAnimate, setCanAnimate] = useState(false);
+  const [offscreen, setOffscreen] = useState(false);
+  const hostRef = useRef<HTMLDivElement | null>(null);
   const mode = (preset ?? 'AURORA').toUpperCase();
+  const pack = useMemo(
+    () => (engineMode ? null : channelVizPackFromJson(visualSettingsJson)),
+    [engineMode, visualSettingsJson],
+  );
+  const packMode = useVizPackMode(pack);
+  const portedMode = resolveEngineMode(engineMode ?? packMode, preset ?? '');
   const scheme = useMemo(
     () => parseScheme(colorScheme, colorSchemeJson),
     [colorScheme, colorSchemeJson],
@@ -149,6 +219,23 @@ export const ChannelVisualizer = ({
     setCanAnimate(!reducedMotion && mode !== 'MINIMAL' && supportsWebGL());
   }, [mode]);
 
+  useEffect(() => {
+    const el = hostRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          setOffscreen(!entry.isIntersecting);
+        }
+      },
+      { rootMargin: '80px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [portedMode]);
+
   const fallback = (
     <div
       className={className}
@@ -161,6 +248,22 @@ export const ChannelVisualizer = ({
 
   if (!canAnimate) {
     return fallback;
+  }
+
+  if (portedMode) {
+    return (
+      <div ref={hostRef} className={className}>
+        <VisualizerHost
+          mode={portedMode}
+          showModePicker={false}
+          showModeButtons={showModeButtons}
+          showStatusBar={showModeButtons}
+          onModeChange={onEngineModeChange}
+          suspended={offscreen || !resolvedAudioReactive}
+          className="h-full w-full"
+        />
+      </div>
+    );
   }
 
   return (

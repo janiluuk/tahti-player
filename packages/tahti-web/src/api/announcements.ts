@@ -1,6 +1,16 @@
+import {
+  announcementDurationSec,
+  readAudioFileDuration,
+} from '../lib/audioFileDuration';
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
-import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import {
+  allowMockFallback,
+  apiErrorMeta,
+  isForceMock,
+  mockFallbackMeta,
+} from './mode';
+import { requestJson as requestApiJson } from './request-json';
 
 export type AnnouncementClip = {
   id: string;
@@ -51,19 +61,31 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
+export async function fetchPinnedAnnouncementsWithMeta(slug: string): Promise<{
+  data: PinnedAnnouncement[];
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return {
+      data: [...mockPinnedAnnouncements],
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await requestJson<PinnedAnnouncement[]>(
+      `/api/chat/${encodeURIComponent(slug)}/announcements`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: apiErrorMeta(err) };
+  }
+}
+
 export async function fetchPinnedAnnouncements(
   slug: string,
 ): Promise<PinnedAnnouncement[]> {
-  if (isForceMock()) {
-    return [...mockPinnedAnnouncements];
-  }
-  try {
-    return await requestJson<PinnedAnnouncement[]>(
-      `/api/chat/${encodeURIComponent(slug)}/announcements`,
-    );
-  } catch {
-    return [];
-  }
+  const { data } = await fetchPinnedAnnouncementsWithMeta(slug);
+  return data;
 }
 
 export async function postPinnedAnnouncement(
@@ -144,7 +166,7 @@ export async function fetchAnnouncementClips(): Promise<{
     return { data: data.clips, meta: { source: 'api' } };
   } catch (error) {
     if (allowMockFallback()) {
-      return { data: [...mockClips], meta: failMeta(error) };
+      return { data: [...mockClips], meta: mockFallbackMeta(error) };
     }
     return { data: [], meta: apiErrorMeta(error) };
   }
@@ -172,6 +194,9 @@ export async function uploadAnnouncementClip(file: File): Promise<
     return { ok: true, clip };
   }
   try {
+    const durationSec = announcementDurationSec(
+      await readAudioFileDuration(file),
+    );
     const prepared = await requestJson<{ uploadId: string; uploadUrl: string }>(
       '/api/me/announcements/prepare',
       {
@@ -200,6 +225,7 @@ export async function uploadAnnouncementClip(file: File): Promise<
           uploadId: prepared.uploadId,
           title,
           contentType: 'CLIP',
+          durationSec,
         }),
       },
     );
@@ -309,6 +335,42 @@ export async function fetchAnnouncementPreview(id: string): Promise<
     return {
       ok: false,
       error: error instanceof Error ? error.message : 'Could not load preview',
+    };
+  }
+}
+
+export type AnnouncementTrim = {
+  startSec: number;
+  endSec: number;
+  fadeInSec: number;
+  fadeOutSec: number;
+};
+
+/** Re-render a clip as a trim of its original upload (never of an earlier
+ * trim), with optional fades. The clip is PROCESSING until the worker
+ * writes the new audio. */
+export async function renderAnnouncementTrim(
+  id: string,
+  trim: AnnouncementTrim,
+): Promise<
+  | { ok: true; renderStatus: AnnouncementClip['renderStatus'] }
+  | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    return { ok: true, renderStatus: 'PROCESSING' };
+  }
+  try {
+    const { data } = await requestApiJson<{
+      renderStatus: AnnouncementClip['renderStatus'];
+    }>(`/api/me/announcements/${encodeURIComponent(id)}/editor/render`, {
+      method: 'POST',
+      body: JSON.stringify(trim),
+    });
+    return { ok: true, renderStatus: data.renderStatus };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not trim the clip',
     };
   }
 }

@@ -13,7 +13,12 @@ const POLL_MS = 20_000;
 
 type NotificationInboxState = {
   items: TahtiNotification[];
+  unreadCount: number;
+  hasMore: boolean;
+  loadingOlder: boolean;
+  lastInboxError: string | null;
   load: (opts?: { toastNew?: boolean }) => Promise<void>;
+  loadOlder: () => Promise<void>;
   acknowledge: (id: string) => Promise<void>;
   markNonStickyRead: () => Promise<void>;
   reset: () => void;
@@ -41,10 +46,18 @@ function presentToast(
 export const useNotificationInboxStore = create<NotificationInboxState>(
   (set, get) => ({
     items: [],
+    unreadCount: 0,
+    hasMore: false,
+    loadingOlder: false,
+    lastInboxError: null,
 
     load: async (opts) => {
       const toastNew = opts?.toastNew ?? true;
       const result = await fetchNotifications();
+      if (result.meta.source === 'api' && result.meta.reason) {
+        set({ lastInboxError: result.meta.reason });
+        return;
+      }
       const previousSeen = seenIds;
       const nextSeen = new Set(result.data.map((item) => item.id));
       const unread = result.data.filter((item) => !item.readAt);
@@ -63,7 +76,42 @@ export const useNotificationInboxStore = create<NotificationInboxState>(
       }
 
       seenIds = nextSeen;
-      set({ items: result.data });
+      const latestIds = new Set(result.data.map((item) => item.id));
+      const oldestLatest = result.data.at(-1)?.createdAt;
+      const olderKept = oldestLatest
+        ? get().items.filter(
+            (item) => !latestIds.has(item.id) && item.createdAt < oldestLatest,
+          )
+        : [];
+      set({
+        items: [...result.data, ...olderKept],
+        unreadCount: result.unreadCount,
+        hasMore: olderKept.length > 0 ? get().hasMore : result.hasMore,
+        lastInboxError: null,
+      });
+    },
+
+    loadOlder: async () => {
+      const oldest = get().items.at(-1);
+      if (!oldest || get().loadingOlder) {
+        return;
+      }
+      set({ loadingOlder: true });
+      const result = await fetchNotifications(oldest.id);
+      if (result.meta.source === 'api' && result.meta.reason) {
+        set({ loadingOlder: false, lastInboxError: result.meta.reason });
+        return;
+      }
+      const known = new Set(get().items.map((item) => item.id));
+      set((state) => ({
+        items: [
+          ...state.items,
+          ...result.data.filter((item) => !known.has(item.id)),
+        ],
+        hasMore: result.hasMore,
+        loadingOlder: false,
+        lastInboxError: null,
+      }));
     },
 
     acknowledge: async (id) => {
@@ -74,6 +122,9 @@ export const useNotificationInboxStore = create<NotificationInboxState>(
         items: state.items.map((item) =>
           item.id === id ? { ...item, readAt } : item,
         ),
+        unreadCount: state.items.some((item) => item.id === id && !item.readAt)
+          ? Math.max(0, state.unreadCount - 1)
+          : state.unreadCount,
       }));
     },
 
@@ -89,6 +140,8 @@ export const useNotificationInboxStore = create<NotificationInboxState>(
         items: state.items.map((item) =>
           item.sticky || item.readAt ? item : { ...item, readAt },
         ),
+        unreadCount: state.items.filter((item) => item.sticky && !item.readAt)
+          .length,
       }));
       await markAllNotificationsRead();
     },
@@ -97,7 +150,13 @@ export const useNotificationInboxStore = create<NotificationInboxState>(
       seenIds = new Set();
       initialLoadDone = false;
       toast.dismiss();
-      set({ items: [] });
+      set({
+        items: [],
+        unreadCount: 0,
+        hasMore: false,
+        loadingOlder: false,
+        lastInboxError: null,
+      });
     },
   }),
 );

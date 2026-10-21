@@ -10,6 +10,7 @@ import { useState, type ReactNode } from 'react';
 
 import {
   Button,
+  ButtonLink,
   Dialog,
   EmptyState,
   ImageReveal,
@@ -18,8 +19,10 @@ import {
 } from '@tahti-player/ui';
 
 import type { DiscoverArtistOfWeek } from '../../api/discover';
+import type { LatestRelease } from '../../api/latest-releases';
 import type { DiscoverCollection, DiscoverTrackItem } from '../../api/types';
 import type { DiscoverWidgetId } from '../../stores/discoverStore';
+import { PageError } from '../PageStates';
 import { WidgetTrackRow } from './WidgetTrackRow';
 
 const MAX_ROWS = 8;
@@ -29,8 +32,11 @@ export function WidgetCard({
   title,
   subtitle,
   loading,
+  error = null,
+  onRetry,
   items,
   collections = [],
+  releases = [],
   artist,
   showRank,
   emptyMessage,
@@ -46,8 +52,11 @@ export function WidgetCard({
   title: string;
   subtitle?: ReactNode;
   loading: boolean;
+  error?: string | null;
+  onRetry?: () => void;
   items: DiscoverTrackItem[];
   collections?: DiscoverCollection[];
+  releases?: LatestRelease[];
   artist?: DiscoverArtistOfWeek;
   showRank?: boolean;
   emptyMessage: string;
@@ -64,10 +73,15 @@ export function WidgetCard({
   const [configureOpen, setConfigureOpen] = useState(false);
 
   return (
-    <section className="group border-border bg-background-secondary flex min-h-[280px] flex-col gap-3 rounded-md border-(length:--border-width) p-4">
+    <section
+      id={id}
+      className="group border-border bg-background-secondary flex min-h-[240px] scroll-mt-20 flex-col gap-2 rounded-md border-(length:--border-width) p-3 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] sm:min-h-[280px] sm:gap-3 sm:p-4"
+    >
       <header className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <h3 className="truncate text-sm font-semibold">{title}</h3>
+          <h2 className="truncate text-sm leading-tight font-semibold">
+            {title}
+          </h2>
           {subtitle && (
             <p className="text-foreground-secondary truncate text-xs">
               {subtitle}
@@ -116,7 +130,7 @@ export function WidgetCard({
               variant="text"
               onClick={() => onRemove(id)}
               aria-label="Remove widget"
-              className="text-foreground-secondary hover:text-accent-red"
+              className="text-foreground-secondary hover:text-accent-red-strong"
             >
               <XIcon size={14} />
             </Button>
@@ -128,6 +142,12 @@ export function WidgetCard({
         <div className="flex flex-1 items-center justify-center">
           <Loader size="sm" />
         </div>
+      ) : error ? (
+        <PageError
+          title={`Could not load ${title.toLowerCase()}`}
+          description={error}
+          onRetry={onRetry}
+        />
       ) : artist ? (
         <div className="flex flex-1 flex-col items-center text-center">
           <ImageReveal
@@ -141,17 +161,70 @@ export function WidgetCard({
               </span>
             }
           />
-          <h4 className="mt-4 text-lg font-semibold">{artist.displayName}</h4>
+          <h3 className="mt-4 text-lg font-semibold">{artist.displayName}</h3>
           <p className="text-foreground-secondary mt-2 line-clamp-4 max-w-xl text-sm">
             {artist.bio ?? 'Discover this artist’s music on Tahti.'}
           </p>
-          <Link
+          <ButtonLink
             to="/channel/$slug"
             params={{ slug: artist.channelSlug }}
+            size="sm"
             className="mt-4"
           >
-            <Button size="sm">Listen to their music</Button>
-          </Link>
+            Listen to their music
+          </ButtonLink>
+        </div>
+      ) : releases.length > 0 ? (
+        <div className="grid gap-2" data-testid="latest-releases">
+          {releases.slice(0, MAX_ROWS).map((release) => (
+            <div
+              key={release.id}
+              className="border-border bg-background hover:bg-background-tertiary flex items-center gap-3 rounded-md border p-2 transition-colors"
+            >
+              <Link
+                to="/r/$slug"
+                params={{ slug: release.smartLinkSlug }}
+                tabIndex={-1}
+                aria-hidden
+                className="shrink-0"
+              >
+                <ImageReveal
+                  src={release.artworkUrl ?? undefined}
+                  alt=""
+                  className="bg-primary size-12 rounded"
+                  placeholder={
+                    <span className="text-primary-foreground text-xs font-bold">
+                      {release.title.charAt(0).toUpperCase()}
+                    </span>
+                  }
+                />
+              </Link>
+              <div className="min-w-0">
+                <Link
+                  to="/r/$slug"
+                  params={{ slug: release.smartLinkSlug }}
+                  className="block truncate text-sm font-semibold hover:underline"
+                >
+                  {release.title}
+                </Link>
+                <p className="text-foreground-secondary truncate text-xs">
+                  {release.artistUsername ? (
+                    <Link
+                      to="/u/$username"
+                      params={{ username: release.artistUsername }}
+                      className="hover:underline"
+                    >
+                      {release.artistDisplayName}
+                    </Link>
+                  ) : (
+                    release.artistDisplayName
+                  )}{' '}
+                  · {release.type.toLowerCase()} ·{' '}
+                  {new Date(release.releaseDate).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       ) : collections.length > 0 ? (
         <div className="grid gap-2">
@@ -176,9 +249,9 @@ export function WidgetCard({
                 }
               />
               <div className="min-w-0">
-                <h4 className="truncate text-sm font-semibold">
+                <h3 className="truncate text-sm font-semibold">
                   {collection.name}
-                </h4>
+                </h3>
                 <p className="text-foreground-secondary truncate text-xs">
                   {collection.ownerDisplayName} · {collection.itemCount} tracks
                 </p>

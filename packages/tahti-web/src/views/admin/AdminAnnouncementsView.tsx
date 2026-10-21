@@ -1,7 +1,8 @@
-import { PlayIcon, Trash2Icon } from 'lucide-react';
+import { PlayIcon, ScissorsIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
+  Badge,
   Button,
   FilePicker,
   Input,
@@ -23,9 +24,10 @@ import {
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { usePlayerStore } from '../../stores/playerStore';
+import { AnnouncementTrimDialog } from './announcements/AnnouncementTrimDialog';
 
 function fmtDuration(sec: number | null): string {
   if (sec == null) {
@@ -45,6 +47,7 @@ export function AdminAnnouncementsView() {
   const [msg, setMsg] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] =
     useState<AdminAnnouncementClip | null>(null);
+  const [trimming, setTrimming] = useState<AdminAnnouncementClip | null>(null);
 
   const reload = () => {
     void fetchAdminAnnouncements().then((res) => {
@@ -75,7 +78,10 @@ export function AdminAnnouncementsView() {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/announcements">
-          <ViewShell title="Announcements" classes={{ root: 'px-0 pt-0' }}>
+          <ViewShell
+            title="Announcements"
+            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+          >
             {msg && (
               <p className="text-foreground-secondary text-sm" role="status">
                 {msg}
@@ -137,9 +143,7 @@ export function AdminAnnouncementsView() {
               {loading ? (
                 <PageLoading label="Loading announcements…" />
               ) : clips.length === 0 ? (
-                <p className="text-foreground-secondary py-4 text-center text-sm">
-                  No system announcement clips yet.
-                </p>
+                <PageEmpty title="No system announcement clips yet." />
               ) : (
                 <ul className="divide-border divide-y">
                   {clips.map((clip) => (
@@ -157,8 +161,17 @@ export function AdminAnnouncementsView() {
                         />
                         <div>
                           <div className="font-medium">{clip.title}</div>
-                          <div className="text-foreground-secondary text-xs">
+                          <div className="text-foreground-secondary flex items-center gap-2 text-xs">
                             {fmtDuration(clip.durationSec)}
+                            {clip.renderStatus === 'PROCESSING' ? (
+                              <Badge variant="pill" color="cyan">
+                                Rendering
+                              </Badge>
+                            ) : clip.renderStatus === 'ERROR' ? (
+                              <Badge variant="pill" color="red">
+                                Render failed
+                              </Badge>
+                            ) : null}
                           </div>
                         </div>
                       </div>
@@ -227,6 +240,19 @@ export function AdminAnnouncementsView() {
                         <Button
                           size="sm"
                           variant="text"
+                          disabled={clip.renderStatus === 'PROCESSING'}
+                          onClick={() => setTrimming(clip)}
+                        >
+                          <ScissorsIcon
+                            size={14}
+                            aria-hidden
+                            className="mr-1.5"
+                          />
+                          Trim
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="text"
                           onClick={() => setPendingDelete(clip)}
                         >
                           <Trash2Icon
@@ -243,6 +269,15 @@ export function AdminAnnouncementsView() {
               )}
             </StudioPanel>
           </ViewShell>
+          <AnnouncementTrimDialog
+            clip={trimming}
+            onClose={() => setTrimming(null)}
+            onRendered={() => {
+              setTrimming(null);
+              setMsg('Rendering the trimmed clip…');
+              reload();
+            }}
+          />
           <ConfirmDialog
             isOpen={pendingDelete !== null}
             title={`Delete "${pendingDelete?.title ?? ''}"?`}

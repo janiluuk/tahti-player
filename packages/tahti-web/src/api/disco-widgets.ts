@@ -1,43 +1,11 @@
-import { apiBase } from './http';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
   type FetchMeta,
 } from './mode';
-
-async function requestJson<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<{ data: T; status: number }> {
-  const { headers: initHeaders, ...rest } = init ?? {};
-  const res = await fetch(`${apiBase()}${path}`, {
-    credentials: 'include',
-    ...rest,
-    headers: {
-      Accept: 'application/json',
-      ...(rest.body ? { 'Content-Type': 'application/json' } : {}),
-      ...initHeaders,
-    },
-  });
-  if (!res.ok) {
-    let detail = `${path} → ${res.status}`;
-    try {
-      const body = (await res.json()) as { error?: string; message?: string };
-      if (body.error || body.message) {
-        detail = body.error ?? body.message ?? detail;
-      }
-    } catch {
-      // ignore
-    }
-    throw new Error(detail);
-  }
-  if (res.status === 204) {
-    return { data: undefined as T, status: res.status };
-  }
-  return { data: (await res.json()) as T, status: res.status };
-}
+import { requestJson } from './request-json';
 
 export type DiscoWidgetScope = 'LISTENER' | 'ARTIST';
 
@@ -73,11 +41,10 @@ export type DiscoWidgetRenderItem = {
 };
 
 type ActionResult<T = void> =
-  | { error: null; data: T }
-  | { error: string; data?: undefined };
+  { error: null; data: T } | { error: string; data?: undefined };
 
 function emptyMeta(err: unknown): FetchMeta {
-  return allowMockFallback() ? failMeta(err) : apiErrorMeta(err);
+  return allowMockFallback() ? mockFallbackMeta(err) : apiErrorMeta(err);
 }
 
 export async function fetchDiscoWidgetStore(scope: DiscoWidgetScope): Promise<{
@@ -89,7 +56,7 @@ export async function fetchDiscoWidgetStore(scope: DiscoWidgetScope): Promise<{
   }
   try {
     const { data } = await requestJson<{ widgets: DiscoWidgetStoreItem[] }>(
-      `/api/disco-widgets/store?scope=${scope}`,
+      `/api/addons/store?scope=${scope}`,
     );
     return { data: data.widgets, meta: { source: 'api' } };
   } catch (err) {
@@ -108,8 +75,8 @@ export async function fetchDiscoWidgetInstalls(
   }
   const path =
     scope === 'ARTIST'
-      ? '/api/me/channel/disco-widgets/installs'
-      : '/api/me/disco-widgets/installs';
+      ? '/api/me/channel/addons/installs'
+      : '/api/me/addons/installs';
   try {
     const { data } = await requestJson<{ installs: DiscoWidgetInstallView[] }>(
       path,
@@ -129,8 +96,8 @@ export async function createDiscoWidgetInstall(
   }
   const path =
     scope === 'ARTIST'
-      ? '/api/me/channel/disco-widgets/installs'
-      : '/api/me/disco-widgets/installs';
+      ? '/api/me/channel/addons/installs'
+      : '/api/me/addons/installs';
   try {
     const { data } = await requestJson<DiscoWidgetInstallView>(path, {
       method: 'POST',
@@ -154,8 +121,8 @@ export async function patchDiscoWidgetInstall(
   }
   const path =
     scope === 'ARTIST'
-      ? `/api/me/channel/disco-widgets/installs/${id}`
-      : `/api/me/disco-widgets/installs/${id}`;
+      ? `/api/me/channel/addons/installs/${id}`
+      : `/api/me/addons/installs/${id}`;
   try {
     const { data } = await requestJson<DiscoWidgetInstallView>(path, {
       method: 'PATCH',
@@ -178,8 +145,8 @@ export async function removeDiscoWidgetInstall(
   }
   const path =
     scope === 'ARTIST'
-      ? `/api/me/channel/disco-widgets/installs/${id}`
-      : `/api/me/disco-widgets/installs/${id}`;
+      ? `/api/me/channel/addons/installs/${id}`
+      : `/api/me/addons/installs/${id}`;
   try {
     await requestJson<void>(path, { method: 'DELETE' });
     return { error: null, data: undefined };
@@ -199,7 +166,7 @@ export async function fetchDiscoverDiscoWidgets(): Promise<{
   }
   try {
     const { data } = await requestJson<{ widgets: DiscoWidgetRenderItem[] }>(
-      '/api/v1/disco-widgets/discover',
+      '/api/v1/addons/discover',
     );
     return { data: data.widgets, meta: { source: 'api' } };
   } catch (err) {
@@ -216,7 +183,7 @@ export async function fetchHomepageDiscoWidgets(): Promise<{
   }
   try {
     const { data } = await requestJson<{ widgets: DiscoWidgetRenderItem[] }>(
-      '/api/v1/disco-widgets/homepage',
+      '/api/v1/addons/homepage',
     );
     return { data: data.widgets, meta: { source: 'api' } };
   } catch (err) {
@@ -233,7 +200,7 @@ export async function fetchChannelDiscoWidgets(slug: string): Promise<{
   }
   try {
     const { data } = await requestJson<{ widgets: DiscoWidgetRenderItem[] }>(
-      `/api/v1/channels/${encodeURIComponent(slug)}/disco-widgets`,
+      `/api/v1/channels/${encodeURIComponent(slug)}/addons`,
     );
     return { data: data.widgets, meta: { source: 'api' } };
   } catch (err) {

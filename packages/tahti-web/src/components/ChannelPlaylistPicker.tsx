@@ -5,6 +5,7 @@ import { Button, Select } from '@tahti-player/ui';
 
 import { fetchStudioCollections } from '../api/studio';
 import type { StudioCollection } from '../api/studio-types';
+import { PageEmpty, PageError } from './PageStates';
 
 type Props = {
   /** Already-used playlist slugs on the page (still selectable to re-show). */
@@ -32,16 +33,22 @@ export function ChannelPlaylistPicker({
   const [playlists, setPlaylists] = useState<StudioCollection[]>([]);
   const [selectedSlug, setSelectedSlug] = useState(initialSlug ?? '');
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
+    setLoadError(null);
     void fetchStudioCollections().then((result) => {
       if (cancelled) {
         return;
       }
       const next = result.data.filter(isPlaylistCollection);
       setPlaylists(next);
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setSelectedSlug((current) => {
         if (
           initialSlug &&
@@ -56,7 +63,7 @@ export function ChannelPlaylistPicker({
     return () => {
       cancelled = true;
     };
-  }, [initialSlug]);
+  }, [initialSlug, attempt]);
 
   if (loading) {
     return (
@@ -64,11 +71,19 @@ export function ChannelPlaylistPicker({
     );
   }
 
+  if (loadError && playlists.length === 0) {
+    return (
+      <PageError
+        title="Could not load playlists"
+        description={loadError}
+        onRetry={() => setAttempt((current) => current + 1)}
+      />
+    );
+  }
+
   if (playlists.length === 0) {
     return (
-      <p className="text-foreground-secondary text-xs">
-        No playlists in your library yet. Create one under Studio → Collections.
-      </p>
+      <PageEmpty title="No playlists in your library yet. Create one under Studio → Collections." />
     );
   }
 

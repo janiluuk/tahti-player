@@ -1,4 +1,4 @@
-import { ChevronDownIcon, SlidersHorizontalIcon } from 'lucide-react';
+import { SlidersHorizontalIcon } from 'lucide-react';
 import { useMemo, useState, type FC } from 'react';
 
 import { FilterChips, Input } from '@tahti-player/ui';
@@ -149,33 +149,29 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
             placeholder="Artist name, username, genre…"
             className="min-w-48 flex-1"
           />
-          <button
-            type="button"
-            aria-pressed={activeOnly}
-            onClick={() => setActiveOnly((previous) => !previous)}
-            className={`inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
-              activeOnly
-                ? 'bg-foreground text-background border-foreground'
-                : 'border-border text-foreground hover:bg-foreground/10 bg-transparent'
-            }`}
-          >
-            Active now ({artists.filter(isDirectoryArtistActive).length})
-          </button>
-          <button
-            type="button"
-            aria-expanded={filtersExpanded}
-            onClick={() => setFiltersExpanded((previous) => !previous)}
-            className="border-border text-foreground-secondary hover:text-foreground inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium transition-colors"
-          >
-            <SlidersHorizontalIcon size={14} aria-hidden />
-            Filters
-            {activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
-            <ChevronDownIcon
-              size={14}
-              aria-hidden
-              className={`transition-transform ${filtersExpanded ? 'rotate-180' : ''}`}
-            />
-          </button>
+          <FilterChips
+            aria-label="Directory controls"
+            multiple
+            items={[
+              {
+                id: 'active',
+                label: `Active now (${artists.filter(isDirectoryArtistActive).length})`,
+              },
+              {
+                id: 'filters',
+                label: `Filters${activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}`,
+                icon: <SlidersHorizontalIcon size={14} aria-hidden />,
+              },
+            ]}
+            selected={[
+              ...(activeOnly ? ['active'] : []),
+              ...(filtersExpanded ? ['filters'] : []),
+            ]}
+            onChange={(ids) => {
+              setActiveOnly(ids.includes('active'));
+              setFiltersExpanded(ids.includes('filters'));
+            }}
+          />
           {genres.length > 0 ? (
             <FilterChips
               items={chipItems}

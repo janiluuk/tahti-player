@@ -6,6 +6,7 @@ import {
   PowerIcon,
   RadioTowerIcon,
   SearchIcon,
+  SparklesIcon,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -23,11 +24,12 @@ import {
   type AdminSelectsItem,
   type AdminSelectsStream,
 } from '../../../../api/admin';
-import { PageLoading } from '../../../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { TahtiRotationPlaylistEditor } from '../../../../components/TahtiRotationPlaylistEditor';
 import { usePolling } from '../../../../hooks/usePolling';
 import { usePlayerStore } from '../../../../stores/playerStore';
+import { SelectsGenerateDialog } from './SelectsGenerateDialog';
 
 function fmtDuration(sec: number | null): string {
   if (!sec) {
@@ -56,6 +58,7 @@ export function SelectsTab() {
   const [query, setQuery] = useState('');
   const [browse, setBrowse] = useState<AdminSelectsBrowseItem[]>([]);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [generateOpen, setGenerateOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [adding, setAdding] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -224,9 +227,9 @@ export function SelectsTab() {
           <div
             className={`flex size-10 shrink-0 items-center justify-center rounded-full ${
               stream.state === 'LIVE'
-                ? 'bg-accent-green/20 text-accent-green'
+                ? 'bg-accent-green/20 text-accent-green-strong'
                 : stream.state === 'STARTING'
-                  ? 'bg-accent-yellow/20 text-accent-yellow'
+                  ? 'bg-accent-yellow/20 text-accent-yellow-strong'
                   : 'bg-background-secondary text-foreground-secondary'
             }`}
           >
@@ -254,23 +257,31 @@ export function SelectsTab() {
       <StudioPanel
         title={`Current rotation (${items.length})`}
         action={
-          <Tooltip content="Add content to rotation" side="top">
+          <div className="flex items-center gap-2">
             <Button
-              size="icon-sm"
-              aria-label="Add content to rotation"
-              onClick={() => setPickerOpen(true)}
+              size="sm"
+              variant="secondary"
+              onClick={() => setGenerateOpen(true)}
             >
-              <PlusIcon size={16} aria-hidden />
+              <SparklesIcon size={14} aria-hidden className="mr-1.5" />
+              Fill from top list
             </Button>
-          </Tooltip>
+            <Tooltip content="Add content to rotation" side="top">
+              <Button
+                size="icon-sm"
+                aria-label="Add content to rotation"
+                onClick={() => setPickerOpen(true)}
+              >
+                <PlusIcon size={16} aria-hidden />
+              </Button>
+            </Tooltip>
+          </div>
         }
       >
         {loading ? (
           <PageLoading label="Loading Selects rotation…" />
         ) : items.length === 0 ? (
-          <p className="text-foreground-secondary py-4 text-center text-sm">
-            Nothing in rotation yet — use the plus button to add tracks.
-          </p>
+          <PageEmpty title="Nothing in rotation yet — use the plus button to add tracks." />
         ) : (
           <TahtiRotationPlaylistEditor
             items={items}
@@ -313,6 +324,16 @@ export function SelectsTab() {
         )}
       </StudioPanel>
 
+      <SelectsGenerateDialog
+        isOpen={generateOpen}
+        rotationSize={items.length}
+        onClose={() => setGenerateOpen(false)}
+        onGenerated={(message) => {
+          setGenerateOpen(false);
+          setMsg(message);
+          reload();
+        }}
+      />
       <Dialog.Root
         isOpen={pickerOpen}
         onClose={() => {
@@ -363,11 +384,13 @@ export function SelectsTab() {
             />
             <div className="border-border min-h-0 overflow-auto rounded-md border">
               {browse.length === 0 ? (
-                <p className="text-foreground-secondary p-4 text-sm">
-                  {query.trim()
-                    ? `No public archive tracks match “${query}”.`
-                    : 'No eligible archive tracks found.'}
-                </p>
+                <PageEmpty
+                  title={
+                    query.trim()
+                      ? `No public archive tracks match “${query}”.`
+                      : 'No eligible archive tracks found.'
+                  }
+                />
               ) : (
                 <ul
                   aria-label="Available tracks"
@@ -381,7 +404,9 @@ export function SelectsTab() {
                         key={item.id}
                         className={`flex items-center gap-3 px-3 py-2.5 text-sm ${index % 2 === 1 ? 'bg-background-secondary/40' : 'bg-background'}`}
                       >
-                        <button
+                        <Button
+                          variant="plain"
+                          size="flexible"
                           type="button"
                           disabled={already}
                           aria-label={`${selected ? 'Deselect' : 'Select'} ${item.title}`}
@@ -397,10 +422,10 @@ export function SelectsTab() {
                               return next;
                             });
                           }}
-                          className={`border-border flex size-5 shrink-0 items-center justify-center rounded border ${selected ? 'bg-primary text-primary-foreground' : 'bg-background'} disabled:opacity-40`}
+                          className={`border-border flex size-5 shrink-0 items-center justify-center rounded border whitespace-normal active:scale-100 ${selected ? 'bg-primary text-primary-foreground' : 'bg-background'} disabled:opacity-40`}
                         >
                           {selected && <CheckIcon size={13} aria-hidden />}
-                        </button>
+                        </Button>
                         <div className="min-w-0 flex-1">
                           <div className="truncate font-medium">
                             {item.title}

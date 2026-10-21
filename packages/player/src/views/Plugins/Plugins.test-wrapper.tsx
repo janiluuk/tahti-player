@@ -11,10 +11,10 @@ export const PluginsWrapper = {
     );
     await userEvent.click(
       await component.findByRole('button', {
-        name: 'Plugins',
+        name: 'Add-ons',
       }),
     );
-    await screen.findByRole('heading', { name: 'Plugins' });
+    await screen.findByRole('heading', { name: 'Add-ons' });
 
     return component;
   },
@@ -46,7 +46,7 @@ export const PluginsWrapper = {
       .map((item) => new PluginStoreItemWrapper(item));
   },
   async searchStore(query: string): Promise<void> {
-    const input = screen.getByPlaceholderText('Search plugins...');
+    const input = screen.getByPlaceholderText('Search add-ons...');
     await userEvent.clear(input);
     await userEvent.type(input, query);
   },

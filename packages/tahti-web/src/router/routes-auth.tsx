@@ -1,0 +1,112 @@
+import { createRoute, redirect } from '@tanstack/react-router';
+
+import { appLayoutRoute } from './router-core';
+import {
+  ForgotPasswordView,
+  JoinView,
+  LoginView,
+  NewsletterStatusView,
+  ResetPasswordView,
+  SetupPasswordView,
+  SignupPaymentView,
+  StatusView,
+  VerifyView,
+} from './router-lazy-views';
+
+export const joinRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/join',
+  component: JoinView,
+});
+
+/** Legacy /apply and /signup URLs — land on Join, which already explains
+ * whether registration is open, rather than 404ing an inbound link. */
+export const applyRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/apply',
+  beforeLoad: () => {
+    throw redirect({ to: '/join' });
+  },
+});
+
+export const signupRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/signup',
+  beforeLoad: () => {
+    throw redirect({ to: '/join' });
+  },
+});
+
+export const signupPaymentRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/signup/payment',
+  component: SignupPaymentView,
+});
+
+export const verifyRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/verify',
+  component: VerifyView,
+});
+
+export const setupPasswordRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/setup-password',
+  component: SetupPasswordView,
+});
+
+export const forgotPasswordRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/forgot-password',
+  component: ForgotPasswordView,
+});
+
+export const resetPasswordRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/reset-password',
+  component: ResetPasswordView,
+});
+
+export const loginRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/login',
+  component: LoginView,
+});
+
+export const accountRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/account',
+  beforeLoad: () => {
+    throw redirect({
+      to: '/settings/$section',
+      params: { section: 'account' },
+    });
+  },
+});
+
+export const statusRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/status',
+  component: StatusView,
+});
+
+export const newsletterConfirmedRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/newsletter/confirmed',
+  component: () => <NewsletterStatusView status={{ kind: 'confirmed' }} />,
+});
+
+export const newsletterUnsubscribedRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/newsletter/unsubscribed',
+  component: () => <NewsletterStatusView status={{ kind: 'unsubscribed' }} />,
+});
+
+export const newsletterUnsubscribeRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/newsletter/unsubscribe/$token',
+  component: function NewsletterUnsubscribe() {
+    const { token } = newsletterUnsubscribeRoute.useParams();
+    return <NewsletterStatusView status={{ kind: 'unsubscribe', token }} />;
+  },
+});

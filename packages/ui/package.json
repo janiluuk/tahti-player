@@ -1,15 +1,22 @@
 {
   "name": "@tahti-player/ui",
-  "version": "0.0.10",
+  "version": "0.0.19",
   "description": "Shared UI component library for Tahti",
   "type": "module",
   "main": "./src/index.ts",
+  "sideEffects": [
+    "**/*.css",
+    "./src/index.ts"
+  ],
   "module": "./src/index.ts",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./src/index.ts",
       "types": "./dist/index.d.ts"
+    },
+    "./test": {
+      "import": "./src/test/index.ts"
     }
   },
   "files": [
@@ -35,10 +42,10 @@
     "@fontsource/dm-sans": "^5.2.6",
     "@fontsource/space-mono": "^5.2.9",
     "@headlessui/react": "^2.2.7",
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@tahti-player/eslint-config": "workspace:*",
     "@tahti-player/model": "workspace:*",
     "@tahti-player/tailwind-config": "workspace:*",
-    "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@tanstack/react-router": "^1.131.2",
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/react-virtual": "^3.13.12",
@@ -48,11 +55,11 @@
     "d3-shape": "^3.2.0",
     "lodash-es": "^4.17.21",
     "lucide-react": "^0.542.0",
-    "luxon": "^3.7.1",
     "react-activity-calendar": "3.2.1",
     "recharts": "^3.9.2",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "wavesurfer.js": "^8.0.3"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.11",
@@ -62,7 +69,6 @@
     "@types/d3-scale": "^4.0.9",
     "@types/d3-shape": "^3.1.8",
     "@types/lodash-es": "^4.17.12",
-    "@types/luxon": "^3.7.1",
     "@types/node": "^25.4.0",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",

@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { GlobalSearch } from '@tahti-web/components/GlobalSearch';
-import { userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 
-const meta: Meta<typeof GlobalSearch> = {
+const meta: Meta<NonNullable<Parameters<typeof GlobalSearch>[0]>> = {
   title: 'Tahti/Widgets/GlobalSearch',
   component: GlobalSearch,
   parameters: { layout: 'padded' },
@@ -28,5 +28,12 @@ export const WithResults: Story = {
     const input = canvas.getByRole('combobox');
     await userEvent.click(input);
     await userEvent.type(input, 'Northern', { delay: 30 });
+    const listbox = await canvas.findByRole('listbox');
+    await expect(input).toHaveAttribute('aria-expanded', 'true');
+    await waitFor(() =>
+      expect(
+        listbox.querySelector('#search-option-artist-northern-lights'),
+      ).toBeTruthy(),
+    );
   },
 };

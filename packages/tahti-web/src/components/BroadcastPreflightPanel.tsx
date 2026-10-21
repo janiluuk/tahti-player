@@ -12,7 +12,7 @@ import {
 } from '../api/broadcast';
 import { fetchShowSeries } from '../api/shows';
 import { fetchMeProfile } from '../api/studio-extras';
-import { PageLoading } from './PageStates';
+import { PageError, PageLoading } from './PageStates';
 import { RoundImageUploadButton } from './RoundImageUploadButton';
 
 type Props = {
@@ -46,6 +46,8 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
   const [series, setSeries] = useState<
     Array<{ id: string; title: string; nextEpisodeNumber: number }>
   >([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -58,6 +60,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
         return;
       }
       const loadedPreflight = preflightResult.data;
+      setLoadError(preflightResult.meta.reason ?? null);
       if (loadedPreflight) {
         setPreflight(loadedPreflight);
         setTitle(loadedPreflight.title ?? '');
@@ -83,7 +86,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   if (!loaded) {
     return <PageLoading label="Loading show info…" />;
@@ -91,9 +94,14 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
 
   if (!preflight) {
     return (
-      <p className="text-foreground-secondary text-sm">
-        Show details could not be loaded.
-      </p>
+      <PageError
+        title="Could not load your show details"
+        description={loadError ?? undefined}
+        onRetry={() => {
+          setLoaded(false);
+          setAttempt((n) => n + 1);
+        }}
+      />
     );
   }
 
@@ -140,7 +148,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
   return (
     <section className="border-border bg-background-secondary/35 rounded-xl border p-3 shadow-sm sm:p-4">
       <div className="mb-3 flex items-start gap-3">
-        <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg">
+        <div className="bg-primary/10 text-primary-strong flex size-9 shrink-0 items-center justify-center rounded-lg">
           <ImageIcon size={18} aria-hidden />
         </div>
         <div className="min-w-0 flex-1">
@@ -261,7 +269,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
 
 export function ShowInfoConfirmed() {
   return (
-    <span className="text-accent-green inline-flex items-center gap-1 text-xs font-semibold">
+    <span className="text-accent-green-strong inline-flex items-center gap-1 text-xs font-semibold">
       <CheckCircle2Icon size={15} aria-hidden />
       Confirmed
     </span>

@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import {
   BanknoteIcon,
   BuildingIcon,
+  EyeIcon,
   FileTextIcon,
   GavelIcon,
   ScrollTextIcon,
@@ -10,7 +11,14 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Input, SaveButton, Select, Textarea } from '@tahti-player/ui';
+import {
+  Button,
+  Input,
+  SaveButton,
+  Select,
+  StatTile,
+  Textarea,
+} from '@tahti-player/ui';
 
 import {
   createAdminResolution,
@@ -22,8 +30,10 @@ import {
   type AdminGovernanceOverview,
 } from '../../../../api/admin';
 import type { BoardResolution } from '../../../../api/types';
+import { PageEmpty } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import type { AdminGovernanceTabId } from '../governanceNav';
+import { LegalHoldControl } from '../records/LegalHoldControl';
 
 type ResolutionOutcome = 'PASSED' | 'FAILED' | 'DEFERRED';
 
@@ -165,67 +175,60 @@ export function OverviewTab() {
         description="Voting and discussion activity across motions and feature topics."
       >
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="border-border bg-background-secondary/35 rounded-lg border p-3">
-            <p className="text-foreground-secondary text-xs uppercase">
-              Votes recorded
-            </p>
-            <p className="mt-1 text-2xl font-bold">{totalVotes}</p>
-          </div>
-          <div className="border-border bg-background-secondary/35 rounded-lg border p-3">
-            <p className="text-foreground-secondary text-xs uppercase">
-              Discussions
-            </p>
-            <p className="mt-1 text-2xl font-bold">{discussionCount}</p>
-            <p className="text-foreground-secondary text-xs">
-              Subjects with comments
-            </p>
-          </div>
-          <div className="border-border bg-background-secondary/35 rounded-lg border p-3">
-            <p className="text-foreground-secondary text-xs uppercase">
-              Comments
-            </p>
-            <p className="mt-1 text-2xl font-bold">{totalComments}</p>
-            <p className="text-foreground-secondary text-xs">
-              Recorded governance comments
-            </p>
-          </div>
+          <StatTile value={totalVotes} label="Votes recorded" />
+          <StatTile
+            value={discussionCount}
+            label="Discussions"
+            sublabel="Subjects with comments"
+          />
+          <StatTile
+            value={totalComments}
+            label="Comments"
+            sublabel="Recorded governance comments"
+          />
         </div>
 
-        <div className="border-border mt-4 overflow-x-auto rounded-lg border">
+        <div
+          className="border-border focus-visible:ring-primary mt-4 overflow-x-auto rounded-lg border outline-none focus-visible:ring-2"
+          role="region"
+          aria-labelledby="governance-voting-activity"
+          tabIndex={0}
+        >
           <div className="border-border border-b px-3 py-2">
-            <h3 className="text-xs font-semibold tracking-wide uppercase">
+            <h3
+              id="governance-voting-activity"
+              className="text-xs font-semibold tracking-wide uppercase"
+            >
               Recent voting activity
             </h3>
           </div>
           {votingActivity.length === 0 ? (
-            <p className="text-foreground-secondary px-3 py-4 text-sm">
-              No voting activity recorded.
-            </p>
+            <PageEmpty title="No voting activity recorded." />
           ) : (
             <ul className="divide-border divide-y">
               {votingActivity.slice(0, 12).map((entry) => (
                 <li
                   key={entry.id}
-                  className="flex min-w-[38rem] items-start gap-3 px-3 py-2.5 text-sm"
+                  className="flex flex-wrap items-start gap-x-3 gap-y-1 px-3 py-2.5 text-sm sm:min-w-[38rem] sm:flex-nowrap"
                 >
                   <time
                     dateTime={entry.createdAt}
-                    className="text-foreground-secondary w-32 shrink-0 text-xs"
+                    className="text-foreground-secondary shrink-0 text-xs sm:w-32"
                   >
                     {new Date(entry.createdAt).toLocaleString([], {
                       dateStyle: 'short',
                       timeStyle: 'short',
                     })}
                   </time>
-                  <span className="w-36 shrink-0 font-medium">
+                  <span className="min-w-0 font-medium break-words sm:w-36 sm:shrink-0">
                     {entry.actorDisplayName ??
                       entry.actorUsername ??
                       entry.actorId}
                   </span>
-                  <span className="text-foreground-secondary w-32 shrink-0 text-xs">
+                  <span className="text-foreground-secondary shrink-0 text-xs sm:w-32">
                     {activityAction(entry)}
                   </span>
-                  <span className="min-w-0 truncate">
+                  <span className="min-w-0 basis-full break-words sm:basis-auto sm:truncate">
                     {activitySubject(entry)}
                   </span>
                 </li>
@@ -251,6 +254,7 @@ export function OverviewTab() {
           <Input
             value={resolutionTitle}
             onChange={(event) => setResolutionTitle(event.target.value)}
+            aria-label="Resolution title"
             placeholder="Resolution title"
           />
           <Select
@@ -267,6 +271,7 @@ export function OverviewTab() {
           <Textarea
             value={resolutionBody}
             onChange={(event) => setResolutionBody(event.target.value)}
+            aria-label="Resolution body"
             placeholder="Resolution body"
             rows={4}
             className="sm:col-span-2"
@@ -275,18 +280,21 @@ export function OverviewTab() {
             value={resolutionFor}
             onChange={(event) => setResolutionFor(event.target.value)}
             inputMode="numeric"
+            aria-label="Votes for"
             placeholder="Votes for"
           />
           <Input
             value={resolutionAgainst}
             onChange={(event) => setResolutionAgainst(event.target.value)}
             inputMode="numeric"
+            aria-label="Votes against"
             placeholder="Votes against"
           />
           <Input
             value={resolutionAbstain}
             onChange={(event) => setResolutionAbstain(event.target.value)}
             inputMode="numeric"
+            aria-label="Abstentions"
             placeholder="Abstentions"
           />
         </div>
@@ -348,9 +356,19 @@ export function OverviewTab() {
                     });
                   }}
                 >
+                  <EyeIcon size={14} aria-hidden className="mr-1.5" />
                   Publish
                 </Button>
               )}
+              <div className="w-full">
+                <LegalHoldControl
+                  kind="resolution"
+                  id={resolution.id}
+                  title={resolution.title}
+                  legalHoldAt={resolution.legalHoldAt}
+                  legalHoldReason={resolution.legalHoldReason}
+                />
+              </div>
             </li>
           ))}
         </ul>

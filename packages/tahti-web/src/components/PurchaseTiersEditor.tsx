@@ -6,9 +6,12 @@ import { Button, Dialog, Input, Textarea, Toggle } from '@tahti-player/ui';
 import {
   createPurchaseTier,
   fetchMyPurchaseTiers,
+  fetchStoreSettings,
   setPurchaseTierActive,
+  setStoreEnabled,
   type PurchaseTierRow,
 } from '../api/purchase-tiers';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 function euros(cents: number): string {
   return `€${(cents / 100).toFixed(cents % 100 === 0 ? 0 : 2)}`;
@@ -16,6 +19,8 @@ function euros(cents: number): string {
 
 export function PurchaseTiersEditor() {
   const [tiers, setTiers] = useState<PurchaseTierRow[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [name, setName] = useState('Track');
   const [eurosAmt, setEurosAmt] = useState('5');
@@ -23,16 +28,46 @@ export function PurchaseTiersEditor() {
   const [priceOptional, setPriceOptional] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [storeEnabled, setStoreEnabledState] = useState<boolean | null>(null);
+  const [savingStore, setSavingStore] = useState(false);
+
+  const [storeError, setStoreError] = useState<string | null>(null);
 
   const reload = () => {
     void fetchMyPurchaseTiers().then((r) => {
       setTiers(r.data);
+      setLoadError(r.meta.source === 'api' ? (r.meta.reason ?? null) : null);
+      setLoaded(true);
+    });
+  };
+
+  const reloadStoreSettings = () => {
+    void fetchStoreSettings().then((r) => {
+      if (r.ok) {
+        setStoreEnabledState(r.storeEnabled);
+        setStoreError(null);
+      } else {
+        setStoreError(r.error);
+      }
     });
   };
 
   useEffect(() => {
     reload();
+    reloadStoreSettings();
   }, []);
+
+  const toggleStore = async (next: boolean) => {
+    setSavingStore(true);
+    setMsg(null);
+    const r = await setStoreEnabled(next);
+    setSavingStore(false);
+    if (!r.ok) {
+      setMsg(r.error);
+      return;
+    }
+    setStoreEnabledState(r.storeEnabled);
+  };
 
   const closeCreate = () => {
     setCreateOpen(false);
@@ -45,6 +80,29 @@ export function PurchaseTiersEditor() {
 
   return (
     <div className="flex flex-col gap-4">
+      {storeEnabled === null && storeError ? (
+        <PageError
+          title="Could not load your store settings"
+          description={storeError}
+          onRetry={reloadStoreSettings}
+        />
+      ) : null}
+      {storeEnabled !== null && (
+        <div className="border-border flex items-center justify-between gap-3 rounded-lg border px-3 py-2">
+          <div>
+            <p className="text-sm font-medium">Store section</p>
+            <p className="text-foreground-secondary text-xs">
+              Show your active tiers in a Store section on your artist page.
+            </p>
+          </div>
+          <Toggle
+            label="Show a Store section on your artist page"
+            checked={storeEnabled}
+            disabled={savingStore}
+            onChange={(next) => void toggleStore(next)}
+          />
+        </div>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-foreground-secondary text-xs">
           One-time purchase tiers for individual tracks — assign one from a
@@ -64,12 +122,19 @@ export function PurchaseTiersEditor() {
         </Button>
       </div>
 
-      {tiers.length === 0 ? (
-        <div className="border-border flex flex-col items-center gap-3 rounded-lg border px-4 py-6 text-center">
-          <p className="text-foreground-secondary text-sm">
-            No purchase tiers yet.
-          </p>
-        </div>
+      {!loaded ? (
+        <PageLoading label="Loading tiers…" />
+      ) : loadError && tiers.length === 0 ? (
+        <PageError
+          title="Could not load your purchase tiers"
+          description={loadError}
+          onRetry={reload}
+        />
+      ) : tiers.length === 0 ? (
+        <PageEmpty
+          title="No purchase tiers yet"
+          description="Add a tier, then assign it to a track from its edit dialog."
+        />
       ) : (
         <ul className="flex flex-col gap-2">
           {tiers.map((t) => (

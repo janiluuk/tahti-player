@@ -42,6 +42,9 @@ export function showNotificationToast(
     description,
     duration: sticky ? STICKY_TOAST_DURATION : undefined,
     closeButton: sticky,
+    // Sticky policy toasts sit top-center so they do not cover the queue
+    // pane or Settings modal in the bottom-right.
+    position: sticky ? 'top-center' : undefined,
     ...(actionLabel && onAction
       ? { action: { label: actionLabel, onClick: onAction } }
       : {}),

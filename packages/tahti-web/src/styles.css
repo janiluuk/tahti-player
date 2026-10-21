@@ -36,13 +36,30 @@ body,
   overflow-y: auto;
 }
 
+@keyframes tahti-rail-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tahti-rail-panel-enter {
+  animation: tahti-rail-panel-enter 0.14s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tahti-rail-panel-enter {
+    animation: none;
+  }
+}
+
 :root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,
-:root[data-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
-  background-color: color-mix(
-    in srgb,
-    var(--background-secondary) 72%,
-    transparent
-  );
+:root[data-custom-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
+  background-color: var(--background);
   transition:
     background-color 240ms ease,
     border-color 180ms ease,
@@ -70,7 +87,7 @@ body,
   :root[data-theme-id='nuclear:tahti-dark']
     :is(button, a, [role='button'], [role='tab'], summary),
   :root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,
-  :root[data-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
+  :root[data-custom-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
     transition-duration: 0.01ms;
   }
 }
@@ -81,6 +98,16 @@ body,
   min-width: 0;
 }
 
+/* Studio pages must share one content origin (top-left). Per-view mx-auto /
+ * max-w-* wrappers otherwise shift the left edge when switching routes. */
+.studio-page-layout {
+  margin-inline: 0 !important;
+  max-width: none !important;
+  width: 100% !important;
+  align-self: stretch;
+  box-sizing: border-box;
+}
+
 @media (max-width: 639px) {
   .studio-page-layout,
   .admin-page-layout,
@@ -88,6 +115,10 @@ body,
     box-sizing: border-box;
     width: 100%;
     padding-inline: 0.25rem;
+  }
+
+  .studio-page-layout {
+    padding-block: 0.5rem;
   }
 }
 
@@ -101,6 +132,10 @@ body,
     padding-inline: 0.5rem !important;
     justify-self: stretch;
     column-gap: 1.5rem;
+  }
+
+  .studio-page-layout {
+    padding-block: 0.5rem;
   }
 
   /* Studio + Admin both use horizontal section tabs (AdminPageLayout nests

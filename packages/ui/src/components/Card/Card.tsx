@@ -13,21 +13,17 @@ type CardProps = {
   className?: string;
   onClick?: () => void;
   imageReveal?: boolean;
-  /** Centered play overlay on the cover. */
+  surface?: 'brand' | 'neutral';
   onPlay?: () => void;
   playLabel?: string;
   pauseLabel?: string;
   isPlaying?: boolean;
   playDisabled?: boolean;
-  /** Queue overlay on the cover. */
   onQueue?: () => void;
   queueLabel?: string;
   queueDisabled?: boolean;
-  /** Favorite overlay on the cover. */
   onFavorite?: () => void;
   favorited?: boolean;
-  /** Click on the title text specifically — separate from `onClick`
-   * (artwork) when the two should navigate differently. */
   onTitleClick?: () => void;
 };
 
@@ -39,6 +35,7 @@ export const Card: FC<CardProps> = ({
   className,
   onClick,
   imageReveal = true,
+  surface = 'brand',
   onPlay,
   playLabel,
   pauseLabel,
@@ -52,14 +49,23 @@ export const Card: FC<CardProps> = ({
   onTitleClick,
 }) => {
   const hasOverlays = Boolean(onPlay || onQueue || onFavorite);
+  const isNeutral = surface === 'neutral';
+  const titleClass = isNeutral ? 'text-foreground' : 'text-primary-foreground';
+  const subtitleClass = isNeutral
+    ? 'text-foreground-secondary'
+    : 'text-primary-foreground';
 
   return (
     <div
       data-testid="card"
+      data-surface={surface}
       role={onClick && !hasOverlays ? 'button' : undefined}
       tabIndex={onClick && !hasOverlays ? 0 : undefined}
       className={cn(
-        'text-primary-foreground bg-primary border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all',
+        'border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all',
+        isNeutral
+          ? 'bg-background-secondary text-foreground'
+          : 'text-primary-foreground bg-primary',
         onClick &&
           !hasOverlays &&
           'hover:translate-x-shadow-x hover:translate-y-shadow-y cursor-pointer hover:shadow-none',
@@ -78,7 +84,7 @@ export const Card: FC<CardProps> = ({
       }
     >
       <Box
-        variant="primary"
+        variant={isNeutral ? 'tertiary' : 'primary'}
         shadow="none"
         className="relative aspect-square w-full items-center justify-center overflow-hidden p-0"
       >
@@ -86,7 +92,7 @@ export const Card: FC<CardProps> = ({
           <MediaArtwork
             size="fill"
             src={src}
-            alt={typeof title === 'string' ? title : undefined}
+            alt={typeof title === 'string' ? title : ''}
             imageReveal={imageReveal}
             onPlay={onPlay}
             playLabel={playLabel}
@@ -121,20 +127,23 @@ export const Card: FC<CardProps> = ({
                   e.stopPropagation();
                   onTitleClick();
                 }}
-                className="text-primary-foreground block w-full truncate text-left text-sm font-bold hover:underline"
+                className={cn(
+                  'block w-full truncate text-left text-sm font-bold hover:underline',
+                  titleClass,
+                )}
               >
                 {title}
               </button>
             ) : (
               <div
                 data-testid="card-title"
-                className="text-primary-foreground truncate text-sm font-bold"
+                className={cn('truncate text-sm font-bold', titleClass)}
               >
                 {title}
               </div>
             ))}
           {subtitle && (
-            <div className="text-primary-foreground truncate text-xs opacity-60">
+            <div className={cn('truncate text-xs', subtitleClass)}>
               {subtitle}
             </div>
           )}

@@ -42,9 +42,9 @@ export const KeyboardShortcutsWrapper = {
         if (!element) {
           return [];
         }
-        return within(element)
-          .getAllByRole('kbd')
-          .map((kbd) => kbd.textContent);
+        return Array.from(element.querySelectorAll('kbd')).map(
+          (kbd) => kbd.textContent,
+        );
       },
       get isRecording() {
         if (!element) {

@@ -4,6 +4,10 @@ description: Make CORS-free HTTP requests from plugins using a standard fetch AP
 
 # HTTP
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 ## HTTP API for plugins
 
 Desktop apps can make HTTP requests without CORS restrictions, but plugin code runs in a browser context. The HTTP API bridges this gap by routing plugin requests through Tauri's native HTTP client.

@@ -1,16 +1,16 @@
-import { Link } from '@tanstack/react-router';
 import { RadioTowerIcon } from 'lucide-react';
 
-import { Box, Button, MediaArtwork, Tooltip } from '@tahti-player/ui';
+import { Box, ButtonLink, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import { resolvePublicVisualizerPreset } from '../api/channel-design';
+import { prefetchHls } from '../lib/hlsLoader';
 import { ChannelVisualizer, type VisualColorScheme } from './ChannelVisualizer';
 
 export type RadioListItemProps = {
   name: string;
   coverUrl?: string | null;
   /** Already-resolved status line — now-playing title/artist, "24/7
-   * community stream", or "Temporarily offline". */
+   * community stream", or "Off air". */
   subtitle: string;
   isPlaying: boolean;
   /** True when there's no live stream to play (e.g. no hlsUrl yet). */
@@ -57,7 +57,11 @@ export function RadioListItem({
           />
         </div>
       ) : null}
-      <div className="relative z-10 flex min-w-0 items-center gap-3">
+      <div
+        className="relative z-10 flex min-w-0 items-center gap-3"
+        onPointerEnter={disabled ? undefined : prefetchHls}
+        onFocus={disabled ? undefined : prefetchHls}
+      >
         <MediaArtwork
           src={coverUrl}
           alt=""
@@ -81,11 +85,14 @@ export function RadioListItem({
       </div>
       <div className="relative z-10 flex flex-wrap items-center gap-2">
         <Tooltip content="Open radio" side="top">
-          <Link to={openHref}>
-            <Button size="icon-sm" variant="secondary" aria-label="Open radio">
-              <RadioTowerIcon size={16} aria-hidden />
-            </Button>
-          </Link>
+          <ButtonLink
+            to={openHref}
+            size="icon-sm"
+            variant="secondary"
+            aria-label="Open radio"
+          >
+            <RadioTowerIcon size={16} aria-hidden />
+          </ButtonLink>
         </Tooltip>
       </div>
     </Box>

@@ -44,6 +44,7 @@ export function PlayableTrackContextMenu({
   const user = useAuthStore((state) => state.user);
   const [createPlaylistOpen, setCreatePlaylistOpen] = useState(false);
   const [playlists, setPlaylists] = useState<StudioCollection[]>([]);
+  const [playlistsError, setPlaylistsError] = useState<string | null>(null);
   const [playlistFilter, setPlaylistFilter] = useState('');
   const [addingSlug, setAddingSlug] = useState<string | null>(null);
   const play = usePlayerStore((state) => state.play);
@@ -63,6 +64,7 @@ export function PlayableTrackContextMenu({
   useEffect(() => {
     if (!user || !soundId) {
       setPlaylists([]);
+      setPlaylistsError(null);
       return;
     }
     let cancelled = false;
@@ -77,6 +79,9 @@ export function PlayableTrackContextMenu({
           collection.style === 'CUSTOM',
       );
       setPlaylists(rows.length > 0 ? rows : result.data);
+      setPlaylistsError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
     });
     return () => {
       cancelled = true;
@@ -167,7 +172,7 @@ export function PlayableTrackContextMenu({
               <HeartIcon
                 size={16}
                 className={
-                  isFavorite ? 'text-accent-red fill-current' : undefined
+                  isFavorite ? 'text-accent-red-strong fill-current' : undefined
                 }
               />
             }
@@ -201,6 +206,16 @@ export function PlayableTrackContextMenu({
                       data-testid="playlist-filter-input"
                     />
                   </div>
+                ) : null}
+                {playlistsError && playlists.length === 0 ? (
+                  <TrackContextMenu.Action
+                    icon={<ListPlusIcon size={16} />}
+                    disabled
+                    onClick={() => undefined}
+                    data-testid="playlist-submenu-error"
+                  >
+                    Could not load playlists
+                  </TrackContextMenu.Action>
                 ) : null}
                 {visiblePlaylists.map((collection) => (
                   <TrackContextMenu.Action

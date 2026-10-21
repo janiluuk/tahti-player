@@ -5,6 +5,7 @@ import {
   CalendarHeatmap,
   DayOfWeekChart,
   FilterChips,
+  HorizontalScroll,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -13,9 +14,8 @@ import {
   type StatsPlays,
   type StatsPlaysRange,
 } from '../../api/studio-extras';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
 import { StatNumber } from '../../components/tahti/StatNumber';
@@ -83,7 +83,6 @@ export function StudioStatsDetailView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/stats" />
         <p className="text-foreground-secondary -mb-2 text-xs">
           <Link
             to="/studio/insights"
@@ -92,7 +91,10 @@ export function StudioStatsDetailView() {
             ← Insights
           </Link>
         </p>
-        <ViewShell title="Insights" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell
+          title="Insights"
+          classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+        >
           <FilterChips
             items={RANGES}
             selected={range}
@@ -119,11 +121,9 @@ export function StudioStatsDetailView() {
                 </p>
 
                 {data.daily.length === 0 ? (
-                  <p className="text-foreground-secondary mt-4 text-sm">
-                    No daily points in this range.
-                  </p>
+                  <PageEmpty title="No daily activity in this range" />
                 ) : useHeatmap ? (
-                  <div className="mt-4 overflow-x-auto">
+                  <HorizontalScroll label="Daily activity" className="mt-4">
                     <CalendarHeatmap
                       days={data.daily.map((day) => ({
                         date: day.date,
@@ -139,7 +139,7 @@ export function StudioStatsDetailView() {
                       formatValue={(value) => `${value.toLocaleString()} plays`}
                       formatDate={formatAxisDate}
                     />
-                  </div>
+                  </HorizontalScroll>
                 ) : (
                   <div className="mt-4 h-48 w-full">
                     <DayOfWeekChart

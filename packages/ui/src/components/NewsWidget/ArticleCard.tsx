@@ -31,6 +31,16 @@ export const ArticleCard: FC<ArticleCardProps> = ({ item, className }) => {
         className,
       )}
       onClick={item.onClick}
+      onKeyDown={
+        item.onClick
+          ? (event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                item.onClick?.();
+              }
+            }
+          : undefined
+      }
       role={item.onClick ? 'button' : undefined}
       tabIndex={item.onClick ? 0 : undefined}
     >

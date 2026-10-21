@@ -5,26 +5,54 @@ When a task is finished → fold into [`HISTORY.md`](HISTORY.md), delete the tod
 
 Status values: `open` | `blocked` | `partial`.
 
-| Status | File | One-line |
-| --- | --- | --- |
-| open | [player-performance-optimizations.md](player-performance-optimizations.md) | (Later) Release-build CPU/native-memory profiling, then startup, queue, playback, visualizer and loading optimizations |
-| partial | [channel-designer-background-section-fixes.md](channel-designer-background-section-fixes.md) | Designer background section; design decision remains |
-| blocked | [channelview-move-player-to-stage.md](channelview-move-player-to-stage.md) | Player-in-backdrop extraction needs a design decision |
-| partial | [desktop-pro-library.md](desktop-pro-library.md) | Native capability signal shipped; durable import/play, catalog phases, and Soulseek remain |
-| partial | [atlas-navigation-structure-widget.md](atlas-navigation-structure-widget.md) | Atlas navigation draft widget supports persisted reorder/add/remove; runtime wiring intentionally deferred |
-| partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |
-| open | [governance-gap-list.md](governance-gap-list.md) | Governance gaps: 16 of 18 shipped; remaining bulk comments (#2), voting window (#15, backend-blocked) |
-| partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Press-kit lightbox delete shipped 2026-09-10; admin radio logo blocked on redesign |
-| open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist; PluginRegistryHost façade + §6 contract tests added 2026-09-08 |
-| partial | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Discovery/Add-ons category done 2026-09-08; all-13-category scoping still open |
-| partial | [release-player-workflow-broken.md](release-player-workflow-broken.md) | Root cause fixed 2026-09-07; user needs to run 2 `gh secret set` commands to finish |
-| partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |
-| open | [tahti-cli-tool.md](tahti-cli-tool.md) | CLI (gumroad-cli-inspired) wrapping api-client — list library items, maybe TUI player |
-| open | [tahti-org-ci-skip-full-e2e.md](tahti-org-ci-skip-full-e2e.md) | (tahti-org) CI always runs full e2e on every push/PR; needs a skip/path-filter strategy |
-| partial | [listen-widget-hearthis-config-and-set-embed-bug.md](listen-widget-hearthis-config-and-set-embed-bug.md) | Auto-fill username + set-embed bug shipped; icon-button config UI needs user to point at specifics |
-| partial | [codebase-refactor-hotspots.md](codebase-refactor-hotspots.md) | http + PluginStore Radio/Service/Themes + admin radio/storage/addons peeled; SettingsPanels / client domains / remaining admin still open |
-| partial | [performance-cleanup-bulk.md](performance-cleanup-bulk.md) | Phases 1–3 + 5 done; Phase 4: PluginStore + admin radio/storage/addons peeled; SettingsPanels / client / studio / router still open |
-| open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles; feed/posts widgets |
+Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
+
+## Launch: beta.tahti.live → main site
+
+| Status  | File | One-line |
+| ------- | ---- | -------- |
+| partial | [beta-launch-findings.md](beta-launch-findings.md) | Domain switch, Tahti Radio HLS 404, #879 to prod, test releases on the front page; open Studio/listener/platform findings from the beta e2e run and the legacy parity sweep |
+| blocked | [final-season-hardening.md](final-season-hardening.md) | Cutover L ops (vend SPA, prod upstream, runbook); DNS map filled — you flip |
+| blocked | [first-100-users-infra.md](first-100-users-infra.md) | Ops verify backups/disk + deploy Swarm fail-closed (#872/#873/#1079 merged); host access required |
+| open    | [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md) | Radio Nova + NRJ (Bauer AAC streams) do not play in production; reproduce in a real browser |
+| partial | [finnish-radio-now-playing-scrapers.md](finnish-radio-now-playing-scrapers.md) | ICY-only for YleX/Rock/Suomipop; left: org UA + kill-switch |
+| blocked | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live verify Centrifugo Send on brand-new channel — playbook ready |
+
+## Engineering backlog (no external blocker)
+
+| Status  | File | One-line |
+| ------- | ---- | -------- |
+| open    | [batch-88-wavesurfer-thirty.md](batch-88-wavesurfer-thirty.md) | Thirty slices: wavesurfer.js Waveform in ui, large preview migration, editor shell plugins |
+| open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |
+| open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |
+| open    | [studio-usability-audit.md](studio-usability-audit.md) | Studio uses shared components; 3 actionable findings |
+| open    | [studio-stats-audience-breakdown.md](studio-stats-audience-breakdown.md) | Rest of the stats page from the reference screenshot: stacked daily + CSV, loyalty, city list, browser/OS/device/source breakdown; needs tahti-org UA/referrer capture first |
+| partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
+| partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |
+
+## Blocked on a decision, credentials or manual testing
+
+| Status  | File | One-line |
+| ------- | ---- | -------- |
+| blocked | [dead-end-leftovers.md](dead-end-leftovers.md) | OAuth app credentials (ops), Bandcamp API approval, Google Drive Picker, release delete (tahti-org route), governance Retry |
+| blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
+| blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
+| blocked | [listening-party.md](listening-party.md) | Needs user go-ahead for tahti-org work |
+| partial | [wavesurfer-waveforms.md](wavesurfer-waveforms.md) | wavesurfer.js: decisions locked; batch 88 ships ui Waveform + large previews + editor shell; desktop / full ProWaveform delete remain |
+| blocked | [ai-dj-radio-dj-port.md](ai-dj-radio-dj-port.md) | POC not committed; no prod ship without go-ahead |
+| blocked | [track-visualizer-video-editor.md](track-visualizer-video-editor.md) | PulseForge licence / port decision |
+| blocked | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Multi-phase 13-category project not started |
+| blocked | [tahti-cli-tool.md](tahti-cli-tool.md) | npm publish @tahti/api-client (NPM_TOKEN) |
+| blocked | [release-player-workflow-broken.md](release-player-workflow-broken.md) | User store secrets + first real release run |
+
+## Desktop app
+
+| Status  | File | One-line |
+| ------- | ---- | -------- |
+| blocked | [desktop-pro-library.md](desktop-pro-library.md) | Real-music validation + Phases 6–7 untouched |
+| blocked | [desktop-smart-playlists.md](desktop-smart-playlists.md) | Manual check on real 10k+ desktop library |
+| blocked | [import-provider-set-to-native-library.md](import-provider-set-to-native-library.md) | Manual desktop run vs real hearthis.at / SoundCloud |
+| blocked | [desktop-ui-slowness.md](desktop-ui-slowness.md) | Waiting user manual test of 30 fps fix |
 
 ## Fold rule (copy into CLAUDE / chat)
 

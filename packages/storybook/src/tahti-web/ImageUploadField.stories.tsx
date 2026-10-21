@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ImageUploadField } from '@tahti-web/components/ImageUploadField';
-import { userEvent, within } from 'storybook/test';
+import { expect, userEvent } from 'storybook/test';
+
+import { findDialog, openDialog } from './_lib/play';
 
 const meta: Meta<typeof ImageUploadField> = {
   title: 'Tahti/Media/ImageUploadField',
@@ -29,17 +31,22 @@ export const Set: Story = {
 export const PreviewModalOpen: Story = {
   args: { value: 'https://picsum.photos/seed/upload-field/200' },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole('button', { name: /preview/i }));
+    const preview = await openDialog(canvasElement, /preview/i, 'Cover image');
+    await expect(
+      preview.getByRole('img', { name: 'Cover image' }),
+    ).toBeVisible();
+    await expect(preview.getByRole('button', { name: 'Delete' })).toBeVisible();
+    await expect(preview.getByRole('button', { name: 'Change' })).toBeVisible();
   },
 };
 
 export const ConfirmDelete: Story = {
   args: { value: 'https://picsum.photos/seed/upload-field/200' },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole('button', { name: /preview/i }));
-    const body = within(canvasElement.ownerDocument.body);
-    await userEvent.click(body.getByRole('button', { name: 'Delete' }));
+    const preview = await openDialog(canvasElement, /preview/i, 'Cover image');
+    await userEvent.click(preview.getByRole('button', { name: 'Delete' }));
+    const confirm = await findDialog(canvasElement, 'Remove cover image?');
+    await expect(confirm.getByRole('button', { name: 'Remove' })).toBeVisible();
+    await expect(confirm.getByRole('button', { name: 'Cancel' })).toBeVisible();
   },
 };

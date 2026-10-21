@@ -61,6 +61,8 @@ export function MapCommentForm({
       text: draft,
     });
     if (saved) {
+      // Clear so another comment can be added for the same target.
+      setDraft(kind, targetId, '');
       setSavedFlash(true);
     }
   }

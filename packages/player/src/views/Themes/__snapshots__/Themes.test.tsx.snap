@@ -2,6 +2,7 @@
 
 exports[`Themes view > (Snapshot) renders the themes view 1`] = `
 <div
+  aria-label="Settings"
   aria-modal="true"
   class="relative z-50"
   data-headlessui-state="open"
@@ -24,51 +25,21 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
     />
   </div>
   <div
-    class="fixed inset-0 flex items-center justify-center p-4"
+    class="pointer-events-none fixed inset-0 flex items-center justify-center p-4"
   >
     <div
       animate="[object Object]"
-      class="w-full max-w-[calc(100vw-2rem)]"
+      class="pointer-events-auto flex max-h-full w-full max-w-[calc(100vw-2rem)] flex-col"
       exit="[object Object]"
       initial="[object Object]"
       transition="[object Object]"
     >
       <div
-        class="border-border bg-background shadow-shadow relative mx-auto rounded-md border-(length:--border-width) flex h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] w-full max-w-none min-w-0 flex-col overflow-hidden p-0 sm:h-[80vh] sm:max-h-[900px] sm:w-[80vw] sm:max-w-6xl sm:flex-row!"
+        class="border-border bg-background shadow-shadow relative mx-auto overflow-y-auto rounded-md border-(length:--border-width) flex! h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] w-full max-w-none min-w-0 flex-col overflow-hidden! p-0 sm:h-[80vh] sm:max-h-[900px] sm:w-[80vw] sm:max-w-6xl sm:flex-row!"
         data-headlessui-state="open"
         data-open=""
         id="headlessui-dialog-panel-:ra:"
       >
-        <div>
-          <button
-            aria-label="Close"
-            class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center absolute top-3 right-3"
-            data-headlessui-state=""
-            data-testid="dialog-x-close"
-            type="button"
-          >
-            <svg
-              aria-hidden="true"
-              class="lucide lucide-x"
-              fill="none"
-              height="16"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-              width="16"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M18 6 6 18"
-              />
-              <path
-                d="m6 6 12 12"
-              />
-            </svg>
-          </button>
-        </div>
         <nav
           class="border-border h-full min-h-0 w-full shrink-0 flex-col border-b-(length:--border-width) p-2 sm:flex! sm:w-56! sm:border-r-(length:--border-width) sm:border-b-0 sm:p-4 hidden"
           data-testid="settings-panel-nav"
@@ -77,7 +48,7 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
             class="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto"
           >
             <button
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-10 px-4 py-2 shrink-0 justify-start gap-2"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-10 px-4 py-2 shrink-0 justify-start gap-2"
               data-headlessui-state=""
               data-testid="settings-tab-general"
               type="button"
@@ -117,7 +88,7 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
               General
             </button>
             <button
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-10 px-4 py-2 shrink-0 justify-start gap-2"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-10 px-4 py-2 shrink-0 justify-start gap-2"
               data-headlessui-state=""
               data-testid="settings-tab-shortcuts"
               type="button"
@@ -172,7 +143,7 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
               Key Shortcuts
             </button>
             <button
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-10 px-4 py-2 shrink-0 justify-start gap-2"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-10 px-4 py-2 shrink-0 justify-start gap-2"
               data-headlessui-state=""
               data-testid="settings-tab-plugins"
               type="button"
@@ -203,10 +174,10 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
                   />
                 </svg>
               </span>
-              Plugins
+              Add-ons
             </button>
             <button
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 shrink-0 justify-start gap-2"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 shrink-0 justify-start gap-2"
               data-headlessui-state="hover"
               data-hover=""
               data-testid="settings-tab-themes"
@@ -258,7 +229,7 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
               Themes
             </button>
             <button
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-10 px-4 py-2 shrink-0 justify-start gap-2"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-10 px-4 py-2 shrink-0 justify-start gap-2"
               data-headlessui-state=""
               data-testid="settings-tab-logs"
               type="button"
@@ -294,7 +265,7 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
               Logs
             </button>
             <button
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-10 px-4 py-2 shrink-0 justify-start gap-2"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-10 px-4 py-2 shrink-0 justify-start gap-2"
               data-headlessui-state=""
               data-testid="settings-tab-whats-new"
               type="button"
@@ -343,7 +314,7 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
               >
                 <div>
                   <button
-                    class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
+                    class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
                     data-headlessui-state=""
                     type="button"
                   >
@@ -365,7 +336,7 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
                 </div>
                 <div>
                   <button
-                    class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
+                    class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
                     data-headlessui-state=""
                     type="button"
                   >
@@ -408,7 +379,7 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
             <div>
               <button
                 aria-label="Back to settings sections"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
                 data-headlessui-state=""
                 type="button"
               >
@@ -448,505 +419,511 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
               class="bg-background relative flex h-full min-h-0 w-full flex-1 flex-col items-start justify-start px-6 pt-6"
             >
               <h1
-                class="mb-6 flex w-full flex-0 flex-row text-center text-3xl font-bold"
+                class="mb-6 flex w-full flex-0 flex-row text-3xl font-bold text-center"
                 data-testid="title"
               >
                 Themes
               </h1>
               <div
-                class="relative h-full flex min-h-0 w-full flex-1 flex-col"
+                animate="[object Object]"
+                class="flex min-h-0 w-full flex-1 flex-col"
+                transition="[object Object]"
               >
                 <div
-                  class="scrollbar-hide flex h-full w-full flex-col overflow-auto"
-                  style="scrollbar-width: none;"
+                  class="relative h-full flex min-h-0 w-full flex-1 flex-col"
                 >
                   <div
-                    class="max-h-full w-full gap-2 flex flex-1 flex-col overflow-hidden"
+                    class="scrollbar-hide flex h-full w-full flex-col overflow-auto"
+                    style="scrollbar-width: none;"
                   >
                     <div
-                      aria-orientation="horizontal"
-                      class="flex w-full flex-wrap items-center gap-2"
-                      id="tabs-:rb:-list"
-                      role="tablist"
-                    >
-                      <button
-                        aria-controls="headlessui-tabs-panel-:rg:"
-                        aria-selected="true"
-                        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-8 px-2 text-sm"
-                        data-headlessui-state=""
-                        data-selected=""
-                        id="headlessui-tabs-tab-:rc:"
-                        role="tab"
-                        tabindex="0"
-                        type="button"
-                      >
-                        <span
-                          class="inline-flex items-center gap-1.5"
-                        >
-                          <span
-                            aria-hidden="true"
-                            class="shrink-0 [&>svg]:size-3.5"
-                          >
-                            <svg
-                              aria-hidden="true"
-                              class="lucide lucide-palette"
-                              fill="none"
-                              height="14"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="14"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"
-                              />
-                              <circle
-                                cx="13.5"
-                                cy="6.5"
-                                fill="currentColor"
-                                r=".5"
-                              />
-                              <circle
-                                cx="17.5"
-                                cy="10.5"
-                                fill="currentColor"
-                                r=".5"
-                              />
-                              <circle
-                                cx="6.5"
-                                cy="12.5"
-                                fill="currentColor"
-                                r=".5"
-                              />
-                              <circle
-                                cx="8.5"
-                                cy="7.5"
-                                fill="currentColor"
-                                r=".5"
-                              />
-                            </svg>
-                          </span>
-                          My themes
-                        </span>
-                      </button>
-                      <button
-                        aria-controls="headlessui-tabs-panel-:rp:"
-                        aria-selected="false"
-                        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-8 px-2 text-sm"
-                        data-headlessui-state=""
-                        id="headlessui-tabs-tab-:re:"
-                        role="tab"
-                        tabindex="-1"
-                        type="button"
-                      >
-                        <span
-                          class="inline-flex items-center gap-1.5"
-                        >
-                          <span
-                            aria-hidden="true"
-                            class="shrink-0 [&>svg]:size-3.5"
-                          >
-                            <svg
-                              aria-hidden="true"
-                              class="lucide lucide-store"
-                              fill="none"
-                              height="14"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="14"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"
-                              />
-                              <path
-                                d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"
-                              />
-                              <path
-                                d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"
-                              />
-                            </svg>
-                          </span>
-                          The Crate
-                        </span>
-                      </button>
-                    </div>
-                    <div
-                      class="mt-2 flex flex-col flex-1 overflow-hidden"
-                      id="tabs-:rb:-panels"
+                      class="max-h-full w-full gap-2 flex flex-1 flex-col overflow-hidden"
                     >
                       <div
-                        aria-labelledby="headlessui-tabs-tab-:rc:"
-                        class="relative outline-none flex flex-1 overflow-hidden"
-                        data-headlessui-state="selected"
-                        data-selected=""
-                        id="headlessui-tabs-panel-:rg:"
-                        role="tabpanel"
-                        tabindex="0"
+                        aria-orientation="horizontal"
+                        class="flex w-full flex-wrap items-center gap-2"
+                        id="tabs-:rb:-list"
+                        role="tablist"
+                      >
+                        <button
+                          aria-controls="headlessui-tabs-panel-:rg:"
+                          aria-selected="true"
+                          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-8 px-2 text-sm"
+                          data-headlessui-state=""
+                          data-selected=""
+                          id="headlessui-tabs-tab-:rc:"
+                          role="tab"
+                          tabindex="0"
+                          type="button"
+                        >
+                          <span
+                            class="inline-flex items-center gap-1.5"
+                          >
+                            <span
+                              aria-hidden="true"
+                              class="shrink-0 [&>svg]:size-3.5"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="lucide lucide-palette"
+                                fill="none"
+                                height="14"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                                width="14"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"
+                                />
+                                <circle
+                                  cx="13.5"
+                                  cy="6.5"
+                                  fill="currentColor"
+                                  r=".5"
+                                />
+                                <circle
+                                  cx="17.5"
+                                  cy="10.5"
+                                  fill="currentColor"
+                                  r=".5"
+                                />
+                                <circle
+                                  cx="6.5"
+                                  cy="12.5"
+                                  fill="currentColor"
+                                  r=".5"
+                                />
+                                <circle
+                                  cx="8.5"
+                                  cy="7.5"
+                                  fill="currentColor"
+                                  r=".5"
+                                />
+                              </svg>
+                            </span>
+                            My themes
+                          </span>
+                        </button>
+                        <button
+                          aria-controls="headlessui-tabs-panel-:rp:"
+                          aria-selected="false"
+                          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-8 px-2 text-sm"
+                          data-headlessui-state=""
+                          id="headlessui-tabs-tab-:re:"
+                          role="tab"
+                          tabindex="-1"
+                          type="button"
+                        >
+                          <span
+                            class="inline-flex items-center gap-1.5"
+                          >
+                            <span
+                              aria-hidden="true"
+                              class="shrink-0 [&>svg]:size-3.5"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="lucide lucide-store"
+                                fill="none"
+                                height="14"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                                width="14"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"
+                                />
+                                <path
+                                  d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"
+                                />
+                                <path
+                                  d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"
+                                />
+                              </svg>
+                            </span>
+                            The Crate
+                          </span>
+                        </button>
+                      </div>
+                      <div
+                        class="mt-2 flex flex-col flex-1 overflow-hidden"
+                        id="tabs-:rb:-panels"
                       >
                         <div
-                          animate="[object Object]"
-                          class="h-full"
-                          transition="[object Object]"
+                          aria-labelledby="headlessui-tabs-tab-:rc:"
+                          class="focus-visible:ring-primary relative outline-none focus-visible:ring-2 focus-visible:ring-inset flex flex-1 overflow-hidden"
+                          data-headlessui-state="selected"
+                          data-selected=""
+                          id="headlessui-tabs-panel-:rg:"
+                          role="tabpanel"
+                          tabindex="0"
                         >
                           <div
-                            class="relative h-full w-full"
+                            animate="[object Object]"
+                            class="h-full"
+                            transition="[object Object]"
                           >
                             <div
-                              class="scrollbar-hide flex h-full w-full flex-col overflow-auto"
-                              style="scrollbar-width: none;"
+                              class="relative h-full w-full"
                             >
                               <div
-                                class="relative h-full w-full overflow-hidden"
+                                class="scrollbar-hide flex h-full w-full flex-col overflow-auto"
+                                style="scrollbar-width: none;"
                               >
                                 <div
-                                  class="scrollbar-hide flex h-full w-full flex-col overflow-auto"
-                                  style="scrollbar-width: none;"
+                                  class="relative h-full w-full overflow-hidden"
                                 >
-                                  <section
-                                    class="mb-6 flex w-full flex-col items-start justify-start"
-                                    data-testid="basic-themes"
-                                  >
-                                    <h2
-                                      class="mb-3 flex w-full flex-0 flex-row text-left text-2xl font-bold"
-                                    >
-                                      Basic themes
-                                    </h2>
-                                    <div
-                                      class="flex w-full flex-1 flex-col"
-                                    >
-                                      <div
-                                        class="flex flex-wrap gap-4 p-1"
-                                      >
-                                        <button
-                                          aria-pressed="true"
-                                          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y text-foreground border-(length:--border-width) hover:shadow-none h-auto flex-col justify-between gap-2 px-4 py-2 bg-primary"
-                                          data-headlessui-state=""
-                                          type="button"
-                                        >
-                                          <span
-                                            class="text-foreground text-left text-base font-bold"
-                                          >
-                                            Default
-                                          </span>
-                                          <div
-                                            class="block"
-                                          >
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.78 0.15 20);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.917 0.036 7.16);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.48 0.08 5);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.28 0.12 260);"
-                                            />
-                                          </div>
-                                        </button>
-                                        <button
-                                          aria-pressed="false"
-                                          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-background-secondary text-foreground border-(length:--border-width) hover:shadow-none h-auto flex-col justify-between gap-2 px-4 py-2"
-                                          data-headlessui-state=""
-                                          type="button"
-                                        >
-                                          <span
-                                            class="text-foreground text-left text-base font-bold"
-                                          >
-                                            Aurora
-                                          </span>
-                                          <div
-                                            class="block"
-                                          >
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.74 0.15 305);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.98 0.01 340);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.62 0.11 305);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.22 0.03 305);"
-                                            />
-                                          </div>
-                                        </button>
-                                        <button
-                                          aria-pressed="false"
-                                          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-background-secondary text-foreground border-(length:--border-width) hover:shadow-none h-auto flex-col justify-between gap-2 px-4 py-2"
-                                          data-headlessui-state=""
-                                          type="button"
-                                        >
-                                          <span
-                                            class="text-foreground text-left text-base font-bold"
-                                          >
-                                            Ember
-                                          </span>
-                                          <div
-                                            class="block"
-                                          >
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.76 0.14 30);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.97 0.02 70);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.64 0.1 30);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.22 0.03 20);"
-                                            />
-                                          </div>
-                                        </button>
-                                        <button
-                                          aria-pressed="false"
-                                          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-background-secondary text-foreground border-(length:--border-width) hover:shadow-none h-auto flex-col justify-between gap-2 px-4 py-2"
-                                          data-headlessui-state=""
-                                          type="button"
-                                        >
-                                          <span
-                                            class="text-foreground text-left text-base font-bold"
-                                          >
-                                            Lagoon
-                                          </span>
-                                          <div
-                                            class="block"
-                                          >
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.67 0.16 205);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.985 0.018 210);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.55 0.12 205);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.2 0.025 205);"
-                                            />
-                                          </div>
-                                        </button>
-                                        <button
-                                          aria-pressed="false"
-                                          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-background-secondary text-foreground border-(length:--border-width) hover:shadow-none h-auto flex-col justify-between gap-2 px-4 py-2"
-                                          data-headlessui-state=""
-                                          type="button"
-                                        >
-                                          <span
-                                            class="text-foreground text-left text-base font-bold"
-                                          >
-                                            Moss
-                                          </span>
-                                          <div
-                                            class="block"
-                                          >
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.7 0.12 175);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.97 0.008 200);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.58 0.09 175);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.2 0.02 175);"
-                                            />
-                                          </div>
-                                        </button>
-                                        <button
-                                          aria-pressed="false"
-                                          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-background-secondary text-foreground border-(length:--border-width) hover:shadow-none h-auto flex-col justify-between gap-2 px-4 py-2"
-                                          data-headlessui-state=""
-                                          type="button"
-                                        >
-                                          <span
-                                            class="text-foreground text-left text-base font-bold"
-                                          >
-                                            Tahti
-                                          </span>
-                                          <div
-                                            class="block"
-                                          >
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.8131 0.165 75.04);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.2747 0.0497 269.93);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.7159 0.035 268.54);"
-                                            />
-                                            <span
-                                              aria-hidden="true"
-                                              class="ring-border inline-block size-5 rounded-full ring-2"
-                                              style="background-color: oklch(0.1663 0.0262 269.37);"
-                                            />
-                                          </div>
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </section>
                                   <div
-                                    class="flex gap-4"
+                                    class="scrollbar-hide flex h-full w-full flex-col overflow-auto"
+                                    style="scrollbar-width: none;"
                                   >
                                     <section
                                       class="mb-6 flex w-full flex-col items-start justify-start"
-                                      data-testid="advanced-themes"
+                                      data-testid="basic-themes"
                                     >
                                       <h2
                                         class="mb-3 flex w-full flex-0 flex-row text-left text-2xl font-bold"
                                       >
-                                        Advanced themes
+                                        Basic themes
                                       </h2>
                                       <div
                                         class="flex w-full flex-1 flex-col"
                                       >
                                         <div
-                                          class="max-w-80 p-1"
+                                          class="flex flex-wrap gap-4 p-1"
+                                        >
+                                          <button
+                                            aria-pressed="true"
+                                            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y text-foreground border-(length:--border-width) hover:shadow-none h-auto flex-col justify-between gap-2 px-4 py-2 bg-primary"
+                                            data-headlessui-state=""
+                                            type="button"
+                                          >
+                                            <span
+                                              class="text-foreground text-left text-base font-bold"
+                                            >
+                                              Default
+                                            </span>
+                                            <div
+                                              class="block"
+                                            >
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.78 0.15 20);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.917 0.036 7.16);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.48 0.08 5);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.28 0.12 260);"
+                                              />
+                                            </div>
+                                          </button>
+                                          <button
+                                            aria-pressed="false"
+                                            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-background-secondary text-foreground border-(length:--border-width) hover:shadow-none h-auto flex-col justify-between gap-2 px-4 py-2"
+                                            data-headlessui-state=""
+                                            type="button"
+                                          >
+                                            <span
+                                              class="text-foreground text-left text-base font-bold"
+                                            >
+                                              Aurora
+                                            </span>
+                                            <div
+                                              class="block"
+                                            >
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.74 0.15 305);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.98 0.01 340);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.62 0.11 305);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.22 0.03 305);"
+                                              />
+                                            </div>
+                                          </button>
+                                          <button
+                                            aria-pressed="false"
+                                            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-background-secondary text-foreground border-(length:--border-width) hover:shadow-none h-auto flex-col justify-between gap-2 px-4 py-2"
+                                            data-headlessui-state=""
+                                            type="button"
+                                          >
+                                            <span
+                                              class="text-foreground text-left text-base font-bold"
+                                            >
+                                              Ember
+                                            </span>
+                                            <div
+                                              class="block"
+                                            >
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.76 0.14 30);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.97 0.02 70);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.64 0.1 30);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.22 0.03 20);"
+                                              />
+                                            </div>
+                                          </button>
+                                          <button
+                                            aria-pressed="false"
+                                            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-background-secondary text-foreground border-(length:--border-width) hover:shadow-none h-auto flex-col justify-between gap-2 px-4 py-2"
+                                            data-headlessui-state=""
+                                            type="button"
+                                          >
+                                            <span
+                                              class="text-foreground text-left text-base font-bold"
+                                            >
+                                              Lagoon
+                                            </span>
+                                            <div
+                                              class="block"
+                                            >
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.67 0.16 205);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.985 0.018 210);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.55 0.12 205);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.2 0.025 205);"
+                                              />
+                                            </div>
+                                          </button>
+                                          <button
+                                            aria-pressed="false"
+                                            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-background-secondary text-foreground border-(length:--border-width) hover:shadow-none h-auto flex-col justify-between gap-2 px-4 py-2"
+                                            data-headlessui-state=""
+                                            type="button"
+                                          >
+                                            <span
+                                              class="text-foreground text-left text-base font-bold"
+                                            >
+                                              Moss
+                                            </span>
+                                            <div
+                                              class="block"
+                                            >
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.7 0.12 175);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.97 0.008 200);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.58 0.09 175);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.2 0.02 175);"
+                                              />
+                                            </div>
+                                          </button>
+                                          <button
+                                            aria-pressed="false"
+                                            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-background-secondary text-foreground border-(length:--border-width) hover:shadow-none h-auto flex-col justify-between gap-2 px-4 py-2"
+                                            data-headlessui-state=""
+                                            type="button"
+                                          >
+                                            <span
+                                              class="text-foreground text-left text-base font-bold"
+                                            >
+                                              Tahti
+                                            </span>
+                                            <div
+                                              class="block"
+                                            >
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.8131 0.165 75.04);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.2747 0.0497 269.93);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.7159 0.035 268.54);"
+                                              />
+                                              <span
+                                                aria-hidden="true"
+                                                class="ring-border inline-block size-5 rounded-full ring-2"
+                                                style="background-color: oklch(0.1663 0.0262 269.37);"
+                                              />
+                                            </div>
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </section>
+                                    <div
+                                      class="flex gap-4"
+                                    >
+                                      <section
+                                        class="mb-6 flex w-full flex-col items-start justify-start"
+                                        data-testid="advanced-themes"
+                                      >
+                                        <h2
+                                          class="mb-3 flex w-full flex-0 flex-row text-left text-2xl font-bold"
+                                        >
+                                          Advanced themes
+                                        </h2>
+                                        <div
+                                          class="flex w-full flex-1 flex-col"
                                         >
                                           <div
-                                            class="relative flex w-full flex-col gap-2"
+                                            class="max-w-80 p-1"
                                           >
-                                            <button
-                                              aria-expanded="false"
-                                              aria-haspopup="listbox"
-                                              class="border-border bg-background-input text-foreground relative flex w-full items-center justify-between rounded-md border-(length:--border-width) text-left transition-colors focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 px-3 py-2 text-sm"
-                                              data-headlessui-state=""
-                                              id="select-:ri:"
-                                              type="button"
+                                            <div
+                                              class="relative flex w-full flex-col gap-2"
                                             >
-                                              <span
-                                                class="block truncate"
+                                              <button
+                                                aria-expanded="false"
+                                                aria-haspopup="listbox"
+                                                class="border-border bg-background-input text-foreground focus-visible:ring-primary focus-visible:ring-offset-background relative flex w-full items-center justify-between rounded-md border-(length:--border-width) text-left transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 px-3 py-2 text-sm"
+                                                data-headlessui-state=""
+                                                id="select-:ri:"
+                                                type="button"
                                               >
-                                                Select a theme
-                                              </span>
-                                              <span
-                                                class="flex items-center"
-                                              >
-                                                <svg
-                                                  aria-hidden="true"
-                                                  class="lucide lucide-chevron-down text-foreground transition-transform"
-                                                  fill="none"
-                                                  height="16"
-                                                  stroke="currentColor"
-                                                  stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  stroke-width="2"
-                                                  viewBox="0 0 24 24"
-                                                  width="16"
-                                                  xmlns="http://www.w3.org/2000/svg"
+                                                <span
+                                                  class="block truncate"
                                                 >
-                                                  <path
-                                                    d="m6 9 6 6 6-6"
-                                                  />
-                                                </svg>
-                                              </span>
-                                            </button>
+                                                  Select a theme
+                                                </span>
+                                                <span
+                                                  class="flex items-center"
+                                                >
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    class="lucide lucide-chevron-down text-foreground transition-transform"
+                                                    fill="none"
+                                                    height="16"
+                                                    stroke="currentColor"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    viewBox="0 0 24 24"
+                                                    width="16"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                  >
+                                                    <path
+                                                      d="m6 9 6 6 6-6"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                              </button>
+                                              <p
+                                                class="text-foreground-secondary text-sm select-none"
+                                                id="select-:ri:-description"
+                                              >
+                                                Themes found in your app data themes directory
+                                              </p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </section>
+                                      <section
+                                        class="mb-6 flex w-full flex-col items-start justify-start"
+                                        data-testid="marketplace-themes"
+                                      >
+                                        <h2
+                                          class="mb-3 flex w-full flex-0 flex-row text-left text-2xl font-bold"
+                                        >
+                                          The Crate
+                                        </h2>
+                                        <div
+                                          class="flex w-full flex-1 flex-col"
+                                        >
+                                          <div
+                                            class="max-w-80 p-1"
+                                          >
                                             <p
-                                              class="text-foreground-secondary text-sm select-none"
-                                              id="select-:ri:-description"
+                                              class="text-foreground-secondary text-sm leading-relaxed"
                                             >
-                                              Themes found in your app data themes directory
+                                              No crate themes installed yet. Browse The Crate to add some.
                                             </p>
                                           </div>
                                         </div>
-                                      </div>
-                                    </section>
-                                    <section
-                                      class="mb-6 flex w-full flex-col items-start justify-start"
-                                      data-testid="marketplace-themes"
-                                    >
-                                      <h2
-                                        class="mb-3 flex w-full flex-0 flex-row text-left text-2xl font-bold"
-                                      >
-                                        The Crate
-                                      </h2>
-                                      <div
-                                        class="flex w-full flex-1 flex-col"
-                                      >
-                                        <div
-                                          class="max-w-80 p-1"
-                                        >
-                                          <p
-                                            class="text-foreground-secondary text-sm leading-relaxed"
-                                          >
-                                            No crate themes installed yet. Browse The Crate to add some.
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </section>
+                                      </section>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
+                        <span
+                          aria-hidden="true"
+                          aria-labelledby="headlessui-tabs-tab-:re:"
+                          id="headlessui-tabs-panel-:rp:"
+                          role="tabpanel"
+                          style="position: fixed; top: 1px; left: 1px; width: 1px; height: 0px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; border-width: 0px;"
+                          tabindex="-1"
+                        />
                       </div>
-                      <span
-                        aria-hidden="true"
-                        aria-labelledby="headlessui-tabs-tab-:re:"
-                        id="headlessui-tabs-panel-:rp:"
-                        role="tabpanel"
-                        style="position: fixed; top: 1px; left: 1px; width: 1px; height: 0px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; border-width: 0px;"
-                        tabindex="-1"
-                      />
                     </div>
                   </div>
                 </div>
@@ -954,6 +931,34 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
             </div>
           </div>
         </div>
+        <button
+          aria-label="Close"
+          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center pointer-events-auto absolute top-3 right-3 z-[100]"
+          data-headlessui-state=""
+          data-testid="dialog-x-close"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-x"
+            fill="none"
+            height="16"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="16"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M18 6 6 18"
+            />
+            <path
+              d="m6 6 12 12"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   </div>

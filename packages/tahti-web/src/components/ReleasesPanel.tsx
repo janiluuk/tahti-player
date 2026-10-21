@@ -1,8 +1,7 @@
-import { Link } from '@tanstack/react-router';
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-import { Button, Input, MediaArtwork } from '@tahti-player/ui';
+import { Button, ButtonLink, Input, MediaArtwork } from '@tahti-player/ui';
 
 import type { PublicProfileRelease } from '../api/types';
 import { usePlayerStore } from '../stores/playerStore';
@@ -41,9 +40,11 @@ function SortHeader({
   onClick: (key: SortKey) => void;
 }) {
   return (
-    <button
+    <Button
+      variant="plain"
+      size="flexible"
       type="button"
-      className="text-foreground-secondary hover:text-foreground flex items-center gap-1 text-left text-xs font-semibold tracking-wide uppercase"
+      className="text-foreground-secondary hover:text-foreground flex items-center gap-1 rounded-none text-left text-xs font-semibold tracking-wide whitespace-normal uppercase active:scale-100"
       onClick={() => onClick(sortKey)}
       aria-sort={active ? (dir === 'asc' ? 'ascending' : 'descending') : 'none'}
     >
@@ -54,13 +55,12 @@ function SortHeader({
         ) : (
           <ArrowDownIcon size={12} aria-hidden />
         ))}
-    </button>
+    </Button>
   );
 }
 
 /** Searchable, sortable, zebra-striped release table with tracklist
- * drill-down — the "Releases" half of MyDiscographyView, pulled out so
- * it can also stand alone as its own Library tab. */
+ * drill-down, shown as its own Library tab. */
 export function ReleasesPanel({
   releases,
   artist,
@@ -123,11 +123,9 @@ export function ReleasesPanel({
         title="No releases yet"
         description="Publish a release in Studio to see it here."
         action={
-          <Link to="/studio/releases">
-            <Button size="sm" variant="secondary">
-              Studio → Releases
-            </Button>
-          </Link>
+          <ButtonLink to="/studio/releases" size="sm" variant="secondary">
+            Studio → Releases
+          </ButtonLink>
         }
       />
     );
@@ -144,9 +142,14 @@ export function ReleasesPanel({
       />
 
       {sortedReleases.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No releases match “{query}”.
-        </p>
+        <PageEmpty
+          title={`No releases match “${query}”.`}
+          action={
+            <Button size="sm" variant="secondary" onClick={() => setQuery('')}>
+              Clear search
+            </Button>
+          }
+        />
       ) : (
         <div className="border-border overflow-hidden rounded-lg border">
           <table className="w-full text-sm">
@@ -203,13 +206,15 @@ export function ReleasesPanel({
                       />
                     </td>
                     <td className="px-3 py-2">
-                      <button
+                      <Button
+                        variant="plain"
+                        size="flexible"
                         type="button"
-                        className="truncate text-left font-medium hover:underline"
+                        className="inline-block truncate rounded-none text-left font-medium hover:underline active:scale-100"
                         onClick={() => setTracklistRelease(rel)}
                       >
                         {rel.title}
-                      </button>
+                      </Button>
                     </td>
                     <td className="text-foreground-secondary hidden px-3 py-2 sm:table-cell">
                       {rel.type ?? 'Release'}

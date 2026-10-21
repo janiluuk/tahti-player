@@ -1,7 +1,21 @@
 import { AlertCircle, Inbox, PackageOpen, Radio } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button, CenteredLoader, EmptyState } from '@tahti-player/ui';
+import { Alert, Button, CenteredLoader, EmptyState } from '@tahti-player/ui';
+
+export function RouteChunkSkeleton() {
+  return (
+    <div
+      className="flex flex-col gap-3 px-1 py-2"
+      role="status"
+      aria-label="Loading page"
+    >
+      <div className="bg-background-secondary/70 h-6 w-40 max-w-[55%] rounded-md motion-safe:animate-pulse" />
+      <div className="bg-background-secondary/50 h-4 w-full max-w-md rounded-md motion-safe:animate-pulse" />
+      <div className="bg-background-secondary/40 mt-1 h-4 w-3/4 max-w-sm rounded-md motion-safe:animate-pulse" />
+    </div>
+  );
+}
 
 export function PageLoading({ label }: { label?: string }) {
   return (
@@ -9,6 +23,32 @@ export function PageLoading({ label }: { label?: string }) {
       <CenteredLoader size="lg" />
       {label && <p className="text-foreground-secondary text-sm">{label}</p>}
     </div>
+  );
+}
+
+export function PageGate({
+  page,
+  icon,
+  title,
+  description,
+  action,
+}: {
+  page: string | null;
+  icon: ReactNode;
+  title: string;
+  description: string;
+  action: ReactNode;
+}) {
+  return (
+    <>
+      {page ? <h1 className="sr-only">{page}</h1> : null}
+      <EmptyState
+        icon={icon}
+        title={title}
+        description={description}
+        action={action}
+      />
+    </>
   );
 }
 
@@ -54,7 +94,9 @@ export function PageError({
   return (
     <EmptyState
       size="sm"
-      icon={<AlertCircle size={40} className="text-accent-red opacity-80" />}
+      icon={
+        <AlertCircle size={40} className="text-accent-red-strong opacity-80" />
+      }
       title={title}
       description={description}
       action={
@@ -65,5 +107,28 @@ export function PageError({
         ) : undefined
       }
     />
+  );
+}
+
+export function PageErrorBanner({
+  title,
+  description,
+  onRetry,
+}: {
+  title: string;
+  description?: string;
+  onRetry?: () => void;
+}) {
+  return (
+    <Alert tone="error" title={title}>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        {description ? <span>{description}</span> : <span />}
+        {onRetry ? (
+          <Button size="sm" variant="secondary" onClick={onRetry}>
+            Retry
+          </Button>
+        ) : null}
+      </div>
+    </Alert>
   );
 }

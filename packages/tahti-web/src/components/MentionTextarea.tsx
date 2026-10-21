@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import { Textarea } from '@tahti-player/ui';
+import { Button, MediaArtwork, Textarea } from '@tahti-player/ui';
 
 import { searchMentionUsers, type MentionUser } from '../api/mentions';
+import { placeholderArtworkUrl } from '../lib/placeholderArt';
 
 type Props = {
   label: string;
@@ -70,17 +71,24 @@ export function MentionTextarea({
         >
           {matches.map((user) => (
             <li key={user.username}>
-              <button
+              <Button
                 type="button"
-                className="hover:bg-background-secondary flex w-full items-center gap-2 px-3 py-2 text-left text-sm"
+                variant="text"
+                className="h-auto w-full justify-start gap-2 rounded-none px-3 py-2 text-left text-sm"
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => selectMention(user)}
               >
+                <MediaArtwork
+                  size="sm"
+                  src={user.avatarUrl ?? placeholderArtworkUrl(user.username)}
+                  alt=""
+                  className="size-7 min-w-7 rounded-full"
+                />
                 <span className="font-medium">{user.displayName}</span>
                 <span className="text-foreground-secondary text-xs">
                   @{user.username}
                 </span>
-              </button>
+              </Button>
             </li>
           ))}
         </ul>

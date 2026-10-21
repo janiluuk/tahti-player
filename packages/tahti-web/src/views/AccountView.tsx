@@ -2,12 +2,18 @@ import { Link } from '@tanstack/react-router';
 import { BadgeCheckIcon, HeartHandshakeIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Box, Button, Tabs, ViewShell } from '@tahti-player/ui';
+import { Box, Button, ButtonLink, Tabs, ViewShell } from '@tahti-player/ui';
 
 import { fetchMembership, fetchMySubscriptions } from '../api/client';
 import type { FanSubscriptionRow, MembershipStatus } from '../api/types';
+import { FanSubscriptionsBillingButton } from '../components/FanSubscriptionsBillingButton';
 import { MembershipStatusPanel } from '../components/MembershipStatusPanel';
-import { PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import {
+  fanSubscriptionStatusLabel,
+  hasPortalManagedSubscription,
+  isCanceledAtPeriodEnd,
+} from '../lib/fanSubscriptionStatus';
 import { useAuthStore } from '../stores/authStore';
 
 function euros(cents: number): string {
@@ -20,10 +26,13 @@ export function AccountView() {
   const [membership, setMembership] = useState<MembershipStatus | null>(null);
   const [subs, setSubs] = useState<FanSubscriptionRow[]>([]);
   const [loading, setLoading] = useState(false);
+  const [membershipError, setMembershipError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (!user) {
       setMembership(null);
+      setMembershipError(null);
       setSubs([]);
       return;
     }
@@ -35,6 +44,8 @@ export function AccountView() {
           return;
         }
         setMembership(m.data);
+        const reason = m.meta.source === 'api' ? (m.meta.reason ?? null) : null;
+        setMembershipError(reason);
         setSubs(s.data);
         setLoading(false);
       },
@@ -42,7 +53,7 @@ export function AccountView() {
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [user, attempt]);
 
   if (!user) {
     return (
@@ -50,9 +61,9 @@ export function AccountView() {
         title="Account"
         classes={{ root: 'px-0 pt-0 mx-auto max-w-md' }}
       >
-        <Link to="/login">
-          <Button>Login</Button>
-        </Link>
+        <ButtonLink className="w-fit" to="/login">
+          Login
+        </ButtonLink>
       </ViewShell>
     );
   }
@@ -63,11 +74,14 @@ export function AccountView() {
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
     >
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <Link to="/settings/$section" params={{ section: 'account' }}>
-          <Button size="sm" variant="secondary">
-            Account settings
-          </Button>
-        </Link>
+        <ButtonLink
+          to="/settings/$section"
+          params={{ section: 'account' }}
+          size="sm"
+          variant="secondary"
+        >
+          Account settings
+        </ButtonLink>
         <Button size="sm" variant="text" onClick={() => void logout()}>
           Log out
         </Button>
@@ -88,20 +102,21 @@ export function AccountView() {
         </div>
         <div className="flex flex-wrap gap-2">
           {!loading && !membership?.isMember ? (
-            <Link to="/signup/payment">
-              <Button size="sm">Become a member</Button>
-            </Link>
+            <ButtonLink to="/signup/payment" size="sm">
+              Become a member
+            </ButtonLink>
           ) : null}
-          <Link to="/forgot-password">
-            <Button size="sm" variant="secondary">
-              Reset password
-            </Button>
-          </Link>
-          <Link to="/settings/$section" params={{ section: 'account' }}>
-            <Button size="sm" variant="secondary">
-              Security
-            </Button>
-          </Link>
+          <ButtonLink to="/forgot-password" size="sm" variant="secondary">
+            Reset password
+          </ButtonLink>
+          <ButtonLink
+            to="/settings/$section"
+            params={{ section: 'account' }}
+            size="sm"
+            variant="secondary"
+          >
+            Security
+          </ButtonLink>
         </div>
       </Box>
 
@@ -113,19 +128,26 @@ export function AccountView() {
             id: 'membership',
             label: 'Membership',
             icon: <BadgeCheckIcon size={14} />,
-            content: !membership ? (
-              <p className="text-foreground-secondary text-sm">
-                Membership details are unavailable right now.
-              </p>
-            ) : (
-              <MembershipStatusPanel
-                membership={membership}
-                userEmail={user.email}
-                onChange={() =>
-                  void fetchMembership().then((m) => setMembership(m.data))
-                }
-              />
-            ),
+            content:
+              membershipError && !membership ? (
+                <PageError
+                  title="Could not load membership"
+                  description={membershipError}
+                  onRetry={() => setAttempt((n) => n + 1)}
+                />
+              ) : !membership ? (
+                <p className="text-foreground-secondary text-sm">
+                  Membership details are unavailable right now.
+                </p>
+              ) : (
+                <MembershipStatusPanel
+                  membership={membership}
+                  userEmail={user.email}
+                  onChange={() =>
+                    void fetchMembership().then((m) => setMembership(m.data))
+                  }
+                />
+              ),
           },
           {
             id: 'subscriptions',
@@ -134,45 +156,50 @@ export function AccountView() {
             count: subs.length,
             content:
               subs.length === 0 ? (
-                <p className="text-foreground-secondary text-sm">
-                  No fan subscriptions on this account. Support an artist from
-                  their profile.
-                </p>
+                <PageEmpty title="No fan subscriptions on this account. Support an artist from their profile." />
               ) : (
-                <ul className="flex flex-col gap-2">
-                  {subs.map((subscription) => (
-                    <li
-                      key={subscription.id}
-                      className="border-border bg-background-secondary/40 flex flex-wrap items-center justify-between gap-2 rounded-xl border px-4 py-3 text-sm"
-                    >
-                      <div>
-                        <Link
-                          to="/u/$username"
-                          params={{ username: subscription.artist.username }}
-                          className="font-medium hover:underline"
-                        >
-                          {subscription.artist.displayName}
-                        </Link>
-                        <p className="text-foreground-secondary text-xs">
-                          {subscription.tierName},{' '}
-                          {euros(subscription.amountCents)}/mo,{' '}
-                          {subscription.state}
-                          {subscription.currentPeriodEnd
-                            ? `, until ${new Date(subscription.currentPeriodEnd).toLocaleDateString()}`
-                            : ''}
-                        </p>
-                      </div>
-                      <Link
-                        to="/subscribe/$username"
-                        params={{ username: subscription.artist.username }}
+                <div className="flex flex-col gap-3">
+                  <ul className="flex flex-col gap-2">
+                    {subs.map((subscription) => (
+                      <li
+                        key={subscription.id}
+                        className="border-border bg-background-secondary/40 flex flex-wrap items-center justify-between gap-2 rounded-xl border px-4 py-3 text-sm"
                       >
-                        <Button size="sm" variant="text">
+                        <div>
+                          <Link
+                            to="/u/$username"
+                            params={{ username: subscription.artist.username }}
+                            className="font-medium hover:underline"
+                          >
+                            {subscription.artist.displayName}
+                          </Link>
+                          <p className="text-foreground-secondary text-xs">
+                            {subscription.tierName},{' '}
+                            {euros(subscription.amountCents)}/mo,{' '}
+                            {isCanceledAtPeriodEnd(subscription)
+                              ? fanSubscriptionStatusLabel(subscription)
+                              : `${subscription.state}${
+                                  subscription.currentPeriodEnd
+                                    ? `, until ${new Date(subscription.currentPeriodEnd).toLocaleDateString()}`
+                                    : ''
+                                }`}
+                          </p>
+                        </div>
+                        <ButtonLink
+                          to="/subscribe/$username"
+                          params={{ username: subscription.artist.username }}
+                          size="sm"
+                          variant="text"
+                        >
                           Tiers
-                        </Button>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                        </ButtonLink>
+                      </li>
+                    ))}
+                  </ul>
+                  {hasPortalManagedSubscription(subs) ? (
+                    <FanSubscriptionsBillingButton />
+                  ) : null}
+                </div>
               ),
           },
         ]}

@@ -2,40 +2,28 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test } from '@playwright/test';
 
+import { E2E_EMAIL, E2E_PASSWORD } from './helpers/auth';
+
 // Covers the "stash / private link / subscriber-only content" request, using
 // the real visibility model (AudienceVisibilitySection, TrackEditDialog's
-// "Sharing" tab): PUBLIC, UNLISTED ("Not listed — direct link only"),
-// PRIVATE ("only you"), and STASH ("selected tiers" — subscriber-gated).
+// "Sharing" tab). A Sound only stores `isPublic`, so the Audience select
+// offers Public and Private ("only you and share links"); subscriber gating
+// is the separate "Access" select (accessMode SUBSCRIBERS_ONLY / PURCHASE).
 //
-// Two things from the original ask do NOT have real support in this
-// codebase today and are deliberately not tested end-to-end:
-//
-// 1. The Studio → Stash page (StudioStashView.tsx) is NOT the "private
-//    locker, share a link when ready" feature its own copy claims to be —
-//    it lists items with visibility STASH/PRIVATE (or isPublic===false),
-//    but that filter never matches UNLISTED items, even though UNLISTED is
-//    the actual "direct link only" visibility level. So an UNLISTED
-//    track — the real equivalent of "stash a track and share a private
-//    link" — never shows up in the Stash view at all. This test sets
-//    visibility via TrackEditDialog's Sharing tab directly (the real,
-//    working mechanism) rather than through the Stash page, and that
-//    inconsistency is worth a human's attention as a product bug, not
-//    something this test works around by asserting fictional behavior.
-// 2. "A subscriber can access it via link" cannot be driven end-to-end:
-//    subscribing to a fan tier opens real Stripe Checkout
-//    (SubscribeView.tsx: "Subscribe opens Stripe Checkout (or redirects)"),
-//    which this suite has no test-mode path through. This test verifies
-//    the owner-side behavior that's fully real (uploading with STASH
-//    visibility + a fan tier, and that content being absent from the
-//    public profile listing) and stops there, the same way
-//    real-user-journeys.spec.ts documents the two journeys it couldn't
-//    cover rather than faking them.
+// "A subscriber can access it via link" cannot be driven end-to-end:
+// subscribing to a fan tier opens real Stripe Checkout
+// (SubscribeView.tsx: "Subscribe opens Stripe Checkout (or redirects)"),
+// which this suite has no test-mode path through. This test verifies the
+// owner-side behavior that's fully real (uploading, making the track
+// private, and that content being absent from the public profile listing)
+// and stops there, the same way real-user-journeys.spec.ts documents the
+// journeys it couldn't cover rather than faking them.
 //
 // "Marked in event logs": there is no per-play/per-download admin log —
 // AdminActivityView.tsx says so directly ("plays) so individual listens
 // aren't shown here — see Stats for aggregate play counts"). The only real
 // "statistics" surface for an individual track is its Insights panel
-// (Studio → Sounds → per-track stats button), which this test opens and
+// (Studio → Tracks → per-track stats button), which this test opens and
 // asserts renders — not a live-incremented number, since nothing in this
 // codebase's existing e2e suite asserts a stat updating synchronously
 // within a single test run (aggregation is plausibly async/server-side).
@@ -49,11 +37,11 @@ const FIXTURE_AUDIO = path.join(
 
 async function signIn(
   page: import('@playwright/test').Page,
-  email = 'artist@tahti.live',
+  email = E2E_EMAIL,
 ): Promise<void> {
   await page.goto('/login');
   await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password').fill('demo-password');
+  await page.getByLabel('Password').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'Sign in' }).click();
   await expect(
     page.getByRole('button', { name: /^Signed in as/ }),
@@ -90,14 +78,14 @@ async function setSharing(
   await page.getByRole('option', { name: audienceLabel }).click();
 }
 
-test('an unlisted sound is playable and downloadable via direct link by another visitor, and its Insights panel is real', async ({
+test('a public sound is playable and downloadable by another visitor, and its Insights panel is real', async ({
   page,
   browser,
 }) => {
   await signIn(page);
   const id = await uploadSound(page);
 
-  await setSharing(page, 'Not listed — direct link only');
+  await setSharing(page, 'Public');
   await page.getByRole('button', { name: 'Save changes' }).click();
   await expect(page.getByText(/saved/i)).toBeVisible();
 
@@ -125,7 +113,7 @@ test('an unlisted sound is playable and downloadable via direct link by another 
   await visitorContext.close();
 
   // Owner side: the per-track Insights panel is the real "statistics"
-  // surface for this item (not a synchronous play/download counter here —
+  // surface for this item (not a synchronous play/download counter here -
   // see file header).
   await page.goto('/studio/sounds');
   await page
@@ -137,7 +125,7 @@ test('an unlisted sound is playable and downloadable via direct link by another 
   await expect(page.getByText('Downloads')).toBeVisible();
 });
 
-test('a sound limited to a subscriber tier is hidden from the public profile listing', async ({
+test('a private sound is hidden from the public profile listing', async ({
   page,
   browser,
 }) => {
@@ -148,15 +136,7 @@ test('a sound limited to a subscriber tier is hidden from the public profile lis
     .first()
     .textContent();
 
-  await setSharing(page, 'Stash — selected tiers');
-  // Only proceed to select a tier if one exists — creating a fan tier is a
-  // separate flow (Studio → Revenue) this test doesn't also need to drive;
-  // STASH visibility alone (with no tier selected) already means "no one
-  // but you", which is enough to prove listing-exclusion.
-  const firstTierCheckbox = page.getByRole('checkbox').first();
-  if (await firstTierCheckbox.isVisible().catch(() => false)) {
-    await firstTierCheckbox.check();
-  }
+  await setSharing(page, 'Private - only you and share links');
   await page.getByRole('button', { name: 'Save changes' }).click();
   await expect(page.getByText(/saved/i)).toBeVisible();
 
@@ -175,8 +155,8 @@ test('a sound limited to a subscriber tier is hidden from the public profile lis
     await expect(visitorPage.getByText(title, { exact: true })).toHaveCount(0);
   }
 
-  // Direct link is still reachable by URL, but not usable without a
-  // subscription — this suite stops here; see file header for why.
+  // Direct link is still reachable by URL, but not usable without a share
+  // key - this suite stops here; see file header for why.
   await visitorPage.goto(`/t/${id}`);
 
   await visitorContext.close();

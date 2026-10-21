@@ -7,9 +7,9 @@ PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 VERSION="${1:-}"
 
 if [ -z "$VERSION" ]; then
-  echo "Usage: $0 <version>"
-  echo "  version: Semantic version (e.g., 1.47.0)"
-  exit 1
+  VERSION="$(jq -r .version "$PROJECT_DIR/packages/player/package.json")"
+  echo "No version specified; deploying latest version from package.json: $VERSION"
+  echo "  (pass a version argument to deploy a custom version instead, e.g., $0 1.47.0)"
 fi
 
 echo "=== Tahti Player Production Deployment ==="

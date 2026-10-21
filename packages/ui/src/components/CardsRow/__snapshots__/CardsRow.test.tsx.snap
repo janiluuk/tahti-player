@@ -6,28 +6,29 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
   data-testid="cards-row"
 >
   <div
-    class="flex items-center justify-between gap-4"
+    class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2"
   >
     <div
       class="flex items-center gap-2"
     >
       <h2
-        class="text-foreground text-lg font-bold"
+        class="text-foreground text-lg font-bold whitespace-nowrap"
       >
         Top Albums
       </h2>
     </div>
     <div
-      class="flex items-center gap-2"
+      class="flex min-w-64 flex-1 items-center justify-end gap-2"
     >
       <div
         class="flex w-full flex-col gap-2"
       >
         <div
-          class="border-border inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-black has-[:focus-visible]:ring-offset-2"
+          class="border-border has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-background inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2"
         >
           <input
-            class="border-border text-foreground placeholder:text-foreground-secondary w-full px-3 transition-colors focus-visible:ring-black focus-visible:outline-none bg-background h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            aria-label="Filter cards"
+            class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
             data-headlessui-state=""
             data-testid="cards-row-filter"
             id="input-:r0:"
@@ -73,7 +74,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         <div>
           <button
             aria-label="Scroll left"
-            class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-10 justify-center"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-10 justify-center"
             data-headlessui-state=""
             data-testid="cards-row-scroll-left"
             type="button"
@@ -100,7 +101,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         <div>
           <button
             aria-label="Scroll right"
-            class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-10 justify-center"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-10 justify-center"
             data-headlessui-state=""
             data-testid="cards-row-scroll-right"
             type="button"
@@ -132,7 +133,8 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
     style="scrollbar-width: none;"
   >
     <div
-      class="text-primary-foreground bg-primary border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all flex-shrink-0"
+      class="border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+      data-surface="brand"
       data-testid="card"
     >
       <div
@@ -200,20 +202,21 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         class="min-w-0"
       >
         <div
-          class="text-primary-foreground truncate text-sm font-bold"
+          class="truncate text-sm font-bold text-primary-foreground"
           data-testid="card-title"
         >
           Midnight Drive
         </div>
         <div
-          class="text-primary-foreground truncate text-xs opacity-60"
+          class="truncate text-xs text-primary-foreground"
         >
           Neon City
         </div>
       </div>
     </div>
     <div
-      class="text-primary-foreground bg-primary border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all flex-shrink-0"
+      class="border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+      data-surface="brand"
       data-testid="card"
     >
       <div
@@ -281,20 +284,21 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         class="min-w-0"
       >
         <div
-          class="text-primary-foreground truncate text-sm font-bold"
+          class="truncate text-sm font-bold text-primary-foreground"
           data-testid="card-title"
         >
           Northern Lights
         </div>
         <div
-          class="text-primary-foreground truncate text-xs opacity-60"
+          class="truncate text-xs text-primary-foreground"
         >
           Aurora
         </div>
       </div>
     </div>
     <div
-      class="text-primary-foreground bg-primary border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all flex-shrink-0"
+      class="border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+      data-surface="brand"
       data-testid="card"
     >
       <div
@@ -362,13 +366,13 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         class="min-w-0"
       >
         <div
-          class="text-primary-foreground truncate text-sm font-bold"
+          class="truncate text-sm font-bold text-primary-foreground"
           data-testid="card-title"
         >
           Echoes of Silence
         </div>
         <div
-          class="text-primary-foreground truncate text-xs opacity-60"
+          class="truncate text-xs text-primary-foreground"
         >
           The Wanderers
         </div>

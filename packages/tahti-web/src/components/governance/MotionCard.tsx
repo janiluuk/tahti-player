@@ -1,16 +1,18 @@
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
-import { Badge, Button, Input } from '@tahti-player/ui';
+import { Badge, Button, Input, Textarea } from '@tahti-player/ui';
 
 import {
-  fetchMotionComments,
   patchGovernanceMotion,
-  postMotionComment,
   voteOnMotion,
   type MotionComment,
 } from '../../api/client';
 import type { GovernanceMotion } from '../../api/types';
+import { toDatetimeLocalValue } from '../../lib/datetimeLocal';
+import { MotionDiscussion } from './MotionDiscussion';
+import { MotionProposerActions } from './MotionProposerActions';
+import { MotionSecondControl } from './MotionSecondControl';
 
 function stateBadge(state: string): {
   color: 'green' | 'orange' | 'secondary';
@@ -23,7 +25,7 @@ function stateBadge(state: string): {
     return { color: 'secondary', label: 'Closed' };
   }
   if (state === 'DRAFT') {
-    return { color: 'orange', label: 'Discussion · 7-day circulation' };
+    return { color: 'orange', label: 'DRAFT' };
   }
   return { color: 'orange', label: state };
 }
@@ -62,6 +64,7 @@ export function MotionCard({
   description,
   linkTitle = false,
   defaultExpanded = false,
+  preloadedComments,
   onChanged,
 }: {
   motion: GovernanceMotion;
@@ -72,36 +75,31 @@ export function MotionCard({
   /** List view links each title to its detail route; the detail page itself does not. */
   linkTitle?: boolean;
   defaultExpanded?: boolean;
+  /** List pages bulk-fetch every visible motion's comments up front
+   * (fetchMotionCommentsBulk) and pass the result here so expanding a
+   * card doesn't fire its own request. Undefined (not just empty) means
+   * "not preloaded" — the card falls back to fetching on expand itself,
+   * which is what the standalone detail page still does. */
+  preloadedComments?: MotionComment[];
   onChanged: () => void;
 }) {
-  const [expanded, setExpanded] = useState(defaultExpanded);
-  const [comments, setComments] = useState<MotionComment[]>([]);
-  const [commentsLoaded, setCommentsLoaded] = useState(false);
-  const [commentBody, setCommentBody] = useState('');
   const [actionMsg, setActionMsg] = useState<string | null>(null);
   const [voting, setVoting] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(motion.title);
   const [editDescription, setEditDescription] = useState(description ?? '');
+  const [editCloseAt, setEditCloseAt] = useState(
+    motion.closeAt ? toDatetimeLocalValue(motion.closeAt) : '',
+  );
   const [savingEdit, setSavingEdit] = useState(false);
-
-  const openThread = () => {
-    setExpanded(true);
-    setCommentBody('');
-    if (!commentsLoaded) {
-      void fetchMotionComments(motion.id).then((res) => {
-        setComments(res.data);
-        setCommentsLoaded(true);
-      });
-    }
-  };
 
   const expired = isExpiredMotion(motion);
   const badge = expired
     ? { color: 'secondary' as const, label: 'Expired' }
     : stateBadge(motion.state);
   const resultLabel = advisoryResultLabel(motion);
+  const eligibleVoters = motion.eligibleMemberCount ?? memberCount;
   const m = motion;
 
   return (
@@ -136,27 +134,44 @@ export function MotionCard({
           <Input
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
+            aria-label="Motion title"
             placeholder="Motion title"
             maxLength={200}
           />
-          <textarea
+          <Textarea
+            tone="secondary"
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}
             rows={4}
             maxLength={10000}
-            className="border-border bg-background rounded-md border px-3 py-2 text-sm"
+            aria-label="Motion description"
+            className="text-sm"
           />
+          <label className="flex flex-col gap-1 text-sm">
+            <span className="text-foreground-secondary text-xs uppercase">
+              Voting closes
+            </span>
+            <Input
+              type="datetime-local"
+              value={editCloseAt}
+              onChange={(e) => setEditCloseAt(e.target.value)}
+            />
+          </label>
           <div className="flex gap-2">
             <Button
               size="sm"
               disabled={
-                savingEdit || !editTitle.trim() || !editDescription.trim()
+                savingEdit ||
+                !editTitle.trim() ||
+                !editDescription.trim() ||
+                !editCloseAt
               }
               onClick={() => {
                 setSavingEdit(true);
                 void patchGovernanceMotion(m.id, {
                   title: editTitle.trim(),
                   description: editDescription.trim(),
+                  closeAt: new Date(editCloseAt).toISOString(),
                 }).then((r) => {
                   setSavingEdit(false);
                   setActionMsg(r.ok ? 'Motion updated.' : r.error);
@@ -193,6 +208,9 @@ export function MotionCard({
               onClick={() => {
                 setEditTitle(m.title);
                 setEditDescription(description ?? '');
+                setEditCloseAt(
+                  m.closeAt ? toDatetimeLocalValue(m.closeAt) : '',
+                );
                 setEditing(true);
               }}
             >
@@ -207,6 +225,12 @@ export function MotionCard({
             : 'Voting opens after circulation period (bylaws §9).'}
         </p>
       )}
+      <MotionSecondControl motion={m} onChanged={onChanged} />
+      <MotionProposerActions
+        motion={m}
+        description={description}
+        onChanged={onChanged}
+      />
       {m.youVoted && (
         <p className="mt-2 text-sm">
           Your vote:{' '}
@@ -231,12 +255,12 @@ export function MotionCard({
           </span>
         </div>
       )}
-      {typeof memberCount === 'number' &&
-        memberCount > 0 &&
+      {typeof eligibleVoters === 'number' &&
+        eligibleVoters > 0 &&
         typeof m.totalVotes === 'number' &&
         (m.state === 'OPEN' || m.state === 'CLOSED') && (
           <p className="text-foreground-secondary mt-2 text-xs">
-            {m.totalVotes} of {memberCount} members voted
+            {m.totalVotes} of {eligibleVoters} members voted
             {m.state === 'OPEN'
               ? ' · tally revealed at close'
               : m.tally
@@ -310,75 +334,14 @@ export function MotionCard({
         </p>
       )}
 
-      <div className="mt-3">
-        <Button
-          size="sm"
-          variant="text"
-          onClick={() => {
-            if (expanded) {
-              setExpanded(false);
-            } else {
-              openThread();
-            }
-          }}
-        >
-          {expanded ? 'Hide discussion' : 'Discussion'}
-        </Button>
-      </div>
-
-      {expanded && (
-        <div className="border-border mt-3 flex flex-col gap-2 border-t pt-3">
-          {!commentsLoaded ? (
-            <p className="text-foreground-secondary text-xs">Loading…</p>
-          ) : comments.length === 0 ? (
-            <p className="text-foreground-secondary text-xs">
-              No comments yet.
-            </p>
-          ) : (
-            <ul className="border-border divide-border divide-y overflow-hidden rounded-md border text-sm">
-              {comments.map((c) => (
-                <li key={c.id} className="px-3 py-2">
-                  <div className="text-foreground-secondary text-xs">
-                    {c.authorDisplayName ?? 'Member'}
-                    {c.createdAt
-                      ? `, ${new Date(c.createdAt).toLocaleString()}`
-                      : ''}
-                  </div>
-                  <p className="mt-1">{c.body}</p>
-                </li>
-              ))}
-            </ul>
-          )}
-          {m.state !== 'CLOSED' && !expired && (
-            <div className="flex flex-wrap gap-2">
-              <Input
-                className="min-w-[200px] flex-1"
-                value={commentBody}
-                onChange={(e) => setCommentBody(e.target.value)}
-                placeholder="Add a comment…"
-              />
-              <Button
-                size="sm"
-                disabled={!commentBody.trim()}
-                onClick={() => {
-                  void postMotionComment(m.id, commentBody.trim()).then((r) => {
-                    if (!r.ok) {
-                      setActionMsg(r.error);
-                      return;
-                    }
-                    setComments((prev) => [...prev, r.data]);
-                    setCommentBody('');
-                    setActionMsg('Comment posted.');
-                    onChanged();
-                  });
-                }}
-              >
-                Post
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
+      <MotionDiscussion
+        motion={m}
+        canPost={m.state !== 'CLOSED' && !expired}
+        defaultExpanded={defaultExpanded}
+        preloadedComments={preloadedComments}
+        onMessage={setActionMsg}
+        onChanged={onChanged}
+      />
     </li>
   );
 }

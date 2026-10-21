@@ -26,7 +26,7 @@ caller — it loops `editList.pluginChain`, skips disabled plugins, and
 connects whatever each enabled plugin returns. It has no per-plugin
 branches; it doesn't know EQ from a Limiter.
 
-Note: `buildPreviewNodes` is a real-time *approximation* for monitoring.
+Note: `buildPreviewNodes` is a real-time _approximation_ for monitoring.
 The limiter, for instance, is a fast `DynamicsCompressorNode`, not a true
 brickwall limiter — the actual export still renders through the ffmpeg
 path server-side. See the comment in `../../lib/audioPreviewGraph.ts`.
@@ -54,7 +54,7 @@ A fifth plugin (reverb, de-esser, whatever) means: a new module
 implementing `AudioFxPlugin`, one line added to `audioFxPlugins` in
 `index.ts`, and a test against `testAudioContext.ts`. Nothing in
 `useAudioPreviewGraph` or `StudioProEditorView.tsx` needs to change for
-the audio-graph half — though the host *UI* (add/remove/reorder/per-plugin
+the audio-graph half — though the host _UI_ (add/remove/reorder/per-plugin
 param controls) is still hand-written per plugin inside
 `StudioProEditorView.tsx` (~1200 lines) and would need its own generic
 host component before a truly arbitrary/third-party plugin chain is

@@ -1,45 +1,6 @@
 import type { FetchMeta } from './client';
-import { apiBase } from './http';
-import { isForceMock } from './mode';
-
-async function requestJson<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<{ data: T; status: number }> {
-  const { headers: initHeaders, ...rest } = init ?? {};
-  const res = await fetch(`${apiBase()}${path}`, {
-    credentials: 'include',
-    ...rest,
-    headers: {
-      Accept: 'application/json',
-      ...(rest.body ? { 'Content-Type': 'application/json' } : {}),
-      ...initHeaders,
-    },
-  });
-  if (!res.ok) {
-    let detail = `${path} → ${res.status}`;
-    try {
-      const body = (await res.json()) as { error?: string; message?: string };
-      if (body.error || body.message) {
-        detail = body.error ?? body.message ?? detail;
-      }
-    } catch {
-      // ignore
-    }
-    throw new Error(detail);
-  }
-  if (res.status === 204) {
-    return { data: undefined as T, status: res.status };
-  }
-  return { data: (await res.json()) as T, status: res.status };
-}
-
-function failMeta(err: unknown): FetchMeta {
-  return {
-    source: 'mock',
-    reason: err instanceof Error ? err.message : 'fetch failed',
-  };
-}
+import { failMeta, isForceMock } from './mode';
+import { requestJson } from './request-json';
 
 export type VenueBroadcast = {
   id: string;
@@ -67,6 +28,9 @@ export type MyVenue = {
   broadcasts: VenueBroadcast[];
 };
 
+const HOUR = 60 * 60 * 1000;
+const DAY = 24 * HOUR;
+
 const mockVenue: MyVenue = {
   id: 'venue-mock-1',
   slug: 'northern-lights-hall',
@@ -84,8 +48,8 @@ const mockVenue: MyVenue = {
   broadcasts: [
     {
       id: 'vb-mock-1',
-      startAt: '2026-09-05T18:00:00.000Z',
-      endAt: '2026-09-05T21:00:00.000Z',
+      startAt: new Date(Date.now() + 10 * DAY).toISOString(),
+      endAt: new Date(Date.now() + 10 * DAY + 3 * HOUR).toISOString(),
       description: 'Album release show',
       channelId: null,
       state: 'SCHEDULED',

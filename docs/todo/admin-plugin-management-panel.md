@@ -1,6 +1,30 @@
 # Admin plugin management panel (all Add-ons categories)
 
-**Status:** partial
+**Status:** blocked
+
+**Blocker:** Multi-phase project (13 categories, schema + submission surfaces) not started — too large for incidental closeout; needs dedicated kickoff.
+
+## Audience taxonomy decision (user, 2026-09-18)
+
+Simplify the user-facing Add-ons browser from implementation categories into
+three audience lists:
+
+- Listener add-ons/widgets stay together and remain available to listeners.
+- Artist add-ons (import, export/releasing, fingerprinting, multicast,
+  channel visuals/widgets and audio tools) are visible only to artists and
+  board users.
+- Admin add-ons/tools are visible only to board admins.
+
+Keep legacy category deep links working by mapping them to the appropriate
+audience list. Themes already have their own Settings section and should no
+longer duplicate an Add-ons category. This settles the earlier unified-page
+question for the user-facing browser; the admin moderation page remains the
+admin-only place for managing scoped runtime add-on submissions.
+
+Implemented 2026-09-25 (`pluginStoreCategories.ts`, `PluginStorePanel.tsx`):
+three tabs gated by `minimumRole`, each a set of collapsible groups; old
+category ids still open the right tab and group. Scrobbling shows the
+"moved to Settings → Integrations" notice in the Listener tab.
 
 ## Ask (user, 2026-09-08)
 
@@ -197,6 +221,169 @@ pass per category:
   enum used everywhere else), since those are two different,
   currently-unreconciled notions of "category" in the codebase today.
 
+## Category audit + scoping answers (2026-09-16)
+
+Read `PLUGIN-STORE-PLAN.md`, `docs/PLUGINS.md`, `pluginStoreCategories.ts`,
+and each category's implementation under `src/plugins/`/
+`src/components/plugin-store/RemainingCategories.tsx` to answer the three
+open questions above with real findings instead of guesses.
+
+**Key discovery: this admin page already covers 2 of the 13 categories,
+not 1.** `AdminAddonScope` isn't discovery-specific — it's `LISTENER` /
+`ARTIST` / `ADMIN`, and `RemainingCategories.tsx`'s `ChannelCategory()`
+(the "Channel" plugin-store category) literally renders
+`<DiscoWidgetManagerPanel scope="ARTIST" />` — **the same sandboxed
+widget-bundle system as Discovery (`scope="LISTENER"`), just a different
+scope value.** `../tahti-org`'s schema comment confirms this: one
+`AddonInstall` row is discriminated by whichever of
+`listenerUserId`/`channelId`/`adminSurface` is set. So "Add-ons" (this
+page) was never really discovery-only; it was already both `discovery`
+and `channel`, just labeled with raw backend scope names ("Listener"/
+"Artist"/"Admin") that never named the plugin-store categories they map
+to. **Fixed this pass** (no backend/schema change needed — purely a
+labeling fix): `SCOPES` labels now read "Listener (Discovery)" / "Artist
+(Channel)" / "Admin surface", and the page header gained an explanatory
+paragraph stating exactly which 2 of 13 categories it covers and why the
+other 11 don't fit this pattern.
+
+**Q1 — category-by-category admin-governability audit:**
+
+| Category | Admin-governable today? | Why |
+| --- | --- | --- |
+| `discovery` | **Yes** — full lifecycle | `AdminAddonsView`, `scope=LISTENER`; already had approve/reject/disable/enabled-by-default/default-config before this pass |
+| `channel` | **Yes** — full lifecycle, same page | `AdminAddonsView`, `scope=ARTIST` — see discovery above; label fix shipped this pass makes this visible |
+| *(no plugin-store category — `scope=ADMIN`)* | Modeled, unused | `ADMIN`-scope addons are registerable but nothing anywhere installs/renders one on an admin surface — a real gap, but a separate feature (an admin-surface widget host), not attempted here, unchanged from the prior pass's note |
+| `radio` | **Yes** — own dedicated admin page | `/admin/radio` (`AdminRadioView.tsx`) + `RadioStationCover` admin editing — correctly a *separate* pattern from the Addon/bundle-store, since it's a curated stream directory, not installable widgets |
+| `themes` | No | Built-ins are a fixed code registry (`@tahti-player/themes`); user-imported custom themes are private JSON, no publish/sharing path to moderate |
+| `visualizers` | No | Fixed `VisualizerPreset` code registry, no per-user submission |
+| `export` | No | Fixed `EXPORT_TARGETS` metadata array, single centralized Revelator delivery path, no per-target behavior to govern |
+| `import` | No | Fixed `SOURCE_DEFS` registry; per-user OAuth connections are private, not submittable content |
+| `multicast` | No | Fixed 8-provider registry; per-user `RtmpTarget` rows are private broadcast configs, not shared/moderated content |
+| `fingerprinting` | No | Single hardcoded provider (AcoustID), no user choice or submission |
+| `scrobbling` | No | Fixed 2-provider registry (Last.fm/ListenBrainz), per-user private OAuth, nothing to moderate |
+| `audio-plugins` | No | Fixed 4-plugin code registry; host UI still embedded in `StudioProEditorView.tsx` per `PLUGIN-STORE-PLAN.md` |
+| `tools` | No | Single fixed item (Discord bot config card), per-user private integration |
+| `listen` | No | Per-user private embeds (`ListenerWidgetsSection`/`useListenerWidgetsStore`); no admin page exists, none needed — nothing here is shared/submitted content |
+
+**Answer:** only `discovery` + `channel` are genuinely admin-governable in
+this ticket's sense (submissions, enable-by-default, moderation) — and
+both already are, via the same page. `radio` is admin-governed too, but
+correctly through its own separate page (different content shape). The
+other 10 are fixed code registries or private per-user connections where
+"admin management" doesn't apply the way this ticket originally
+envisioned. This is a materially smaller remaining scope than the
+original ask assumed.
+
+**2026-09-21 — overridden by the user: full submission/moderation parity
+across all 13 categories is still wanted**, not just visibility/enable-
+toggles for the 10 fixed-registry categories. This is a genuinely large,
+multi-repo project, not a UI tweak — recording the real shape of it here
+before any implementation starts, so it can be picked up in phases:
+
+**What "full parity" requires per fixed-registry category** (themes,
+visualizers, export, import, multicast, fingerprinting, scrobbling,
+audio-plugins, tools, listen — 10 categories): today each is a hardcoded
+TypeScript array/registry (e.g. `EXPORT_TARGETS`, `SOURCE_DEFS`, the
+4-plugin audio-plugins list) with no per-item database row, no submission
+concept, and no moderation lifecycle. Reaching parity with
+`discovery`/`channel` means, for each one:
+1. **Backend (`../tahti-org`)**: either widen the existing `Addon`/
+   `AddonVersion`/`AddonInstall` model to cover non-widget-bundle plugin
+   shapes (a provider config, an export target, a theme JSON blob, etc.
+   aren't sandboxed JS bundles — the current model is bundle-shaped), or
+   add a second, more general "plugin registration" model that can
+   represent both. This is a real schema design question, not a
+   mechanical extension — the two content shapes are different enough
+   that forcing them into `Addon` as-is would misrepresent what a
+   "version" or a "bundle" even means for e.g. a Last.fm scrobbler config.
+2. **Submission flow**: today there is no user-facing "submit a plugin"
+   UI anywhere for these 10 categories (no theme upload form, no
+   multicast-provider request form, etc.) — that's 10 new or generalized
+   submission surfaces, not just an admin-side review queue for something
+   that already gets submitted.
+3. **Moderation**: approve/reject/disable actions already exist and are
+   reusable *if* the backend model is unified or made polymorphic;
+   otherwise this is 10 more sets of action endpoints.
+4. **Frontend registry integration**: each category's actual runtime
+   behavior currently reads its fixed TS array directly (e.g.
+   `StudioProEditorView.tsx` for audio-plugins, `EXPORT_TARGETS` consumers
+   for export) — making these admin-editable means each consumer needs to
+   read from the new dynamic source instead, without breaking existing
+   behavior for the 3 categories (`discovery`, `channel`, `radio`) that
+   already don't work this way.
+
+**Recommendation on sequencing** (not yet started, no code changed for
+this pass): treat this as its own multi-phase project, not a continuation
+of the existing `AdminAddonsView.tsx` page. Suggested order: (a) pick one
+fixed-registry category as a pilot (audio-plugins is the most contained —
+already flagged elsewhere in `PLUGIN-STORE-PLAN.md` as needing a "host UI"
+decision) to prove out the schema/submission/moderation pattern once, (b)
+decide then whether to generalize `Addon` or add a second model based on
+what the pilot actually needs, (c) roll out to the remaining 9 once the
+pattern is proven. Doing all 13 at once in one pass risks a schema design
+that's wrong for categories not yet considered in depth.
+
+Not attempted this pass — this update is scoping only, to make the size
+of the ask visible before committing calendar time to it.
+
+**Q2 — unified page vs. per-category (recommendation, not decided here):**
+given the audit above, there is no real unification work left to do —
+the only two categories that fit this pattern already share one page.
+Recommend **not** building a 13-category unified admin shell; the
+current shape (one shared page for the 2 addon/bundle-store categories,
+separate dedicated pages for categories with a fundamentally different
+data model like `radio`) already matches what the categories actually
+need. Left for the user to confirm/override — this is a product call,
+not something to silently implement.
+
+**Q3 — category field reconciliation (answered, not a guess):**
+`AdminAddon.categories` values in the mock/registration data are
+freeform marketplace browse tags (`'social'`, `'new-releases'`,
+`'stats'`, `'events'`, ...) — **none of which are `PluginCategoryId`
+values** (`themes`, `visualizers`, `export`, ... — a fixed 13-value
+navigation enum for the Settings → Add-ons page shell). These are two
+intentionally different concepts: one is content tagging for browsing a
+widget marketplace, the other is store navigation. Narrowing
+`categories` to `PluginCategoryId` would lose real expressiveness and
+doesn't match how the field is actually used. **Recommendation: leave as
+`string[]`, do not reconcile** — documented with a doc comment on the
+type this pass so a future session doesn't retry this without checking
+first.
+
+**Not attempted (still genuinely open, from the prior pass, unchanged):**
+bundle upload/publish UI, and the "category" field's `PluginCategoryId`
+question (resolved above: deliberately not reconciling).
+
+## ADMIN-scope install management (2026-09-18, this pass)
+
+Built the "modeled-but-unused" gap flagged above: `ADMIN`-scope add-ons
+(registerable, but nothing previously installed/rendered one on a shared
+admin surface) can now be installed, ordered, toggled, and removed from a
+surface. Backend was already complete and unchanged — `../tahti-org`'s
+`apps/api/src/routes/admin/addons.ts` already had
+`GET/POST /api/admin/addons/installs` and
+`PATCH/DELETE /api/admin/addons/installs/:id`, confirmed by reading the
+route file directly rather than assuming.
+
+`packages/tahti-web/src/api/admin/admin-addons.ts` gained
+`AdminAddonInstall` + `fetchAdminAddonInstalls`/`createAdminAddonInstall`/
+`patchAdminAddonInstall`/`deleteAdminAddonInstall` (mock-mode state
+included, keyed by surface). `AdminAddonsView.tsx` gained an "Admin
+surface installs" panel: a `surface` text field (defaults to `homepage`,
+the only surface with a public renderer today —
+`GET /api/v1/addons/homepage`), a picker dialog listing not-yet-installed
+`APPROVED` `ADMIN`-scope add-ons, and per-install enable toggle /
+reorder (swaps `position` with its neighbor) / remove (confirm-gated).
+Separate axis from the existing "enabled by default" Toggle on the
+Manage dialog — that's platform-wide "render everywhere with no explicit
+install"; this is "render on this one surface, at this position, with
+this override."
+
+Verified: `tsc --noEmit` / `eslint` clean on both changed files,
+`admin.test.ts` still 8/8. Not live-browser-verified. Bundle
+upload/publish UI and the Q2 unified-page product decision remain open —
+this pass only closes the specific "not attempted" install-CRUD gap.
+
 ## Related
 
 - `packages/tahti-web/PLUGIN-STORE-PLAN.md` — per-category extraction
@@ -210,3 +397,14 @@ pass per category:
 - `/admin/addons` sits under the `operations` ("Manage") nav group in
   `packages/tahti-web/src/components/AdminNav.tsx` — a new unified plugins
   page belongs in the same group.
+
+**2026-09-28 bundle upload/publish UI (#206):** every card in `/admin/addons`
+has a Publish action: semver version (next patch prefilled), `.js`/`.mjs`
+bundle up to 2 MB, optional changelog → `prepare-upload` → PUT to storage →
+`publish-version` (moves the add-on to PENDING). Not tried against real
+storage. Still open: the multi-category submission/moderation project.
+
+**2026-09-28 edit and delete (#217, #218 stacked):** cards have Edit
+(`PATCH /api/admin/addons/:id`: name, description, author, cover,
+categories; slug and type locked) and Delete (`DELETE`, with a confirmation
+that points at Disable as the reversible option).

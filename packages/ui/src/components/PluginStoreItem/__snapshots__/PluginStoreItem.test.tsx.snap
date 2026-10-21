@@ -2,17 +2,17 @@
 
 exports[`PluginStoreItem > (Snapshot) renders compact 1`] = `
 <div
-  class="border-border flex h-full w-full rounded-md border-(length:--border-width) bg-background-secondary text-foreground shadow-shadow flex-row items-center justify-between gap-2 p-2"
+  class="border-border flex rounded-md border-(length:--border-width) bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-2 p-2"
   data-testid="plugin-store-item"
 >
   <div
-    class="flex min-w-0 flex-1 flex-col gap-1"
+    class="flex min-w-0 flex-1 basis-48 flex-col gap-1"
   >
     <div
       class="flex flex-wrap items-center gap-2"
     >
       <h3
-        class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-sm"
+        class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-sm"
       >
         <span
           data-testid="plugin-store-item-name"
@@ -37,7 +37,7 @@ exports[`PluginStoreItem > (Snapshot) renders compact 1`] = `
     data-testid="plugin-store-item-actions"
   >
     <button
-      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3 w-20"
+      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3 w-20"
       data-headlessui-state=""
       type="button"
     >
@@ -76,28 +76,28 @@ exports[`PluginStoreItem > (Snapshot) renders compact 1`] = `
 
 exports[`PluginStoreItem > (Snapshot) renders default state 1`] = `
 <div
-  class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row items-center justify-between gap-4"
+  class="border-border flex rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-4"
   data-testid="plugin-store-item"
 >
   <div
-    class="flex min-w-0 flex-1 flex-col gap-1"
+    class="flex min-w-0 flex-1 basis-48 flex-col gap-1"
   >
     <div
       class="flex flex-wrap items-center gap-2"
     >
       <h3
-        class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-lg"
+        class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-lg"
       >
         <span
           data-testid="plugin-store-item-name"
         >
           YouTube Music
         </span>
-        <p
+        <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             by
           </span>
@@ -106,7 +106,7 @@ exports[`PluginStoreItem > (Snapshot) renders default state 1`] = `
           >
             Nuclear Team
           </span>
-        </p>
+        </span>
       </h3>
       <span
         class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground"
@@ -131,7 +131,7 @@ exports[`PluginStoreItem > (Snapshot) renders default state 1`] = `
     data-testid="plugin-store-item-actions"
   >
     <button
-      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
+      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
       data-headlessui-state=""
       type="button"
     >
@@ -170,28 +170,28 @@ exports[`PluginStoreItem > (Snapshot) renders default state 1`] = `
 
 exports[`PluginStoreItem > (Snapshot) renders installed state 1`] = `
 <div
-  class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row items-center justify-between gap-4"
+  class="border-border flex rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-4"
   data-testid="plugin-store-item"
 >
   <div
-    class="flex min-w-0 flex-1 flex-col gap-1"
+    class="flex min-w-0 flex-1 basis-48 flex-col gap-1"
   >
     <div
       class="flex flex-wrap items-center gap-2"
     >
       <h3
-        class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-lg"
+        class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-lg"
       >
         <span
           data-testid="plugin-store-item-name"
         >
           YouTube Music
         </span>
-        <p
+        <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             by
           </span>
@@ -200,7 +200,7 @@ exports[`PluginStoreItem > (Snapshot) renders installed state 1`] = `
           >
             Nuclear Team
           </span>
-        </p>
+        </span>
       </h3>
       <span
         class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground"
@@ -225,7 +225,7 @@ exports[`PluginStoreItem > (Snapshot) renders installed state 1`] = `
     data-testid="plugin-store-item-actions"
   >
     <button
-      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
+      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
       data-disabled=""
       data-headlessui-state="disabled"
       disabled=""
@@ -260,28 +260,28 @@ exports[`PluginStoreItem > (Snapshot) renders installed state 1`] = `
 
 exports[`PluginStoreItem > (Snapshot) renders installing state 1`] = `
 <div
-  class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row items-center justify-between gap-4"
+  class="border-border flex rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-4"
   data-testid="plugin-store-item"
 >
   <div
-    class="flex min-w-0 flex-1 flex-col gap-1"
+    class="flex min-w-0 flex-1 basis-48 flex-col gap-1"
   >
     <div
       class="flex flex-wrap items-center gap-2"
     >
       <h3
-        class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-lg"
+        class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-lg"
       >
         <span
           data-testid="plugin-store-item-name"
         >
           YouTube Music
         </span>
-        <p
+        <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             by
           </span>
@@ -290,7 +290,7 @@ exports[`PluginStoreItem > (Snapshot) renders installing state 1`] = `
           >
             Nuclear Team
           </span>
-        </p>
+        </span>
       </h3>
       <span
         class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground"
@@ -315,7 +315,7 @@ exports[`PluginStoreItem > (Snapshot) renders installing state 1`] = `
     data-testid="plugin-store-item-actions"
   >
     <button
-      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28 disabled:opacity-100"
+      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28 disabled:opacity-100"
       data-disabled=""
       data-headlessui-state="disabled"
       disabled=""
@@ -362,28 +362,28 @@ exports[`PluginStoreItem > (Snapshot) renders installing state 1`] = `
 
 exports[`PluginStoreItem > (Snapshot) renders with custom labels 1`] = `
 <div
-  class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row items-center justify-between gap-4"
+  class="border-border flex rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-4"
   data-testid="plugin-store-item"
 >
   <div
-    class="flex min-w-0 flex-1 flex-col gap-1"
+    class="flex min-w-0 flex-1 basis-48 flex-col gap-1"
   >
     <div
       class="flex flex-wrap items-center gap-2"
     >
       <h3
-        class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-lg"
+        class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-lg"
       >
         <span
           data-testid="plugin-store-item-name"
         >
           YouTube Music
         </span>
-        <p
+        <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             from
           </span>
@@ -392,7 +392,7 @@ exports[`PluginStoreItem > (Snapshot) renders with custom labels 1`] = `
           >
             Nuclear Team
           </span>
-        </p>
+        </span>
       </h3>
       <span
         class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground"
@@ -417,7 +417,7 @@ exports[`PluginStoreItem > (Snapshot) renders with custom labels 1`] = `
     data-testid="plugin-store-item-actions"
   >
     <button
-      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
+      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
       data-headlessui-state=""
       type="button"
     >
@@ -456,28 +456,28 @@ exports[`PluginStoreItem > (Snapshot) renders with custom labels 1`] = `
 
 exports[`PluginStoreItem > (Snapshot) renders with long description 1`] = `
 <div
-  class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row items-center justify-between gap-4"
+  class="border-border flex rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow h-auto w-auto flex-row flex-wrap items-center justify-between gap-4"
   data-testid="plugin-store-item"
 >
   <div
-    class="flex min-w-0 flex-1 flex-col gap-1"
+    class="flex min-w-0 flex-1 basis-48 flex-col gap-1"
   >
     <div
       class="flex flex-wrap items-center gap-2"
     >
       <h3
-        class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-lg"
+        class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-lg"
       >
         <span
           data-testid="plugin-store-item-name"
         >
           YouTube Music
         </span>
-        <p
+        <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             by
           </span>
@@ -486,7 +486,7 @@ exports[`PluginStoreItem > (Snapshot) renders with long description 1`] = `
           >
             Nuclear Team
           </span>
-        </p>
+        </span>
       </h3>
       <span
         class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground"
@@ -511,7 +511,7 @@ exports[`PluginStoreItem > (Snapshot) renders with long description 1`] = `
     data-testid="plugin-store-item-actions"
   >
     <button
-      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
+      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
       data-headlessui-state=""
       type="button"
     >

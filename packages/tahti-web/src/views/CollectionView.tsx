@@ -1,8 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
-  ArrowLeftIcon,
   BookmarkIcon,
-  ListMusicIcon,
   ListPlusIcon,
   MusicIcon,
   PencilIcon,
@@ -13,65 +11,173 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, EmptyState, Tooltip } from '@tahti-player/ui';
+import {
+  backButtonCornerClassName,
+  BackButtonLink,
+  Button,
+  ButtonLink,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   fetchCollection,
   fetchCollectionSubscription,
   setCollectionSubscription,
 } from '../api/client';
+import {
+  contributionLine,
+  type ContributionLine,
+} from '../api/collection-contribution';
+import type { CollectionTextLayer } from '../api/collection-text-layer';
 import { createJam } from '../api/jam';
 import type {
-  CollectionSound,
+  EmbedPlaybackProvider,
   PublicCollection,
   TahtiPlayable,
 } from '../api/types';
+import { ChannelTextOverlayView } from '../components/ChannelTextOverlayView';
+import { CollaborativePlaylistAdd } from '../components/CollaborativePlaylistAdd';
+import { CollectionContribution } from '../components/CollectionContribution';
 import { EmbedButton } from '../components/EmbedButton';
-import { EmbedTrackRow } from '../components/EmbedTrackRow';
 import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
 import { PageFrame } from '../components/PageHeader';
-import { PageEmpty, PageLoading } from '../components/PageStates';
-import { PlayableTrackTable } from '../components/PlayableTrackTable';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
+import { ReportButton } from '../components/ReportButton';
+import { RssFeedButton } from '../components/RssFeedButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
-import type { EmbedProvider } from '../lib/embedSrc';
+import { contrastingText } from '../lib/colorScheme';
+import { toEmbedPlaybackProvider } from '../lib/embedSrc';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { syncDocumentMetadata } from '../lib/seo';
+import { useDominantColor } from '../lib/useDominantColor';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 
-function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
-  const out: TahtiPlayable[] = [];
-  for (const item of col.items) {
-    const sound = item.sound;
-    if (!sound?.audioUrl) {
-      continue;
+function rgbToHex(r: number, g: number, b: number): string {
+  return `#${[r, g, b].map((c) => c.toString(16).padStart(2, '0')).join('')}`;
+}
+
+function schemeFromCoverRgb(rgb: [number, number, number] | null):
+  | {
+      bg: string;
+      text: string;
+      accent: string;
+      highlight: string;
+      muted: string;
     }
-    const isHls = sound.audioUrl.includes('.m3u8');
-    out.push({
+  | undefined {
+  if (!rgb) {
+    return undefined;
+  }
+  const [r, g, b] = rgb;
+  const bg = rgbToHex(r, g, b);
+  const accent = rgbToHex(
+    Math.min(255, Math.round(r * 0.85 + 40)),
+    Math.min(255, Math.round(g * 0.85 + 40)),
+    Math.min(255, Math.round(b * 0.85 + 40)),
+  );
+  const highlight = rgbToHex(
+    Math.min(255, Math.round(r * 0.7 + 80)),
+    Math.min(255, Math.round(g * 0.7 + 80)),
+    Math.min(255, Math.round(b * 0.7 + 80)),
+  );
+  const muted = rgbToHex(
+    Math.round(r * 0.55 + 60),
+    Math.round(g * 0.55 + 60),
+    Math.round(b * 0.55 + 60),
+  );
+  return {
+    bg,
+    text: contrastingText(bg),
+    accent,
+    highlight,
+    muted,
+  };
+}
+
+function collectionSoundToPlayable(
+  sound: NonNullable<PublicCollection['items'][number]['sound']>,
+  col: PublicCollection,
+): TahtiPlayable | null {
+  const coverUrl =
+    sound.bannerUrl ??
+    col.coverUrl ??
+    placeholderArtworkUrl(`${col.slug}:${sound.id}`);
+  if (sound.audioUrl) {
+    return {
       id: `sound:${sound.id}`,
       kind: 'sound',
       title: sound.title,
       artist: col.user.displayName,
-      coverUrl:
-        sound.bannerUrl ??
-        col.coverUrl ??
-        placeholderArtworkUrl(`${col.slug}:${sound.id}`),
+      coverUrl,
       streamUrl: sound.audioUrl,
-      protocol: isHls ? 'hls' : 'https',
+      protocol: sound.audioUrl.includes('.m3u8') ? 'hls' : 'https',
       channelSlug: sound.channel?.slug,
-    });
+    };
+  }
+  if (sound.embedProvider && sound.embedUri) {
+    const provider: EmbedPlaybackProvider = toEmbedPlaybackProvider(
+      sound.embedProvider,
+    );
+    return {
+      id: `sound:${sound.id}`,
+      kind: 'sound',
+      title: sound.title,
+      artist: col.user.displayName,
+      coverUrl,
+      streamUrl: '',
+      protocol: 'https',
+      channelSlug: sound.channel?.slug,
+      sourceProvider: provider,
+      embed: { provider, embedUri: sound.embedUri },
+    };
+  }
+  return null;
+}
+
+/** Every playable in a collection — both Tahti-hosted tracks and the
+ * provider's-own-widget (hearthis.at / Mixcloud / Spotify / Bandcamp)
+ * embeds — in original item order, so listeners see one list. */
+function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
+  const out: TahtiPlayable[] = [];
+  for (const item of col.items) {
+    if (!item.sound) {
+      continue;
+    }
+    const playable = collectionSoundToPlayable(item.sound, col);
+    if (playable) {
+      out.push(playable);
+    }
+  }
+  return out;
+}
+
+function contributionsByPlayableId(
+  col: PublicCollection,
+): Map<string, ContributionLine> {
+  const out = new Map<string, ContributionLine>();
+  for (const item of col.items) {
+    const line = contributionLine(item, col.user.username);
+    if (item.sound && line) {
+      out.set(`sound:${item.sound.id}`, line);
+    }
   }
   return out;
 }
 
 export function CollectionView({ slug }: { slug: string }) {
-  const [collection, setCollection] = useState<PublicCollection | null>(null);
+  const [collection, setCollection] = useState<
+    (PublicCollection & Partial<CollectionTextLayer>) | null
+  >(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const me = useAuthStore((s) => s.user);
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
@@ -91,26 +197,45 @@ export function CollectionView({ slug }: { slug: string }) {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    void fetchCollection(slug).then((res) => {
-      if (cancelled) {
-        return;
-      }
-      setCollection(res.data);
-      setLoading(false);
-      if (res.data) {
-        syncDocumentMetadata(window.location.pathname, {
-          title: `${res.data.name} by ${res.data.user.displayName} on Tahti`,
-          description:
-            res.data.description ??
-            `Listen to ${res.data.name}, a collection by ${res.data.user.displayName} on Tahti.`,
-          image: res.data.coverUrl ?? placeholderArtworkUrl(res.data.slug),
-        });
-      }
-    });
+    setLoadError(null);
+    void fetchCollection(slug)
+      .then((res) => {
+        if (cancelled) {
+          return;
+        }
+        setCollection(res.data);
+        setLoadError(
+          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+        );
+        if (res.data) {
+          syncDocumentMetadata(window.location.pathname, {
+            title: `${res.data.name} by ${res.data.user.displayName} on Tahti`,
+            description:
+              res.data.description ??
+              `Listen to ${res.data.name}, a collection by ${res.data.user.displayName} on Tahti.`,
+            image: res.data.coverUrl ?? placeholderArtworkUrl(res.data.slug),
+          });
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setCollection(null);
+          setLoadError(
+            err instanceof Error
+              ? err.message
+              : 'Could not load this collection.',
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, attempt]);
 
   useEffect(() => {
     let cancelled = false;
@@ -129,24 +254,32 @@ export function CollectionView({ slug }: { slug: string }) {
     [collection],
   );
 
-  // Items Tahti references but never hosts — only the provider's own
-  // widget can play them, so they can't go through the track table.
-  const embedItems = useMemo(() => {
-    if (!collection) {
-      return [];
-    }
-    const out: { sound: CollectionSound; provider: EmbedProvider }[] = [];
-    for (const item of collection.items) {
-      const sound = item.sound;
-      if (sound && !sound.audioUrl && sound.embedProvider && sound.embedUri) {
-        out.push({ sound, provider: sound.embedProvider });
-      }
-    }
-    return out;
-  }, [collection]);
+  const contributions = useMemo(
+    () =>
+      collection
+        ? contributionsByPlayableId(collection)
+        : new Map<string, ContributionLine>(),
+    [collection],
+  );
+
+  const coverTintUrl = collection
+    ? (collection.coverUrl ?? placeholderArtworkUrl(collection.slug))
+    : null;
+  const coverRgb = useDominantColor(coverTintUrl);
+  const coverScheme = useMemo(() => schemeFromCoverRgb(coverRgb), [coverRgb]);
 
   if (loading) {
     return <PageLoading label="Loading collection…" />;
+  }
+
+  if (loadError) {
+    return (
+      <PageError
+        title="Could not load this collection"
+        description={loadError}
+        onRetry={() => setAttempt((n) => n + 1)}
+      />
+    );
   }
 
   if (!collection) {
@@ -235,15 +368,13 @@ export function CollectionView({ slug }: { slug: string }) {
   };
 
   return (
-    <PageFrame maxWidth="full">
-      <Tooltip content="Back to Listen" side="right">
-        <Link
-          to="/"
-          aria-label="Back to Listen"
-          className="text-foreground-secondary hover:bg-background-secondary inline-flex size-8 w-fit items-center justify-center rounded-full"
-        >
-          <ArrowLeftIcon size={16} aria-hidden />
-        </Link>
+    <PageFrame maxWidth="full" className="relative">
+      <Tooltip
+        content="Back to Listen"
+        side="right"
+        wrapperClassName={backButtonCornerClassName}
+      >
+        <BackButtonLink to="/" aria-label="Back to Listen" />
       </Tooltip>
 
       <EntitySocialHeader
@@ -265,22 +396,23 @@ export function CollectionView({ slug }: { slug: string }) {
         }
         description={collection.description}
         backdropUrl={backdropUrl}
+        colorScheme={coverScheme}
         visualizerPreset={resolveArtworkVisualizerPreset(collection.slug)}
         artworkUrlForVisualizer={coverUrl}
         stats={headerStats}
         actions={
           isOwner ? (
             <Tooltip content="Edit in Studio" side="top">
-              <Link to="/studio/collections/$slug" params={{ slug }}>
-                <Button
-                  variant="secondary"
-                  size="icon-sm"
-                  className="bg-background border-border rounded-md border-(length:--border-width)"
-                  aria-label="Edit in Studio"
-                >
-                  <PencilIcon size={14} aria-hidden />
-                </Button>
-              </Link>
+              <ButtonLink
+                to="/studio/collections/$slug"
+                params={{ slug }}
+                variant="secondary"
+                size="icon-sm"
+                aria-label="Edit in Studio"
+                className="bg-background border-border rounded-md border-(length:--border-width)"
+              >
+                <PencilIcon size={14} aria-hidden />
+              </ButtonLink>
             </Tooltip>
           ) : (
             <Tooltip
@@ -330,6 +462,12 @@ export function CollectionView({ slug }: { slug: string }) {
             </Button>
           </Tooltip>
           <EmbedButton target={{ kind: 'collection', slug }} />
+          {collection.isPublic && collection.links?.rss ? (
+            <RssFeedButton
+              href={collection.links.rss}
+              label={`RSS feed of ${collection.name}`}
+            />
+          ) : null}
           <Button variant="secondary" onClick={() => void startJam()}>
             <RadioIcon size={15} aria-hidden className="mr-1.5" />
             Start a Jam
@@ -366,38 +504,38 @@ export function CollectionView({ slug }: { slug: string }) {
                 : ''}
             </Button>
           ) : null}
+          {!isOwner && collection.isPublic ? (
+            <ReportButton
+              targetType="COLLECTION"
+              targetId={slug}
+              label={collection.name}
+            />
+          ) : null}
         </div>
       </EntitySocialHeader>
 
+      <ChannelTextOverlayView
+        mode={collection.textLayerMode}
+        text={collection.textLayerText}
+        align={collection.textLayerAlign}
+      />
+
       {playables.length > 0 && (
-        <PlayableTrackTable
-          items={playables}
-          compactActions
-          emptyMessage="No tracks yet."
-        />
+        <div className="shadow-float rounded-[var(--radius-card)]">
+          <PlayableAmbientTrackList
+            items={playables}
+            compactActions
+            emptyMessage="No tracks yet."
+            getAnnotation={(item) => {
+              const line = contributions.get(item.id);
+              return line ? <CollectionContribution line={line} /> : null;
+            }}
+          />
+        </div>
       )}
 
-      {embedItems.length > 0 && (
-        <section className="flex flex-col gap-2">
-          <h2>
-            <Eyebrow>Elsewhere</Eyebrow>
-          </h2>
-          <ul className="flex flex-col gap-2">
-            {embedItems.map(({ sound, provider }) => (
-              <EmbedTrackRow
-                key={sound.id}
-                title={sound.title}
-                provider={provider}
-                embedUri={sound.embedUri!}
-              />
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {playables.length === 0 && embedItems.length === 0 && (
-        <EmptyState
-          icon={<ListMusicIcon size={40} className="opacity-40" />}
+      {playables.length === 0 && (
+        <PageEmpty
           title="No tracks in this playlist"
           description={
             isOwner
@@ -433,6 +571,22 @@ export function CollectionView({ slug }: { slug: string }) {
           </ul>
         </section>
       )}
+
+      {collection.collaborative && collection.isPublic ? (
+        <CollaborativePlaylistAdd
+          slug={collection.slug}
+          existingSoundIds={collection.items.flatMap((item) =>
+            item.sound ? [item.sound.id] : [],
+          )}
+          onAdded={() =>
+            void fetchCollection(slug).then((res) => {
+              if (res.data) {
+                setCollection(res.data);
+              }
+            })
+          }
+        />
+      ) : null}
     </PageFrame>
   );
 }

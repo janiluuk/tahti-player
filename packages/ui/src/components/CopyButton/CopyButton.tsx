@@ -12,17 +12,23 @@ export type CopyButtonProps = Omit<
   'onClick' | 'children'
 > & {
   text: string;
+  /** Visible label text, e.g. "Share". Omit for the default icon-only button. */
+  label?: string;
   /** Confirmed ("copied") state duration in ms. Defaults to 10s. */
   feedbackDurationMs?: number;
   /** Show a toast on copy. `true` uses a generic message; a string is shown as-is. */
   toastMessage?: string | boolean;
+  /** Shown via toast if the clipboard write fails. Defaults to a generic message. */
+  errorMessage?: string;
 };
 
 const CopyButtonImpl: FC<CopyButtonProps> = ({
   text,
-  size = 'icon-sm',
+  label,
+  size,
   feedbackDurationMs = COPY_FEEDBACK_DURATION_MS,
   toastMessage,
+  errorMessage = 'Could not copy to clipboard',
   'aria-label': ariaLabel,
   title,
   ...props
@@ -38,10 +44,15 @@ const CopyButtonImpl: FC<CopyButtonProps> = ({
     };
   }, []);
 
-  const label = ariaLabel ?? title ?? 'Copy';
+  const accessibleLabel = ariaLabel ?? title ?? label ?? 'Copy';
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(text);
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      toast.error(errorMessage);
+      return;
+    }
     setCopied(true);
     if (toastMessage) {
       toast.success(
@@ -57,13 +68,19 @@ const CopyButtonImpl: FC<CopyButtonProps> = ({
   };
 
   return (
-    <Tooltip content={label} side="top">
-      <Button size={size} onClick={handleCopy} aria-label={label} {...props}>
+    <Tooltip content={accessibleLabel} side="top">
+      <Button
+        size={size ?? (label ? 'sm' : 'icon-sm')}
+        onClick={() => void handleCopy()}
+        aria-label={accessibleLabel}
+        {...props}
+      >
         {copied ? (
           <Check className="size-3.5" />
         ) : (
           <Copy className="size-3.5" />
         )}
+        {label && <span className="ml-1.5">{copied ? 'Copied' : label}</span>}
       </Button>
     </Tooltip>
   );

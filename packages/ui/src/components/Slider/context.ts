@@ -9,6 +9,7 @@ export type SliderContextValue = {
   step: number;
   value: number;
   unit?: string;
+  formatValue?: (value: number) => string;
   disabled?: boolean;
   percentage: number;
   emit: (v: number) => void;

@@ -1,7 +1,12 @@
 import { render, RenderResult, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { CardsRow, CardsRowItem, CardsRowLabels } from './CardsRow';
+import {
+  CardsRow,
+  CardsRowBadgeColor,
+  CardsRowItem,
+  CardsRowLabels,
+} from './CardsRow';
 
 const user = userEvent.setup();
 
@@ -34,6 +39,7 @@ const defaultItems: CardsRowItem[] = [
 type MountOptions = {
   title?: string;
   badge?: string;
+  badgeColor?: CardsRowBadgeColor;
   items?: CardsRowItem[];
   labels?: CardsRowLabels;
 };
@@ -43,12 +49,19 @@ export const CardsRowWrapper = {
     const {
       title = 'Top Albums',
       badge,
+      badgeColor,
       items = defaultItems,
       labels = defaultLabels,
     } = options;
 
     return render(
-      <CardsRow title={title} badge={badge} items={items} labels={labels} />,
+      <CardsRow
+        title={title}
+        badge={badge}
+        badgeColor={badgeColor}
+        items={items}
+        labels={labels}
+      />,
     );
   },
 

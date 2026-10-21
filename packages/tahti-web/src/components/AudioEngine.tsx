@@ -1,7 +1,25 @@
-import Hls from 'hls.js';
-import { useEffect, useRef } from 'react';
+import type Hls from 'hls.js';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+
+import type { QueueItem } from '@tahti-player/model';
 
 import { postListenEvent } from '../api/client';
+import type { TahtiPlayable } from '../api/types';
+import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
+import { ensureAudioCoreBridge } from '../lib/audioCoreBridge';
+import {
+  canAirPlay,
+  canPlayNativeHls,
+  isHlsStream,
+  loadHls,
+  prefersNativeHls,
+  prefetchHls,
+  scheduleIdleHlsPrefetch,
+} from '../lib/hlsLoader';
+import { mediaSessionArtwork } from '../lib/mediaSessionArtwork';
+import { getNativeLibrary } from '../lib/nativeLibrary';
+import { normalizationFor } from '../lib/replayGain';
+import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 
 const LISTEN_EVENT_AFTER_SEC = 15;
@@ -11,38 +29,112 @@ const LISTEN_EVENT_AFTER_SEC = 15;
  * Live / radio: HLS via hls.js (or native Safari).
  */
 export function AudioEngine() {
+  ensureAudioCoreBridge();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const hlsRef = useRef<Hls | null>(null);
   const listenReportedRef = useRef<Set<string>>(new Set());
   const audioCtxRef = useRef<AudioContext | null>(null);
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const gainRef = useRef<GainNode | null>(null);
+  const normalizationRef = useRef(1);
 
-  const currentId = usePlayerStore((s) => s.currentId);
-  const queue = usePlayerStore((s) => s.queue);
+  const current = usePlayerStore(selectCurrentItem);
+  const restoredPending = usePlayerStore((s) => s.restoredPending);
   const status = usePlayerStore((s) => s.status);
   const volume = usePlayerStore((s) => s.volume);
   const muted = usePlayerStore((s) => s.muted);
+  const fadeLevel = usePlayerStore((s) => s.fadeLevel);
   const seekTarget = usePlayerStore((s) => s.seekTarget);
-  const currentTime = usePlayerStore((s) => s.currentTime);
   const setStatus = usePlayerStore((s) => s.setStatus);
   const setProgress = usePlayerStore((s) => s.setProgress);
   const clearSeekTarget = usePlayerStore((s) => s.clearSeekTarget);
   const next = usePlayerStore((s) => s.next);
   const previous = usePlayerStore((s) => s.previous);
+  const seekBy = usePlayerStore((s) => s.seekBy);
+  const skipSeconds = usePlaybackPrefsStore((s) => s.skipSeconds);
   const setAnalyser = usePlayerStore((s) => s.setAnalyser);
+  const setAudioElement = usePlayerStore((s) => s.setAudioElement);
+  const normalizationMode = usePlaybackPrefsStore((s) => s.normalization);
 
-  const current = queue.find((q) => q.id === currentId) ?? null;
-  const playable = current ? playableFromQueueItem(current) : null;
+  const playable = useMemo(
+    () => (current ? playableFromQueueItem(current) : null),
+    [current],
+  );
+
+  useEffect(() => scheduleIdleHlsPrefetch(), []);
+
+  useEffect(() => {
+    setAudioElement(audioRef.current);
+    return () => setAudioElement(null);
+  }, [setAudioElement]);
+
+  const currentIsHls =
+    playable != null && !playable.embed && isHlsStream(playable);
+  useEffect(() => {
+    if (currentIsHls) {
+      prefetchHls();
+    }
+  }, [currentIsHls]);
+
+  // Without a Web Audio graph (AirPlay) normalization can only turn down.
+  const applyNormalization = useCallback(() => {
+    const factor = normalizationRef.current;
+    if (gainRef.current) {
+      gainRef.current.gain.value = factor;
+    }
+    const audio = audioRef.current;
+    if (audio) {
+      const level = volume * fadeLevel;
+      audio.volume = gainRef.current ? level : level * Math.min(factor, 1);
+    }
+  }, [volume, fadeLevel]);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) {
       return;
     }
-    audio.volume = volume;
+    applyNormalization();
     audio.muted = muted;
-  }, [volume, muted]);
+    // A channel that started on its own did so without a gesture, which
+    // leaves the audio context suspended; unmuting is the gesture.
+    if (!muted && audioCtxRef.current?.state === 'suspended') {
+      void audioCtxRef.current.resume().catch(() => undefined);
+    }
+  }, [applyNormalization, muted]);
+
+  const applyNormalizationRef = useRef(applyNormalization);
+  applyNormalizationRef.current = applyNormalization;
+
+  const localTrackId =
+    playable?.sourceProvider === 'local' && playable.id.startsWith('local:')
+      ? playable.id.slice('local:'.length)
+      : null;
+  useEffect(() => {
+    normalizationRef.current = 1;
+    applyNormalization();
+    const analysis = getNativeLibrary()?.analysis;
+    if (normalizationMode === 'off' || !localTrackId || !analysis) {
+      return;
+    }
+    let cancelled = false;
+    analysis
+      .detail(localTrackId)
+      .then((detail) => {
+        if (!cancelled) {
+          normalizationRef.current = normalizationFor(
+            normalizationMode,
+            detail,
+          ).factor;
+          applyNormalization();
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [localTrackId, normalizationMode, applyNormalization]);
 
   // OS-level media controls (lock screen, notification, headset/keyboard
   // media keys) — matches Nuclear desktop's official MediaSession plugin,
@@ -55,30 +147,48 @@ export function AudioEngine() {
     navigator.mediaSession.setActionHandler('pause', () => setStatus('paused'));
     navigator.mediaSession.setActionHandler('previoustrack', () => previous());
     navigator.mediaSession.setActionHandler('nexttrack', () => next());
+    navigator.mediaSession.setActionHandler('seekforward', (details) =>
+      seekBy(details.seekOffset ?? skipSeconds),
+    );
+    navigator.mediaSession.setActionHandler('seekbackward', (details) =>
+      seekBy(-(details.seekOffset ?? skipSeconds)),
+    );
     return () => {
       navigator.mediaSession.setActionHandler('play', null);
       navigator.mediaSession.setActionHandler('pause', null);
       navigator.mediaSession.setActionHandler('previoustrack', null);
       navigator.mediaSession.setActionHandler('nexttrack', null);
+      navigator.mediaSession.setActionHandler('seekforward', null);
+      navigator.mediaSession.setActionHandler('seekbackward', null);
     };
-  }, [setStatus, previous, next]);
+  }, [setStatus, previous, next, seekBy, skipSeconds]);
 
+  const hasPlayable = playable != null;
+  const stationNowPlaying = usePlayerStationNowPlaying(playable);
+  const metaTitle = stationNowPlaying?.title ?? playable?.title;
+  const metaArtist = stationNowPlaying?.artist ?? playable?.artist;
+  const metaArtworkJson = useMemo(
+    () =>
+      JSON.stringify(mediaSessionArtwork(current?.track.artwork?.items ?? [])),
+    [current],
+  );
+  // Keyed on primitives, not the playable object: queue rebuilds (re-play,
+  // resolved stream URLs) hand back a new object for the same track, and
+  // each MediaMetadata assignment makes the OS refetch artwork.
   useEffect(() => {
     if (!('mediaSession' in navigator)) {
       return;
     }
-    if (!playable) {
+    if (!hasPlayable) {
       navigator.mediaSession.metadata = null;
       return;
     }
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: playable.title,
-      artist: playable.artist,
-      artwork: playable.coverUrl
-        ? [{ src: playable.coverUrl, sizes: '512x512', type: 'image/jpeg' }]
-        : [],
+      title: metaTitle,
+      artist: metaArtist,
+      artwork: JSON.parse(metaArtworkJson) as MediaImage[],
     });
-  }, [playable]);
+  }, [hasPlayable, metaTitle, metaArtist, metaArtworkJson]);
 
   useEffect(() => {
     if (!('mediaSession' in navigator)) {
@@ -99,6 +209,9 @@ export function AudioEngine() {
       return;
     }
     const ensureGraph = () => {
+      if (canAirPlay()) {
+        return;
+      }
       try {
         if (!audioCtxRef.current) {
           const Ctx =
@@ -118,13 +231,17 @@ export function AudioEngine() {
           sourceRef.current = ctx.createMediaElementSource(audio);
         }
         if (!analyserRef.current) {
+          const gain = ctx.createGain();
           const analyser = ctx.createAnalyser();
           analyser.fftSize = 256;
           analyser.smoothingTimeConstant = 0.75;
-          sourceRef.current.connect(analyser);
+          sourceRef.current.connect(gain);
+          gain.connect(analyser);
           analyser.connect(ctx.destination);
+          gainRef.current = gain;
           analyserRef.current = analyser;
           setAnalyser(analyser);
+          applyNormalizationRef.current();
         }
       } catch {
         // createMediaElementSource can only run once per element — ignore races.
@@ -152,8 +269,17 @@ export function AudioEngine() {
       return;
     }
 
+    // A track restored from the last session stays unloaded until the user
+    // presses play (which clears restoredPending) -- no audio on launch.
+    if (
+      restoredPending === playable.id &&
+      usePlayerStore.getState().status === 'paused'
+    ) {
+      return;
+    }
+
     const url = playable.streamUrl;
-    const isHls = playable.protocol === 'hls' || url.includes('.m3u8');
+    const isHls = isHlsStream(playable);
 
     const cleanup = () => {
       hlsRef.current?.destroy();
@@ -166,6 +292,14 @@ export function AudioEngine() {
     setStatus('loading');
 
     const onPlaying = () => setStatus('playing');
+    // The element ran out of data mid-stream (slow network, a seek into an
+    // unbuffered part). It fires `playing` again once audio resumes; until
+    // then the player is loading, not playing. A pause is left alone.
+    const onWaiting = () => {
+      if (usePlayerStore.getState().status === 'playing') {
+        setStatus('loading');
+      }
+    };
     const onPause = () => {
       if (!audio.ended) {
         setStatus('paused');
@@ -185,10 +319,13 @@ export function AudioEngine() {
         return;
       }
       lastProgressUpdate = now;
-      setProgress(
-        audio.currentTime,
-        Number.isFinite(audio.duration) ? audio.duration : 0,
-      );
+      const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
+      setProgress(audio.currentTime, duration);
+      updatePositionState(audio.currentTime, duration, audio.playbackRate);
+    };
+    const onSeeked = () => {
+      const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
+      updatePositionState(audio.currentTime, duration, audio.playbackRate);
     };
     // crossOrigin is required for the shared analyser (see the graph
     // effect above) -- without it, connecting a MediaElementAudioSourceNode
@@ -214,43 +351,75 @@ export function AudioEngine() {
       setStatus('error', 'Playback error');
     };
 
-    audio.crossOrigin = 'anonymous';
+    audio.crossOrigin = canAirPlay() ? null : 'anonymous';
     audio.addEventListener('playing', onPlaying);
+    audio.addEventListener('waiting', onWaiting);
     audio.addEventListener('pause', onPause);
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('timeupdate', onTime);
+    audio.addEventListener('seeked', onSeeked);
     audio.addEventListener('error', onError);
 
-    if (isHls && Hls.isSupported()) {
-      const hls = new Hls({ liveDurationInfinity: true, enableWorker: true });
-      hlsRef.current = hls;
-      hls.on(Hls.Events.ERROR, (_e, data) => {
-        if (data.fatal) {
-          setStatus('error', data.details);
-        }
-      });
-      hls.loadSource(url);
-      hls.attachMedia(audio);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        void audio.play().catch(() => setStatus('paused'));
-      });
-    } else if (isHls && audio.canPlayType('application/vnd.apple.mpegurl')) {
+    const playDirect = () => {
       audio.src = url;
       void audio.play().catch(() => setStatus('paused'));
+    };
+    let disposed = false;
+
+    if (!isHls || prefersNativeHls(audio)) {
+      playDirect();
     } else {
-      audio.src = url;
-      void audio.play().catch(() => setStatus('paused'));
+      void loadHls()
+        .then(({ default: HlsPlayer }) => {
+          if (disposed) {
+            return;
+          }
+          if (!HlsPlayer.isSupported()) {
+            playDirect();
+            return;
+          }
+          const hls = new HlsPlayer({
+            liveDurationInfinity: true,
+            enableWorker: true,
+          });
+          hlsRef.current = hls;
+          hls.on(HlsPlayer.Events.ERROR, (_e, data) => {
+            if (data.fatal) {
+              setStatus('error', data.details);
+            }
+          });
+          hls.loadSource(url);
+          hls.attachMedia(audio);
+          hls.on(HlsPlayer.Events.MANIFEST_PARSED, () => {
+            void audio.play().catch(() => setStatus('paused'));
+          });
+        })
+        .catch(() => {
+          if (disposed) {
+            return;
+          }
+          // The chunk can fail on a stale deploy or a flaky connection;
+          // native playback is then the only way left to make sound.
+          if (canPlayNativeHls(audio)) {
+            playDirect();
+            return;
+          }
+          setStatus('error', 'Playback error');
+        });
     }
 
     return () => {
+      disposed = true;
       audio.removeEventListener('playing', onPlaying);
+      audio.removeEventListener('waiting', onWaiting);
       audio.removeEventListener('pause', onPause);
       audio.removeEventListener('ended', onEnded);
       audio.removeEventListener('timeupdate', onTime);
+      audio.removeEventListener('seeked', onSeeked);
       audio.removeEventListener('error', onError);
       cleanup();
     };
-  }, [playable?.id, playable?.streamUrl]);
+  }, [playable?.id, playable?.streamUrl, restoredPending]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -278,24 +447,82 @@ export function AudioEngine() {
     clearSeekTarget();
   }, [seekTarget, clearSeekTarget]);
 
-  // Best-effort listen analytics once an archive item has played long enough.
-  useEffect(() => {
-    if (!playable || playable.kind !== 'sound') {
-      return;
-    }
-    if (currentTime < LISTEN_EVENT_AFTER_SEC) {
-      return;
-    }
-    if (!playable.id.startsWith('sound:')) {
-      return;
-    }
-    const soundId = playable.id.slice('sound:'.length);
-    if (!soundId || listenReportedRef.current.has(soundId)) {
-      return;
-    }
-    listenReportedRef.current.add(soundId);
-    void postListenEvent(soundId);
-  }, [playable, currentTime]);
+  return (
+    <>
+      <audio ref={audioRef} preload="none" className="hidden" />
+      <ListenEventReporter
+        soundId={listenSoundId(playable)}
+        reported={listenReportedRef}
+      />
+    </>
+  );
+}
 
-  return <audio ref={audioRef} preload="none" className="hidden" />;
+function selectCurrentItem(
+  s: ReturnType<typeof usePlayerStore.getState>,
+): QueueItem | null {
+  return s.queue.find((item) => item.id === s.currentId) ?? null;
+}
+
+function listenSoundId(playable: TahtiPlayable | null): string | null {
+  if (!playable || playable.kind !== 'sound') {
+    return null;
+  }
+  if (!playable.id.startsWith('sound:')) {
+    return null;
+  }
+  return playable.id.slice('sound:'.length) || null;
+}
+
+function updatePositionState(
+  position: number,
+  duration: number,
+  playbackRate: number,
+) {
+  if (
+    !('mediaSession' in navigator) ||
+    typeof navigator.mediaSession.setPositionState !== 'function'
+  ) {
+    return;
+  }
+  // Live/radio streams report no finite duration; the API throws unless
+  // 0 <= position <= duration and duration > 0.
+  if (!(duration > 0) || position < 0 || position > duration) {
+    return;
+  }
+  try {
+    navigator.mediaSession.setPositionState({
+      duration,
+      position,
+      playbackRate: playbackRate > 0 ? playbackRate : 1,
+    });
+  } catch {
+    // Some browsers reject edge values despite the guard above.
+  }
+}
+
+/**
+ * Subscribes to elapsed time on its own so progress ticks re-render only
+ * this null component, never AudioEngine's metadata/playback effects.
+ */
+function ListenEventReporter({
+  soundId,
+  reported,
+}: {
+  soundId: string | null;
+  reported: { current: Set<string> };
+}) {
+  const pastThreshold = usePlayerStore(
+    (state) => state.currentTime >= LISTEN_EVENT_AFTER_SEC,
+  );
+
+  useEffect(() => {
+    if (!soundId || !pastThreshold || reported.current.has(soundId)) {
+      return;
+    }
+    reported.current.add(soundId);
+    void postListenEvent(soundId);
+  }, [soundId, pastThreshold, reported]);
+
+  return null;
 }

@@ -1,11 +1,12 @@
 import isEmpty from 'lodash-es/isEmpty';
 import { ChevronLeft, ChevronRight, Filter } from 'lucide-react';
-import { FC } from 'react';
+import { ReactNode } from 'react';
 
 import { cn } from '../../utils';
 import { Badge } from '../Badge';
 import { Button } from '../Button';
 import { Card } from '../Card';
+import { EmptyState } from '../EmptyState';
 import { Input } from '../Input';
 import { Tooltip } from '../Tooltip';
 import { useCardsRow } from './useCardsRow';
@@ -21,25 +22,44 @@ export type CardsRowItem = {
 export type CardsRowLabels = {
   filterPlaceholder: string;
   nothingFound: string;
+  clearFilter?: string;
 };
 
-export type CardsRowProps = {
+export type CardsRowBadgeColor =
+  | 'green'
+  | 'cyan'
+  | 'orange'
+  | 'red'
+  | 'yellow'
+  | 'purple'
+  | 'blue'
+  | 'secondary'
+  | 'inverted';
+
+export type CardsRowProps<T extends CardsRowItem = CardsRowItem> = {
   title: string;
   badge?: string;
-  items: CardsRowItem[];
+  /** Section-meaning hue for the title pill (live / radio / history…). */
+  badgeColor?: CardsRowBadgeColor;
+  items: T[];
   labels: CardsRowLabels;
   className?: string;
   'data-testid'?: string;
+  renderItem?: (item: T) => ReactNode;
+  cardSurface?: 'brand' | 'neutral';
 };
 
-export const CardsRow: FC<CardsRowProps> = ({
+export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
   title,
   badge,
+  badgeColor = 'purple',
   items,
   labels,
   className,
   'data-testid': testId = 'cards-row',
-}) => {
+  renderItem,
+  cardSurface = 'brand',
+}: CardsRowProps<T>) => {
   const {
     filterText,
     setFilterText,
@@ -52,21 +72,28 @@ export const CardsRow: FC<CardsRowProps> = ({
 
   return (
     <div data-testid={testId} className={cn('flex flex-col gap-3', className)}>
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <div className="flex items-center gap-2">
-          <h2 className="text-foreground text-lg font-bold">{title}</h2>
+          <h2 className="text-foreground text-lg font-bold whitespace-nowrap">
+            {title}
+          </h2>
           {badge && (
-            <Badge data-testid="cards-row-badge" variant="pill" color="purple">
+            <Badge
+              data-testid="cards-row-badge"
+              variant="pill"
+              color={badgeColor}
+            >
               {badge}
             </Badge>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-64 flex-1 items-center justify-end gap-2">
           <Input
             data-testid="cards-row-filter"
             size="sm"
             tone="secondary"
             placeholder={labels.filterPlaceholder}
+            aria-label={labels.filterPlaceholder.replace(/(…|\.{3})$/, '')}
             value={filterText}
             onChange={(event) => setFilterText(event.target.value)}
             endAddon={
@@ -116,23 +143,45 @@ export const CardsRow: FC<CardsRowProps> = ({
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {isEmpty(filteredItems) ? (
-          <div
+          <EmptyState
             data-testid="cards-row-nothing-found"
-            className="text-foreground-secondary py-8 text-sm"
-          >
-            {labels.nothingFound}
-          </div>
+            size="sm"
+            title={labels.nothingFound}
+            className="w-full py-8"
+            action={
+              filterText ? (
+                <Button
+                  data-testid="cards-row-nothing-found-clear"
+                  size="sm"
+                  variant="secondary"
+                  onClick={clearFilter}
+                >
+                  {labels.clearFilter ?? 'Clear filter'}
+                </Button>
+              ) : undefined
+            }
+          />
         ) : (
-          filteredItems.map((item) => (
-            <Card
-              key={item.id}
-              className="flex-shrink-0"
-              src={item.imageUrl}
-              title={item.title}
-              subtitle={item.subtitle}
-              onClick={item.onClick}
-            />
-          ))
+          filteredItems.map((item) =>
+            renderItem ? (
+              <div
+                key={item.id}
+                className="flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+              >
+                {renderItem(item)}
+              </div>
+            ) : (
+              <Card
+                key={item.id}
+                className="flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+                src={item.imageUrl}
+                title={item.title}
+                subtitle={item.subtitle}
+                onClick={item.onClick}
+                surface={cardSurface}
+              />
+            ),
+          )
         )}
       </div>
     </div>

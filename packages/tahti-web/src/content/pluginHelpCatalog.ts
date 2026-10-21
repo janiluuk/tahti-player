@@ -46,7 +46,7 @@ export const READY_PLUGIN_HELP: PluginHelpEntry[] = [
     stateLabel: 'Desktop planned',
     description:
       'Search and download from Soulseek into your local library from the desktop player. The browser cannot speak the Soulseek protocol, and Tahti does not relay peer-to-peer traffic.',
-    help: 'Settings → Add-ons → Import → Soulseek → Configure. Test connection stays disabled until the native desktop bridge ships. Use Library → Local files for local audio in the meantime.',
+    help: 'Settings → Add-ons → Import → Soulseek → Configure. Test connection stays disabled until the native desktop bridge ships. Local audio from disk is Library → Local files in the Tahti Player desktop app.',
   },
   {
     name: 'Stash',
@@ -70,10 +70,10 @@ export const READY_PLUGIN_HELP: PluginHelpEntry[] = [
     name: 'Bandcamp',
     category: 'Import',
     state: 'partial',
-    stateLabel: 'Importer ready',
+    stateLabel: 'Connect only',
     description:
-      'Connects your Bandcamp account to browse your discography and bring albums into your catalog, with in-app playback through the Bandcamp widget once a track is imported.',
-    help: 'Connect Bandcamp from Sources, then import albums into your catalog. Imported tracks play through the Bandcamp widget on Tahti. Production catalog import is still pending the sibling API’s Bandcamp import endpoint.',
+      'Connects your Bandcamp account. Album listing and catalog import wait on Bandcamp API approval; playback through the Bandcamp widget works for linked tracks.',
+    help: 'Connect Bandcamp from Sources. Catalog import is not available yet — the API marks bandcamp import:false until Bandcamp API v1 lands.',
   },
   {
     name: 'Google Drive',
@@ -119,15 +119,6 @@ export const READY_PLUGIN_HELP: PluginHelpEntry[] = [
     description:
       'Seeds a release smart link’s destination buttons from a pasted streaming-service URL.',
     help: 'Paste Spotify, Bandcamp, or similar URLs when building a release smart link.',
-  },
-  {
-    name: 'Internet radio URL',
-    category: 'Import',
-    state: 'ready',
-    stateLabel: 'Ready',
-    description:
-      'Plays any direct stream or M3U/M3U8 playlist URL as a station in the shared Tahti player.',
-    help: 'Paste an M3U, M3U8, or direct stream URL in Sources to play a station in the shared player.',
   },
   {
     name: 'YouTube Live',
@@ -205,46 +196,47 @@ export const READY_PLUGIN_HELP: PluginHelpEntry[] = [
   },
   {
     name: 'EQ',
-    category: 'Audio plugins',
+    category: 'Audio tools',
     state: 'ready',
     stateLabel: 'Ready',
     description: 'Multi-band equalizer for shaping tone in the Pro Editor.',
-    help: 'Activate it in Settings → Add-ons → Audio plugins, then add it to a Pro Editor chain.',
+    help: 'Activate it in Settings → Add-ons → Audio tools, then add it to a Pro Editor chain.',
   },
   {
     name: 'Compressor',
-    category: 'Audio plugins',
+    category: 'Audio tools',
     state: 'ready',
     stateLabel: 'Ready',
     description: 'Evens out loud and quiet passages before export.',
-    help: 'Activate it under Audio plugins, then use it in the Pro Editor to even out dynamics before export.',
+    help: 'Activate it under Audio tools, then use it in the Pro Editor to even out dynamics before export.',
   },
   {
     name: 'Limiter',
-    category: 'Audio plugins',
+    category: 'Audio tools',
     state: 'ready',
     stateLabel: 'Ready',
     description: 'Caps peak loudness so the export doesn’t clip.',
-    help: 'Activate it under Audio plugins. The editor preview is a fast ceiling; the export render is the final file.',
+    help: 'Activate it under Audio tools. The editor preview is a fast ceiling; the export render is the final file.',
   },
   {
     name: 'Filter',
-    category: 'Audio plugins',
+    category: 'Audio tools',
     state: 'ready',
     stateLabel: 'Ready',
     description:
       'Low-pass, high-pass, and shelf filtering with selectable slope for cutting or shaping frequency ranges.',
-    help: 'Activate it under Audio plugins, then choose low-pass, high-pass, or shelf in the Pro Editor.',
+    help: 'Activate it under Audio tools, then choose low-pass, high-pass, or shelf in the Pro Editor.',
   },
   {
-    name: 'Internet radio stations',
+    name: 'Curated internet radio stations',
     category: 'Radio',
     state: 'ready',
     stateLabel: 'Ready',
     description:
-      'Adds curated internet radio stations as extra options in the main player, alongside Tahti channels.',
-    help: 'Enable stations in Settings → Add-ons → Radio. They appear as extra stations in the main player.',
+      'Adds internet radio stations to the main player alongside Tahti channels: the Finnish stations, any station from the public Radio Browser directory, and your own M3U/M3U8 or direct stream URL.',
+    help: 'Open Settings → Add-ons → Radio. Switch on the Finnish stations you want, save stations from Browser, or use Add URL to add your own M3U playlist or stream.',
   },
+
   {
     name: 'SoundCloud embed',
     category: 'Embed',

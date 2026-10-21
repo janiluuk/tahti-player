@@ -621,6 +621,7 @@
       "favorites": "Suosikit",
       "studio": "Studio",
       "library": "Kirjasto",
+      "chat": "Chat",
       "perform": "Esiinny",
       "admin": "Hallinta",
       "help": "Ohjekeskus",
@@ -640,12 +641,21 @@
       "audience": "Yleisö",
       "stripe": "Stripe",
       "tiers": "Tasot",
+      "playsListeners": "Kuuntelut ja kuulijat",
+      "topLists": "Kärkilistat",
+      "motions": "Aloitteet",
+      "topics": "Aiheet",
+      "documents": "Asiakirjat",
+      "guide": "Opas",
+      "newsletter": "Uutiskirje",
       "sounds": "Äänet",
       "collections": "Kokoelmat",
       "releases": "Julkaisut",
+      "distribution": "Jakelu",
       "upload": "Lähetä",
       "editor": "Muokkain",
       "goLive": "Lähetys",
+      "onAir": "Mene liveen",
       "schedule": "Aikataulu",
       "events": "Tapahtumat",
       "shows": "Ohjelmat",
@@ -679,5 +689,11 @@
       "label": "Kieli",
       "description": "Valitse sovelluksen kieli. Voit vaihtaa sen milloin tahansa."
     }
+  },
+  "studioEditor": {
+    "editorModeTrim": "Trimmaus / efektit",
+    "editorModeMultitrack": "Moniraita + viz",
+    "editorBounceReady": "Bounce valmis — WAV ladattu.",
+    "visualizerMode": "Visualisoinnin tila"
   }
 }

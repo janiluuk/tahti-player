@@ -19,7 +19,8 @@ export const createFramerMotionMock = (mod: typeof import('motion/react')) => {
             className={className}
             animate={animate}
             exit={exit}
-            initial={initial}
+            // React rejects boolean `initial` on DOM nodes (it never renders it)
+            initial={typeof initial === 'boolean' ? undefined : initial}
             transition={transition}
             {...domSafeProps}
           >

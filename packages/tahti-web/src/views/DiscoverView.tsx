@@ -20,11 +20,14 @@ import {
   Select,
   TabLabel,
   Tabs,
-  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
-import { fetchDirectory, fetchTrackDetail } from '../api/client';
+import {
+  fetchDirectory,
+  fetchTrackDetail,
+  type FetchMeta,
+} from '../api/client';
 import {
   fetchArtistOfTheWeek,
   fetchLatestTracks,
@@ -32,9 +35,14 @@ import {
   fetchNewToYou,
   fetchPublicCollections,
   fetchRandomArtist,
+  fetchTahtiSelects,
   fetchTopTracks,
 } from '../api/discover';
 import type { DiscoverArtistOfWeek } from '../api/discover';
+import {
+  fetchLatestReleases,
+  type LatestRelease,
+} from '../api/latest-releases';
 import type {
   ChannelDirectoryItem,
   DiscoverCollection,
@@ -45,6 +53,7 @@ import { DirectoryArtistsBrowser } from '../components/DirectoryArtistsBrowser';
 import { WidgetCard } from '../components/discover/WidgetCard';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { NewsFeedWidget } from '../components/NewsFeedWidget';
+import { PageError } from '../components/PageStates';
 import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { VenuesDirectory } from '../components/VenuesDirectory';
 import { CONTENT_TYPES } from '../content/contentTypes';
@@ -65,6 +74,10 @@ import { usePlayerStore } from '../stores/playerStore';
 
 const ALL_FILTER_ID = '__all__';
 
+function apiReason(meta: FetchMeta): string | null {
+  return meta.source === 'api' ? (meta.reason ?? null) : null;
+}
+
 const WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
   'this-week-most-played': 'This week: most played',
   'this-week-least-played': 'This week: least played',
@@ -75,6 +88,8 @@ const WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
   'artist-of-the-week': 'Random artist of the week',
   'random-artist': 'Random artist pick',
   'public-playlists': 'Public playlists',
+  'tahti-selects': 'Tahti Selects',
+  'latest-releases': 'Latest releases',
 };
 
 const TOP_LIST_WIDGET_IDS = new Set<DiscoverWidgetId>([
@@ -85,8 +100,10 @@ const TOP_LIST_WIDGET_IDS = new Set<DiscoverWidgetId>([
 
 type WidgetData = {
   loading: boolean;
+  error?: string | null;
   items: DiscoverTrackItem[];
   collections?: DiscoverCollection[];
+  releases?: LatestRelease[];
   subtitle?: string;
   artist?: DiscoverArtistOfWeek;
 };
@@ -138,6 +155,8 @@ export function DiscoverView() {
   );
   const [artists, setArtists] = useState<ChannelDirectoryItem[]>([]);
   const [artistsLoading, setArtistsLoading] = useState(true);
+  const [artistsError, setArtistsError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const search = useSearch({ strict: false }) as { tab?: string };
   const activeTab = discoverTabFromSearch(search.tab);
   const navigate = useNavigate();
@@ -155,13 +174,20 @@ export function DiscoverView() {
         setArtists(
           result.data.items.filter((artist) => artist.slug !== 'tahti-radio'),
         );
+        setArtistsError(apiReason(result.meta));
         setArtistsLoading(false);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [contentTypeFilter, genreFilter, randomArtistRotationDays, unheardOnly]);
+  }, [
+    contentTypeFilter,
+    genreFilter,
+    randomArtistRotationDays,
+    unheardOnly,
+    reloadKey,
+  ]);
 
   useEffect(() => {
     if (!unheardOnly) {
@@ -192,47 +218,58 @@ export function DiscoverView() {
       const load = async (): Promise<WidgetData> => {
         switch (id) {
           case 'artist-of-the-week': {
-            const { data: artist } = await fetchArtistOfTheWeek();
-            return { loading: false, items: [], artist: artist ?? undefined };
+            const { data: artist, meta } = await fetchArtistOfTheWeek();
+            return {
+              loading: false,
+              error: apiReason(meta),
+              items: [],
+              artist: artist ?? undefined,
+            };
           }
           case 'random-artist': {
-            const { data: artist } = await fetchRandomArtist(
+            const { data: artist, meta } = await fetchRandomArtist(
               randomArtistRotationDays,
             );
-            return { loading: false, items: [], artist: artist ?? undefined };
+            return {
+              loading: false,
+              error: apiReason(meta),
+              items: [],
+              artist: artist ?? undefined,
+            };
           }
           case 'this-week-most-played': {
-            const { data: items } = await fetchTopTracks(
+            const { data: items, meta } = await fetchTopTracks(
               'week',
               'desc',
               filters,
             );
-            return { loading: false, items };
+            return { loading: false, error: apiReason(meta), items };
           }
           case 'this-week-least-played': {
-            const { data: items } = await fetchTopTracks(
+            const { data: items, meta } = await fetchTopTracks(
               'week',
               'asc',
               filters,
             );
-            return { loading: false, items };
+            return { loading: false, error: apiReason(meta), items };
           }
           case 'most-played': {
-            const { data: items } = await fetchTopTracks(
+            const { data: items, meta } = await fetchTopTracks(
               'all_time',
               'desc',
               filters,
             );
-            return { loading: false, items };
+            return { loading: false, error: apiReason(meta), items };
           }
           case 'latest-tracks': {
-            const { data: items } = await fetchLatestTracks(filters);
-            return { loading: false, items };
+            const { data: items, meta } = await fetchLatestTracks(filters);
+            return { loading: false, error: apiReason(meta), items };
           }
           case 'new-to-you': {
             const res = await fetchNewToYou();
             return {
               loading: false,
+              error: apiReason(res.meta),
               items: res.data,
               subtitle: res.authenticated
                 ? res.preferenceGenres.length > 0
@@ -242,12 +279,36 @@ export function DiscoverView() {
             };
           }
           case 'loved': {
-            const { data: items } = await fetchLovedTracks(filters);
-            return { loading: false, items };
+            const { data: items, meta } = await fetchLovedTracks(filters);
+            return { loading: false, error: apiReason(meta), items };
           }
           case 'public-playlists': {
-            const { data: collections } = await fetchPublicCollections(filters);
-            return { loading: false, items: [], collections };
+            const { data: collections, meta } =
+              await fetchPublicCollections(filters);
+            return {
+              loading: false,
+              error: apiReason(meta),
+              items: [],
+              collections,
+            };
+          }
+          case 'latest-releases': {
+            const { data: releases, meta } = await fetchLatestReleases();
+            return {
+              loading: false,
+              error: apiReason(meta),
+              items: [],
+              releases,
+            };
+          }
+          case 'tahti-selects': {
+            const { data: items, meta } = await fetchTahtiSelects();
+            return {
+              loading: false,
+              error: apiReason(meta),
+              items,
+              subtitle: 'Picked for the Tahti Selects rotation',
+            };
           }
         }
       };
@@ -275,6 +336,7 @@ export function DiscoverView() {
     unheardIds,
     unheardOnly,
     randomArtistRotationDays,
+    reloadKey,
   ]);
 
   const availableToAdd = ALL_WIDGET_IDS.filter(
@@ -304,7 +366,7 @@ export function DiscoverView() {
   };
 
   return (
-    <div className="relative flex max-w-5xl flex-col gap-6">
+    <div className="relative flex max-w-5xl flex-col gap-4 sm:gap-6">
       <DiscoverGatewayBackground />
       <Tabs.Root
         selectedIndex={Math.max(
@@ -332,22 +394,36 @@ export function DiscoverView() {
           ))}
         </Tabs.List>
       </Tabs.Root>
-      <ViewShell title="Discover" classes={{ root: 'px-0 pt-0' }}>
-        <header className="mb-4 flex flex-wrap items-center gap-2">
-          {activeTab === 'venues' ? (
+      <ViewShell
+        title="Discover"
+        classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+        actions={
+          activeTab === 'discover' ? (
+            <DiscoverAddWidgetButton
+              availableToAdd={availableToAdd}
+              onAdd={addWidget}
+            />
+          ) : undefined
+        }
+      >
+        {activeTab === 'venues' ? (
+          <header className="mb-4 flex flex-wrap items-center gap-2">
             <Link
               to="/venues/register"
               className="text-sm font-medium underline-offset-2 hover:underline"
             >
               Register a venue
             </Link>
-          ) : activeTab === 'discover' ? (
-            <DiscoverAddWidgetButton
-              availableToAdd={availableToAdd}
-              onAdd={addWidget}
-            />
-          ) : null}
-        </header>
+            {user ? (
+              <Link
+                to="/venues/mine"
+                className="text-sm font-medium underline-offset-2 hover:underline"
+              >
+                My venues
+              </Link>
+            ) : null}
+          </header>
+        ) : null}
 
         {activeTab === 'discover' ? (
           <div className="flex flex-col gap-3">
@@ -451,7 +527,7 @@ export function DiscoverView() {
 
         {activeTab === 'discover' && enabledWidgets.length > 0 && (
           <div
-            className="grid gap-4 lg:grid-cols-3"
+            className="grid grid-cols-1 gap-2 sm:gap-4 lg:grid-cols-3"
             data-testid="discover-widget-columns"
           >
             {enabledWidgets.map((id, index) => {
@@ -463,8 +539,11 @@ export function DiscoverView() {
                   title={WIDGET_LABELS[id]}
                   subtitle={widgetData?.subtitle}
                   loading={widgetData?.loading ?? true}
+                  error={widgetData?.error}
+                  onRetry={() => setReloadKey((n) => n + 1)}
                   items={widgetData?.items ?? []}
                   collections={widgetData?.collections}
+                  releases={widgetData?.releases}
                   artist={widgetData?.artist}
                   showRank={TOP_LIST_WIDGET_IDS.has(id)}
                   emptyMessage={
@@ -472,7 +551,11 @@ export function DiscoverView() {
                       ? 'No community-loved tracks yet.'
                       : id === 'public-playlists'
                         ? 'No public playlists match these filters yet.'
-                        : 'Nothing here yet.'
+                        : id === 'tahti-selects'
+                          ? 'No tracks in the Tahti Selects rotation right now.'
+                          : id === 'latest-releases'
+                            ? 'No releases published yet.'
+                            : 'Nothing here yet.'
                   }
                   canMoveUp={index > 0}
                   canMoveDown={index < enabledWidgets.length - 1}
@@ -504,7 +587,13 @@ export function DiscoverView() {
           </div>
         )}
 
-        {activeTab === 'artists' ? (
+        {activeTab === 'artists' && artistsError && artists.length === 0 ? (
+          <PageError
+            title="Could not load the artist directory"
+            description={artistsError}
+            onRetry={() => setReloadKey((n) => n + 1)}
+          />
+        ) : activeTab === 'artists' ? (
           <DirectoryArtistsBrowser
             artists={artists}
             loading={artistsLoading}
@@ -538,20 +627,18 @@ function DiscoverAddWidgetButton({
 
   return (
     <Popover
-      className="relative"
       anchor="bottom end"
+      tooltip={{ content: 'Add a widget', side: 'top' }}
       trigger={
-        <Tooltip content="Add a widget" side="top">
-          <Button
-            size="icon"
-            variant="secondary"
-            aria-label="Add a widget"
-            data-testid="discover-add-widget"
-          >
-            <Plus size={17} aria-hidden />
-            <Blocks size={15} aria-hidden />
-          </Button>
-        </Tooltip>
+        <Button
+          size="icon"
+          variant="secondary"
+          aria-label="Add a widget"
+          data-testid="discover-add-widget"
+        >
+          <Plus size={17} aria-hidden />
+          <Blocks size={15} aria-hidden />
+        </Button>
       }
       panelClassName="w-56"
     >
@@ -592,9 +679,11 @@ function DiscoverWaveformPlayer({
       aria-label="Waveform player"
     >
       <div className="flex items-start gap-3">
-        <button
+        <Button
           type="button"
-          className="bg-primary text-primary-foreground flex size-10 shrink-0 items-center justify-center rounded-full transition-transform hover:scale-105"
+          variant="text"
+          size="flexible"
+          className="bg-foreground text-background hover:bg-foreground/90 flex size-10 shrink-0 items-center justify-center rounded-full transition-transform hover:scale-105"
           onClick={() => {
             if (isCurrent) {
               setStatus(isPlaying ? 'paused' : 'playing');
@@ -607,7 +696,7 @@ function DiscoverWaveformPlayer({
           }
         >
           {isPlaying ? <PauseIcon size={17} /> : <PlayIcon size={17} />}
-        </button>
+        </Button>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">
             {selection.playable.title}
@@ -628,14 +717,16 @@ function DiscoverWaveformPlayer({
             }
           />
         </div>
-        <button
+        <Button
           type="button"
-          className="text-foreground-secondary hover:text-foreground shrink-0 rounded p-1 transition-colors"
+          variant="text"
+          size="icon-sm"
+          className="text-foreground-secondary hover:text-foreground shrink-0"
           onClick={onClose}
           aria-label="Close waveform player"
         >
           <XIcon size={16} />
-        </button>
+        </Button>
       </div>
     </section>
   );

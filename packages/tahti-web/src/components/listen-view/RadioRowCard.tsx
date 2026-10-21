@@ -1,0 +1,149 @@
+import { Link } from '@tanstack/react-router';
+import { XIcon } from 'lucide-react';
+
+import { Button, Card, Tooltip } from '@tahti-player/ui';
+
+import type { EnabledInternetRadioPreset } from '../../api/client';
+import {
+  RADIO_STATIONS,
+  stationNowPlayingSource,
+  type RadioStation,
+} from '../../content/radioStations';
+import { prefetchListenCardIntent } from '../../lib/intentRoutePrefetch';
+import { placeholderArtworkUrl } from '../../lib/placeholderArt';
+import { RadioStationCoverEditButton } from '../RadioStationCover';
+import { StationCardSubtitle } from './StationCardSubtitle';
+
+export type RadioRowItem =
+  | {
+      id: string;
+      title: string;
+      kind: 'preset';
+      preset: EnabledInternetRadioPreset;
+    }
+  | { id: string; title: string; kind: 'catalog'; station: RadioStation };
+
+/** One card in the Listen "Radio" row: a board-curated preset, or a catalog
+ * station the listener enabled (removable). */
+export function RadioRowCard({
+  item,
+  isPlaying,
+  nowPlaying,
+  onPlay,
+  onCoverChange,
+  onRemove,
+}: {
+  item: RadioRowItem;
+  isPlaying: boolean;
+  nowPlaying?: string;
+  onPlay: () => void;
+  onCoverChange: (presetId: string, iconUrl: string | null) => void;
+  onRemove: (station: RadioStation) => void;
+}) {
+  const warmRadioRoute = () => prefetchListenCardIntent('radio');
+  if (item.kind === 'preset') {
+    const { preset } = item;
+    const catalogId = RADIO_STATIONS.find(
+      (station) => station.name === preset.name,
+    )?.id;
+    return (
+      <div
+        className="group relative w-fit"
+        onPointerEnter={catalogId ? warmRadioRoute : undefined}
+        onFocus={catalogId ? warmRadioRoute : undefined}
+      >
+        <RadioStationCoverEditButton
+          label={preset.name}
+          stationName={preset.name}
+          catalogStationId={catalogId}
+          presetId={preset.id}
+          className="absolute top-3 left-3 z-10 rounded-full"
+          onCoverChange={(iconUrl) => onCoverChange(preset.id, iconUrl)}
+        />
+        <Card
+          surface="neutral"
+          title={
+            catalogId ? (
+              <Link
+                to="/radio/station/$stationId"
+                params={{ stationId: catalogId }}
+                className="hover:underline"
+              >
+                {preset.name}
+              </Link>
+            ) : (
+              preset.name
+            )
+          }
+          subtitle={
+            !preset.streamUrl
+              ? 'Off air'
+              : (nowPlaying ?? preset.genre ?? 'Internet radio')
+          }
+          src={preset.iconUrl ?? placeholderArtworkUrl(item.id)}
+          isPlaying={isPlaying}
+          playDisabled={!preset.streamUrl}
+          onPlay={() => {
+            if (preset.streamUrl) {
+              onPlay();
+            }
+          }}
+        />
+      </div>
+    );
+  }
+  const { station } = item;
+  const streamUrl = station.streamUrl;
+  return (
+    <div
+      className="group relative w-fit"
+      onPointerEnter={warmRadioRoute}
+      onFocus={warmRadioRoute}
+    >
+      <RadioStationCoverEditButton
+        label={station.name}
+        stationName={station.name}
+        catalogStationId={station.id}
+        className="absolute top-3 left-3 z-10 rounded-full"
+      />
+      <Tooltip content={`Remove ${station.name}`} side="top">
+        <Button
+          size="icon-sm"
+          variant="text"
+          aria-label={`Remove ${station.name}`}
+          onClick={() => onRemove(station)}
+          className="bg-background/80 hover:bg-background absolute top-1 right-1 z-10 rounded-full opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+        >
+          <XIcon size={14} aria-hidden />
+        </Button>
+      </Tooltip>
+      <Card
+        surface="neutral"
+        title={
+          <Link
+            to="/radio/station/$stationId"
+            params={{ stationId: station.id }}
+            className="hover:underline"
+          >
+            {station.name}
+          </Link>
+        }
+        subtitle={
+          <StationCardSubtitle
+            source={stationNowPlayingSource(station)}
+            fallback={
+              streamUrl
+                ? `${station.language} · ${station.bitrateKbps}kbps`
+                : 'Off air'
+            }
+          />
+        }
+        src={station.logoUrl}
+        isPlaying={isPlaying}
+        playLabel={streamUrl ? 'Play' : 'Stream pending'}
+        playDisabled={!streamUrl}
+        onPlay={streamUrl ? onPlay : undefined}
+      />
+    </div>
+  );
+}

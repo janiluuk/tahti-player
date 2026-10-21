@@ -106,7 +106,7 @@ describe('Plugin Store', () => {
     await PluginsWrapper.searchStore('nonexistent plugin xyz');
 
     expect(PluginsWrapper.getStorePlugins()).toHaveLength(0);
-    expect(screen.getByText('No plugins found')).toBeVisible();
+    expect(screen.getByText('No add-ons found')).toBeVisible();
   });
 
   it('installs a plugin from the store', async () => {

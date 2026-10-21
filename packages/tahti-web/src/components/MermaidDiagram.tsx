@@ -1,15 +1,19 @@
 import { Maximize2, Minimize2 } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 
+import { Button } from '@tahti-player/ui';
+
 type Props = {
   chart: string;
   className?: string;
+  /** Names the scrollable diagram for screen readers. */
+  label?: string;
 };
 
 /**
  * Renders a Mermaid chart client-side (lazy-loads the mermaid package).
  */
-export function MermaidDiagram({ chart, className }: Props) {
+export function MermaidDiagram({ chart, className, label = 'Diagram' }: Props) {
   const reactId = useId().replace(/:/g, '');
   const hostRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
@@ -104,27 +108,34 @@ export function MermaidDiagram({ chart, className }: Props) {
     >
       <div
         className="mb-2 flex items-center justify-end gap-1"
+        role="group"
         aria-label="Diagram zoom controls"
       >
-        <button
+        <Button
+          variant="plain"
+          size="flexible"
           type="button"
-          className="border-border text-foreground-secondary hover:text-foreground rounded border px-2 py-1 text-xs"
+          className="border-border text-foreground-secondary hover:text-foreground inline-block rounded border px-2 py-1 text-xs whitespace-normal active:scale-100"
           onClick={() => setZoom((current) => Math.max(0.6, current - 0.2))}
           aria-label="Zoom out diagram"
         >
           −
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="plain"
+          size="flexible"
           type="button"
-          className="border-border text-foreground-secondary hover:text-foreground rounded border px-2 py-1 text-xs tabular-nums"
+          className="border-border text-foreground-secondary hover:text-foreground inline-block rounded border px-2 py-1 text-xs whitespace-normal tabular-nums active:scale-100"
           onClick={() => setZoom(1)}
           aria-label="Reset diagram zoom"
         >
           {Math.round(zoom * 100)}%
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="plain"
+          size="flexible"
           type="button"
-          className="border-border text-foreground-secondary hover:text-foreground rounded border px-2 py-1"
+          className="border-border text-foreground-secondary hover:text-foreground inline-block rounded border px-2 py-1 whitespace-normal active:scale-100"
           onClick={toggleFullscreen}
           aria-label={
             isFullscreen ? 'Exit fullscreen diagram' : 'View diagram fullscreen'
@@ -132,15 +143,17 @@ export function MermaidDiagram({ chart, className }: Props) {
           title={isFullscreen ? 'Exit fullscreen' : 'View fullscreen'}
         >
           {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="plain"
+          size="flexible"
           type="button"
-          className="border-border text-foreground-secondary hover:text-foreground rounded border px-2 py-1 text-xs"
+          className="border-border text-foreground-secondary hover:text-foreground inline-block rounded border px-2 py-1 text-xs whitespace-normal active:scale-100"
           onClick={() => setZoom((current) => Math.min(2, current + 0.2))}
           aria-label="Zoom in diagram"
         >
           +
-        </button>
+        </Button>
       </div>
       {!ready && !error && (
         <p className="text-foreground-secondary text-sm">Rendering diagram…</p>
@@ -152,7 +165,12 @@ export function MermaidDiagram({ chart, className }: Props) {
           {chart}
         </pre>
       )}
-      <div className="mermaid-host max-h-[75vh] min-h-0 overflow-auto [&:fullscreen]:max-h-none [&:fullscreen]:flex-1">
+      <div
+        className="mermaid-host focus-visible:ring-primary max-h-[75vh] min-h-0 overflow-auto rounded outline-none focus-visible:ring-2 [&:fullscreen]:max-h-none [&:fullscreen]:flex-1"
+        role="region"
+        aria-label={label}
+        tabIndex={0}
+      >
         <div
           ref={hostRef}
           style={{

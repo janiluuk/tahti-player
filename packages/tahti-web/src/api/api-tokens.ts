@@ -1,6 +1,11 @@
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
-import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import {
+  allowMockFallback,
+  apiErrorMeta,
+  isForceMock,
+  mockFallbackMeta,
+} from './mode';
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${apiBase()}${path}`, {
@@ -34,6 +39,8 @@ export type ApiToken = {
   tokenPrefix: string;
   scopes: Array<'read' | 'write'>;
   lastUsedAt: string | null;
+  /** Null or absent: the token never expires. */
+  expiresAt?: string | null;
   createdAt: string;
 };
 
@@ -65,7 +72,7 @@ export async function fetchApiTokens(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (error) {
     if (allowMockFallback()) {
-      return { data: [...mockTokens], meta: failMeta(error) };
+      return { data: [...mockTokens], meta: mockFallbackMeta(error) };
     }
     return { data: [], meta: apiErrorMeta(error) };
   }
@@ -74,6 +81,7 @@ export async function fetchApiTokens(): Promise<{
 export async function createApiToken(
   name: string,
   scopes: Array<'read' | 'write'>,
+  expiresInDays?: number,
 ): Promise<{ ok: true; data: CreatedApiToken } | { ok: false; error: string }> {
   if (isForceMock()) {
     const token: CreatedApiToken = {
@@ -82,6 +90,9 @@ export async function createApiToken(
       tokenPrefix: 'tk_live_mock',
       scopes,
       lastUsedAt: null,
+      expiresAt: expiresInDays
+        ? new Date(Date.now() + expiresInDays * 86_400_000).toISOString()
+        : null,
       createdAt: new Date().toISOString(),
       token: `tk_live_mock_${Date.now()}`,
     };
@@ -91,6 +102,7 @@ export async function createApiToken(
       tokenPrefix: token.tokenPrefix,
       scopes: token.scopes,
       lastUsedAt: token.lastUsedAt,
+      expiresAt: token.expiresAt,
       createdAt: token.createdAt,
     };
     mockTokens = [view, ...mockTokens];
@@ -99,7 +111,11 @@ export async function createApiToken(
   try {
     const data = await requestJson<CreatedApiToken>('/api/me/api-tokens', {
       method: 'POST',
-      body: JSON.stringify({ name, scopes }),
+      body: JSON.stringify({
+        name,
+        scopes,
+        ...(expiresInDays ? { expiresInDays } : {}),
+      }),
     });
     return { ok: true, data };
   } catch (error) {
@@ -128,4 +144,13 @@ export async function revokeApiToken(
       error: error instanceof Error ? error.message : 'Failed to revoke token',
     };
   }
+}
+
+/** The Tahti API's MCP endpoint, absolute so it can be pasted into an AI tool. */
+export function mcpEndpointUrl(): string {
+  const base = apiBase();
+  const absolute = base.startsWith('http')
+    ? base
+    : `${window.location.origin}${base}`;
+  return `${absolute}/api/v1/mcp`;
 }

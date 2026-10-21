@@ -1,7 +1,12 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Box, SectionShell, ViewShell } from '@tahti-player/ui';
+import {
+  Box,
+  HorizontalScroll,
+  SectionShell,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchTransparencyGrants,
@@ -13,7 +18,14 @@ import type {
   TransparencyLedgerEntry,
   TransparencyYtd,
 } from '../api/types';
-import { PageLoading } from '../components/PageStates';
+import { PageBackLink } from '../components/PageBackLink';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+
+function rejectedReason(result: PromiseRejectedResult): string {
+  return result.reason instanceof Error
+    ? result.reason.message
+    : 'Request failed';
+}
 
 function centsLabel(raw: string) {
   const n = Number(raw);
@@ -28,10 +40,17 @@ export function TransparencyView() {
   const [grants, setGrants] = useState<TransparencyGrantReport | null>(null);
   const [ledger, setLedger] = useState<TransparencyLedgerEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
+  const [ytdError, setYtdError] = useState<string | null>(null);
+  const [grantsError, setGrantsError] = useState<string | null>(null);
+  const [ledgerError, setLedgerError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
-    void Promise.all([
+    setLoading(true);
+    setFailed(false);
+    void Promise.allSettled([
       fetchTransparencyYtd(),
       fetchTransparencyGrants(),
       fetchTransparencyLedger(),
@@ -39,25 +58,39 @@ export function TransparencyView() {
       if (cancelled) {
         return;
       }
-      setYtd(y.data);
-      setGrants(g.data);
-      setLedger(l.data);
+      setYtd(y.status === 'fulfilled' ? y.value.data : null);
+      setGrants(g.status === 'fulfilled' ? g.value.data : null);
+      setLedger(l.status === 'fulfilled' ? l.value.data : []);
+      setYtdError(y.status === 'rejected' ? rejectedReason(y) : null);
+      setGrantsError(g.status === 'rejected' ? rejectedReason(g) : null);
+      const ledgerReason =
+        l.status === 'fulfilled'
+          ? l.value.meta.source === 'api'
+            ? (l.value.meta.reason ?? null)
+            : null
+          : rejectedReason(l);
+      setLedgerError(ledgerReason);
+      setFailed(
+        y.status === 'rejected' &&
+          g.status === 'rejected' &&
+          l.status === 'rejected',
+      );
       setLoading(false);
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   return (
     <ViewShell
       title="Transparency"
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-4xl',
-        scrollableArea: 'gap-8',
       }}
     >
-      <div className="flex flex-col gap-1">
+      <PageBackLink to="/governance" label="Governance" />
+      <div className="mb-6 flex flex-col gap-1">
         <Link
           to="/transparency/methodology"
           className="text-foreground-secondary w-fit text-xs underline-offset-2 hover:underline"
@@ -80,8 +113,23 @@ export function TransparencyView() {
 
       {loading ? (
         <PageLoading label="Loading transparency…" />
+      ) : failed ? (
+        <PageError
+          title="Could not load transparency data"
+          onRetry={() => setAttempt((n) => n + 1)}
+        />
       ) : (
         <>
+          {!ytd && ytdError && (
+            <SectionShell title="Year to date">
+              <PageError
+                title="Could not load year-to-date figures"
+                description={ytdError}
+                onRetry={() => setAttempt((n) => n + 1)}
+              />
+            </SectionShell>
+          )}
+
           {ytd && (
             <SectionShell title={`YTD ${ytd.year}`}>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -98,22 +146,37 @@ export function TransparencyView() {
                   value={String(Object.keys(ytd.byCategory).length)}
                 />
               </div>
-              <table className="mt-3 w-full border-collapse text-left text-sm">
-                <thead>
-                  <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-                    <th className="py-2 pr-3 font-medium">Category</th>
-                    <th className="py-2 font-medium">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(ytd.byCategory).map(([cat, amt]) => (
-                    <tr key={cat} className="border-border border-b">
-                      <td className="py-2 pr-3 font-mono text-xs">{cat}</td>
-                      <td className="py-2">{centsLabel(amt)}</td>
+              <HorizontalScroll
+                label={`Spending ${ytd.year} by category`}
+                className="mt-3"
+              >
+                <table className="w-full border-collapse text-left text-sm">
+                  <thead>
+                    <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
+                      <th className="py-2 pr-3 font-medium">Category</th>
+                      <th className="py-2 font-medium">Amount</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {Object.entries(ytd.byCategory).map(([cat, amt]) => (
+                      <tr key={cat} className="border-border border-b">
+                        <td className="py-2 pr-3 font-mono text-xs">{cat}</td>
+                        <td className="py-2">{centsLabel(amt)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </HorizontalScroll>
+            </SectionShell>
+          )}
+
+          {!grants && grantsError && (
+            <SectionShell title="Grants">
+              <PageError
+                title="Could not load the grants report"
+                description={grantsError}
+                onRetry={() => setAttempt((n) => n + 1)}
+              />
             </SectionShell>
           )}
 
@@ -129,29 +192,36 @@ export function TransparencyView() {
                   }
                 />
               </div>
-              <table className="mt-3 w-full border-collapse text-left text-sm">
-                <thead>
-                  <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-                    <th className="py-2 pr-3 font-medium">Published as</th>
-                    <th className="py-2 pr-3 font-medium">Amount</th>
-                    <th className="py-2 font-medium">State</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {grants.grants.map((g) => (
-                    <tr
-                      key={`${g.publishedAs}-${g.amountCents}`}
-                      className="border-border border-b"
-                    >
-                      <td className="py-2 pr-3">{g.publishedAs}</td>
-                      <td className="py-2 pr-3">{centsLabel(g.amountCents)}</td>
-                      <td className="text-foreground-secondary py-2 text-xs">
-                        {g.state}
-                      </td>
+              <HorizontalScroll
+                label={`Grants ${grants.year}`}
+                className="mt-3"
+              >
+                <table className="w-full border-collapse text-left text-sm">
+                  <thead>
+                    <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
+                      <th className="py-2 pr-3 font-medium">Published as</th>
+                      <th className="py-2 pr-3 font-medium">Amount</th>
+                      <th className="py-2 font-medium">State</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {grants.grants.map((g) => (
+                      <tr
+                        key={`${g.publishedAs}-${g.amountCents}`}
+                        className="border-border border-b"
+                      >
+                        <td className="py-2 pr-3">{g.publishedAs}</td>
+                        <td className="py-2 pr-3">
+                          {centsLabel(g.amountCents)}
+                        </td>
+                        <td className="text-foreground-secondary py-2 text-xs">
+                          {g.state}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </HorizontalScroll>
               <div className="mt-3 flex flex-wrap gap-2 text-xs">
                 {Array.from(
                   { length: 5 },
@@ -171,30 +241,44 @@ export function TransparencyView() {
           )}
 
           <SectionShell title="Latest ledger">
-            <table className="w-full border-collapse text-left text-sm">
-              <thead>
-                <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-                  <th className="py-2 pr-3 font-medium">When</th>
-                  <th className="py-2 pr-3 font-medium">Category</th>
-                  <th className="py-2 pr-3 font-medium">Description</th>
-                  <th className="py-2 font-medium">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ledger.map((e) => (
-                  <tr key={e.id} className="border-border border-b">
-                    <td className="text-foreground-secondary py-2 pr-3 text-xs">
-                      {e.createdAt.slice(0, 10)}
-                    </td>
-                    <td className="py-2 pr-3 font-mono text-xs">
-                      {e.category}
-                    </td>
-                    <td className="py-2 pr-3">{e.description}</td>
-                    <td className="py-2">{centsLabel(e.amountCents)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            {ledgerError && ledger.length === 0 ? (
+              <PageError
+                title="Could not load the ledger"
+                description={ledgerError}
+                onRetry={() => setAttempt((n) => n + 1)}
+              />
+            ) : ledger.length === 0 ? (
+              <PageEmpty title="No ledger entries yet" />
+            ) : (
+              <HorizontalScroll label="Latest ledger">
+                <table className="w-full border-collapse text-left text-sm">
+                  <thead>
+                    <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
+                      <th className="py-2 pr-3 font-medium">When</th>
+                      <th className="py-2 pr-3 font-medium">Category</th>
+                      <th className="py-2 pr-3 font-medium">Description</th>
+                      <th className="py-2 font-medium">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ledger.map((e) => (
+                      <tr key={e.id} className="border-border border-b">
+                        <td className="text-foreground-secondary py-2 pr-3 text-xs whitespace-nowrap">
+                          {e.createdAt.slice(0, 10)}
+                        </td>
+                        <td className="py-2 pr-3 font-mono text-xs">
+                          {e.category}
+                        </td>
+                        <td className="py-2 pr-3">{e.description}</td>
+                        <td className="py-2 whitespace-nowrap">
+                          {centsLabel(e.amountCents)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </HorizontalScroll>
+            )}
           </SectionShell>
         </>
       )}

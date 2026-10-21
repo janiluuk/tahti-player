@@ -9,8 +9,11 @@ import {
   UsersIcon,
 } from 'lucide-react';
 import { useState } from 'react';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { Box, Card, CardGrid, Loader, TabLabel, Tabs } from '@tahti-player/ui';
+
+import { selectTab } from './tahti-web/_lib/play';
 
 const meta = {
   title: 'Layout/Tabs',
@@ -76,6 +79,24 @@ const ITEMS = [
 export const Basic: Story = {
   args: {
     items: ITEMS,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('tab', { name: 'Artists' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent('David Bowie');
+    await selectTab(canvas, 'About');
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
+      'Section in a box.',
+    );
+    // Arrow keys move selection in automatic mode.
+    await userEvent.keyboard('{ArrowLeft}');
+    await expect(canvas.getByRole('tab', { name: 'Tracks' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
   },
 };
 
@@ -192,7 +213,7 @@ export const VerticalIconOnly: Story = {
           selectedIndex={index}
           onChange={setIndex}
           listClassName="flex-col items-center gap-2"
-          tabClassName="relative size-9 shrink-0 rounded-md p-0 data-[selected]:bg-primary/15 data-[selected]:text-primary"
+          tabClassName="relative size-9 shrink-0 rounded-md p-0 data-[selected]:bg-primary/15 data-[selected]:text-primary-strong"
         >
           <Tabs.List aria-label="Rail" className="w-auto flex-col">
             <Tabs.Tab aria-label="Chat" title="Chat">
@@ -238,12 +259,30 @@ export const Controlled: Story = {
       </div>
     );
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('Selected index: 1')).toBeVisible();
+    await selectTab(canvas, 'About');
+    await expect(canvas.getByText('Selected index: 2')).toBeVisible();
+  },
 };
 
 export const ManualActivation: Story = {
   args: {
     items: ITEMS,
     manual: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const artists = canvas.getByRole('tab', { name: 'Artists' });
+    const tracks = canvas.getByRole('tab', { name: 'Tracks' });
+    artists.focus();
+    // Manual mode: arrows only move focus; Enter activates.
+    await userEvent.keyboard('{ArrowRight}');
+    await expect(tracks).toHaveFocus();
+    await expect(artists).toHaveAttribute('aria-selected', 'true');
+    await userEvent.keyboard('{Enter}');
+    await expect(tracks).toHaveAttribute('aria-selected', 'true');
   },
 };
 

@@ -1,6 +1,6 @@
 import { MessageCircleIcon, MicIcon } from 'lucide-react';
 
-import { Button, Input, Select, Textarea } from '@tahti-player/ui';
+import { Button, FilterChips, Input, Select, Textarea } from '@tahti-player/ui';
 
 import type { ShowType, StudioShowSeries } from '../api/shows';
 import { ShowImagePicker } from './ShowImagePicker';
@@ -52,60 +52,36 @@ export function BroadcastDetailsFields({
         </div>
       ) : null}
 
-      <div
-        className="border-border flex flex-wrap gap-1 rounded-lg border p-1"
-        role="group"
+      <FilterChips
         aria-label="Broadcast type"
-      >
-        {(
-          [
-            ['LIVE_SET', 'Live set', MicIcon] as const,
-            ['TALK', 'Talk', MessageCircleIcon] as const,
-          ] as const
-        ).map(([type, label, Icon]) => (
-          <Button
-            key={type}
-            type="button"
-            size="sm"
-            variant="text"
-            onClick={() => onChange({ ...values, showType: type })}
-            aria-pressed={values.showType === type}
-            className={
-              values.showType === type
-                ? 'bg-primary text-primary-foreground rounded-md'
-                : 'text-foreground-secondary rounded-md'
-            }
-          >
-            <Icon size={13} aria-hidden />
-            {label}
-          </Button>
-        ))}
-      </div>
+        items={[
+          {
+            id: 'LIVE_SET',
+            label: 'Live set',
+            icon: <MicIcon size={13} aria-hidden />,
+          },
+          {
+            id: 'TALK',
+            label: 'Talk',
+            icon: <MessageCircleIcon size={13} aria-hidden />,
+          },
+        ]}
+        selected={values.showType}
+        onChange={(type) => onChange({ ...values, showType: type as ShowType })}
+      />
 
       <div className="flex flex-wrap items-end gap-3">
-        <div
-          className="border-border flex gap-1 rounded-lg border p-1"
-          role="group"
+        <FilterChips
           aria-label="Duration"
-        >
-          {([1, 2] as const).map((hours) => (
-            <Button
-              key={hours}
-              type="button"
-              size="sm"
-              variant="text"
-              onClick={() => onChange({ ...values, durationHours: hours })}
-              aria-pressed={values.durationHours === hours}
-              className={
-                values.durationHours === hours
-                  ? 'bg-primary text-primary-foreground rounded-md'
-                  : 'text-foreground-secondary rounded-md'
-              }
-            >
-              {hours}h
-            </Button>
-          ))}
-        </div>
+          items={[
+            { id: '1', label: '1h' },
+            { id: '2', label: '2h' },
+          ]}
+          selected={String(values.durationHours)}
+          onChange={(id) =>
+            onChange({ ...values, durationHours: Number(id) as 1 | 2 })
+          }
+        />
         <div className="flex gap-1">
           {(['SERIES', 'SINGLE'] as const).map((mode) => (
             <Button

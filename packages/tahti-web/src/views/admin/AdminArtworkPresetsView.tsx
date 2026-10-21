@@ -1,7 +1,14 @@
 import { PlusIcon, RotateCcwIcon, UploadIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button, Dialog, Input, Tooltip, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  ImageThumbnailPicker,
+  Input,
+  Tooltip,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
@@ -146,7 +153,7 @@ export function AdminArtworkPresetsView() {
         <div className="flex flex-col gap-6">
           <ViewShell
             title="Artwork presets"
-            classes={{ root: 'px-0 pt-0' }}
+            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             actions={
               <div className="flex items-center gap-1.5">
                 <Tooltip content="Add new artwork" side="top">
@@ -176,27 +183,16 @@ export function AdminArtworkPresetsView() {
               </div>
             }
           >
-            <div className="grid gap-3 sm:grid-cols-4 lg:grid-cols-8">
-              {DEFAULT_ARTWORKS.map((_, index) => (
-                <button
-                  key={DEFAULT_NAMES[index]}
-                  type="button"
-                  onClick={() => openSlotEditor(index)}
-                  className={`border-border overflow-hidden rounded-lg border text-left ${selected === index && editorOpen ? 'ring-primary ring-2' : ''}`}
-                  aria-label={`Edit ${DEFAULT_NAMES[index]}`}
-                >
-                  <img
-                    src={activeUrls[index]}
-                    alt=""
-                    className="aspect-square w-full"
-                  />
-                  <span className="block px-2 py-1 text-xs">
-                    {DEFAULT_NAMES[index]}
-                    {assignments[index] != null ? ' · custom' : ''}
-                  </span>
-                </button>
-              ))}
-            </div>
+            <ImageThumbnailPicker
+              items={DEFAULT_ARTWORKS.map((_, index) => ({
+                id: String(index),
+                imageUrl: activeUrls[index] ?? '',
+                label: `${DEFAULT_NAMES[index]}${assignments[index] != null ? ' · custom' : ''}`,
+                ariaLabel: `Edit ${DEFAULT_NAMES[index]}`,
+              }))}
+              selected={editorOpen ? String(selected) : null}
+              onSelect={(id) => openSlotEditor(Number(id))}
+            />
           </ViewShell>
         </div>
       </AdminPageLayout>
@@ -214,17 +210,19 @@ export function AdminArtworkPresetsView() {
               alt="Selected artwork preset"
               className="h-full w-full rounded-xl object-cover"
             />
-            <button
+            <Button
+              variant="plain"
+              size="flexible"
               type="button"
               onClick={() => {
                 setUploadTarget('slot');
                 setUploadOpen(true);
               }}
               aria-label={`Upload artwork for ${DEFAULT_NAMES[selected] ?? 'this slot'}`}
-              className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/0 opacity-0 transition group-hover:bg-black/40 group-hover:opacity-100"
+              className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/0 whitespace-normal opacity-0 transition group-hover:bg-black/40 group-hover:opacity-100 active:scale-100"
             >
               <UploadIcon size={28} aria-hidden className="text-white" />
-            </button>
+            </Button>
           </div>
           <Input
             label="Editing slot"
@@ -241,35 +239,32 @@ export function AdminArtworkPresetsView() {
               <span className="text-foreground text-sm font-semibold">
                 Assign from your artwork
               </span>
-              <div className="flex flex-wrap gap-2">
-                {customPool.map((url) => (
-                  <button
-                    key={url}
+              <ImageThumbnailPicker
+                layout="inline"
+                items={customPool.map((url) => ({
+                  id: url,
+                  imageUrl: url,
+                  ariaLabel: 'Assign this artwork to the selected slot',
+                }))}
+                selected={assignments[selected] ?? null}
+                onSelect={assignToSelected}
+                trailingAction={
+                  <Button
+                    variant="plain"
+                    size="flexible"
                     type="button"
-                    onClick={() => assignToSelected(url)}
-                    aria-label="Assign this artwork to the selected slot"
-                    className={`size-12 overflow-hidden rounded-md border ${assignments[selected] === url ? 'border-primary ring-primary ring-2' : 'border-border'}`}
+                    onClick={() => {
+                      setUploadTarget('slot');
+                      setUploadOpen(true);
+                    }}
+                    aria-label="Upload a new artwork"
+                    title="Upload a new artwork"
+                    className="border-border text-foreground-secondary flex size-12 items-center justify-center rounded-md border border-dashed whitespace-normal active:scale-100"
                   >
-                    <img
-                      src={url}
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
-                  </button>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setUploadTarget('slot');
-                    setUploadOpen(true);
-                  }}
-                  aria-label="Upload a new artwork"
-                  title="Upload a new artwork"
-                  className="border-border text-foreground-secondary flex size-12 items-center justify-center rounded-md border border-dashed"
-                >
-                  <PlusIcon size={16} aria-hidden />
-                </button>
-              </div>
+                    <PlusIcon size={16} aria-hidden />
+                  </Button>
+                }
+              />
             </div>
           ) : null}
         </div>

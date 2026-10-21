@@ -1,13 +1,12 @@
-import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchAdminGrants,
   type AdminGrantYearSummary,
 } from '../../../../api/admin';
-import { PageLoading } from '../../../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 
 function formatEur(cents: number): string {
@@ -31,9 +30,7 @@ export function GrantsTab() {
         {loading ? (
           <PageLoading label="Loading grant cycles…" />
         ) : history.length === 0 ? (
-          <p className="text-foreground-secondary py-4 text-center text-sm">
-            No grant cycles have been run yet.
-          </p>
+          <PageEmpty title="No grant cycles have been run yet." />
         ) : (
           <ul className="divide-border divide-y">
             {history.map((row) => (
@@ -48,20 +45,18 @@ export function GrantsTab() {
                 <div className="text-sm font-medium">
                   {formatEur(row.totalCents)}
                 </div>
-                <Link
-                  to="/admin/grants/$year"
-                  params={{ year: String(row.year) }}
-                >
-                  <Tooltip content={`View ${row.year} grants`} side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={`View ${row.year} grants`}
-                    >
-                      →
-                    </Button>
-                  </Tooltip>
-                </Link>
+                <Tooltip content={`View ${row.year} grants`} side="top">
+                  <ButtonLink
+                    to="/admin/grants/$year"
+                    params={{ year: String(row.year) }}
+
+                    size="icon-sm"
+                    variant="text"
+                    aria-label={`View ${row.year} grants`}
+                  >
+                    →
+                  </ButtonLink>
+                </Tooltip>
               </li>
             ))}
           </ul>
@@ -78,15 +73,15 @@ export function GrantsTab() {
             new Date().getUTCFullYear() - 2,
             new Date().getUTCFullYear() - 3,
           ].map((year) => (
-            <Link
+            <ButtonLink
               key={year}
               to="/admin/grants/$year"
               params={{ year: String(year) }}
+              size="sm"
+              variant="secondary"
             >
-              <Button size="sm" variant="secondary">
-                {year}
-              </Button>
-            </Link>
+              {year}
+            </ButtonLink>
           ))}
         </div>
       </StudioPanel>

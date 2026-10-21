@@ -1,16 +1,18 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import {
   CompassIcon,
-  GaugeIcon,
   HeartIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
   LibraryIcon,
+  ListMusicIcon,
+  MessageCircleIcon,
   RadioIcon,
   SettingsIcon,
   ShieldIcon,
+  SparklesIcon,
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -22,79 +24,141 @@ import {
   Toaster,
 } from '@tahti-player/ui';
 
+import { startAuthSession } from '../api/auth-session-client';
+import { useAutoHideNavWhilePlaying } from '../hooks/useAutoHideNavWhilePlaying';
 import { useIsCompactDesktop, useIsMobile } from '../hooks/useIsMobile';
-import { MAIN_CONTENT_PADDING } from '../layout/contentPadding';
-import { hasAccountRole } from '../lib/accountRoles';
+import { useOpenedOnce } from '../hooks/useOpenedOnce';
+import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
+import { useStudioShellScrollRestore } from '../hooks/useStudioShellScrollRestore';
+import { useWarnBeforeLeavingWhilePlaying } from '../hooks/useWarnBeforeLeavingWhilePlaying';
+import { isAnonymousRouteAllowed } from '../layout/anonymousRoutes';
+import {
+  isFullBleedRoute,
+  MAIN_CONTENT_PADDING,
+} from '../layout/contentPadding';
+import { hasAccountRole, hasStudioAccess } from '../lib/accountRoles';
 import { diagnosticsEnabled } from '../lib/buildPolicy';
 import { cn } from '../lib/cn';
 import { activeSidebarItem } from '../lib/navigationActive';
-import {
-  reapplyLastMetadata,
-  scrollingPlaybackTitle,
-  syncDocumentMetadata,
-} from '../lib/seo';
-import { useAuthModalStore } from '../stores/authModalStore';
-import { useAuthStore } from '../stores/authStore';
-import { useLayoutStore } from '../stores/layoutStore';
-import { usePlayerStore } from '../stores/playerStore';
-import { useSettingsModalStore } from '../stores/settingsModalStore';
-import { useTourStore } from '../stores/tourStore';
+import { navigationPathname } from '../lib/navigationPathname';
 import {
   deferOnboardingPrompt,
   hasDeferredOnboardingPrompt,
   hasSeenOnboarding,
   markOnboardingSeen,
-} from '../views/OnboardingView';
+} from '../lib/onboardingPrompt';
+import {
+  playbackDocumentTitle,
+  setPlaybackDocumentTitle,
+  syncDocumentMetadata,
+} from '../lib/seo';
+import { spaceActivatesTarget } from '../lib/spaceActivatesTarget';
+import { useAuthModalStore } from '../stores/authModalStore';
+import { useAuthStore } from '../stores/authStore';
+import { useChannelSetupModalStore } from '../stores/channelSetupModalStore';
+import { useLayoutStore } from '../stores/layoutStore';
+import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
+import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
+import { useSettingsModalStore } from '../stores/settingsModalStore';
+import { useTourStore } from '../stores/tourStore';
 import { AmbientBackground } from './AmbientBackground';
 import { AppTopNav } from './AppTopNav';
 import { AudioEngine } from './AudioEngine';
 import { AuthDialog } from './AuthDialog';
-import { ChannelSetupDialog } from './ChannelSetupDialog';
 import { ConnectedPlayerBar } from './ConnectedPlayerBar';
-import { ConnectedSettingsModal } from './ConnectedSettingsModal';
 import { ConnectedStatusBar } from './ConnectedStatusBar';
-import { FullScreenPlayer } from './FullScreenPlayer';
+import { HearthisEmbedHostProvider } from './HearthisEmbedHost';
+import { ListenHeartbeat } from './ListenHeartbeat';
 import { MobileBottomNav, MobileDrawer } from './MobileChrome';
 import { NotificationToasts } from './NotificationToasts';
+import { RouteChunkSkeleton } from './PageStates';
 import { PageTourSpotlight } from './PageTourSpotlight';
+import { RightRailHeaderActions } from './RightRailHeaderActions';
 import { RightRailPanel } from './RightRailPanel';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
+import { MAIN_CONTENT_ID, SkipToContent } from './SkipToContent';
 import {
   getStudioPrimaryRoute,
   StudioMainNavItems,
   StudioNav,
 } from './StudioNav';
 
-const LOADING_BAR_DELAY_MS = 1000;
+/** Show the top progress strip sooner than a full second so slow lazy chunks
+ * feel acknowledged; still delayed so fast navigations stay clean. */
+const LOADING_BAR_DELAY_MS = 180;
 
-const ANONYMOUS_ALLOWED_ROUTES = [
-  /^\/$/,
-  /^\/listen(?:\/|$)/,
-  /^\/settings(?:\/|$)/,
-  /^\/(login|join|apply|signup|verify|setup-password|forgot-password|reset-password)(?:\/|$)/,
-  /^\/(about|privacy|terms|agpl|help|what-is-it|how-it-works|for-artists)(?:\/|$)/,
-  /^\/(status|whats-new|news)(?:\/|$)/,
-  /^\/(radio|discover)(?:\/|$)/,
-  /^\/(channel|u|r|t|v|venues)(?:\/|$)/,
-  /^\/(listen\/favorites|library\/favorites|favorites)(?:\/|$)/,
-  /^\/studio(?:\/|$)/,
-  /^\/transparency(?:\/|$)/,
-  /^\/governance\/history(?:\/|$)/,
-  /^\/governance(?:\/feature-requests)?$/,
-];
+const ChannelSetupDialog = lazy(() =>
+  import('./ChannelSetupDialog').then((m) => ({
+    default: m.ChannelSetupDialog,
+  })),
+);
+const ConnectedSettingsModal = lazy(() =>
+  import('./ConnectedSettingsModal').then((m) => ({
+    default: m.ConnectedSettingsModal,
+  })),
+);
+const FullScreenPlayer = lazy(() =>
+  import('./FullScreenPlayer').then((m) => ({
+    default: m.FullScreenPlayer,
+  })),
+);
 
-function isAnonymousRouteAllowed(pathname: string) {
-  return ANONYMOUS_ALLOWED_ROUTES.some((route) => route.test(pathname));
+/** Both dialogs pull large editors (channel designer, every settings panel),
+ * so they load on first open rather than with the shell. */
+function DeferredDialogs() {
+  const settingsOpened = useOpenedOnce(
+    useSettingsModalStore((state) => state.isOpen),
+  );
+  const channelSetupOpened = useOpenedOnce(
+    useChannelSetupModalStore((state) => state.isOpen),
+  );
+  return (
+    <>
+      {channelSetupOpened && (
+        <Suspense fallback={null}>
+          <ChannelSetupDialog />
+        </Suspense>
+      )}
+      {settingsOpened && (
+        <Suspense fallback={null}>
+          <ConnectedSettingsModal />
+        </Suspense>
+      )}
+    </>
+  );
+}
+
+/** Now-playing takeover (visualizer + large artwork) — stay mounted after the
+ * first open so the close animation can finish, same as DeferredDialogs. */
+function DeferredFullScreenPlayer({ open }: { open: boolean }) {
+  const opened = useOpenedOnce(open);
+  if (!opened) {
+    return null;
+  }
+  return (
+    <Suspense fallback={null}>
+      <FullScreenPlayer />
+    </Suspense>
+  );
 }
 
 function SidebarNavItems({ compact }: { compact: boolean }) {
   const isLoggedIn = useAuthStore((state) => Boolean(state.user));
   const isBoard = useAuthStore((state) => hasAccountRole(state.user, 'BOARD'));
+  // Until the profile loads, the stored user may lack its channel: treat the
+  // account as an artist so an artist never sees the listener entry flash.
+  const isListener = useAuthStore(
+    (state) =>
+      Boolean(state.user) &&
+      state.profileLoaded &&
+      !hasStudioAccess(state.user),
+  );
   const openSettings = useSettingsModalStore((state) => state.open);
-  const pathname = useRouterState({
-    select: (state) => state.location.pathname,
+  const settingsModalOpen = useSettingsModalStore((state) => state.isOpen);
+  const sidebarPathname = useRouterState({ select: navigationPathname });
+  const sidebarActive = activeSidebarItem(sidebarPathname, {
+    settingsModalOpen,
   });
-  const sidebarActive = activeSidebarItem(pathname);
   return (
     <SidebarNavigation isCompact={compact}>
       <div className="flex h-full min-h-0 flex-col p-1">
@@ -102,7 +166,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
           <div data-tour-id="nav-listen">
             <SidebarNavigationItem
               to="/"
-              icon={<GaugeIcon size={16} />}
+              icon={<ListMusicIcon size={16} />}
               label="Listen"
               isSelected={sidebarActive === 'listen'}
             />
@@ -139,15 +203,23 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               isSelected={sidebarActive === 'library'}
             />
           </div>
-          <div data-tour-id="nav-studio" className="flex flex-col gap-2">
-            <SidebarNavigationItem
-              to="/studio"
-              icon={<LayoutDashboardIcon size={16} />}
-              label="Studio"
-              isSelected={sidebarActive === 'studio'}
-            />
-            {isLoggedIn && <StudioMainNavItems />}
-          </div>
+          {isLoggedIn ? (
+            <div data-tour-id="nav-studio" className="flex flex-col gap-2">
+              <SidebarNavigationItem
+                to="/studio"
+                icon={
+                  isListener ? (
+                    <SparklesIcon size={16} />
+                  ) : (
+                    <LayoutDashboardIcon size={16} />
+                  )
+                }
+                label={isListener ? 'Become an artist' : 'Studio'}
+                isSelected={sidebarActive === 'studio'}
+              />
+              {!isListener && <StudioMainNavItems />}
+            </div>
+          ) : null}
           {isLoggedIn && isBoard && diagnosticsEnabled && (
             <div data-tour-id="nav-admin">
               <SidebarNavigationItem
@@ -160,6 +232,14 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
           )}
         </div>
         <div className="border-border mt-2 flex shrink-0 flex-col gap-2 border-t pt-2">
+          <div data-tour-id="nav-chat">
+            <SidebarNavigationItem
+              to="/chat"
+              icon={<MessageCircleIcon size={16} />}
+              label="Chat"
+              isSelected={sidebarActive === 'chat'}
+            />
+          </div>
           <div data-tour-id="nav-help">
             <SidebarNavigationItem
               to="/help"
@@ -206,8 +286,8 @@ function RouteContent({ children }: { children: React.ReactNode }) {
       <div className="h-full">{children}</div>
       {showLoadingBar ? (
         <div
-          className="bg-primary pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 opacity-70"
-          aria-live="polite"
+          className="tahti-route-loading-bar pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5"
+          role="progressbar"
           aria-label="Loading page content"
         />
       ) : null}
@@ -223,6 +303,7 @@ export function AppShell() {
   // on every mousemove -- a single unselected useLayoutStore() call would
   // re-render this entire shell, including the routed content tree, on
   // every one of those ticks.
+  useWarnBeforeLeavingWhilePlaying();
   const leftCollapsed = useLayoutStore((s) => s.leftCollapsed);
   const rightCollapsed = useLayoutStore((s) => s.rightCollapsed);
   const leftWidth = useLayoutStore((s) => s.leftWidth);
@@ -240,6 +321,7 @@ export function AppShell() {
   const refresh = useAuthStore((s) => s.refresh);
   const userId = useAuthStore((s) => s.user?.id);
   const authHydrated = useAuthStore((s) => s.hydrated);
+  const studioAccess = useAuthStore((s) => hasStudioAccess(s.user));
   const openAuth = useAuthModalStore((s) => s.open);
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -254,11 +336,16 @@ export function AppShell() {
     /^\/(studio|admin|library)(\/|$)/.test(pathname) ||
     /^\/$|^\/listen(?:\/|$)/.test(pathname) ||
     pathname === '/favorites';
+  const fullBleedRoute = isFullBleedRoute(pathname);
   const currentTrackId = usePlayerStore((state) => state.currentId);
   const playerQueue = usePlayerStore((state) => state.queue);
   const playerStatus = usePlayerStore((state) => state.status);
   const isLivePlayback = usePlayerStore((state) => state.isLive);
   const toggleTour = useTourStore((state) => state.toggle);
+  const mobileNavHidden = useAutoHideNavWhilePlaying(
+    isMobile,
+    playerStatus === 'playing',
+  );
 
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const bottomQueueOpen = useLayoutStore((s) => s.bottomQueueOpen);
@@ -268,6 +355,10 @@ export function AppShell() {
     /^\/studio\/(?:archive\/[^/]+\/editor|editor\/[^/]+)$/.test(pathname);
   const anonymousRouteBlocked =
     authHydrated && !userId && !isAnonymousRouteAllowed(pathname);
+
+  useEffect(() => {
+    startAuthSession();
+  }, []);
 
   useEffect(() => {
     void refresh();
@@ -283,6 +374,8 @@ export function AppShell() {
   useEffect(() => {
     syncDocumentMetadata(pathname);
   }, [pathname]);
+
+  useStudioShellScrollRestore(pathname);
 
   useEffect(() => {
     if (isAudioEditorRoute) {
@@ -301,39 +394,28 @@ export function AppShell() {
     }
   }, [isAudioEditorRoute, leftCollapsed, setLeftCollapsed]);
 
-  useEffect(() => {
-    const currentItem = playerQueue.find((item) => item.id === currentTrackId);
-    const radioPlaying =
-      isLivePlayback &&
-      (playerStatus === 'playing' || playerStatus === 'loading') &&
-      currentItem;
-    if (!radioPlaying) {
-      return;
-    }
+  const currentItem = playerQueue.find((item) => item.id === currentTrackId);
+  const currentPlayable = currentItem
+    ? playableFromQueueItem(currentItem)
+    : null;
+  const stationNowPlaying = usePlayerStationNowPlaying(currentPlayable);
+  const playbackTitle =
+    isLivePlayback &&
+    (playerStatus === 'playing' || playerStatus === 'loading') &&
+    currentItem
+      ? playbackDocumentTitle(
+          stationNowPlaying?.title ?? currentItem.track.title,
+          stationNowPlaying?.artist ??
+            currentItem.track.artists
+              .map((entry) => entry.name)
+              .filter(Boolean)
+              .join(', '),
+        )
+      : null;
 
-    const artist = currentItem.track.artists
-      .map((entry) => entry.name)
-      .filter(Boolean)
-      .join(', ');
-    const title = `▶ ${currentItem.track.title}${artist ? ` — ${artist}` : ''} · Tahti Radio`;
-    let offset = 0;
-    document.title = scrollingPlaybackTitle(title, offset);
-    let raf = 0;
-    let last = 0;
-    const step = (now: number) => {
-      if (now - last >= 450) {
-        last = now;
-        offset += 1;
-        document.title = scrollingPlaybackTitle(title, offset);
-      }
-      raf = window.requestAnimationFrame(step);
-    };
-    raf = window.requestAnimationFrame(step);
-    return () => {
-      window.cancelAnimationFrame(raf);
-      reapplyLastMetadata(pathname);
-    };
-  }, [currentTrackId, isLivePlayback, pathname, playerQueue, playerStatus]);
+  useEffect(() => {
+    setPlaybackDocumentTitle(playbackTitle);
+  }, [playbackTitle]);
 
   // Offer onboarding via a dismissible toast instead of forcing a redirect.
   // At most once per browser session (sessionStorage), even if the toast
@@ -353,6 +435,7 @@ export function AppShell() {
     deferOnboardingPrompt(userId);
     toast('Finish setting up your profile?', {
       description: 'A few quick steps to personalize your channel.',
+      duration: 8_000,
       action: {
         label: 'Set up profile',
         onClick: () => void navigate({ to: '/onboarding' }),
@@ -387,6 +470,15 @@ export function AppShell() {
     setRightCollapsed(true);
   }, [isCompactDesktop, setLeftCollapsed, setRightCollapsed]);
 
+  // Empty queue takes ~25% of a 1440 px Studio/Library layout; collapse the
+  // rail automatically when the last item leaves (user can still reopen it).
+  useEffect(() => {
+    if (playerQueue.length > 0) {
+      return;
+    }
+    setRightCollapsed(true);
+  }, [playerQueue.length, setRightCollapsed]);
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target;
@@ -400,7 +492,7 @@ export function AppShell() {
       }
 
       if (event.altKey && !event.ctrlKey && !event.metaKey) {
-        const destinations: Record<
+        const byCode: Record<
           string,
           '/' | '/radio' | '/feed' | '/library' | '/studio'
         > = {
@@ -409,12 +501,46 @@ export function AppShell() {
           Digit3: '/feed',
           Digit4: '/library',
           Digit5: '/studio',
+          Numpad1: '/',
+          Numpad2: '/radio',
+          Numpad3: '/feed',
+          Numpad4: '/library',
+          Numpad5: '/studio',
         };
-        const destination = destinations[event.code];
+        const byKey: Record<
+          string,
+          '/' | '/radio' | '/feed' | '/library' | '/studio'
+        > = {
+          '1': '/',
+          '2': '/radio',
+          '3': '/feed',
+          '4': '/library',
+          '5': '/studio',
+        };
+        const destination = byCode[event.code] ?? byKey[event.key];
         if (destination) {
           event.preventDefault();
           void navigate({ to: destination });
         }
+        return;
+      }
+
+      if (
+        event.code === 'Space' &&
+        !event.altKey &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.shiftKey &&
+        currentTrackId &&
+        !spaceActivatesTarget(target)
+      ) {
+        event.preventDefault();
+        const player = usePlayerStore.getState();
+        player.setStatus(
+          player.status === 'playing' || player.status === 'loading'
+            ? 'paused'
+            : 'playing',
+        );
         return;
       }
 
@@ -427,6 +553,22 @@ export function AppShell() {
       ) {
         event.preventDefault();
         setFullScreenPlayerOpen(!fullScreenPlayerOpen);
+        return;
+      }
+
+      if (
+        (event.code === 'ArrowLeft' || event.code === 'ArrowRight') &&
+        event.shiftKey &&
+        !event.altKey &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        currentTrackId
+      ) {
+        event.preventDefault();
+        const { skipSeconds } = usePlaybackPrefsStore.getState();
+        usePlayerStore
+          .getState()
+          .seekBy(event.code === 'ArrowLeft' ? -skipSeconds : skipSeconds);
         return;
       }
 
@@ -450,154 +592,151 @@ export function AppShell() {
     toggleTour,
   ]);
 
-  // The artist's own public profile is meant to feel like a standalone page
-  // (a link people share), not an internal app screen: no sidebar, no
-  // management icons -- just the Tahti logo (back to the app) plus compact
-  // nav icons for signed-in visitors.
-  const isArtistPage = /^\/u\/[^/]+/.test(pathname);
-
   return (
-    <PlayerShell className={isMobile ? 'tahti-mobile-shell' : undefined}>
-      {!fullScreenPlayerOpen && (
-        <AppTopNav
-          showMenuButton={isMobile && !isArtistPage}
-          onOpenMenu={() => setMobileNavOpen(true)}
-        />
-      )}
-      <AmbientBackground />
-      <NotificationToasts />
+    <HearthisEmbedHostProvider>
+      <PlayerShell
+        data-testid="listen-shell"
+        className={isMobile ? 'tahti-mobile-shell' : undefined}
+      >
+        <SkipToContent />
+        {!fullScreenPlayerOpen && (
+          <AppTopNav
+            showMenuButton={isMobile}
+            onOpenMenu={() => setMobileNavOpen(true)}
+          />
+        )}
+        <AmbientBackground />
+        <NotificationToasts />
 
-      <AudioEngine />
+        <AudioEngine />
+        <ListenHeartbeat />
 
-      {isMobile ? (
-        <div className="tahti-ambient-surface bg-background relative flex min-h-0 flex-1 flex-col overflow-hidden">
-          <div
-            className={cn(
-              'min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto',
-              MAIN_CONTENT_PADDING,
-            )}
-            data-studio-shell
-          >
-            {userId && getStudioPrimaryRoute(pathname) ? (
-              <StudioNav current={navigationLocation} global />
-            ) : null}
-            <RouteContent>
-              <RouteTransition
-                key={userId ?? 'anonymous'}
-                fast={fastNavigationRoute}
+        {isMobile ? (
+          <div className="tahti-ambient-surface bg-background relative flex min-h-0 flex-1 flex-col overflow-hidden">
+            <main
+              id={MAIN_CONTENT_ID}
+              tabIndex={-1}
+              className={cn(
+                'focus-visible:ring-primary min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto outline-none focus-visible:ring-2 focus-visible:ring-inset',
+                MAIN_CONTENT_PADDING,
+              )}
+              data-studio-shell
+            >
+              {studioAccess && getStudioPrimaryRoute(pathname) ? (
+                <StudioNav current={navigationLocation} />
+              ) : null}
+              <RouteContent>
+                <Suspense fallback={<RouteChunkSkeleton />}>
+                  <RouteTransition
+                    key={userId ?? 'anonymous'}
+                    fast={fastNavigationRoute}
+                  />
+                </Suspense>
+              </RouteContent>
+            </main>
+            {!fullScreenPlayerOpen && <ConnectedPlayerBar />}
+            {!mobileNavHidden && (
+              <MobileBottomNav
+                onOpenMore={() => setMobileNavOpen(true)}
+                moreOpen={mobileNavOpen}
               />
-            </RouteContent>
+            )}
           </div>
-          {!fullScreenPlayerOpen && <ConnectedPlayerBar />}
-          {!isArtistPage && (
-            <MobileBottomNav
-              onOpenMore={() => setMobileNavOpen(true)}
-              moreOpen={mobileNavOpen}
-            />
-          )}
-        </div>
-      ) : isArtistPage ? (
-        <div
-          className={cn(
-            'tahti-ambient-surface min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto',
-            MAIN_CONTENT_PADDING,
-          )}
-          data-studio-shell
-        >
-          <RouteContent>
-            <RouteTransition
-              key={userId ?? 'anonymous'}
-              fast={fastNavigationRoute}
-            />
-          </RouteContent>
-        </div>
-      ) : (
-        <PlayerWorkspace className="tahti-ambient-surface">
-          <PlayerWorkspace.LeftSidebar
-            width={leftWidth}
-            isCollapsed={leftCollapsed}
-            onWidthChange={setLeftWidth}
-            onToggle={toggleLeft}
-          >
-            <SidebarNavItems compact={leftCollapsed} />
-          </PlayerWorkspace.LeftSidebar>
+        ) : (
+          <PlayerWorkspace className="tahti-ambient-surface">
+            <PlayerWorkspace.LeftSidebar
+              width={leftWidth}
+              isCollapsed={leftCollapsed}
+              onWidthChange={setLeftWidth}
+              onToggle={toggleLeft}
+            >
+              <SidebarNavItems compact={leftCollapsed} />
+            </PlayerWorkspace.LeftSidebar>
 
-          {/*
+            {/*
             Padding lives on Main (outside the scrollport) so titles keep
             breathing room from the pane edge while content scrolls.
           */}
-          <PlayerWorkspace.Main
-            className={cn(
-              'tahti-ambient-surface min-h-0 min-w-0 overflow-hidden',
-              MAIN_CONTENT_PADDING,
+            <PlayerWorkspace.Main
+              className={cn(
+                'tahti-ambient-surface min-h-0 min-w-0 overflow-hidden',
+                !fullBleedRoute && MAIN_CONTENT_PADDING,
+              )}
+            >
+              <div
+                id={MAIN_CONTENT_ID}
+                tabIndex={-1}
+                className={cn(
+                  'focus-visible:ring-primary h-full min-w-0 overflow-x-hidden overflow-y-auto outline-none focus-visible:ring-2 focus-visible:ring-inset',
+                  fullBleedRoute && MAIN_CONTENT_PADDING,
+                )}
+                data-studio-shell
+              >
+                {studioAccess && getStudioPrimaryRoute(pathname) ? (
+                  <StudioNav current={navigationLocation} />
+                ) : null}
+                <RouteContent>
+                  <Suspense fallback={<RouteChunkSkeleton />}>
+                    <RouteTransition
+                      key={userId ?? 'anonymous'}
+                      fast={fastNavigationRoute}
+                    />
+                  </Suspense>
+                </RouteContent>
+              </div>
+            </PlayerWorkspace.Main>
+
+            {userId && (
+              <PlayerWorkspace.RightSidebar
+                width={rightWidth}
+                isCollapsed={rightCollapsed}
+                onWidthChange={setRightWidth}
+                onToggle={toggleRight}
+                headerActions={<RightRailHeaderActions />}
+              >
+                <RightRailPanel isCollapsed={rightCollapsed} />
+              </PlayerWorkspace.RightSidebar>
             )}
-          >
-            <div
-              className="h-full min-w-0 overflow-x-hidden overflow-y-auto"
-              data-studio-shell
-            >
-              {userId && getStudioPrimaryRoute(pathname) ? (
-                <StudioNav current={navigationLocation} global />
-              ) : null}
-              <RouteContent>
-                <RouteTransition
-                  key={userId ?? 'anonymous'}
-                  fast={fastNavigationRoute}
-                />
-              </RouteContent>
-            </div>
-          </PlayerWorkspace.Main>
+          </PlayerWorkspace>
+        )}
 
-          {userId && (
-            <PlayerWorkspace.RightSidebar
-              width={rightWidth}
-              isCollapsed={rightCollapsed}
-              onWidthChange={setRightWidth}
-              onToggle={toggleRight}
-            >
-              <RightRailPanel isCollapsed={rightCollapsed} />
-            </PlayerWorkspace.RightSidebar>
-          )}
-        </PlayerWorkspace>
-      )}
+        {!isMobile && !fullScreenPlayerOpen && <ConnectedPlayerBar />}
+        {!isMobile && <ConnectedStatusBar />}
+        <DeferredFullScreenPlayer open={fullScreenPlayerOpen} />
+        <AuthDialog />
+        <DeferredDialogs />
+        <PageTourSpotlight />
+        <Toaster position="bottom-right" richColors closeButton />
 
-      {!isMobile && !fullScreenPlayerOpen && <ConnectedPlayerBar />}
-      <ConnectedStatusBar />
-      <FullScreenPlayer />
-      <AuthDialog />
-      <ChannelSetupDialog />
-      <ConnectedSettingsModal />
-      <PageTourSpotlight />
-      <Toaster position="bottom-right" richColors closeButton />
-
-      <MobileDrawer
-        open={mobileNavOpen}
-        title="Navigate"
-        side="left"
-        onClose={() => setMobileNavOpen(false)}
-      >
-        <div
-          className="flex flex-col gap-1"
-          onClick={() => setMobileNavOpen(false)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              setMobileNavOpen(false);
-            }
-          }}
-          role="presentation"
+        <MobileDrawer
+          open={mobileNavOpen}
+          title="Navigate"
+          side="left"
+          onClose={() => setMobileNavOpen(false)}
         >
-          <SidebarNavItems compact={false} />
-        </div>
-      </MobileDrawer>
+          <div
+            className="flex flex-col gap-1"
+            onClick={() => setMobileNavOpen(false)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                setMobileNavOpen(false);
+              }
+            }}
+            role="presentation"
+          >
+            <SidebarNavItems compact={false} />
+          </div>
+        </MobileDrawer>
 
-      <MobileDrawer
-        open={bottomQueueOpen}
-        title="Queue"
-        fullScreen
-        onClose={() => setBottomQueueOpen(false)}
-      >
-        <SidebarQueuePanel />
-      </MobileDrawer>
-    </PlayerShell>
+        <MobileDrawer
+          open={bottomQueueOpen}
+          title="Queue"
+          fullScreen
+          onClose={() => setBottomQueueOpen(false)}
+        >
+          <SidebarQueuePanel />
+        </MobileDrawer>
+      </PlayerShell>
+    </HearthisEmbedHostProvider>
   );
 }

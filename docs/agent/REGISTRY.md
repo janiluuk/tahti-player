@@ -43,13 +43,11 @@ In-app Tahti page add-ons (Settings → Add-ons widgets that are not marketplace
 zips) stay owned here, but if they also have a public store listing, that
 listing still lives in `tahti-registry`.
 
-### Runtime registry separation guardrail
+### Runtime registry invariants
 
-Start separating the plugin registry conceptually, but do not break or migrate
-the current runtime registry yet. First inventory all callers, the persisted
-`plugins.json` format, bootstrap ordering, and enable/update/removal semantics.
-Then define a compatibility interface and contract tests around the existing
-implementation. Keep the current registry as the runtime source of truth until
-the adapter, rollback plan, and ownership split between player core, plugin SDK,
-and import-provider plugins are accepted. Do not change registry keys, storage
-location, discovery semantics, or bootstrap order during preparation.
+The runtime registry lives in `@tahti-player/plugin-registry`
+(own repo, [janiluuk/tahti-plugin-registry](https://github.com/janiluuk/tahti-plugin-registry), pinned by tag); the player's `pluginRegistry*.ts` files are
+re-export shims and `PluginRegistryHost` stays in the player. Ownership split
+and rollback plan are in [`docs/PLUGIN-REGISTRY.md`](../PLUGIN-REGISTRY.md).
+Do not change registry keys, storage location, discovery semantics, or
+bootstrap order without a migration plan: existing installs depend on them.

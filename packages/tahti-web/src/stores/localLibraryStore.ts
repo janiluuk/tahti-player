@@ -86,6 +86,25 @@ export function isLocalTrackPlayable(track: LocalLibraryTrack): boolean {
   return Boolean(track.objectUrl);
 }
 
+export function isSameUnresolvedFile(
+  track: LocalLibraryTrack,
+  file: File,
+): boolean {
+  if (track.fileName !== file.name || isLocalTrackPlayable(track)) {
+    return false;
+  }
+  if (track.fileSize === undefined) {
+    return false;
+  }
+  if (track.fileSize !== file.size) {
+    return false;
+  }
+  if (track.lastModified !== undefined && file.lastModified) {
+    return track.lastModified === file.lastModified;
+  }
+  return true;
+}
+
 export function playableFromLocalTrack(
   track: LocalLibraryTrack,
 ): TahtiPlayable | null {
@@ -150,9 +169,8 @@ export const useLocalLibraryStore = create<LocalLibraryState>()(
             continue;
           }
           const objectUrl = URL.createObjectURL(file);
-          const existingIndex = next.findIndex(
-            (track) =>
-              track.fileName === file.name && !isLocalTrackPlayable(track),
+          const existingIndex = next.findIndex((track) =>
+            isSameUnresolvedFile(track, file),
           );
           if (existingIndex >= 0) {
             const existing = next[existingIndex]!;

@@ -1,20 +1,21 @@
-/** Mock-mode dismissals that survive reload within this browser session.
- * Without this, forceMock dismissNotification is a no-op and the sticky
- * "Theme is in review" fixture reappears every reload. */
-import { apiBase } from './http';
+/** Mock-mode dismissals that survive reload within this browser (not just
+ * one tab). Without this, forceMock dismissNotification is a no-op and the
+ * other mock fixtures reappear on every reload. */
+import { mockFixture } from './mock-overrides';
 import {
   allowMockFallback,
   apiErrorMeta,
-  failMeta,
   isForceMock,
+  mockFallbackMeta,
   type FetchMeta,
 } from './mode';
+import { requestJson } from './request-json';
 
 const MOCK_DISMISSED_KEY = 'tahti-web-mock-notifications-dismissed';
 
 function readMockDismissedIds(): Set<string> {
   try {
-    const raw = sessionStorage.getItem(MOCK_DISMISSED_KEY);
+    const raw = localStorage.getItem(MOCK_DISMISSED_KEY);
     if (!raw) {
       return new Set();
     }
@@ -29,7 +30,7 @@ function readMockDismissedIds(): Set<string> {
 
 function writeMockDismissedIds(ids: Set<string>) {
   try {
-    sessionStorage.setItem(MOCK_DISMISSED_KEY, JSON.stringify([...ids]));
+    localStorage.setItem(MOCK_DISMISSED_KEY, JSON.stringify([...ids]));
   } catch {
     // ignore
   }
@@ -39,38 +40,6 @@ function dismissMockNotification(id: string) {
   const ids = readMockDismissedIds();
   ids.add(id);
   writeMockDismissedIds(ids);
-}
-
-async function requestJson<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<{ data: T; status: number }> {
-  const { headers: initHeaders, ...rest } = init ?? {};
-  const res = await fetch(`${apiBase()}${path}`, {
-    credentials: 'include',
-    ...rest,
-    headers: {
-      Accept: 'application/json',
-      ...(rest.body ? { 'Content-Type': 'application/json' } : {}),
-      ...initHeaders,
-    },
-  });
-  if (!res.ok) {
-    let detail = `${path} → ${res.status}`;
-    try {
-      const body = (await res.json()) as { error?: string; message?: string };
-      if (body.error || body.message) {
-        detail = body.error ?? body.message ?? detail;
-      }
-    } catch {
-      // ignore
-    }
-    throw new Error(detail);
-  }
-  if (res.status === 204) {
-    return { data: undefined as T, status: res.status };
-  }
-  return { data: (await res.json()) as T, status: res.status };
 }
 
 export type TahtiNotification = {
@@ -90,23 +59,35 @@ export type TahtiNotification = {
 };
 
 function emptyMeta(err: unknown): FetchMeta {
-  return allowMockFallback() ? failMeta(err) : apiErrorMeta(err);
+  return allowMockFallback() ? mockFallbackMeta(err) : apiErrorMeta(err);
 }
 
 function mockNotifications(includeInboxExtras: boolean): TahtiNotification[] {
+  return mockFixture(
+    'notifications',
+    buildMockNotifications(includeInboxExtras),
+    includeInboxExtras,
+  );
+}
+
+const MOCK_STICKY_NOTIFICATION_ID = 'notification-mock-sticky-policy';
+
+function buildMockNotifications(
+  includeInboxExtras: boolean,
+): TahtiNotification[] {
+  const dismissed = readMockDismissedIds();
+  const items: TahtiNotification[] = [];
   const sticky: TahtiNotification = {
-    id: 'notification-mock-sticky',
-    type: 'THEME_UNDER_REVIEW',
+    id: MOCK_STICKY_NOTIFICATION_ID,
+    type: 'POLICY',
     actor: null,
-    title: 'Theme is in review',
-    body: 'An admin will approve or reject it soon. This stays until you acknowledge it.',
-    url: '/settings/themes',
+    title: 'Review the updated community guidelines',
+    body: 'Acknowledge once you have read the summary — it stays out of the way after that.',
+    url: '/help/community',
     readAt: null,
     sticky: true,
-    createdAt: new Date(Date.now() - 5 * 60_000).toISOString(),
+    createdAt: new Date(Date.now() - 86400_000).toISOString(),
   };
-  const items: TahtiNotification[] = [];
-  const dismissed = readMockDismissedIds();
   if (!dismissed.has(sticky.id)) {
     items.push(sticky);
   }
@@ -169,23 +150,45 @@ export async function fetchStickyNotifications(): Promise<{
   }
 }
 
-export async function fetchNotifications(): Promise<{
+export const NOTIFICATION_PAGE_SIZE = 20;
+
+/** One page of the inbox, newest first. `before` is the id of the oldest
+ * notification already shown, to read the page after it. */
+export async function fetchNotifications(before?: string): Promise<{
   data: TahtiNotification[];
+  unreadCount: number;
+  hasMore: boolean;
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
+    const data = before ? [] : mockNotifications(true);
     return {
-      data: mockNotifications(true),
+      data,
+      unreadCount: data.filter((item) => !item.readAt).length,
+      hasMore: false,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
   try {
+    const params = new URLSearchParams({
+      limit: String(NOTIFICATION_PAGE_SIZE),
+    });
+    if (before) {
+      params.set('before', before);
+    }
     const { data } = await requestJson<{
       notifications: TahtiNotification[];
-    }>('/api/me/notifications?limit=20');
-    return { data: data.notifications, meta: { source: 'api' } };
+      unreadCount: number;
+      hasMore?: boolean;
+    }>(`/api/me/notifications?${params.toString()}`);
+    return {
+      data: data.notifications,
+      unreadCount: data.unreadCount,
+      hasMore: data.hasMore ?? false,
+      meta: { source: 'api' },
+    };
   } catch (err) {
-    return { data: [], meta: emptyMeta(err) };
+    return { data: [], unreadCount: 0, hasMore: false, meta: emptyMeta(err) };
   }
 }
 

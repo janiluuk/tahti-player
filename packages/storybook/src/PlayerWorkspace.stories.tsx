@@ -3,14 +3,10 @@ import {
   Clock,
   Disc3,
   Download,
-  Filter,
-  Grid3X3,
   Heart,
   Home,
   Library,
-  List,
   Mic2,
-  MoreHorizontal,
   Play,
   Radio,
   Repeat,
@@ -24,14 +20,18 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
+import type { QueueItem, Track } from '@tahti-player/model';
 import {
   BottomBar,
   Button,
   PlayerWorkspace,
+  QueuePanel,
   SidebarNavigation,
   SidebarNavigationItem,
   TahtiLogo,
   TopBar,
+  TrackTable,
+  type TrackTableLabels,
 } from '@tahti-player/ui';
 
 const meta = {
@@ -45,134 +45,90 @@ const meta = {
 
 export default meta;
 
-const MockTrackList = () => (
-  <div className="p-6">
-    <div className="mb-6 flex items-center justify-between">
-      <h1 className="text-foreground text-2xl font-bold">Your Library</h1>
-      <div className="flex gap-2">
-        <Button size="sm" variant="text">
-          <Filter size={16} />
-        </Button>
-        <Button size="sm" variant="text">
-          <Grid3X3 size={16} />
-        </Button>
-        <Button size="sm" variant="text">
-          <List size={16} />
-        </Button>
-      </div>
-    </div>
+const LIBRARY: [
+  title: string,
+  artist: string,
+  album: string,
+  seconds: number,
+][] = [
+  ['Bohemian Rhapsody', 'Queen', 'A Night at the Opera', 355],
+  ['Stairway to Heaven', 'Led Zeppelin', 'Led Zeppelin IV', 482],
+  ['Hotel California', 'Eagles', 'Hotel California', 390],
+  ["Sweet Child O' Mine", "Guns N' Roses", 'Appetite for Destruction', 303],
+  ['Imagine', 'John Lennon', 'Imagine', 187],
+  ['Billie Jean', 'Michael Jackson', 'Thriller', 294],
+  ['Like a Rolling Stone', 'Bob Dylan', 'Highway 61 Revisited', 373],
+  ['Smells Like Teen Spirit', 'Nirvana', 'Nevermind', 301],
+];
 
-    <div className="space-y-2">
-      {[
-        {
-          title: 'Bohemian Rhapsody',
-          artist: 'Queen',
-          album: 'A Night at the Opera',
-          duration: '5:55',
-        },
-        {
-          title: 'Stairway to Heaven',
-          artist: 'Led Zeppelin',
-          album: 'Led Zeppelin IV',
-          duration: '8:02',
-        },
-        {
-          title: 'Hotel California',
-          artist: 'Eagles',
-          album: 'Hotel California',
-          duration: '6:30',
-        },
-        {
-          title: "Sweet Child O' Mine",
-          artist: "Guns N' Roses",
-          album: 'Appetite for Destruction',
-          duration: '5:03',
-        },
-        {
-          title: 'Imagine',
-          artist: 'John Lennon',
-          album: 'Imagine',
-          duration: '3:07',
-        },
-        {
-          title: 'Billie Jean',
-          artist: 'Michael Jackson',
-          album: 'Thriller',
-          duration: '4:54',
-        },
-        {
-          title: 'Like a Rolling Stone',
-          artist: 'Bob Dylan',
-          album: 'Highway 61 Revisited',
-          duration: '6:13',
-        },
-        {
-          title: 'Smells Like Teen Spirit',
-          artist: 'Nirvana',
-          album: 'Nevermind',
-          duration: '5:01',
-        },
-      ].map((track, index) => (
-        <div
-          key={index}
-          className="hover:bg-background hover:border-border flex items-center justify-between rounded-md border border-transparent p-3 transition-all"
-        >
-          <div className="flex items-center gap-4">
-            <Button
-              size="icon"
-              variant="text"
-              className="opacity-0 group-hover:opacity-100"
-            >
-              <Play size={14} />
-            </Button>
-            <div>
-              <div className="text-foreground font-medium">{track.title}</div>
-              <div className="text-foreground-secondary text-sm">
-                {track.artist} • {track.album}
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-foreground-secondary text-sm">
-              {track.duration}
-            </span>
-            <Button size="icon" variant="text">
-              <MoreHorizontal size={16} />
-            </Button>
-          </div>
-        </div>
-      ))}
-    </div>
+const LIBRARY_TRACKS: Track[] = LIBRARY.map(
+  ([title, artist, album, seconds], index) => {
+    const source = { provider: 'local', id: `workspace-${index + 1}` };
+    return {
+      title,
+      artists: [{ name: artist, roles: ['primary'] }],
+      album: { title: album, artists: [{ name: artist, source }], source },
+      durationMs: seconds * 1000,
+      source,
+    };
+  },
+);
+
+const TRACK_TABLE_LABELS: TrackTableLabels = {
+  headers: {
+    artist: 'Artist',
+    title: 'Title',
+    album: 'Album',
+    duration: 'Duration',
+  },
+  favorite: 'Add to favorites',
+  unfavorite: 'Remove from favorites',
+  play: 'Play',
+  pause: 'Pause',
+  playAll: 'Play all',
+  addAllToQueue: 'Add all to queue',
+  addToQueue: 'Add to queue',
+  inQueue: 'In queue',
+  trackOptions: 'Track options',
+  remove: 'Remove from list',
+  filterPlaceholder: 'Filter tracks',
+};
+
+const LibraryTrackList = () => (
+  <div className="flex h-full flex-col gap-4 p-6">
+    <h1 className="text-foreground text-2xl font-bold">Your Library</h1>
+    <TrackTable
+      tracks={LIBRARY_TRACKS}
+      labels={TRACK_TABLE_LABELS}
+      display={{
+        displayPosition: true,
+        displayArtist: true,
+        displayAlbum: true,
+        displayDuration: true,
+      }}
+      actions={{}}
+    />
   </div>
 );
 
-const MockQueueSidebar = () => (
-  <div className="p-4">
-    <h3 className="text-foreground mb-4 font-bold">Queue</h3>
-    <div className="space-y-3">
-      <div className="text-sm">
-        <div className="text-foreground font-medium">Now Playing</div>
-        <div className="text-foreground-secondary">
-          Bohemian Rhapsody - Queen
-        </div>
-      </div>
-      <div className="border-border border-t pt-3">
-        <div className="text-foreground mb-2 text-sm font-medium">Up Next</div>
-        {[
-          'Stairway to Heaven - Led Zeppelin',
-          'Hotel California - Eagles',
-          "Sweet Child O' Mine - Guns N' Roses",
-        ].map((track, index) => (
-          <div
-            key={index}
-            className="text-foreground-secondary hover:text-foreground cursor-pointer py-1 text-sm"
-          >
-            {track}
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
+const QUEUE_ITEMS: QueueItem[] = LIBRARY_TRACKS.slice(0, 4).map((track) => ({
+  id: track.source.id,
+  track,
+  status: 'idle',
+  addedAtIso: '2026-10-01T12:00:00.000Z',
+}));
+
+const QueueSidebar = ({ isCollapsed }: { isCollapsed?: boolean }) => (
+  <QueuePanel
+    items={QUEUE_ITEMS}
+    currentItemId={QUEUE_ITEMS[0]?.id}
+    isCollapsed={isCollapsed}
+    labels={{
+      removeButton: 'Remove from queue',
+      playbackError: 'Playback error',
+      emptyTitle: 'Queue empty',
+    }}
+  />
 );
 
 export const BasicLayout = () => {
@@ -211,7 +167,7 @@ export const BasicLayout = () => {
         </PlayerWorkspace.LeftSidebar>
 
         <PlayerWorkspace.Main>
-          <MockTrackList />
+          <LibraryTrackList />
         </PlayerWorkspace.Main>
 
         <PlayerWorkspace.RightSidebar
@@ -220,7 +176,7 @@ export const BasicLayout = () => {
           onWidthChange={setRightWidth}
           onToggle={() => setRightCollapsed(!rightCollapsed)}
         >
-          <MockQueueSidebar />
+          <QueueSidebar isCollapsed={rightCollapsed} />
         </PlayerWorkspace.RightSidebar>
       </PlayerWorkspace>
 
@@ -346,7 +302,7 @@ export const FullNavigationLayout = () => {
         </PlayerWorkspace.LeftSidebar>
 
         <PlayerWorkspace.Main>
-          <MockTrackList />
+          <LibraryTrackList />
         </PlayerWorkspace.Main>
 
         <PlayerWorkspace.RightSidebar
@@ -355,7 +311,7 @@ export const FullNavigationLayout = () => {
           onWidthChange={setRightWidth}
           onToggle={() => setRightCollapsed(!rightCollapsed)}
         >
-          <MockQueueSidebar />
+          <QueueSidebar isCollapsed={rightCollapsed} />
         </PlayerWorkspace.RightSidebar>
       </PlayerWorkspace>
 

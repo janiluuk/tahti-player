@@ -12,22 +12,26 @@ import { useEffect, useState } from 'react';
 import { Button, CopyButton, Dialog, Tooltip } from '@tahti-player/ui';
 
 import { fetchChannel } from '../api/client';
-import { useChannelShareStore } from '../stores/channelShareStore';
 
 export function ChannelShareButton({
   channelSlug,
   displayName,
   iconOnly = true,
+  open: openProp,
+  onOpenChange,
+  showTrigger = true,
 }: {
   channelSlug: string;
   displayName: string;
   iconOnly?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  showTrigger?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const open = openProp ?? uncontrolledOpen;
+  const setOpen = onOpenChange ?? setUncontrolledOpen;
   const [playlistUrl, setPlaylistUrl] = useState<string | null>(null);
-  const enabled = useChannelShareStore(
-    (state) => state.enabledByChannel[channelSlug] !== false,
-  );
   const url = `${window.location.origin}/channel/${channelSlug}`;
   const embedUrl = `${window.location.origin}/embed/c/${channelSlug}`;
   const embedSnippet = `<iframe src="${embedUrl}" width="100%" height="180" frameborder="0" allow="autoplay"></iframe>`;
@@ -75,22 +79,20 @@ export function ChannelShareButton({
     },
   ];
 
-  if (!enabled) {
-    return null;
-  }
-
   return (
     <>
-      <Button
-        size={iconOnly ? 'icon-sm' : 'sm'}
-        variant="secondary"
-        onClick={() => setOpen(true)}
-        aria-label={`Share ${displayName}`}
-        title="Share or embed channel"
-      >
-        <Share2Icon size={16} aria-hidden />
-        {!iconOnly && <span className="ml-1.5">Share</span>}
-      </Button>
+      {showTrigger ? (
+        <Button
+          size={iconOnly ? 'icon-sm' : 'sm'}
+          variant="secondary"
+          onClick={() => setOpen(true)}
+          aria-label={`Share ${displayName}`}
+          title="Share or embed channel"
+        >
+          <Share2Icon size={16} aria-hidden />
+          {!iconOnly && <span className="ml-1.5">Share</span>}
+        </Button>
+      ) : null}
       <Dialog.Root isOpen={open} onClose={() => setOpen(false)}>
         <Dialog.Title>Share channel</Dialog.Title>
         <div className="mt-4 flex flex-col gap-5">

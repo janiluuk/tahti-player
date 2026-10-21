@@ -5,6 +5,7 @@ import { Button } from '@tahti-player/ui';
 
 import { fetchMembership, startMembershipCheckout } from '../api/client';
 import type { MembershipStatus } from '../api/types';
+import { assignStripeRedirectUrl } from '../lib/stripeRedirect';
 import { useAuthStore } from '../stores/authStore';
 
 export function SignupPaymentView() {
@@ -92,7 +93,9 @@ export function SignupPaymentView() {
                   return;
                 }
                 if ('checkoutUrl' in res && res.checkoutUrl) {
-                  window.location.assign(res.checkoutUrl);
+                  if (!assignStripeRedirectUrl(res.checkoutUrl)) {
+                    setError('Checkout URL was not from Stripe');
+                  }
                   return;
                 }
                 if ('activated' in res && res.activated) {
@@ -111,7 +114,7 @@ export function SignupPaymentView() {
         </div>
       )}
 
-      {error && <p className="text-accent-red text-sm">{error}</p>}
+      {error && <p className="text-accent-red-strong text-sm">{error}</p>}
       {msg && <p className="text-sm">{msg}</p>}
 
       <Link

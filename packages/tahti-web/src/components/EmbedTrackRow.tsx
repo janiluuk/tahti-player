@@ -1,6 +1,8 @@
 import { PlayIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { Button } from '@tahti-player/ui';
+
 import { playableFromHearthis } from '../api/sources';
 import {
   EMBED_PROVIDER_HEIGHT,
@@ -9,6 +11,8 @@ import {
   type EmbedProvider,
 } from '../lib/embedSrc';
 import { usePlayerStore } from '../stores/playerStore';
+import { useHearthisEmbedClaim } from './HearthisEmbedHost';
+import { HearthisEmbedSurface } from './HearthisEmbedSurface';
 
 type Props = {
   title: string;
@@ -36,6 +40,7 @@ export function EmbedTrackRow({ title, provider, embedUri, className }: Props) {
   const playerId = `hearthis:${embedUri}`;
   const isCurrent = currentId === playerId;
   const isPlaying = isCurrent && (status === 'playing' || status === 'loading');
+  useHearthisEmbedClaim(provider === 'HEARTHIS' && isCurrent);
 
   if (!src) {
     return null;
@@ -66,7 +71,19 @@ export function EmbedTrackRow({ title, provider, embedUri, className }: Props) {
     <li
       className={`border-border overflow-hidden rounded-lg border ${className ?? ''}`}
     >
-      {embedOpen ? (
+      {provider === 'HEARTHIS' && isCurrent ? (
+        <div
+          className="relative max-h-28 overflow-hidden contain-paint"
+          data-testid="hearthis-row-embed"
+        >
+          <HearthisEmbedSurface
+            embedUri={embedUri}
+            title={title}
+            autoplay={isPlaying}
+            compact
+          />
+        </div>
+      ) : embedOpen ? (
         <iframe
           title={title}
           src={src}
@@ -77,25 +94,27 @@ export function EmbedTrackRow({ title, provider, embedUri, className }: Props) {
           loading="lazy"
         />
       ) : (
-        <button
+        <Button
+          variant="text"
+          size="flexible"
           type="button"
-          className="hover:bg-background-secondary flex w-full items-center gap-3 px-3 py-2 text-left transition-colors"
+          className="hover:bg-background-secondary flex w-full items-center gap-3 rounded-none px-3 py-2 text-left"
           onClick={() => void start()}
           aria-label={`${isPlaying ? 'Pause' : 'Play'} ${title} on ${label}`}
         >
-          <span className="bg-primary/15 text-primary flex size-10 shrink-0 items-center justify-center rounded-md">
+          <span className="bg-primary/15 text-primary-strong flex size-10 shrink-0 items-center justify-center rounded-md">
             <PlayIcon size={16} className="fill-current" aria-hidden />
           </span>
           <span className="min-w-0 flex-1">
             <span className="block truncate text-sm font-medium">{title}</span>
             <span className="text-foreground-secondary block truncate text-xs">
-              {isPlaying ? 'Playing in Tahti player' : `Listen on ${label}`}
+              {`Listen on ${label}`}
             </span>
           </span>
           <span className="text-foreground-secondary shrink-0 font-mono text-[10px] tracking-wide uppercase">
             Embed
           </span>
-        </button>
+        </Button>
       )}
     </li>
   );

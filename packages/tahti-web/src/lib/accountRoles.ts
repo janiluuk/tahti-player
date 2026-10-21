@@ -33,5 +33,10 @@ export const hasAccountRole = (
   role: AccountRole,
 ): boolean => Boolean(user && getAccountRole(user) === role);
 
+/** Studio is for accounts that publish: artists and the board. */
+export const hasStudioAccess = (
+  user: AccountRoleSource | null | undefined,
+): boolean => hasAccountRole(user, 'ARTIST') || hasAccountRole(user, 'BOARD');
+
 export const accountRoleLabel = (role: AccountRole): string =>
   role.charAt(0) + role.slice(1).toLowerCase();

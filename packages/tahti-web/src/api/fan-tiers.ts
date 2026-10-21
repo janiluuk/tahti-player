@@ -1,38 +1,11 @@
 import type { FetchMeta } from './client';
-import { apiBase } from './http';
-import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
-
-async function requestJson<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<{ data: T; status: number }> {
-  const { headers: initHeaders, ...rest } = init ?? {};
-  const res = await fetch(`${apiBase()}${path}`, {
-    credentials: 'include',
-    ...rest,
-    headers: {
-      Accept: 'application/json',
-      ...(rest.body ? { 'Content-Type': 'application/json' } : {}),
-      ...initHeaders,
-    },
-  });
-  if (!res.ok) {
-    let detail = `${path} → ${res.status}`;
-    try {
-      const body = (await res.json()) as { error?: string; message?: string };
-      if (body.error || body.message) {
-        detail = body.error ?? body.message ?? detail;
-      }
-    } catch {
-      // ignore
-    }
-    throw new Error(detail);
-  }
-  if (res.status === 204) {
-    return { data: undefined as T, status: res.status };
-  }
-  return { data: (await res.json()) as T, status: res.status };
-}
+import {
+  allowMockFallback,
+  apiErrorMeta,
+  isForceMock,
+  mockFallbackMeta,
+} from './mode';
+import { requestJson } from './request-json';
 
 export type FanTierRow = {
   id: string;
@@ -42,6 +15,10 @@ export type FanTierRow = {
   perks?: string[] | null;
   active?: boolean;
 };
+
+/** Active tier as listed on an artist's public profile; `description` and
+ * `perks` are absent from older API builds. */
+export type PublicFanTier = Omit<FanTierRow, 'active'>;
 
 let mockTiers: FanTierRow[] = [
   {
@@ -69,7 +46,10 @@ export async function fetchMyFanTiers(): Promise<{
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockTiers.map((t) => ({ ...t })), meta: failMeta(err) };
+      return {
+        data: mockTiers.map((t) => ({ ...t })),
+        meta: mockFallbackMeta(err),
+      };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }

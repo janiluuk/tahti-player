@@ -8,7 +8,10 @@ On-demand detail (do not load unless the task needs it):
 
 | Topic | File |
 | --- | --- |
-| Code style / components / domains / i18n | [`docs/agent/CODE-STYLE.md`](./docs/agent/CODE-STYLE.md) |
+| System architecture (repos, infra, diagram) | [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) |
+| Repo root files, `packaging/`, service config | [`docs/REPO-LAYOUT.md`](./docs/REPO-LAYOUT.md) |
+| Data flow (listen / studio publish / go-live, traced) | [`docs/DATA-FLOW.md`](./docs/DATA-FLOW.md) |
+| Code style / components / accessibility / layout / domains / i18n | [`docs/agent/CODE-STYLE.md`](./docs/agent/CODE-STYLE.md) |
 | View catalog (Storybook coverage, routes, candidates) | [`docs/VIEW-CATALOG.md`](./docs/VIEW-CATALOG.md) |
 | Marketplace registry checklist | [`docs/agent/REGISTRY.md`](./docs/agent/REGISTRY.md) |
 | Testing wrappers & conventions | [`docs/agent/TESTING.md`](./docs/agent/TESTING.md) |
@@ -28,6 +31,8 @@ This repository is the Tahti fork of Nuclear (`janiluuk/tahti-player`). Upstream
 - `@tahti-player/player` — Tauri app
 - `@tahti-player/ui` / `storybook` / `plugin-sdk` / `model` / `themes` / `hifi` / `i18n`
 - `@tahti-player/tahti-web` — beta.tahti.live
+- `@tahti-player/tahti-cli` — product `tahti` API/TUI CLI
+- `@tahti-player/tahti-ops` — maintainer `tahti-ops` (folds `scripts/`; separate from product CLI)
 - `@tahti-player/docs` / `website` / `tools` / shared eslint + tailwind configs
 
 ## Environment
@@ -44,6 +49,13 @@ pnpm dev                 # Player
 pnpm dev:remote          # Bind Vite 0.0.0.0 for remote control
 pnpm storybook
 pnpm dev:tahti           # tahti-web
+pnpm tahti --help        # product API/TUI CLI
+pnpm tahti-ops --help    # maintainer CLI: desktop, test, e2e, snapshots, deploy, stack, env, backup
+pnpm desktop             # build + launch the desktop app (tahti-ops desktop run)
+pnpm test:all            # every package's tests (tahti-ops test all)
+pnpm e2e                 # screenshot journeys on the mock app (tahti-ops e2e journeys)
+pnpm snapshots update ui player   # re-record snapshot groups (tahti-ops snapshots)
+pnpm deploy:web          # ship beta.tahti.live (tahti-ops deploy web)
 pnpm build && pnpm tauri build
 pnpm lint && pnpm type-check && pnpm test
 pnpm --filter @tahti-player/ui test -- src/components/Badge/Badge.test.tsx
@@ -51,8 +63,8 @@ pnpm --filter @tahti-player/ui test -- src/components/Badge/Badge.test.tsx
 
 ## Invariants (keep short)
 
-- No comments in code; never commit unless asked; rebase onto the latest base before every push; small focused changes.
-- Import-provider Configure lives in this Nuclear repo (modal: settings → test → save/enable). Open API questions → [`docs/DECISIONS.md`](./docs/DECISIONS.md).
+- No comments in code; never commit unless asked; rebase onto the latest base before every push; format changed files with Prettier before every push; small focused changes.
+- Import-provider Configure lives in this repo (host-rendered modal: settings → test → save, then enable). Settled 2026-10-05 — [`docs/DECISIONS.md`](./docs/DECISIONS.md).
 - **Todo lifecycle:** `docs/todo/` + INDEX (`open|blocked|partial`) → when done fold HISTORY, delete file, strip WORKPLAN. See [`CLAUDE.md`](./CLAUDE.md).
 - Governance API in `../tahti-org`. Contexts: member `/governance`, artist `/studio/governance`, board `/admin/governance` + `/admin/agm`. No invented DTOs; advisory ≠ AGM ballot until sibling contracts exist.
 - Registry: after plugin/theme add/change, update `../tahti-registry` — full checklist in [`docs/agent/REGISTRY.md`](./docs/agent/REGISTRY.md). Do not migrate runtime `plugins.json` yet.
@@ -70,4 +82,4 @@ Neo-brutalist, purposeful motion, no generic AI chrome. pnpm workspaces, Turbore
 
 - Don't install Rust or Tauri system deps to work on `tahti-web` — `pnpm dev:tahti` is pure Vite.
 - The lockfile (`pnpm-lock.yaml`) is committed; don't delete it — installs are deterministic against it.
-- CI snapshot mismatches warn but don't fail the workflow; a red CI run isn't always a real failure — check the logs.
+- A red CI run isn't always a real failure: Storybook shards sometimes lose their browser ("Browser connection was closed"); re-run the failed job. Snapshot mismatches in the core packages fail `test-core` and post a visual digest to the PR. Docs-only PRs skip every job except the gate. See [`docs/agent/TESTING.md`](./docs/agent/TESTING.md) → CI pipeline.

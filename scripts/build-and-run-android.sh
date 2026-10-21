@@ -16,7 +16,7 @@ repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repository_root"
 
 if [[ ! -d packages/player/src-tauri/gen/android ]]; then
-  pnpm --filter @nuclearplayer/player tauri android init
+  pnpm --filter @tahti-player/player tauri android init
 fi
 
-exec pnpm --filter @nuclearplayer/player tauri android run --debug "$@"
+exec pnpm --filter @tahti-player/player tauri android run --debug "$@"

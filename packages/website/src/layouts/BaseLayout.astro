@@ -30,12 +30,12 @@ const {
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
-const ogImageUrl = new URL(
-  ogImage ?? '/images/social-banner.png',
-  Astro.site,
-);
+const ogImageUrl = new URL(ogImage ?? '/images/social-banner.png', Astro.site);
 const siteUrl = Astro.site?.toString() ?? 'https://tahti.live/';
-const logoUrl = new URL('/images/logo-full-outlined.svg', Astro.site).toString();
+const logoUrl = new URL(
+  '/images/logo-full-outlined.svg',
+  Astro.site,
+).toString();
 
 const organizationId = `${siteUrl}#organization`;
 const websiteId = `${siteUrl}#website`;
@@ -92,7 +92,7 @@ const jsonLd = {
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth overflow-x-clip">
+<html lang="en" class="overflow-x-clip scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

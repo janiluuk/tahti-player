@@ -1,5 +1,8 @@
-import type { Preview } from '@storybook/react-vite';
+/// <reference types="vite/client" />
+import type { Decorator, Preview } from '@storybook/react-vite';
+import { MotionConfig, MotionGlobalConfig } from 'motion/react';
 import { createElement } from 'react';
+import { configure } from 'storybook/test';
 
 import '@fontsource/dm-sans/400.css';
 import '@fontsource/dm-sans/700.css';
@@ -9,8 +12,45 @@ import '@tahti-player/tailwind-config';
 import '@tahti-player/themes';
 import './dark-docs.css';
 
+import {
+  resetMockOverrides,
+  setMockOverrides,
+  type MockOverrides,
+} from '@tahti-web/api/mock-overrides';
+
 import { listBasicThemes } from '@tahti-player/themes';
 
+import {
+  forgetStoryRouter,
+  storyRouterSettled,
+} from '../src/tahti-web/_lib/decorators';
+
+// Under the Vitest play runner, CSS transitions and animations (fade-ins,
+// dialog and popover enter/leave) made assertions race them on busy CI
+// runners: "element is not visible" mid fade-in, a closing popover still in
+// the DOM. Motion is already reduced below; this does the same for CSS.
+if (import.meta.env.VITEST) {
+  const style = document.createElement('style');
+  style.setAttribute('data-storybook-test', 'no-animations');
+  style.textContent =
+    '*,*::before,*::after{transition-duration:0s!important;transition-delay:0s!important;animation-duration:0s!important;animation-delay:0s!important;animation-iteration-count:1!important;}';
+  document.head.appendChild(style);
+  document.documentElement.setAttribute('data-skip-enter-motion', '');
+  // MotionConfig reducedMotion only drops transforms, and components that
+  // read useReducedMotion() ignore it, so opacity fades still started at 0;
+  // skipAnimations finishes the rest on the next frame.
+  MotionGlobalConfig.skipAnimations = true;
+  // Two story files share a busy runner; the 1s default made findBy*
+  // time out on data that was a moment away.
+  configure({ asyncUtilTimeout: 5000 });
+}
+
+const withReducedMotion: Decorator = (Story) =>
+  createElement(
+    MotionConfig,
+    { reducedMotion: 'always' },
+    createElement(Story),
+  );
 // Every real basic theme (Default/Aurora/Ember/Lagoon/Moss/Tahti), read
 // from the same source the live app's theme picker uses — see
 // packages/themes/src/index.ts's listBasicThemes(). Keeps this toolbar in
@@ -32,10 +72,7 @@ const THEME_ID_ITEMS = listBasicThemes().map((theme) => ({
   title: theme.name,
 }));
 
-const withTahtiTheme: NonNullable<Preview['decorators']>[number] = (
-  Story,
-  context,
-) => {
+const withTahtiTheme: Decorator = (Story, context) => {
   const root = document.documentElement;
   root.setAttribute(
     'data-theme-id',
@@ -50,7 +87,22 @@ const withTahtiTheme: NonNullable<Preview['decorators']>[number] = (
 };
 
 const preview: Preview = {
-  decorators: [withTahtiTheme],
+  decorators: [withReducedMotion, withTahtiTheme],
+  // Seeds tahti-web's mock fixture overrides from `parameters.mockData`
+  // before each story renders, and clears them afterwards so one story's
+  // data never leaks into the next. See src/tahti-web/_lib/README.md.
+  beforeEach: ({ parameters }) => {
+    forgetStoryRouter();
+    setMockOverrides((parameters.mockData as MockOverrides | undefined) ?? {});
+    return () => resetMockOverrides();
+  },
+  // Same as the React renderer's default mount, plus waiting for a
+  // story's router to render before its play runs (see storyRouterSettled).
+  mount: (context) => async () => {
+    await context.renderToCanvas();
+    await storyRouterSettled();
+    return context.canvas;
+  },
   globalTypes: {
     themeId: {
       name: 'Theme',

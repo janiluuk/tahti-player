@@ -1,0 +1,45 @@
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+import type { NormalizationMode } from '../lib/replayGain';
+
+export const SKIP_SECONDS_MIN = 1;
+export const SKIP_SECONDS_MAX = 60;
+export const DEFAULT_SKIP_SECONDS = 5;
+
+export function clampSkipSeconds(value: number): number {
+  if (!Number.isFinite(value)) {
+    return DEFAULT_SKIP_SECONDS;
+  }
+  return Math.min(
+    SKIP_SECONDS_MAX,
+    Math.max(SKIP_SECONDS_MIN, Math.round(value)),
+  );
+}
+
+type PlaybackPrefsState = {
+  /** Seconds moved by seek forward/backward (Shift+Arrow, OS media keys). */
+  skipSeconds: number;
+  setSkipSeconds: (value: number) => void;
+  /** Loudness normalization for local library files; off by default. */
+  normalization: NormalizationMode;
+  setNormalization: (mode: NormalizationMode) => void;
+  /** Whether a channel page may start playing on its own; on by default.
+   * The channel's artist has a switch of their own, and both must be on. */
+  channelAutoplay: boolean;
+  setChannelAutoplay: (value: boolean) => void;
+};
+
+export const usePlaybackPrefsStore = create<PlaybackPrefsState>()(
+  persist(
+    (set) => ({
+      skipSeconds: DEFAULT_SKIP_SECONDS,
+      setSkipSeconds: (value) => set({ skipSeconds: clampSkipSeconds(value) }),
+      normalization: 'off',
+      setNormalization: (normalization) => set({ normalization }),
+      channelAutoplay: true,
+      setChannelAutoplay: (channelAutoplay) => set({ channelAutoplay }),
+    }),
+    { name: 'tahti-playback-prefs' },
+  ),
+);

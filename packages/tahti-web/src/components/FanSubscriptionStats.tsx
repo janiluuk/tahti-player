@@ -7,10 +7,11 @@ import {
 } from 'lucide-react';
 import type { FC, ReactNode } from 'react';
 
-import { Badge } from '@tahti-player/ui';
+import { Badge, HorizontalScroll } from '@tahti-player/ui';
 
 import type { FanPayoutStats } from '../api/revenue';
 import type { RevenueOrderRow } from '../lib/revenueOrders';
+import { PageEmpty } from './PageStates';
 
 type FanSubscriptionStatsProps = {
   stats: FanPayoutStats;
@@ -47,7 +48,7 @@ const FanStat: FC<{
     className="border-border bg-background flex max-w-full min-w-0 flex-col gap-2 overflow-hidden rounded-lg border p-3"
   >
     <span className="text-foreground-secondary flex min-w-0 items-center gap-2 text-[11px] font-semibold tracking-wide break-words uppercase">
-      <Icon size={14} aria-hidden className="text-primary" />
+      <Icon size={14} aria-hidden className="text-primary-strong shrink-0" />
       {label}
     </span>
     <strong className="font-display text-2xl font-extrabold tabular-nums">
@@ -64,12 +65,12 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
 }) => (
   <section
     aria-label="Fan subscription summary"
-    className="flex max-w-full min-w-0 flex-col gap-4"
+    className="@container flex max-w-full min-w-0 flex-col gap-4"
   >
     <div
       data-tour-id="revenue-stats"
       data-testid="fan-order-stats"
-      className="grid min-w-0 grid-cols-2 gap-2 lg:grid-cols-[repeat(4,minmax(0,1fr))]"
+      className="grid min-w-0 grid-cols-1 gap-2 @[16rem]:grid-cols-2 @xl:grid-cols-[repeat(4,minmax(0,1fr))]"
     >
       <FanStat
         label="Active subscribers"
@@ -97,7 +98,7 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
       <p>
         Paid in the last 30 days: {stats.paidLast30Days.toLocaleString()}
         {stats.failed > 0 ? (
-          <span className="text-accent-red">
+          <span className="text-accent-red-strong">
             {' '}
             · Failed payouts: {stats.failed.toLocaleString()}
           </span>
@@ -118,7 +119,7 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
 
     <div data-tour-id="revenue-orders" data-testid="fan-order-list">
       <h3 className="mb-2 text-sm font-bold">Payout history</h3>
-      <div className="overflow-x-auto">
+      <HorizontalScroll label="Payout history">
         <table className="w-full min-w-[430px] text-left text-sm">
           <thead className="text-foreground-secondary text-[11px] tracking-wide uppercase">
             <tr className="border-border border-b">
@@ -132,11 +133,8 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
           <tbody className="divide-border divide-y">
             {orders.length === 0 ? (
               <tr>
-                <td
-                  colSpan={5}
-                  className="text-foreground-secondary px-2 py-4 text-center"
-                >
-                  No payouts yet.
+                <td colSpan={5} className="px-2 py-4">
+                  <PageEmpty title="No payouts yet." />
                 </td>
               </tr>
             ) : (
@@ -164,7 +162,7 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
             )}
           </tbody>
         </table>
-      </div>
+      </HorizontalScroll>
       {footnote ? (
         <p className="text-foreground-secondary mt-3 text-xs">{footnote}</p>
       ) : null}

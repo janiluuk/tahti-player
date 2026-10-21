@@ -9,6 +9,7 @@ import {
 } from '../api/client';
 import type { MembershipStatus } from '../api/types';
 import { membershipStatusLabel } from '../lib/membershipStatus';
+import { assignStripeRedirectUrl } from '../lib/stripeRedirect';
 
 function euros(cents: number): string {
   return `€${(cents / 100).toFixed(cents % 100 === 0 ? 0 : 2)}`;
@@ -51,7 +52,9 @@ export function MembershipStatusPanel({
         return;
       }
       if ('checkoutUrl' in res && res.checkoutUrl) {
-        window.location.assign(res.checkoutUrl);
+        if (!assignStripeRedirectUrl(res.checkoutUrl)) {
+          setError('Checkout URL was not from Stripe');
+        }
         return;
       }
       if ('activated' in res && res.activated) {
@@ -74,7 +77,9 @@ export function MembershipStatusPanel({
         setError(res.error);
         return;
       }
-      window.location.assign(res.portalUrl);
+      if (!assignStripeRedirectUrl(res.portalUrl)) {
+        setError('Billing portal URL was not from Stripe');
+      }
     });
   }
 
@@ -124,7 +129,7 @@ export function MembershipStatusPanel({
             Next renewal around {dueLabel} (Stripe subscription).
           </p>
         )}
-        {error && <p className="text-accent-red text-sm">{error}</p>}
+        {error && <p className="text-accent-red-strong text-sm">{error}</p>}
         {membership.hasStripeSubscription ? (
           <Button
             size="sm"
@@ -165,14 +170,14 @@ export function MembershipStatusPanel({
         {membershipStatusLabel(membership)}
       </p>
       {lapsed && (
-        <p className="text-accent-red text-sm">
+        <p className="text-accent-red-strong text-sm">
           Your membership lapsed — renew to restore lossless streaming and
           unlimited live time.
         </p>
       )}
       {pendingEmail && (
         <div className="flex flex-col gap-2">
-          <p className="text-accent-red text-sm">
+          <p className="text-accent-red-strong text-sm">
             Verify your email before completing membership checkout.
           </p>
           {resendMessage && <p className="text-sm">{resendMessage}</p>}
@@ -186,7 +191,7 @@ export function MembershipStatusPanel({
           </Button>
         </div>
       )}
-      {error && <p className="text-accent-red text-sm">{error}</p>}
+      {error && <p className="text-accent-red-strong text-sm">{error}</p>}
       {message && <p className="text-sm">{message}</p>}
       <Button
         disabled={busy || !membership.emailVerified || pendingEmail}

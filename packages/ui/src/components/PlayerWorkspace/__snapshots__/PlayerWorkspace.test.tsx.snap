@@ -11,13 +11,13 @@ exports[`PlayerWorkspace > (Snapshot) both sidebars collapsed 1`] = `
       transition="[object Object]"
     >
       <span
-        class="flex flex-row items-center mb-1 justify-center px-0.5 pt-1"
+        class="flex shrink-0 flex-row items-center mb-1 justify-center px-0.5 pt-1"
       >
         <div>
           <button
             aria-label="Expand panel"
             aria-pressed="false"
-            class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none bg-transparent hover:bg-black/5 active:bg-black/10 justify-center size-7 transition-all text-foreground-secondary opacity-45 hover:opacity-100"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none bg-transparent hover:bg-black/5 active:bg-black/10 justify-center size-7 transition-all text-foreground-secondary opacity-45 hover:opacity-100"
             data-headlessui-state=""
             data-testid="sidebar-toggle-left"
             type="button"
@@ -50,7 +50,7 @@ exports[`PlayerWorkspace > (Snapshot) both sidebars collapsed 1`] = `
         </div>
       </span>
       <div
-        class="flex flex-1 flex-col overflow-hidden"
+        class="flex min-h-0 flex-1 flex-col overflow-hidden"
       />
     </div>
     <main
@@ -63,13 +63,13 @@ exports[`PlayerWorkspace > (Snapshot) both sidebars collapsed 1`] = `
       transition="[object Object]"
     >
       <span
-        class="flex flex-row items-center mb-1 justify-center px-0.5 pt-1"
+        class="flex shrink-0 flex-row items-center mb-1 justify-center px-0.5 pt-1"
       >
         <div>
           <button
             aria-label="Expand panel"
             aria-pressed="false"
-            class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none bg-transparent hover:bg-black/5 active:bg-black/10 justify-center size-7 transition-all text-foreground-secondary opacity-45 hover:opacity-100"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none bg-transparent hover:bg-black/5 active:bg-black/10 justify-center size-7 transition-all text-foreground-secondary opacity-45 hover:opacity-100"
             data-headlessui-state=""
             data-testid="sidebar-toggle-right"
             type="button"
@@ -102,7 +102,7 @@ exports[`PlayerWorkspace > (Snapshot) both sidebars collapsed 1`] = `
         </div>
       </span>
       <div
-        class="flex flex-1 flex-col overflow-hidden"
+        class="flex min-h-0 flex-1 flex-col overflow-hidden"
       />
     </div>
   </div>
@@ -120,13 +120,13 @@ exports[`PlayerWorkspace > (Snapshot) both sidebars expanded 1`] = `
       transition="[object Object]"
     >
       <span
-        class="flex flex-row items-center mb-2 justify-end"
+        class="flex shrink-0 flex-row items-center mb-3 justify-end"
       >
         <div>
           <button
             aria-label="Collapse panel"
             aria-pressed="true"
-            class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
             data-headlessui-state=""
             data-testid="sidebar-toggle-left"
             type="button"
@@ -159,7 +159,7 @@ exports[`PlayerWorkspace > (Snapshot) both sidebars expanded 1`] = `
         </div>
       </span>
       <div
-        class="flex flex-1 flex-col overflow-hidden"
+        class="flex min-h-0 flex-1 flex-col overflow-hidden pt-1"
       />
       <div
         class="absolute top-0 bottom-0 w-1 cursor-col-resize transition-colors right-0"
@@ -175,13 +175,13 @@ exports[`PlayerWorkspace > (Snapshot) both sidebars expanded 1`] = `
       transition="[object Object]"
     >
       <span
-        class="flex flex-row items-center mb-2 justify-start"
+        class="flex shrink-0 flex-row items-center mb-3 justify-start"
       >
         <div>
           <button
             aria-label="Collapse panel"
             aria-pressed="true"
-            class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
             data-headlessui-state=""
             data-testid="sidebar-toggle-right"
             type="button"
@@ -214,7 +214,7 @@ exports[`PlayerWorkspace > (Snapshot) both sidebars expanded 1`] = `
         </div>
       </span>
       <div
-        class="flex flex-1 flex-col overflow-hidden"
+        class="flex min-h-0 flex-1 flex-col overflow-hidden pt-1"
       />
       <div
         class="absolute top-0 bottom-0 w-1 cursor-col-resize transition-colors left-0"

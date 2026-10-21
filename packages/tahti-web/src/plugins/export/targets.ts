@@ -4,7 +4,7 @@ export const EXPORT_TARGETS: ExportTarget[] = [
   {
     id: 'spotify',
     label: 'Spotify',
-    note: 'Release delivery through Revelator.',
+    note: 'Storefront deep link — submit releases via Revelator in Studio → Distribution.',
     color: 'var(--accent-green)',
     to: '/studio/distribution',
     supportsTracks: false,
@@ -12,7 +12,7 @@ export const EXPORT_TARGETS: ExportTarget[] = [
   {
     id: 'apple',
     label: 'Apple Music',
-    note: 'Release delivery through Revelator.',
+    note: 'Storefront deep link — submit releases via Revelator in Studio → Distribution.',
     color: 'var(--foreground-secondary)',
     to: '/studio/distribution',
     supportsTracks: false,
@@ -20,7 +20,7 @@ export const EXPORT_TARGETS: ExportTarget[] = [
   {
     id: 'deezer',
     label: 'Deezer',
-    note: 'Release delivery through Revelator.',
+    note: 'Storefront deep link — submit releases via Revelator in Studio → Distribution.',
     color: 'var(--primary)',
     to: '/studio/distribution',
     supportsTracks: false,
@@ -28,7 +28,7 @@ export const EXPORT_TARGETS: ExportTarget[] = [
   {
     id: 'youtube',
     label: 'YouTube Music',
-    note: 'Release delivery through Revelator.',
+    note: 'Storefront deep link — submit releases via Revelator in Studio → Distribution.',
     color: 'var(--accent-red)',
     to: '/studio/distribution',
     supportsTracks: false,

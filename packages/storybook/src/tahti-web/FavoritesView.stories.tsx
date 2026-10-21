@@ -10,7 +10,7 @@ const radioFavorite: TahtiPlayable = {
   kind: 'radio',
   title: 'Radio Helsinki',
   artist: 'Radio Helsinki',
-  coverUrl: 'https://www.streamurl.link/logos/JoiOnv3Q9An.webp',
+  coverUrl: 'https://picsum.photos/seed/radio-helsinki/200',
   streamUrl: 'https://example.com/radio-helsinki.mp3',
   protocol: 'https',
   sourceProvider: 'radio',

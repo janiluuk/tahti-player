@@ -19,14 +19,14 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Listen directory / on-air discovery | `/` (production `/listen`) | Present | Route intentionally differs; directory uses the live channel API. |
 | Artist live channel and archive | `/channel/$slug` (production `/c/:slug`) | Present | HLS, archive playback, now-playing state, chat, and visualizer are present. |
 | Anonymous listening | Public listener routes | Present | Matches the product principle that listening does not require an account. |
-| Channel chat | Channel rail and `/chat/$slug` | Present | REST/WS chat, anonymous hCaptcha join, reactions, and subscriber-only gating are wired. |
+| Channel chat | Channel rail and `/chat/$slug` | Present | REST/WS chat, anonymous hCaptcha join, reactions, and subscriber-only gating are wired. The header shows today's listener count unless the artist turned it off (#275). Channel pages also take comments (#285), and an old address after a rename redirects (#290). While live, the header also shows how many people are listening (#304). The channel header copies its RSS feed (#352). |
 | Tahti Radio | `/radio` | Present | Radio playback and current-track presentation are implemented. |
-| Artist profiles | `/u/$username` | Present | Includes pinned tracks, catalog, gallery, and profile actions. |
-| Collections and smart links | `/u/$username/c/$slug`, `/r/$slug` | Present | Both public surfaces are implemented. |
+| Artist profiles | `/u/$username` | Present | Includes pinned tracks, catalog, gallery, and profile actions, plus the artist's SoundCloud tracks (#282; managed from Library → Embeds, #276) and top-list rank badges on popular tracks (#286), plus a Store section for one-time purchase tiers when the artist turns it on (#297, toggle #296). Tracks and channels can be reported (#335). The News section lists the artist's own feed (#350, #351); track pages take likes and reposts (#354, #355). The header draws the Branding logo (#363), the music tab lists reposts (#366), and tracks and collections follow the order set in Studio (#361, #362). |
+| Collections and smart links | `/u/$username/c/$slug`, `/r/$slug` | Present | Both public surfaces are implemented. Signed-in listeners can add public tracks to a collaborative playlist from its page (#303). Collection pages show the text layer set in the editor (#345) and have an RSS button that copies the feed link for a podcast app; so do artist pages (#348, #336). Release pages offer downloads of the tracks the listener can play (#364). |
 | Favorites and history | `/library/*` | Partial | Beta uses local persistence/follows; it is not a full production account-backed equivalent. |
 | Playlists | Player bar, Music/library tables | Present | Create and add-to-playlist flows are live-API backed. |
-| Fan subscriptions | `/subscribe/$username` | Present | Stripe checkout is wired; offline activation is mock-only. |
-| Venues | `/venues` | Partial | Listing exists, but the production venue experience has more depth than the beta list. Registration exists at `/venues/register`. |
+| Fan subscriptions | `/subscribe/$username` | Present | Stripe checkout is wired; offline activation is mock-only. Listeners can open the Stripe portal for their fan subscriptions (#353). |
+| Venues | `/venues` | Partial | Listing exists; registration at `/venues/register`. Venue pages load the venue's own profile with address, upcoming shows and an iCalendar feed (#257). |
 | Governance and direct messages | `/governance`, `/messages` | Present | Voting/comments and inbox paths are live-API backed. |
 | Widgets | Settings → Widgets, listener/channel surfaces | Present | Sandboxed widgets exist; the admin widget catalog remains outside this beta SPA. |
 | Help, legal, about, status | `/help`, legal routes, `/status` | Partial | Core pages exist, but legal/about coverage and content depth are not fully equivalent. |
@@ -38,19 +38,19 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | --- | --- | --- | --- |
 | Artist dashboard | `/studio` | Present | Studio shell and section navigation are implemented. |
 | Channel setup | `/studio/channel?tab=setup` | Present | Channel provisioning uses the live API. |
-| Go Live / browser broadcast | `/studio/go-live` | Present | Broadcast wizard is present; simulator behavior is restricted to mock mode. |
-| Multistream RTMP | Go Live → multistream | Present | RTMP target management is included in the live flow. |
-| Archive, upload, releases, collections | `/studio/archive`, `/studio/upload`, `/studio/releases`, `/studio/collections` | Present | Upload prepare/complete and album-based collection design are implemented. |
+| Go Live / browser broadcast | `/studio/go-live` | Present | Broadcast wizard is present; simulator behavior is restricted to mock mode. The green room for the running broadcast is managed there too: open it, invite and remove guests (#315, #316). |
+| Multistream RTMP | Go Live → multistream | Present | RTMP target management is included in the live flow; live status per destination is on Channel → Radio → Stream (#289). Stream key and Icecast password can be replaced from Go Live (#271); Tahti Radio's own destinations are in `/admin/radio` (#263). |
+| Archive, upload, releases, collections | `/studio/archive`, `/studio/upload`, `/studio/releases`, `/studio/collections` | Present | Upload prepare/complete and album-based collection design are implemented. Releases have per-track credits (#295); playlists can take any public track from a catalog search (#302). Release tracks have a Versions tab to switch and upload audio versions (#318, #319). Releases can be imported from a CSV (#358); collections take Spotify tracks (#356, #357). Release tracks can be downloaded from the Smart links tracklist (#365). |
 | Pro editor | `/studio/editor` | Partial | Core editor exists, but production-grade multitrack timeline depth is still missing. |
-| Schedule / 24/7 rotation / radio shows | `/studio/schedule` (Broadcast), `/studio/channel`, `/studio/shows` | Present | Nav and page title are Broadcast. Programme, rotation, bookings, series, and episodes are on that page and Channel → Radio. |
-| Stats and detail reporting | `/studio/stats`, `/studio/stats/detail` | Present | Summary and range-detail views exist. |
-| Channel design / profile / branding | `/studio/channel`, `/channel/$slug?edit=1` | Partial | Presets, layers, layout, gallery, and press-kit workflows exist; parity with the production designer is not complete. |
-| Updates/newsletter | `/studio/updates` | Present | Newsletter/update flow is live-API backed. |
+| Schedule / 24/7 rotation / radio shows | `/studio/schedule` (Broadcast), `/studio/channel`, `/studio/shows` | Present | Nav and page title are Broadcast. Programme, rotation, bookings, series, and episodes are on that page and Channel → Radio. Released tracks can be added to the rotation directly (#301). |
+| Stats and detail reporting | `/studio/stats`, `/studio/stats/detail` | Present | Summary and range-detail views exist; Overview has the follow/repost download-gate funnel (#273), per-track gates are in the track edit dialog (#274), and a release's smart-link clicks are on its Smart links tab (#278). Listen time is now reported from the new app too (#334). |
+| Channel design / profile / branding | `/studio/channel`, `/channel/$slug?edit=1` | Partial | Presets, layers, layout, gallery, and press-kit workflows exist; parity with the production designer is not complete. Branding has a transparent logo with avatar/cover/both placement (#346); the public artist page doesn't draw it yet. |
+| Updates/newsletter | `/studio/updates` | Present | Newsletter/update flow is live-API backed; the Newsletter tab shows subscriber counts (#265). |
 | Revenue and Stripe Connect | `/studio/audience` | Present | Merged fan-sub + Revelator payout history, Connect onboarding, empty tier state, order-flow breakdown, and help tour match production `/dashboard/revenue`. |
 | Distribution | `/studio/distribution` | Present | Catalog, Revelator submission/payment, Spotify profile, and royalty surfaces exist. |
 | Stash | `/studio/stash` | Present | Upload/delete and share access are implemented. |
 | Channel moderators | `/studio/moderation` | Present | API-backed assignment/removal; exposed from Studio navigation |
-| Settings | `/settings` | Partial | Nuclear settings shell exists, but parity/depth across artist, discovery, notification, and account sections is thinner. |
+| Settings | `/settings` | Partial | Nuclear settings shell exists, but parity/depth across artist, discovery, notification, and account sections is thinner. Added since: own internet radio stations in Playback (#277), broadcast record/publish defaults in Broadcast (#279), channel and new-upload comment switches in Account (#280). Members and credits are editable and show the API's roster (#321). Social links and the press kit bio now use the routes the API serves (#325, #326); members get pictures and ordering (#327-#329). |
 | Source connections / OAuth | `/sources` | Partial | Source hub exists; several providers still have simplified OAuth UX and need production callback verification. |
 | Email invites for people without accounts | — | Missing/deferred | Current moderator flow assigns an existing username; there is no invite-token flow for a new user. |
 
@@ -63,16 +63,16 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Activity and container logs | `/admin/logs` | Present | Combined Logs page has separate Activity and Container logs tabs; `/admin/activity` remains a compatibility route. |
 | Moderation queues | `/admin/moderation/$tab` | Present | Support, beta, radio submissions, Selects, content reports, and feature requests are consolidated into tabs. |
 | Users | `/admin/users` | Partial | User administration exists, but production has more detailed user/support workflows. |
-| Radio and station suggestions | `/admin/radio`, `/admin/radio-station-suggestions` | Present | Separate destinations; active-route matching is boundary-safe so they cannot highlight together. |
+| Radio and station suggestions | `/admin/radio`, `/admin/radio-station-suggestions` | Present | Separate destinations; active-route matching is boundary-safe so they cannot highlight together. Suggestions now have their API: submit (tahti-org#581), approve into a disabled preset or reject with a note (tahti-org#582); refusal reasons shown (#344). |
 | News, announcements, streams, status | Corresponding `/admin/*` routes | Present | Core operational pages are ported. |
 | Top lists, storage, financial, governance | Corresponding `/admin/*` routes | Partial | Core pages exist, but some production actions are intentionally trimmed. |
 | Grants | `/admin/grants` | Partial | Listing/review exists; grant run/preview depth is missing. |
-| Storage/files operations | `/admin/storage` | Partial | Storage visibility exists; production bulk file operations are not ported. |
-| Financial operations | `/admin/financial` | Partial | Main records exist; payout retry and legacy-member migration workflows are missing. |
-| User/support detail pages | — | Missing | Production has deeper detail pages than the beta board surface. |
-| Announcement clip/detail workflows | — | Missing | Not included in the beta admin port. |
-| Widget catalog administration | Production admin/catalog | Missing from beta | Listener widgets work, but catalog management remains in the production/Next admin surface. |
-| Full production admin surface | Production has roughly 35 admin pages; beta has 22 | Partial | Beta covers the main board workflows but is not a complete admin replacement. |
+| Storage/files operations | `/admin/storage` | Partial | Files browser filters by uploader/genre/type (#244) and bulk-edits genre, type, visibility and license (#245). Bulk delete with a confirmation, through `POST /api/admin/files/bulk-delete` (gap-mapping batch 5). |
+| Financial operations | `/admin/financial` | Partial | Fan-sub payout queue with retry (#237); ledger entries can be added again (#241), by year with CSV export (#242); legacy-member migration queue, read-only because the API has no action for it (#243). |
+| User/support detail pages | `/admin/users` | Partial | User panel now has CSV export (#231), engagement by year with board adjustments (#232, #233), account restrictions (#234) and GDPR deletion (#235). Support ticket detail depth not re-checked. |
+| Announcement clip/detail workflows | `/admin/announcements` | Present | Switch and upload fixed to the real routes (#239); trim editor for system clips (#240); uploads send the clip length (#248). |
+| Widget catalog administration | `/admin/disco-widgets`, `/admin/addons` | Present | Publish, approve and version add-ons from the beta admin. |
+| Full production admin surface | `/admin/*` | Present | 2026-10-20 sweep: every `/api/...` endpoint the 124 legacy `/admin/*` and `/dashboard/*` pages call is also called by tahti-web (see `docs/todo/HISTORY.md`, "Todo consolidation and docs audit"). |
 
 ## Recommended implementation order
 
@@ -113,17 +113,7 @@ The production app has dedicated surfaces that the beta currently folds together
 
 ### Admin cutover boundary
 
-The current cutover decision keeps production Next `/admin/*` canonical and switches only the public listener/artist client. That decision prevents accidental loss of admin capabilities. If Admin is moved to the Nuclear client later, the following production routes need to be ported or explicitly retained on Next before changing the host:
-
-- channel-specific archive and programme management (`/admin/channels/[slug]/archive`, `/admin/channels/[slug]/programme`)
-- announcement editor/detail (`/admin/announcements/editor/[id]`)
-- widget catalog administration (`/admin/disco-widgets`), themes, internet radio, and missed shows
-- financial fan-subscriptions, ledger, and legacy-member workflows
-- governance audit, reports, resolutions, and publishing
-- grant year/run/preview detail (`/admin/grants/[year]`)
-- support ticket detail (`/admin/support/[id]`) and user detail/restrictions (`/admin/users/[id]`)
-
-The beta Admin port should remain clearly labelled partial until those surfaces either exist in Nuclear or the deployment contract guarantees that `/admin/*` stays on Next. The existing Admin Logs and Moderation tab consolidations are intentional and must retain their deep-link compatibility aliases.
+The 2026-10-20 parity sweep found endpoint parity between the Next `/admin/*` pages and the beta admin, including the routes this section used to list (per-channel programme and sounds, announcement editor, disco-widgets and themes, internet radio, missed shows, financial fan-subs / ledger / legacy members, governance audit / reports / resolutions, grant years, support and user detail). Moving `/admin/*` to the beta host no longer drops a capability; keep the moderation and logs deep-link aliases.
 
 ### Deployment safeguards
 

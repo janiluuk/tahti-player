@@ -5,10 +5,7 @@ import { PulsingText } from '../PulsingText';
 import { TahtiMark } from '../TahtiLogo';
 
 export type ConnectionStatus =
-  | 'connecting'
-  | 'connected'
-  | 'reconnecting'
-  | 'failed';
+  'connecting' | 'connected' | 'reconnecting' | 'failed';
 
 export type ConnectionStatusLabels = Record<ConnectionStatus, string>;
 
@@ -44,7 +41,7 @@ export const TahtiJamHeader: FC<TahtiJamHeaderProps> = ({
         Tahti{' '}
         <PulsingText
           text="Jam"
-          className="text-primary text-stroke-4 stroke-text-black dark:stroke-text-foreground"
+          className="text-primary-strong text-stroke-4 stroke-text-black dark:stroke-text-foreground"
         />
       </h1>
     </span>

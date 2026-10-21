@@ -1,9 +1,9 @@
-import { Link } from '@tanstack/react-router';
 import { AudioLinesIcon, FolderOpenIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
   Button,
+  ButtonLink,
   Dialog,
   Input,
   Select,
@@ -18,9 +18,8 @@ import {
   fetchStudioSounds,
 } from '../../api/studio';
 import type { EditorProjectRow, StudioSound } from '../../api/studio-types';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { contentTypeLabel } from '../../content/contentTypes';
 
@@ -33,6 +32,8 @@ export function StudioEditorListView() {
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [soundsError, setSoundsError] = useState<string | null>(null);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [libraryType, setLibraryType] = useState('ALL');
   const [libraryQuery, setLibraryQuery] = useState('');
@@ -72,6 +73,10 @@ export function StudioEditorListView() {
         // no Tahti-hosted audio file, so there's nothing for the Pro
         // Editor to open or trim — keep them out of "Open from library".
         setSounds(a.data.filter((item) => !item.embedProvider));
+        setLoadError(p.meta.source === 'api' ? (p.meta.reason ?? null) : null);
+        setSoundsError(
+          a.meta.source === 'api' ? (a.meta.reason ?? null) : null,
+        );
         setLoading(false);
       },
     );
@@ -93,25 +98,29 @@ export function StudioEditorListView() {
       return;
     }
     setBusy(true);
-    void createEditorProject({
+    createEditorProject({
       title: title || undefined,
       soundId: soundId || undefined,
-    }).then((r) => {
-      setBusy(false);
-      if (!r.ok) {
-        setMessage(r.error);
-        return;
-      }
-      setMessage(`Created ${r.data.title}`);
-      closeCreate();
-      reload();
-    });
+    })
+      .then((r) => {
+        setBusy(false);
+        if (!r.ok) {
+          setMessage(r.error);
+          return;
+        }
+        setMessage(`Created ${r.data.title}`);
+        closeCreate();
+        reload();
+      })
+      .catch(() => {
+        setBusy(false);
+        setMessage('Could not create the project.');
+      });
   };
 
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex w-full max-w-[1400px] flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/editor" />
         <ViewShell
           title="Editor"
           classes={{ root: 'px-0 pt-0' }}
@@ -183,23 +192,31 @@ export function StudioEditorListView() {
           <StudioPanel title="Projects">
             {loading ? (
               <PageLoading label="Loading…" />
+            ) : loadError && projects.length === 0 ? (
+              <PageError
+                title="Could not load your editor projects"
+                description={loadError}
+                onRetry={() => {
+                  setLoading(true);
+                  reload();
+                }}
+              />
             ) : projects.length === 0 ? (
-              <div className="flex flex-col gap-3 py-4 text-center">
-                <p className="text-foreground-secondary text-sm">
-                  No editor projects yet.
-                </p>
-                <div>
+              <PageEmpty
+                title="No editor projects yet."
+                action={
                   <Tooltip content="New session" side="top">
                     <Button
                       size="icon-sm"
+                      variant="secondary"
                       onClick={() => setCreateOpen(true)}
                       aria-label="New session"
                     >
                       <PlusIcon size={16} aria-hidden />
                     </Button>
                   </Tooltip>
-                </div>
-              </div>
+                }
+              />
             ) : (
               <ul className="divide-border divide-y">
                 {projects.map((p) => (
@@ -215,30 +232,27 @@ export function StudioEditorListView() {
                       </p>
                     </div>
                     <Tooltip content="Open session" side="top">
-                      <Link to="/studio/editor/$id" params={{ id: p.id }}>
-                        <Button
-                          size="icon-sm"
-                          variant="secondary"
-                          aria-label={`Open ${p.title}`}
-                        >
-                          <FolderOpenIcon size={16} aria-hidden />
-                        </Button>
-                      </Link>
+                      <ButtonLink
+                        to="/studio/editor/$id"
+                        params={{ id: p.id }}
+                        size="icon-sm"
+                        variant="secondary"
+                        aria-label={`Open ${p.title}`}
+                      >
+                        <FolderOpenIcon size={16} aria-hidden />
+                      </ButtonLink>
                     </Tooltip>
                     {p.soundId && (
                       <Tooltip content="Pro editor" side="top">
-                        <Link
+                        <ButtonLink
                           to="/studio/sounds/$id/editor"
                           params={{ id: p.soundId }}
+                          size="icon-sm"
+                          variant="text"
+                          aria-label="Pro editor"
                         >
-                          <Button
-                            size="icon-sm"
-                            variant="text"
-                            aria-label="Pro editor"
-                          >
-                            <AudioLinesIcon size={16} aria-hidden />
-                          </Button>
-                        </Link>
+                          <AudioLinesIcon size={16} aria-hidden />
+                        </ButtonLink>
                       </Tooltip>
                     )}
                   </li>
@@ -305,12 +319,20 @@ export function StudioEditorListView() {
                   placeholder="Search library…"
                   aria-label="Search library"
                 />
-                {filteredLibrary.length === 0 ? (
-                  <p className="text-foreground-secondary py-8 text-center text-sm">
-                    {sounds.length === 0
-                      ? 'Upload content in Library first.'
-                      : 'No library items match this selection.'}
-                  </p>
+                {soundsError && sounds.length === 0 ? (
+                  <PageError
+                    title="Could not load your library"
+                    description={soundsError}
+                    onRetry={reload}
+                  />
+                ) : filteredLibrary.length === 0 ? (
+                  <PageEmpty
+                    title={
+                      sounds.length === 0
+                        ? 'Upload content in Library first.'
+                        : 'No library items match this selection.'
+                    }
+                  />
                 ) : (
                   <ul className="border-border divide-border max-h-[20rem] divide-y overflow-y-auto rounded-md border">
                     {filteredLibrary.map((item) => (
@@ -327,20 +349,19 @@ export function StudioEditorListView() {
                             {item.genre ? ` · ${item.genre}` : ''}
                           </p>
                         </div>
-                        <Link
+                        <ButtonLink
                           to="/studio/sounds/$id/editor"
                           params={{ id: item.id }}
                           onClick={() => setLibraryOpen(false)}
+                          size="sm"
                         >
-                          <Button size="sm">
-                            <AudioLinesIcon
-                              size={14}
-                              aria-hidden
-                              className="mr-1.5"
-                            />
-                            Open
-                          </Button>
-                        </Link>
+                          <AudioLinesIcon
+                            size={14}
+                            aria-hidden
+                            className="mr-1.5"
+                          />
+                          Open
+                        </ButtonLink>
                       </li>
                     ))}
                   </ul>

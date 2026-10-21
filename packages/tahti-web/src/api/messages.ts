@@ -1,37 +1,43 @@
 import type { FetchMeta } from './client';
-import { apiBase } from './http';
-import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import { mockFixture } from './mock-overrides';
+import {
+  allowMockFallback,
+  apiErrorMeta,
+  isForceMock,
+  mockFallbackMeta,
+} from './mode';
+import { requestJson, RequestJsonError } from './request-json';
 
-async function requestJson<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<{ data: T; status: number }> {
-  const { headers: initHeaders, ...rest } = init ?? {};
-  const res = await fetch(`${apiBase()}${path}`, {
-    credentials: 'include',
-    ...rest,
-    headers: {
-      Accept: 'application/json',
-      ...(rest.body ? { 'Content-Type': 'application/json' } : {}),
-      ...initHeaders,
-    },
-  });
-  if (!res.ok) {
-    let detail = `${path} → ${res.status}`;
-    try {
-      const body = (await res.json()) as { error?: string; message?: string };
-      if (body.error || body.message) {
-        detail = body.error ?? body.message ?? detail;
-      }
-    } catch {
-      // ignore
-    }
-    throw new Error(detail);
+export type ChannelStaffRole = 'owner' | 'moderator';
+
+export const RECIPIENT_UNAVAILABLE_MESSAGE =
+  'This account is no longer available';
+
+function isRecipientUnavailable(err: unknown): boolean {
+  return (
+    err instanceof RequestJsonError &&
+    err.status === 403 &&
+    err.code === 'recipient_unavailable'
+  );
+}
+
+/** Failure shape for send/start: `recipientUnavailable` is set when the other
+ * account was deleted or suspended. */
+export type DmFailure = {
+  ok: false;
+  error: string;
+  recipientUnavailable?: true;
+};
+
+function dmFailure(err: unknown, fallback: string): DmFailure {
+  if (isRecipientUnavailable(err)) {
+    return {
+      ok: false,
+      error: RECIPIENT_UNAVAILABLE_MESSAGE,
+      recipientUnavailable: true,
+    };
   }
-  if (res.status === 204) {
-    return { data: undefined as T, status: res.status };
-  }
-  return { data: (await res.json()) as T, status: res.status };
+  return { ok: false, error: err instanceof Error ? err.message : fallback };
 }
 
 export type ConversationSummary = {
@@ -40,6 +46,9 @@ export type ConversationSummary = {
     username: string;
     displayName: string;
     avatarUrl: string | null;
+    channelRole?: ChannelStaffRole | null;
+    /** False once the account is deleted or suspended; missing on older APIs. */
+    available?: boolean;
   };
   lastMessage: {
     body: string;
@@ -58,12 +67,16 @@ export type ChatDm = {
   body: string;
   createdAt: string;
   isMine: boolean;
+  senderChannelRole?: ChannelStaffRole | null;
 };
 
 export type ConversationDetail = {
   id: string;
   otherUser: ConversationSummary['otherUser'];
+  /** Oldest first. */
   messages: ChatDm[];
+  /** Older messages exist before `messages[0]`; missing on older APIs. */
+  hasMore?: boolean;
 };
 
 let mockConversations: ConversationSummary[] = [
@@ -83,6 +96,29 @@ let mockConversations: ConversationSummary[] = [
     updatedAt: new Date().toISOString(),
   },
 ];
+
+/** Mock-mode conversation ids treated as read (unreadCount 0), e.g. seeded by
+ * the screenshot capture scripts so no unread badges appear. */
+const MOCK_READ_KEY = 'tahti-web-mock-messages-read';
+
+function mockConversationsWithReadState(): ConversationSummary[] {
+  let read: Set<string>;
+  try {
+    const parsed = JSON.parse(
+      localStorage.getItem(MOCK_READ_KEY) ?? '[]',
+    ) as unknown;
+    read = new Set(
+      Array.isArray(parsed)
+        ? parsed.filter((id): id is string => typeof id === 'string')
+        : [],
+    );
+  } catch {
+    read = new Set();
+  }
+  return mockConversations.map((c) =>
+    read.has(c.id) ? { ...c, unreadCount: 0 } : c,
+  );
+}
 
 const mockThreads = new Map<string, ChatDm[]>([
   [
@@ -116,7 +152,7 @@ export async function fetchConversations(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: [...mockConversations],
+      data: mockFixture('conversations', mockConversationsWithReadState()),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -127,7 +163,10 @@ export async function fetchConversations(): Promise<{
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: [...mockConversations], meta: failMeta(err) };
+      return {
+        data: mockFixture('conversations', [...mockConversations]),
+        meta: mockFallbackMeta(err),
+      };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }
@@ -150,7 +189,7 @@ export async function fetchConversation(
 ): Promise<{ data: ConversationDetail | null; meta: FetchMeta }> {
   if (isForceMock()) {
     return {
-      data: mockConversationDetail(id),
+      data: mockFixture('conversation', mockConversationDetail(id), id),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -161,16 +200,38 @@ export async function fetchConversation(
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockConversationDetail(id), meta: failMeta(err) };
+      return { data: mockConversationDetail(id), meta: mockFallbackMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
+  }
+}
+
+/** The page of messages before `beforeId`, oldest first. Null when the
+ * request fails, so callers can keep what they already show. */
+export async function fetchOlderMessages(
+  conversationId: string,
+  beforeId: string,
+): Promise<{ messages: ChatDm[]; hasMore: boolean } | null> {
+  if (isForceMock()) {
+    return { messages: [], hasMore: false };
+  }
+  try {
+    const { data } = await requestJson<ConversationDetail>(
+      `/api/me/messages/conversations/${encodeURIComponent(conversationId)}?before=${encodeURIComponent(beforeId)}`,
+    );
+    return {
+      messages: Array.isArray(data.messages) ? data.messages : [],
+      hasMore: data.hasMore === true,
+    };
+  } catch {
+    return null;
   }
 }
 
 export async function sendDm(
   conversationId: string,
   body: string,
-): Promise<{ ok: true; data: ChatDm } | { ok: false; error: string }> {
+): Promise<{ ok: true; data: ChatDm } | DmFailure> {
   if (isForceMock()) {
     const msg: ChatDm = {
       id: `m-${Date.now()}`,
@@ -207,18 +268,13 @@ export async function sendDm(
     );
     return { ok: true, data };
   } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Send failed',
-    };
+    return dmFailure(err, 'Send failed');
   }
 }
 
 export async function startConversation(
   username: string,
-): Promise<
-  { ok: true; conversationId: string } | { ok: false; error: string }
-> {
+): Promise<{ ok: true; conversationId: string } | DmFailure> {
   if (isForceMock()) {
     const existing = mockConversations.find(
       (c) => c.otherUser.username === username,
@@ -247,11 +303,43 @@ export async function startConversation(
     );
     return { ok: true, conversationId: data.conversationId };
   } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Start failed',
-    };
+    return dmFailure(err, 'Start failed');
   }
+}
+
+const MOCK_DM_USER_DIRECTORY = [
+  {
+    username: 'listener',
+    displayName: 'Listener One',
+    avatarUrl: null as string | null,
+  },
+  {
+    username: 'listener-liina',
+    displayName: 'Liina',
+    avatarUrl: null as string | null,
+  },
+  {
+    username: 'dj-moonlight',
+    displayName: 'DJ Moonlight',
+    avatarUrl: null as string | null,
+  },
+  {
+    username: 'northern-lights',
+    displayName: 'Northern Lights',
+    avatarUrl: null as string | null,
+  },
+] as const;
+
+function mockSearchUsers(q: string) {
+  const needle = q.trim().toLowerCase();
+  if (!needle) {
+    return [];
+  }
+  return MOCK_DM_USER_DIRECTORY.filter(
+    (user) =>
+      user.username.toLowerCase().includes(needle) ||
+      user.displayName.toLowerCase().includes(needle),
+  ).map((user) => ({ ...user }));
 }
 
 export async function searchUsers(q: string): Promise<{
@@ -264,15 +352,7 @@ export async function searchUsers(q: string): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: q
-        ? [
-            {
-              username: 'listener',
-              displayName: 'Listener One',
-              avatarUrl: null,
-            },
-          ]
-        : [],
+      data: mockSearchUsers(q),
       meta: { source: 'mock' },
     };
   }
@@ -284,16 +364,8 @@ export async function searchUsers(q: string): Promise<{
   } catch (err) {
     if (allowMockFallback()) {
       return {
-        data: q
-          ? [
-              {
-                username: 'listener',
-                displayName: 'Listener One',
-                avatarUrl: null,
-              },
-            ]
-          : [],
-        meta: failMeta(err),
+        data: mockSearchUsers(q),
+        meta: mockFallbackMeta(err),
       };
     }
     return { data: [], meta: apiErrorMeta(err) };

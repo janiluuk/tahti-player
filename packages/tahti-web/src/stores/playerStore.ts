@@ -3,17 +3,18 @@ import { create } from 'zustand';
 
 import type { QueueItem, RepeatMode } from '@tahti-player/model';
 
-import type { TahtiPlayable } from '../api/types';
+import type { EmbedPlaybackProvider, TahtiPlayable } from '../api/types';
+import { isInternetRadioPlayableId } from '../content/radioStations';
+import { FADE_IN_MS, FADE_OUT_MS, rampLevel } from '../lib/audioFade';
 import { playableToTrack } from '../lib/playableToTrack';
 import { useLayoutStore } from './layoutStore';
 import { useLibraryStore } from './libraryStore';
+import { peaksFor, rememberPeaks, type PeaksCache } from './peaksCache';
+
+const FADE_START_TIMEOUT_MS = 4000;
 
 export type PlaybackStatus =
-  | 'idle'
-  | 'loading'
-  | 'playing'
-  | 'paused'
-  | 'error';
+  'idle' | 'loading' | 'playing' | 'paused' | 'error';
 
 type PlayerState = {
   queue: QueueItem[];
@@ -22,6 +23,13 @@ type PlayerState = {
   error: string | null;
   volume: number;
   muted: boolean;
+  /** Set while a channel that started on its own is playing muted: holds
+   * what `muted` was before, to put back when the listener starts something
+   * themselves. `null` whenever the mute is the listener's own. */
+  autoplayRestoreMuted: boolean | null;
+  /** Multiplier on the output level, 1 except while one source fades out
+   * and the next fades in. The listener's `volume` is never touched. */
+  fadeLevel: number;
   currentTime: number;
   duration: number;
   isLive: boolean;
@@ -32,6 +40,13 @@ type PlayerState = {
   isRealLive: boolean;
   shuffle: boolean;
   repeatMode: RepeatMode;
+  /**
+   * Id of a current track restored from the last session that has not been
+   * loaded yet. While it is the current track and playback is paused, the
+   * audio engine leaves it unloaded, so launching the app never starts audio.
+   * Cleared as soon as the user plays (or navigates the queue).
+   */
+  restoredPending: string | null;
   /** True after the user has started playback at least once this session. */
   hasPlayed: boolean;
   /** Last radio/live station played — resumed automatically once a track detour finishes with nothing else queued. */
@@ -44,16 +59,39 @@ type PlayerState = {
    * Nuclear Track). Cleared when switching to a track without known peaks. */
   currentPeaks: number[] | null;
   /** Peaks remembered by playable id so queue skips keep real waveforms. */
-  peaksById: Record<string, number[]>;
+  peaksById: PeaksCache;
   /** Shared Web Audio analyser for channel visualizers (set by AudioEngine). */
   analyser: AnalyserNode | null;
   setAnalyser: (analyser: AnalyserNode | null) => void;
+  /** Global hidden `<audio>` element (set by AudioEngine) for waveform binding. */
+  audioElement: HTMLAudioElement | null;
+  setAudioElement: (el: HTMLAudioElement | null) => void;
   /** Cache waveform peaks for a playable id; updates currentPeaks when that id is playing. */
   cachePeaks: (id: string, peaks: number[]) => void;
   play: (item: TahtiPlayable, opts?: { enqueueRest?: TahtiPlayable[] }) => void;
+  /** Plays `items[index]` with the full ordered list as the queue so
+   * previous/next walk neighbors (e.g. Listen Radio row stations). */
+  playFromList: (items: TahtiPlayable[], index: number) => void;
+  /** Starts a channel nobody pressed play on: muted, because browsers refuse
+   * sound without a gesture, until `unmuteAutoplay`. */
+  autoplayMuted: (item: TahtiPlayable) => void;
+  /** The listener asked to hear the channel that started muted. */
+  unmuteAutoplay: () => void;
+  /** Fades what is playing out, switches to `item` and fades it in. The
+   * queue is kept: `item` goes in after the current track, so Previous
+   * leads back. Resolves `false` when the listener changed track meanwhile. */
+  fadeOverTo: (item: TahtiPlayable) => Promise<boolean>;
   enqueue: (item: TahtiPlayable) => void;
+  /** Installs a queue saved by an earlier session: paused, nothing loaded, no history entry. */
+  hydrateQueue: (items: TahtiPlayable[], currentId: string | null) => void;
+  /** Fills in stream URLs for queued items once they are resolved (id -> URL). */
+  setQueueSources: (sources: Record<string, string>) => void;
+  /** Appends many at once (one update, one toast); skips ones already queued. */
+  enqueueMany: (items: TahtiPlayable[]) => number;
   /** Insert right after the current track, replacing any earlier occurrence. */
   playNext: (item: TahtiPlayable) => void;
+  /** Inserts many right after the current track, keeping their order. */
+  playNextMany: (items: TahtiPlayable[]) => number;
   playQueueIndex: (id: string) => void;
   removeFromQueue: (id: string) => void;
   clearQueue: () => void;
@@ -69,8 +107,11 @@ type PlayerState = {
   toggleMute: () => void;
   toggleShuffle: () => void;
   cycleRepeat: () => void;
+  setRepeatMode: (mode: RepeatMode) => void;
   /** Seek VOD/archive to absolute seconds (no-op while live/radio). */
   seekTo: (seconds: number) => void;
+  /** Relative seek from the current position (no-op while live/radio). */
+  seekBy: (deltaSeconds: number) => void;
   clearSeekTarget: () => void;
   next: () => void;
   previous: () => void;
@@ -93,16 +134,27 @@ function toQueueItem(item: TahtiPlayable): QueueItem {
   };
 }
 
-function streamUrlFromQueueItem(qi: QueueItem): string | null {
+export function streamUrlFromQueueItem(qi: QueueItem): string | null {
   return (
     qi.track.streamCandidates?.[0]?.stream?.url ?? qi.track.source.url ?? null
+  );
+}
+
+/** Providers whose queue items carry no stream URL — they play through the
+ * shared player bar's own widget instead, keyed off `track.source.provider`. */
+function isEmbedProvider(provider: string): provider is EmbedPlaybackProvider {
+  return (
+    provider === 'hearthis' ||
+    provider === 'mixcloud' ||
+    provider === 'spotify' ||
+    provider === 'bandcamp'
   );
 }
 
 export function playableFromQueueItem(qi: QueueItem): TahtiPlayable | null {
   const url = streamUrlFromQueueItem(qi);
   const provider = qi.track.source.provider;
-  if (!url && provider !== 'hearthis') {
+  if (!url && !isEmbedProvider(provider)) {
     return null;
   }
   const protocol = url
@@ -111,16 +163,18 @@ export function playableFromQueueItem(qi: QueueItem): TahtiPlayable | null {
       : 'https'
     : 'https';
   const embed =
-    provider === 'hearthis' && !url
-      ? { provider: 'hearthis' as const, embedUri: qi.track.source.id }
+    !url && isEmbedProvider(provider)
+      ? { provider, embedUri: qi.track.source.id }
       : undefined;
+  const internetRadio = isInternetRadioPlayableId(qi.id);
   return {
     id: qi.id,
-    kind: qi.id.startsWith('radio:')
-      ? 'radio'
-      : qi.id.startsWith('sound:')
-        ? 'sound'
-        : 'live',
+    kind:
+      qi.id.startsWith('radio:') || internetRadio
+        ? 'radio'
+        : qi.id.startsWith('sound:')
+          ? 'sound'
+          : 'live',
     title: qi.track.title,
     artist: qi.track.artists.map((a) => a.name).join(', '),
     coverUrl: qi.track.artwork?.items[0]?.url,
@@ -128,7 +182,10 @@ export function playableFromQueueItem(qi: QueueItem): TahtiPlayable | null {
     protocol,
     embed,
     sourceProvider: provider,
-    channelSlug: qi.id.includes(':') ? qi.id.split(':')[1] : undefined,
+    // An internet radio id ends in a station id, not a channel slug: treating
+    // it as one linked the station name to an artist page that doesn't exist.
+    channelSlug:
+      !internetRadio && qi.id.includes(':') ? qi.id.split(':')[1] : undefined,
   };
 }
 
@@ -136,11 +193,14 @@ const REPEAT_CYCLE: RepeatMode[] = ['off', 'all', 'one'];
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
   queue: [],
+  restoredPending: null,
   currentId: null,
   status: 'idle',
   error: null,
   volume: 0.85,
   muted: false,
+  autoplayRestoreMuted: null,
+  fadeLevel: 1,
   currentTime: 0,
   duration: 0,
   isLive: true,
@@ -154,15 +214,18 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   currentPeaks: null,
   peaksById: {},
   analyser: null,
+  audioElement: null,
 
   setAnalyser: (analyser) => set({ analyser }),
+
+  setAudioElement: (audioElement) => set({ audioElement }),
 
   cachePeaks: (id, peaks) => {
     if (!peaks.length) {
       return;
     }
     set((s) => ({
-      peaksById: { ...s.peaksById, [id]: peaks },
+      peaksById: rememberPeaks(s.peaksById, id, peaks),
       currentPeaks: s.currentId === id ? peaks : s.currentPeaks,
     }));
   },
@@ -183,13 +246,102 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       duration: 0,
       seekTarget: null,
       currentPeaks: peaks,
-      peaksById: peaks ? { ...s.peaksById, [head.id]: peaks } : s.peaksById,
+      peaksById: rememberPeaks(s.peaksById, head.id, peaks),
       isLive: isRadioOrLive,
       isRealLive: isRadioOrLive && Boolean(item.isRealLive),
       hasPlayed: true,
       lastRadioPlayable: isRadioOrLive ? item : s.lastRadioPlayable,
       playerBarVisible: true,
+      ...(s.autoplayRestoreMuted === null
+        ? {}
+        : { muted: s.autoplayRestoreMuted, autoplayRestoreMuted: null }),
     }));
+  },
+
+  playFromList: (items, index) => {
+    if (items.length === 0) {
+      return;
+    }
+    const clamped = Math.max(0, Math.min(index, items.length - 1));
+    const item = items[clamped]!;
+    const queue = items.map(toQueueItem);
+    const isRadioOrLive = item.kind === 'live' || item.kind === 'radio';
+    const peaks = item.peaks?.length ? item.peaks : null;
+    recordHistory(item);
+    set((s) => ({
+      queue,
+      currentId: item.id,
+      status: item.embed ? 'playing' : 'loading',
+      error: null,
+      currentTime: 0,
+      duration: 0,
+      seekTarget: null,
+      currentPeaks: peaks,
+      peaksById: rememberPeaks(s.peaksById, item.id, peaks),
+      isLive: isRadioOrLive,
+      isRealLive: isRadioOrLive && Boolean(item.isRealLive),
+      hasPlayed: true,
+      lastRadioPlayable: isRadioOrLive ? item : s.lastRadioPlayable,
+      playerBarVisible: true,
+      ...(s.autoplayRestoreMuted === null
+        ? {}
+        : { muted: s.autoplayRestoreMuted, autoplayRestoreMuted: null }),
+    }));
+  },
+
+  autoplayMuted: (item) => {
+    const before = get().autoplayRestoreMuted ?? get().muted;
+    const hadPlayed = get().hasPlayed;
+    // Muted before the source changes, so the element is silent by the time
+    // the engine asks it to play.
+    set({ muted: true, autoplayRestoreMuted: null });
+    get().play(item);
+    set({ autoplayRestoreMuted: before, hasPlayed: hadPlayed });
+  },
+
+  unmuteAutoplay: () =>
+    set({ muted: false, autoplayRestoreMuted: null, hasPlayed: true }),
+
+  fadeOverTo: async (item) => {
+    const from = get().currentId;
+    const setLevel = (fadeLevel: number) => set({ fadeLevel });
+    const faded = await rampLevel({
+      from: get().fadeLevel,
+      to: 0,
+      ms: FADE_OUT_MS,
+      onLevel: setLevel,
+      cancelled: () => get().currentId !== from,
+    });
+    if (!faded) {
+      setLevel(1);
+      return false;
+    }
+    get().playNext(item);
+    get().playQueueIndex(item.id);
+    set({ isRealLive: Boolean(item.isRealLive) });
+    // Stay silent until the new source has sound, or give up waiting.
+    await new Promise<void>((resolve) => {
+      const timer = setTimeout(done, FADE_START_TIMEOUT_MS);
+      const unsubscribe = usePlayerStore.subscribe((s) => {
+        if (s.status !== 'loading' || s.currentId !== item.id) {
+          done();
+        }
+      });
+      function done() {
+        clearTimeout(timer);
+        unsubscribe();
+        resolve();
+      }
+    });
+    const arrived = await rampLevel({
+      from: 0,
+      to: 1,
+      ms: FADE_IN_MS,
+      onLevel: setLevel,
+      cancelled: () => get().currentId !== item.id,
+    });
+    setLevel(1);
+    return arrived;
   },
 
   enqueue: (item) => {
@@ -212,6 +364,77 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     if (!wasBarVisible || !useLayoutStore.getState().bottomQueueOpen) {
       toast(`Added "${item.title}" to queue`);
     }
+  },
+
+  hydrateQueue: (items, currentId) => {
+    const queue = items.map(toQueueItem);
+    const current = queue.some((q) => q.id === currentId) ? currentId : null;
+    set({
+      queue,
+      currentId: current,
+      status: current ? 'paused' : 'idle',
+      restoredPending: current,
+      error: null,
+      currentTime: 0,
+      duration: 0,
+      seekTarget: null,
+      playerBarVisible: queue.length > 0,
+    });
+  },
+
+  setQueueSources: (sources) =>
+    set((s) => ({
+      queue: s.queue.map((qi) => {
+        const url = sources[qi.id];
+        return url
+          ? {
+              ...qi,
+              track: { ...qi.track, source: { ...qi.track.source, url } },
+            }
+          : qi;
+      }),
+    })),
+
+  enqueueMany: (items) => {
+    const queued = new Set(get().queue.map((q) => q.id));
+    const fresh = items.map(toQueueItem).filter((qi) => {
+      if (queued.has(qi.id)) {
+        return false;
+      }
+      queued.add(qi.id);
+      return true;
+    });
+    if (!fresh.length) {
+      return 0;
+    }
+    set((s) => ({ queue: [...s.queue, ...fresh], playerBarVisible: true }));
+    toast(
+      fresh.length === 1
+        ? 'Added 1 track to queue'
+        : `Added ${fresh.length} tracks to queue`,
+    );
+    return fresh.length;
+  },
+
+  playNextMany: (items) => {
+    const incoming = items.map(toQueueItem);
+    const ids = new Set(incoming.map((qi) => qi.id));
+    set((s) => {
+      const rest = s.queue.filter((q) => !ids.has(q.id));
+      const currentIdx = s.currentId
+        ? rest.findIndex((q) => q.id === s.currentId)
+        : -1;
+      const insertAt = currentIdx + 1;
+      return {
+        queue: [
+          ...rest.slice(0, insertAt),
+          ...incoming,
+          ...rest.slice(insertAt),
+        ],
+        playerBarVisible: true,
+      };
+    });
+    return incoming.length;
   },
 
   playNext: (item) => {
@@ -248,7 +471,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       error: null,
       currentTime: 0,
       seekTarget: null,
-      currentPeaks: get().peaksById[id] ?? null,
+      currentPeaks: peaksFor(get().peaksById, id),
       isLive: isRadioOrLive,
       // playableFromQueueItem rebuilds a TahtiPlayable from the queued
       // Track, which never carried isRealLive through -- conservatively
@@ -272,6 +495,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         queue,
         currentId,
         status: currentId ? s.status : 'idle',
+        // A restored current track that disappears hands its "not loaded yet"
+        // state to whatever becomes current, so nothing starts on its own.
+        restoredPending:
+          s.restoredPending === id ? currentId : s.restoredPending,
       };
     });
   },
@@ -324,13 +551,25 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   hidePlayerBar: () => set({ playerBarVisible: false }),
 
-  setStatus: (status, error = null) => set({ status, error }),
+  setStatus: (status, error = null) =>
+    set((s) => ({
+      status,
+      error,
+      restoredPending:
+        status === 'playing' || status === 'loading' ? null : s.restoredPending,
+    })),
 
   setProgress: (currentTime, duration) => set({ currentTime, duration }),
 
-  setVolume: (volume) => set({ volume, muted: volume === 0 ? true : false }),
+  setVolume: (volume) =>
+    set({
+      volume,
+      muted: volume === 0 ? true : false,
+      autoplayRestoreMuted: null,
+    }),
 
-  toggleMute: () => set((s) => ({ muted: !s.muted })),
+  toggleMute: () =>
+    set((s) => ({ muted: !s.muted, autoplayRestoreMuted: null })),
 
   toggleShuffle: () => {
     const { isLive } = get();
@@ -349,6 +588,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     set({ repeatMode: REPEAT_CYCLE[(idx + 1) % REPEAT_CYCLE.length]! });
   },
 
+  setRepeatMode: (repeatMode) => set({ repeatMode }),
+
   seekTo: (seconds) => {
     const { isLive, duration } = get();
     if (isLive) {
@@ -357,6 +598,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     const max = duration > 0 ? duration : seconds;
     const clamped = Math.max(0, Math.min(max, seconds));
     set({ seekTarget: clamped, currentTime: clamped });
+  },
+
+  seekBy: (deltaSeconds) => {
+    get().seekTo(get().currentTime + deltaSeconds);
   },
 
   clearSeekTarget: () => set({ seekTarget: null }),

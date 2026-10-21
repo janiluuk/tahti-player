@@ -1,5 +1,6 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useSearch } from '@tanstack/react-router';
 import {
+  BarChart3Icon,
   Disc3Icon,
   DiscAlbumIcon,
   ExternalLinkIcon,
@@ -7,16 +8,20 @@ import {
   MoreHorizontalIcon,
   PencilIcon,
   PlusIcon,
+  SearchIcon,
   Share2Icon,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
   Button,
+  ButtonLink,
   CopyButton,
   Dialog,
   EmptyState,
+  ExternalLink,
+  FilterChips,
   Input,
   Tooltip,
   ViewShell,
@@ -28,12 +33,13 @@ import {
   patchStudioReleaseVisual,
 } from '../../api/studio';
 import type { StudioRelease } from '../../api/studio-types';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
-import { StudioPanel, StudioToggleChip } from '../../components/StudioPanel';
+import { StudioPanel } from '../../components/StudioPanel';
 import { resolveNewReleaseVisualizer } from '../../lib/releaseVisualizer';
+import { ReleaseCsvImportButton } from './ReleaseCsvImportButton';
+import { ReleasePinButton } from './ReleasePinButton';
 
 const RELEASE_TYPES = [
   {
@@ -50,13 +56,10 @@ const RELEASE_TYPES = [
   },
 ] as const;
 
-export function StudioReleasesView({
-  embedded = false,
-}: {
-  embedded?: boolean;
-}) {
+export function StudioReleasesView() {
   const [releases, setReleases] = useState<StudioRelease[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [openMoreId, setOpenMoreId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
@@ -64,12 +67,22 @@ export function StudioReleasesView({
   const [releaseDate, setReleaseDate] = useState(() =>
     new Date().toISOString().slice(0, 10),
   );
-  const [msg, setMsg] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [query, setQuery] = useState('');
+  const search = useSearch({ strict: false }) as { create?: boolean };
+
+  useEffect(() => {
+    if (search.create) {
+      setCreateOpen(true);
+    }
+  }, [search.create]);
 
   const reload = () => {
     void fetchStudioReleases().then((res) => {
       setReleases(res.data.releases);
+      setLoadError(
+        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
   };
@@ -77,6 +90,16 @@ export function StudioReleasesView({
   useEffect(() => {
     reload();
   }, []);
+
+  const filteredReleases = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    if (!needle) {
+      return releases;
+    }
+    return releases.filter((release) =>
+      release.title.toLowerCase().includes(needle),
+    );
+  }, [releases, query]);
 
   const closeCreate = () => {
     setCreateOpen(false);
@@ -88,7 +111,6 @@ export function StudioReleasesView({
 
   const create = async () => {
     setCreating(true);
-    setMsg(null);
     const r = await createStudioRelease({
       title: title.trim(),
       type,
@@ -96,7 +118,7 @@ export function StudioReleasesView({
     });
     setCreating(false);
     if (!r.ok) {
-      setMsg(r.error);
+      toast.error(r.error);
       return;
     }
     const visualResult = await patchStudioReleaseVisual(
@@ -106,7 +128,7 @@ export function StudioReleasesView({
     if (!visualResult.ok) {
       toast.error('Release created, but its visualizer could not be saved.');
     }
-    setMsg(`Created ${r.data.title}.`);
+    toast.success(`Created ${r.data.title}.`);
     closeCreate();
     reload();
   };
@@ -114,29 +136,34 @@ export function StudioReleasesView({
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        {!embedded ? <StudioNav current="/studio/releases" /> : null}
         <ViewShell
           title="Releases"
           classes={{ root: 'px-0 pt-0' }}
           actions={
-            <Tooltip content="New release" side="top">
-              <Button
-                size="icon-sm"
-                onClick={() => {
-                  setMsg(null);
-                  setCreateOpen(true);
-                }}
-                aria-label="New release"
-              >
-                <PlusIcon size={16} aria-hidden />
-              </Button>
-            </Tooltip>
+            <div className="flex items-center gap-2">
+              <Tooltip content="Distribution" side="top">
+                <ButtonLink
+                  to="/studio/distribution"
+                  size="icon-sm"
+                  variant="text"
+                  aria-label="Distribution"
+                >
+                  <Share2Icon size={16} aria-hidden />
+                </ButtonLink>
+              </Tooltip>
+              <ReleaseCsvImportButton onImported={reload} />
+              <Tooltip content="New release" side="top">
+                <Button
+                  size="icon-sm"
+                  onClick={() => setCreateOpen(true)}
+                  aria-label="New release"
+                >
+                  <PlusIcon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
+            </div>
           }
         >
-          {msg && (
-            <p className="text-foreground-secondary mb-4 text-sm">{msg}</p>
-          )}
-
           <Dialog.Root isOpen={createOpen} onClose={closeCreate}>
             <form
               onSubmit={(e) => {
@@ -157,17 +184,12 @@ export function StudioReleasesView({
                   onChange={(e) => setTitle(e.target.value)}
                   autoFocus
                 />
-                <div className="flex flex-wrap gap-2">
-                  {RELEASE_TYPES.map((t) => (
-                    <StudioToggleChip
-                      key={t.id}
-                      selected={type === t.id}
-                      icon={t.icon}
-                      label={t.label}
-                      onClick={() => setType(t.id)}
-                    />
-                  ))}
-                </div>
+                <FilterChips
+                  items={RELEASE_TYPES}
+                  selected={type}
+                  onChange={setType}
+                  aria-label="Release type"
+                />
                 <Input
                   type="date"
                   label="Release date"
@@ -191,6 +213,15 @@ export function StudioReleasesView({
           <StudioPanel>
             {loading ? (
               <PageLoading label="Loading…" />
+            ) : loadError && releases.length === 0 ? (
+              <PageError
+                title="Could not load your releases"
+                description={loadError}
+                onRetry={() => {
+                  setLoading(true);
+                  reload();
+                }}
+              />
             ) : releases.length === 0 ? (
               <EmptyState
                 size="sm"
@@ -209,102 +240,154 @@ export function StudioReleasesView({
                 }
               />
             ) : (
-              <ul className="divide-border divide-y">
-                {releases.map((r) => (
-                  <li
-                    key={r.id}
-                    className="flex flex-wrap items-center gap-2 py-3 text-sm first:pt-0 last:pb-0"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <Link
-                        to="/studio/releases/$id"
-                        params={{ id: r.id }}
-                        className="font-medium hover:underline"
-                      >
-                        {r.title}
-                      </Link>
-                      <p className="text-foreground-secondary truncate text-xs">
-                        {r.type}, {r.state}
-                        {typeof r._count?.tracks === 'number'
-                          ? `, ${r._count.tracks} tracks`
-                          : ''}
-                        {' · '}
-                        <code className="text-foreground-secondary">
-                          /r/{r.smartLinkSlug}
-                        </code>
-                      </p>
-                    </div>
-                    <Link to="/studio/releases/$id" params={{ id: r.id }}>
-                      <Button size="sm" variant="secondary">
-                        <PencilIcon size={14} aria-hidden className="mr-1.5" />
-                        Edit
-                      </Button>
-                    </Link>
-                    <CopyButton
-                      text={`${window.location.origin}/r/${r.smartLinkSlug}`}
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={`Copy smartlink for ${r.title}`}
-                    />
-                    {r.smartLinkTargets?.bandcamp ? (
-                      <a
-                        href={r.smartLinkTargets.bandcamp}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="border-border inline-flex size-8 items-center justify-center overflow-hidden rounded border"
-                        aria-label={`Open ${r.title} on Bandcamp`}
-                        title="Open on Bandcamp"
-                      >
-                        <SourceServiceIcon id="bandcamp" size="detail" />
-                      </a>
-                    ) : null}
-                    <Tooltip
-                      content={openMoreId === r.id ? 'Less' : 'More'}
-                      side="top"
-                    >
+              <>
+                <Input
+                  type="search"
+                  aria-label="Search releases"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search by title…"
+                  className="mb-4 max-w-md"
+                  startAddon={
+                    <SearchIcon size={14} aria-hidden className="opacity-70" />
+                  }
+                />
+                {filteredReleases.length === 0 ? (
+                  <PageEmpty
+                    title={`No releases match “${query.trim()}”`}
+                    action={
                       <Button
-                        size="icon-sm"
-                        variant="text"
-                        aria-label={openMoreId === r.id ? 'Less' : 'More'}
-                        onClick={() =>
-                          setOpenMoreId((id) => (id === r.id ? null : r.id))
-                        }
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => setQuery('')}
                       >
-                        <MoreHorizontalIcon size={16} aria-hidden />
+                        Clear search
                       </Button>
-                    </Tooltip>
-                    {openMoreId === r.id && (
-                      <div className="flex w-full flex-wrap gap-2 pt-1">
-                        <Tooltip content="Public link" side="top">
+                    }
+                  />
+                ) : (
+                  <ul className="divide-border divide-y">
+                    {filteredReleases.map((r) => (
+                      <li
+                        key={r.id}
+                        className="flex flex-wrap items-center gap-2 py-3 text-sm first:pt-0 last:pb-0"
+                      >
+                        <div className="min-w-0 flex-1">
                           <Link
-                            to="/r/$slug"
-                            params={{ slug: r.smartLinkSlug }}
+                            to="/studio/releases/$id"
+                            params={{ id: r.id }}
+                            className="font-medium hover:underline"
                           >
-                            <Button
-                              size="icon-sm"
-                              variant="text"
-                              aria-label="Public link"
-                            >
-                              <ExternalLinkIcon size={16} aria-hidden />
-                            </Button>
+                            {r.title}
                           </Link>
+                          <p className="text-foreground-secondary truncate text-xs">
+                            {r.type}, {r.state}
+                            {typeof r._count?.tracks === 'number'
+                              ? `, ${r._count.tracks} tracks`
+                              : ''}
+                            {r.pinnedAt ? ', pinned to profile' : ''}
+                            {' · '}
+                            <code className="text-foreground-secondary">
+                              /r/{r.smartLinkSlug}
+                            </code>
+                          </p>
+                        </div>
+                        <ButtonLink
+                          to="/studio/releases/$id"
+                          params={{ id: r.id }}
+                          size="sm"
+                          variant="secondary"
+                        >
+                          <PencilIcon
+                            size={14}
+                            aria-hidden
+                            className="mr-1.5"
+                          />
+                          Edit
+                        </ButtonLink>
+                        <Tooltip content="Stats" side="top">
+                          <ButtonLink
+                            to="/studio/releases/$id"
+                            params={{ id: r.id }}
+                            search={{ tab: 'stats' }}
+                            size="icon-sm"
+                            variant="text"
+                            aria-label={`Stats for ${r.title}`}
+                          >
+                            <BarChart3Icon size={16} aria-hidden />
+                          </ButtonLink>
                         </Tooltip>
-                        <Tooltip content="Distribution" side="top">
-                          <Link to="/studio/distribution">
-                            <Button
-                              size="icon-sm"
-                              variant="text"
-                              aria-label="Distribution"
-                            >
-                              <Share2Icon size={16} aria-hidden />
-                            </Button>
-                          </Link>
+                        <CopyButton
+                          text={`${window.location.origin}/r/${r.smartLinkSlug}`}
+                          size="icon-sm"
+                          variant="text"
+                          aria-label={`Copy smartlink for ${r.title}`}
+                        />
+                        {r.smartLinkTargets?.bandcamp ? (
+                          <ExternalLink
+                            href={r.smartLinkTargets.bandcamp}
+                            className="border-border size-8 justify-center overflow-hidden rounded border no-underline"
+                            aria-label={`Open ${r.title} on Bandcamp`}
+                            title="Open on Bandcamp"
+                          >
+                            <SourceServiceIcon id="bandcamp" size="detail" />
+                          </ExternalLink>
+                        ) : null}
+                        <Tooltip
+                          content={openMoreId === r.id ? 'Less' : 'More'}
+                          side="top"
+                        >
+                          <Button
+                            size="icon-sm"
+                            variant="text"
+                            aria-label={openMoreId === r.id ? 'Less' : 'More'}
+                            onClick={() =>
+                              setOpenMoreId((id) => (id === r.id ? null : r.id))
+                            }
+                          >
+                            <MoreHorizontalIcon size={16} aria-hidden />
+                          </Button>
                         </Tooltip>
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
+                        {openMoreId === r.id && (
+                          <div className="flex w-full flex-wrap gap-2 pt-1">
+                            <ReleasePinButton
+                              release={r}
+                              onChange={(pinnedAt) =>
+                                setReleases((list) =>
+                                  list.map((x) =>
+                                    x.id === r.id ? { ...x, pinnedAt } : x,
+                                  ),
+                                )
+                              }
+                            />
+                            <Tooltip content="Public link" side="top">
+                              <ButtonLink
+                                to="/r/$slug"
+                                params={{ slug: r.smartLinkSlug }}
+                                size="icon-sm"
+                                variant="text"
+                                aria-label="Public link"
+                              >
+                                <ExternalLinkIcon size={16} aria-hidden />
+                              </ButtonLink>
+                            </Tooltip>
+                            <Tooltip content="Distribution" side="top">
+                              <ButtonLink
+                                to="/studio/distribution"
+                                size="icon-sm"
+                                variant="text"
+                                aria-label="Distribution"
+                              >
+                                <Share2Icon size={16} aria-hidden />
+                              </ButtonLink>
+                            </Tooltip>
+                          </div>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </>
             )}
           </StudioPanel>
         </ViewShell>

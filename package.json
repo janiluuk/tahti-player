@@ -3,7 +3,7 @@
   "version": "0.0.10",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.33.4",
+  "packageManager": "pnpm@12.5.1+sha512.e3f305bc784a2bc89f5ad3b6138889470fae8d2af5f36b61216ec91c2c3d64089775f9de38aac331044ea40f245cb0d5666392dfdf65824e1907ef6a2c62de5f",
   "engines": {
     "node": ">=24"
   },
@@ -11,17 +11,29 @@
     "dev": "turbo dev --filter=@tahti-player/player --filter=@tahti-player/ui",
     "dev:remote": "VITE_HOST=0.0.0.0 turbo dev --filter=@tahti-player/player --filter=@tahti-player/ui",
     "dev:tahti": "pnpm --filter @tahti-player/tahti-web dev",
-    "deploy:tahti-beta": "pnpm --filter @tahti-player/tahti-web run deploy:vimage",
+    "tahti-ops": "node packages/tahti-ops/src/cli.mjs",
+    "desktop": "pnpm tahti-ops desktop run",
+    "desktop:dev": "pnpm tahti-ops desktop dev",
+    "test:all": "pnpm tahti-ops test all",
+    "e2e": "pnpm tahti-ops e2e journeys",
+    "e2e:beta": "pnpm tahti-ops e2e tasks",
+    "snapshots": "pnpm tahti-ops snapshots",
+    "deploy:web": "pnpm tahti-ops deploy web",
+    "deploy:prod": "pnpm tahti-ops deploy all",
+    "tahti": "node packages/tahti-cli/src/cli.mjs",
+    "deploy:tahti-beta": "pnpm tahti-ops deploy web",
     "deploy:tahti-storybook": "pnpm --filter @tahti-player/storybook run deploy:vimage",
     "build": "turbo build",
-    "build:linux:run": "./scripts/build-and-run-linux.sh",
-    "player:build:run": "./scripts/build-and-run-player.sh",
-    "player:run": "./scripts/run-linux.sh",
+    "build:linux:run": "pnpm tahti-ops desktop run",
+    "player:build:run": "pnpm tahti-ops desktop run",
+    "player:run": "pnpm tahti-ops desktop launch",
     "build:android:run": "./scripts/build-and-run-android.sh",
     "lint": "turbo lint",
+    "check:file-size": "node scripts/check-file-size.mjs",
+    "storybook:surfaces": "node scripts/generate-storybook-surfaces.mjs",
     "lint:fix": "turbo lint:fix",
     "test": "turbo test",
-    "test:coverage": "turbo test:coverage",
+    "test:coverage": "turbo test:coverage --continue",
     "snapshot-digest": "node scripts/ci/build-snapshot-digest.mjs",
     "tauri": "pnpm --filter player tauri",
     "release:prepare": "node packages/tools/src/prepare-release.mjs",
@@ -31,23 +43,25 @@
     "type-check": "turbo type-check"
   },
   "devDependencies": {
-    "@ianvs/prettier-plugin-sort-imports": "^4.5.1",
-    "@tailwindcss/vite": "^4.1.11",
-    "@vitejs/plugin-react": "^5.0.1",
-    "@vitest/coverage-v8": "^4.0.0",
-    "eslint": "^10.0.0",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^5.2.0",
+    "@vitest/coverage-v8": "^4.1.11",
+    "eslint": "^10.11.0",
     "husky": "^9.1.7",
     "jsdom": "^26.1.0",
-    "lint-staged": "^16.1.4",
+    "lint-staged": "^16.4.0",
+    "pixelmatch": "^7.2.0",
+    "pngjs": "^7.0.0",
     "prettier-plugin-astro": "^0.14.1",
-    "prettier-plugin-tailwindcss": "^0.8.0",
-    "tailwindcss": "^4.1.11",
-    "turbo": "^2.5.6",
-    "typescript": "^5.9.2",
-    "vite": "^7.1.3",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "tailwindcss": "^4.3.3",
+    "turbo": "^2.11.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.6",
     "vite-plugin-dts": "^4.5.4",
-    "vite-plugin-svgr": "^4.3.0",
-    "vitest": "^4.0.0"
+    "vite-plugin-svgr": "^4.5.0",
+    "vitest": "^4.1.11"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
@@ -57,5 +71,16 @@
   "author": {
     "name": "Tahti <noreply@tahti.live>"
   },
-  "license": "AGPL-3.0-only"
+  "license": "AGPL-3.0-only",
+  "dependencies": {
+    "prettier": "3.9.8"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "eslint-plugin-react>eslint": "10",
+        "@codecov/vite-plugin>vite": "7"
+      }
+    }
+  }
 }

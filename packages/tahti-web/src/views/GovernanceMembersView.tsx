@@ -1,11 +1,18 @@
 import { Link } from '@tanstack/react-router';
+import { LandmarkIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Badge, Input, ViewShell } from '@tahti-player/ui';
+import { Badge, Button, Input, StatChip, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMembers } from '../api/client';
 import type { GovernanceMember } from '../api/types';
-import { PageLoading } from '../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../components/PageStates';
+import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
 export function GovernanceMembersView() {
@@ -13,6 +20,8 @@ export function GovernanceMembersView() {
   const [members, setMembers] = useState<GovernanceMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (!user) {
@@ -22,9 +31,12 @@ export function GovernanceMembersView() {
     setLoading(true);
     void fetchGovernanceMembers().then((result) => {
       setMembers(result.data);
+      setLoadError(
+        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+      );
       setLoading(false);
     });
-  }, [user]);
+  }, [user, attempt]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -43,7 +55,7 @@ export function GovernanceMembersView() {
       title="Member directory"
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-2xl',
-        scrollableArea: 'gap-6',
+        content: 'gap-6',
       }}
     >
       <Link
@@ -54,27 +66,75 @@ export function GovernanceMembersView() {
       </Link>
 
       {!user && (
-        <p className="text-foreground-secondary text-sm">
-          Sign in with a cooperative membership account to view the member
-          directory.
-        </p>
+        <PageEmpty
+          icon="inbox"
+          title="Sign in to view the member directory"
+          description="Use a cooperative membership account to see who belongs to the co-op."
+          action={
+            <Button onClick={() => useAuthModalStore.getState().open('login')}>
+              Sign in
+            </Button>
+          }
+        />
       )}
 
       {user && loading && <PageLoading label="Loading members…" />}
+
+      {user && !loading && members.length > 0 && (
+        <div className="grid grid-cols-2 gap-3">
+          <StatChip
+            value={members.length}
+            label="Members"
+            icon={<UsersIcon size={16} aria-hidden />}
+          />
+          <StatChip
+            value={members.filter((m) => m.isBoard).length}
+            label="Board"
+            icon={<LandmarkIcon size={16} aria-hidden />}
+          />
+        </div>
+      )}
 
       {user && !loading && (
         <>
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
+            aria-label="Search by name or username"
             placeholder="Search by name or username"
           />
-          {filtered.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              {members.length === 0
-                ? 'No member directory is published yet.'
-                : 'No members match this search.'}
-            </p>
+          {loadError && members.length > 0 ? (
+            <PageErrorBanner
+              title="Could not refresh the member directory."
+              description={loadError}
+              onRetry={() => setAttempt((n) => n + 1)}
+            />
+          ) : null}
+          {loadError && members.length === 0 ? (
+            <PageError
+              title="Could not load the member directory"
+              description={loadError}
+              onRetry={() => setAttempt((n) => n + 1)}
+            />
+          ) : filtered.length === 0 ? (
+            <PageEmpty
+              title={
+                members.length === 0
+                  ? 'No member directory is published yet.'
+                  : 'No members match this search.'
+              }
+              action={
+                members.length > 0 ? (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setQuery('')}
+                  >
+                    Clear search
+                  </Button>
+                ) : undefined
+              }
+            />
           ) : (
             <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
               {filtered.map((member) => {

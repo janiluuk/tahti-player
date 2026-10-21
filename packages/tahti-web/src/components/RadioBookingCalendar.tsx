@@ -9,7 +9,14 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button, Dialog, ImageReveal, Input, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  Dialog,
+  ImageReveal,
+  Input,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   createEpisode,
@@ -26,7 +33,7 @@ import {
   BroadcastDetailsFields,
   type BroadcastDetailsValues,
 } from './BroadcastDetailsFields';
-import { PageLoading } from './PageStates';
+import { PageEmpty, PageLoading } from './PageStates';
 
 const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -260,15 +267,15 @@ export function RadioBookingCalendar({
             {scope === 'mine' ? 'My channel schedule' : 'Tahti Radio schedule'}
           </Dialog.Title>
           <Tooltip content="Open full calendar" side="top">
-            <Link to="/schedule" onClick={onClose}>
-              <Button
-                size="icon-sm"
-                variant="text"
-                aria-label="Open full calendar"
-              >
-                <CalendarDaysIcon size={16} aria-hidden />
-              </Button>
-            </Link>
+            <ButtonLink
+              to="/schedule"
+              onClick={onClose}
+              size="icon-sm"
+              variant="text"
+              aria-label="Open full calendar"
+            >
+              <CalendarDaysIcon size={16} aria-hidden />
+            </ButtonLink>
           </Tooltip>
         </div>
         <Dialog.Description>
@@ -341,11 +348,13 @@ export function RadioBookingCalendar({
             const isToday = isSameDay(day, today);
             const isSelected = isSameDay(day, selectedDate);
             return (
-              <button
+              <Button
+                variant="plain"
+                size="flexible"
                 key={day.toISOString()}
                 type="button"
                 onClick={() => setSelectedDate(day)}
-                className={`flex flex-col items-center gap-1 rounded-md py-1.5 text-sm ${
+                className={`flex flex-col items-center gap-1 rounded-md py-1.5 text-sm whitespace-normal active:scale-100 ${
                   isSelected
                     ? 'bg-primary text-primary-foreground'
                     : inMonth
@@ -363,7 +372,7 @@ export function RadioBookingCalendar({
                       : 'bg-transparent'
                   }`}
                 />
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -380,9 +389,7 @@ export function RadioBookingCalendar({
           {loading ? (
             <PageLoading label="Loading…" />
           ) : selectedBookings.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              No slots booked yet.
-            </p>
+            <PageEmpty title="No slots booked yet." />
           ) : (
             <ul className="flex flex-col gap-1.5">
               {selectedBookings.map((b) => (
@@ -406,17 +413,19 @@ export function RadioBookingCalendar({
                   <span className="text-foreground-secondary shrink-0 tabular-nums">
                     {formatTimeRange(b.startAt, b.endAt)}
                   </span>
-                  <button
+                  <Button
+                    variant="plain"
+                    size="flexible"
                     type="button"
                     onClick={() => setSelectedBooking(b)}
-                    className="min-w-0 flex-1 truncate text-left font-medium hover:underline"
+                    className="inline-block min-w-0 flex-1 truncate rounded-none text-left font-medium hover:underline active:scale-100"
                   >
                     {b.showTitle ?? b.note ?? b.displayName}
                     {b.episodeNumber != null
                       ? ` · Episode ${b.episodeNumber}`
                       : ''}
                     {b.isMine ? ' (you)' : ''}
-                  </button>
+                  </Button>
                 </li>
               ))}
             </ul>
@@ -511,27 +520,29 @@ export function RadioBookingCalendar({
             </div>
             <Dialog.Actions>
               {selectedBooking.isMine && selectedBooking.showId ? (
-                <Link
+                <ButtonLink
                   to="/studio/shows/$id"
                   params={{ id: selectedBooking.showId }}
                   onClick={() => {
                     setSelectedBooking(null);
                     onClose();
                   }}
+                  variant="secondary"
                 >
-                  <Button variant="secondary">Edit show</Button>
-                </Link>
+                  Edit show
+                </ButtonLink>
               ) : (
-                <Link
+                <ButtonLink
                   to="/radio/show/$channelSlug"
                   params={{ channelSlug: selectedBooking.channelSlug }}
                   onClick={() => {
                     setSelectedBooking(null);
                     onClose();
                   }}
+                  variant="secondary"
                 >
-                  <Button variant="secondary">Open show</Button>
-                </Link>
+                  Open show
+                </ButtonLink>
               )}
               <Dialog.Close>Close</Dialog.Close>
             </Dialog.Actions>

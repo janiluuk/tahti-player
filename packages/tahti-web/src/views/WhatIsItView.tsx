@@ -19,7 +19,6 @@ import {
   ScissorsIcon,
   ServerIcon,
   ShieldCheckIcon,
-  StarIcon,
   UsersIcon,
   VoteIcon,
   Wand2Icon,
@@ -28,14 +27,17 @@ import {
 import type { ReactNode } from 'react';
 
 import { LegalHubLinks } from '../components/LegalHubLinks';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageFrame, PageHeader } from '../components/PageHeader';
+import { PlatformStatsStrip } from '../components/PlatformStatsStrip';
+import { StarRating } from '../components/StarRating';
 import { getLegalPage } from '../content/legal';
 
 const detail = getLegalPage('what-is-it');
 
 function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <p className="text-primary font-mono text-xs font-semibold tracking-[0.2em] uppercase">
+    <p className="text-primary-strong font-mono text-xs font-semibold tracking-[0.2em] uppercase">
       {children}
     </p>
   );
@@ -84,7 +86,7 @@ function Card({
 function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div className="border-border bg-background-secondary/50 rounded-xl border p-4 text-center">
-      <div className="font-display text-primary text-3xl font-bold">
+      <div className="font-display text-primary-strong text-3xl font-bold">
         {value}
       </div>
       <div className="text-foreground-secondary mt-1 text-xs">{label}</div>
@@ -275,6 +277,7 @@ export function WhatIsItView() {
   return (
     <PageFrame maxWidth="5xl" className="pb-16">
       <PageHeader
+        back={<PageBackLink to="/" label="Listen" />}
         title="What is tahti.live"
         subtitle="Nonprofit broadcasting for independent artists — built to support artists, not algorithms."
       />
@@ -282,9 +285,9 @@ export function WhatIsItView() {
       {/* Hero */}
       <section className="border-border bg-background-secondary/30 rounded-2xl border p-6 sm:p-10">
         <Eyebrow>On air · beta live</Eyebrow>
-        <h1 className="font-display mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">
+        <h2 className="font-display mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">
           A home for your music, and your live shows.
-        </h1>
+        </h2>
         <p className="text-foreground-secondary mt-3 max-w-2xl text-sm leading-relaxed sm:text-base">
           You make the music. We take care of the rest — the tedious, mechanical
           work automated, drawn from two decades in streaming.
@@ -305,6 +308,8 @@ export function WhatIsItView() {
           </Link>
         </div>
       </section>
+
+      <PlatformStatsStrip />
 
       {/* Thesis */}
       <section>
@@ -369,7 +374,7 @@ export function WhatIsItView() {
             className="text-foreground-secondary"
           />
           <div className="border-accent-red/40 bg-accent-red/10 rounded-lg border px-3 py-2 text-center">
-            <div className="font-display text-accent-red text-sm font-bold">
+            <div className="font-display text-accent-red-strong text-sm font-bold">
               Tahti Radio
             </div>
           </div>
@@ -416,7 +421,7 @@ export function WhatIsItView() {
           ))}
         </div>
         <p className="text-foreground-secondary mt-3 text-center font-mono text-xs">
-          Most of these are plugins — turn on only what fits how you work.
+          Most of these are add-ons — turn on only what fits how you work.
         </p>
       </section>
 
@@ -464,20 +469,7 @@ export function WhatIsItView() {
                   {row.meta}
                 </div>
               </div>
-              <div className="flex gap-0.5" aria-label={`${row.stars} of 5`}>
-                {Array.from({ length: 5 }, (_, i) => (
-                  <StarIcon
-                    key={i}
-                    size={16}
-                    aria-hidden
-                    className={
-                      i < row.stars
-                        ? 'fill-primary text-primary'
-                        : 'text-border'
-                    }
-                  />
-                ))}
-              </div>
+              <StarRating stars={row.stars} />
             </div>
           ))}
         </div>
@@ -538,7 +530,7 @@ export function WhatIsItView() {
               key={g.when}
               className="border-border bg-background-secondary/50 rounded-xl border p-4"
             >
-              <div className="text-accent-red font-mono text-xs tracking-widest uppercase">
+              <div className="text-accent-red-strong font-mono text-xs tracking-widest uppercase">
                 {g.when}
               </div>
               <div className="font-display mt-1 text-sm font-bold">
@@ -579,7 +571,7 @@ export function WhatIsItView() {
             </ul>
           </div>
           <div className="border-primary/50 bg-primary/5 rounded-xl border p-5">
-            <div className="text-primary font-mono text-xs tracking-widest uppercase">
+            <div className="text-primary-strong font-mono text-xs tracking-widest uppercase">
               Artist membership
             </div>
             <div className="font-display mt-1 text-3xl font-bold">
@@ -712,7 +704,7 @@ export function WhatIsItView() {
               <div
                 className={
                   step.now
-                    ? 'text-accent-red font-display mt-1 text-sm font-bold'
+                    ? 'text-accent-red-strong font-display mt-1 text-sm font-bold'
                     : 'font-display mt-1 text-sm font-bold'
                 }
               >
@@ -746,7 +738,7 @@ export function WhatIsItView() {
         <h2 className="font-display mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
           You won&rsquo;t be a user here.
           <br />
-          <span className="text-primary">You&rsquo;ll be a member.</span>
+          <span className="text-primary-strong">You&rsquo;ll be a member.</span>
         </h2>
         <p className="text-foreground-secondary mx-auto mt-3 max-w-xl text-sm leading-relaxed">
           One member, one vote — you help decide what we build next. The beta is

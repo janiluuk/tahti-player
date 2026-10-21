@@ -36,7 +36,7 @@ const SIDEBAR_STEPS: TourStep[] = [
   {
     id: 'nav-library',
     label: 'My Library',
-    description: 'Your sounds, collections, playlists, and listening history.',
+    description: 'Your tracks, collections, playlists, and listening history.',
   },
   {
     id: 'nav-messages',
@@ -132,6 +132,23 @@ const REVENUE_PAGE_STEPS: TourStep[] = [
   },
 ];
 
+const DISCO_WIDGETS_STEP: TourStep = {
+  id: 'disco-widgets',
+  label: 'Disco-widgets',
+  description:
+    'Small add-ons shown on the page: on Listen the ones you installed (Settings → Add-ons → Discovery), on an artist or channel page the ones the artist chose. Each runs in its own sandbox and cannot see your account.',
+};
+
+/** Pages that can show Disco-widgets; the step is skipped where none render. */
+function showsDiscoWidgets(pathname: string): boolean {
+  return (
+    pathname === '/' ||
+    pathname === '/listen' ||
+    pathname.startsWith('/u/') ||
+    pathname.startsWith('/channel/')
+  );
+}
+
 const STRIPE_PAGE_STEPS: TourStep[] = [
   {
     id: 'stripe-status',
@@ -185,7 +202,7 @@ const PAGE_PURPOSE_BY_PREFIX: Array<{
   {
     prefix: '/studio/upload',
     label: 'Upload',
-    description: 'Add new sounds and releases to your library.',
+    description: 'Add new tracks and releases to your library.',
   },
   {
     prefix: '/studio',
@@ -195,14 +212,14 @@ const PAGE_PURPOSE_BY_PREFIX: Array<{
   },
   {
     prefix: '/library/sounds',
-    label: 'Sounds',
+    label: 'Tracks',
     description: 'Your uploaded tracks and encoding status.',
   },
   {
     prefix: '/library',
     label: 'Library',
     description:
-      'Your sounds, releases, collections, recordings, and listening history.',
+      'Your tracks, releases, collections, recordings, and listening history.',
   },
   {
     prefix: '/admin',
@@ -277,6 +294,9 @@ function pageFunctionalitySteps(pathname: string): TourStep[] {
   if (pathname === '/studio/stripe') {
     steps.push(...STRIPE_PAGE_STEPS);
   }
+  if (showsDiscoWidgets(pathname)) {
+    steps.push(DISCO_WIDGETS_STEP);
+  }
   return steps;
 }
 
@@ -291,7 +311,12 @@ export function getPageTourSteps(pathname: string): TourStep[] {
   const purpose = pagePurposeStep(pathname);
 
   if (pathname === '/') {
-    return dedupeById([purpose, ...SIDEBAR_STEPS, ...TOPBAR_STEPS]);
+    return dedupeById([
+      purpose,
+      ...SIDEBAR_STEPS,
+      ...TOPBAR_STEPS,
+      ...pageFunctionalitySteps(pathname),
+    ]);
   }
 
   return dedupeById([purpose, ...pageFunctionalitySteps(pathname)]);

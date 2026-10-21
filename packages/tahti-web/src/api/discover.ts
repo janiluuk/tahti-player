@@ -3,8 +3,10 @@ import { apiBase } from './http';
 import { mockLatestTracks, mockNewToYou, mockTopTracks } from './mock';
 import {
   allowMockFallback,
+  apiErrorMeta,
   failMeta,
   isForceMock,
+  mockFallbackMeta,
   type FetchMeta,
 } from './mode';
 import type { DiscoverCollection, DiscoverTrackItem } from './types';
@@ -83,7 +85,7 @@ export async function fetchPublicCollections(
     if (allowMockFallback()) {
       return {
         data: [],
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     throw err instanceof Error ? err : new Error('Public collections failed');
@@ -251,9 +253,9 @@ export async function fetchTopTracks(
     return { data: merged.map(topListEntryToTrack), meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockTopTracks(sort), meta: failMeta(err) };
+      return { data: mockTopTracks(sort), meta: mockFallbackMeta(err) };
     }
-    return { data: [], meta: failMeta(err) };
+    return { data: [], meta: mockFallbackMeta(err) };
   }
 }
 
@@ -321,9 +323,9 @@ export async function fetchLatestTracks(
     };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: mockLatestTracks(), meta: failMeta(err) };
+      return { data: mockLatestTracks(), meta: mockFallbackMeta(err) };
     }
-    return { data: [], meta: failMeta(err) };
+    return { data: [], meta: apiErrorMeta(err) };
   }
 }
 
@@ -364,7 +366,7 @@ export async function fetchNewToYou(): Promise<{
         data: mock.items,
         authenticated: true,
         preferenceGenres: mock.preferenceGenres,
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
     return {
@@ -376,19 +378,21 @@ export async function fetchNewToYou(): Promise<{
   }
 }
 
-type TrackReactionResponse = {
-  reactions: Array<{ type: string }>;
-};
+type WireLovedEntry = Omit<WireTopListEntry, 'listens'> & { loves: number };
 
-async function countTrackLoves(trackId: string): Promise<number> {
-  const response = await getJson<TrackReactionResponse>(
-    `/api/reactions/track/${encodeURIComponent(trackId)}`,
-  );
-  return response.reactions.filter((reaction) => reaction.type === 'LOVE')
-    .length;
+function lovedEntryToTrack(entry: WireLovedEntry): DiscoverTrackItem {
+  return {
+    id: `sound:${entry.soundId}`,
+    title: entry.title,
+    artist: entry.artistName,
+    channelSlug: entry.channelSlug,
+    coverUrl: entry.bannerUrl,
+    genre: entry.genre,
+    loves: entry.loves,
+  };
 }
 
-/** Community-wide Loved list, ranked from the public LOVE reactions on tracks. */
+/** Community-wide Loved list: tracks ranked by how many people loved them. */
 export async function fetchLovedTracks(
   filters: DiscoverFilters,
 ): Promise<{ data: DiscoverTrackItem[]; meta: FetchMeta }> {
@@ -402,18 +406,30 @@ export async function fetchLovedTracks(
     };
   }
   try {
-    const candidates = await fetchTopTracks('all_time', 'desc', filters);
-    const ranked = await Promise.all(
-      candidates.data.slice(0, 24).map(async (track) => ({
-        track,
-        loves: await countTrackLoves(track.id.replace(/^sound:/, '')),
-      })),
+    const qs = filterQuery(filters);
+    const genres = filters.genres.length > 0 ? filters.genres : [undefined];
+    const lists = await Promise.all(
+      genres.map(async (genre) => {
+        const params = [
+          genre ? `genre=${encodeURIComponent(genre)}` : '',
+          qs,
+        ].filter(Boolean);
+        const { entries } = await getJson<{ entries: WireLovedEntry[] }>(
+          `/api/top-lists/loved${params.length > 0 ? `?${params.join('&')}` : ''}`,
+        );
+        return entries;
+      }),
     );
+    const byId = new Map<string, WireLovedEntry>();
+    for (const entry of lists.flat()) {
+      if (!byId.has(entry.soundId)) {
+        byId.set(entry.soundId, entry);
+      }
+    }
     return {
-      data: ranked
-        .filter(({ loves }) => loves > 0)
+      data: [...byId.values()]
         .sort((left, right) => right.loves - left.loves)
-        .map(({ track, loves }) => ({ ...track, loves })),
+        .map(lovedEntryToTrack),
       meta: { source: 'api' },
     };
   } catch (err) {
@@ -423,9 +439,29 @@ export async function fetchLovedTracks(
           ...item,
           loves: Math.max(1, 42 - index * 7),
         })),
-        meta: failMeta(err),
+        meta: mockFallbackMeta(err),
       };
     }
+    return { data: [], meta: failMeta(err) };
+  }
+}
+
+export async function fetchTahtiSelects(): Promise<{
+  data: DiscoverTrackItem[];
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return {
+      data: mockLatestTracks().slice(0, 6),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { items } = await getJson<{ items: WireGalleryItem[] }>(
+      '/api/v1/tahti-selects/gallery',
+    );
+    return { data: items.map(galleryItemToTrack), meta: { source: 'api' } };
+  } catch (err) {
     return { data: [], meta: failMeta(err) };
   }
 }

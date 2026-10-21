@@ -10,37 +10,59 @@ import { useMemo } from 'react';
 
 import { pickArtwork, Track } from '@tahti-player/model';
 
+import { cn } from '../../../utils';
 import { formatTimeMillis } from '../../../utils/time';
 import { ActionsCell } from '../Cells/ActionsCell';
 import { FavoriteCell } from '../Cells/FavoriteCell';
 import { PositionCell } from '../Cells/PositionCell';
 import { RemoveCell } from '../Cells/RemoveCell';
+import { SelectCell } from '../Cells/SelectCell';
 import { TextCell } from '../Cells/TextCell';
 import { ThumbnailCell } from '../Cells/ThumbnailCell';
 import { TitleCell } from '../Cells/TitleCell';
 import { IconHeader } from '../Headers/IconHeader';
+import { SelectAllHeader } from '../Headers/SelectAllHeader';
 import { TextHeader } from '../Headers/TextHeader';
 import { TrackTableProps } from '../types';
 import { formatReleaseDate } from '../utils/date';
 
 export function useColumns<T extends Track = Track>(
-  props: Pick<TrackTableProps<T>, 'display' | 'labels' | 'actions'>,
+  props: Pick<
+    TrackTableProps<T>,
+    'display' | 'labels' | 'actions' | 'features'
+  >,
+  actionsColumn: { show: boolean; className: string },
 ): ColumnDef<T>[] {
-  const { display, labels, actions } = props;
+  const { display, labels, actions, features } = props;
   const columnHelper = createColumnHelper<T>();
 
   const showFavorite =
     display?.displayFavorite && Boolean(actions?.onToggleFavorite);
   const showDelete = display?.displayDeleteButton && Boolean(actions?.onRemove);
-  const showActions = Boolean(display?.displayQueueControls);
+  const showActions = actionsColumn.show;
+
+  const showSelect = Boolean(features?.selectable);
 
   const columns: ColumnDef<T>[] = useMemo(
     () => [
+      showSelect &&
+        columnHelper.display({
+          id: 'select',
+          header: SelectAllHeader,
+          cell: SelectCell,
+          enableSorting: false,
+        }),
       display?.displayPosition &&
         columnHelper.accessor((track) => track.trackNumber, {
           id: 'position',
           enableSorting: true,
-          header: (context) => <IconHeader Icon={HashIcon} context={context} />,
+          header: (context) => (
+            <IconHeader
+              Icon={HashIcon}
+              label={labels.headers.position ?? 'Track number'}
+              context={context}
+            />
+          ),
           cell: PositionCell,
         }),
       display?.displayThumbnail &&
@@ -49,7 +71,12 @@ export function useColumns<T extends Track = Track>(
           {
             id: 'thumbnail',
             header: (context) => (
-              <IconHeader Icon={ImageIcon} context={context} />
+              <IconHeader
+                Icon={ImageIcon}
+                label={labels.headers.artwork ?? 'Artwork'}
+                context={context}
+                className="w-14"
+              />
             ),
             cell: ThumbnailCell,
             enableSorting: false,
@@ -107,18 +134,28 @@ export function useColumns<T extends Track = Track>(
       showFavorite &&
         columnHelper.display({
           id: 'favorite',
-          header: (context) => <IconHeader Icon={Heart} context={context} />,
+          header: (context) => (
+            <IconHeader
+              Icon={Heart}
+              label={labels.headers.favorite ?? 'Favorite'}
+              context={context}
+            />
+          ),
           cell: FavoriteCell,
         }),
       showActions &&
         columnHelper.display({
           id: 'actions',
-          // Wider than IconHeader's fixed w-10 -- this column can hold up
-          // to four icon buttons (queue, edit, context menu, open detail).
           header: () => (
-            <th role="columnheader" className="w-28 text-center">
+            <th
+              role="columnheader"
+              className={cn(actionsColumn.className, 'text-center')}
+            >
               <span className="flex w-full items-center justify-center">
-                <EllipsisVertical className="h-4 w-4" />
+                <EllipsisVertical className="h-4 w-4" aria-hidden />
+                <span className="sr-only">
+                  {labels.headers.actions ?? 'Actions'}
+                </span>
               </span>
             </th>
           ),
@@ -127,11 +164,25 @@ export function useColumns<T extends Track = Track>(
       showDelete &&
         columnHelper.display({
           id: 'delete',
-          header: (context) => <IconHeader Icon={Trash2} context={context} />,
+          header: (context) => (
+            <IconHeader
+              Icon={Trash2}
+              label={labels.headers.remove ?? 'Remove'}
+              context={context}
+            />
+          ),
           cell: RemoveCell,
         }),
     ],
-    [labels, display, showFavorite, showActions, showDelete],
+    [
+      labels,
+      display,
+      showFavorite,
+      showActions,
+      showDelete,
+      showSelect,
+      actionsColumn.className,
+    ],
   ).filter(Boolean) as ColumnDef<T>[];
 
   return columns;

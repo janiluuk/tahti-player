@@ -6,10 +6,12 @@ import {
   UserIcon,
   XIcon,
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useDeferredValue, useEffect, useRef, useState } from 'react';
 
 import {
   Button,
+  ButtonLink,
+  cn,
   EmptyState,
   ImageReveal,
   Input,
@@ -56,7 +58,7 @@ function ResultRow({
   meta: string;
   onSelect: () => void;
 }) {
-  const ref = useRef<HTMLButtonElement>(null);
+  const ref = useRef<HTMLElement>(null);
   useEffect(() => {
     if (active) {
       ref.current?.scrollIntoView({ block: 'nearest' });
@@ -64,7 +66,9 @@ function ResultRow({
   }, [active]);
 
   return (
-    <button
+    <Button
+      variant="text"
+      size="flexible"
       id={id}
       ref={ref}
       type="button"
@@ -83,13 +87,23 @@ function ResultRow({
           {meta}
         </span>
       </span>
-    </button>
+    </Button>
   );
 }
 
 /** Top-nav search across artists, tracks, and collections — debounced,
  * thumbnailed results grouped and labeled by type. */
-export function GlobalSearch() {
+type GlobalSearchProps = {
+  autoFocus?: boolean;
+  fullWidth?: boolean;
+  onDone?: () => void;
+};
+
+export function GlobalSearch({
+  autoFocus,
+  fullWidth,
+  onDone,
+}: GlobalSearchProps = {}) {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResponse>(EMPTY);
@@ -150,6 +164,7 @@ export function GlobalSearch() {
   const close = () => {
     setOpen(false);
     setQuery('');
+    onDone?.();
   };
 
   const goToArtist = (artist: SearchArtistResult) => {
@@ -175,30 +190,38 @@ export function GlobalSearch() {
 
   const trimmed = query.trim();
   const hasQuery = trimmed.length >= MIN_QUERY_LENGTH;
+  const deferredResults = useDeferredValue(results);
   const hasResults =
-    results.artists.length > 0 ||
-    results.tracks.length > 0 ||
-    results.collections.length > 0;
+    deferredResults.artists.length > 0 ||
+    deferredResults.tracks.length > 0 ||
+    deferredResults.collections.length > 0;
 
   // Flat, render-order list so arrow keys can rove across the three
   // grouped sections as one sequence, matching how a screen reader's
   // combobox/listbox pattern is expected to behave.
   const flatOptions: { id: string; select: () => void }[] = [
-    ...results.artists.map((a) => ({
+    ...deferredResults.artists.map((a) => ({
       id: `search-option-artist-${a.username}`,
       select: () => goToArtist(a),
     })),
-    ...results.tracks.map((t) => ({
+    ...deferredResults.tracks.map((t) => ({
       id: `search-option-track-${t.id}`,
       select: () => goToTrack(t),
     })),
-    ...results.collections.map((c) => ({
+    ...deferredResults.collections.map((c) => ({
       id: `search-option-collection-${c.slug}`,
       select: () => goToCollection(c),
     })),
   ];
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && hasQuery && activeIndex < 0) {
+      e.preventDefault();
+      const q = trimmed;
+      close();
+      void navigate({ to: '/search', search: { q } });
+      return;
+    }
     if (!open || flatOptions.length === 0) {
       return;
     }
@@ -208,14 +231,20 @@ export function GlobalSearch() {
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setActiveIndex((i) => (i <= 0 ? flatOptions.length - 1 : i - 1));
-    } else if (e.key === 'Enter' && activeIndex >= 0) {
+    } else if (e.key === 'Enter' && !loading) {
       e.preventDefault();
-      flatOptions[activeIndex]?.select();
+      flatOptions[Math.max(activeIndex, 0)]?.select();
     }
   };
 
   return (
-    <div ref={rootRef} className="relative w-full max-w-xs min-w-0 sm:max-w-sm">
+    <div
+      ref={rootRef}
+      className={cn(
+        'relative w-full min-w-0',
+        !fullWidth && 'max-w-xs sm:max-w-sm',
+      )}
+    >
       <div className="relative">
         <Input
           type="search"
@@ -236,7 +265,11 @@ export function GlobalSearch() {
             activeIndex >= 0 ? flatOptions[activeIndex]?.id : undefined
           }
           autoComplete="off"
-          className={query ? 'pr-9' : undefined}
+          autoFocus={autoFocus}
+          className={cn(
+            '[&::-webkit-search-cancel-button]:appearance-none',
+            query && 'pr-9',
+          )}
           startAddon={
             <SearchIcon size={14} aria-hidden className="opacity-70" />
           }
@@ -270,15 +303,39 @@ export function GlobalSearch() {
               <p className="text-foreground-secondary text-sm">Searching…</p>
             </div>
           ) : !hasResults ? (
-            <EmptyState size="sm" title={`No results for “${trimmed}”.`} />
+            <EmptyState
+              size="sm"
+              title={`No results for “${trimmed}”.`}
+              description="Try another spelling, or browse Discover and Radio."
+              action={
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <ButtonLink
+                    to="/discover"
+                    size="sm"
+                    variant="secondary"
+                    onClick={close}
+                  >
+                    Discover
+                  </ButtonLink>
+                  <ButtonLink
+                    to="/radio"
+                    size="sm"
+                    variant="secondary"
+                    onClick={close}
+                  >
+                    Radio
+                  </ButtonLink>
+                </div>
+              }
+            />
           ) : (
             <div className="flex flex-col gap-2">
-              {results.artists.length > 0 && (
+              {deferredResults.artists.length > 0 && (
                 <div>
                   <p className="text-foreground-secondary flex items-center gap-1.5 px-2 py-1 text-xs font-semibold uppercase">
                     <UserIcon size={12} aria-hidden /> Artists
                   </p>
-                  {results.artists.map((artist, i) => (
+                  {deferredResults.artists.map((artist, i) => (
                     <ResultRow
                       key={artist.username}
                       id={`search-option-artist-${artist.username}`}
@@ -296,16 +353,18 @@ export function GlobalSearch() {
                   ))}
                 </div>
               )}
-              {results.tracks.length > 0 && (
+              {deferredResults.tracks.length > 0 && (
                 <div>
                   <p className="text-foreground-secondary flex items-center gap-1.5 px-2 py-1 text-xs font-semibold uppercase">
                     <DiscIcon size={12} aria-hidden /> Tracks
                   </p>
-                  {results.tracks.map((track, i) => (
+                  {deferredResults.tracks.map((track, i) => (
                     <ResultRow
                       key={track.id}
                       id={`search-option-track-${track.id}`}
-                      active={activeIndex === results.artists.length + i}
+                      active={
+                        activeIndex === deferredResults.artists.length + i
+                      }
                       thumbnail={
                         <Thumbnail src={track.coverUrl} seed={track.id} />
                       }
@@ -320,18 +379,20 @@ export function GlobalSearch() {
                   ))}
                 </div>
               )}
-              {results.collections.length > 0 && (
+              {deferredResults.collections.length > 0 && (
                 <div>
                   <p className="text-foreground-secondary flex items-center gap-1.5 px-2 py-1 text-xs font-semibold uppercase">
                     <ListMusicIcon size={12} aria-hidden /> Playlists
                   </p>
-                  {results.collections.map((collection, i) => (
+                  {deferredResults.collections.map((collection, i) => (
                     <ResultRow
                       key={collection.slug}
                       id={`search-option-collection-${collection.slug}`}
                       active={
                         activeIndex ===
-                        results.artists.length + results.tracks.length + i
+                        deferredResults.artists.length +
+                          deferredResults.tracks.length +
+                          i
                       }
                       thumbnail={
                         <Thumbnail

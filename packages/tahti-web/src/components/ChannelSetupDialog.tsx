@@ -14,6 +14,7 @@ export function ChannelSetupDialog() {
   const isOpen = useChannelSetupModalStore((state) => state.isOpen);
   const close = useChannelSetupModalStore((state) => state.close);
   const user = useAuthStore((state) => state.user);
+  const profileLoaded = useAuthStore((state) => state.profileLoaded);
   const refresh = useAuthStore((state) => state.refresh);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +35,7 @@ export function ChannelSetupDialog() {
     toast.success('Channel created.');
   };
 
-  if (user?.channel && !designStep) {
+  if ((user?.channel || !profileLoaded) && !designStep) {
     return null;
   }
 
@@ -94,7 +95,7 @@ export function ChannelSetupDialog() {
         broadcasting, uploads, and your public channel designer.
       </Dialog.Description>
       {error ? (
-        <p className="text-accent-red mt-4 text-sm" role="alert">
+        <p className="text-accent-red-strong mt-4 text-sm" role="alert">
           {error}
         </p>
       ) : null}

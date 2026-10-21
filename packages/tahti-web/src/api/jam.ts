@@ -1,7 +1,17 @@
 import { apiBase, requestJson } from './client';
+import {
+  mockCreateJam,
+  mockFetchJam,
+  mockJamActive,
+  mockJoinJam,
+  mockUpdateJam,
+} from './jam.mock';
 import type { JamEvent, JamSession, JamTrack } from './types';
 
 export async function createJam(collectionSlug: string): Promise<JamSession> {
+  if (mockJamActive()) {
+    return mockCreateJam();
+  }
   const { data } = await requestJson<JamSession>('/api/v1/jam', {
     method: 'POST',
     body: JSON.stringify({ collectionSlug }),
@@ -10,6 +20,9 @@ export async function createJam(collectionSlug: string): Promise<JamSession> {
 }
 
 export async function joinJam(code: string): Promise<JamSession> {
+  if (mockJamActive()) {
+    return mockJoinJam(code);
+  }
   const { data } = await requestJson<JamSession>(
     `/api/v1/jam/${encodeURIComponent(code)}/join`,
     { method: 'POST' },
@@ -18,6 +31,9 @@ export async function joinJam(code: string): Promise<JamSession> {
 }
 
 export async function fetchJam(sessionId: string): Promise<JamSession> {
+  if (mockJamActive()) {
+    return mockFetchJam(sessionId);
+  }
   const { data } = await requestJson<JamSession>(
     `/api/v1/jam/${encodeURIComponent(sessionId)}`,
   );
@@ -32,6 +48,13 @@ export async function pushJamState(
     positionSec: number;
   },
 ): Promise<JamSession> {
+  if (mockJamActive()) {
+    return mockUpdateJam(sessionId, (session) => ({
+      ...session,
+      ...state,
+      positionUpdatedAt: new Date().toISOString(),
+    }));
+  }
   const { data } = await requestJson<JamSession>(
     `/api/v1/jam/${encodeURIComponent(sessionId)}/state`,
     { method: 'POST', body: JSON.stringify(state) },
@@ -39,13 +62,73 @@ export async function pushJamState(
   return data;
 }
 
+/** Host-only: lets a guest change the jam's playback, or takes that back.
+ * Resolves to the updated session, or null when the API refuses or doesn't
+ * support it yet - the caller hides the control in that case. */
+export async function setJamParticipantControl(
+  sessionId: string,
+  userId: string,
+  canControl: boolean,
+): Promise<JamSession | null> {
+  if (mockJamActive()) {
+    return mockUpdateJam(sessionId, (session) => ({
+      ...session,
+      participants: session.participants.map((participant) =>
+        participant.userId === userId
+          ? { ...participant, canControl }
+          : participant,
+      ),
+    }));
+  }
+  try {
+    const { data } = await requestJson<JamSession>(
+      `/api/v1/jam/${encodeURIComponent(sessionId)}/participants/${encodeURIComponent(userId)}`,
+      { method: 'PATCH', body: JSON.stringify({ canControl }) },
+    );
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+/** Host-only: takes a guest out of the jam. They cannot rejoin through the
+ * same link. Resolves to `null` when the API refuses or lacks the route. */
+export async function removeJamParticipant(
+  sessionId: string,
+  userId: string,
+): Promise<JamSession | null> {
+  if (mockJamActive()) {
+    return mockUpdateJam(sessionId, (session) => ({
+      ...session,
+      participants: session.participants.filter(
+        (participant) => participant.userId !== userId,
+      ),
+    }));
+  }
+  try {
+    const { data } = await requestJson<JamSession>(
+      `/api/v1/jam/${encodeURIComponent(sessionId)}/participants/${encodeURIComponent(userId)}`,
+      { method: 'DELETE' },
+    );
+    return data;
+  } catch {
+    return null;
+  }
+}
+
 export async function leaveJam(sessionId: string): Promise<void> {
+  if (mockJamActive()) {
+    return;
+  }
   await requestJson(`/api/v1/jam/${encodeURIComponent(sessionId)}/leave`, {
     method: 'POST',
   });
 }
 
 export async function endJam(sessionId: string): Promise<void> {
+  if (mockJamActive()) {
+    return;
+  }
   await requestJson(`/api/v1/jam/${encodeURIComponent(sessionId)}`, {
     method: 'DELETE',
   });
@@ -64,6 +147,10 @@ export function subscribeToJamEvents(
     onOpen?: () => void;
   },
 ): () => void {
+  if (mockJamActive()) {
+    const timer = setTimeout(() => handlers.onOpen?.(), 0);
+    return () => clearTimeout(timer);
+  }
   const source = new EventSource(
     `${apiBase()}/api/v1/jam/${encodeURIComponent(sessionId)}/events`,
     { withCredentials: true },

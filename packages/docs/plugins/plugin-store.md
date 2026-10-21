@@ -4,6 +4,10 @@ description: Browse, install, and manage plugins from the built-in plugin store.
 
 # Plugin store
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 Tahti Player has a built-in plugin store. Open Preferences from the sidebar, and go to Plugins, and you'll see two tabs: **Installed** and **Store**.
 
 ## Browsing the store
@@ -52,6 +56,6 @@ Dev plugins are never auto-updated. To update a dev plugin, edit the source and 
 
 ## Where plugins are stored
 
-Tahti Player copies all plugins (both store and dev) into a managed directory inside your [app data folder](../misc/platform-specific.md#appdata) at `plugins/{id}/{version}/`. The running code always comes from this managed copy.
+Tahti Player copies all plugins (both store and dev) into a managed directory inside your [app data folder](../user-manual/desktop/platform-notes.md#app-data) at `plugins/{id}/{version}/`. The running code always comes from this managed copy.
 
 For dev plugins, the original source folder is preserved and used when you click reload.

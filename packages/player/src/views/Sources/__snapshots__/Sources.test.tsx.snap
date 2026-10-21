@@ -3,7 +3,7 @@
 exports[`Sources view > (Snapshot) renders the view 1`] = `
 <DocumentFragment>
   <div
-    class="grid h-screen w-screen grid-rows-[auto_1fr_auto] overflow-hidden"
+    class="grid h-dvh w-screen grid-rows-[auto_1fr_auto] overflow-hidden"
   >
     <div>
       <header
@@ -41,11 +41,6 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
                   />
                 </svg>
               </span>
-              <span
-                class="leading-none uppercase"
-              >
-                TAHTI
-              </span>
             </span>
           </div>
           <div
@@ -54,7 +49,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
             <div>
               <button
                 aria-label="Back"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-disabled=""
                 data-headlessui-state="disabled"
                 disabled=""
@@ -82,7 +77,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
             <div>
               <button
                 aria-label="Forward"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-disabled=""
                 data-headlessui-state="disabled"
                 disabled=""
@@ -138,7 +133,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
             class="flex w-full flex-col gap-2"
           >
             <input
-              class="border-border text-foreground placeholder:text-foreground-secondary w-full transition-colors focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-none bg-background rounded-md border-(length:--border-width) h-8 px-8"
+              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none bg-background rounded-md border-(length:--border-width) h-8 px-8"
               data-headlessui-state=""
               data-testid="search-box"
               id="input-:r0:"
@@ -154,7 +149,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
           <button
             aria-checked="false"
             aria-label="Toggle theme"
-            class="border-border relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full border-(length:--border-width) transition-all focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-none data-checked:bg-primary bg-white data-disabled:cursor-not-allowed data-disabled:opacity-50 group justify-self-end"
+            class="border-border focus:ring-primary focus:ring-offset-background relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-(length:--border-width) transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none data-checked:bg-primary bg-background-secondary data-disabled:cursor-not-allowed data-disabled:opacity-50 group justify-self-end"
             data-headlessui-state=""
             id="headlessui-switch-:r2:"
             role="switch"
@@ -221,13 +216,13 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
         transition="[object Object]"
       >
         <span
-          class="flex flex-row items-center mb-2 justify-end"
+          class="flex shrink-0 flex-row items-center mb-3 justify-end"
         >
           <div>
             <button
               aria-label="Collapse panel"
               aria-pressed="true"
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
               data-headlessui-state=""
               data-testid="sidebar-toggle-left"
               type="button"
@@ -260,9 +255,10 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
           </div>
         </span>
         <div
-          class="flex flex-1 flex-col overflow-hidden"
+          class="flex min-h-0 flex-1 flex-col overflow-hidden pt-1"
         >
-          <div
+          <nav
+            aria-label="Main"
             class="flex flex-1 flex-col"
             data-testid="sidebar-navigation"
           >
@@ -632,7 +628,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
                 </span>
               </div>
             </div>
-          </div>
+          </nav>
         </div>
         <div
           class="absolute top-0 bottom-0 w-1 cursor-col-resize transition-colors right-0"
@@ -656,194 +652,51 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
               data-testid="sources-view"
             >
               <h1
-                class="mb-6 flex w-full flex-0 flex-row text-center text-3xl font-bold"
+                class="mb-6 flex w-full flex-0 flex-row text-3xl font-bold text-center"
                 data-testid="title"
               >
                 Sources
               </h1>
               <div
-                class="relative h-full flex min-h-0 w-full flex-1 flex-col"
+                animate="[object Object]"
+                class="flex min-h-0 w-full flex-1 flex-col"
+                transition="[object Object]"
               >
                 <div
-                  class="scrollbar-hide flex h-full w-full flex-col overflow-auto"
-                  style="scrollbar-width: none;"
+                  class="relative h-full flex min-h-0 w-full flex-1 flex-col"
                 >
                   <div
-                    class="flex h-full w-full items-start justify-center"
+                    class="scrollbar-hide flex h-full w-full flex-col overflow-auto"
+                    style="scrollbar-width: none;"
                   >
                     <div
-                      class="relative h-full w-full max-w-120 flex-1 gap-4 overflow-hidden"
+                      class="flex h-full w-full items-start justify-center"
                     >
                       <div
-                        class="scrollbar-hide flex h-full w-full flex-col overflow-auto"
-                        style="scrollbar-width: none;"
+                        class="relative h-full w-full max-w-120 flex-1 gap-4 overflow-hidden"
                       >
                         <div
-                          class="mb-6 px-2"
-                          data-testid="sources-section-metadata"
+                          class="scrollbar-hide flex h-full w-full flex-col overflow-auto"
+                          style="scrollbar-width: none;"
                         >
-                          <h3
-                            class="text-foreground mb-1 flex items-center gap-2 text-sm font-semibold"
-                          >
-                            <svg
-                              aria-hidden="true"
-                              class="lucide lucide-search"
-                              fill="none"
-                              height="14"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="14"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="m21 21-4.34-4.34"
-                              />
-                              <circle
-                                cx="11"
-                                cy="11"
-                                r="8"
-                              />
-                            </svg>
-                            Metadata
-                          </h3>
-                          <p
-                            class="text-foreground-secondary mb-2 text-sm"
-                          >
-                            Metadata sources provide information about artists, albums, and tracks. Search results, artist pages, and album details come from the active metadata source.
-                          </p>
                           <div
-                            class="relative flex w-full flex-col gap-2"
+                            class="mb-6 px-2"
+                            data-testid="sources-section-metadata"
                           >
-                            <button
-                              aria-expanded="false"
-                              aria-haspopup="listbox"
-                              class="border-border bg-background-input text-foreground relative flex w-full items-center justify-between rounded-md border-(length:--border-width) text-left transition-colors focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 px-3 py-2 text-sm"
-                              data-headlessui-state=""
-                              id="select-:r3:"
-                              type="button"
-                            >
-                              <span
-                                class="block truncate"
-                              >
-                                Acme Metadata
-                              </span>
-                              <span
-                                class="flex items-center"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  class="lucide lucide-chevron-down text-foreground transition-transform"
-                                  fill="none"
-                                  height="16"
-                                  stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
-                                  viewBox="0 0 24 24"
-                                  width="16"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="m6 9 6 6 6-6"
-                                  />
-                                </svg>
-                              </span>
-                            </button>
-                          </div>
-                        </div>
-                        <div
-                          class="mb-6 px-2"
-                          data-testid="sources-section-streaming"
-                        >
-                          <h3
-                            class="text-foreground mb-1 flex items-center gap-2 text-sm font-semibold"
-                          >
-                            <svg
-                              aria-hidden="true"
-                              class="lucide lucide-headphones"
-                              fill="none"
-                              height="14"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="14"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"
-                              />
-                            </svg>
-                            Streaming
-                          </h3>
-                          <p
-                            class="text-foreground-secondary mb-2 text-sm"
-                          >
-                            Streaming sources provide audio. When you play a track, the streaming source finds and delivers the audio stream.
-                          </p>
-                          <div
-                            class="relative flex w-full flex-col gap-2"
-                          >
-                            <button
-                              aria-expanded="false"
-                              aria-haspopup="listbox"
-                              class="border-border bg-background-input text-foreground relative flex w-full items-center justify-between rounded-md border-(length:--border-width) text-left transition-colors focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 px-3 py-2 text-sm"
-                              data-disabled=""
-                              data-headlessui-state="disabled"
-                              disabled=""
-                              id="select-:ra:"
-                              type="button"
-                            >
-                              <span
-                                class="block truncate"
-                              >
-                                Acme
-                              </span>
-                              <span
-                                class="flex items-center"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  class="lucide lucide-chevron-down text-foreground transition-transform"
-                                  fill="none"
-                                  height="16"
-                                  stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
-                                  viewBox="0 0 24 24"
-                                  width="16"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="m6 9 6 6 6-6"
-                                  />
-                                </svg>
-                              </span>
-                            </button>
-                          </div>
-                          <p
-                            class="text-foreground-secondary mt-4 text-sm leading-relaxed"
-                            data-testid="locked-reason"
-                          >
-                            <span
-                              class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-yellow text-accent-foreground gap-1 mx-1 align-middle"
+                            <h3
+                              class="text-foreground mb-1 flex items-center gap-2 text-sm font-semibold"
                             >
                               <svg
                                 aria-hidden="true"
                                 class="lucide lucide-search"
                                 fill="none"
-                                height="10"
+                                height="14"
                                 stroke="currentColor"
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
                                 viewBox="0 0 24 24"
-                                width="10"
+                                width="14"
                                 xmlns="http://www.w3.org/2000/svg"
                               >
                                 <path
@@ -855,150 +708,264 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
                                   r="8"
                                 />
                               </svg>
-                              Acme Metadata
-                            </span>
-                             metadata source requires 
-                            <span
-                              class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground gap-1 mx-1 align-middle"
+                              Metadata
+                            </h3>
+                            <p
+                              class="text-foreground-secondary mb-2 text-sm"
+                            >
+                              Metadata sources provide information about artists, albums, and tracks. Search results, artist pages, and album details come from the active metadata source.
+                            </p>
+                            <div
+                              class="relative flex w-full flex-col gap-2"
+                            >
+                              <button
+                                aria-expanded="false"
+                                aria-haspopup="listbox"
+                                class="border-border bg-background-input text-foreground focus-visible:ring-primary focus-visible:ring-offset-background relative flex w-full items-center justify-between rounded-md border-(length:--border-width) text-left transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 px-3 py-2 text-sm"
+                                data-headlessui-state=""
+                                id="select-:r3:"
+                                type="button"
+                              >
+                                <span
+                                  class="block truncate"
+                                >
+                                  Acme Metadata
+                                </span>
+                                <span
+                                  class="flex items-center"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="lucide lucide-chevron-down text-foreground transition-transform"
+                                    fill="none"
+                                    height="16"
+                                    stroke="currentColor"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    viewBox="0 0 24 24"
+                                    width="16"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="m6 9 6 6 6-6"
+                                    />
+                                  </svg>
+                                </span>
+                              </button>
+                            </div>
+                          </div>
+                          <div
+                            class="mb-6 px-2"
+                            data-testid="sources-section-streaming"
+                          >
+                            <h3
+                              class="text-foreground mb-1 flex items-center gap-2 text-sm font-semibold"
                             >
                               <svg
                                 aria-hidden="true"
                                 class="lucide lucide-headphones"
                                 fill="none"
-                                height="10"
+                                height="14"
                                 stroke="currentColor"
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
                                 viewBox="0 0 24 24"
-                                width="10"
+                                width="14"
                                 xmlns="http://www.w3.org/2000/svg"
                               >
                                 <path
                                   d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"
                                 />
                               </svg>
-                              Acme
-                            </span>
-                             streaming source.
-                          </p>
-                        </div>
-                        <div
-                          class="mb-6 px-2"
-                          data-testid="sources-section-discovery"
-                        >
-                          <h3
-                            class="text-foreground mb-1 flex items-center gap-2 text-sm font-semibold"
-                          >
-                            <svg
-                              aria-hidden="true"
-                              class="lucide lucide-boom-box"
-                              fill="none"
-                              height="14"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="14"
-                              xmlns="http://www.w3.org/2000/svg"
+                              Streaming
+                            </h3>
+                            <p
+                              class="text-foreground-secondary mb-2 text-sm"
                             >
-                              <path
-                                d="M4 9V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"
-                              />
-                              <path
-                                d="M8 8v1"
-                              />
-                              <path
-                                d="M12 8v1"
-                              />
-                              <path
-                                d="M16 8v1"
-                              />
-                              <rect
-                                height="12"
-                                rx="2"
-                                width="20"
-                                x="2"
-                                y="9"
-                              />
-                              <circle
-                                cx="8"
-                                cy="15"
-                                r="2"
-                              />
-                              <circle
-                                cx="16"
-                                cy="15"
-                                r="2"
-                              />
-                            </svg>
-                            Discovery
-                          </h3>
-                          <p
-                            class="text-foreground-secondary mb-2 text-sm"
-                          >
-                            Discovery sources recommend new tracks based on what you're listening to. Enable music discovery by using the boombox icon in the bottom bar.
-                          </p>
-                          <p
-                            class="text-foreground-secondary text-sm italic"
-                            data-testid="no-providers-message"
-                          >
-                            No providers installed
-                          </p>
-                        </div>
-                        <div
-                          class="mb-6 px-2"
-                          data-testid="sources-section-dashboard"
-                        >
-                          <h3
-                            class="text-foreground mb-1 flex items-center gap-2 text-sm font-semibold"
-                          >
-                            <svg
-                              aria-hidden="true"
-                              class="lucide lucide-gauge"
-                              fill="none"
-                              height="14"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="14"
-                              xmlns="http://www.w3.org/2000/svg"
+                              Streaming sources provide audio. When you play a track, the streaming source finds and delivers the audio stream.
+                            </p>
+                            <div
+                              class="relative flex w-full flex-col gap-2"
                             >
-                              <path
-                                d="m12 14 4-4"
-                              />
-                              <path
-                                d="M3.34 19a10 10 0 1 1 17.32 0"
-                              />
-                            </svg>
-                            Dashboard
-                          </h3>
-                          <p
-                            class="text-foreground-secondary mb-3 text-sm"
-                          >
-                            Dashboard sources provide personalized content like top tracks, new releases, and recommendations on the home screen.
-                          </p>
+                              <button
+                                aria-expanded="false"
+                                aria-haspopup="listbox"
+                                class="border-border bg-background-input text-foreground focus-visible:ring-primary focus-visible:ring-offset-background relative flex w-full items-center justify-between rounded-md border-(length:--border-width) text-left transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 px-3 py-2 text-sm"
+                                data-disabled=""
+                                data-headlessui-state="disabled"
+                                disabled=""
+                                id="select-:ra:"
+                                type="button"
+                              >
+                                <span
+                                  class="block truncate"
+                                >
+                                  Acme
+                                </span>
+                                <span
+                                  class="flex items-center"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="lucide lucide-chevron-down text-foreground transition-transform"
+                                    fill="none"
+                                    height="16"
+                                    stroke="currentColor"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    viewBox="0 0 24 24"
+                                    width="16"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="m6 9 6 6 6-6"
+                                    />
+                                  </svg>
+                                </span>
+                              </button>
+                            </div>
+                            <p
+                              class="text-foreground-secondary mt-4 text-sm leading-relaxed"
+                              data-testid="locked-reason"
+                            >
+                              <span
+                                class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-yellow text-accent-foreground gap-1 mx-1 align-middle"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  class="lucide lucide-search"
+                                  fill="none"
+                                  height="10"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  viewBox="0 0 24 24"
+                                  width="10"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="m21 21-4.34-4.34"
+                                  />
+                                  <circle
+                                    cx="11"
+                                    cy="11"
+                                    r="8"
+                                  />
+                                </svg>
+                                Acme Metadata
+                              </span>
+                               metadata source requires 
+                              <span
+                                class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground gap-1 mx-1 align-middle"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  class="lucide lucide-headphones"
+                                  fill="none"
+                                  height="10"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  viewBox="0 0 24 24"
+                                  width="10"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"
+                                  />
+                                </svg>
+                                Acme
+                              </span>
+                               streaming source.
+                            </p>
+                          </div>
                           <div
-                            class="flex flex-wrap gap-2"
+                            class="mb-6 px-2"
+                            data-testid="sources-section-discovery"
                           >
-                            <span
-                              class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-purple text-accent-foreground gap-1"
-                              data-testid="provider-list-item"
+                            <h3
+                              class="text-foreground mb-1 flex items-center gap-2 text-sm font-semibold"
                             >
                               <svg
                                 aria-hidden="true"
-                                class="lucide lucide-gauge"
+                                class="lucide lucide-boom-box"
                                 fill="none"
-                                height="10"
+                                height="14"
                                 stroke="currentColor"
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
                                 viewBox="0 0 24 24"
-                                width="10"
+                                width="14"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M4 9V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"
+                                />
+                                <path
+                                  d="M8 8v1"
+                                />
+                                <path
+                                  d="M12 8v1"
+                                />
+                                <path
+                                  d="M16 8v1"
+                                />
+                                <rect
+                                  height="12"
+                                  rx="2"
+                                  width="20"
+                                  x="2"
+                                  y="9"
+                                />
+                                <circle
+                                  cx="8"
+                                  cy="15"
+                                  r="2"
+                                />
+                                <circle
+                                  cx="16"
+                                  cy="15"
+                                  r="2"
+                                />
+                              </svg>
+                              Discovery
+                            </h3>
+                            <p
+                              class="text-foreground-secondary mb-2 text-sm"
+                            >
+                              Discovery sources recommend new tracks based on what you're listening to. Enable music discovery by using the boombox icon in the bottom bar.
+                            </p>
+                            <p
+                              class="text-foreground-secondary text-sm italic"
+                              data-testid="no-providers-message"
+                            >
+                              No providers installed
+                            </p>
+                          </div>
+                          <div
+                            class="mb-6 px-2"
+                            data-testid="sources-section-dashboard"
+                          >
+                            <h3
+                              class="text-foreground mb-1 flex items-center gap-2 text-sm font-semibold"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="lucide lucide-gauge"
+                                fill="none"
+                                height="14"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                                width="14"
                                 xmlns="http://www.w3.org/2000/svg"
                               >
                                 <path
@@ -1008,71 +975,62 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
                                   d="M3.34 19a10 10 0 1 1 17.32 0"
                                 />
                               </svg>
-                              Acme Dashboard
-                            </span>
-                          </div>
-                        </div>
-                        <div
-                          class="mb-6 px-2"
-                          data-testid="sources-section-playlists"
-                        >
-                          <h3
-                            class="text-foreground mb-1 flex items-center gap-2 text-sm font-semibold"
-                          >
-                            <svg
-                              aria-hidden="true"
-                              class="lucide lucide-list-music"
-                              fill="none"
-                              height="14"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                              width="14"
-                              xmlns="http://www.w3.org/2000/svg"
+                              Dashboard
+                            </h3>
+                            <p
+                              class="text-foreground-secondary mb-3 text-sm"
                             >
-                              <path
-                                d="M21 15V6"
-                              />
-                              <path
-                                d="M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"
-                              />
-                              <path
-                                d="M12 12H3"
-                              />
-                              <path
-                                d="M16 6H3"
-                              />
-                              <path
-                                d="M12 18H3"
-                              />
-                            </svg>
-                            Playlists
-                          </h3>
-                          <p
-                            class="text-foreground-secondary mb-3 text-sm"
-                          >
-                            Playlist sources let you import playlists from external services by URL.
-                          </p>
+                              Dashboard sources provide personalized content like top tracks, new releases, and recommendations on the home screen.
+                            </p>
+                            <div
+                              class="flex flex-wrap gap-2"
+                            >
+                              <span
+                                class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-purple text-accent-foreground gap-1"
+                                data-testid="provider-list-item"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  class="lucide lucide-gauge"
+                                  fill="none"
+                                  height="10"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  viewBox="0 0 24 24"
+                                  width="10"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="m12 14 4-4"
+                                  />
+                                  <path
+                                    d="M3.34 19a10 10 0 1 1 17.32 0"
+                                  />
+                                </svg>
+                                Acme Dashboard
+                              </span>
+                            </div>
+                          </div>
                           <div
-                            class="flex flex-wrap gap-2"
+                            class="mb-6 px-2"
+                            data-testid="sources-section-playlists"
                           >
-                            <span
-                              class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-green text-accent-foreground gap-1"
-                              data-testid="provider-list-item"
+                            <h3
+                              class="text-foreground mb-1 flex items-center gap-2 text-sm font-semibold"
                             >
                               <svg
                                 aria-hidden="true"
                                 class="lucide lucide-list-music"
                                 fill="none"
-                                height="10"
+                                height="14"
                                 stroke="currentColor"
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
                                 viewBox="0 0 24 24"
-                                width="10"
+                                width="14"
                                 xmlns="http://www.w3.org/2000/svg"
                               >
                                 <path
@@ -1091,8 +1049,52 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
                                   d="M12 18H3"
                                 />
                               </svg>
-                              Acme Playlists
-                            </span>
+                              Playlists
+                            </h3>
+                            <p
+                              class="text-foreground-secondary mb-3 text-sm"
+                            >
+                              Playlist sources let you import playlists from external services by URL.
+                            </p>
+                            <div
+                              class="flex flex-wrap gap-2"
+                            >
+                              <span
+                                class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-green text-accent-foreground gap-1"
+                                data-testid="provider-list-item"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  class="lucide lucide-list-music"
+                                  fill="none"
+                                  height="10"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  viewBox="0 0 24 24"
+                                  width="10"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M21 15V6"
+                                  />
+                                  <path
+                                    d="M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"
+                                  />
+                                  <path
+                                    d="M12 12H3"
+                                  />
+                                  <path
+                                    d="M16 6H3"
+                                  />
+                                  <path
+                                    d="M12 18H3"
+                                  />
+                                </svg>
+                                Acme Playlists
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1110,13 +1112,13 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
         transition="[object Object]"
       >
         <span
-          class="flex flex-row items-center mb-2 justify-start"
+          class="flex shrink-0 flex-row items-center mb-3 justify-start"
         >
           <div>
             <button
               aria-label="Collapse panel"
               aria-pressed="true"
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
               data-headlessui-state=""
               data-testid="sidebar-toggle-right"
               type="button"
@@ -1152,7 +1154,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
           />
         </span>
         <div
-          class="flex flex-1 flex-col overflow-hidden"
+          class="flex min-h-0 flex-1 flex-col overflow-hidden pt-1"
         >
           <div
             class="flex h-full min-h-0 flex-col items-center justify-center gap-4 p-8 text-center transition-opacity duration-150 opacity-100"
@@ -1292,12 +1294,14 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
               <div
                 class="text-foreground truncate text-sm font-semibold tracking-tight"
                 data-testid="now-playing-title"
+                title="No track playing"
               >
                 No track playing
               </div>
               <div
                 class="text-foreground-secondary truncate text-xs"
                 data-testid="player-now-playing-artist"
+                title=""
               />
             </div>
           </div>
@@ -1312,7 +1316,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
               <button
                 aria-label="Shuffle: off"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-shuffle-button"
                 type="button"
@@ -1351,7 +1355,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
             <div>
               <button
                 aria-label="Previous"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 type="button"
               >
@@ -1381,7 +1385,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
               <button
                 aria-label="Play"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green size-10 rounded-full shadow-md active:text-black"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green rounded-full shadow-md active:text-black size-10"
                 data-headlessui-state=""
                 data-testid="player-play-button"
                 type="button"
@@ -1408,7 +1412,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
             <div>
               <button
                 aria-label="Next"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-next-button"
                 type="button"
@@ -1439,7 +1443,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
               <button
                 aria-label="Repeat: off"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-repeat-button"
                 type="button"
@@ -1484,7 +1488,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
               <button
                 aria-label="Mute"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
                 data-headlessui-state=""
                 type="button"
               >
@@ -1549,8 +1553,8 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
                         style="width: 100%;"
                       />
                       <div
-                        class="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-                        style="left: 100%;"
+                        class="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+                        style="left: calc(100% - 20px);"
                       />
                     </div>
                   </div>
@@ -1580,6 +1584,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
       aria-label="Notifications alt+T"
       aria-live="polite"
       aria-relevant="additions text"
+      data-react-aria-top-layer="true"
       tabindex="-1"
     />
   </div>

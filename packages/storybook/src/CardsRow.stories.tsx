@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { CardsRow } from '@tahti-player/ui';
 
@@ -10,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Horizontally scrolling card row used on the desktop player dashboard. Orphan in tahti-web: Listen On air / Radio / artists and Discover Artists use CardGrid+Card (DirectoryArtistCardGrid) with per-item overlays CardsRowItem cannot represent. Missing states: per-item overlay/actions slot.',
+          'Horizontally scrolling card row used on the desktop player dashboard. `badgeColor` keys the title pill to section meaning (live = green, radio = cyan, history = yellow). Orphan in tahti-web: Listen On air / Radio / artists and Discover Artists use CardGrid+Card (DirectoryArtistCardGrid) with per-item overlays CardsRowItem cannot represent. Missing states: per-item overlay/actions slot.',
       },
     },
   },
@@ -96,6 +97,20 @@ export const WithItems: Story = {
   },
 };
 
+/** Phone width (375px): the filter and scroll buttons wrap under the title. */
+export const MobileView: Story = {
+  args: {
+    title: 'Your feed',
+    items,
+    labels,
+  },
+  render: (args) => (
+    <div style={{ width: 375 }}>
+      <CardsRow {...args} />
+    </div>
+  ),
+};
+
 export const WithBadge: Story = {
   args: {
     title: 'Top Albums',
@@ -110,6 +125,30 @@ export const Empty: Story = {
     title: 'Top Albums',
     items: [],
     labels,
+  },
+};
+
+export const NothingFound: Story = {
+  name: 'Nothing found (clear filter)',
+  args: {
+    title: 'Top Albums',
+    items,
+    labels: {
+      ...labels,
+      clearFilter: 'Clear filter',
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.type(
+      canvas.getByTestId('cards-row-filter'),
+      'zzzzz-no-match',
+    );
+    await expect(canvas.getByTestId('cards-row-nothing-found')).toBeVisible();
+    await userEvent.click(canvas.getByTestId('cards-row-nothing-found-clear'));
+    await expect(
+      canvas.queryByTestId('cards-row-nothing-found'),
+    ).not.toBeInTheDocument();
   },
 };
 

@@ -22,25 +22,25 @@ Discover stations and catalogue, then keep listening from the persistent player.
 
 #### Listener home
 
-<img src="./docs/readme-shots/listen-home.png" alt="Listener home" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/listen-home--light.png" /><img src="./docs/readme-shots/listen-home.png" alt="Listener home" width="1680" /></picture>
 
 Browse stations, releases and the active player. · [`/`](./docs/VIEW-GUIDE.md#listen-home)
 
 #### Radio directory
 
-<img src="./docs/readme-shots/listen-radio.png" alt="Radio directory" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/listen-radio--light.png" /><img src="./docs/readme-shots/listen-radio.png" alt="Radio directory" width="1680" /></picture>
 
 Find live channels and open a station. · [`/radio`](./docs/VIEW-GUIDE.md#listen-radio)
 
 #### Discover
 
-<img src="./docs/readme-shots/listen-discover.png" alt="Discover" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/listen-discover--light.png" /><img src="./docs/readme-shots/listen-discover.png" alt="Discover" width="1680" /></picture>
 
 Explore tracks, artists and collections. · [`/discover`](./docs/VIEW-GUIDE.md#listen-discover)
 
 #### Public channel / Aurora
 
-<img src="./docs/readme-shots/public-channel-aurora.png" alt="Public channel / Aurora" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/public-channel-aurora--light.png" /><img src="./docs/readme-shots/public-channel-aurora.png" alt="Public channel / Aurora" width="1680" /></picture>
 
 A public artist channel with the Aurora visualizer. · [`/channel/demo`](./docs/VIEW-GUIDE.md#public-channel-aurora)
 
@@ -52,25 +52,25 @@ Upload, organise sounds and releases, and prepare catalogue for the public chann
 
 #### Studio / Library / Sounds
 
-<img src="./docs/readme-shots/studio-sounds.png" alt="Studio / Library / Sounds" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/studio-sounds--light.png" /><img src="./docs/readme-shots/studio-sounds.png" alt="Studio / Library / Sounds" width="1680" /></picture>
 
 Filter, sort, play and edit sound content. · [`/studio/sounds`](./docs/VIEW-GUIDE.md#studio-sounds)
 
 #### Studio / Library / Releases
 
-<img src="./docs/readme-shots/studio-releases.png" alt="Studio / Library / Releases" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/studio-releases--light.png" /><img src="./docs/readme-shots/studio-releases.png" alt="Studio / Library / Releases" width="1680" /></picture>
 
 Manage singles, EPs and albums. · [`/studio/releases`](./docs/VIEW-GUIDE.md#studio-releases)
 
 #### Studio / Library / Upload
 
-<img src="./docs/readme-shots/studio-upload.png" alt="Studio / Library / Upload" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/studio-upload--light.png" /><img src="./docs/readme-shots/studio-upload.png" alt="Studio / Library / Upload" width="1680" /></picture>
 
 Add tracks, releases, clips and imports. · [`/library/upload`](./docs/VIEW-GUIDE.md#studio-upload)
 
 #### Studio / Library / Collections
 
-<img src="./docs/readme-shots/studio-collections.png" alt="Studio / Library / Collections" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/studio-collections--light.png" /><img src="./docs/readme-shots/studio-collections.png" alt="Studio / Library / Collections" width="1680" /></picture>
 
 Create and browse organized collections. · [`/library/collections`](./docs/VIEW-GUIDE.md#studio-collections)
 
@@ -82,25 +82,25 @@ Go live, programme the schedule, and run channel / radio controls.
 
 #### Studio / Perform / Go live
 
-<img src="./docs/readme-shots/studio-go-live.png" alt="Studio / Perform / Go live" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/studio-go-live--light.png" /><img src="./docs/readme-shots/studio-go-live.png" alt="Studio / Perform / Go live" width="1680" /></picture>
 
 Run pre-flight, rotation and live broadcast controls. · [`/studio/go-live`](./docs/VIEW-GUIDE.md#studio-go-live)
 
 #### Studio / Perform / Schedule
 
-<img src="./docs/readme-shots/studio-schedule.png" alt="Studio / Perform / Schedule" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/studio-schedule--light.png" /><img src="./docs/readme-shots/studio-schedule.png" alt="Studio / Perform / Schedule" width="1680" /></picture>
 
 Plan broadcasts and inspect analytics. · [`/studio/schedule`](./docs/VIEW-GUIDE.md#studio-schedule)
 
 #### Studio / Manage / Radio
 
-<img src="./docs/readme-shots/studio-radio.png" alt="Studio / Manage / Radio" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/studio-radio--light.png" /><img src="./docs/readme-shots/studio-radio.png" alt="Studio / Manage / Radio" width="1680" /></picture>
 
 Control stream statistics and 24/7 rotation. · [`/studio/channel?tab=radio`](./docs/VIEW-GUIDE.md#studio-radio)
 
 #### Studio / Branding
 
-<img src="./docs/readme-shots/studio-branding.png" alt="Studio / Branding" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/studio-branding--light.png" /><img src="./docs/readme-shots/studio-branding.png" alt="Studio / Branding" width="1680" /></picture>
 
 Design channel look, artwork and public presentation. · [`/studio/branding`](./docs/VIEW-GUIDE.md#studio-branding)
 
@@ -112,25 +112,25 @@ Artist identity, audience, messages and community governance.
 
 #### Artist profile
 
-<img src="./docs/readme-shots/public-artist.png" alt="Artist profile" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/public-artist--light.png" /><img src="./docs/readme-shots/public-artist.png" alt="Artist profile" width="1680" /></picture>
 
 See the artist identity, story, people and public catalogue. · [`/u/demo`](./docs/VIEW-GUIDE.md#public-artist)
 
 #### Studio / Audience
 
-<img src="./docs/readme-shots/studio-audience.png" alt="Studio / Audience" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/studio-audience--light.png" /><img src="./docs/readme-shots/studio-audience.png" alt="Studio / Audience" width="1680" /></picture>
 
 Manage audience relationships and fan revenue. · [`/studio/revenue`](./docs/VIEW-GUIDE.md#studio-audience)
 
 #### Messages
 
-<img src="./docs/readme-shots/listener-messages.png" alt="Messages" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/listener-messages--light.png" /><img src="./docs/readme-shots/listener-messages.png" alt="Messages" width="1680" /></picture>
 
 Open conversations and highlighted message threads. · [`/messages`](./docs/VIEW-GUIDE.md#listener-messages)
 
 #### Governance
 
-<img src="./docs/readme-shots/governance.png" alt="Governance" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/governance--light.png" /><img src="./docs/readme-shots/governance.png" alt="Governance" width="1680" /></picture>
 
 Review proposals, voting and community decisions. · [`/governance`](./docs/VIEW-GUIDE.md#governance)
 
@@ -142,25 +142,25 @@ Board tools for health, moderation queues and live stream oversight.
 
 #### Admin / Overview
 
-<img src="./docs/readme-shots/admin-overview.png" alt="Admin / Overview" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/admin-overview--light.png" /><img src="./docs/readme-shots/admin-overview.png" alt="Admin / Overview" width="1680" /></picture>
 
 Monitor platform needs action, streams and system status. · [`/admin`](./docs/VIEW-GUIDE.md#admin-overview)
 
 #### Admin / Moderation / Support
 
-<img src="./docs/readme-shots/admin-moderation.png" alt="Admin / Moderation / Support" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/admin-moderation--light.png" /><img src="./docs/readme-shots/admin-moderation.png" alt="Admin / Moderation / Support" width="1680" /></picture>
 
 Triage moderation queues. · [`/admin/moderation`](./docs/VIEW-GUIDE.md#admin-moderation)
 
 #### Admin / Streams
 
-<img src="./docs/readme-shots/admin-streams.png" alt="Admin / Streams" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/admin-streams--light.png" /><img src="./docs/readme-shots/admin-streams.png" alt="Admin / Streams" width="1680" /></picture>
 
 Manage streams, listeners and controls. · [`/admin/streams`](./docs/VIEW-GUIDE.md#admin-streams)
 
 #### Admin / Status
 
-<img src="./docs/readme-shots/admin-status.png" alt="Admin / Status" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/admin-status--light.png" /><img src="./docs/readme-shots/admin-status.png" alt="Admin / Status" width="1680" /></picture>
 
 View platform health alongside operational data. · [`/admin/status`](./docs/VIEW-GUIDE.md#admin-status)
 
@@ -176,7 +176,7 @@ More in this area: see the [full view guide](./docs/VIEW-GUIDE.md).
 
 ### Listen page
 
-- **Radio** — curated internet radio stations in the main player bar, either enabled for everyone by a board admin or added by you.
+- **Radio** — curated internet radio stations in the main player bar, either enabled for everyone by a board admin or added by you: pick from the catalog, search Radio Browser, or use Add URL for a stream or M3U address. Each catalog station has a page at `/radio/station/:id`, and the player bar shows its programme and track where the station publishes them.
 - **Listen** — inline listener widgets played through the provider's own official embedded player: SoundCloud, YouTube, Spotify, hearthis.at, Bandcamp.
 - **Discovery** — sandboxed, admin-curated third-party embeds on the Listen page, visible only to the listener who enables them.
 
@@ -196,6 +196,7 @@ More in this area: see the [full view guide](./docs/VIEW-GUIDE.md).
 
 ```bash
 pnpm dev
+VITE_FORCE_MOCK=1 pnpm dev:tahti   # offline: demo@tahti.live (artist) or listener@tahti.live (listener), any password
 pnpm storybook
 pnpm --filter @tahti-player/tahti-web type-check
 pnpm --filter @tahti-player/tahti-web lint
@@ -208,6 +209,18 @@ README_GUIDE_BASE_URL=http://127.0.0.1:5180 node packages/tahti-web/scripts/capt
 ```
 
 That rewrites the README feature highlights and the full [`docs/VIEW-GUIDE.md`](./docs/VIEW-GUIDE.md) index from 1680×1050 viewport captures (mock content, reduced motion).
+
+The guide and the screen atlas are captured as the artist/board account. To see the app as a plain listener, and to check what a listener and a signed-out visitor get, run against the mock app:
+
+```bash
+# listener@tahti.live on the public and listener pages, plus the Studio and Admin gates;
+# shots go to docs/listener-shots/ (not committed), never into the atlas
+MAP_BASE_URL=http://127.0.0.1:5173 MAP_ACCOUNT=listener node packages/tahti-web/scripts/capture-map-screens.mjs
+# fails on sign-in prompts, page errors, owner tools or the email address shown to a listener
+BASE=http://127.0.0.1:5173 node packages/tahti-web/scripts/audit-signed-out.mjs
+```
+
+See [`docs/SCREEN-ATLAS.md`](./docs/SCREEN-ATLAS.md#listener-pass) for what each pass covers.
 
 ## Documentation and architecture
 

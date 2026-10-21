@@ -2,8 +2,13 @@
   --background: oklch(0.98 0.01 340);
   --primary: oklch(0.74 0.15 305);
   --secondary: oklch(0.91 0.06 305);
+  --background-input: var(--secondary);
+  --background-secondary: oklch(0.955 0.02 305);
+  --foreground: oklch(0.24 0.05 305);
+  --border: oklch(0.22 0.04 305);
   --secondary-foreground: oklch(0.24 0.06 305);
   --foreground-secondary: oklch(0.42 0.1 305);
+  --primary-strong: oklch(0.56 0.15 305);
 }
 
 :root[data-theme-id='nuclear:aurora'][data-theme='dark'] {
@@ -17,4 +22,5 @@
   --foreground: oklch(0.9 0.008 305);
   --foreground-secondary: oklch(0.78 0.1 305);
   --border: oklch(0.48 0.04 305);
+  --primary-strong: var(--primary);
 }

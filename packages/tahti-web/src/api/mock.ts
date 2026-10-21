@@ -1,3 +1,4 @@
+import { toEmbedPlaybackProvider } from '../lib/embedSrc';
 import {
   getMockBackgroundColorSchemeJson,
   getMockBackgroundVisualPreset,
@@ -16,6 +17,9 @@ import {
   getMockVisualPreset,
   getMockVisualSettingsJson,
 } from './channel-design';
+import { mockChatStoreMessages } from './mock-chat-store';
+import { isMockChannelLive } from './mock-live-session';
+import { mockFixture } from './mock-overrides';
 import { getMockFreeSubscriptionsEnabled } from './mock-profile-preferences';
 import type {
   Announcement,
@@ -380,14 +384,15 @@ const MOCK_DIRECTORY: ChannelDirectoryResponse = {
   // tahti-radio is featured via fetchRadioStation on Listen — not listed here.
 };
 
-export function mockDirectory(): ChannelDirectoryResponse {
+function buildMockDirectory(): ChannelDirectoryResponse {
   return MOCK_DIRECTORY;
 }
 
 /** Offline stand-in for GET /api/v1/search — matches artists from the mock
- * directory and tracks from each of their mock archives. No mock collection
- * fixture list exists yet, so collections always come back empty offline. */
-export function mockSearch(
+ * directory, tracks from each archive, and each artist's Favorites vault
+ * when the query hits the collection name/slug (not the owner — owner
+ * matches stay under Artists). */
+function buildMockSearch(
   q: string,
   type: 'all' | 'tracks' | 'artists' | 'collections' = 'all',
 ): SearchResponse {
@@ -422,7 +427,29 @@ export function mockSearch(
               coverUrl: track.bannerUrl ?? null,
             })),
         );
-  return { tracks, artists, collections: [] };
+  const collections =
+    type === 'tracks' || type === 'artists'
+      ? []
+      : MOCK_DIRECTORY.items.flatMap((item) => {
+          const slug = mockFavoritesSlug(item.username);
+          const name = 'Favorites vault';
+          const haystack = [name, slug, 'playlist', 'favorites', 'vault']
+            .join(' ')
+            .toLowerCase();
+          if (!haystack.includes(needle)) {
+            return [];
+          }
+          return [
+            {
+              slug,
+              name,
+              coverUrl: null as string | null,
+              ownerUsername: item.username,
+              ownerDisplayName: item.displayName,
+            },
+          ];
+        });
+  return { tracks, artists, collections };
 }
 
 function stationContent(slug: string): StationContent {
@@ -454,16 +481,21 @@ function stationContent(slug: string): StationContent {
 const isCuratedStation = (key: string) =>
   Object.prototype.hasOwnProperty.call(STATION_CONTENT, key);
 
-export function mockChannel(slug: string): PublicChannel {
+function buildMockChannel(slug: string): PublicChannel {
   const isRadio = slug === TAHTI_RADIO_SLUG;
   const contentKey = isRadio ? 'northern-lights' : slug;
   const content = stationContent(contentKey);
-  const live = LIVE_SLUGS.has(slug);
+  // Catalog radio + northern-lights stay live; artist go-live also lights
+  // the session slug persisted in mock-live-session (survives reload).
+  const live = LIVE_SLUGS.has(slug) || isMockChannelLive(slug);
   const usesOwnDesign = !isRadio && !isCuratedStation(contentKey);
   const ownColorScheme = getMockChannelColorScheme();
   return {
     slug,
     state: live ? 'LIVE' : 'OFFLINE',
+    channelKind: isRadio ? 'RADIO' : 'ARTIST',
+    nextBroadcastNote: isRadio ? 'Weekly shows, all week long' : null,
+    nextBroadcastAt: null,
     // Tahti Radio's "LIVE" is the always-on 24/7 rotation, not a real
     // broadcast -- mirrors the real backend's signalConnected contract
     // (an ingest signal, not just channel state) so mock mode exercises
@@ -558,7 +590,7 @@ export function mockChannel(slug: string): PublicChannel {
 }
 
 /** Member-relay snapshot (GET /api/v1/radio) — distinct from the always-on station. */
-export function mockRadio(): RadioNowPlaying {
+function buildMockRadio(): RadioNowPlaying {
   return {
     live: true,
     channel: {
@@ -576,6 +608,7 @@ export function mockRadioRecentlyPlayed(): RadioRecentlyPlayedItem[] {
   return [
     {
       id: 'mock-rp-1',
+      soundId: 'mock-rp-1',
       title: 'Aurora Drift',
       artistName: 'Northern Lights',
       artistUsername: 'northern-lights',
@@ -585,6 +618,7 @@ export function mockRadioRecentlyPlayed(): RadioRecentlyPlayedItem[] {
     },
     {
       id: 'mock-rp-2',
+      soundId: 'mock-rp-2',
       title: 'Route 550',
       artistName: 'Midnight Cartography',
       artistUsername: 'midnight-cartography',
@@ -594,6 +628,7 @@ export function mockRadioRecentlyPlayed(): RadioRecentlyPlayedItem[] {
     },
     {
       id: 'mock-rp-3',
+      soundId: 'mock-rp-3',
       title: 'Boathouse Session — Set 1',
       artistName: 'Saimaa Sessions',
       artistUsername: 'saimaa-sessions',
@@ -603,6 +638,7 @@ export function mockRadioRecentlyPlayed(): RadioRecentlyPlayedItem[] {
     },
     {
       id: 'mock-rp-4',
+      soundId: 'mock-rp-4',
       title: 'Echo Chamber Cypher',
       artistName: 'Kaiku Collective',
       artistUsername: 'kaiku-collective',
@@ -612,6 +648,7 @@ export function mockRadioRecentlyPlayed(): RadioRecentlyPlayedItem[] {
     },
     {
       id: 'mock-rp-5',
+      soundId: 'mock-rp-5',
       title: 'CC0 Selects Cut',
       artistName: 'Tahti Selects',
       artistUsername: null,
@@ -621,6 +658,11 @@ export function mockRadioRecentlyPlayed(): RadioRecentlyPlayedItem[] {
     },
   ];
 }
+
+/** Offline capture fixtures for gated public track pages (`/t/$id`). */
+export const MOCK_GATED_SUBSCRIBERS_TRACK_ID = 'northern-lights-archive-6';
+export const MOCK_GATED_PURCHASE_TRACK_ID = 'northern-lights-archive-7';
+export const MOCK_GATED_PURCHASE_TIER_ID = 'mock-tier-northern-lights-unlock';
 
 const GENRE_TAGS: Record<string, string> = {
   ambient: 'ambient',
@@ -640,7 +682,7 @@ const GENRE_TAGS: Record<string, string> = {
   acoustic: 'folk',
 };
 
-export function mockSoundItems(slug: string): ChannelSoundItem[] {
+function buildMockSoundItems(slug: string): ChannelSoundItem[] {
   const channel = mockChannel(slug);
   const content = stationContent(slug);
   const artist = channel.user.displayName;
@@ -653,17 +695,44 @@ export function mockSoundItems(slug: string): ChannelSoundItem[] {
     '2026-04-18T21:00:00.000Z',
     '2026-03-22T19:15:00.000Z',
   ];
-  return content.trackTitles.map((title, i) => ({
+  const items = content.trackTitles.map((title, i) => ({
     id: `${slug}-archive-${i + 1}`,
     title,
     artistName: artist,
     durationSec: durations[i % durations.length],
-    bannerUrl: content.trackArtwork?.[i] ?? null,
+    bannerUrl:
+      content.trackArtwork?.[i] ??
+      '/mock/northern-lights/cover-first-light.svg',
     audioUrl: i === durations.length - 1 && i % 2 === 0 ? DEMO_HLS : DEMO_MP3,
     genre: primaryGenre,
     createdAt: dates[i % dates.length],
     ...(i === 0 ? { pinnedAt: '2026-07-15T12:00:00.000Z' } : {}),
   }));
+  if (slug === 'northern-lights') {
+    items.push(
+      {
+        id: MOCK_GATED_SUBSCRIBERS_TRACK_ID,
+        title: 'Fan subscribers only (demo gate)',
+        artistName: artist,
+        durationSec: 245,
+        bannerUrl: '/mock/northern-lights/cover-first-light.svg',
+        audioUrl: DEMO_MP3,
+        genre: primaryGenre,
+        createdAt: '2026-02-01T18:00:00.000Z',
+      },
+      {
+        id: MOCK_GATED_PURCHASE_TRACK_ID,
+        title: 'Buy to listen (demo gate)',
+        artistName: artist,
+        durationSec: 198,
+        bannerUrl: '/mock/northern-lights/cover-first-light.svg',
+        audioUrl: DEMO_MP3,
+        genre: primaryGenre,
+        createdAt: '2026-02-02T18:00:00.000Z',
+      },
+    );
+  }
+  return items;
 }
 
 /** Stand-in for the real M27 ingest-time waveform decode — a smooth,
@@ -710,7 +779,7 @@ const MOCK_SET_TRACKLIST = [
   },
 ];
 
-export function mockTrackComments(id: string): TrackComment[] {
+function buildMockTrackComments(id: string): TrackComment[] {
   if (!id.endsWith('-archive-1')) {
     return [];
   }
@@ -736,7 +805,7 @@ export function mockTrackComments(id: string): TrackComment[] {
 
 /** GET /api/tracks/:id mock — reconstructs the item from its channel's
  * archive list, since mock ids encode the owning slug (`${slug}-archive-N`). */
-export function mockTrackDetail(id: string): PublicTrackDetail | null {
+function buildMockTrackDetail(id: string): PublicTrackDetail | null {
   const slug = id.replace(/-archive-\d+$/, '');
   if (!slug || slug === id) {
     return null;
@@ -751,6 +820,18 @@ export function mockTrackDetail(id: string): PublicTrackDetail | null {
   // provider's own widget supplies the audio on the public track page.
   const isSpotifyEmbed = id.endsWith('-archive-4');
   const isBandcampEmbed = id.endsWith('-archive-5');
+  const accessExtras =
+    id === MOCK_GATED_SUBSCRIBERS_TRACK_ID
+      ? { accessMode: 'SUBSCRIBERS_ONLY' as const }
+      : id === MOCK_GATED_PURCHASE_TRACK_ID
+        ? {
+            accessMode: 'PURCHASE' as const,
+            purchaseTierId: MOCK_GATED_PURCHASE_TIER_ID,
+            purchaseTierName: 'Single unlock (demo)',
+            purchaseTierPriceCents: 300,
+            purchaseTierPriceOptional: false,
+          }
+        : {};
   return {
     id: item.id,
     title: item.title,
@@ -796,6 +877,7 @@ export function mockTrackDetail(id: string): PublicTrackDetail | null {
     peaks: mockPeaks(item.id, isSet ? 220 : 100),
     commentCount: isSet ? 3 : 0,
     downloadCount: isSet ? 13 : 0,
+    ...accessExtras,
   };
 }
 
@@ -827,7 +909,7 @@ function discoverTrackPool(): DiscoverTrackItem[] {
   );
 }
 
-export function mockTopTracks(sort: 'asc' | 'desc'): DiscoverTrackItem[] {
+function buildMockTopTracks(sort: 'asc' | 'desc'): DiscoverTrackItem[] {
   const pool = discoverTrackPool().map((track, i) => ({
     ...track,
     listens: 340 - i * 37,
@@ -838,7 +920,7 @@ export function mockTopTracks(sort: 'asc' | 'desc'): DiscoverTrackItem[] {
   return pool;
 }
 
-export function mockLatestTracks(): DiscoverTrackItem[] {
+function buildMockLatestTracks(): DiscoverTrackItem[] {
   const slugs = ['northern-lights', 'demo'];
   return slugs
     .flatMap((slug) =>
@@ -862,11 +944,12 @@ export function mockNewToYou(): {
   };
 }
 
-export function mockProfile(username: string): PublicProfile {
+function buildMockProfile(username: string): PublicProfile {
   const channel = mockChannel(username);
   const content = stationContent(username);
   const archive = mockSoundItems(username);
   const releaseSlugFor = (i: number) => `${username}-release-${i + 1}`;
+  const favoritesSlug = mockFavoritesSlug(username);
 
   const releases = content.releases.map((rel, i) => ({
     id: `${username}-rel-${i + 1}`,
@@ -900,6 +983,7 @@ export function mockProfile(username: string): PublicProfile {
       tipJarUrl: null,
       tier: 'FREE',
       pronouns: content.pronouns ?? null,
+      countryCode: 'FI',
       followerCount: content.followerCount,
       followingCount: 0,
       freeSubscriptionsEnabled: getMockFreeSubscriptionsEnabled(
@@ -933,16 +1017,20 @@ export function mockProfile(username: string): PublicProfile {
         id: 'tier-1',
         name: 'Supporter',
         amountCents: 500,
+        description: 'Keeps the stream running.',
+        perks: ['FAN_CHAT'],
       },
       {
         id: 'tier-2',
         name: 'Patron',
         amountCents: 1500,
+        description: null,
+        perks: ['FAN_CHAT', 'FAN_NEWSLETTER', 'Monthly thank-you mix'],
       },
     ],
     collections: [
       {
-        slug: 'favorites-vault',
+        slug: favoritesSlug,
         name: 'Favorites vault',
         type: 'PLAYLIST',
         style: 'LIST',
@@ -950,8 +1038,8 @@ export function mockProfile(username: string): PublicProfile {
         coverUrl: null,
         isFeatured: true,
         itemCount: 2,
-        url: `/u/${username}/c/favorites-vault`,
-        rssUrl: `/api/v1/collections/favorites-vault/rss.xml`,
+        url: `/u/${username}/c/${favoritesSlug}`,
+        rssUrl: `/api/v1/collections/${favoritesSlug}/rss.xml`,
       },
     ],
     links: {
@@ -964,14 +1052,44 @@ export function mockProfile(username: string): PublicProfile {
   };
 }
 
-export function mockCollection(
+/** Collection slugs are global in the API, so each mock artist's vault
+ * gets its own; Northern Lights keeps the bare one the fixtures use. */
+function mockFavoritesSlug(username: string): string {
+  return username === 'northern-lights'
+    ? 'favorites-vault'
+    : `${username}-favorites-vault`;
+}
+
+function buildMockCollection(
   slug: string,
-  username = 'northern-lights',
+  username = slug.match(/^(.+)-favorites-vault$/)?.[1] ?? 'northern-lights',
 ): PublicCollection {
+  if (slug === 'empty-vault' || slug.endsWith('-empty-vault')) {
+    const owner = slug.endsWith('-empty-vault')
+      ? slug.slice(0, -'-empty-vault'.length)
+      : username;
+    return {
+      slug,
+      name: 'Empty vault',
+      description: 'A playlist with no tracks yet.',
+      coverUrl: null,
+      isPublic: true,
+      collaborative: false,
+      user: {
+        username: owner,
+        displayName: mockChannel(owner).user.displayName,
+      },
+      items: [],
+      links: {
+        page: `https://tahti.live/u/${owner}/c/${slug}`,
+        rss: `/api/v1/collections/${slug}/rss.xml`,
+      },
+    };
+  }
   const archive = mockSoundItems(username);
   return {
     slug,
-    name: slug === 'favorites-vault' ? 'Favorites vault' : slug,
+    name: slug.endsWith('favorites-vault') ? 'Favorites vault' : slug,
     description: 'Mock public collection for the Nuclear × Tahti POC.',
     coverUrl: null,
     isPublic: true,
@@ -1019,11 +1137,13 @@ export function mockCollection(
   };
 }
 
-export function mockSmartLink(smartLinkSlug: string): SmartLinkView {
+function buildMockSmartLink(smartLinkSlug: string): SmartLinkView {
   const username =
     smartLinkSlug.match(/^(.*)-release-\d+$/)?.[1] ?? 'northern-lights';
   const profile = mockProfile(username);
-  const release = profile.releases[0]!;
+  const release =
+    profile.releases.find((r) => r.smartLinkSlug === smartLinkSlug) ??
+    profile.releases[0]!;
   return {
     release: {
       id: release.id,
@@ -1035,9 +1155,14 @@ export function mockSmartLink(smartLinkSlug: string): SmartLinkView {
       description: release.description,
       smartLinkSlug,
       tracks: (release.tracks ?? []).map((t) => ({
+        id: `${release.id}-track-${t.position}`,
+        soundId: t.soundId ?? null,
         title: t.title,
         position: t.position,
+        durationSec: t.durationSec ?? null,
         isrc: null,
+        audioUrl: t.playUrl ?? null,
+        gate: null,
       })),
     },
     artist: {
@@ -1078,7 +1203,7 @@ export function mockVenues(): VenueDirectoryItem[] {
   ];
 }
 
-export function mockVenueProfile(slug: string): VenueProfile | null {
+function buildMockVenueProfile(slug: string): VenueProfile | null {
   const base = mockVenues().find((v) => v.slug === slug);
   if (!base) {
     return null;
@@ -1146,14 +1271,11 @@ export function soundItemToPlayable(
   channelSlug?: string,
 ): TahtiPlayable | null {
   if (!item.audioUrl) {
-    // EMBED_ONLY items (never hosted here) have no audioUrl at all — only
-    // hearthis.at has a shared-player-wide embed widget (the bottom bar
-    // special-cases `embed.provider: 'hearthis'`, see playableFromHearthis/
-    // TrackDetailView's playableFromDetail); Mixcloud/Spotify/Bandcamp only
-    // ever play through a page's own inline widget, which this generic
-    // channel-listing table doesn't have, so those still fall through to
-    // "not playable here" below.
-    if (item.embedProvider === 'HEARTHIS' && item.embedUri) {
+    // EMBED_ONLY items (never hosted here) have no audioUrl — the provider's
+    // own widget supplies the audio; every supported provider yields a
+    // playable row in the unified listen surface, played through the shared
+    // player bar like any other track.
+    if (item.embedProvider && item.embedUri) {
       return {
         id: `sound:${item.id}`,
         kind: 'sound',
@@ -1163,10 +1285,13 @@ export function soundItemToPlayable(
         streamUrl: '',
         protocol: 'https',
         channelSlug,
-        sourceProvider: 'hearthis',
+        sourceProvider: toEmbedPlaybackProvider(item.embedProvider),
         durationSec: item.durationSec,
         releaseDate: item.createdAt ?? null,
-        embed: { provider: 'hearthis', embedUri: item.embedUri },
+        embed: {
+          provider: toEmbedPlaybackProvider(item.embedProvider),
+          embedUri: item.embedUri,
+        },
       };
     }
     return null;
@@ -1189,6 +1314,7 @@ export function soundItemToPlayable(
 
 export function mockChatAccess(): ChatAccess {
   return {
+    chatEnabled: true,
     fanChatEnabled: true,
     isSupporter: false,
     canJoinFanChat: false,
@@ -1197,7 +1323,7 @@ export function mockChatAccess(): ChatAccess {
   };
 }
 
-export function mockChatHistory(slug: string): ChatMessage[] {
+function buildMockChatHistory(slug: string): ChatMessage[] {
   const now = Date.now();
   return [
     {
@@ -1236,7 +1362,7 @@ export function mockAuthUser(overrides?: Partial<AuthUser>): AuthUser {
   };
 }
 
-export function mockFanTiers(username: string): FanTiersResponse {
+function buildMockFanTiers(username: string): FanTiersResponse {
   const channel = mockChannel(username);
   return {
     artist: {
@@ -1354,7 +1480,7 @@ export function mockTransparencyResolutions(
   ];
 }
 
-export function mockAnnouncements(): Announcement[] {
+function buildMockAnnouncements(): Announcement[] {
   return [
     {
       id: '3',
@@ -1395,7 +1521,7 @@ function feedArtist(slug: string) {
 /** GET /api/me/feed — recent posts/tracks/releases from artists the member
  * follows. Mixes a few of the richer mock stations so it reads like a real
  * timeline instead of one repeated fixture. */
-export function mockFeed(): FeedResponse {
+function buildMockFeed(): FeedResponse {
   const moonlight = stationContent('dj-moonlight');
   const cartography = stationContent('midnight-cartography');
   return {
@@ -1464,4 +1590,92 @@ export function mockFeed(): FeedResponse {
       },
     ],
   };
+}
+
+export function mockDirectory(): ChannelDirectoryResponse {
+  return mockFixture('directory', buildMockDirectory());
+}
+
+export function mockSearch(
+  q: string,
+  type: 'all' | 'tracks' | 'artists' | 'collections' = 'all',
+): SearchResponse {
+  return mockFixture('search', buildMockSearch(q, type), q, type);
+}
+
+export function mockChannel(slug: string): PublicChannel {
+  return mockFixture('channel', buildMockChannel(slug), slug);
+}
+
+export function mockRadio(): RadioNowPlaying {
+  return mockFixture('radio', buildMockRadio());
+}
+
+export function mockSoundItems(slug: string): ChannelSoundItem[] {
+  return mockFixture('soundItems', buildMockSoundItems(slug), slug);
+}
+
+export function mockTrackComments(id: string): TrackComment[] {
+  return mockFixture('trackComments', buildMockTrackComments(id), id);
+}
+
+export function mockTrackDetail(id: string): PublicTrackDetail | null {
+  return mockFixture('trackDetail', buildMockTrackDetail(id), id);
+}
+
+export function mockProfile(username: string): PublicProfile {
+  return mockFixture('profile', buildMockProfile(username), username);
+}
+
+export function mockCollection(
+  slug: string,
+  username = slug.match(/^(.+)-favorites-vault$/)?.[1] ?? 'northern-lights',
+): PublicCollection {
+  return mockFixture(
+    'collection',
+    buildMockCollection(slug, username),
+    slug,
+    username,
+  );
+}
+
+export function mockSmartLink(smartLinkSlug: string): SmartLinkView {
+  return mockFixture(
+    'smartLink',
+    buildMockSmartLink(smartLinkSlug),
+    smartLinkSlug,
+  );
+}
+
+export function mockVenueProfile(slug: string): VenueProfile | null {
+  return mockFixture('venueProfile', buildMockVenueProfile(slug), slug);
+}
+
+export function mockChatHistory(slug: string): ChatMessage[] {
+  const base = mockFixture('chatHistory', buildMockChatHistory(slug), slug);
+  const extras = mockChatStoreMessages(slug);
+  if (extras.length === 0) {
+    return base;
+  }
+  return [...base, ...extras].slice(-100);
+}
+
+export function mockFanTiers(username: string): FanTiersResponse {
+  return mockFixture('fanTiers', buildMockFanTiers(username), username);
+}
+
+export function mockAnnouncements(): Announcement[] {
+  return mockFixture('announcements', buildMockAnnouncements());
+}
+
+export function mockFeed(): FeedResponse {
+  return mockFixture('feed', buildMockFeed());
+}
+
+export function mockTopTracks(sort: 'asc' | 'desc'): DiscoverTrackItem[] {
+  return mockFixture('topTracks', buildMockTopTracks(sort), sort);
+}
+
+export function mockLatestTracks(): DiscoverTrackItem[] {
+  return mockFixture('latestTracks', buildMockLatestTracks());
 }

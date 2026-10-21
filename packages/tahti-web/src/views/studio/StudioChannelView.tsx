@@ -3,6 +3,7 @@ import {
   DoorOpenIcon,
   ListMusicIcon,
   MegaphoneIcon,
+  MessageSquareIcon,
   PinIcon,
   PlusIcon,
   RadioIcon,
@@ -13,7 +14,13 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, TabLabel, Tabs, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  TabLabel,
+  Tabs,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchStatsPlays,
@@ -22,11 +29,12 @@ import {
 } from '../../api/studio-extras';
 import { ChannelAnnouncementsPanel } from '../../components/ChannelAnnouncementsPanel';
 import { ChannelRadioPlaylistPanel } from '../../components/ChannelRadioPlaylistPanel';
+import { MultistreamStatusPanel } from '../../components/MultistreamStatusPanel';
 import { PageLoading } from '../../components/PageStates';
 import { PinnedAnnouncementsPanel } from '../../components/PinnedAnnouncementsPanel';
+import { RotationSourcePicker } from '../../components/RotationSourcePicker';
 import { StreamManagerPanel } from '../../components/StreamManagerPanel';
 import { StudioGate } from '../../components/StudioGate';
-import { BroadcastSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StudioRadioSubmissionPanel } from '../../components/StudioRadioSubmissionPanel';
 import { useAuthStore } from '../../stores/authStore';
@@ -62,6 +70,19 @@ const RADIO_SETTING_TABS = [
 
 const isTab = (value: string | undefined): value is Tab =>
   ['setup', 'radio', 'green-room', 'selects'].includes(value ?? '');
+
+const DEEP_LINKED_RADIO_TABS = [
+  'rotation',
+  'announcements',
+  'pinned',
+  'multicast',
+  'tahti-radio',
+] as const;
+
+const isDeepLinkedRadioTab = (
+  value: string | undefined,
+): value is (typeof DEEP_LINKED_RADIO_TABS)[number] =>
+  (DEEP_LINKED_RADIO_TABS as readonly string[]).includes(value ?? '');
 
 const DESIGNER_TABS = new Set(['design', 'profile']);
 
@@ -130,13 +151,13 @@ export function StudioChannelView() {
   const user = useAuthStore((s) => s.user);
   const openChannelSetup = useChannelSetupModalStore((s) => s.open);
   const channel = user?.channel;
-  const [tab, setTab] = useState<Tab>(channel ? 'green-room' : 'setup');
+  const [tab, setTab] = useState<Tab>(channel ? 'setup' : 'setup');
   const [radioTab, setRadioTab] = useState<RadioTab>('stream');
 
   useEffect(() => {
-    if (search.tab === 'multicast') {
+    if (isDeepLinkedRadioTab(search.tab)) {
       setTab('radio');
-      setRadioTab('multicast');
+      setRadioTab(search.tab);
       return;
     }
     if (isTab(search.tab) && (search.tab !== 'setup' || !channel)) {
@@ -146,10 +167,21 @@ export function StudioChannelView() {
       }
     } else if (!channel) {
       setTab('setup');
-    } else {
-      setTab('green-room');
+    } else if (!search.tab) {
+      // Default to Setup (look / promo), not Green room — lifecycle e2e P2.
+      setTab('setup');
     }
   }, [channel, search.tab]);
+
+  useEffect(() => {
+    if (!search.tab) {
+      void navigate({
+        to: '/studio/channel',
+        search: { tab: 'setup' },
+        replace: true,
+      });
+    }
+  }, [navigate, search.tab]);
 
   if (DESIGNER_TABS.has(search.tab ?? '')) {
     return (
@@ -164,11 +196,6 @@ export function StudioChannelView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <BroadcastSubNav
-          current={
-            search.tab ? `/studio/channel?tab=${search.tab}` : '/studio/channel'
-          }
-        />
         {tab !== 'radio' ? (
           <Tabs.Root
             selectedIndex={Math.max(
@@ -209,14 +236,12 @@ export function StudioChannelView() {
                 return;
               }
               setRadioTab(next.id);
-              if (next.id === 'multicast' || search.tab === 'multicast') {
-                void navigate({
-                  to: '/studio/channel',
-                  search: {
-                    tab: next.id === 'multicast' ? 'multicast' : 'radio',
-                  },
-                });
-              }
+              void navigate({
+                to: '/studio/channel',
+                search: {
+                  tab: isDeepLinkedRadioTab(next.id) ? next.id : 'radio',
+                },
+              });
             }}
           >
             <Tabs.List className="w-fit flex-wrap">
@@ -258,6 +283,7 @@ export function StudioChannelView() {
                       slug={channel.slug}
                       channelState={channel.state}
                     />
+                    <MultistreamStatusPanel slug={channel.slug} />
                     <ChannelOverallStats />
                   </>
                 ) : (
@@ -268,7 +294,12 @@ export function StudioChannelView() {
                   </StudioPanel>
                 )
               ) : radioTab === 'rotation' ? (
-                <ChannelRadioPlaylistPanel />
+                <>
+                  {channel?.slug ? (
+                    <RotationSourcePicker slug={channel.slug} />
+                  ) : null}
+                  <ChannelRadioPlaylistPanel />
+                </>
               ) : radioTab === 'announcements' ? (
                 <ChannelAnnouncementsPanel />
               ) : radioTab === 'pinned' ? (
@@ -283,7 +314,36 @@ export function StudioChannelView() {
             </div>
           )}
 
-          {tab === 'green-room' && <BroadcastPanel section="green-room" />}
+          {tab === 'green-room' && (
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-wrap items-center gap-2">
+                {user?.username ? (
+                  <ButtonLink
+                    to="/u/$username/green-room"
+                    params={{ username: user.username }}
+                    size="sm"
+                    variant="secondary"
+                  >
+                    <MessageSquareIcon
+                      size={14}
+                      aria-hidden
+                      className="mr-1.5"
+                    />
+                    Open Green Room chat
+                  </ButtonLink>
+                ) : null}
+                <ButtonLink
+                  to="/studio/go-live"
+                  search={{ tab: 'green-room' }}
+                  size="sm"
+                  variant="secondary"
+                >
+                  Session on Broadcast
+                </ButtonLink>
+              </div>
+              <BroadcastPanel section="green-room" />
+            </div>
+          )}
 
           {tab === 'selects' && <SelectsTab />}
         </ViewShell>

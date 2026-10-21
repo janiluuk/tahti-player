@@ -1,43 +1,79 @@
 name: Update AUR
 
+# Called by release-player.yml once the GitHub Release is published, or run by
+# hand for an existing player@ tag.
 on:
-  workflow_run:
-    workflows: ['Release Player']
-    types: [completed]
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Tag or version to publish, e.g. player@1.47.112 or 1.47.112'
+        required: true
+        type: string
+    secrets:
+      AUR_SSH_KEY:
+        required: false
+      AUR_KNOWN_HOSTS:
+        required: false
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version to publish (e.g., 1.23.2)'
+      tag:
+        description: 'Tag or version to publish, e.g. player@1.47.112 or 1.47.112'
         required: true
+        type: string
+
+permissions:
+  contents: read
 
 jobs:
   update-bin:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     container:
       image: archlinux:latest
 
     steps:
+      - name: Resolve version
+        id: version
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          VERSION="${INPUT_TAG#player@}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=player@$VERSION" >> "$GITHUB_OUTPUT"
+
+      # The secret is checked in the shell because a step-level `if:` on
+      # secrets.* makes GitHub reject the whole workflow file.
+      - name: Check AUR credentials
+        id: store
+        env:
+          AUR_SSH_KEY: ${{ secrets.AUR_SSH_KEY }}
+          AUR_KNOWN_HOSTS: ${{ secrets.AUR_KNOWN_HOSTS }}
+        run: |
+          if [ -z "$AUR_SSH_KEY" ] || [ -z "$AUR_KNOWN_HOSTS" ]; then
+            echo "::warning::AUR_SSH_KEY or AUR_KNOWN_HOSTS secret is not set, skipping AUR update."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Install dependencies
+        if: steps.store.outputs.enabled == 'true'
         run: pacman -Syu --noconfirm base-devel git openssh curl
 
       - name: Checkout code
+        if: steps.store.outputs.enabled == 'true'
         uses: actions/checkout@v7
+        with:
+          ref: refs/tags/${{ steps.version.outputs.tag }}
 
       - name: Install SSH key
+        if: steps.store.outputs.enabled == 'true'
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.AUR_SSH_KEY }}
           known_hosts: ${{ secrets.AUR_KNOWN_HOSTS }}
 
       - name: Update tahti-player-bin
-        run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            VERSION="${{ github.event.inputs.version }}"
-          else
-            TAG="${{ github.event.workflow_run.head_branch }}"
-            VERSION="${TAG#player@}"
-          fi
-          ./scripts/update-aur.sh --version "${VERSION}"
+        if: steps.store.outputs.enabled == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: ./scripts/update-aur.sh --version "$VERSION"

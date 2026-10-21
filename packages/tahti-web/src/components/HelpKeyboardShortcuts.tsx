@@ -16,9 +16,9 @@ function ShortcutSection({ section }: { section: KeyboardShortcutSection }) {
       className="flex scroll-mt-4 flex-col gap-3"
       data-testid="keyboard-shortcut-section"
     >
-      <h3 className="text-foreground text-sm font-semibold tracking-tight">
+      <h2 className="text-foreground text-sm font-semibold tracking-tight">
         {section.heading}
-      </h3>
+      </h2>
       {section.rows.length > 0 ? (
         <ul className="flex flex-col gap-2">
           {section.rows.map((row) => (

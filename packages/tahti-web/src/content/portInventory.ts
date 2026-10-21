@@ -1,6 +1,6 @@
 /**
  * Structured port / mock inventory for the Tahti map (`/more`).
- * Keep in sync with TAHTI-PORT-CHECKLIST.md + FEATURES.md + MOCKS.md.
+ * Keep in sync with FEATURES.md + MOCKS.md.
  */
 
 export type PortStatus =
@@ -33,7 +33,7 @@ export const PORT_STATUS_LABEL: Record<PortStatus, string> = {
   'out-of-scope': 'Out of scope',
 };
 
-/** Priority backlog from TAHTI-PORT-CHECKLIST.md (unchecked = still open). */
+/** Port priority backlog (the open rows match FEATURES.md Remaining). */
 export const PORT_BACKLOG: PortInventoryItem[] = [
   {
     id: 'mobile-chrome',
@@ -287,10 +287,10 @@ export const PORT_GAP_HIGHLIGHTS: PortInventoryItem[] = [
   {
     id: 'gap-press-kit-gallery',
     surface: 'Press-kit gallery',
-    route: '/studio/branding',
+    route: '/settings/artist?tab=gallery',
     status: 'done',
     detail:
-      '/api/me/press-kit/images/* upload/delete; ArtistGalleryPanel wired into the gallery tab.',
+      '/api/me/press-kit/images/* upload/delete; ArtistGalleryPanel wired into Settings → Artist → Gallery.',
     section: 'gap',
   },
 ];

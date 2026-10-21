@@ -1,17 +1,26 @@
-import { ArrowLeftIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { MaximizeIcon, MinimizeIcon, MoreHorizontalIcon } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { formatArtistNames } from '@tahti-player/model';
-import { Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
+import { BackButton, Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
+import type { VisualizerMode } from '@tahti-player/visualizer';
 
+import { useIsMobile } from '../hooks/useIsMobile';
+import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
+import {
+  loadChannelVizMode,
+  saveChannelVizMode,
+} from '../lib/channelVizPreset';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { useDominantColor } from '../lib/useDominantColor';
 import { useLayoutStore } from '../stores/layoutStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
 import { ChannelVisualizer } from './ChannelVisualizer';
-import { HearthisEmbedSurface } from './HearthisEmbedSurface';
+import { EmbedSurface } from './EmbedSurface';
+import { NowPlayingActionSheet } from './NowPlayingActionSheet';
 import { ConnectedSeekBar, PlayerLiveIndicator } from './PlayerSeekBar';
+import { VisualizerModeMenu } from './VisualizerModeMenu';
 
 const ANIMATION_MS = 280;
 
@@ -22,6 +31,7 @@ const ANIMATION_MS = 280;
  * arbitrary queue items yet — see the commit note for why that's
  * deliberately out of scope here. */
 export function FullScreenPlayer() {
+  const isMobile = useIsMobile();
   const open = useLayoutStore((s) => s.fullScreenPlayerOpen);
   const setOpen = useLayoutStore((s) => s.setFullScreenPlayerOpen);
   const queue = usePlayerStore((s) => s.queue);
@@ -42,6 +52,28 @@ export function FullScreenPlayer() {
 
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [screenFilled, setScreenFilled] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const canFillScreen =
+    typeof document !== 'undefined' && document.fullscreenEnabled;
+
+  useEffect(() => {
+    const onChange = () => setScreenFilled(Boolean(document.fullscreenElement));
+    onChange();
+    document.addEventListener('fullscreenchange', onChange);
+    return () => document.removeEventListener('fullscreenchange', onChange);
+  }, []);
+
+  const toggleScreenFilled = () => {
+    if (document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => undefined);
+      return;
+    }
+    // The whole page goes full screen, not just this overlay, so the
+    // dialogs it opens (which portal to the body) still show.
+    void document.documentElement.requestFullscreen().catch(() => undefined);
+  };
 
   useEffect(() => {
     if (open) {
@@ -50,6 +82,10 @@ export function FullScreenPlayer() {
       return () => cancelAnimationFrame(raf);
     }
     setVisible(false);
+    setMenuOpen(false);
+    if (document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => undefined);
+    }
     const t = setTimeout(() => setMounted(false), ANIMATION_MS);
     return () => clearTimeout(t);
   }, [open]);
@@ -63,7 +99,14 @@ export function FullScreenPlayer() {
       return;
     }
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key !== 'Escape') {
+        return;
+      }
+      // Dialogs opened from here (options sheet, add to playlist) portal
+      // outside this overlay and close themselves on Escape via a later
+      // window listener, so only react to presses that start in here.
+      const target = e.target as Node | null;
+      if (target === document.body || rootRef.current?.contains(target)) {
         setOpen(false);
       }
     };
@@ -79,13 +122,32 @@ export function FullScreenPlayer() {
   const current = queue.find((q) => q.id === currentId);
   const playable = current ? playableFromQueueItem(current) : null;
   const coverUrl = playable?.coverUrl ?? current?.track.artwork?.items[0]?.url;
-  const title = playable?.title ?? 'Nothing playing';
+  const stationNowPlaying = usePlayerStationNowPlaying(playable);
+  const title =
+    stationNowPlaying?.title ?? playable?.title ?? 'Nothing playing';
   const artist =
+    stationNowPlaying?.artist ??
     playable?.artist ??
     (current ? formatArtistNames(current.track.artists) : '');
   const soundId = soundIdFromPlayableId(playable?.id ?? currentId);
+  const channelKey =
+    playable?.channelSlug?.trim() || soundId || currentId || 'default';
+  const [engineMode, setEngineMode] = useState<VisualizerMode>(() =>
+    loadChannelVizMode(channelKey),
+  );
+  useEffect(() => {
+    setEngineMode(loadChannelVizMode(channelKey));
+  }, [channelKey]);
+  const onEngineModeChange = useMemo(
+    () => (mode: VisualizerMode) => {
+      setEngineMode(mode);
+      saveChannelVizMode(channelKey, mode);
+    },
+    [channelKey],
+  );
   const isPlaying = status === 'playing' || status === 'loading';
-  const hearthisEmbed = playable?.embed;
+  const isLoading = status === 'loading';
+  const embed = playable?.embed;
 
   const rgb = useDominantColor(coverUrl);
 
@@ -107,6 +169,7 @@ export function FullScreenPlayer() {
 
   return (
     <div
+      ref={rootRef}
       className={cn(
         'bg-background fixed inset-0 z-[60] flex flex-col overflow-hidden transition-all',
         visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
@@ -117,7 +180,12 @@ export function FullScreenPlayer() {
       aria-label="Now playing, full screen"
     >
       <div className="bg-background/35 absolute inset-0 backdrop-blur-md">
-        <ChannelVisualizer className="h-full w-full" artworkUrl={coverUrl} />
+        <ChannelVisualizer
+          className="h-full w-full"
+          artworkUrl={coverUrl}
+          engineMode={engineMode}
+          showModeButtons={false}
+        />
       </div>
 
       {/* Must outrank the content column below: that div is `absolute`'s
@@ -125,18 +193,53 @@ export function FullScreenPlayer() {
        * same top strip. Equal z-index would let DOM order hand it click
        * priority over this back button despite the button painting on
        * top visually. */}
-      <div className="absolute inset-x-0 top-0 z-20 flex items-start p-4">
+      <div className="absolute inset-x-0 top-0 z-20 flex items-start justify-between p-4">
         <Tooltip content="Back to player" side="right">
-          <Button
-            size="icon"
-            variant="text"
-            onClick={close}
-            aria-label="Minimize player"
-            className="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
-          >
-            <ArrowLeftIcon size={28} aria-hidden />
-          </Button>
+          <BackButton onClick={close} aria-label="Minimize player" />
         </Tooltip>
+        <div className="flex items-start gap-2">
+          <VisualizerModeMenu
+            mode={engineMode}
+            onModeChange={onEngineModeChange}
+            triggerClassName="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
+            panelClassName="z-[70]"
+          />
+          {canFillScreen ? (
+            <Tooltip
+              content={screenFilled ? 'Exit full screen' : 'Full screen'}
+              side="left"
+            >
+              <Button
+                size="icon"
+                variant="text"
+                onClick={toggleScreenFilled}
+                aria-label={screenFilled ? 'Exit full screen' : 'Full screen'}
+                aria-pressed={screenFilled}
+                className="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
+              >
+                {screenFilled ? (
+                  <MinimizeIcon size={28} aria-hidden />
+                ) : (
+                  <MaximizeIcon size={28} aria-hidden />
+                )}
+              </Button>
+            </Tooltip>
+          ) : null}
+          {playable ? (
+            <Tooltip content="More options" side="left">
+              <Button
+                size="icon"
+                variant="text"
+                onClick={() => setMenuOpen(true)}
+                aria-label="More options"
+                aria-haspopup="dialog"
+                className="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
+              >
+                <MoreHorizontalIcon size={28} aria-hidden />
+              </Button>
+            </Tooltip>
+          ) : null}
+        </div>
       </div>
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-8 overflow-y-auto px-6 pb-10">
@@ -169,7 +272,7 @@ export function FullScreenPlayer() {
             <div className="mt-3 flex justify-center">
               <AddToPlaylistButton
                 soundId={soundId}
-                trackTitle={title}
+                trackTitle={playable.title}
                 variant="secondary"
                 iconOnly={false}
               />
@@ -178,15 +281,24 @@ export function FullScreenPlayer() {
         </div>
 
         <div className="flex w-full max-w-md flex-col items-center gap-2">
-          {hearthisEmbed ? (
-            <HearthisEmbedSurface
-              embedUri={hearthisEmbed.embedUri}
+          {embed ? (
+            <EmbedSurface
+              provider={embed.provider}
+              embedUri={embed.embedUri}
               title={title}
               autoplay={isPlaying}
             />
           ) : null}
+          <p
+            role="status"
+            className="text-foreground-secondary h-4 text-xs tracking-wide uppercase"
+          >
+            {isLoading ? 'Buffering…' : ''}
+          </p>
           <PlayerBar.Controls
+            size="large"
             isPlaying={isPlaying}
+            isLoading={isLoading}
             isShuffleActive={!isLive && shuffle}
             repeatMode={isLive ? 'off' : repeatMode}
             showDiscovery={false}
@@ -219,12 +331,25 @@ export function FullScreenPlayer() {
               <ConnectedSeekBar />
             </div>
           )}
-          <PlayerBar.Volume
-            value={muted ? 0 : Math.round(volume * 100)}
-            onValueChange={(v) => setVolume(v / 100)}
-          />
+          {/* Mobile has no software volume control (iOS Safari ignores
+           * HTMLMediaElement.volume entirely) — the device's hardware
+           * buttons are the only real control there, so the slider is
+           * just dead UI on mobile. */}
+          {!isMobile && (
+            <PlayerBar.Volume
+              value={muted ? 0 : Math.round(volume * 100)}
+              onValueChange={(v) => setVolume(v / 100)}
+            />
+          )}
         </div>
       </div>
+      {playable ? (
+        <NowPlayingActionSheet
+          isOpen={menuOpen}
+          onClose={() => setMenuOpen(false)}
+          playable={playable}
+        />
+      ) : null}
     </div>
   );
 }

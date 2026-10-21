@@ -1,0 +1,269 @@
+// @vitest-environment jsdom
+import {
+  createMemoryHistory,
+  createRootRoute,
+  createRoute,
+  createRouter,
+  Outlet,
+  RouterProvider,
+} from '@tanstack/react-router';
+import { act, fireEvent, screen } from '@testing-library/react';
+import { createRoot, type Root } from 'react-dom/client';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import type { StudioCollection } from '../../../api/studio-types';
+import { useAuthStore } from '../../../stores/authStore';
+import { StudioPlaylistEditorView } from './StudioPlaylistEditorView';
+
+const TEST_ROW_HEIGHT = 42;
+
+vi.mock('@tanstack/react-virtual', () => ({
+  useVirtualizer: (opts: { count: number }) => {
+    const count = Math.max(0, Number(opts?.count ?? 0));
+    return {
+      getVirtualItems: () =>
+        Array.from({ length: count }).map((_, i) => ({
+          index: i,
+          start: i * TEST_ROW_HEIGHT,
+          end: (i + 1) * TEST_ROW_HEIGHT,
+          key: i,
+          size: TEST_ROW_HEIGHT,
+        })),
+      getTotalSize: () => count * TEST_ROW_HEIGHT,
+    };
+  },
+}));
+
+let collection: StudioCollection;
+let collectionFailure: string | null = null;
+const removeStudioCollectionItem = vi.fn();
+const patchStudioCollection = vi.fn();
+
+vi.mock('../../../api/studio', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../api/studio')>();
+  return {
+    ...actual,
+    fetchStudioCollection: async () =>
+      collectionFailure
+        ? {
+            data: { slug: 'my-list', name: 'my-list', items: [] },
+            meta: { source: 'api' as const, reason: collectionFailure },
+          }
+        : { data: collection, meta: { source: 'mock' as const } },
+    fetchStudioSounds: async () => ({
+      data: [],
+      meta: { source: 'mock' as const },
+    }),
+    fetchStudioReleases: async () => ({
+      data: { page: 1, limit: 100, total: 0, releases: [] },
+      meta: { source: 'mock' as const },
+    }),
+    removeStudioCollectionItem: (...args: unknown[]) =>
+      removeStudioCollectionItem(...args),
+    patchStudioCollection: (...args: unknown[]) =>
+      patchStudioCollection(...args),
+  };
+});
+
+function createEditorRouter() {
+  const rootRoute = createRootRoute({ component: () => <Outlet /> });
+  const editorRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/studio/playlists/$slug',
+    component: () => <StudioPlaylistEditorView slug="my-list" />,
+  });
+  return createRouter({
+    routeTree: rootRoute.addChildren([editorRoute]),
+    history: createMemoryHistory({
+      initialEntries: ['/studio/playlists/my-list'],
+    }),
+  });
+}
+
+let container: HTMLDivElement;
+let root: Root;
+
+beforeEach(() => {
+  vi.stubEnv('VITE_FORCE_MOCK', '1');
+  collectionFailure = null;
+  removeStudioCollectionItem.mockResolvedValue({ ok: true });
+  patchStudioCollection.mockResolvedValue({
+    ok: true,
+    data: {
+      slug: 'my-list',
+      name: 'My List',
+      isPublic: true,
+      trackSortMode: 'NAME',
+      items: [],
+    },
+  });
+  collection = {
+    slug: 'my-list',
+    name: 'My List',
+    isPublic: true,
+    trackSortMode: 'MANUAL',
+    items: [
+      {
+        id: 'item-1',
+        position: 0,
+        soundId: 'sound-1',
+        sound: { id: 'sound-1', title: 'First Track' },
+      },
+    ],
+  };
+  container = document.createElement('div');
+  document.body.appendChild(container);
+  root = createRoot(container);
+});
+
+afterEach(() => {
+  act(() => root.unmount());
+  container.remove();
+  vi.unstubAllEnvs();
+  vi.clearAllMocks();
+  useAuthStore.setState({ user: null, hydrated: true, loading: false });
+});
+
+async function renderEditor() {
+  useAuthStore.setState({
+    user: {
+      id: 'user-1',
+      email: 'artist@tahti.live',
+      username: 'artist',
+      displayName: 'An Artist',
+      role: 'ARTIST',
+      isBoard: false,
+      isMember: true,
+      channel: { slug: 'artist', state: 'OFFLINE' },
+    },
+    hydrated: true,
+    loading: false,
+  });
+  const router = createEditorRouter();
+  await act(async () => {
+    root.render(<RouterProvider router={router} />);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+}
+
+describe('StudioPlaylistEditorView track removal', () => {
+  it('asks for confirmation before removing a track, and only removes on confirm', async () => {
+    await renderEditor();
+
+    expect(screen.getByText('First Track')).toBeInTheDocument();
+
+    const removeButton = screen.getByLabelText('Remove from list');
+    await act(async () => fireEvent.click(removeButton));
+
+    expect(removeStudioCollectionItem).not.toHaveBeenCalled();
+    expect(screen.getByText('Remove "First Track"?')).toBeInTheDocument();
+
+    const confirmButton = screen.getByRole('button', { name: 'Remove' });
+    await act(async () => fireEvent.click(confirmButton));
+
+    expect(removeStudioCollectionItem).toHaveBeenCalledWith(
+      'my-list',
+      'item-1',
+    );
+  });
+
+  it('removes nothing when the confirmation is cancelled', async () => {
+    await renderEditor();
+
+    await act(async () =>
+      fireEvent.click(screen.getByLabelText('Remove from list')),
+    );
+    const cancelButtons = screen.getAllByRole('button', { name: 'Cancel' });
+    expect(cancelButtons).toHaveLength(1);
+    await act(async () => {
+      fireEvent.click(cancelButtons[0]!);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(removeStudioCollectionItem).not.toHaveBeenCalled();
+    expect(screen.getByText('First Track')).toBeInTheDocument();
+  });
+});
+
+describe('StudioPlaylistEditorView contributions', () => {
+  it("shows who added a track and their note, by username only, and doesn't credit the owner", async () => {
+    collection = {
+      ...collection,
+      collaborative: true,
+      items: [
+        {
+          id: 'item-1',
+          position: 0,
+          soundId: 'sound-1',
+          sound: { id: 'sound-1', title: 'First Track' },
+          addedBy: { username: 'mira', displayName: 'mira@example.com' },
+          addNote: 'Perfect opener',
+        },
+        {
+          id: 'item-2',
+          position: 1,
+          soundId: 'sound-2',
+          sound: { id: 'sound-2', title: 'Owner Pick' },
+          addedBy: { username: 'artist', displayName: 'An Artist' },
+        },
+      ],
+    };
+
+    await renderEditor();
+
+    const lines = screen.getAllByTestId('collection-contribution');
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toHaveTextContent('Added by @mira · “Perfect opener”');
+    expect(screen.getByRole('link', { name: '@mira' })).toHaveAttribute(
+      'href',
+      '/u/mira',
+    );
+    expect(document.body.textContent).not.toContain('mira@example.com');
+  });
+
+  it('shows no contribution line when the API omits contributors', async () => {
+    await renderEditor();
+
+    expect(screen.getByText('First Track')).toBeInTheDocument();
+    expect(screen.queryByTestId('collection-contribution')).toBeNull();
+  });
+});
+
+describe('StudioPlaylistEditorView track order', () => {
+  it('saves the chosen public track order with the playlist settings', async () => {
+    await renderEditor();
+
+    const trackOrder = screen.getByRole('button', { name: /Track order/i });
+    await act(async () => {
+      fireEvent.click(trackOrder);
+    });
+    const option = await screen.findByRole('option', { name: 'Title (A-Z)' });
+    await act(async () => {
+      fireEvent.click(option);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Save/i }));
+    });
+
+    expect(patchStudioCollection).toHaveBeenCalledWith(
+      'my-list',
+      expect.objectContaining({ trackSortMode: 'NAME' }),
+    );
+  });
+});
+
+describe('StudioPlaylistEditorView load failure', () => {
+  it('shows an error instead of an editable blank playlist', async () => {
+    collectionFailure = 'HTTP 502';
+    await renderEditor();
+    expect(screen.getByText('Could not load this playlist')).toBeTruthy();
+    expect(screen.queryByText('First Track')).toBeNull();
+
+    collectionFailure = null;
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    expect(screen.getByText('First Track')).toBeTruthy();
+  });
+});

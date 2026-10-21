@@ -1,6 +1,15 @@
-import { CassetteTape, Heart, ListPlus, Pause, Play } from 'lucide-react';
-import { FC, ReactNode, type MouseEvent } from 'react';
+import {
+  CassetteTape,
+  Heart,
+  ListPlus,
+  LoaderCircle,
+  Pause,
+  Play,
+} from 'lucide-react';
+import { FC, ReactNode, useState, type MouseEvent } from 'react';
 
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { useShiftHeld } from '../../hooks/useShiftHeld';
 import { cn } from '../../utils';
 import { Button } from '../Button';
 import { ImageReveal } from '../ImageReveal';
@@ -18,19 +27,32 @@ export type MediaArtworkAction = {
 export type MediaArtworkProps = {
   src?: string | null;
   alt?: string;
+  /** Still first frame of an animated `src` (GIF). Shown at rest, swapped
+   * for `src` while the artwork is hovered or focused, and kept when the
+   * viewer prefers reduced motion. */
+  posterSrc?: string | null;
+  /** Plays the animated `src` regardless of hover, e.g. while a control
+   * wrapping the artwork has keyboard focus. */
+  animate?: boolean;
   /** Visual size preset — `fill` stretches to parent (card cover). `thumb`
    * is the standard inline track-row thumbnail (a step up from `sm`). */
   size?: 'sm' | 'thumb' | 'md' | 'lg' | 'fill';
   className?: string;
   imageReveal?: boolean;
   placeholder?: ReactNode;
-  /** Centered circular play control. */
+  /** CSS `background` for the no-image state, e.g. an artist's avatar
+   * theme (`#22D3EE` or a `linear-gradient(...)`). */
+  fallbackBackground?: string | null;
+  /** Centered circular play control. Shift+click queues instead when
+   * `onQueue` is set (same shortcut on every MediaArtwork play control). */
   onPlay?: () => void;
   playLabel?: string;
   pauseLabel?: string;
   isPlaying?: boolean;
+  /** Shows a spinner on the play control while the stream buffers. */
+  isLoading?: boolean;
   playDisabled?: boolean;
-  /** Convenience queue action (top-right overlay). */
+  /** Convenience queue action (top-right overlay). Also used by Shift+play. */
   onQueue?: () => void;
   queueLabel?: string;
   queueDisabled?: boolean;
@@ -77,14 +99,18 @@ const overlayReveal =
 export const MediaArtwork: FC<MediaArtworkProps> = ({
   src,
   alt,
+  posterSrc,
+  animate = false,
   size = 'fill',
   className,
   imageReveal = true,
   placeholder,
+  fallbackBackground,
   onPlay,
   playLabel = 'Play',
   pauseLabel = 'Pause',
   isPlaying = false,
+  isLoading = false,
   playDisabled,
   onQueue,
   queueLabel = 'Add to queue',
@@ -97,7 +123,19 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   actions = [],
   onArtworkClick,
 }) => {
-  const resolvedSrc = src ?? undefined;
+  const reducedMotion = usePrefersReducedMotion();
+  const shiftHeld = useShiftHeld();
+  const [animating, setAnimating] = useState(false);
+  const still = posterSrc && src && (reducedMotion || !(animate || animating));
+  const resolvedSrc = (still ? posterSrc : src) ?? undefined;
+  const motionHandlers = posterSrc
+    ? {
+        onPointerEnter: () => setAnimating(true),
+        onPointerLeave: () => setAnimating(false),
+        onFocus: () => setAnimating(true),
+        onBlur: () => setAnimating(false),
+      }
+    : {};
   const iconPx = playIconSize[size];
   const overlayPx = overlayIconSize[size];
   // At small/thumb/md sizes the card reads as crowded with more than a
@@ -130,7 +168,9 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   <Heart
                     size={overlayPx}
                     className={
-                      favorited ? 'text-accent-red fill-current' : undefined
+                      favorited
+                        ? 'text-accent-red-strong fill-current'
+                        : undefined
                     }
                   />
                 ),
@@ -147,13 +187,48 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
     e.stopPropagation();
   };
 
+  const handlePlayClick = (e: MouseEvent) => {
+    stop(e);
+    if (e.shiftKey && onQueue && !queueDisabled) {
+      onQueue();
+      return;
+    }
+    onPlay?.();
+  };
+
   const hasPlay = Boolean(onPlay);
   const hasSecondary = secondary.length > 0;
   const interactive = hasPlay || hasSecondary || Boolean(onArtworkClick);
+  const queueOnShift = Boolean(onQueue) && !queueDisabled && !isPlaying;
+  const showQueueIcon = queueOnShift && shiftHeld;
+  const playTooltip = isLoading
+    ? 'Loading…'
+    : isPlaying
+      ? pauseLabel
+      : showQueueIcon
+        ? queueLabel
+        : onQueue
+          ? `${playLabel} · Shift+click to queue`
+          : playLabel;
+
+  const playIcon = isLoading ? (
+    <LoaderCircle
+      size={iconPx}
+      className="animate-spin motion-reduce:animate-none"
+      data-testid="media-artwork-loading"
+    />
+  ) : isPlaying ? (
+    <Pause size={iconPx} className="fill-current" />
+  ) : showQueueIcon ? (
+    <ListPlus size={iconPx} />
+  ) : (
+    <Play size={iconPx} className="translate-x-px fill-current" />
+  );
 
   return (
     <div
       data-testid="media-artwork"
+      {...motionHandlers}
       className={cn(
         'group relative overflow-hidden',
         sizeClass[size],
@@ -173,7 +248,8 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
       }
     >
       {resolvedSrc ? (
-        imageReveal && size !== 'sm' ? (
+        // ImageReveal would replay its fade-in on every poster/GIF swap.
+        imageReveal && size !== 'sm' && !posterSrc ? (
           <ImageReveal
             enabled
             src={resolvedSrc}
@@ -198,7 +274,16 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
           />
         )
       ) : (
-        <div className="bg-background-secondary absolute inset-0 flex items-center justify-center">
+        <div
+          data-testid="media-artwork-fallback"
+          className={cn(
+            'absolute inset-0 flex items-center justify-center',
+            !fallbackBackground && 'bg-background-secondary',
+          )}
+          style={
+            fallbackBackground ? { background: fallbackBackground } : undefined
+          }
+        >
           {placeholder ?? (
             <CassetteTape
               size={size === 'sm' ? 20 : 48}
@@ -212,9 +297,16 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
       {(hasPlay || hasSecondary) && (
         <div
           className={cn(
-            'pointer-events-none absolute inset-0 bg-black/0 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-hover:bg-black/45',
-            // Always dim slightly on touch so controls read clearly
-            '[@media(hover:none)]:bg-black/35',
+            'pointer-events-none absolute inset-0',
+            isPlaying
+              ? // Keep the dim visible while playing so the persistent
+                // pause control reads clearly without needing hover.
+                'bg-black/35'
+              : [
+                  'bg-black/0 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-hover:bg-black/45',
+                  // Always dim slightly on touch so controls read clearly
+                  '[@media(hover:none)]:bg-black/35',
+                ],
           )}
           aria-hidden
         />
@@ -225,36 +317,25 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
           pinned to a far corner like on the larger grid-card sizes below. */}
       {size === 'sm' ? (
         (hasPlay || hasSecondary) && (
-          <div
-            className={cn(
-              'pointer-events-none absolute inset-0 flex items-center justify-center gap-0.5',
-              overlayReveal,
-            )}
-          >
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-0.5">
             {hasPlay && (
-              <Tooltip content={isPlaying ? pauseLabel : playLabel} side="top">
+              <Tooltip content={playTooltip} side="top">
                 <Button
                   type="button"
                   size="icon-sm"
-                  variant="default"
+                  variant="text"
                   disabled={playDisabled}
-                  aria-label={isPlaying ? pauseLabel : playLabel}
+                  aria-label={playTooltip}
                   aria-pressed={isPlaying || undefined}
+                  aria-busy={isLoading || undefined}
                   data-testid="media-artwork-play"
-                  className="pointer-events-auto size-6 rounded-full shadow-md"
-                  onClick={(e) => {
-                    stop(e);
-                    onPlay?.();
-                  }}
-                >
-                  {isPlaying ? (
-                    <Pause size={iconPx} className="fill-current" />
-                  ) : (
-                    <Play
-                      size={iconPx}
-                      className="translate-x-px fill-current"
-                    />
+                  className={cn(
+                    'pointer-events-auto size-6 rounded-full text-white active:scale-[0.96] motion-reduce:active:scale-100',
+                    isPlaying || isLoading ? 'opacity-100' : overlayReveal,
                   )}
+                  onClick={handlePlayClick}
+                >
+                  {playIcon}
                 </Button>
               </Tooltip>
             )}
@@ -270,6 +351,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   data-testid={`media-artwork-${action.id}`}
                   className={cn(
                     'pointer-events-auto size-4 rounded-full bg-black/55 text-white shadow-sm backdrop-blur-sm',
+                    overlayReveal,
                     action.active && 'bg-primary text-primary-foreground',
                   )}
                   onClick={(e) => {
@@ -286,40 +368,27 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
       ) : (
         <>
           {hasPlay && (
-            <div
-              className={cn(
-                'pointer-events-none absolute inset-0 flex items-center justify-center',
-                overlayReveal,
-              )}
-            >
-              <Tooltip content={isPlaying ? pauseLabel : playLabel} side="top">
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <Tooltip content={playTooltip} side="top">
                 <Button
                   type="button"
                   size="icon-sm"
                   variant={size === 'thumb' ? 'text' : 'default'}
                   disabled={playDisabled}
-                  aria-label={isPlaying ? pauseLabel : playLabel}
+                  aria-label={playTooltip}
                   aria-pressed={isPlaying || undefined}
+                  aria-busy={isLoading || undefined}
                   data-testid="media-artwork-play"
                   className={cn(
-                    'pointer-events-auto rounded-full',
+                    'pointer-events-auto rounded-full active:scale-[0.96] motion-reduce:active:scale-100',
+                    isPlaying || isLoading ? 'opacity-100' : overlayReveal,
                     size === 'thumb'
                       ? 'text-white'
                       : ['shadow-md', size === 'md' ? 'size-9' : 'size-11'],
                   )}
-                  onClick={(e) => {
-                    stop(e);
-                    onPlay?.();
-                  }}
+                  onClick={handlePlayClick}
                 >
-                  {isPlaying ? (
-                    <Pause size={iconPx} className="fill-current" />
-                  ) : (
-                    <Play
-                      size={iconPx}
-                      className="translate-x-px fill-current"
-                    />
-                  )}
+                  {playIcon}
                 </Button>
               </Tooltip>
             </div>

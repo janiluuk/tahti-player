@@ -1,14 +1,147 @@
 import { XIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-import { Box, Button, Tooltip } from '@tahti-player/ui';
+import { Box, Button, Loader, Tooltip } from '@tahti-player/ui';
 
+import {
+  fetchSpotifyPlaylistTracks,
+  spotifyCoverUrl,
+  type SpotifyTrack,
+} from '../api/sources';
+import type { TahtiPlayable } from '../api/types';
 import { listenerWidgetType } from '../content/listenerWidgets';
+import { playableFromEmbed } from '../lib/embedPlayback';
 import type { ListenerWidgetInstance } from '../stores/listenerWidgetsStore';
+import { PlayableTrackTable } from './PlayableTrackTable';
 
-/** Renders one enabled external widget instance using that
- * platform's real embedded player (an iframe) — this app can't legally or
- * technically proxy audio out of those platforms, so "playing" their
- * content here means embedding the official widget, same as any website. */
+function spotifyTracksToPlayables(tracks: SpotifyTrack[]): TahtiPlayable[] {
+  return tracks.map((track) =>
+    playableFromEmbed('spotify', {
+      playerId: track.uri,
+      title: track.title,
+      artist: track.artists.join(', ') || 'Spotify',
+      coverUrl: track.coverUrl ? spotifyCoverUrl(track.coverUrl) : undefined,
+      embedUri: track.uri,
+      durationSec: track.durationSec,
+    }),
+  );
+}
+
+function SpotifyPlaylistTracks({
+  instance,
+  onRemove,
+}: {
+  instance: ListenerWidgetInstance;
+  onRemove?: () => void;
+}) {
+  const type = listenerWidgetType(instance.typeId);
+  const embedUrl = type?.toEmbedUrl(instance.input);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'fallback'>(
+    'loading',
+  );
+  const [items, setItems] = useState<TahtiPlayable[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setStatus('loading');
+    setLoadError(null);
+    void fetchSpotifyPlaylistTracks(instance.input).then((result) => {
+      if (cancelled) {
+        return;
+      }
+      if (!result.ok) {
+        setItems([]);
+        setLoadError(result.error);
+        setStatus('fallback');
+        return;
+      }
+      if (result.data.length === 0) {
+        setItems([]);
+        setLoadError('This playlist has no playable tracks.');
+        setStatus('fallback');
+        return;
+      }
+      setItems(spotifyTracksToPlayables(result.data));
+      setStatus('ready');
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [instance.input]);
+
+  return (
+    <Box
+      variant="tertiary"
+      className="group relative h-auto w-auto flex-col gap-2 rounded-lg p-3"
+      data-testid="listener-widget-embed"
+      data-widget-type={instance.typeId}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <span className="min-w-0 truncate text-sm font-medium">
+          {instance.label}
+        </span>
+        {onRemove ? (
+          <Tooltip content={`Remove ${instance.label}`} side="top">
+            <Button
+              size="icon-sm"
+              variant="text"
+              aria-label={`Remove ${instance.label}`}
+              onClick={onRemove}
+              className="opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+            >
+              <XIcon size={14} aria-hidden />
+            </Button>
+          </Tooltip>
+        ) : null}
+      </div>
+      {status === 'loading' ? (
+        <div className="flex items-center gap-2 py-6 text-sm">
+          <Loader size="sm" />
+          <span className="text-foreground-secondary">Loading playlist…</span>
+        </div>
+      ) : null}
+      {status === 'ready' ? (
+        <PlayableTrackTable
+          items={items}
+          emptyMessage="This playlist has no tracks."
+          filterable={false}
+          quietHeader
+          compactActions
+        />
+      ) : null}
+      {status === 'fallback' ? (
+        <div className="flex flex-col gap-2">
+          {loadError ? (
+            <p className="text-foreground-secondary text-xs" role="status">
+              {loadError} Showing Spotify&apos;s embed instead when possible.
+            </p>
+          ) : null}
+          {embedUrl && type ? (
+            <iframe
+              title={instance.label}
+              src={embedUrl}
+              width="100%"
+              height={type.embedHeight}
+              style={{ border: 0 }}
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+            />
+          ) : (
+            <p className="text-destructive text-xs" role="alert">
+              Couldn&apos;t load this Spotify playlist — remove it and try a
+              public playlist link again.
+            </p>
+          )}
+        </div>
+      ) : null}
+    </Box>
+  );
+}
+
+/** Renders one enabled external widget instance. Spotify playlists resolve to
+ * a normal track table (embed playback in the player bar); other platforms
+ * use their official iframe embeds. */
 export function ListenerWidgetEmbed({
   instance,
   onRemove,
@@ -18,6 +151,10 @@ export function ListenerWidgetEmbed({
    * this component doesn't remove anything itself. */
   onRemove?: () => void;
 }) {
+  if (instance.typeId === 'spotify') {
+    return <SpotifyPlaylistTracks instance={instance} onRemove={onRemove} />;
+  }
+
   const type = listenerWidgetType(instance.typeId);
   const embedUrl = type?.toEmbedUrl(instance.input);
 

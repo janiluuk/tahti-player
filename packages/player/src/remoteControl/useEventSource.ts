@@ -22,6 +22,9 @@ export const useEventSource = (url: string) => {
     let retries = 0;
 
     const connect = () => {
+      if (cancelled) {
+        return;
+      }
       const eventSource = new EventSource(url);
       source.current = eventSource;
 
@@ -31,6 +34,11 @@ export const useEventSource = (url: string) => {
       });
 
       eventSource.addEventListener('error', () => {
+        // A closed source can keep reporting errors; only the current one
+        // may schedule a reconnect, or each extra error leaks a timer.
+        if (source.current !== eventSource) {
+          return;
+        }
         if (eventSource.readyState === EventSource.CLOSED && !cancelled) {
           eventSource.close();
           source.current = null;

@@ -3,7 +3,7 @@
 exports[`App > should render snapshot 1`] = `
 <DocumentFragment>
   <div
-    class="grid h-screen w-screen grid-rows-[auto_1fr_auto] overflow-hidden"
+    class="grid h-dvh w-screen grid-rows-[auto_1fr_auto] overflow-hidden"
   >
     <div>
       <header
@@ -41,11 +41,6 @@ exports[`App > should render snapshot 1`] = `
                   />
                 </svg>
               </span>
-              <span
-                class="leading-none uppercase"
-              >
-                TAHTI
-              </span>
             </span>
           </div>
           <div
@@ -54,7 +49,7 @@ exports[`App > should render snapshot 1`] = `
             <div>
               <button
                 aria-label="Back"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-disabled=""
                 data-headlessui-state="disabled"
                 disabled=""
@@ -82,7 +77,7 @@ exports[`App > should render snapshot 1`] = `
             <div>
               <button
                 aria-label="Forward"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-disabled=""
                 data-headlessui-state="disabled"
                 disabled=""
@@ -138,7 +133,7 @@ exports[`App > should render snapshot 1`] = `
             class="flex w-full flex-col gap-2"
           >
             <input
-              class="border-border text-foreground placeholder:text-foreground-secondary w-full transition-colors focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-none bg-background rounded-md border-(length:--border-width) h-8 px-8"
+              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none bg-background rounded-md border-(length:--border-width) h-8 px-8"
               data-headlessui-state=""
               data-testid="search-box"
               id="input-:r0:"
@@ -154,7 +149,7 @@ exports[`App > should render snapshot 1`] = `
           <button
             aria-checked="false"
             aria-label="Toggle theme"
-            class="border-border relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full border-(length:--border-width) transition-all focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-none data-checked:bg-primary bg-white data-disabled:cursor-not-allowed data-disabled:opacity-50 group justify-self-end"
+            class="border-border focus:ring-primary focus:ring-offset-background relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-(length:--border-width) transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none data-checked:bg-primary bg-background-secondary data-disabled:cursor-not-allowed data-disabled:opacity-50 group justify-self-end"
             data-headlessui-state=""
             id="headlessui-switch-:r2:"
             role="switch"
@@ -221,13 +216,13 @@ exports[`App > should render snapshot 1`] = `
         transition="[object Object]"
       >
         <span
-          class="flex flex-row items-center mb-2 justify-end"
+          class="flex shrink-0 flex-row items-center mb-3 justify-end"
         >
           <div>
             <button
               aria-label="Collapse panel"
               aria-pressed="true"
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
               data-headlessui-state=""
               data-testid="sidebar-toggle-left"
               type="button"
@@ -260,9 +255,10 @@ exports[`App > should render snapshot 1`] = `
           </div>
         </span>
         <div
-          class="flex flex-1 flex-col overflow-hidden"
+          class="flex min-h-0 flex-1 flex-col overflow-hidden pt-1"
         >
-          <div
+          <nav
+            aria-label="Main"
             class="flex flex-1 flex-col"
             data-testid="sidebar-navigation"
           >
@@ -632,7 +628,7 @@ exports[`App > should render snapshot 1`] = `
                 </span>
               </div>
             </div>
-          </div>
+          </nav>
         </div>
         <div
           class="absolute top-0 bottom-0 w-1 cursor-col-resize transition-colors right-0"
@@ -656,91 +652,97 @@ exports[`App > should render snapshot 1`] = `
               data-testid="dashboard-view"
             >
               <h1
-                class="mb-6 flex w-full flex-0 flex-row text-center text-3xl font-bold"
+                class="mb-6 flex w-full flex-0 flex-row text-3xl font-bold text-center"
                 data-testid="title"
               >
                 Dashboard
               </h1>
               <div
-                class="relative h-full flex min-h-0 w-full flex-1 flex-col"
+                animate="[object Object]"
+                class="flex min-h-0 w-full flex-1 flex-col"
+                transition="[object Object]"
               >
                 <div
-                  class="scrollbar-hide flex h-full w-full flex-col overflow-auto"
-                  style="scrollbar-width: none;"
+                  class="relative h-full flex min-h-0 w-full flex-1 flex-col"
                 >
                   <div
-                    class="flex flex-col items-center justify-center text-center gap-4 p-8 flex-1"
-                    data-testid="dashboard-empty-state"
+                    class="scrollbar-hide flex h-full w-full flex-col overflow-auto"
+                    style="scrollbar-width: none;"
                   >
                     <div
-                      class="text-foreground"
+                      class="flex flex-col items-center justify-center text-center gap-4 p-8 flex-1"
+                      data-testid="dashboard-empty-state"
                     >
-                      <svg
-                        aria-hidden="true"
-                        class="lucide lucide-layout-dashboard"
-                        fill="none"
-                        height="48"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                        width="48"
-                        xmlns="http://www.w3.org/2000/svg"
+                      <div
+                        class="text-foreground"
                       >
-                        <rect
-                          height="9"
-                          rx="1"
-                          width="7"
-                          x="3"
-                          y="3"
-                        />
-                        <rect
-                          height="5"
-                          rx="1"
-                          width="7"
-                          x="14"
-                          y="3"
-                        />
-                        <rect
-                          height="9"
-                          rx="1"
-                          width="7"
-                          x="14"
-                          y="12"
-                        />
-                        <rect
-                          height="5"
-                          rx="1"
-                          width="7"
-                          x="3"
-                          y="16"
-                        />
-                      </svg>
-                    </div>
-                    <div
-                      class="flex flex-col gap-1"
-                    >
-                      <h3
-                        class="text-foreground text-lg font-bold"
+                        <svg
+                          aria-hidden="true"
+                          class="lucide lucide-layout-dashboard"
+                          fill="none"
+                          height="48"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                          width="48"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <rect
+                            height="9"
+                            rx="1"
+                            width="7"
+                            x="3"
+                            y="3"
+                          />
+                          <rect
+                            height="5"
+                            rx="1"
+                            width="7"
+                            x="14"
+                            y="3"
+                          />
+                          <rect
+                            height="9"
+                            rx="1"
+                            width="7"
+                            x="14"
+                            y="12"
+                          />
+                          <rect
+                            height="5"
+                            rx="1"
+                            width="7"
+                            x="3"
+                            y="16"
+                          />
+                        </svg>
+                      </div>
+                      <div
+                        class="flex flex-col gap-1"
                       >
-                        Welcome to Tahti Player
-                      </h3>
-                      <p
-                        class="text-foreground text-sm opacity-60"
-                      >
-                        Install a plugin to see top tracks, new releases, and recommendations here.
-                      </p>
-                    </div>
-                    <div>
-                      <button
-                        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2"
-                        data-headlessui-state=""
-                        data-testid="dashboard-empty-state-action"
-                        type="button"
-                      >
-                        Browse plugins
-                      </button>
+                        <h2
+                          class="text-foreground text-lg font-bold"
+                        >
+                          Welcome to Tahti Player
+                        </h2>
+                        <p
+                          class="text-foreground text-sm opacity-60"
+                        >
+                          Install an add-on to see top tracks, new releases, and recommendations here.
+                        </p>
+                      </div>
+                      <div>
+                        <button
+                          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2"
+                          data-headlessui-state=""
+                          data-testid="dashboard-empty-state-action"
+                          type="button"
+                        >
+                          Browse add-ons
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -755,13 +757,13 @@ exports[`App > should render snapshot 1`] = `
         transition="[object Object]"
       >
         <span
-          class="flex flex-row items-center mb-2 justify-start"
+          class="flex shrink-0 flex-row items-center mb-3 justify-start"
         >
           <div>
             <button
               aria-label="Collapse panel"
               aria-pressed="true"
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
               data-headlessui-state=""
               data-testid="sidebar-toggle-right"
               type="button"
@@ -797,7 +799,7 @@ exports[`App > should render snapshot 1`] = `
           />
         </span>
         <div
-          class="flex flex-1 flex-col overflow-hidden"
+          class="flex min-h-0 flex-1 flex-col overflow-hidden pt-1"
         >
           <div
             class="flex h-full min-h-0 flex-col items-center justify-center gap-4 p-8 text-center transition-opacity duration-150 opacity-100"
@@ -937,12 +939,14 @@ exports[`App > should render snapshot 1`] = `
               <div
                 class="text-foreground truncate text-sm font-semibold tracking-tight"
                 data-testid="now-playing-title"
+                title="No track playing"
               >
                 No track playing
               </div>
               <div
                 class="text-foreground-secondary truncate text-xs"
                 data-testid="player-now-playing-artist"
+                title=""
               />
             </div>
           </div>
@@ -957,7 +961,7 @@ exports[`App > should render snapshot 1`] = `
               <button
                 aria-label="Shuffle: off"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-shuffle-button"
                 type="button"
@@ -996,7 +1000,7 @@ exports[`App > should render snapshot 1`] = `
             <div>
               <button
                 aria-label="Previous"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 type="button"
               >
@@ -1026,7 +1030,7 @@ exports[`App > should render snapshot 1`] = `
               <button
                 aria-label="Play"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green size-10 rounded-full shadow-md active:text-black"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green rounded-full shadow-md active:text-black size-10"
                 data-headlessui-state=""
                 data-testid="player-play-button"
                 type="button"
@@ -1053,7 +1057,7 @@ exports[`App > should render snapshot 1`] = `
             <div>
               <button
                 aria-label="Next"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-next-button"
                 type="button"
@@ -1084,7 +1088,7 @@ exports[`App > should render snapshot 1`] = `
               <button
                 aria-label="Repeat: off"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-repeat-button"
                 type="button"
@@ -1129,7 +1133,7 @@ exports[`App > should render snapshot 1`] = `
               <button
                 aria-label="Mute"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
                 data-headlessui-state=""
                 type="button"
               >
@@ -1194,8 +1198,8 @@ exports[`App > should render snapshot 1`] = `
                         style="width: 100%;"
                       />
                       <div
-                        class="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-                        style="left: 100%;"
+                        class="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+                        style="left: calc(100% - 20px);"
                       />
                     </div>
                   </div>
@@ -1225,6 +1229,7 @@ exports[`App > should render snapshot 1`] = `
       aria-label="Notifications alt+T"
       aria-live="polite"
       aria-relevant="additions text"
+      data-react-aria-top-layer="true"
       tabindex="-1"
     />
   </div>

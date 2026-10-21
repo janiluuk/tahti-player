@@ -11,6 +11,11 @@ export type TrackTableLabels = {
     /** Optional -- older label sets that predate the release-date column
      * still type-check; the column falls back to a default when absent. */
     releaseDate?: string;
+    position?: string;
+    artwork?: string;
+    favorite?: string;
+    actions?: string;
+    remove?: string;
   };
   favorite: string;
   unfavorite: string;
@@ -23,10 +28,17 @@ export type TrackTableLabels = {
   trackOptions: string;
   remove: string;
   filterPlaceholder: string;
+  /** Bulk-selection toolbar strings -- optional, only rendered when
+   * `features.selectable` is on. Fall back to sensible English defaults
+   * so existing label sets that predate bulk selection still type-check. */
+  clearSelection?: string;
+  removeSelected?: string;
+  addSelectedToQueue?: string;
 };
 
 export type TrackTableClasses = {
   root?: string;
+  header?: string;
 };
 
 export type TrackTableActions<T extends Track = Track> = {
@@ -47,6 +59,13 @@ export type TrackTableActions<T extends Track = Track> = {
    * which gates whether the icon renders at all per-row (e.g. hidden for
    * tracks with no detail page to open, such as embed-only sources). */
   onOpenDetail?: (track: T) => void;
+  /** Bulk actions over the current checkbox selection -- paired with
+   * `features.selectable`. The selection-toolbar button for each only
+   * renders when the matching callback is provided, same convention as
+   * onEdit/onOpenDetail being absent hiding their icons. Selection state
+   * itself lives inside TrackTable (like sorting/filtering), not here. */
+  onRemoveSelected?: (ids: string[]) => void;
+  onAddSelectedToQueue?: (ids: string[]) => void;
 };
 
 export type ContextMenuWrapperProps<T extends Track = Track> = {
@@ -92,6 +111,9 @@ export type TrackTableProps<T extends Track = Track> = {
     /** Per-row gate for actions.onOpenDetail's icon -- same convention as
      * canEditTrack. */
     canOpenDetail?: (track: T) => boolean;
+    /** Extra secondary line under a row's title (e.g. who added the track
+     * to a shared playlist). Pair with a larger `rowHeight` when used. */
+    getTrackAnnotation?: (track: T) => ReactNode;
     ContextMenuWrapper?: FC<ContextMenuWrapperProps<T>>;
   };
   rowHeight?: number;

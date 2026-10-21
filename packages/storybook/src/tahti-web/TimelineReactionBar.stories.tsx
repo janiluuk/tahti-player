@@ -15,6 +15,7 @@ const meta: Meta<typeof TimelineReactionBar> = {
     commentOpen: false,
     onReact: () => {},
     onComment: () => {},
+    onSignIn: () => {},
   },
 };
 
@@ -22,7 +23,17 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const SignedIn: Story = {};
-export const SignedOut: Story = { args: { signedIn: false } };
+export const SignedOut: Story = {
+  args: { signedIn: false },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A visitor with no account can still press a reaction: it opens sign-in instead of adding it.',
+      },
+    },
+  },
+};
 export const CommentsDisabled: Story = {
   args: { commentsEnabled: false },
   parameters: {

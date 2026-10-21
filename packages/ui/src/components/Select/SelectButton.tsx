@@ -6,7 +6,9 @@ import { selectVariants } from '.';
 import { cn } from '../../utils';
 import { useSelectContext } from './context';
 
-export const SelectButton: FC = () => {
+export const SelectButton: FC<{ 'aria-label'?: string }> = ({
+  'aria-label': ariaLabel,
+}) => {
   const {
     ids: { selectId, listboxId, labelId },
     size,
@@ -29,6 +31,7 @@ export const SelectButton: FC = () => {
       aria-expanded={open}
       aria-controls={listboxId}
       aria-labelledby={hasLabel ? labelId : undefined}
+      aria-label={hasLabel ? undefined : ariaLabel}
       aria-describedby={describedBy}
       aria-invalid={hasError || undefined}
       aria-errormessage={hasError ? `${selectId}-error` : undefined}

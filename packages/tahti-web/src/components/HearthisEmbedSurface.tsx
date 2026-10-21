@@ -13,7 +13,8 @@ export function HearthisEmbedSurface({
   autoplay,
   compact = false,
 }: Props) {
-  const src = embedSrcFor('HEARTHIS', embedUri);
+  const src = embedSrcFor('HEARTHIS', embedUri, { compact });
+  const height = compact ? 96 : 150;
 
   if (!src) {
     return null;
@@ -25,8 +26,9 @@ export function HearthisEmbedSurface({
       title={`${title} — hearthis.at player`}
       src={src.replace('autoplay=0', `autoplay=${autoplay ? '1' : '0'}`)}
       width="100%"
-      height={compact ? 96 : 150}
-      className="border-border block w-full rounded-lg border"
+      height={height}
+      style={{ border: 0, display: 'block', height, maxHeight: height }}
+      className="border-border block w-full max-w-full rounded-lg border"
       allow="autoplay"
       loading="lazy"
     />

@@ -1,10 +1,10 @@
 import { Link } from '@tanstack/react-router';
 import {
+  CalendarDaysIcon,
   CalendarIcon,
   HeartIcon,
   HistoryIcon,
   ListOrderedIcon,
-  MessageCircleIcon,
   MicIcon,
   PauseIcon,
   PlayIcon,
@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
+  ButtonLink,
   ImageReveal,
   MediaArtwork,
   Tabs,
@@ -25,11 +26,18 @@ import {
 import { resolvePublicVisualizerPreset } from '../api/channel-design';
 import {
   fetchRadio,
+  fetchRadioFeatureHistory,
   fetchRadioRecentlyPlayed,
   fetchRadioStation,
   TAHTI_RADIO_SLUG,
 } from '../api/client';
-import { fetchShowBookings, type StudioShowBooking } from '../api/shows';
+import type { RadioFeatureHistoryItem } from '../api/radio-public';
+import {
+  fetchRadioShowUpcoming,
+  fetchShowBookings,
+  type RadioShowUpcomingTrack,
+  type StudioShowBooking,
+} from '../api/shows';
 import type {
   PublicChannel,
   RadioNowPlaying,
@@ -41,8 +49,9 @@ import {
   MediaIconActions,
   playQueueFavoriteActions,
 } from '../components/MediaIconActions';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { RadioBookingCalendar } from '../components/RadioBookingCalendar';
+import { RadioUpNextPanel } from '../components/RadioUpNextPanel';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { TrackInfoDialog, type TrackInfo } from '../components/TrackInfoDialog';
@@ -69,30 +78,18 @@ function formatAgo(iso: string): string {
   return `${Math.floor(hours / 24)}d ago`;
 }
 
-function formatUpcoming(iso: string): string {
-  const d = new Date(iso);
-  const now = new Date();
-  const dayDiff = Math.round(
-    (new Date(d.toDateString()).getTime() -
-      new Date(now.toDateString()).getTime()) /
-      86_400_000,
-  );
-  const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  if (dayDiff === 0) {
-    return `Today ${time}`;
-  }
-  if (dayDiff === 1) {
-    return `Tomorrow ${time}`;
-  }
-  return `${d.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })} ${time}`;
-}
-
 export function RadioView() {
   const [station, setStation] = useState<PublicChannel | null>(null);
   const [relay, setRelay] = useState<RadioNowPlaying | null>(null);
   const [recent, setRecent] = useState<RadioRecentlyPlayedItem[]>([]);
+  const [featured, setFeatured] = useState<RadioFeatureHistoryItem[]>([]);
   const [upcoming, setUpcoming] = useState<StudioShowBooking[]>([]);
+  const [rotation, setRotation] = useState<RadioShowUpcomingTrack[]>([]);
   const [loading, setLoading] = useState(true);
+  const [stationError, setStationError] = useState<string | null>(null);
+  const [sectionErrors, setSectionErrors] = useState<
+    Partial<Record<'upcoming' | 'rotation' | 'recent' | 'featured', string>>
+  >({});
   const [infoTrack, setInfoTrack] = useState<TrackInfo | null>(null);
   const [calendarOpen, setCalendarOpen] = useState(false);
 
@@ -114,6 +111,10 @@ export function RadioView() {
       Date.now() + UPCOMING_WINDOW_DAYS * 24 * 3600_000,
     ).toISOString();
     void fetchShowBookings(from, to).then((r) => {
+      setSectionErrors((current) => ({
+        ...current,
+        upcoming: r.meta.source === 'api' ? r.meta.reason : undefined,
+      }));
       setUpcoming(
         r.data
           .filter((b) => new Date(b.startAt).getTime() > Date.now())
@@ -123,16 +124,48 @@ export function RadioView() {
     });
   };
 
+  const reloadRotation = () => {
+    void fetchRadioShowUpcoming(TAHTI_RADIO_SLUG).then((r) => {
+      setSectionErrors((current) => ({
+        ...current,
+        rotation: r.meta.source === 'api' ? r.meta.reason : undefined,
+      }));
+      setRotation(r.data);
+    });
+  };
+
   const reload = () => {
     setLoading(true);
     void Promise.all([
-      fetchRadioStation().catch(() => null),
+      fetchRadioStation().then(
+        (result) => ({
+          result,
+          reason:
+            result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
+        }),
+        (err: unknown) => ({
+          result: null,
+          reason: err instanceof Error ? err.message : 'Station fetch failed',
+        }),
+      ),
       fetchRadio(),
       fetchRadioRecentlyPlayed(),
-    ]).then(([ch, memberRelay, recentRes]) => {
-      setStation(ch?.data ?? null);
+      fetchRadioFeatureHistory(),
+    ]).then(([stationRes, memberRelay, recentRes, featuredRes]) => {
+      setStation(stationRes.result?.data ?? null);
+      setStationError(stationRes.result ? null : stationRes.reason);
       setRelay(memberRelay.data);
       setRecent(recentRes.data);
+      setFeatured(featuredRes.data);
+      setSectionErrors((current) => ({
+        ...current,
+        recent:
+          recentRes.meta.source === 'api' ? recentRes.meta.reason : undefined,
+        featured:
+          featuredRes.meta.source === 'api'
+            ? featuredRes.meta.reason
+            : undefined,
+      }));
       setLoading(false);
     });
     reloadUpcoming();
@@ -152,6 +185,12 @@ export function RadioView() {
 
   const online = Boolean(station?.hlsUrl);
   const nowPlaying = station?.nowPlaying;
+  const nowPlayingTitle = nowPlaying?.title;
+
+  useEffect(() => {
+    reloadRotation();
+  }, [nowPlayingTitle]);
+
   const stationLogo =
     station?.user.avatarUrl ?? station?.nowPlaying?.artworkUrl ?? null;
   const memberLive =
@@ -162,6 +201,7 @@ export function RadioView() {
           title: relay.channel.title,
         }
       : null;
+  const upcomingCount = (memberLive ? 0 : rotation.length) + upcoming.length;
   const TAGLINE =
     '24/7 community radio — always on. Fair rotation when nobody is booked.';
   const description = [TAGLINE, station?.user.bio]
@@ -187,9 +227,19 @@ export function RadioView() {
   };
 
   return (
-    <ViewShell title="Radio" classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}>
+    <ViewShell
+      title="Radio"
+      data-testid="radio-view"
+      classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
+    >
       {loading ? (
         <PageLoading label="Tuning Tahti Radio…" />
+      ) : !station && stationError ? (
+        <PageError
+          title="Could not load Tahti Radio"
+          description={stationError}
+          onRetry={reload}
+        />
       ) : !station ? (
         <PageEmpty
           icon="radio"
@@ -224,7 +274,7 @@ export function RadioView() {
                   {online ? (
                     <OnAirBadge />
                   ) : (
-                    <span className="text-accent-red font-mono text-xs font-semibold tracking-wide uppercase">
+                    <span className="text-accent-red-strong font-mono text-xs font-semibold tracking-wide uppercase">
                       Offline
                     </span>
                   )}
@@ -237,16 +287,26 @@ export function RadioView() {
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
+              <Tooltip content="Full programme schedule" side="top">
+                <ButtonLink
+                  to="/schedule"
+                  size="icon-sm"
+                  variant="secondary"
+                  aria-label="Open programme schedule"
+                >
+                  <CalendarDaysIcon size={16} aria-hidden />
+                </ButtonLink>
+              </Tooltip>
               <Tooltip content="Open Tahti Radio channel" side="top">
-                <Link to="/channel/$slug" params={{ slug: TAHTI_RADIO_SLUG }}>
-                  <Button
-                    size="icon-sm"
-                    variant="secondary"
-                    aria-label="Open Tahti Radio channel"
-                  >
-                    <RadioTowerIcon size={16} aria-hidden />
-                  </Button>
-                </Link>
+                <ButtonLink
+                  to="/channel/$slug"
+                  params={{ slug: TAHTI_RADIO_SLUG }}
+                  size="icon-sm"
+                  variant="secondary"
+                  aria-label="Open Tahti Radio channel"
+                >
+                  <RadioTowerIcon size={16} aria-hidden />
+                </ButtonLink>
               </Tooltip>
               {user && (
                 <Tooltip content="Book a slot" side="top">
@@ -284,15 +344,13 @@ export function RadioView() {
           {!online ? (
             <PageEmpty
               icon="radio"
-              title="Tahti Radio is temporarily offline"
+              title="Off air"
               description="Browse live channels or check back soon."
               action={
                 <div className="flex flex-wrap gap-2">
-                  <Link to="/">
-                    <Button size="sm" variant="secondary">
-                      Browse listen
-                    </Button>
-                  </Link>
+                  <ButtonLink to="/" size="sm" variant="secondary">
+                    Browse listen
+                  </ButtonLink>
                   <Button size="sm" variant="secondary" onClick={reload}>
                     Refresh
                   </Button>
@@ -373,7 +431,7 @@ export function RadioView() {
                             size={16}
                             className={
                               favorited
-                                ? 'text-accent-red fill-current'
+                                ? 'text-accent-red-strong fill-current'
                                 : undefined
                             }
                           />
@@ -389,11 +447,14 @@ export function RadioView() {
                       },
                     ]}
                   />
-                  <Link to="/channel/$slug" params={{ slug: TAHTI_RADIO_SLUG }}>
-                    <Button size="sm" variant="secondary">
-                      Open channel
-                    </Button>
-                  </Link>
+                  <ButtonLink
+                    to="/channel/$slug"
+                    params={{ slug: TAHTI_RADIO_SLUG }}
+                    size="sm"
+                    variant="secondary"
+                  >
+                    Open channel
+                  </ButtonLink>
                 </div>
               </div>
             </Box>
@@ -408,69 +469,19 @@ export function RadioView() {
                   id: 'up-next',
                   label: 'Up next',
                   icon: <ListOrderedIcon size={14} />,
-                  count: upcoming.length > 0 ? upcoming.length : undefined,
-                  content:
-                    upcoming.length === 0 ? (
-                      <div className="flex flex-col items-start gap-2">
-                        <p className="text-foreground-secondary text-sm">
-                          Nothing booked yet — fair rotation plays when nobody
-                          is.
-                        </p>
-                        {user && (
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            onClick={() => setCalendarOpen(true)}
-                          >
-                            <CalendarIcon
-                              size={15}
-                              className="mr-1.5"
-                              aria-hidden
-                            />
-                            Book a slot
-                          </Button>
-                        )}
-                      </div>
-                    ) : (
-                      <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
-                        {upcoming.map((b) => (
-                          <li
-                            key={b.id}
-                            className="flex items-center gap-3 px-3 py-2"
-                          >
-                            {b.showType === 'TALK' ? (
-                              <MessageCircleIcon
-                                size={16}
-                                aria-hidden
-                                className="text-foreground-secondary shrink-0"
-                              />
-                            ) : (
-                              <MicIcon
-                                size={16}
-                                aria-hidden
-                                className="text-foreground-secondary shrink-0"
-                              />
-                            )}
-                            <div className="min-w-0 flex-1">
-                              <Link
-                                to="/radio/show/$channelSlug"
-                                params={{ channelSlug: b.channelSlug }}
-                                className="block truncate text-sm font-medium underline-offset-2 hover:underline"
-                              >
-                                {b.note ?? b.displayName}
-                              </Link>
-                              <div className="text-foreground-secondary truncate text-xs">
-                                {b.displayName}
-                                {b.isMine ? ' (you)' : ''}
-                              </div>
-                            </div>
-                            <span className="text-foreground-secondary shrink-0 text-xs tabular-nums">
-                              {formatUpcoming(b.startAt)}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    ),
+                  count: upcomingCount > 0 ? upcomingCount : undefined,
+                  content: (
+                    <RadioUpNextPanel
+                      onRotation={!memberLive}
+                      rotation={rotation}
+                      rotationError={sectionErrors.rotation}
+                      onRetryRotation={reloadRotation}
+                      bookings={upcoming}
+                      bookingsError={sectionErrors.upcoming}
+                      onRetryBookings={reloadUpcoming}
+                      onBook={user ? () => setCalendarOpen(true) : undefined}
+                    />
+                  ),
                 },
                 {
                   id: 'just-played',
@@ -478,24 +489,29 @@ export function RadioView() {
                   icon: <HistoryIcon size={14} />,
                   count: recent.length > 0 ? recent.length : undefined,
                   content:
-                    recent.length === 0 ? (
-                      <p className="text-foreground-secondary text-sm">
-                        No recent plays logged yet.
-                      </p>
+                    sectionErrors.recent && recent.length === 0 ? (
+                      <PageError
+                        title="Could not load recent plays"
+                        description={sectionErrors.recent}
+                        onRetry={reload}
+                      />
+                    ) : recent.length === 0 ? (
+                      <PageEmpty title="No recent plays logged yet." />
                     ) : (
                       <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
                         {recent.map((item) => {
-                          const playable: TahtiPlayable | null = item.audioUrl
-                            ? {
-                                id: `sound:${item.id}`,
-                                kind: 'sound',
-                                title: item.title,
-                                artist: item.artistName,
-                                coverUrl: item.artworkUrl ?? undefined,
-                                streamUrl: item.audioUrl,
-                                protocol: 'https',
-                              }
-                            : null;
+                          const playable: TahtiPlayable | null =
+                            item.audioUrl && item.soundId
+                              ? {
+                                  id: `sound:${item.soundId}`,
+                                  kind: 'sound',
+                                  title: item.title,
+                                  artist: item.artistName,
+                                  coverUrl: item.artworkUrl ?? undefined,
+                                  streamUrl: item.audioUrl,
+                                  protocol: 'https',
+                                }
+                              : null;
                           const isPlaying = Boolean(
                             playable && playable.id === currentId,
                           );
@@ -543,8 +559,8 @@ export function RadioView() {
                                 <Link
                                   to="/t/$id"
                                   params={{ id: item.id }}
-                                  className={`block truncate text-sm font-medium underline-offset-2 hover:underline ${
-                                    isPlaying ? 'text-accent-green' : ''
+                                  className={`block truncate text-sm leading-6 font-medium underline-offset-2 hover:underline ${
+                                    isPlaying ? 'text-accent-green-strong' : ''
                                   }`}
                                 >
                                   {item.title}
@@ -587,25 +603,48 @@ export function RadioView() {
                       </ul>
                     ),
                 },
+                {
+                  id: 'featured',
+                  label: 'Featured',
+                  icon: <MicIcon size={14} />,
+                  count: featured.length > 0 ? featured.length : undefined,
+                  content:
+                    sectionErrors.featured && featured.length === 0 ? (
+                      <PageError
+                        title="Could not load member sets"
+                        description={sectionErrors.featured}
+                        onRetry={reload}
+                      />
+                    ) : featured.length === 0 ? (
+                      <PageEmpty title="No member sets relayed yet." />
+                    ) : (
+                      <ul
+                        className="border-border divide-border divide-y overflow-hidden rounded-lg border"
+                        data-testid="radio-featured"
+                      >
+                        {featured.map((item) => (
+                          <li
+                            key={`${item.channelId}-${item.featuredAt}`}
+                            className="flex items-center gap-3 px-3 py-2"
+                          >
+                            <Link
+                              to="/channel/$slug"
+                              params={{ slug: item.slug }}
+                              className="min-w-0 flex-1 truncate text-sm font-medium underline-offset-2 hover:underline"
+                            >
+                              {item.artistName || item.slug}
+                            </Link>
+                            <span className="text-foreground-secondary shrink-0 text-xs">
+                              {formatAgo(item.featuredAt)}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    ),
+                },
               ]}
             />
           </section>
-
-          <p className="text-foreground-secondary text-xs">
-            Prefer a single artist?{' '}
-            <Link to="/" className="underline-offset-2 hover:underline">
-              Browse the listen directory
-            </Link>{' '}
-            (e.g.{' '}
-            <Link
-              to="/channel/$slug"
-              params={{ slug: 'northern-lights' }}
-              className="underline-offset-2 hover:underline"
-            >
-              northern-lights
-            </Link>
-            ).
-          </p>
         </div>
       )}
 

@@ -105,6 +105,20 @@ export const Empty: Story = {
   },
 };
 
+export const LoadError: Story = {
+  args: {
+    id: 'latest-tracks',
+    title: 'Latest tracks',
+    loading: false,
+    error: 'Server unavailable',
+    onRetry: () => {},
+    items: [],
+    emptyMessage: 'No tracks yet.',
+    canMoveUp: true,
+    canMoveDown: true,
+  },
+};
+
 export const RandomArtistWithSettings: Story = {
   args: {
     id: 'random-artist',

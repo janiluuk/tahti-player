@@ -23,6 +23,7 @@
 
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-strong: var(--primary-strong);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
 
@@ -38,6 +39,13 @@
   --color-accent-cyan: var(--accent-cyan);
   --color-accent-red: var(--accent-red);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-green-strong: var(--accent-green-strong);
+  --color-accent-yellow-strong: var(--accent-yellow-strong);
+  --color-accent-purple-strong: var(--accent-purple-strong);
+  --color-accent-blue-strong: var(--accent-blue-strong);
+  --color-accent-orange-strong: var(--accent-orange-strong);
+  --color-accent-cyan-strong: var(--accent-cyan-strong);
+  --color-accent-red-strong: var(--accent-red-strong);
 
   --color-shadow: var(--shadow-color);
 
@@ -81,7 +89,7 @@
   /* Text Colors */
   --foreground: oklch(0.28 0.12 260);
   --foreground-secondary: oklch(0.48 0.08 5);
-  --foreground-input: oklch(0.28 0.12 260);
+  --foreground-input: var(--foreground);
 
   /* Interactive Elements */
   --primary: oklch(0.78 0.15 20);
@@ -91,6 +99,11 @@
      assumed; overridden per-theme below and in packages/themes where a
      variant's own --primary needs the other extreme to pass. */
   --primary-foreground: oklch(0.28 0.12 260);
+  /* --primary used as text (links, labels, eyebrows). A pastel primary
+     reads on a fill but not as text on a light page, so light themes use a
+     darker one (4.5:1 or better on their backgrounds). Dark modes, and
+     advanced themes (see generateAdvancedThemeCSS), use --primary itself. */
+  --primary-strong: oklch(0.58 0.15 20);
   --secondary: oklch(0.917 0.036 7.16);
   --secondary-foreground: oklch(0.28 0.12 260);
 
@@ -109,6 +122,17 @@
   --accent-red: oklch(0.7327 0.2428 18);
   /* Ink on light accent fills (pills, toasts, level chips). */
   --accent-foreground: oklch(0 0 0);
+  /* Accents used as text (errors, links, status words): the fills above
+     are pastel and fall to ~1.4-2.7:1 on light backgrounds, so text uses
+     these darker versions, 4.8:1 or better on every light theme. Dark
+     modes point them back at the accent itself. */
+  --accent-green-strong: oklch(0.51 0.13 145);
+  --accent-yellow-strong: oklch(0.52 0.107 95);
+  --accent-purple-strong: oklch(0.535 0.12 300);
+  --accent-blue-strong: oklch(0.52 0.12 250);
+  --accent-orange-strong: oklch(0.53 0.119 65);
+  --accent-cyan-strong: oklch(0.515 0.088 200);
+  --accent-red-strong: oklch(0.55 0.22 18);
 
   /* Borders */
   --border-width: 2px;
@@ -178,10 +202,11 @@
 
   --foreground: oklch(0.9 0.008 5);
   --foreground-secondary: oklch(0.78 0.1 5);
-  --foreground-input: oklch(0.93 0 0);
+  --foreground-input: var(--foreground);
 
-  --primary: oklch(0.5 0.1 5);
-  --primary-foreground: oklch(1 0 0);
+  --primary: oklch(0.66 0.1 5);
+  --primary-foreground: oklch(0.22 0.03 5);
+  --primary-strong: var(--primary);
   --secondary: oklch(0.32 0.06 5);
   --secondary-foreground: oklch(0.95 0.01 5);
 
@@ -196,4 +221,11 @@
   --accent-cyan: oklch(0.75 0.11 200);
   --accent-red: oklch(0.68 0.14 18);
   --accent-foreground: oklch(0 0 0);
+  --accent-green-strong: var(--accent-green);
+  --accent-yellow-strong: var(--accent-yellow);
+  --accent-purple-strong: var(--accent-purple);
+  --accent-blue-strong: var(--accent-blue);
+  --accent-orange-strong: var(--accent-orange);
+  --accent-cyan-strong: var(--accent-cyan);
+  --accent-red-strong: var(--accent-red);
 }

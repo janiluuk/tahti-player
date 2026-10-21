@@ -1,11 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChannelBackdropCard } from '@tahti-web/components/ChannelBackdropCard';
 
+import { withTahtiRouter } from './_lib/decorators';
+
 const meta: Meta<typeof ChannelBackdropCard> = {
   title: 'Tahti/Channel/ChannelBackdropCard',
   component: ChannelBackdropCard,
   parameters: { layout: 'padded' },
   tags: ['autodocs'],
+  // The Subscribe CTA (subscribeVisible) renders a <Link>, which needs a
+  // router context.
+  decorators: [withTahtiRouter('/channel/northern-lights')],
   args: {
     displayName: 'Northern Lights',
     username: 'northern-lights',
@@ -143,4 +148,26 @@ export const CoolPalette: Story = {
     fg: '#E0F2FE',
   },
   parameters: { backgrounds: { default: 'dark' } },
+};
+
+/** Bio/CTA/avatar folded into the backdrop (see
+ * BACKDROP_FOLDED_ITEM_TYPES in channelPageLayout.ts) — these three
+ * toggles gate what was previously always-shown (avatar/bio) or a
+ * separate page block (Subscribe CTA). */
+export const SubscribeCtaVisible: Story = {
+  name: 'Subscribe CTA shown',
+  args: {
+    headerStyle: 'GRADIENT',
+    subscribeVisible: true,
+  },
+};
+
+export const AvatarAndBioHidden: Story = {
+  name: 'Avatar + bio hidden',
+  args: {
+    headerStyle: 'GRADIENT',
+    avatarVisible: false,
+    bioVisible: false,
+    subscribeVisible: true,
+  },
 };

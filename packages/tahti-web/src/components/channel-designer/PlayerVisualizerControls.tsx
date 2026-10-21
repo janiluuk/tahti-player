@@ -10,8 +10,9 @@ import type { ReactNode } from 'react';
 import { Badge, Button, PluginItem, Tooltip } from '@tahti-player/ui';
 
 import type { VisualPreset } from '../../api/channel-design';
-import { visualizerMetadata } from '../../plugins/visualizers';
+import { visualizerMetadata } from '../../plugins/visualizers/meta';
 import { Eyebrow } from '../tahti/Eyebrow';
+import { ChannelVizPackPicker } from './ChannelVizPackPicker';
 
 type Props = {
   activeVisualizer: Exclude<VisualPreset, 'MINIMAL'>;
@@ -24,6 +25,9 @@ type Props = {
   onNext: () => void;
   onToggleSettings: () => void;
   onToggleEnabled: () => void;
+  vizPackId?: string | null;
+  /** Omit to hide the show-pack picker. */
+  onVizPackChange?: (packId: string | null) => void;
 };
 
 /** Player tab → Visualizer: preset chrome + optional tuning dock. */
@@ -37,6 +41,8 @@ export function PlayerVisualizerControls({
   onNext,
   onToggleSettings,
   onToggleEnabled,
+  vizPackId = null,
+  onVizPackChange,
 }: Props) {
   const meta = visualizerMetadata(activeVisualizer);
   const label = activeVisualizer.replace(/_/g, ' ');
@@ -48,14 +54,16 @@ export function PlayerVisualizerControls({
     >
       <PluginItem
         icon={
-          <button
+          <Button
+            variant="plain"
+            size="flexible"
             type="button"
-            className="hover:bg-background-secondary flex size-full items-center justify-center rounded-lg transition-colors"
+            className="hover:bg-background-secondary flex size-full items-center justify-center rounded-lg whitespace-normal transition-colors active:scale-100"
             aria-label="Choose visualizer"
             onClick={onOpenPicker}
           >
             <meta.Icon size={22} aria-hidden />
-          </button>
+          </Button>
         }
         name={
           <span className="inline-flex flex-wrap items-center gap-2 text-base">
@@ -138,6 +146,13 @@ export function PlayerVisualizerControls({
           <Eyebrow>Tune {label}</Eyebrow>
           {tuningSlot}
         </div>
+      ) : null}
+      {onVizPackChange ? (
+        <ChannelVizPackPicker
+          value={vizPackId}
+          onChange={onVizPackChange}
+          disabled={!visualizerEnabled}
+        />
       ) : null}
     </section>
   );

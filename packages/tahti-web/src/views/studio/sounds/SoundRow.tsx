@@ -1,0 +1,285 @@
+import { Link } from '@tanstack/react-router';
+import {
+  BarChart3Icon,
+  DownloadIcon,
+  PencilIcon,
+  PlayIcon,
+  RotateCcwIcon,
+} from 'lucide-react';
+
+import {
+  Button,
+  Checkbox,
+  MediaArtwork,
+  Tooltip,
+  TrackProcessing,
+} from '@tahti-player/ui';
+
+import type { StudioSound } from '../../../api/studio-types';
+import { AddToPlaylistButton } from '../../../components/AddToPlaylistButton';
+import { useHearthisEmbedClaim } from '../../../components/HearthisEmbedHost';
+import { HearthisEmbedSurface } from '../../../components/HearthisEmbedSurface';
+import { StudioSoundRowMenu } from '../../../components/StudioSoundRowMenu';
+import {
+  canRetrySoundProcessing,
+  useRetrySoundProcessing,
+} from '../../../hooks/useRetrySoundProcessing';
+import {
+  EMBED_PROVIDER_HEIGHT,
+  EMBED_PROVIDER_LABEL,
+  embedSrcFor,
+} from '../../../lib/embedSrc';
+import { isPinned } from '../../../lib/pinnedTracks';
+import { useDominantColor } from '../../../lib/useDominantColor';
+import { usePlayerStore } from '../../../stores/playerStore';
+import type { StudioSoundsState } from './useStudioSoundsState';
+
+function formatUploadDate(value: string | undefined): string | null {
+  if (!value) {
+    return null;
+  }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+  return new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  }).format(date);
+}
+
+function ambientStyle(
+  rgb: [number, number, number] | null,
+): { backgroundImage: string } | undefined {
+  if (!rgb) {
+    return undefined;
+  }
+  const [r, g, b] = rgb;
+  return {
+    backgroundImage: `linear-gradient(90deg, rgba(${r}, ${g}, ${b}, 0.42), rgba(${r}, ${g}, ${b}, 0.12) 45%, transparent 85%)`,
+  };
+}
+
+export function SoundRow({
+  item,
+  state,
+}: {
+  item: StudioSound;
+  state: StudioSoundsState;
+}) {
+  const {
+    busyId,
+    embedOpenId,
+    playItem,
+    playEmbedItem,
+    downloadItem,
+    togglePin,
+    setEditingId,
+    setStatsItem,
+    setPendingDeleteItem,
+    setItems,
+    selectedIds,
+    toggleSelected,
+  } = state;
+  const { retry, retryingId } = useRetrySoundProcessing((id) =>
+    setItems((prev) =>
+      prev.map((sound) =>
+        sound.id === id
+          ? { ...sound, status: 'PENDING', processingError: null }
+          : sound,
+      ),
+    ),
+  );
+  const failed = item.status === 'ERROR';
+  const processing =
+    !item.embedProvider &&
+    (item.status === 'PENDING' || item.status === 'PROCESSING');
+  const rgb = useDominantColor(item.bannerUrl);
+  const currentId = usePlayerStore((s) => s.currentId);
+  const playerStatus = usePlayerStore((s) => s.status);
+  const hearthisActive =
+    item.embedProvider === 'HEARTHIS' &&
+    Boolean(item.embedUri) &&
+    currentId === `sound:${item.id}`;
+  const hearthisPlaying =
+    hearthisActive &&
+    (playerStatus === 'playing' || playerStatus === 'loading');
+  useHearthisEmbedClaim(hearthisActive);
+
+  const embedSrc =
+    item.embedProvider && item.embedUri
+      ? embedSrcFor(item.embedProvider, item.embedUri)
+      : null;
+  const inlineProviderEmbed =
+    embedSrc && embedOpenId === item.id && item.embedProvider !== 'HEARTHIS';
+
+  return (
+    <li
+      className="flex flex-wrap items-center gap-2 py-3 text-sm first:pt-0 last:pb-0"
+      style={ambientStyle(rgb)}
+    >
+      <Checkbox
+        checked={selectedIds.has(item.id)}
+        onChange={() => toggleSelected(item.id)}
+        aria-label={`Select ${item.title}`}
+      />
+      <div className="relative shrink-0 overflow-hidden rounded-md">
+        <MediaArtwork src={item.bannerUrl ?? undefined} size="sm" />
+        {processing ? (
+          <TrackProcessing variant="overlay" label="" decorative />
+        ) : null}
+      </div>
+      <div className="min-w-44 flex-1">
+        <Link
+          to="/t/$id"
+          params={{ id: item.id }}
+          className="font-medium hover:underline"
+        >
+          {item.title}
+        </Link>
+        <p className="text-foreground-secondary text-xs">
+          {processing ? (
+            <TrackProcessing />
+          ) : failed ? (
+            'Processing failed'
+          ) : (
+            item.status
+          )}
+          {formatUploadDate(item.createdAt)
+            ? `, uploaded ${formatUploadDate(item.createdAt)}`
+            : ''}
+          {isPinned(item) ? ', pinned' : ''}
+          {item.durationSec != null
+            ? `, ${Math.round(item.durationSec / 60)} min`
+            : ''}
+          {item.genre ? `, ${item.genre}` : ''}
+          {item.isPublic === false ? ', private' : ''}
+          {item.downloadsEnabled === false ? ', downloads off' : ''}
+          {embedSrc ? `, via ${EMBED_PROVIDER_LABEL[item.embedProvider!]}` : ''}
+        </p>
+        {failed && item.processingError ? (
+          <p className="text-accent-red-strong text-xs">
+            {item.processingError}
+          </p>
+        ) : null}
+      </div>
+      {canRetrySoundProcessing(item) ? (
+        <Button
+          size="xs"
+          variant="secondary"
+          disabled={retryingId === item.id}
+          onClick={() => void retry(item)}
+          aria-label={`Retry processing ${item.title}`}
+        >
+          <RotateCcwIcon size={14} aria-hidden className="mr-1" />
+          Retry
+        </Button>
+      ) : null}
+      <div
+        className="relative flex max-w-full min-w-0 flex-wrap items-center gap-2"
+        data-testid="sound-row-actions"
+      >
+        {!item.embedProvider ? (
+          <Tooltip content="Play · Shift+click to queue" side="top">
+            <Button
+              size="icon-sm"
+              disabled={processing || busyId === item.id}
+              onClick={(event) => {
+                void playItem(item.id, item.title, {
+                  queue: event.shiftKey,
+                });
+              }}
+              aria-label={`Play ${item.title}`}
+            >
+              <PlayIcon size={16} aria-hidden />
+            </Button>
+          </Tooltip>
+        ) : (
+          <Tooltip
+            content={`Play on ${EMBED_PROVIDER_LABEL[item.embedProvider!]} · Shift+click to queue`}
+            side="top"
+          >
+            <Button
+              size="icon-sm"
+              disabled={busyId === item.id}
+              onClick={(event) => {
+                void playEmbedItem(item, { queue: event.shiftKey });
+              }}
+              aria-label={`Play ${item.title} on ${EMBED_PROVIDER_LABEL[item.embedProvider!]}`}
+            >
+              <PlayIcon size={16} aria-hidden />
+            </Button>
+          </Tooltip>
+        )}
+        {hearthisActive && item.embedUri ? (
+          <div
+            className="border-border relative w-full max-w-md basis-full overflow-hidden rounded-lg border contain-paint sm:w-[min(100%,18rem)] sm:basis-auto"
+            data-testid="hearthis-row-embed"
+          >
+            <HearthisEmbedSurface
+              embedUri={item.embedUri}
+              title={item.title}
+              autoplay={hearthisPlaying}
+              compact
+            />
+          </div>
+        ) : null}
+        {!item.embedProvider ? (
+          <Tooltip content="Download original" side="top">
+            <Button
+              size="icon-sm"
+              variant="text"
+              disabled={busyId === item.id}
+              onClick={() => void downloadItem(item)}
+              aria-label={`Download ${item.title}`}
+            >
+              <DownloadIcon size={16} aria-hidden />
+            </Button>
+          </Tooltip>
+        ) : null}
+        <Tooltip content="Edit track" side="top">
+          <Button
+            size="icon-sm"
+            variant="secondary"
+            aria-label={`Edit ${item.title}`}
+            onClick={() => setEditingId(item.id)}
+          >
+            <PencilIcon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
+        <Tooltip content="Stats" side="top">
+          <Button
+            size="icon-sm"
+            variant="text"
+            onClick={() => setStatsItem(item)}
+            aria-label={`Show stats for ${item.title}`}
+          >
+            <BarChart3Icon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
+        <AddToPlaylistButton soundId={item.id} trackTitle={item.title} />
+        <StudioSoundRowMenu
+          item={item}
+          busy={busyId === item.id}
+          hasEmbed={Boolean(embedSrc)}
+          onTogglePin={() => void togglePin(item)}
+          onDelete={() => setPendingDeleteItem(item)}
+        />
+      </div>
+      {inlineProviderEmbed ? (
+        <div className="w-full basis-full">
+          <iframe
+            title={item.title}
+            src={embedSrc}
+            width="100%"
+            height={EMBED_PROVIDER_HEIGHT[item.embedProvider!]}
+            style={{ border: 0, display: 'block' }}
+            allow="autoplay; encrypted-media"
+            loading="lazy"
+          />
+        </div>
+      ) : null}
+    </li>
+  );
+}

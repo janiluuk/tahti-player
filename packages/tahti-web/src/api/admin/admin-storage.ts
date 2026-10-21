@@ -1,5 +1,5 @@
 import type { FetchMeta } from '../client';
-import { getJson, mutate } from '../http';
+import { getJson, mutate, sendJson } from '../http';
 import { failMeta, isForceMock } from '../mode';
 
 // ── Storage ─────────────────────────────────────────────────────────────────
@@ -131,7 +131,7 @@ export function setUserStorageQuota(userId: string, quotaBytes: number) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
-    `/api/admin/storage/${encodeURIComponent(userId)}/quota`,
+    `/api/admin/storage/users/${encodeURIComponent(userId)}/quota`,
     'PATCH',
     {
       quotaBytes,
@@ -340,36 +340,95 @@ function mockAdminFiles(): AdminFileRow[] {
 
 let mockAdminFilesState: AdminFileRow[] | null = null;
 
-export async function fetchAdminFiles(query?: string): Promise<{
+export type AdminFileFilters = {
+  q?: string;
+  userId?: string;
+  genre?: string;
+  contentType?: string;
+};
+
+export type AdminFileFacets = {
+  users: { id: string; username: string; displayName: string }[];
+  genres: string[];
+  contentTypes: string[];
+};
+
+export function adminFilesQuery(filters: AdminFileFilters = {}): string {
+  const qs = new URLSearchParams({ limit: '100' });
+  if (filters.q?.trim()) {
+    qs.set('q', filters.q.trim());
+  }
+  if (filters.userId) {
+    qs.set('userIds', filters.userId);
+  }
+  if (filters.genre) {
+    qs.set('genres', filters.genre);
+  }
+  if (filters.contentType) {
+    qs.set('contentTypes', filters.contentType);
+  }
+  return qs.toString();
+}
+
+export async function fetchAdminFiles(f: AdminFileFilters = {}): Promise<{
   data: AdminFileRow[];
+  total: number;
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
     if (!mockAdminFilesState) {
       mockAdminFilesState = mockAdminFiles();
     }
-    const q = query?.trim().toLowerCase();
-    const data = q
-      ? mockAdminFilesState.filter(
-          (f) =>
-            f.title.toLowerCase().includes(q) ||
-            f.artistName.toLowerCase().includes(q) ||
-            f.username.toLowerCase().includes(q),
-        )
-      : mockAdminFilesState;
-    return { data, meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
+    const q = f.q?.trim().toLowerCase();
+    const data = mockAdminFilesState.filter(
+      (file) =>
+        (!q ||
+          file.title.toLowerCase().includes(q) ||
+          file.artistName.toLowerCase().includes(q) ||
+          file.username.toLowerCase().includes(q)) &&
+        (!f.userId || file.userId === f.userId) &&
+        (!f.genre || file.genre === f.genre) &&
+        (!f.contentType || file.contentType === f.contentType),
+    );
+    return {
+      data,
+      total: data.length,
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
   }
   try {
-    const qs = new URLSearchParams({ limit: '100' });
-    if (query?.trim()) {
-      qs.set('q', query.trim());
-    }
-    const data = await getJson<{ items: AdminFileRow[] }>(
-      `/api/admin/files?${qs.toString()}`,
+    const data = await getJson<{ items: AdminFileRow[]; total?: number }>(
+      `/api/admin/files?${adminFilesQuery(f)}`,
     );
-    return { data: data.items, meta: { source: 'api' } };
+    return {
+      data: data.items,
+      total: data.total ?? data.items.length,
+      meta: { source: 'api' },
+    };
   } catch (err) {
-    return { data: [], meta: failMeta(err) };
+    return { data: [], total: 0, meta: failMeta(err) };
+  }
+}
+
+export async function fetchAdminFileFacets(): Promise<AdminFileFacets> {
+  if (isForceMock()) {
+    const files = mockAdminFilesState ?? mockAdminFiles();
+    return {
+      users: files.map((file) => ({
+        id: file.userId,
+        username: file.username,
+        displayName: file.displayName,
+      })),
+      genres: [
+        ...new Set(files.map((file) => file.genre).filter(Boolean)),
+      ] as string[],
+      contentTypes: ['TRACK', 'DJ_SET', 'CLIP'],
+    };
+  }
+  try {
+    return await getJson<AdminFileFacets>('/api/admin/files/facets');
+  } catch {
+    return { users: [], genres: [], contentTypes: [] };
   }
 }
 
@@ -425,5 +484,112 @@ export async function fetchAdminFileAudio(id: string): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     return { data: null, meta: failMeta(err) };
+  }
+}
+
+export const FILE_LICENSES = [
+  { id: 'ALL_RIGHTS_RESERVED', label: 'All rights reserved' },
+  { id: 'CC_BY', label: 'CC BY' },
+  { id: 'CC_BY_SA', label: 'CC BY-SA' },
+  { id: 'CC_BY_NC', label: 'CC BY-NC' },
+  { id: 'CC_BY_NC_SA', label: 'CC BY-NC-SA' },
+  { id: 'CC_BY_NC_ND', label: 'CC BY-NC-ND' },
+  { id: 'CC0', label: 'CC0 (public domain)' },
+] as const;
+
+export type AdminFilesBulkPatch = {
+  genre?: string | null;
+  contentType?: string;
+  isPublic?: boolean;
+  license?: string;
+};
+
+export async function bulkPatchAdminFiles(
+  ids: string[],
+  patch: AdminFilesBulkPatch,
+): Promise<{ ok: true; updated: number } | { ok: false; error: string }> {
+  if (ids.length === 0 || Object.keys(patch).length === 0) {
+    return { ok: false, error: 'Choose files and at least one change.' };
+  }
+  if (ids.length > 200) {
+    return { ok: false, error: 'Edit at most 200 files at a time.' };
+  }
+  if (isForceMock()) {
+    const files = mockAdminFilesState ?? mockAdminFiles();
+    let updated = 0;
+    for (const file of files) {
+      if (ids.includes(file.id)) {
+        updated += 1;
+        if (patch.genre !== undefined) {
+          file.genre = patch.genre;
+        }
+        if (patch.contentType !== undefined) {
+          file.contentType = patch.contentType;
+        }
+        if (patch.isPublic !== undefined) {
+          file.isPublic = patch.isPublic;
+        }
+      }
+    }
+    mockAdminFilesState = files;
+    return { ok: true, updated };
+  }
+  try {
+    const result = await sendJson<{ updated: number }>(
+      '/api/admin/files/bulk',
+      'PATCH',
+      { ids, ...patch },
+    );
+    return { ok: true, updated: result.updated };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not update the files',
+    };
+  }
+}
+
+export type AdminFilesBulkDeleteResult = {
+  deleted: number;
+  /** Files the server kept, each with the reason. */
+  failed: { id: string; error: string }[];
+};
+
+export async function bulkDeleteAdminFiles(
+  ids: string[],
+): Promise<
+  ({ ok: true } & AdminFilesBulkDeleteResult) | { ok: false; error: string }
+> {
+  if (ids.length === 0) {
+    return { ok: false, error: 'Choose the files to delete.' };
+  }
+  if (ids.length > 200) {
+    return { ok: false, error: 'Delete at most 200 files at a time.' };
+  }
+  if (isForceMock()) {
+    const files = mockAdminFilesState ?? mockAdminFiles();
+    mockAdminFilesState = files.filter((file) => !ids.includes(file.id));
+    return {
+      ok: true,
+      deleted: files.length - mockAdminFilesState.length,
+      failed: [],
+    };
+  }
+  try {
+    const result = await sendJson<AdminFilesBulkDeleteResult>(
+      '/api/admin/files/bulk-delete',
+      'POST',
+      { ids },
+    );
+    return {
+      ok: true,
+      deleted: result.deleted,
+      failed: Array.isArray(result.failed) ? result.failed : [],
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not delete the files',
+    };
   }
 }

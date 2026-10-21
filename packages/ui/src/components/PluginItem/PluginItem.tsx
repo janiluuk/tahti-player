@@ -90,13 +90,13 @@ export const PluginItem: FC<PluginItemProps> = ({
           )}
 
           <div className="min-w-0 flex-1">
-            <h3 className="text-foreground inline-flex flex-row items-baseline gap-2 text-lg leading-tight font-bold select-none">
+            <h3 className="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 text-lg leading-tight font-bold select-none">
               <span data-testid="plugin-name">{name}</span>
               {author ? (
-                <p className="text-foreground-secondary text-sm font-normal select-none">
-                  <span className="mr-1 opacity-60">{labels.by ?? 'by'}</span>
+                <span className="text-foreground-secondary text-sm font-normal select-none">
+                  <span className="mr-1">{labels.by ?? 'by'}</span>
                   <span data-testid="plugin-author">{author}</span>
-                </p>
+                </span>
               ) : null}
             </h3>
             {!descriptionBelow && (

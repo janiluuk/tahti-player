@@ -1,0 +1,118 @@
+[
+  {
+    "file": "studio-dashboard.png",
+    "label": "studio-dashboard"
+  },
+  {
+    "file": "studio-stats.png",
+    "label": "studio-stats"
+  },
+  {
+    "file": "studio-updates.png",
+    "label": "studio-updates"
+  },
+  {
+    "file": "studio-distribution.png",
+    "label": "studio-distribution"
+  },
+  {
+    "file": "studio-insights.png",
+    "label": "studio-insights"
+  },
+  {
+    "file": "studio-fanbase.png",
+    "label": "studio-fanbase"
+  },
+  {
+    "file": "library.png",
+    "label": "library"
+  },
+  {
+    "file": "library-archive.png",
+    "label": "library-archive"
+  },
+  {
+    "file": "library-releases.png",
+    "label": "library-releases"
+  },
+  {
+    "file": "library-collections.png",
+    "label": "library-collections"
+  },
+  {
+    "file": "library-playlists.png",
+    "label": "library-playlists"
+  },
+  {
+    "file": "library-recordings.png",
+    "label": "library-recordings"
+  },
+  {
+    "file": "library-editor.png",
+    "label": "library-editor"
+  },
+  {
+    "file": "library-stash.png",
+    "label": "library-stash"
+  },
+  {
+    "file": "perform-go-live.png",
+    "label": "perform-go-live"
+  },
+  {
+    "file": "perform-schedule.png",
+    "label": "perform-schedule"
+  },
+  {
+    "file": "perform-events.png",
+    "label": "perform-events"
+  },
+  {
+    "file": "perform-events-new.png",
+    "label": "perform-events-new"
+  },
+  {
+    "file": "perform-venues.png",
+    "label": "perform-venues"
+  },
+  {
+    "file": "perform-shows.png",
+    "label": "perform-shows"
+  },
+  {
+    "file": "manage-moderation.png",
+    "label": "manage-moderation"
+  },
+  {
+    "file": "manage-setup.png",
+    "label": "manage-setup"
+  },
+  {
+    "file": "settings-account.png",
+    "label": "settings-account"
+  },
+  {
+    "file": "settings-artist.png",
+    "label": "settings-artist"
+  },
+  {
+    "file": "settings-channel.png",
+    "label": "settings-channel"
+  },
+  {
+    "file": "settings-broadcast.png",
+    "label": "settings-broadcast"
+  },
+  {
+    "file": "settings-themes.png",
+    "label": "settings-themes"
+  },
+  {
+    "file": "settings-addons.png",
+    "label": "settings-addons"
+  },
+  {
+    "file": "settings-whats-new.png",
+    "label": "settings-whats-new"
+  }
+]

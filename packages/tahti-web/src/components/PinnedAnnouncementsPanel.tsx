@@ -6,27 +6,38 @@ import { Button, Input, Tooltip } from '@tahti-player/ui';
 
 import {
   deletePinnedAnnouncement,
-  fetchPinnedAnnouncements,
+  fetchPinnedAnnouncementsWithMeta,
   postPinnedAnnouncement,
   type PinnedAnnouncement,
 } from '../api/announcements';
 import { ConfirmDialog } from './ConfirmDialog';
+import { PageEmpty, PageError } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
   const [items, setItems] = useState<PinnedAnnouncement[]>([]);
   const [body, setBody] = useState('');
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [pendingRemove, setPendingRemove] = useState<PinnedAnnouncement | null>(
     null,
   );
 
   const reload = () => {
-    void fetchPinnedAnnouncements(slug).then((data) => {
-      setItems(data);
-      setLoading(false);
-    });
+    setLoading(true);
+    setLoadError(null);
+    void fetchPinnedAnnouncementsWithMeta(slug)
+      .then(({ data, meta }) => {
+        setItems(data);
+        setLoadError(meta.source === 'api' ? (meta.reason ?? null) : null);
+      })
+      .catch((err) => {
+        setLoadError(
+          err instanceof Error ? err.message : 'Could not load announcements.',
+        );
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(reload, [slug]);
@@ -86,17 +97,21 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
           <p className="text-foreground-secondary text-sm">
             Loading announcements…
           </p>
+        ) : loadError ? (
+          <PageError
+            title="Could not load announcements"
+            description={loadError}
+            onRetry={reload}
+          />
         ) : items.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">
-            No pinned announcements yet.
-          </p>
+          <PageEmpty title="No pinned announcements yet." />
         ) : (
           <ul className="border-border divide-border divide-y rounded-lg border">
             {items.map((item) => (
               <li key={item.id} className="flex items-start gap-3 p-3">
                 <PinIcon
                   size={16}
-                  className="text-accent-orange mt-0.5 shrink-0"
+                  className="text-accent-orange-strong mt-0.5 shrink-0"
                   aria-hidden
                 />
                 <p className="min-w-0 flex-1 text-sm">{item.body}</p>

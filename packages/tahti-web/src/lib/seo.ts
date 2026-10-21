@@ -18,6 +18,80 @@ function displaySlug(value: string): string {
     .join(' ');
 }
 
+const PAGE_TITLES: [string, string][] = [
+  ['/discover', 'Discover'],
+  ['/favorites', 'Favorites'],
+  ['/listen/favorites', 'Favorites'],
+  ['/library/favorites', 'Favorites'],
+  ['/feed', 'Feed'],
+  ['/listen/feed', 'Feed'],
+  ['/history', 'History'],
+  ['/listen/history', 'History'],
+  ['/library/history', 'History'],
+  ['/library/sounds', 'Tracks'],
+  ['/library/smartlinks', 'Smart links'],
+  ['/library/local', 'Local files'],
+  ['/messages', 'Messages'],
+  ['/governance/feature-requests', 'Feature requests'],
+  ['/governance/history', 'Closed decisions'],
+  ['/governance/members', 'Member directory'],
+  ['/governance', 'Governance'],
+  ['/transparency', 'Transparency'],
+  ['/help', 'Help'],
+  ['/news', 'Platform news'],
+  ['/whats-new', 'What’s new'],
+  ['/schedule', 'Schedule'],
+  ['/search', 'Search'],
+  ['/settings', 'Settings'],
+  ['/venues', 'Venues'],
+  ['/chat', 'Chat'],
+  ['/status', 'Status'],
+  ['/more', 'Tahti map'],
+  ['/about', 'About'],
+  ['/what-is-it', 'What is it'],
+  ['/how-it-works', 'How it works'],
+  ['/for-artists', 'For artists'],
+  ['/terms', 'Terms of service'],
+  ['/privacy', 'Privacy policy'],
+  ['/agpl', 'Source code & AGPL licence'],
+  ['/subscribe', 'Subscribe'],
+  ['/newsletter', 'Newsletter'],
+  ['/moderate', 'Chat moderation'],
+  ['/jam', 'Jam'],
+];
+
+const SECTION_NAMES: [string, string][] = [
+  ['/studio', 'Studio'],
+  ['/admin', 'Admin'],
+  ['/library', 'Library'],
+];
+
+function sentenceCase(value: string): string {
+  const words = decodeURIComponent(value).split('-').filter(Boolean).join(' ');
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
+function matchesPrefix(pathname: string, prefix: string): boolean {
+  return pathname === prefix || pathname.startsWith(`${prefix}/`);
+}
+
+function pageTitleForPath(pathname: string): string | null {
+  const page = PAGE_TITLES.find(([prefix]) => matchesPrefix(pathname, prefix));
+  if (page) {
+    return `${page[1]} · Tahti`;
+  }
+  const section = SECTION_NAMES.find(([prefix]) =>
+    matchesPrefix(pathname, prefix),
+  );
+  if (!section) {
+    return null;
+  }
+  const child = pathname.slice(section[0].length).split('/').filter(Boolean)[0];
+  return child
+    ? `${sentenceCase(child)} · ${section[1]} · Tahti`
+    : `${section[1]} · Tahti`;
+}
+
 export function metadataForPath(pathname: string): RouteMetadata {
   const channel = /^\/(?:channel|c)\/([^/]+)/.exec(pathname)?.[1];
   if (channel) {
@@ -65,6 +139,23 @@ export function metadataForPath(pathname: string): RouteMetadata {
     };
   }
 
+  const subscribe = /^\/subscribe\/([^/]+)/.exec(pathname)?.[1];
+  if (subscribe) {
+    const name = displaySlug(subscribe);
+    return {
+      title: `Subscribe to ${name} · Tahti`,
+      description: `Support ${name} with a fan subscription on Tahti.`,
+    };
+  }
+
+  const moderated = /^\/moderate\/([^/]+)/.exec(pathname)?.[1];
+  if (moderated) {
+    return {
+      ...DEFAULT_METADATA,
+      title: `${displaySlug(moderated)}: chat moderation · Tahti`,
+    };
+  }
+
   if (pathname.startsWith('/radio')) {
     return {
       title: 'Tahti Radio',
@@ -72,12 +163,17 @@ export function metadataForPath(pathname: string): RouteMetadata {
     };
   }
 
+  const pageTitle = pageTitleForPath(pathname);
   if (pathname.startsWith('/studio')) {
     return {
-      title: 'Studio · Tahti',
+      title: pageTitle ?? 'Studio · Tahti',
       description:
         'Manage your music, channel, broadcasts, and audience on Tahti.',
     };
+  }
+
+  if (pageTitle) {
+    return { ...DEFAULT_METADATA, title: pageTitle };
   }
 
   return DEFAULT_METADATA;
@@ -90,10 +186,11 @@ function setMeta(property: string, content: string): void {
 }
 
 let lastApplied: (RouteMetadata & { pathname: string }) | null = null;
+let playbackTitle: string | null = null;
 
 function applyMetadata(pathname: string, metadata: RouteMetadata): void {
   const canonicalUrl = new URL(pathname, window.location.origin).toString();
-  document.title = metadata.title;
+  document.title = playbackTitle ?? metadata.title;
   document.head
     .querySelector<HTMLMetaElement>('meta[name="description"]')
     ?.setAttribute('content', metadata.description);
@@ -125,21 +222,23 @@ export function syncDocumentMetadata(
 }
 
 /**
- * Re-applies whatever metadata was last synced for this pathname (guess or
- * real-data override) rather than recomputing the slug guess — used when
- * something else (the scrolling now-playing title) temporarily took over
- * document.title and needs to hand it back without discarding an override.
+ * Shows `title` in the tab and window title in place of the page's own
+ * until called with null, which puts the page's last synced title back.
+ * Page metadata synced in between keeps its share and Open Graph tags.
  */
-export function reapplyLastMetadata(pathname: string): void {
-  if (lastApplied && lastApplied.pathname === pathname) {
-    applyMetadata(pathname, lastApplied);
-  } else {
-    syncDocumentMetadata(pathname);
-  }
+export function setPlaybackDocumentTitle(title: string | null): void {
+  playbackTitle = title;
+  document.title = title ?? lastApplied?.title ?? document.title;
 }
 
-export function scrollingPlaybackTitle(title: string, offset: number): string {
-  const marquee = `${title}   `;
-  const position = offset % marquee.length;
-  return `${marquee.slice(position)}${marquee.slice(0, position)}`;
+/** The tab and window title while something plays: what is on, then who
+ * plays it, without repeating a name that is both. */
+export function playbackDocumentTitle(title: string, artist: string): string {
+  const what = title.trim();
+  const who = artist.trim();
+  const line =
+    who && who.toLowerCase() !== what.toLowerCase()
+      ? `${what} — ${who}`
+      : what || who;
+  return `▶ ${line} · Tahti`;
 }

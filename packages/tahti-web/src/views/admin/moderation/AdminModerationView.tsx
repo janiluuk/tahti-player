@@ -1,8 +1,9 @@
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import {
   FileWarningIcon,
   FlagIcon,
   LightbulbIcon,
+  PaletteIcon,
   RadioIcon,
   TicketIcon,
   UsersIcon,
@@ -27,6 +28,7 @@ import { ContentReportsTab } from './tabs/ContentReportsTab';
 import { FeatureRequestsTab } from './tabs/FeatureRequestsTab';
 import { RadioSubmissionsTab } from './tabs/RadioSubmissionsTab';
 import { SupportTab } from './tabs/SupportTab';
+import { ThemesTab } from './tabs/ThemesTab';
 
 function tabContent(id: AdminModerationTabId) {
   switch (id) {
@@ -42,6 +44,8 @@ function tabContent(id: AdminModerationTabId) {
       return <FeatureRequestsTab />;
     case 'missed-shows':
       return <AdminMissedShowsPanel />;
+    case 'themes':
+      return <ThemesTab />;
   }
 }
 
@@ -52,6 +56,7 @@ const MODERATION_TAB_ICONS: Record<AdminModerationTabId, typeof UsersIcon> = {
   'content-reports': FlagIcon,
   'feature-requests': LightbulbIcon,
   'missed-shows': FileWarningIcon,
+  themes: PaletteIcon,
 };
 
 const MODERATION_TAB_ITEMS: ModerationTabItem[] = ADMIN_MODERATION_TABS.map(
@@ -93,6 +98,16 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
           moderationPendingCount={pendingCount}
         >
           <div className="flex max-w-5xl flex-col gap-6">
+            <nav
+              aria-label="Breadcrumb"
+              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
+            >
+              <Link to="/admin" className="hover:underline">
+                Admin
+              </Link>
+              <span aria-hidden>→</span>
+              <span aria-current="page">Moderation</span>
+            </nav>
             <ModerationTabs
               activeId={
                 ADMIN_MODERATION_TABS[selectedIndex < 0 ? 0 : selectedIndex].id
@@ -107,7 +122,10 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
                 });
               }}
             />
-            <ViewShell title="Moderation" classes={{ root: 'px-0 pt-0' }}>
+            <ViewShell
+              title="Moderation"
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+            >
               {tabContent(active)}
             </ViewShell>
           </div>

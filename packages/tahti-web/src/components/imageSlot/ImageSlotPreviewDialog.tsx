@@ -18,11 +18,16 @@ type Props = {
    * large preview. Omit for a single-image slot. */
   frames?: ImageSlotFrame[];
   onChangeClick: () => void;
-  confirmOpen: boolean;
-  clearing: boolean;
-  onRequestDelete: () => void;
-  onCancelDelete: () => void;
-  onConfirmDelete: () => void | Promise<void>;
+  /** Omit the Delete action and its confirm dialog entirely — for a slot
+   * where an image is always required (e.g. RadioStationCover has no
+   * "empty" state, so clearing isn't a valid action). Defaults to false;
+   * every other consumer is unaffected. */
+  hideDelete?: boolean;
+  confirmOpen?: boolean;
+  clearing?: boolean;
+  onRequestDelete?: () => void;
+  onCancelDelete?: () => void;
+  onConfirmDelete?: () => void | Promise<void>;
 };
 
 /** Shared large-preview modal for a "set image" upload slot — Change /
@@ -34,12 +39,15 @@ export function ImageSlotPreviewDialog({
   src,
   frames,
   onChangeClick,
-  confirmOpen,
-  clearing,
+  hideDelete = false,
+  confirmOpen = false,
+  clearing = false,
   onRequestDelete,
   onCancelDelete,
   onConfirmDelete,
 }: Props) {
+  const showDelete = !hideDelete && Boolean(onRequestDelete);
+
   return (
     <>
       <Dialog.Root
@@ -69,15 +77,17 @@ export function ImageSlotPreviewDialog({
                     className="size-full object-cover"
                   />
                   {frame.onDelete ? (
-                    <button
+                    <Button
+                      variant="plain"
+                      size="flexible"
                       type="button"
                       aria-label="Remove image"
                       title="Remove image"
-                      className="bg-background/90 text-foreground hover:bg-accent-red absolute top-0.5 right-0.5 flex size-5 items-center justify-center rounded-full opacity-0 shadow-sm transition-opacity group-hover:opacity-100 hover:text-white"
+                      className="bg-background/90 text-foreground hover:bg-accent-red absolute top-0.5 right-0.5 flex size-5 items-center justify-center rounded-full whitespace-normal opacity-0 shadow-sm transition-opacity group-hover:opacity-100 hover:text-white active:scale-100"
                       onClick={frame.onDelete}
                     >
                       <XIcon size={12} aria-hidden />
-                    </button>
+                    </Button>
                   ) : null}
                 </div>
               ))}
@@ -85,23 +95,27 @@ export function ImageSlotPreviewDialog({
           ) : null}
         </div>
         <Dialog.Actions>
-          <Button variant="secondary" onClick={onRequestDelete}>
-            Delete
-          </Button>
+          {showDelete ? (
+            <Button variant="secondary" onClick={onRequestDelete}>
+              Delete
+            </Button>
+          ) : null}
           <Button onClick={onChangeClick} variant="secondary">
             Change
           </Button>
         </Dialog.Actions>
       </Dialog.Root>
 
-      <ConfirmDialog
-        isOpen={confirmOpen}
-        title={`Remove ${label.toLowerCase()}?`}
-        description="This can't be undone from here — you'll need to upload a new image to replace it."
-        confirmLabel={clearing ? 'Removing…' : 'Remove'}
-        onCancel={onCancelDelete}
-        onConfirm={() => void onConfirmDelete()}
-      />
+      {showDelete ? (
+        <ConfirmDialog
+          isOpen={confirmOpen}
+          title={`Remove ${label.toLowerCase()}?`}
+          description="This can't be undone from here — you'll need to upload a new image to replace it."
+          confirmLabel={clearing ? 'Removing…' : 'Remove'}
+          onCancel={() => onCancelDelete?.()}
+          onConfirm={() => void onConfirmDelete?.()}
+        />
+      ) : null}
     </>
   );
 }

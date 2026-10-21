@@ -4,9 +4,15 @@ import { fn } from 'storybook/test';
 import type { Track } from '@tahti-player/model';
 import { QueueItem } from '@tahti-player/ui';
 
+const labels = {
+  removeButton: 'Remove from queue',
+  playbackError: 'Playback error',
+};
+
 const meta = {
   title: 'Components/QueueItem',
   component: QueueItem,
+  args: { labels },
   parameters: {
     layout: 'padded',
   },
@@ -199,22 +205,40 @@ export const CollapsedNoArtwork: Story = {
 export const AllStates: Story = {
   render: () => (
     <div className="flex flex-col gap-4">
-      <QueueItem track={mockTrack} onSelect={fn()} onRemove={fn()} />
-      <QueueItem track={mockTrack} isCurrent onSelect={fn()} onRemove={fn()} />
       <QueueItem
+        labels={labels}
+        track={mockTrack}
+        onSelect={fn()}
+        onRemove={fn()}
+      />
+      <QueueItem
+        labels={labels}
+        track={mockTrack}
+        isCurrent
+        onSelect={fn()}
+        onRemove={fn()}
+      />
+      <QueueItem
+        labels={labels}
         track={mockTrack}
         status="loading"
         onSelect={fn()}
         onRemove={fn()}
       />
       <QueueItem
+        labels={labels}
         track={mockTrack}
         status="error"
         errorMessage="Failed to load"
         onSelect={fn()}
         onRemove={fn()}
       />
-      <QueueItem track={mockTrackNoArtwork} onSelect={fn()} onRemove={fn()} />
+      <QueueItem
+        labels={labels}
+        track={mockTrackNoArtwork}
+        onSelect={fn()}
+        onRemove={fn()}
+      />
     </div>
   ),
 };
@@ -222,16 +246,39 @@ export const AllStates: Story = {
 export const CollapsedStates: Story = {
   render: () => (
     <div className="flex gap-4">
-      <QueueItem track={mockTrack} isCollapsed onSelect={fn()} />
-      <QueueItem track={mockTrack} isCollapsed isCurrent onSelect={fn()} />
       <QueueItem
+        labels={labels}
+        track={mockTrack}
+        isCollapsed
+        onSelect={fn()}
+      />
+      <QueueItem
+        labels={labels}
+        track={mockTrack}
+        isCollapsed
+        isCurrent
+        onSelect={fn()}
+      />
+      <QueueItem
+        labels={labels}
         track={mockTrack}
         isCollapsed
         status="loading"
         onSelect={fn()}
       />
-      <QueueItem track={mockTrack} isCollapsed status="error" onSelect={fn()} />
-      <QueueItem track={mockTrackNoArtwork} isCollapsed onSelect={fn()} />
+      <QueueItem
+        labels={labels}
+        track={mockTrack}
+        isCollapsed
+        status="error"
+        onSelect={fn()}
+      />
+      <QueueItem
+        labels={labels}
+        track={mockTrackNoArtwork}
+        isCollapsed
+        onSelect={fn()}
+      />
     </div>
   ),
 };

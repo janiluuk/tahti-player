@@ -1,5 +1,4 @@
 import type { IntegrationId } from '../../api/sources';
-import type { PluginCategoryId } from '../../content/pluginStoreCategories';
 import { EXPORT_TARGETS } from '../../plugins/export';
 import {
   importSourcePlugins,
@@ -22,9 +21,11 @@ export type ServicePlugin = {
   name: string;
   author: string;
   description: string;
-  tags: PluginCategoryId[];
+  tags: ServiceCategoryId[];
   action: ServiceAction;
 };
+
+export type ServiceCategoryId = 'export' | 'import' | 'fingerprinting';
 
 const NON_IMPORT_TOOL_IDS = new Set<IntegrationId>(['url', 'radio']);
 
@@ -68,10 +69,9 @@ const IMPORT_SERVICE_PLUGINS: ServicePlugin[] = importPlugins
             oauthPath: source.oauthStartPath ?? '',
             ...OAUTH_SOURCE_INSTRUCTIONS[source.id],
           }
-        : {
-            kind: 'deep-link' as const,
-            to: source.studioDeepLink ?? `/sources/${source.id}`,
-          },
+        : source.studioDeepLink
+          ? { kind: 'deep-link' as const, to: source.studioDeepLink }
+          : { kind: 'info' as const },
   }));
 
 const EXPORT_SERVICE_PLUGINS: ServicePlugin[] = EXPORT_TARGETS.filter(
@@ -80,10 +80,14 @@ const EXPORT_SERVICE_PLUGINS: ServicePlugin[] = EXPORT_TARGETS.filter(
 ).map((target) => ({
   id: `export-${target.id}`,
   name: target.label,
-  author: 'Tahti distribution',
+  author: 'Deep link · via Revelator',
   description: target.note,
   tags: ['export'],
-  action: { kind: 'deep-link', to: target.to },
+  action: {
+    kind: 'deep-link',
+    to: target.to,
+    label: 'Open distribution',
+  },
 }));
 
 const SERVICE_PLUGINS: ServicePlugin[] = [
@@ -124,6 +128,6 @@ const SERVICE_PLUGINS: ServicePlugin[] = [
   },
 ];
 
-export function servicePluginsForCategory(categoryId: PluginCategoryId) {
+export function servicePluginsForCategory(categoryId: ServiceCategoryId) {
   return SERVICE_PLUGINS.filter((plugin) => plugin.tags.includes(categoryId));
 }

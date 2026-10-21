@@ -1,0 +1,890 @@
+{
+  "base": "https://beta.tahti.live",
+  "tasks": [
+    {
+      "name": "Sign in as listener",
+      "ok": true,
+      "ms": 4140,
+      "notes": ["landed on /"],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "401 GET /tahti-api/api/auth/me"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiohelsinki.fi%2Fohjelmakartta%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fnrj"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fradio-nova"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://icecast.live.yle.fi/radio/YleX/icecast.audio' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Request header field icy-metadata is not allowed by Access-Control-Allow-Headers in preflight response."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-radiorock.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested res"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-suomipop.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested reso"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origi"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream.radiohelsinki.fi/stream' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.supla.fi%2Fsuomipop"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiorock.fi%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fareena.yle.fi%2Faudio%2Fohjelmat%2Fyle-x"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        }
+      ],
+      "shots": ["01-sign-in-as-listener.png"]
+    },
+    {
+      "name": "Home: what can I listen to?",
+      "ok": false,
+      "ms": 17266,
+      "notes": ["no playable tracks on home"],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://icecast.live.yle.fi/radio/YleX/icecast.audio' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Request header field icy-metadata is not allowed by Access-Control-Allow-Headers in preflight response."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiohelsinki.fi%2Fohjelmakartta%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fnrj"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fradio-nova"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-radiorock.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested res"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-suomipop.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested reso"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origi"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream.radiohelsinki.fi/stream' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fareena.yle.fi%2Faudio%2Fohjelmat%2Fyle-x"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiorock.fi%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.supla.fi%2Fsuomipop"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "slow",
+          "detail": "2580ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "2644ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "2723ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "2812ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "2887ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "2966ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "3040ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "3113ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "3187ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "3269ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "3343ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "3417ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "3491ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\">"
+        }
+      ],
+      "shots": ["02-home-what-can-i-listen-to.png"]
+    },
+    {
+      "name": "Play a track from home",
+      "ok": false,
+      "ms": 30001,
+      "notes": ["locator.getAttribute: Timeout 30000ms exceeded."],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/sound/processing"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        }
+      ],
+      "shots": ["03-play-a-track-from-home.png"]
+    },
+    {
+      "name": "Pause and resume with the space bar",
+      "ok": true,
+      "ms": 1666,
+      "notes": [],
+      "ux": ["space bar paused but did not resume"],
+      "signals": [
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        }
+      ],
+      "shots": ["04-pause-and-resume-with-the-space-bar.png"]
+    },
+    {
+      "name": "Add another track to the queue and open the queue",
+      "ok": false,
+      "ms": 31101,
+      "notes": ["locator.click: Timeout 30000ms exceeded."],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/sound/processing"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unnamed control <div data-queue-item-id=\"sound:cmsysdsoo00ezsg6bt6bhmn78\" class=\"\" role=\"button\" tabindex=\"0\" aria-disabled=\"true\" aria-"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unnamed control <div class=\"border-border rounded-md border-(length:--border-width) bg-background-secondary text-foreground shadow-none "
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        },
+        {
+          "kind": "audit",
+          "detail": "/: unlabeled field <input type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr-only\" tabindex=\"-1\" aria-hidden=\"true\" style=\"\">"
+        }
+      ],
+      "shots": ["05-add-another-track-to-the-queue-and-open-the-queue.png"]
+    },
+    {
+      "name": "Favourite the playing track, find it in Favorites, undo",
+      "ok": true,
+      "ms": 8689,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://icecast.live.yle.fi/radio/YleX/icecast.audio' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Request header field icy-metadata is not allowed by Access-Control-Allow-Headers in preflight response."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-suomipop.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested reso"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-radiorock.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested res"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fradio-nova"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fnrj"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiohelsinki.fi%2Fohjelmakartta%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origi"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream.radiohelsinki.fi/stream' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.supla.fi%2Fsuomipop"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fareena.yle.fi%2Faudio%2Fohjelmat%2Fyle-x"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiorock.fi%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "slow",
+          "detail": "2544ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "2616ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "2691ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "2762ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "2839ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "2911ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "2986ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "3064ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "3135ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "3209ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "3290ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "3365ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "3435ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "slow",
+          "detail": "3508ms GET /tahti-api/api/me/collections?expand=items"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/likes?limit=100"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "audit",
+          "detail": "/favorites: unnamed control <div data-queue-item-id=\"sound:cmsysdsoo00ezsg6bt6bhmn78\" class=\"\" role=\"button\" tabindex=\"0\" aria-disabled=\"true\" aria-"
+        },
+        {
+          "kind": "audit",
+          "detail": "/favorites: unnamed control <div class=\"border-border rounded-md border-(length:--border-width) bg-background-secondary text-foreground shadow-none "
+        }
+      ],
+      "shots": ["06-favourite-the-playing-track-find-it-in-favorites-undo.png"]
+    },
+    {
+      "name": "Search for the track I just played",
+      "ok": true,
+      "ms": 4139,
+      "notes": ["0 suggestions; /favorites"],
+      "ux": ["no suggestions for \"a\"", "Enter in search went to /favorites"],
+      "signals": [
+        {
+          "kind": "audit",
+          "detail": "/favorites: unnamed control <div data-queue-item-id=\"sound:cmsysdsoo00ezsg6bt6bhmn78\" class=\"\" role=\"button\" tabindex=\"0\" aria-disabled=\"true\" aria-"
+        },
+        {
+          "kind": "audit",
+          "detail": "/favorites: unnamed control <div class=\"border-border rounded-md border-(length:--border-width) bg-background-secondary text-foreground shadow-none "
+        }
+      ],
+      "shots": ["07-search-for-the-track-i-just-played.png"]
+    },
+    {
+      "name": "Open an artist channel from a track",
+      "ok": true,
+      "ms": 3607,
+      "notes": ["/channel/liis-kask-ee → \"Discover\""],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "audit",
+          "detail": "/discover: unnamed control <div data-queue-item-id=\"sound:cmsysdryo00b7sg6b6o2vx328\" class=\"\" role=\"button\" tabindex=\"0\" aria-disabled=\"true\" aria-"
+        },
+        {
+          "kind": "audit",
+          "detail": "/discover: unnamed control <div class=\"border-border rounded-md border-(length:--border-width) text-foreground shadow-none group relative flex item"
+        }
+      ],
+      "shots": ["08-open-an-artist-channel-from-a-track.png"]
+    },
+    {
+      "name": "Follow / subscribe to the artist",
+      "ok": false,
+      "ms": 11,
+      "notes": ["no Follow or Subscribe button on the channel"],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "audit",
+          "detail": "/discover: unnamed control <div data-queue-item-id=\"sound:cmsysdryo00b7sg6b6o2vx328\" class=\"\" role=\"button\" tabindex=\"0\" aria-disabled=\"true\" aria-"
+        },
+        {
+          "kind": "audit",
+          "detail": "/discover: unnamed control <div class=\"border-border rounded-md border-(length:--border-width) text-foreground shadow-none group relative flex item"
+        }
+      ],
+      "shots": ["09-follow-subscribe-to-the-artist.png"]
+    },
+    {
+      "name": "Play a radio station",
+      "ok": false,
+      "ms": 7128,
+      "notes": [
+        "\"Play Radio\" did not start: [{\"paused\":false,\"t\":0,\"src\":\"blob:https://beta.tahti.live/b4f84f4a-810d-4b77-9535-8f02b1e5029b\",\"err\":null}]"
+      ],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "audit",
+          "detail": "/radio: unnamed control <div data-queue-item-id=\"radio:tahti-radio\" class=\"\" role=\"button\" tabindex=\"0\" aria-disabled=\"true\" aria-roledescriptio"
+        },
+        {
+          "kind": "audit",
+          "detail": "/radio: unnamed control <div class=\"border-border rounded-md border-(length:--border-width) text-foreground shadow-none group relative flex item"
+        }
+      ],
+      "shots": ["10-play-a-radio-station.png"]
+    },
+    {
+      "name": "Listening history shows what I played",
+      "ok": true,
+      "ms": 1303,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fnrj"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.supla.fi%2Fsuomipop"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fareena.yle.fi%2Faudio%2Fohjelmat%2Fyle-x"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiohelsinki.fi%2Fohjelmakartta%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radiorock.fi%2F"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/v1/internet-radio/now-playing?url=https%3A%2F%2Fwww.radioplay.fi%2Fradio-nova"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origi"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://icecast.live.yle.fi/radio/YleX/icecast.audio' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Request header field icy-metadata is not allowed by Access-Control-Allow-Headers in preflight response."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://stream.radiohelsinki.fi/stream' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-suomipop.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested reso"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "kind": "console",
+          "detail": "Access to fetch at 'https://aud-stream-radiorock.nm-elemental.nelonenmedia.fi/playlist.m3u8' from origin 'https://beta.tahti.live' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested res"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: net::ERR_FAILED"
+        }
+      ],
+      "shots": ["11-listening-history-shows-what-i-played.png"]
+    },
+    {
+      "name": "Library and collections",
+      "ok": true,
+      "ms": 2274,
+      "notes": [
+        "tabs: Overview, Sounds, Collections, Upload, Recordings, Media, Stash, Embeds, Smart links, Local files"
+      ],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/collection-subscriptions"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        }
+      ],
+      "shots": ["12-library-and-collections.png"]
+    },
+    {
+      "name": "Messages and notifications",
+      "ok": true,
+      "ms": 906,
+      "notes": [],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/blocks"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/blocks"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/blocks"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        }
+      ],
+      "shots": ["13-messages-and-notifications.png"]
+    },
+    {
+      "name": "Account settings",
+      "ok": true,
+      "ms": 875,
+      "notes": [],
+      "ux": ["account settings has no editable fields"],
+      "signals": [],
+      "shots": ["14-account-settings.png"]
+    },
+    {
+      "name": "Sign out",
+      "ok": false,
+      "ms": 30001,
+      "notes": ["locator.click: Timeout 30000ms exceeded."],
+      "ux": [],
+      "signals": [
+        {
+          "kind": "api",
+          "detail": "404 GET /tahti-api/api/me/sound/processing"
+        },
+        {
+          "kind": "console",
+          "detail": "Failed to load resource: the server responded with a status of 404 ()"
+        }
+      ],
+      "shots": ["15-sign-out.png"]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react';
+import { FC, ReactElement } from 'react';
 
 import type { StreamCandidate, Track } from '@tahti-player/model';
 
@@ -15,7 +15,7 @@ export type QueueItemPopoverLabels = {
 
 type QueueItemPopoverProps = {
   track: Track;
-  children: ReactNode;
+  children: ReactElement;
   className?: string;
   labels?: QueueItemPopoverLabels;
   onSelectCandidate?: (candidateId: string) => void;

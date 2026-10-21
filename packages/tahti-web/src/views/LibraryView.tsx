@@ -10,10 +10,18 @@ import {
   MicIcon,
   Music2Icon,
   PackageIcon,
+  UploadIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { TabLabel, Tabs, TopList, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  TabLabel,
+  Tabs,
+  TopList,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchStudioSounds } from '../api/studio';
 import {
@@ -23,13 +31,20 @@ import {
   type StorageUsage,
 } from '../api/studio-extras';
 import { DesktopLibraryPanel } from '../components/DesktopLibraryPanel';
+import { PageEmpty, PageError } from '../components/PageStates';
+import {
+  PHONE_SCROLL_TAB_LIST,
+  useSelectedTabInView,
+} from '../components/SectionTabs';
 import { StudioPanel } from '../components/StudioPanel';
+import { hasStudioAccess } from '../lib/accountRoles';
+import { getNativeLibrary } from '../lib/nativeLibrary';
 import { formatPlayCount } from '../lib/topListEntries';
+import { useAuthModalStore } from '../stores/authModalStore';
+import { useAuthStore } from '../stores/authStore';
 import { LibraryEmbedsView } from './LibraryEmbedsView';
 import { LibraryMediaView } from './LibraryMediaView';
 import { LibrarySmartLinksView } from './LibrarySmartLinksView';
-import { MyCollectionsView } from './MyCollectionsView';
-import { MyDiscographyView } from './MyDiscographyView';
 import { StudioRecordingsView } from './studio/StudioRecordingsView';
 import { StudioStashView } from './studio/StudioStashView';
 
@@ -42,7 +57,8 @@ export type Tab =
   | 'stash'
   | 'embeds'
   | 'smartlinks'
-  | 'local';
+  | 'local'
+  | 'upload';
 
 export const LIBRARY_SECTION_TABS = [
   {
@@ -62,6 +78,12 @@ export const LIBRARY_SECTION_TABS = [
     label: 'Collections',
     icon: LibraryIcon,
     to: '/library/collections',
+  },
+  {
+    id: 'upload' as const,
+    label: 'Upload',
+    icon: UploadIcon,
+    to: '/library/upload',
   },
   {
     id: 'recordings' as const,
@@ -103,6 +125,31 @@ export const LIBRARY_SECTION_TABS = [
 
 export type LibrarySectionId = (typeof LIBRARY_SECTION_TABS)[number]['id'];
 
+/** Tabs for publishing artists only; a listener's Library leaves them out. */
+const ARTIST_ONLY_TABS: ReadonlySet<LibrarySectionId> = new Set([
+  'upload',
+  'recordings',
+  'embeds',
+  'smartlinks',
+]);
+
+function useLibraryTabs() {
+  // Until the profile loads the stored user may lack its channel: keep every
+  // tab so an artist never sees them disappear and come back.
+  const listener = useAuthStore(
+    (state) =>
+      Boolean(state.user) &&
+      state.profileLoaded &&
+      !hasStudioAccess(state.user),
+  );
+  // Local files is the desktop native library — hide on plain web.
+  const desktopLocal = Boolean(getNativeLibrary());
+  const tabs = listener
+    ? LIBRARY_SECTION_TABS.filter((item) => !ARTIST_ONLY_TABS.has(item.id))
+    : LIBRARY_SECTION_TABS;
+  return desktopLocal ? tabs : tabs.filter((item) => item.id !== 'local');
+}
+
 /**
  * The horizontal Overview/Sounds/Collections/... tab strip shown at the top
  * of every Library page. Reused outside LibraryView by pages that live one
@@ -111,27 +158,34 @@ export type LibrarySectionId = (typeof LIBRARY_SECTION_TABS)[number]['id'];
  */
 export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
   const navigate = useNavigate();
+  const ref = useSelectedTabInView(active);
+  const tabs = useLibraryTabs();
   return (
-    <Tabs.Root
-      selectedIndex={Math.max(
-        0,
-        LIBRARY_SECTION_TABS.findIndex((item) => item.id === active),
-      )}
-      onChange={(index) => {
-        const next = LIBRARY_SECTION_TABS[index];
-        if (next) {
-          void navigate({ to: next.to as never });
-        }
-      }}
-    >
-      <Tabs.List aria-label="Library sections" className="overflow-x-auto">
-        {LIBRARY_SECTION_TABS.map((item) => (
-          <Tabs.Tab key={item.id}>
-            <TabLabel icon={<item.icon size={14} />}>{item.label}</TabLabel>
-          </Tabs.Tab>
-        ))}
-      </Tabs.List>
-    </Tabs.Root>
+    <div ref={ref} className="min-w-0">
+      <Tabs.Root
+        selectedIndex={Math.max(
+          0,
+          tabs.findIndex((item) => item.id === active),
+        )}
+        onChange={(index) => {
+          const next = tabs[index];
+          if (next) {
+            void navigate({ to: next.to as never });
+          }
+        }}
+      >
+        <Tabs.List
+          aria-label="Library sections"
+          className={`${PHONE_SCROLL_TAB_LIST} max-w-full`}
+        >
+          {tabs.map((item) => (
+            <Tabs.Tab key={item.id}>
+              <TabLabel icon={<item.icon size={14} />}>{item.label}</TabLabel>
+            </Tabs.Tab>
+          ))}
+        </Tabs.List>
+      </Tabs.Root>
+    </div>
   );
 }
 
@@ -141,19 +195,21 @@ export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
       ? 'Overview'
       : tab === 'sounds'
         ? 'Sounds'
-        : tab === 'recordings'
-          ? 'Recordings'
-          : tab === 'embeds'
-            ? 'Embeds'
-            : tab === 'media'
-              ? 'Media'
-              : tab === 'stash'
-                ? 'Stash'
-                : tab === 'smartlinks'
-                  ? 'Smart links'
-                  : tab === 'local'
-                    ? 'Local files'
-                    : 'Collections';
+        : tab === 'upload'
+          ? 'Upload'
+          : tab === 'recordings'
+            ? 'Recordings'
+            : tab === 'embeds'
+              ? 'Embeds'
+              : tab === 'media'
+                ? 'Media'
+                : tab === 'stash'
+                  ? 'Stash'
+                  : tab === 'smartlinks'
+                    ? 'Smart links'
+                    : tab === 'local'
+                      ? 'Local files'
+                      : 'Collections';
 
   return (
     <div className="studio-page-layout flex w-full flex-col gap-6">
@@ -162,16 +218,6 @@ export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
         {tab === 'library' ? (
           <div className="mt-2">
             <LibraryStats />
-          </div>
-        ) : null}
-        {tab === 'sounds' ? (
-          <div className="mt-2">
-            <MyDiscographyView />
-          </div>
-        ) : null}
-        {tab === 'collections' ? (
-          <div className="mt-2">
-            <MyCollectionsView embedded />
           </div>
         ) : null}
         {tab === 'recordings' ? (
@@ -214,9 +260,14 @@ function formatBytes(bytes: number): string {
 
 function LibraryStats() {
   const navigate = useNavigate();
+  const user = useAuthStore((s) => s.user);
+  const canUpload = hasStudioAccess(user);
+  const signedIn = Boolean(user);
   const [topTracks, setTopTracks] = useState<StatsTopTrack[]>([]);
   const [storage, setStorage] = useState<StorageUsage | null>(null);
-  const [soundCount, setSoundCount] = useState(0);
+  const [soundCount, setSoundCount] = useState<number | null>(null);
+  const [soundsError, setSoundsError] = useState<string | null>(null);
+  const [soundsAttempt, setSoundsAttempt] = useState(0);
 
   useEffect(() => {
     void Promise.all([fetchStatsTopTracks('all'), fetchStorageUsage()]).then(
@@ -228,10 +279,15 @@ function LibraryStats() {
   }, []);
 
   useEffect(() => {
-    void fetchStudioSounds().then((result) =>
-      setSoundCount(result.data.length),
-    );
-  }, []);
+    void fetchStudioSounds().then((result) => {
+      setSoundsError(
+        canUpload && result.meta.source === 'api'
+          ? (result.meta.reason ?? null)
+          : null,
+      );
+      setSoundCount(result.data.length);
+    });
+  }, [canUpload, soundsAttempt]);
 
   return (
     <StudioPanel
@@ -240,14 +296,20 @@ function LibraryStats() {
     >
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="border-border bg-background-secondary/40 rounded-lg border p-3">
-          <Music2Icon size={18} className="text-primary" aria-hidden />
+          <Music2Icon size={18} className="text-primary-strong" aria-hidden />
           <p className="text-foreground-secondary mt-2 text-xs uppercase">
             Total sounds
           </p>
-          <p className="mt-1 text-2xl font-bold tabular-nums">{soundCount}</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums">
+            {soundCount === null || soundsError ? '—' : soundCount}
+          </p>
         </div>
         <div className="border-border bg-background-secondary/40 rounded-lg border p-3">
-          <HardDriveIcon size={18} className="text-primary" aria-hidden />
+          <HardDriveIcon
+            size={18}
+            className="text-primary-strong"
+            aria-hidden
+          />
           <p className="text-foreground-secondary mt-2 text-xs uppercase">
             Storage used
           </p>
@@ -263,7 +325,11 @@ function LibraryStats() {
           </p>
         </div>
         <div className="border-border bg-background-secondary/40 rounded-lg border p-3">
-          <HeadphonesIcon size={18} className="text-primary" aria-hidden />
+          <HeadphonesIcon
+            size={18}
+            className="text-primary-strong"
+            aria-hidden
+          />
           <p className="text-foreground-secondary mt-2 text-xs uppercase">
             Top sound
           </p>
@@ -293,6 +359,57 @@ function LibraryStats() {
                 });
               },
             }))}
+          />
+        </div>
+      ) : soundsError ? (
+        <div className="mt-4">
+          <PageError
+            title="Could not load your catalog"
+            description={soundsError}
+            onRetry={() => setSoundsAttempt((n) => n + 1)}
+          />
+        </div>
+      ) : soundCount === 0 ? (
+        <div className="mt-4">
+          <PageEmpty
+            title={
+              canUpload
+                ? 'Your catalog is empty'
+                : signedIn
+                  ? 'Nothing saved yet'
+                  : 'Your library is empty'
+            }
+            description={
+              canUpload
+                ? 'Upload a track to start filling Library, or browse Discover for inspiration.'
+                : signedIn
+                  ? 'Follow artists and save favorites from Discover — they show up here.'
+                  : 'Sign in to save music you like, or browse Discover.'
+            }
+            action={
+              <div className="flex flex-wrap gap-2">
+                {canUpload ? (
+                  <ButtonLink to="/library/upload" size="sm">
+                    Upload
+                  </ButtonLink>
+                ) : null}
+                {!signedIn ? (
+                  <Button
+                    size="sm"
+                    onClick={() => useAuthModalStore.getState().open('login')}
+                  >
+                    Sign in
+                  </Button>
+                ) : null}
+                <ButtonLink
+                  to="/discover"
+                  size="sm"
+                  variant={canUpload || !signedIn ? 'secondary' : undefined}
+                >
+                  Discover
+                </ButtonLink>
+              </div>
+            }
           />
         </div>
       ) : null}

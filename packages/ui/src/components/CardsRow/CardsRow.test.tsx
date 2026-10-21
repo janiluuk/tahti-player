@@ -1,3 +1,4 @@
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { CardsRowWrapper as Wrapper } from './CardsRow.test-wrapper';
@@ -6,6 +7,12 @@ describe('CardsRow', () => {
   it('(Snapshot) renders correctly with items', () => {
     const { container } = Wrapper.mount();
     expect(container.firstChild).toMatchSnapshot();
+  });
+
+  it('names the filter box after its placeholder', () => {
+    Wrapper.mount();
+
+    expect(screen.getByTestId('cards-row-filter')).toHaveAccessibleName();
   });
 
   it('renders all card titles when no filter is applied', () => {
@@ -35,6 +42,17 @@ describe('CardsRow', () => {
     expect(Wrapper.cards).toHaveLength(0);
   });
 
+  it('clears the filter from the nothing-found empty action', async () => {
+    Wrapper.mount();
+
+    await Wrapper.filter.type('zzzzz');
+    expect(Wrapper.nothingFound).toBeInTheDocument();
+
+    await userEvent.click(screen.getByTestId('cards-row-nothing-found-clear'));
+    expect(Wrapper.cards).toHaveLength(3);
+    expect(Wrapper.filter.input).toHaveValue('');
+  });
+
   it('clears the filter when the clear filter button is clicked', async () => {
     Wrapper.mount();
 
@@ -51,6 +69,12 @@ describe('CardsRow', () => {
 
     expect(Wrapper.badge).toBeInTheDocument();
     expect(Wrapper.badge).toHaveTextContent('Acme Music');
+  });
+
+  it('applies the section badge color class', () => {
+    Wrapper.mount({ badge: 'Live', badgeColor: 'green' });
+
+    expect(Wrapper.badge).toHaveClass('bg-accent-green');
   });
 
   it('does not render a badge when badge is not set', () => {

@@ -1,10 +1,10 @@
-import { Link } from '@tanstack/react-router';
 import { ListMusicIcon, PlusIcon, RadioIcon } from 'lucide-react';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
   Button,
+  ButtonLink,
   Dialog,
   FilterChips,
   Input,
@@ -34,6 +34,8 @@ import {
 import type { StudioCollection, StudioRelease } from '../api/studio-types';
 import { usePlayerStore } from '../stores/playerStore';
 import { ChannelRotationEditor } from './ChannelRotationEditor';
+import { PageError } from './PageStates';
+import { ReleaseTracksToRotation } from './ReleaseTracksToRotation';
 
 const isPlaylist = (collection: StudioCollection) =>
   !collection.style ||
@@ -42,6 +44,7 @@ const isPlaylist = (collection: StudioCollection) =>
 
 export const ChannelRadioPlaylistPanel: FC = () => {
   const [programme, setProgramme] = useState<ProgrammeView | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [playlists, setPlaylists] = useState<StudioCollection[]>([]);
   const [selectedSlug, setSelectedSlug] = useState('');
   const [fallbackEnabled, setFallbackEnabled] = useState(false);
@@ -86,6 +89,16 @@ export const ChannelRadioPlaylistPanel: FC = () => {
       fetchStudioReleases(),
     ]).then(
       ([programmeResult, collectionResult, soundResult, releaseResult]) => {
+        const reason =
+          [programmeResult, collectionResult, soundResult, releaseResult]
+            .map((result) =>
+              result.meta.source === 'api' ? result.meta.reason : undefined,
+            )
+            .find(Boolean) ?? null;
+        setLoadError(reason);
+        if (reason) {
+          return;
+        }
         applyProgramme(programmeResult.data);
         setLibraryItems(
           soundResult.data
@@ -204,7 +217,14 @@ export const ChannelRadioPlaylistPanel: FC = () => {
       return;
     }
     setBusy(true);
-    const { data } = await fetchStudioCollection(selectedSlug);
+    const { data, meta } = await fetchStudioCollection(selectedSlug);
+    if (meta.source === 'api' && meta.reason) {
+      setBusy(false);
+      toast.error(
+        'Could not load that playlist, so the rotation was left unchanged.',
+      );
+      return;
+    }
     const soundIds = (data.items ?? [])
       .map((item) => item.soundId)
       .filter((id): id is string => Boolean(id));
@@ -312,11 +332,21 @@ export const ChannelRadioPlaylistPanel: FC = () => {
     await saveRotation(next);
   };
 
+  if (loadError && !programme) {
+    return (
+      <PageError
+        title="Could not load the 24/7 programme"
+        description={loadError}
+        onRetry={reload}
+      />
+    );
+  }
+
   return (
     <section className="border-border bg-background-secondary/40 overflow-hidden rounded-xl border shadow-sm">
       <header className="border-border flex flex-wrap items-center justify-between gap-4 border-b px-4 py-4 sm:px-5">
         <div className="flex min-w-0 items-center gap-3">
-          <span className="bg-primary/15 text-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
+          <span className="bg-primary/15 text-primary-strong flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
             <RadioIcon size={20} aria-hidden />
           </span>
           <div className="min-w-0">
@@ -332,7 +362,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
           <span
             className={`font-mono text-xs font-semibold uppercase ${
               fallbackEnabled
-                ? 'text-accent-green'
+                ? 'text-accent-green-strong'
                 : 'text-foreground-secondary'
             }`}
           >
@@ -405,15 +435,15 @@ export const ChannelRadioPlaylistPanel: FC = () => {
                 Use playlist
               </Button>
               {selectedPlaylist ? (
-                <Link
+                <ButtonLink
                   to="/studio/collections/$slug"
                   params={{ slug: selectedPlaylist.slug }}
+                  size="sm"
+                  variant="secondary"
                 >
-                  <Button size="sm" variant="secondary">
-                    <ListMusicIcon size={14} aria-hidden className="mr-1.5" />
-                    Edit tracks
-                  </Button>
-                </Link>
+                  <ListMusicIcon size={14} aria-hidden className="mr-1.5" />
+                  Edit tracks
+                </ButtonLink>
               ) : null}
               <Tooltip content="Create playlist" side="top">
                 <Button
@@ -468,13 +498,14 @@ export const ChannelRadioPlaylistPanel: FC = () => {
             />
 
             <label className="flex items-center justify-between gap-3 text-sm">
-              <span>
+              <span className="min-w-0">
                 Auto-add uploads
                 <span className="text-foreground-secondary block text-xs">
                   Add new ready uploads to the rotation automatically
                 </span>
               </span>
               <Toggle
+                className="shrink-0"
                 checked={fallbackAutoEnroll}
                 disabled={busy || !programme}
                 onChange={setFallbackAutoEnroll}
@@ -483,13 +514,14 @@ export const ChannelRadioPlaylistPanel: FC = () => {
             </label>
 
             <label className="flex items-center justify-between gap-3 text-sm">
-              <span>
+              <span className="min-w-0">
                 Artist announcements
                 <span className="text-foreground-secondary block text-xs">
                   Include your station IDs and clips
                 </span>
               </span>
               <Toggle
+                className="shrink-0"
                 checked={announcementsEnabled}
                 disabled={busy || !programme}
                 onChange={setAnnouncementsEnabled}
@@ -526,6 +558,16 @@ export const ChannelRadioPlaylistPanel: FC = () => {
           onPlay={(item) => void playRotationItem(item)}
           libraryGroups={libraryGroups}
           onAddGroup={(group) => setPendingAdd(group)}
+        />
+      ) : null}
+      {activeTab === 'rotation' ? (
+        <ReleaseTracksToRotation
+          releases={releases}
+          disabled={busy}
+          onAdded={(next) => {
+            applyProgramme(next);
+            reload();
+          }}
         />
       ) : null}
 

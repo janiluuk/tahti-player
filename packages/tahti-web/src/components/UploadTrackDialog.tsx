@@ -1,10 +1,20 @@
-import { Link } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { UploadIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Dialog, FilePicker, Input } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  Dialog,
+  FilePicker,
+  Input,
+} from '@tahti-player/ui';
 
 import { uploadSoundFile } from '../api/studio';
+import {
+  UPLOAD_AUDIO_ACCEPT,
+  UPLOAD_AUDIO_FORMATS_LABEL,
+} from '../lib/uploadAudioFormats';
 
 type Props = {
   isOpen: boolean;
@@ -13,20 +23,17 @@ type Props = {
 };
 
 export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [note, setNote] = useState<string | null>(null);
-  const [itemId, setItemId] = useState<string | null>(null);
 
   const reset = () => {
     setTitle('');
     setFile(null);
     setBusy(false);
     setError(null);
-    setNote(null);
-    setItemId(null);
   };
 
   const handleClose = () => {
@@ -41,16 +48,19 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
     }
     setBusy(true);
     setError(null);
-    setNote(null);
-    const result = await uploadSoundFile({ file, title: title || file.name });
+    const fallbackTitle = file.name.replace(/\.[^.]+$/, '') || file.name;
+    const result = await uploadSoundFile({
+      file,
+      title: title.trim() || fallbackTitle,
+    });
     setBusy(false);
     if (!result.ok) {
       setError(result.error);
       return;
     }
-    setItemId(result.itemId);
     onUploaded?.(result.itemId);
-    setNote('Upload complete — processing may take a minute.');
+    handleClose();
+    void navigate({ to: '/studio/sounds/$id', params: { id: result.itemId } });
   };
 
   return (
@@ -68,7 +78,7 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
           </span>
         </Dialog.Title>
         <Dialog.Description>
-          Add audio to your Music archive. MP3, WAV, FLAC, or AIFF.
+          Add audio to your Music archive.
         </Dialog.Description>
         <div className="mt-4 flex flex-col gap-3">
           <Input
@@ -81,35 +91,29 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
           <FilePicker
             labels={{
               title: 'Audio file',
-              description: 'MP3, WAV, FLAC, or AIFF',
+              description: UPLOAD_AUDIO_FORMATS_LABEL,
               browse: file ? 'Choose another file' : 'Choose audio',
             }}
-            accept="audio/*,.flac,.wav,.mp3,.aiff"
+            accept={UPLOAD_AUDIO_ACCEPT}
             selectedFiles={file ? [file] : []}
             onFiles={(files) => setFile(files[0] ?? null)}
           />
           {error && (
-            <p className="text-accent-red text-sm" role="alert">
+            <p className="text-accent-red-strong text-sm" role="alert">
               {error}
             </p>
           )}
-          {note && (
-            <p className="text-foreground-secondary text-sm" role="status">
-              {note}
-            </p>
-          )}
-          {itemId && (
-            <Link
-              to="/studio/sounds/$id"
-              params={{ id: itemId }}
-              className="text-sm underline"
-              onClick={handleClose}
-            >
-              Open in Music
-            </Link>
-          )}
         </div>
         <Dialog.Actions>
+          <ButtonLink
+            to="/library/upload"
+            variant="text"
+            size="sm"
+            className="mr-auto"
+            onClick={handleClose}
+          >
+            Open full upload page
+          </ButtonLink>
           <Dialog.Close>Cancel</Dialog.Close>
           <Button type="submit" disabled={busy || !file}>
             <UploadIcon size={16} aria-hidden className="mr-1.5" />

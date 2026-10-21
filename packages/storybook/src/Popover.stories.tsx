@@ -1,7 +1,15 @@
 import { Meta, StoryObj } from '@storybook/react-vite';
-import { PencilIcon, Trash2Icon } from 'lucide-react';
+import {
+  ChevronDownIcon,
+  PencilIcon,
+  SearchIcon,
+  Trash2Icon,
+} from 'lucide-react';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
-import { Button, Popover } from '@tahti-player/ui';
+import { Button, Input, Popover } from '@tahti-player/ui';
+
+import { withinBody } from './tahti-web/_lib/play';
 
 const meta: Meta<typeof Popover> = {
   title: 'Components/Popover',
@@ -9,6 +17,12 @@ const meta: Meta<typeof Popover> = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'The **Dropdown Menu** and **Sectioned Menu** stories below are the base pattern for any button-triggered action menu. Compose `Popover` + `Popover.Menu` directly for any trigger shape (a plain button, an icon button, a table row) and any menu shape (flat, sectioned, with a footer).',
+      },
+    },
   },
 };
 
@@ -25,27 +39,23 @@ export const Default: Story = {
 
 export const AllAnchors: Story = {
   render: () => (
-    <div className="h-full w-full">
+    <div className="flex flex-wrap gap-4">
       <Popover
-        className="relative"
-        trigger={<Button className="relative flex">Opens top</Button>}
+        trigger={<Button>Opens top</Button>}
         children="Popover content"
         anchor="top"
       />
       <Popover
-        className="relative"
         trigger={<Button>Opens below</Button>}
         children="Popover content"
         anchor="bottom"
       />
       <Popover
-        className="relative"
         trigger={<Button>Opens right</Button>}
         children="Popover content"
         anchor="right"
       />
       <Popover
-        className="relative"
         trigger={<Button>Opens left</Button>}
         children="Popover content"
         anchor="left"
@@ -57,7 +67,6 @@ export const AllAnchors: Story = {
 export const SectionedMenu: Story = {
   render: () => (
     <Popover
-      className="relative"
       panelClassName="bg-background px-0 py-0"
       trigger={<Button>Recent</Button>}
       anchor="bottom"
@@ -86,32 +95,83 @@ export const SectionedMenu: Story = {
   ),
 };
 
+const onEdit = fn();
+const onDuplicate = fn();
+const onDelete = fn();
+
 export const DropdownMenu: Story = {
   render: () => (
     <Popover
-      className="relative"
       panelClassName="bg-background px-0 py-0"
       trigger={<Button>Actions</Button>}
       anchor="bottom"
     >
       <Popover.Menu>
-        <Popover.Item
-          icon={<PencilIcon size={16} />}
-          onClick={() => console.log('edit')}
-        >
+        <Popover.Item icon={<PencilIcon size={16} />} onClick={onEdit}>
           Edit
         </Popover.Item>
-        <Popover.Item onClick={() => console.log('duplicate')}>
-          Duplicate
-        </Popover.Item>
+        <Popover.Item onClick={onDuplicate}>Duplicate</Popover.Item>
         <Popover.Item
           intent="danger"
           icon={<Trash2Icon size={16} />}
-          onClick={() => console.log('delete')}
+          onClick={onDelete}
         >
           Delete
         </Popover.Item>
       </Popover.Menu>
     </Popover>
+  ),
+  play: async ({ canvasElement }) => {
+    onEdit.mockClear();
+    const body = withinBody(canvasElement);
+    const trigger = within(canvasElement).getByRole('button', {
+      name: 'Actions',
+    });
+    await userEvent.click(trigger);
+    // The panel fades in, so its items are briefly in the DOM but invisible.
+    for (const name of ['Edit', 'Duplicate', 'Delete']) {
+      await waitFor(() =>
+        expect(body.getByRole('button', { name })).toBeVisible(),
+      );
+    }
+    await userEvent.click(body.getByRole('button', { name: 'Edit' }));
+    await expect(onEdit).toHaveBeenCalledOnce();
+
+    await userEvent.keyboard('{Escape}');
+    await waitFor(() =>
+      expect(body.queryByRole('button', { name: 'Duplicate' })).toBeNull(),
+    );
+  },
+};
+
+/** Popover sits in normal flow, so it can share a row with other controls without overlapping them. */
+export const InlineToolbar: Story = {
+  parameters: { layout: 'padded' },
+  render: () => (
+    <div className="flex w-full max-w-xl items-center gap-2">
+      <Input
+        type="search"
+        placeholder="Search all tracks…"
+        aria-label="Search all tracks"
+        startAddon={<SearchIcon size={14} aria-hidden />}
+      />
+      <Popover
+        anchor="bottom end"
+        className="shrink-0"
+        panelClassName="bg-background px-0 py-0"
+        trigger={
+          <Button variant="secondary" className="gap-1.5">
+            Newest first
+            <ChevronDownIcon size={16} className="opacity-70" />
+          </Button>
+        }
+      >
+        <Popover.Menu>
+          <Popover.Item>Newest first</Popover.Item>
+          <Popover.Item>Oldest first</Popover.Item>
+          <Popover.Item>Title A–Z</Popover.Item>
+        </Popover.Menu>
+      </Popover>
+    </div>
   ),
 };

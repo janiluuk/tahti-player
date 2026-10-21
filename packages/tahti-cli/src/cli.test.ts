@@ -1,0 +1,347 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { main } from './cli.mjs';
+import { mockFetchJson } from './test-helpers';
+
+describe('main', () => {
+  let logSpy: ReturnType<typeof vi.spyOn>;
+  let errorSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.stubEnv('TAHTI_API_URL', 'https://api.example.test');
+  });
+
+  afterEach(() => {
+    logSpy.mockRestore();
+    errorSpy.mockRestore();
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+
+  it('prints help listing every command for --help', async () => {
+    const code = await main(['--help']);
+    expect(code).toBe(0);
+    const help = String(logSpy.mock.calls[0][0]);
+    expect(help).toContain('tahti-cli');
+    expect(help).toContain('tahti whoami');
+    expect(help).toContain('tahti library list');
+    expect(help).toContain('tahti library show <id>');
+    expect(help).toContain('tahti releases list');
+    expect(help).toContain('tahti releases show <id>');
+    expect(help).toContain('tahti search <query>');
+    expect(help).toContain('tahti hearthis sets');
+    expect(help).toContain('tahti hearthis set <permalink-or-url>');
+    expect(help).toContain('tahti hearthis download-set');
+    expect(help).toContain('tahti notifications list');
+    expect(help).toContain('tahti notifications read <id> | --all');
+    expect(help).toContain('tahti stats');
+    expect(help).toContain('tahti collections list');
+    expect(help).toContain('tahti collections show <slug>');
+    expect(help).toContain('tahti channel [<slug>]');
+    expect(help).toContain('tahti shell');
+  });
+
+  it('prints help and exits 0 with no arguments', async () => {
+    const code = await main([]);
+    expect(code).toBe(0);
+    expect(logSpy).toHaveBeenCalled();
+  });
+
+  it('exits 1 with an error for an unknown command', async () => {
+    const code = await main(['bogus']);
+    expect(code).toBe(1);
+    expect(errorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Unknown command: bogus'),
+    );
+  });
+
+  it('treats an incomplete command as unknown', async () => {
+    const code = await main(['library']);
+    expect(code).toBe(1);
+    expect(errorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Unknown command: library'),
+    );
+  });
+
+  it.each([
+    [['whoami', '--help'], 'Usage: tahti whoami [--json]'],
+    [['library', 'list', '-h'], '--sort <order>'],
+    [['library', 'show', '--help'], 'Usage: tahti library show <id> [--json]'],
+    [['releases', 'list', '--help'], '--limit <n>'],
+    [
+      ['releases', 'show', '--help'],
+      'Usage: tahti releases show <id> [--json]',
+    ],
+    [['releases', 'add-tracks', '--help'], 'POST /api/me/releases/:id/tracks'],
+    [['search', '--help'], 'works without'],
+    [['hearthis', 'sets', '--help'], 'hearthis.at Sets'],
+    [['hearthis', 'set', '--help'], 'tracks in one hearthis.at Set'],
+    [['hearthis', 'download-set', '--help'], 'Artist/Album'],
+    [['shell', '--help'], 'Interactive TUI'],
+  ])(
+    'prints per-command help for %j without calling the API',
+    async (argv, text) => {
+      const fetchMock = vi.fn();
+      vi.stubGlobal('fetch', fetchMock);
+      const code = await main(argv);
+      expect(code).toBe(0);
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining(text));
+      if (argv[0] !== 'shell') {
+        expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('--json'));
+      }
+      expect(fetchMock).not.toHaveBeenCalled();
+    },
+  );
+
+  it('rejects unknown flags with a pointer to the command help', async () => {
+    await expect(main(['whoami', '--verbose'])).rejects.toThrow(
+      /Run `tahti whoami --help` for usage/,
+    );
+  });
+
+  it('rejects extra positional arguments', async () => {
+    await expect(main(['library', 'show', 'a', 'b'])).rejects.toThrow(
+      'Unexpected argument: b',
+    );
+  });
+
+  it('runs library list and prints the table', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    mockFetchJson([
+      { id: 'a1', title: 'Track', status: 'READY', durationSec: 42 },
+    ]);
+
+    const code = await main(['library', 'list']);
+
+    expect(code).toBe(0);
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Track'));
+  });
+
+  it('runs library list with --sort', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    const fetchMock = mockFetchJson([]);
+
+    await main(['library', 'list', '--sort', 'title']);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.test/api/me/sound?sort=title',
+      expect.anything(),
+    );
+  });
+
+  it('runs whoami without printing the email', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    mockFetchJson({
+      id: 'u1',
+      email: 'artist@example.test',
+      username: 'artist',
+      displayName: 'The Artist',
+      tier: 'FREE',
+      isMember: false,
+      channel: null,
+      storage: { usedBytes: '0', showSoftTarget: true },
+    });
+
+    const code = await main(['whoami']);
+
+    expect(code).toBe(0);
+    const output = String(logSpy.mock.calls[0][0]);
+    expect(output).toContain('The Artist');
+    expect(output).not.toContain('artist@example.test');
+  });
+
+  it('runs library show with the positional id', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    const fetchMock = mockFetchJson({
+      id: 'snd_1',
+      title: 'Night Drive',
+      status: 'READY',
+    });
+
+    const code = await main(['library', 'show', 'snd_1', '--json']);
+
+    expect(code).toBe(0);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.test/api/me/sound/snd_1',
+      expect.anything(),
+    );
+    expect(JSON.parse(String(logSpy.mock.calls[0][0])).title).toBe(
+      'Night Drive',
+    );
+  });
+
+  it('runs releases list', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    mockFetchJson({
+      page: 1,
+      limit: 100,
+      total: 1,
+      releases: [{ id: 'rel_1', title: 'First EP', _count: { tracks: 3 } }],
+    });
+
+    const code = await main(['releases', 'list']);
+
+    expect(code).toBe(0);
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('First EP'));
+  });
+
+  it('runs releases show with the positional id', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    const fetchMock = mockFetchJson({
+      id: 'rel_1',
+      title: 'First EP',
+      tracks: [{ id: 't1', position: 1, title: 'Opener', status: 'READY' }],
+    });
+
+    const code = await main(['releases', 'show', 'rel_1']);
+
+    expect(code).toBe(0);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.test/api/me/releases/rel_1',
+      expect.anything(),
+    );
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Opener'));
+  });
+
+  it('runs releases create with the title and flags', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    const fetchMock = mockFetchJson({
+      id: 'rel_2',
+      title: 'Second EP',
+      state: 'DRAFT',
+      tracks: [],
+    });
+
+    const code = await main([
+      'releases',
+      'create',
+      'Second EP',
+      '--type',
+      'ep',
+      '--date',
+      '2026-12-01',
+    ]);
+
+    expect(code).toBe(0);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.test/api/me/releases',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({
+          title: 'Second EP',
+          type: 'EP',
+          releaseDate: '2026-12-01',
+        }),
+      }),
+    );
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Created "Second EP" (rel_2) as a draft.'),
+    );
+  });
+
+  it('runs releases edit with repeated --link flags', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    const fetchMock = mockFetchJson({
+      id: 'rel_1',
+      title: 'First EP',
+      state: 'DRAFT',
+      smartLinkTargets: {},
+      tracks: [],
+    });
+
+    const code = await main([
+      'releases',
+      'edit',
+      'rel_1',
+      '--link',
+      'tidal=https://tidal.com/album/1',
+      '--link',
+      'apple=https://music.apple.com/album/1',
+    ]);
+
+    expect(code).toBe(0);
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'https://api.example.test/api/me/releases/rel_1',
+      expect.objectContaining({
+        method: 'PATCH',
+        body: JSON.stringify({
+          smartLinkTargets: {
+            tidal: 'https://tidal.com/album/1',
+            apple: 'https://music.apple.com/album/1',
+          },
+        }),
+      }),
+    );
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('STORE LINKS'));
+  });
+
+  it('runs search without TAHTI_API_TOKEN and joins the query words', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', '');
+    const fetchMock = mockFetchJson({
+      tracks: [
+        {
+          id: 'snd_1',
+          title: 'Night Drive',
+          durationSec: 245,
+          artistName: 'DJ Night',
+          channelSlug: 'djnight',
+        },
+      ],
+      hasMore: false,
+    });
+
+    const code = await main(['search', 'night', 'drive', '--limit', '5']);
+
+    expect(code).toBe(0);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.test/api/v1/search/tracks?q=night+drive',
+      { headers: { Accept: 'application/json' } },
+    );
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Night Drive'));
+  });
+
+  it('runs notifications list with --unread', async () => {
+    const fetchMock = mockFetchJson({
+      notifications: [
+        {
+          id: 'n_1',
+          type: 'NEW_FOLLOWER',
+          title: 'nightowl followed you',
+          readAt: null,
+          createdAt: '2026-10-14T09:00:00.000Z',
+          actor: { username: 'nightowl', displayName: 'Night Owl' },
+        },
+      ],
+      unreadCount: 1,
+      hasMore: false,
+    });
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    expect(await main(['notifications', 'list', '--unread'])).toBe(0);
+    expect(fetchMock.mock.calls[0][0]).toBe(
+      'https://api.example.test/api/me/notifications',
+    );
+    expect(String(logSpy.mock.calls[0][0])).toContain('nightowl followed you');
+  });
+
+  it('runs notifications read with the positional id', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 204 });
+    vi.stubGlobal('fetch', fetchMock);
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    expect(await main(['notifications', 'read', 'n_1'])).toBe(0);
+    expect(fetchMock.mock.calls[0][0]).toBe(
+      'https://api.example.test/api/me/notifications/n_1/read',
+    );
+    expect(String(logSpy.mock.calls[0][0])).toBe('Marked n_1 read.');
+  });
+
+  it('surfaces a 401 as a token error', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_revoked');
+    mockFetchJson({ error: 'Invalid or expired API token' }, 401);
+
+    await expect(main(['whoami'])).rejects.toThrow(
+      /Token invalid or missing scope/,
+    );
+  });
+});

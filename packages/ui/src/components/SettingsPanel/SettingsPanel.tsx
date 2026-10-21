@@ -9,6 +9,8 @@ export type SettingsTab = {
   label: string;
   icon: ReactNode;
   content: () => ReactNode;
+  /** Consecutive tabs sharing a group render under one nav heading. */
+  group?: string;
 };
 
 type SettingsPanelProps = {
@@ -18,6 +20,8 @@ type SettingsPanelProps = {
   activeTab: string;
   onTabChange: (tabId: string) => void;
   navFooter?: ReactNode;
+  startOnContent?: boolean;
+  label?: string;
 };
 
 export const SettingsPanel: FC<SettingsPanelProps> = ({
@@ -27,27 +31,30 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
   activeTab,
   onTabChange,
   navFooter,
+  startOnContent = false,
+  label = 'Settings',
 }) => {
   const activeTabMeta = tabs.find((tab) => tab.id === activeTab);
   // Below `sm`, nav and content share one screen — list first, then detail.
   // Desktop always shows both; `sm:flex!` on each pane overrides the mobile
   // `hidden`/`flex` toggle above the breakpoint.
-  const [mobileShowList, setMobileShowList] = useState(true);
+  const [mobileShowList, setMobileShowList] = useState(!startOnContent);
 
   useEffect(() => {
     if (isOpen) {
-      setMobileShowList(true);
+      setMobileShowList(!startOnContent);
     }
-  }, [isOpen]);
+  }, [isOpen, startOnContent]);
 
   return (
     <DialogRoot
       isOpen={isOpen}
       onClose={onClose}
+      aria-label={label}
       // Fill the DialogRoot padded viewport on mobile (`w-full` + dvh), not a
       // second `100vw-2rem` that stacks with the overlay's `p-4`. `min-w-0`
       // + `overflow-hidden` keep section bodies scrolling inside the pane.
-      className="flex h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] w-full max-w-none min-w-0 flex-col overflow-hidden p-0 sm:h-[80vh] sm:max-h-[900px] sm:w-[80vw] sm:max-w-6xl sm:flex-row!"
+      className="flex! h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] w-full max-w-none min-w-0 flex-col overflow-hidden! p-0 sm:h-[80vh] sm:max-h-[900px] sm:w-[80vw] sm:max-w-6xl sm:flex-row!"
     >
       <SettingsPanelNav
         tabs={tabs}

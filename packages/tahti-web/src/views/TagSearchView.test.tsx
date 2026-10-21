@@ -1,0 +1,76 @@
+import { screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { fetchTracksByTag } from '../api/listen';
+import { renderWithRouter } from '../test/renderWithRouter';
+import { TagSearchView } from './TagSearchView';
+
+vi.mock('../api/listen', () => ({
+  fetchTracksByTag: vi.fn(),
+}));
+
+const fetchMock = vi.mocked(fetchTracksByTag);
+
+describe('TagSearchView', () => {
+  beforeEach(() => {
+    fetchMock.mockReset();
+  });
+
+  it('lists public tracks with the tag, linking to each track', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      tracks: [
+        {
+          id: 's1',
+          title: 'Midnight Drone',
+          artistName: 'Aino',
+          channelSlug: 'aino',
+          durationSec: 300,
+          coverUrl: null,
+        },
+      ],
+    });
+
+    await renderWithRouter(<TagSearchView tag="late night" />);
+
+    expect(screen.getByText('#late night')).toBeInTheDocument();
+    const link = await screen.findByRole('link', { name: /Midnight Drone/ });
+    expect(link).toHaveAttribute('href', '/t/s1');
+    expect(screen.getByText('Aino')).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith('late night');
+  });
+
+  it('says so when no tracks have the tag', async () => {
+    fetchMock.mockResolvedValue({ ok: true, tracks: [] });
+    await renderWithRouter(<TagSearchView tag="drone" />);
+    expect(
+      await screen.findByText('No public tracks tagged “drone” yet'),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/mock fixtures/)).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Discover' })).toBeInTheDocument();
+  });
+
+  it('mentions mock fixtures only in force-mock mode', async () => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+    fetchMock.mockResolvedValue({ ok: true, tracks: [] });
+    await renderWithRouter(<TagSearchView tag="drone" />);
+    expect(
+      await screen.findByText(/No tracks tagged “drone” in mock fixtures/),
+    ).toBeInTheDocument();
+    vi.unstubAllEnvs();
+  });
+
+  it('shows an error when the API cannot filter by tag', async () => {
+    fetchMock.mockResolvedValue({ ok: false, error: 'Required' });
+    await renderWithRouter(<TagSearchView tag="drone" />);
+    expect(
+      await screen.findByText("Couldn't load tracks for this tag"),
+    ).toBeInTheDocument();
+  });
+
+  it('does not search without a tag', async () => {
+    await renderWithRouter(<TagSearchView />);
+    expect(screen.getByText('No tag chosen')).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+});

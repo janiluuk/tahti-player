@@ -1,3 +1,4 @@
+import { useClose } from '@headlessui/react';
 import { cva, VariantProps } from 'class-variance-authority';
 import { ComponentProps, FC, ReactNode } from 'react';
 
@@ -9,7 +10,7 @@ const popoverItemVariants = cva(
     variants: {
       intent: {
         default: '',
-        danger: 'text-accent-red',
+        danger: 'text-accent-red-strong',
       },
       align: {
         left: '',
@@ -32,6 +33,8 @@ type PopoverItemProps = Omit<ComponentProps<'button'>, 'children'> &
   VariantProps<typeof popoverItemVariants> & {
     icon?: ReactNode;
     children: ReactNode;
+    /** Close the surrounding Popover after `onClick` (action items). */
+    closeOnClick?: boolean;
   };
 
 export const PopoverItem: FC<PopoverItemProps> = ({
@@ -41,13 +44,26 @@ export const PopoverItem: FC<PopoverItemProps> = ({
   highlight,
   icon,
   children,
+  closeOnClick = false,
+  onClick,
   ...props
-}) => (
-  <button
-    className={cn(popoverItemVariants({ intent, align, highlight, className }))}
-    {...props}
-  >
-    <span className="w-4 shrink-0">{icon}</span>
-    <span>{children}</span>
-  </button>
-);
+}) => {
+  const close = useClose();
+  return (
+    <button
+      className={cn(
+        popoverItemVariants({ intent, align, highlight, className }),
+      )}
+      onClick={(event) => {
+        onClick?.(event);
+        if (closeOnClick) {
+          close();
+        }
+      }}
+      {...props}
+    >
+      <span className="w-4 shrink-0">{icon}</span>
+      <span>{children}</span>
+    </button>
+  );
+};

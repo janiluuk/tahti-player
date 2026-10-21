@@ -5,6 +5,13 @@
 This inventory table below is historical (2026-08); the `/more` atlas and
 `src/content/mapScreens.ts` are the current source of truth.
 
+**2026-10-03:** Several rows below that say **missing** now have Nuclear
+routes: `/v/$slug` (venue page with "Recorded here"),
+`/u/$username/green-room`, `/radio/show/$channelSlug`, `/setup-password`,
+`/apply` (redirects to `/join`), `/for-artists`, `/how-it-works`, `/feed`,
+`/studio/insights/$kind/$id`, and the whole in-app `/admin/*`. Current
+routes and menus: [`../NAVIGATION-SITEMAP.md`](../NAVIGATION-SITEMAP.md).
+
 Inventory of production (`apps/web` / app.tahti.live) surfaces vs Nuclear (`@tahti-player/tahti-web` / beta.tahti.live), with screenshot status.
 
 **Legend**
@@ -83,7 +90,7 @@ Screenshots are Nuclear UI only (mock or beta). Prod is the source of *what must
 | `/dashboard/broadcast` | `/studio/go-live` | `studio-go-live-v1.png` | shot |
 | `/dashboard/archive` | `/studio/archive` | `studio-archive-v1.png` | shot |
 | `/dashboard/archive/[id]` | `/studio/archive/$id` | `studio-archive-item-v1.png` | shot |
-| `/dashboard/archive/[id]/editor` | `/studio/archive/$id/editor` | — | ui-no-shot |
+| `/dashboard/archive/[id]/editor` | `/studio/sounds/$id/editor` (old `/studio/archive/$id/editor` still routes) | `studio-sound-editor-waveform.png`, `studio-sound-editor-waveform-zoomed.png` (+ `--light`; real decoded audio, `scripts/capture-editor-waveform.mjs`) | shot |
 | `/dashboard/upload` (+ imports, from-broadcast) | `/studio/upload` | `studio-upload-v1.png` | partial (imports thinner) |
 | `/dashboard/releases` | `/studio/releases` | `studio-releases-v1.png` | shot |
 | `/dashboard/releases/[id]` | `/studio/releases/$id` | `studio-release-detail-v1.png` | ui-no-shot → capture |
@@ -162,3 +169,27 @@ REDESIGN_BASE_URL=http://127.0.0.1:5190 node scripts/capture-atlas-shots.mjs
 ```
 
 Update this file’s Shot column when new PNGs land.
+
+### Listener pass
+
+`capture-map-screens.mjs` signs in as the board artist by default. With
+`MAP_ACCOUNT=listener` it signs in as the mock `listener@tahti.live` account
+(no channel, no Studio or Admin role) and captures the public and listener
+shots plus what a listener meets on their own profile, Studio
+(`/studio`, `/studio/go-live`, `/studio/releases`, `/library/upload`) and
+`/admin`. The shots go to `docs/listener-shots/`, which is not committed and
+not read by the `/more` atlas, so the artist shots and `sitemap.json` are
+never touched. `MAP_VIEWPORT=mobile` and `MAP_SHOT_IDS` work the same way.
+
+```bash
+MAP_BASE_URL=http://127.0.0.1:5190 MAP_ACCOUNT=listener node scripts/capture-map-screens.mjs
+```
+
+The checks live in `scripts/audit-signed-out.mjs`. As the listener it fails
+when a listener page opens sign-in, throws a page error, shows owner tools
+(Edit design, Full studio settings, Go live and similar) or shows the
+account's email address; when a Studio page does not offer "Create your
+channel" or shows the Studio tab bar; when `/admin` does not say Board access
+is required; and when Settings lists Channel & chat or Broadcast. The Studio
+menu entry, Library's artist tabs and the listener's own profile are open
+product questions, so they are listed under "To look at" instead of failing.

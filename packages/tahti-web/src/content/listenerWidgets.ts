@@ -12,11 +12,7 @@
  */
 
 export type ListenerWidgetTypeId =
-  | 'soundcloud'
-  | 'spotify'
-  | 'youtube'
-  | 'hearthis'
-  | 'bandcamp';
+  'soundcloud' | 'spotify' | 'youtube' | 'hearthis' | 'bandcamp';
 
 export type ListenerWidgetType = {
   id: ListenerWidgetTypeId;
@@ -133,23 +129,26 @@ function youtubeEmbedUrl(input: string): string | null {
 }
 
 function spotifyPlaylistEmbedUrl(input: string): string | null {
+  const trimmed = input.trim();
+  const uriMatch = /^spotify:playlist:([A-Za-z0-9]+)$/.exec(trimmed);
+  if (uriMatch) {
+    return `https://open.spotify.com/embed/playlist/${encodeURIComponent(uriMatch[1])}`;
+  }
   let url: URL;
   try {
-    url = new URL(input.trim());
+    url = new URL(trimmed);
   } catch {
     return null;
   }
   const host = url.hostname.replace(/^www\./, '').toLowerCase();
-  const pathParts = url.pathname.split('/').filter(Boolean);
-  if (
-    host !== 'open.spotify.com' ||
-    pathParts.length !== 2 ||
-    pathParts[0] !== 'playlist' ||
-    !/^[A-Za-z0-9]+$/.test(pathParts[1])
-  ) {
+  if (host !== 'open.spotify.com' && !host.endsWith('.spotify.com')) {
     return null;
   }
-  return `https://open.spotify.com/embed/playlist/${encodeURIComponent(pathParts[1])}`;
+  const pathMatch = /\/playlist\/([A-Za-z0-9]+)/.exec(url.pathname);
+  if (!pathMatch) {
+    return null;
+  }
+  return `https://open.spotify.com/embed/playlist/${encodeURIComponent(pathMatch[1])}`;
 }
 
 function hearthisEmbedUrl(input: string): string | null {
@@ -328,10 +327,11 @@ export const LISTENER_WIDGET_TYPES: ListenerWidgetType[] = [
     name: 'Spotify',
     author: 'Spotify',
     description:
-      "Play a specific Spotify playlist inline using Spotify's official embedded player.",
+      'Show tracks from a public Spotify playlist as a normal track list (plays via Spotify embed in the player bar).',
     category: 'Streaming',
     placeholder: 'https://open.spotify.com/playlist/…',
-    helpText: 'Paste a public Spotify playlist URL.',
+    helpText:
+      'Paste a public Spotify playlist URL. Tracks appear in the usual table; private playlists will not load.',
     embedHeight: 352,
     toEmbedUrl: spotifyPlaylistEmbedUrl,
   },

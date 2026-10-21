@@ -1,8 +1,13 @@
-import { Link } from '@tanstack/react-router';
 import { ArrowLeftIcon, PlayIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Badge, Button, Tooltip, ViewShell } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  ButtonLink,
+  Tooltip,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchAdminStorageUserFiles,
@@ -39,12 +44,15 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
   return (
     <AdminGate>
       <div className="admin-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
-        <Link to="/admin/storage">
-          <Button size="sm" variant="text">
-            <ArrowLeftIcon size={14} aria-hidden className="mr-1.5" />
-            Back to Storage
-          </Button>
-        </Link>
+        <ButtonLink
+          className="w-fit"
+          to="/admin/storage"
+          size="sm"
+          variant="text"
+        >
+          <ArrowLeftIcon size={14} aria-hidden className="mr-1.5" />
+          Back to Storage
+        </ButtonLink>
 
         {loading ? (
           <StudioPanel>
@@ -58,7 +66,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
           <>
             <ViewShell
               title={detail.displayName}
-              classes={{ root: 'px-0 pt-0' }}
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <StudioPanel>
                 <div className="flex flex-wrap gap-6">
@@ -84,7 +92,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
                         Used of quota
                       </div>
                       <div
-                        className={`text-lg font-semibold ${pct > 100 ? 'text-accent-red' : ''}`}
+                        className={`text-lg font-semibold ${pct > 100 ? 'text-accent-red-strong' : ''}`}
                       >
                         {Math.round(pct)}%
                       </div>
@@ -109,7 +117,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
                         <div className="min-w-0 flex-1">
                           <div className="font-medium">{f.title}</div>
                           <div className="text-foreground-secondary text-xs">
-                            {f.kind === 'stash' ? 'Stash' : 'Sounds'} ·{' '}
+                            {f.kind === 'stash' ? 'Stash' : 'Tracks'} ·{' '}
                             {formatBytes(f.sizeBytes)} ·{' '}
                             {formatFileDate(f.createdAt)} · running total{' '}
                             {formatBytes(f.runningTotalBytes)}

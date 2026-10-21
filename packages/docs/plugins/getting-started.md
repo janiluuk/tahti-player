@@ -4,6 +4,10 @@ description: Create and load your first Tahti Player plugin and verify the SDK w
 
 # Getting started with plugins
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 Spin up a bare plugin, load it in Tahti Player, and poke the Plugin SDK to make sure everything is wired.
 
 {% hint style="info" %}
