@@ -3,6 +3,7 @@ import { MessageCircleIcon } from 'lucide-react';
 import { Waveform } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
+import { formatDuration } from '../lib/playableToTrack';
 import { usePlayerStore } from '../stores/playerStore';
 
 export type PlayerWaveformProps = {
@@ -13,6 +14,8 @@ export type PlayerWaveformProps = {
   trackId?: string;
   markers?: Array<{ fraction: number }>;
   onSeek?: (fraction: number) => void;
+  /** Accessible name, e.g. the track title; defaults to "Waveform". */
+  label?: string;
 };
 
 export function PlayerWaveform({
@@ -23,6 +26,7 @@ export function PlayerWaveform({
   trackId,
   markers,
   onSeek,
+  label,
 }: PlayerWaveformProps) {
   const currentId = usePlayerStore((s) => s.currentId);
   const audioElement = usePlayerStore((s) => s.audioElement);
@@ -37,6 +41,11 @@ export function PlayerWaveform({
   const media = isCurrent ? audioElement : null;
   const progress =
     isCurrent && totalDuration > 0 ? currentTime / totalDuration : 0;
+
+  const valueText =
+    totalDuration > 0
+      ? `${formatDuration(progress * totalDuration)} of ${formatDuration(totalDuration)}`
+      : undefined;
 
   const handleSeek = (fraction: number) => {
     if (isCurrent && !onSeek) {
@@ -58,6 +67,8 @@ export function PlayerWaveform({
         onSeek={handleSeek}
         height={height}
         className={className}
+        aria-label={label ? `Waveform: ${label}` : 'Waveform'}
+        aria-valuetext={valueText}
       />
       {markers?.map((marker, index) => (
         <span

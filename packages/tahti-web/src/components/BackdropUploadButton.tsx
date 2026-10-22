@@ -2,7 +2,7 @@ import { ImageIcon, UploadCloudIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, FilePicker } from '@tahti-player/ui';
+import { Button, Dialog, FilePicker, MediaArtwork } from '@tahti-player/ui';
 
 import { uploadUserMediaFile } from '../api/user-media';
 import { cn } from '../lib/cn';
@@ -88,7 +88,7 @@ export function BackdropUploadButton({
           className="border-border bg-background-secondary flex size-full items-center justify-center overflow-hidden rounded-none border whitespace-normal active:scale-100"
         >
           {value ? (
-            <img src={value} alt="" className="size-full object-cover" />
+            <MediaArtwork src={value} alt="" size="fill" imageReveal={false} />
           ) : (
             <ImageIcon
               size={28}

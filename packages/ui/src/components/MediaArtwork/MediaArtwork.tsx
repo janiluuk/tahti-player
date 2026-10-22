@@ -1,11 +1,4 @@
-import {
-  CassetteTape,
-  Heart,
-  ListPlus,
-  LoaderCircle,
-  Pause,
-  Play,
-} from 'lucide-react';
+import { CassetteTape, Heart, ListPlus, Pause, Play } from 'lucide-react';
 import { FC, ReactNode, useState, type MouseEvent } from 'react';
 
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
@@ -13,6 +6,7 @@ import { useShiftHeld } from '../../hooks/useShiftHeld';
 import { cn } from '../../utils';
 import { Button } from '../Button';
 import { ImageReveal } from '../ImageReveal';
+import { Loader } from '../Loader';
 import { Tooltip } from '../Tooltip';
 
 export type MediaArtworkAction = {
@@ -212,11 +206,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
           : playLabel;
 
   const playIcon = isLoading ? (
-    <LoaderCircle
-      size={iconPx}
-      className="animate-spin motion-reduce:animate-none"
-      data-testid="media-artwork-loading"
-    />
+    <Loader shape="circle" size={iconPx} data-testid="media-artwork-loading" />
   ) : isPlaying ? (
     <Pause size={iconPx} className="fill-current" />
   ) : showQueueIcon ? (

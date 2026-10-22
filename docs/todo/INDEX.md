@@ -22,10 +22,8 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [batch-88-wavesurfer-thirty.md](batch-88-wavesurfer-thirty.md) | Thirty slices: wavesurfer.js Waveform in ui, large preview migration, editor shell plugins |
 | open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |
-| open    | [studio-usability-audit.md](studio-usability-audit.md) | Studio uses shared components; 3 actionable findings |
 | open    | [studio-stats-audience-breakdown.md](studio-stats-audience-breakdown.md) | Rest of the stats page from the reference screenshot: stacked daily + CSV, loyalty, city list, browser/OS/device/source breakdown; needs tahti-org UA/referrer capture first |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |
@@ -38,7 +36,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
 | blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
 | blocked | [listening-party.md](listening-party.md) | Needs user go-ahead for tahti-org work |
-| partial | [wavesurfer-waveforms.md](wavesurfer-waveforms.md) | wavesurfer.js: decisions locked; batch 88 ships ui Waveform + large previews + editor shell; desktop / full ProWaveform delete remain |
+| partial | [wavesurfer-waveforms.md](wavesurfer-waveforms.md) | wavesurfer.js shipped (batch 88) and fixed (batch 89: silence bars, player `src`, theme); desktop / full ProWaveform delete remain |
 | blocked | [ai-dj-radio-dj-port.md](ai-dj-radio-dj-port.md) | POC not committed; no prod ship without go-ahead |
 | blocked | [track-visualizer-video-editor.md](track-visualizer-video-editor.md) | PulseForge licence / port decision |
 | blocked | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Multi-phase 13-category project not started |

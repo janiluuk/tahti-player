@@ -1,3 +1,32 @@
+## 2026-10-22 - UX batch 89 thirty waveform + UI slices
+
+Folded `batch-89-waveform-ui-thirty.md`. Waveform: `peaksToWaveSurfer` maps
+`[0..255]` to `0..1` (silence drew full bars); placeholder peaks always passed
+so a peak-less track never calls `load('')` on the bound global `<audio>`
+(stripped its `src`) or fetches/decodes the file; shared `observeThemeChange`
+recolours `Waveform` + `EditorWaveSurfer`; height via `setOptions`; content
+`peaksKey`; keyboard slider + value text; loading state; Dynamics story.
+UI: `Loader` pixel `size` + last four spinners; `DownloadGatesPanel` ->
+`DataTable`; `NowPlayingOverlay` / `BackdropUploadButton` -> `MediaArtwork`;
+TrackHero back falls back to `/`; `SectionShell` / `PlayerShell` stories.
+Also folded the finished `studio-usability-audit.md` (all actions done). ui
+`0.0.20`, tahti-web `0.0.245`.
+
+## 2026-10-21 - Batch 88 wavesurfer.js migration (tahti-player #1463)
+
+Folded `batch-88-wavesurfer-thirty.md` (all thirty slices shipped): ui
+`Waveform` on wavesurfer.js, `PlayerWaveform` bound to the global player audio,
+TrackHero / SoundHeader / AudioTab migrated, `EditorWaveSurfer` with Regions,
+Timeline, Minimap, Zoom and Hover and a `ProWaveform` fallback. Leftovers stay
+in [wavesurfer-waveforms.md](wavesurfer-waveforms.md).
+
+## 2026-10-21 - UX batch 87 forty slices (tahti-player #1462)
+
+Folded `batch-87-forty-slices.md` (all forty shipped): admin breadcrumbs on
+18 views, partial-fail banners / PageError on 10 surfaces, Listen new tracks
+and artist popular on `PlayableAmbientTrackList`, client sort on the library
+trio, News / Radio de-green, FeatureRequests full-page link.
+
 ## 2026-10-21 - UX batch 88 thirty slices
 
 Folded `ux-batch-88-thirty.md`. `Loader` API (className, small sizes, circle

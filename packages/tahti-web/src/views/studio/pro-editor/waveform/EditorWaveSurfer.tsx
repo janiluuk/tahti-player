@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 
-import { hasPeaks, peaksToWaveSurfer } from '@tahti-player/ui';
+import {
+  hasPeaks,
+  observeThemeChange,
+  peaksToWaveSurfer,
+  PLACEHOLDER_PEAKS,
+  readCssVar,
+} from '@tahti-player/ui';
 
 import { formatClock, type TimeView } from './draw';
 import type { WaveformData } from './peaks';
@@ -40,11 +46,6 @@ const MAX_POINTS = 16384;
 const MAX_ZOOM_PX_PER_SEC = 4000;
 const SELECTION_EPSILON = 1e-6;
 const PLAYHEAD_EPSILON = 0.02;
-
-function readCssVar(el: HTMLElement, name: string, fallback: string): string {
-  const value = getComputedStyle(el).getPropertyValue(name).trim();
-  return value || fallback;
-}
 
 function mix(color: string, percent: number): string {
   return `color-mix(in srgb, ${color} ${percent}%, transparent)`;
@@ -93,6 +94,16 @@ export function resolveWaveSurferPeaks(
   return dataToWaveSurferPeaks(peaks);
 }
 
+function editorColors(root: HTMLElement) {
+  return {
+    wave: readCssVar(root, '--color-accent-cyan', '#22d3ee'),
+    progress: readCssVar(root, '--color-primary', '#facc15'),
+    cursor: readCssVar(root, '--color-foreground', '#ffffff'),
+    muted: readCssVar(root, '--color-foreground-secondary', '#999999'),
+    surface: readCssVar(root, '--color-background-secondary', '#1a1a1a'),
+  };
+}
+
 type Session = {
   ws: WaveSurferInstance;
   regions: RegionsInstance;
@@ -123,6 +134,9 @@ export function EditorWaveSurfer({
   const containerRef = useRef<HTMLDivElement>(null);
   const regionRef = useRef<RegionInstance | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [themeVersion, setThemeVersion] = useState(0);
+  const heightRef = useRef(height);
+  heightRef.current = height;
 
   const live = useRef({
     onSeek,
@@ -174,32 +188,24 @@ export function EditorWaveSurfer({
         return;
       }
       const root = containerRef.current;
-      const wave = readCssVar(root, '--color-accent-cyan', '#22d3ee');
-      const progress = readCssVar(root, '--color-primary', '#facc15');
-      const cursor = readCssVar(root, '--color-foreground', '#ffffff');
-      const muted = readCssVar(root, '--color-foreground-secondary', '#999999');
-      const surface = readCssVar(
-        root,
-        '--color-background-secondary',
-        '#1a1a1a',
-      );
+      const { wave, progress, cursor, muted, surface } = editorColors(root);
 
       const resolved = resolveWaveSurferPeaks(peaks);
       const regions = Regions.create();
       const ws = WaveSurfer.create({
         container: root,
-        height,
+        height: heightRef.current,
         waveColor: wave,
         progressColor: wave,
         cursorColor: cursor,
         cursorWidth: 1,
-        normalize: true,
+        normalize: resolved != null,
         interact: true,
         dragToSeek: false,
         autoScroll: false,
         autoCenter: false,
         duration: durationSec,
-        peaks: resolved ?? [new Float32Array(64).fill(0.08)],
+        peaks: resolved ?? PLACEHOLDER_PEAKS,
         ...(media ? { media } : {}),
         plugins: [
           regions,
@@ -341,7 +347,37 @@ export function EditorWaveSurfer({
         created = null;
       }
     };
-  }, [peaks, durationSec, height, media]);
+  }, [peaks, durationSec, media]);
+
+  useEffect(() => {
+    if (session && session.ws.options.height !== height) {
+      session.ws.setOptions({ height });
+    }
+  }, [session, height]);
+
+  useEffect(() => {
+    if (!session) {
+      return;
+    }
+    return observeThemeChange(() => {
+      const root = containerRef.current;
+      if (!root) {
+        return;
+      }
+      const { wave, progress, cursor } = editorColors(root);
+      session.ws.setOptions({
+        waveColor: wave,
+        progressColor: wave,
+        cursorColor: cursor,
+      });
+      for (const region of session.regions.getRegions()) {
+        if (!region.id.startsWith(OVERLAY_PREFIX)) {
+          region.setOptions({ color: mix(progress, 30) });
+        }
+      }
+      setThemeVersion((version) => version + 1);
+    });
+  }, [session]);
 
   useEffect(() => {
     if (!session) {
@@ -422,7 +458,7 @@ export function EditorWaveSurfer({
         region.remove();
       }
     };
-  }, [session, cuts, fades, markers]);
+  }, [session, cuts, fades, markers, themeVersion]);
 
   useEffect(() => {
     if (!session) {

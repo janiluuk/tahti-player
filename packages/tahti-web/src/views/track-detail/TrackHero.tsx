@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useCanGoBack } from '@tanstack/react-router';
 import {
   ActivityIcon,
   DownloadIcon,
@@ -91,6 +91,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
     accessGate,
   } = page;
   const mixVersion = mixVersionLabel(playable.title, detail?.mixVersion);
+  const canGoBack = useCanGoBack();
   const like = useSoundEngagement('like', detail?.channelSlug, id);
   const repost = useSoundEngagement('repost', detail?.channelSlug, id);
 
@@ -145,7 +146,14 @@ export function TrackHero({ page }: { page: TrackPage }) {
             aria-label={`Back to ${detail.channel.displayName}`}
           />
         ) : (
-          <BackButton onClick={() => router.history.back()} aria-label="Back" />
+          <BackButton
+            onClick={() =>
+              canGoBack
+                ? router.history.back()
+                : void router.navigate({ to: '/' })
+            }
+            aria-label="Back"
+          />
         )}
       </Tooltip>
 
@@ -246,6 +254,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                   </div>
                   <PlayerWaveform
                     trackId={playable.id}
+                    label={playable.title}
                     peaks={detail?.peaks}
                     durationSec={totalDuration}
                     markers={commentMarkers}

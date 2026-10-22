@@ -1,8 +1,8 @@
 import { cva, VariantProps } from 'class-variance-authority';
-import { LoaderCircle } from 'lucide-react';
 import { FC } from 'react';
 
 import { cn } from '../../utils';
+import { Loader } from '../Loader';
 
 const trackProcessingVariants = cva(
   'text-foreground-secondary flex items-center gap-1.5 font-medium',
@@ -53,10 +53,10 @@ export const TrackProcessing: FC<TrackProcessingProps> = ({
         className="bg-foreground/5 absolute inset-0 animate-pulse motion-reduce:animate-none"
       />
     )}
-    <LoaderCircle
+    <Loader
+      shape="circle"
       size={iconSize[variant ?? 'inline']}
-      aria-hidden
-      className="relative shrink-0 animate-spin motion-reduce:animate-none"
+      className="relative"
     />
     {label ? <span className="relative">{label}</span> : null}
   </span>

@@ -26,3 +26,8 @@ export const InlineCircle: Story = {
 export const Labelled: Story = {
   args: { size: 'sm', shape: 'circle', label: 'Loading tracks' },
 };
+
+/** Pixel size for icon slots such as the 28px player play button. */
+export const PixelSize: Story = {
+  args: { size: 28, shape: 'circle' },
+};

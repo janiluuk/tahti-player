@@ -13,7 +13,8 @@ exports[`TrackProcessing > (Snapshot) renders all variants 1`] = `
     >
       <svg
         aria-hidden="true"
-        class="lucide lucide-loader-circle relative shrink-0 animate-spin motion-reduce:animate-none"
+        class="lucide lucide-loader-circle shrink-0 animate-spin motion-reduce:animate-none relative"
+        data-testid="loader"
         fill="none"
         height="14"
         stroke="currentColor"
@@ -45,7 +46,8 @@ exports[`TrackProcessing > (Snapshot) renders all variants 1`] = `
       >
         <svg
           aria-hidden="true"
-          class="lucide lucide-loader-circle relative shrink-0 animate-spin motion-reduce:animate-none"
+          class="lucide lucide-loader-circle shrink-0 animate-spin motion-reduce:animate-none relative"
+          data-testid="loader"
           fill="none"
           height="18"
           stroke="currentColor"
@@ -79,7 +81,8 @@ exports[`TrackProcessing > (Snapshot) renders all variants 1`] = `
       />
       <svg
         aria-hidden="true"
-        class="lucide lucide-loader-circle relative shrink-0 animate-spin motion-reduce:animate-none"
+        class="lucide lucide-loader-circle shrink-0 animate-spin motion-reduce:animate-none relative"
+        data-testid="loader"
         fill="none"
         height="18"
         stroke="currentColor"

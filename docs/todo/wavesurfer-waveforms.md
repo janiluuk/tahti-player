@@ -1,7 +1,9 @@
 # Waveforms with wavesurfer.js (audio editor + previews)
 
-**Status:** partial — batch 88 implements foundation + large previews + editor
-shell; desktop / full ProWaveform deletion remain.
+**Status:** partial — batch 88 shipped foundation + large previews + editor
+shell; batch 89 fixed silence drawing as full bars, peak-less tracks stripping
+the player `src`, and theme / resize re-creation. Desktop / full ProWaveform
+deletion remain.
 
 Requested 2026-10-21: integrate [wavesurfer.js](https://github.com/katspaugh/wavesurfer.js)
 ([wavesurfer.xyz](https://wavesurfer.xyz/)) and use it for the waveforms in the

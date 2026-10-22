@@ -25,6 +25,7 @@ const mocks = vi.hoisted(() => {
       return vi.fn();
     }),
     addRegion: vi.fn(() => region),
+    getRegions: vi.fn(() => [region]),
     enableDragSelection: vi.fn(() => vi.fn()),
   };
   const ws = {
@@ -39,7 +40,8 @@ const mocks = vi.hoisted(() => {
     getScroll: vi.fn(() => 0),
     setScrollTime: vi.fn(),
     zoom: vi.fn(),
-    options: { minPxPerSec: 0 },
+    setOptions: vi.fn(),
+    options: { minPxPerSec: 0, height: 192 },
   };
   const create = vi.fn(() => ws);
   return { handlers, regionHandlers, region, regions, ws, create };
@@ -113,6 +115,39 @@ describe('EditorWaveSurfer', () => {
       end: 2.5,
     } as never);
     expect(onSelect).toHaveBeenCalledWith({ start: 0.5, end: 2.5 });
+  });
+
+  it('draws the placeholder un-normalised when there are no peaks', async () => {
+    render(<EditorWaveSurfer {...baseProps} peaks={null} />);
+    await waitFor(() => expect(mocks.create).toHaveBeenCalledTimes(1));
+    const options = (
+      mocks.create.mock.calls[0] as unknown as [{ normalize: boolean }]
+    )[0];
+    expect(options.normalize).toBe(false);
+  });
+
+  it('resizes without re-creating and recolours on theme change', async () => {
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      cb(0);
+      return 1;
+    });
+    const { rerender } = render(<EditorWaveSurfer {...baseProps} />);
+    await waitFor(() => expect(mocks.create).toHaveBeenCalledTimes(1));
+    rerender(<EditorWaveSurfer {...baseProps} height={240} />);
+    await waitFor(() =>
+      expect(mocks.ws.setOptions).toHaveBeenCalledWith({ height: 240 }),
+    );
+    expect(mocks.create).toHaveBeenCalledTimes(1);
+    document.documentElement.setAttribute('data-theme', 'dark');
+    await waitFor(() =>
+      expect(mocks.ws.setOptions).toHaveBeenCalledWith(
+        expect.objectContaining({ waveColor: expect.any(String) }),
+      ),
+    );
+    expect(mocks.region.setOptions).toHaveBeenCalledWith(
+      expect.objectContaining({ color: expect.any(String) }),
+    );
+    document.documentElement.removeAttribute('data-theme');
   });
 
   it('calls onFallback when initialisation fails', async () => {
