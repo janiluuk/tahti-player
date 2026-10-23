@@ -5,6 +5,7 @@ import {
   Button,
   SelectableTiles,
   Slider,
+  Tooltip,
   type SelectableTile,
 } from '@tahti-player/ui';
 
@@ -107,25 +108,30 @@ export function CoverArtGenerator({ onGenerate, generating }: Props) {
         </span>
         <div className="flex flex-wrap gap-2">
           {COLOR_PALETTES.map((palette) => (
-            <Button
-              variant="plain"
-              size="flexible"
+            <Tooltip
               key={palette.id}
-              type="button"
-              title={palette.label}
-              aria-label={palette.label}
-              aria-pressed={paletteId === palette.id}
-              onClick={() => setPaletteId(palette.id)}
-              className={cn(
-                'inline-block h-9 w-14 overflow-hidden rounded-md border-2 whitespace-normal transition-transform hover:scale-105 active:scale-100',
-                paletteId === palette.id
-                  ? 'border-primary shadow-md'
-                  : 'border-transparent',
-              )}
-              style={{
-                background: `linear-gradient(90deg, ${palette.colors.join(', ')})`,
-              }}
-            />
+              content={palette.label}
+              side="top"
+              wrapperClassName="inline-flex"
+            >
+              <Button
+                variant="plain"
+                size="flexible"
+                type="button"
+                aria-label={palette.label}
+                aria-pressed={paletteId === palette.id}
+                onClick={() => setPaletteId(palette.id)}
+                className={cn(
+                  'inline-block h-9 w-14 overflow-hidden rounded-md border-2 whitespace-normal transition-transform hover:scale-105 active:scale-100',
+                  paletteId === palette.id
+                    ? 'border-primary shadow-md'
+                    : 'border-transparent',
+                )}
+                style={{
+                  background: `linear-gradient(90deg, ${palette.colors.join(', ')})`,
+                }}
+              />
+            </Tooltip>
           ))}
         </div>
       </div>
@@ -136,21 +142,26 @@ export function CoverArtGenerator({ onGenerate, generating }: Props) {
         </span>
         <div className="flex flex-wrap gap-2">
           {BACKGROUND_COLORS.map((bg) => (
-            <Button
-              variant="plain"
-              size="flexible"
+            <Tooltip
               key={bg.id}
-              type="button"
-              title={bg.id}
-              aria-label={bg.id}
-              aria-pressed={bgColor === bg.hex}
-              onClick={() => setBgColor(bg.hex)}
-              className={cn(
-                'border-border inline-block size-8 rounded-full border-(length:--border-width) whitespace-normal transition-transform hover:scale-105 active:scale-100',
-                bgColor === bg.hex && 'ring-primary ring-2 ring-offset-2',
-              )}
-              style={{ background: bg.hex }}
-            />
+              content={bg.id}
+              side="top"
+              wrapperClassName="inline-flex"
+            >
+              <Button
+                variant="plain"
+                size="flexible"
+                type="button"
+                aria-label={bg.id}
+                aria-pressed={bgColor === bg.hex}
+                onClick={() => setBgColor(bg.hex)}
+                className={cn(
+                  'border-border inline-block size-8 rounded-full border-(length:--border-width) whitespace-normal transition-transform hover:scale-105 active:scale-100',
+                  bgColor === bg.hex && 'ring-primary ring-2 ring-offset-2',
+                )}
+                style={{ background: bg.hex }}
+              />
+            </Tooltip>
           ))}
         </div>
       </div>

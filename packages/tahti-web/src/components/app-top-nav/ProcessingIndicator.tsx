@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
-import { Badge, Button } from '@tahti-player/ui';
+import { Badge, Button, Tooltip } from '@tahti-player/ui';
 
 import { type TopNavState } from './useTopNavState';
 
@@ -9,17 +9,22 @@ export function ProcessingIndicator({ nav }: { nav: TopNavState }) {
 
   return (
     <div className="relative">
-      <Button
-        variant="text"
-        size="icon-sm"
-        className="inline-flex size-7 items-center justify-center active:scale-100"
-        aria-label={`${processingItems.length} track${processingItems.length === 1 ? '' : 's'} processing`}
-        aria-expanded={processingOpen}
-        title="Track processing status"
-        onClick={() => setProcessingOpen((current) => !current)}
+      <Tooltip
+        content="Track processing status"
+        side="bottom"
+        wrapperClassName="inline-flex"
       >
-        <Badge variant="dot" color="blue" animated aria-hidden />
-      </Button>
+        <Button
+          variant="text"
+          size="icon-sm"
+          className="inline-flex size-7 items-center justify-center active:scale-100"
+          aria-label={`${processingItems.length} track${processingItems.length === 1 ? '' : 's'} processing`}
+          aria-expanded={processingOpen}
+          onClick={() => setProcessingOpen((current) => !current)}
+        >
+          <Badge variant="dot" color="blue" animated aria-hidden />
+        </Button>
+      </Tooltip>
       {processingOpen ? (
         <div className="border-border bg-background absolute top-[calc(100%+8px)] left-0 z-40 w-72 rounded-lg border p-2 shadow-lg">
           <p className="text-foreground-secondary px-2 py-1 text-[11px] font-semibold tracking-wide uppercase">

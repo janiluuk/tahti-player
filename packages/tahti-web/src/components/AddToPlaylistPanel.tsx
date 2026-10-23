@@ -251,12 +251,11 @@ export function AddToPlaylistPanel({
               className="border-border hover:border-primary flex flex-col items-center gap-1.5 rounded-lg border border-dashed px-2 py-3 text-center"
               onClick={() => setCreating(true)}
               aria-label="Create new playlist"
-              title="New playlist"
             >
               <span className="text-foreground-secondary flex h-10 w-10 items-center justify-center">
                 <PlusIcon size={22} aria-hidden />
               </span>
-              <span className="text-[11px] leading-tight">New</span>
+              <span className="text-[11px] leading-tight">New playlist</span>
             </Button>
             {collections.length === 0 && (
               <EmptyState

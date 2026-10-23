@@ -2,7 +2,7 @@ import { DownloadIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button } from '@tahti-player/ui';
+import { Button, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchObsPreset,
@@ -92,16 +92,22 @@ export function ObsPresetButton() {
           ))}
         </dl>
       ) : null}
-      <Button
-        size="sm"
-        variant="secondary"
-        disabled={loading}
-        onClick={() => void downloadPreset()}
-        title="Download an OBS scene collection (Scene Collection → Import in OBS)"
+      <Tooltip
+        content="Download an OBS scene collection (Scene Collection → Import in OBS)"
+        side="bottom"
+        wrapperClassName="inline-flex"
+        multiline
       >
-        <DownloadIcon size={14} aria-hidden className="mr-1.5" />
-        Download OBS preset
-      </Button>
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={loading}
+          onClick={() => void downloadPreset()}
+        >
+          <DownloadIcon size={14} aria-hidden className="mr-1.5" />
+          Download OBS preset
+        </Button>
+      </Tooltip>
     </div>
   );
 }

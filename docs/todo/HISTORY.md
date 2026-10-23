@@ -1,3 +1,13 @@
+## 2026-10-23 - UX batch 92 thirty waveform + UI slices
+
+Folded `batch-92-waveform-ui-thirty.md`. `lib/commentMarkers`
+(`buildCommentMarkers`: time + author + clipped text labels, 1.5% grouping
+with counts) feeds `PlayerWaveform`, whose labelled markers are `Button` +
+`Tooltip` seek targets; `PlayerWaveform` story. Seventeen `Button title=` ->
+`Tooltip` (wrapper display classes moved off the buttons), two redundant
+titles removed, `Tooltip` `multiline`. Tests + stories. ui `0.0.21`,
+tahti-web `0.0.248`.
+
 ## 2026-10-23 - UX batch 91 thirty waveform + UI slices
 
 Folded `batch-91-waveform-ui-thirty.md`. `EditorWaveSurfer`: capture-phase

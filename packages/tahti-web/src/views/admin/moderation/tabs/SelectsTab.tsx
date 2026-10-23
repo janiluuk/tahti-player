@@ -382,15 +382,21 @@ export function SelectsTab() {
               Tracks
             </Button>
             {['Releases', 'Collections', 'Playlists'].map((type) => (
-              <Button
+              <Tooltip
                 key={type}
-                variant="text"
-                className="justify-start opacity-50"
-                disabled
-                title="This content type is not available from the Selects API"
+                content="This content type is not available from the Selects API"
+                side="right"
+                wrapperClassName="flex"
+                multiline
               >
-                {type}
-              </Button>
+                <Button
+                  variant="text"
+                  className="justify-start opacity-50"
+                  disabled
+                >
+                  {type}
+                </Button>
+              </Tooltip>
             ))}
           </nav>
           <div className="flex min-w-0 flex-col gap-3">

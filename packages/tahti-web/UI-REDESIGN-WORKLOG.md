@@ -1,3 +1,15 @@
+## 2026-10-23 - UX batch 92 (clickable comment markers, library tooltips)
+
+Timed comments on the track page waveform are now buttons: hover or focus
+shows the time, author and comment, and a click jumps there (starting the
+track if needed). Comments within 1.5% of each other share one marker with
+a count instead of stacking. Seventeen buttons that relied on the browser's
+`title` tooltip use the library `Tooltip` (top nav Search / Log in / Close
+search / Upload / processing, channel share, embed, OBS preset, radio cover
+edit / preview, cover-art and brand swatches, saved map comments, admin
+Selects, Soulseek); two redundant titles are gone. `Tooltip` gains
+`multiline` for long explanations. Bumped ui `0.0.21`, tahti-web `0.0.248`.
+
 ## 2026-10-23 - UX batch 91 (editor wheel + labels, fitted seekbar bars, external links)
 
 The pro editor waveform no longer zooms on every mouse wheel: a plain wheel

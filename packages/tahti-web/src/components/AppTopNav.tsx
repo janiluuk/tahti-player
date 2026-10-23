@@ -1,10 +1,15 @@
 import { LogInIcon, MenuIcon, SearchIcon, XIcon } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
 
-import { BackButton, Button, CenteredLoader, Dialog } from '@tahti-player/ui';
+import {
+  BackButton,
+  Button,
+  CenteredLoader,
+  Dialog,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { useOpenedOnce } from '../hooks/useOpenedOnce';
-import { cn } from '../lib/cn';
 import { BroadcastControls } from './app-top-nav/BroadcastControls';
 import { MessagesPopover } from './app-top-nav/MessagesPopover';
 import { NotificationsPopover } from './app-top-nav/NotificationsPopover';
@@ -97,17 +102,22 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
       </div>
 
       <div className="flex shrink-0 items-center gap-1" ref={popupRef}>
-        <Button
-          variant="text"
-          size="icon-sm"
-          className={cn(iconBtnClass, 'sm:hidden')}
-          aria-label="Search"
-          title="Search"
-          data-testid="topbar-search"
-          onClick={() => setPhoneSearchOpen(true)}
+        <Tooltip
+          content="Search"
+          side="bottom"
+          wrapperClassName="inline-flex sm:hidden"
         >
-          <SearchIcon size={16} />
-        </Button>
+          <Button
+            variant="text"
+            size="icon-sm"
+            className={iconBtnClass}
+            aria-label="Search"
+            data-testid="topbar-search"
+            onClick={() => setPhoneSearchOpen(true)}
+          >
+            <SearchIcon size={16} />
+          </Button>
+        </Tooltip>
         {user && hasChannel ? <BroadcastControls nav={nav} /> : null}
 
         {user ? <NotificationsPopover nav={nav} /> : null}
@@ -117,17 +127,22 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
         {user ? (
           <UserMenu nav={nav} />
         ) : (
-          <Button
-            variant="text"
-            size="icon-sm"
-            className={iconBtnClass}
-            aria-label="Log in"
-            title="Log in"
-            data-tour-id="topbar-login"
-            onClick={() => openAuth('login')}
+          <Tooltip
+            content="Log in"
+            side="bottom"
+            wrapperClassName="inline-flex"
           >
-            <LogInIcon size={16} />
-          </Button>
+            <Button
+              variant="text"
+              size="icon-sm"
+              className={iconBtnClass}
+              aria-label="Log in"
+              data-tour-id="topbar-login"
+              onClick={() => openAuth('login')}
+            >
+              <LogInIcon size={16} />
+            </Button>
+          </Tooltip>
         )}
       </div>
       {phoneSearchOpen ? (
@@ -145,16 +160,21 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
             fullWidth
             onDone={() => setPhoneSearchOpen(false)}
           />
-          <Button
-            variant="text"
-            size="icon-sm"
-            className={iconBtnClass}
-            aria-label="Close search"
-            title="Close search"
-            onClick={() => setPhoneSearchOpen(false)}
+          <Tooltip
+            content="Close search"
+            side="bottom"
+            wrapperClassName="inline-flex"
           >
-            <XIcon size={16} />
-          </Button>
+            <Button
+              variant="text"
+              size="icon-sm"
+              className={iconBtnClass}
+              aria-label="Close search"
+              onClick={() => setPhoneSearchOpen(false)}
+            >
+              <XIcon size={16} />
+            </Button>
+          </Tooltip>
         </div>
       ) : null}
       {bookingCalendarOpened ? (

@@ -1,6 +1,6 @@
 import { MessageCircleIcon } from 'lucide-react';
 
-import { Waveform } from '@tahti-player/ui';
+import { Button, Tooltip, Waveform } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 import { formatDuration } from '../lib/playableToTrack';
@@ -12,7 +12,8 @@ export type PlayerWaveformProps = {
   height?: number;
   className?: string;
   trackId?: string;
-  markers?: Array<{ fraction: number }>;
+  /** Timed comments; with a `label` each becomes a button that seeks. */
+  markers?: Array<{ fraction: number; label?: string; count?: number }>;
   onSeek?: (fraction: number) => void;
   /** Accessible name, e.g. the track title; defaults to "Waveform". */
   label?: string;
@@ -70,20 +71,51 @@ export function PlayerWaveform({
         aria-label={label ? `Waveform: ${label}` : 'Waveform'}
         aria-valuetext={valueText}
       />
-      {markers?.map((marker, index) => (
-        <span
-          key={`marker-${index}`}
-          className={cn(
-            'text-accent-yellow pointer-events-none absolute top-0',
-            '-translate-x-1/2 -translate-y-1/4 drop-shadow',
-          )}
-          style={{
-            left: `${Math.min(100, Math.max(0, marker.fraction)) * 100}%`,
-          }}
-        >
+      {markers?.map((marker, index) => {
+        const left = `${Math.min(100, Math.max(0, marker.fraction)) * 100}%`;
+        const icon = (
           <MessageCircleIcon size={12} className="fill-current" aria-hidden />
-        </span>
-      ))}
+        );
+        if (!marker.label) {
+          return (
+            <span
+              key={`marker-${index}`}
+              className={cn(
+                'text-accent-yellow pointer-events-none absolute top-0',
+                '-translate-x-1/2 -translate-y-1/4 drop-shadow',
+              )}
+              style={{ left }}
+            >
+              {icon}
+            </span>
+          );
+        }
+        return (
+          <span
+            key={`marker-${marker.fraction}-${index}`}
+            className="absolute top-0 z-10 -translate-x-1/2 -translate-y-1/2"
+            style={{ left }}
+          >
+            <Tooltip content={marker.label} side="top" multiline>
+              <Button
+                variant="plain"
+                size="flexible"
+                aria-label={`Jump to comment: ${marker.label}`}
+                data-testid="waveform-comment-marker"
+                className="text-accent-yellow relative size-5 justify-center rounded-full p-0 drop-shadow"
+                onClick={() => handleSeek(marker.fraction)}
+              >
+                {icon}
+                {marker.count && marker.count > 1 ? (
+                  <span className="bg-background text-foreground absolute -top-1 -right-1 rounded-full px-1 text-[9px] leading-tight font-semibold">
+                    {marker.count}
+                  </span>
+                ) : null}
+              </Button>
+            </Tooltip>
+          </span>
+        );
+      })}
     </div>
   );
 }

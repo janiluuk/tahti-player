@@ -88,16 +88,21 @@ export function ChannelShareButton({
   return (
     <>
       {showTrigger ? (
-        <Button
-          size={iconOnly ? 'icon-sm' : 'sm'}
-          variant="secondary"
-          onClick={() => setOpen(true)}
-          aria-label={`Share ${displayName}`}
-          title="Share or embed channel"
+        <Tooltip
+          content="Share or embed channel"
+          side="bottom"
+          wrapperClassName="inline-flex"
         >
-          <Share2Icon size={16} aria-hidden />
-          {!iconOnly && <span className="ml-1.5">Share</span>}
-        </Button>
+          <Button
+            size={iconOnly ? 'icon-sm' : 'sm'}
+            variant="secondary"
+            onClick={() => setOpen(true)}
+            aria-label={`Share ${displayName}`}
+          >
+            <Share2Icon size={16} aria-hidden />
+            {!iconOnly && <span className="ml-1.5">Share</span>}
+          </Button>
+        </Tooltip>
       ) : null}
       <Dialog.Root isOpen={open} onClose={() => setOpen(false)}>
         <Dialog.Title>Share channel</Dialog.Title>

@@ -2,7 +2,7 @@ import { UploadCloudIcon } from 'lucide-react';
 import { useEffect, useRef, useState, type FC, type RefObject } from 'react';
 import { toast } from 'sonner';
 
-import { Button, ImageReveal, Loader } from '@tahti-player/ui';
+import { Button, ImageReveal, Loader, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 import { IMAGE_UPLOAD_ACCEPT_ATTR } from '../lib/imageUploadContentType';
@@ -103,33 +103,38 @@ export const RadioStationCoverEditButton: FC<
 
   return (
     <>
-      <Button
-        variant="text"
-        size="icon-sm"
-        type="button"
-        disabled={busy}
-        title={`Edit ${label} cover`}
-        aria-label={`Edit ${label} cover`}
-        data-testid="radio-station-cover-edit"
-        className={cn(
-          'p-0',
-          'bg-background/80 hover:bg-background/90 disabled:cursor-wait',
-          'opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100',
-          'size-8 rounded-full',
-          className,
-        )}
-        onClick={(event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          openCoverPicker(inputRef, busy);
-        }}
+      <Tooltip
+        content={`Edit ${label} cover`}
+        side="bottom"
+        wrapperClassName="inline-flex"
       >
-        {busy ? (
-          <Loader size="sm" shape="circle" />
-        ) : (
-          <UploadCloudIcon size={18} aria-hidden />
-        )}
-      </Button>
+        <Button
+          variant="text"
+          size="icon-sm"
+          type="button"
+          disabled={busy}
+          aria-label={`Edit ${label} cover`}
+          data-testid="radio-station-cover-edit"
+          className={cn(
+            'p-0',
+            'bg-background/80 hover:bg-background/90 disabled:cursor-wait',
+            'opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100',
+            'size-8 rounded-full',
+            className,
+          )}
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            openCoverPicker(inputRef, busy);
+          }}
+        >
+          {busy ? (
+            <Loader size="sm" shape="circle" />
+          ) : (
+            <UploadCloudIcon size={18} aria-hidden />
+          )}
+        </Button>
+      </Tooltip>
       <input
         ref={inputRef}
         type="file"
@@ -189,17 +194,22 @@ export const RadioStationCover: FC<RadioStationCoverProps> = ({
       className={cn('group relative size-full', className)}
     >
       {canEdit ? (
-        <Button
-          variant="text"
-          size="flexible"
-          type="button"
-          title={`Preview ${label} cover`}
-          aria-label={`Preview ${label} cover`}
-          className="block size-full rounded-none p-0 text-left hover:bg-transparent active:scale-100"
-          onClick={() => setPreviewOpen(true)}
+        <Tooltip
+          content={`Preview ${label} cover`}
+          side="bottom"
+          wrapperClassName="block size-full"
         >
-          {coverImage}
-        </Button>
+          <Button
+            variant="text"
+            size="flexible"
+            type="button"
+            aria-label={`Preview ${label} cover`}
+            className="block size-full rounded-none p-0 text-left hover:bg-transparent active:scale-100"
+            onClick={() => setPreviewOpen(true)}
+          >
+            {coverImage}
+          </Button>
+        </Tooltip>
       ) : (
         coverImage
       )}

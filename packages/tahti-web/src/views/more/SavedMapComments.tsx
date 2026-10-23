@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Badge, Button, Textarea } from '@tahti-player/ui';
+import { Badge, Button, Textarea, Tooltip } from '@tahti-player/ui';
 
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { MAP_CASE_GROUPS } from '../../content/mapScreens';
@@ -84,18 +84,20 @@ function CopyCommentsButton({ comments }: { comments: MapComment[] }) {
   };
 
   return (
-    <Button
-      size="sm"
-      onClick={copy}
-      disabled={comments.length === 0}
-      title="Copy all comments as plain text, each with its page route and screenshot link, ready to paste back into a chat"
+    <Tooltip
+      content="Copy all comments as plain text, each with its page route and screenshot link, ready to paste back into a chat"
+      side="bottom"
+      wrapperClassName="inline-flex"
+      multiline
     >
-      {state === 'copied'
-        ? 'Copied ✓'
-        : state === 'error'
-          ? 'Copy failed — select & copy manually'
-          : `Copy all (${comments.length})`}
-    </Button>
+      <Button size="sm" onClick={copy} disabled={comments.length === 0}>
+        {state === 'copied'
+          ? 'Copied ✓'
+          : state === 'error'
+            ? 'Copy failed — select & copy manually'
+            : `Copy all (${comments.length})`}
+      </Button>
+    </Tooltip>
   );
 }
 
@@ -235,14 +237,20 @@ export function SavedMapComments() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => downloadMapCommentsCsv(comments)}
-            title="Download CSV with status, route, and commentary for fixing"
+          <Tooltip
+            content="Download CSV with status, route, and commentary for fixing"
+            side="bottom"
+            wrapperClassName="inline-flex"
+            multiline
           >
-            Export CSV ({comments.length})
-          </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => downloadMapCommentsCsv(comments)}
+            >
+              Export CSV ({comments.length})
+            </Button>
+          </Tooltip>
           <CopyCommentsButton comments={comments} />
           <Button
             size="sm"

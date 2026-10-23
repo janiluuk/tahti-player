@@ -1,7 +1,13 @@
 import { SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Dialog, Input, PluginStoreItem } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  Input,
+  PluginStoreItem,
+  Tooltip,
+} from '@tahti-player/ui';
 
 const SOULSEEK_ADDON = {
   id: 'soulseek',
@@ -55,13 +61,16 @@ export function SoulseekAddonCard() {
         </div>
         <Dialog.Actions>
           <Dialog.Close>Close</Dialog.Close>
-          <Button
-            size="sm"
-            disabled
-            title="Soulseek connects from the desktop player only."
+          <Tooltip
+            content="Soulseek connects from the desktop player only."
+            side="top"
+            wrapperClassName="inline-flex"
+            multiline
           >
-            Desktop only
-          </Button>
+            <Button size="sm" disabled>
+              Desktop only
+            </Button>
+          </Tooltip>
         </Dialog.Actions>
       </Dialog.Root>
     </>
