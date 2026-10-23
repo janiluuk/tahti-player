@@ -258,6 +258,7 @@ export function OverviewTab() {
             placeholder="Resolution title"
           />
           <Select
+            aria-label="Outcome"
             value={resolutionOutcome}
             onValueChange={(value) =>
               setResolutionOutcome(value as ResolutionOutcome)

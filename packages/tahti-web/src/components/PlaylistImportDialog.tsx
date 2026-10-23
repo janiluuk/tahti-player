@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Input, Loader, Toggle } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  Input,
+  Loader,
+  Toggle,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import type {
   NativeEntryStatus,
@@ -211,11 +218,19 @@ export function PlaylistImportDialog({
                   <li
                     key={`${entry.line}-${entry.path}`}
                     className="border-border flex items-center gap-2 rounded-md border px-2 py-1 text-sm"
-                    title={entry.path}
                   >
-                    <span className="min-w-0 flex-1 truncate">
-                      {entry.title}
-                    </span>
+                    <Tooltip
+                      content={entry.path}
+                      side="top"
+                      wrapperClassName="min-w-0 flex-1"
+                    >
+                      <span
+                        className="block truncate"
+                        aria-description={entry.path}
+                      >
+                        {entry.title}
+                      </span>
+                    </Tooltip>
                     <span className="text-foreground-secondary shrink-0 text-xs">
                       {STATUS_LABEL[entry.status]}
                     </span>

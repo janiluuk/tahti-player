@@ -339,6 +339,7 @@ export function FeatureRequestsView({
                     )}
                     <div className="flex flex-wrap gap-2">
                       <Input
+                        aria-label="Comment"
                         className="min-w-[200px] flex-1"
                         value={commentBody}
                         onChange={(e) => setCommentBody(e.target.value)}

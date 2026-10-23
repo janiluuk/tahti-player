@@ -9,6 +9,7 @@ import {
   FilterChips,
   Input,
   SaveButton,
+  SectionTitle,
   Select,
   TabLabel,
   Tabs,
@@ -350,9 +351,11 @@ export const ChannelRadioPlaylistPanel: FC = () => {
             <RadioIcon size={20} aria-hidden />
           </span>
           <div className="min-w-0">
-            <h2 className="font-display text-lg font-bold tracking-tight">
-              24/7 &amp; offline programme
-            </h2>
+            <SectionTitle
+              title="24/7 & offline programme"
+              wrap
+              className="font-display tracking-tight"
+            />
             <p className="text-foreground-secondary text-xs">
               One place for everything that plays between live broadcasts.
             </p>

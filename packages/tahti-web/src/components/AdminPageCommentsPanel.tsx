@@ -3,7 +3,7 @@ import { CheckIcon, XIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Badge, Button, Textarea } from '@tahti-player/ui';
+import { Badge, Button, Textarea, Tooltip } from '@tahti-player/ui';
 
 import { downloadMapCommentsCsv } from '../lib/mapCommentsCsv';
 import { mapPageTargetForPath } from '../lib/mapPageTarget';
@@ -146,17 +146,19 @@ export function AdminPageCommentsPanel() {
             Same store as Tahti atlas · {forPage.length} here · {openCount} open
           </p>
         </div>
-        <Button
-          size="icon-sm"
-          variant="text"
-          aria-label="Close page comments"
-          onClick={() => {
-            closePanel();
-            setRightCollapsed(false);
-          }}
-        >
-          <XIcon size={16} aria-hidden />
-        </Button>
+        <Tooltip content="Close page comments" side="top">
+          <Button
+            size="icon-sm"
+            variant="text"
+            aria-label="Close page comments"
+            onClick={() => {
+              closePanel();
+              setRightCollapsed(false);
+            }}
+          >
+            <XIcon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
       </div>
 
       <MapCommentForm

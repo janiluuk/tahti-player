@@ -218,27 +218,37 @@ export function ConnectedPlayerBar() {
   );
 
   const mobilePlayPauseButton = (
-    <Button
-      size="icon"
-      onClick={onPlayPause}
-      className={cn(
-        'size-16 shrink-0 rounded-full shadow-md',
-        isPlaying &&
-          'bg-accent-green active:bg-accent-green text-black active:text-black',
-      )}
-      aria-label={isPlaying ? 'Pause' : 'Play'}
-      aria-pressed={isPlaying}
-      aria-busy={isLoading || undefined}
-      data-testid={isPlaying ? 'player-pause-button' : 'player-play-button'}
+    <Tooltip
+      content={isPlaying ? 'Pause' : 'Play'}
+      side="top"
+      wrapperClassName="shrink-0"
     >
-      {isLoading ? (
-        <Loader shape="circle" size={28} data-testid="player-loading-spinner" />
-      ) : isPlaying ? (
-        <PauseIcon size={28} />
-      ) : (
-        <PlayIcon size={28} className="ml-0.5" />
-      )}
-    </Button>
+      <Button
+        size="icon"
+        onClick={onPlayPause}
+        className={cn(
+          'size-16 shrink-0 rounded-full shadow-md',
+          isPlaying &&
+            'bg-accent-green active:bg-accent-green text-black active:text-black',
+        )}
+        aria-label={isPlaying ? 'Pause' : 'Play'}
+        aria-pressed={isPlaying}
+        aria-busy={isLoading || undefined}
+        data-testid={isPlaying ? 'player-pause-button' : 'player-play-button'}
+      >
+        {isLoading ? (
+          <Loader
+            shape="circle"
+            size={28}
+            data-testid="player-loading-spinner"
+          />
+        ) : isPlaying ? (
+          <PauseIcon size={28} />
+        ) : (
+          <PlayIcon size={28} className="ml-0.5" />
+        )}
+      </Button>
+    </Tooltip>
   );
 
   const queueLabel = queuePressed

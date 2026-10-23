@@ -1,4 +1,4 @@
-import { Button, Slider, Toggle } from '@tahti-player/ui';
+import { Button, SectionTitle, Slider, Toggle } from '@tahti-player/ui';
 
 import { useThemeStore } from '../plugins/themes';
 import { TAHTI_BLUE_THEME_ID } from '../plugins/themes/presets';
@@ -41,9 +41,11 @@ export function ThemeVisualizationSettings({
   return (
     <section className="border-border bg-background-secondary/30 flex flex-col gap-3 rounded-lg border p-4">
       <div>
-        <h2 className="font-display text-lg font-bold tracking-tight">
-          Background visualizations
-        </h2>
+        <SectionTitle
+          title="Background visualizations"
+          wrap
+          className="font-display tracking-tight"
+        />
         <p className="text-foreground-secondary mt-1 text-sm">
           Tahti themes (and the stock Nuclear default) can show a quiet,
           audio-reactive Three.js ambience behind the app.

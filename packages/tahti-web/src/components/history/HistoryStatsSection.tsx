@@ -115,6 +115,7 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
         )}
         <div data-testid="history-stats-range" className="w-44">
           <Select
+            aria-label="Date range"
             options={RANGE_PRESETS.map((p) => ({ id: p.id, label: p.label }))}
             value={presetId}
             onValueChange={(value) => setPresetId(value as RangePresetId)}

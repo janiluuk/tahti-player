@@ -580,6 +580,7 @@ export function RadioScheduleView() {
             aria-label="Show type"
           />
           <Input
+            aria-label="Note"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder={
@@ -721,6 +722,7 @@ export function RadioScheduleView() {
                   aria-label="Show type"
                 />
                 <Input
+                  aria-label="Note"
                   value={editNote}
                   onChange={(e) => setEditNote(e.target.value)}
                   disabled={busy}

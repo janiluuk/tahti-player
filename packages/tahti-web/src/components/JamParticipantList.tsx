@@ -1,6 +1,6 @@
 import { UsersIcon, XIcon } from 'lucide-react';
 
-import { Badge, Button, Toggle } from '@tahti-player/ui';
+import { Badge, Button, Toggle, Tooltip } from '@tahti-player/ui';
 
 import type { JamParticipant } from '../api/types';
 
@@ -66,15 +66,17 @@ export function JamParticipantList({
                 </Badge>
               ) : null}
               {isGuest && onRemove ? (
-                <Button
-                  size="icon-sm"
-                  variant="ghost"
-                  aria-label={`Remove ${name} from the Jam`}
-                  disabled={pendingUserIds?.has(p.userId)}
-                  onClick={() => onRemove(p)}
-                >
-                  <XIcon size={14} />
-                </Button>
+                <Tooltip content={`Remove ${name} from the Jam`} side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="ghost"
+                    aria-label={`Remove ${name} from the Jam`}
+                    disabled={pendingUserIds?.has(p.userId)}
+                    onClick={() => onRemove(p)}
+                  >
+                    <XIcon size={14} />
+                  </Button>
+                </Tooltip>
               ) : null}
             </li>
           );

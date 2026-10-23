@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { Button, ExternalLink, Slider } from '@tahti-player/ui';
+import { Button, ExternalLink, Slider, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 import {
@@ -190,34 +190,38 @@ export function StemMixer({
                 </Slider>
               </div>
               <div className="flex shrink-0 items-center gap-1">
-                <Button
-                  size="icon-sm"
-                  variant={channel.muted ? 'tertiary' : 'text'}
-                  aria-label={`Mute ${f.label}`}
-                  aria-pressed={channel.muted}
-                  onClick={() =>
-                    setMix((prev) => toggleStemMute(prev, f.label))
-                  }
-                >
-                  {channel.muted ? (
-                    <VolumeXIcon size={14} aria-hidden />
-                  ) : (
-                    <Volume2Icon size={14} aria-hidden />
-                  )}
-                </Button>
-                <Button
-                  size="icon-sm"
-                  variant={channel.solo ? 'tertiary' : 'text'}
-                  aria-label={`Solo ${f.label}`}
-                  aria-pressed={channel.solo}
-                  onClick={(e) =>
-                    setMix((prev) =>
-                      toggleStemSolo(prev, f.label, e.shiftKey || e.altKey),
-                    )
-                  }
-                >
-                  <HeadphonesIcon size={14} aria-hidden />
-                </Button>
+                <Tooltip content={`Mute ${f.label}`} side="top">
+                  <Button
+                    size="icon-sm"
+                    variant={channel.muted ? 'tertiary' : 'text'}
+                    aria-label={`Mute ${f.label}`}
+                    aria-pressed={channel.muted}
+                    onClick={() =>
+                      setMix((prev) => toggleStemMute(prev, f.label))
+                    }
+                  >
+                    {channel.muted ? (
+                      <VolumeXIcon size={14} aria-hidden />
+                    ) : (
+                      <Volume2Icon size={14} aria-hidden />
+                    )}
+                  </Button>
+                </Tooltip>
+                <Tooltip content={`Solo ${f.label}`} side="top">
+                  <Button
+                    size="icon-sm"
+                    variant={channel.solo ? 'tertiary' : 'text'}
+                    aria-label={`Solo ${f.label}`}
+                    aria-pressed={channel.solo}
+                    onClick={(e) =>
+                      setMix((prev) =>
+                        toggleStemSolo(prev, f.label, e.shiftKey || e.altKey),
+                      )
+                    }
+                  >
+                    <HeadphonesIcon size={14} aria-hidden />
+                  </Button>
+                </Tooltip>
                 <ExternalLink
                   href={f.url}
                   aria-label={`Download ${f.label}`}

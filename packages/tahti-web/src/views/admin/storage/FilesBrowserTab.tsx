@@ -70,19 +70,21 @@ function FileRow({
 }) {
   return (
     <li className="flex flex-wrap items-center justify-between gap-3 px-2 py-3 text-sm">
-      <Button
-        size="icon-sm"
-        variant="text"
-        aria-pressed={selected}
-        aria-label={`Select ${f.title}`}
-        onClick={() => onToggleSelect(f.id)}
-      >
-        {selected ? (
-          <CheckSquareIcon size={16} aria-hidden />
-        ) : (
-          <SquareIcon size={16} aria-hidden />
-        )}
-      </Button>
+      <Tooltip content={`Select ${f.title}`} side="top">
+        <Button
+          size="icon-sm"
+          variant="text"
+          aria-pressed={selected}
+          aria-label={`Select ${f.title}`}
+          onClick={() => onToggleSelect(f.id)}
+        >
+          {selected ? (
+            <CheckSquareIcon size={16} aria-hidden />
+          ) : (
+            <SquareIcon size={16} aria-hidden />
+          )}
+        </Button>
+      </Tooltip>
       <div className="min-w-0 flex-1">
         <div className="font-medium">
           {f.title}{' '}

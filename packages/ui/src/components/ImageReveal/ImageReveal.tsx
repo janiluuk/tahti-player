@@ -62,7 +62,7 @@ export const ImageReveal: FC<ImageRevealProps> = ({
         (animationsDisabled ? (
           <img
             src={src}
-            alt={alt}
+            alt={alt ?? ''}
             className={cn('h-full w-full object-cover', imgClassName)}
             onLoad={handleLoad}
             onError={handleError}
@@ -73,7 +73,7 @@ export const ImageReveal: FC<ImageRevealProps> = ({
           <motion.img
             key={src}
             src={src}
-            alt={alt}
+            alt={alt ?? ''}
             className={cn('h-full w-full object-cover', imgClassName)}
             initial={{ opacity: 0, scale: 0.98, filter: 'blur(8px)' }}
             animate={{

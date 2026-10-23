@@ -1,6 +1,13 @@
 import { useState } from 'react';
 
-import { Button, InlineError, Input, Select, Textarea } from '@tahti-player/ui';
+import {
+  Button,
+  InlineError,
+  Input,
+  SectionTitle,
+  Select,
+  Textarea,
+} from '@tahti-player/ui';
 
 import { submitSupportTicket, type SupportTicketCategory } from '../api/client';
 import { useAuthStore } from '../stores/authStore';
@@ -62,7 +69,7 @@ export function SupportContactForm({
         });
       }}
     >
-      <h2 className="font-display text-lg font-bold">Contact support</h2>
+      <SectionTitle title="Contact support" wrap className="font-display" />
       {!email && (
         <Input
           label="Your email"

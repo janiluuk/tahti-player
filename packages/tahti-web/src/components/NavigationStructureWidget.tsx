@@ -218,20 +218,28 @@ function NavigationItem({
         style={{ marginLeft: depth * 20 }}
       >
         {children.length > 0 ? (
-          <Button
-            size="icon-sm"
-            variant="text"
-            aria-label={
+          <Tooltip
+            content={
               expanded ? `Collapse ${item.label}` : `Expand ${item.label}`
             }
-            onClick={() => setExpanded((value) => !value)}
+            side="top"
+            wrapperClassName="shrink-0"
           >
-            {expanded ? (
-              <ChevronDownIcon size={15} aria-hidden />
-            ) : (
-              <ChevronRightIcon size={15} aria-hidden />
-            )}
-          </Button>
+            <Button
+              size="icon-sm"
+              variant="text"
+              aria-label={
+                expanded ? `Collapse ${item.label}` : `Expand ${item.label}`
+              }
+              onClick={() => setExpanded((value) => !value)}
+            >
+              {expanded ? (
+                <ChevronDownIcon size={15} aria-hidden />
+              ) : (
+                <ChevronRightIcon size={15} aria-hidden />
+              )}
+            </Button>
+          </Tooltip>
         ) : (
           <span className="size-8 shrink-0" aria-hidden />
         )}

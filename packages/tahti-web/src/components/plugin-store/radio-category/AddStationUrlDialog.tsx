@@ -99,6 +99,7 @@ export function AddStationUrlDialog({
       <div className="mt-4 flex flex-col gap-3">
         <div className="flex flex-wrap gap-2">
           <Input
+            aria-label="Stream URL"
             className="min-w-0 flex-1 basis-48"
             size="sm"
             value={draft}

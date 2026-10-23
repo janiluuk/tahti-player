@@ -1,3 +1,11 @@
+## 2026-10-24 - UX batch 101 (tooltips, field names, SectionTitle)
+
+Twenty-two icon-only buttons show a tooltip, twenty-two unnamed fields get an
+accessible name, tour key hints use `KeyCombo`, ten matching headings use
+`SectionTitle`, and three truncated rows reveal their full text in a
+`Tooltip`. `MediaArtwork` / `ImageReveal` now mark artwork without alt text
+as decorative instead of leaving `alt` off. Bumped tahti-web `0.0.258`.
+
 ## 2026-10-23 - UX batch 100 (InlineError everywhere, tooltip fixes)
 
 Fixes three batch 98 tooltips that pushed inline text onto its own line

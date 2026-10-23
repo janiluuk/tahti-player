@@ -68,6 +68,7 @@ export function BasicsTab({
                 </Tooltip>
               </div>
               <Input
+                aria-label="Artist"
                 value={form.artistName ?? user?.displayName ?? ''}
                 onChange={(event) =>
                   setForm({ ...form, artistName: event.target.value })

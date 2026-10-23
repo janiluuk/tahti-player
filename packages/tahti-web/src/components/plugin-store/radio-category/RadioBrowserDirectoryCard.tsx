@@ -371,6 +371,7 @@ export function RadioBrowserDirectoryCard() {
                         </div>
                       ) : null}
                       <Select
+                        aria-label="Country"
                         className="w-full"
                         options={[
                           { id: '', label: 'All countries' },

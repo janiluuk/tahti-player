@@ -1,6 +1,6 @@
 import { ExternalLinkIcon, RotateCcwIcon, Trash2Icon } from 'lucide-react';
 
-import { Badge, Button, ButtonAnchor } from '@tahti-player/ui';
+import { Badge, Button, ButtonAnchor, Tooltip } from '@tahti-player/ui';
 
 import {
   deleteMyTheme,
@@ -93,14 +93,19 @@ export function ThemeSubmissions({
                 </Button>
               ) : null}
               {theme.visibility !== 'PENDING_REVIEW' ? (
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  aria-label={`Delete the ${theme.name} submission`}
-                  onClick={() => run(deleteMyTheme(theme.id))}
+                <Tooltip
+                  content={`Delete the ${theme.name} submission`}
+                  side="top"
                 >
-                  <Trash2Icon size={14} aria-hidden />
-                </Button>
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    aria-label={`Delete the ${theme.name} submission`}
+                    onClick={() => run(deleteMyTheme(theme.id))}
+                  >
+                    <Trash2Icon size={14} aria-hidden />
+                  </Button>
+                </Tooltip>
               ) : null}
             </div>
           </li>

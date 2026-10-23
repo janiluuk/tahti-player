@@ -420,12 +420,12 @@ describe('export and import', () => {
       name: 'Unresolved entries',
     });
     expect(
-      within(list).getByText('Fresh').parentElement?.textContent,
+      within(list).getByText('Fresh').closest('li')?.textContent,
     ).toContain('Not in library yet');
-    expect(within(list).getByText('Gone').parentElement?.textContent).toContain(
+    expect(within(list).getByText('Gone').closest('li')?.textContent).toContain(
       'File not found',
     );
-    expect(within(list).getByText('Song').parentElement?.textContent).toContain(
+    expect(within(list).getByText('Song').closest('li')?.textContent).toContain(
       'Unsupported format',
     );
 

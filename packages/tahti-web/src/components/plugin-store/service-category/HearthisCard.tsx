@@ -556,6 +556,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
           {tab === 'search' && (
             <div className="flex flex-wrap gap-2">
               <Input
+                aria-label="Search hearthis.at"
                 className="min-w-0 flex-1 basis-40"
                 size="sm"
                 value={q}
@@ -586,6 +587,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
           {tab !== 'collections' && (
             <div className="border-border bg-background-secondary/40 flex flex-wrap items-center gap-2 rounded-lg border p-3">
               <Select
+                aria-label="Destination playlist"
                 className="min-w-0 flex-1 basis-40"
                 options={[
                   { id: '', label: 'Choose destination playlist' },

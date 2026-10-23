@@ -247,7 +247,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
           <ImageReveal
             enabled
             src={resolvedSrc}
-            alt={alt}
+            alt={alt ?? ''}
             className="absolute inset-0"
             imgClassName={cn(
               'h-full w-full',

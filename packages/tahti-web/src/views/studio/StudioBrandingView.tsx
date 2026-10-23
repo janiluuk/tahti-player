@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 
-import { TabLabel, Tabs } from '@tahti-player/ui';
+import { SectionTitle, TabLabel, Tabs } from '@tahti-player/ui';
 
 import { ChannelDesigner } from '../../components/ChannelDesigner';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
@@ -98,9 +98,11 @@ export const StudioBrandingPanel: FC<{
       {tab === 'branding' ? (
         <>
           {hideSectionNav ? null : (
-            <h2 className="font-display text-lg font-bold tracking-tight">
-              Artist branding
-            </h2>
+            <SectionTitle
+              title="Artist branding"
+              wrap
+              className="font-display tracking-tight"
+            />
           )}
           <ProfilePictureSection kit={kit} />
           <ProfileBackdropSection

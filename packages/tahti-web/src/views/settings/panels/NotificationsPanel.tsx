@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { InlineLoader } from '@tahti-player/ui';
+import { InlineLoader, SectionTitle } from '@tahti-player/ui';
 
 import {
   fetchNotificationPrefs,
@@ -192,9 +192,11 @@ export function NotificationsVisibilityPanel() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="font-display text-lg font-bold tracking-tight">
-          Visibility
-        </h2>
+        <SectionTitle
+          title="Visibility"
+          wrap
+          className="font-display tracking-tight"
+        />
         <p className="text-foreground-secondary mt-1 text-sm">
           Choose what appears publicly on your profile and channel.
         </p>
@@ -262,9 +264,11 @@ export function NotificationsVisibilityPanel() {
         </div>
       )}
       <div className="border-border border-t pt-5">
-        <h2 className="font-display text-lg font-bold tracking-tight">
-          Notifications
-        </h2>
+        <SectionTitle
+          title="Notifications"
+          wrap
+          className="font-display tracking-tight"
+        />
         <p className="text-foreground-secondary mt-1 mb-5 text-sm">
           Choose which activity reaches you by email or in the app.
         </p>
