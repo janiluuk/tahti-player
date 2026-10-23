@@ -95,6 +95,7 @@ export function CoverArtGenerator({ onGenerate, generating }: Props) {
           Style
         </span>
         <SelectableTiles
+          aria-label="Style"
           items={STYLE_OPTIONS}
           selected={presetId}
           onChange={setPresetId}

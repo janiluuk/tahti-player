@@ -174,6 +174,7 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
           />
           {genres.length > 0 ? (
             <FilterChips
+              aria-label="Genre"
               items={chipItems}
               selected={genre}
               onChange={setGenre}
@@ -188,6 +189,7 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
                 Artist type
               </p>
               <FilterChips
+                aria-label="Artist type"
                 items={artistTypeChipItems}
                 selected={artistType}
                 onChange={setArtistType}

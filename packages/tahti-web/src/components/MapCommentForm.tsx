@@ -74,14 +74,9 @@ export function MapCommentForm({
         className ?? 'border-border flex flex-col gap-2 border-t px-4 py-4'
       }
     >
-      <label
-        htmlFor={fieldId}
-        className="text-foreground text-xs font-semibold tracking-wide uppercase"
-      >
-        {label}
-      </label>
       <Textarea
         id={fieldId}
+        label={label}
         tone="secondary"
         rows={3}
         value={draft}

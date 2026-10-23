@@ -28,23 +28,14 @@ export function BackdropBackgroundExtras({
 }: Props) {
   return (
     <section className="flex flex-col gap-4">
-      <label className="border-border bg-background-secondary/40 flex items-start gap-3 rounded-lg border p-3 text-sm">
-        <Toggle
-          checked={useBackgroundGradient}
-          onChange={onUseBackgroundGradient}
-          label="Use a separate background palette"
-          className="mt-0.5"
-        />
-        <span>
-          <span className="block font-semibold">
-            Full separate background palette
-          </span>
-          <span className="text-foreground-secondary block text-xs">
-            Optional — edit every background color independently of header
-            accents. The Background swatch above always works.
-          </span>
-        </span>
-      </label>
+      <Toggle
+        checked={useBackgroundGradient}
+        onChange={onUseBackgroundGradient}
+        label="Full separate background palette"
+        description="Optional — edit every background color independently of header accents. The Background swatch above always works."
+        showLabel
+        labelClassName="border-border bg-background-secondary/40 items-start gap-3 rounded-lg border p-3 font-semibold"
+      />
       {useBackgroundGradient ? (
         <ColorSchemeFields
           scheme={backgroundScheme}

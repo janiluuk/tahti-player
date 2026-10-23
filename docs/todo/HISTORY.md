@@ -1,3 +1,25 @@
+## 2026-10-23 - UX batch 96 thirty-plus label, toggle and group slices
+
+New library `ColorField` (swatch + label + value line, `actions` kept outside
+the label, `compact`) replaces five hand-rolled colour cards (channel colour
+scheme, page background, accent pair, stream overlay text colour, nameplate
+colour); the overlay and nameplate reset buttons no longer sit inside a
+`<label>`. `Toggle` takes `description` and `labelPosition="start"` (Headless
+`Field` / `Label` / `Description`), used by radio auto-add uploads, radio
+artist announcements, the separate background palette and the public gallery
+switch; the announcement clip On/Off text no longer wraps its switch in a
+label. Ten more `<label>` wrappers -> `Textarea` / `Input` `label` (meeting
+matter, station-suggestion and radio-submission rejection notes, annual
+report correction, answer correction, add-on description, theme rejection
+note, press kit short bio, map comment, governance report year). Five
+`<label>`s that wrapped button groups (onboarding artist kind, project type,
+green room invitees, collection style, channel genres) become plain groups
+with their own name, and sixteen chip / tile groups that announced the generic
+"Filter options" / "Selectable options" get a real name (local library
+filters x5, smart playlist match, M3U path mode, cover art style, directory
+genre + artist type, Discover unheard / genres / content types, onboarding
+appearance, catalog methods, distribution guides). tahti-web `0.0.252`.
+
 ## 2026-10-23 - UX batch 95 thirty-plus form, control and tooltip slices
 
 Twenty-nine more hand-rolled `<label>` wrappers -> `Textarea` / `Input`

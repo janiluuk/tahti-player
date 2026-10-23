@@ -203,14 +203,14 @@ export function ChannelAnnouncementsPanel() {
                   {clip.renderStatus.toLowerCase()}
                 </div>
               </div>
-              <label className="flex items-center gap-2 text-xs">
+              <span className="flex items-center gap-2 text-xs">
                 <Toggle
                   checked={clip.isEnabled}
                   onChange={() => toggle(clip)}
                   aria-label={`Enable ${clip.title}`}
                 />
-                {clip.isEnabled ? 'On' : 'Off'}
-              </label>
+                <span aria-hidden>{clip.isEnabled ? 'On' : 'Off'}</span>
+              </span>
               <Tooltip content="Preview" side="top">
                 <Button
                   size="icon-sm"

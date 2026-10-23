@@ -1,6 +1,6 @@
 import { RotateCcwIcon } from 'lucide-react';
 
-import { Button, Input, Tooltip } from '@tahti-player/ui';
+import { Button, ColorField, Input, Tooltip } from '@tahti-player/ui';
 
 import type { ProfileFields } from '../../api/studio-extras';
 import { Nameplate } from '../../components/Nameplate';
@@ -38,36 +38,32 @@ export function NameplateFields({
           setProfile({ ...profile, nameplateText: e.target.value })
         }
       />
-      <label className="border-border bg-background-secondary/40 flex items-center gap-3 rounded-lg border p-2.5 text-sm">
-        <Input
-          type="color"
-          value={color || '#22d3ee'}
-          onChange={(e) =>
-            setProfile({ ...profile, nameplateColor: e.target.value })
-          }
-          aria-label="Nameplate color"
-        />
-        <span className="min-w-0 flex-1">
-          <span className="block text-sm font-semibold">Nameplate color</span>
-          <span className="text-foreground-secondary block text-xs">
-            {color || 'Default (your page accent)'}
-          </span>
-        </span>
-        <Nameplate text={profile.nameplateText} color={color || null} />
-        {color ? (
-          <Tooltip content="Use the page accent" side="top">
-            <Button
-              type="button"
-              size="icon-sm"
-              variant="secondary"
-              aria-label="Use the page accent"
-              onClick={() => setProfile({ ...profile, nameplateColor: null })}
-            >
-              <RotateCcwIcon size={14} aria-hidden />
-            </Button>
-          </Tooltip>
-        ) : null}
-      </label>
+      <ColorField
+        label="Nameplate color"
+        value={color || '#22d3ee'}
+        detail={color || 'Default (your page accent)'}
+        onChange={(next) => setProfile({ ...profile, nameplateColor: next })}
+        actions={
+          <>
+            <Nameplate text={profile.nameplateText} color={color || null} />
+            {color ? (
+              <Tooltip content="Use the page accent" side="top">
+                <Button
+                  type="button"
+                  size="icon-sm"
+                  variant="secondary"
+                  aria-label="Use the page accent"
+                  onClick={() =>
+                    setProfile({ ...profile, nameplateColor: null })
+                  }
+                >
+                  <RotateCcwIcon size={14} aria-hidden />
+                </Button>
+              </Tooltip>
+            ) : null}
+          </>
+        }
+      />
       <SettingsToggle
         label="Show page hero"
         description="The header card with your avatar, name and stats on your channel page."

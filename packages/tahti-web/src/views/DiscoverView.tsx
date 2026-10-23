@@ -471,6 +471,7 @@ export function DiscoverView() {
                 />
               </Button>
               <FilterChips
+                aria-label="Unheard only"
                 multiple
                 items={[{ id: 'unheard', label: 'Tracks I haven’t heard' }]}
                 selected={unheardOnly ? ['unheard'] : []}
@@ -481,6 +482,7 @@ export function DiscoverView() {
             </div>
             {genresOpen ? (
               <FilterChips
+                aria-label="Genres"
                 multiple
                 items={[
                   { id: ALL_FILTER_ID, label: 'All' },
@@ -496,6 +498,7 @@ export function DiscoverView() {
             ) : null}
             {contentTypesOpen ? (
               <FilterChips
+                aria-label="Content types"
                 multiple
                 items={[{ id: ALL_FILTER_ID, label: 'All' }, ...CONTENT_TYPES]}
                 selected={

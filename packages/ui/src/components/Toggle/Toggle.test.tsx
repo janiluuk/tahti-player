@@ -19,4 +19,23 @@ describe('Toggle', () => {
     fireEvent.click(screen.getByText('Autoplay'));
     expect(onChange).toHaveBeenCalledWith(true);
   });
+
+  it('describes the switch and can put the text first', () => {
+    render(
+      <Toggle
+        label="Auto-add uploads"
+        description="Add new uploads to the rotation"
+        showLabel
+        labelPosition="start"
+      />,
+    );
+    const toggle = screen.getByRole('switch', { name: 'Auto-add uploads' });
+    expect(toggle).toHaveAccessibleDescription(
+      'Add new uploads to the rotation',
+    );
+    expect(
+      screen.getByText('Auto-add uploads').compareDocumentPosition(toggle) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
 });

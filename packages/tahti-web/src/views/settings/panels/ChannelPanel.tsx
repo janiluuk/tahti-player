@@ -177,8 +177,7 @@ export function ChannelPanel() {
                 title="Genres"
                 description={`Up to ${MAX_GENRES}. They help listeners find you.`}
               >
-                <label className="flex flex-col gap-2">
-                  <span className="sr-only">Genres</span>
+                <div className="flex flex-col gap-2">
                   <GenrePicker
                     value={normalizeGenresForPicker(
                       parseGenreTags(channelProfile.socialLinks?.genres),
@@ -200,7 +199,7 @@ export function ChannelPanel() {
                       });
                     }}
                   />
-                </label>
+                </div>
                 <div className="mt-4">
                   <SettingsHint>
                     A channel with public tracks is listed in the Listen

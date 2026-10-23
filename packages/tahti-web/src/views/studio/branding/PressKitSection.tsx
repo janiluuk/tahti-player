@@ -55,25 +55,18 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
             onRetry={() => void reload()}
           />
         ) : null}
-        <label
-          className={`flex flex-col gap-1.5 text-sm ${pressKitError ? 'hidden' : ''}`}
-        >
-          <span className="text-foreground-secondary text-xs uppercase">
-            Short bio
-          </span>
-          <Textarea
-            tone="secondary"
-            rows={5}
-            value={pressKit?.bioShort ?? ''}
-            onChange={(event) =>
-              setPressKit((current) =>
-                current
-                  ? { ...current, bioShort: event.target.value }
-                  : current,
-              )
-            }
-          />
-        </label>
+        <Textarea
+          label="Short bio"
+          fieldClassName={pressKitError ? 'hidden' : undefined}
+          tone="secondary"
+          rows={5}
+          value={pressKit?.bioShort ?? ''}
+          onChange={(event) =>
+            setPressKit((current) =>
+              current ? { ...current, bioShort: event.target.value } : current,
+            )
+          }
+        />
         <div className="mt-3 flex flex-wrap justify-end gap-2">
           {pressKit?.downloadPath ? (
             <Button

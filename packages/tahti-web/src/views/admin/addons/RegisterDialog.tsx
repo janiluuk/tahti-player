@@ -71,17 +71,15 @@ export function RegisterDialog({
           placeholder="Live status"
           onChange={(event) => onChange({ ...draft, name: event.target.value })}
         />
-        <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-foreground font-semibold">Description</span>
-          <Textarea
-            value={draft.description}
-            rows={3}
-            placeholder="What does this add-on show or do?"
-            onChange={(event) =>
-              onChange({ ...draft, description: event.target.value })
-            }
-          />
-        </label>
+        <Textarea
+          label="Description"
+          value={draft.description}
+          rows={3}
+          placeholder="What does this add-on show or do?"
+          onChange={(event) =>
+            onChange({ ...draft, description: event.target.value })
+          }
+        />
         <div className="grid gap-4 sm:grid-cols-2">
           <Input
             label="Author"

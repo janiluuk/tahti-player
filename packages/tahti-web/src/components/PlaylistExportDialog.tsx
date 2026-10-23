@@ -83,8 +83,11 @@ export function PlaylistExportDialog({ playlist, library, onClose }: Props) {
         Entries whose file is missing are kept with their last known path.
       </Dialog.Description>
       <div className="flex flex-col gap-2 py-2">
-        <span className="text-sm font-medium">File paths</span>
+        <span className="text-sm font-medium" aria-hidden>
+          File paths
+        </span>
         <FilterChips
+          aria-label="File paths"
           items={[
             { id: 'relative', label: 'Relative to the saved file' },
             { id: 'absolute', label: 'Full paths' },

@@ -1,3 +1,15 @@
+## 2026-10-23 - UX batch 96 (ColorField, Toggle descriptions, named groups)
+
+`@tahti-player/ui` gains `ColorField` (story `Components/ColorField`) for the
+colour swatch cards in the channel designer, stream overlay and nameplate
+settings; reset buttons sit beside the label instead of inside it. `Toggle`
+takes `description` and `labelPosition="start"` for settings-style rows, used
+by the radio programme switches, the separate background palette and the
+public gallery switch. Ten more fields use the `Textarea` / `Input` `label`
+prop; five labels that wrapped tile or chip groups are now plain groups, and
+sixteen chip / tile groups get a real accessible name instead of "Filter
+options". Bumped tahti-web `0.0.252`.
+
 ## 2026-10-23 - UX batch 95 (form labels, library controls, tooltips)
 
 Twenty-nine more fields drop their hand-rolled `<label>` wrappers for the

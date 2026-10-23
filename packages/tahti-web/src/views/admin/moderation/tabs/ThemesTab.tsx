@@ -86,17 +86,13 @@ function RejectDialog({
       <Dialog.Description>
         The author gets this note with the rejection.
       </Dialog.Description>
-      <label className="flex flex-col gap-1.5 text-sm">
-        <span className="text-foreground font-semibold">
-          Note to the author
-        </span>
-        <Textarea
-          value={note}
-          rows={4}
-          maxLength={2000}
-          onChange={(event) => setNote(event.target.value)}
-        />
-      </label>
+      <Textarea
+        label="Note to the author"
+        value={note}
+        rows={4}
+        maxLength={2000}
+        onChange={(event) => setNote(event.target.value)}
+      />
       {error ? (
         <p className="text-accent-red-strong mt-2 text-sm" role="alert">
           {error}

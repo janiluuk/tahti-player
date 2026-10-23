@@ -173,11 +173,12 @@ export function BroadcastPanel({
             value={green.defaultEnabled}
             onChange={(defaultEnabled) => saveGreenRoom({ defaultEnabled })}
           />
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className="text-foreground text-sm font-semibold">
+          <div className="flex flex-col gap-1.5 text-sm">
+            <span className="text-foreground text-sm font-semibold" aria-hidden>
               Who gets invited
             </span>
             <SelectableTiles
+              aria-label="Who gets invited"
               items={GREEN_ROOM_POOL_OPTIONS}
               selected={green.invitePool}
               onChange={(value) => {
@@ -189,7 +190,7 @@ export function BroadcastPanel({
               Invited guests can listen before the stream goes public. You can
               invite anyone else by handle from Go Live.
             </span>
-          </label>
+          </div>
           <ButtonLink
             className="w-fit"
             to="/studio/go-live"

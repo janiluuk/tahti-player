@@ -282,11 +282,15 @@ export function OnboardingView() {
                         Optional — JPEG, PNG, or WebP.
                       </p>
                     </div>
-                    <label className="flex flex-col gap-1.5 text-sm">
-                      <span className="text-foreground-secondary text-xs uppercase">
+                    <div className="flex flex-col gap-1.5 text-sm">
+                      <span
+                        className="text-foreground-secondary text-xs uppercase"
+                        aria-hidden
+                      >
                         I am a…
                       </span>
                       <SelectableTiles
+                        aria-label="I am a…"
                         items={ARTIST_KIND_OPTIONS}
                         selected={artistKind}
                         onChange={(id) =>
@@ -300,7 +304,7 @@ export function OnboardingView() {
                           Artist → Members.
                         </p>
                       )}
-                    </label>
+                    </div>
                     <div className="grid gap-6 sm:grid-cols-2">
                       <div className="flex flex-col gap-4">
                         <Input
@@ -416,6 +420,7 @@ export function OnboardingView() {
                       change it any time in Settings.
                     </p>
                     <SelectableTiles
+                      aria-label="Appearance"
                       items={APPEARANCE_OPTIONS}
                       selected={colorMode}
                       onChange={(id) => setColorMode(id as ColorMode)}
