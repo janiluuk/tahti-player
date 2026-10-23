@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useState } from 'react';
 
 import { Button, Textarea } from '@tahti-player/ui';
 
@@ -15,7 +15,6 @@ export function AnswerCorrectionForm({
   id: string;
   onAnswered: () => void;
 }) {
-  const noteId = useId();
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState('');
   const [busy, setBusy] = useState(false);
@@ -52,20 +51,14 @@ export function AnswerCorrectionForm({
 
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={noteId} className="text-xs font-semibold">
-        What was decided (the member reads this)
-      </label>
       <Textarea
-        id={noteId}
+        label="What was decided (the member reads this)"
+        description="Answering changes no record by itself. Make the correction where it belongs and say here what you did."
         rows={2}
         value={note}
         maxLength={2000}
         onChange={(e) => setNote(e.target.value)}
       />
-      <p className="text-foreground-secondary text-xs">
-        Answering changes no record by itself. Make the correction where it
-        belongs and say here what you did.
-      </p>
       <div className="flex flex-wrap gap-2">
         <Button size="sm" disabled={busy} onClick={() => answer('ACCEPTED')}>
           Accept

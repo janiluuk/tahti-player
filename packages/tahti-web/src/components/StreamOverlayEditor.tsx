@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 
 import {
   Button,
+  ColorField,
   Dialog,
   FilePicker,
   Input,
@@ -433,44 +434,39 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
               }))
             }
           />
-          <label className="border-border bg-background-secondary/40 flex items-center gap-3 rounded-lg border p-2.5 text-sm">
-            <Input
-              type="color"
-              value={overlay.streamOverlayTextColor || '#ffffff'}
-              onChange={(event) =>
-                setOverlay((current) => ({
-                  ...current,
-                  streamOverlayTextColor: event.target.value,
-                }))
-              }
-              aria-label="Overlay text color"
-            />
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm font-semibold">Text color</span>
-              <span className="text-foreground-secondary block text-xs">
-                {overlay.streamOverlayTextColor ||
-                  'Default (white / light gray)'}
-              </span>
-            </span>
-            {overlay.streamOverlayTextColor ? (
-              <Tooltip content="Reset to default colors" side="top">
-                <Button
-                  type="button"
-                  size="icon-sm"
-                  variant="secondary"
-                  aria-label="Reset to default colors"
-                  onClick={() =>
-                    setOverlay((current) => ({
-                      ...current,
-                      streamOverlayTextColor: '',
-                    }))
-                  }
-                >
-                  <RotateCcwIcon size={14} aria-hidden />
-                </Button>
-              </Tooltip>
-            ) : null}
-          </label>
+          <ColorField
+            label="Overlay text color"
+            value={overlay.streamOverlayTextColor || '#ffffff'}
+            detail={
+              overlay.streamOverlayTextColor || 'Default (white / light gray)'
+            }
+            onChange={(next) =>
+              setOverlay((current) => ({
+                ...current,
+                streamOverlayTextColor: next,
+              }))
+            }
+            actions={
+              overlay.streamOverlayTextColor ? (
+                <Tooltip content="Reset to default colors" side="top">
+                  <Button
+                    type="button"
+                    size="icon-sm"
+                    variant="secondary"
+                    aria-label="Reset to default colors"
+                    onClick={() =>
+                      setOverlay((current) => ({
+                        ...current,
+                        streamOverlayTextColor: '',
+                      }))
+                    }
+                  >
+                    <RotateCcwIcon size={14} aria-hidden />
+                  </Button>
+                </Tooltip>
+              ) : null
+            }
+          />
           <div className="border-border bg-background-secondary/40 flex items-center justify-between gap-3 rounded-lg border p-2.5 text-sm">
             <span className="min-w-0 flex-1">
               <span className="block font-semibold">Darken behind text</span>

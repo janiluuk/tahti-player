@@ -39,15 +39,14 @@ export function ReportsTab() {
     <>
       <StudioPanel title="Generate report">
         <div className="flex flex-wrap items-end gap-2">
-          <label className="text-foreground-secondary flex flex-col gap-1 text-xs">
-            Year
+          <div className="w-28">
             <Input
+              label="Year"
               value={year}
               onChange={(event) => setYear(event.target.value)}
               inputMode="numeric"
-              className="w-28"
             />
-          </label>
+          </div>
           <Button
             size="sm"
             disabled={busy || !/^20\d{2}$/.test(year)}

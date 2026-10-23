@@ -135,15 +135,13 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
           value={name}
           onChange={(event) => setName(event.target.value)}
         />
-        <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-foreground font-semibold">Matter</span>
-          <Textarea
-            value={matter}
-            rows={2}
-            maxLength={2000}
-            onChange={(event) => setMatter(event.target.value)}
-          />
-        </label>
+        <Textarea
+          label="Matter"
+          value={matter}
+          rows={2}
+          maxLength={2000}
+          onChange={(event) => setMatter(event.target.value)}
+        />
         <Toggle
           label="Stepped out of the decision"
           checked={recused}

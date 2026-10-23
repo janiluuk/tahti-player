@@ -497,37 +497,25 @@ export const ChannelRadioPlaylistPanel: FC = () => {
               aria-label="Rotation mode"
             />
 
-            <label className="flex items-center justify-between gap-3 text-sm">
-              <span className="min-w-0">
-                Auto-add uploads
-                <span className="text-foreground-secondary block text-xs">
-                  Add new ready uploads to the rotation automatically
-                </span>
-              </span>
-              <Toggle
-                className="shrink-0"
-                checked={fallbackAutoEnroll}
-                disabled={busy || !programme}
-                onChange={setFallbackAutoEnroll}
-                aria-label="Auto-add uploads"
-              />
-            </label>
+            <Toggle
+              label="Auto-add uploads"
+              description="Add new ready uploads to the rotation automatically"
+              showLabel
+              labelPosition="start"
+              checked={fallbackAutoEnroll}
+              disabled={busy || !programme}
+              onChange={setFallbackAutoEnroll}
+            />
 
-            <label className="flex items-center justify-between gap-3 text-sm">
-              <span className="min-w-0">
-                Artist announcements
-                <span className="text-foreground-secondary block text-xs">
-                  Include your station IDs and clips
-                </span>
-              </span>
-              <Toggle
-                className="shrink-0"
-                checked={announcementsEnabled}
-                disabled={busy || !programme}
-                onChange={setAnnouncementsEnabled}
-                aria-label="Artist announcements"
-              />
-            </label>
+            <Toggle
+              label="Artist announcements"
+              description="Include your station IDs and clips"
+              showLabel
+              labelPosition="start"
+              checked={announcementsEnabled}
+              disabled={busy || !programme}
+              onChange={setAnnouncementsEnabled}
+            />
 
             <div className="flex justify-end">
               <SaveButton

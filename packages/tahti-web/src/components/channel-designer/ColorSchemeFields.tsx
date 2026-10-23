@@ -1,4 +1,4 @@
-import { Input } from '@tahti-player/ui';
+import { ColorField } from '@tahti-player/ui';
 
 import {
   DEFAULT_COLOR_SCHEME,
@@ -47,25 +47,12 @@ export function ColorSchemeFields({
       {FIELD_ORDER.map((key) => {
         const label = labels[key];
         return (
-          <label
+          <ColorField
             key={key}
-            className="border-border bg-background-secondary/40 flex items-center gap-3 rounded-lg border p-3 text-sm"
-          >
-            <Input
-              type="color"
-              value={scheme[key] ?? DEFAULT_COLOR_SCHEME[key]}
-              onChange={(event) =>
-                onChange({ ...scheme, [key]: event.target.value })
-              }
-              aria-label={label}
-            />
-            <span className="min-w-0">
-              <span className="block text-sm font-semibold">{label}</span>
-              <code className="text-foreground-secondary text-xs">
-                {scheme[key]}
-              </code>
-            </span>
-          </label>
+            label={label}
+            value={scheme[key] ?? DEFAULT_COLOR_SCHEME[key]}
+            onChange={(next) => onChange({ ...scheme, [key]: next })}
+          />
         );
       })}
     </div>

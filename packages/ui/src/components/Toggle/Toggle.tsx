@@ -1,4 +1,9 @@
-import { Switch as HeadlessSwitch } from '@headlessui/react';
+import {
+  Description,
+  Field,
+  Switch as HeadlessSwitch,
+  Label,
+} from '@headlessui/react';
 import { ComponentPropsWithoutRef, forwardRef, ReactNode } from 'react';
 
 import { cn } from '../../utils';
@@ -16,6 +21,12 @@ type ToggleProps = Omit<
   showLabel?: boolean;
   /** Class for the visible label wrapper when `showLabel` is set. */
   labelClassName?: string;
+  /** Supporting copy under the visible label, wired as the switch's
+   * description. Only shown with `showLabel`. */
+  description?: string;
+  /** `end` (default) puts the text after the switch; `start` puts it first
+   * and pushes the switch to the far edge of the row. */
+  labelPosition?: 'start' | 'end';
   thumbIcon?: ReactNode;
   checkedThumbIcon?: ReactNode;
   name?: string;
@@ -34,6 +45,8 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
       label,
       showLabel = false,
       labelClassName,
+      description,
+      labelPosition = 'end',
       thumbIcon,
       checkedThumbIcon,
       name,
@@ -83,16 +96,36 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
       return toggle;
     }
     return (
-      <label
+      <Field
+        disabled={disabled}
         className={cn(
-          'inline-flex cursor-pointer items-center gap-2 text-sm',
-          disabled && 'cursor-not-allowed opacity-70',
+          'inline-flex items-center gap-2 text-sm',
+          labelPosition === 'start' && 'flex justify-between gap-3',
+          disabled && 'opacity-70',
           labelClassName,
         )}
       >
-        {toggle}
-        <span>{label}</span>
-      </label>
+        {labelPosition === 'end' ? toggle : null}
+        <span className="min-w-0">
+          <Label
+            className={cn(
+              'block',
+              disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+            )}
+          >
+            {label}
+          </Label>
+          {description ? (
+            <Description
+              as="span"
+              className="text-foreground-secondary block text-xs font-normal"
+            >
+              {description}
+            </Description>
+          ) : null}
+        </span>
+        {labelPosition === 'start' ? toggle : null}
+      </Field>
     );
   },
 );

@@ -158,22 +158,18 @@ export function RadioSubmissionsTab() {
               </div>
 
               <div className="mt-4 flex flex-col gap-3">
-                <label className="flex flex-col gap-1 text-sm">
-                  <span className="text-foreground-secondary text-xs uppercase">
-                    Rejection note (optional)
-                  </span>
-                  <Textarea
-                    tone="secondary"
-                    value={notes[active.id] ?? ''}
-                    onChange={(e) =>
-                      setNotes((prev) => ({
-                        ...prev,
-                        [active.id]: e.target.value,
-                      }))
-                    }
-                    rows={2}
-                  />
-                </label>
+                <Textarea
+                  label="Rejection note (optional)"
+                  tone="secondary"
+                  value={notes[active.id] ?? ''}
+                  onChange={(e) =>
+                    setNotes((prev) => ({
+                      ...prev,
+                      [active.id]: e.target.value,
+                    }))
+                  }
+                  rows={2}
+                />
                 <div className="flex flex-wrap gap-2">
                   <Button
                     className="gap-1.5"

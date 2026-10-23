@@ -133,8 +133,11 @@ export function SmartPlaylistDialog({
           }
         />
         <div className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Include tracks that match</span>
+          <span className="text-sm font-medium" aria-hidden>
+            Include tracks that match
+          </span>
           <FilterChips
+            aria-label="Include tracks that match"
             items={[
               { id: 'all', label: 'All of the rules' },
               { id: 'any', label: 'Any of the rules' },

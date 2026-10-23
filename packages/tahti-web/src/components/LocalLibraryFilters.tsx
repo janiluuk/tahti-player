@@ -158,8 +158,11 @@ export function LocalLibraryFilters({
           />
         </div>
         <div className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Analysis</span>
+          <span className="text-sm font-medium" aria-hidden>
+            Analysis
+          </span>
           <FilterChips
+            aria-label="Analysis"
             items={[
               { id: 'any', label: 'All' },
               { id: 'analyzed', label: 'Analyzed' },
@@ -176,8 +179,11 @@ export function LocalLibraryFilters({
         </div>
         {options && options.formats.length > 0 ? (
           <div className="flex flex-col gap-1">
-            <span className="text-sm font-medium">Format</span>
+            <span className="text-sm font-medium" aria-hidden>
+              Format
+            </span>
             <FilterChips
+              aria-label="Format"
               multiple
               items={options.formats.map((format) => ({
                 id: format,
@@ -189,8 +195,11 @@ export function LocalLibraryFilters({
           </div>
         ) : null}
         <div className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Availability</span>
+          <span className="text-sm font-medium" aria-hidden>
+            Availability
+          </span>
           <FilterChips
+            aria-label="Availability"
             items={[
               { id: 'any', label: 'All' },
               { id: 'available', label: 'Available' },
@@ -205,8 +214,11 @@ export function LocalLibraryFilters({
           />
         </div>
         <div className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Rating</span>
+          <span className="text-sm font-medium" aria-hidden>
+            Rating
+          </span>
           <FilterChips
+            aria-label="Rating"
             items={[
               { id: '0', label: 'Any' },
               { id: '1', label: '★ 1+' },
@@ -222,8 +234,11 @@ export function LocalLibraryFilters({
           />
         </div>
         <div className="flex flex-col gap-1">
-          <span className="text-sm font-medium">Color label</span>
+          <span className="text-sm font-medium" aria-hidden>
+            Color label
+          </span>
           <FilterChips
+            aria-label="Color label"
             items={[
               { id: 'any', label: 'Any' },
               ...TRACK_COLORS.map((color) => ({ id: color, label: color })),

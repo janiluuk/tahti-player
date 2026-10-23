@@ -75,16 +75,20 @@ export function DetailsPanel({ state }: { state: CollectionEditState }) {
             placeholder="Electronic, Ambient"
             onChange={(event) => setGenres(event.target.value)}
           />
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="text-foreground-secondary text-xs uppercase">
+          <div className="flex flex-col gap-1 text-sm">
+            <span
+              className="text-foreground-secondary text-xs uppercase"
+              aria-hidden
+            >
               Style
             </span>
             <FilterChips
+              aria-label="Style"
               items={COLLECTION_STYLES}
               selected={style}
               onChange={setStyle}
             />
-          </label>
+          </div>
           <Select
             label="Track order"
             description="How tracks are ordered on the public page."

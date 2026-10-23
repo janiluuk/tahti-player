@@ -391,8 +391,8 @@ export function ArtistPanel() {
       icon: <Users size={14} />,
       content: (
         <div className="flex flex-col gap-5">
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className="text-foreground text-sm font-semibold">
+          <div className="flex flex-col gap-1.5 text-sm">
+            <span className="text-foreground text-sm font-semibold" aria-hidden>
               Project type
             </span>
             <span className="text-foreground-secondary text-xs">
@@ -400,6 +400,7 @@ export function ArtistPanel() {
               collective.
             </span>
             <SelectableTiles
+              aria-label="Project type"
               items={ARTIST_KIND_OPTIONS}
               selected={profile?.artistKind ?? 'SINGLE'}
               onChange={(kind) =>
@@ -411,7 +412,7 @@ export function ArtistPanel() {
               }
               className="grid-cols-2"
             />
-          </label>
+          </div>
           <div className="flex flex-col gap-3">
             <div>
               <h3 className="text-foreground text-sm font-semibold">

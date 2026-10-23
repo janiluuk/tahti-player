@@ -285,8 +285,11 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
       </ul>
 
       <div>
-        <p className="mb-2 text-xs font-medium">Catalog methods</p>
+        <p className="mb-2 text-xs font-medium" aria-hidden>
+          Catalog methods
+        </p>
         <SelectableTiles
+          aria-label="Catalog methods"
           multiple
           items={CATALOG_METHOD_TILES}
           selected={[...activeMethods]}

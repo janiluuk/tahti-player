@@ -345,6 +345,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/CatalogTable` | `CatalogTable.stories.tsx` |
 | `Components/Checkbox` | `Checkbox.stories.tsx` |
 | `Components/ClampedText` | `ClampedText.stories.tsx` |
+| `Components/ColorField` | `ColorField.stories.tsx` |
 | `Components/Combobox` | `Combobox.stories.tsx` |
 | `Components/CopyButton` | `CopyButton.stories.tsx` |
 | `Components/DataTable` | `DataTable.stories.tsx` |

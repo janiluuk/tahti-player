@@ -38,14 +38,14 @@ export function GallerySection({ kit }: { kit: PressKitState }) {
         title="Gallery"
         action={
           <div className="flex items-center gap-3">
-            <label className="flex items-center gap-2 text-sm">
-              <span className="text-foreground-secondary text-xs">Public</span>
-              <Toggle
-                checked={galleryPublic}
-                onChange={(checked) => void setVisibility(checked)}
-                aria-label="Public gallery"
-              />
-            </label>
+            <Toggle
+              label="Public gallery"
+              showLabel
+              labelPosition="start"
+              labelClassName="text-foreground-secondary text-xs"
+              checked={galleryPublic}
+              onChange={(checked) => void setVisibility(checked)}
+            />
             <Tooltip content="Upload more gallery images" side="top">
               <Button
                 size="icon-sm"

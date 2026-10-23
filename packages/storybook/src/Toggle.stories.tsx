@@ -63,6 +63,28 @@ export const VisibleLabel: Story = {
   },
 };
 
+/** `description` adds supporting copy; `labelPosition="start"` puts the text
+ * first and the switch at the end of the row, for settings lists. */
+export const SettingRow: Story = {
+  args: {
+    label: 'Auto-add uploads',
+    description: 'Add new ready uploads to the rotation automatically',
+    showLabel: true,
+    labelPosition: 'start',
+    labelClassName: 'w-80',
+    onChange: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const toggle = canvas.getByRole('switch', { name: 'Auto-add uploads' });
+    await expect(toggle).toHaveAccessibleDescription(
+      'Add new ready uploads to the rotation automatically',
+    );
+    await userEvent.click(canvas.getByText('Auto-add uploads'));
+    await expect(args.onChange).toHaveBeenLastCalledWith(true);
+  },
+};
+
 export const Checked: Story = {
   args: {
     label: 'Checked Toggle',

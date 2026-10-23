@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useState } from 'react';
 
 import { Button, ExternalLink, Textarea } from '@tahti-player/ui';
 
@@ -25,7 +25,6 @@ export function AnnualReportCorrection({
   report: AdminAnnualReport;
   onChanged: () => void;
 }) {
-  const noteId = useId();
   const [writing, setWriting] = useState(false);
   const [note, setNote] = useState('');
   const [busy, setBusy] = useState(false);
@@ -86,20 +85,14 @@ export function AnnualReportCorrection({
             });
           }}
         >
-          <label htmlFor={noteId} className="text-xs font-semibold">
-            What does the correction change?
-          </label>
           <Textarea
-            id={noteId}
+            label="What does the correction change?"
+            description="The report is regenerated from today's records. The replaced version is kept with this note."
             rows={2}
             value={note}
             maxLength={2000}
             onChange={(e) => setNote(e.target.value)}
           />
-          <p className="text-foreground-secondary text-xs">
-            The report is regenerated from today&apos;s records. The replaced
-            version is kept with this note.
-          </p>
           <div className="flex gap-2">
             <Button type="submit" size="sm" disabled={busy}>
               Regenerate corrected report

@@ -75,7 +75,7 @@ export const MatchesHeader: Story = {
     );
 
     await userEvent.click(
-      canvas.getByRole('switch', { name: 'Use a separate background palette' }),
+      canvas.getByRole('switch', { name: 'Full separate background palette' }),
     );
     await expect(args.onUseBackgroundGradient).toHaveBeenCalledWith(true);
     await expect(canvas.getByLabelText('Background')).toBeVisible();

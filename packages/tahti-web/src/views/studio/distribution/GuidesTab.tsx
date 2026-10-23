@@ -18,6 +18,7 @@ export function GuidesTab() {
   return (
     <div className="flex flex-col gap-4 text-xs">
       <SelectableTiles
+        aria-label="Distribution guides"
         items={GUIDE_TILES}
         selected={selectedGuide}
         onChange={setSelectedGuide}
