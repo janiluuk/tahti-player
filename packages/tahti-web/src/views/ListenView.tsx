@@ -100,6 +100,7 @@ const LISTEN_SECTION_TABS = [
 
 const NOW_PLAYING_POLL_MS = 45_000;
 const RECENTLY_PLAYED_LIMIT = 20;
+const RADIO_BLOCK_ID = 'radio';
 
 const ROW_LABELS = {
   filterPlaceholder: 'Filter…',
@@ -125,6 +126,13 @@ function orderListenBlocks(
     ? mergeBlockOrder(known, defaults)
     : [...known, ...defaults.filter((id) => !known.includes(id))];
   return ids.map((id) => byId.get(id)!);
+}
+
+/** Someone new to Listen (signed out, or nothing played yet) starts on the
+ * radio channels; a saved section order still wins in `orderListenBlocks`. */
+function radioRowFirst(blocks: SortableBlock[]): SortableBlock[] {
+  const radio = blocks.find((block) => block.id === RADIO_BLOCK_ID);
+  return radio ? [radio, ...blocks.filter((block) => block !== radio)] : blocks;
 }
 
 const FeedView = lazy(() =>
@@ -606,7 +614,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
       ),
     },
     {
-      id: 'radio',
+      id: RADIO_BLOCK_ID,
       label: 'Radio',
       content: (
         <ListenSection
@@ -661,7 +669,11 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
       ),
     },
   ];
-  const orderedBlocks = orderListenBlocks(dashboardBlocks, listenOrder);
+  const newListener = !signedIn || history.length === 0;
+  const orderedBlocks = orderListenBlocks(
+    newListener ? radioRowFirst(dashboardBlocks) : dashboardBlocks,
+    listenOrder,
+  );
 
   return (
     <div className="relative flex w-full min-w-0 flex-col gap-6">

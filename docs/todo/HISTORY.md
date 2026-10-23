@@ -1,3 +1,13 @@
+## 2026-10-23 - Listen: radio row first for new listeners, Recently played kept across sign-in
+
+Signed-out visitors and signed-in listeners with no listening history start
+Listen on the Radio row (internet radio channels); once they have played
+something, Tahti Radio and Recently played lead again. A saved section order
+still wins. Listening history is kept per account in the browser (the API
+keeps none), so an account's first sign-in on a device now starts with the
+plays made there while signed out instead of an empty Recently played row;
+an account's own history is never replaced. Story `New listener starts on
+radio`; the Order story now uses a listener with history. tahti-web `0.0.257`.
 ## 2026-10-23 - UX batch 100 sixty error-line and tooltip slices
 
 Fixes from batch 98: `Tooltip`'s wrapper is a block `div`, so the two admin

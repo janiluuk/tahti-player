@@ -327,4 +327,25 @@ export async function rehydrateLibraryForUser(userId: string | null) {
   suspendPersistWrites = false;
   await useLibraryStore.persist.rehydrate();
   useLibraryStore.setState({ scopeKey: nextScope });
+  if (userId && useLibraryStore.getState().history.length === 0) {
+    const carried = signedOutHistory();
+    if (carried.length > 0) {
+      useLibraryStore.setState({ history: carried });
+    }
+  }
+}
+
+/** Listening history is kept per account in this browser and the API keeps
+ * none, so an account's first sign-in here starts with the plays made while
+ * signed out instead of an empty Recently played row. */
+function signedOutHistory(): HistoryEntry[] {
+  try {
+    const raw = localStorage.getItem(`${STORAGE_PREFIX}:anon`);
+    const history = raw
+      ? (JSON.parse(raw) as { state?: { history?: unknown } }).state?.history
+      : null;
+    return Array.isArray(history) ? (history as HistoryEntry[]) : [];
+  } catch {
+    return [];
+  }
 }

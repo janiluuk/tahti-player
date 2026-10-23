@@ -87,6 +87,32 @@ describe('libraryStore + internet radio stations', () => {
     expect(useLibraryStore.getState().isFavoriteTrack(playable.id)).toBe(true);
   });
 
+  it('starts a new account with the history played while signed out', async () => {
+    await rehydrateLibraryForUser(null);
+    useLibraryStore.getState().pushHistory(playableFromRadioStation(STATION));
+    await rehydrateLibraryForUser('user-first-sign-in');
+    expect(
+      useLibraryStore.getState().history.map((h) => h.playable.id),
+    ).toEqual([playableFromRadioStation(STATION).id]);
+    expect(
+      localStorage.getItem('tahti-web:library:user-first-sign-in'),
+    ).toContain(playableFromRadioStation(STATION).id);
+  });
+
+  it("keeps an account's own history over the signed-out one", async () => {
+    await rehydrateLibraryForUser('user-with-history');
+    useLibraryStore.getState().pushHistory({
+      ...playableFromRadioStation(STATION),
+      id: 'own-play',
+    });
+    await rehydrateLibraryForUser(null);
+    useLibraryStore.getState().pushHistory(playableFromRadioStation(STATION));
+    await rehydrateLibraryForUser('user-with-history');
+    expect(
+      useLibraryStore.getState().history.map((h) => h.playable.id),
+    ).toEqual(['own-play']);
+  });
+
   it("keeps a local track's streamUrl in memory but strips it before persisting history", () => {
     const local: TahtiPlayable = {
       id: 'local:abc123',
