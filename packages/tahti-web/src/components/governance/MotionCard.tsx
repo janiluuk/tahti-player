@@ -147,16 +147,12 @@ export function MotionCard({
             aria-label="Motion description"
             className="text-sm"
           />
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="text-foreground-secondary text-xs uppercase">
-              Voting closes
-            </span>
-            <Input
-              type="datetime-local"
-              value={editCloseAt}
-              onChange={(e) => setEditCloseAt(e.target.value)}
-            />
-          </label>
+          <Input
+            label="Voting closes"
+            type="datetime-local"
+            value={editCloseAt}
+            onChange={(e) => setEditCloseAt(e.target.value)}
+          />
           <div className="flex gap-2">
             <Button
               size="sm"

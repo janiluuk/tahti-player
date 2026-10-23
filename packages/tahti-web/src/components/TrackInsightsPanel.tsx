@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import {
   SegmentedControl,
   StatTile,
+  Tooltip,
   type SegmentedControlOption,
 } from '@tahti-player/ui';
 
@@ -113,10 +114,11 @@ export function TrackInsightsPanel({
             ) : (
               <div className="flex h-32 items-end gap-1">
                 {insights.daily.map((day) => (
-                  <div
+                  <Tooltip
                     key={day.date}
-                    className="group relative flex h-full flex-1 items-end"
-                    title={`${day.date}: ${day.downloads}`}
+                    content={`${day.date}: ${day.downloads}`}
+                    side="top"
+                    wrapperClassName="group relative flex h-full flex-1 items-end"
                   >
                     <div
                       className="bg-primary hover:bg-accent-cyan w-full rounded-t transition-colors"
@@ -124,7 +126,7 @@ export function TrackInsightsPanel({
                         height: `${Math.max(4, (day.downloads / maxDaily) * 100)}%`,
                       }}
                     />
-                  </div>
+                  </Tooltip>
                 ))}
               </div>
             )}

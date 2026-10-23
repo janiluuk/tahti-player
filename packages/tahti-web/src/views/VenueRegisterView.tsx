@@ -150,19 +150,15 @@ export function VenueRegisterView() {
           value={capacity}
           onChange={(e) => setCapacity(e.target.value)}
         />
-        <label className="flex flex-col gap-1 text-sm">
-          <span className="text-foreground-secondary text-xs tracking-wide uppercase">
-            Description (optional)
-          </span>
-          <Textarea
-            tone="secondary"
-            className="min-h-[6rem] text-sm"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            maxLength={2000}
-            rows={4}
-          />
-        </label>
+        <Textarea
+          label="Description (optional)"
+          tone="secondary"
+          className="min-h-[6rem] text-sm"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          maxLength={2000}
+          rows={4}
+        />
         <ImageUploadField
           label="Venue image"
           description="JPEG, PNG, WebP, or GIF"

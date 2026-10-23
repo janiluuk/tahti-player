@@ -222,17 +222,13 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                 value={publicTitle}
                 onChange={(event) => setPublicTitle(event.target.value)}
               />
-              <label className="flex flex-col gap-1 text-sm">
-                <span className="text-foreground-secondary text-xs uppercase">
-                  Description
-                </span>
-                <Textarea
-                  tone="secondary"
-                  value={publicDescription}
-                  onChange={(event) => setPublicDescription(event.target.value)}
-                  rows={4}
-                />
-              </label>
+              <Textarea
+                label="Description"
+                tone="secondary"
+                value={publicDescription}
+                onChange={(event) => setPublicDescription(event.target.value)}
+                rows={4}
+              />
               <div className="flex justify-end">
                 <SaveButton
                   saving={savingDetails}

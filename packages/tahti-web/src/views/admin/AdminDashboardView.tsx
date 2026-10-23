@@ -9,6 +9,7 @@ import {
   ButtonAnchor,
   ButtonLink,
   Dialog,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -415,7 +416,16 @@ export function AdminDashboardView() {
                               key={job.jobName}
                               className="flex items-center justify-between py-2 text-sm first:pt-0 last:pb-0"
                             >
-                              <span title={job.description}>{job.jobName}</span>
+                              <Tooltip
+                                content={job.description}
+                                side="right"
+                                disabled={!job.description}
+                                multiline
+                              >
+                                <span aria-description={job.description}>
+                                  {job.jobName}
+                                </span>
+                              </Tooltip>
                               <span className="text-foreground-secondary text-xs">
                                 {job.lastRun?.outcome ?? '—'}
                               </span>

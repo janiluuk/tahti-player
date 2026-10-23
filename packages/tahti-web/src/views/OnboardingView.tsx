@@ -309,18 +309,14 @@ export function OnboardingView() {
                           onChange={(e) => setDisplayName(e.target.value)}
                         />
                       </div>
-                      <label className="flex flex-col gap-1.5 text-sm">
-                        <span className="text-foreground-secondary text-xs uppercase">
-                          Bio
-                        </span>
-                        <Textarea
-                          tone="secondary"
-                          value={bio}
-                          onChange={(e) => setBio(e.target.value)}
-                          rows={9}
-                          placeholder="Tell listeners what you do…"
-                        />
-                      </label>
+                      <Textarea
+                        label="Bio"
+                        tone="secondary"
+                        value={bio}
+                        onChange={(e) => setBio(e.target.value)}
+                        rows={9}
+                        placeholder="Tell listeners what you do…"
+                      />
                     </div>
                   </div>
                 ),

@@ -1,6 +1,6 @@
 import { toast } from 'sonner';
 
-import type { CatalogColumn } from '@tahti-player/ui';
+import { Tooltip, type CatalogColumn } from '@tahti-player/ui';
 
 import { formatTotalDuration, pluralTracks } from '../../lib/libraryFormat';
 import type {
@@ -11,6 +11,12 @@ import type {
 import { preparePlayables, shuffled } from '../../lib/nativePlayback';
 import { formatDuration } from '../../lib/playableToTrack';
 import { usePlayerStore } from '../../stores/playerStore';
+
+function unavailableReason(entry: NativePlaylistEntry): string {
+  return entry.track
+    ? 'The original file is missing'
+    : 'This track is no longer in your library';
+}
 
 export const PLAYLIST_COLUMNS: CatalogColumn<NativePlaylistEntry>[] = [
   {
@@ -29,16 +35,18 @@ export const PLAYLIST_COLUMNS: CatalogColumn<NativePlaylistEntry>[] = [
       <span title={entry.path}>
         {entry.title}
         {entry.unavailable ? (
-          <span
-            className="text-accent-red-strong ml-2 text-xs"
-            title={
-              entry.track
-                ? 'The original file is missing'
-                : 'This track is no longer in your library'
-            }
+          <Tooltip
+            content={unavailableReason(entry)}
+            side="top"
+            wrapperClassName="ml-2 inline-flex"
           >
-            Unavailable
-          </span>
+            <span
+              className="text-accent-red-strong text-xs"
+              aria-description={unavailableReason(entry)}
+            >
+              Unavailable
+            </span>
+          </Tooltip>
         ) : null}
       </span>
     ),

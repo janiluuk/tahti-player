@@ -1,5 +1,5 @@
 import { PlusIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   Badge,
@@ -7,6 +7,7 @@ import {
   ButtonAnchor,
   CopyButton,
   ExternalLink,
+  HiddenFileInput,
   Input,
   Loader,
   Select,
@@ -272,6 +273,41 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
   );
 }
 
+function MinutesUploadButton({
+  label,
+  disabled,
+  onFile,
+}: {
+  label: string;
+  disabled: boolean;
+  onFile: (file: File) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  return (
+    <>
+      <Button
+        size="xs"
+        variant="text"
+        className="text-primary-strong"
+        disabled={disabled}
+        onClick={() => inputRef.current?.click()}
+      >
+        {label}
+      </Button>
+      <HiddenFileInput
+        ref={inputRef}
+        accept="application/pdf"
+        disabled={disabled}
+        onFiles={([file]) => {
+          if (file) {
+            onFile(file);
+          }
+        }}
+      />
+    </>
+  );
+}
+
 export function AgmTab() {
   const [motions, setMotions] = useState<AdminMotion[]>([]);
   const [meetings, setMeetings] = useState<GovernanceMeeting[]>([]);
@@ -436,29 +472,20 @@ export function AgmTab() {
                       Download
                     </ExternalLink>
                   )}
-                  <label className="text-primary-strong cursor-pointer underline-offset-2 hover:underline">
-                    {minutesUploading === meeting.id
-                      ? 'Uploading…'
-                      : meeting.minutesKey
-                        ? 'Replace file'
-                        : 'Upload file'}
-                    <input
-                      type="file"
-                      accept="application/pdf"
-                      className="hidden"
-                      disabled={minutesUploading === meeting.id}
-                      onChange={(event) => {
-                        const file = event.target.files?.[0];
-                        event.target.value = '';
-                        if (!file) {
-                          return;
-                        }
-                        setMinutesUploading(meeting.id);
-                        setMinutesError(null);
-                        void uploadAdminGovernanceMinutes(
-                          meeting.id,
-                          file,
-                        ).then((result) => {
+                  <MinutesUploadButton
+                    label={
+                      minutesUploading === meeting.id
+                        ? 'Uploading…'
+                        : meeting.minutesKey
+                          ? 'Replace file'
+                          : 'Upload file'
+                    }
+                    disabled={minutesUploading === meeting.id}
+                    onFile={(file) => {
+                      setMinutesUploading(meeting.id);
+                      setMinutesError(null);
+                      void uploadAdminGovernanceMinutes(meeting.id, file).then(
+                        (result) => {
                           setMinutesUploading(null);
                           if (!result.ok) {
                             setMinutesError({
@@ -472,10 +499,10 @@ export function AgmTab() {
                               item.id === meeting.id ? result.data : item,
                             ),
                           );
-                        });
-                      }}
-                    />
-                  </label>
+                        },
+                      );
+                    }}
+                  />
                   {!meeting.minutesApprovedAt && meeting.minutesKey && (
                     <Button
                       size="sm"

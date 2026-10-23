@@ -1,11 +1,18 @@
 import { Link, useBlocker } from '@tanstack/react-router';
 import { UploadIcon } from 'lucide-react';
-import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { toast } from 'sonner';
 
 import { preferInternalEngine } from '@tahti-player/audio-core';
 import { MultitrackEditor } from '@tahti-player/audio-editor';
-import { Button, Dialog, Input, SaveButton, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  Input,
+  SaveButton,
+  SegmentedControl,
+  ViewShell,
+} from '@tahti-player/ui';
 import { VisualizerHost } from '@tahti-player/visualizer';
 
 import {
@@ -46,6 +53,10 @@ import { useMultitrackSession } from './useMultitrackSession';
 
 const DEFAULT_VERSION_LABEL = 'Edited mix';
 const MULTITRACK_BOUNCE_LABEL = 'Multitrack bounce';
+const EDITOR_MODE_OPTIONS = [
+  { id: 'trim', label: 'Trim / effects' },
+  { id: 'multitrack', label: 'Multitrack + viz' },
+] as const;
 
 /** Keyed by sound so navigating between tracks starts from a clean editor
  * (selection, markers, zoom, unsaved edits, audio) instead of carrying the
@@ -59,8 +70,6 @@ function ProEditor({ soundId }: { soundId: string }) {
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [editorMode, setEditorMode] = useState<'trim' | 'multitrack'>('trim');
-  const modeTrimId = useId();
-  const modeMultiId = useId();
   const [editList, setEditList] = useState<EditList | null>(null);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
   const [serverPeaks, setServerPeaks] = useState<EditorPeaks | null>(null);
@@ -364,39 +373,26 @@ function ProEditor({ soundId }: { soundId: string }) {
             can attach as a version after render.
           </ClientCapabilityNotice>
 
-          <div
-            className="flex flex-wrap gap-3 text-sm"
-            role="radiogroup"
+          <SegmentedControl
             aria-label="Editor mode"
-          >
-            <div className="flex items-center gap-2">
-              <input
-                id={modeTrimId}
-                name="studio-editor-mode"
-                type="radio"
-                checked={editorMode === 'trim'}
-                onChange={() => setEditorMode('trim')}
-              />
-              <label htmlFor={modeTrimId}>Trim / effects</label>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                id={modeMultiId}
-                name="studio-editor-mode"
-                type="radio"
-                checked={editorMode === 'multitrack'}
-                onChange={() => {
-                  setEditorMode('multitrack');
-                  if (!multitrackReady) {
-                    void ensureMultitrackSession();
-                  } else {
-                    preferInternalEngine();
-                  }
-                }}
-              />
-              <label htmlFor={modeMultiId}>Multitrack + viz</label>
-            </div>
-          </div>
+            className="w-fit"
+            options={EDITOR_MODE_OPTIONS}
+            value={editorMode}
+            onChange={(mode) => {
+              if (mode === editorMode) {
+                return;
+              }
+              setEditorMode(mode);
+              if (mode !== 'multitrack') {
+                return;
+              }
+              if (!multitrackReady) {
+                void ensureMultitrackSession();
+              } else {
+                preferInternalEngine();
+              }
+            }}
+          />
 
           {loading ? (
             <StudioPanel>

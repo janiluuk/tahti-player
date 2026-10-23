@@ -86,18 +86,14 @@ export function PublishDialog({
             This file is {formatSize(file.size)}; bundles can be at most 2 MB.
           </p>
         ) : null}
-        <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-foreground font-semibold">
-            Changelog (optional)
-          </span>
-          <Textarea
-            value={changelog}
-            rows={3}
-            maxLength={2000}
-            placeholder="What changed in this version?"
-            onChange={(event) => setChangelog(event.target.value)}
-          />
-        </label>
+        <Textarea
+          label="Changelog (optional)"
+          value={changelog}
+          rows={3}
+          maxLength={2000}
+          placeholder="What changed in this version?"
+          onChange={(event) => setChangelog(event.target.value)}
+        />
         {error ? (
           <p className="text-accent-red-strong text-sm" role="alert">
             {error}

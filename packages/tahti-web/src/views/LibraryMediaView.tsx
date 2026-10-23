@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import {
   Badge,
   Button,
+  ExternalLink,
   FilterChips,
   ImageReveal,
   Tooltip,
@@ -192,16 +193,15 @@ export function LibraryMediaView() {
                           {formatBytes(file.sizeBytes)}
                         </p>
                       </div>
-                      <a
-                        href={file.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label={`Open ${file.filename}`}
-                        title="Open preview"
-                        className="text-foreground-secondary hover:text-foreground"
-                      >
-                        <PlayIcon size={16} aria-hidden />
-                      </a>
+                      <Tooltip content="Open preview" side="top">
+                        <ExternalLink
+                          href={file.url}
+                          aria-label={`Open ${file.filename}`}
+                          className="text-foreground-secondary no-underline"
+                        >
+                          <PlayIcon size={16} aria-hidden />
+                        </ExternalLink>
+                      </Tooltip>
                       <Tooltip content={`Remove ${file.filename}`} side="top">
                         <Button
                           size="icon-sm"

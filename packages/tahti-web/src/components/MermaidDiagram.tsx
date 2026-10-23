@@ -1,7 +1,7 @@
 import { Maximize2, Minimize2 } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, Tooltip } from '@tahti-player/ui';
 
 type Props = {
   chart: string;
@@ -131,19 +131,25 @@ export function MermaidDiagram({ chart, className, label = 'Diagram' }: Props) {
         >
           {Math.round(zoom * 100)}%
         </Button>
-        <Button
-          variant="plain"
-          size="flexible"
-          type="button"
-          className="border-border text-foreground-secondary hover:text-foreground inline-block rounded border px-2 py-1 whitespace-normal active:scale-100"
-          onClick={toggleFullscreen}
-          aria-label={
-            isFullscreen ? 'Exit fullscreen diagram' : 'View diagram fullscreen'
-          }
-          title={isFullscreen ? 'Exit fullscreen' : 'View fullscreen'}
+        <Tooltip
+          content={isFullscreen ? 'Exit fullscreen' : 'View fullscreen'}
+          side="top"
         >
-          {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
-        </Button>
+          <Button
+            variant="plain"
+            size="flexible"
+            type="button"
+            className="border-border text-foreground-secondary hover:text-foreground inline-block rounded border px-2 py-1 whitespace-normal active:scale-100"
+            onClick={toggleFullscreen}
+            aria-label={
+              isFullscreen
+                ? 'Exit fullscreen diagram'
+                : 'View diagram fullscreen'
+            }
+          >
+            {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+          </Button>
+        </Tooltip>
         <Button
           variant="plain"
           size="flexible"

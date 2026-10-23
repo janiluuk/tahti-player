@@ -176,19 +176,15 @@ export function PostDialog({
               maxLength={160}
               autoFocus
             />
-            <label className="flex flex-col gap-1 text-sm">
-              <span className="text-foreground-secondary text-xs uppercase">
-                Body
-              </span>
-              <Textarea
-                tone="secondary"
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
-                rows={4}
-                maxLength={5000}
-                required
-              />
-            </label>
+            <Textarea
+              label="Body"
+              tone="secondary"
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              rows={4}
+              maxLength={5000}
+              required
+            />
             <Input
               label="Link (optional)"
               inputMode="url"
