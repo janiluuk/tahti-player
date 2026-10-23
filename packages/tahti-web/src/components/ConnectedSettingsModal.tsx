@@ -2,7 +2,7 @@ import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { BookOpenIcon, GithubIcon, LogInIcon } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
-import { Button, ExternalLink, SettingsPanel } from '@tahti-player/ui';
+import { Button, ExternalLink, SettingsPanel, Tooltip } from '@tahti-player/ui';
 
 import { hasAccountRole } from '../lib/accountRoles';
 import { buildSettingsPath } from '../lib/settingsUrl';
@@ -193,30 +193,33 @@ export function ConnectedSettingsModal() {
           ) : null}
           <div className="border-border flex flex-col gap-2 border-t pt-2">
             <div className="flex items-center justify-center gap-1">
-              <ExternalLink
-                href={GITHUB_REPO_URL}
-                className={footerIconLinkClass}
-                aria-label="GitHub"
-                title="GitHub"
-              >
-                <GithubIcon size={18} aria-hidden />
-              </ExternalLink>
-              <ExternalLink
-                href={DISCORD_URL}
-                className={footerIconLinkClass}
-                aria-label="Discord"
-                title="Discord"
-              >
-                <DiscordIcon size={18} />
-              </ExternalLink>
-              <ExternalLink
-                href={API_DOCS_URL}
-                className={footerIconLinkClass}
-                aria-label="API docs"
-                title="API docs"
-              >
-                <BookOpenIcon size={18} aria-hidden />
-              </ExternalLink>
+              <Tooltip content="GitHub" side="top">
+                <ExternalLink
+                  href={GITHUB_REPO_URL}
+                  className={footerIconLinkClass}
+                  aria-label="GitHub"
+                >
+                  <GithubIcon size={18} aria-hidden />
+                </ExternalLink>
+              </Tooltip>
+              <Tooltip content="Discord" side="top">
+                <ExternalLink
+                  href={DISCORD_URL}
+                  className={footerIconLinkClass}
+                  aria-label="Discord"
+                >
+                  <DiscordIcon size={18} />
+                </ExternalLink>
+              </Tooltip>
+              <Tooltip content="API docs" side="top">
+                <ExternalLink
+                  href={API_DOCS_URL}
+                  className={footerIconLinkClass}
+                  aria-label="API docs"
+                >
+                  <BookOpenIcon size={18} aria-hidden />
+                </ExternalLink>
+              </Tooltip>
             </div>
             <SidebarBuildInfo />
           </div>

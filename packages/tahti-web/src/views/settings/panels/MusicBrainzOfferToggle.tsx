@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Toggle } from '@tahti-player/ui';
+import { InlineLoader, Toggle } from '@tahti-player/ui';
 
 import {
   fetchMusicbrainzDefault,
   saveMusicbrainzDefault,
   type MusicbrainzDefault,
 } from '../../../api/musicbrainz-default';
-import { SettingsHint } from '../SettingsFields';
 
 /** Re-enable the post-publish MusicBrainz registration prompt after
  * "Don't ask again" (legacy Settings → Connections had the same toggle). */
@@ -29,7 +28,7 @@ export function MusicBrainzOfferToggle() {
   }, []);
 
   if (pref === undefined) {
-    return <SettingsHint>Loading MusicBrainz preference…</SettingsHint>;
+    return <InlineLoader label="Loading MusicBrainz preference…" />;
   }
 
   const offered = pref !== false;

@@ -8,7 +8,7 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Input, Tabs } from '@tahti-player/ui';
+import { Button, InlineLoader, Input, Tabs } from '@tahti-player/ui';
 
 import {
   checkSlugAvailable,
@@ -149,7 +149,7 @@ export function ChannelPanel() {
             profileError ? (
               profileFailed
             ) : (
-              <SettingsHint>Loading…</SettingsHint>
+              <InlineLoader label="Loading…" />
             )
           ) : (
             <div className="flex flex-col gap-4">
@@ -339,7 +339,7 @@ export function ChannelPanel() {
                 profileError ? (
                   profileFailed
                 ) : (
-                  <SettingsHint>Loading…</SettingsHint>
+                  <InlineLoader label="Loading…" />
                 )
               ) : (
                 <div className="flex flex-col gap-5">

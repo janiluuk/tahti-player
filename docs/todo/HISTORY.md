@@ -1,3 +1,18 @@
+## 2026-10-23 - UX batch 98 thirty loading-state and tooltip slices
+
+Thirteen more bare loading lines -> `InlineLoader`: eleven Settings panel
+`SettingsHint` "Loading…" lines (broadcast x2, artist x2, account storage,
+mentions, MusicBrainz preference, channel x2, notifications x2), the local
+playlists empty-state and the listener widget playlist. Sixteen native
+`title` tooltips -> `Tooltip` (with `aria-description` where the text is not
+already the accessible name): tracklist markers, the settings footer GitHub /
+Discord / API docs links, the top bar broadcast / messages / notifications
+buttons, the smart link open button, the AI-generated badge, the Bandcamp
+links on releases and release tracks, the "Missing" file marker, the
+designer's player preview, the two admin status timestamps and the local
+library folder rows. The pro editor link drops a `title` that repeated its
+label. tahti-web `0.0.254`.
+
 ## 2026-10-23 - UX batch 97 thirty-plus loading-state and link slices
 
 New library `InlineLoader` (spinner + text, `role="status"`, `textSize`

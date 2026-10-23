@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Input, MediaArtwork } from '@tahti-player/ui';
+import { Button, InlineLoader, Input, MediaArtwork } from '@tahti-player/ui';
 
 import {
   fetchMentions,
@@ -20,7 +20,7 @@ import { PageEmpty, PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { humanizePastDate } from '../../../lib/humanizeDate';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
-import { SettingsHint, SettingsToggle } from '../SettingsFields';
+import { SettingsToggle } from '../SettingsFields';
 
 function MentionSource({
   mention,
@@ -93,7 +93,7 @@ export function MentionsPanel() {
     );
   }
   if (!settings || !mentions) {
-    return <SettingsHint>Loading…</SettingsHint>;
+    return <InlineLoader label="Loading…" />;
   }
 
   const toggle = (
