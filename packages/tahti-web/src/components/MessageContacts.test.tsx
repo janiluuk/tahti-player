@@ -43,7 +43,7 @@ describe('MessageContacts', () => {
   it('starts a conversation with a picked contact', async () => {
     const { onPick } = await renderContacts([contact(1), contact(2)]);
     const button = screen.getByRole('button', { name: 'Message User 2' });
-    expect(button.getAttribute('title')).toBe('You follow each other');
+    expect(button).toHaveAttribute('aria-description', 'You follow each other');
     fireEvent.click(button);
     expect(onPick).toHaveBeenCalledWith('user-2');
   });

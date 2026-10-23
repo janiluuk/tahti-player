@@ -6,6 +6,7 @@ import {
   ExternalLink,
   ImageReveal,
   SegmentedControl,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import {
@@ -150,20 +151,31 @@ function ExportNotesButton() {
   const openCount = comments.filter((c) => !c.resolvedAt).length;
 
   return (
-    <Button
-      size="sm"
-      variant="secondary"
-      onClick={() => downloadMapCommentsCsv(comments)}
-      disabled={count === 0}
-      aria-label="Export submitted comments as CSV"
-      title={
+    <Tooltip
+      content={
         count === 0
           ? 'Submit a comment below to enable export'
           : `Export ${count} comment${count === 1 ? '' : 's'} (${openCount} open) as CSV for fixing`
       }
+      side="bottom"
+      wrapperClassName="inline-flex"
+      multiline
     >
-      Export comments ({count}) as CSV
-    </Button>
+      <Button
+        size="sm"
+        variant="secondary"
+        onClick={() => downloadMapCommentsCsv(comments)}
+        disabled={count === 0}
+        aria-label="Export submitted comments as CSV"
+        aria-description={
+          count === 0
+            ? 'Submit a comment below to enable export'
+            : `Export ${count} comment${count === 1 ? '' : 's'} (${openCount} open) as CSV for fixing`
+        }
+      >
+        Export comments ({count}) as CSV
+      </Button>
+    </Tooltip>
   );
 }
 
@@ -254,20 +266,22 @@ function ApplyReviewButton() {
   };
 
   return (
-    <Button
-      size="sm"
-      onClick={apply}
-      disabled={state === 'saving'}
-      title="Write comments + approvals to tahti-fit/review-state.json for Claude Code to read"
+    <Tooltip
+      content="Write comments + approvals to tahti-fit/review-state.json for Claude Code to read"
+      side="bottom"
+      wrapperClassName="inline-flex"
+      multiline
     >
-      {state === 'saving'
-        ? 'Applying…'
-        : state === 'done'
-          ? 'Applied ✓'
-          : state === 'error'
-            ? 'Failed — retry'
-            : 'Apply review'}
-    </Button>
+      <Button size="sm" onClick={apply} disabled={state === 'saving'}>
+        {state === 'saving'
+          ? 'Applying…'
+          : state === 'done'
+            ? 'Applied ✓'
+            : state === 'error'
+              ? 'Failed — retry'
+              : 'Apply review'}
+      </Button>
+    </Tooltip>
   );
 }
 

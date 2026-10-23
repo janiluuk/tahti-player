@@ -7,6 +7,7 @@ import {
   Dialog,
   FilePicker,
   Input,
+  MediaArtwork,
   SaveButton,
   Select,
   Toggle,
@@ -268,22 +269,24 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
           className="border-border bg-background-secondary relative flex size-full items-center justify-center overflow-hidden rounded-xl border whitespace-normal active:scale-100"
         >
           {overlay.streamOverlayCoverUrl ? (
-            <img
+            <MediaArtwork
               src={overlay.streamOverlayCoverUrl}
               alt=""
-              className="size-full object-cover"
+              imageReveal={false}
             />
           ) : nowPlayingArtworkUrl ? (
-            <img
+            <MediaArtwork
               src={nowPlayingArtworkUrl}
               alt=""
-              className="size-full object-cover opacity-60"
+              imageReveal={false}
+              className="opacity-60"
             />
           ) : avatarUrl ? (
-            <img
+            <MediaArtwork
               src={avatarUrl}
               alt=""
-              className="size-full object-cover opacity-60"
+              imageReveal={false}
+              className="opacity-60"
             />
           ) : (
             <ImageIcon

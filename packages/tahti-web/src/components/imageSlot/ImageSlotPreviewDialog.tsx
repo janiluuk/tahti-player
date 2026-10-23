@@ -1,6 +1,6 @@
 import { XIcon } from 'lucide-react';
 
-import { Button, Dialog } from '@tahti-player/ui';
+import { Button, Dialog, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import { ConfirmDialog } from '../ConfirmDialog';
 
@@ -71,23 +71,24 @@ export function ImageSlotPreviewDialog({
                   key={frame.url + index}
                   className="group border-border relative size-16 shrink-0 overflow-hidden rounded-md border"
                 >
-                  <img
-                    src={frame.url}
-                    alt=""
-                    className="size-full object-cover"
-                  />
+                  <MediaArtwork src={frame.url} alt="" imageReveal={false} />
                   {frame.onDelete ? (
-                    <Button
-                      variant="plain"
-                      size="flexible"
-                      type="button"
-                      aria-label="Remove image"
-                      title="Remove image"
-                      className="bg-background/90 text-foreground hover:bg-accent-red absolute top-0.5 right-0.5 flex size-5 items-center justify-center rounded-full whitespace-normal opacity-0 shadow-sm transition-opacity group-hover:opacity-100 hover:text-white active:scale-100"
-                      onClick={frame.onDelete}
+                    <Tooltip
+                      content="Remove image"
+                      side="top"
+                      wrapperClassName="absolute top-0.5 right-0.5"
                     >
-                      <XIcon size={12} aria-hidden />
-                    </Button>
+                      <Button
+                        variant="plain"
+                        size="flexible"
+                        type="button"
+                        aria-label="Remove image"
+                        className="bg-background/90 text-foreground hover:bg-accent-red flex size-5 items-center justify-center rounded-full whitespace-normal opacity-0 shadow-sm transition-opacity group-hover:opacity-100 hover:text-white active:scale-100"
+                        onClick={frame.onDelete}
+                      >
+                        <XIcon size={12} aria-hidden />
+                      </Button>
+                    </Tooltip>
                   ) : null}
                 </div>
               ))}

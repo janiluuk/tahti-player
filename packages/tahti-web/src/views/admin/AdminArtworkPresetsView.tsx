@@ -7,6 +7,7 @@ import {
   Dialog,
   ImageThumbnailPicker,
   Input,
+  MediaArtwork,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -216,10 +217,11 @@ export function AdminArtworkPresetsView() {
         <Dialog.Title>{DEFAULT_NAMES[selected] ?? 'Edit artwork'}</Dialog.Title>
         <div className="flex flex-col gap-4">
           <div className="group relative aspect-square w-full max-w-64">
-            <img
+            <MediaArtwork
               src={selectedUrl}
               alt="Selected artwork preset"
-              className="h-full w-full rounded-xl object-cover"
+              imageReveal={false}
+              className="rounded-xl"
             />
             <Button
               variant="plain"

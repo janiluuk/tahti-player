@@ -1,7 +1,14 @@
 import { CircleDollarSignIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, Input, Textarea, Toggle } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  Input,
+  Textarea,
+  Toggle,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   createPurchaseTier,
@@ -108,18 +115,23 @@ export function PurchaseTiersEditor() {
           One-time purchase tiers for individual tracks — assign one from a
           track's edit dialog.
         </p>
-        <Button
-          size="sm"
-          onClick={() => {
-            setMsg(null);
-            setCreateOpen(true);
-          }}
-          aria-label="New purchase tier"
-          title="New purchase tier"
+        <Tooltip
+          content="New purchase tier"
+          side="bottom"
+          wrapperClassName="inline-flex"
         >
-          <PlusIcon size={16} aria-hidden className="mr-1.5" />
-          New tier
-        </Button>
+          <Button
+            size="sm"
+            onClick={() => {
+              setMsg(null);
+              setCreateOpen(true);
+            }}
+            aria-label="New purchase tier"
+          >
+            <PlusIcon size={16} aria-hidden className="mr-1.5" />
+            New tier
+          </Button>
+        </Tooltip>
       </div>
 
       {!loaded ? (
@@ -236,17 +248,13 @@ export function PurchaseTiersEditor() {
               value={eurosAmt}
               onChange={(e) => setEurosAmt(e.target.value)}
             />
-            <label className="flex flex-col gap-1 text-sm">
-              <span className="text-foreground-secondary text-xs uppercase">
-                Description
-              </span>
-              <Textarea
-                tone="secondary"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={2}
-              />
-            </label>
+            <Textarea
+              label="Description"
+              tone="secondary"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={2}
+            />
             <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-3 rounded-lg border p-3 text-sm">
               <span className="font-medium">
                 Pay what you want (buyer can enter any amount, incl. free)

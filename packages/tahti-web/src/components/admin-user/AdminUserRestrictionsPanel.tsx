@@ -191,19 +191,15 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
             <p className="text-foreground-secondary text-xs">
               {TYPE_HELP[type]}
             </p>
-            <label className="flex flex-col gap-1 text-sm">
-              <span className="text-foreground-secondary text-xs uppercase">
-                Reason
-              </span>
-              <Textarea
-                tone="secondary"
-                value={reason}
-                onChange={(event) => setReason(event.target.value)}
-                rows={2}
-                maxLength={500}
-                placeholder="Shown to the user"
-              />
-            </label>
+            <Textarea
+              label="Reason"
+              tone="secondary"
+              value={reason}
+              onChange={(event) => setReason(event.target.value)}
+              rows={2}
+              maxLength={500}
+              placeholder="Shown to the user"
+            />
             {error ? (
               <p className="text-accent-red-strong text-sm" role="alert">
                 {error}

@@ -1,3 +1,26 @@
+## 2026-10-23 - UX batch 94 thirty-plus waveform + UI slices
+
+`Textarea` `label` / `description` / `error` / `fieldClassName` (bare
+textarea when none) + thirteen `<label>` wrappers migrated; `Toggle`
+`showLabel` / `labelClassName` + three duplicate-text sites; nine more
+`Button title=` -> `Tooltip` (Screen atlas x2, image slot remove / delete
+badge, artist image overlay, add to playlist, fan / purchase tier, stream
+playlist). `AmbientTrackRow` `durationSec` from both ambient lists;
+`ConnectedPlayerBar` seek off while duration is 0; `WaveformCanvas` hover
+time. Tests + stories. ui `0.0.23`, tahti-web `0.0.250`.
+
+## 2026-10-23 - UX batch 93 thirty waveform + UI slices
+
+Folded `batch-93-waveform-ui-thirty.md`. `WaveformSeekbar` mouse-only hover
+line + time label; ui `Waveform` lazy Hover plugin when seekable (colours
+via CSS variables so theme switches need no re-create). ui
+`HiddenFileInput` (resets value, `onFiles(File[])`) replaces five hidden
+inputs; `MediaArtwork` `fit`; nine `<img>` -> `MediaArtwork`; NewsView raw
+`<button>` -> `Button`; seven `title=` -> `Tooltip` (newsletter x2,
+collection sign-in, admin cron job, backdrop visualizer, message contacts,
+image upload preview).
+Tests + stories. ui `0.0.22`, tahti-web `0.0.249`.
+
 ## 2026-10-23 - UX batch 92 thirty waveform + UI slices
 
 Folded `batch-92-waveform-ui-thirty.md`. `lib/commentMarkers`

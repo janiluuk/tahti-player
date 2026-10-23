@@ -2,7 +2,14 @@ import { MaximizeIcon, MinimizeIcon, MoreHorizontalIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { formatArtistNames } from '@tahti-player/model';
-import { BackButton, Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
+import {
+  BackButton,
+  Button,
+  cn,
+  MediaArtwork,
+  PlayerBar,
+  Tooltip,
+} from '@tahti-player/ui';
 import type { VisualizerMode } from '@tahti-player/visualizer';
 
 import { useIsMobile } from '../hooks/useIsMobile';
@@ -250,13 +257,12 @@ export function FullScreenPlayer() {
           )}
         >
           {coverUrl ? (
-            <img
+            <MediaArtwork
               src={coverUrl}
               alt={isLive ? `${artist} logo` : ''}
-              className={cn(
-                'size-full',
-                isLive ? 'object-contain' : 'object-cover',
-              )}
+              fit={isLive ? 'contain' : 'cover'}
+              imageReveal={false}
+              className="relative size-full"
             />
           ) : null}
         </div>

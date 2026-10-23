@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Badge, Button, ViewShell } from '@tahti-player/ui';
+import { Badge, Button, Tooltip, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchAdminDashboard,
@@ -172,16 +172,23 @@ export function AdminStatusView() {
                           key={job.jobName}
                           className="flex items-center justify-between py-2 text-sm first:pt-0 last:pb-0"
                         >
-                          <Button
-                            size="flexible"
-                            variant="text"
-                            className="p-0 text-sm underline-offset-2 hover:underline"
-                            title={job.description}
-                            aria-label={`${job.jobName} run history`}
-                            onClick={() => setCronJob(job.jobName)}
+                          <Tooltip
+                            content={job.description}
+                            side="right"
+                            wrapperClassName="inline-flex"
+                            multiline
                           >
-                            {job.jobName}
-                          </Button>
+                            <Button
+                              aria-description={job.description}
+                              size="flexible"
+                              variant="text"
+                              className="p-0 text-sm underline-offset-2 hover:underline"
+                              aria-label={`${job.jobName} run history`}
+                              onClick={() => setCronJob(job.jobName)}
+                            >
+                              {job.jobName}
+                            </Button>
+                          </Tooltip>
                           <span className="text-foreground-secondary text-xs">
                             {job.lastRun ? (
                               <>

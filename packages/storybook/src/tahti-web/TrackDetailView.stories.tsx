@@ -131,7 +131,7 @@ export const ReportTrack: Story = {
       dialog.getByRole('button', { name: 'Reason' }),
     ).toHaveTextContent('Copyright infringement');
     await userEvent.type(
-      dialog.getByRole('textbox', { name: 'Details' }),
+      dialog.getByRole('textbox', { name: 'Details (optional)' }),
       'This is my own unreleased track.',
     );
     await userEvent.click(dialog.getByRole('button', { name: 'Send report' }));

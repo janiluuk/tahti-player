@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Button, MediaArtwork } from '@tahti-player/ui';
+import { Button, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchMessageContacts,
@@ -54,25 +54,31 @@ export function MessageContacts({
       <ul className="flex flex-wrap gap-2" data-testid="message-contacts">
         {visible.map((contact) => (
           <li key={contact.username}>
-            <Button
-              variant="secondary"
-              size="sm"
-              disabled={disabled}
-              title={relation(contact)}
-              aria-label={`Message ${contact.displayName}`}
-              onClick={() => onPick(contact.username)}
-              className="gap-2"
+            <Tooltip
+              content={relation(contact)}
+              side="top"
+              wrapperClassName="inline-flex"
             >
-              <MediaArtwork
-                src={
-                  contact.avatarUrl ?? placeholderArtworkUrl(contact.username)
-                }
-                alt=""
+              <Button
+                variant="secondary"
                 size="sm"
-                className="size-5 min-w-5 rounded-full"
-              />
-              {contact.displayName}
-            </Button>
+                disabled={disabled}
+                aria-label={`Message ${contact.displayName}`}
+                aria-description={relation(contact)}
+                onClick={() => onPick(contact.username)}
+                className="gap-2"
+              >
+                <MediaArtwork
+                  src={
+                    contact.avatarUrl ?? placeholderArtworkUrl(contact.username)
+                  }
+                  alt=""
+                  size="sm"
+                  className="size-5 min-w-5 rounded-full"
+                />
+                {contact.displayName}
+              </Button>
+            </Tooltip>
           </li>
         ))}
       </ul>

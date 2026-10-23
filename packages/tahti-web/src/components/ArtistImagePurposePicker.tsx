@@ -1,7 +1,13 @@
 import { UploadCloudIcon, XIcon } from 'lucide-react';
 import { useState, type FC } from 'react';
 
-import { Button, Dialog, FilePicker, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  FilePicker,
+  MediaArtwork,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   updatePressKitImage,
@@ -150,26 +156,32 @@ export const ArtistImagePurposePicker: FC<Props> = ({
       <div className="group relative inline-flex">
         <div className="border-border bg-background-secondary flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 text-xl font-bold">
           {avatarUrl ? (
-            <img
+            <MediaArtwork
               src={avatarUrl}
               alt=""
-              className="h-full w-full object-cover"
+              imageReveal={false}
+              className="relative size-full"
             />
           ) : (
             displayName.slice(0, 1).toUpperCase()
           )}
         </div>
-        <Button
-          variant="plain"
-          size="flexible"
-          type="button"
-          onClick={() => setPickerOpen(true)}
-          aria-label="Change profile image"
-          title="Change profile image"
-          className="bg-background/80 text-foreground absolute inset-0 flex items-center justify-center rounded-full whitespace-normal opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 active:scale-100"
+        <Tooltip
+          content="Change profile image"
+          side="bottom"
+          wrapperClassName="absolute inset-0"
         >
-          <UploadCloudIcon size={20} aria-hidden />
-        </Button>
+          <Button
+            variant="plain"
+            size="flexible"
+            type="button"
+            onClick={() => setPickerOpen(true)}
+            aria-label="Change profile image"
+            className="bg-background/80 text-foreground flex size-full items-center justify-center rounded-full whitespace-normal opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 active:scale-100"
+          >
+            <UploadCloudIcon size={20} aria-hidden />
+          </Button>
+        </Tooltip>
       </div>
 
       <Dialog.Root
@@ -220,10 +232,11 @@ export const ArtistImagePurposePicker: FC<Props> = ({
               key={image.id}
               className="border-border bg-background-secondary/30 flex flex-col gap-3 rounded-xl border p-3 sm:flex-row"
             >
-              <img
+              <MediaArtwork
                 src={image.previewUrl}
                 alt=""
-                className="size-24 shrink-0 rounded-lg object-cover"
+                imageReveal={false}
+                className="relative size-24 shrink-0 rounded-lg"
               />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold">

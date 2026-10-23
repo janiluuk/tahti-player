@@ -173,13 +173,14 @@ export function NewsView() {
             role="status"
           >
             Could not refresh the news: {loadError}{' '}
-            <button
-              type="button"
-              className="underline underline-offset-2"
+            <Button
+              variant="plain"
+              size="flexible"
+              className="inline p-0 text-xs underline underline-offset-2"
               onClick={() => setAttempt((n) => n + 1)}
             >
               Retry
-            </button>
+            </Button>
           </p>
         )}
 

@@ -7,7 +7,14 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, FilterChips, Input, Textarea } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  FilterChips,
+  Input,
+  Textarea,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   createFanTier,
@@ -84,18 +91,23 @@ export function FanTiersEditor() {
         <p className="text-foreground-secondary text-xs">
           Fan subscription tiers, perks, and pricing.
         </p>
-        <Button
-          size="sm"
-          onClick={() => {
-            setMsg(null);
-            setCreateOpen(true);
-          }}
-          aria-label="New tier"
-          title="New tier"
+        <Tooltip
+          content="New tier"
+          side="bottom"
+          wrapperClassName="inline-flex"
         >
-          <PlusIcon size={16} aria-hidden className="mr-1.5" />
-          New tier
-        </Button>
+          <Button
+            size="sm"
+            onClick={() => {
+              setMsg(null);
+              setCreateOpen(true);
+            }}
+            aria-label="New tier"
+          >
+            <PlusIcon size={16} aria-hidden className="mr-1.5" />
+            New tier
+          </Button>
+        </Tooltip>
       </div>
 
       {loaded && loadError && tiers.length > 0 ? (
@@ -221,17 +233,13 @@ export function FanTiersEditor() {
               value={eurosAmt}
               onChange={(e) => setEurosAmt(e.target.value)}
             />
-            <label className="flex flex-col gap-1 text-sm">
-              <span className="text-foreground-secondary text-xs uppercase">
-                Description
-              </span>
-              <Textarea
-                tone="secondary"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={2}
-              />
-            </label>
+            <Textarea
+              label="Description"
+              tone="secondary"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={2}
+            />
             <FilterChips
               multiple
               items={PERK_OPTIONS.map((p) => ({

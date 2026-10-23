@@ -1,3 +1,34 @@
+## 2026-10-23 - UX batch 94 (form labels, toggle labels, waveform durations)
+
+`Textarea` takes `label`, `description` and `error` like `Input`; thirteen
+forms drop their hand-rolled `<label>` wrappers (report, fan and purchase
+tiers, support, broadcast details, admin user edit / restrictions /
+engagement, candidacy, motion correction, venue, tracklist paste, mention
+box), so each form's fields now share one label style. `Toggle` gains
+`showLabel`: three switches whose text sat next to them (some not clickable)
+use it. Ambient rows pass the track length to their seekbar, so row
+waveforms step 5 s, read out the time and preview it on hover; the player
+bar is not seekable until the duration is known; the tracklist editor
+waveform previews the hovered time. Nine more `title` tooltips use
+`Tooltip`, with `aria-description` where they carry extra information.
+Bumped ui `0.0.23`, tahti-web `0.0.250`.
+
+## 2026-10-23 - UX batch 93 (waveform hover times, library file inputs and artwork)
+
+Hovering a seekable waveform previews the time under the mouse: the player
+bar, ambient rows and other seekbars draw a line with a time label, and the
+large wavesurfer previews (track page, Studio header, edit dialog) use the
+Hover plugin, themed through CSS variables. Touch shows nothing. New
+`HiddenFileInput` in `@tahti-player/ui` replaces five hand-rolled hidden
+file inputs (tracklist import, artist gallery, round image upload, radio
+cover). `MediaArtwork` gains `fit="contain"`; nine raw `<img>`s move to it
+(full-screen player cover with contained live logos, artwork presets,
+image upload preview, artist image picker, image slot frames, stream
+overlay covers). The News refresh Retry is a library `Button`, and seven
+more `title` tooltips use `Tooltip`; where a tooltip carries information
+beyond the button's label (contact relation, cron job, disabled reasons,
+export details) it is also an `aria-description` so screen readers keep it. Bumped ui `0.0.22`, tahti-web `0.0.249`.
+
 ## 2026-10-23 - UX batch 92 (clickable comment markers, library tooltips)
 
 Timed comments on the track page waveform are now buttons: hover or focus

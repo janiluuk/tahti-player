@@ -93,8 +93,8 @@ export const KeyboardWithDuration: Story = {
           className="h-12"
         />
         <p className="text-foreground-secondary text-xs">
-          Tab to the waveform, then use the arrow keys (5 s), Page Up / Down
-          (10%), Home and End.
+          Hover to preview a time. Tab to the waveform, then use the arrow keys
+          (5 s), Page Up / Down (10%), Home and End.
         </p>
       </div>
     );

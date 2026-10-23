@@ -110,20 +110,16 @@ export function BroadcastDetailsFields({
         onChange={(event) => onChange({ ...values, title: event.target.value })}
         placeholder="New show name or episode title"
       />
-      <label className="flex flex-col gap-1 text-sm">
-        <span className="text-foreground-secondary text-xs uppercase">
-          Show description
-        </span>
-        <Textarea
-          tone="secondary"
-          value={values.description}
-          onChange={(event) =>
-            onChange({ ...values, description: event.target.value })
-          }
-          rows={2}
-          placeholder="What listeners can expect"
-        />
-      </label>
+      <Textarea
+        label="Show description"
+        tone="secondary"
+        value={values.description}
+        onChange={(event) =>
+          onChange({ ...values, description: event.target.value })
+        }
+        rows={2}
+        placeholder="What listeners can expect"
+      />
       <ShowImagePicker
         label="Show cover"
         description="JPEG, PNG, WebP, or GIF"

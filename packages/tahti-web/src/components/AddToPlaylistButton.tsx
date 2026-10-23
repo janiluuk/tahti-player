@@ -1,7 +1,7 @@
 import { ListPlusIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, Tooltip } from '@tahti-player/ui';
 
 import { AddToPlaylistPanel } from './AddToPlaylistPanel';
 
@@ -27,19 +27,29 @@ export function AddToPlaylistButton({
 
   return (
     <>
-      <Button
-        size={
-          iconOnly ? size : size === 'icon-sm' || size === 'icon' ? 'sm' : size
-        }
-        variant={variant}
-        className={className}
-        onClick={() => setOpen(true)}
-        aria-label="Add to playlist"
-        title="Add to playlist"
+      <Tooltip
+        content="Add to playlist"
+        side="top"
+        disabled={!iconOnly}
+        wrapperClassName="inline-flex"
       >
-        <ListPlusIcon size={16} aria-hidden />
-        {!iconOnly ? <span className="ml-1.5">Add to playlist</span> : null}
-      </Button>
+        <Button
+          size={
+            iconOnly
+              ? size
+              : size === 'icon-sm' || size === 'icon'
+                ? 'sm'
+                : size
+          }
+          variant={variant}
+          className={className}
+          onClick={() => setOpen(true)}
+          aria-label="Add to playlist"
+        >
+          <ListPlusIcon size={16} aria-hidden />
+          {!iconOnly ? <span className="ml-1.5">Add to playlist</span> : null}
+        </Button>
+      </Tooltip>
       <AddToPlaylistPanel
         isOpen={open}
         soundId={soundId}

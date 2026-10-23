@@ -67,7 +67,11 @@ export function SoulseekAddonCard() {
             wrapperClassName="inline-flex"
             multiline
           >
-            <Button size="sm" disabled>
+            <Button
+              aria-description="Soulseek connects from the desktop player only."
+              size="sm"
+              disabled
+            >
               Desktop only
             </Button>
           </Tooltip>

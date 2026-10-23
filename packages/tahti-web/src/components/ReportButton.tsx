@@ -98,18 +98,13 @@ export function ReportButton({
             onValueChange={(value) => setReason(value as ContentReportReason)}
             options={REASONS}
           />
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className="text-foreground-secondary text-xs">
-              Details (optional)
-            </span>
-            <Textarea
-              aria-label="Details"
-              rows={4}
-              maxLength={MAX_DETAILS}
-              value={details}
-              onChange={(event) => setDetails(event.target.value)}
-            />
-          </label>
+          <Textarea
+            label="Details (optional)"
+            rows={4}
+            maxLength={MAX_DETAILS}
+            value={details}
+            onChange={(event) => setDetails(event.target.value)}
+          />
         </div>
         <Dialog.Actions>
           <Dialog.Close>Cancel</Dialog.Close>

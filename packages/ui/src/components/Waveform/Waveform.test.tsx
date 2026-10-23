@@ -40,8 +40,18 @@ vi.mock('wavesurfer.js', () => ({
   },
 }));
 
+const hoverCreate = vi.fn((options: Record<string, unknown>) => ({
+  hover: true,
+  options,
+}));
+
+vi.mock('wavesurfer.js/dist/plugins/hover.esm.js', () => ({
+  default: { create: hoverCreate },
+}));
+
 beforeEach(() => {
   instances.length = 0;
+  hoverCreate.mockClear();
 });
 
 describe('peaksToWaveSurfer', () => {
@@ -137,5 +147,22 @@ describe('Waveform', () => {
       ),
     );
     document.documentElement.removeAttribute('data-theme');
+  });
+
+  it('shows a hover time only when the waveform can seek', async () => {
+    render(<Waveform peaks={[1, 2, 3]} durationSec={10} onSeek={vi.fn()} />);
+    await vi.waitFor(() => expect(instances).toHaveLength(1));
+    expect(instances[0]!.options.plugins).toHaveLength(1);
+    const options = hoverCreate.mock.calls[0]![0] as {
+      formatTimeCallback: (seconds: number) => string;
+      lineColor: string;
+    };
+    expect(options.formatTimeCallback(65.7)).toBe('1:05');
+    expect(options.lineColor).toBe('var(--color-foreground)');
+
+    instances.length = 0;
+    render(<Waveform peaks={[1, 2, 3]} durationSec={10} />);
+    await vi.waitFor(() => expect(instances).toHaveLength(1));
+    expect(instances[0]!.options.plugins).toEqual([]);
   });
 });

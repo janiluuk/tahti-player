@@ -490,19 +490,28 @@ export function CollectionView({ slug }: { slug: string }) {
             </Button>
           ) : null}
           {!isOwner && collection.isPublic && subscription ? (
-            <Button
-              variant={subscription.subscribed ? 'default' : 'secondary'}
-              onClick={() => void toggleSubscription()}
-              disabled={subscriptionBusy}
-              aria-pressed={subscription.subscribed}
-              title={me ? undefined : 'Sign in to subscribe to this playlist'}
+            <Tooltip
+              content="Sign in to subscribe to this playlist"
+              side="bottom"
+              disabled={Boolean(me)}
+              wrapperClassName="inline-flex"
             >
-              <BookmarkIcon size={15} aria-hidden className="mr-1.5" />
-              {subscription.subscribed ? 'Subscribed' : 'Subscribe'}
-              {subscription.subscriberCount > 0
-                ? ` (${subscription.subscriberCount})`
-                : ''}
-            </Button>
+              <Button
+                variant={subscription.subscribed ? 'default' : 'secondary'}
+                onClick={() => void toggleSubscription()}
+                disabled={subscriptionBusy}
+                aria-pressed={subscription.subscribed}
+                aria-description={
+                  me ? undefined : 'Sign in to subscribe to this playlist'
+                }
+              >
+                <BookmarkIcon size={15} aria-hidden className="mr-1.5" />
+                {subscription.subscribed ? 'Subscribed' : 'Subscribe'}
+                {subscription.subscriberCount > 0
+                  ? ` (${subscription.subscriberCount})`
+                  : ''}
+              </Button>
+            </Tooltip>
           ) : null}
           {!isOwner && collection.isPublic ? (
             <ReportButton

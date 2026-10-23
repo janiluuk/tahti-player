@@ -16,7 +16,14 @@ import {
   type FC,
 } from 'react';
 
-import { Button, Input, Tabs, Textarea, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  HiddenFileInput,
+  Input,
+  Tabs,
+  Textarea,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { searchMentionUsers, type MentionUser } from '../api/mentions';
 import type { TracklistEntry } from '../api/studio-types';
@@ -437,17 +444,13 @@ export const TracklistEditor: FC<Props> = ({
                               />{' '}
                               Import list
                             </Button>
-                            <input
+                            <HiddenFileInput
                               ref={fileInputRef}
-                              className="hidden"
-                              type="file"
                               accept=".nml,.txt,text/plain,application/xml"
-                              onChange={(event) => {
-                                const file = event.target.files?.[0];
+                              onFiles={([file]) => {
                                 if (file) {
                                   void importFile(file);
                                 }
-                                event.currentTarget.value = '';
                               }}
                             />
                           </div>
@@ -473,17 +476,15 @@ export const TracklistEditor: FC<Props> = ({
                           up automatically.
                         </p>
                         <div className="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-end">
-                          <label className="flex flex-col gap-1 text-sm">
-                            Paste one track per line
-                            <Textarea
-                              rows={5}
-                              placeholder="12:14 Artist – Track\nArtist – Next track – 18:02"
-                              value={pastedList}
-                              onChange={(event) =>
-                                setPastedList(event.target.value)
-                              }
-                            />
-                          </label>
+                          <Textarea
+                            label="Paste one track per line"
+                            rows={5}
+                            placeholder="12:14 Artist – Track\nArtist – Next track – 18:02"
+                            value={pastedList}
+                            onChange={(event) =>
+                              setPastedList(event.target.value)
+                            }
+                          />
                           <Button
                             size="sm"
                             variant="secondary"

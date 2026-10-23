@@ -287,12 +287,9 @@ export function ConnectedPlayerBar() {
           peaks={currentPeaks}
           label={playable?.title}
           durationSec={duration}
-          onSeek={(fraction) => {
-            if (duration <= 0) {
-              return;
-            }
-            seekTo(fraction * duration);
-          }}
+          onSeek={
+            duration > 0 ? (fraction) => seekTo(fraction * duration) : undefined
+          }
           className={cn(
             'w-full transition-[height] duration-200',
             waveformExpanded ? WAVEFORM_EXPANDED : WAVEFORM_COMPACT,

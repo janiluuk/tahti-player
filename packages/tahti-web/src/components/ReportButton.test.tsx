@@ -38,7 +38,7 @@ describe('ReportButton', () => {
     await act(async () => {
       fireEvent.click(await screen.findByRole('option', { name: 'Spam' }));
     });
-    fireEvent.change(screen.getByLabelText('Details'), {
+    fireEvent.change(screen.getByLabelText('Details (optional)'), {
       target: { value: 'Same upload posted ten times' },
     });
     await act(async () => {

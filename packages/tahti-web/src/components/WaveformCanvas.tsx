@@ -80,6 +80,7 @@ export function WaveformCanvas({
   const hasPeaks = peaks.length > 0;
   const peakMax = useMemo(() => peakMaxOf(peaks), [peaks]);
   const [themeVersion, setThemeVersion] = useState(0);
+  const [hover, setHover] = useState<{ x: number; sec: number } | null>(null);
 
   useEffect(
     () => observeThemeChange(() => setThemeVersion((version) => version + 1)),
@@ -312,42 +313,64 @@ export function WaveformCanvas({
   };
 
   return (
-    <canvas
-      ref={canvasRef}
-      role="slider"
-      tabIndex={0}
-      aria-label={label}
-      aria-valuemin={0}
-      aria-valuemax={Math.round(durationSec)}
-      aria-valuenow={Math.round(currentTime)}
-      aria-valuetext={`${formatDuration(currentTime)} of ${formatDuration(durationSec)}`}
-      data-waveform={hasPeaks ? 'peaks' : 'empty'}
-      className="border-border bg-background focus-visible:ring-primary h-56 w-full cursor-crosshair touch-none rounded-md border-2 outline-none focus-visible:ring-2"
-      onKeyDown={onKeyDown}
-      onPointerDown={(e: PointerEvent<HTMLCanvasElement>) => {
-        if (e.button > 0) {
-          return;
-        }
-        e.currentTarget.setPointerCapture?.(e.pointerId);
-        const sec = secFromEvent(e.clientX);
-        dragRef.current = { startX: e.clientX, startSec: sec };
-        onSeek(sec);
-      }}
-      onPointerMove={(e) => {
-        if (!dragRef.current || !onSelectRange) {
-          return;
-        }
-        const end = secFromEvent(e.clientX);
-        const start = dragRef.current.startSec;
-        onSelectRange(Math.min(start, end), Math.max(start, end));
-      }}
-      onPointerUp={(e) => {
-        e.currentTarget.releasePointerCapture?.(e.pointerId);
-        finishDrag(e.clientX);
-      }}
-      onPointerCancel={() => {
-        dragRef.current = null;
-      }}
-    />
+    <div className="relative w-full">
+      <canvas
+        ref={canvasRef}
+        role="slider"
+        tabIndex={0}
+        aria-label={label}
+        aria-valuemin={0}
+        aria-valuemax={Math.round(durationSec)}
+        aria-valuenow={Math.round(currentTime)}
+        aria-valuetext={`${formatDuration(currentTime)} of ${formatDuration(durationSec)}`}
+        data-waveform={hasPeaks ? 'peaks' : 'empty'}
+        className="border-border bg-background focus-visible:ring-primary h-56 w-full cursor-crosshair touch-none rounded-md border-2 outline-none focus-visible:ring-2"
+        onKeyDown={onKeyDown}
+        onPointerDown={(e: PointerEvent<HTMLCanvasElement>) => {
+          if (e.button > 0) {
+            return;
+          }
+          e.currentTarget.setPointerCapture?.(e.pointerId);
+          const sec = secFromEvent(e.clientX);
+          dragRef.current = { startX: e.clientX, startSec: sec };
+          onSeek(sec);
+        }}
+        onPointerMove={(e) => {
+          if (e.pointerType === 'mouse' && durationSec > 0) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            setHover({
+              x: e.clientX - rect.left,
+              sec: secFromEvent(e.clientX),
+            });
+          }
+          if (!dragRef.current || !onSelectRange) {
+            return;
+          }
+          const end = secFromEvent(e.clientX);
+          const start = dragRef.current.startSec;
+          onSelectRange(Math.min(start, end), Math.max(start, end));
+        }}
+        onPointerUp={(e) => {
+          e.currentTarget.releasePointerCapture?.(e.pointerId);
+          finishDrag(e.clientX);
+        }}
+        onPointerCancel={() => {
+          dragRef.current = null;
+        }}
+        onPointerLeave={() => setHover(null)}
+      />
+      {hover ? (
+        <span
+          aria-hidden
+          data-testid="waveform-canvas-hover"
+          className="bg-foreground/70 pointer-events-none absolute inset-y-0.5 w-px"
+          style={{ left: hover.x }}
+        >
+          <span className="bg-background-secondary text-foreground absolute top-1 left-1 rounded px-1 py-0.5 text-[10px] leading-none font-medium whitespace-nowrap tabular-nums shadow-sm">
+            {formatDuration(hover.sec)}
+          </span>
+        </span>
+      ) : null}
+    </div>
   );
 }

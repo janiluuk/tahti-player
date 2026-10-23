@@ -76,6 +76,9 @@ export type AmbientTrackRowProps = {
   artist: string;
   coverUrl?: string | null;
   durationLabel?: string;
+  /** Track length; lets the seekbar step 5 s, read out "1:05 of 3:20" and
+   * preview hover times. */
+  durationSec?: number | null;
   genreLabel?: string;
   peaks?: number[] | null;
   /** Playback position, 0–1. */
@@ -104,6 +107,7 @@ export function AmbientTrackRow({
   artist,
   coverUrl,
   durationLabel,
+  durationSec,
   genreLabel,
   peaks,
   progress = 0,
@@ -199,6 +203,7 @@ export function AmbientTrackRow({
             peaks={peaks}
             bars={layout.bars}
             label={title}
+            durationSec={durationSec ?? undefined}
             onSeek={onSeek}
             className={layout.wave}
           />

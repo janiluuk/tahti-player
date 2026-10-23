@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
-import { FilePicker } from '@tahti-player/ui';
+import { Button, FilePicker, HiddenFileInput } from '@tahti-player/ui';
 
 const meta = {
   title: 'Components/FilePicker',
@@ -73,6 +73,31 @@ export const RetryAfterUploadError: Story = {
         />
         <p className="text-foreground-secondary text-xs" role="status">
           {message || 'Select an image to verify the retryable input behavior.'}
+        </p>
+      </div>
+    );
+  },
+};
+
+/** `HiddenFileInput` behind a custom control: the button opens the OS
+ * picker through the input's ref. */
+export const HiddenInputBehindButton: Story = {
+  render: () => {
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [names, setNames] = useState<string[]>([]);
+    return (
+      <div className="flex flex-col items-start gap-2">
+        <Button variant="secondary" onClick={() => inputRef.current?.click()}>
+          Choose images
+        </Button>
+        <HiddenFileInput
+          ref={inputRef}
+          accept="image/*"
+          multiple
+          onFiles={(files) => setNames(files.map((file) => file.name))}
+        />
+        <p className="text-foreground-secondary text-xs">
+          {names.length > 0 ? names.join(', ') : 'Nothing chosen yet.'}
         </p>
       </div>
     );
