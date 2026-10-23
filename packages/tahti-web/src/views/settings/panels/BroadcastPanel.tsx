@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 
 import {
   ButtonLink,
+  InlineLoader,
   SelectableTile,
   SelectableTiles,
   Tabs,
@@ -118,7 +119,7 @@ export function BroadcastPanel({
             onRetry={retry}
           />
         ) : (
-          <SettingsHint>Loading…</SettingsHint>
+          <InlineLoader label="Loading…" />
         )
       ) : (
         <div className="flex flex-col gap-6">
@@ -163,7 +164,7 @@ export function BroadcastPanel({
             onRetry={retry}
           />
         ) : (
-          <SettingsHint>Loading…</SettingsHint>
+          <InlineLoader label="Loading…" />
         )
       ) : (
         <div className="flex flex-col gap-6">

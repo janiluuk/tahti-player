@@ -2,7 +2,7 @@ import { FolderOpenIcon, TrashIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Loader } from '@tahti-player/ui';
+import { Button, Dialog, InlineError, Loader } from '@tahti-player/ui';
 
 import { formatLibrarySize } from '../lib/libraryFormat';
 import type {
@@ -204,9 +204,7 @@ export function DuplicatesDialog({
         </div>
         <div className="flex max-h-[50vh] flex-col gap-4 overflow-y-auto py-2">
           {error ? (
-            <p role="alert" className="text-accent-red-strong text-sm">
-              {error}
-            </p>
+            <InlineError>{error}</InlineError>
           ) : groups === null ? (
             <p className="text-foreground-secondary flex items-center gap-2 text-sm">
               <Loader size="inline" shape="circle" />

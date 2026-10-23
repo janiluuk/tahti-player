@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Select } from '@tahti-player/ui';
+import { Button, InlineError, Select } from '@tahti-player/ui';
 
 import {
   fetchMeetingAgenda,
@@ -105,9 +105,9 @@ export function MotionAgendaItemControl({
         Cancel
       </Button>
       {error ? (
-        <p role="alert" className="text-accent-red-strong w-full text-xs">
+        <InlineError textSize="xs" className="w-full">
           {error}
-        </p>
+        </InlineError>
       ) : null}
     </div>
   );

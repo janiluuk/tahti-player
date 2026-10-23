@@ -1,6 +1,6 @@
 import { useId, useState } from 'react';
 
-import { Button, Input, Textarea } from '@tahti-player/ui';
+import { Button, InlineError, Input, Textarea } from '@tahti-player/ui';
 
 import {
   patchVenue,
@@ -103,11 +103,7 @@ export function VenueDetailsForm({
         maxLength={DESCRIPTION_MAX}
         onChange={(e) => setDescription(e.target.value)}
       />
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-sm">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError>{error}</InlineError> : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy}>
           {busy ? 'Saving…' : 'Save details'}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
   BUSINESS_ID_PATTERN,
@@ -105,11 +105,7 @@ export function AssociationEditPanel() {
           />
         ))}
         <div className="flex flex-col gap-2 sm:col-span-2">
-          {error ? (
-            <p role="alert" className="text-accent-red-strong text-sm">
-              {error}
-            </p>
-          ) : null}
+          {error ? <InlineError>{error}</InlineError> : null}
           {saved ? (
             <p role="status" className="text-sm">
               Saved. Members see these details on Governance.

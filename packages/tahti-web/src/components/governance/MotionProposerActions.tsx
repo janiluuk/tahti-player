@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
-import { Button, Input, Textarea } from '@tahti-player/ui';
+import { Button, InlineError, Input, Textarea } from '@tahti-player/ui';
 
 import {
   editMotionDraft,
@@ -120,11 +120,7 @@ export function MotionProposerActions({
             Cancel
           </Button>
         </div>
-        {error && (
-          <p role="alert" className="text-accent-red-strong text-xs">
-            {error}
-          </p>
-        )}
+        {error && <InlineError textSize="xs">{error}</InlineError>}
       </div>
     );
   }
@@ -164,11 +160,7 @@ export function MotionProposerActions({
           {notice}
         </p>
       )}
-      {error && (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      )}
+      {error && <InlineError textSize="xs">{error}</InlineError>}
       <ConfirmDialog
         isOpen={confirming}
         title="Withdraw this motion?"

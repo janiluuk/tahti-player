@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Input, SaveButton, Toggle } from '@tahti-player/ui';
+import {
+  Button,
+  InlineError,
+  Input,
+  SaveButton,
+  Toggle,
+} from '@tahti-player/ui';
 
 import {
   disconnectSocial,
@@ -131,11 +137,7 @@ export function SocialOAuthPlatform({
       ) : (
         <SettingsHint>{copy.connectHint}</SettingsHint>
       )}
-      {error ? (
-        <p className="text-accent-red-strong text-sm" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError>{error}</InlineError> : null}
       <div className="flex flex-wrap justify-end gap-2">
         {status.connected ? (
           <>

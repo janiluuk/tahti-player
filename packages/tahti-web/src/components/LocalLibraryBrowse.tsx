@@ -141,21 +141,27 @@ export function FacetGroupList({
           key={`${group.name}\u0000${group.secondary}`}
           className="flex items-center gap-1"
         >
-          <Button
-            variant="text"
-            className="border-border h-auto min-w-0 flex-1 justify-start rounded-md border px-2 py-1.5 text-left"
-            title={kind === 'folders' ? group.name : undefined}
-            onClick={() => onSelect(group)}
+          <Tooltip
+            content={group.name}
+            side="top"
+            disabled={kind !== 'folders'}
+            wrapperClassName="flex min-w-0 flex-1"
           >
-            <span className="flex min-w-0 flex-col">
-              <span className="truncate text-sm font-semibold">
-                {facetTitle(kind, group)}
+            <Button
+              variant="text"
+              className="border-border h-auto w-full min-w-0 justify-start rounded-md border px-2 py-1.5 text-left"
+              onClick={() => onSelect(group)}
+            >
+              <span className="flex min-w-0 flex-col">
+                <span className="truncate text-sm font-semibold">
+                  {facetTitle(kind, group)}
+                </span>
+                <span className="text-foreground-secondary truncate text-xs font-normal">
+                  {facetSubtitle(kind, group)}
+                </span>
               </span>
-              <span className="text-foreground-secondary truncate text-xs font-normal">
-                {facetSubtitle(kind, group)}
-              </span>
-            </span>
-          </Button>
+            </Button>
+          </Tooltip>
           {onAddToPlaylist ? (
             <Tooltip content="Add to playlist" side="top">
               <Button

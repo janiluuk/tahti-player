@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, Input } from '@tahti-player/ui';
+import { Button, Dialog, InlineError, Input } from '@tahti-player/ui';
 
 import type { AnnouncementClip, AnnouncementTrim } from '../api/announcements';
 
@@ -88,9 +88,9 @@ export function AnnouncementTrimDialog({
         {field('fadeOutSec', 'Fade out (s)')}
       </div>
       {typeof result === 'string' ? (
-        <p className="text-accent-red-strong mt-2 text-xs" role="alert">
+        <InlineError textSize="xs" className="mt-2">
           {result}
-        </p>
+        </InlineError>
       ) : null}
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>

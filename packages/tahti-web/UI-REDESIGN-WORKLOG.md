@@ -1,3 +1,19 @@
+## 2026-10-23 - UX batch 99 (InlineError)
+
+`@tahti-player/ui` gains `InlineError` (story `Components/InlineError`), the
+red error line under a form, row or panel, announced as an alert. Ninety-three
+hand-styled error paragraphs across 82 files use it, so error text has one
+colour, size scale and role. Bumped tahti-web `0.0.255`.
+
+## 2026-10-23 - UX batch 98 (Settings loaders, title tooltips)
+
+Settings panels, the local playlists browser and the listener widget show
+`InlineLoader` while loading instead of a bare "Loading…" line. Sixteen
+native `title` tooltips use `Tooltip` instead, so they appear on keyboard
+focus and match the rest of the app (top bar buttons, settings footer links,
+Bandcamp links, tracklist markers, AI-generated badge, admin status times,
+library folders). Bumped tahti-web `0.0.254`.
+
 ## 2026-10-23 - UX batch 97 (InlineLoader, embed links)
 
 `@tahti-player/ui` gains `InlineLoader` (story `Components/Loader` ->

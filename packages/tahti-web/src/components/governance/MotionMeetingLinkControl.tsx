@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Select } from '@tahti-player/ui';
+import { Button, InlineError, Select } from '@tahti-player/ui';
 
 import { fetchGovernanceMeetings } from '../../api/client';
 import { linkMotionMeeting } from '../../api/governance-motion-meeting';
@@ -90,9 +90,9 @@ export function MotionMeetingLinkControl({
         Cancel
       </Button>
       {error ? (
-        <p role="alert" className="text-accent-red-strong w-full text-xs">
+        <InlineError textSize="xs" className="w-full">
           {error}
-        </p>
+        </InlineError>
       ) : null}
     </div>
   );

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Badge, Button, Input, Select } from '@tahti-player/ui';
+import { Badge, Button, InlineError, Input, Select } from '@tahti-player/ui';
 
 import {
   createAdminElection,
@@ -131,11 +131,7 @@ function NewElectionForm({ onCreated }: { onCreated: () => void }) {
           onChange={(e) => setCloseAt(e.target.value)}
         />
       </div>
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-sm">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError>{error}</InlineError> : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy}>
           Call election

@@ -34,7 +34,7 @@ export const Shown: Story = {
   play: async ({ canvasElement }) => {
     const badge = within(canvasElement).getByText('AI-generated');
     await expect(badge).toHaveAttribute(
-      'title',
+      'aria-description',
       'The artist marked this track as made with generative AI',
     );
   },

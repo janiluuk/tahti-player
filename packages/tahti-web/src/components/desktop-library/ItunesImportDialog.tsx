@@ -5,6 +5,7 @@ import {
   Button,
   CopyButton,
   Dialog,
+  InlineError,
   Input,
   Loader,
   Meter,
@@ -331,11 +332,7 @@ export function ItunesImportDialog({
         files are not changed, and tags already in a file are kept.
       </Dialog.Description>
 
-      {state.error ? (
-        <p role="alert" className="text-accent-red-strong text-sm">
-          {state.error}
-        </p>
-      ) : null}
+      {state.error ? <InlineError>{state.error}</InlineError> : null}
 
       {state.phase === 'pick' ? (
         <div className="py-2">

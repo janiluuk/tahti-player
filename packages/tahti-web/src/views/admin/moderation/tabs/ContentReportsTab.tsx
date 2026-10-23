@@ -8,7 +8,13 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, ButtonAnchor, Input, Select } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonAnchor,
+  InlineError,
+  Input,
+  Select,
+} from '@tahti-player/ui';
 
 import {
   fetchAdminContentReports,
@@ -193,11 +199,7 @@ function ReportActions({
           </Button>
         ) : null}
       </div>
-      {error ? (
-        <p className="text-accent-red-strong text-xs" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
     </div>
   );
 }

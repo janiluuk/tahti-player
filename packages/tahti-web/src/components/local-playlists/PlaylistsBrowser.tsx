@@ -12,7 +12,13 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, EmptyState, Loader, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  EmptyState,
+  InlineLoader,
+  Loader,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import type {
   NativeImportPreview,
@@ -139,7 +145,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
           className="flex-1"
         />
       ) : playlists === null ? (
-        <EmptyState size="sm" title="Loading…" className="flex-1" />
+        <InlineLoader label="Loading…" className="flex-1 justify-center" />
       ) : playlists.length === 0 ? (
         <EmptyState
           size="sm"

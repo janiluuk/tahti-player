@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import {
   Button,
   FilterChips,
+  InlineLoader,
   Input,
   SaveButton,
   Select,
@@ -241,7 +242,7 @@ export function ArtistPanel() {
       onRetry={() => setAttempt((n) => n + 1)}
     />
   ) : (
-    <SettingsHint>Loading…</SettingsHint>
+    <InlineLoader label="Loading…" />
   );
 
   const tabItems: TabsItem[] = [
@@ -450,7 +451,7 @@ export function ArtistPanel() {
             }}
           />
         ) : (
-          <SettingsHint>Loading…</SettingsHint>
+          <InlineLoader label="Loading…" />
         )
       ) : (
         <div className="flex flex-col gap-6">

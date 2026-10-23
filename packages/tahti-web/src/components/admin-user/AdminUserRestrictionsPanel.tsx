@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Badge, Button, Select, Textarea } from '@tahti-player/ui';
+import { Badge, Button, InlineError, Select, Textarea } from '@tahti-player/ui';
 
 import {
   createAccountRestriction,
@@ -200,11 +200,7 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
               maxLength={500}
               placeholder="Shown to the user"
             />
-            {error ? (
-              <p className="text-accent-red-strong text-sm" role="alert">
-                {error}
-              </p>
-            ) : null}
+            {error ? <InlineError>{error}</InlineError> : null}
             <div className="flex justify-end">
               <Button type="submit" size="sm" disabled={busy || !reason.trim()}>
                 Add restriction

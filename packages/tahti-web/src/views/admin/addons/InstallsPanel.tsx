@@ -1,6 +1,13 @@
 import { ArrowDownIcon, ArrowUpIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 
-import { Badge, Button, Input, Toggle, Tooltip } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  InlineError,
+  Input,
+  Toggle,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { type AdminAddonInstall } from '../../../api/admin';
 import { PageEmpty, PageLoading } from '../../../components/PageStates';
@@ -53,11 +60,7 @@ export function InstallsPanel({
         className="max-w-xs"
         description="Freeform surface id, e.g. homepage."
       />
-      {error ? (
-        <p className="text-accent-red-strong text-sm" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError>{error}</InlineError> : null}
       {loading ? (
         <PageLoading label="Loading installs…" />
       ) : installs.length === 0 ? (

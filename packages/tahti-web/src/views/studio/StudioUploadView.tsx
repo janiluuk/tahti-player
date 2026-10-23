@@ -13,6 +13,7 @@ import {
   ButtonLink,
   EmptyState,
   FilePicker,
+  InlineError,
   InlineLoader,
   Tooltip,
   ViewShell,
@@ -246,11 +247,7 @@ export function StudioUploadView() {
                 metadata. If the file has none, its filename is used and you can
                 name it in the editor afterwards.
               </p>
-              {message && (
-                <p className="text-accent-red-strong text-sm" role="alert">
-                  {message}
-                </p>
-              )}
+              {message && <InlineError>{message}</InlineError>}
               <div className="flex flex-wrap gap-2">
                 <Button
                   disabled={busy || !file}

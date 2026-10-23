@@ -1,7 +1,7 @@
 import { HistoryIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Badge, Button, Dialog } from '@tahti-player/ui';
+import { Badge, Button, Dialog, InlineError } from '@tahti-player/ui';
 
 import {
   fetchAdminWorkerHistory,
@@ -66,9 +66,7 @@ function WorkerHistoryDialog({
     >
       <Dialog.Title>{worker?.name} job history</Dialog.Title>
       {error ? (
-        <p className="text-accent-red-strong text-sm" role="alert">
-          {error}
-        </p>
+        <InlineError>{error}</InlineError>
       ) : history === null ? (
         <PageLoading label="Loading history…" />
       ) : history.length === 0 ? (

@@ -1,6 +1,12 @@
 import { useState } from 'react';
 
-import { Dialog, Input, SaveButton, Toggle } from '@tahti-player/ui';
+import {
+  Dialog,
+  InlineError,
+  Input,
+  SaveButton,
+  Toggle,
+} from '@tahti-player/ui';
 
 import {
   createRtmpTarget,
@@ -174,11 +180,7 @@ export function MulticastConfigureDialog({
             disabled={saving}
           />
         ) : null}
-        {error ? (
-          <p className="text-accent-red-strong text-sm" role="alert">
-            {error}
-          </p>
-        ) : null}
+        {error ? <InlineError>{error}</InlineError> : null}
       </div>
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>

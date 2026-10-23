@@ -144,14 +144,15 @@ export function ReleaseTrackRow({
         </Link>
       ) : null}
       {shopUrl ? (
-        <ExternalLink
-          href={shopUrl}
-          className="border-border size-7 justify-center overflow-hidden rounded border no-underline"
-          aria-label={`Open ${track.title} on Bandcamp`}
-          title="Open on Bandcamp"
-        >
-          <SourceServiceIcon id="bandcamp" size="detail" />
-        </ExternalLink>
+        <Tooltip content="Open on Bandcamp" side="top">
+          <ExternalLink
+            href={shopUrl}
+            className="border-border size-7 justify-center overflow-hidden rounded border no-underline"
+            aria-label={`Open ${track.title} on Bandcamp`}
+          >
+            <SourceServiceIcon id="bandcamp" size="detail" />
+          </ExternalLink>
+        </Tooltip>
       ) : null}
     </li>
   );
