@@ -15,7 +15,6 @@ import {
   AmbientTrackList,
   type AmbientTrackListItem,
 } from '../../../components/AmbientTrackList';
-import { mockAmbientPeaks } from '../../../components/AmbientTrackRow';
 import { EmbedTrackRow } from '../../../components/EmbedTrackRow';
 import { StudioSoundRowMenu } from '../../../components/StudioSoundRowMenu';
 import {
@@ -199,10 +198,7 @@ function toHostedListItem(
     isCurrent && playback.duration > 0
       ? playback.currentTime / playback.duration
       : 0;
-  const peaks =
-    item.peaks && item.peaks.length > 0
-      ? item.peaks
-      : mockAmbientPeaks(item.id.length);
+  const peaks = item.peaks ?? null;
 
   const titleNode: ReactNode = <SoundTitle item={item} />;
   const belowTitle: ReactNode = (

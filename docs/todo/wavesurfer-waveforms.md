@@ -3,7 +3,8 @@
 **Status:** partial — batch 88 shipped foundation + large previews + editor
 shell; batch 89 fixed silence drawing as full bars, peak-less tracks stripping
 the player `src`, and theme / resize re-creation. Desktop / full ProWaveform
-deletion remain.
+deletion remain. Batch 91: editor wheel only zooms with Ctrl/⌘, theme
+re-create, labelled overlays, fallback notice.
 
 Requested 2026-10-21: integrate [wavesurfer.js](https://github.com/katspaugh/wavesurfer.js)
 ([wavesurfer.xyz](https://wavesurfer.xyz/)) and use it for the waveforms in the
@@ -17,10 +18,10 @@ migration”).
   `waveform/peaks.ts`, zoom / pan in `waveform/viewMath.ts`, regions in
   `RegionList.tsx`, toolbar `WaveformToolbar.tsx`, editor shell
   `WaveformEditor.tsx` (trim etc.).
-- **Previews**: `components/WaveformCanvas.tsx`, `WaveformMinimap.tsx`,
+- **Previews**: `components/WaveformCanvas.tsx`,
   `tahti/WaveformSeekbar.tsx` (player bar / seek), `AmbientTrackRow.tsx`
-  (Library, Collections, Favorites rows; falls back to mock peaks when a
-  track has none), `views/track-detail/TrackHero.tsx`, Studio
+  (Library, Collections, Favorites rows; a flat placeholder when a track
+  has no peaks, batch 90), `views/track-detail/TrackHero.tsx`, Studio
   `sound/SoundHeader.tsx`, `track-edit-dialog/AudioTab.tsx`.
 - **Peaks data**: tahti-org stores `peaks Json?` as `[0..255]` amplitude
   buckets cached at transcode time (Sound and the set / episode models), so

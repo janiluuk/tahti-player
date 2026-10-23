@@ -1,6 +1,12 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-import { Badge, Button, ImageReveal, SegmentedControl } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  ExternalLink,
+  ImageReveal,
+  SegmentedControl,
+} from '@tahti-player/ui';
 
 import {
   caseFlowchart,
@@ -404,25 +410,21 @@ function ShotPane({
                   ? `Screenshot captured ${shot.capturedAt}`
                   : 'Screenshot capture date unknown'}
               </span>
-              <a
+              <ExternalLink
                 href={screenshotUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-primary-strong font-mono break-all underline-offset-2 hover:underline"
+                className="text-primary-strong font-mono break-all no-underline underline-offset-2 hover:underline"
               >
                 {screenshotUrl}
-              </a>
+              </ExternalLink>
             </>
           ) : null}
           {storybookUrl ? (
-            <a
+            <ExternalLink
               href={storybookUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary-strong ml-auto font-semibold underline-offset-2 hover:underline"
+              className="text-primary-strong ml-auto font-semibold no-underline underline-offset-2 hover:underline"
             >
               Storybook →
-            </a>
+            </ExternalLink>
           ) : null}
         </div>
       ) : null}

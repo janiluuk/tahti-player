@@ -114,3 +114,18 @@ export const WithReactNodeContent: Story = {
     </div>
   ),
 };
+
+/** Long explanations wrap at a readable width instead of one long line. */
+export const Multiline: Story = {
+  render: () => (
+    <div className="p-20">
+      <Tooltip
+        multiline
+        side="bottom"
+        content="Download an OBS scene collection, then use Scene Collection → Import in OBS."
+      >
+        <Button variant="secondary">OBS preset</Button>
+      </Tooltip>
+    </div>
+  ),
+};

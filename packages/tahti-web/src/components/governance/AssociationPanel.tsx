@@ -1,6 +1,8 @@
 import { Building2Icon } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
+import { ExternalLink } from '@tahti-player/ui';
+
 import {
   fetchAssociationProfile,
   type AssociationProfile,
@@ -105,14 +107,12 @@ export function AssociationPanel() {
                 <Fact
                   label="Website"
                   value={
-                    <a
+                    <ExternalLink
                       href={profile.website}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline-offset-2 hover:underline"
+                      className="no-underline underline-offset-2 hover:underline"
                     >
                       {profile.website}
-                    </a>
+                    </ExternalLink>
                   }
                 />
               ) : null}

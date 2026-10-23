@@ -6,7 +6,7 @@ import {
   UploadIcon,
 } from 'lucide-react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { iconBtnClass } from './shared';
@@ -102,19 +102,24 @@ export function BroadcastControls({ nav }: { nav: TopNavState }) {
           </div>
         ) : null}
       </div>
-      <Button
-        variant="text"
-        size="icon-sm"
-        className={cn('hidden sm:inline-flex', iconBtnClass)}
-        aria-label="Open upload"
-        title="Open upload"
-        data-tour-id="topbar-upload"
-        onClick={() => {
-          void navigate({ to: '/library/upload' });
-        }}
+      <Tooltip
+        content="Open upload"
+        side="bottom"
+        wrapperClassName="hidden sm:inline-flex"
       >
-        <UploadIcon size={16} />
-      </Button>
+        <Button
+          variant="text"
+          size="icon-sm"
+          className={iconBtnClass}
+          aria-label="Open upload"
+          data-tour-id="topbar-upload"
+          onClick={() => {
+            void navigate({ to: '/library/upload' });
+          }}
+        >
+          <UploadIcon size={16} />
+        </Button>
+      </Tooltip>
     </>
   );
 }

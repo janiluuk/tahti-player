@@ -159,6 +159,8 @@ export function ChannelStagePlayer({
                   channelIsCurrent && duration > 0 ? currentTime / duration : 0
                 }
                 bars={72}
+                label={channel.user.displayName}
+                durationSec={duration}
                 className="mt-3 h-10 max-w-2xl"
                 playedColor={channel.colorScheme?.accent}
                 unplayedColor={channel.colorScheme?.muted}

@@ -132,6 +132,7 @@ export function EditorWaveSurfer({
   label = 'Waveform',
 }: EditorWaveSurferProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const outerRef = useRef<HTMLDivElement>(null);
   const regionRef = useRef<RegionInstance | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [themeVersion, setThemeVersion] = useState(0);
@@ -347,7 +348,7 @@ export function EditorWaveSurfer({
         created = null;
       }
     };
-  }, [peaks, durationSec, media]);
+  }, [peaks, durationSec, media, themeVersion]);
 
   useEffect(() => {
     if (session && session.ws.options.height !== height) {
@@ -355,29 +356,30 @@ export function EditorWaveSurfer({
     }
   }, [session, height]);
 
+  // Timeline, Minimap and Hover read their colours only at creation, so a
+  // theme switch re-creates the whole instance; selection, overlays and the
+  // view are re-applied from props by the effects below.
+  useEffect(
+    () => observeThemeChange(() => setThemeVersion((version) => version + 1)),
+    [],
+  );
+
   useEffect(() => {
-    if (!session) {
+    const outer = outerRef.current;
+    if (!outer) {
       return;
     }
-    return observeThemeChange(() => {
-      const root = containerRef.current;
-      if (!root) {
-        return;
+    // The Zoom plugin zooms on every vertical wheel. Only Ctrl/⌘ + wheel
+    // (trackpad pinch arrives as ctrl + wheel) may reach it; a plain wheel
+    // scrolls the page and Shift + wheel pans the waveform natively.
+    const guard = (event: WheelEvent) => {
+      if (!event.ctrlKey && !event.metaKey) {
+        event.stopPropagation();
       }
-      const { wave, progress, cursor } = editorColors(root);
-      session.ws.setOptions({
-        waveColor: wave,
-        progressColor: wave,
-        cursorColor: cursor,
-      });
-      for (const region of session.regions.getRegions()) {
-        if (!region.id.startsWith(OVERLAY_PREFIX)) {
-          region.setOptions({ color: mix(progress, 30) });
-        }
-      }
-      setThemeVersion((version) => version + 1);
-    });
-  }, [session]);
+    };
+    outer.addEventListener('wheel', guard, { capture: true, passive: true });
+    return () => outer.removeEventListener('wheel', guard, { capture: true });
+  }, []);
 
   useEffect(() => {
     if (!session) {
@@ -422,12 +424,13 @@ export function EditorWaveSurfer({
     const read = (name: string, fallback: string) =>
       root ? readCssVar(root, name, fallback) : fallback;
     const cutColor = mix(read('--color-accent-red', '#ef4444'), 35);
-    const fadeColor = mix(read('--color-accent-cyan', '#22d3ee'), 20);
+    const fadeInColor = mix(read('--color-accent-cyan', '#22d3ee'), 25);
+    const fadeOutColor = mix(read('--color-accent-purple', '#c084fc'), 25);
     const markerColor = read('--color-accent-yellow', '#eab308');
     const added: { remove: () => void }[] = [];
     const place = (
       id: string,
-      params: { start: number; end?: number; color: string },
+      params: { start: number; end?: number; color: string; content: string },
     ) => {
       const region = session.regions.addRegion({
         id: `${OVERLAY_PREFIX}${id}`,
@@ -441,17 +444,22 @@ export function EditorWaveSurfer({
       added.push(region);
     };
     (cuts ?? []).forEach((cut, index) =>
-      place(`cut-${index}`, { ...cut, color: cutColor }),
+      place(`cut-${index}`, { ...cut, color: cutColor, content: 'Cut' }),
     );
     (fades ?? []).forEach((fade, index) =>
       place(`fade-${index}`, {
         start: fade.at,
         end: fade.at + fade.duration,
-        color: fadeColor,
+        color: fade.type === 'in' ? fadeInColor : fadeOutColor,
+        content: fade.type === 'in' ? 'Fade in' : 'Fade out',
       }),
     );
     (markers ?? []).forEach((at, index) =>
-      place(`marker-${index}`, { start: at, color: markerColor }),
+      place(`marker-${index}`, {
+        start: at,
+        color: markerColor,
+        content: `M${index + 1}`,
+      }),
     );
     return () => {
       for (const region of added) {
@@ -498,6 +506,7 @@ export function EditorWaveSurfer({
 
   return (
     <div
+      ref={outerRef}
       tabIndex={0}
       role="application"
       aria-label={`${label}. Space plays or pauses, arrow keys move the playhead, left and right bracket start and end a selection at the playhead, plus and minus zoom, Z zooms to the selection, Delete cuts it, Escape clears it.`}

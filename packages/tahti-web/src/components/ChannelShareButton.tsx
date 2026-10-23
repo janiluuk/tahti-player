@@ -9,7 +9,13 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, CopyButton, Dialog, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  CopyButton,
+  Dialog,
+  ExternalLink,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { fetchChannel } from '../api/client';
 
@@ -82,16 +88,21 @@ export function ChannelShareButton({
   return (
     <>
       {showTrigger ? (
-        <Button
-          size={iconOnly ? 'icon-sm' : 'sm'}
-          variant="secondary"
-          onClick={() => setOpen(true)}
-          aria-label={`Share ${displayName}`}
-          title="Share or embed channel"
+        <Tooltip
+          content="Share or embed channel"
+          side="bottom"
+          wrapperClassName="inline-flex"
         >
-          <Share2Icon size={16} aria-hidden />
-          {!iconOnly && <span className="ml-1.5">Share</span>}
-        </Button>
+          <Button
+            size={iconOnly ? 'icon-sm' : 'sm'}
+            variant="secondary"
+            onClick={() => setOpen(true)}
+            aria-label={`Share ${displayName}`}
+          >
+            <Share2Icon size={16} aria-hidden />
+            {!iconOnly && <span className="ml-1.5">Share</span>}
+          </Button>
+        </Tooltip>
       ) : null}
       <Dialog.Root isOpen={open} onClose={() => setOpen(false)}>
         <Dialog.Title>Share channel</Dialog.Title>
@@ -137,15 +148,13 @@ export function ChannelShareButton({
             <div className="flex items-center gap-2 pt-1">
               {socialLinks.map((link) => (
                 <Tooltip key={link.id} content={link.label} side="top">
-                  <a
+                  <ExternalLink
                     href={link.href}
-                    target="_blank"
-                    rel="noreferrer"
                     aria-label={link.label}
-                    className="border-border hover:bg-background-secondary text-foreground-secondary hover:text-foreground inline-flex size-8 items-center justify-center rounded-lg border transition-colors"
+                    className="border-border hover:bg-background-secondary text-foreground-secondary hover:text-foreground inline-flex size-8 items-center justify-center rounded-lg border no-underline transition-colors"
                   >
                     <link.icon size={16} aria-hidden />
-                  </a>
+                  </ExternalLink>
                 </Tooltip>
               ))}
             </div>

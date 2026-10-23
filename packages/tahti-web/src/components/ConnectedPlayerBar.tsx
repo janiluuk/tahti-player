@@ -285,7 +285,8 @@ export function ConnectedPlayerBar() {
           trackId={playable?.id ?? currentId ?? 'none'}
           progress={progress}
           peaks={currentPeaks}
-          bars={currentPeaks?.length || 64}
+          label={playable?.title}
+          durationSec={duration}
           onSeek={(fraction) => {
             if (duration <= 0) {
               return;

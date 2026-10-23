@@ -126,7 +126,7 @@ describe('EditorWaveSurfer', () => {
     expect(options.normalize).toBe(false);
   });
 
-  it('resizes without re-creating and recolours on theme change', async () => {
+  it('resizes without re-creating and re-creates on theme change', async () => {
     vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
       cb(0);
       return 1;
@@ -139,15 +139,45 @@ describe('EditorWaveSurfer', () => {
     );
     expect(mocks.create).toHaveBeenCalledTimes(1);
     document.documentElement.setAttribute('data-theme', 'dark');
-    await waitFor(() =>
-      expect(mocks.ws.setOptions).toHaveBeenCalledWith(
-        expect.objectContaining({ waveColor: expect.any(String) }),
-      ),
-    );
-    expect(mocks.region.setOptions).toHaveBeenCalledWith(
-      expect.objectContaining({ color: expect.any(String) }),
-    );
+    await waitFor(() => expect(mocks.create).toHaveBeenCalledTimes(2));
+    expect(mocks.ws.destroy).toHaveBeenCalledTimes(1);
     document.documentElement.removeAttribute('data-theme');
+  });
+
+  it('lets only Ctrl/⌘ + wheel reach the zoom plugin', async () => {
+    render(<EditorWaveSurfer {...baseProps} />);
+    const outer = screen.getByTestId('editor-wavesurfer');
+    const inner = outer.firstElementChild!;
+    const reached = vi.fn();
+    inner.addEventListener('wheel', reached);
+    inner.dispatchEvent(new WheelEvent('wheel', { deltaY: 40, bubbles: true }));
+    expect(reached).not.toHaveBeenCalled();
+    inner.dispatchEvent(
+      new WheelEvent('wheel', { deltaY: 40, ctrlKey: true, bubbles: true }),
+    );
+    inner.dispatchEvent(
+      new WheelEvent('wheel', { deltaY: 40, metaKey: true, bubbles: true }),
+    );
+    expect(reached).toHaveBeenCalledTimes(2);
+  });
+
+  it('labels cuts, fades and markers', async () => {
+    render(
+      <EditorWaveSurfer
+        {...baseProps}
+        cuts={[{ start: 1, end: 2 }]}
+        fades={[
+          { type: 'in', at: 0, duration: 1 },
+          { type: 'out', at: 10, duration: 2 },
+        ]}
+        markers={[5, 7]}
+      />,
+    );
+    await waitFor(() => expect(mocks.regions.addRegion).toHaveBeenCalled());
+    const contents = (
+      mocks.regions.addRegion.mock.calls as unknown as [{ content?: string }][]
+    ).map(([params]) => params.content);
+    expect(contents).toEqual(['Cut', 'Fade in', 'Fade out', 'M1', 'M2']);
   });
 
   it('calls onFallback when initialisation fails', async () => {

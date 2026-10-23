@@ -78,15 +78,18 @@ export type TooltipProps = PropsWithChildren<{
   disabled?: boolean;
   className?: string;
   wrapperClassName?: string;
+  /** Wrap long text at a readable width instead of one long line. */
+  multiline?: boolean;
 }>;
 
 /** The floating bubble; positioning only runs while a tooltip is actually open. */
 const TooltipBubble: FC<{
   anchor: HTMLElement | null;
   side: TooltipSide;
+  multiline: boolean;
   className?: string;
   children: ReactNode;
-}> = ({ anchor, side, className, children }) => {
+}> = ({ anchor, side, multiline, className, children }) => {
   const { refs, floatingStyles } = useFloating({
     placement: side,
     open: true,
@@ -105,6 +108,7 @@ const TooltipBubble: FC<{
       style={floatingStyles}
       className={cn(
         'border-border bg-background text-foreground shadow-shadow pointer-events-none z-50 rounded-md border-(length:--border-width) px-2 py-1 text-sm whitespace-nowrap',
+        multiline && 'max-w-xs whitespace-normal',
         className,
       )}
     >
@@ -121,6 +125,7 @@ export const Tooltip: FC<TooltipProps> = ({
   disabled = false,
   className,
   wrapperClassName,
+  multiline = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
@@ -138,7 +143,12 @@ export const Tooltip: FC<TooltipProps> = ({
     >
       {children}
       {isOpen && !suppressed && (
-        <TooltipBubble anchor={anchor} side={side} className={className}>
+        <TooltipBubble
+          anchor={anchor}
+          side={side}
+          multiline={multiline}
+          className={className}
+        >
           {content}
         </TooltipBubble>
       )}

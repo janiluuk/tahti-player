@@ -123,10 +123,12 @@ export const SeekAndVolume: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const seek = canvas.getByRole('slider', { name: 'Seek' });
+    const seek = canvas.getByRole('slider', { name: /^Seek/ });
     await expect(seek).toHaveAttribute('aria-valuenow', '25');
     const rect = seek.getBoundingClientRect();
-    fireEvent.click(seek, { clientX: rect.left + rect.width * 0.5 });
+    const midpoint = { clientX: rect.left + rect.width * 0.5, pointerId: 1 };
+    fireEvent.pointerDown(seek, midpoint);
+    fireEvent.pointerUp(seek, midpoint);
     await expect(usePlayerStore.getState().currentTime).toBeCloseTo(122.5, 0);
     await waitFor(() => expect(seek).toHaveAttribute('aria-valuenow', '50'));
 

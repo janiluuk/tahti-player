@@ -9,14 +9,12 @@ import { fetchDownloadGates } from '../../api/sound-download-gates';
 import { type TahtiPlayable, type TrackComment } from '../../api/types';
 import { hasAccountRole } from '../../lib/accountRoles';
 import { normalizeColorScheme } from '../../lib/colorScheme';
+import { buildCommentMarkers } from '../../lib/commentMarkers';
 import { EMBED_PROVIDER_LABEL, embedSrcFor } from '../../lib/embedSrc';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
 import { assignStripeRedirectUrl } from '../../lib/stripeRedirect';
-import {
-  formatTimedCommentBody,
-  parseTimedComment,
-} from '../../lib/timedComment';
+import { formatTimedCommentBody } from '../../lib/timedComment';
 import { resolveTrackAccessGate } from './resolveAccessGate';
 import { type TrackDetailState } from './useTrackDetail';
 
@@ -100,13 +98,7 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
   const ambient = rgb
     ? `radial-gradient(circle at 20% 10%, rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.55), transparent 55%), radial-gradient(circle at 80% 0%, rgba(${rgb[2]}, ${rgb[0]}, ${rgb[1]}, 0.35), transparent 50%)`
     : undefined;
-  const commentMarkers = comments.flatMap((comment) => {
-    const parsed = parseTimedComment(comment.body);
-    if (parsed.seconds == null || totalDuration <= 0) {
-      return [];
-    }
-    return [{ fraction: parsed.seconds / totalDuration }];
-  });
+  const commentMarkers = buildCommentMarkers(comments, totalDuration);
   const activeCueId = tracklist.reduce<string | null>((current, cue) => {
     if (cue.startSec == null || cue.startSec > elapsed) {
       return current;

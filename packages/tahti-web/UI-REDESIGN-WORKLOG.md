@@ -1,3 +1,45 @@
+## 2026-10-23 - UX batch 92 (clickable comment markers, library tooltips)
+
+Timed comments on the track page waveform are now buttons: hover or focus
+shows the time, author and comment, and a click jumps there (starting the
+track if needed). Comments within 1.5% of each other share one marker with
+a count instead of stacking. Seventeen buttons that relied on the browser's
+`title` tooltip use the library `Tooltip` (top nav Search / Log in / Close
+search / Upload / processing, channel share, embed, OBS preset, radio cover
+edit / preview, cover-art and brand swatches, saved map comments, admin
+Selects, Soulseek); two redundant titles are gone. `Tooltip` gains
+`multiline` for long explanations. Bumped ui `0.0.21`, tahti-web `0.0.248`.
+
+## 2026-10-23 - UX batch 91 (editor wheel + labels, fitted seekbar bars, external links)
+
+The pro editor waveform no longer zooms on every mouse wheel: a plain wheel
+scrolls the page, Ctrl/⌘ + wheel or pinch zooms and Shift + wheel pans, as
+the hint under it says. Theme switches recolour its timeline, minimap and
+hover label too; cuts, fade in / fade out (now different colours) and
+numbered markers are labelled on the waveform; and if the detailed editor
+can't start, a notice says the basic waveform is showing. The player bar
+and Discover seekbars fit their bar count to the width instead of drawing
+600 sub-pixel bars per track. Artist liked tracks use the ambient list
+(waveforms, sizes, grid, sort). Thirteen new-tab links (governance
+documents, meetings, AGM minutes, annual report revisions, Screen atlas,
+Settings footer, user menu, channel share) use `ExternalLink`. Bumped to
+`0.0.247`.
+
+## 2026-10-23 - UX batch 90 (honest ambient waveforms, seekbar keyboard + touch, grid view)
+
+Ambient track rows on Collections, Smart links, Favorites, Listen, artist
+pages and Studio Sounds no longer draw a made-up waveform for tracks without
+stored peaks; they show the flat placeholder. The waveform seekbar (player
+bar, ambient rows, channel stage, Discover, Studio upload) is a focusable
+slider: arrow keys step 5 s, Page Up / Down 10%, Home / End; drag to scrub,
+touch included, while lists still scroll vertically; it is named after the
+track with "1:05 of 3:20" value text, and resampling keeps each bar's
+loudest bucket. The tracklist editor waveform uses pointer events (touch,
+drags that end outside), redraws on theme change, draws a dim placeholder
+without peaks, and moves the playhead from the keyboard. The orphan
+`WaveformMinimap` is gone. Track lists with a size switcher gain a Grid view
+of cover cards with play. Bumped to `0.0.246`.
+
 ## 2026-10-22 - UX batch 89 (waveform fixes + UI library swaps)
 
 wavesurfer previews were drawing silence as full-height bars (stored `[0..255]`

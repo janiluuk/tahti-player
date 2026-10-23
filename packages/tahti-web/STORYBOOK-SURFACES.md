@@ -226,6 +226,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Library/PlayableAmbientTrackList` | `tahti-web/PlayableAmbientTrackList.stories.tsx` |
 | `Tahti/Track/PlayableTrackContextMenu` | `tahti-web/PlayableTrackContextMenu.stories.tsx` |
 | `Tahti/Track/PlayableTrackTable` | `tahti-web/PlayableTrackTable.stories.tsx` |
+| `Tahti/Player/PlayerWaveform` | `tahti-web/PlayerWaveform.stories.tsx` |
 | `Tahti/Widgets/PluginStorePanel` | `tahti-web/PluginStorePanel.stories.tsx` |
 | `Tahti/Widgets/PluginStorePanel/Shared cards` | `tahti-web/PluginStoreShared.stories.tsx` |
 | `Tahti/Misc/PortInventoryPanel` | `tahti-web/PortInventoryPanel.stories.tsx` |
@@ -323,7 +324,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Auth/VerifyView` | `tahti-web/VerifyView.stories.tsx` |
 | `Tahti/Player/VisualizerModeMenu` | `tahti-web/VisualizerModeMenu.stories.tsx` |
 | `Tahti/Player/WaveformCanvas` | `tahti-web/WaveformCanvas.stories.tsx` |
-| `Tahti/Widgets/WaveformMinimap` | `tahti-web/WaveformMinimap.stories.tsx` |
 | `Tahti/Player/WaveformSeekbar` | `tahti-web/WaveformSeekbar.stories.tsx` |
 | `Tahti/Listen/WelcomeStrip` | `tahti-web/WelcomeStrip.stories.tsx` |
 | `Tahti/App/WhatsNewView` | `tahti-web/WhatsNewView.stories.tsx` |

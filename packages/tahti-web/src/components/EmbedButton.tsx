@@ -1,7 +1,7 @@
 import { CodeIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, CopyButton, Dialog } from '@tahti-player/ui';
+import { Button, CopyButton, Dialog, Tooltip } from '@tahti-player/ui';
 
 export type EmbedTarget =
   | { kind: 'channel'; slug: string }
@@ -40,20 +40,26 @@ export function EmbedButton({
 
   return (
     <>
-      <Button
-        size={iconOnly ? 'icon-sm' : 'sm'}
-        variant="secondary"
-        onClick={() => setOpen(true)}
-        aria-label={iconOnly ? 'Embed artist channel' : undefined}
-        title={iconOnly ? 'Embed artist channel' : undefined}
+      <Tooltip
+        content="Embed artist channel"
+        side="bottom"
+        disabled={!iconOnly}
+        wrapperClassName="inline-flex"
       >
-        <CodeIcon
-          size={14}
-          aria-hidden
-          className={iconOnly ? undefined : 'mr-1.5'}
-        />
-        {!iconOnly && label}
-      </Button>
+        <Button
+          size={iconOnly ? 'icon-sm' : 'sm'}
+          variant="secondary"
+          onClick={() => setOpen(true)}
+          aria-label={iconOnly ? 'Embed artist channel' : undefined}
+        >
+          <CodeIcon
+            size={14}
+            aria-hidden
+            className={iconOnly ? undefined : 'mr-1.5'}
+          />
+          {!iconOnly && label}
+        </Button>
+      </Tooltip>
       <Dialog.Root isOpen={open} onClose={() => setOpen(false)}>
         <Dialog.Title>Embed</Dialog.Title>
         <Dialog.Description>

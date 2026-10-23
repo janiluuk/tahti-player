@@ -3,10 +3,11 @@ import {
   AmbientTrackList,
   type AmbientTrackListItem,
 } from '@tahti-web/components/AmbientTrackList';
-import { mockAmbientPeaks } from '@tahti-web/components/AmbientTrackRow';
 import { useState } from 'react';
 
 import { Button } from '@tahti-player/ui';
+
+import { mockAmbientPeaks } from './mockAmbientPeaks';
 
 const COVER_A = '/mock/northern-lights/cover-first-light.svg';
 const COVER_B = '/mock/dj-moonlight/cover-after-hours.svg';
@@ -112,6 +113,16 @@ export const DenseDefault: Story = {
     items: ITEMS,
     persistDensity: false,
     defaultDensity: 'dense',
+  },
+};
+
+/** Grid offered (as on Collections, Favorites, Listen): pick it in the
+ * switcher to see cover cards with play; the choice is remembered. */
+export const WithGrid: Story = {
+  args: {
+    items: ITEMS,
+    allowGrid: true,
+    persistDensity: false,
   },
 };
 

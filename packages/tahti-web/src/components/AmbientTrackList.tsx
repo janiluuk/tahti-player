@@ -1,7 +1,13 @@
-import { AlignJustifyIcon, ListIcon, Rows2Icon, Rows3Icon } from 'lucide-react';
+import {
+  AlignJustifyIcon,
+  LayoutGridIcon,
+  ListIcon,
+  Rows2Icon,
+  Rows3Icon,
+} from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
-import { SegmentedControl } from '@tahti-player/ui';
+import { Card, CardGrid, SegmentedControl } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 import {
@@ -40,19 +46,29 @@ const LIST_OPTION = {
   icon: <ListIcon size={14} aria-hidden />,
 };
 
-/** A row density, or `list`: a plain data table instead of ambient rows. */
-export type AmbientTrackListView = AmbientTrackRowDensity | 'list';
+const GRID_OPTION = {
+  id: 'grid' as const,
+  label: 'Grid',
+  icon: <LayoutGridIcon size={14} aria-hidden />,
+};
+
+/** A row density, `list` (a plain data table) or `grid` (cover cards). */
+export type AmbientTrackListView = AmbientTrackRowDensity | 'list' | 'grid';
 
 const STORAGE_KEY = 'tahti.ambientTrackList.density';
 
 function readStoredView(
   fallback: AmbientTrackListView,
   allowList: boolean,
+  allowGrid: boolean,
 ): AmbientTrackListView {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw === 'list' && allowList) {
       return 'list';
+    }
+    if (raw === 'grid' && allowGrid) {
+      return 'grid';
     }
     if (
       raw &&
@@ -86,6 +102,8 @@ export type AmbientTrackListProps = {
   toolbarEnd?: ReactNode;
   /** Offers a List option in the switcher; renders this in place of the rows. */
   renderList?: () => ReactNode;
+  /** Offers a Grid option: cover cards with play, no waveform. */
+  allowGrid?: boolean;
   className?: string;
 };
 
@@ -98,19 +116,31 @@ export function AmbientTrackList({
   emptyMessage = 'No tracks yet.',
   toolbarEnd,
   renderList,
+  allowGrid = false,
   className,
 }: AmbientTrackListProps) {
   const controlled = densityProp !== undefined;
   const shouldPersist = persistDensity ?? !controlled;
   const [internal, setInternal] = useState<AmbientTrackListView>(() =>
     shouldPersist
-      ? readStoredView(defaultDensity, Boolean(renderList))
+      ? readStoredView(defaultDensity, Boolean(renderList), allowGrid)
       : defaultDensity,
   );
   const view: AmbientTrackListView = controlled ? densityProp : internal;
   const showList = view === 'list' && Boolean(renderList);
+  const showGrid = view === 'grid' && allowGrid;
   const density: AmbientTrackRowDensity =
-    view === 'list' ? defaultDensity : view;
+    view === 'list' || view === 'grid' ? defaultDensity : view;
+  const activeView: AmbientTrackListView = showList
+    ? 'list'
+    : showGrid
+      ? 'grid'
+      : density;
+  const options = [
+    ...SIZE_OPTIONS,
+    ...(allowGrid ? [GRID_OPTION] : []),
+    ...(renderList ? [LIST_OPTION] : []),
+  ];
 
   useEffect(() => {
     if (!shouldPersist) {
@@ -127,7 +157,7 @@ export function AmbientTrackList({
     if (!controlled) {
       setInternal(next);
     }
-    if (next !== 'list') {
+    if (next !== 'list' && next !== 'grid') {
       onDensityChange?.(next);
     }
   };
@@ -136,14 +166,14 @@ export function AmbientTrackList({
     <section
       className={cn('flex w-full min-w-0 flex-col gap-3', className)}
       data-testid="ambient-track-list"
-      data-density={showList ? 'list' : density}
+      data-density={activeView}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <SegmentedControl
           aria-label="Track size"
           iconOnly
-          options={renderList ? [...SIZE_OPTIONS, LIST_OPTION] : SIZE_OPTIONS}
-          value={showList ? 'list' : density}
+          options={options}
+          value={activeView}
           onChange={setView}
         />
         {toolbarEnd ? (
@@ -154,6 +184,22 @@ export function AmbientTrackList({
         <p className="text-foreground-secondary text-sm">{emptyMessage}</p>
       ) : showList && renderList ? (
         renderList()
+      ) : showGrid ? (
+        <CardGrid data-testid="ambient-track-grid">
+          {items.map((item) => (
+            <Card
+              key={item.id}
+              src={item.coverUrl ?? undefined}
+              title={item.titleNode ?? item.title}
+              subtitle={item.artist}
+              surface="neutral"
+              onPlay={item.onPlay}
+              isPlaying={item.isPlaying}
+              playLabel={`Play ${item.title}`}
+              pauseLabel={`Pause ${item.title}`}
+            />
+          ))}
+        </CardGrid>
       ) : (
         <ul className="flex flex-col gap-2">
           {items.map((item) => {

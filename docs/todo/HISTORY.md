@@ -1,3 +1,38 @@
+## 2026-10-23 - UX batch 92 thirty waveform + UI slices
+
+Folded `batch-92-waveform-ui-thirty.md`. `lib/commentMarkers`
+(`buildCommentMarkers`: time + author + clipped text labels, 1.5% grouping
+with counts) feeds `PlayerWaveform`, whose labelled markers are `Button` +
+`Tooltip` seek targets; `PlayerWaveform` story. Seventeen `Button title=` ->
+`Tooltip` (wrapper display classes moved off the buttons), two redundant
+titles removed, `Tooltip` `multiline`. Tests + stories. ui `0.0.21`,
+tahti-web `0.0.248`.
+
+## 2026-10-23 - UX batch 91 thirty waveform + UI slices
+
+Folded `batch-91-waveform-ui-thirty.md`. `EditorWaveSurfer`: capture-phase
+wheel guard so only Ctrl/⌘ + wheel reaches the Zoom plugin; theme change
+re-creates the instance (plugins read colours once); overlay region labels
+(Cut / Fade in / Fade out / M1..), fade in cyan vs fade out purple;
+`WaveformEditor` shows an Alert on the ProWaveform fallback.
+`WaveformSeekbar` `bars="auto"` (default, ~1 bar / 4 px, 16..160) - player
+bar and Discover no longer pass the 600-peak length. `ArtistLikes` ->
+`PlayableAmbientTrackList`. Thirteen `target="_blank"` anchors in ten files
+-> `ExternalLink`. Tests + stories. tahti-web `0.0.247`.
+
+## 2026-10-23 - UX batch 90 thirty waveform + UI slices
+
+Folded `batch-90-waveform-ui-thirty.md`. `PlayableAmbientTrackList` and
+`SoundsAmbientList` stopped fabricating peaks (`mockAmbientPeaks` is now a
+Storybook-only helper). `WaveformSeekbar`: focusable slider, keyboard seek,
+pointer-capture scrub (`touch-pan-y`), `label` / `durationSec` value text,
+memoised max-resampled bars; five callers pass labels. `WaveformCanvas`:
+pointer events, `observeThemeChange` redraw, memoised peak max, dim
+placeholder, keyboard slider. Orphan `WaveformMinimap` deleted.
+`AmbientTrackList` `allowGrid` Grid view (`CardGrid` + `Card`), persisted,
+on every `PlayableAmbientTrackList` surface. Tests + stories. tahti-web
+`0.0.246`.
+
 ## 2026-10-22 - UX batch 89 thirty waveform + UI slices
 
 Folded `batch-89-waveform-ui-thirty.md`. Waveform: `peaksToWaveSurfer` maps

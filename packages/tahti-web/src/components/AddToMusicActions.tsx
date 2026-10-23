@@ -53,7 +53,6 @@ export function AddToMusicActions({
         <Button
           size={size}
           variant="secondary"
-          title="Import"
           onClick={() =>
             useSettingsModalStore.getState().open('plugin-store', 'import')
           }

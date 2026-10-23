@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Badge, Button, Input } from '@tahti-player/ui';
+import { Badge, Button, ExternalLink, Input } from '@tahti-player/ui';
 
 import { patchAdminGovernanceDocument } from '../../../../api/admin/admin-governance-documents';
 import type { GovernanceDocument } from '../../../../api/types';
@@ -41,14 +41,12 @@ export function GovernanceDocumentRow({
       <div className="flex flex-wrap items-center gap-2">
         <span>
           {href ? (
-            <a
+            <ExternalLink
               href={href}
-              target="_blank"
-              rel="noreferrer"
-              className="underline-offset-2 hover:underline"
+              className="no-underline underline-offset-2 hover:underline"
             >
               {document.title}
-            </a>
+            </ExternalLink>
           ) : (
             document.title
           )}{' '}

@@ -87,7 +87,9 @@ describe('buildTrackPage', () => {
       playable,
     );
 
-    expect(page.commentMarkers).toEqual([{ fraction: 0.25 }]);
+    expect(page.commentMarkers).toEqual([
+      expect.objectContaining({ fraction: 0.25, seconds: 50, count: 1 }),
+    ]);
   });
 
   it('pauses the current track and plays another one', () => {

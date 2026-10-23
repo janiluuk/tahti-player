@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { fetchUserLikes, likedTrackToPlayable } from '../../api/likes';
 import type { TahtiPlayable } from '../../api/types';
 import { PageError } from '../PageStates';
-import { PlayableTrackTable } from '../PlayableTrackTable';
+import { PlayableAmbientTrackList } from '../PlayableAmbientTrackList';
 import { Eyebrow } from '../tahti/Eyebrow';
 
 export function ArtistLikes({ username }: { username: string }) {
@@ -63,7 +63,12 @@ export function ArtistLikes({ username }: { username: string }) {
           Liked tracks
         </span>
       </Eyebrow>
-      <PlayableTrackTable items={items} playAll={false} compactActions />
+      <PlayableAmbientTrackList
+        items={items}
+        playAll={false}
+        compactActions
+        emptyMessage="No liked tracks."
+      />
     </section>
   );
 }

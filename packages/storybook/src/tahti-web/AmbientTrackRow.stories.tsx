@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import {
-  AmbientTrackRow,
-  mockAmbientPeaks,
-} from '@tahti-web/components/AmbientTrackRow';
+import { AmbientTrackRow } from '@tahti-web/components/AmbientTrackRow';
 import { useState } from 'react';
 
 import { Button } from '@tahti-player/ui';
+
+import { mockAmbientPeaks } from './mockAmbientPeaks';
 
 const COVER_A = '/mock/northern-lights/cover-first-light.svg';
 const COVER_B = '/mock/dj-moonlight/cover-after-hours.svg';

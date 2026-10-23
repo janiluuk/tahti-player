@@ -46,6 +46,19 @@ describe('Tooltip', () => {
     });
   });
 
+  it('wraps long text when multiline', async () => {
+    render(
+      <Tooltip content="A long explanation of what this does" multiline>
+        <button>Hover me</button>
+      </Tooltip>,
+    );
+
+    await userEvent.hover(screen.getByText('Hover me'));
+    const bubble = await screen.findByRole('tooltip');
+    expect(bubble).toHaveClass('max-w-xs', 'whitespace-normal');
+    expect(bubble).not.toHaveClass('whitespace-nowrap');
+  });
+
   it('does not show tooltip when disabled', async () => {
     render(
       <Tooltip content="Settings" disabled>
