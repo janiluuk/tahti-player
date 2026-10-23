@@ -1,6 +1,6 @@
 import { useId, useState } from 'react';
 
-import { Button, Input, Textarea, Toggle } from '@tahti-player/ui';
+import { Button, InlineError, Input, Textarea, Toggle } from '@tahti-player/ui';
 
 import {
   correctMotionResult,
@@ -107,11 +107,7 @@ export function MotionResultCorrectionForm({
           ))}
         </div>
       ) : null}
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy || !note.trim()}>
           Add correction

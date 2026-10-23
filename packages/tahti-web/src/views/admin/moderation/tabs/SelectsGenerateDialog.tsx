@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, SegmentedControl } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  InlineError,
+  SegmentedControl,
+} from '@tahti-player/ui';
 
 import {
   generateSelectsRotation,
@@ -50,11 +55,7 @@ export function SelectsGenerateDialog({
           This removes all {rotationSize} tracks in the current rotation.
         </p>
       ) : null}
-      {error ? (
-        <p className="text-accent-red-strong mt-3 text-sm" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError className="mt-3">{error}</InlineError> : null}
       <Dialog.Actions>
         <Button type="button" variant="secondary" onClick={onClose}>
           Cancel

@@ -1,7 +1,7 @@
 import { FileTextIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Button, Input, Loader } from '@tahti-player/ui';
+import { Button, InlineError, Input, Loader } from '@tahti-player/ui';
 
 import {
   fetchAdminAnnualReports,
@@ -71,11 +71,7 @@ export function ReportsTab() {
             {busy ? 'Generating…' : 'Generate report'}
           </Button>
         </div>
-        {error ? (
-          <p role="alert" className="text-accent-red-strong mt-2 text-sm">
-            {error}
-          </p>
-        ) : null}
+        {error ? <InlineError className="mt-2">{error}</InlineError> : null}
       </StudioPanel>
       <StudioPanel title="Generated reports">
         {loading ? (

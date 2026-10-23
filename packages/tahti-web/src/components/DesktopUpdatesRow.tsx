@@ -1,4 +1,4 @@
-import { Button, Meter } from '@tahti-player/ui';
+import { Button, InlineError, Meter } from '@tahti-player/ui';
 
 import { useDesktopUpdateStore } from '../lib/updates/desktopUpdates';
 import { SettingsToggle } from '../views/settings/SettingsFields';
@@ -66,11 +66,7 @@ export function DesktopUpdatesRow() {
           {update.notes}
         </p>
       ) : null}
-      {error ? (
-        <p className="text-accent-red-strong text-sm" role="alert">
-          Could not update: {error}
-        </p>
-      ) : null}
+      {error ? <InlineError>Could not update: {error}</InlineError> : null}
     </div>
   );
 }

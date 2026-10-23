@@ -2,7 +2,13 @@ import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, InlineLoader, Input, MediaArtwork } from '@tahti-player/ui';
+import {
+  Button,
+  InlineError,
+  InlineLoader,
+  Input,
+  MediaArtwork,
+} from '@tahti-player/ui';
 
 import {
   fetchMentions,
@@ -258,9 +264,7 @@ export function MentionsPanel() {
           </Button>
         </form>
         {muteError ? (
-          <p className="text-accent-red-strong mt-2 text-sm" role="alert">
-            {muteError}
-          </p>
+          <InlineError className="mt-2">{muteError}</InlineError>
         ) : null}
       </StudioPanel>
     </div>

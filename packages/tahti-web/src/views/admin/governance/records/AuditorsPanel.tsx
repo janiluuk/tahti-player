@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Badge, Button, Input, Select, Toggle } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  InlineError,
+  Input,
+  Select,
+  Toggle,
+} from '@tahti-player/ui';
 
 import {
   createAdminAuditor,
@@ -133,11 +140,7 @@ function AddAuditorForm({ onAdded }: { onAdded: () => void }) {
           onChange={(e) => setTermEnd(e.target.value)}
         />
       </div>
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-sm">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError>{error}</InlineError> : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy}>
           Save auditor
@@ -219,9 +222,9 @@ function EndAuditorTerm({
         Cancel
       </Button>
       {error ? (
-        <p role="alert" className="text-accent-red-strong w-full text-xs">
+        <InlineError textSize="xs" className="w-full">
           {error}
-        </p>
+        </InlineError>
       ) : null}
     </form>
   );

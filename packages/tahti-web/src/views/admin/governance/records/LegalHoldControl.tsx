@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Badge, Button, Input } from '@tahti-player/ui';
+import { Badge, Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
   setRecordLegalHold,
@@ -103,11 +103,7 @@ export function LegalHoldControl({
           Legal hold
         </Button>
       )}
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
     </div>
   );
 }

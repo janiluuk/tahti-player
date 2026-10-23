@@ -7,6 +7,7 @@ import {
   ButtonLink,
   Dialog,
   FilePicker,
+  InlineError,
   Input,
 } from '@tahti-player/ui';
 
@@ -98,11 +99,7 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
             selectedFiles={file ? [file] : []}
             onFiles={(files) => setFile(files[0] ?? null)}
           />
-          {error && (
-            <p className="text-accent-red-strong text-sm" role="alert">
-              {error}
-            </p>
-          )}
+          {error && <InlineError>{error}</InlineError>}
         </div>
         <Dialog.Actions>
           <ButtonLink

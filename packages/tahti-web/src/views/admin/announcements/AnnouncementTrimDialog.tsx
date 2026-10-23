@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, InlineLoader, Input } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  InlineError,
+  InlineLoader,
+  Input,
+} from '@tahti-player/ui';
 
 import {
   fetchAdminAnnouncementSource,
@@ -154,11 +160,7 @@ export function AnnouncementTrimDialog({
             The original is {durationSec} s long.
           </p>
         ) : null}
-        {error ? (
-          <p className="text-accent-red-strong text-sm" role="alert">
-            {error}
-          </p>
-        ) : null}
+        {error ? <InlineError>{error}</InlineError> : null}
         <div className="border-border flex justify-end gap-2 border-t pt-4">
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel

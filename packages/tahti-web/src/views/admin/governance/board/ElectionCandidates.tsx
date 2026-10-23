@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { Badge, Button, Input } from '@tahti-player/ui';
+import { Badge, Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
   fetchAdminElectionCandidates,
@@ -156,11 +156,7 @@ export function ElectionCandidates({
           </div>
         </form>
       ) : null}
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       <ElectionResultForm
         election={election}
         candidates={candidates}

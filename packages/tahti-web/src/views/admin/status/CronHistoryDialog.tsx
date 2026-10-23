@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Badge, Dialog } from '@tahti-player/ui';
+import { Badge, Dialog, InlineError } from '@tahti-player/ui';
 
 import {
   fetchAdminCronHistory,
@@ -70,9 +70,7 @@ export function CronHistoryDialog({
         </Dialog.Description>
       ) : null}
       {error ? (
-        <p className="text-accent-red-strong text-sm" role="alert">
-          {error}
-        </p>
+        <InlineError>{error}</InlineError>
       ) : runs === null ? (
         <PageLoading label="Loading runs…" />
       ) : runs.length === 0 ? (

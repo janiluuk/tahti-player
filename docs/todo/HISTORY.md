@@ -1,3 +1,14 @@
+## 2026-10-23 - UX batch 99 ninety-three inline error slices
+
+New library `InlineError` (`<p role="alert">` in `text-accent-red-strong`,
+`textSize` `sm` / `xs`, story `Components/InlineError`) replaces 93
+hand-styled `<p role="alert" className="text-accent-red-strong …">` error
+lines in 82 files across Studio, admin, governance, settings, dialogs and
+desktop library panels. Layout classes (margins, `w-full`) and other
+attributes carry over. The 44 red paragraphs without `role="alert"` are left
+alone: some are static notices that should not be announced. tahti-web
+`0.0.255`.
+
 ## 2026-10-23 - UX batch 98 thirty loading-state and tooltip slices
 
 Thirteen more bare loading lines -> `InlineLoader`: eleven Settings panel

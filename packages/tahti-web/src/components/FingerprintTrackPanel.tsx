@@ -1,7 +1,7 @@
 import { CheckCircle2Icon, FingerprintIcon, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, InlineError } from '@tahti-player/ui';
 
 import type { FingerprintMatch, StudioReleaseTrack } from '../api/studio-types';
 import { acoustIdProvider } from '../plugins/fingerprinting';
@@ -110,11 +110,7 @@ export function FingerprintTrackPanel({
           <MatchSummary match={checkResult} />
         </div>
       )}
-      {error && (
-        <p className="text-accent-red-strong text-sm" role="alert">
-          {error}
-        </p>
-      )}
+      {error && <InlineError>{error}</InlineError>}
     </div>
   );
 }

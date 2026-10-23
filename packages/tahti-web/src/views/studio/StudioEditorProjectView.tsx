@@ -2,7 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { AudioLinesIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, ButtonLink, ViewShell } from '@tahti-player/ui';
+import { Button, ButtonLink, InlineError, ViewShell } from '@tahti-player/ui';
 
 import {
   deleteEditorProject,
@@ -135,11 +135,7 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                   </ButtonLink>
                 ) : null}
               </div>
-              {error && (
-                <p className="text-accent-red-strong text-sm" role="alert">
-                  {error}
-                </p>
-              )}
+              {error && <InlineError>{error}</InlineError>}
               {timeline && (
                 <StudioPanel
                   title="Timeline"

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
   setAnnualReportFiling,
@@ -105,9 +105,9 @@ export function AnnualReportFilingForm({
         Cancel
       </Button>
       {error ? (
-        <p role="alert" className="text-accent-red-strong w-full text-xs">
+        <InlineError textSize="xs" className="w-full">
           {error}
-        </p>
+        </InlineError>
       ) : null}
     </form>
   );

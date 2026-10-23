@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, InlineError } from '@tahti-player/ui';
 
 import { circulateMotion } from '../../api/governance-motion-circulate';
 import { ConfirmDialog } from '../ConfirmDialog';
@@ -43,11 +43,7 @@ export function MotionCirculateControl({
           {message}
         </p>
       ) : null}
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       <ConfirmDialog
         isOpen={confirming}
         title="Circulate this draft?"

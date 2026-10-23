@@ -11,7 +11,14 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, Input, SaveButton, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  InlineError,
+  Input,
+  SaveButton,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   createRtmpTarget,
@@ -257,11 +264,7 @@ function DestinationDialog({
                 ← Choose another source
               </Button>
             )}
-            {error && (
-              <p className="text-accent-red-strong text-sm" role="alert">
-                {error}
-              </p>
-            )}
+            {error && <InlineError>{error}</InlineError>}
             <Input
               label="Label"
               value={label}

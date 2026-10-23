@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, Textarea } from '@tahti-player/ui';
+import { Button, InlineError, Textarea } from '@tahti-player/ui';
 
 import {
   answerAdminCorrection,
@@ -80,11 +80,7 @@ export function AnswerCorrectionForm({
           Cancel
         </Button>
       </div>
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
     </div>
   );
 }
