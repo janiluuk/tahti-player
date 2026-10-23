@@ -18,7 +18,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as discover from '../api/discover';
 import * as listen from '../api/listen';
+import type { AuthUser } from '../api/types';
 import { clearListenSectionCache } from '../components/listen-view/useListenSections';
+import { useAuthStore, type AuthUser } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import {
   BROWSER_STATIONS_BLOCK_ID,
@@ -213,6 +215,8 @@ describe('ListenView block order', () => {
     cleanup();
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
+    useAuthStore.setState({ user: null });
+    useLibraryStore.setState({ history: [] });
   });
 
   const blockIds = () =>
@@ -222,7 +226,48 @@ describe('ListenView block order', () => {
         .querySelectorAll<HTMLElement>('[data-sortable-block]'),
     ).map((node) => node.dataset.sortableBlock);
 
+  const returningListener = () => {
+    useAuthStore.setState({
+      user: { id: 'listener-1', username: 'listener' } as AuthUser,
+    });
+    useLibraryStore.setState({
+      history: [
+        {
+          playable: {
+            id: 'sound:1',
+            kind: 'sound',
+            title: 'First listen',
+            artist: 'Aino',
+            streamUrl: 'https://cdn.example/1.mp3',
+            protocol: 'https',
+          },
+          playedAt: '2026-10-23T10:00:00.000Z',
+        },
+      ],
+    });
+  };
+
+  it('starts a new listener on the radio channels', async () => {
+    await renderListen();
+    expect(blockIds().slice(0, 2)).toEqual(['radio', 'tahti-radio']);
+  });
+
+  it('starts a signed-in listener with no history on the radio channels', async () => {
+    useAuthStore.setState({
+      user: { id: 'listener-2', username: 'newcomer' } as AuthUser,
+    });
+    await renderListen();
+    expect(blockIds()[0]).toBe('radio');
+  });
+
+  it('leads with Tahti Radio and Recently played once they have listened', async () => {
+    returningListener();
+    await renderListen();
+    expect(blockIds().slice(0, 2)).toEqual(['tahti-radio', 'recently-played']);
+  });
+
   it('puts a widget added from the store above every section', async () => {
+    returningListener();
     await renderListen();
     expect(blockIds()[0]).toBe('tahti-radio');
 
@@ -259,6 +304,7 @@ describe('ListenView block order', () => {
   });
 
   it('follows the stored order and keeps unknown sections by their neighbours', async () => {
+    returningListener();
     useListenerWidgetsStore.setState({ listenOrder: ['radio', 'tahti-radio'] });
     await renderListen();
     const ids = blockIds();

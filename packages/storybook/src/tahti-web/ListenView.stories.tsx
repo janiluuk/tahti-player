@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { useLibraryStore } from '@tahti-web/stores/libraryStore';
 import {
   BROWSER_STATIONS_BLOCK_ID,
   useListenerWidgetsStore,
@@ -97,6 +98,34 @@ const resetListenOrder = () => {
     });
 };
 
+/** A listener who has played something, so Listen leads with Tahti Radio
+ * and Recently played rather than the radio channels. */
+const withListenHistory = () => {
+  const saved = useLibraryStore.getState().history;
+  useLibraryStore.setState({
+    history: [
+      {
+        playable: {
+          id: 'story-recent-1',
+          kind: 'sound',
+          title: 'Northern Lights',
+          artist: 'Aino',
+          streamUrl: 'https://cdn.example/story-recent-1.mp3',
+          protocol: 'https',
+        },
+        playedAt: '2026-10-23T10:00:00.000Z',
+      },
+    ],
+  });
+  return () => useLibraryStore.setState({ history: saved });
+};
+
+const withoutListenHistory = () => {
+  const saved = useLibraryStore.getState().history;
+  useLibraryStore.setState({ history: [] });
+  return () => useLibraryStore.setState({ history: saved });
+};
+
 const dashboardBlockIds = (canvasElement: HTMLElement) =>
   Array.from(
     canvasElement.querySelectorAll<HTMLElement>(
@@ -107,7 +136,14 @@ const dashboardBlockIds = (canvasElement: HTMLElement) =>
 export const OrderSections: Story = {
   name: 'Order sections (drag handles)',
   decorators: [withMockAuth(MOCK_USERS.listener), withTahtiRouter('/')],
-  beforeEach: resetListenOrder,
+  beforeEach: () => {
+    const restoreOrder = resetListenOrder();
+    const restoreHistory = withListenHistory();
+    return () => {
+      restoreHistory();
+      restoreOrder();
+    };
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await canvas.findByTestId('listen-dashboard');
@@ -121,17 +157,39 @@ export const OrderSections: Story = {
     await keyboardMoveDown(handle);
     await waitFor(() =>
       expect(dashboardBlockIds(canvasElement).slice(0, 2)).toEqual([
-        'selects',
+        'recently-played',
         'tahti-radio',
       ]),
     );
     await expect(useListenerWidgetsStore.getState().listenOrder[0]).toBe(
-      'selects',
+      'recently-played',
     );
     await userEvent.click(toggle);
     await expect(
       canvas.queryByRole('button', { name: 'Move Tahti Radio' }),
     ).toBeNull();
+  },
+};
+
+/** Someone who hasn't played anything yet (or is signed out) starts on the
+ * radio channels; once they have history, Tahti Radio and Recently played
+ * lead again. */
+export const NewListenerRadioFirst: Story = {
+  name: 'New listener starts on radio',
+  decorators: [withMockAuth(MOCK_USERS.listener), withTahtiRouter('/')],
+  beforeEach: () => {
+    const restoreOrder = resetListenOrder();
+    const restoreHistory = withoutListenHistory();
+    return () => {
+      restoreHistory();
+      restoreOrder();
+    };
+  },
+  play: async ({ canvasElement }) => {
+    await within(canvasElement).findByTestId('listen-dashboard');
+    await waitFor(() =>
+      expect(dashboardBlockIds(canvasElement)[0]).toBe('radio'),
+    );
   },
 };
 
