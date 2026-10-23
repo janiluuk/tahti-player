@@ -129,6 +129,8 @@ function RecordedBroadcastCard({
         }
         bars={72}
         className="mt-2 h-8"
+        label={title}
+        durationSec={progressDuration}
         onSeek={isCurrent && progressDuration > 0 ? onSeek : undefined}
       />
     </li>

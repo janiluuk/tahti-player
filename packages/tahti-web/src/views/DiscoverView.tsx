@@ -709,6 +709,8 @@ function DiscoverWaveformPlayer({
             progress={progress}
             peaks={peaks}
             bars={peaks?.length || 64}
+            label={selection.playable.title}
+            durationSec={isCurrent ? duration : undefined}
             className="mt-3 h-9 w-full"
             onSeek={
               isCurrent && duration > 0

@@ -1,3 +1,16 @@
+## 2026-10-23 - UX batch 90 thirty waveform + UI slices
+
+Folded `batch-90-waveform-ui-thirty.md`. `PlayableAmbientTrackList` and
+`SoundsAmbientList` stopped fabricating peaks (`mockAmbientPeaks` is now a
+Storybook-only helper). `WaveformSeekbar`: focusable slider, keyboard seek,
+pointer-capture scrub (`touch-pan-y`), `label` / `durationSec` value text,
+memoised max-resampled bars; five callers pass labels. `WaveformCanvas`:
+pointer events, `observeThemeChange` redraw, memoised peak max, dim
+placeholder, keyboard slider. Orphan `WaveformMinimap` deleted.
+`AmbientTrackList` `allowGrid` Grid view (`CardGrid` + `Card`), persisted,
+on every `PlayableAmbientTrackList` surface. Tests + stories. tahti-web
+`0.0.246`.
+
 ## 2026-10-22 - UX batch 89 thirty waveform + UI slices
 
 Folded `batch-89-waveform-ui-thirty.md`. Waveform: `peaksToWaveSurfer` maps

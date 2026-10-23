@@ -1,7 +1,8 @@
 import { MessageCircleIcon } from 'lucide-react';
-import { useRef } from 'react';
+import { useMemo, useRef, type KeyboardEvent, type PointerEvent } from 'react';
 
 import { cn } from '../../lib/cn';
+import { formatDuration } from '../../lib/playableToTrack';
 import { PlayerLiveIndicator } from '../PlayerSeekBar';
 
 /** Flat dim bars for tracks with no decoded peaks — reads as "no waveform
@@ -10,8 +11,9 @@ function emptyHeights(bars: number): number[] {
   return Array.from({ length: bars }, () => 16);
 }
 
-/** Downsample real peak buckets to the bar count, averaging each bar's span. */
-function resamplePeaks(peaks: number[], bars: number): number[] {
+/** Downsample real peak buckets to the bar count, keeping each bar's loudest
+ * bucket so short transients stay visible. */
+export function resamplePeaks(peaks: number[], bars: number): number[] {
   if (peaks.length === bars) {
     return peaks;
   }
@@ -21,22 +23,30 @@ function resamplePeaks(peaks: number[], bars: number): number[] {
       start + 1,
       Math.floor(((i + 1) / bars) * peaks.length),
     );
-    let sum = 0;
-    let count = 0;
+    let max = 0;
     for (let j = start; j < end && j < peaks.length; j++) {
-      sum += peaks[j]!;
-      count++;
+      max = Math.max(max, peaks[j]!);
     }
-    return count > 0 ? sum / count : 0;
+    return max;
   });
 }
 
 function heightsFromPeaks(peaks: number[]): number[] {
-  const max = Math.max(1, ...peaks);
+  let max = 1;
+  for (const peak of peaks) {
+    max = Math.max(max, peak);
+  }
   return peaks.map((p) => Math.max(6, (p / max) * 100));
 }
 
 const BAR_COUNT = 64;
+const KEY_STEP_SEC = 5;
+const KEY_STEP_FRACTION = 0.02;
+const PAGE_STEP_FRACTION = 0.1;
+
+function clamp01(value: number): number {
+  return Math.min(1, Math.max(0, value));
+}
 
 /** The tahti waveform motif used as a scrubbable progress bar. Draws real
  * decoded amplitude buckets when `peaks` is given; otherwise a flat dim
@@ -51,6 +61,8 @@ export function WaveformSeekbar({
   live = false,
   playedColor,
   unplayedColor,
+  label,
+  durationSec,
   className,
 }: {
   trackId: string;
@@ -66,46 +78,121 @@ export function WaveformSeekbar({
   live?: boolean;
   playedColor?: string;
   unplayedColor?: string;
+  /** Track title for the slider's accessible name. */
+  label?: string;
+  /** Enables 5 s keyboard steps and "1:05 of 3:20" value text. */
+  durationSec?: number;
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const draggingRef = useRef(false);
   const hasPeaks = Boolean(peaks && peaks.length > 0);
-  const heights = hasPeaks
-    ? heightsFromPeaks(resamplePeaks(peaks!, bars))
-    : emptyHeights(bars);
-  const clamped = live ? 0 : Math.min(1, Math.max(0, progress));
+  const heights = useMemo(
+    () =>
+      hasPeaks
+        ? heightsFromPeaks(resamplePeaks(peaks!, bars))
+        : emptyHeights(bars),
+    [hasPeaks, peaks, bars],
+  );
+  const clamped = live ? 0 : clamp01(progress);
   const filledCount = live ? 0 : Math.round(clamped * bars);
   const seekEnabled = Boolean(onSeek) && !live;
+  const hasDuration = durationSec != null && durationSec > 0;
 
   const seekAt = (clientX: number) => {
     if (!seekEnabled || !onSeek || !ref.current) {
       return;
     }
     const rect = ref.current.getBoundingClientRect();
-    const fraction = Math.min(
-      1,
-      Math.max(0, (clientX - rect.left) / rect.width),
-    );
-    onSeek(fraction);
+    if (rect.width <= 0) {
+      return;
+    }
+    onSeek(clamp01((clientX - rect.left) / rect.width));
   };
+
+  const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (!seekEnabled || event.button > 0) {
+      return;
+    }
+    draggingRef.current = true;
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    seekAt(event.clientX);
+  };
+
+  const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (draggingRef.current) {
+      seekAt(event.clientX);
+    }
+  };
+
+  const endDrag = (event: PointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) {
+      return;
+    }
+    draggingRef.current = false;
+    event.currentTarget.releasePointerCapture?.(event.pointerId);
+  };
+
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!seekEnabled || !onSeek) {
+      return;
+    }
+    const step = hasDuration ? KEY_STEP_SEC / durationSec : KEY_STEP_FRACTION;
+    const next = (() => {
+      switch (event.key) {
+        case 'ArrowLeft':
+        case 'ArrowDown':
+          return clamped - step;
+        case 'ArrowRight':
+        case 'ArrowUp':
+          return clamped + step;
+        case 'PageDown':
+          return clamped - PAGE_STEP_FRACTION;
+        case 'PageUp':
+          return clamped + PAGE_STEP_FRACTION;
+        case 'Home':
+          return 0;
+        case 'End':
+          return 1;
+        default:
+          return null;
+      }
+    })();
+    if (next == null) {
+      return;
+    }
+    event.preventDefault();
+    onSeek(clamp01(next));
+  };
+
+  const valueText = hasDuration
+    ? `${formatDuration(clamped * durationSec)} of ${formatDuration(durationSec)}`
+    : `${Math.round(clamped * 100)}%`;
 
   const waveform = (
     <div
       ref={ref}
       role={seekEnabled ? 'slider' : undefined}
-      aria-label={seekEnabled ? 'Seek' : undefined}
+      tabIndex={seekEnabled ? 0 : undefined}
+      aria-label={seekEnabled ? (label ? `Seek ${label}` : 'Seek') : undefined}
       aria-valuemin={seekEnabled ? 0 : undefined}
       aria-valuemax={seekEnabled ? 100 : undefined}
       aria-valuenow={seekEnabled ? Math.round(clamped * 100) : undefined}
+      aria-valuetext={seekEnabled ? valueText : undefined}
       data-waveform={live ? 'live' : hasPeaks ? 'peaks' : 'empty'}
       data-track-id={trackId}
       className={cn(
         'relative',
-        seekEnabled && 'cursor-pointer',
+        seekEnabled &&
+          'focus-visible:ring-primary cursor-pointer touch-pan-y rounded-sm outline-none focus-visible:ring-2',
         (!hasPeaks || live) && 'opacity-60',
         live ? undefined : className,
       )}
-      onClick={seekEnabled ? (e) => seekAt(e.clientX) : undefined}
+      onPointerDown={seekEnabled ? onPointerDown : undefined}
+      onPointerMove={seekEnabled ? onPointerMove : undefined}
+      onPointerUp={seekEnabled ? endDrag : undefined}
+      onPointerCancel={seekEnabled ? endDrag : undefined}
+      onKeyDown={seekEnabled ? onKeyDown : undefined}
     >
       <div className="flex h-full items-end gap-px">
         {heights.map((h, i) => (

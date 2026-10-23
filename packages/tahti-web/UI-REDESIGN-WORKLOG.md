@@ -1,3 +1,18 @@
+## 2026-10-23 - UX batch 90 (honest ambient waveforms, seekbar keyboard + touch, grid view)
+
+Ambient track rows on Collections, Smart links, Favorites, Listen, artist
+pages and Studio Sounds no longer draw a made-up waveform for tracks without
+stored peaks; they show the flat placeholder. The waveform seekbar (player
+bar, ambient rows, channel stage, Discover, Studio upload) is a focusable
+slider: arrow keys step 5 s, Page Up / Down 10%, Home / End; drag to scrub,
+touch included, while lists still scroll vertically; it is named after the
+track with "1:05 of 3:20" value text, and resampling keeps each bar's
+loudest bucket. The tracklist editor waveform uses pointer events (touch,
+drags that end outside), redraws on theme change, draws a dim placeholder
+without peaks, and moves the playhead from the keyboard. The orphan
+`WaveformMinimap` is gone. Track lists with a size switcher gain a Grid view
+of cover cards with play. Bumped to `0.0.246`.
+
 ## 2026-10-22 - UX batch 89 (waveform fixes + UI library swaps)
 
 wavesurfer previews were drawing silence as full-height bars (stored `[0..255]`

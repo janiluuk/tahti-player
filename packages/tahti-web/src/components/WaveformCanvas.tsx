@@ -1,6 +1,16 @@
-import { useEffect, useRef } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent,
+} from 'react';
+
+import { observeThemeChange } from '@tahti-player/ui';
 
 import type { EditCut } from '../api/studio-types';
+import { formatDuration } from '../lib/playableToTrack';
 
 type Props = {
   peaks: number[];
@@ -18,6 +28,7 @@ type Props = {
   onViewChange?: (start: number, end: number) => void;
   onSeek: (sec: number) => void;
   onSelectRange?: (start: number, end: number) => void;
+  label?: string;
 };
 
 /** Reads a theme colour token at draw time so the canvas re-themes with
@@ -32,6 +43,20 @@ function themeColor(
 }
 
 const MIN_SPAN = 0.005;
+const PLACEHOLDER_BARS = 256;
+const PLACEHOLDER_AMP = 0.06;
+const KEY_STEP_SEC = 1;
+const KEY_PAGE_SEC = 10;
+
+function peakMaxOf(peaks: number[]): number {
+  let max = 1;
+  for (const peak of peaks) {
+    if (Number.isFinite(peak) && peak > max) {
+      max = peak;
+    }
+  }
+  return max;
+}
 
 /** Peaks waveform with zoom (wheel, zoom-to-cursor), playhead, cut
  * regions, and click/drag selection — all scoped to the current
@@ -47,10 +72,19 @@ export function WaveformCanvas({
   onViewChange,
   onSeek,
   onSelectRange,
+  label = 'Waveform',
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dragRef = useRef<{ startX: number; startSec: number } | null>(null);
   const span = Math.max(MIN_SPAN, viewEnd - viewStart);
+  const hasPeaks = peaks.length > 0;
+  const peakMax = useMemo(() => peakMaxOf(peaks), [peaks]);
+  const [themeVersion, setThemeVersion] = useState(0);
+
+  useEffect(
+    () => observeThemeChange(() => setThemeVersion((version) => version + 1)),
+    [],
+  );
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -75,11 +109,13 @@ export function WaveformCanvas({
 
       const w = cssW;
       const h = cssH;
-      const barColor = themeColor(
-        canvas,
-        '--color-accent-cyan',
-        'rgba(120, 220, 200, 1)',
-      );
+      const barColor = hasPeaks
+        ? themeColor(canvas, '--color-accent-cyan', 'rgba(120, 220, 200, 1)')
+        : themeColor(
+            canvas,
+            '--color-foreground-secondary',
+            'rgba(160, 160, 160, 1)',
+          );
       const selColor = themeColor(
         canvas,
         '--color-primary',
@@ -93,24 +129,26 @@ export function WaveformCanvas({
 
       ctx.clearRect(0, 0, w, h);
 
-      const all =
-        peaks.length > 0 ? peaks : Array.from({ length: 256 }, () => 0.3);
-      const peakMax = Math.max(
-        1,
-        ...all.filter((peak) => Number.isFinite(peak)),
-      );
-      const startIdx = Math.floor(viewStart * all.length);
-      const endIdx = Math.max(startIdx + 1, Math.ceil(viewEnd * all.length));
-      const data = all.slice(startIdx, endIdx);
-      const barW = w / data.length;
-      for (let i = 0; i < data.length; i++) {
-        const amp = Math.max(0.05, Math.min(1, (data[i] ?? 0) / peakMax));
+      const all = hasPeaks ? peaks : null;
+      const count = all ? all.length : PLACEHOLDER_BARS;
+      const startIdx = Math.floor(viewStart * count);
+      const endIdx = Math.max(startIdx + 1, Math.ceil(viewEnd * count));
+      const visible = endIdx - startIdx;
+      const barW = w / visible;
+      if (!all) {
+        ctx.globalAlpha = 0.4;
+      }
+      for (let i = 0; i < visible; i++) {
+        const amp = all
+          ? Math.max(0.05, Math.min(1, (all[startIdx + i] ?? 0) / peakMax))
+          : PLACEHOLDER_AMP;
         const bh = amp * (h - 8);
         const x = i * barW;
         const y = (h - bh) / 2;
         ctx.fillStyle = barColor;
         ctx.fillRect(x, y, Math.max(1, barW - 0.5), bh);
       }
+      ctx.globalAlpha = 1;
 
       const toX = (sec: number) => ((sec / durationSec - viewStart) / span) * w;
 
@@ -162,6 +200,9 @@ export function WaveformCanvas({
     return () => observer.disconnect();
   }, [
     peaks,
+    hasPeaks,
+    peakMax,
+    themeVersion,
     durationSec,
     currentTime,
     cuts,
@@ -227,16 +268,72 @@ export function WaveformCanvas({
     return Math.max(0, Math.min(durationSec, viewSec));
   };
 
+  const finishDrag = (clientX: number) => {
+    if (!dragRef.current) {
+      return;
+    }
+    const end = secFromEvent(clientX);
+    const start = dragRef.current.startSec;
+    dragRef.current = null;
+    if (onSelectRange && Math.abs(end - start) > 0.05) {
+      onSelectRange(Math.min(start, end), Math.max(start, end));
+    } else {
+      onSeek(end);
+    }
+  };
+
+  const onKeyDown = (event: KeyboardEvent<HTMLCanvasElement>) => {
+    if (durationSec <= 0) {
+      return;
+    }
+    const next = (() => {
+      switch (event.key) {
+        case 'ArrowLeft':
+          return currentTime - KEY_STEP_SEC;
+        case 'ArrowRight':
+          return currentTime + KEY_STEP_SEC;
+        case 'PageDown':
+          return currentTime - KEY_PAGE_SEC;
+        case 'PageUp':
+          return currentTime + KEY_PAGE_SEC;
+        case 'Home':
+          return 0;
+        case 'End':
+          return durationSec;
+        default:
+          return null;
+      }
+    })();
+    if (next == null) {
+      return;
+    }
+    event.preventDefault();
+    onSeek(Math.max(0, Math.min(durationSec, next)));
+  };
+
   return (
     <canvas
       ref={canvasRef}
-      className="border-border bg-background h-56 w-full cursor-crosshair touch-none rounded-md border-2"
-      onMouseDown={(e) => {
+      role="slider"
+      tabIndex={0}
+      aria-label={label}
+      aria-valuemin={0}
+      aria-valuemax={Math.round(durationSec)}
+      aria-valuenow={Math.round(currentTime)}
+      aria-valuetext={`${formatDuration(currentTime)} of ${formatDuration(durationSec)}`}
+      data-waveform={hasPeaks ? 'peaks' : 'empty'}
+      className="border-border bg-background focus-visible:ring-primary h-56 w-full cursor-crosshair touch-none rounded-md border-2 outline-none focus-visible:ring-2"
+      onKeyDown={onKeyDown}
+      onPointerDown={(e: PointerEvent<HTMLCanvasElement>) => {
+        if (e.button > 0) {
+          return;
+        }
+        e.currentTarget.setPointerCapture?.(e.pointerId);
         const sec = secFromEvent(e.clientX);
         dragRef.current = { startX: e.clientX, startSec: sec };
         onSeek(sec);
       }}
-      onMouseMove={(e) => {
+      onPointerMove={(e) => {
         if (!dragRef.current || !onSelectRange) {
           return;
         }
@@ -244,20 +341,11 @@ export function WaveformCanvas({
         const start = dragRef.current.startSec;
         onSelectRange(Math.min(start, end), Math.max(start, end));
       }}
-      onMouseUp={(e) => {
-        if (!dragRef.current) {
-          return;
-        }
-        const end = secFromEvent(e.clientX);
-        const start = dragRef.current.startSec;
-        dragRef.current = null;
-        if (onSelectRange && Math.abs(end - start) > 0.05) {
-          onSelectRange(Math.min(start, end), Math.max(start, end));
-        } else {
-          onSeek(end);
-        }
+      onPointerUp={(e) => {
+        e.currentTarget.releasePointerCapture?.(e.pointerId);
+        finishDrag(e.clientX);
       }}
-      onMouseLeave={() => {
+      onPointerCancel={() => {
         dragRef.current = null;
       }}
     />

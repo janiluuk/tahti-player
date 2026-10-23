@@ -19,7 +19,6 @@ import {
   AmbientTrackList,
   type AmbientTrackListItem,
 } from './AmbientTrackList';
-import { mockAmbientPeaks } from './AmbientTrackRow';
 import { MediaIconActions, playQueueFavoriteActions } from './MediaIconActions';
 import { PlayableTrackTable } from './PlayableTrackTable';
 
@@ -75,10 +74,7 @@ export function PlayableAmbientTrackList({
       coverUrl: item.coverUrl,
       durationLabel:
         item.durationSec != null ? formatDuration(item.durationSec) : undefined,
-      peaks:
-        item.peaks && item.peaks.length > 0
-          ? item.peaks
-          : mockAmbientPeaks(item.id.length),
+      peaks: item.peaks ?? null,
       progress: isCurrent && duration > 0 ? currentTime / duration : 0,
       isPlaying,
       onPlay: () => {
@@ -122,6 +118,7 @@ export function PlayableAmbientTrackList({
   return (
     <AmbientTrackList
       items={listItems}
+      allowGrid
       defaultDensity="compact"
       emptyMessage={emptyMessage}
       toolbarEnd={

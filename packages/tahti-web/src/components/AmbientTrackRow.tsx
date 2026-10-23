@@ -19,18 +19,6 @@ function ambientStyle(
   };
 }
 
-/** Synthetic [0..255] peaks for Storybook / empty demos — not real audio. */
-export function mockAmbientPeaks(seed = 1, count = 96): number[] {
-  return Array.from({ length: count }, (_, i) => {
-    const t = (i + seed * 7) / count;
-    const wave =
-      0.35 +
-      0.45 * Math.abs(Math.sin(t * Math.PI * 4 + seed)) +
-      0.2 * Math.abs(Math.sin(t * Math.PI * 11));
-    return Math.round(40 + wave * 200);
-  });
-}
-
 export type AmbientTrackRowDensity = 'comfortable' | 'compact' | 'dense';
 
 const DENSITY_LAYOUT: Record<
@@ -210,6 +198,7 @@ export function AmbientTrackRow({
             progress={progress}
             peaks={peaks}
             bars={layout.bars}
+            label={title}
             onSeek={onSeek}
             className={layout.wave}
           />

@@ -17,10 +17,10 @@ migration”).
   `waveform/peaks.ts`, zoom / pan in `waveform/viewMath.ts`, regions in
   `RegionList.tsx`, toolbar `WaveformToolbar.tsx`, editor shell
   `WaveformEditor.tsx` (trim etc.).
-- **Previews**: `components/WaveformCanvas.tsx`, `WaveformMinimap.tsx`,
+- **Previews**: `components/WaveformCanvas.tsx`,
   `tahti/WaveformSeekbar.tsx` (player bar / seek), `AmbientTrackRow.tsx`
-  (Library, Collections, Favorites rows; falls back to mock peaks when a
-  track has none), `views/track-detail/TrackHero.tsx`, Studio
+  (Library, Collections, Favorites rows; a flat placeholder when a track
+  has no peaks, batch 90), `views/track-detail/TrackHero.tsx`, Studio
   `sound/SoundHeader.tsx`, `track-edit-dialog/AudioTab.tsx`.
 - **Peaks data**: tahti-org stores `peaks Json?` as `[0..255]` amplitude
   buckets cached at transcode time (Sound and the set / episode models), so

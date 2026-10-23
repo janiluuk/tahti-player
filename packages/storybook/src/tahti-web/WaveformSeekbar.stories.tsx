@@ -10,7 +10,7 @@ const meta: Meta<typeof WaveformSeekbar> = {
     docs: {
       description: {
         component:
-          'Scrubbable waveform progress for the compact player bar (planned swap from PlayerBar.SeekBar). Production: Discover inline player today; ConnectedPlayerBar after the queue→right-rail work.',
+          'Scrubbable waveform progress used by the player bar, ambient track rows, the channel stage player, Discover and Studio upload. Drag to scrub (touch too); focus it and use the arrow keys, Page Up / Down, Home and End.',
       },
     },
   },
@@ -69,6 +69,33 @@ export const WithPeaks: Story = {
           onSeek={setProgress}
           className="h-12"
         />
+      </div>
+    );
+  },
+};
+
+/** Keyboard + accessible name: "Seek First Light", value "1:05 of 3:20". */
+export const KeyboardWithDuration: Story = {
+  render: () => {
+    const [progress, setProgress] = useState(0.33);
+    const peaks = Array.from({ length: 64 }, (_, index) =>
+      index > 20 && index < 26 ? 0 : Math.abs(Math.sin(index * 0.3) * 200 + 30),
+    );
+    return (
+      <div className="flex w-full max-w-xl flex-col gap-2">
+        <WaveformSeekbar
+          trackId="story-keyboard"
+          progress={progress}
+          peaks={peaks}
+          label="First Light"
+          durationSec={200}
+          onSeek={setProgress}
+          className="h-12"
+        />
+        <p className="text-foreground-secondary text-xs">
+          Tab to the waveform, then use the arrow keys (5 s), Page Up / Down
+          (10%), Home and End.
+        </p>
       </div>
     );
   },
