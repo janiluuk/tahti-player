@@ -1,6 +1,6 @@
 import { EyeIcon, EyeOffIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 
-import { Button, Input, Tooltip } from '@tahti-player/ui';
+import { Button, InlineError, Input, Tooltip } from '@tahti-player/ui';
 
 import type { ChannelLink } from '../api/channel-design';
 import { isSafeChannelLinkUrl } from '../lib/safeHref';
@@ -105,9 +105,9 @@ export function ChannelLinksEditor({
               </Tooltip>
             </div>
             {urlInvalid ? (
-              <p className="text-accent-red-strong pl-8 text-xs">
+              <InlineError textSize="xs" className="pl-8">
                 Use an http(s) or mailto: link
-              </p>
+              </InlineError>
             ) : null}
           </div>
         );

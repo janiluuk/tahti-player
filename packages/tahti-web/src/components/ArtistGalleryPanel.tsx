@@ -13,6 +13,7 @@ import {
   Button,
   HiddenFileInput,
   ImageReveal,
+  InlineError,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -226,7 +227,7 @@ export function ArtistGalleryPanel({
         </div>
       ) : null}
 
-      {error ? <p className="text-accent-red-strong text-sm">{error}</p> : null}
+      {error ? <InlineError>{error}</InlineError> : null}
 
       {images.length > 0 ? (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
@@ -449,7 +450,7 @@ export function ArtistGalleryAddIcon({
         multiple
         onFiles={(files) => void onFiles(files)}
       />
-      {error ? <p className="text-accent-red-strong text-xs">{error}</p> : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
     </div>
   );
 }

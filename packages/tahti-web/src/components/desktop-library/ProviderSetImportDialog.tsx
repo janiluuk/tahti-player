@@ -8,6 +8,7 @@ import {
   Input,
   Loader,
   Toggle,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import type { NativeProviderImport } from '../../lib/nativeLibrary';
@@ -146,12 +147,17 @@ function TrackRows({ rows }: { rows: SetImportRow[] }) {
           <span className="text-foreground-secondary w-6 shrink-0 text-right text-xs tabular-nums">
             {index + 1}
           </span>
-          <span
-            className={`min-w-0 flex-1 truncate ${row.state === 'unavailable' ? 'text-foreground-secondary' : ''}`}
-            title={row.track.title}
+          <Tooltip
+            content={row.track.title}
+            side="top"
+            wrapperClassName="min-w-0 flex-1"
           >
-            {row.track.title}
-          </span>
+            <span
+              className={`min-w-0 flex-1 truncate ${row.state === 'unavailable' ? 'text-foreground-secondary' : ''}`}
+            >
+              {row.track.title}
+            </span>
+          </Tooltip>
           {row.state === 'failed' ? (
             <Badge variant="pill" color="red">
               Failed

@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, FilePicker, MediaArtwork, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  FilePicker,
+  InlineError,
+  MediaArtwork,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { uploadUserMediaFile } from '../api/user-media';
 import { IMAGE_UPLOAD_ACCEPT_ATTR } from '../lib/imageUploadContentType';
@@ -88,7 +94,9 @@ export function ImageUploadField({
         </div>
       ) : null}
       {error ? (
-        <p className="text-accent-red-strong mt-1 text-xs">{error}</p>
+        <InlineError textSize="xs" className="mt-1">
+          {error}
+        </InlineError>
       ) : null}
       <ImageSlotPreviewDialog
         isOpen={chrome.previewOpen}

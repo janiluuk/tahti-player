@@ -1,7 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Box, Button, Input } from '@tahti-player/ui';
+import { Box, Button, InlineError, Input } from '@tahti-player/ui';
 
 import { fetchResetPasswordInfo } from '../api/client';
 import { useAuthStore } from '../stores/authStore';
@@ -100,7 +100,7 @@ export function ResetPasswordView() {
         </Box>
       ) : infoError ? (
         <div className="flex flex-col gap-3">
-          <p className="text-accent-red-strong text-sm">{infoError}</p>
+          <InlineError>{infoError}</InlineError>
           <p className="text-foreground-secondary text-sm">
             Request a new one from the{' '}
             <Link
@@ -128,9 +128,7 @@ export function ResetPasswordView() {
             autoFocus
           />
           {tooShort && (
-            <p className="text-accent-red-strong text-sm">
-              Password must be at least 8 characters.
-            </p>
+            <InlineError>Password must be at least 8 characters.</InlineError>
           )}
           <Input
             label="Confirm new password"
@@ -139,12 +137,8 @@ export function ResetPasswordView() {
             onChange={(e) => setConfirm(e.target.value)}
             autoComplete="new-password"
           />
-          {mismatch && (
-            <p className="text-accent-red-strong text-sm">
-              Passwords don&apos;t match.
-            </p>
-          )}
-          {error && <p className="text-accent-red-strong text-sm">{error}</p>}
+          {mismatch && <InlineError>Passwords don&apos;t match.</InlineError>}
+          {error && <InlineError>{error}</InlineError>}
           <Button disabled={!canSubmit} onClick={onSubmit}>
             {loading ? 'Saving…' : 'Reset password & sign in'}
           </Button>

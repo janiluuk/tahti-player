@@ -40,15 +40,18 @@ function TopUsersChart({ users }: { users: AdminStorageUserRow[] }) {
       {top.map((u) => (
         <div key={u.userId} className="text-sm">
           <div className="flex items-baseline justify-between gap-2">
-            <span
-              className="min-w-0 truncate font-medium"
-              title={`${u.displayName} @${u.username}`}
+            <Tooltip
+              content={`${u.displayName} @${u.username}`}
+              side="top"
+              wrapperClassName="min-w-0"
             >
-              {u.displayName}{' '}
-              <span className="text-foreground-secondary font-normal">
-                @{u.username}
+              <span className="min-w-0 truncate font-medium">
+                {u.displayName}{' '}
+                <span className="text-foreground-secondary font-normal">
+                  @{u.username}
+                </span>
               </span>
-            </span>
+            </Tooltip>
             <span className="text-foreground-secondary shrink-0 text-xs">
               {formatBytes(u.usedBytes)}
               {u.unlimited ? ' · unlimited quota' : ''}

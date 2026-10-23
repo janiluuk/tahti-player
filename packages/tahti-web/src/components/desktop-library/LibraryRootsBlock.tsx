@@ -92,26 +92,32 @@ export function LibraryRootsBlock({
         <ul className="flex flex-col gap-1">
           {roots.map((root) => (
             <li key={root.id} className="flex items-center gap-2">
-              <div className="min-w-0 flex-1" title={root.path}>
-                <p className="truncate text-xs font-semibold">
-                  {basename(root.path)}
-                </p>
-                <p
-                  className={
-                    root.available
-                      ? 'text-foreground-secondary truncate text-[10px]'
-                      : 'text-accent-red-strong truncate text-[10px]'
-                  }
-                >
-                  {root.available
-                    ? `${root.trackCount} tracks${
-                        root.missingCount
-                          ? ` · ${root.missingCount} missing`
-                          : ''
-                      }`
-                    : 'Folder not found — reconnect the drive or relink'}
-                </p>
-              </div>
+              <Tooltip
+                content={root.path}
+                side="top"
+                wrapperClassName="min-w-0 flex-1"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-xs font-semibold">
+                    {basename(root.path)}
+                  </p>
+                  <p
+                    className={
+                      root.available
+                        ? 'text-foreground-secondary truncate text-[10px]'
+                        : 'text-accent-red-strong truncate text-[10px]'
+                    }
+                  >
+                    {root.available
+                      ? `${root.trackCount} tracks${
+                          root.missingCount
+                            ? ` · ${root.missingCount} missing`
+                            : ''
+                        }`
+                      : 'Folder not found — reconnect the drive or relink'}
+                  </p>
+                </div>
+              </Tooltip>
               <Tooltip content="Relink to another folder" side="top">
                 <Button
                   size="icon-sm"

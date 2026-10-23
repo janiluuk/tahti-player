@@ -8,6 +8,7 @@ import {
   CopyButton,
   ExternalLink,
   HiddenFileInput,
+  InlineError,
   InlineLoader,
   Input,
   Loader,
@@ -530,9 +531,9 @@ export function AgmTab() {
                   )}
                 </div>
                 {minutesError?.meetingId === meeting.id && (
-                  <p className="text-accent-red-strong mt-1 text-xs">
+                  <InlineError textSize="xs" className="mt-1">
                     {minutesError.message}
-                  </p>
+                  </InlineError>
                 )}
                 <AgendaItemsPanel meetingId={meeting.id} />
                 <AttendancePanel meeting={meeting} />

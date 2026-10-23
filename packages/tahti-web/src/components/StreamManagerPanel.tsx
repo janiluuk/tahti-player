@@ -1,6 +1,6 @@
 import { BarChart3Icon, ListMusicIcon } from 'lucide-react';
 
-import { TabLabel, Tabs } from '@tahti-player/ui';
+import { InlineError, TabLabel, Tabs } from '@tahti-player/ui';
 
 import { ManagerDialogs } from './stream-manager/ManagerDialogs';
 import { PanelHeader } from './stream-manager/PanelHeader';
@@ -89,7 +89,7 @@ export function StreamManagerPanel({
 
       {canControl ? <ManagerDialogs state={state} /> : null}
 
-      {error && <p className="text-accent-red-strong text-xs">{error}</p>}
+      {error && <InlineError textSize="xs">{error}</InlineError>}
 
       {canControl ? <PlaylistDialog state={state} /> : null}
     </section>

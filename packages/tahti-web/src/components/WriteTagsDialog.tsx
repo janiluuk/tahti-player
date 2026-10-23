@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, InlineError, Loader, Toggle } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  InlineError,
+  Loader,
+  Toggle,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import type {
   NativeWriteTagsPreview,
@@ -126,9 +133,11 @@ export function WriteTagsDialog({
             <div className="flex flex-col gap-0.5 text-xs">
               <p className="font-medium">Skipped</p>
               {preview.skipped.slice(0, 8).map((skip) => (
-                <p key={skip.path} className="truncate" title={skip.path}>
-                  {skip.path} — {skip.reason}
-                </p>
+                <Tooltip key={skip.path} content={skip.path} side="top">
+                  <p className="truncate">
+                    {skip.path} — {skip.reason}
+                  </p>
+                </Tooltip>
               ))}
             </div>
           ) : null}

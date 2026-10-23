@@ -2,7 +2,14 @@ import { FolderOpenIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Input, Loader, Toggle } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  Input,
+  Loader,
+  Toggle,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import type {
   NativeOrganizeOptions,
@@ -230,13 +237,15 @@ export function OrganizeFilesDialog({
                 .filter((item) => item.status === 'ready')
                 .slice(0, 5)
                 .map((item) => (
-                  <p
+                  <Tooltip
                     key={item.id}
-                    className="text-foreground-secondary truncate text-xs"
-                    title={`${item.from} → ${item.to}`}
+                    content={`${item.from} → ${item.to}`}
+                    side="top"
                   >
-                    → {item.to}
-                  </p>
+                    <p className="text-foreground-secondary truncate text-xs">
+                      → {item.to}
+                    </p>
+                  </Tooltip>
                 ))}
             </div>
           ) : null}

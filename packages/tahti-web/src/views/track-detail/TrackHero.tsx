@@ -20,6 +20,7 @@ import {
   BackButtonLink,
   Badge,
   Button,
+  InlineError,
   Input,
   MediaArtwork,
   Tooltip,
@@ -355,7 +356,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
           </div>
         </div>
         {commentError ? (
-          <p className="text-accent-red-strong text-xs">{commentError}</p>
+          <InlineError textSize="xs">{commentError}</InlineError>
         ) : null}
 
         <div className="flex flex-wrap items-center justify-between gap-3">

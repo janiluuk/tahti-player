@@ -109,6 +109,7 @@ export function AdminStatusView() {
                             platform?.ts ?? data.ts,
                           ).toLocaleString()}
                           side="top"
+                          wrapperClassName="inline"
                         >
                           <time
                             dateTime={platform?.ts ?? data.ts}
@@ -206,6 +207,7 @@ export function AdminStatusView() {
                                     job.lastRun.startedAt,
                                   ).toLocaleString()}
                                   side="top"
+                                  wrapperClassName="inline"
                                 >
                                   <time
                                     dateTime={job.lastRun.startedAt}

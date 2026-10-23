@@ -2,7 +2,7 @@ import { FolderOpenIcon, TrashIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, InlineError, Loader } from '@tahti-player/ui';
+import { Button, Dialog, InlineError, Loader, Tooltip } from '@tahti-player/ui';
 
 import { formatLibrarySize } from '../lib/libraryFormat';
 import type {
@@ -237,15 +237,14 @@ export function DuplicatesDialog({
                           {track.title}
                           {track.artist ? ` — ${track.artist}` : ''}
                         </p>
-                        <p
-                          className="text-foreground-secondary truncate text-xs"
-                          title={track.path}
-                        >
-                          {track.path} · {formatLibrarySize(track.sizeBytes)}
-                          {track.duration
-                            ? ` · ${formatDuration(track.duration)}`
-                            : ''}
-                        </p>
+                        <Tooltip content={track.path} side="top">
+                          <p className="text-foreground-secondary truncate text-xs">
+                            {track.path} · {formatLibrarySize(track.sizeBytes)}
+                            {track.duration
+                              ? ` · ${formatDuration(track.duration)}`
+                              : ''}
+                          </p>
+                        </Tooltip>
                       </div>
                       <Button
                         size="sm"

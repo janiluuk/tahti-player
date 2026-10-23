@@ -2,7 +2,7 @@ import { FolderOpenIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, InlineError, Loader } from '@tahti-player/ui';
+import { Button, Dialog, InlineError, Loader, Tooltip } from '@tahti-player/ui';
 
 import type {
   NativeRestorePreview,
@@ -168,9 +168,9 @@ export function BackupRestoreDialog({
               {preview.roots.map((root) => (
                 <div key={root.from} className="flex items-center gap-2">
                   <div className="min-w-0 flex-1 text-xs">
-                    <p className="truncate" title={root.from}>
-                      {root.from}
-                    </p>
+                    <Tooltip content={root.from} side="top">
+                      <p className="truncate">{root.from}</p>
+                    </Tooltip>
                     <p
                       className={
                         root.exists
@@ -200,9 +200,9 @@ export function BackupRestoreDialog({
             <div className="text-foreground-secondary flex flex-col gap-0.5 text-xs">
               <p>Not found, for example:</p>
               {preview.missingExamples.map((path) => (
-                <p key={path} className="truncate" title={path}>
-                  {path}
-                </p>
+                <Tooltip key={path} content={path} side="top">
+                  <p className="truncate">{path}</p>
+                </Tooltip>
               ))}
             </div>
           ) : null}

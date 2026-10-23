@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Alert, Badge, Box, Button } from '@tahti-player/ui';
+import { Alert, Badge, Box, Button, InlineError } from '@tahti-player/ui';
 
 import {
   resendVerificationEmail,
@@ -129,7 +129,7 @@ export function MembershipStatusPanel({
             Next renewal around {dueLabel} (Stripe subscription).
           </p>
         )}
-        {error && <p className="text-accent-red-strong text-sm">{error}</p>}
+        {error && <InlineError>{error}</InlineError>}
         {membership.hasStripeSubscription ? (
           <Button
             size="sm"
@@ -170,16 +170,16 @@ export function MembershipStatusPanel({
         {membershipStatusLabel(membership)}
       </p>
       {lapsed && (
-        <p className="text-accent-red-strong text-sm">
+        <InlineError announce={false}>
           Your membership lapsed — renew to restore lossless streaming and
           unlimited live time.
-        </p>
+        </InlineError>
       )}
       {pendingEmail && (
         <div className="flex flex-col gap-2">
-          <p className="text-accent-red-strong text-sm">
+          <InlineError announce={false}>
             Verify your email before completing membership checkout.
-          </p>
+          </InlineError>
           {resendMessage && <p className="text-sm">{resendMessage}</p>}
           <Button
             size="sm"
@@ -191,7 +191,7 @@ export function MembershipStatusPanel({
           </Button>
         </div>
       )}
-      {error && <p className="text-accent-red-strong text-sm">{error}</p>}
+      {error && <InlineError>{error}</InlineError>}
       {message && <p className="text-sm">{message}</p>}
       <Button
         disabled={busy || !membership.emailVerified || pendingEmail}

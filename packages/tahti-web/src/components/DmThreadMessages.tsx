@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, InlineError } from '@tahti-player/ui';
 
 import type { ChatDm } from '../api/messages';
 import { DmRoleBadge } from './DmRoleBadge';
@@ -51,9 +51,9 @@ export function DmThreadMessages({
       {hasMore && (
         <div className="flex flex-col items-center gap-1">
           {olderError && !loadingOlder ? (
-            <p role="status" className="text-accent-red-strong text-xs">
+            <InlineError textSize="xs">
               Could not load older messages.
-            </p>
+            </InlineError>
           ) : null}
           <Button
             size="sm"

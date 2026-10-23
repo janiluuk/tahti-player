@@ -9,6 +9,7 @@ import {
   Input,
   Loader,
   Meter,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import type {
@@ -119,12 +120,11 @@ function UnresolvedList({
                   <li key={`${track.path ?? ''}:${index}`} className="min-w-0">
                     <p className="truncate">{trackLabel(track)}</p>
                     {track.path ? (
-                      <p
-                        className="text-foreground-secondary truncate"
-                        title={track.path}
-                      >
-                        {track.path}
-                      </p>
+                      <Tooltip content={track.path} side="top">
+                        <p className="text-foreground-secondary truncate">
+                          {track.path}
+                        </p>
+                      </Tooltip>
                     ) : null}
                   </li>
                 ))}
@@ -344,12 +344,11 @@ export function ItunesImportDialog({
       ) : null}
 
       {state.sourcePath && state.phase !== 'pick' ? (
-        <p
-          className="text-foreground-secondary truncate text-xs"
-          title={state.sourcePath}
-        >
-          {state.sourcePath}
-        </p>
+        <Tooltip content={state.sourcePath} side="top">
+          <p className="text-foreground-secondary truncate text-xs">
+            {state.sourcePath}
+          </p>
+        </Tooltip>
       ) : null}
 
       {state.phase === 'previewing' && !state.preview ? (

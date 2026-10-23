@@ -26,3 +26,15 @@ export const Default: Story = {
 export const Small: Story = {
   args: { textSize: 'xs', children: 'This file is larger than 2 MB.' },
 };
+
+/** `announce={false}` for a standing notice that is not a response to the
+ * user's last action. */
+export const StandingNotice: Story = {
+  args: {
+    announce: false,
+    children: 'Verify your email before completing membership checkout.',
+  },
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).queryByRole('alert')).toBeNull();
+  },
+};

@@ -5,6 +5,7 @@ import {
   Button,
   Dialog,
   FilePicker,
+  InlineError,
   MediaArtwork,
   Tooltip,
 } from '@tahti-player/ui';
@@ -288,9 +289,7 @@ export const ArtistImagePurposePicker: FC<Props> = ({
             </article>
           ))}
         </div>
-        {error ? (
-          <p className="text-accent-red-strong mt-3 text-sm">{error}</p>
-        ) : null}
+        {error ? <InlineError className="mt-3">{error}</InlineError> : null}
         <Dialog.Actions>
           <Button
             variant="secondary"

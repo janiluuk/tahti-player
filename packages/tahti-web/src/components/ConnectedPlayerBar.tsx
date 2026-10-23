@@ -372,18 +372,16 @@ export function ConnectedPlayerBar() {
               <div className="flex min-w-0 items-center gap-2">
                 {embedPanel}
                 <div className="min-w-0">
-                  <div
-                    className="truncate text-sm font-semibold tracking-tight"
-                    title={title}
-                  >
-                    {title}
-                  </div>
-                  <div
-                    className="text-foreground-secondary truncate text-xs"
-                    title={artist}
-                  >
-                    {artist}
-                  </div>
+                  <Tooltip content={title} side="top">
+                    <div className="truncate text-sm font-semibold tracking-tight">
+                      {title}
+                    </div>
+                  </Tooltip>
+                  <Tooltip content={artist} side="top">
+                    <div className="text-foreground-secondary truncate text-xs">
+                      {artist}
+                    </div>
+                  </Tooltip>
                 </div>
                 {isRealLive ? <PlayerLiveBadge /> : null}
               </div>

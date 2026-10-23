@@ -10,6 +10,7 @@ export function AiGeneratedBadge({ show }: { show: boolean | undefined }) {
     <Tooltip
       content="The artist marked this track as made with generative AI"
       side="top"
+      wrapperClassName="shrink-0"
     >
       <Badge
         variant="pill"

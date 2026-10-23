@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Select } from '@tahti-player/ui';
+import { InlineError, Select } from '@tahti-player/ui';
 
 import { fetchVenues } from '../../api/client';
 import type { StudioSound } from '../../api/studio-types';
@@ -76,9 +76,9 @@ export function RecordedAtVenuePicker({
         options={[{ id: NONE, label: 'No venue' }, ...options]}
       />
       {loadError ? (
-        <p className="text-accent-red-strong mt-1 text-xs" role="status">
+        <InlineError textSize="xs" className="mt-1">
           Could not load all venues: {loadError}
-        </p>
+        </InlineError>
       ) : null}
     </div>
   );

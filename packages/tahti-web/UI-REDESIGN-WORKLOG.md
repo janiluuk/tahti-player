@@ -1,3 +1,12 @@
+## 2026-10-23 - UX batch 100 (InlineError everywhere, tooltip fixes)
+
+Fixes three batch 98 tooltips that pushed inline text onto its own line
+(admin status times, the "Missing" marker) and keeps the AI-generated badge
+from shrinking. Forty-one more error and notice lines use `InlineError`;
+thirty-two conditional errors are now announced, and nine standing notices
+use the new `announce={false}`. Fourteen truncated paths and titles show the
+full text in a `Tooltip`. Bumped tahti-web `0.0.256`.
+
 ## 2026-10-23 - UX batch 99 (InlineError)
 
 `@tahti-player/ui` gains `InlineError` (story `Components/InlineError`), the

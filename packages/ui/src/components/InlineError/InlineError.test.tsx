@@ -19,4 +19,12 @@ describe('InlineError', () => {
     );
     expect(screen.getByTestId('err')).toHaveClass('text-xs', 'mt-2');
   });
+
+  it('can show a standing notice without announcing it', () => {
+    render(<InlineError announce={false}>Membership lapsed</InlineError>);
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(screen.getByText('Membership lapsed')).toHaveClass(
+      'text-accent-red-strong',
+    );
+  });
 });

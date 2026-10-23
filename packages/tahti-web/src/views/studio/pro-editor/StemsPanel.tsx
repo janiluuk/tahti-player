@@ -2,7 +2,7 @@ import { LayersIcon, SplitIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Loader, TabLabel, Tabs } from '@tahti-player/ui';
+import { Button, InlineError, Loader, TabLabel, Tabs } from '@tahti-player/ui';
 
 import {
   fetchSoundStems,
@@ -193,9 +193,9 @@ export function StemsPanel({
                 </span>
               </div>
               {job.status === 'ERROR' && job.errorMessage && (
-                <p className="text-accent-red-strong mt-1 text-xs">
+                <InlineError textSize="xs" className="mt-1" announce={false}>
                   {job.errorMessage}
-                </p>
+                </InlineError>
               )}
               {job.files && job.files.length > 0 && (
                 <div className="mt-2 flex flex-col gap-2">

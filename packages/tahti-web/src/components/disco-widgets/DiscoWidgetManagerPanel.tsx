@@ -7,6 +7,7 @@ import {
   Dialog,
   EmptyState,
   ImageReveal,
+  InlineError,
   Input,
   PluginStoreItem,
   Toggle,
@@ -329,7 +330,7 @@ export function DiscoWidgetManagerPanel({
           </div>
         </>
       )}
-      {error ? <p className="text-accent-red-strong text-sm">{error}</p> : null}
+      {error ? <InlineError>{error}</InlineError> : null}
       <Dialog.Root
         isOpen={configuringId !== null}
         onClose={() => setConfiguringId(null)}
