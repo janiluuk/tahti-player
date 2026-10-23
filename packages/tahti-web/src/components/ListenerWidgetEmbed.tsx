@@ -1,7 +1,7 @@
 import { XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Box, Button, Loader, Tooltip } from '@tahti-player/ui';
+import { Box, Button, InlineLoader, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchSpotifyPlaylistTracks,
@@ -96,10 +96,7 @@ function SpotifyPlaylistTracks({
         ) : null}
       </div>
       {status === 'loading' ? (
-        <div className="flex items-center gap-2 py-6 text-sm">
-          <Loader size="sm" />
-          <span className="text-foreground-secondary">Loading playlist…</span>
-        </div>
+        <InlineLoader label="Loading playlist…" className="py-6" />
       ) : null}
       {status === 'ready' ? (
         <PlayableTrackTable

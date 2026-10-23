@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, InlineLoader, Input } from '@tahti-player/ui';
 
 import {
   fetchMotionComments,
@@ -120,7 +120,7 @@ export function MotionDiscussion({
               }}
             />
           ) : !commentsLoaded ? (
-            <p className="text-foreground-secondary text-xs">Loading…</p>
+            <InlineLoader label="Loading…" textSize="xs" />
           ) : comments.length === 0 ? (
             <PageEmpty title="No comments yet." />
           ) : (

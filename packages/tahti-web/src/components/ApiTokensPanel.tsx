@@ -6,6 +6,7 @@ import {
   Badge,
   Button,
   CopyButton,
+  InlineError,
   Input,
   SectionShell,
   Select,
@@ -248,11 +249,7 @@ export function ApiTokensPanel() {
             </Button>
           ) : (
             <div className="border-border flex flex-col gap-3 border-t pt-4">
-              {error ? (
-                <p className="text-accent-red-strong text-sm" role="alert">
-                  {error}
-                </p>
-              ) : null}
+              {error ? <InlineError>{error}</InlineError> : null}
               <Input
                 label="Name"
                 value={name}

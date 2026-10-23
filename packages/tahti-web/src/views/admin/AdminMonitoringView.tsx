@@ -7,6 +7,7 @@ import {
   Button,
   ButtonAnchor,
   ButtonLink,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -61,22 +62,27 @@ export function AdminMonitoringView() {
                       description: string;
                     }>
                   ).map((dash) => (
-                    <ButtonAnchor
+                    <Tooltip
                       key={dash.uid}
-                      href={grafanaDashboardUrl(dash.uid)}
-                      target="_blank"
-                      rel="noreferrer"
-                      size="sm"
-                      variant="secondary"
-                      title={dash.description}
+                      content={dash.description}
+                      side="top"
                     >
-                      {dash.title}
-                      <ExternalLinkIcon
-                        size={12}
-                        aria-hidden
-                        className="ml-1"
-                      />
-                    </ButtonAnchor>
+                      <ButtonAnchor
+                        href={grafanaDashboardUrl(dash.uid)}
+                        target="_blank"
+                        rel="noreferrer"
+                        size="sm"
+                        variant="secondary"
+                        aria-description={dash.description}
+                      >
+                        {dash.title}
+                        <ExternalLinkIcon
+                          size={12}
+                          aria-hidden
+                          className="ml-1"
+                        />
+                      </ButtonAnchor>
+                    </Tooltip>
                   ))}
                   <ButtonAnchor
                     href={grafanaExploreLogsUrl()}

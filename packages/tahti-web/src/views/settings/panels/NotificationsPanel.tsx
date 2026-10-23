@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { InlineLoader } from '@tahti-player/ui';
+
 import {
   fetchNotificationPrefs,
   patchNotificationPrefs,
@@ -13,7 +15,7 @@ import {
 } from '../../../api/studio-extras';
 import { PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
-import { SettingsHint, SettingsToggle } from '../SettingsFields';
+import { SettingsToggle } from '../SettingsFields';
 import { CommentSettingsToggles } from './CommentSettingsToggles';
 import { GrantReportAttributionToggle } from './GrantReportAttributionToggle';
 import { TopListsToggle } from './TopListsToggle';
@@ -62,7 +64,7 @@ export function NotificationsPanel() {
   }
 
   if (!prefs) {
-    return <SettingsHint>Loading…</SettingsHint>;
+    return <InlineLoader label="Loading…" />;
   }
 
   const toggle = (key: keyof NotificationPrefs, value: boolean) => {
@@ -207,7 +209,7 @@ export function NotificationsVisibilityPanel() {
           }}
         />
       ) : !profile ? (
-        <SettingsHint>Loading…</SettingsHint>
+        <InlineLoader label="Loading…" />
       ) : (
         <div className="flex flex-col gap-4">
           <StudioPanel

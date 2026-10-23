@@ -324,14 +324,15 @@ export function StudioReleasesView() {
                           aria-label={`Copy smartlink for ${r.title}`}
                         />
                         {r.smartLinkTargets?.bandcamp ? (
-                          <ExternalLink
-                            href={r.smartLinkTargets.bandcamp}
-                            className="border-border size-8 justify-center overflow-hidden rounded border no-underline"
-                            aria-label={`Open ${r.title} on Bandcamp`}
-                            title="Open on Bandcamp"
-                          >
-                            <SourceServiceIcon id="bandcamp" size="detail" />
-                          </ExternalLink>
+                          <Tooltip content="Open on Bandcamp" side="top">
+                            <ExternalLink
+                              href={r.smartLinkTargets.bandcamp}
+                              className="border-border size-8 justify-center overflow-hidden rounded border no-underline"
+                              aria-label={`Open ${r.title} on Bandcamp`}
+                            >
+                              <SourceServiceIcon id="bandcamp" size="detail" />
+                            </ExternalLink>
+                          </Tooltip>
                         ) : null}
                         <Tooltip
                           content={openMoreId === r.id ? 'Less' : 'More'}

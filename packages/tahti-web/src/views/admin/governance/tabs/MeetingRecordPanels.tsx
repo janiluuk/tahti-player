@@ -1,7 +1,15 @@
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
-import { Badge, Button, Input, Textarea, Toggle } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  InlineError,
+  InlineLoader,
+  Input,
+  Textarea,
+  Toggle,
+} from '@tahti-player/ui';
 
 import {
   declareAdminGovernanceConflict,
@@ -81,7 +89,7 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
       onToggle={() => setOpen((value) => !value)}
     >
       {records === null ? (
-        <p className="text-foreground-secondary text-xs">Loading…</p>
+        <InlineLoader label="Loading…" textSize="xs" />
       ) : records.length === 0 ? (
         <p className="text-foreground-secondary text-xs">
           No conflicts declared for this meeting.
@@ -147,11 +155,7 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
           checked={recused}
           onChange={setRecused}
         />
-        {error ? (
-          <p className="text-accent-red-strong text-xs" role="alert">
-            {error}
-          </p>
-        ) : null}
+        {error ? <InlineError textSize="xs">{error}</InlineError> : null}
         <div>
           <Button
             size="sm"
@@ -216,11 +220,9 @@ export function NoticeDeliveriesPanel({ meetingId }: { meetingId: string }) {
       onToggle={() => setOpen((value) => !value)}
     >
       {error ? (
-        <p className="text-accent-red-strong text-xs" role="alert">
-          {error}
-        </p>
+        <InlineError textSize="xs">{error}</InlineError>
       ) : records === null ? (
-        <p className="text-foreground-secondary text-xs">Loading…</p>
+        <InlineLoader label="Loading…" textSize="xs" />
       ) : records.length === 0 ? (
         <PageEmpty title="No meeting notice has been sent yet." />
       ) : (

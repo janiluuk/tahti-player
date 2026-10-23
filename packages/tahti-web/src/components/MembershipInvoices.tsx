@@ -1,7 +1,12 @@
 import { DownloadIcon, ExternalLinkIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Badge, ButtonAnchor } from '@tahti-player/ui';
+import {
+  Badge,
+  ButtonAnchor,
+  InlineError,
+  InlineLoader,
+} from '@tahti-player/ui';
 
 import {
   fetchMembershipInvoices,
@@ -51,11 +56,9 @@ export function MembershipInvoices() {
         Invoices
       </h3>
       {error ? (
-        <p className="text-accent-red-strong mt-2 text-sm" role="alert">
-          {error}
-        </p>
+        <InlineError className="mt-2">{error}</InlineError>
       ) : invoices === null ? (
-        <p className="text-foreground-secondary mt-2 text-sm">Loading…</p>
+        <InlineLoader label="Loading…" className="mt-2" />
       ) : invoices.length === 0 ? (
         <PageEmpty title="No membership invoices yet. Invoices appear here once you pay through Stripe checkout." />
       ) : (

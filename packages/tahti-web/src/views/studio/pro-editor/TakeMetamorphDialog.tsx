@@ -8,6 +8,8 @@ import {
   Button,
   Dialog,
   EmptyState,
+  InlineError,
+  InlineLoader,
   Select,
   Slider,
   Toggle,
@@ -231,9 +233,7 @@ export function TakeMetamorphDialog({
       </Dialog.Description>
       <div className="mt-4 flex min-w-0 flex-col gap-4">
         {versions === null ? (
-          <p className="text-foreground-secondary text-sm" role="status">
-            Loading versions…
-          </p>
+          <InlineLoader label="Loading versions…" />
         ) : versions.length < 2 ? (
           <EmptyState
             size="sm"
@@ -297,9 +297,7 @@ export function TakeMetamorphDialog({
               </div>
             </div>
             {error ? (
-              <p className="text-accent-red-strong text-sm" role="alert">
-                {error}
-              </p>
+              <InlineError>{error}</InlineError>
             ) : busy === 'render' ? (
               <p className="text-foreground-secondary text-sm" role="status">
                 Rendering the morph in your browser…

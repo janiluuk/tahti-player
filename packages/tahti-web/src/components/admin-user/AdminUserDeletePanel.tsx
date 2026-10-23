@@ -1,7 +1,7 @@
 import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Dialog, Input } from '@tahti-player/ui';
+import { Button, Dialog, InlineError, Input } from '@tahti-player/ui';
 
 import {
   deleteAdminUserAccount,
@@ -95,11 +95,7 @@ export function AdminUserDeletePanel({
           autoComplete="off"
           placeholder={user.username}
         />
-        {error ? (
-          <p className="text-accent-red-strong mt-2 text-sm" role="alert">
-            {error}
-          </p>
-        ) : null}
+        {error ? <InlineError className="mt-2">{error}</InlineError> : null}
         <Dialog.Actions>
           <Dialog.Close>Cancel</Dialog.Close>
           <Button

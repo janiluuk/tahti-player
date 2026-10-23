@@ -1,3 +1,45 @@
+## 2026-10-23 - UX batch 99 ninety-three inline error slices
+
+New library `InlineError` (`<p role="alert">` in `text-accent-red-strong`,
+`textSize` `sm` / `xs`, story `Components/InlineError`) replaces 93
+hand-styled `<p role="alert" className="text-accent-red-strong …">` error
+lines in 82 files across Studio, admin, governance, settings, dialogs and
+desktop library panels. Layout classes (margins, `w-full`) and other
+attributes carry over. The 44 red paragraphs without `role="alert"` are left
+alone: some are static notices that should not be announced. tahti-web
+`0.0.255`.
+
+## 2026-10-23 - UX batch 98 thirty loading-state and tooltip slices
+
+Thirteen more bare loading lines -> `InlineLoader`: eleven Settings panel
+`SettingsHint` "Loading…" lines (broadcast x2, artist x2, account storage,
+mentions, MusicBrainz preference, channel x2, notifications x2), the local
+playlists empty-state and the listener widget playlist. Sixteen native
+`title` tooltips -> `Tooltip` (with `aria-description` where the text is not
+already the accessible name): tracklist markers, the settings footer GitHub /
+Discord / API docs links, the top bar broadcast / messages / notifications
+buttons, the smart link open button, the AI-generated badge, the Bandcamp
+links on releases and release tracks, the "Missing" file marker, the
+designer's player preview, the two admin status timestamps and the local
+library folder rows. The pro editor link drops a `title` that repeated its
+label. tahti-web `0.0.254`.
+
+## 2026-10-23 - UX batch 97 thirty-plus loading-state and link slices
+
+New library `InlineLoader` (spinner + text, `role="status"`, `textSize`
+`sm` / `xs`) replaces twenty-six plain "Loading…" paragraphs that had no
+spinner and were not announced: support tickets, add to playlist,
+membership invoices, channel playlist picker, share links, elections,
+association, board, meeting agenda, motion discussion, hourly stats, AGM
+(x2), agenda items, meeting records (x2), member register, pinned
+announcements, stream playlist, OAuth releases, annual reports, take
+versions, announcement trim, track editor, provider set import, recorded
+broadcasts. The three embed "Open channel / smart link / collection" links
+are `ExternalLink`; the Grafana dashboard buttons' `title` is a `Tooltip`
+with `aria-description`. tahti-web unit tests pin `LC_ALL=en_US.UTF-8` so
+collation and number-format assertions match CI on a non-English shell.
+tahti-web `0.0.253`.
+
 ## 2026-10-23 - UX batch 96 thirty-plus label, toggle and group slices
 
 New library `ColorField` (swatch + label + value line, `actions` kept outside

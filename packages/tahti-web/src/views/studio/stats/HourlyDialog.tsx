@@ -1,4 +1,4 @@
-import { Dialog, ListeningClock } from '@tahti-player/ui';
+import { Dialog, InlineLoader, ListeningClock } from '@tahti-player/ui';
 
 import { formatDate } from './helpers';
 import type { StatsData } from './useStatsData';
@@ -23,7 +23,7 @@ export function HourlyDialog({ state }: { state: StatsData }) {
       </Dialog.Description>
       <div className="mt-4 min-h-48">
         {hourlyLoading ? (
-          <p className="text-foreground-secondary text-sm">Loading hours…</p>
+          <InlineLoader label="Loading hours…" />
         ) : (
           <ListeningClock
             values={hourly}

@@ -152,37 +152,38 @@ export function ChannelPagePreview({
           </span>
         }
       />
-      <div
-        role="button"
-        tabIndex={0}
-        data-testid="channel-designer-stage-player"
-        aria-label="Edit player design"
-        title="Edit player design"
-        onClick={onEditPlayer}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            onEditPlayer();
-          }
-        }}
-        className={`border-border cursor-pointer overflow-hidden border border-y-0 outline-none ${
-          highlightSection === 'visualizer'
-            ? 'ring-primary ring-2 ring-inset'
-            : ''
-        }`}
-      >
-        <div className="bg-gradient-to-t from-black/85 via-black/45 to-black/10 p-4 pt-10">
-          <div className="text-[10px] font-semibold tracking-wide text-white/70 uppercase">
-            Now playing
-          </div>
-          <div className="mt-1 text-2xl font-extrabold text-white">
-            Your live channel
-          </div>
-          <div className="text-sm text-white/80">
-            A live preview of the artist stage
+      <Tooltip content="Edit player design" side="top">
+        <div
+          role="button"
+          tabIndex={0}
+          data-testid="channel-designer-stage-player"
+          aria-label="Edit player design"
+          onClick={onEditPlayer}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              onEditPlayer();
+            }
+          }}
+          className={`border-border cursor-pointer overflow-hidden border border-y-0 outline-none ${
+            highlightSection === 'visualizer'
+              ? 'ring-primary ring-2 ring-inset'
+              : ''
+          }`}
+        >
+          <div className="bg-gradient-to-t from-black/85 via-black/45 to-black/10 p-4 pt-10">
+            <div className="text-[10px] font-semibold tracking-wide text-white/70 uppercase">
+              Now playing
+            </div>
+            <div className="mt-1 text-2xl font-extrabold text-white">
+              Your live channel
+            </div>
+            <div className="text-sm text-white/80">
+              A live preview of the artist stage
+            </div>
           </div>
         </div>
-      </div>
+      </Tooltip>
       <nav
         aria-label="Channel navigation"
         className="border-border relative flex flex-wrap items-center gap-x-5 gap-y-2 border border-t-0 px-4 py-3 text-xs font-semibold uppercase"

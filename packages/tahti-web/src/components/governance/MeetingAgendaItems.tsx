@@ -1,6 +1,8 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState, type ReactNode } from 'react';
 
+import { InlineLoader } from '@tahti-player/ui';
+
 import {
   fetchMeetingAgenda,
   type MemberAgendaItem,
@@ -98,9 +100,7 @@ export function MeetingAgendaItems({
     );
   }
   if (items === null) {
-    return (
-      <p className="text-foreground-secondary text-sm">Loading the agenda…</p>
-    );
+    return <InlineLoader label="Loading the agenda…" />;
   }
   if (items.length === 0) {
     return <>{fallback}</>;

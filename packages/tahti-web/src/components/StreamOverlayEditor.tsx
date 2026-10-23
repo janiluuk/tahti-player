@@ -7,6 +7,7 @@ import {
   ColorField,
   Dialog,
   FilePicker,
+  InlineError,
   Input,
   MediaArtwork,
   SaveButton,
@@ -239,11 +240,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
           nothing's live.
         </p>
       </HelpLayer>
-      {error && (
-        <p className="text-accent-red-strong text-sm" role="alert">
-          {error}
-        </p>
-      )}
+      {error && <InlineError>{error}</InlineError>}
 
       <div className="group relative aspect-video w-full max-w-xs">
         <Button

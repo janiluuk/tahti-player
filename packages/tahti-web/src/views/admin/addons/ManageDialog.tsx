@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, Textarea, Toggle } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  InlineError,
+  Textarea,
+  Toggle,
+} from '@tahti-player/ui';
 
 import { type AdminAddon } from '../../../api/admin';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
@@ -69,16 +75,8 @@ export function ManageDialog({
               setConfigError(null);
             }}
           />
-          {configError ? (
-            <p className="text-accent-red-strong text-sm" role="alert">
-              {configError}
-            </p>
-          ) : null}
-          {error ? (
-            <p className="text-accent-red-strong text-sm" role="alert">
-              {error}
-            </p>
-          ) : null}
+          {configError ? <InlineError>{configError}</InlineError> : null}
+          {error ? <InlineError>{error}</InlineError> : null}
           <div className="border-border flex items-center justify-between border-t pt-4">
             <Button
               type="button"

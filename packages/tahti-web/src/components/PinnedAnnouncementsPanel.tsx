@@ -2,7 +2,7 @@ import { PinIcon, SendIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Input, Tooltip } from '@tahti-player/ui';
+import { Button, InlineLoader, Input, Tooltip } from '@tahti-player/ui';
 
 import {
   deletePinnedAnnouncement,
@@ -94,9 +94,7 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
           </Tooltip>
         </div>
         {loading ? (
-          <p className="text-foreground-secondary text-sm">
-            Loading announcements…
-          </p>
+          <InlineLoader label="Loading announcements…" />
         ) : loadError ? (
           <PageError
             title="Could not load announcements"

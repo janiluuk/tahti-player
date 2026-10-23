@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, InlineError, InlineLoader, Input } from '@tahti-player/ui';
 
 import {
   createAdminAgendaItem,
@@ -68,7 +68,7 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
       onToggle={() => setOpen((value) => !value)}
     >
       {items === null ? (
-        <p className="text-foreground-secondary text-xs">Loading…</p>
+        <InlineLoader label="Loading…" textSize="xs" />
       ) : loadError && items.length === 0 ? (
         <PageError
           title="Could not load agenda items"
@@ -134,9 +134,9 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
         </div>
       </form>
       {error ? (
-        <p className="text-accent-red-strong mt-2 text-xs" role="alert">
+        <InlineError textSize="xs" className="mt-2">
           {error}
-        </p>
+        </InlineError>
       ) : null}
     </CollapsibleRecord>
   );

@@ -1,7 +1,7 @@
 import { Building2Icon } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
-import { ExternalLink } from '@tahti-player/ui';
+import { ExternalLink, InlineLoader } from '@tahti-player/ui';
 
 import {
   fetchAssociationProfile,
@@ -66,7 +66,7 @@ export function AssociationPanel() {
   return (
     <GovernancePanel title="The association" icon={Building2Icon}>
       {state === 'loading' ? (
-        <p className="text-foreground-secondary text-sm">Loading…</p>
+        <InlineLoader label="Loading…" />
       ) : state === 'failed' || !profile ? (
         <PageError
           title="Could not load the association's details"

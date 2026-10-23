@@ -7,7 +7,7 @@ import {
   TagsIcon,
 } from 'lucide-react';
 
-import { Dialog, SaveButton, Tabs } from '@tahti-player/ui';
+import { Dialog, InlineError, SaveButton, Tabs } from '@tahti-player/ui';
 
 import type { StudioSound, TracklistEntry } from '../api/studio-types';
 import { AddToPlaylistPanel } from './AddToPlaylistPanel';
@@ -126,11 +126,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
           />
         ) : null}
 
-        {loadError && (
-          <p className="text-accent-red-strong mt-3 text-sm" role="alert">
-            {loadError}
-          </p>
-        )}
+        {loadError && <InlineError className="mt-3">{loadError}</InlineError>}
 
         <Dialog.Actions>
           <Dialog.Close>Close</Dialog.Close>

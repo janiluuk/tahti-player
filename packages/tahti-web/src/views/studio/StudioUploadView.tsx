@@ -13,7 +13,8 @@ import {
   ButtonLink,
   EmptyState,
   FilePicker,
-  Loader,
+  InlineError,
+  InlineLoader,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -246,11 +247,7 @@ export function StudioUploadView() {
                 metadata. If the file has none, its filename is used and you can
                 name it in the editor afterwards.
               </p>
-              {message && (
-                <p className="text-accent-red-strong text-sm" role="alert">
-                  {message}
-                </p>
-              )}
+              {message && <InlineError>{message}</InlineError>}
               <div className="flex flex-wrap gap-2">
                 <Button
                   disabled={busy || !file}
@@ -269,12 +266,7 @@ export function StudioUploadView() {
                 Last recorded broadcasts
               </div>
               {recordingsLoading ? (
-                <div className="mt-4 flex items-center gap-2">
-                  <Loader size="sm" />
-                  <span className="text-foreground-secondary text-sm">
-                    Loading recordings…
-                  </span>
-                </div>
+                <InlineLoader label="Loading recordings…" className="mt-4" />
               ) : recordingsError && recordings.length === 0 ? (
                 <PageError
                   title="Could not load recent recordings"

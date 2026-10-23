@@ -104,14 +104,21 @@ export function AdminStatusView() {
                           (platform?.uptimeSec ?? data.uptimeSec) / 3600,
                         )}
                         h{' · checked '}
-                        <time
-                          dateTime={platform?.ts ?? data.ts}
-                          title={new Date(
+                        <Tooltip
+                          content={new Date(
                             platform?.ts ?? data.ts,
                           ).toLocaleString()}
+                          side="top"
                         >
-                          {humanizePastDate(platform?.ts ?? data.ts)}
-                        </time>
+                          <time
+                            dateTime={platform?.ts ?? data.ts}
+                            aria-description={new Date(
+                              platform?.ts ?? data.ts,
+                            ).toLocaleString()}
+                          >
+                            {humanizePastDate(platform?.ts ?? data.ts)}
+                          </time>
+                        </Tooltip>
                       </span>
                     </div>
                     <ul className="divide-border divide-y">
@@ -194,14 +201,21 @@ export function AdminStatusView() {
                               <>
                                 {job.lastRun.outcome ?? '—'}
                                 {' · '}
-                                <time
-                                  dateTime={job.lastRun.startedAt}
-                                  title={new Date(
+                                <Tooltip
+                                  content={new Date(
                                     job.lastRun.startedAt,
                                   ).toLocaleString()}
+                                  side="top"
                                 >
-                                  {humanizePastDate(job.lastRun.startedAt)}
-                                </time>
+                                  <time
+                                    dateTime={job.lastRun.startedAt}
+                                    aria-description={new Date(
+                                      job.lastRun.startedAt,
+                                    ).toLocaleString()}
+                                  >
+                                    {humanizePastDate(job.lastRun.startedAt)}
+                                  </time>
+                                </Tooltip>
                               </>
                             ) : (
                               '—'

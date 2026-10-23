@@ -6,6 +6,7 @@ import {
   Button,
   ButtonAnchor,
   Dialog,
+  InlineError,
   Select,
   Textarea,
 } from '@tahti-player/ui';
@@ -93,11 +94,7 @@ function RejectDialog({
         maxLength={2000}
         onChange={(event) => setNote(event.target.value)}
       />
-      {error ? (
-        <p className="text-accent-red-strong mt-2 text-sm" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError className="mt-2">{error}</InlineError> : null}
       <Dialog.Actions>
         <Button type="button" variant="secondary" onClick={onClose}>
           Cancel
@@ -183,9 +180,7 @@ export function ThemesTab() {
       }
     >
       {actionError ? (
-        <p className="text-accent-red-strong mb-2 text-sm" role="alert">
-          {actionError}
-        </p>
+        <InlineError className="mb-2">{actionError}</InlineError>
       ) : null}
       {loadError ? (
         <PageError

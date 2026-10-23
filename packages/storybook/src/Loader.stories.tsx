@@ -1,6 +1,6 @@
 import { StoryObj } from '@storybook/react-vite';
 
-import { Loader } from '@tahti-player/ui';
+import { InlineLoader, Loader } from '@tahti-player/ui';
 
 const meta = { title: 'Components/Loader', component: Loader };
 
@@ -30,4 +30,15 @@ export const Labelled: Story = {
 /** Pixel size for icon slots such as the 28px player play button. */
 export const PixelSize: Story = {
   args: { size: 28, shape: 'circle' },
+};
+
+/** `InlineLoader`: spinner plus text for a panel or list that is still
+ * loading; announced as a status. */
+export const InlineText: Story = {
+  render: () => (
+    <div className="flex flex-col gap-3">
+      <InlineLoader label="Loading the board…" />
+      <InlineLoader label="Loading…" textSize="xs" />
+    </div>
+  ),
 };

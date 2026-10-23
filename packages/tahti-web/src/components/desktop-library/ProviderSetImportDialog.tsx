@@ -3,6 +3,8 @@ import {
   Badge,
   Button,
   Dialog,
+  InlineError,
+  InlineLoader,
   Input,
   Loader,
   Toggle,
@@ -207,11 +209,7 @@ export function ProviderSetImportDialog({
         out.
       </Dialog.Description>
 
-      {state.error ? (
-        <p role="alert" className="text-accent-red-strong text-sm">
-          {state.error}
-        </p>
-      ) : null}
+      {state.error ? <InlineError>{state.error}</InlineError> : null}
 
       {state.phase === 'pick' ? (
         <div className="flex flex-col gap-3 py-2">
@@ -266,10 +264,7 @@ export function ProviderSetImportDialog({
       ) : null}
 
       {state.phase === 'loading' ? (
-        <p className="text-foreground-secondary flex items-center gap-2 py-2 text-sm">
-          <Loader size="inline" shape="circle" />
-          Loading the set…
-        </p>
+        <InlineLoader label="Loading the set…" className="py-2" />
       ) : null}
 
       {state.phase === 'review' ||

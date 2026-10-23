@@ -1,6 +1,12 @@
 import { useState } from 'react';
 
-import { Badge, Button, ExternalLink, Input } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  ExternalLink,
+  InlineError,
+  Input,
+} from '@tahti-player/ui';
 
 import { patchAdminGovernanceDocument } from '../../../../api/admin/admin-governance-documents';
 import type { GovernanceDocument } from '../../../../api/types';
@@ -104,11 +110,7 @@ export function GovernanceDocumentRow({
           </Button>
         </form>
       ) : null}
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       <LegalHoldControl
         kind="document"
         id={document.id}

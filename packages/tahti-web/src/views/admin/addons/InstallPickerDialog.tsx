@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, FilterChips } from '@tahti-player/ui';
+import { Button, Dialog, FilterChips, InlineError } from '@tahti-player/ui';
 
 import { type AdminAddon } from '../../../api/admin';
 
@@ -50,11 +50,7 @@ export function InstallPickerDialog({
           onChange={setSelected}
         />
       )}
-      {error ? (
-        <p className="text-accent-red-strong text-sm" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError>{error}</InlineError> : null}
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
         <Button

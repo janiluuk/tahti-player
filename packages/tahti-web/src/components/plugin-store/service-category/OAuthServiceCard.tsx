@@ -5,6 +5,7 @@ import {
   Button,
   ButtonLink,
   ExternalLink,
+  InlineLoader,
   Input,
   MediaArtwork,
   PluginStoreItem,
@@ -310,9 +311,7 @@ export function OAuthServiceCard({
             <div className="border-border flex flex-col gap-3 border-t pt-3">
               <p className="text-sm font-medium">Your Bandcamp discography</p>
               {bandcampBusy ? (
-                <p className="text-foreground-secondary text-sm">
-                  Loading your releases…
-                </p>
+                <InlineLoader label="Loading your releases…" />
               ) : bandcampAlbums.length === 0 ? (
                 <p className="text-foreground-secondary text-sm">
                   {bandcampMessage ?? 'No Bandcamp releases were found.'}

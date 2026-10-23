@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, Input, Toggle } from '@tahti-player/ui';
+import { Button, InlineError, Input, Toggle } from '@tahti-player/ui';
 
 import {
   recordElectionResult,
@@ -110,11 +110,7 @@ export function ElectionResultForm({
         Each elected member gets a board term in this role and the election
         closes. Board access is still granted separately.
       </p>
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy}>
           Record result

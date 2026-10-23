@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
-import { Badge, Button, Textarea } from '@tahti-player/ui';
+import { Badge, Button, InlineLoader, Textarea } from '@tahti-player/ui';
 
 import {
   fetchMySupportTickets,
@@ -144,7 +144,7 @@ export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
           }}
         />
       ) : tickets === null ? (
-        <p className="text-foreground-secondary text-sm">Loading…</p>
+        <InlineLoader label="Loading…" />
       ) : tickets.length === 0 ? (
         <PageEmpty
           title="No support requests yet"

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Loader, Toggle } from '@tahti-player/ui';
+import { Button, Dialog, InlineError, Loader, Toggle } from '@tahti-player/ui';
 
 import type {
   NativeWriteTagsPreview,
@@ -105,9 +105,7 @@ export function WriteTagsDialog({
         tagged on a copy and checked before it replaces the original.
       </Dialog.Description>
       {error ? (
-        <p role="alert" className="text-accent-red-strong text-sm">
-          {error}
-        </p>
+        <InlineError>{error}</InlineError>
       ) : !preview ? (
         <p className="text-foreground-secondary flex items-center gap-2 text-sm">
           <Loader size="inline" shape="circle" />

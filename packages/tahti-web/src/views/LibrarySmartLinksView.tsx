@@ -8,6 +8,7 @@ import {
   EmptyState,
   FilterChips,
   ImageReveal,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import { fetchStudioReleases } from '../api/studio';
@@ -238,16 +239,17 @@ export function LibrarySmartLinksView() {
                           >
                             Manage
                           </ButtonLink>
-                          <ButtonLink
-                            to="/r/$slug"
-                            params={{ slug: release.smartLinkSlug }}
-                            size="sm"
-                            variant="text"
-                            aria-label={`Open smartlink for ${release.title}`}
-                            title="Open smartlink"
-                          >
-                            <ExternalLinkIcon size={15} aria-hidden />
-                          </ButtonLink>
+                          <Tooltip content="Open smartlink" side="top">
+                            <ButtonLink
+                              to="/r/$slug"
+                              params={{ slug: release.smartLinkSlug }}
+                              size="sm"
+                              variant="text"
+                              aria-label={`Open smartlink for ${release.title}`}
+                            >
+                              <ExternalLinkIcon size={15} aria-hidden />
+                            </ButtonLink>
+                          </Tooltip>
                         </div>
                       </li>
                     );

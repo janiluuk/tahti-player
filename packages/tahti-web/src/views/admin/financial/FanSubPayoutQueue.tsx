@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { RotateCcwIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Badge, Button, Select } from '@tahti-player/ui';
+import { Badge, Button, InlineError, Select } from '@tahti-player/ui';
 
 import {
   fetchFanSubPayouts,
@@ -87,11 +87,7 @@ export function FanSubPayoutQueue({ onChanged }: { onChanged?: () => void }) {
         />
       }
     >
-      {error ? (
-        <p className="text-accent-red-strong mb-3 text-sm" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError className="mb-3">{error}</InlineError> : null}
       {loading && !rows ? (
         <PageLoading label="Loading payouts…" />
       ) : !rows ? (

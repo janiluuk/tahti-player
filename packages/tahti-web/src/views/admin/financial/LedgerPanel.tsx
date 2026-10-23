@@ -4,6 +4,7 @@ import { useState } from 'react';
 import {
   Button,
   ButtonAnchor,
+  InlineError,
   Input,
   SaveButton,
   Select,
@@ -100,11 +101,7 @@ function LedgerEntryForm({ onSaved }: { onSaved: () => void }) {
         value={externalRef}
         onChange={(event) => setExternalRef(event.target.value)}
       />
-      {error ? (
-        <p className="text-accent-red-strong text-sm" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError>{error}</InlineError> : null}
       <div>
         <SaveButton
           size="sm"

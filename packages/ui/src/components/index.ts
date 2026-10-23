@@ -30,6 +30,7 @@ export * from './FilterChips';
 export * from './HistoryDayGroup';
 export * from './HistoryRow';
 export * from './ImageThumbnailPicker';
+export * from './InlineError';
 export * from './Input';
 export * from './HistoryCharts';
 export * from './KeyCombo';

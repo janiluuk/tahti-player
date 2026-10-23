@@ -1,6 +1,13 @@
 import { PlusIcon, SaveIcon } from 'lucide-react';
 
-import { Button, Dialog, Input, Select, Textarea } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  InlineError,
+  Input,
+  Select,
+  Textarea,
+} from '@tahti-player/ui';
 
 import {
   type AdminAddonRegisterInput,
@@ -111,11 +118,7 @@ export function RegisterDialog({
             })
           }
         />
-        {error ? (
-          <p className="text-accent-red-strong text-sm" role="alert">
-            {error}
-          </p>
-        ) : null}
+        {error ? <InlineError>{error}</InlineError> : null}
       </div>
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>

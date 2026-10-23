@@ -5,6 +5,7 @@ import {
   Badge,
   Button,
   Dialog,
+  InlineError,
   Input,
   SaveButton,
   Textarea,
@@ -92,11 +93,7 @@ function TrackEditDialog({
           onChange={(event) => setDescription(event.target.value)}
         />
         <Toggle label="Public" checked={isPublic} onChange={setIsPublic} />
-        {error ? (
-          <p className="text-accent-red-strong text-sm" role="alert">
-            {error}
-          </p>
-        ) : null}
+        {error ? <InlineError>{error}</InlineError> : null}
       </div>
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
@@ -165,11 +162,7 @@ export function ChannelTracksPanel() {
         </Button>
       </form>
 
-      {error ? (
-        <p className="text-accent-red-strong mt-3 text-sm" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError className="mt-3">{error}</InlineError> : null}
 
       {slug ? (
         sounds.length === 0 ? (

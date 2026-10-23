@@ -1,7 +1,7 @@
 import { BookOpenIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { ExternalLink } from '@tahti-player/ui';
+import { ExternalLink, InlineLoader } from '@tahti-player/ui';
 
 import {
   fetchAnnualReports,
@@ -55,9 +55,7 @@ export function AnnualReportsPanel() {
   return (
     <GovernancePanel title="Annual reports" icon={BookOpenIcon}>
       {reports === null ? (
-        <p className="text-foreground-secondary text-sm">
-          Loading annual reports…
-        </p>
+        <InlineLoader label="Loading annual reports…" />
       ) : loadError ? (
         <PageError
           title="Could not load the annual reports"

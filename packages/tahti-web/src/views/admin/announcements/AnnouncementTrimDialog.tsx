@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, Input } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  InlineError,
+  InlineLoader,
+  Input,
+} from '@tahti-player/ui';
 
 import {
   fetchAdminAnnouncementSource,
@@ -126,9 +132,7 @@ export function AnnouncementTrimDialog({
             className="w-full"
           />
         ) : !error ? (
-          <p className="text-foreground-secondary text-sm" role="status">
-            Loading the original upload…
-          </p>
+          <InlineLoader label="Loading the original upload…" />
         ) : null}
         <div className="grid grid-cols-2 gap-3">
           {FIELDS.map((field) => (
@@ -156,11 +160,7 @@ export function AnnouncementTrimDialog({
             The original is {durationSec} s long.
           </p>
         ) : null}
-        {error ? (
-          <p className="text-accent-red-strong text-sm" role="alert">
-            {error}
-          </p>
-        ) : null}
+        {error ? <InlineError>{error}</InlineError> : null}
         <div className="border-border flex justify-end gap-2 border-t pt-4">
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel

@@ -1,7 +1,7 @@
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
   deleteAdminAgendaItem,
@@ -73,11 +73,7 @@ export function AgendaItemRow({
             maxLength={5000}
             onChange={(e) => setOutcome(e.target.value)}
           />
-          {error ? (
-            <p className="text-accent-red-strong text-xs" role="alert">
-              {error}
-            </p>
-          ) : null}
+          {error ? <InlineError textSize="xs">{error}</InlineError> : null}
           <div className="flex gap-2">
             <Button type="submit" size="sm" disabled={busy}>
               Save item
@@ -151,11 +147,7 @@ export function AgendaItemRow({
           Remove
         </Button>
       </div>
-      {error ? (
-        <p className="text-accent-red-strong text-xs" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       <ConfirmDialog
         isOpen={confirmDelete}
         title={`Remove "${item.title}" from the agenda?`}

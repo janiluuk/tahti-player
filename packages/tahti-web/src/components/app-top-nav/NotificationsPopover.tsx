@@ -1,6 +1,6 @@
 import { BellIcon } from 'lucide-react';
 
-import { Badge, Button, EmptyState } from '@tahti-player/ui';
+import { Badge, Button, EmptyState, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { PageError } from '../PageStates';
@@ -26,38 +26,39 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
 
   return (
     <div className="relative">
-      <Button
-        variant="text"
-        size="icon-sm"
-        className={cn(
-          iconBtnClass,
-          'relative',
-          isMobile && 'hidden',
-          notificationsOpen &&
-            'border-accent-cyan bg-accent-cyan/15 text-foreground',
-        )}
-        aria-label="Notifications"
-        aria-haspopup="menu"
-        aria-expanded={notificationsOpen}
-        title="Notifications"
-        data-tour-id="topbar-notifications"
-        onClick={() => {
-          setNotificationsOpen((current) => !current);
-          setBroadcastOpen(false);
-          setMessagesOpen(false);
-        }}
-      >
-        <BellIcon size={16} />
-        {unreadNotificationCount > 0 ? (
-          <Badge
-            variant="pill"
-            color="red"
-            className="absolute -top-1 -right-1 min-w-4 px-1 text-center text-[9px] font-bold"
-          >
-            {Math.min(9, unreadNotificationCount)}
-          </Badge>
-        ) : null}
-      </Button>
+      <Tooltip content="Notifications" side="top">
+        <Button
+          variant="text"
+          size="icon-sm"
+          className={cn(
+            iconBtnClass,
+            'relative',
+            isMobile && 'hidden',
+            notificationsOpen &&
+              'border-accent-cyan bg-accent-cyan/15 text-foreground',
+          )}
+          aria-label="Notifications"
+          aria-haspopup="menu"
+          aria-expanded={notificationsOpen}
+          data-tour-id="topbar-notifications"
+          onClick={() => {
+            setNotificationsOpen((current) => !current);
+            setBroadcastOpen(false);
+            setMessagesOpen(false);
+          }}
+        >
+          <BellIcon size={16} />
+          {unreadNotificationCount > 0 ? (
+            <Badge
+              variant="pill"
+              color="red"
+              className="absolute -top-1 -right-1 min-w-4 px-1 text-center text-[9px] font-bold"
+            >
+              {Math.min(9, unreadNotificationCount)}
+            </Badge>
+          ) : null}
+        </Button>
+      </Tooltip>
       {notificationsOpen ? (
         <div
           className="border-border bg-background absolute top-[calc(100%+6px)] right-0 z-40 w-72 rounded-lg border p-2 shadow-lg"

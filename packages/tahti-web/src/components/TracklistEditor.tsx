@@ -276,24 +276,29 @@ export const TracklistEditor: FC<Props> = ({
                   />
                   <div className="pointer-events-none absolute inset-x-2 top-2 h-56">
                     {sortedEntries.map((entry) => (
-                      <Button
-                        variant="plain"
-                        size="flexible"
+                      <Tooltip
                         key={entry.id}
-                        type="button"
-                        className="border-background bg-primary text-primary-foreground pointer-events-auto absolute top-1 block -translate-x-1/2 rounded-full border-2 p-1 whitespace-normal shadow active:scale-100"
-                        style={{
-                          left: `${Math.min(100, Math.max(0, ((entry.startSec ?? 0) / Math.max(1, durationSec)) * 100))}%`,
-                        }}
-                        aria-label={`Place ${entry.title} at ${formatTime(entry.startSec)}`}
-                        title={`${entry.title} · ${formatTime(entry.startSec)}`}
-                        onClick={() => {
-                          setSelectedId(entry.id);
-                          setPlayhead(entry.startSec ?? 0);
-                        }}
+                        content={`${entry.title} · ${formatTime(entry.startSec)}`}
+                        side="top"
                       >
-                        <MapPinPlusIcon size={13} aria-hidden />
-                      </Button>
+                        <Button
+                          variant="plain"
+                          size="flexible"
+
+                          type="button"
+                          className="border-background bg-primary text-primary-foreground pointer-events-auto absolute top-1 block -translate-x-1/2 rounded-full border-2 p-1 whitespace-normal shadow active:scale-100"
+                          style={{
+                            left: `${Math.min(100, Math.max(0, ((entry.startSec ?? 0) / Math.max(1, durationSec)) * 100))}%`,
+                          }}
+                          aria-label={`Place ${entry.title} at ${formatTime(entry.startSec)}`}
+                          onClick={() => {
+                            setSelectedId(entry.id);
+                            setPlayhead(entry.startSec ?? 0);
+                          }}
+                        >
+                          <MapPinPlusIcon size={13} aria-hidden />
+                        </Button>
+                      </Tooltip>
                     ))}
                   </div>
                 </div>

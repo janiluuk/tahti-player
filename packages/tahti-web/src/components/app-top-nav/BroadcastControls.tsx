@@ -30,28 +30,29 @@ export function BroadcastControls({ nav }: { nav: TopNavState }) {
   return (
     <>
       <div className="relative hidden sm:block">
-        <Button
-          variant="text"
-          size="icon-sm"
-          className={cn(
-            iconBtnClass,
-            (broadcastOpen || pathname.startsWith('/studio/go-live')) &&
-              'border-primary bg-primary/15 text-primary-strong',
-            broadcastToneClass,
-          )}
-          aria-label={`Open live panel — ${broadcast.label}`}
-          aria-haspopup="menu"
-          aria-expanded={broadcastOpen}
-          title="Broadcast status"
-          data-tour-id="topbar-golive"
-          onClick={() => {
-            setBroadcastOpen((current) => !current);
-            setMessagesOpen(false);
-            setNotificationsOpen(false);
-          }}
-        >
-          <RadioIcon size={16} />
-        </Button>
+        <Tooltip content="Broadcast status" side="top">
+          <Button
+            variant="text"
+            size="icon-sm"
+            className={cn(
+              iconBtnClass,
+              (broadcastOpen || pathname.startsWith('/studio/go-live')) &&
+                'border-primary bg-primary/15 text-primary-strong',
+              broadcastToneClass,
+            )}
+            aria-label={`Open live panel — ${broadcast.label}`}
+            aria-haspopup="menu"
+            aria-expanded={broadcastOpen}
+            data-tour-id="topbar-golive"
+            onClick={() => {
+              setBroadcastOpen((current) => !current);
+              setMessagesOpen(false);
+              setNotificationsOpen(false);
+            }}
+          >
+            <RadioIcon size={16} />
+          </Button>
+        </Tooltip>
         {broadcastOpen ? (
           <div
             className="border-border bg-background absolute top-[calc(100%+6px)] right-0 z-40 min-w-52 rounded-lg border p-2 shadow-lg"

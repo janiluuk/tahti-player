@@ -1,7 +1,7 @@
 import { VoteIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Badge } from '@tahti-player/ui';
+import { Badge, InlineLoader } from '@tahti-player/ui';
 
 import { BOARD_ROLE_LABELS } from '../../api/governance-board';
 import {
@@ -117,7 +117,7 @@ export function ElectionsPanel() {
   return (
     <GovernancePanel title="Board elections" icon={VoteIcon}>
       {elections === null ? (
-        <p className="text-foreground-secondary text-sm">Loading elections…</p>
+        <InlineLoader label="Loading elections…" />
       ) : loadError ? (
         <PageError
           title="Could not load the elections"

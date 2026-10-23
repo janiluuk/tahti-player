@@ -23,6 +23,7 @@ import {
   Button,
   ButtonAnchor,
   ButtonLink,
+  InlineLoader,
   Meter,
   Tabs,
   Textarea,
@@ -450,7 +451,7 @@ function AccountStoragePanel() {
   }, []);
 
   if (!storage) {
-    return <SettingsHint>Loading storage usage…</SettingsHint>;
+    return <InlineLoader label="Loading storage usage…" />;
   }
 
   const usedPercent = storage.quotaBytes

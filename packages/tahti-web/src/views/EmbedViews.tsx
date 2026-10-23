@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
-import { Button, ImageReveal } from '@tahti-player/ui';
+import { Button, ExternalLink, ImageReveal } from '@tahti-player/ui';
 
 import {
   fetchEmbedChannel,
@@ -145,14 +145,12 @@ export function EmbedChannelView({ slug }: { slug: string }) {
                 {isPlaying ? 'Playing' : 'Play'}
               </Button>
             ) : (
-              <a
+              <ExternalLink
                 href={`https://tahti.live/c/${data.slug}`}
-                target="_blank"
-                rel="noreferrer"
-                className="text-foreground-secondary text-xs underline"
+                className="text-foreground-secondary text-xs"
               >
                 Open channel
-              </a>
+              </ExternalLink>
             )}
           </div>
           {!playable && (
@@ -236,14 +234,12 @@ export function EmbedReleaseView({ id }: { id: string }) {
             ))}
           </ol>
           {data.smartLinkSlug && (
-            <a
+            <ExternalLink
               href={`https://tahti.live/r/${data.smartLinkSlug}`}
-              target="_blank"
-              rel="noreferrer"
-              className="text-foreground-secondary text-xs underline"
+              className="text-foreground-secondary text-xs"
             >
               Open smart link
-            </a>
+            </ExternalLink>
           )}
         </div>
       )}
@@ -349,14 +345,12 @@ export function EmbedCollectionView({
             ))}
           </ol>
           {artistUsername && (
-            <a
+            <ExternalLink
               href={`https://tahti.live/u/${artistUsername}/c/${data.slug}`}
-              target="_blank"
-              rel="noreferrer"
-              className="text-foreground-secondary text-xs underline"
+              className="text-foreground-secondary text-xs"
             >
               Open collection
-            </a>
+            </ExternalLink>
           )}
         </div>
       )}
