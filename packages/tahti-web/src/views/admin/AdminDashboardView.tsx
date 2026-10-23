@@ -55,16 +55,25 @@ export function AdminDashboardView() {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    void fetchAdminDashboard().then((res) => {
-      if (cancelled) {
-        return;
-      }
-      const reason = res.meta.source === 'api' ? res.meta.reason : undefined;
-      // The failure payload is zeroed KPIs and "down" health; never show it.
-      setData(reason ? null : res.data);
-      setError(reason ?? null);
-      setLoading(false);
-    });
+    void fetchAdminDashboard()
+      .then((res) => {
+        if (cancelled) {
+          return;
+        }
+        const reason = res.meta.source === 'api' ? res.meta.reason : undefined;
+        // The failure payload is zeroed KPIs and "down" health; never show it.
+        setData(reason ? null : res.data);
+        setError(reason ?? null);
+        setLoading(false);
+      })
+      .catch((err: unknown) => {
+        if (cancelled) {
+          return;
+        }
+        setData(null);
+        setError(err instanceof Error ? err.message : String(err));
+        setLoading(false);
+      });
     return () => {
       cancelled = true;
     };

@@ -1,6 +1,5 @@
 import {
   BoomBox,
-  LoaderCircle,
   Pause,
   Play,
   Repeat,
@@ -15,6 +14,7 @@ import { RepeatMode } from '@tahti-player/model';
 
 import { Button } from '..';
 import { cn } from '../../utils';
+import { Loader } from '../Loader';
 import { Tooltip } from '../Tooltip';
 
 type PlayerBarControlsLabels = {
@@ -136,11 +136,10 @@ export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
           data-testid={isPlaying ? 'player-pause-button' : 'player-play-button'}
         >
           {isLoading ? (
-            <LoaderCircle
+            <Loader
+              shape="circle"
               size={playIconSize}
-              className="animate-spin motion-reduce:animate-none"
               data-testid="player-loading-spinner"
-              aria-hidden
             />
           ) : isPlaying ? (
             <Pause size={playIconSize} />

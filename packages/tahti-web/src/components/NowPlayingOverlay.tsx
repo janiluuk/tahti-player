@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import { MediaArtwork } from '@tahti-player/ui';
+
 import type {
   NowPlayingOverlayPresetId,
   NowPlayingOverlaySettings,
@@ -41,7 +43,7 @@ export function NowPlayingOverlay({
       }
     : undefined;
   const cover = artworkUrl ? (
-    <img src={artworkUrl} alt="" className="size-full object-cover" />
+    <MediaArtwork src={artworkUrl} alt="" size="fill" imageReveal={false} />
   ) : null;
 
   if (presetId === 'centered') {
@@ -77,7 +79,7 @@ export function NowPlayingOverlay({
       <div className="flex flex-col items-start gap-2" style={overlayStyle}>
         <div className="inline-flex max-w-full items-center gap-2 rounded-full bg-black/45 py-1.5 pr-3 pl-1.5 backdrop-blur-sm">
           <div
-            className={`shrink-0 overflow-hidden rounded-full bg-white/10 ${
+            className={`relative shrink-0 overflow-hidden rounded-full bg-white/10 ${
               compact ? 'size-4' : 'size-6'
             }`}
           >
@@ -122,7 +124,7 @@ export function NowPlayingOverlay({
               {artist}
             </span>
             <div
-              className={`shrink-0 overflow-hidden rounded-full bg-white/10 shadow-lg ring-2 ring-white/20 ${
+              className={`relative shrink-0 overflow-hidden rounded-full bg-white/10 shadow-lg ring-2 ring-white/20 ${
                 compact ? 'size-8' : 'size-12 sm:size-16'
               }`}
             >
@@ -147,7 +149,7 @@ export function NowPlayingOverlay({
     <div className="flex flex-col gap-1" style={overlayStyle}>
       <div className={`flex items-end gap-3 ${compact ? '' : 'sm:gap-4'}`}>
         <div
-          className={`hidden shrink-0 overflow-hidden rounded-lg bg-white/10 shadow-lg ring-1 ring-white/15 sm:block ${
+          className={`relative hidden shrink-0 overflow-hidden rounded-lg bg-white/10 shadow-lg ring-1 ring-white/15 sm:block ${
             compact ? 'sm:size-10' : 'sm:size-20'
           }`}
         >

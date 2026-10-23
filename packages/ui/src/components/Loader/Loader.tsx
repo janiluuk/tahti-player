@@ -15,7 +15,8 @@ const LOADER_SIZES = {
 export type LoaderSize = keyof typeof LOADER_SIZES;
 
 type LoaderProps = {
-  size?: LoaderSize | null;
+  /** A named size, or a pixel size for icon-sized slots (e.g. a play button). */
+  size?: LoaderSize | number | null;
   /** `circle` is the compact spinner for buttons and inline status rows. */
   shape?: 'pinwheel' | 'circle';
   /** Announced to assistive tech; without it the spinner is decorative. */
@@ -34,7 +35,7 @@ export const Loader: FC<LoaderProps> = ({
   const Icon = shape === 'circle' ? LoaderCircle : LoaderPinwheel;
   return (
     <Icon
-      size={LOADER_SIZES[size ?? 'default']}
+      size={typeof size === 'number' ? size : LOADER_SIZES[size ?? 'default']}
       className={cn(
         'shrink-0 animate-spin motion-reduce:animate-none',
         className,

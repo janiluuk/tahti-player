@@ -197,6 +197,7 @@ export function AudioTab({
           <div className="flex flex-col gap-2">
             <PlayerWaveform
               trackId={`sound:${item.id}`}
+              label={item.title}
               peaks={peaks}
               durationSec={editList?.sourceDuration ?? item.durationSec ?? 0}
               height={64}

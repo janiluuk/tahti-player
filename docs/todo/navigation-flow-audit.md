@@ -42,7 +42,11 @@ All three redirect to (or are aliases of) their non-`/listen` equivalents — `A
 
 ---
 
-## 4. ChannelView — back arrow navigates via `router.history.back()` (not `<Link>`)
+## 4. ChannelView — back arrow navigates via `router.history.back()` (not `<Link>`) ✅
+
+**Done:** ChannelView uses `BackButtonLink to="/"`; TrackHero's history-back
+fallback (no channel username) goes to `/` when there is no in-app history
+(batch 89).
 
 **File:** `src/views/ChannelView.tsx:593-596` — the back button uses an `onClick={() => router.history.back()}` pattern with an `ArrowLeftIcon`. This is functional but inconsistent with other entity-detail views that use declarative `<Link>` (bookmarkable, keyboard-accessible without JS). `TrackHero.tsx:134` uses the same `router.history.back()` pattern in the share overlay — intentional for a toast-like overlay but worth noting as an inconsistency surface.
 

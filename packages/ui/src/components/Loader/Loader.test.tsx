@@ -16,4 +16,9 @@ describe('Loader', () => {
     expect(loader).toHaveClass('animate-spin', 'mr-1.5');
     expect(loader).toHaveAttribute('width', '24');
   });
+
+  it('accepts a pixel size', () => {
+    render(<Loader size={28} shape="circle" />);
+    expect(screen.getByTestId('loader')).toHaveAttribute('width', '28');
+  });
 });

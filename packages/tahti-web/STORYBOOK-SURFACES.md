@@ -375,6 +375,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/Pagination` | `Pagination.stories.tsx` |
 | `Audio/PianoRoll` | `PianoRoll.stories.tsx` |
 | `Layout/PlayerBar` | `PlayerBar.stories.tsx` |
+| `Components/PlayerShell` | `PlayerShell.stories.tsx` |
 | `Layout/PlayerWorkspace` | `PlayerWorkspace.stories.tsx` |
 | `Components/PluginItem` | `PluginItem.stories.tsx` |
 | `Components/PluginStoreItem` | `PluginStoreItem.stories.tsx` |
@@ -386,6 +387,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/QueuePanel` | `QueuePanel.stories.tsx` |
 | `Components/SaveButton` | `SaveButton.stories.tsx` |
 | `Components/ScrollableArea` | `ScrollableArea.stories.tsx` |
+| `Components/SectionShell` | `SectionShell.stories.tsx` |
 | `Components/SectionTitle` | `SectionTitle.stories.tsx` |
 | `Components/SegmentedControl` | `SegmentedControl.stories.tsx` |
 | `Components/Select` | `Select.stories.tsx` |

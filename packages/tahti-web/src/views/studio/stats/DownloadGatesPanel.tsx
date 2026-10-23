@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
 
-import { Badge, HorizontalScroll, StatTile } from '@tahti-player/ui';
+import {
+  Badge,
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableHead,
+  DataTableHeaderCell,
+  DataTableRow,
+  HorizontalScroll,
+  StatTile,
+} from '@tahti-player/ui';
 
 import {
   fetchDownloadGateStats,
@@ -91,28 +101,29 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
           />
         ) : (
           <HorizontalScroll label="Gated downloads" className="mt-4">
-            <table
-              className="w-full min-w-[32rem] text-sm"
-              data-testid="download-gates"
-            >
-              <thead>
-                <tr className="text-foreground-secondary text-left text-xs">
-                  <th className="py-2 pr-3 font-semibold">Track</th>
-                  <th className="py-2 pr-3 font-semibold">Gate</th>
-                  <th className="py-2 pr-3 text-right font-semibold">
+            <DataTable className="min-w-[32rem]" data-testid="download-gates">
+              <DataTableHead>
+                <DataTableRow>
+                  <DataTableHeaderCell>Track</DataTableHeaderCell>
+                  <DataTableHeaderCell>Gate</DataTableHeaderCell>
+                  <DataTableHeaderCell className="text-right">
                     Downloads
-                  </th>
-                  <th className="py-2 pr-3 text-right font-semibold">
+                  </DataTableHeaderCell>
+                  <DataTableHeaderCell className="text-right">
                     Blocked
-                  </th>
-                  <th className="py-2 text-right font-semibold">Reposts</th>
-                </tr>
-              </thead>
-              <tbody className="divide-border divide-y">
+                  </DataTableHeaderCell>
+                  <DataTableHeaderCell className="text-right">
+                    Reposts
+                  </DataTableHeaderCell>
+                </DataTableRow>
+              </DataTableHead>
+              <DataTableBody>
                 {stats.items.map((item) => (
-                  <tr key={item.soundId}>
-                    <td className="py-2 pr-3 font-semibold">{item.title}</td>
-                    <td className="py-2 pr-3">
+                  <DataTableRow key={item.soundId}>
+                    <DataTableCell className="font-semibold">
+                      {item.title}
+                    </DataTableCell>
+                    <DataTableCell>
                       <div className="flex flex-wrap gap-1">
                         {item.followToDownload && (
                           <Badge variant="pill" color="blue">
@@ -125,20 +136,20 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
                           </Badge>
                         )}
                       </div>
-                    </td>
-                    <td className="py-2 pr-3 text-right tabular-nums">
+                    </DataTableCell>
+                    <DataTableCell className="text-right tabular-nums">
                       {item.countedDownloadCount}
-                    </td>
-                    <td className="py-2 pr-3 text-right tabular-nums">
+                    </DataTableCell>
+                    <DataTableCell className="text-right tabular-nums">
                       {item.blockedDownloadAttempts}
-                    </td>
-                    <td className="py-2 text-right tabular-nums">
+                    </DataTableCell>
+                    <DataTableCell className="text-right tabular-nums">
                       {item.repostAckCount}
-                    </td>
-                  </tr>
+                    </DataTableCell>
+                  </DataTableRow>
                 ))}
-              </tbody>
-            </table>
+              </DataTableBody>
+            </DataTable>
           </HorizontalScroll>
         )}
       </StudioPanel>

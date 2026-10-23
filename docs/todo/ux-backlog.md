@@ -9,7 +9,6 @@ One place for the open UI/UX polish work. Consolidates (2026-10-20):
 `profile-surfaces-unification.md`, `studio-artist-usability.md`. What those
 shipped is in HISTORY. Audits still being worked on keep their own files:
 [navigation-flow-audit.md](navigation-flow-audit.md),
-[studio-usability-audit.md](studio-usability-audit.md),
 [ui-nav-audit.md](ui-nav-audit.md), [channel-page-redesign.md](channel-page-redesign.md).
 
 Rule of thumb: library components only (`@tahti-player/ui`), Storybook story per
@@ -71,7 +70,3 @@ new surface, one PR per row.
 - [ ] Add selected Sounds to a release (bulk action; needs a picker).
 - [ ] Undo for publish / create flows (none in Studio).
 
-## Leftovers from batch 88
-
-- [ ] `Loader` numeric `size` so the last four spinners can move (PlayerBarControls,
-  MediaArtwork, TrackProcessing, ConnectedPlayerBar 28px).

@@ -83,5 +83,6 @@ export * from './ViewShell';
 export * from './Waveform';
 export * from '../providers/PlatformProvider';
 export * from '../utils/time';
+export * from '../utils/themeChange';
 export * from './TrackTable';
 export * from './TrackProcessing';

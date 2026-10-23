@@ -1,2 +1,7 @@
 export { Waveform, type WaveformProps } from './Waveform';
-export { hasPeaks, peaksToWaveSurfer } from './peaks';
+export {
+  hasPeaks,
+  peaksKey,
+  peaksToWaveSurfer,
+  PLACEHOLDER_PEAKS,
+} from './peaks';

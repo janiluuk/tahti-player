@@ -1,3 +1,17 @@
+## 2026-10-22 - UX batch 89 (waveform fixes + UI library swaps)
+
+wavesurfer previews were drawing silence as full-height bars (stored `[0..255]`
+peaks were mapped to `-1..1` and wavesurfer draws `|value|`); they now map to
+`0..1`. A track without stored peaks no longer strips the global player's
+audio `src` (`load('')`) or downloads and decodes the whole file. The preview
+`Waveform` and the pro-editor waveform recolour on theme change and resize
+without re-creating; the preview is a keyboard `slider` (arrows, Page Up / Down,
+Home / End) with "1:05 of 3:20" value text and a loading skeleton. `Loader`
+takes a pixel size and the last four spinners use it; Download gates table ->
+`DataTable`; Now Playing overlay and backdrop slot images -> `MediaArtwork`;
+the track page back button falls back to Listen on a deep link; `SectionShell`
+and `PlayerShell` stories. Bumped ui `0.0.20`, tahti-web `0.0.245`.
+
 ## 2026-10-21 - UX batch 88 (Loader, load honesty leftovers, clear filters)
 
 `Loader` gains `className`, `xs`/`inline` sizes, `shape="circle"`, `label`

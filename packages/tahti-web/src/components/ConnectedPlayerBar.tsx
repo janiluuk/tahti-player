@@ -1,7 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import {
   ListMusicIcon,
-  LoaderCircleIcon,
   Maximize2Icon,
   PauseIcon,
   PlayIcon,
@@ -13,6 +12,7 @@ import {
   Badge,
   Button,
   cn,
+  Loader,
   MediaArtwork,
   PlayerBar,
   Tooltip,
@@ -232,12 +232,7 @@ export function ConnectedPlayerBar() {
       data-testid={isPlaying ? 'player-pause-button' : 'player-play-button'}
     >
       {isLoading ? (
-        <LoaderCircleIcon
-          size={28}
-          className="animate-spin motion-reduce:animate-none"
-          data-testid="player-loading-spinner"
-          aria-hidden
-        />
+        <Loader shape="circle" size={28} data-testid="player-loading-spinner" />
       ) : isPlaying ? (
         <PauseIcon size={28} />
       ) : (

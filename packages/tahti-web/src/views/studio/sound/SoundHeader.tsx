@@ -199,6 +199,7 @@ export function SoundHeader({
           <div className="min-w-0 flex-1">
             <PlayerWaveform
               trackId={`sound:${id}`}
+              label={item.title}
               peaks={peaks}
               durationSec={editList?.sourceDuration ?? item.durationSec ?? 0}
               height={56}
