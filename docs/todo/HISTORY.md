@@ -1,3 +1,15 @@
+## 2026-10-23 - UX batch 91 thirty waveform + UI slices
+
+Folded `batch-91-waveform-ui-thirty.md`. `EditorWaveSurfer`: capture-phase
+wheel guard so only Ctrl/⌘ + wheel reaches the Zoom plugin; theme change
+re-creates the instance (plugins read colours once); overlay region labels
+(Cut / Fade in / Fade out / M1..), fade in cyan vs fade out purple;
+`WaveformEditor` shows an Alert on the ProWaveform fallback.
+`WaveformSeekbar` `bars="auto"` (default, ~1 bar / 4 px, 16..160) - player
+bar and Discover no longer pass the 600-peak length. `ArtistLikes` ->
+`PlayableAmbientTrackList`. Thirteen `target="_blank"` anchors in ten files
+-> `ExternalLink`. Tests + stories. tahti-web `0.0.247`.
+
 ## 2026-10-23 - UX batch 90 thirty waveform + UI slices
 
 Folded `batch-90-waveform-ui-thirty.md`. `PlayableAmbientTrackList` and

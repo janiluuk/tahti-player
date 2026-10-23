@@ -37,7 +37,8 @@ new surface, one PR per row.
 - [ ] Wire `AmbientTrackRow` / `AmbientTrackList` beyond Library → Sounds
   (Listen, Favorites, Collections…); prefer real `peaks` from the list API.
   Partial: Favorites (batch 84); CollectionView + SmartLinkView (batch 85);
-  Listen new tracks + artist popular (batch 87).
+  Listen new tracks + artist popular (batch 87); artist liked tracks (batch
+  91). Left: channel page blocks (waits on the channel redesign).
 - [ ] `PlayableTrackTable` view mode (dense / expanded / grid) + client sort,
   persisted (pattern: player `usePlaylistSort`). Fixes ListenView,
   CollectionView, SmartLinkView, FavoritesView, ChannelViewBlocks,

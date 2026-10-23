@@ -517,25 +517,35 @@ export function WaveformEditor({
               onFallback={fallbackToCanvas}
             />
           ) : (
-            <ProWaveform
-              ref={waveRef}
-              data={data}
-              durationSec={duration}
-              view={view}
-              minSpan={minSpan}
-              onViewChange={setView}
-              overlay={{
-                cuts: editList.cuts,
-                fades: editList.fades,
-                selection,
-                markers,
-              }}
-              playhead={pausedAt}
-              onSeek={seek}
-              onSelect={setSelection}
-              snap={snap}
-              onKeyDown={onKeyDown}
-            />
+            <>
+              <Alert
+                tone="info"
+                className="mb-2"
+                data-testid="editor-basic-waveform"
+              >
+                Showing the basic waveform: the detailed editor couldn’t start
+                in this browser. Editing, zoom and shortcuts still work.
+              </Alert>
+              <ProWaveform
+                ref={waveRef}
+                data={data}
+                durationSec={duration}
+                view={view}
+                minSpan={minSpan}
+                onViewChange={setView}
+                overlay={{
+                  cuts: editList.cuts,
+                  fades: editList.fades,
+                  selection,
+                  markers,
+                }}
+                playhead={pausedAt}
+                onSeek={seek}
+                onSelect={setSelection}
+                snap={snap}
+                onKeyDown={onKeyDown}
+              />
+            </>
           )}
 
           {useWavesurfer ? null : (

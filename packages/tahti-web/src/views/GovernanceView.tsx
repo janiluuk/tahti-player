@@ -15,6 +15,7 @@ import {
   Box,
   Button,
   ButtonLink,
+  ExternalLink,
   Input,
   StatChip,
   Textarea,
@@ -488,18 +489,16 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                     className="py-2 text-sm first:pt-0 last:pb-0"
                   >
                     {document.downloadUrl || document.externalUrl ? (
-                      <a
+                      <ExternalLink
                         href={
                           document.downloadUrl ??
                           document.externalUrl ??
                           undefined
                         }
-                        target="_blank"
-                        rel="noreferrer"
-                        className="font-medium underline-offset-2 hover:underline"
+                        className="font-medium no-underline underline-offset-2 hover:underline"
                       >
                         {document.title}
-                      </a>
+                      </ExternalLink>
                     ) : (
                       <span className="font-medium">{document.title}</span>
                     )}

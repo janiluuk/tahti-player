@@ -9,7 +9,7 @@ import {
   UserIcon,
 } from 'lucide-react';
 
-import { Badge, Button } from '@tahti-player/ui';
+import { Badge, Button, ExternalLink } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { type TopNavState } from './useTopNavState';
@@ -195,17 +195,15 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
             <SettingsIcon size={14} />
             Settings
           </Button>
-          <a
+          <ExternalLink
             href="https://tahti.live"
-            className="hover:bg-background-secondary flex items-center gap-2 rounded-md px-2.5 py-2 text-xs"
+            className="hover:bg-background-secondary flex items-center gap-2 rounded-md px-2.5 py-2 text-xs no-underline"
             role="menuitem"
-            target="_blank"
-            rel="noreferrer"
             onClick={() => setOpen(false)}
           >
             <ExternalLinkIcon size={14} />
             tahti.live
-          </a>
+          </ExternalLink>
 
           <div className="bg-border mx-1 my-0.5 h-px" role="separator" />
           <Button

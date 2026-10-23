@@ -1,6 +1,6 @@
 import { useId, useState } from 'react';
 
-import { Button, Textarea } from '@tahti-player/ui';
+import { Button, ExternalLink, Textarea } from '@tahti-player/ui';
 
 import {
   correctAnnualReport,
@@ -134,14 +134,12 @@ export function AnnualReportCorrection({
                   Replaced {formatDay(revision.replacedAt)}
                 </span>
                 {revision.downloadUrl ? (
-                  <a
+                  <ExternalLink
                     href={revision.downloadUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="ml-2 underline-offset-2 hover:underline"
+                    className="ml-2 no-underline underline-offset-2 hover:underline"
                   >
                     Download
-                  </a>
+                  </ExternalLink>
                 ) : null}
                 <p className="text-foreground-secondary">{revision.note}</p>
               </li>

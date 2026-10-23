@@ -101,6 +101,36 @@ export const KeyboardWithDuration: Story = {
   },
 };
 
+/** 600 stored peaks (the tahti-org bucket count) fitted to the width: about
+ * one bar per 4 px, 16 to 160 bars. */
+export const FittedToWidth: Story = {
+  render: () => {
+    const peaks = Array.from({ length: 600 }, (_, index) =>
+      Math.round(Math.abs(Math.sin(index / 9)) * 220 + 20),
+    );
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="w-48">
+          <WaveformSeekbar
+            trackId="story-narrow"
+            progress={0.4}
+            peaks={peaks}
+            className="h-8"
+          />
+        </div>
+        <div className="w-full max-w-2xl">
+          <WaveformSeekbar
+            trackId="story-wide"
+            progress={0.4}
+            peaks={peaks}
+            className="h-12"
+          />
+        </div>
+      </div>
+    );
+  },
+};
+
 export const LiveNoDuration: Story = {
   name: 'LiveWithoutDuration',
   render: () => (

@@ -1,7 +1,11 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { resamplePeaks, WaveformSeekbar } from './WaveformSeekbar';
+import {
+  autoBarCount,
+  resamplePeaks,
+  WaveformSeekbar,
+} from './WaveformSeekbar';
 
 // jsdom has no PointerEvent; without it fireEvent drops clientX/pointerId.
 if (!('PointerEvent' in globalThis)) {
@@ -35,7 +39,26 @@ describe('resamplePeaks', () => {
   });
 });
 
+describe('autoBarCount', () => {
+  it('fits about one bar per 4 px within 16..160', () => {
+    expect(autoBarCount(400)).toBe(100);
+    expect(autoBarCount(20)).toBe(16);
+    expect(autoBarCount(4000)).toBe(160);
+    expect(autoBarCount(0)).toBe(64);
+  });
+});
+
 describe('WaveformSeekbar', () => {
+  it('does not render one bar per stored peak', () => {
+    const peaks = Array.from({ length: 600 }, (_, i) => i % 256);
+    const { container } = render(
+      <WaveformSeekbar trackId="t1" progress={0} peaks={peaks} />,
+    );
+    const bars = container.querySelectorAll('[data-waveform] > div > span');
+    expect(bars.length).toBeLessThanOrEqual(160);
+    expect(bars.length).toBeGreaterThan(0);
+  });
+
   it('is a focusable, labelled slider with time value text', () => {
     render(
       <WaveformSeekbar

@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { CalendarCheckIcon, ScrollTextIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Badge, ViewShell } from '@tahti-player/ui';
+import { Badge, ExternalLink, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMeetings } from '../api/client';
 import { parseMeetingAgenda } from '../api/governanceMocks';
@@ -128,14 +128,12 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
                 {meeting.remoteUrl && isSafeHref(meeting.remoteUrl) && (
                   <>
                     {' · '}
-                    <a
+                    <ExternalLink
                       href={meeting.remoteUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline-offset-2 hover:underline"
+                      className="no-underline underline-offset-2 hover:underline"
                     >
                       Join remotely
-                    </a>
+                    </ExternalLink>
                   </>
                 )}
               </dd>
@@ -155,14 +153,12 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
                 {meeting.minutesUrl && isSafeHref(meeting.minutesUrl) && (
                   <>
                     {' · '}
-                    <a
+                    <ExternalLink
                       href={meeting.minutesUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline-offset-2 hover:underline"
+                      className="no-underline underline-offset-2 hover:underline"
                     >
                       Download
-                    </a>
+                    </ExternalLink>
                   </>
                 )}
               </dd>

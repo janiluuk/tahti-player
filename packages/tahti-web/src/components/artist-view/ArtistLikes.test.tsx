@@ -61,6 +61,8 @@ describe('ArtistLikes', () => {
     ).toBeTruthy();
     expect(screen.getAllByText('Northern Lights').length).toBeGreaterThan(0);
     expect(screen.queryByText('Gated')).toBeNull();
+    expect(screen.getByTestId('ambient-track-list')).toBeTruthy();
+    expect(screen.getByRole('radio', { name: 'Grid' })).toBeTruthy();
   });
 
   it('renders nothing when the user hides their likes', async () => {

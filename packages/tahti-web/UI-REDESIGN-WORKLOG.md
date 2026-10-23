@@ -1,3 +1,18 @@
+## 2026-10-23 - UX batch 91 (editor wheel + labels, fitted seekbar bars, external links)
+
+The pro editor waveform no longer zooms on every mouse wheel: a plain wheel
+scrolls the page, Ctrl/⌘ + wheel or pinch zooms and Shift + wheel pans, as
+the hint under it says. Theme switches recolour its timeline, minimap and
+hover label too; cuts, fade in / fade out (now different colours) and
+numbered markers are labelled on the waveform; and if the detailed editor
+can't start, a notice says the basic waveform is showing. The player bar
+and Discover seekbars fit their bar count to the width instead of drawing
+600 sub-pixel bars per track. Artist liked tracks use the ambient list
+(waveforms, sizes, grid, sort). Thirteen new-tab links (governance
+documents, meetings, AGM minutes, annual report revisions, Screen atlas,
+Settings footer, user menu, channel share) use `ExternalLink`. Bumped to
+`0.0.247`.
+
 ## 2026-10-23 - UX batch 90 (honest ambient waveforms, seekbar keyboard + touch, grid view)
 
 Ambient track rows on Collections, Smart links, Favorites, Listen, artist

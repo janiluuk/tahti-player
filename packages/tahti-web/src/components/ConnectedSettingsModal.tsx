@@ -2,7 +2,7 @@ import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { BookOpenIcon, GithubIcon, LogInIcon } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
-import { Button, SettingsPanel } from '@tahti-player/ui';
+import { Button, ExternalLink, SettingsPanel } from '@tahti-player/ui';
 
 import { hasAccountRole } from '../lib/accountRoles';
 import { buildSettingsPath } from '../lib/settingsUrl';
@@ -193,36 +193,30 @@ export function ConnectedSettingsModal() {
           ) : null}
           <div className="border-border flex flex-col gap-2 border-t pt-2">
             <div className="flex items-center justify-center gap-1">
-              <a
+              <ExternalLink
                 href={GITHUB_REPO_URL}
                 className={footerIconLinkClass}
-                target="_blank"
-                rel="noreferrer"
                 aria-label="GitHub"
                 title="GitHub"
               >
                 <GithubIcon size={18} aria-hidden />
-              </a>
-              <a
+              </ExternalLink>
+              <ExternalLink
                 href={DISCORD_URL}
                 className={footerIconLinkClass}
-                target="_blank"
-                rel="noreferrer"
                 aria-label="Discord"
                 title="Discord"
               >
                 <DiscordIcon size={18} />
-              </a>
-              <a
+              </ExternalLink>
+              <ExternalLink
                 href={API_DOCS_URL}
                 className={footerIconLinkClass}
-                target="_blank"
-                rel="noreferrer"
                 aria-label="API docs"
                 title="API docs"
               >
                 <BookOpenIcon size={18} aria-hidden />
-              </a>
+              </ExternalLink>
             </div>
             <SidebarBuildInfo />
           </div>

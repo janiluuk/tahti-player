@@ -3,7 +3,8 @@
 **Status:** partial — batch 88 shipped foundation + large previews + editor
 shell; batch 89 fixed silence drawing as full bars, peak-less tracks stripping
 the player `src`, and theme / resize re-creation. Desktop / full ProWaveform
-deletion remain.
+deletion remain. Batch 91: editor wheel only zooms with Ctrl/⌘, theme
+re-create, labelled overlays, fallback notice.
 
 Requested 2026-10-21: integrate [wavesurfer.js](https://github.com/katspaugh/wavesurfer.js)
 ([wavesurfer.xyz](https://wavesurfer.xyz/)) and use it for the waveforms in the

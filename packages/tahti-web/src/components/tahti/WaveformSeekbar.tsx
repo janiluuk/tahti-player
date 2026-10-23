@@ -1,5 +1,12 @@
 import { MessageCircleIcon } from 'lucide-react';
-import { useMemo, useRef, type KeyboardEvent, type PointerEvent } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent,
+} from 'react';
 
 import { cn } from '../../lib/cn';
 import { formatDuration } from '../../lib/playableToTrack';
@@ -40,6 +47,20 @@ function heightsFromPeaks(peaks: number[]): number[] {
 }
 
 const BAR_COUNT = 64;
+const AUTO_BAR_PX = 4;
+const AUTO_MIN_BARS = 16;
+const AUTO_MAX_BARS = 160;
+
+/** Bars that fit `width` px at about one bar per 4 px. */
+export function autoBarCount(width: number): number {
+  if (!(width > 0)) {
+    return BAR_COUNT;
+  }
+  return Math.min(
+    AUTO_MAX_BARS,
+    Math.max(AUTO_MIN_BARS, Math.round(width / AUTO_BAR_PX)),
+  );
+}
 const KEY_STEP_SEC = 5;
 const KEY_STEP_FRACTION = 0.02;
 const PAGE_STEP_FRACTION = 0.1;
@@ -55,7 +76,7 @@ export function WaveformSeekbar({
   trackId,
   progress,
   peaks,
-  bars = BAR_COUNT,
+  bars = 'auto',
   markers,
   onSeek,
   live = false,
@@ -71,7 +92,9 @@ export function WaveformSeekbar({
   /** Real [0..255] amplitude buckets, when decoded — null/omitted uses the
    * flat empty placeholder. */
   peaks?: number[] | null;
-  bars?: number;
+  /** Bar count, or `auto` (default) to fit the width - never one bar per
+   * stored peak, which is 600 for tahti-org tracks. */
+  bars?: number | 'auto';
   markers?: Array<{ fraction: number }>;
   onSeek?: (fraction: number) => void;
   /** Live streams have no seekable duration — flat bars, Live badge, no scrub. */
@@ -86,16 +109,31 @@ export function WaveformSeekbar({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
+  const [autoBars, setAutoBars] = useState(BAR_COUNT);
+  const barCount = bars === 'auto' ? autoBars : bars;
+
+  useEffect(() => {
+    const el = ref.current;
+    if (bars !== 'auto' || !el || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+    const measure = () => setAutoBars(autoBarCount(el.clientWidth));
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [bars]);
+
   const hasPeaks = Boolean(peaks && peaks.length > 0);
   const heights = useMemo(
     () =>
       hasPeaks
-        ? heightsFromPeaks(resamplePeaks(peaks!, bars))
-        : emptyHeights(bars),
-    [hasPeaks, peaks, bars],
+        ? heightsFromPeaks(resamplePeaks(peaks!, barCount))
+        : emptyHeights(barCount),
+    [hasPeaks, peaks, barCount],
   );
   const clamped = live ? 0 : clamp01(progress);
-  const filledCount = live ? 0 : Math.round(clamped * bars);
+  const filledCount = live ? 0 : Math.round(clamped * barCount);
   const seekEnabled = Boolean(onSeek) && !live;
   const hasDuration = durationSec != null && durationSec > 0;
 

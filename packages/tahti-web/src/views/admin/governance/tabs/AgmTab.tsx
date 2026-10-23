@@ -6,6 +6,7 @@ import {
   Button,
   ButtonAnchor,
   CopyButton,
+  ExternalLink,
   Input,
   Loader,
   Select,
@@ -428,14 +429,12 @@ export function AgmTab() {
                         : 'Not uploaded'}
                   </span>
                   {meeting.minutesUrl && isSafeHref(meeting.minutesUrl) && (
-                    <a
+                    <ExternalLink
                       href={meeting.minutesUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline-offset-2 hover:underline"
+                      className="no-underline underline-offset-2 hover:underline"
                     >
                       Download
-                    </a>
+                    </ExternalLink>
                   )}
                   <label className="text-primary-strong cursor-pointer underline-offset-2 hover:underline">
                     {minutesUploading === meeting.id
