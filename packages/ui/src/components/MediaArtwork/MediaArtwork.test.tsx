@@ -92,6 +92,23 @@ describe('MediaArtwork play / queue', () => {
 });
 
 describe('MediaArtwork fallback', () => {
+  it('letterboxes with fit="contain" and crops by default', () => {
+    const { container, rerender } = render(
+      <MediaArtwork src="/logo.png" alt="Station logo" imageReveal={false} />,
+    );
+    expect(container.querySelector('img')).toHaveClass('object-cover');
+    rerender(
+      <MediaArtwork
+        src="/logo.png"
+        alt="Station logo"
+        imageReveal={false}
+        fit="contain"
+      />,
+    );
+    expect(container.querySelector('img')).toHaveClass('object-contain');
+    expect(container.querySelector('img')).not.toHaveClass('object-cover');
+  });
+
   it('paints the fallback background when there is no image', () => {
     render(
       <MediaArtwork

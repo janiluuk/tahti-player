@@ -11,9 +11,11 @@ import {
 if (!('PointerEvent' in globalThis)) {
   class PointerEventPolyfill extends MouseEvent {
     pointerId: number;
+    pointerType: string;
     constructor(type: string, init: PointerEventInit = {}) {
       super(type, init);
       this.pointerId = init.pointerId ?? 0;
+      this.pointerType = init.pointerType ?? '';
     }
   }
   vi.stubGlobal('PointerEvent', PointerEventPolyfill);
@@ -112,5 +114,26 @@ describe('WaveformSeekbar', () => {
       <WaveformSeekbar trackId="t1" progress={0} live onSeek={vi.fn()} />,
     );
     expect(screen.queryByRole('slider')).toBeNull();
+  });
+
+  it('previews the time under a hovering mouse, not a touch', () => {
+    render(
+      <WaveformSeekbar
+        trackId="t1"
+        progress={0}
+        durationSec={200}
+        onSeek={vi.fn()}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    stubRect(slider);
+    fireEvent.pointerMove(slider, { clientX: 50, pointerType: 'touch' });
+    expect(screen.queryByTestId('waveform-seekbar-hover')).toBeNull();
+    fireEvent.pointerMove(slider, { clientX: 50, pointerType: 'mouse' });
+    expect(screen.getByTestId('waveform-seekbar-hover')).toHaveTextContent(
+      '0:50',
+    );
+    fireEvent.pointerLeave(slider);
+    expect(screen.queryByTestId('waveform-seekbar-hover')).toBeNull();
   });
 });

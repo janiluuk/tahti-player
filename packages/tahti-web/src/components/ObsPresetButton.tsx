@@ -99,6 +99,7 @@ export function ObsPresetButton() {
         multiline
       >
         <Button
+          aria-description="Download an OBS scene collection (Scene Collection → Import in OBS)"
           size="sm"
           variant="secondary"
           disabled={loading}

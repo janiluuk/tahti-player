@@ -1,3 +1,19 @@
+## 2026-10-23 - UX batch 93 (waveform hover times, library file inputs and artwork)
+
+Hovering a seekable waveform previews the time under the mouse: the player
+bar, ambient rows and other seekbars draw a line with a time label, and the
+large wavesurfer previews (track page, Studio header, edit dialog) use the
+Hover plugin, themed through CSS variables. Touch shows nothing. New
+`HiddenFileInput` in `@tahti-player/ui` replaces five hand-rolled hidden
+file inputs (tracklist import, artist gallery, round image upload, radio
+cover). `MediaArtwork` gains `fit="contain"`; nine raw `<img>`s move to it
+(full-screen player cover with contained live logos, artwork presets,
+image upload preview, artist image picker, image slot frames, stream
+overlay covers). The News refresh Retry is a library `Button`, and seven
+more `title` tooltips use `Tooltip`; where a tooltip carries information
+beyond the button's label (contact relation, cron job, disabled reasons,
+export details) it is also an `aria-description` so screen readers keep it. Bumped ui `0.0.22`, tahti-web `0.0.249`.
+
 ## 2026-10-23 - UX batch 92 (clickable comment markers, library tooltips)
 
 Timed comments on the track page waveform are now buttons: hover or focus

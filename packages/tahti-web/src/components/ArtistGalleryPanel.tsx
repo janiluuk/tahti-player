@@ -9,7 +9,12 @@ import {
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, ImageReveal, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  HiddenFileInput,
+  ImageReveal,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   deletePressKitImage,
@@ -50,8 +55,8 @@ export function ArtistGalleryPanel({
   const [dragId, setDragId] = useState<string | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
-  async function onFiles(files: FileList | null) {
-    if (!files?.length || !isOwner) {
+  async function onFiles(files: File[]) {
+    if (files.length === 0 || !isOwner) {
       return;
     }
     setBusy(true);
@@ -210,13 +215,11 @@ export function ArtistGalleryPanel({
                   <ImagePlusIcon size={16} aria-hidden />
                 </Button>
               </Tooltip>
-              <input
+              <HiddenFileInput
                 ref={inputRef}
-                type="file"
                 accept={ACCEPTED}
                 multiple
-                className="hidden"
-                onChange={(e) => void onFiles(e.target.files)}
+                onFiles={(files) => void onFiles(files)}
               />
             </>
           ) : null}
@@ -401,8 +404,8 @@ export function ArtistGalleryAddIcon({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function onFiles(files: FileList | null) {
-    if (!files?.length) {
+  async function onFiles(files: File[]) {
+    if (files.length === 0) {
       return;
     }
     setBusy(true);
@@ -440,13 +443,11 @@ export function ArtistGalleryAddIcon({
           <ImagePlusIcon size={16} />
         </Button>
       </Tooltip>
-      <input
+      <HiddenFileInput
         ref={inputRef}
-        type="file"
         accept={ACCEPTED}
         multiple
-        className="hidden"
-        onChange={(e) => void onFiles(e.target.files)}
+        onFiles={(files) => void onFiles(files)}
       />
       {error ? <p className="text-accent-red-strong text-xs">{error}</p> : null}
     </div>

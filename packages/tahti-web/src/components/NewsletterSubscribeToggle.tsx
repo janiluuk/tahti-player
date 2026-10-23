@@ -2,7 +2,7 @@ import { MailIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, Input, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchNewsletterSubscription,
@@ -61,26 +61,32 @@ function SignedInToggle({
   };
 
   return (
-    <Button
-      size="sm"
-      variant={subscribed ? 'default' : 'secondary'}
-      disabled={subscribed === null || busy}
-      aria-pressed={subscribed ?? false}
-      title={
+    <Tooltip
+      content={
         subscribed
           ? 'Subscribed — you’ll see this artist in your feed and notifications. Click to unsubscribe.'
           : 'Subscribe to see this artist in your feed and notifications'
       }
-      onClick={toggle}
+      side="bottom"
+      wrapperClassName="inline-flex"
+      multiline
     >
-      <MailIcon size={14} aria-hidden className="mr-1.5" />
-      {!iconOnly &&
-        (subscribed === null
-          ? 'Subscribe'
-          : subscribed
-            ? 'Subscribed'
-            : 'Subscribe')}
-    </Button>
+      <Button
+        size="sm"
+        variant={subscribed ? 'default' : 'secondary'}
+        disabled={subscribed === null || busy}
+        aria-pressed={subscribed ?? false}
+        onClick={toggle}
+      >
+        <MailIcon size={14} aria-hidden className="mr-1.5" />
+        {!iconOnly &&
+          (subscribed === null
+            ? 'Subscribe'
+            : subscribed
+              ? 'Subscribed'
+              : 'Subscribe')}
+      </Button>
+    </Tooltip>
   );
 }
 
@@ -96,16 +102,22 @@ function AnonymousForm({
 
   if (!open) {
     return (
-      <Button
-        size="sm"
-        variant="secondary"
-        onClick={() => setOpen(true)}
-        title="Subscribe by email — you're not signed in"
-        aria-label={`Subscribe to ${artistDisplayName}`}
+      <Tooltip
+        content="Subscribe by email — you're not signed in"
+        side="bottom"
+        wrapperClassName="inline-flex"
+        multiline
       >
-        <MailIcon size={14} aria-hidden className="mr-1.5" />
-        {!iconOnly && 'Subscribe'}
-      </Button>
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={() => setOpen(true)}
+          aria-label={`Subscribe to ${artistDisplayName}`}
+        >
+          <MailIcon size={14} aria-hidden className="mr-1.5" />
+          {!iconOnly && 'Subscribe'}
+        </Button>
+      </Tooltip>
     );
   }
 

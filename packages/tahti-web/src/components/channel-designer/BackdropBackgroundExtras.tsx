@@ -1,4 +1,4 @@
-import { Button, Toggle } from '@tahti-player/ui';
+import { Button, Toggle, Tooltip } from '@tahti-player/ui';
 
 import {
   BACKGROUND_VISUAL_PRESETS,
@@ -70,26 +70,33 @@ export function BackdropBackgroundExtras({
             const selected =
               (backgroundVisualPreset ?? 'INTERACTIVE_POINTS') === preset;
             return (
-              <Button
-                variant="plain"
-                size="flexible"
+              <Tooltip
                 key={preset}
-                type="button"
-                title={meta.description}
-                aria-label={`${preset.replace(/_/g, ' ')} background visualizer`}
-                aria-pressed={selected}
-                onClick={() => onBackgroundVisualPreset(preset)}
-                className={`border-border flex flex-col items-start gap-1 rounded-md border p-2 text-left text-xs whitespace-normal transition-transform hover:scale-[1.02] active:scale-100 ${
-                  selected
-                    ? 'border-primary bg-primary/10 ring-primary ring-1'
-                    : 'bg-background-secondary/40'
-                }`}
+                content={meta.description}
+                side="top"
+                wrapperClassName="flex"
+                multiline
               >
-                <Icon size={16} aria-hidden className="opacity-80" />
-                <span className="font-semibold tracking-wide uppercase">
-                  {preset.replace(/_/g, ' ')}
-                </span>
-              </Button>
+                <Button
+                  aria-description={meta.description}
+                  variant="plain"
+                  size="flexible"
+                  type="button"
+                  aria-label={`${preset.replace(/_/g, ' ')} background visualizer`}
+                  aria-pressed={selected}
+                  onClick={() => onBackgroundVisualPreset(preset)}
+                  className={`border-border flex flex-col items-start gap-1 rounded-md border p-2 text-left text-xs whitespace-normal transition-transform hover:scale-[1.02] active:scale-100 ${
+                    selected
+                      ? 'border-primary bg-primary/10 ring-primary ring-1'
+                      : 'bg-background-secondary/40'
+                  }`}
+                >
+                  <Icon size={16} aria-hidden className="opacity-80" />
+                  <span className="font-semibold tracking-wide uppercase">
+                    {preset.replace(/_/g, ' ')}
+                  </span>
+                </Button>
+              </Tooltip>
             );
           })}
         </div>

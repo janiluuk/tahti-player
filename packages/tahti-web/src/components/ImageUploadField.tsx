@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, FilePicker } from '@tahti-player/ui';
+import { Button, FilePicker, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import { uploadUserMediaFile } from '../api/user-media';
 import { IMAGE_UPLOAD_ACCEPT_ATTR } from '../lib/imageUploadContentType';
@@ -63,21 +63,27 @@ export function ImageUploadField({
       />
       {value ? (
         <div className="group relative mt-2 inline-block">
-          <Button
-            variant="plain"
-            size="flexible"
-            type="button"
-            onClick={chrome.openPreview}
-            aria-label={`Preview ${label.toLowerCase()}`}
-            title={`Preview ${label.toLowerCase()}`}
-            className="block rounded-none whitespace-normal active:scale-100"
+          <Tooltip
+            content={`Preview ${label.toLowerCase()}`}
+            side="top"
+            wrapperClassName="inline-flex"
           >
-            <img
-              src={value}
-              alt={`${label} preview`}
-              className="h-20 w-20 rounded-md object-cover"
-            />
-          </Button>
+            <Button
+              variant="plain"
+              size="flexible"
+              type="button"
+              onClick={chrome.openPreview}
+              aria-label={`Preview ${label.toLowerCase()}`}
+              className="block rounded-none whitespace-normal active:scale-100"
+            >
+              <MediaArtwork
+                src={value}
+                alt={`${label} preview`}
+                imageReveal={false}
+                className="relative h-20 w-20 rounded-md"
+              />
+            </Button>
+          </Tooltip>
           <ImageSlotDeleteBadge label={label} onClick={chrome.requestDelete} />
         </div>
       ) : null}

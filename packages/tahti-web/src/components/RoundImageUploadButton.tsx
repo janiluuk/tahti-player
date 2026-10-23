@@ -2,7 +2,7 @@ import { ImageIcon, UploadCloudIcon } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, MediaArtwork } from '@tahti-player/ui';
+import { Button, HiddenFileInput, MediaArtwork } from '@tahti-player/ui';
 
 import { uploadUserMediaFile } from '../api/user-media';
 import { cn } from '../lib/cn';
@@ -48,8 +48,8 @@ export function RoundImageUploadButton({
   const inputRef = useRef<HTMLInputElement>(null);
   const chrome = useImageSlotChrome({ onClear: () => onChange('') });
 
-  const handleFiles = async (files: FileList | null) => {
-    const file = files?.[0];
+  const handleFiles = async (files: File[]) => {
+    const file = files[0];
     if (!file) {
       return;
     }
@@ -110,21 +110,11 @@ export function RoundImageUploadButton({
           <UploadCloudIcon size={18} aria-hidden />
         </div>
       )}
-      {/* No @tahti-player/ui component fits: FilePicker is a labelled
-          dropzone, while this slot and the preview's Change action open
-          the OS picker from their own controls. */}
-      <input
+      <HiddenFileInput
         ref={inputRef}
-        type="file"
         accept={accept}
         disabled={busy}
-        className="sr-only"
-        tabIndex={-1}
-        aria-hidden
-        onChange={(e) => {
-          void handleFiles(e.target.files);
-          e.target.value = '';
-        }}
+        onFiles={(files) => void handleFiles(files)}
       />
       <ImageSlotPreviewDialog
         isOpen={chrome.previewOpen}

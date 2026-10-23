@@ -74,8 +74,9 @@ export const Seeking: Story = {
           aria-valuetext={`${Math.round(progress * 120)}s of 120s`}
         />
         <p className="text-foreground-secondary text-xs">
-          Progress {(progress * 100).toFixed(0)}% - click the waveform to seek,
-          or focus it and use the arrow keys, Page Up / Down, Home and End.
+          Progress {(progress * 100).toFixed(0)}% - hover for the time, click to
+          seek, or focus it and use the arrow keys, Page Up / Down, Home and
+          End.
         </p>
       </div>
     );

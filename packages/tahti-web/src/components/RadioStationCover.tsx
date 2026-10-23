@@ -2,7 +2,13 @@ import { UploadCloudIcon } from 'lucide-react';
 import { useEffect, useRef, useState, type FC, type RefObject } from 'react';
 import { toast } from 'sonner';
 
-import { Button, ImageReveal, Loader, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  HiddenFileInput,
+  ImageReveal,
+  Loader,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 import { IMAGE_UPLOAD_ACCEPT_ATTR } from '../lib/imageUploadContentType';
@@ -135,17 +141,11 @@ export const RadioStationCoverEditButton: FC<
           )}
         </Button>
       </Tooltip>
-      <input
+      <HiddenFileInput
         ref={inputRef}
-        type="file"
         accept={IMAGE_UPLOAD_ACCEPT_ATTR}
         disabled={busy}
-        className="sr-only"
-        tabIndex={-1}
-        aria-hidden
-        onChange={(event) => {
-          const file = event.target.files?.[0];
-          event.target.value = '';
+        onFiles={([file]) => {
           setBusy(true);
           void replaceCover({
             file,

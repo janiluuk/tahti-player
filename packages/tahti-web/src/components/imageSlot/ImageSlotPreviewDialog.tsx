@@ -1,6 +1,6 @@
 import { XIcon } from 'lucide-react';
 
-import { Button, Dialog } from '@tahti-player/ui';
+import { Button, Dialog, MediaArtwork } from '@tahti-player/ui';
 
 import { ConfirmDialog } from '../ConfirmDialog';
 
@@ -71,11 +71,7 @@ export function ImageSlotPreviewDialog({
                   key={frame.url + index}
                   className="group border-border relative size-16 shrink-0 overflow-hidden rounded-md border"
                 >
-                  <img
-                    src={frame.url}
-                    alt=""
-                    className="size-full object-cover"
-                  />
+                  <MediaArtwork src={frame.url} alt="" imageReveal={false} />
                   {frame.onDelete ? (
                     <Button
                       variant="plain"

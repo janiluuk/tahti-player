@@ -65,10 +65,10 @@ export const Inbox: Story = {
       );
       await expect(
         contacts.getByRole('button', { name: 'Message Listener One' }),
-      ).toHaveAttribute('title', 'You follow each other');
+      ).toHaveAttribute('aria-description', 'You follow each other');
       await expect(
         contacts.getByRole('button', { name: 'Message Northern Lights' }),
-      ).toHaveAttribute('title', 'You follow');
+      ).toHaveAttribute('aria-description', 'You follow');
     });
 
     await step('search fills in the username', async () => {

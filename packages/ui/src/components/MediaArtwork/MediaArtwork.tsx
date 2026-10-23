@@ -31,6 +31,9 @@ export type MediaArtworkProps = {
   /** Visual size preset — `fill` stretches to parent (card cover). `thumb`
    * is the standard inline track-row thumbnail (a step up from `sm`). */
   size?: 'sm' | 'thumb' | 'md' | 'lg' | 'fill';
+  /** `contain` letterboxes the image (station logos, previews that must not
+   * be cropped); the default `cover` fills and crops. */
+  fit?: 'cover' | 'contain';
   className?: string;
   imageReveal?: boolean;
   placeholder?: ReactNode;
@@ -96,6 +99,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   posterSrc,
   animate = false,
   size = 'fill',
+  fit = 'cover',
   className,
   imageReveal = true,
   placeholder,
@@ -245,7 +249,10 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
             src={resolvedSrc}
             alt={alt}
             className="absolute inset-0"
-            imgClassName="h-full w-full object-cover"
+            imgClassName={cn(
+              'h-full w-full',
+              fit === 'contain' ? 'object-contain' : 'object-cover',
+            )}
             placeholder={
               placeholder ?? (
                 <CassetteTape
@@ -260,7 +267,10 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
           <img
             src={resolvedSrc}
             alt={alt ?? ''}
-            className="absolute inset-0 h-full w-full object-cover"
+            className={cn(
+              'absolute inset-0 h-full w-full',
+              fit === 'contain' ? 'object-contain' : 'object-cover',
+            )}
           />
         )
       ) : (

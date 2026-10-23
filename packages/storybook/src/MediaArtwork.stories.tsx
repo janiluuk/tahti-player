@@ -179,3 +179,26 @@ export const ThemedFallback: Story = {
     ),
   },
 };
+
+/** `fit="contain"` letterboxes (live station logos, previews that must not be
+ * cropped); the default `cover` fills and crops. */
+export const FitContain: Story = {
+  render: () => (
+    <div className="flex gap-4">
+      {(['cover', 'contain'] as const).map((fit) => (
+        <div key={fit} className="flex flex-col items-center gap-2">
+          <div className="bg-background-secondary relative h-32 w-48 rounded-lg">
+            <MediaArtwork
+              src={SAMPLE_IMAGE}
+              alt=""
+              fit={fit}
+              imageReveal={false}
+              className="rounded-lg"
+            />
+          </div>
+          <p className="text-foreground-secondary m-0 text-xs">{fit}</p>
+        </div>
+      ))}
+    </div>
+  ),
+};

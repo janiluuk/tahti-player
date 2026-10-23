@@ -1,3 +1,15 @@
+## 2026-10-23 - UX batch 93 thirty waveform + UI slices
+
+Folded `batch-93-waveform-ui-thirty.md`. `WaveformSeekbar` mouse-only hover
+line + time label; ui `Waveform` lazy Hover plugin when seekable (colours
+via CSS variables so theme switches need no re-create). ui
+`HiddenFileInput` (resets value, `onFiles(File[])`) replaces five hidden
+inputs; `MediaArtwork` `fit`; nine `<img>` -> `MediaArtwork`; NewsView raw
+`<button>` -> `Button`; seven `title=` -> `Tooltip` (newsletter x2,
+collection sign-in, admin cron job, backdrop visualizer, message contacts,
+image upload preview).
+Tests + stories. ui `0.0.22`, tahti-web `0.0.249`.
+
 ## 2026-10-23 - UX batch 92 thirty waveform + UI slices
 
 Folded `batch-92-waveform-ui-thirty.md`. `lib/commentMarkers`

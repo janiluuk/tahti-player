@@ -109,6 +109,7 @@ export function WaveformSeekbar({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
+  const [hoverFraction, setHoverFraction] = useState<number | null>(null);
   const [autoBars, setAutoBars] = useState(BAR_COUNT);
   const barCount = bars === 'auto' ? autoBars : bars;
 
@@ -157,9 +158,20 @@ export function WaveformSeekbar({
     seekAt(event.clientX);
   };
 
+  const fractionAt = (clientX: number): number | null => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect || rect.width <= 0) {
+      return null;
+    }
+    return clamp01((clientX - rect.left) / rect.width);
+  };
+
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
     if (draggingRef.current) {
       seekAt(event.clientX);
+    }
+    if (event.pointerType === 'mouse' && hasDuration) {
+      setHoverFraction(fractionAt(event.clientX));
     }
   };
 
@@ -230,8 +242,21 @@ export function WaveformSeekbar({
       onPointerMove={seekEnabled ? onPointerMove : undefined}
       onPointerUp={seekEnabled ? endDrag : undefined}
       onPointerCancel={seekEnabled ? endDrag : undefined}
+      onPointerLeave={seekEnabled ? () => setHoverFraction(null) : undefined}
       onKeyDown={seekEnabled ? onKeyDown : undefined}
     >
+      {seekEnabled && hasDuration && hoverFraction != null ? (
+        <span
+          aria-hidden
+          data-testid="waveform-seekbar-hover"
+          className="bg-foreground/70 pointer-events-none absolute inset-y-0 z-10 w-px"
+          style={{ left: `${hoverFraction * 100}%` }}
+        >
+          <span className="bg-background-secondary text-foreground absolute bottom-full left-1/2 mb-1 -translate-x-1/2 rounded px-1 py-0.5 text-[10px] leading-none font-medium whitespace-nowrap tabular-nums shadow-sm">
+            {formatDuration(hoverFraction * durationSec)}
+          </span>
+        </span>
+      ) : null}
       <div className="flex h-full items-end gap-px">
         {heights.map((h, i) => (
           <span

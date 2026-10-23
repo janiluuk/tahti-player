@@ -11,6 +11,7 @@ import type WaveSurfer from 'wavesurfer.js';
 
 import { cn } from '../../utils';
 import { observeThemeChange, readCssVar } from '../../utils/themeChange';
+import { formatTimeSeconds } from '../../utils/time';
 import {
   hasPeaks,
   peaksKey,
@@ -88,13 +89,16 @@ export const Waveform: FC<WaveformProps> = ({
     const subscriptions: (() => void)[] = [];
     setReady(false);
 
-    void import('wavesurfer.js').then(({ default: WaveSurferCtor }) => {
+    const interactive = Boolean(onSeekRef.current || media);
+    void Promise.all([
+      import('wavesurfer.js'),
+      interactive ? import('wavesurfer.js/dist/plugins/hover.esm.js') : null,
+    ]).then(([{ default: WaveSurferCtor }, hoverModule]) => {
       if (cancelled || !containerRef.current) {
         return;
       }
       const root = containerRef.current;
       const current = peaksRef.current;
-      const interactive = Boolean(onSeekRef.current || media);
 
       // Peaks + duration must always be present: without them wavesurfer
       // fetches and decodes the media `src`, and a later `load('')` would
@@ -114,6 +118,21 @@ export const Waveform: FC<WaveformProps> = ({
         peaks: hasPeaks(current)
           ? peaksToWaveSurfer(current!)
           : PLACEHOLDER_PEAKS,
+        // CSS variables inherit into wavesurfer's shadow root, so the hover
+        // line and label follow theme switches without re-creating.
+        plugins: hoverModule
+          ? [
+              hoverModule.default.create({
+                lineColor: 'var(--color-foreground)',
+                lineWidth: 1,
+                labelColor: 'var(--color-foreground)',
+                labelBackground: 'var(--color-background-secondary)',
+                labelSize: '11px',
+                formatTimeCallback: (seconds: number) =>
+                  formatTimeSeconds(Math.floor(seconds)),
+              }),
+            ]
+          : [],
       };
       if (media) {
         options.media = media;

@@ -16,7 +16,14 @@ import {
   type FC,
 } from 'react';
 
-import { Button, Input, Tabs, Textarea, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  HiddenFileInput,
+  Input,
+  Tabs,
+  Textarea,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { searchMentionUsers, type MentionUser } from '../api/mentions';
 import type { TracklistEntry } from '../api/studio-types';
@@ -437,17 +444,13 @@ export const TracklistEditor: FC<Props> = ({
                               />{' '}
                               Import list
                             </Button>
-                            <input
+                            <HiddenFileInput
                               ref={fileInputRef}
-                              className="hidden"
-                              type="file"
                               accept=".nml,.txt,text/plain,application/xml"
-                              onChange={(event) => {
-                                const file = event.target.files?.[0];
+                              onFiles={([file]) => {
                                 if (file) {
                                   void importFile(file);
                                 }
-                                event.currentTarget.value = '';
                               }}
                             />
                           </div>

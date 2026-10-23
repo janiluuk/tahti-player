@@ -90,7 +90,12 @@ function CopyCommentsButton({ comments }: { comments: MapComment[] }) {
       wrapperClassName="inline-flex"
       multiline
     >
-      <Button size="sm" onClick={copy} disabled={comments.length === 0}>
+      <Button
+        aria-description="Copy all comments as plain text, each with its page route and screenshot link, ready to paste back into a chat"
+        size="sm"
+        onClick={copy}
+        disabled={comments.length === 0}
+      >
         {state === 'copied'
           ? 'Copied ✓'
           : state === 'error'
@@ -247,6 +252,7 @@ export function SavedMapComments() {
               size="sm"
               variant="secondary"
               onClick={() => downloadMapCommentsCsv(comments)}
+              aria-description="Download CSV with status, route, and commentary for fixing"
             >
               Export CSV ({comments.length})
             </Button>

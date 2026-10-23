@@ -390,6 +390,7 @@ export function SelectsTab() {
                 multiline
               >
                 <Button
+                  aria-description="This content type is not available from the Selects API"
                   variant="text"
                   className="justify-start opacity-50"
                   disabled
