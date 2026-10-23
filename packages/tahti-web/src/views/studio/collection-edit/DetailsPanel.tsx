@@ -94,17 +94,14 @@ export function DetailsPanel({ state }: { state: CollectionEditState }) {
             }
             options={TRACK_ORDER_OPTIONS}
           />
-          <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-            <span className="text-foreground-secondary text-xs uppercase">
-              Description
-            </span>
-            <Textarea
-              tone="secondary"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-            />
-          </label>
+          <Textarea
+            label="Description"
+            fieldClassName="sm:col-span-2"
+            tone="secondary"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+          />
           <section className="border-border bg-background-secondary/30 flex flex-col gap-3 rounded-lg border p-3 sm:col-span-2">
             <Select
               label="Visibility"

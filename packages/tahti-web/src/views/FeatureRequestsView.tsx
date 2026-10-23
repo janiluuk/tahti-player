@@ -187,20 +187,16 @@ export function FeatureRequestsView({
             required
             maxLength={200}
           />
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="text-foreground-secondary text-xs uppercase">
-              Description
-            </span>
-            <Textarea
-              tone="secondary"
-              className="min-h-[6rem] text-sm"
-              value={newDescription}
-              onChange={(e) => setNewDescription(e.target.value)}
-              required
-              maxLength={2000}
-              rows={4}
-            />
-          </label>
+          <Textarea
+            label="Description"
+            tone="secondary"
+            className="min-h-[6rem] text-sm"
+            value={newDescription}
+            onChange={(e) => setNewDescription(e.target.value)}
+            required
+            maxLength={2000}
+            rows={4}
+          />
           <Button
             type="submit"
             disabled={submitting || !newTitle.trim() || !newDescription.trim()}

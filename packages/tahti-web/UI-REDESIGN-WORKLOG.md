@@ -1,3 +1,16 @@
+## 2026-10-23 - UX batch 95 (form labels, library controls, tooltips)
+
+Twenty-nine more fields drop their hand-rolled `<label>` wrappers for the
+`label` prop on `Textarea` / `Input` (governance, venues, onboarding, Studio
+release / show / playlist / update / sound forms, release ops, admin news,
+radio presets, add-ons, notifications), so their fields share the library
+label style and wiring. The Governance Retry and the What's New "Read full
+update" card are library `Button`s; the Studio editor mode switch is a
+`SegmentedControl`; the AGM minutes upload is a `Button` plus
+`HiddenFileInput`, so it can be reached from the keyboard. Seven more
+`title` tooltips use `Tooltip`, with `aria-description` where they carry
+information. Bumped tahti-web `0.0.251`.
+
 ## 2026-10-23 - UX batch 94 (form labels, toggle labels, waveform durations)
 
 `Textarea` takes `label`, `description` and `error` like `Input`; thirteen

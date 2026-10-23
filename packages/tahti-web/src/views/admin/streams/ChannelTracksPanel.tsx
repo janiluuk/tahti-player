@@ -84,15 +84,13 @@ function TrackEditDialog({
           maxLength={80}
           onChange={(event) => setGenre(event.target.value)}
         />
-        <label className="flex flex-col gap-1 text-sm font-semibold">
-          Description
-          <Textarea
-            value={description}
-            maxLength={2000}
-            rows={4}
-            onChange={(event) => setDescription(event.target.value)}
-          />
-        </label>
+        <Textarea
+          label="Description"
+          value={description}
+          maxLength={2000}
+          rows={4}
+          onChange={(event) => setDescription(event.target.value)}
+        />
         <Toggle label="Public" checked={isPublic} onChange={setIsPublic} />
         {error ? (
           <p className="text-accent-red-strong text-sm" role="alert">

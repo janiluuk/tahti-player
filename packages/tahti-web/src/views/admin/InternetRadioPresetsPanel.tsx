@@ -343,17 +343,15 @@ export function InternetRadioPresetsPanel() {
               }
             />
           </div>
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className="text-foreground font-semibold">Description</span>
-            <Textarea
-              value={draft.description ?? ''}
-              rows={2}
-              placeholder="What listeners should expect from this station."
-              onChange={(event) =>
-                setDraft({ ...draft, description: event.target.value })
-              }
-            />
-          </label>
+          <Textarea
+            label="Description"
+            value={draft.description ?? ''}
+            rows={2}
+            placeholder="What listeners should expect from this station."
+            onChange={(event) =>
+              setDraft({ ...draft, description: event.target.value })
+            }
+          />
           <Input
             label="Stream URL"
             value={draft.streamUrl ?? ''}

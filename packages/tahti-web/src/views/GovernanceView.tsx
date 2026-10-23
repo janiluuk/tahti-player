@@ -67,13 +67,14 @@ function LoadErrorCaption({
   return (
     <p className="text-foreground-secondary mb-2 text-xs" role="status">
       Could not refresh this list: {message}{' '}
-      <button
-        type="button"
-        className="underline underline-offset-2"
+      <Button
+        variant="plain"
+        size="flexible"
+        className="inline p-0 text-xs underline underline-offset-2"
         onClick={onRetry}
       >
         Retry
-      </button>
+      </Button>
     </p>
   );
 }

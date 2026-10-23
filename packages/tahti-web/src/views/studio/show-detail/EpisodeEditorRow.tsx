@@ -67,17 +67,13 @@ export function EpisodeEditorRow({
           value={title}
           onChange={(event) => setTitle(event.target.value)}
         />
-        <label className="flex flex-col gap-1 text-sm">
-          <span className="text-foreground-secondary text-xs uppercase">
-            Description
-          </span>
-          <Textarea
-            tone="secondary"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-            rows={3}
-          />
-        </label>
+        <Textarea
+          label="Description"
+          tone="secondary"
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
+          rows={3}
+        />
         <div className="flex flex-wrap items-center justify-between gap-2">
           {message ? (
             <span className="text-foreground-secondary text-xs">{message}</span>

@@ -1,5 +1,6 @@
 import {
   MediaArtwork,
+  Tooltip,
   type CatalogColumn,
   type CatalogSort,
 } from '@tahti-player/ui';
@@ -40,6 +41,9 @@ const SORTABLE = new Set<string>([
   'key',
   'loudness',
 ]);
+
+const BPM_SOURCE_HINT =
+  "Your correction, else the file's tag, else an estimate";
 
 export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
   {
@@ -162,14 +166,16 @@ export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
     sortable: true,
     render: (track) =>
       track.rating > 0 ? (
-        <span
-          role="img"
-          title={`${track.rating} of 5 stars`}
-          aria-label={`${track.rating} of 5 stars`}
+        <Tooltip
+          content={`${track.rating} of 5 stars`}
+          side="top"
+          wrapperClassName="inline-flex"
         >
-          {'★'.repeat(track.rating)}
-          <span className="opacity-30">{'★'.repeat(5 - track.rating)}</span>
-        </span>
+          <span role="img" aria-label={`${track.rating} of 5 stars`}>
+            {'★'.repeat(track.rating)}
+            <span className="opacity-30">{'★'.repeat(5 - track.rating)}</span>
+          </span>
+        </Tooltip>
       ) : (
         '—'
       ),
@@ -201,9 +207,16 @@ export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
     align: 'right',
     render: (track) =>
       track.bpm ? (
-        <span title="Your correction, else the file's tag, else an estimate">
-          {Math.round(track.bpm * 10) / 10}
-        </span>
+        <Tooltip
+          content={BPM_SOURCE_HINT}
+          side="top"
+          wrapperClassName="inline-flex"
+          multiline
+        >
+          <span aria-description={BPM_SOURCE_HINT}>
+            {Math.round(track.bpm * 10) / 10}
+          </span>
+        </Tooltip>
       ) : (
         '—'
       ),

@@ -85,17 +85,13 @@ export function OverviewTab({
             onChange={(e) => setTagline(e.target.value)}
             maxLength={200}
           />
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="text-foreground-secondary text-xs uppercase">
-              Description
-            </span>
-            <Textarea
-              tone="secondary"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-            />
-          </label>
+          <Textarea
+            label="Description"
+            tone="secondary"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+          />
           <Input
             label="When it airs"
             description="Shown with your upcoming shows, e.g. Fridays 20:00."

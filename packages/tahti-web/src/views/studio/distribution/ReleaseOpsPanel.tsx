@@ -297,96 +297,81 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
 
       <div className="grid gap-2 sm:grid-cols-2">
         {activeMethods.has('upc') && (
-          <label className="flex flex-col gap-1 text-xs">
-            <span className="text-foreground-secondary">UPC / EAN</span>
-            <Input
-              value={form?.upc ?? ''}
-              disabled={busy}
-              onChange={(e) =>
-                setForm((previous) =>
-                  previous ? { ...previous, upc: e.target.value } : previous,
-                )
-              }
-            />
-          </label>
+          <Input
+            label="UPC / EAN"
+            value={form?.upc ?? ''}
+            disabled={busy}
+            onChange={(e) =>
+              setForm((previous) =>
+                previous ? { ...previous, upc: e.target.value } : previous,
+              )
+            }
+          />
         )}
         {activeMethods.has('musicbrainz') && (
           <>
-            <label className="flex flex-col gap-1 text-xs">
-              <span className="text-foreground-secondary">
-                MusicBrainz release MBID
-              </span>
-              <Input
-                value={form?.musicbrainzReleaseId ?? ''}
-                disabled={busy}
-                onChange={(e) =>
-                  setForm((previous) =>
-                    previous
-                      ? { ...previous, musicbrainzReleaseId: e.target.value }
-                      : previous,
-                  )
-                }
-              />
-            </label>
-            <label className="flex flex-col gap-1 text-xs">
-              <span className="text-foreground-secondary">
-                MusicBrainz artist MBID
-              </span>
-              <Input
-                value={form?.musicbrainzArtistId ?? ''}
-                disabled={busy}
-                onChange={(e) =>
-                  setForm((previous) =>
-                    previous
-                      ? { ...previous, musicbrainzArtistId: e.target.value }
-                      : previous,
-                  )
-                }
-              />
-            </label>
-          </>
-        )}
-        {activeMethods.has('discogs') && (
-          <label className="flex flex-col gap-1 text-xs">
-            <span className="text-foreground-secondary">
-              Discogs release ID
-            </span>
             <Input
-              value={form?.discogsReleaseId ?? ''}
+              label="MusicBrainz release MBID"
+              value={form?.musicbrainzReleaseId ?? ''}
               disabled={busy}
               onChange={(e) =>
                 setForm((previous) =>
                   previous
-                    ? { ...previous, discogsReleaseId: e.target.value }
+                    ? { ...previous, musicbrainzReleaseId: e.target.value }
                     : previous,
                 )
               }
             />
-          </label>
+            <Input
+              label="MusicBrainz artist MBID"
+              value={form?.musicbrainzArtistId ?? ''}
+              disabled={busy}
+              onChange={(e) =>
+                setForm((previous) =>
+                  previous
+                    ? { ...previous, musicbrainzArtistId: e.target.value }
+                    : previous,
+                )
+              }
+            />
+          </>
+        )}
+        {activeMethods.has('discogs') && (
+          <Input
+            label="Discogs release ID"
+            value={form?.discogsReleaseId ?? ''}
+            disabled={busy}
+            onChange={(e) =>
+              setForm((previous) =>
+                previous
+                  ? { ...previous, discogsReleaseId: e.target.value }
+                  : previous,
+              )
+            }
+          />
         )}
         {activeMethods.has('rights') && (
           <>
             {(['pLine', 'cLine', 'labelImprint'] as const).map((key) => (
-              <label key={key} className="flex flex-col gap-1 text-xs">
-                <span className="text-foreground-secondary">
-                  {key === 'pLine'
+              <Input
+                key={key}
+                label={
+                  key === 'pLine'
                     ? 'P-line'
                     : key === 'cLine'
                       ? 'C-line'
-                      : 'Label imprint'}
-                </span>
-                <Input
-                  value={form?.[key] ?? ''}
-                  disabled={busy}
-                  onChange={(e) =>
-                    setForm((previous) =>
-                      previous
-                        ? { ...previous, [key]: e.target.value }
-                        : previous,
-                    )
-                  }
-                />
-              </label>
+                      : 'Label imprint'
+                }
+                value={form?.[key] ?? ''}
+                disabled={busy}
+                onChange={(e) =>
+                  setForm((previous) =>
+                    previous
+                      ? { ...previous, [key]: e.target.value }
+                      : previous,
+                  )
+                }
+              />
             ))}
           </>
         )}

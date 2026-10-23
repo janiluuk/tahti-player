@@ -313,17 +313,13 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                         }
                       >
                         {detailsExpanded ? (
-                          <label className="flex flex-col gap-1 text-sm">
-                            <span className="text-foreground-secondary text-xs uppercase">
-                              Description
-                            </span>
-                            <Textarea
-                              tone="secondary"
-                              value={description}
-                              onChange={(e) => setDescription(e.target.value)}
-                              rows={3}
-                            />
-                          </label>
+                          <Textarea
+                            label="Description"
+                            tone="secondary"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            rows={3}
+                          />
                         ) : (
                           <p className="text-foreground-secondary text-sm">
                             {description.trim() || 'No description set yet.'}

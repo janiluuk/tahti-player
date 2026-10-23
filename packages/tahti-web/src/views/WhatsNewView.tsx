@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { SparklesIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { cn, Dialog, ViewShell } from '@tahti-player/ui';
+import { Button, cn, Dialog, ViewShell } from '@tahti-player/ui';
 
 import { PageBackLink } from '../components/PageBackLink';
 import {
@@ -117,9 +117,10 @@ function ReleaseEntry({
         </div>
         <div className="border-border bg-background-secondary shadow-shadow flex-1 overflow-hidden rounded-md border-(length:--border-width)">
           {truncated ? (
-            <button
-              type="button"
-              className="hover:bg-background-secondary/80 w-full cursor-pointer p-3 text-left transition-colors sm:p-4"
+            <Button
+              variant="plain"
+              size="flexible"
+              className="hover:bg-background-secondary/80 block w-full rounded-none p-3 text-left whitespace-normal active:scale-100 sm:p-4"
               onClick={() => onOpenFull(note)}
               aria-label={`Read full update for ${note.period}`}
             >
@@ -135,7 +136,7 @@ function ReleaseEntry({
                   +{hiddenCount} more
                 </span>
               </div>
-            </button>
+            </Button>
           ) : (
             <div className="p-3 sm:p-4">
               <SectionList sections={note.sections} />

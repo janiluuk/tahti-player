@@ -1,3 +1,18 @@
+## 2026-10-23 - UX batch 95 thirty-plus form, control and tooltip slices
+
+Twenty-nine more hand-rolled `<label>` wrappers -> `Textarea` / `Input`
+`label` (motion close date, venue, feature request, onboarding bio, social
+post, event, release, show, playlist, release ops identifiers + rights
+lines, update draft / post, show overview, episode editor / review,
+collection details, admin news x2, radio preset, test notification, add-on
+publish / manage, channel tracks, corrections, sound details). Governance
+Retry and What's New "Read full update" -> `Button`; Studio editor mode
+radios -> `SegmentedControl`; AGM minutes upload -> `Button` +
+`HiddenFileInput` (keyboard reachable). Seven `title` tooltips -> `Tooltip`
+(Library media preview link, diagram fullscreen, track rating, BPM source,
+download chart bars, cron job descriptions, unavailable playlist entries).
+tahti-web `0.0.251`.
+
 ## 2026-10-23 - UX batch 94 thirty-plus waveform + UI slices
 
 `Textarea` `label` / `description` / `error` / `fieldClassName` (bare

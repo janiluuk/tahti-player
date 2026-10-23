@@ -161,17 +161,13 @@ export function AdminNewsView() {
                               value={editHeadline}
                               onChange={(e) => setEditHeadline(e.target.value)}
                             />
-                            <label className="flex flex-col gap-1 text-sm">
-                              <span className="text-foreground-secondary text-xs uppercase">
-                                Summary
-                              </span>
-                              <Textarea
-                                tone="secondary"
-                                value={editSummary}
-                                onChange={(e) => setEditSummary(e.target.value)}
-                                rows={3}
-                              />
-                            </label>
+                            <Textarea
+                              label="Summary"
+                              tone="secondary"
+                              value={editSummary}
+                              onChange={(e) => setEditSummary(e.target.value)}
+                              rows={3}
+                            />
                             <ImageUploadField
                               label="News image"
                               description="JPEG, PNG, WebP, or GIF"
@@ -331,17 +327,13 @@ export function AdminNewsView() {
                   onChange={(e) => setHeadline(e.target.value)}
                   autoFocus
                 />
-                <label className="flex flex-col gap-1 text-sm">
-                  <span className="text-foreground-secondary text-xs uppercase">
-                    Short summary
-                  </span>
-                  <Textarea
-                    tone="secondary"
-                    value={summary}
-                    onChange={(e) => setSummary(e.target.value)}
-                    rows={3}
-                  />
-                </label>
+                <Textarea
+                  label="Short summary"
+                  tone="secondary"
+                  value={summary}
+                  onChange={(e) => setSummary(e.target.value)}
+                  rows={3}
+                />
                 <ImageUploadField
                   label="News image"
                   description="JPEG, PNG, WebP, or GIF"

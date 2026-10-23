@@ -1,5 +1,5 @@
 import { PencilLineIcon } from 'lucide-react';
-import { useCallback, useEffect, useId, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Badge, Button, Select, Textarea } from '@tahti-player/ui';
 
@@ -112,7 +112,6 @@ function CorrectionItem({
 /** Ask the board to correct your member-register data or a governance
  * record, and follow its answer (/api/v1/governance/corrections). */
 export function CorrectionsPanel() {
-  const detailsId = useId();
   const [corrections, setCorrections] = useState<GovernanceCorrection[] | null>(
     null,
   );
@@ -176,11 +175,8 @@ export function CorrectionsPanel() {
             Object.keys(CORRECTION_SUBJECT_LABELS) as CorrectionSubject[]
           ).map((id) => ({ id, label: CORRECTION_SUBJECT_LABELS[id] }))}
         />
-        <label htmlFor={detailsId} className="text-xs font-semibold">
-          What is wrong, and what should it be?
-        </label>
         <Textarea
-          id={detailsId}
+          label="What is wrong, and what should it be?"
           rows={3}
           value={details}
           maxLength={CORRECTION_DETAILS_MAX}

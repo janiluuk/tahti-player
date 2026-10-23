@@ -183,17 +183,13 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                     placeholder="https://tickets.example/event"
                   />
                 </div>
-                <label className="flex flex-col gap-1 text-sm">
-                  <span className="text-foreground-secondary text-xs uppercase">
-                    Description
-                  </span>
-                  <Textarea
-                    value={description}
-                    onChange={(event) => setDescription(event.target.value)}
-                    rows={3}
-                    placeholder="What should people expect — set details, door time, ticketing…"
-                  />
-                </label>
+                <Textarea
+                  label="Description"
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value)}
+                  rows={3}
+                  placeholder="What should people expect — set details, door time, ticketing…"
+                />
                 <Input
                   type="datetime-local"
                   label="Start"

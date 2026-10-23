@@ -168,18 +168,14 @@ export function StudioShowsView() {
                   onChange={(e) => setTitle(e.target.value)}
                   autoFocus
                 />
-                <label className="flex flex-col gap-1 text-sm">
-                  <span className="text-foreground-secondary text-xs uppercase">
-                    Description
-                  </span>
-                  <Textarea
-                    tone="secondary"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    rows={3}
-                    placeholder="Copied to every new episode"
-                  />
-                </label>
+                <Textarea
+                  label="Description"
+                  tone="secondary"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={3}
+                  placeholder="Copied to every new episode"
+                />
                 <ShowImagePicker
                   label="Show thumbnail"
                   description="JPEG, PNG, WebP, or GIF"

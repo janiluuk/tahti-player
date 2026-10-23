@@ -63,15 +63,13 @@ export function AdminTestNotificationPanel() {
           maxLength={120}
           onChange={(event) => setTitle(event.target.value)}
         />
-        <label className="flex flex-col gap-1 text-sm">
-          Message (optional)
-          <Textarea
-            value={body}
-            maxLength={500}
-            rows={3}
-            onChange={(event) => setBody(event.target.value)}
-          />
-        </label>
+        <Textarea
+          label="Message (optional)"
+          value={body}
+          maxLength={500}
+          rows={3}
+          onChange={(event) => setBody(event.target.value)}
+        />
         <Input
           label="Link (optional)"
           value={url}

@@ -57,24 +57,18 @@ export function ManageDialog({
               onChange={(checked) => onSetEnabledByDefault(addon, checked)}
             />
           </div>
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className="text-foreground font-semibold">
-              Default settings (JSON)
-            </span>
-            <Textarea
-              value={configText}
-              rows={5}
-              placeholder="{}"
-              onChange={(event) => {
-                setConfigText(event.target.value);
-                setConfigError(null);
-              }}
-            />
-            <span className="text-foreground-secondary text-xs">
-              Starting settings every new install gets. Leave empty to clear.
-              Existing installs are not changed.
-            </span>
-          </label>
+          <Textarea
+            label="Default settings (JSON)"
+            description="Starting settings every new install gets. Leave empty to clear. Existing installs are not changed."
+            aria-invalid={configError ? true : undefined}
+            value={configText}
+            rows={5}
+            placeholder="{}"
+            onChange={(event) => {
+              setConfigText(event.target.value);
+              setConfigError(null);
+            }}
+          />
           {configError ? (
             <p className="text-accent-red-strong text-sm" role="alert">
               {configError}

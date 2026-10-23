@@ -396,17 +396,13 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
-                  <label className="flex flex-col gap-1 text-sm">
-                    <span className="text-foreground-secondary text-xs uppercase">
-                      Description
-                    </span>
-                    <Textarea
-                      tone="secondary"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      rows={2}
-                    />
-                  </label>
+                  <Textarea
+                    label="Description"
+                    tone="secondary"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    rows={2}
+                  />
                   <div className="flex items-center justify-between gap-3 text-sm">
                     <span>Public on profile</span>
                     <Toggle

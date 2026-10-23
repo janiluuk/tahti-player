@@ -65,18 +65,14 @@ export function NewDraftDialog({
             onChange={(e) => setSubject(e.target.value)}
             autoFocus
           />
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="text-foreground-secondary text-xs uppercase">
-              Body (markdown)
-            </span>
-            <Textarea
-              tone="secondary"
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              rows={5}
-              required
-            />
-          </label>
+          <Textarea
+            label="Body (markdown)"
+            tone="secondary"
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            rows={5}
+            required
+          />
           <div className="flex items-center justify-between gap-3 text-sm">
             <span>Fans / subscribers only</span>
             <Toggle

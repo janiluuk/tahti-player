@@ -115,15 +115,13 @@ export function SocialPostNow({
               className="max-w-56"
             />
           ) : null}
-          <label className="flex flex-col gap-1 text-sm font-semibold">
-            Message
-            <Textarea
-              value={message}
-              maxLength={500}
-              rows={3}
-              onChange={(event) => setMessage(event.target.value)}
-            />
-          </label>
+          <Textarea
+            label="Message"
+            value={message}
+            maxLength={500}
+            rows={3}
+            onChange={(event) => setMessage(event.target.value)}
+          />
           <div className="flex justify-end">
             <Button
               size="sm"
