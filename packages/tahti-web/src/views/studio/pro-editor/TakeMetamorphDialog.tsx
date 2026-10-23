@@ -8,6 +8,7 @@ import {
   Button,
   Dialog,
   EmptyState,
+  InlineLoader,
   Select,
   Slider,
   Toggle,
@@ -231,9 +232,7 @@ export function TakeMetamorphDialog({
       </Dialog.Description>
       <div className="mt-4 flex min-w-0 flex-col gap-4">
         {versions === null ? (
-          <p className="text-foreground-secondary text-sm" role="status">
-            Loading versions…
-          </p>
+          <InlineLoader label="Loading versions…" />
         ) : versions.length < 2 ? (
           <EmptyState
             size="sm"

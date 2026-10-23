@@ -3,6 +3,7 @@ import {
   Badge,
   Button,
   Dialog,
+  InlineLoader,
   Input,
   Loader,
   Toggle,
@@ -266,10 +267,7 @@ export function ProviderSetImportDialog({
       ) : null}
 
       {state.phase === 'loading' ? (
-        <p className="text-foreground-secondary flex items-center gap-2 py-2 text-sm">
-          <Loader size="inline" shape="circle" />
-          Loading the set…
-        </p>
+        <InlineLoader label="Loading the set…" className="py-2" />
       ) : null}
 
       {state.phase === 'review' ||

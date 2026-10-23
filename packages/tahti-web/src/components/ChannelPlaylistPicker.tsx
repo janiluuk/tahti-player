@@ -1,7 +1,7 @@
 import { ListMusicIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Select } from '@tahti-player/ui';
+import { Button, InlineLoader, Select } from '@tahti-player/ui';
 
 import { fetchStudioCollections } from '../api/studio';
 import type { StudioCollection } from '../api/studio-types';
@@ -66,9 +66,7 @@ export function ChannelPlaylistPicker({
   }, [initialSlug, attempt]);
 
   if (loading) {
-    return (
-      <p className="text-foreground-secondary text-xs">Loading playlists…</p>
-    );
+    return <InlineLoader label="Loading playlists…" textSize="xs" />;
   }
 
   if (loadError && playlists.length === 0) {

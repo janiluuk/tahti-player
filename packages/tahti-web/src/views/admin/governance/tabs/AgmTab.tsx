@@ -8,6 +8,7 @@ import {
   CopyButton,
   ExternalLink,
   HiddenFileInput,
+  InlineLoader,
   Input,
   Loader,
   Select,
@@ -208,7 +209,7 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
       onToggle={() => setOpen((prev) => !prev)}
     >
       {loading ? (
-        <p className="text-foreground-secondary text-xs">Loading…</p>
+        <InlineLoader label="Loading…" textSize="xs" />
       ) : records.length === 0 ? (
         <PageEmpty title="No attendance recorded yet." />
       ) : (
@@ -552,9 +553,10 @@ export function AgmTab() {
 
       <StudioPanel title="Motions & proposals">
         {loading ? (
-          <p className="text-foreground-secondary py-4 text-center text-sm">
-            Loading motions…
-          </p>
+          <InlineLoader
+            label="Loading motions…"
+            className="justify-center py-4"
+          />
         ) : motions.length === 0 ? (
           <PageEmpty title="No open or draft motions." />
         ) : (

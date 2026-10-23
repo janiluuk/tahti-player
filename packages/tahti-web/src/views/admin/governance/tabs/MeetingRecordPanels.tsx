@@ -1,7 +1,14 @@
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
-import { Badge, Button, Input, Textarea, Toggle } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  InlineLoader,
+  Input,
+  Textarea,
+  Toggle,
+} from '@tahti-player/ui';
 
 import {
   declareAdminGovernanceConflict,
@@ -81,7 +88,7 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
       onToggle={() => setOpen((value) => !value)}
     >
       {records === null ? (
-        <p className="text-foreground-secondary text-xs">Loading…</p>
+        <InlineLoader label="Loading…" textSize="xs" />
       ) : records.length === 0 ? (
         <p className="text-foreground-secondary text-xs">
           No conflicts declared for this meeting.
@@ -220,7 +227,7 @@ export function NoticeDeliveriesPanel({ meetingId }: { meetingId: string }) {
           {error}
         </p>
       ) : records === null ? (
-        <p className="text-foreground-secondary text-xs">Loading…</p>
+        <InlineLoader label="Loading…" textSize="xs" />
       ) : records.length === 0 ? (
         <PageEmpty title="No meeting notice has been sent yet." />
       ) : (

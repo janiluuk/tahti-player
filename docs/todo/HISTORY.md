@@ -1,3 +1,19 @@
+## 2026-10-23 - UX batch 97 thirty-plus loading-state and link slices
+
+New library `InlineLoader` (spinner + text, `role="status"`, `textSize`
+`sm` / `xs`) replaces twenty-six plain "Loading…" paragraphs that had no
+spinner and were not announced: support tickets, add to playlist,
+membership invoices, channel playlist picker, share links, elections,
+association, board, meeting agenda, motion discussion, hourly stats, AGM
+(x2), agenda items, meeting records (x2), member register, pinned
+announcements, stream playlist, OAuth releases, annual reports, take
+versions, announcement trim, track editor, provider set import, recorded
+broadcasts. The three embed "Open channel / smart link / collection" links
+are `ExternalLink`; the Grafana dashboard buttons' `title` is a `Tooltip`
+with `aria-description`. tahti-web unit tests pin `LC_ALL=en_US.UTF-8` so
+collation and number-format assertions match CI on a non-English shell.
+tahti-web `0.0.253`.
+
 ## 2026-10-23 - UX batch 96 thirty-plus label, toggle and group slices
 
 New library `ColorField` (swatch + label + value line, `actions` kept outside

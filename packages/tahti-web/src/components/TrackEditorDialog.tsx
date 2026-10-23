@@ -2,7 +2,7 @@ import { Undo2Icon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Input, Loader } from '@tahti-player/ui';
+import { Button, Dialog, InlineLoader, Input, Loader } from '@tahti-player/ui';
 
 import type {
   NativeEditField,
@@ -205,10 +205,7 @@ export function TrackEditorDialog({
           {loadError}
         </p>
       ) : !summary ? (
-        <p className="text-foreground-secondary flex items-center gap-2 text-sm">
-          <Loader size="inline" shape="circle" />
-          Loading…
-        </p>
+        <InlineLoader label="Loading…" />
       ) : (
         <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto py-2">
           {FIELDS.map(({ field, label }) => {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Badge, Button, Input } from '@tahti-player/ui';
+import { Badge, Button, InlineLoader, Input } from '@tahti-player/ui';
 
 import {
   fetchMemberRegister,
@@ -65,7 +65,7 @@ export function MemberRegisterPanel() {
       onToggle={() => setOpen((value) => !value)}
     >
       {rows === null ? (
-        <p className="text-foreground-secondary text-xs">Loading…</p>
+        <InlineLoader label="Loading…" textSize="xs" />
       ) : loadError && rows.length === 0 ? (
         <PageError
           title="Could not load the member register"

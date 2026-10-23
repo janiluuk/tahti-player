@@ -53,3 +53,29 @@ export const CenteredLoader: FC<LoaderProps> = (props) => (
     <Loader {...props} />
   </div>
 );
+
+type InlineLoaderProps = {
+  /** Visible text beside the spinner, announced as a polite status. */
+  label: string;
+  /** `xs` for dense panels and list footers. */
+  textSize?: 'xs' | 'sm';
+  className?: string;
+};
+
+export const InlineLoader: FC<InlineLoaderProps> = ({
+  label,
+  textSize = 'sm',
+  className,
+}) => (
+  <p
+    role="status"
+    className={cn(
+      'text-foreground-secondary flex items-center gap-2',
+      textSize === 'xs' ? 'text-xs' : 'text-sm',
+      className,
+    )}
+  >
+    <Loader size={textSize === 'xs' ? 'xs' : 'inline'} shape="circle" />
+    {label}
+  </p>
+);

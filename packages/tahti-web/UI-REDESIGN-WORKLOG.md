@@ -1,3 +1,12 @@
+## 2026-10-23 - UX batch 97 (InlineLoader, embed links)
+
+`@tahti-player/ui` gains `InlineLoader` (story `Components/Loader` ->
+Inline Text): a small spinner beside the loading text, announced as a
+status. Twenty-six panels and dialogs that showed a bare "Loading…" line use
+it. The embed widgets' "Open …" links are `ExternalLink`, and the Grafana
+dashboard buttons show their description in a `Tooltip`. Bumped tahti-web
+`0.0.253`.
+
 ## 2026-10-23 - UX batch 96 (ColorField, Toggle descriptions, named groups)
 
 `@tahti-player/ui` gains `ColorField` (story `Components/ColorField`) for the

@@ -2,7 +2,7 @@ import { ListPlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Input, Loader } from '@tahti-player/ui';
+import { Button, Dialog, InlineLoader, Input, Loader } from '@tahti-player/ui';
 
 import { formatTotalDuration, pluralTracks } from '../lib/libraryFormat';
 import type {
@@ -108,7 +108,7 @@ export function AddToPlaylistDialog({
       </Dialog.Description>
       <div className="flex max-h-[45vh] flex-col gap-1 overflow-y-auto py-2">
         {playlists === null ? (
-          <p className="text-foreground-secondary text-sm">Loading…</p>
+          <InlineLoader label="Loading…" />
         ) : loadError ? (
           <PageError
             title="Could not load your playlists"

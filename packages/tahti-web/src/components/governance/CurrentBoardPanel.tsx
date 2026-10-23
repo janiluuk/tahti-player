@@ -1,6 +1,8 @@
 import { ShieldCheckIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { InlineLoader } from '@tahti-player/ui';
+
 import {
   BOARD_ROLE_LABELS,
   fetchCurrentBoard,
@@ -42,7 +44,7 @@ export function CurrentBoardPanel() {
   return (
     <GovernancePanel title="Board" icon={ShieldCheckIcon}>
       {seats === null ? (
-        <p className="text-foreground-secondary text-sm">Loading the board…</p>
+        <InlineLoader label="Loading the board…" />
       ) : loadError ? (
         <PageError
           title="Could not load the board"

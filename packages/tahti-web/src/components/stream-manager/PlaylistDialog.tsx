@@ -1,4 +1,4 @@
-import { Button, Dialog } from '@tahti-player/ui';
+import { Button, Dialog, InlineLoader } from '@tahti-player/ui';
 
 import { ConfirmDialog } from '../ConfirmDialog';
 import { PageError } from '../PageStates';
@@ -58,9 +58,7 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
           </div>
           <div className="border-border min-h-32 rounded-lg border p-3">
             {playlistLoading ? (
-              <p className="text-foreground-secondary text-sm">
-                Loading playlist…
-              </p>
+              <InlineLoader label="Loading playlist…" />
             ) : previewError ? (
               <PageError
                 title="Could not load this playlist"

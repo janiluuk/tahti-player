@@ -2,7 +2,14 @@ import { CheckIcon, LinkIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, CopyButton, Input, Select, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  CopyButton,
+  InlineLoader,
+  Input,
+  Select,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   createSoundShare,
@@ -114,7 +121,7 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
       </div>
 
       {loading ? (
-        <p className="text-foreground-secondary text-xs">Loading…</p>
+        <InlineLoader label="Loading…" textSize="xs" />
       ) : loadError ? (
         <PageError
           title="Could not load share links"

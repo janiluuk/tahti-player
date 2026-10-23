@@ -13,7 +13,7 @@ import {
   ButtonLink,
   EmptyState,
   FilePicker,
-  Loader,
+  InlineLoader,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -269,12 +269,7 @@ export function StudioUploadView() {
                 Last recorded broadcasts
               </div>
               {recordingsLoading ? (
-                <div className="mt-4 flex items-center gap-2">
-                  <Loader size="sm" />
-                  <span className="text-foreground-secondary text-sm">
-                    Loading recordings…
-                  </span>
-                </div>
+                <InlineLoader label="Loading recordings…" className="mt-4" />
               ) : recordingsError && recordings.length === 0 ? (
                 <PageError
                   title="Could not load recent recordings"

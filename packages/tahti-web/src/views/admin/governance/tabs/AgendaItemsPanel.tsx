@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, InlineLoader, Input } from '@tahti-player/ui';
 
 import {
   createAdminAgendaItem,
@@ -68,7 +68,7 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
       onToggle={() => setOpen((value) => !value)}
     >
       {items === null ? (
-        <p className="text-foreground-secondary text-xs">Loading…</p>
+        <InlineLoader label="Loading…" textSize="xs" />
       ) : loadError && items.length === 0 ? (
         <PageError
           title="Could not load agenda items"

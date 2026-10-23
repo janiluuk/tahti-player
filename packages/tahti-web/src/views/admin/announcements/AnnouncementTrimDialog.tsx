@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, Input } from '@tahti-player/ui';
+import { Button, Dialog, InlineLoader, Input } from '@tahti-player/ui';
 
 import {
   fetchAdminAnnouncementSource,
@@ -126,9 +126,7 @@ export function AnnouncementTrimDialog({
             className="w-full"
           />
         ) : !error ? (
-          <p className="text-foreground-secondary text-sm" role="status">
-            Loading the original upload…
-          </p>
+          <InlineLoader label="Loading the original upload…" />
         ) : null}
         <div className="grid grid-cols-2 gap-3">
           {FIELDS.map((field) => (

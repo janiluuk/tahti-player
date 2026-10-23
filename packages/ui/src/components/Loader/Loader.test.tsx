@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import { Loader } from '.';
+import { InlineLoader, Loader } from '.';
 
 describe('Loader', () => {
   it('is decorative without a label', () => {
@@ -20,5 +20,13 @@ describe('Loader', () => {
   it('accepts a pixel size', () => {
     render(<Loader size={28} shape="circle" />);
     expect(screen.getByTestId('loader')).toHaveAttribute('width', '28');
+  });
+
+  it('shows inline loading text as a status', () => {
+    render(<InlineLoader label="Loading the board…" textSize="xs" />);
+    const status = screen.getByRole('status');
+    expect(status).toHaveTextContent('Loading the board…');
+    expect(status).toHaveClass('text-xs');
+    expect(screen.getByTestId('loader')).toHaveAttribute('width', '12');
   });
 });

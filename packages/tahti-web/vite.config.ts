@@ -142,6 +142,13 @@ function reviewStateApiPlugin(): Plugin {
 }
 
 export default defineConfig(({ command, mode }) => {
+  if (process.env.VITEST) {
+    // ICU reads the locale once at process start, so it has to be in the
+    // environment the test workers are forked with. Tests assert en-US
+    // collation and number formatting, as on CI; a Finnish or Estonian
+    // shell otherwise sorts and groups differently.
+    process.env.LC_ALL = 'en_US.UTF-8';
+  }
   const env = loadEnv(mode, process.cwd(), '');
   validateProductionBuildEnvironment(command, env);
   const deployVersion =
