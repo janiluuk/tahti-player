@@ -8,7 +8,7 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 import { useEffect, useState } from 'react';
 
-import { Button, Input, SectionShell } from '@tahti-player/ui';
+import { Button, InlineError, Input, SectionShell } from '@tahti-player/ui';
 
 import {
   confirmTotp,
@@ -233,7 +233,7 @@ export function SecurityTotpPanel() {
           </div>
         )}
 
-        {error && <p className="text-accent-red-strong text-sm">{error}</p>}
+        {error && <InlineError>{error}</InlineError>}
       </div>
     </SectionShell>
   );

@@ -9,6 +9,7 @@ import {
   ButtonAnchor,
   ButtonLink,
   Dialog,
+  InlineError,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -136,9 +137,13 @@ export function AdminDashboardView() {
                           {value.toLocaleString()}
                         </StatNumber>
                         {note ? (
-                          <p className="text-accent-red-strong mt-1 text-xs font-semibold">
+                          <InlineError
+                            textSize="xs"
+                            className="mt-1 font-semibold"
+                            announce={false}
+                          >
                             {note}
-                          </p>
+                          </InlineError>
                         ) : null}
                       </StudioPanel>
                     ))}

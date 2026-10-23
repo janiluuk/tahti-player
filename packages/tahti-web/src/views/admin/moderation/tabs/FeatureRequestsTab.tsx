@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Badge, Button } from '@tahti-player/ui';
+import { Badge, Button, InlineError } from '@tahti-player/ui';
 
 import {
   fetchAdminFeatureRequestReports,
@@ -74,7 +74,11 @@ function QuarterlyReportsPanel() {
           {generating ? 'Generating…' : `Generate ${currentQuarterLabel()}`}
         </Button>
       </div>
-      {error && <p className="text-accent-red-strong mt-2 text-xs">{error}</p>}
+      {error && (
+        <InlineError textSize="xs" className="mt-2">
+          {error}
+        </InlineError>
+      )}
       {loading ? (
         <PageLoading label="Loading reports…" />
       ) : reports.length === 0 ? (

@@ -1,7 +1,13 @@
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
-import { Button, Input, Textarea, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  InlineError,
+  Input,
+  Textarea,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { registerVenue } from '../api/client';
 import { ImageUploadField } from '../components/ImageUploadField';
@@ -189,7 +195,7 @@ export function VenueRegisterView() {
         >
           {pending ? 'Submitting…' : 'Submit for review'}
         </Button>
-        {error && <p className="text-accent-red-strong text-sm">{error}</p>}
+        {error && <InlineError>{error}</InlineError>}
       </form>
     </ViewShell>
   );

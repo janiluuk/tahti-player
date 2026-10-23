@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, InlineError } from '@tahti-player/ui';
 
 import { fetchMembership, startMembershipCheckout } from '../api/client';
 import type { MembershipStatus } from '../api/types';
@@ -114,7 +114,7 @@ export function SignupPaymentView() {
         </div>
       )}
 
-      {error && <p className="text-accent-red-strong text-sm">{error}</p>}
+      {error && <InlineError>{error}</InlineError>}
       {msg && <p className="text-sm">{msg}</p>}
 
       <Link

@@ -10,6 +10,7 @@ import {
 import {
   Button,
   Checkbox,
+  InlineError,
   MediaArtwork,
   Tooltip,
   TrackProcessing,
@@ -159,9 +160,9 @@ export function SoundRow({
           {embedSrc ? `, via ${EMBED_PROVIDER_LABEL[item.embedProvider!]}` : ''}
         </p>
         {failed && item.processingError ? (
-          <p className="text-accent-red-strong text-xs">
+          <InlineError textSize="xs" announce={false}>
             {item.processingError}
-          </p>
+          </InlineError>
         ) : null}
       </div>
       {canRetrySoundProcessing(item) ? (

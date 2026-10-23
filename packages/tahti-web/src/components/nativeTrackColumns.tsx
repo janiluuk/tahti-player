@@ -63,9 +63,13 @@ export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
         <span className="min-w-0 truncate">
           {track.title}
           {!track.available ? (
-            <Tooltip content="Original file is missing" side="top">
+            <Tooltip
+              content="Original file is missing"
+              side="top"
+              wrapperClassName="ml-2 inline-flex"
+            >
               <span
-                className="text-accent-red-strong ml-2 text-xs"
+                className="text-accent-red-strong text-xs"
                 aria-description="Original file is missing"
               >
                 Missing

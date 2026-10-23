@@ -13,6 +13,7 @@ import {
   DataTableHeaderCell,
   DataTableRow,
   HorizontalScroll,
+  InlineError,
   SectionShell,
   ViewShell,
 } from '@tahti-player/ui';
@@ -245,9 +246,7 @@ export function AdminGrantCycleView() {
                         eligible artists.
                       </p>
                       {error ? (
-                        <p className="text-accent-red-strong mt-2 text-sm">
-                          {error}
-                        </p>
+                        <InlineError className="mt-2">{error}</InlineError>
                       ) : null}
                       <Button
                         className="mt-3"

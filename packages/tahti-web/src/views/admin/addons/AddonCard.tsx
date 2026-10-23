@@ -7,7 +7,13 @@ import {
   XIcon,
 } from 'lucide-react';
 
-import { Badge, Button, ImageReveal, Tooltip } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  ImageReveal,
+  InlineError,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { type AdminAddon } from '../../../api/admin';
 import { statusColor } from './shared';
@@ -65,9 +71,9 @@ export function AddonCard({
         </p>
         {addon.moderationNote &&
         (addon.status === 'REJECTED' || addon.status === 'DISABLED') ? (
-          <p className="text-accent-red-strong mt-2 text-xs">
+          <InlineError textSize="xs" className="mt-2" announce={false}>
             {addon.moderationNote}
-          </p>
+          </InlineError>
         ) : null}
         <div className="mt-3 flex flex-wrap items-center gap-2">
           {addon.categories.map((category) => (

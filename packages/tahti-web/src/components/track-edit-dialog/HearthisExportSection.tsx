@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { UploadCloudIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, InlineError } from '@tahti-player/ui';
 
 import {
   exportSoundToHearthis,
@@ -100,9 +100,7 @@ export function HearthisExportSection({
             'Copy this track to your own hearthis.at account.'
           )}
         </p>
-        {error ? (
-          <p className="text-accent-red-strong mt-1 text-sm">{error}</p>
-        ) : null}
+        {error ? <InlineError className="mt-1">{error}</InlineError> : null}
       </div>
       {installed ? (
         <Button

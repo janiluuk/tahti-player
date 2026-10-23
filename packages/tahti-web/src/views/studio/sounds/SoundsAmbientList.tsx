@@ -7,7 +7,12 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button, Tooltip, TrackProcessing } from '@tahti-player/ui';
+import {
+  Button,
+  InlineError,
+  Tooltip,
+  TrackProcessing,
+} from '@tahti-player/ui';
 
 import type { StudioSound } from '../../../api/studio-types';
 import { AddToPlaylistButton } from '../../../components/AddToPlaylistButton';
@@ -95,7 +100,9 @@ function SoundStatusLine({ item }: { item: StudioSound }) {
         {embedSrc ? `, via ${EMBED_PROVIDER_LABEL[item.embedProvider!]}` : ''}
       </p>
       {failed && item.processingError ? (
-        <p className="text-accent-red-strong text-xs">{item.processingError}</p>
+        <InlineError textSize="xs" announce={false}>
+          {item.processingError}
+        </InlineError>
       ) : null}
     </>
   );

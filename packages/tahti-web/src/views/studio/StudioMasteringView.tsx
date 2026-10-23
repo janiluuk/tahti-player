@@ -2,7 +2,13 @@ import { Link } from '@tanstack/react-router';
 import { DownloadIcon, SlidersHorizontalIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, ButtonAnchor, FilePicker, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonAnchor,
+  FilePicker,
+  InlineError,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchEditorSource } from '../../api/studio';
 import type { EditorSource } from '../../api/studio-types';
@@ -151,9 +157,7 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
                   onFiles={handleReferenceFiles}
                 />
                 {decodeError ? (
-                  <p className="text-accent-red-strong mt-2 text-sm">
-                    {decodeError}
-                  </p>
+                  <InlineError className="mt-2">{decodeError}</InlineError>
                 ) : null}
               </StudioPanel>
 
@@ -180,7 +184,7 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
                 </div>
 
                 {status === 'error' && error ? (
-                  <p className="text-accent-red-strong mt-3 text-sm">{error}</p>
+                  <InlineError className="mt-3">{error}</InlineError>
                 ) : null}
 
                 {status === 'done' && result ? (

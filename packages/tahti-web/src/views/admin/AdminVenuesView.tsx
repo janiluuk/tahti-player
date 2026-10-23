@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { CheckIcon, MapPinIcon, XIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button, Input, ViewShell } from '@tahti-player/ui';
+import { Button, InlineError, Input, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchAdminVenues,
@@ -107,9 +107,7 @@ export function AdminVenuesView() {
                     onChange={(event) => setQuery(event.target.value)}
                     placeholder="Name, city, slug, or submitter"
                   />
-                  {error ? (
-                    <p className="text-accent-red-strong text-sm">{error}</p>
-                  ) : null}
+                  {error ? <InlineError>{error}</InlineError> : null}
                   {loading ? (
                     <PageLoading label="Loading venues…" />
                   ) : loadError && venues.length === 0 ? (

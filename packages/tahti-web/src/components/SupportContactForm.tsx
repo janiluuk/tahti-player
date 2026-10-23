@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, Input, Select, Textarea } from '@tahti-player/ui';
+import { Button, InlineError, Input, Select, Textarea } from '@tahti-player/ui';
 
 import { submitSupportTicket, type SupportTicketCategory } from '../api/client';
 import { useAuthStore } from '../stores/authStore';
@@ -108,7 +108,7 @@ export function SupportContactForm({
       >
         {pending ? 'Sending…' : 'Send message'}
       </Button>
-      {error && <p className="text-accent-red-strong text-sm">{error}</p>}
+      {error && <InlineError>{error}</InlineError>}
     </form>
   );
 }

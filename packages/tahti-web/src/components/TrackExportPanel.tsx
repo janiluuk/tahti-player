@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, ButtonAnchor, Tooltip } from '@tahti-player/ui';
+import { Button, ButtonAnchor, InlineError, Tooltip } from '@tahti-player/ui';
 
 import {
   exportTrack,
@@ -140,7 +140,7 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
       </div>
       {error && (
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <p className="text-accent-red-strong text-xs">{error}</p>
+          <InlineError textSize="xs">{error}</InlineError>
           {connectUrl ? (
             <ButtonAnchor href={connectUrl} size="sm" variant="secondary">
               Connect Mixcloud

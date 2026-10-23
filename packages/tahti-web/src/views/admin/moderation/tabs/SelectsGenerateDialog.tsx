@@ -51,9 +51,9 @@ export function SelectsGenerateDialog({
         ]}
       />
       {mode === 'replace' && rotationSize > 0 ? (
-        <p className="text-accent-red-strong mt-3 text-sm">
+        <InlineError className="mt-3" announce={false}>
           This removes all {rotationSize} tracks in the current rotation.
-        </p>
+        </InlineError>
       ) : null}
       {error ? <InlineError className="mt-3">{error}</InlineError> : null}
       <Dialog.Actions>

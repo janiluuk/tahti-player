@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { ButtonLink, ViewShell } from '@tahti-player/ui';
+import { ButtonLink, Tooltip, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchAdminContentOverview,
@@ -135,12 +135,11 @@ export function AdminContentView() {
                                 aria-hidden
                               />
                               <div className="min-w-0 flex-1">
-                                <p
-                                  className="truncate text-sm font-medium"
-                                  title={item.title}
-                                >
-                                  {item.title}
-                                </p>
+                                <Tooltip content={item.title} side="top">
+                                  <p className="truncate text-sm font-medium">
+                                    {item.title}
+                                  </p>
+                                </Tooltip>
                                 <p className="text-foreground-secondary text-xs">
                                   {item.type}
                                   {item.artistName
@@ -178,12 +177,11 @@ export function AdminContentView() {
                                 aria-hidden
                               />
                               <div className="min-w-0 flex-1">
-                                <p
-                                  className="truncate text-sm font-medium"
-                                  title={broadcast.title}
-                                >
-                                  {broadcast.title}
-                                </p>
+                                <Tooltip content={broadcast.title} side="top">
+                                  <p className="truncate text-sm font-medium">
+                                    {broadcast.title}
+                                  </p>
+                                </Tooltip>
                                 <p className="text-foreground-secondary text-xs">
                                   {broadcast.artistName ?? 'Unknown artist'} ·{' '}
                                   {formatDuration(broadcast.durationSec)}

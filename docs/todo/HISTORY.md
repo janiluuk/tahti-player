@@ -1,3 +1,23 @@
+## 2026-10-23 - UX batch 100 sixty error-line and tooltip slices
+
+Fixes from batch 98: `Tooltip`'s wrapper is a block `div`, so the two admin
+status timestamps (inside a sentence) and the "Missing" file marker (inside a
+truncated title) broke onto their own line; they now get an inline wrapper,
+and the AI-generated badge wrapper keeps `shrink-0`. `InlineError` takes
+`announce={false}` for standing notices. Forty-one more red paragraphs ->
+`InlineError`: thirty-two conditional errors that were never announced
+(gallery x2, image purpose, channel link validation, older messages, image
+upload, membership x2, 2FA, stream manager, support form, Mixcloud export,
+widgets, hearthis export, venue list, reset password x4, set up password x4,
+signup payment, venue register, verify, grant cycle, admin venues, AGM
+minutes, feature requests, mastering x2, track comments) and nine standing
+notices with `announce={false}` (membership lapsed / verify email, admin
+note, add-on moderation note, rotation warning, stem job error, processing
+errors x2). Fourteen truncated-text `title`s -> `Tooltip` (backup restore
+paths x2, duplicates, organize files, write tags, iTunes paths x2, library
+roots, admin content x2, player bar title + artist, storage user, set import
+track). tahti-web `0.0.256`.
+
 ## 2026-10-23 - UX batch 99 ninety-three inline error slices
 
 New library `InlineError` (`<p role="alert">` in `text-accent-red-strong`,

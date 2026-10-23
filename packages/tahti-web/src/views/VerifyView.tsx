@@ -1,7 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Box, Button, Input } from '@tahti-player/ui';
+import { Box, Button, InlineError, Input } from '@tahti-player/ui';
 
 import { useAuthStore } from '../stores/authStore';
 
@@ -87,7 +87,7 @@ export function VerifyView() {
             onChange={(e) => setToken(e.target.value)}
             description="From ?token= in the email link"
           />
-          {error && <p className="text-accent-red-strong text-sm">{error}</p>}
+          {error && <InlineError>{error}</InlineError>}
           {message && !error && (
             <p className="text-foreground-secondary text-sm">{message}</p>
           )}
