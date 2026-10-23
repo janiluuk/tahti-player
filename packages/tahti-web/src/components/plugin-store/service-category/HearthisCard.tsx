@@ -45,8 +45,8 @@ import { PageEmpty, PageError } from '../../PageStates';
 import { SourceServiceIcon } from '../../SourceServiceIcon';
 import type { ServicePlugin } from '../serviceCatalog';
 import { ConfigurableCard } from '../shared';
+import { readImportedIds, writeImportedIds } from './hearthisImports';
 
-const HEARTHIS_IMPORTS_STORAGE_KEY = 'tahti-web-hearthis-imports';
 const NEW_PLAYLIST_DESTINATION = '__new_playlist__';
 
 export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
@@ -155,23 +155,8 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
   }, [user]);
 
   useEffect(() => {
-    if (!user || typeof localStorage === 'undefined') {
-      return;
-    }
-    try {
-      const stored = JSON.parse(
-        localStorage.getItem(`${HEARTHIS_IMPORTS_STORAGE_KEY}:${user.id}`) ??
-          '[]',
-      ) as unknown;
-      setImportedIds(
-        new Set(
-          Array.isArray(stored)
-            ? stored.filter((id): id is string => typeof id === 'string')
-            : [],
-        ),
-      );
-    } catch {
-      setImportedIds(new Set());
+    if (user) {
+      setImportedIds(readImportedIds(user.id));
     }
   }, [user]);
 
@@ -271,15 +256,8 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
     trackIds.forEach((id) => next.add(id));
     importedRef.current = next;
     setImportedIds(next);
-    if (user && typeof localStorage !== 'undefined') {
-      try {
-        localStorage.setItem(
-          `${HEARTHIS_IMPORTS_STORAGE_KEY}:${user.id}`,
-          JSON.stringify([...next]),
-        );
-      } catch {
-        // Storage full/blocked: the imported marks just won't survive a reload.
-      }
+    if (user) {
+      writeImportedIds(user.id, next);
     }
   };
 
