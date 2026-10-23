@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, InlineError } from '@tahti-player/ui';
 
 import {
   secondMotion,
@@ -65,11 +65,7 @@ export function MotionSecondControl({
           </Button>
         )}
       </div>
-      {error && (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      )}
+      {error && <InlineError textSize="xs">{error}</InlineError>}
     </div>
   );
 }

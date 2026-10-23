@@ -1,7 +1,13 @@
 import { Link } from '@tanstack/react-router';
 import { PlusIcon } from 'lucide-react';
 
-import { Button, FilterChips, Tooltip, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  FilterChips,
+  InlineError,
+  Tooltip,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import type { AdminAddonScope } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
@@ -144,9 +150,7 @@ export function AdminAddonsView() {
               !manageTarget &&
               !publishTarget &&
               !editTarget ? (
-                <p className="text-accent-red-strong text-sm" role="alert">
-                  {error}
-                </p>
+                <InlineError>{error}</InlineError>
               ) : null}
               {loading ? (
                 <PageLoading label="Loading add-on catalog…" />

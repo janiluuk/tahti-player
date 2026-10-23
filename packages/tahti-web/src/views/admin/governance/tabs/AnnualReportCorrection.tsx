@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, ExternalLink, Textarea } from '@tahti-player/ui';
+import { Button, ExternalLink, InlineError, Textarea } from '@tahti-player/ui';
 
 import {
   correctAnnualReport,
@@ -109,11 +109,7 @@ export function AnnualReportCorrection({
           </div>
         </form>
       ) : null}
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       {revisions !== null ? (
         revisions.length === 0 ? (
           <p className="text-foreground-secondary text-xs">

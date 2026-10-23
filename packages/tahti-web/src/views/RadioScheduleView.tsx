@@ -15,6 +15,7 @@ import {
   Dialog,
   FilterChips,
   HorizontalScroll,
+  InlineError,
   Input,
   SaveButton,
   TabLabel,
@@ -635,11 +636,7 @@ export function RadioScheduleView() {
           {message}
         </p>
       ) : null}
-      {error ? (
-        <p className="text-accent-red-strong text-sm" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError>{error}</InlineError> : null}
 
       <div className="text-foreground-secondary flex flex-wrap gap-x-4 gap-y-1 text-xs">
         <span className="inline-flex items-center gap-1.5">

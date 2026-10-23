@@ -2,7 +2,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog } from '@tahti-player/ui';
+import { Button, Dialog, InlineError } from '@tahti-player/ui';
 
 import { provisionChannel } from '../api/channel-provision';
 import { useAuthStore } from '../stores/authStore';
@@ -94,11 +94,7 @@ export function ChannelSetupDialog() {
         Create {user?.username ?? 'your-name'}.tahti.live to unlock
         broadcasting, uploads, and your public channel designer.
       </Dialog.Description>
-      {error ? (
-        <p className="text-accent-red-strong mt-4 text-sm" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError className="mt-4">{error}</InlineError> : null}
       <Dialog.Actions>
         <Button variant="text" size="sm" onClick={close} disabled={busy}>
           Cancel

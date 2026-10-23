@@ -2,7 +2,14 @@ import { Undo2Icon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, InlineLoader, Input, Loader } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  InlineError,
+  InlineLoader,
+  Input,
+  Loader,
+} from '@tahti-player/ui';
 
 import type {
   NativeEditField,
@@ -201,9 +208,7 @@ export function TrackEditorDialog({
         are not modified. Leave a field alone to keep each track’s own value.
       </Dialog.Description>
       {loadError ? (
-        <p role="alert" className="text-accent-red-strong text-sm">
-          {loadError}
-        </p>
+        <InlineError>{loadError}</InlineError>
       ) : !summary ? (
         <InlineLoader label="Loading…" />
       ) : (
@@ -278,9 +283,7 @@ export function TrackEditorDialog({
         </div>
       )}
       {previewError ? (
-        <p role="alert" className="text-accent-red-strong text-sm">
-          {previewError}
-        </p>
+        <InlineError>{previewError}</InlineError>
       ) : preview ? (
         <div className="text-foreground-secondary flex flex-col gap-1 text-xs">
           <p>

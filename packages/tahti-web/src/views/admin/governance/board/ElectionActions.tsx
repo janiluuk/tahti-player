@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import type { BoardActionResult } from '../../../../api/admin/admin-governance-board';
 import {
@@ -161,11 +161,7 @@ export function ElectionActions({
           </Button>
         </form>
       ) : null}
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
     </div>
   );
 }

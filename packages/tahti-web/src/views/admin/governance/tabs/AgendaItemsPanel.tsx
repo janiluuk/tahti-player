@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Button, InlineLoader, Input } from '@tahti-player/ui';
+import { Button, InlineError, InlineLoader, Input } from '@tahti-player/ui';
 
 import {
   createAdminAgendaItem,
@@ -134,9 +134,9 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
         </div>
       </form>
       {error ? (
-        <p className="text-accent-red-strong mt-2 text-xs" role="alert">
+        <InlineError textSize="xs" className="mt-2">
           {error}
-        </p>
+        </InlineError>
       ) : null}
     </CollapsibleRecord>
   );

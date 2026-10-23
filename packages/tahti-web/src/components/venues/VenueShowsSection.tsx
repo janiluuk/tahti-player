@@ -1,6 +1,6 @@
 import { useId, useState } from 'react';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
   cancelVenueBroadcast,
@@ -144,11 +144,7 @@ export function VenueShowsSection({
           ))}
         </ul>
       )}
-      {cancelError ? (
-        <p role="alert" className="text-accent-red-strong text-sm">
-          {cancelError}
-        </p>
-      ) : null}
+      {cancelError ? <InlineError>{cancelError}</InlineError> : null}
       <ConfirmDialog
         isOpen={cancelling !== null}
         title="Cancel this show?"
@@ -192,11 +188,7 @@ export function VenueShowsSection({
             maxLength={500}
             onChange={(e) => setDescription(e.target.value)}
           />
-          {error ? (
-            <p role="alert" className="text-accent-red-strong text-sm">
-              {error}
-            </p>
-          ) : null}
+          {error ? <InlineError>{error}</InlineError> : null}
           <div className="flex gap-2">
             <Button type="submit" size="sm" disabled={busy}>
               {busy ? 'Booking…' : 'Book the show'}

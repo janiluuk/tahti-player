@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, Dialog, Input } from '@tahti-player/ui';
+import { Button, Dialog, InlineError, Input } from '@tahti-player/ui';
 
 import { addStudioCollectionItem, createStudioCollection } from '../api/studio';
 import { soundIdFromPlayableId } from '../lib/soundId';
@@ -76,11 +76,7 @@ export function SaveQueueAsPlaylistDialog({ isOpen, onClose }: Props) {
         onChange={(event) => setName(event.target.value)}
         autoFocus
       />
-      {error && (
-        <p className="text-accent-red-strong mt-2 text-sm" role="alert">
-          {error}
-        </p>
-      )}
+      {error && <InlineError className="mt-2">{error}</InlineError>}
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
         <Button

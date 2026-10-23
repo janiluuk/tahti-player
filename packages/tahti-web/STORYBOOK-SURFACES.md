@@ -362,6 +362,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/HorizontalScroll` | `HorizontalScroll.stories.tsx` |
 | `Components/ImageReveal` | `ImageReveal.stories.tsx` |
 | `Components/ImageThumbnailPicker` | `ImageThumbnailPicker.stories.tsx` |
+| `Components/InlineError` | `InlineError.stories.tsx` |
 | `Components/Input` | `Input.stories.tsx` |
 | `Components/KeyCombo` | `KeyCombo.stories.tsx` |
 | `Components/HistoryCharts/ListeningClock` | `ListeningClock.stories.tsx` |

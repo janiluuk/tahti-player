@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, FilePicker, Input, Textarea } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  FilePicker,
+  InlineError,
+  Input,
+  Textarea,
+} from '@tahti-player/ui';
 
 import {
   ADDON_BUNDLE_MAX_BYTES,
@@ -82,9 +89,9 @@ export function PublishDialog({
           onFiles={(files) => setFile(files[0] ?? null)}
         />
         {tooBig ? (
-          <p className="text-accent-red-strong text-sm" role="alert">
+          <InlineError>
             This file is {formatSize(file.size)}; bundles can be at most 2 MB.
-          </p>
+          </InlineError>
         ) : null}
         <Textarea
           label="Changelog (optional)"
@@ -94,11 +101,7 @@ export function PublishDialog({
           placeholder="What changed in this version?"
           onChange={(event) => setChangelog(event.target.value)}
         />
-        {error ? (
-          <p className="text-accent-red-strong text-sm" role="alert">
-            {error}
-          </p>
-        ) : null}
+        {error ? <InlineError>{error}</InlineError> : null}
         <Dialog.Actions>
           <Dialog.Close>Cancel</Dialog.Close>
           <Button

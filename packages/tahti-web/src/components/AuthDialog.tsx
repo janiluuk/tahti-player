@@ -2,7 +2,13 @@ import { Link } from '@tanstack/react-router';
 import { KeyRoundIcon, LogInIcon, UserPlusIcon } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 
-import { Button, Dialog, Input, SegmentedControl } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  InlineError,
+  Input,
+  SegmentedControl,
+} from '@tahti-player/ui';
 
 import {
   persistPendingArtistKind,
@@ -27,15 +33,7 @@ const slugifyUsername = (value: string) =>
     .replace(/^-+|-+$/g, '');
 
 function AuthDialogError({ message }: { message: string }) {
-  return (
-    <p
-      className="text-accent-red-strong text-sm"
-      role="alert"
-      aria-live="polite"
-    >
-      {message}
-    </p>
-  );
+  return <InlineError aria-live="polite">{message}</InlineError>;
 }
 
 export const AuthDialog: FC = () => {

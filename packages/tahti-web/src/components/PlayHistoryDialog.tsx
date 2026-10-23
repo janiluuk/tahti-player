@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Loader } from '@tahti-player/ui';
+import { Button, Dialog, InlineError, Loader } from '@tahti-player/ui';
 
 import type {
   NativePlayLogEntry,
@@ -111,9 +111,7 @@ export function PlayHistoryDialog({
             </ul>
           )}
           {error && entries.length > 0 ? (
-            <p role="alert" className="text-accent-red-strong text-xs">
-              {error}
-            </p>
+            <InlineError textSize="xs">{error}</InlineError>
           ) : null}
           {loading ? (
             <Loader size="inline" shape="circle" />

@@ -12,6 +12,7 @@ import {
   Badge,
   Button,
   Dialog,
+  InlineError,
   Input,
   SaveButton,
   Textarea,
@@ -370,11 +371,7 @@ export function InternetRadioPresetsPanel() {
               setDraft({ ...draft, programmingUrl: event.target.value })
             }
           />
-          {error ? (
-            <p className="text-accent-red-strong text-sm" role="alert">
-              {error}
-            </p>
-          ) : null}
+          {error ? <InlineError>{error}</InlineError> : null}
         </div>
         <Dialog.Actions>
           <Dialog.Close>Cancel</Dialog.Close>

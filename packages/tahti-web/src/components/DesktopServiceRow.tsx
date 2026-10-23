@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { CopyButton } from '@tahti-player/ui';
+import { CopyButton, InlineError } from '@tahti-player/ui';
 
 import type { DesktopServiceStore } from '../lib/desktopService';
 import { SettingsToggle } from '../views/settings/SettingsFields';
@@ -51,9 +51,9 @@ export function DesktopServiceRow({
       ) : null}
       {enabled && url ? children : null}
       {error ? (
-        <p className="text-accent-red-strong text-sm" role="alert">
+        <InlineError>
           {failure}: {error}
-        </p>
+        </InlineError>
       ) : null}
     </div>
   );

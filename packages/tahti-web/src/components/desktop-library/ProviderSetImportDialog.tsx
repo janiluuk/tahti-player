@@ -3,6 +3,7 @@ import {
   Badge,
   Button,
   Dialog,
+  InlineError,
   InlineLoader,
   Input,
   Loader,
@@ -208,11 +209,7 @@ export function ProviderSetImportDialog({
         out.
       </Dialog.Description>
 
-      {state.error ? (
-        <p role="alert" className="text-accent-red-strong text-sm">
-          {state.error}
-        </p>
-      ) : null}
+      {state.error ? <InlineError>{state.error}</InlineError> : null}
 
       {state.phase === 'pick' ? (
         <div className="flex flex-col gap-3 py-2">

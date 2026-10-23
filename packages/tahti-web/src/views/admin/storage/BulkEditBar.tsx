@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, Select } from '@tahti-player/ui';
+import { Button, InlineError, Select } from '@tahti-player/ui';
 
 import {
   bulkDeleteAdminFiles,
@@ -166,11 +166,7 @@ export function BulkEditBar({
           Delete {count}
         </Button>
       </div>
-      {error ? (
-        <p className="text-accent-red-strong text-sm" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError>{error}</InlineError> : null}
       <ConfirmDialog
         isOpen={confirmingDelete}
         title={`Delete ${count} ${count === 1 ? 'file' : 'files'} permanently?`}

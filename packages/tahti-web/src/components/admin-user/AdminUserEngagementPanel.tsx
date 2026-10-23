@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Button, Input, Select, Textarea } from '@tahti-player/ui';
+import { Button, InlineError, Input, Select, Textarea } from '@tahti-player/ui';
 
 import {
   createEngagementAdjustment,
@@ -79,11 +79,7 @@ function AdjustmentForm({
         maxLength={500}
         placeholder="Shown in the audit log"
       />
-      {error ? (
-        <p className="text-accent-red-strong text-sm" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError>{error}</InlineError> : null}
       <div className="flex justify-end">
         <Button type="submit" size="sm" disabled={!valid || busy}>
           {busy ? 'Adding…' : 'Add adjustment'}

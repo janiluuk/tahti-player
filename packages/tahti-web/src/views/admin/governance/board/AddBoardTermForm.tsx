@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, Input, Select } from '@tahti-player/ui';
+import { Button, InlineError, Input, Select } from '@tahti-player/ui';
 
 import { createAdminBoardTerm } from '../../../../api/admin/admin-governance-board';
 import {
@@ -83,11 +83,7 @@ export function AddBoardTermForm({ onAdded }: { onAdded: () => void }) {
           onChange={(e) => setTermEnd(e.target.value)}
         />
       </div>
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-sm">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError>{error}</InlineError> : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy}>
           Save term

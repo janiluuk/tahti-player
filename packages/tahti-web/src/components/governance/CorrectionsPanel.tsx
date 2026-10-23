@@ -1,7 +1,7 @@
 import { PencilLineIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Badge, Button, Select, Textarea } from '@tahti-player/ui';
+import { Badge, Button, InlineError, Select, Textarea } from '@tahti-player/ui';
 
 import {
   CORRECTION_DETAILS_MAX,
@@ -92,11 +92,7 @@ function CorrectionItem({
           Withdraw request
         </Button>
       ) : null}
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       <ConfirmDialog
         isOpen={confirming}
         title="Withdraw this request?"
@@ -185,11 +181,7 @@ export function CorrectionsPanel() {
         <Button type="submit" size="sm" className="w-fit" disabled={busy}>
           {busy ? 'Sending…' : 'Send to the board'}
         </Button>
-        {error ? (
-          <p role="alert" className="text-accent-red-strong text-xs">
-            {error}
-          </p>
-        ) : null}
+        {error ? <InlineError textSize="xs">{error}</InlineError> : null}
         {sent ? (
           <p role="status" className="text-xs">
             Sent. The board will answer here.

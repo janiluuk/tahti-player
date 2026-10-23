@@ -2,7 +2,7 @@ import { FolderOpenIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Loader } from '@tahti-player/ui';
+import { Button, Dialog, InlineError, Loader } from '@tahti-player/ui';
 
 import type {
   NativeRestorePreview,
@@ -142,9 +142,7 @@ export function BackupRestoreDialog({
         the backup — they must already be on this computer.
       </Dialog.Description>
       {error ? (
-        <p role="alert" className="text-accent-red-strong text-sm">
-          {error}
-        </p>
+        <InlineError>{error}</InlineError>
       ) : !preview ? (
         <p className="text-foreground-secondary flex items-center gap-2 text-sm">
           <Loader size="inline" shape="circle" />

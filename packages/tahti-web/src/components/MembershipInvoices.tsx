@@ -1,7 +1,12 @@
 import { DownloadIcon, ExternalLinkIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Badge, ButtonAnchor, InlineLoader } from '@tahti-player/ui';
+import {
+  Badge,
+  ButtonAnchor,
+  InlineError,
+  InlineLoader,
+} from '@tahti-player/ui';
 
 import {
   fetchMembershipInvoices,
@@ -51,9 +56,7 @@ export function MembershipInvoices() {
         Invoices
       </h3>
       {error ? (
-        <p className="text-accent-red-strong mt-2 text-sm" role="alert">
-          {error}
-        </p>
+        <InlineError className="mt-2">{error}</InlineError>
       ) : invoices === null ? (
         <InlineLoader label="Loading…" className="mt-2" />
       ) : invoices.length === 0 ? (

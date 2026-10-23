@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, Select } from '@tahti-player/ui';
+import { Button, InlineError, Select } from '@tahti-player/ui';
 
 import {
   approveAnnualReport,
@@ -118,11 +118,7 @@ export function AnnualReportActions({
           run(() => publishAnnualReport(report.year));
         }}
       />
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
     </div>
   );
 }

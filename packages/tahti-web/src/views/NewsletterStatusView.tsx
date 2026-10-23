@@ -1,7 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
-import { Box, Button } from '@tahti-player/ui';
+import { Box, Button, InlineError } from '@tahti-player/ui';
 
 import { unsubscribeFromNewsletter } from '../api/newsletter-links';
 
@@ -61,11 +61,7 @@ export function NewsletterStatusView({ status }: { status: NewsletterStatus }) {
             <p className="text-foreground-secondary text-sm">
               You&apos;ll no longer get this artist&apos;s newsletter.
             </p>
-            {error ? (
-              <p className="text-accent-red-strong text-sm" role="alert">
-                {error}
-              </p>
-            ) : null}
+            {error ? <InlineError>{error}</InlineError> : null}
             <Button
               className="self-start"
               disabled={busy}

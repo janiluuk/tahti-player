@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
   setAnnualReportLegalHold,
@@ -92,11 +92,7 @@ export function AnnualReportLegalHold({
           Legal hold
         </Button>
       )}
-      {error ? (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
     </div>
   );
 }

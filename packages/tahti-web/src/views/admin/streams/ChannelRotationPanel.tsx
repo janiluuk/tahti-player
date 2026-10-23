@@ -1,7 +1,14 @@
 import { ArrowDownIcon, ArrowUpIcon, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Input, SaveButton, Select, Toggle } from '@tahti-player/ui';
+import {
+  Button,
+  InlineError,
+  Input,
+  SaveButton,
+  Select,
+  Toggle,
+} from '@tahti-player/ui';
 
 import {
   addAdminReleaseTrackToRotation,
@@ -141,11 +148,7 @@ export function ChannelRotationPanel() {
         </Button>
       </form>
 
-      {error ? (
-        <p className="text-accent-red-strong mt-3 text-sm" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError className="mt-3">{error}</InlineError> : null}
       {notice ? (
         <p className="text-foreground-secondary mt-3 text-sm" role="status">
           {notice}

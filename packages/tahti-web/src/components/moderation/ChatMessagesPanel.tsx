@@ -2,7 +2,13 @@ import { BanIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Badge, Button, EmptyState, Tooltip } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  EmptyState,
+  InlineError,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   banChatMessageSender,
@@ -94,9 +100,7 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
       {loading ? (
         <PageLoading label="Loading…" />
       ) : loadError ? (
-        <p role="alert" className="text-accent-red-strong text-sm">
-          {loadError}
-        </p>
+        <InlineError>{loadError}</InlineError>
       ) : messages.length === 0 ? (
         <EmptyState size="sm" title="No messages yet" />
       ) : (

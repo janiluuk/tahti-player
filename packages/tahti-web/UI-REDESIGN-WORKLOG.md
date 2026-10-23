@@ -1,3 +1,10 @@
+## 2026-10-23 - UX batch 99 (InlineError)
+
+`@tahti-player/ui` gains `InlineError` (story `Components/InlineError`), the
+red error line under a form, row or panel, announced as an alert. Ninety-three
+hand-styled error paragraphs across 82 files use it, so error text has one
+colour, size scale and role. Bumped tahti-web `0.0.255`.
+
 ## 2026-10-23 - UX batch 98 (Settings loaders, title tooltips)
 
 Settings panels, the local playlists browser and the listener widget show

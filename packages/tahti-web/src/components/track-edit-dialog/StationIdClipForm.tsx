@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
   createClipFromSound,
@@ -129,11 +129,7 @@ export function StationIdClipForm({
           ) : null}
         </div>
       </div>
-      {error ? (
-        <p className="text-accent-red-strong text-xs" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       <Button
         size="sm"
         className="self-start"

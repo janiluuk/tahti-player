@@ -1,7 +1,7 @@
 import { UploadIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Dialog, FilePicker } from '@tahti-player/ui';
+import { Button, Dialog, FilePicker, InlineError } from '@tahti-player/ui';
 
 import { uploadUserMediaFile } from '../api/user-media';
 
@@ -70,11 +70,7 @@ export function ArtworkPresetUploadDialog({
           disabled={busy}
           onFiles={(files) => setFile(files[0] ?? null)}
         />
-        {error && (
-          <p className="text-accent-red-strong mt-2 text-sm" role="alert">
-            {error}
-          </p>
-        )}
+        {error && <InlineError className="mt-2">{error}</InlineError>}
       </div>
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>

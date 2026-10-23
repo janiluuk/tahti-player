@@ -1,6 +1,6 @@
 import { useId, useState } from 'react';
 
-import { Button, Textarea } from '@tahti-player/ui';
+import { Button, InlineError, Textarea } from '@tahti-player/ui';
 
 import {
   standForElection,
@@ -95,11 +95,7 @@ export function CandidacyControl({
           Stand for election
         </Button>
       )}
-      {error && (
-        <p role="alert" className="text-accent-red-strong text-xs">
-          {error}
-        </p>
-      )}
+      {error && <InlineError textSize="xs">{error}</InlineError>}
       <ConfirmDialog
         isOpen={confirmWithdraw}
         title="Withdraw your candidacy?"
