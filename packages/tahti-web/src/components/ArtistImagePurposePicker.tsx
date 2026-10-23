@@ -166,17 +166,22 @@ export const ArtistImagePurposePicker: FC<Props> = ({
             displayName.slice(0, 1).toUpperCase()
           )}
         </div>
-        <Button
-          variant="plain"
-          size="flexible"
-          type="button"
-          onClick={() => setPickerOpen(true)}
-          aria-label="Change profile image"
-          title="Change profile image"
-          className="bg-background/80 text-foreground absolute inset-0 flex items-center justify-center rounded-full whitespace-normal opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 active:scale-100"
+        <Tooltip
+          content="Change profile image"
+          side="bottom"
+          wrapperClassName="absolute inset-0"
         >
-          <UploadCloudIcon size={20} aria-hidden />
-        </Button>
+          <Button
+            variant="plain"
+            size="flexible"
+            type="button"
+            onClick={() => setPickerOpen(true)}
+            aria-label="Change profile image"
+            className="bg-background/80 text-foreground flex size-full items-center justify-center rounded-full whitespace-normal opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 active:scale-100"
+          >
+            <UploadCloudIcon size={20} aria-hidden />
+          </Button>
+        </Tooltip>
       </div>
 
       <Dialog.Root

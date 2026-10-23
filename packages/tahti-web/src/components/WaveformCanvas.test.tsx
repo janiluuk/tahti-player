@@ -7,9 +7,11 @@ import { WaveformCanvas } from './WaveformCanvas';
 if (!('PointerEvent' in globalThis)) {
   class PointerEventPolyfill extends MouseEvent {
     pointerId: number;
+    pointerType: string;
     constructor(type: string, init: PointerEventInit = {}) {
       super(type, init);
       this.pointerId = init.pointerId ?? 0;
+      this.pointerType = init.pointerType ?? '';
     }
   }
   vi.stubGlobal('PointerEvent', PointerEventPolyfill);
@@ -92,5 +94,17 @@ describe('WaveformCanvas', () => {
       'data-waveform',
       'empty',
     );
+  });
+
+  it('previews the time under a hovering mouse', () => {
+    render(<WaveformCanvas {...base} onSeek={vi.fn()} />);
+    const slider = screen.getByRole('slider');
+    stubRect(slider);
+    fireEvent.pointerMove(slider, { clientX: 45, pointerType: 'mouse' });
+    expect(screen.getByTestId('waveform-canvas-hover')).toHaveTextContent(
+      '0:45',
+    );
+    fireEvent.pointerLeave(slider);
+    expect(screen.queryByTestId('waveform-canvas-hover')).toBeNull();
   });
 });

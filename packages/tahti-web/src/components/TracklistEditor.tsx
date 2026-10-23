@@ -476,17 +476,15 @@ export const TracklistEditor: FC<Props> = ({
                           up automatically.
                         </p>
                         <div className="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-end">
-                          <label className="flex flex-col gap-1 text-sm">
-                            Paste one track per line
-                            <Textarea
-                              rows={5}
-                              placeholder="12:14 Artist – Track\nArtist – Next track – 18:02"
-                              value={pastedList}
-                              onChange={(event) =>
-                                setPastedList(event.target.value)
-                              }
-                            />
-                          </label>
+                          <Textarea
+                            label="Paste one track per line"
+                            rows={5}
+                            placeholder="12:14 Artist – Track\nArtist – Next track – 18:02"
+                            value={pastedList}
+                            onChange={(event) =>
+                              setPastedList(event.target.value)
+                            }
+                          />
                           <Button
                             size="sm"
                             variant="secondary"

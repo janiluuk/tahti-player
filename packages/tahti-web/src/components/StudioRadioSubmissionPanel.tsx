@@ -96,14 +96,12 @@ export function StudioRadioSubmissionPanel() {
         description="Submit up to five single tracks for review. Approved tracks may be added to the shared Tahti Radio rotation."
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <label className="flex items-center gap-2 text-sm">
-            <Toggle
-              checked={!optedOut}
-              onChange={() => void toggleOptOut()}
-              aria-label="Include my channel in Tahti Radio"
-            />{' '}
-            Include my channel in Tahti Radio
-          </label>
+          <Toggle
+            label="Include my channel in Tahti Radio"
+            showLabel
+            checked={!optedOut}
+            onChange={() => void toggleOptOut()}
+          />
           <Button className="gap-1.5" onClick={() => setOpen(true)}>
             <SendIcon size={16} aria-hidden />
             Select tracks

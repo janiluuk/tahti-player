@@ -231,6 +231,7 @@ function toHostedListItem(
     genreLabel: item.genre ?? undefined,
     durationLabel:
       item.durationSec != null ? formatDuration(item.durationSec) : undefined,
+    durationSec: item.durationSec ?? null,
     peaks,
     progress,
     isPlaying,

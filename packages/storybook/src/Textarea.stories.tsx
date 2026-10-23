@@ -31,3 +31,19 @@ export const WithValue: Story = {
       'A curated collection of tracks for late night coding sessions.',
   },
 };
+
+/** Label, description and error, wired like `Input`'s. */
+export const WithLabel: Story = {
+  args: {
+    label: 'Message',
+    description: 'Up to 5000 characters.',
+    placeholder: 'How can we help?',
+  },
+};
+
+export const WithError: Story = {
+  args: {
+    label: 'What is being corrected',
+    error: 'Describe the correction.',
+  },
+};

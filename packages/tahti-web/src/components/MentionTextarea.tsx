@@ -54,15 +54,13 @@ export function MentionTextarea({
 
   return (
     <div className="relative flex flex-col gap-1">
-      <label className="flex flex-col gap-1 text-sm">
-        {label}
-        <Textarea
-          rows={rows}
-          value={value}
-          placeholder={placeholder}
-          onChange={(event) => onChange(event.target.value)}
-        />
-      </label>
+      <Textarea
+        label={label}
+        rows={rows}
+        value={value}
+        placeholder={placeholder}
+        onChange={(event) => onChange(event.target.value)}
+      />
       {matches.length > 0 ? (
         <ul
           className="border-border bg-background absolute top-full right-0 left-0 z-10 mt-1 overflow-hidden rounded-md border shadow-lg"

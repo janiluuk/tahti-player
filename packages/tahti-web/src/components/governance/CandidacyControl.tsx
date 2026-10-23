@@ -67,11 +67,9 @@ export function CandidacyControl({
             run(() => standForElection(election.id, statement));
           }}
         >
-          <label htmlFor={statementId} className="text-xs font-semibold">
-            Why you are standing (optional)
-          </label>
           <Textarea
             id={statementId}
+            label="Why you are standing (optional)"
             value={statement}
             maxLength={STATEMENT_MAX}
             rows={3}

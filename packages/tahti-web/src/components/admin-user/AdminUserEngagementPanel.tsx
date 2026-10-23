@@ -70,19 +70,15 @@ function AdjustmentForm({
         onChange={(event) => setUnits(event.target.value)}
         placeholder="e.g. 25 or -10"
       />
-      <label className="flex flex-col gap-1 text-sm">
-        <span className="text-foreground-secondary text-xs uppercase">
-          Reason
-        </span>
-        <Textarea
-          tone="secondary"
-          value={reason}
-          onChange={(event) => setReason(event.target.value)}
-          rows={2}
-          maxLength={500}
-          placeholder="Shown in the audit log"
-        />
-      </label>
+      <Textarea
+        label="Reason"
+        tone="secondary"
+        value={reason}
+        onChange={(event) => setReason(event.target.value)}
+        rows={2}
+        maxLength={500}
+        placeholder="Shown in the audit log"
+      />
       {error ? (
         <p className="text-accent-red-strong text-sm" role="alert">
           {error}

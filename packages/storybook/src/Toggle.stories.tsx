@@ -44,6 +44,25 @@ export const Default: Story = {
   },
 };
 
+/** `showLabel` renders the label beside the switch; clicking it toggles. */
+export const VisibleLabel: Story = {
+  args: {
+    label: 'Include my channel in Tahti Radio',
+    showLabel: true,
+    onChange: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      canvas.getByText('Include my channel in Tahti Radio'),
+    );
+    await expect(
+      canvas.getByRole('switch', { name: 'Include my channel in Tahti Radio' }),
+    ).toBeChecked();
+    await expect(args.onChange).toHaveBeenLastCalledWith(true);
+  },
+};
+
 export const Checked: Story = {
   args: {
     label: 'Checked Toggle',

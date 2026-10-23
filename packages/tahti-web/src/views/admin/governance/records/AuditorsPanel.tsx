@@ -104,10 +104,7 @@ function AddAuditorForm({ onAdded }: { onAdded: () => void }) {
         onValueChange={(value) => setKind(value as GovernanceAuditor['kind'])}
         options={KIND_OPTIONS}
       />
-      <div className="flex items-center gap-2 text-sm">
-        <Toggle label="Deputy" checked={deputy} onChange={setDeputy} />
-        Deputy
-      </div>
+      <Toggle label="Deputy" showLabel checked={deputy} onChange={setDeputy} />
       <div className="flex flex-wrap gap-2">
         <Input
           label="Name"

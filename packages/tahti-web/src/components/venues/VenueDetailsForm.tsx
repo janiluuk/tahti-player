@@ -95,11 +95,9 @@ export function VenueDetailsForm({
         value={capacity}
         onChange={(e) => setCapacity(e.target.value)}
       />
-      <label htmlFor={descriptionId} className="text-sm font-semibold">
-        Description
-      </label>
       <Textarea
         id={descriptionId}
+        label="Description"
         rows={4}
         value={description}
         maxLength={DESCRIPTION_MAX}

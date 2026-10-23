@@ -150,18 +150,23 @@ export function ArtistMusicTab({
           ) : null}
 
           {channel && (isOwner || isAdministrator) ? (
-            <Button
-              type="button"
-              size="sm"
-              variant="secondary"
-              className="absolute top-3 right-3 z-[2] gap-1.5"
-              onClick={onOpenManager}
-              aria-label="Manage stream playlist"
-              title="Manage stream playlist"
+            <Tooltip
+              content="Manage stream playlist"
+              side="bottom"
+              wrapperClassName="inline-flex"
             >
-              <ListMusicIcon size={16} aria-hidden />
-              <span>Manage</span>
-            </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                className="absolute top-3 right-3 z-[2] gap-1.5"
+                onClick={onOpenManager}
+                aria-label="Manage stream playlist"
+              >
+                <ListMusicIcon size={16} aria-hidden />
+                <span>Manage</span>
+              </Button>
+            </Tooltip>
           ) : null}
 
           {featured.playable ? (

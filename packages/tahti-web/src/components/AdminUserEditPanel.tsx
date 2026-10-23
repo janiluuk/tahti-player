@@ -440,19 +440,15 @@ export function AdminUserEditPanel({
           }
         >
           {!detail.suspendedAt ? (
-            <label className="flex flex-col gap-1 text-sm">
-              <span className="text-foreground-secondary text-xs uppercase">
-                Suspension reason
-              </span>
-              <Textarea
-                tone="secondary"
-                value={suspendReason}
-                onChange={(event) => setSuspendReason(event.target.value)}
-                rows={4}
-                maxLength={500}
-                placeholder="Required before suspending"
-              />
-            </label>
+            <Textarea
+              label="Suspension reason"
+              tone="secondary"
+              value={suspendReason}
+              onChange={(event) => setSuspendReason(event.target.value)}
+              rows={4}
+              maxLength={500}
+              placeholder="Required before suspending"
+            />
           ) : null}
           <Button
             size="sm"

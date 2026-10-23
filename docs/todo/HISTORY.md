@@ -1,3 +1,14 @@
+## 2026-10-23 - UX batch 94 thirty-plus waveform + UI slices
+
+`Textarea` `label` / `description` / `error` / `fieldClassName` (bare
+textarea when none) + thirteen `<label>` wrappers migrated; `Toggle`
+`showLabel` / `labelClassName` + three duplicate-text sites; nine more
+`Button title=` -> `Tooltip` (Screen atlas x2, image slot remove / delete
+badge, artist image overlay, add to playlist, fan / purchase tier, stream
+playlist). `AmbientTrackRow` `durationSec` from both ambient lists;
+`ConnectedPlayerBar` seek off while duration is 0; `WaveformCanvas` hover
+time. Tests + stories. ui `0.0.23`, tahti-web `0.0.250`.
+
 ## 2026-10-23 - UX batch 93 thirty waveform + UI slices
 
 Folded `batch-93-waveform-ui-thirty.md`. `WaveformSeekbar` mouse-only hover

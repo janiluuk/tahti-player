@@ -80,24 +80,20 @@ export function MotionResultCorrectionForm({
         });
       }}
     >
-      <label htmlFor={noteId} className="text-xs font-semibold">
-        What is being corrected
-      </label>
       <Textarea
         id={noteId}
+        label="What is being corrected"
         rows={2}
         value={note}
         maxLength={2000}
         onChange={(e) => setNote(e.target.value)}
       />
-      <div className="flex items-center gap-2 text-sm">
-        <Toggle
-          label="Correct the count too"
-          checked={withCount}
-          onChange={setWithCount}
-        />
-        Correct the count too
-      </div>
+      <Toggle
+        label="Correct the count too"
+        showLabel
+        checked={withCount}
+        onChange={setWithCount}
+      />
       {withCount ? (
         <div className="flex flex-wrap gap-2">
           {FIELDS.map(({ key, label }) => (

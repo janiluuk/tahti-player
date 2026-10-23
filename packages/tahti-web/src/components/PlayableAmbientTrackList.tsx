@@ -74,6 +74,7 @@ export function PlayableAmbientTrackList({
       coverUrl: item.coverUrl,
       durationLabel:
         item.durationSec != null ? formatDuration(item.durationSec) : undefined,
+      durationSec: item.durationSec ?? null,
       peaks: item.peaks ?? null,
       progress: isCurrent && duration > 0 ? currentTime / duration : 0,
       isPlaying,

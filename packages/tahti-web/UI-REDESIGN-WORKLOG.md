@@ -1,3 +1,18 @@
+## 2026-10-23 - UX batch 94 (form labels, toggle labels, waveform durations)
+
+`Textarea` takes `label`, `description` and `error` like `Input`; thirteen
+forms drop their hand-rolled `<label>` wrappers (report, fan and purchase
+tiers, support, broadcast details, admin user edit / restrictions /
+engagement, candidacy, motion correction, venue, tracklist paste, mention
+box), so each form's fields now share one label style. `Toggle` gains
+`showLabel`: three switches whose text sat next to them (some not clickable)
+use it. Ambient rows pass the track length to their seekbar, so row
+waveforms step 5 s, read out the time and preview it on hover; the player
+bar is not seekable until the duration is known; the tracklist editor
+waveform previews the hovered time. Nine more `title` tooltips use
+`Tooltip`, with `aria-description` where they carry extra information.
+Bumped ui `0.0.23`, tahti-web `0.0.250`.
+
 ## 2026-10-23 - UX batch 93 (waveform hover times, library file inputs and artwork)
 
 Hovering a seekable waveform previews the time under the mouse: the player

@@ -87,20 +87,16 @@ export function SupportContactForm({
         required
         maxLength={200}
       />
-      <label className="flex flex-col gap-1 text-sm">
-        <span className="text-foreground-secondary text-xs uppercase">
-          Message
-        </span>
-        <Textarea
-          tone="secondary"
-          className="min-h-[8rem]"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          required
-          maxLength={5000}
-          rows={6}
-        />
-      </label>
+      <Textarea
+        label="Message"
+        tone="secondary"
+        className="min-h-[8rem]"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        required
+        maxLength={5000}
+        rows={6}
+      />
       <Button
         type="submit"
         disabled={

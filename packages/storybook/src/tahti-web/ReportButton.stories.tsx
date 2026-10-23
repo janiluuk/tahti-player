@@ -46,7 +46,7 @@ export const Track: Story = {
     const dialog = await findDialog(canvasElement, 'Report Night Drive');
     await expect(dialog.getByText('Copyright infringement')).toBeVisible();
     await userEvent.type(
-      dialog.getByLabelText('Details'),
+      dialog.getByLabelText('Details (optional)'),
       'Re-upload of my track',
     );
     await userEvent.click(dialog.getByRole('button', { name: 'Send report' }));
