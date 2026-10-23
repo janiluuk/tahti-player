@@ -1,3 +1,23 @@
+## 2026-10-24 - UX batch 101 sixty tooltip, field-name and heading slices
+
+Twenty-two icon-only buttons that had no tooltip get one (page comments
+close, track row play, top bar menu, mobile play, duplicates reveal /
+remove, fan chat back, jam guest remove, navigation expand, tour close,
+smart playlist rule remove, stem mute / solo, theme delete, rating stars,
+waveform player close, admin file select, rotation move up / down, channel
+track edit, avatar colours) plus the desktop shortcuts popover. Twenty-two
+fields with no accessible name get one (chat and DM message, channel link
+label / URL, channel tab label, playlist filter, full bio, history page size
+and range, stream URL, country, streaming service URL, hearthis search and
+destination, track artist, feature comment, radio show note x2, add-on
+rejection reason, resolution outcome, theme JSON, multitrack playhead
+slider). Tour key hints use `KeyCombo`. Ten headings already styled like
+`SectionTitle` (`font-display text-lg font-bold`) use it. Three truncated
+rows show their full text in a `Tooltip` (iTunes import failures, unresolved
+playlist entries, smart link DSP prefix). `MediaArtwork` / `ImageReveal`
+pass `alt=""` when none is given, so fading-in artwork is no longer an image
+without alt text. tahti-web `0.0.258`.
+
 ## 2026-10-23 - Listen: radio row first for new listeners, Recently played kept across sign-in
 
 Signed-out visitors and signed-in listeners with no listening history start

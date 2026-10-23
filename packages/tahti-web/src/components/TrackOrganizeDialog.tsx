@@ -2,7 +2,7 @@ import { StarIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Input, Loader } from '@tahti-player/ui';
+import { Button, Dialog, Input, Loader, Tooltip } from '@tahti-player/ui';
 
 import {
   TRACK_COLORS,
@@ -155,33 +155,38 @@ export function TrackOrganizeDialog({
             </span>
             <div className="flex items-center gap-1">
               {[1, 2, 3, 4, 5].map((stars) => (
-                <Button
+                <Tooltip
                   key={stars}
-                  size="icon-sm"
-                  variant={
-                    currentRating !== null && stars <= currentRating
-                      ? 'secondary'
-                      : 'text'
-                  }
-                  disabled={busy}
-                  aria-label={`${stars} ${stars === 1 ? 'star' : 'stars'}`}
-                  onClick={() =>
-                    void run(
-                      `Rated ${plural(ids.length, 'track')} ${stars} of 5.`,
-                      () => library.catalog.setRating(ids, stars),
-                    )
-                  }
+                  content={`${stars} ${stars === 1 ? 'star' : 'stars'}`}
+                  side="top"
                 >
-                  <StarIcon
-                    size={16}
-                    aria-hidden
-                    fill={
+                  <Button
+                    size="icon-sm"
+                    variant={
                       currentRating !== null && stars <= currentRating
-                        ? 'currentColor'
-                        : 'none'
+                        ? 'secondary'
+                        : 'text'
                     }
-                  />
-                </Button>
+                    disabled={busy}
+                    aria-label={`${stars} ${stars === 1 ? 'star' : 'stars'}`}
+                    onClick={() =>
+                      void run(
+                        `Rated ${plural(ids.length, 'track')} ${stars} of 5.`,
+                        () => library.catalog.setRating(ids, stars),
+                      )
+                    }
+                  >
+                    <StarIcon
+                      size={16}
+                      aria-hidden
+                      fill={
+                        currentRating !== null && stars <= currentRating
+                          ? 'currentColor'
+                          : 'none'
+                      }
+                    />
+                  </Button>
+                </Tooltip>
               ))}
               <Button
                 size="sm"

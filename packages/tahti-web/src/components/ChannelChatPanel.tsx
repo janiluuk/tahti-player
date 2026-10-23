@@ -646,6 +646,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
       ) : (
         <div className="border-border flex gap-2 border-t p-3">
           <Input
+            aria-label="Chat message"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={

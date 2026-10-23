@@ -319,9 +319,15 @@ export function ReleaseSmartLinksPanel({
                 }
                 startAddon={
                   showPrefix && prefix ? (
-                    <span className="truncate" title={prefix}>
-                      {displayDspPrefix(prefix)}
-                    </span>
+                    <Tooltip
+                      content={prefix}
+                      side="top"
+                      wrapperClassName="min-w-0"
+                    >
+                      <span className="block truncate">
+                        {displayDspPrefix(prefix)}
+                      </span>
+                    </Tooltip>
                   ) : undefined
                 }
               />

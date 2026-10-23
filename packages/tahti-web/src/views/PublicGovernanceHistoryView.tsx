@@ -1,7 +1,14 @@
 import { ScrollTextIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Badge, Box, ButtonLink, StatChip, ViewShell } from '@tahti-player/ui';
+import {
+  Badge,
+  Box,
+  ButtonLink,
+  SectionTitle,
+  StatChip,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchPublicGovernanceMotions } from '../api/client';
 import type { PublicGovernanceMotion } from '../api/types';
@@ -85,9 +92,11 @@ export function PublicGovernanceHistoryView() {
             >
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
-                  <h2 className="font-display text-lg font-bold">
-                    {motion.title}
-                  </h2>
+                  <SectionTitle
+                    title={motion.title}
+                    wrap
+                    className="font-display"
+                  />
                   <p className="text-foreground-secondary mt-1 text-xs">
                     Proposed by {motion.proposer} · Closed{' '}
                     {new Date(motion.closedAt).toLocaleDateString()}

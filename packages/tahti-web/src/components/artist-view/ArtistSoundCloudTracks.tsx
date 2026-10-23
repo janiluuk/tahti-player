@@ -1,6 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 
-import { ExternalLink, MediaArtwork } from '@tahti-player/ui';
+import { ExternalLink, MediaArtwork, SectionTitle } from '@tahti-player/ui';
 
 import {
   fetchChannelSoundCloudEmbeds,
@@ -49,9 +49,11 @@ export function ArtistSoundCloudTracks({
         <div className="size-5 shrink-0 overflow-hidden rounded">
           <SourceServiceIcon id="soundcloud" />
         </div>
-        <h2 className="font-display text-lg font-bold tracking-tight">
-          On SoundCloud
-        </h2>
+        <SectionTitle
+          title="On SoundCloud"
+          wrap
+          className="font-display tracking-tight"
+        />
       </div>
       <ul className="flex flex-col gap-3" data-testid="soundcloud-tracks">
         {embeds.map((embed) => {

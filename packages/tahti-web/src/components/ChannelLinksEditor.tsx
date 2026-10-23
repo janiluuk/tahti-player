@@ -54,6 +54,7 @@ export function ChannelLinksEditor({
                 <SocialLinkIcon label={link.label} url={link.url} />
               </span>
               <Input
+                aria-label={`Link ${i + 1} label`}
                 size="sm"
                 placeholder="Label (e.g. Bandcamp)"
                 value={link.label}
@@ -62,6 +63,7 @@ export function ChannelLinksEditor({
                 className="min-w-0 flex-[0.8]"
               />
               <Input
+                aria-label={`Link ${i + 1} URL`}
                 size="sm"
                 type="text"
                 placeholder="https://…"

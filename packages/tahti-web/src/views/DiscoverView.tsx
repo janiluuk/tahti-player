@@ -20,6 +20,7 @@ import {
   Select,
   TabLabel,
   Tabs,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -721,16 +722,22 @@ function DiscoverWaveformPlayer({
             }
           />
         </div>
-        <Button
-          type="button"
-          variant="text"
-          size="icon-sm"
-          className="text-foreground-secondary hover:text-foreground shrink-0"
-          onClick={onClose}
-          aria-label="Close waveform player"
+        <Tooltip
+          content="Close waveform player"
+          side="top"
+          wrapperClassName="shrink-0"
         >
-          <XIcon size={16} />
-        </Button>
+          <Button
+            type="button"
+            variant="text"
+            size="icon-sm"
+            className="text-foreground-secondary hover:text-foreground shrink-0"
+            onClick={onClose}
+            aria-label="Close waveform player"
+          >
+            <XIcon size={16} />
+          </Button>
+        </Tooltip>
       </div>
     </section>
   );

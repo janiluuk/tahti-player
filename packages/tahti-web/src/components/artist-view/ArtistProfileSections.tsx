@@ -221,6 +221,7 @@ export function ArtistBioSection({
       {editing ? (
         <div className="flex max-w-2xl flex-col gap-2">
           <Textarea
+            aria-label="Full bio"
             autoFocus
             rows={6}
             placeholder="Share your full history — how you got started, your influences, milestones…"

@@ -1,7 +1,7 @@
 import { ArrowLeftIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-import { Button, EmptyState, Input } from '@tahti-player/ui';
+import { Button, EmptyState, Input, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchFanChatHistory,
@@ -217,14 +217,16 @@ export function FanChatRoom({
       }`}
     >
       <div className="border-border flex items-center gap-2 border-b px-3 py-2">
-        <Button
-          size="icon-sm"
-          variant="text"
-          onClick={onLeave}
-          aria-label="Back to the public chat"
-        >
-          <ArrowLeftIcon size={16} aria-hidden />
-        </Button>
+        <Tooltip content="Back to the public chat" side="top">
+          <Button
+            size="icon-sm"
+            variant="text"
+            onClick={onLeave}
+            aria-label="Back to the public chat"
+          >
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
         <div className="font-display text-sm font-bold">Fan room</div>
         <span className="text-foreground-secondary text-xs">
           {connected ? 'Subscribers only' : 'Connecting…'}

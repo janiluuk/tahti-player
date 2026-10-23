@@ -139,3 +139,16 @@ describe('MediaArtwork fallback', () => {
     expect(screen.queryByTestId('media-artwork-fallback')).toBeNull();
   });
 });
+
+describe('MediaArtwork alt text', () => {
+  it('treats artwork without alt as decorative when it fades in', () => {
+    const { container } = render(
+      <MediaArtwork src="https://media.example/a.jpg" size="lg" />,
+    );
+    const images = container.querySelectorAll('img');
+    expect(images.length).toBeGreaterThan(0);
+    for (const img of images) {
+      expect(img).toHaveAttribute('alt', '');
+    }
+  });
+});

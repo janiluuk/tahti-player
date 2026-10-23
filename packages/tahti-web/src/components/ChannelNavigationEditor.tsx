@@ -51,6 +51,7 @@ export function ChannelNavigationEditor({
         >
           <div className="flex items-center gap-1.5">
             <Input
+              aria-label={`Tab ${i + 1} label`}
               size="sm"
               placeholder={`Tab ${i + 1} label (e.g. Releases)`}
               value={tab.label}

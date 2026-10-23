@@ -266,6 +266,7 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
           <div className="flex justify-end pr-1">
             <div data-testid="history-page-size" className="w-24">
               <Select
+                aria-label="Tracks per page"
                 options={PAGE_SIZES.map((size) => ({
                   id: String(size),
                   label: String(size),

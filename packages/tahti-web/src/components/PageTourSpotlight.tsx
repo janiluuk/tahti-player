@@ -2,7 +2,7 @@ import { useRouterState } from '@tanstack/react-router';
 import { ChevronLeftIcon, ChevronRightIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, KeyCombo, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 import { getPageTourSteps, type TourStep } from '../lib/pageTour';
@@ -166,16 +166,18 @@ export function PageTourSpotlight() {
       <div className="border-border bg-background pointer-events-auto fixed bottom-8 left-1/2 z-[102] w-[min(90vw,420px)] -translate-x-1/2 rounded-xl border p-4 shadow-xl">
         <div className="flex items-start justify-between gap-2">
           <h2 className="font-display text-sm font-bold">{step.label}</h2>
-          <Button
-            variant="text"
-            size="icon-sm"
-            type="button"
-            onClick={close}
-            aria-label="Close tour"
-            className="text-foreground-secondary hover:text-foreground -mt-1 -mr-1 size-6"
-          >
-            <XIcon size={16} />
-          </Button>
+          <Tooltip content="Close tour" side="top" wrapperClassName="shrink-0">
+            <Button
+              variant="text"
+              size="icon-sm"
+              type="button"
+              onClick={close}
+              aria-label="Close tour"
+              className="text-foreground-secondary hover:text-foreground -mt-1 -mr-1 size-6"
+            >
+              <XIcon size={16} />
+            </Button>
+          </Tooltip>
         </div>
         <p className="text-foreground-secondary mt-1.5 text-sm">
           {step.description}
@@ -220,11 +222,14 @@ export function PageTourSpotlight() {
         )}
 
         <p className="text-foreground-secondary mt-2.5 text-[10px]">
-          Press{' '}
-          <kbd className="border-border rounded border px-1 py-0.5">H</kbd> or{' '}
-          <kbd className="border-border rounded border px-1 py-0.5">Esc</kbd> to
+          Press <KeyCombo shortcut="h" /> or <KeyCombo shortcut="escape" /> to
           close
-          {steps.length > 1 ? ' · ← → to move' : ''}
+          {steps.length > 1 ? (
+            <>
+              {' · '}
+              <KeyCombo shortcut="left" /> <KeyCombo shortcut="right" /> to move
+            </>
+          ) : null}
         </p>
       </div>
     </div>

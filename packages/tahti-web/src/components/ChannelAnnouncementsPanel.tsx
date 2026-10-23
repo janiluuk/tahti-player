@@ -2,7 +2,13 @@ import { PlayIcon, ScissorsIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, FilePicker, Toggle, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  FilePicker,
+  SectionTitle,
+  Toggle,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   deleteAnnouncementClip,
@@ -148,9 +154,11 @@ export function ChannelAnnouncementsPanel() {
   return (
     <section className="border-border bg-background-secondary/40 flex flex-col gap-5 rounded-xl border p-4 shadow-sm sm:p-5">
       <div>
-        <h2 className="font-display text-lg font-bold tracking-tight">
-          Station announcements
-        </h2>
+        <SectionTitle
+          title="Station announcements"
+          wrap
+          className="font-display tracking-tight"
+        />
         <p className="text-foreground-secondary mt-1 text-sm">
           Upload short station IDs, shoutouts, or interstitials for your 24/7
           rotation. Enable them here, then turn the rotation switch on in the

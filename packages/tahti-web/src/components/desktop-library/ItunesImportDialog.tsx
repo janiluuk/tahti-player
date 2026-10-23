@@ -256,15 +256,20 @@ function ResultSummary({
           <p className="text-foreground-secondary">Could not be imported:</p>
           <ul className="flex flex-col gap-0.5">
             {result.errors.map((failure) => (
-              <li
-                key={failure.path}
-                className="truncate"
-                title={`${failure.path}: ${failure.error}`}
-              >
-                <span className="text-accent-red-strong">{failure.error}</span>{' '}
-                <span className="text-foreground-secondary">
-                  {failure.path}
-                </span>
+              <li key={failure.path} className="min-w-0">
+                <Tooltip
+                  content={`${failure.path}: ${failure.error}`}
+                  side="top"
+                >
+                  <p className="truncate">
+                    <span className="text-accent-red-strong">
+                      {failure.error}
+                    </span>{' '}
+                    <span className="text-foreground-secondary">
+                      {failure.path}
+                    </span>
+                  </p>
+                </Tooltip>
               </li>
             ))}
           </ul>

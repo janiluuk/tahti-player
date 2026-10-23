@@ -1,7 +1,7 @@
 import { PauseIcon, PlayIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button, MediaArtwork } from '@tahti-player/ui';
+import { Button, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 import { useDominantColor } from '../lib/useDominantColor';
@@ -145,19 +145,25 @@ export function AmbientTrackRow({
       <div className={cn('flex min-w-0 flex-1 flex-col', layout.gap)}>
         <div className="flex min-w-0 items-start gap-2">
           {onPlay && !media ? (
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              onClick={onPlay}
-              aria-label={isPlaying ? `Pause ${title}` : `Play ${title}`}
-              className="shrink-0"
+            <Tooltip
+              content={isPlaying ? `Pause ${title}` : `Play ${title}`}
+              side="top"
+              wrapperClassName="shrink-0"
             >
-              {isPlaying ? (
-                <PauseIcon size={14} aria-hidden />
-              ) : (
-                <PlayIcon size={14} aria-hidden />
-              )}
-            </Button>
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                onClick={onPlay}
+                aria-label={isPlaying ? `Pause ${title}` : `Play ${title}`}
+                className="shrink-0"
+              >
+                {isPlaying ? (
+                  <PauseIcon size={14} aria-hidden />
+                ) : (
+                  <PlayIcon size={14} aria-hidden />
+                )}
+              </Button>
+            </Tooltip>
           ) : null}
           <div className="min-w-0 flex-1">
             <p

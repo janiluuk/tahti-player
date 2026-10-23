@@ -9,6 +9,7 @@ import {
   Input,
   Loader,
   Select,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import type {
@@ -186,20 +187,22 @@ export function SmartPlaylistDialog({
                   onChange={(value2) => setRule(index, { ...rule, value2 })}
                 />
               ) : null}
-              <Button
-                size="icon-sm"
-                variant="text"
-                intent="danger"
-                aria-label={`Remove rule ${index + 1}`}
-                onClick={() =>
-                  setDraft((current) => ({
-                    ...current,
-                    rules: current.rules.filter((_, i) => i !== index),
-                  }))
-                }
-              >
-                <TrashIcon size={14} aria-hidden />
-              </Button>
+              <Tooltip content={`Remove rule ${index + 1}`} side="top">
+                <Button
+                  size="icon-sm"
+                  variant="text"
+                  intent="danger"
+                  aria-label={`Remove rule ${index + 1}`}
+                  onClick={() =>
+                    setDraft((current) => ({
+                      ...current,
+                      rules: current.rules.filter((_, i) => i !== index),
+                    }))
+                  }
+                >
+                  <TrashIcon size={14} aria-hidden />
+                </Button>
+              </Tooltip>
             </li>
           ))}
         </ul>

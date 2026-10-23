@@ -68,15 +68,17 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
     >
       <div className="flex min-w-0 items-center gap-2">
         {showMenuButton ? (
-          <Button
-            variant="text"
-            size="icon-sm"
-            className={iconBtnClass}
-            aria-label="Open menu"
-            onClick={onOpenMenu}
-          >
-            <MenuIcon size={18} />
-          </Button>
+          <Tooltip content="Open menu" side="top">
+            <Button
+              variant="text"
+              size="icon-sm"
+              className={iconBtnClass}
+              aria-label="Open menu"
+              onClick={onOpenMenu}
+            >
+              <MenuIcon size={18} />
+            </Button>
+          </Tooltip>
         ) : null}
         <TahtiLogoLink markOnly />
         {user && processingItems.length > 0 ? (

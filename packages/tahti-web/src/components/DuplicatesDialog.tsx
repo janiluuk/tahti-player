@@ -261,33 +261,43 @@ export function DuplicatesDialog({
                       >
                         Keep this
                       </Button>
-                      <Button
-                        size="icon-sm"
-                        variant="text"
-                        aria-label={`Reveal ${track.title} in folder`}
-                        onClick={() =>
-                          void library
-                            .reveal(track.id)
-                            .catch((failure) =>
-                              toast.error(
-                                failure instanceof Error
-                                  ? failure.message
-                                  : 'Could not open the folder.',
-                              ),
-                            )
-                        }
+                      <Tooltip
+                        content={`Reveal ${track.title} in folder`}
+                        side="top"
                       >
-                        <FolderOpenIcon size={14} aria-hidden />
-                      </Button>
-                      <Button
-                        size="icon-sm"
-                        variant="text"
-                        intent="danger"
-                        aria-label={`Remove ${track.title} from library`}
-                        onClick={() => setPending(track)}
+                        <Button
+                          size="icon-sm"
+                          variant="text"
+                          aria-label={`Reveal ${track.title} in folder`}
+                          onClick={() =>
+                            void library
+                              .reveal(track.id)
+                              .catch((failure) =>
+                                toast.error(
+                                  failure instanceof Error
+                                    ? failure.message
+                                    : 'Could not open the folder.',
+                                ),
+                              )
+                          }
+                        >
+                          <FolderOpenIcon size={14} aria-hidden />
+                        </Button>
+                      </Tooltip>
+                      <Tooltip
+                        content={`Remove ${track.title} from library`}
+                        side="top"
                       >
-                        <TrashIcon size={14} aria-hidden />
-                      </Button>
+                        <Button
+                          size="icon-sm"
+                          variant="text"
+                          intent="danger"
+                          aria-label={`Remove ${track.title} from library`}
+                          onClick={() => setPending(track)}
+                        >
+                          <TrashIcon size={14} aria-hidden />
+                        </Button>
+                      </Tooltip>
                     </li>
                   ))}
                 </ul>

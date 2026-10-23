@@ -315,6 +315,9 @@ export const MultitrackTimeline = ({
             value={currentTime}
             onValueChange={setTime}
           >
+            <div className="sr-only">
+              <Slider.Header label="Playhead" />
+            </div>
             <Slider.Surface>
               <Slider.Track />
               <Slider.RangeInput />

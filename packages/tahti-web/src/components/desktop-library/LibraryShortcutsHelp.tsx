@@ -22,6 +22,7 @@ export function LibraryShortcutsHelp() {
     <Popover
       anchor="bottom end"
       panelClassName="w-80"
+      tooltip={{ content: 'Keyboard shortcuts', side: 'top' }}
       trigger={
         <Button size="icon-sm" variant="text" aria-label="Keyboard shortcuts">
           <KeyboardIcon size={14} aria-hidden />

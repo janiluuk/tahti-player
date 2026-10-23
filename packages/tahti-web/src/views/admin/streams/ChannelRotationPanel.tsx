@@ -8,6 +8,7 @@ import {
   SaveButton,
   Select,
   Toggle,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import {
@@ -230,28 +231,32 @@ export function ChannelRotationPanel() {
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={`Move ${item.title} up`}
-                      disabled={index === 0}
-                      onClick={() =>
-                        setItems(moveRotationItem(items, index, -1))
-                      }
-                    >
-                      <ArrowUpIcon size={14} aria-hidden />
-                    </Button>
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={`Move ${item.title} down`}
-                      disabled={index === items.length - 1}
-                      onClick={() =>
-                        setItems(moveRotationItem(items, index, 1))
-                      }
-                    >
-                      <ArrowDownIcon size={14} aria-hidden />
-                    </Button>
+                    <Tooltip content={`Move ${item.title} up`} side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        aria-label={`Move ${item.title} up`}
+                        disabled={index === 0}
+                        onClick={() =>
+                          setItems(moveRotationItem(items, index, -1))
+                        }
+                      >
+                        <ArrowUpIcon size={14} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content={`Move ${item.title} down`} side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        aria-label={`Move ${item.title} down`}
+                        disabled={index === items.length - 1}
+                        onClick={() =>
+                          setItems(moveRotationItem(items, index, 1))
+                        }
+                      >
+                        <ArrowDownIcon size={14} aria-hidden />
+                      </Button>
+                    </Tooltip>
                   </div>
                 </li>
               ))}

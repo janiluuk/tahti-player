@@ -34,6 +34,7 @@ export function RejectDialog({
         A reason is required — it&apos;s shown to the author.
       </Dialog.Description>
       <Textarea
+        aria-label="Rejection reason"
         value={note}
         rows={3}
         placeholder="Why is this add-on being rejected?"

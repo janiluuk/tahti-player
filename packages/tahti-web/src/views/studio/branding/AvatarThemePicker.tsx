@@ -2,7 +2,7 @@ import { CheckIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button } from '@tahti-player/ui';
+import { Button, Tooltip } from '@tahti-player/ui';
 
 import { patchMeProfile } from '../../../api/studio-extras';
 import {
@@ -48,23 +48,28 @@ export function AvatarThemePicker({
         {AVATAR_THEME_PRESETS.map((preset, index) => {
           const selected = sameAvatarTheme(preset, value);
           return (
-            <Button
+            <Tooltip
               key={avatarThemeCss(preset)}
-              type="button"
-              size="icon-sm"
-              variant="text"
-              disabled={busy}
-              aria-label={`Avatar colour ${index + 1}`}
-              aria-pressed={selected}
-              className={cn(
-                'size-8 rounded-full p-0 text-white',
-                selected && 'ring-foreground ring-2 ring-offset-2',
-              )}
-              style={{ background: avatarThemeCss(preset) }}
-              onClick={() => void save(preset)}
+              content={`Avatar colour ${index + 1}`}
+              side="top"
             >
-              {selected ? <CheckIcon size={14} aria-hidden /> : null}
-            </Button>
+              <Button
+                type="button"
+                size="icon-sm"
+                variant="text"
+                disabled={busy}
+                aria-label={`Avatar colour ${index + 1}`}
+                aria-pressed={selected}
+                className={cn(
+                  'size-8 rounded-full p-0 text-white',
+                  selected && 'ring-foreground ring-2 ring-offset-2',
+                )}
+                style={{ background: avatarThemeCss(preset) }}
+                onClick={() => void save(preset)}
+              >
+                {selected ? <CheckIcon size={14} aria-hidden /> : null}
+              </Button>
+            </Tooltip>
           );
         })}
         <Button
