@@ -262,7 +262,13 @@ export function ReleaseSmartLinksPanel({
         title="Smart-link destinations"
         description="Spotify and SoundCloud use the stream URLs from your embed, import, and export plugin settings. Fill all, then edit any link."
       >
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+        <form
+          className="flex flex-col gap-3 sm:flex-row sm:items-end"
+          onSubmit={(event) => {
+            event.preventDefault();
+            fillAllFromPlugins();
+          }}
+        >
           <Input
             label="Path for every service"
             placeholder="polar-nights"
@@ -272,13 +278,13 @@ export function ReleaseSmartLinksPanel({
           />
           <Button
             variant="secondary"
-            onClick={fillAllFromPlugins}
+            type="submit"
             disabled={Object.keys(dspPrefixes).length === 0}
           >
             <Wand2Icon size={14} aria-hidden className="mr-1.5" />
             Fill all
           </Button>
-        </div>
+        </form>
         {missingPluginDsps.length > 0 ? (
           <p className="text-foreground-secondary mt-2 text-xs">
             Set{' '}

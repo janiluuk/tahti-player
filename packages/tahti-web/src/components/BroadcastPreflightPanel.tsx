@@ -166,103 +166,110 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
         />
       </div>
 
-      <div className="grid gap-2.5 sm:grid-cols-2">
-        <Input
-          label="Show name"
-          size="sm"
-          value={title}
-          onChange={(event) => {
-            setTitle(event.target.value);
-            markDirty();
-          }}
-          placeholder="Show name"
-        />
-        <Input
-          label="Tagline"
-          size="sm"
-          value={tagline}
-          onChange={(event) => {
-            setTagline(event.target.value);
-            markDirty();
-          }}
-          placeholder="What is this broadcast about?"
-          maxLength={200}
-        />
-      </div>
-
-      <div className="mt-2.5 grid gap-2.5 sm:grid-cols-2">
-        <Select
-          label="Show type"
-          value={showType}
-          onValueChange={(value) => {
-            setShowType(value as BroadcastPreflight['showType']);
-            markDirty();
-          }}
-          options={SHOW_TYPE_OPTIONS}
-        />
-        <Select
-          label="Visibility"
-          value={visibility}
-          onValueChange={(value) => {
-            setVisibility(value as BroadcastPreflight['visibility']);
-            markDirty();
-          }}
-          options={VISIBILITY_OPTIONS}
-        />
-      </div>
-
-      <div className="mt-2.5 grid gap-2.5 sm:grid-cols-[minmax(0,1fr)_7rem]">
-        {series.length > 0 && (
-          <Select
-            label="Series episode"
-            value={seriesId}
-            disabled={Boolean(preflight.plannedLiveShow)}
-            onValueChange={(value) => {
-              setSeriesId(value);
-              markDirty();
-              // Auto-fill the title from the picked series when the artist
-              // hasn't already typed one — matches StudioShowDetailView's
-              // own "<Series> — Episode <n>" default for a new episode.
-              const picked = series.find((show) => show.id === value);
-              if (picked && !title.trim()) {
-                setTitle(
-                  `${picked.title} — Episode ${picked.nextEpisodeNumber}`,
-                );
-              }
-            }}
-            options={[
-              { id: '', label: 'One-off broadcast' },
-              ...series.map((show) => ({
-                id: show.id,
-                label: `${show.title} — next #${show.nextEpisodeNumber}`,
-              })),
-            ]}
-          />
-        )}
-        {preflight.plannedLiveShow?.seriesId ? (
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          void save();
+        }}
+      >
+        <div className="grid gap-2.5 sm:grid-cols-2">
           <Input
-            type="number"
-            variant="number"
-            label="Episode"
+            label="Show name"
             size="sm"
-            min={1}
-            value={episodeNumber ?? ''}
-            disabled
+            value={title}
+            onChange={(event) => {
+              setTitle(event.target.value);
+              markDirty();
+            }}
+            placeholder="Show name"
           />
-        ) : null}
-      </div>
+          <Input
+            label="Tagline"
+            size="sm"
+            value={tagline}
+            onChange={(event) => {
+              setTagline(event.target.value);
+              markDirty();
+            }}
+            placeholder="What is this broadcast about?"
+            maxLength={200}
+          />
+        </div>
 
-      <div className="border-border/70 mt-3 flex items-center justify-between gap-3 border-t pt-3">
-        <p className="text-foreground-secondary text-[11px]">
-          This appears on your channel while you are live.
-        </p>
-        <SaveButton
-          size="sm"
-          saving={saving}
-          label="Save show info"
-          onClick={() => void save()}
-        />
-      </div>
+        <div className="mt-2.5 grid gap-2.5 sm:grid-cols-2">
+          <Select
+            label="Show type"
+            value={showType}
+            onValueChange={(value) => {
+              setShowType(value as BroadcastPreflight['showType']);
+              markDirty();
+            }}
+            options={SHOW_TYPE_OPTIONS}
+          />
+          <Select
+            label="Visibility"
+            value={visibility}
+            onValueChange={(value) => {
+              setVisibility(value as BroadcastPreflight['visibility']);
+              markDirty();
+            }}
+            options={VISIBILITY_OPTIONS}
+          />
+        </div>
+
+        <div className="mt-2.5 grid gap-2.5 sm:grid-cols-[minmax(0,1fr)_7rem]">
+          {series.length > 0 && (
+            <Select
+              label="Series episode"
+              value={seriesId}
+              disabled={Boolean(preflight.plannedLiveShow)}
+              onValueChange={(value) => {
+                setSeriesId(value);
+                markDirty();
+                // Auto-fill the title from the picked series when the artist
+                // hasn't already typed one — matches StudioShowDetailView's
+                // own "<Series> — Episode <n>" default for a new episode.
+                const picked = series.find((show) => show.id === value);
+                if (picked && !title.trim()) {
+                  setTitle(
+                    `${picked.title} — Episode ${picked.nextEpisodeNumber}`,
+                  );
+                }
+              }}
+              options={[
+                { id: '', label: 'One-off broadcast' },
+                ...series.map((show) => ({
+                  id: show.id,
+                  label: `${show.title} — next #${show.nextEpisodeNumber}`,
+                })),
+              ]}
+            />
+          )}
+          {preflight.plannedLiveShow?.seriesId ? (
+            <Input
+              type="number"
+              variant="number"
+              label="Episode"
+              size="sm"
+              min={1}
+              value={episodeNumber ?? ''}
+              disabled
+            />
+          ) : null}
+        </div>
+
+        <div className="border-border/70 mt-3 flex items-center justify-between gap-3 border-t pt-3">
+          <p className="text-foreground-secondary text-[11px]">
+            This appears on your channel while you are live.
+          </p>
+          <SaveButton
+            size="sm"
+            saving={saving}
+            label="Save show info"
+            type="submit"
+          />
+        </div>
+      </form>
     </section>
   );
 }

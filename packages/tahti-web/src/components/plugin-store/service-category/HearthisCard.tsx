@@ -446,7 +446,13 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
         />
       )}
     >
-      <div className="border-border bg-background-secondary/40 flex flex-wrap items-center gap-2 rounded-lg border p-3">
+      <form
+        className="border-border bg-background-secondary/40 flex flex-wrap items-center gap-2 rounded-lg border p-3"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void save();
+        }}
+      >
         {handle ? (
           <span className="text-sm">
             Connected as <span className="font-medium">@{handle}</span>
@@ -467,14 +473,10 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
           placeholder={handle ? 'Change username…' : 'hearthis.at username'}
           aria-label="hearthis.at username"
         />
-        <Button
-          size="sm"
-          disabled={saving || !draft.trim()}
-          onClick={() => void save()}
-        >
+        <Button size="sm" disabled={saving || !draft.trim()} type="submit">
           {saving ? 'Saving…' : handle ? 'Update' : 'Connect'}
         </Button>
-      </div>
+      </form>
       {msg && (
         <p className="text-foreground-secondary text-xs" role="status">
           {msg}
@@ -535,7 +537,21 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
           </Tabs.Root>
 
           {tab === 'search' && (
-            <div className="flex flex-wrap gap-2">
+            <form
+              className="flex flex-wrap gap-2"
+              onSubmit={(event) => {
+                event.preventDefault();
+                setSearching(true);
+                const profile = hearthisProfileFromQuery(q);
+                (profile
+                  ? fetchHearthisArtistTracks(profile)
+                  : hearthisSourceAdapter.search(q.trim())
+                )
+                  .then((result) => setHits(result.data))
+                  .catch(() => toast.error('hearthis.at search failed.'))
+                  .finally(() => setSearching(false));
+              }}
+            >
               <Input
                 aria-label="Search hearthis.at"
                 type="search"
@@ -545,25 +561,11 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Search, or paste a profile link or @handle"
               />
-              <Button
-                size="sm"
-                disabled={!q.trim() || searching}
-                onClick={() => {
-                  setSearching(true);
-                  const profile = hearthisProfileFromQuery(q);
-                  (profile
-                    ? fetchHearthisArtistTracks(profile)
-                    : hearthisSourceAdapter.search(q.trim())
-                  )
-                    .then((result) => setHits(result.data))
-                    .catch(() => toast.error('hearthis.at search failed.'))
-                    .finally(() => setSearching(false));
-                }}
-              >
+              <Button size="sm" disabled={!q.trim() || searching} type="submit">
                 <SearchIcon size={16} aria-hidden className="mr-1.5" />
                 {searching ? 'Searching…' : 'Search'}
               </Button>
-            </div>
+            </form>
           )}
 
           {tab !== 'collections' && (

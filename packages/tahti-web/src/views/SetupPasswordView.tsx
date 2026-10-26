@@ -112,7 +112,13 @@ export function SetupPasswordView() {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <form
+          className="flex flex-col gap-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onSubmit();
+          }}
+        >
           <Input
             label="Password"
             variant="password"
@@ -134,10 +140,10 @@ export function SetupPasswordView() {
           />
           {mismatch && <InlineError>Passwords don&apos;t match.</InlineError>}
           {error && <InlineError>{error}</InlineError>}
-          <Button disabled={!canSubmit} onClick={onSubmit}>
+          <Button disabled={!canSubmit} type="submit">
             {loading ? 'Setting password…' : 'Set password'}
           </Button>
-        </div>
+        </form>
       )}
     </div>
   );

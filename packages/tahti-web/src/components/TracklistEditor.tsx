@@ -237,7 +237,21 @@ export const TracklistEditor: FC<Props> = ({
             icon: <MapPinPlusIcon size={15} />,
             content: (
               <div className="flex flex-col gap-4">
-                <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
+                <form
+                  className="grid gap-2 sm:grid-cols-[1fr_auto]"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    const entry = {
+                      id: `track-${Date.now()}`,
+                      title: newTitle.trim(),
+                      artist: null,
+                      startSec: Math.round(playhead),
+                    };
+                    onChange([...value, entry]);
+                    setSelectedId(entry.id);
+                    setNewTitle('');
+                  }}
+                >
                   <Input
                     label="Add track name"
                     placeholder="Artist — title"
@@ -248,22 +262,12 @@ export const TracklistEditor: FC<Props> = ({
                     className="self-end"
                     size="sm"
                     disabled={!newTitle.trim()}
-                    onClick={() => {
-                      const entry = {
-                        id: `track-${Date.now()}`,
-                        title: newTitle.trim(),
-                        artist: null,
-                        startSec: Math.round(playhead),
-                      };
-                      onChange([...value, entry]);
-                      setSelectedId(entry.id);
-                      setNewTitle('');
-                    }}
+                    type="submit"
                   >
                     <PlusIcon size={16} aria-hidden className="mr-1.5" /> Add
                     pin
                   </Button>
-                </div>
+                </form>
 
                 <div className="border-border relative rounded-xl border p-2">
                   <WaveformCanvas

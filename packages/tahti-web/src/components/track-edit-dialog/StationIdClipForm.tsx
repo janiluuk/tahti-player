@@ -69,7 +69,13 @@ export function StationIdClipForm({
     playheadSec != null ? String(Math.round(playheadSec * 10) / 10) : null;
 
   return (
-    <div className="border-border flex flex-col gap-3 rounded-xl border p-4">
+    <form
+      className="border-border flex flex-col gap-3 rounded-xl border p-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        void submit();
+      }}
+    >
       <div>
         <p className="font-medium">Make a station ID clip</p>
         <p className="text-foreground-secondary text-sm">
@@ -134,10 +140,10 @@ export function StationIdClipForm({
         size="sm"
         className="self-start"
         disabled={busy || error !== null}
-        onClick={() => void submit()}
+        type="submit"
       >
         {busy ? 'Making clip…' : 'Make clip'}
       </Button>
-    </div>
+    </form>
   );
 }

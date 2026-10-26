@@ -1,3 +1,10 @@
+## 2026-10-26 - UX batch 107 (Enter submits)
+
+Thirty forms that needed a mouse click now submit on Enter: password set-up
+and reset, 2FA, add-on and radio station dialogs, settings, studio editors,
+admin news / ledger / motion edits and the hearthis.at card. Bumped
+tahti-web `0.0.265`.
+
 ## 2026-10-26 - UX batch 104 (machine text, number keypads)
 
 Keys, tokens, slugs, JSON / CSV and nine more username fields no longer get

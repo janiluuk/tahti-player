@@ -195,54 +195,61 @@ export function DiscordBotAddonCard() {
           Board-only. Values are stored by Tahti and pushed to the Discord bot.
           The token is never shown again after save.
         </Dialog.Description>
-        <div className="mt-4 flex flex-col gap-4">
-          <Input
-            autoCapitalize="none"
-            autoCorrect="off"
-            spellCheck={false}
-            label="Application / Client ID"
-            description="From Discord Developer Portal → General Information."
-            value={clientId}
-            onChange={(e) => setClientId(e.target.value)}
-            inputMode="numeric"
-            error={clientId.trim() ? (clientIdError ?? undefined) : undefined}
-            data-testid="discord-bot-client-id"
-          />
-          <Input
-            autoCapitalize="none"
-            autoCorrect="off"
-            spellCheck={false}
-            type="password"
-            variant="password"
-            label="Bot token"
-            description={
-              settings?.tokenConfigured
-                ? `Stored token ${settings.tokenHint ?? ''} — leave blank to keep it.`
-                : 'From Discord Developer Portal → Bot → Reset Token.'
-            }
-            value={token}
-            onChange={(e) => setToken(e.target.value)}
-            autoComplete="off"
-            error={token ? (tokenError ?? undefined) : undefined}
-            data-testid="discord-bot-token"
-          />
-          <p className="text-foreground-secondary text-xs">
-            Privacy policy and terms for the Discord app:{' '}
-            <ExternalLink href="https://tahti.live/privacy">
-              tahti.live/privacy
-            </ExternalLink>
-            {' · '}
-            <ExternalLink href="https://tahti.live/terms">
-              tahti.live/terms
-            </ExternalLink>
-          </p>
-        </div>
-        <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
-          <Button size="sm" disabled={!canSave} onClick={onSave}>
-            {busy ? 'Saving…' : 'Save'}
-          </Button>
-        </Dialog.Actions>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            onSave();
+          }}
+        >
+          <div className="mt-4 flex flex-col gap-4">
+            <Input
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              label="Application / Client ID"
+              description="From Discord Developer Portal → General Information."
+              value={clientId}
+              onChange={(e) => setClientId(e.target.value)}
+              inputMode="numeric"
+              error={clientId.trim() ? (clientIdError ?? undefined) : undefined}
+              data-testid="discord-bot-client-id"
+            />
+            <Input
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              type="password"
+              variant="password"
+              label="Bot token"
+              description={
+                settings?.tokenConfigured
+                  ? `Stored token ${settings.tokenHint ?? ''} — leave blank to keep it.`
+                  : 'From Discord Developer Portal → Bot → Reset Token.'
+              }
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+              autoComplete="off"
+              error={token ? (tokenError ?? undefined) : undefined}
+              data-testid="discord-bot-token"
+            />
+            <p className="text-foreground-secondary text-xs">
+              Privacy policy and terms for the Discord app:{' '}
+              <ExternalLink href="https://tahti.live/privacy">
+                tahti.live/privacy
+              </ExternalLink>
+              {' · '}
+              <ExternalLink href="https://tahti.live/terms">
+                tahti.live/terms
+              </ExternalLink>
+            </p>
+          </div>
+          <Dialog.Actions>
+            <Dialog.Close>Cancel</Dialog.Close>
+            <Button size="sm" disabled={!canSave} type="submit">
+              {busy ? 'Saving…' : 'Save'}
+            </Button>
+          </Dialog.Actions>
+        </form>
       </Dialog.Root>
       <ConfirmDialog
         isOpen={confirmRestart}

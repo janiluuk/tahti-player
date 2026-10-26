@@ -222,182 +222,190 @@ function DestinationDialog({
             ? 'Paste the RTMP address and stream key for this destination.'
             : `Paste the stream key from your ${selectedProvider?.label} dashboard.`}
       </Dialog.Description>
-      <div className="mt-4 flex flex-col gap-3">
-        {!providerId ? (
-          <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-            {multicastProviders
-              .filter(
-                (option) =>
-                  !existingTargets.some(
-                    (target) => target.provider === option.id && target.enabled,
-                  ),
-              )
-              .map((option) => (
-                <Button
-                  key={option.id}
-                  variant="text"
-                  size="flexible"
-                  onClick={() => {
-                    setProviderId(option.id);
-                    setLabel(option.label);
-                  }}
-                  className="border-border bg-background-secondary hover:border-primary flex flex-col items-center gap-1.5 rounded-lg border p-2 text-center whitespace-normal transition-colors"
-                >
-                  <div className="size-9 shrink-0">
-                    <ProviderTile providerId={option.id} size={16} />
-                  </div>
-                  <span className="text-foreground truncate text-xs font-medium">
-                    {option.label}
-                  </span>
-                </Button>
-              ))}
-          </div>
-        ) : (
-          <>
-            {!savedTarget && (
-              <Button
-                size="sm"
-                variant="text"
-                className="self-start"
-                onClick={() => setProviderId(null)}
-              >
-                ← Choose another source
-              </Button>
-            )}
-            {error && <InlineError>{error}</InlineError>}
-            <Input
-              label="Label"
-              value={label}
-              onChange={(event) => setLabel(event.target.value)}
-              placeholder={selectedProvider?.label}
-            />
-            <Input
-              label={savedTarget ? 'New stream key' : 'Stream key'}
-              type="password"
-              autoComplete="off"
-              value={streamKey}
-              onChange={(event) => setStreamKey(event.target.value)}
-              placeholder={
-                savedTarget
-                  ? `Leave blank to keep the current key (···${savedTarget.keyLast4 ?? '····'})`
-                  : undefined
-              }
-            />
-            {isCustom && (
-              <Input
-                inputMode="url"
-                autoCapitalize="none"
-                autoCorrect="off"
-                spellCheck={false}
-                label="RTMP address"
-                value={rtmpUrl}
-                onChange={(event) => setRtmpUrl(event.target.value)}
-                placeholder="rtmp://example.com/live"
-                disabled={Boolean(savedTarget)}
-              />
-            )}
-            {mirror.visible && (
-              <RotationMirrorToggle
-                checked={mirror.checked}
-                onChange={mirror.setChecked}
-                disabled={saving}
-              />
-            )}
-            {savedTarget && (
-              <div className="border-border flex flex-wrap items-center gap-2 rounded-md border p-3">
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  disabled={testing}
-                  onClick={runTest}
-                >
-                  {testing ? 'Testing…' : 'Test connection'}
-                </Button>
-                <Button
-                  size="sm"
-                  variant={savedTarget.enabled ? 'secondary' : undefined}
-                  onClick={() => {
-                    void patchRtmpTarget(
-                      savedTarget.id,
-                      { enabled: !savedTarget.enabled },
-                      scope,
-                    ).then((result) => {
-                      if (!result.ok) {
-                        setError(result.error);
-                        return;
-                      }
-                      const updated = {
-                        ...savedTarget,
-                        enabled: !savedTarget.enabled,
-                      };
-                      setSavedTarget(updated);
-                      onSaved(updated);
-                    });
-                  }}
-                >
-                  {savedTarget.enabled ? 'Disable' : 'Enable'}
-                </Button>
-                {testResult && (
-                  <p
-                    className={
-                      testResult.ok && testResult.reachable
-                        ? 'text-accent-green-strong w-full text-xs'
-                        : 'text-accent-red-strong w-full text-xs'
-                    }
-                    role="status"
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          save();
+        }}
+      >
+        <div className="mt-4 flex flex-col gap-3">
+          {!providerId ? (
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+              {multicastProviders
+                .filter(
+                  (option) =>
+                    !existingTargets.some(
+                      (target) =>
+                        target.provider === option.id && target.enabled,
+                    ),
+                )
+                .map((option) => (
+                  <Button
+                    key={option.id}
+                    variant="text"
+                    size="flexible"
+                    onClick={() => {
+                      setProviderId(option.id);
+                      setLabel(option.label);
+                    }}
+                    className="border-border bg-background-secondary hover:border-primary flex flex-col items-center gap-1.5 rounded-lg border p-2 text-center whitespace-normal transition-colors"
                   >
-                    {testResult.ok
-                      ? testResult.reachable
-                        ? 'Reachable — the destination is accepting connections.'
-                        : (testResult.error ??
-                          'Could not reach the destination.')
-                      : testResult.error}
-                  </p>
-                )}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-      <Dialog.Actions>
-        <Dialog.Close>Close</Dialog.Close>
-        {providerId && savedTarget && (
-          <Button
-            intent="danger"
-            variant="secondary"
-            disabled={deleting}
-            onClick={() => {
-              setDeleting(true);
-              void deleteRtmpTarget(savedTarget.id, scope).then((result) => {
-                setDeleting(false);
-                if (!result.ok) {
-                  setError(result.error);
-                  return;
-                }
-                onDeleted();
-              });
-            }}
-          >
-            {deleting ? 'Removing…' : 'Remove'}
-          </Button>
-        )}
-        {providerId &&
-          (savedTarget ? (
-            <SaveButton
-              disabled={saving || !label.trim()}
-              saving={saving}
-              label="Save changes"
-              onClick={save}
-            />
+                    <div className="size-9 shrink-0">
+                      <ProviderTile providerId={option.id} size={16} />
+                    </div>
+                    <span className="text-foreground truncate text-xs font-medium">
+                      {option.label}
+                    </span>
+                  </Button>
+                ))}
+            </div>
           ) : (
+            <>
+              {!savedTarget && (
+                <Button
+                  size="sm"
+                  variant="text"
+                  className="self-start"
+                  onClick={() => setProviderId(null)}
+                >
+                  ← Choose another source
+                </Button>
+              )}
+              {error && <InlineError>{error}</InlineError>}
+              <Input
+                label="Label"
+                value={label}
+                onChange={(event) => setLabel(event.target.value)}
+                placeholder={selectedProvider?.label}
+              />
+              <Input
+                label={savedTarget ? 'New stream key' : 'Stream key'}
+                type="password"
+                autoComplete="off"
+                value={streamKey}
+                onChange={(event) => setStreamKey(event.target.value)}
+                placeholder={
+                  savedTarget
+                    ? `Leave blank to keep the current key (···${savedTarget.keyLast4 ?? '····'})`
+                    : undefined
+                }
+              />
+              {isCustom && (
+                <Input
+                  inputMode="url"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  label="RTMP address"
+                  value={rtmpUrl}
+                  onChange={(event) => setRtmpUrl(event.target.value)}
+                  placeholder="rtmp://example.com/live"
+                  disabled={Boolean(savedTarget)}
+                />
+              )}
+              {mirror.visible && (
+                <RotationMirrorToggle
+                  checked={mirror.checked}
+                  onChange={mirror.setChecked}
+                  disabled={saving}
+                />
+              )}
+              {savedTarget && (
+                <div className="border-border flex flex-wrap items-center gap-2 rounded-md border p-3">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    disabled={testing}
+                    onClick={runTest}
+                  >
+                    {testing ? 'Testing…' : 'Test connection'}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={savedTarget.enabled ? 'secondary' : undefined}
+                    onClick={() => {
+                      void patchRtmpTarget(
+                        savedTarget.id,
+                        { enabled: !savedTarget.enabled },
+                        scope,
+                      ).then((result) => {
+                        if (!result.ok) {
+                          setError(result.error);
+                          return;
+                        }
+                        const updated = {
+                          ...savedTarget,
+                          enabled: !savedTarget.enabled,
+                        };
+                        setSavedTarget(updated);
+                        onSaved(updated);
+                      });
+                    }}
+                  >
+                    {savedTarget.enabled ? 'Disable' : 'Enable'}
+                  </Button>
+                  {testResult && (
+                    <p
+                      className={
+                        testResult.ok && testResult.reachable
+                          ? 'text-accent-green-strong w-full text-xs'
+                          : 'text-accent-red-strong w-full text-xs'
+                      }
+                      role="status"
+                    >
+                      {testResult.ok
+                        ? testResult.reachable
+                          ? 'Reachable — the destination is accepting connections.'
+                          : (testResult.error ??
+                            'Could not reach the destination.')
+                        : testResult.error}
+                    </p>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+        <Dialog.Actions>
+          <Dialog.Close>Close</Dialog.Close>
+          {providerId && savedTarget && (
             <Button
-              disabled={saving || !label.trim() || !streamKey.trim()}
-              onClick={save}
+              intent="danger"
+              variant="secondary"
+              disabled={deleting}
+              onClick={() => {
+                setDeleting(true);
+                void deleteRtmpTarget(savedTarget.id, scope).then((result) => {
+                  setDeleting(false);
+                  if (!result.ok) {
+                    setError(result.error);
+                    return;
+                  }
+                  onDeleted();
+                });
+              }}
             >
-              {saving ? 'Saving…' : 'Add destination'}
+              {deleting ? 'Removing…' : 'Remove'}
             </Button>
-          ))}
-      </Dialog.Actions>
+          )}
+          {providerId &&
+            (savedTarget ? (
+              <SaveButton
+                disabled={saving || !label.trim()}
+                saving={saving}
+                label="Save changes"
+                type="submit"
+              />
+            ) : (
+              <Button
+                disabled={saving || !label.trim() || !streamKey.trim()}
+                type="submit"
+              >
+                {saving ? 'Saving…' : 'Add destination'}
+              </Button>
+            ))}
+        </Dialog.Actions>
+      </form>
     </Dialog.Root>
   );
 }

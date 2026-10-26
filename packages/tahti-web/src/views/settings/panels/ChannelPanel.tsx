@@ -216,107 +216,115 @@ export function ChannelPanel() {
           icon: <Globe size={14} />,
           content: (
             <div className="flex flex-col gap-6">
-              <Input
-                autoCapitalize="none"
-                autoCorrect="off"
-                spellCheck={false}
-                label="Channel slug / username"
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-              />
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  disabled={!slug.trim()}
-                  onClick={() => {
-                    void checkSlugAvailable(slug.trim()).then((r) => {
-                      if (r.available) {
-                        say(`${slug.trim()} is available.`);
-                      } else {
-                        sayFailed(
-                          `Not available${r.reason ? ` (${r.reason})` : ''}`,
-                        );
-                      }
-                    });
-                  }}
-                >
-                  Check availability
-                </Button>
-                <Button
-                  size="sm"
-                  disabled={!slug.trim() || slug.trim() === channel?.slug}
-                  onClick={() => setConfirmingRename(true)}
-                >
-                  Rename
-                </Button>
-                <ConfirmDialog
-                  isOpen={confirmingRename}
-                  title={`Rename your channel to ${slug.trim()}?`}
-                  description="Your channel address changes, and your stream key may change with it, so an encoder such as OBS needs the new key before your next stream. The old address redirects for a while."
-                  confirmLabel="Rename"
-                  onCancel={() => setConfirmingRename(false)}
-                  onConfirm={() => {
-                    setConfirmingRename(false);
-                    void updateChannelSlug(slug.trim()).then((r) => {
-                      if (r.ok) {
-                        say(channelRenameNote(r));
-                      } else {
-                        sayFailed(r.error);
-                      }
-                    });
-                  }}
+              <form
+                className="flex flex-col gap-6"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void checkSlugAvailable(slug.trim()).then((r) => {
+                    if (r.available) {
+                      say(`${slug.trim()} is available.`);
+                    } else {
+                      sayFailed(
+                        `Not available${r.reason ? ` (${r.reason})` : ''}`,
+                      );
+                    }
+                  });
+                }}
+              >
+                <Input
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  label="Channel slug / username"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
                 />
-              </div>
-              <Input
-                label="Custom domain"
-                description={
-                  channel?.customDomain
-                    ? `Current: ${channel.customDomain}${channel.customDomainVerified ? ' (verified)' : ' (pending)'}`
-                    : 'Requires membership. Add DNS TXT then verify.'
-                }
-                value={domain}
-                onChange={(e) => setDomain(e.target.value)}
-                placeholder="music.example.com"
-              />
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  size="sm"
-                  disabled={!domain.trim()}
-                  onClick={() => {
-                    void setCustomDomain(domain.trim()).then((r) => {
-                      if (!r.ok) {
-                        sayFailed(r.error);
-                      } else {
-                        say(
-                          `Add TXT ${r.txtHost} = ${r.txtRecord}, then Verify.`,
-                        );
-                      }
-                    });
-                  }}
-                >
-                  Set domain
-                </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => {
-                    void verifyCustomDomain().then((r) => {
-                      if (!r.ok) {
-                        sayFailed(r.error);
-                      } else if (r.verified) {
-                        say('Domain verified.');
-                      } else {
-                        sayFailed(
-                          'Not verified yet. DNS changes can take a while to show.',
-                        );
-                      }
-                    });
-                  }}
-                >
-                  Verify DNS
-                </Button>
-              </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    disabled={!slug.trim()}
+                    type="submit"
+                  >
+                    Check availability
+                  </Button>
+                  <Button
+                    size="sm"
+                    disabled={!slug.trim() || slug.trim() === channel?.slug}
+                    onClick={() => setConfirmingRename(true)}
+                  >
+                    Rename
+                  </Button>
+                  <ConfirmDialog
+                    isOpen={confirmingRename}
+                    title={`Rename your channel to ${slug.trim()}?`}
+                    description="Your channel address changes, and your stream key may change with it, so an encoder such as OBS needs the new key before your next stream. The old address redirects for a while."
+                    confirmLabel="Rename"
+                    onCancel={() => setConfirmingRename(false)}
+                    onConfirm={() => {
+                      setConfirmingRename(false);
+                      void updateChannelSlug(slug.trim()).then((r) => {
+                        if (r.ok) {
+                          say(channelRenameNote(r));
+                        } else {
+                          sayFailed(r.error);
+                        }
+                      });
+                    }}
+                  />
+                </div>
+              </form>
+              <form
+                className="flex flex-col gap-6"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void setCustomDomain(domain.trim()).then((r) => {
+                    if (!r.ok) {
+                      sayFailed(r.error);
+                    } else {
+                      say(
+                        `Add TXT ${r.txtHost} = ${r.txtRecord}, then Verify.`,
+                      );
+                    }
+                  });
+                }}
+              >
+                <Input
+                  label="Custom domain"
+                  description={
+                    channel?.customDomain
+                      ? `Current: ${channel.customDomain}${channel.customDomainVerified ? ' (verified)' : ' (pending)'}`
+                      : 'Requires membership. Add DNS TXT then verify.'
+                  }
+                  value={domain}
+                  onChange={(e) => setDomain(e.target.value)}
+                  placeholder="music.example.com"
+                />
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm" disabled={!domain.trim()} type="submit">
+                    Set domain
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      void verifyCustomDomain().then((r) => {
+                        if (!r.ok) {
+                          sayFailed(r.error);
+                        } else if (r.verified) {
+                          say('Domain verified.');
+                        } else {
+                          sayFailed(
+                            'Not verified yet. DNS changes can take a while to show.',
+                          );
+                        }
+                      });
+                    }}
+                  >
+                    Verify DNS
+                  </Button>
+                </div>
+              </form>
               {note ? (
                 <p
                   role={note.failed ? 'alert' : 'status'}

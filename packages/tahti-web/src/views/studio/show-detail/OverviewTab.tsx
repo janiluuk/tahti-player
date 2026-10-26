@@ -72,7 +72,13 @@ export function OverviewTab({
         title="Show defaults"
         description="Manage the show identity and defaults inherited by new episodes."
       >
-        <div className="flex flex-col gap-3">
+        <form
+          className="flex flex-col gap-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void saveMeta();
+          }}
+        >
           <Input
             label="Title"
             value={title}
@@ -189,10 +195,10 @@ export function OverviewTab({
             <SaveButton
               saving={savingMeta}
               label="Save defaults"
-              onClick={() => void saveMeta()}
+              type="submit"
             />
           </div>
-        </div>
+        </form>
       </StudioPanel>
 
       <StudioPanel

@@ -130,7 +130,25 @@ export function MotionCard({
           : ''}
       </p>
       {description !== undefined && editing ? (
-        <div className="mt-2 flex flex-col gap-2">
+        <form
+          className="mt-2 flex flex-col gap-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            setSavingEdit(true);
+            void patchGovernanceMotion(m.id, {
+              title: editTitle.trim(),
+              description: editDescription.trim(),
+              closeAt: new Date(editCloseAt).toISOString(),
+            }).then((r) => {
+              setSavingEdit(false);
+              setActionMsg(r.ok ? 'Motion updated.' : r.error);
+              if (r.ok) {
+                setEditing(false);
+                onChanged();
+              }
+            });
+          }}
+        >
           <Input
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
@@ -162,21 +180,7 @@ export function MotionCard({
                 !editDescription.trim() ||
                 !editCloseAt
               }
-              onClick={() => {
-                setSavingEdit(true);
-                void patchGovernanceMotion(m.id, {
-                  title: editTitle.trim(),
-                  description: editDescription.trim(),
-                  closeAt: new Date(editCloseAt).toISOString(),
-                }).then((r) => {
-                  setSavingEdit(false);
-                  setActionMsg(r.ok ? 'Motion updated.' : r.error);
-                  if (r.ok) {
-                    setEditing(false);
-                    onChanged();
-                  }
-                });
-              }}
+              type="submit"
             >
               Save changes
             </Button>
@@ -189,7 +193,7 @@ export function MotionCard({
               Cancel
             </Button>
           </div>
-        </div>
+        </form>
       ) : description ? (
         <p className="mt-2 text-sm leading-relaxed">{description}</p>
       ) : null}

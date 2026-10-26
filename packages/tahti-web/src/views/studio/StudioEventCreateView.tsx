@@ -111,7 +111,30 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
             {loadingEvent ? (
               <PageLoading label="Loading…" />
             ) : (
-              <div className="flex flex-col gap-4">
+              <form
+                className="flex flex-col gap-4"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  setBusy(true);
+                  save()
+                    .then((result) => {
+                      setBusy(false);
+                      if (!result.ok) {
+                        toast.error(result.error);
+                        return;
+                      }
+                      void navigate({ to: '/studio/events' });
+                    })
+                    .catch(() => {
+                      setBusy(false);
+                      toast.error(
+                        editing
+                          ? 'Could not save the event.'
+                          : 'Could not create the event.',
+                      );
+                    });
+                }}
+              >
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <Input
                     label="Title"
@@ -202,30 +225,7 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                     <ArrowLeftIcon size={14} aria-hidden className="mr-1.5" />
                     Cancel
                   </ButtonLink>
-                  <Button
-                    size="sm"
-                    disabled={!canSubmit || busy}
-                    onClick={() => {
-                      setBusy(true);
-                      save()
-                        .then((result) => {
-                          setBusy(false);
-                          if (!result.ok) {
-                            toast.error(result.error);
-                            return;
-                          }
-                          void navigate({ to: '/studio/events' });
-                        })
-                        .catch(() => {
-                          setBusy(false);
-                          toast.error(
-                            editing
-                              ? 'Could not save the event.'
-                              : 'Could not create the event.',
-                          );
-                        });
-                    }}
-                  >
+                  <Button size="sm" disabled={!canSubmit || busy} type="submit">
                     {busy ? (
                       <Loader size="sm" shape="circle" className="mr-1.5" />
                     ) : editing ? (
@@ -246,7 +246,7 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                         : 'Add event'}
                   </Button>
                 </div>
-              </div>
+              </form>
             )}
           </StudioPanel>
         </ViewShell>

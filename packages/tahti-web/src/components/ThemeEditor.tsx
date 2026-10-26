@@ -415,7 +415,13 @@ export function ThemeEditor() {
       className="flex max-h-[min(70vh,36rem)] flex-col gap-3"
       data-testid="theme-editor"
     >
-      <div className="flex flex-wrap items-end gap-2">
+      <form
+        className="flex flex-wrap items-end gap-2"
+        onSubmit={(event) => {
+          event.preventDefault();
+          save();
+        }}
+      >
         <div className="min-w-0 flex-1">
           <Input
             autoComplete="off"
@@ -435,7 +441,7 @@ export function ThemeEditor() {
             Discard
           </Button>
         ) : null}
-        <Button size="sm" onClick={save}>
+        <Button size="sm" type="submit">
           Save
         </Button>
         <Tooltip content="Import theme JSON" side="top">
@@ -448,7 +454,7 @@ export function ThemeEditor() {
             <FileJson size={16} aria-hidden />
           </Button>
         </Tooltip>
-      </div>
+      </form>
       <p className="text-foreground-secondary text-xs">
         Editing the <strong>{dark ? 'dark' : 'light'}</strong> variant. Use the
         sun/moon control above to switch. Click a color to tune it — blank keeps
