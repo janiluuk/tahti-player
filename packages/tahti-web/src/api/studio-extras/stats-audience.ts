@@ -6,7 +6,7 @@ import type { StatsPlaysRange } from './stats-plays';
 export type StatsShare = { name: string; count: number; share: number };
 
 export type StatsAudienceDimension =
-  'browser' | 'os' | 'deviceType' | 'deviceVendor' | 'source';
+  'browser' | 'os' | 'deviceType' | 'deviceVendor' | 'source' | 'surface';
 
 export type StatsAudience = {
   dimension: StatsAudienceDimension;
@@ -70,6 +70,13 @@ const MOCK_AUDIENCE: Record<StatsAudienceDimension, [string, number][]> = {
     ['Samsung', 152],
     ['Google', 61],
     ['Other', 49],
+  ],
+  surface: [
+    ['CHANNEL_PAGE', 402],
+    ['TAHTI_RADIO', 188],
+    ['ARTIST_PROFILE', 121],
+    ['DISCOVER', 64],
+    ['EMBED', 45],
   ],
   source: [
     ['Direct', 501],
