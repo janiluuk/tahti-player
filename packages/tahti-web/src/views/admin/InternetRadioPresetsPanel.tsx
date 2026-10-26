@@ -352,6 +352,7 @@ export function InternetRadioPresetsPanel() {
               />
             </div>
             <Textarea
+              submitOnModEnter
               label="Description"
               value={draft.description ?? ''}
               rows={2}

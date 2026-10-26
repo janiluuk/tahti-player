@@ -227,6 +227,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                 onChange={(event) => setPublicTitle(event.target.value)}
               />
               <Textarea
+                submitOnModEnter
                 label="Description"
                 tone="secondary"
                 value={publicDescription}

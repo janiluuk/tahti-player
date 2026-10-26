@@ -94,6 +94,7 @@ export function PublishDialog({
           </InlineError>
         ) : null}
         <Textarea
+          submitOnModEnter
           label="Changelog (optional)"
           value={changelog}
           rows={3}

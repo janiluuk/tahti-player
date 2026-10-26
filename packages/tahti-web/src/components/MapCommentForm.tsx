@@ -75,6 +75,7 @@ export function MapCommentForm({
       }
     >
       <Textarea
+        submitOnModEnter
         id={fieldId}
         label={label}
         tone="secondary"

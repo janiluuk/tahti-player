@@ -92,6 +92,7 @@ export function OverviewTab({
             maxLength={200}
           />
           <Textarea
+            submitOnModEnter
             label="Description"
             tone="secondary"
             value={description}

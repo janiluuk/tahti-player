@@ -81,6 +81,7 @@ export function MotionResultCorrectionForm({
       }}
     >
       <Textarea
+        submitOnModEnter
         id={noteId}
         label="What is being corrected"
         rows={2}

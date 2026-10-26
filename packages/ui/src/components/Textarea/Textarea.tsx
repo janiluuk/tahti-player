@@ -32,7 +32,25 @@ type TextareaProps = ComponentProps<'textarea'> &
     error?: string;
     /** Class for the label/description wrapper (e.g. a grid span). */
     fieldClassName?: string;
+    /** Cmd/Ctrl+Enter submits the enclosing form through its first submit
+     * button, and does nothing while that button is disabled. */
+    submitOnModEnter?: boolean;
   };
+
+function submitEnclosingForm(textarea: HTMLTextAreaElement): boolean {
+  const form = textarea.form;
+  if (!form) {
+    return false;
+  }
+  const submitter = form.querySelector<HTMLButtonElement | HTMLInputElement>(
+    'button[type="submit"], input[type="submit"]',
+  );
+  if (!submitter || submitter.disabled) {
+    return false;
+  }
+  form.requestSubmit(submitter);
+  return true;
+}
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   function Textarea(
@@ -44,6 +62,8 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       description,
       error,
       fieldClassName,
+      submitOnModEnter = false,
+      onKeyDown,
       ...props
     },
     ref,
@@ -72,6 +92,19 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           }),
         )}
         {...props}
+        onKeyDown={(event) => {
+          onKeyDown?.(event);
+          if (
+            submitOnModEnter &&
+            !event.defaultPrevented &&
+            event.key === 'Enter' &&
+            (event.metaKey || event.ctrlKey) &&
+            !event.nativeEvent.isComposing &&
+            submitEnclosingForm(event.currentTarget)
+          ) {
+            event.preventDefault();
+          }
+        }}
         aria-describedby={describedBy || undefined}
         aria-invalid={error ? true : props['aria-invalid']}
         aria-errormessage={error ? errorId : props['aria-errormessage']}

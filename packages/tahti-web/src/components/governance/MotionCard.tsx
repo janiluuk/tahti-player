@@ -157,6 +157,7 @@ export function MotionCard({
             maxLength={200}
           />
           <Textarea
+            submitOnModEnter
             tone="secondary"
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}

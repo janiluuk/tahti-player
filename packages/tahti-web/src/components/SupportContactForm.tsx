@@ -97,6 +97,7 @@ export function SupportContactForm({
         maxLength={200}
       />
       <Textarea
+        submitOnModEnter
         label="Message"
         tone="secondary"
         className="min-h-[8rem]"

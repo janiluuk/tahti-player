@@ -91,6 +91,7 @@ export function RegisterDialog({
             }
           />
           <Textarea
+            submitOnModEnter
             label="Description"
             value={draft.description}
             rows={3}

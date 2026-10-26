@@ -137,6 +137,7 @@ export function ChannelComments({
           data-testid="channel-comments-composer"
         >
           <Textarea
+            submitOnModEnter
             aria-label="Write a comment"
             placeholder="Say something about this channel…"
             value={body}

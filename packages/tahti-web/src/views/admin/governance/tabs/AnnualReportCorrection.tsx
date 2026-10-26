@@ -86,6 +86,7 @@ export function AnnualReportCorrection({
           }}
         >
           <Textarea
+            submitOnModEnter
             label="What does the correction change?"
             description="The report is regenerated from today's records. The replaced version is kept with this note."
             rows={2}

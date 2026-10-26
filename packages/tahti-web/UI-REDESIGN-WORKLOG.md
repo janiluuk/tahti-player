@@ -1,3 +1,9 @@
+## 2026-10-26 - UX batch 109 (Cmd/Ctrl+Enter in text areas)
+
+Every multi-line field inside a form now submits with Cmd/Ctrl+Enter, the
+usual shortcut for comments and posts, while Enter keeps adding new lines.
+New `submitOnModEnter` prop on the library `Textarea`. Bumped tahti-web
+`0.0.268`.
 ## 2026-10-26 - UX batch 106 (Enter key labels)
 
 Every search field shows a Search key on phone keyboards, message and reply
