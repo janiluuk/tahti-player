@@ -506,6 +506,7 @@ export function AdminUserEditPanel({
           </div>
           <div className="mt-3 flex gap-2">
             <Input
+              enterKeyHint="send"
               aria-label={`Message ${detail.displayName}`}
               value={messageBody}
               onChange={(event) => setMessageBody(event.target.value)}

@@ -77,6 +77,7 @@ function SkipDurationField() {
 
   return (
     <Input
+      enterKeyHint="done"
       variant="number"
       min={SKIP_SECONDS_MIN}
       max={SKIP_SECONDS_MAX}

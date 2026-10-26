@@ -497,6 +497,7 @@ export function ReleaseSmartLinksPanel({
         </Dialog.Description>
         <div className="flex flex-wrap gap-2 py-3">
           <Input
+            enterKeyHint="search"
             type="search"
             label="Search"
             value={query}

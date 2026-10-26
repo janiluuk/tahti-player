@@ -1,3 +1,9 @@
+## 2026-10-26 - UX batch 106 (Enter key labels)
+
+Every search field shows a Search key on phone keyboards, message and reply
+boxes show Send, and the moderator, tag and skip duration fields show Go /
+Done. Bumped tahti-web `0.0.267`.
+
 ## 2026-10-26 - UX batch 108 (more Enter submits)
 
 Thirty more single-action groups submit on Enter: account recovery and

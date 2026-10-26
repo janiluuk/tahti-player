@@ -160,6 +160,7 @@ export function MyVenuesView() {
       ) : (
         <>
           <Input
+            enterKeyHint="search"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}

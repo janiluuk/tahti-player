@@ -91,6 +91,7 @@ export function AdminTopListsView() {
           >
             <div className="flex flex-col gap-3">
               <Input
+                enterKeyHint="search"
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}

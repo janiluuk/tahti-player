@@ -1,3 +1,11 @@
+## 2026-10-26 - UX batch 106 thirty-seven Enter key slices
+
+Phone keyboards label the Enter key for what it does. All thirty search
+fields (`type="search"`) get `enterKeyHint="search"`; the admin direct
+message, channel chat, Messages and support reply boxes get `send`; adding a
+channel moderator gets `go`; adding a tag and the skip duration get `done`.
+tahti-web `0.0.267`.
+
 ## 2026-10-26 - UX batch 108 thirty more Enter-submits slices
 
 Thirty more input groups become forms, so Enter submits them, and a disabled

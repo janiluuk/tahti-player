@@ -247,6 +247,7 @@ export function GlobalSearch({
     >
       <div className="relative">
         <Input
+          enterKeyHint="search"
           type="search"
           size="sm"
           value={query}

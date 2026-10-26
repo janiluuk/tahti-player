@@ -102,6 +102,7 @@ export function AdminVenuesView() {
               <StudioPanel>
                 <div className="flex flex-col gap-3">
                   <Input
+                    enterKeyHint="search"
                     type="search"
                     label="Search venues"
                     value={query}

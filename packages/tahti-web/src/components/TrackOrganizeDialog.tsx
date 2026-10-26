@@ -278,6 +278,7 @@ export function TrackOrganizeDialog({
             <div className="flex items-end gap-2">
               <div className="min-w-0 flex-1">
                 <Input
+                  enterKeyHint="done"
                   label="Add a tag"
                   value={tagInput}
                   disabled={busy}

@@ -399,6 +399,7 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
                 ) : (
                   <div className="border-border flex gap-2 border-t p-3">
                     <Input
+                      enterKeyHint="send"
                       aria-label="Message"
                       value={body}
                       onChange={(e) => setBody(e.target.value)}

@@ -83,6 +83,7 @@ export const AdminUsersView = () => {
             <div className="grid min-h-[36rem] grid-cols-1 gap-4 lg:grid-cols-[20rem_minmax(0,1fr)]">
               <StudioPanel className="flex min-h-0 flex-col gap-3">
                 <Input
+                  enterKeyHint="search"
                   type="search"
                   aria-label="Search users"
                   placeholder="Name, email, or username"

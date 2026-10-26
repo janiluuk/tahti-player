@@ -276,6 +276,7 @@ export function DesktopLibraryContent({
           <div className="flex items-end gap-2">
             <div className="min-w-0 flex-1">
               <Input
+                enterKeyHint="search"
                 type="search"
                 label="Search desktop library"
                 placeholder="Title, artist, album, genre or path"

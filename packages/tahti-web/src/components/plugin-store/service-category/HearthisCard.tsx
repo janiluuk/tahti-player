@@ -553,6 +553,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
               }}
             >
               <Input
+                enterKeyHint="search"
                 aria-label="Search hearthis.at"
                 type="search"
                 className="min-w-0 flex-1 basis-40"
