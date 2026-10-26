@@ -1,6 +1,7 @@
-import { BarChart3Icon } from 'lucide-react';
+import { DownloadIcon } from 'lucide-react';
 
 import {
+  Button,
   CalendarHeatmap,
   DayOfWeekChart,
   HorizontalScroll,
@@ -16,7 +17,7 @@ import {
 } from '../../../lib/historyStats';
 import { useThemeStore } from '../../../plugins/themes';
 import { AudienceBreakdown } from './AudienceBreakdown';
-import { formatDate } from './helpers';
+import { downloadPlaysCsv, formatDate } from './helpers';
 import { ListenerLocations } from './ListenerLocations';
 import { ListenerLoyalty } from './ListenerLoyalty';
 import type { StatsData } from './useStatsData';
@@ -43,6 +44,11 @@ export function PlaysTab({
     range,
     appliedCustom,
   } = state;
+  const splitDaily =
+    plays.daily.length > 0 &&
+    plays.daily.every(
+      (day) => day.downloads != null && day.smartLinkClicks != null,
+    );
 
   return (
     <div className={active ? 'grid gap-6' : 'hidden'}>
@@ -80,11 +86,15 @@ export function PlaysTab({
                   : 'Daily activity appears after your first play.'}
               </p>
             </div>
-            <BarChart3Icon
-              size={22}
-              aria-hidden
-              className="text-primary-strong"
-            />
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={plays.daily.length === 0}
+              onClick={() => downloadPlaysCsv(plays.daily)}
+            >
+              <DownloadIcon size={14} aria-hidden />
+              <span className="ml-1.5">Download CSV</span>
+            </Button>
           </div>
           {plays.daily.length === 0 ? (
             <PageEmpty title="No plays in this period." />
@@ -108,7 +118,16 @@ export function PlaysTab({
             <div className="h-52 w-full">
               {active ? (
                 <DayOfWeekChart
-                  values={chartValues}
+                  values={
+                    splitDaily
+                      ? plays.daily.map((day) => day.downloads ?? 0)
+                      : chartValues
+                  }
+                  stackValues={
+                    splitDaily
+                      ? plays.daily.map((day) => day.smartLinkClicks ?? 0)
+                      : undefined
+                  }
                   labels={{ weekdays: chartLabels }}
                   formatValue={(value) => `${value.toLocaleString()} plays`}
                   onBarClick={(index) => {
@@ -121,6 +140,24 @@ export function PlaysTab({
               ) : null}
             </div>
           )}
+          {splitDaily && !useHeatmap && plays.daily.length > 0 ? (
+            <ul
+              className="text-foreground-secondary mt-2 flex flex-wrap gap-4 text-xs"
+              aria-label="Chart legend"
+            >
+              <li className="flex items-center gap-1.5">
+                <span aria-hidden className="bg-primary size-2.5 rounded-sm" />
+                Downloads
+              </li>
+              <li className="flex items-center gap-1.5">
+                <span
+                  aria-hidden
+                  className="bg-accent-yellow size-2.5 rounded-sm"
+                />
+                Smart-link clicks
+              </li>
+            </ul>
+          ) : null}
           <p className="text-foreground-secondary mt-2 text-xs">
             Click a day for hourly listening.
           </p>

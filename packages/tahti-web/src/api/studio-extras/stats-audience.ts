@@ -6,7 +6,7 @@ import type { StatsPlaysRange } from './stats-plays';
 export type StatsShare = { name: string; count: number; share: number };
 
 export type StatsAudienceDimension =
-  'browser' | 'os' | 'deviceType' | 'deviceVendor' | 'source';
+  'browser' | 'os' | 'deviceType' | 'deviceVendor' | 'source' | 'surface';
 
 export type StatsAudience = {
   dimension: StatsAudienceDimension;
@@ -70,6 +70,13 @@ const MOCK_AUDIENCE: Record<StatsAudienceDimension, [string, number][]> = {
     ['Samsung', 152],
     ['Google', 61],
     ['Other', 49],
+  ],
+  surface: [
+    ['CHANNEL_PAGE', 402],
+    ['TAHTI_RADIO', 188],
+    ['ARTIST_PROFILE', 121],
+    ['DISCOVER', 64],
+    ['EMBED', 45],
   ],
   source: [
     ['Direct', 501],
@@ -205,5 +212,30 @@ export async function fetchStatsLoyalty(
       data: { total: 0, minBucket: 5, points: [] },
       meta: failMeta(err),
     };
+  }
+}
+
+export type StatsListening = {
+  listens: number;
+  minutes: number;
+  averageMinutes: number;
+};
+
+export async function fetchStatsListening(
+  window: StatsAudienceWindow,
+): Promise<{ data: StatsListening | null; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return {
+      data: { listens: 820, minutes: 5_310, averageMinutes: 6.5 },
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<StatsListening>(
+      `/api/me/stats/listening?${statsWindowParams(window).toString()}`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: null, meta: failMeta(err) };
   }
 }
