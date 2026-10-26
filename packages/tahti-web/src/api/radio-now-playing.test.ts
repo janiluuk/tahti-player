@@ -32,7 +32,7 @@ describe('station now playing', () => {
     expect(formatStationProgramme(null)).toBeNull();
   });
 
-  it('asks the API once per page within a minute', async () => {
+  it('asks the API once per page within 20 seconds', async () => {
     const get = vi
       .spyOn(http, 'getJson')
       .mockResolvedValue({ title: 'Usa', artist: 'Viivi' });
@@ -43,6 +43,29 @@ describe('station now playing', () => {
     expect(get.mock.calls[0]?.[0]).toBe(
       `/api/v1/internet-radio/now-playing?url=${encodeURIComponent(url)}`,
     );
+  });
+
+  it('asks the API again once 20 seconds have passed', async () => {
+    vi.useFakeTimers();
+    try {
+      const get = vi
+        .spyOn(http, 'getJson')
+        .mockResolvedValueOnce({ title: 'Show', artist: 'Wilco — Poor Places' })
+        .mockResolvedValueOnce({ title: 'Show', artist: 'Porches — Wobble' });
+      const url = 'https://www.radiohelsinki.fi/ohjelmakartta/';
+      expect(await fetchStationProgramme(url)).toBe(
+        'Show · Wilco — Poor Places',
+      );
+      vi.advanceTimersByTime(19_000);
+      expect(await fetchStationProgramme(url)).toBe(
+        'Show · Wilco — Poor Places',
+      );
+      vi.advanceTimersByTime(2_000);
+      expect(await fetchStationProgramme(url)).toBe('Show · Porches — Wobble');
+      expect(get).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('falls back to the title the stream announces', async () => {
