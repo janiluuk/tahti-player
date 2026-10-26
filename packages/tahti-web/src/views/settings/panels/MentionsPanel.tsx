@@ -248,6 +248,9 @@ export function MentionsPanel() {
           }}
         >
           <Input
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             label="Mute a username"
             placeholder="@username"
             value={handle}

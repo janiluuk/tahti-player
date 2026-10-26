@@ -177,6 +177,7 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                     placeholder="Helsinki, Finland"
                   />
                   <Input
+                    inputMode="url"
                     label="Tickets / event link (optional)"
                     value={eventUrl}
                     onChange={(event) => setEventUrl(event.target.value)}

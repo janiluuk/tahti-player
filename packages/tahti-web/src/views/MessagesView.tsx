@@ -217,6 +217,9 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
         >
           <div className="min-w-36 flex-1">
             <Input
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               label="Message @"
               value={composeUser}
               onChange={(e) => setComposeUser(e.target.value)}

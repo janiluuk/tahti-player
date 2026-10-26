@@ -54,6 +54,7 @@ export function VideoOrImageField({
 
   const urlInput = urlOpen ? (
     <Input
+      inputMode="url"
       label="YouTube, video, or image URL"
       value={url}
       placeholder="https://youtube.com/watch?v=… or https://…/backdrop.jpg"

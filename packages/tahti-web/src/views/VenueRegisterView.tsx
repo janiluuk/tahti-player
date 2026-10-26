@@ -178,6 +178,7 @@ export function VenueRegisterView() {
           onChange={setCoverUrl}
         />
         <Input
+          inputMode="url"
           label="Venue website (optional)"
           value={pageUrl}
           onChange={(e) => setPageUrl(e.target.value)}

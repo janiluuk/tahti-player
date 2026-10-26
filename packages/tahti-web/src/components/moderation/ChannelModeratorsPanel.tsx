@@ -89,6 +89,9 @@ export function ChannelModeratorsPanel() {
         )}
         <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-end">
           <Input
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             label="Username"
             value={username}
             onChange={(event) => setUsername(event.target.value)}

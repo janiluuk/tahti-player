@@ -657,6 +657,7 @@ export function AgmTab() {
               ]}
             />
             <Input
+              inputMode="url"
               value={documentUrl}
               onChange={(event) => setDocumentUrl(event.target.value)}
               placeholder="Public document URL (optional)"

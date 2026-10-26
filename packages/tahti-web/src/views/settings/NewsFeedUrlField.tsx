@@ -50,6 +50,7 @@ export function NewsFeedUrlField() {
         </SettingsHint>
       </div>
       <Input
+        inputMode="url"
         label="Feed URL"
         value={url}
         placeholder="https://example.com/feed.xml"

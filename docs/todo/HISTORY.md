@@ -1,3 +1,15 @@
+## 2026-10-26 - UX batch 103 thirty URL and handle field slices
+
+Twenty-four URL fields get `inputMode="url"` so phones show the URL keyboard
+(cover image, RSS feed x2, SoundCloud track / profile, channel backdrop
+media, set import link, station stream / schedule / details / logo x6,
+streaming service paste, Spotify artist, venue website, news link x2, admin
+radio stream / programming, AGM public document, my radio stream, tip jar,
+event tickets). Six username fields turn off auto-capitalise, autocorrect
+and spellcheck (share link limit, stash share, new message, green room
+invite, muted usernames, channel moderators), so `@aino` is not rewritten
+to "@Aino". tahti-web `0.0.260`.
+
 ## 2026-10-26 - UX batch 102 thirty-one search, email and link slices
 
 Twenty-one search and filter fields use `type="search"` (searchbox role,

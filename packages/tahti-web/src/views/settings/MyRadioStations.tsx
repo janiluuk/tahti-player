@@ -151,6 +151,7 @@ export function MyRadioStations() {
           onChange={(event) => setName(event.target.value)}
         />
         <Input
+          inputMode="url"
           label="Stream URL"
           value={streamUrl}
           placeholder="https://stream.example.com/live.mp3"

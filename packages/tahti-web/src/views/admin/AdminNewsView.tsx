@@ -175,6 +175,7 @@ export function AdminNewsView() {
                               onChange={setEditImageUrl}
                             />
                             <Input
+                              inputMode="url"
                               label="Link URL"
                               value={editLinkUrl}
                               onChange={(event) =>
@@ -341,6 +342,7 @@ export function AdminNewsView() {
                   onChange={setImageUrl}
                 />
                 <Input
+                  inputMode="url"
                   label="Link URL"
                   value={linkUrl}
                   onChange={(event) => setLinkUrl(event.target.value)}

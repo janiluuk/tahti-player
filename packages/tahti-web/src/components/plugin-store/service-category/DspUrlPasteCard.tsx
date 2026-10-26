@@ -39,6 +39,7 @@ export function DspUrlPasteCard() {
         Paste a DSP URL to open Studio releases (smart-link targets).
       </p>
       <Input
+        inputMode="url"
         aria-label="Streaming service URL"
         className="w-full"
         size="sm"

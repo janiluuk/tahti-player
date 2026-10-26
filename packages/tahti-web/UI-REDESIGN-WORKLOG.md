@@ -1,3 +1,9 @@
+## 2026-10-26 - UX batch 103 (URL keyboards, username fields)
+
+Twenty-four URL fields bring up the URL keyboard on phones, and six username
+fields no longer auto-capitalise or autocorrect what is typed. Bumped
+tahti-web `0.0.260`.
+
 ## 2026-10-26 - UX batch 102 (search fields, email keyboards, new-tab links)
 
 Twenty-one search fields are `type="search"`, five email fields bring up the

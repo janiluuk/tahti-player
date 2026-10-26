@@ -354,6 +354,7 @@ export function InternetRadioPresetsPanel() {
             }
           />
           <Input
+            inputMode="url"
             label="Stream URL"
             value={draft.streamUrl ?? ''}
             placeholder="https://stream.example.com/live.mp3"
@@ -363,6 +364,7 @@ export function InternetRadioPresetsPanel() {
             }
           />
           <Input
+            inputMode="url"
             label="Programming URL (optional)"
             value={draft.programmingUrl ?? ''}
             placeholder="https://example.com/now-playing"

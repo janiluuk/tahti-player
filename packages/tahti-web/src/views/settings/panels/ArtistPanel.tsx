@@ -337,6 +337,7 @@ export function ArtistPanel() {
             />
           )}
           <Input
+            inputMode="url"
             label="Tip jar URL"
             value={profile.tipJarUrl ?? ''}
             onChange={(e) =>

@@ -449,6 +449,7 @@ export function ListenAddonsPanel({
                     placeholder="News"
                   />
                   <Input
+                    inputMode="url"
                     label="RSS feed URL"
                     value={newsFeedUrl}
                     onChange={(event) => {

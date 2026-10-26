@@ -371,6 +371,9 @@ export const StashFilesPanel = ({
                   <div className="border-border bg-background-secondary mt-3 grid gap-2 rounded-lg border p-3 sm:grid-cols-2">
                     <div className="sm:col-span-2">
                       <Input
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck={false}
                         label="Share with"
                         value={granteeUsername}
                         onChange={(event) =>
