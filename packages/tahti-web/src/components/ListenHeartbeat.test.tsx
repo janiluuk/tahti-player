@@ -34,10 +34,16 @@ describe('ListenHeartbeat', () => {
     cleanup();
     vi.useRealTimers();
     vi.restoreAllMocks();
-    usePlayerStore.setState({ currentId: null, status: 'idle', queue: [] });
+    usePlayerStore.setState({
+      currentId: null,
+      status: 'idle',
+      queue: [],
+      currentTime: 0,
+      duration: 0,
+    });
   });
 
-  it('pings on play and every three minutes, and stops on pause', () => {
+  it('pings on play and every three minutes, once more on pause, then stops', () => {
     const send = vi
       .spyOn(api, 'sendListenHeartbeat')
       .mockImplementation(() => {});
@@ -48,7 +54,11 @@ describe('ListenHeartbeat', () => {
     });
     render(<ListenHeartbeat />);
     expect(send).toHaveBeenCalledTimes(1);
-    expect(send).toHaveBeenLastCalledWith({ soundId: 's1' }, 'OTHER');
+    expect(send).toHaveBeenLastCalledWith(
+      { soundId: 's1' },
+      'OTHER',
+      undefined,
+    );
     act(() => {
       vi.advanceTimersByTime(LISTEN_HEARTBEAT_MS);
     });
@@ -56,9 +66,59 @@ describe('ListenHeartbeat', () => {
     act(() => {
       usePlayerStore.setState({ status: 'paused' });
     });
+    expect(send).toHaveBeenCalledTimes(3);
     act(() => {
       vi.advanceTimersByTime(LISTEN_HEARTBEAT_MS * 2);
     });
-    expect(send).toHaveBeenCalledTimes(2);
+    expect(send).toHaveBeenCalledTimes(3);
+  });
+
+  it('reports how far a track has played, including where it stopped', () => {
+    const send = vi
+      .spyOn(api, 'sendListenHeartbeat')
+      .mockImplementation(() => {});
+    usePlayerStore.setState({
+      currentId: 'sound:s1',
+      status: 'playing',
+      queue: [],
+      currentTime: 12,
+      duration: 240,
+    });
+    render(<ListenHeartbeat />);
+    expect(send).toHaveBeenLastCalledWith({ soundId: 's1' }, 'OTHER', {
+      positionSec: 12,
+      durationSec: 240,
+    });
+    act(() => {
+      usePlayerStore.setState({ currentTime: 240 });
+      usePlayerStore.setState({ status: 'paused' });
+    });
+    expect(send).toHaveBeenLastCalledWith({ soundId: 's1' }, 'OTHER', {
+      positionSec: 240,
+      durationSec: 240,
+    });
+  });
+
+  it('sends no position or final ping for a live channel', () => {
+    const send = vi
+      .spyOn(api, 'sendListenHeartbeat')
+      .mockImplementation(() => {});
+    usePlayerStore.setState({
+      currentId: 'live:night-drive',
+      status: 'playing',
+      queue: [],
+      currentTime: 50,
+      duration: 100,
+    });
+    render(<ListenHeartbeat />);
+    act(() => {
+      usePlayerStore.setState({ status: 'paused' });
+    });
+    expect(send).toHaveBeenCalledTimes(1);
+    expect(send).toHaveBeenLastCalledWith(
+      { channelSlug: 'night-drive' },
+      'OTHER',
+      undefined,
+    );
   });
 });
