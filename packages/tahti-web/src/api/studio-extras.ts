@@ -56,10 +56,12 @@ export type {
   StatsAudienceWindow,
   StatsLocation,
   StatsLocations,
+  StatsListening,
   StatsLoyalty,
 } from './studio-extras/stats-audience';
 export {
   fetchStatsAudience,
+  fetchStatsListening,
   fetchStatsLocations,
   fetchStatsLoyalty,
 } from './studio-extras/stats-audience';

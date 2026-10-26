@@ -214,3 +214,28 @@ export async function fetchStatsLoyalty(
     };
   }
 }
+
+export type StatsListening = {
+  listens: number;
+  minutes: number;
+  averageMinutes: number;
+};
+
+export async function fetchStatsListening(
+  window: StatsAudienceWindow,
+): Promise<{ data: StatsListening | null; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return {
+      data: { listens: 820, minutes: 5_310, averageMinutes: 6.5 },
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<StatsListening>(
+      `/api/me/stats/listening?${statsWindowParams(window).toString()}`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: null, meta: failMeta(err) };
+  }
+}
