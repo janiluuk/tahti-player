@@ -15,6 +15,7 @@ import {
   weekdayLabelsShort,
 } from '../../../lib/historyStats';
 import { useThemeStore } from '../../../plugins/themes';
+import { AudienceBreakdown } from './AudienceBreakdown';
 import { formatDate } from './helpers';
 import type { StatsData } from './useStatsData';
 
@@ -37,6 +38,8 @@ export function PlaysTab({
     chartLabels,
     chartValues,
     openDay,
+    range,
+    appliedCustom,
   } = state;
 
   return (
@@ -112,6 +115,15 @@ export function PlaysTab({
           </p>
         </StudioPanel>
       </div>
+      {active ? (
+        <AudienceBreakdown
+          window={{
+            range,
+            from: appliedCustom?.from,
+            to: appliedCustom?.to,
+          }}
+        />
+      ) : null}
     </div>
   );
 }

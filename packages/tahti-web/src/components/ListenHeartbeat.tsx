@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import {
   listenSourceForPath,
   sendListenHeartbeat,
+  type ListenPosition,
   type ListenTarget,
 } from '../api/listen-heartbeat';
 import { usePlayerStore } from '../stores/playerStore';
@@ -34,7 +35,18 @@ export function listenTargetFor(
   return null;
 }
 
-/** Sends listen-time heartbeats while playback is running. */
+function playbackPosition(): ListenPosition | undefined {
+  const { currentTime, duration } = usePlayerStore.getState();
+  return duration > 0 && Number.isFinite(duration)
+    ? {
+        positionSec: Math.min(Math.max(0, currentTime), duration),
+        durationSec: duration,
+      }
+    : undefined;
+}
+
+/** Sends listen-time heartbeats while playback is running, and one more
+ * when a track stops so its last position counts. */
 export function ListenHeartbeat() {
   const currentId = usePlayerStore((s) => s.currentId);
   const playing = usePlayerStore((s) => s.status === 'playing');
@@ -52,10 +64,16 @@ export function ListenHeartbeat() {
       sendListenHeartbeat(
         target,
         listenSourceForPath(window.location.pathname),
+        'soundId' in target ? playbackPosition() : undefined,
       );
     ping();
     const timer = window.setInterval(ping, LISTEN_HEARTBEAT_MS);
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearInterval(timer);
+      if ('soundId' in target) {
+        ping();
+      }
+    };
   }, [currentId, playing, provider]);
 
   return null;

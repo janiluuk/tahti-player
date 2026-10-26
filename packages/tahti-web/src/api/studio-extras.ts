@@ -49,6 +49,13 @@ export {
   fetchChannelEgressStats,
   fetchChannelLiveStats,
 } from './studio-extras/stats-plays';
+export type {
+  StatsShare,
+  StatsAudience,
+  StatsAudienceDimension,
+  StatsAudienceWindow,
+} from './studio-extras/stats-audience';
+export { fetchStatsAudience } from './studio-extras/stats-audience';
 export type { ProfileFields, ProfilePatch } from './studio-extras/profile';
 export { fetchMeProfile, patchMeProfile } from './studio-extras/profile';
 export type {
