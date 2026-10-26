@@ -53,6 +53,28 @@ describe('ReportButton', () => {
     expect(toast.success).toHaveBeenCalled();
   });
 
+  it('sends with Ctrl+Enter from the details field', async () => {
+    const send = vi
+      .spyOn(api, 'submitContentReport')
+      .mockResolvedValue({ ok: true });
+    render(
+      <ReportButton
+        targetType="CHANNEL"
+        targetId="night-drive"
+        label="Tahti"
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Report Tahti' }));
+    const details = screen.getByLabelText('Details (optional)');
+    fireEvent.change(details, { target: { value: 'Stolen artwork' } });
+    await act(async () => {
+      fireEvent.keyDown(details, { key: 'Enter', ctrlKey: true });
+    });
+    expect(send).toHaveBeenCalledWith(
+      expect.objectContaining({ details: 'Stolen artwork' }),
+    );
+  });
+
   it('keeps the dialog open when sending fails', async () => {
     vi.spyOn(api, 'submitContentReport').mockResolvedValue({
       ok: false,

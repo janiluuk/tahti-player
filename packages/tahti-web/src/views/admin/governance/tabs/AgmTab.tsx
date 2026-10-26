@@ -231,7 +231,23 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
           ))}
         </ul>
       )}
-      <div className="flex flex-wrap items-end gap-2">
+      <form
+        className="flex flex-wrap items-end gap-2"
+        onSubmit={(event) => {
+          event.preventDefault();
+          setSaving(true);
+          void upsertAdminGovernanceAttendance(meeting.id, {
+            displayName: name.trim(),
+            status,
+          }).then((result) => {
+            setSaving(false);
+            if (result.data) {
+              setRecords((current) => [...current, result.data!]);
+              setName('');
+            }
+          });
+        }}
+      >
         <Input
           autoComplete="off"
           value={name}
@@ -252,26 +268,10 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
             { id: 'EXCUSED', label: 'Excused' },
           ]}
         />
-        <Button
-          size="sm"
-          disabled={saving || !name.trim()}
-          onClick={() => {
-            setSaving(true);
-            void upsertAdminGovernanceAttendance(meeting.id, {
-              displayName: name.trim(),
-              status,
-            }).then((result) => {
-              setSaving(false);
-              if (result.data) {
-                setRecords((current) => [...current, result.data!]);
-                setName('');
-              }
-            });
-          }}
-        >
+        <Button size="sm" disabled={saving || !name.trim()} type="submit">
           {saving ? 'Recording…' : 'Record'}
         </Button>
-      </div>
+      </form>
     </CollapsibleRecord>
   );
 }
@@ -353,7 +353,23 @@ export function AgmTab() {
       <AgendaBuilder />
 
       <StudioPanel title="Meeting records">
-        <div className="border-border mb-4 grid gap-2 border-b pb-4 sm:grid-cols-[1fr_minmax(12rem,auto)_auto]">
+        <form
+          className="border-border mb-4 grid gap-2 border-b pb-4 sm:grid-cols-[1fr_minmax(12rem,auto)_auto]"
+          onSubmit={(event) => {
+            event.preventDefault();
+            setMeetingSaving(true);
+            void createAdminGovernanceMeeting({
+              title: meetingTitle.trim(),
+              type: meetingType,
+            }).then((result) => {
+              setMeetingSaving(false);
+              if (result.data) {
+                setMeetings((current) => [result.data!, ...current]);
+                setMeetingTitle('');
+              }
+            });
+          }}
+        >
           <Input
             value={meetingTitle}
             onChange={(event) => setMeetingTitle(event.target.value)}
@@ -378,19 +394,7 @@ export function AgmTab() {
           <Button
             size="sm"
             disabled={meetingSaving || !meetingTitle.trim()}
-            onClick={() => {
-              setMeetingSaving(true);
-              void createAdminGovernanceMeeting({
-                title: meetingTitle.trim(),
-                type: meetingType,
-              }).then((result) => {
-                setMeetingSaving(false);
-                if (result.data) {
-                  setMeetings((current) => [result.data!, ...current]);
-                  setMeetingTitle('');
-                }
-              });
-            }}
+            type="submit"
           >
             {meetingSaving ? (
               <Loader size="inline" shape="circle" className="mr-1.5" />
@@ -399,7 +403,7 @@ export function AgmTab() {
             )}
             {meetingSaving ? 'Creating…' : 'Create meeting'}
           </Button>
-        </div>
+        </form>
         {meetings.length === 0 ? (
           <PageEmpty title="No persisted meeting records yet. Create the meeting record before publishing notice or minutes." />
         ) : (
@@ -630,7 +634,26 @@ export function AgmTab() {
         <MemberRegisterPanel />
         <div className="border-border mt-4 border-t pt-3">
           <h3 className="text-sm font-semibold">Published documents</h3>
-          <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_minmax(12rem,auto)]">
+          <form
+            className="mt-3 grid gap-2 sm:grid-cols-[1fr_minmax(12rem,auto)]"
+            onSubmit={(event) => {
+              event.preventDefault();
+              setDocumentSaving(true);
+              void createAdminGovernanceDocument({
+                title: documentTitle.trim(),
+                type: documentType,
+                externalUrl: documentUrl.trim() || undefined,
+                publishedAt: documentPublish ? new Date().toISOString() : null,
+              }).then((result) => {
+                setDocumentSaving(false);
+                if (result.data) {
+                  setDocuments((current) => [result.data!, ...current]);
+                  setDocumentTitle('');
+                  setDocumentUrl('');
+                }
+              });
+            }}
+          >
             <Input
               value={documentTitle}
               onChange={(event) => setDocumentTitle(event.target.value)}
@@ -667,24 +690,7 @@ export function AgmTab() {
             <Button
               size="sm"
               disabled={documentSaving || !documentTitle.trim()}
-              onClick={() => {
-                setDocumentSaving(true);
-                void createAdminGovernanceDocument({
-                  title: documentTitle.trim(),
-                  type: documentType,
-                  externalUrl: documentUrl.trim() || undefined,
-                  publishedAt: documentPublish
-                    ? new Date().toISOString()
-                    : null,
-                }).then((result) => {
-                  setDocumentSaving(false);
-                  if (result.data) {
-                    setDocuments((current) => [result.data!, ...current]);
-                    setDocumentTitle('');
-                    setDocumentUrl('');
-                  }
-                });
-              }}
+              type="submit"
             >
               {documentSaving ? (
                 <Loader size="inline" shape="circle" className="mr-1.5" />
@@ -693,7 +699,7 @@ export function AgmTab() {
               )}
               {documentSaving ? 'Publishing…' : 'Add document'}
             </Button>
-          </div>
+          </form>
           <div className="mt-2 flex items-center justify-between gap-3 text-sm">
             <span className="text-foreground-secondary text-xs">
               Publish immediately to members

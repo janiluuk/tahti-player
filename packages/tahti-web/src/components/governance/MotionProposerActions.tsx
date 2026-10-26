@@ -81,7 +81,13 @@ export function MotionProposerActions({
 
   if (editing) {
     return (
-      <div className="mt-3 flex flex-col gap-2">
+      <form
+        className="mt-3 flex flex-col gap-2"
+        onSubmit={(event) => {
+          event.preventDefault();
+          save();
+        }}
+      >
         <Input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -89,6 +95,7 @@ export function MotionProposerActions({
           maxLength={200}
         />
         <Textarea
+          submitOnModEnter
           tone="secondary"
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -107,7 +114,7 @@ export function MotionProposerActions({
           <Button
             size="sm"
             disabled={busy || !title.trim() || !text.trim()}
-            onClick={save}
+            type="submit"
           >
             Save draft
           </Button>
@@ -121,7 +128,7 @@ export function MotionProposerActions({
           </Button>
         </div>
         {error && <InlineError textSize="xs">{error}</InlineError>}
-      </div>
+      </form>
     );
   }
 

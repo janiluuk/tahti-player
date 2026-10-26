@@ -70,7 +70,7 @@ describe('ChannelModeratorsPanel', () => {
     const input = screen.getByLabelText('Username');
     fireEvent.change(input, { target: { value: 'nobody' } });
     await act(async () => {
-      fireEvent.keyDown(input, { key: 'Enter' });
+      fireEvent.submit(input.closest('form')!);
     });
     expect(add).toHaveBeenCalledWith('nobody');
     expect(toast.error).toHaveBeenCalledWith('User not found');

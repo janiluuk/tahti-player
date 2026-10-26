@@ -76,22 +76,25 @@ function SkipDurationField() {
   };
 
   return (
-    <Input
-      enterKeyHint="done"
-      variant="number"
-      min={SKIP_SECONDS_MIN}
-      max={SKIP_SECONDS_MAX}
-      label="Skip duration"
-      description={`Number of seconds to skip forward/backward with Shift+←/→ and media keys (${SKIP_SECONDS_MIN}–${SKIP_SECONDS_MAX}).`}
-      value={draft}
-      onChange={(event) => setDraft(event.target.value)}
-      onBlur={commit}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter') {
-          commit();
-        }
+    <form
+      className="contents"
+      onSubmit={(event) => {
+        event.preventDefault();
+        commit();
       }}
-    />
+    >
+      <Input
+        enterKeyHint="done"
+        variant="number"
+        min={SKIP_SECONDS_MIN}
+        max={SKIP_SECONDS_MAX}
+        label="Skip duration"
+        description={`Number of seconds to skip forward/backward with Shift+←/→ and media keys (${SKIP_SECONDS_MIN}–${SKIP_SECONDS_MAX}).`}
+        value={draft}
+        onChange={(event) => setDraft(event.target.value)}
+        onBlur={commit}
+      />
+    </form>
   );
 }
 

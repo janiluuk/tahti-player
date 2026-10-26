@@ -157,106 +157,114 @@ export function PlaylistImportDialog({
           ? `${basename(preview.sourcePath)} — ${describePreview(preview)}.`
           : ''}
       </Dialog.Description>
-      {preview ? (
-        <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto py-2">
-          <Input
-            label="Playlist name"
-            value={name}
-            error={error ?? undefined}
-            onChange={(event) => setName(event.target.value)}
-          />
-          {preview.needsImport > 0 ? (
-            <div className="flex items-center gap-2">
-              <Toggle
-                checked={importFiles}
-                onChange={setImportFiles}
-                aria-label="Add files to the library"
-              />
-              <span className="text-sm">
-                Also add the {preview.needsImport}{' '}
-                {preview.needsImport === 1 ? 'file' : 'files'} that{' '}
-                {preview.needsImport === 1 ? 'isn’t' : 'aren’t'} in your library
-                yet
-              </span>
-            </div>
-          ) : null}
-          {preview.missing > 0 || relinkRoot ? (
-            <div className="flex items-center gap-2">
-              <Button
-                className="gap-1.5"
-                size="sm"
-                variant="secondary"
-                disabled={busy !== null}
-                onClick={() => void chooseFolder()}
-              >
-                {busy === 'scan' ? (
-                  <Loader size="inline" shape="circle" />
-                ) : null}
-                Find missing files in a folder…
-              </Button>
-              <span className="text-foreground-secondary min-w-0 flex-1 truncate text-xs">
-                {relinkRoot
-                  ? `Searching ${relinkRoot}`
-                  : 'Matches by folder path, then by a unique file name.'}
-              </span>
-            </div>
-          ) : null}
-          {unresolvedCount > 0 ? (
-            <section>
-              <h3 className="mb-1 text-sm font-semibold">
-                Not yet in your library
-              </h3>
-              <p className="text-foreground-secondary mb-1 text-xs">
-                These are kept in the playlist as unavailable entries, never
-                dropped, and link up when the file is in your library.
-              </p>
-              <ul
-                className="flex flex-col gap-1"
-                aria-label="Unresolved entries"
-              >
-                {preview.unresolved.map((entry) => (
-                  <li
-                    key={`${entry.line}-${entry.path}`}
-                    className="border-border flex items-center gap-2 rounded-md border px-2 py-1 text-sm"
-                  >
-                    <Tooltip
-                      content={entry.path}
-                      side="top"
-                      wrapperClassName="min-w-0 flex-1"
-                    >
-                      <span
-                        className="block truncate"
-                        aria-description={entry.path}
-                      >
-                        {entry.title}
-                      </span>
-                    </Tooltip>
-                    <span className="text-foreground-secondary shrink-0 text-xs">
-                      {STATUS_LABEL[entry.status]}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              {unresolvedCount > preview.unresolved.length ? (
-                <p className="text-foreground-secondary mt-1 text-xs">
-                  …and {unresolvedCount - preview.unresolved.length} more.
+      <form
+        className="contents"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void commit();
+        }}
+      >
+        {preview ? (
+          <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto py-2">
+            <Input
+              label="Playlist name"
+              value={name}
+              error={error ?? undefined}
+              onChange={(event) => setName(event.target.value)}
+            />
+            {preview.needsImport > 0 ? (
+              <div className="flex items-center gap-2">
+                <Toggle
+                  checked={importFiles}
+                  onChange={setImportFiles}
+                  aria-label="Add files to the library"
+                />
+                <span className="text-sm">
+                  Also add the {preview.needsImport}{' '}
+                  {preview.needsImport === 1 ? 'file' : 'files'} that{' '}
+                  {preview.needsImport === 1 ? 'isn’t' : 'aren’t'} in your
+                  library yet
+                </span>
+              </div>
+            ) : null}
+            {preview.missing > 0 || relinkRoot ? (
+              <div className="flex items-center gap-2">
+                <Button
+                  className="gap-1.5"
+                  size="sm"
+                  variant="secondary"
+                  disabled={busy !== null}
+                  onClick={() => void chooseFolder()}
+                >
+                  {busy === 'scan' ? (
+                    <Loader size="inline" shape="circle" />
+                  ) : null}
+                  Find missing files in a folder…
+                </Button>
+                <span className="text-foreground-secondary min-w-0 flex-1 truncate text-xs">
+                  {relinkRoot
+                    ? `Searching ${relinkRoot}`
+                    : 'Matches by folder path, then by a unique file name.'}
+                </span>
+              </div>
+            ) : null}
+            {unresolvedCount > 0 ? (
+              <section>
+                <h3 className="mb-1 text-sm font-semibold">
+                  Not yet in your library
+                </h3>
+                <p className="text-foreground-secondary mb-1 text-xs">
+                  These are kept in the playlist as unavailable entries, never
+                  dropped, and link up when the file is in your library.
                 </p>
-              ) : null}
-            </section>
-          ) : null}
-        </div>
-      ) : null}
-      <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
-        <Button
-          className="gap-1.5"
-          disabled={!preview || !name.trim() || busy !== null}
-          onClick={() => void commit()}
-        >
-          {busy === 'import' ? <Loader size="inline" shape="circle" /> : null}
-          Import playlist
-        </Button>
-      </Dialog.Actions>
+                <ul
+                  className="flex flex-col gap-1"
+                  aria-label="Unresolved entries"
+                >
+                  {preview.unresolved.map((entry) => (
+                    <li
+                      key={`${entry.line}-${entry.path}`}
+                      className="border-border flex items-center gap-2 rounded-md border px-2 py-1 text-sm"
+                    >
+                      <Tooltip
+                        content={entry.path}
+                        side="top"
+                        wrapperClassName="min-w-0 flex-1"
+                      >
+                        <span
+                          className="block truncate"
+                          aria-description={entry.path}
+                        >
+                          {entry.title}
+                        </span>
+                      </Tooltip>
+                      <span className="text-foreground-secondary shrink-0 text-xs">
+                        {STATUS_LABEL[entry.status]}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                {unresolvedCount > preview.unresolved.length ? (
+                  <p className="text-foreground-secondary mt-1 text-xs">
+                    …and {unresolvedCount - preview.unresolved.length} more.
+                  </p>
+                ) : null}
+              </section>
+            ) : null}
+          </div>
+        ) : null}
+        <Dialog.Actions>
+          <Dialog.Close>Cancel</Dialog.Close>
+          <Button
+            className="gap-1.5"
+            disabled={!preview || !name.trim() || busy !== null}
+            type="submit"
+          >
+            {busy === 'import' ? <Loader size="inline" shape="circle" /> : null}
+            Import playlist
+          </Button>
+        </Dialog.Actions>
+      </form>
     </Dialog.Root>
   );
 }

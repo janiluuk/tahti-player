@@ -132,8 +132,18 @@ function CommentRow({ comment }: { comment: MapComment }) {
         </Badge>
       </div>
       {editing ? (
-        <div className="mt-2 flex flex-col gap-2">
+        <form
+          className="mt-2 flex flex-col gap-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (updateComment(comment.id, draft)) {
+              setEditing(false);
+              toast.success('Comment updated');
+            }
+          }}
+        >
           <Textarea
+            submitOnModEnter
             tone="secondary"
             rows={3}
             value={draft}
@@ -142,16 +152,7 @@ function CommentRow({ comment }: { comment: MapComment }) {
             className="min-h-[4.5rem] text-sm"
           />
           <div className="flex flex-wrap gap-2">
-            <Button
-              size="sm"
-              disabled={!draft.trim()}
-              onClick={() => {
-                if (updateComment(comment.id, draft)) {
-                  setEditing(false);
-                  toast.success('Comment updated');
-                }
-              }}
-            >
+            <Button size="sm" disabled={!draft.trim()} type="submit">
               Save
             </Button>
             <Button
@@ -165,7 +166,7 @@ function CommentRow({ comment }: { comment: MapComment }) {
               Cancel
             </Button>
           </div>
-        </div>
+        </form>
       ) : (
         <p className="mt-1 whitespace-pre-wrap">{comment.text}</p>
       )}

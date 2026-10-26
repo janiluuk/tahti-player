@@ -75,51 +75,60 @@ export function ReleaseCsvImportButton({
           One row per track. Rows with the same release title and date become
           one draft release. Columns: {RELEASE_CSV_COLUMNS.join(', ')}.
         </Dialog.Description>
-        <div className="flex flex-col gap-3 py-4">
-          <FilePicker
-            accept=".csv,text/csv"
-            labels={{
-              title: 'Choose a CSV file',
-              description: 'Or paste the rows below.',
-              browse: 'Browse',
-            }}
-            onFiles={(files) => void readFile(files[0])}
-          />
-          <Textarea
-            autoCapitalize="none"
-            autoCorrect="off"
-            spellCheck={false}
-            aria-label="CSV rows"
-            rows={8}
-            value={csv}
-            onChange={(event) => {
-              setCsv(event.target.value);
-              setResult(null);
-            }}
-            placeholder="releaseTitle,type,releaseDate,trackTitle&#10;Night Drive,EP,2026-10-01,Intro"
-            className="font-mono text-xs"
-          />
-          {result ? (
-            <div className="text-sm" role="status">
-              <p>
-                Created {result.created}, skipped {result.skipped}.
-              </p>
-              {result.errors.length > 0 ? (
-                <ul className="text-accent-red-strong mt-1 list-disc pl-5 text-xs">
-                  {result.errors.map((error) => (
-                    <li key={error}>{error}</li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
-        <Dialog.Actions>
-          <Dialog.Close>{result ? 'Done' : 'Cancel'}</Dialog.Close>
-          <Button onClick={() => void submit()} disabled={busy || !csv.trim()}>
-            {busy ? 'Importing…' : 'Import'}
-          </Button>
-        </Dialog.Actions>
+        <form
+          className="contents"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void submit();
+          }}
+        >
+          <div className="flex flex-col gap-3 py-4">
+            <FilePicker
+              accept=".csv,text/csv"
+              labels={{
+                title: 'Choose a CSV file',
+                description: 'Or paste the rows below.',
+                browse: 'Browse',
+              }}
+              onFiles={(files) => void readFile(files[0])}
+            />
+            <Textarea
+              submitOnModEnter
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              aria-label="CSV rows"
+              rows={8}
+              value={csv}
+              onChange={(event) => {
+                setCsv(event.target.value);
+                setResult(null);
+              }}
+              placeholder="releaseTitle,type,releaseDate,trackTitle&#10;Night Drive,EP,2026-10-01,Intro"
+              className="font-mono text-xs"
+            />
+            {result ? (
+              <div className="text-sm" role="status">
+                <p>
+                  Created {result.created}, skipped {result.skipped}.
+                </p>
+                {result.errors.length > 0 ? (
+                  <ul className="text-accent-red-strong mt-1 list-disc pl-5 text-xs">
+                    {result.errors.map((error) => (
+                      <li key={error}>{error}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+          <Dialog.Actions>
+            <Dialog.Close>{result ? 'Done' : 'Cancel'}</Dialog.Close>
+            <Button type="submit" disabled={busy || !csv.trim()}>
+              {busy ? 'Importing…' : 'Import'}
+            </Button>
+          </Dialog.Actions>
+        </form>
       </Dialog.Root>
     </>
   );

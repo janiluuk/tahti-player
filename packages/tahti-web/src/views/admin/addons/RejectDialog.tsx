@@ -33,23 +33,28 @@ export function RejectDialog({
       <Dialog.Description>
         A reason is required — it&apos;s shown to the author.
       </Dialog.Description>
-      <Textarea
-        aria-label="Rejection reason"
-        value={note}
-        rows={3}
-        placeholder="Why is this add-on being rejected?"
-        onChange={(event) => setNote(event.target.value)}
-      />
-      <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
-        <Button
-          type="button"
-          disabled={pending || !note.trim()}
-          onClick={() => onConfirm(note.trim())}
-        >
-          Reject
-        </Button>
-      </Dialog.Actions>
+      <form
+        className="contents"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onConfirm(note.trim());
+        }}
+      >
+        <Textarea
+          submitOnModEnter
+          aria-label="Rejection reason"
+          value={note}
+          rows={3}
+          placeholder="Why is this add-on being rejected?"
+          onChange={(event) => setNote(event.target.value)}
+        />
+        <Dialog.Actions>
+          <Dialog.Close>Cancel</Dialog.Close>
+          <Button disabled={pending || !note.trim()} type="submit">
+            Reject
+          </Button>
+        </Dialog.Actions>
+      </form>
     </Dialog.Root>
   );
 }

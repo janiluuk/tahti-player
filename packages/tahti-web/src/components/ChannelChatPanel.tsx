@@ -623,7 +623,13 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
           {CHAT_OFF_MESSAGE}
         </p>
       ) : !handle ? (
-        <div className="border-border flex flex-col gap-2 border-t p-3">
+        <form
+          className="border-border flex flex-col gap-2 border-t p-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void join();
+          }}
+        >
           <Input
             label="Handle"
             value={pendingHandle}
@@ -639,12 +645,18 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
               Signed in as @{user.username} - captcha not required.
             </p>
           )}
-          <Button size="sm" disabled={joining} onClick={() => void join()}>
+          <Button size="sm" disabled={joining} type="submit">
             {joining ? 'Joining…' : 'Join chat'}
           </Button>
-        </div>
+        </form>
       ) : (
-        <div className="border-border flex gap-2 border-t p-3">
+        <form
+          className="border-border flex gap-2 border-t p-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            send();
+          }}
+        >
           <Input
             enterKeyHint="send"
             aria-label="Chat message"
@@ -656,16 +668,10 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
                 : 'Connecting…'
             }
             size="sm"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                send();
-              }
-            }}
           />
           <Button
             size="sm"
-            onClick={send}
+            type="submit"
             disabled={
               !input.trim() ||
               !(
@@ -676,7 +682,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
           >
             Send
           </Button>
-        </div>
+        </form>
       )}
     </div>
   );

@@ -312,41 +312,42 @@ export function RadioBrowserDirectoryCard() {
                 content: (
                   <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-2">
-                      <Input
-                        enterKeyHint="search"
-                        size="sm"
-                        type="search"
-                        value={query}
-                        onChange={(event) => setQuery(event.target.value)}
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter') {
-                            void runSearch();
-                          }
+                      <form
+                        onSubmit={(event) => {
+                          event.preventDefault();
+                          void runSearch();
                         }}
-                        placeholder="Search stations"
-                        aria-label="Search stations"
-                        startAddon={
-                          <SearchIcon
-                            size={14}
-                            aria-hidden
-                            className="opacity-70"
-                          />
-                        }
-                        endAddon={
-                          <Tooltip content="Search" side="top">
-                            <Button
-                              type="button"
-                              variant="text"
-                              size="flexible"
-                              disabled={searching}
-                              onClick={() => void runSearch()}
-                              aria-label="Search"
-                            >
-                              <SearchIcon size={14} aria-hidden />
-                            </Button>
-                          </Tooltip>
-                        }
-                      />
+                      >
+                        <Input
+                          enterKeyHint="search"
+                          size="sm"
+                          type="search"
+                          value={query}
+                          onChange={(event) => setQuery(event.target.value)}
+                          placeholder="Search stations"
+                          aria-label="Search stations"
+                          startAddon={
+                            <SearchIcon
+                              size={14}
+                              aria-hidden
+                              className="opacity-70"
+                            />
+                          }
+                          endAddon={
+                            <Tooltip content="Search" side="top">
+                              <Button
+                                variant="text"
+                                size="flexible"
+                                disabled={searching}
+                                type="submit"
+                                aria-label="Search"
+                              >
+                                <SearchIcon size={14} aria-hidden />
+                              </Button>
+                            </Tooltip>
+                          }
+                        />
+                      </form>
                       {genreOptions.length > 0 ? (
                         <div className="flex flex-col gap-1.5">
                           <Button

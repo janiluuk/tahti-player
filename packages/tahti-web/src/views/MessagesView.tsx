@@ -397,7 +397,13 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
                     {RECIPIENT_UNAVAILABLE_MESSAGE}
                   </p>
                 ) : (
-                  <div className="border-border flex gap-2 border-t p-3">
+                  <form
+                    className="border-border flex gap-2 border-t p-3"
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      send();
+                    }}
+                  >
                     <Input
                       enterKeyHint="send"
                       aria-label="Message"
@@ -405,17 +411,11 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
                       onChange={(e) => setBody(e.target.value)}
                       placeholder="Write a message…"
                       size="sm"
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          send();
-                        }
-                      }}
                     />
-                    <Button size="sm" disabled={!body.trim()} onClick={send}>
+                    <Button size="sm" disabled={!body.trim()} type="submit">
                       Send
                     </Button>
-                  </div>
+                  </form>
                 )}
               </>
             )}

@@ -72,9 +72,9 @@ describe('RadioBrowserDirectoryCard', () => {
     fireEvent.click(await screen.findByRole('tab', { name: 'Browser' }));
     const input = await screen.findByLabelText('Search stations');
     fireEvent.change(input, { target: { value: 'old' } });
-    fireEvent.keyDown(input, { key: 'Enter' });
+    fireEvent.submit(input.closest('form')!);
     fireEvent.change(input, { target: { value: 'new' } });
-    fireEvent.keyDown(input, { key: 'Enter' });
+    fireEvent.submit(input.closest('form')!);
     expect(await screen.findByText('Newest')).toBeTruthy();
     await act(async () => finishOld([station('old', 'Stale')]));
     expect(screen.queryByText('Stale')).toBeNull();

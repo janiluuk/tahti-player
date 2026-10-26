@@ -275,7 +275,13 @@ export function TrackOrganizeDialog({
                 </Button>
               ))}
             </div>
-            <div className="flex items-end gap-2">
+            <form
+              className="flex items-end gap-2"
+              onSubmit={(event) => {
+                event.preventDefault();
+                addTag(tagInput);
+              }}
+            >
               <div className="min-w-0 flex-1">
                 <Input
                   enterKeyHint="done"
@@ -283,21 +289,12 @@ export function TrackOrganizeDialog({
                   value={tagInput}
                   disabled={busy}
                   onChange={(event) => setTagInput(event.target.value)}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter') {
-                      event.preventDefault();
-                      addTag(tagInput);
-                    }
-                  }}
                 />
               </div>
-              <Button
-                disabled={busy || !tagInput.trim()}
-                onClick={() => addTag(tagInput)}
-              >
+              <Button disabled={busy || !tagInput.trim()} type="submit">
                 Add
               </Button>
-            </div>
+            </form>
             {known.filter(
               (tag) => !tagCounts.some(([name]) => name === tag.name),
             ).length > 0 ? (

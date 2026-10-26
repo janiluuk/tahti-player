@@ -472,7 +472,13 @@ function ProEditor({ soundId }: { soundId: string }) {
                     />
 
                     <StudioPanel title="Export">
-                      <div className="flex flex-col gap-3">
+                      <form
+                        className="flex flex-col gap-3"
+                        onSubmit={(event) => {
+                          event.preventDefault();
+                          void save();
+                        }}
+                      >
                         <Input
                           label="Version label"
                           value={versionLabel}
@@ -495,7 +501,7 @@ function ProEditor({ soundId }: { soundId: string }) {
                           <SaveButton
                             saving={busy}
                             label="Save draft"
-                            onClick={() => void save()}
+                            type="submit"
                           />
                         </div>
                         {message && (
@@ -506,7 +512,7 @@ function ProEditor({ soundId }: { soundId: string }) {
                             {message}
                           </p>
                         )}
-                      </div>
+                      </form>
                     </StudioPanel>
                   </div>
 

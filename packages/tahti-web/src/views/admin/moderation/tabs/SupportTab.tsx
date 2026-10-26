@@ -375,7 +375,13 @@ export function SupportTab() {
 
               <div className="border-border flex flex-col gap-2 border-t p-3">
                 {msg && <p className="text-xs">{msg}</p>}
-                <div className="flex gap-2">
+                <form
+                  className="flex gap-2"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    sendReply();
+                  }}
+                >
                   <Input
                     enterKeyHint="send"
                     value={reply}
@@ -384,23 +390,17 @@ export function SupportTab() {
                     size="sm"
                     className="flex-1"
                     aria-label="Reply to ticket"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        sendReply();
-                      }
-                    }}
                   />
                   <Button
                     className="gap-1.5"
                     size="sm"
                     disabled={busy || !reply.trim()}
-                    onClick={sendReply}
+                    type="submit"
                   >
                     <SendIcon size={14} aria-hidden />
                     Reply
                   </Button>
-                </div>
+                </form>
               </div>
             </>
           )}

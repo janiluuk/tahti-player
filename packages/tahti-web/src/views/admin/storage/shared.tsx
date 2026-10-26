@@ -194,7 +194,24 @@ export function QuotaEditor({
   }
 
   return (
-    <div className="flex items-center gap-1.5">
+    <form
+      className="flex items-center gap-1.5"
+      onSubmit={(event) => {
+        event.preventDefault();
+        const mb = Number(value);
+        if (!Number.isFinite(mb) || mb <= 0) {
+          return;
+        }
+        setSaving(true);
+        void setUserStorageQuota(userId, Math.round(mb * 1024 * 1024)).then(
+          () => {
+            setSaving(false);
+            setEditing(false);
+            onSaved();
+          },
+        );
+      }}
+    >
       <Input
         type="number"
         size="sm"
@@ -206,25 +223,7 @@ export function QuotaEditor({
         aria-label={`Quota in MB for ${displayName}`}
       />
       <span className="text-foreground-secondary text-xs">MB</span>
-      <SaveButton
-        size="sm"
-        saving={saving}
-        title="Save quota"
-        onClick={() => {
-          const mb = Number(value);
-          if (!Number.isFinite(mb) || mb <= 0) {
-            return;
-          }
-          setSaving(true);
-          void setUserStorageQuota(userId, Math.round(mb * 1024 * 1024)).then(
-            () => {
-              setSaving(false);
-              setEditing(false);
-              onSaved();
-            },
-          );
-        }}
-      />
+      <SaveButton size="sm" saving={saving} title="Save quota" type="submit" />
       <Tooltip content="Cancel" side="top">
         <Button
           size="icon-sm"
@@ -235,7 +234,7 @@ export function QuotaEditor({
           <XIcon size={14} aria-hidden />
         </Button>
       </Tooltip>
-    </div>
+    </form>
   );
 }
 

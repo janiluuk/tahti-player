@@ -99,7 +99,13 @@ export function SocialPostNow({
   return (
     <div className="flex flex-col gap-3" data-testid="social-post-now">
       {selected ? (
-        <div className="border-border flex flex-col gap-3 rounded-lg border p-4">
+        <form
+          className="border-border flex flex-col gap-3 rounded-lg border p-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            submit();
+          }}
+        >
           <h3 className="text-sm font-semibold">Post now</h3>
           {platforms.length > 1 ? (
             <Select
@@ -116,6 +122,7 @@ export function SocialPostNow({
             />
           ) : null}
           <Textarea
+            submitOnModEnter
             label="Message"
             value={message}
             maxLength={500}
@@ -126,13 +133,13 @@ export function SocialPostNow({
             <Button
               size="sm"
               disabled={posting || !message.trim()}
-              onClick={submit}
+              type="submit"
             >
               <SendIcon size={14} aria-hidden className="mr-1.5" />
               {posting ? 'Queuing…' : `Post to ${PLATFORM_NAMES[selected]}`}
             </Button>
           </div>
-        </div>
+        </form>
       ) : null}
 
       {posts && posts.length > 0 ? (
