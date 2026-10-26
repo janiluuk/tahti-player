@@ -170,3 +170,22 @@ export const UploadNewTrack: Story = {
     await expect(await canvas.findByText('midnight-sun')).toBeVisible();
   },
 };
+
+// Delete asks first; Cancel keeps the release.
+export const DeleteAsksFirst: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByRole('heading', { name: 'After Hours' });
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Delete release' }),
+    );
+    const dialog = await findDialog(canvasElement, 'Delete this release?');
+    await expect(
+      dialog.getByText(/Tracks you uploaded stay in your library/),
+    ).toBeVisible();
+    await userEvent.click(dialog.getByRole('button', { name: 'Cancel' }));
+    await expect(
+      canvas.getByRole('heading', { name: 'After Hours' }),
+    ).toBeVisible();
+  },
+};
