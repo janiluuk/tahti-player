@@ -121,3 +121,53 @@ export async function fetchStatsAudience(
     };
   }
 }
+
+export type StatsLocation = StatsShare & { countryCode: string | null };
+
+export type StatsLocations = {
+  total: number;
+  minBucket: number;
+  countries: StatsLocation[];
+  cities: StatsLocation[];
+};
+
+export const MOCK_STATS_LOCATIONS: StatsLocations = {
+  total: 820,
+  minBucket: 5,
+  countries: [
+    { name: 'FI', countryCode: 'FI', count: 512, share: 0.6244 },
+    { name: 'SE', countryCode: 'SE', count: 96, share: 0.1171 },
+    { name: 'DE', countryCode: 'DE', count: 71, share: 0.0866 },
+    { name: 'EE', countryCode: 'EE', count: 44, share: 0.0537 },
+    { name: 'Other', countryCode: null, count: 97, share: 0.1183 },
+  ],
+  cities: [
+    { name: 'Helsinki', countryCode: 'FI', count: 288, share: 0.3512 },
+    { name: 'Tampere', countryCode: 'FI', count: 74, share: 0.0902 },
+    { name: 'Stockholm', countryCode: 'SE', count: 52, share: 0.0634 },
+    { name: 'Turku', countryCode: 'FI', count: 33, share: 0.0402 },
+    { name: 'Berlin', countryCode: 'DE', count: 21, share: 0.0256 },
+  ],
+};
+
+export async function fetchStatsLocations(
+  window: StatsAudienceWindow,
+): Promise<{ data: StatsLocations; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return {
+      data: MOCK_STATS_LOCATIONS,
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<StatsLocations>(
+      `/api/me/stats/locations?${statsWindowParams(window).toString()}`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return {
+      data: { total: 0, minBucket: 5, countries: [], cities: [] },
+      meta: failMeta(err),
+    };
+  }
+}

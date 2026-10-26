@@ -17,6 +17,7 @@ import {
 import { useThemeStore } from '../../../plugins/themes';
 import { AudienceBreakdown } from './AudienceBreakdown';
 import { formatDate } from './helpers';
+import { ListenerLocations } from './ListenerLocations';
 import type { StatsData } from './useStatsData';
 
 export function PlaysTab({
@@ -55,6 +56,15 @@ export function PlaysTab({
             </span>
           </div>
           <ListenerWorldMap data={listenerGeo} loading={loading} compact />
+          {active ? (
+            <ListenerLocations
+              window={{
+                range,
+                from: appliedCustom?.from,
+                to: appliedCustom?.to,
+              }}
+            />
+          ) : null}
         </StudioPanel>
 
         <StudioPanel title="Plays over time">
