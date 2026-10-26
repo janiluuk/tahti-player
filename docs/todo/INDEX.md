@@ -15,7 +15,6 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | blocked | [final-season-hardening.md](final-season-hardening.md) | Cutover L ops (vend SPA, prod upstream, runbook); DNS map filled — you flip |
 | blocked | [first-100-users-infra.md](first-100-users-infra.md) | Ops verify backups/disk + deploy Swarm fail-closed (#872/#873/#1079 merged); host access required |
 | open    | [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md) | Radio Nova + NRJ (Bauer AAC streams) do not play in production; reproduce in a real browser |
-| partial | [finnish-radio-now-playing-scrapers.md](finnish-radio-now-playing-scrapers.md) | ICY-only for YleX/Rock/Suomipop; left: org UA + kill-switch |
 | blocked | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live verify Centrifugo Send on brand-new channel — playbook ready |
 
 ## Engineering backlog (no external blocker)
@@ -24,7 +23,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | ------- | ---- | -------- |
 | open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |
-| open    | [studio-stats-audience-breakdown.md](studio-stats-audience-breakdown.md) | Rest of the stats page from the reference screenshot: stacked daily + CSV, loyalty, city list, browser/OS/device/source breakdown; needs tahti-org UA/referrer capture first |
+| partial | [studio-stats-audience-breakdown.md](studio-stats-audience-breakdown.md) | Shipped in batch 111; left: a Storybook story for the new Stats → Plays panels |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |
 
@@ -32,7 +31,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| blocked | [dead-end-leftovers.md](dead-end-leftovers.md) | OAuth app credentials (ops), Bandcamp API approval, Google Drive Picker, release delete (tahti-org route), governance Retry |
+| blocked | [dead-end-leftovers.md](dead-end-leftovers.md) | OAuth app credentials (ops), Bandcamp API approval, Google Drive Picker, governance Retry |
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
 | blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
 | blocked | [listening-party.md](listening-party.md) | Needs user go-ahead for tahti-org work |

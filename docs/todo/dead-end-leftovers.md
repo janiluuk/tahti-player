@@ -22,14 +22,9 @@ that tahti-web can fix on its own (see HISTORY). These need someone else first.
   (`import: false`). Hidden on the upload page; the Plugin store card says so.
 - **Google Drive:** connects, but the Google Picker file chooser was never built, so
   there is nothing to import. Hidden on the upload page; the card points to Upload.
-- **Delete a release:** no `DELETE` release route in tahti-org (see
-  `ux-backlog.md`).
 
 ## Found in batch 77
 
-- **Meeting conflicts never load:** `MeetingConflicts` calls
-  `GET /api/v1/governance/meetings/:id/conflicts`, which tahti-org doesn't have (only the
-  admin route exists), so the panel is always hidden. Needs a member route in tahti-org.
 - [x] **~100 fetchers labeled real API failures as `source: 'mock'`** — fixed in
   batch 80: `failMeta` ≡ `apiErrorMeta` (`source: 'api'`); intentional mock
   fixture returns use `mockFallbackMeta`. Callers updated (`libraryStore`,

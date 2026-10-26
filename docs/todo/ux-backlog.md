@@ -68,7 +68,6 @@ new surface, one PR per row.
 
 ## Studio functional
 
-- [ ] Delete a release — needs a tahti-org `DELETE` route for releases first.
 - [ ] Add selected Sounds to a release (bulk action; needs a picker).
 - [ ] Undo for publish / create flows (none in Studio).
 
