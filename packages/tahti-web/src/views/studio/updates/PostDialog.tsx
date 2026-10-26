@@ -177,6 +177,7 @@ export function PostDialog({
               autoFocus
             />
             <Textarea
+              submitOnModEnter
               label="Body"
               tone="secondary"
               value={body}

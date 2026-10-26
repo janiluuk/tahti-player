@@ -99,6 +99,7 @@ export function VenueDetailsForm({
         onChange={(e) => setCapacity(e.target.value)}
       />
       <Textarea
+        submitOnModEnter
         id={descriptionId}
         label="Description"
         rows={4}

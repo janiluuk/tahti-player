@@ -57,6 +57,7 @@ function TicketReplyForm({
       onSubmit={(event) => void submit(event)}
     >
       <Textarea
+        submitOnModEnter
         aria-label={`Reply to ${ticket.subject}`}
         placeholder={
           ticket.status === 'RESOLVED'

@@ -162,6 +162,7 @@ export function VenueRegisterView() {
           onChange={(e) => setCapacity(e.target.value)}
         />
         <Textarea
+          submitOnModEnter
           label="Description (optional)"
           tone="secondary"
           className="min-h-[6rem] text-sm"

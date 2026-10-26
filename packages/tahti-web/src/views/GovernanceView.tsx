@@ -655,6 +655,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               maxLength={200}
             />
             <Textarea
+              submitOnModEnter
               tone="secondary"
               value={draftDescription}
               onChange={(event) => setDraftDescription(event.target.value)}

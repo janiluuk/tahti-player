@@ -192,6 +192,7 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
               {TYPE_HELP[type]}
             </p>
             <Textarea
+              submitOnModEnter
               label="Reason"
               tone="secondary"
               value={reason}

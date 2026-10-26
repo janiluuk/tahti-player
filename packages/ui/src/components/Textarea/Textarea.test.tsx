@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
 import '@tahti-player/tailwind-config';
 
@@ -40,5 +40,46 @@ describe('Textarea', () => {
   it('renders the bare textarea without label props', () => {
     const { container } = render(<Textarea aria-label="Notes" />);
     expect(container.firstElementChild?.tagName).toBe('TEXTAREA');
+  });
+  describe('submitOnModEnter', () => {
+    const renderForm = (disabled = false, submitOnModEnter = true) => {
+      const onSubmit = vi.fn((event: { preventDefault: () => void }) =>
+        event.preventDefault(),
+      );
+      render(
+        <form onSubmit={onSubmit}>
+          <Textarea aria-label="Note" submitOnModEnter={submitOnModEnter} />
+          <button type="submit" disabled={disabled}>
+            Save
+          </button>
+        </form>,
+      );
+      return { onSubmit, field: screen.getByRole('textbox', { name: 'Note' }) };
+    };
+
+    it('submits the form on Cmd+Enter and Ctrl+Enter', () => {
+      const { onSubmit, field } = renderForm();
+      fireEvent.keyDown(field, { key: 'Enter', metaKey: true });
+      fireEvent.keyDown(field, { key: 'Enter', ctrlKey: true });
+      expect(onSubmit).toHaveBeenCalledTimes(2);
+    });
+
+    it('keeps plain Enter for new lines', () => {
+      const { onSubmit, field } = renderForm();
+      fireEvent.keyDown(field, { key: 'Enter' });
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it('does nothing while the submit button is disabled', () => {
+      const { onSubmit, field } = renderForm(true);
+      fireEvent.keyDown(field, { key: 'Enter', metaKey: true });
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it('is off unless asked for', () => {
+      const { onSubmit, field } = renderForm(false, false);
+      fireEvent.keyDown(field, { key: 'Enter', metaKey: true });
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
   });
 });

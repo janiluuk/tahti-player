@@ -68,6 +68,7 @@ export function CandidacyControl({
           }}
         >
           <Textarea
+            submitOnModEnter
             id={statementId}
             label="Why you are standing (optional)"
             value={statement}

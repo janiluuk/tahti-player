@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
-import { Textarea } from '@tahti-player/ui';
+import { Button, Textarea } from '@tahti-player/ui';
 
 const meta: Meta<typeof Textarea> = {
   title: 'Components/Textarea',
@@ -45,5 +46,34 @@ export const WithError: Story = {
   args: {
     label: 'What is being corrected',
     error: 'Describe the correction.',
+  },
+};
+
+const submitComment = fn();
+
+/** `submitOnModEnter`: Cmd/Ctrl+Enter submits the enclosing form; Enter
+ * alone still adds a new line. */
+export const SubmitOnModEnter: Story = {
+  render: () => (
+    <form
+      className="flex flex-col gap-2"
+      onSubmit={(event) => {
+        event.preventDefault();
+        submitComment();
+      }}
+    >
+      <Textarea label="Comment" submitOnModEnter rows={3} />
+      <Button type="submit" className="self-end">
+        Post comment
+      </Button>
+    </form>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const field = canvas.getByRole('textbox', { name: 'Comment' });
+    await userEvent.type(field, 'First line{Enter}second line');
+    await expect(submitComment).not.toHaveBeenCalled();
+    await userEvent.keyboard('{Control>}{Enter}{/Control}');
+    await expect(submitComment).toHaveBeenCalledTimes(1);
   },
 };

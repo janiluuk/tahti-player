@@ -208,6 +208,7 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                   />
                 </div>
                 <Textarea
+                  submitOnModEnter
                   label="Description"
                   value={description}
                   onChange={(event) => setDescription(event.target.value)}

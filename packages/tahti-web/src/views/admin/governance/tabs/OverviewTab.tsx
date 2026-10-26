@@ -292,6 +292,7 @@ export function OverviewTab() {
               ]}
             />
             <Textarea
+              submitOnModEnter
               value={resolutionBody}
               onChange={(event) => setResolutionBody(event.target.value)}
               aria-label="Resolution body"

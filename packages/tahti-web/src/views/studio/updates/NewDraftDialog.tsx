@@ -66,6 +66,7 @@ export function NewDraftDialog({
             autoFocus
           />
           <Textarea
+            submitOnModEnter
             label="Body (markdown)"
             tone="secondary"
             value={body}

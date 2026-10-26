@@ -172,6 +172,7 @@ export function CorrectionsPanel() {
           ).map((id) => ({ id, label: CORRECTION_SUBJECT_LABELS[id] }))}
         />
         <Textarea
+          submitOnModEnter
           label="What is wrong, and what should it be?"
           rows={3}
           value={details}

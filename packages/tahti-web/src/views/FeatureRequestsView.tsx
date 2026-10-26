@@ -188,6 +188,7 @@ export function FeatureRequestsView({
             maxLength={200}
           />
           <Textarea
+            submitOnModEnter
             label="Description"
             tone="secondary"
             className="min-h-[6rem] text-sm"

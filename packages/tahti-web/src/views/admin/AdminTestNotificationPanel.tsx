@@ -67,6 +67,7 @@ export function AdminTestNotificationPanel() {
           onChange={(event) => setTitle(event.target.value)}
         />
         <Textarea
+          submitOnModEnter
           label="Message (optional)"
           value={body}
           maxLength={500}

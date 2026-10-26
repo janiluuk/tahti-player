@@ -74,6 +74,7 @@ export function EpisodeEditorRow({
           onChange={(event) => setTitle(event.target.value)}
         />
         <Textarea
+          submitOnModEnter
           label="Description"
           tone="secondary"
           value={description}

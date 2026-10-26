@@ -71,6 +71,7 @@ function AdjustmentForm({
         placeholder="e.g. 25 or -10"
       />
       <Textarea
+        submitOnModEnter
         label="Reason"
         tone="secondary"
         value={reason}

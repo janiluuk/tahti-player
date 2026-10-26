@@ -169,6 +169,7 @@ export function StudioShowsView() {
                   autoFocus
                 />
                 <Textarea
+                  submitOnModEnter
                   label="Description"
                   tone="secondary"
                   value={description}

@@ -183,6 +183,7 @@ export function AdminNewsView() {
                               onChange={(e) => setEditHeadline(e.target.value)}
                             />
                             <Textarea
+                              submitOnModEnter
                               label="Summary"
                               tone="secondary"
                               value={editSummary}

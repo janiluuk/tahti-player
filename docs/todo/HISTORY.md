@@ -1,3 +1,15 @@
+## 2026-10-26 - UX batch 109 thirty-one Cmd/Ctrl+Enter slices
+
+`@tahti-player/ui` `Textarea` gets `submitOnModEnter`: Cmd/Ctrl+Enter submits
+the enclosing form through its first submit button, does nothing while that
+button is disabled, and plain Enter still adds a new line (unit tests and a
+Storybook play). Turned on for all thirty-one textareas that sit in a form:
+channel comments, feature ideas, support tickets and contact, map comments,
+fan and purchase tiers, venue details and registration, governance motions,
+corrections, candidacy, resolutions and declarations, annual report
+correction, admin user engagement / restrictions, test notification, news,
+radio presets, add-on register and publish, studio events, shows, show
+defaults, episodes, updates drafts and posts. tahti-web `0.0.268`.
 ## 2026-10-26 - UX batch 106 thirty-seven Enter key slices
 
 Phone keyboards label the Enter key for what it does. All thirty search

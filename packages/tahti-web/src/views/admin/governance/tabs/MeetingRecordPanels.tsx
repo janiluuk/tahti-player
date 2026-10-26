@@ -167,6 +167,7 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
           onChange={(event) => setName(event.target.value)}
         />
         <Textarea
+          submitOnModEnter
           label="Matter"
           value={matter}
           rows={2}

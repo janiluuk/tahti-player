@@ -236,6 +236,7 @@ export function FanTiersEditor() {
               onChange={(e) => setEurosAmt(e.target.value)}
             />
             <Textarea
+              submitOnModEnter
               label="Description"
               tone="secondary"
               value={description}
