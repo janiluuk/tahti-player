@@ -56,10 +56,12 @@ export type {
   StatsAudienceWindow,
   StatsLocation,
   StatsLocations,
+  StatsLoyalty,
 } from './studio-extras/stats-audience';
 export {
   fetchStatsAudience,
   fetchStatsLocations,
+  fetchStatsLoyalty,
 } from './studio-extras/stats-audience';
 export type { ProfileFields, ProfilePatch } from './studio-extras/profile';
 export { fetchMeProfile, patchMeProfile } from './studio-extras/profile';

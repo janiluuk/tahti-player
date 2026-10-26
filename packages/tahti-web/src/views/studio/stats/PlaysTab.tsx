@@ -18,6 +18,7 @@ import { useThemeStore } from '../../../plugins/themes';
 import { AudienceBreakdown } from './AudienceBreakdown';
 import { formatDate } from './helpers';
 import { ListenerLocations } from './ListenerLocations';
+import { ListenerLoyalty } from './ListenerLoyalty';
 import type { StatsData } from './useStatsData';
 
 export function PlaysTab({
@@ -126,13 +127,22 @@ export function PlaysTab({
         </StudioPanel>
       </div>
       {active ? (
-        <AudienceBreakdown
-          window={{
-            range,
-            from: appliedCustom?.from,
-            to: appliedCustom?.to,
-          }}
-        />
+        <>
+          <ListenerLoyalty
+            window={{
+              range,
+              from: appliedCustom?.from,
+              to: appliedCustom?.to,
+            }}
+          />
+          <AudienceBreakdown
+            window={{
+              range,
+              from: appliedCustom?.from,
+              to: appliedCustom?.to,
+            }}
+          />
+        </>
       ) : null}
     </div>
   );

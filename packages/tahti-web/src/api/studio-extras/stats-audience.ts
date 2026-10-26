@@ -171,3 +171,39 @@ export async function fetchStatsLocations(
     };
   }
 }
+
+export type StatsLoyalty = {
+  total: number;
+  minBucket: number;
+  points: { percent: number; share: number }[];
+};
+
+export const MOCK_STATS_LOYALTY: StatsLoyalty = {
+  total: 340,
+  minBucket: 5,
+  points: [1, 0.86, 0.78, 0.71, 0.66, 0.61, 0.55, 0.5, 0.46, 0.41, 0.37].map(
+    (share, index) => ({ percent: index * 10, share }),
+  ),
+};
+
+export async function fetchStatsLoyalty(
+  window: StatsAudienceWindow,
+): Promise<{ data: StatsLoyalty; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return {
+      data: MOCK_STATS_LOYALTY,
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<StatsLoyalty>(
+      `/api/me/stats/loyalty?${statsWindowParams(window).toString()}`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return {
+      data: { total: 0, minBucket: 5, points: [] },
+      meta: failMeta(err),
+    };
+  }
+}
