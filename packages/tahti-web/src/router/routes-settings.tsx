@@ -30,10 +30,7 @@ export const settingsSectionRoute = createRoute({
       });
     }
   },
-  component: function SettingsSectionRoute() {
-    const { section } = settingsSectionRoute.useParams();
-    return <SettingsView sectionId={section} />;
-  },
+  component: () => <SettingsView />,
 });
 
 export const feedRoute = createRoute({
