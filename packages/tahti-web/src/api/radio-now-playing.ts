@@ -4,7 +4,7 @@ import { readIcyStreamTitle } from './radio-sources';
 
 type StationProgramme = { title: string | null; artist: string | null };
 
-const CACHE_MS = 60_000;
+const CACHE_MS = 20_000;
 const cache = new Map<string, { at: number; value: string | null }>();
 
 // Shorter than the 30 s poll so each poller still gets a fresh answer every
@@ -29,7 +29,7 @@ export function formatStationProgramme(
 
 /** What a station's own programme page says is on, via the API. Null when
  * the API has no parser for that station or the page gave nothing. Results
- * are kept for a minute, matching the API's own cache. */
+ * are kept for 20 seconds, matching the API's own cache. */
 export async function fetchStationProgramme(
   programmingUrl: string,
 ): Promise<string | null> {
