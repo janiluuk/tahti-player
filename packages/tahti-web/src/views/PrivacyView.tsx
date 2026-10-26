@@ -42,6 +42,10 @@ export function PrivacyView() {
               body: 'Play counts, download counts, and fan subscription activity. Used to calculate your engagement units for the annual grant distribution. Aggregated totals are published on the transparency page (with your consent for attribution).',
             },
             {
+              term: 'Listening statistics',
+              body: 'While a track or channel plays, the player tells us every few minutes that you are still listening. For each listening session we store the track or channel, the time, a hash of your IP address that changes daily, your country and city looked up from the IP, your browser, operating system and device type and maker read from the user agent, the host of the site that linked you here, and how far into a track you got. The IP address and the full user agent are not stored. Artists see only shares across all their listeners, and a browser, device, site or city is only named once at least five listens share it.',
+            },
+            {
               term: 'Newsletter data',
               body: 'If listeners subscribe to your newsletter, their email addresses are stored on your behalf. You are the data controller for your subscriber list; we are the processor.',
             },

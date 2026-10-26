@@ -177,6 +177,28 @@ export async function patchStudioRelease(
   }
 }
 
+/** Deletes a release the artist owns; its tracks' uploaded sounds stay.
+ * The API refuses once the release has been sent for distribution. */
+export async function deleteStudioRelease(
+  id: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    return { ok: true };
+  }
+  try {
+    await requestJson(`/api/me/releases/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    });
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not delete the release.',
+    };
+  }
+}
+
 export async function patchStudioReleaseVisual(
   id: string,
   visualPreset: string,

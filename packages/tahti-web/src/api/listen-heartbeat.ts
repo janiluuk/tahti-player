@@ -12,12 +12,38 @@ export type ListenSource =
 
 export type ListenTarget = { soundId: string } | { channelSlug: string };
 
+export type ListenPosition = { positionSec: number; durationSec: number };
+
+/** Host of the page that sent the listener here, without `www.`; null when
+ * there is none or it is this site. Only the host is ever sent. */
+export function referrerHostOf(
+  referrer: string,
+  ownHost: string,
+): string | null {
+  try {
+    const host = new URL(referrer).hostname.toLowerCase().replace(/^www\./, '');
+    return host && host !== ownHost.toLowerCase().replace(/^www\./, '')
+      ? host
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+const entryReferrerHost =
+  typeof document === 'undefined'
+    ? null
+    : referrerHostOf(document.referrer, window.location.hostname);
+
 /** "Still listening" ping for listen-time stats. The API opens or extends
- * a listen session per listener and closes it when the pings stop, so no
- * duration is sent. Fire-and-forget: never affects playback. */
+ * a listen session per listener and closes it when the pings stop. Tracks
+ * also report how far they have played, for the loyalty curve. Fire-and-
+ * forget: never affects playback. */
 export function sendListenHeartbeat(
   target: ListenTarget,
   source: ListenSource,
+  position?: ListenPosition,
+  referrerHost: string | null = entryReferrerHost,
 ): void {
   if (isForceMock()) {
     return;
@@ -27,7 +53,12 @@ export function sendListenHeartbeat(
     credentials: 'include',
     keepalive: true,
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...target, source }),
+    body: JSON.stringify({
+      ...target,
+      source,
+      ...(referrerHost ? { referrerHost } : {}),
+      ...(position ?? {}),
+    }),
   }).catch(() => undefined);
 }
 
