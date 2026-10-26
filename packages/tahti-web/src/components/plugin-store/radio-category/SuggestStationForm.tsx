@@ -98,12 +98,14 @@ export function SuggestStationForm() {
               placeholder="128"
             />
             <Input
+              inputMode="url"
               label="Logo URL"
               value={logoUrl}
               onChange={(e) => setLogoUrl(e.target.value)}
               placeholder="https://…"
             />
             <Input
+              inputMode="url"
               label="Stream URL"
               value={streamUrl}
               onChange={(e) => setStreamUrl(e.target.value)}

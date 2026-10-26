@@ -409,6 +409,7 @@ export function OAuthServiceCard({
                 </p>
               )}
               <Input
+                inputMode="url"
                 label="SoundCloud profile URL"
                 value={profileDraft}
                 onChange={(e) => setProfileDraft(e.target.value)}

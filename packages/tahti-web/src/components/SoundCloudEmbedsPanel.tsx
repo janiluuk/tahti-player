@@ -81,6 +81,7 @@ export function SoundCloudEmbedsPanel() {
           >
             <div className="min-w-0 flex-1">
               <Input
+                inputMode="url"
                 label="SoundCloud track URL"
                 value={url}
                 placeholder="https://soundcloud.com/artist/track"

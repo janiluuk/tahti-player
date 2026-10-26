@@ -71,6 +71,9 @@ export function GreenRoomInviteForm({
       >
         <div className="min-w-0 flex-1">
           <Input
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             label="Invite by handle"
             placeholder="@username"
             value={handle}

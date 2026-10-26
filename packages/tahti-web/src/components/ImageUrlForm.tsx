@@ -39,6 +39,7 @@ export function ImageUrlForm({
       onSubmit={(event) => void submit(event)}
     >
       <Input
+        inputMode="url"
         label="Image URL"
         description="A direct link to a JPEG, PNG or WebP image. Tahti keeps its own copy."
         value={url}

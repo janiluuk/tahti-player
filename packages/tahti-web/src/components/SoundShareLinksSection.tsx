@@ -182,6 +182,9 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
         <Input
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           className="flex-1"
           label="Limit to a username (optional)"
           value={granteeUsername}
