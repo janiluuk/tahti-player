@@ -14,13 +14,9 @@ exports[`ShareList > (Snapshot) renders a titled list 1`] = `
       class="flex flex-col gap-1.5"
     >
       <li
-        class="grid grid-cols-[auto_1fr_auto] items-center gap-x-2 gap-y-1 text-sm"
+        class="grid items-center gap-x-2 gap-y-1 text-sm grid-cols-[1fr_auto]"
         data-testid="share-list-row"
       >
-        <span
-          aria-hidden="true"
-          class="text-foreground-secondary flex size-5 items-center justify-center"
-        />
         <span
           class="min-w-0 truncate"
         >
@@ -36,7 +32,7 @@ exports[`ShareList > (Snapshot) renders a titled list 1`] = `
           aria-valuemax="0.6"
           aria-valuemin="0"
           aria-valuenow="0.6"
-          class="bg-background-secondary h-1.5 overflow-hidden rounded-full col-start-2 col-end-4"
+          class="bg-background-secondary h-1.5 overflow-hidden rounded-full col-span-2"
           role="meter"
         >
           <div
@@ -46,13 +42,9 @@ exports[`ShareList > (Snapshot) renders a titled list 1`] = `
         </div>
       </li>
       <li
-        class="grid grid-cols-[auto_1fr_auto] items-center gap-x-2 gap-y-1 text-sm"
+        class="grid items-center gap-x-2 gap-y-1 text-sm grid-cols-[1fr_auto]"
         data-testid="share-list-row"
       >
-        <span
-          aria-hidden="true"
-          class="text-foreground-secondary flex size-5 items-center justify-center"
-        />
         <span
           class="min-w-0 truncate"
         >
@@ -68,7 +60,7 @@ exports[`ShareList > (Snapshot) renders a titled list 1`] = `
           aria-valuemax="0.6"
           aria-valuemin="0"
           aria-valuenow="0.3"
-          class="bg-background-secondary h-1.5 overflow-hidden rounded-full col-start-2 col-end-4"
+          class="bg-background-secondary h-1.5 overflow-hidden rounded-full col-span-2"
           role="meter"
         >
           <div
@@ -78,13 +70,9 @@ exports[`ShareList > (Snapshot) renders a titled list 1`] = `
         </div>
       </li>
       <li
-        class="grid grid-cols-[auto_1fr_auto] items-center gap-x-2 gap-y-1 text-sm"
+        class="grid items-center gap-x-2 gap-y-1 text-sm grid-cols-[1fr_auto]"
         data-testid="share-list-row"
       >
-        <span
-          aria-hidden="true"
-          class="text-foreground-secondary flex size-5 items-center justify-center"
-        />
         <span
           class="min-w-0 truncate"
         >
@@ -100,7 +88,7 @@ exports[`ShareList > (Snapshot) renders a titled list 1`] = `
           aria-valuemax="0.6"
           aria-valuemin="0"
           aria-valuenow="0.1"
-          class="bg-background-secondary h-1.5 overflow-hidden rounded-full col-start-2 col-end-4"
+          class="bg-background-secondary h-1.5 overflow-hidden rounded-full col-span-2"
           role="meter"
         >
           <div

@@ -23,6 +23,17 @@ describe('ShareList', () => {
     expect(meters[1]).toHaveAccessibleName('Firefox 30 %');
   });
 
+  it('only keeps an icon column when some row has an icon', () => {
+    const { container, rerender } = render(<ShareList items={items} />);
+    expect(container.querySelector('[aria-hidden]')).toBeNull();
+    rerender(
+      <ShareList
+        items={[{ id: 'phone', label: 'Smartphone', share: 1, icon: <svg /> }]}
+      />,
+    );
+    expect(container.querySelector('li > [aria-hidden]')).not.toBeNull();
+  });
+
   it('shows one decimal for shares under 10 %', () => {
     render(<ShareList items={[{ id: 'edge', label: 'Edge', share: 0.042 }]} />);
     expect(screen.getByText('4.2 %')).toBeInTheDocument();

@@ -32,6 +32,7 @@ export const ShareList: FC<ShareListProps> = ({
 }) => {
   const Heading = `h${headingLevel}` as const;
   const max = Math.max(0, ...items.map((item) => item.share));
+  const withIcons = items.some((item) => item.icon != null);
 
   return (
     <div className={cn('flex min-w-0 flex-col gap-2', className)} {...props}>
@@ -48,14 +49,21 @@ export const ShareList: FC<ShareListProps> = ({
             <li
               key={item.id}
               data-testid="share-list-row"
-              className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2 gap-y-1 text-sm"
+              className={cn(
+                'grid items-center gap-x-2 gap-y-1 text-sm',
+                withIcons
+                  ? 'grid-cols-[auto_1fr_auto]'
+                  : 'grid-cols-[1fr_auto]',
+              )}
             >
-              <span
-                aria-hidden
-                className="text-foreground-secondary flex size-5 items-center justify-center"
-              >
-                {item.icon}
-              </span>
+              {withIcons ? (
+                <span
+                  aria-hidden
+                  className="text-foreground-secondary flex size-5 items-center justify-center"
+                >
+                  {item.icon}
+                </span>
+              ) : null}
               <span className="min-w-0 truncate">{item.label}</span>
               <span className="text-foreground-secondary tabular-nums">
                 {formatShare(item.share)}
@@ -64,7 +72,7 @@ export const ShareList: FC<ShareListProps> = ({
                 value={item.share}
                 max={max || 1}
                 aria-label={`${item.label} ${formatShare(item.share)}`}
-                className="col-start-2 col-end-4"
+                className={withIcons ? 'col-start-2 col-end-4' : 'col-span-2'}
               />
             </li>
           ))}
