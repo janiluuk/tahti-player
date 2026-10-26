@@ -29,24 +29,26 @@ export function ChatView({ slug }: { slug?: string }) {
           content: 'gap-6',
         }}
       >
-        <Input
-          autoCapitalize="none"
-          autoCorrect="off"
-          spellCheck={false}
-          label="Channel slug"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-        />
-        <Button
-          onClick={() => {
+        <form
+          className="contents"
+          onSubmit={(event) => {
+            event.preventDefault();
             const s = draft.trim();
             if (s) {
               void navigate({ to: '/chat/$slug', params: { slug: s } });
             }
           }}
         >
-          Open chat
-        </Button>
+          <Input
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            label="Channel slug"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+          />
+          <Button type="submit">Open chat</Button>
+        </form>
         <div className="flex flex-wrap gap-2 text-sm">
           {suggestions.map((s) => (
             <Link

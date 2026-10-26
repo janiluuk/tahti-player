@@ -207,113 +207,120 @@ export function TrackEditorDialog({
         Changes are kept in your library and survive rescans; the audio files
         are not modified. Leave a field alone to keep each track’s own value.
       </Dialog.Description>
-      {loadError ? (
-        <InlineError>{loadError}</InlineError>
-      ) : !summary ? (
-        <InlineLoader label="Loading…" />
-      ) : (
-        <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto py-2">
-          {FIELDS.map(({ field, label }) => {
-            const info = summaryFor(field);
-            const mixed = (info?.distinct ?? 1) > 1;
-            const reverting = draft[field] === null;
-            const value =
-              field in draft && draft[field] !== null
-                ? (draft[field] as string)
-                : reverting
-                  ? ''
-                  : mixed
+      <form
+        className="contents"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void apply();
+        }}
+      >
+        {loadError ? (
+          <InlineError>{loadError}</InlineError>
+        ) : !summary ? (
+          <InlineLoader label="Loading…" />
+        ) : (
+          <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto py-2">
+            {FIELDS.map(({ field, label }) => {
+              const info = summaryFor(field);
+              const mixed = (info?.distinct ?? 1) > 1;
+              const reverting = draft[field] === null;
+              const value =
+                field in draft && draft[field] !== null
+                  ? (draft[field] as string)
+                  : reverting
                     ? ''
-                    : (info?.value ?? '');
-            return (
-              <div key={field} className="flex items-end gap-2">
-                <div className="min-w-0 flex-1">
-                  <Input
-                    label={label}
-                    value={value}
-                    disabled={reverting}
-                    placeholder={
-                      reverting
-                        ? 'Will go back to the file’s tag'
-                        : mixed
-                          ? 'Mixed values'
-                          : ''
-                    }
-                    onChange={(event) =>
-                      setDraft((current) => ({
-                        ...current,
-                        [field]: event.target.value,
-                      }))
-                    }
-                  />
+                    : mixed
+                      ? ''
+                      : (info?.value ?? '');
+              return (
+                <div key={field} className="flex items-end gap-2">
+                  <div className="min-w-0 flex-1">
+                    <Input
+                      label={label}
+                      value={value}
+                      disabled={reverting}
+                      placeholder={
+                        reverting
+                          ? 'Will go back to the file’s tag'
+                          : mixed
+                            ? 'Mixed values'
+                            : ''
+                      }
+                      onChange={(event) =>
+                        setDraft((current) => ({
+                          ...current,
+                          [field]: event.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+                  {(info?.edited ?? 0) > 0 || field in draft ? (
+                    <Button
+                      size="sm"
+                      variant="text"
+                      aria-label={
+                        field in draft
+                          ? `Discard change to ${label}`
+                          : `Put ${label} back to the file’s tag`
+                      }
+                      onClick={() =>
+                        setDraft((current) => {
+                          const next = { ...current };
+                          if (field in current) {
+                            delete next[field];
+                          } else {
+                            next[field] = null;
+                          }
+                          return next;
+                        })
+                      }
+                      className="gap-1.5"
+                    >
+                      <Undo2Icon size={13} aria-hidden />
+                      {field in draft
+                        ? 'Discard'
+                        : ids.length > 1
+                          ? `Revert (${info?.edited})`
+                          : 'Revert to file tag'}
+                    </Button>
+                  ) : null}
                 </div>
-                {(info?.edited ?? 0) > 0 || field in draft ? (
-                  <Button
-                    size="sm"
-                    variant="text"
-                    aria-label={
-                      field in draft
-                        ? `Discard change to ${label}`
-                        : `Put ${label} back to the file’s tag`
-                    }
-                    onClick={() =>
-                      setDraft((current) => {
-                        const next = { ...current };
-                        if (field in current) {
-                          delete next[field];
-                        } else {
-                          next[field] = null;
-                        }
-                        return next;
-                      })
-                    }
-                    className="gap-1.5"
-                  >
-                    <Undo2Icon size={13} aria-hidden />
-                    {field in draft
-                      ? 'Discard'
-                      : ids.length > 1
-                        ? `Revert (${info?.edited})`
-                        : 'Revert to file tag'}
-                  </Button>
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
-      )}
-      {previewError ? (
-        <InlineError>{previewError}</InlineError>
-      ) : preview ? (
-        <div className="text-foreground-secondary flex flex-col gap-1 text-xs">
-          <p>
-            {preview.tracksChanged === 0
-              ? 'No track would change.'
-              : `${plural(preview.tracksChanged, 'track')} will change${
-                  preview.tracksUnchanged > 0
-                    ? `, ${preview.tracksUnchanged.toLocaleString('en-US')} already match`
-                    : ''
-                }.`}
-          </p>
-          {preview.examples.slice(0, 3).map((example) => (
-            <p key={`${example.trackId}:${example.field}`} className="truncate">
-              {example.title} — {FIELD_LABEL[example.field]}:{' '}
-              {example.before || '(empty)'} → {example.after || '(empty)'}
+              );
+            })}
+          </div>
+        )}
+        {previewError ? (
+          <InlineError>{previewError}</InlineError>
+        ) : preview ? (
+          <div className="text-foreground-secondary flex flex-col gap-1 text-xs">
+            <p>
+              {preview.tracksChanged === 0
+                ? 'No track would change.'
+                : `${plural(preview.tracksChanged, 'track')} will change${
+                    preview.tracksUnchanged > 0
+                      ? `, ${preview.tracksUnchanged.toLocaleString('en-US')} already match`
+                      : ''
+                  }.`}
             </p>
-          ))}
-        </div>
-      ) : null}
-      <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
-        <Button
-          className="gap-1.5"
-          disabled={!canApply}
-          onClick={() => void apply()}
-        >
-          {busy ? <Loader size="inline" shape="circle" /> : null}
-          Apply
-        </Button>
-      </Dialog.Actions>
+            {preview.examples.slice(0, 3).map((example) => (
+              <p
+                key={`${example.trackId}:${example.field}`}
+                className="truncate"
+              >
+                {example.title} — {FIELD_LABEL[example.field]}:{' '}
+                {example.before || '(empty)'} → {example.after || '(empty)'}
+              </p>
+            ))}
+          </div>
+        ) : null}
+        <Dialog.Actions>
+          <Dialog.Close>Cancel</Dialog.Close>
+          <Button className="gap-1.5" disabled={!canApply} type="submit">
+            {busy ? <Loader size="inline" shape="circle" /> : null}
+            Apply
+          </Button>
+        </Dialog.Actions>
+      </form>
     </Dialog.Root>
   );
 }

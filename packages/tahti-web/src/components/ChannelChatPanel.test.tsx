@@ -342,9 +342,9 @@ describe('ChannelChatPanel', () => {
 
       const input = screen.getByPlaceholderText('Message as nightowl');
       fireEvent.change(input, { target: { value: 'first' } });
-      fireEvent.keyDown(input, { key: 'Enter' });
+      fireEvent.submit(input.closest('form')!);
       fireEvent.change(input, { target: { value: 'second' } });
-      fireEvent.keyDown(input, { key: 'Enter' });
+      fireEvent.submit(input.closest('form')!);
 
       const log = screen.getByRole('log', { name: 'Chat messages' });
       const text = log.textContent ?? '';

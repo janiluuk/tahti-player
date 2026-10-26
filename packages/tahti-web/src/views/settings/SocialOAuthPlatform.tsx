@@ -106,67 +106,75 @@ export function SocialOAuthPlatform({
             : 'Not connected'}
         </span>
       </div>
-      {status.connected ? (
-        <>
-          <div className="flex flex-wrap gap-4">
-            <Toggle
-              label="Post new releases"
-              checked={onRelease}
-              onChange={setOnRelease}
-            />
-            <Toggle
-              label="Post when I go live"
-              checked={onLive}
-              onChange={setOnLive}
-            />
-          </div>
-          <Input
-            label="Post text"
-            value={template}
-            maxLength={copy.templateMax}
-            onChange={(event) => setTemplate(event.target.value)}
-          />
-          <SettingsHint>
-            Fills in {'{artist}'}, {'{release}'}, {'{smart_link}'} and{' '}
-            {'{channel_url}'}.
-            {platform === 'instagram'
-              ? ' Instagram posts need an image: the release cover, a channel image or your profile picture.'
-              : ''}
-          </SettingsHint>
-        </>
-      ) : (
-        <SettingsHint>{copy.connectHint}</SettingsHint>
-      )}
-      {error ? <InlineError>{error}</InlineError> : null}
-      <div className="flex flex-wrap justify-end gap-2">
+      <form
+        className="contents"
+        onSubmit={(event) => {
+          event.preventDefault();
+          save();
+        }}
+      >
         {status.connected ? (
           <>
+            <div className="flex flex-wrap gap-4">
+              <Toggle
+                label="Post new releases"
+                checked={onRelease}
+                onChange={setOnRelease}
+              />
+              <Toggle
+                label="Post when I go live"
+                checked={onLive}
+                onChange={setOnLive}
+              />
+            </div>
+            <Input
+              label="Post text"
+              value={template}
+              maxLength={copy.templateMax}
+              onChange={(event) => setTemplate(event.target.value)}
+            />
+            <SettingsHint>
+              Fills in {'{artist}'}, {'{release}'}, {'{smart_link}'} and{' '}
+              {'{channel_url}'}.
+              {platform === 'instagram'
+                ? ' Instagram posts need an image: the release cover, a channel image or your profile picture.'
+                : ''}
+            </SettingsHint>
+          </>
+        ) : (
+          <SettingsHint>{copy.connectHint}</SettingsHint>
+        )}
+        {error ? <InlineError>{error}</InlineError> : null}
+        <div className="flex flex-wrap justify-end gap-2">
+          {status.connected ? (
+            <>
+              <Button
+                size="sm"
+                variant="secondary"
+                intent="danger"
+                onClick={() => setConfirmDisconnect(true)}
+              >
+                Disconnect
+              </Button>
+              <SaveButton
+                label="Save"
+                saving={saving}
+                disabled={saving}
+                type="submit"
+              />
+            </>
+          ) : status.configured ? (
             <Button
               size="sm"
-              variant="secondary"
-              intent="danger"
-              onClick={() => setConfirmDisconnect(true)}
+              onClick={() =>
+                window.location.assign(socialOAuthStartUrl(platform))
+              }
             >
-              Disconnect
+              Connect {copy.name}
             </Button>
-            <SaveButton
-              label="Save"
-              saving={saving}
-              disabled={saving}
-              onClick={save}
-            />
-          </>
-        ) : status.configured ? (
-          <Button
-            size="sm"
-            onClick={() =>
-              window.location.assign(socialOAuthStartUrl(platform))
-            }
-          >
-            Connect {copy.name}
-          </Button>
-        ) : null}
-      </div>
+          ) : null}
+        </div>
+      </form>
       <ConfirmDialog
         isOpen={confirmDisconnect}
         title={`Disconnect ${copy.name}?`}

@@ -87,40 +87,43 @@ function RejectDialog({
       <Dialog.Description>
         The author gets this note with the rejection.
       </Dialog.Description>
-      <Textarea
-        label="Note to the author"
-        value={note}
-        rows={4}
-        maxLength={2000}
-        onChange={(event) => setNote(event.target.value)}
-      />
-      {error ? <InlineError className="mt-2">{error}</InlineError> : null}
-      <Dialog.Actions>
-        <Button type="button" variant="secondary" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button
-          type="button"
-          disabled={pending || !note.trim()}
-          onClick={() => {
-            if (!theme) {
+      <form
+        className="contents"
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (!theme) {
+            return;
+          }
+          setPending(true);
+          setError(null);
+          void rejectAdminTheme(theme.id, note).then((result) => {
+            setPending(false);
+            if (!result.ok) {
+              setError(result.error);
               return;
             }
-            setPending(true);
-            setError(null);
-            void rejectAdminTheme(theme.id, note).then((result) => {
-              setPending(false);
-              if (!result.ok) {
-                setError(result.error);
-                return;
-              }
-              onRejected();
-            });
-          }}
-        >
-          {pending ? 'Rejecting…' : 'Reject theme'}
-        </Button>
-      </Dialog.Actions>
+            onRejected();
+          });
+        }}
+      >
+        <Textarea
+          submitOnModEnter
+          label="Note to the author"
+          value={note}
+          rows={4}
+          maxLength={2000}
+          onChange={(event) => setNote(event.target.value)}
+        />
+        {error ? <InlineError className="mt-2">{error}</InlineError> : null}
+        <Dialog.Actions>
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button disabled={pending || !note.trim()} type="submit">
+            {pending ? 'Rejecting…' : 'Reject theme'}
+          </Button>
+        </Dialog.Actions>
+      </form>
     </Dialog.Root>
   );
 }

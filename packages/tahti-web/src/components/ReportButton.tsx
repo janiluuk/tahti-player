@@ -91,27 +91,36 @@ export function ReportButton({
           Reports go to the Tahti board&apos;s moderation queue. You don&apos;t
           need an account, and the artist doesn&apos;t see who reported.
         </Dialog.Description>
-        <div className="mt-4 flex flex-col gap-3">
-          <Select
-            label="Reason"
-            value={reason}
-            onValueChange={(value) => setReason(value as ContentReportReason)}
-            options={REASONS}
-          />
-          <Textarea
-            label="Details (optional)"
-            rows={4}
-            maxLength={MAX_DETAILS}
-            value={details}
-            onChange={(event) => setDetails(event.target.value)}
-          />
-        </div>
-        <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
-          <Button size="sm" disabled={sending} onClick={() => void send()}>
-            {sending ? 'Sending…' : 'Send report'}
-          </Button>
-        </Dialog.Actions>
+        <form
+          className="contents"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void send();
+          }}
+        >
+          <div className="mt-4 flex flex-col gap-3">
+            <Select
+              label="Reason"
+              value={reason}
+              onValueChange={(value) => setReason(value as ContentReportReason)}
+              options={REASONS}
+            />
+            <Textarea
+              submitOnModEnter
+              label="Details (optional)"
+              rows={4}
+              maxLength={MAX_DETAILS}
+              value={details}
+              onChange={(event) => setDetails(event.target.value)}
+            />
+          </div>
+          <Dialog.Actions>
+            <Dialog.Close>Cancel</Dialog.Close>
+            <Button size="sm" disabled={sending} type="submit">
+              {sending ? 'Sending…' : 'Send report'}
+            </Button>
+          </Dialog.Actions>
+        </form>
       </Dialog.Root>
     </>
   );

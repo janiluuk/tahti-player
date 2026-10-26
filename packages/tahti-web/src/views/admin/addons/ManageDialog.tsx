@@ -47,7 +47,24 @@ export function ManageDialog({
     <Dialog.Root isOpen={addon !== null} onClose={onClose} className="max-w-lg">
       <Dialog.Title>Manage {addon?.name}</Dialog.Title>
       {addon && (
-        <div className="flex flex-col gap-4">
+        <form
+          className="flex flex-col gap-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            const trimmed = configText.trim();
+            if (!trimmed) {
+              onSetDefaultConfig(addon, '');
+              return;
+            }
+            try {
+              JSON.parse(trimmed);
+            } catch {
+              setConfigError('Not valid JSON.');
+              return;
+            }
+            onSetDefaultConfig(addon, trimmed);
+          }}
+        >
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-sm font-medium">Enabled by default</p>
@@ -64,6 +81,7 @@ export function ManageDialog({
             />
           </div>
           <Textarea
+            submitOnModEnter
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
@@ -89,28 +107,11 @@ export function ManageDialog({
             >
               Disable add-on
             </Button>
-            <Button
-              type="button"
-              disabled={pending}
-              onClick={() => {
-                const trimmed = configText.trim();
-                if (!trimmed) {
-                  onSetDefaultConfig(addon, '');
-                  return;
-                }
-                try {
-                  JSON.parse(trimmed);
-                } catch {
-                  setConfigError('Not valid JSON.');
-                  return;
-                }
-                onSetDefaultConfig(addon, trimmed);
-              }}
-            >
+            <Button disabled={pending} type="submit">
               Save settings
             </Button>
           </div>
-        </div>
+        </form>
       )}
       <ConfirmDialog
         isOpen={confirmDisable}

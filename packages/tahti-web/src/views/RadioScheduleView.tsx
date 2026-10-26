@@ -543,7 +543,13 @@ export function RadioScheduleView() {
       </div>
 
       {selection ? (
-        <div className="border-border bg-background-secondary/40 flex flex-wrap items-center gap-3 rounded-lg border p-3">
+        <form
+          className="border-border bg-background-secondary/40 flex flex-wrap items-center gap-3 rounded-lg border p-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            confirmBooking();
+          }}
+        >
           <div className="text-sm">
             <strong>
               {selection.day.toLocaleDateString(undefined, {
@@ -590,7 +596,7 @@ export function RadioScheduleView() {
             }
             className="min-w-0 flex-1 sm:min-w-48"
           />
-          <Button size="sm" disabled={busy} onClick={confirmBooking}>
+          <Button size="sm" disabled={busy} type="submit">
             {busy ? 'Booking…' : 'Confirm booking'}
           </Button>
           <Button
@@ -601,7 +607,7 @@ export function RadioScheduleView() {
           >
             Cancel
           </Button>
-        </div>
+        </form>
       ) : !user ? (
         <p className="text-foreground-secondary text-sm">
           <Link
@@ -701,55 +707,63 @@ export function RadioScheduleView() {
                 , {formatHour(new Date(selectedBooking.startAt).getHours())}–
                 {formatHour(new Date(selectedBooking.endAt).getHours())}
               </Dialog.Description>
-              <div className="flex flex-col gap-3">
-                {selectedBooking.showTitle && (
-                  <p className="text-sm">
-                    <span className="text-foreground-secondary">Show: </span>
-                    {selectedBooking.showTitle}
-                    {selectedBooking.episodeNumber != null
-                      ? ` — Episode #${selectedBooking.episodeNumber}`
-                      : ''}
-                  </p>
-                )}
-                <FilterChips
-                  items={[
-                    { id: 'LIVE_SET', label: 'Live set' },
-                    { id: 'TALK', label: 'Talk' },
-                  ]}
-                  selected={editShowType}
-                  onChange={(id) => setEditShowType(id as ShowType)}
-                  disabled={busy}
-                  aria-label="Show type"
-                />
-                <Input
-                  aria-label="Note"
-                  value={editNote}
-                  onChange={(e) => setEditNote(e.target.value)}
-                  disabled={busy}
-                  placeholder={
-                    editShowType === 'TALK'
-                      ? 'Note — topic or guests'
-                      : "Note — what you're playing"
-                  }
-                />
-              </div>
-              <Dialog.Actions>
-                <Dialog.Close>Close</Dialog.Close>
-                <Button
-                  intent="danger"
-                  variant="secondary"
-                  disabled={busy}
-                  onClick={() => setCancelConfirming(true)}
-                >
-                  Cancel booking
-                </Button>
-                <SaveButton
-                  disabled={busy}
-                  saving={busy}
-                  label="Save changes"
-                  onClick={saveBookingEdits}
-                />
-              </Dialog.Actions>
+              <form
+                className="contents"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  saveBookingEdits();
+                }}
+              >
+                <div className="flex flex-col gap-3">
+                  {selectedBooking.showTitle && (
+                    <p className="text-sm">
+                      <span className="text-foreground-secondary">Show: </span>
+                      {selectedBooking.showTitle}
+                      {selectedBooking.episodeNumber != null
+                        ? ` — Episode #${selectedBooking.episodeNumber}`
+                        : ''}
+                    </p>
+                  )}
+                  <FilterChips
+                    items={[
+                      { id: 'LIVE_SET', label: 'Live set' },
+                      { id: 'TALK', label: 'Talk' },
+                    ]}
+                    selected={editShowType}
+                    onChange={(id) => setEditShowType(id as ShowType)}
+                    disabled={busy}
+                    aria-label="Show type"
+                  />
+                  <Input
+                    aria-label="Note"
+                    value={editNote}
+                    onChange={(e) => setEditNote(e.target.value)}
+                    disabled={busy}
+                    placeholder={
+                      editShowType === 'TALK'
+                        ? 'Note — topic or guests'
+                        : "Note — what you're playing"
+                    }
+                  />
+                </div>
+                <Dialog.Actions>
+                  <Dialog.Close>Close</Dialog.Close>
+                  <Button
+                    intent="danger"
+                    variant="secondary"
+                    disabled={busy}
+                    onClick={() => setCancelConfirming(true)}
+                  >
+                    Cancel booking
+                  </Button>
+                  <SaveButton
+                    disabled={busy}
+                    saving={busy}
+                    label="Save changes"
+                    type="submit"
+                  />
+                </Dialog.Actions>
+              </form>
             </>
           ))}
       </Dialog.Root>

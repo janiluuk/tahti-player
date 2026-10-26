@@ -55,37 +55,44 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
             onRetry={() => void reload()}
           />
         ) : null}
-        <Textarea
-          label="Short bio"
-          fieldClassName={pressKitError ? 'hidden' : undefined}
-          tone="secondary"
-          rows={5}
-          value={pressKit?.bioShort ?? ''}
-          onChange={(event) =>
-            setPressKit((current) =>
-              current ? { ...current, bioShort: event.target.value } : current,
-            )
-          }
-        />
-        <div className="mt-3 flex flex-wrap justify-end gap-2">
-          {pressKit?.downloadPath ? (
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() =>
-                window.location.assign(pressKit.downloadPath ?? '')
-              }
-            >
-              <DownloadIcon size={14} aria-hidden className="mr-1.5" />
-              Download ZIP
-            </Button>
-          ) : null}
-          <SaveButton
-            disabled={!pressKit}
-            label="Save bio"
-            onClick={() => void saveBio()}
+        <form
+          className="contents"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void saveBio();
+          }}
+        >
+          <Textarea
+            submitOnModEnter
+            label="Short bio"
+            fieldClassName={pressKitError ? 'hidden' : undefined}
+            tone="secondary"
+            rows={5}
+            value={pressKit?.bioShort ?? ''}
+            onChange={(event) =>
+              setPressKit((current) =>
+                current
+                  ? { ...current, bioShort: event.target.value }
+                  : current,
+              )
+            }
           />
-        </div>
+          <div className="mt-3 flex flex-wrap justify-end gap-2">
+            {pressKit?.downloadPath ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() =>
+                  window.location.assign(pressKit.downloadPath ?? '')
+                }
+              >
+                <DownloadIcon size={14} aria-hidden className="mr-1.5" />
+                Download ZIP
+              </Button>
+            ) : null}
+            <SaveButton disabled={!pressKit} label="Save bio" type="submit" />
+          </div>
+        </form>
       </StudioPanel>
       <StudioPanel
         title="Photos"

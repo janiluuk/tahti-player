@@ -394,7 +394,13 @@ export function AdminUserEditPanel({
           title="Account details"
           description="Edit access, membership, and governance roles."
         >
-          <div className="flex flex-col gap-3">
+          <form
+            className="flex flex-col gap-3"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void saveUser();
+            }}
+          >
             <Select
               label="Role"
               value={editRole}
@@ -420,13 +426,9 @@ export function AdminUserEditPanel({
               />
             </div>
             <div className="flex justify-end">
-              <SaveButton
-                saving={busy}
-                label="Save account"
-                onClick={() => void saveUser()}
-              />
+              <SaveButton saving={busy} label="Save account" type="submit" />
             </div>
-          </div>
+          </form>
         </StudioPanel>
 
         <StudioPanel
@@ -504,31 +506,31 @@ export function AdminUserEditPanel({
               ))
             )}
           </div>
-          <div className="mt-3 flex gap-2">
+          <form
+            className="mt-3 flex gap-2"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void sendMessage();
+            }}
+          >
             <Input
               enterKeyHint="send"
               aria-label={`Message ${detail.displayName}`}
               value={messageBody}
               onChange={(event) => setMessageBody(event.target.value)}
               placeholder="Write a message…"
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' && !event.shiftKey) {
-                  event.preventDefault();
-                  void sendMessage();
-                }
-              }}
             />
             <Tooltip content="Send message" side="top">
               <Button
                 size="icon"
                 disabled={busy || !messageBody.trim()}
                 aria-label="Send message"
-                onClick={() => void sendMessage()}
+                type="submit"
               >
                 <SendIcon size={16} aria-hidden />
               </Button>
             </Tooltip>
-          </div>
+          </form>
         </StudioPanel>
       ) : null}
 

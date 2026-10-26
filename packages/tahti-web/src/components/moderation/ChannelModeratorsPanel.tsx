@@ -87,7 +87,13 @@ export function ChannelModeratorsPanel() {
             ))}
           </ul>
         )}
-        <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-end">
+        <form
+          className="flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-end"
+          onSubmit={(event) => {
+            event.preventDefault();
+            add();
+          }}
+        >
           <Input
             enterKeyHint="go"
             autoCapitalize="none"
@@ -96,12 +102,6 @@ export function ChannelModeratorsPanel() {
             label="Username"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                event.preventDefault();
-                add();
-              }
-            }}
             placeholder="listener-handle"
             className="min-w-0 sm:min-w-48"
           />
@@ -110,12 +110,12 @@ export function ChannelModeratorsPanel() {
               size="icon-sm"
               disabled={!handle}
               aria-label="Add moderator"
-              onClick={add}
+              type="submit"
             >
               <UserRoundPlusIcon size={15} aria-hidden />
             </Button>
           </Tooltip>
-        </div>
+        </form>
       </div>
       <ConfirmDialog
         isOpen={pendingRemove !== null}

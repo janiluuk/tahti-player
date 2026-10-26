@@ -1,3 +1,10 @@
+## 2026-10-26 - UX batch 110 (more forms)
+
+Thirty more groups submit with Enter, including chat, messages, support
+replies, moderator and tag fields, which used hand-written Enter handlers
+that could fire while an IME was still composing. Report, reject, post and
+bio text areas also send with Cmd/Ctrl+Enter. Bumped tahti-web `0.0.269`.
+
 ## 2026-10-26 - UX batch 109 (Cmd/Ctrl+Enter in text areas)
 
 Every multi-line field inside a form now submits with Cmd/Ctrl+Enter, the

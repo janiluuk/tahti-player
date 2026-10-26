@@ -206,7 +206,7 @@ describe('TrackOrganizeDialog', () => {
     fireEvent.change(screen.getByLabelText('Add a tag'), {
       target: { value: '  new one ' },
     });
-    fireEvent.keyDown(screen.getByLabelText('Add a tag'), { key: 'Enter' });
+    fireEvent.submit(screen.getByLabelText('Add a tag').closest('form')!);
     await waitFor(() => expect(addTag).toHaveBeenCalledWith(['a'], 'new one'));
   });
 });

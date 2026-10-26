@@ -1,3 +1,16 @@
+## 2026-10-26 - UX batch 110 thirty more form slices
+
+Thirty more input groups become real forms, so Enter (or Cmd/Ctrl+Enter in a
+text area) submits them and a disabled submit button still blocks it. Eight
+hand-written Enter key handlers are replaced by native form submission, which
+also stops them firing mid-word while an IME is composing: channel chat,
+Messages, admin direct message, support reply, channel moderator, tag add,
+Radio Browser search and skip duration. Also: chat handle, open chat by slug, add-on reject and default settings, theme reject, content report,
+post now, motion draft edit, AGM attendance / meetings / documents, playlist
+import, tag editor, admin account details, radio booking confirm and edit,
+storage quota, release CSV import, pro editor export, press kit bio and
+social auto-post settings. tahti-web `0.0.269`.
+
 ## 2026-10-26 - UX batch 109 thirty-one Cmd/Ctrl+Enter slices
 
 `@tahti-player/ui` `Textarea` gets `submitOnModEnter`: Cmd/Ctrl+Enter submits
