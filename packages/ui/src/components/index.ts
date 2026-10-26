@@ -63,6 +63,7 @@ export * from './SectionTitle';
 export * from './SettingsPanel';
 export * from './Select';
 export * from './SelectableList';
+export * from './ShareList';
 export * from './SelectableTiles';
 export * from './SidebarNavigation';
 export * from './Slider';
