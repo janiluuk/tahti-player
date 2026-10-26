@@ -191,6 +191,7 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
         </Tooltip>
         <div className="ml-auto flex w-full max-w-sm items-center gap-2">
           <Input
+            type="search"
             size="sm"
             value={filter}
             onChange={(event) => {

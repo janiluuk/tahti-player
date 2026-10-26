@@ -77,7 +77,9 @@ export const Visitor: Story = {
       await expect(
         tiers.getByRole('list', { name: 'Patron perks' }),
       ).toHaveTextContent('Monthly thank-you mix');
-      const tipJar = canvas.getByRole('link', { name: 'Tip jar' });
+      const tipJar = canvas.getByRole('link', {
+        name: 'Tip jar (opens in a new tab)',
+      });
       await expect(tipJar).toHaveAttribute('href', TIP_JAR_URL);
       await expect(tipJar).toHaveAttribute('target', '_blank');
       await expect(tipJar).toHaveAttribute('rel', 'noopener noreferrer');

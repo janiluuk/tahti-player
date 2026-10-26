@@ -535,6 +535,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
             <div className="flex flex-wrap gap-2">
               <Input
                 aria-label="Search hearthis.at"
+                type="search"
                 className="min-w-0 flex-1 basis-40"
                 size="sm"
                 value={q}

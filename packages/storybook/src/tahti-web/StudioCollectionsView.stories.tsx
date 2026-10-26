@@ -97,7 +97,7 @@ export const FilteredEmpty: Story = {
     const canvas = within(canvasElement);
     await canvas.findByRole('link', { name: 'Midnight Archive' });
     await userEvent.type(
-      canvas.getByRole('textbox', { name: 'Search collections' }),
+      canvas.getByRole('searchbox', { name: 'Search collections' }),
       'zzzz-no-match',
     );
     await expect(

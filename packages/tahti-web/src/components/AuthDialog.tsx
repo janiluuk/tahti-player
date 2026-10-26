@@ -166,6 +166,7 @@ export const AuthDialog: FC = () => {
           }}
         >
           <Input
+            inputMode="email"
             label="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -200,6 +201,7 @@ export const AuthDialog: FC = () => {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
               <Input
+                inputMode="email"
                 label="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

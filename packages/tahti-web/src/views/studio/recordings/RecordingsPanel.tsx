@@ -49,6 +49,7 @@ export function RecordingsPanel({
       >
         <div className="mb-4 flex flex-col gap-2 sm:flex-row">
           <Input
+            type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search recordings…"

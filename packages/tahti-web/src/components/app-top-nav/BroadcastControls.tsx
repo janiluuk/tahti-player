@@ -1,4 +1,3 @@
-import { useNavigate } from '@tanstack/react-router';
 import {
   CalendarIcon,
   ListMusicIcon,
@@ -6,14 +5,13 @@ import {
   UploadIcon,
 } from 'lucide-react';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { iconBtnClass } from './shared';
 import { type TopNavState } from './useTopNavState';
 
 export function BroadcastControls({ nav }: { nav: TopNavState }) {
-  const navigate = useNavigate();
   const {
     pathname,
     broadcastOpen,
@@ -108,18 +106,16 @@ export function BroadcastControls({ nav }: { nav: TopNavState }) {
         side="bottom"
         wrapperClassName="hidden sm:inline-flex"
       >
-        <Button
+        <ButtonLink
+          to="/library/upload"
           variant="text"
           size="icon-sm"
           className={iconBtnClass}
           aria-label="Open upload"
           data-tour-id="topbar-upload"
-          onClick={() => {
-            void navigate({ to: '/library/upload' });
-          }}
         >
           <UploadIcon size={16} />
-        </Button>
+        </ButtonLink>
       </Tooltip>
     </>
   );

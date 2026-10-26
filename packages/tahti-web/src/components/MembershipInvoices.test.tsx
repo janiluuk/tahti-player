@@ -55,9 +55,11 @@ describe('MembershipInvoices', () => {
         .getByRole('link', { name: 'Download invoice TAHTI-0042 as PDF' })
         .getAttribute('href'),
     ).toBe('https://pay.stripe.com/invoice/1/pdf');
-    expect(screen.getByRole('link', { name: 'Pay' }).getAttribute('href')).toBe(
-      'https://invoice.stripe.com/i/2',
-    );
+    expect(
+      screen
+        .getByRole('link', { name: 'Pay (opens in a new tab)' })
+        .getAttribute('href'),
+    ).toBe('https://invoice.stripe.com/i/2');
   });
 
   it('explains an empty list and shows a load error', async () => {

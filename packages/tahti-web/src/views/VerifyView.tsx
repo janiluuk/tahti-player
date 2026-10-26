@@ -1,7 +1,7 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Box, Button, InlineError, Input } from '@tahti-player/ui';
+import { Box, Button, ButtonLink, InlineError, Input } from '@tahti-player/ui';
 
 import { useAuthStore } from '../stores/authStore';
 
@@ -13,7 +13,6 @@ function tokenFromSearch(): string {
 }
 
 export function VerifyView() {
-  const navigate = useNavigate();
   const verify = useAuthStore((s) => s.verify);
   const loading = useAuthStore((s) => s.loading);
   const error = useAuthStore((s) => s.error);
@@ -75,9 +74,7 @@ export function VerifyView() {
           className="h-auto w-auto flex-col gap-3 rounded-xl"
         >
           <p className="text-sm">{message}</p>
-          <Button onClick={() => void navigate({ to: '/login' })}>
-            Continue to login
-          </Button>
+          <ButtonLink to="/login">Continue to login</ButtonLink>
         </Box>
       ) : (
         <div className="flex flex-col gap-3">

@@ -16,7 +16,9 @@ describe('AnnualReportsPanel', () => {
     });
     render(<AnnualReportsPanel />);
     expect(
-      await screen.findByRole('link', { name: 'Annual report 2025' }),
+      await screen.findByRole('link', {
+        name: 'Annual report 2025 (opens in a new tab)',
+      }),
     ).toHaveAttribute('href', 'https://tahti.live/reports/annual-2025.md');
     expect(
       screen.getByText(/^Approved .* · filed with the register/),

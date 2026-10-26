@@ -117,8 +117,8 @@ describe('GovernanceMeetingDetailView', () => {
     expect(container.textContent).toContain('Board meeting');
     expect(container.textContent).toContain('Approved');
     expect(container.textContent).toContain('Met');
-    const downloadLink = Array.from(container.querySelectorAll('a')).find(
-      (a) => a.textContent === 'Download',
+    const downloadLink = Array.from(container.querySelectorAll('a')).find((a) =>
+      a.textContent?.startsWith('Download'),
     );
     expect(downloadLink?.getAttribute('href')).toContain(
       'minutes/2026-06-board.pdf',

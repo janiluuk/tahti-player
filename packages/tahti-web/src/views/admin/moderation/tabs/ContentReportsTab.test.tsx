@@ -54,7 +54,9 @@ describe('ContentReportsTab', () => {
         targetExcerpt: 'a rude comment',
       }),
     ]);
-    const link = screen.getByRole('link', { name: 'Comment by @fan' });
+    const link = screen.getByRole('link', {
+      name: 'Comment by @fan (opens in a new tab)',
+    });
     expect(link.getAttribute('href')).toBe('/t/s1');
     expect(screen.getByText('a rude comment')).toBeTruthy();
   });

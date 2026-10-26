@@ -491,6 +491,7 @@ export function ReleaseSmartLinksPanel({
         </Dialog.Description>
         <div className="flex flex-wrap gap-2 py-3">
           <Input
+            type="search"
             label="Search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}

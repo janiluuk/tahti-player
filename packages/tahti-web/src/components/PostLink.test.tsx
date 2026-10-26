@@ -7,14 +7,18 @@ import { PostLink } from './PostLink';
 describe('PostLink', () => {
   it('shows the label and opens the link in a new tab', () => {
     render(<PostLink linkUrl="https://example.com/t" linkLabel="Tickets" />);
-    const link = screen.getByRole('link', { name: 'Tickets' });
+    const link = screen.getByRole('link', {
+      name: 'Tickets (opens in a new tab)',
+    });
     expect(link).toHaveAttribute('href', 'https://example.com/t');
     expect(link).toHaveAttribute('target', '_blank');
   });
 
   it('falls back to the host when there is no label', () => {
     render(<PostLink linkUrl="https://example.com/t" linkLabel={null} />);
-    expect(screen.getByRole('link', { name: 'example.com' })).toBeVisible();
+    expect(
+      screen.getByRole('link', { name: 'example.com (opens in a new tab)' }),
+    ).toBeVisible();
   });
 
   it('renders nothing for a missing or non-web link', () => {

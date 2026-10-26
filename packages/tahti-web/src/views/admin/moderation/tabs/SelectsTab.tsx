@@ -402,6 +402,7 @@ export function SelectsTab() {
           </nav>
           <div className="flex min-w-0 flex-col gap-3">
             <Input
+              type="search"
               aria-label="Search content"
               placeholder="Search tracks by title…"
               value={query}

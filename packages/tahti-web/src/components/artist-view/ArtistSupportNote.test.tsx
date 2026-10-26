@@ -11,7 +11,9 @@ describe('ArtistSupportNote', () => {
 
   it('links the tip jar in a new tab without leaking the opener', () => {
     render(<ArtistSupportNote tiers={[]} tipJarUrl="https://ko-fi.com/aino" />);
-    const link = screen.getByRole('link', { name: 'Tip jar' });
+    const link = screen.getByRole('link', {
+      name: 'Tip jar (opens in a new tab)',
+    });
     expect(link.getAttribute('href')).toBe('https://ko-fi.com/aino');
     expect(link.getAttribute('target')).toBe('_blank');
     expect(link.getAttribute('rel')).toBe('noopener noreferrer');
@@ -21,7 +23,9 @@ describe('ArtistSupportNote', () => {
     'hides a tip jar that is not an http(s) URL: %s',
     (tipJarUrl) => {
       render(<ArtistSupportNote tiers={tiers} tipJarUrl={tipJarUrl} />);
-      expect(screen.queryByRole('link', { name: 'Tip jar' })).toBeNull();
+      expect(
+        screen.queryByRole('link', { name: 'Tip jar (opens in a new tab)' }),
+      ).toBeNull();
       expect(screen.getByText(/Supporter \(€5\)/)).toBeTruthy();
     },
   );
@@ -80,6 +84,8 @@ describe('ArtistSupportNote', () => {
     ).toEqual(['Fan chat', 'Signed postcard']);
     expect(screen.getByText('Patron')).toBeTruthy();
     expect(screen.queryByRole('list', { name: 'Patron perks' })).toBeNull();
-    expect(screen.getByRole('link', { name: 'Tip jar' })).toBeTruthy();
+    expect(
+      screen.getByRole('link', { name: 'Tip jar (opens in a new tab)' }),
+    ).toBeTruthy();
   });
 });
