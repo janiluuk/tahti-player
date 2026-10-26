@@ -13,6 +13,9 @@ import {
   type InsightsPeriod,
   type TrackInsights,
 } from '../api/track-insights';
+import { AudienceBreakdown } from '../views/studio/stats/AudienceBreakdown';
+import { ListenerLocations } from '../views/studio/stats/ListenerLocations';
+import { ListenerLoyalty } from '../views/studio/stats/ListenerLoyalty';
 import { ListenerWorldMap } from './ListenerWorldMap';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
@@ -54,6 +57,19 @@ export function TrackInsightsPanel({
       cancelled = true;
     };
   }, [kind, id, period, attempt]);
+
+  const listenWindow =
+    kind === 'sound'
+      ? {
+          range:
+            period === '7d'
+              ? ('7' as const)
+              : period === '30d'
+                ? ('30' as const)
+                : ('all' as const),
+          soundId: id,
+        }
+      : null;
 
   const maxDaily = insights
     ? Math.max(1, ...insights.daily.map((day) => day.downloads))
@@ -106,6 +122,7 @@ export function TrackInsightsPanel({
               Anonymized countries for this track's counted plays and downloads.
             </p>
             <ListenerWorldMap data={insights.countries} countLabel="plays" />
+            {listenWindow ? <ListenerLocations window={listenWindow} /> : null}
           </StudioPanel>
 
           <StudioPanel title="Downloads by day">
@@ -131,6 +148,13 @@ export function TrackInsightsPanel({
               </div>
             )}
           </StudioPanel>
+
+          {listenWindow ? (
+            <>
+              <ListenerLoyalty window={listenWindow} />
+              <AudienceBreakdown window={listenWindow} />
+            </>
+          ) : null}
         </>
       )}
     </div>
