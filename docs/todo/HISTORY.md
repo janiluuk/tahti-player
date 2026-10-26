@@ -5503,3 +5503,8 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 - Cause: the API scraped radiohelsinki.fi's server-rendered song, which sits behind the site's page cache and trailed the site's own player (it polls `wp-content/djonline.js` every 20 s) by several songs.
 - tahti-org `fix/radio-helsinki-live-feed`: read the live feed first, fall back to the page; API cache 60 s → 20 s.
 - tahti-web (#1485): client programme cache 60 s → 20 s.
+
+## 2026-10-26 — Radio page internet radio rows
+
+- `/radio` now shows, below Tahti Radio: a **Favorite stations** row (radio favorites, only when there are any), the **Radio** station row shared with Listen (`RadioStationsRow`: curated presets, enabled catalog stations and the listener's own stations, with now-playing), and an **Add stations** area (Browse stations → Settings → Add-ons → Radio directory; Add your own → stream-URL form from `MyRadioStations`, sign-in first).
+- Station cards gained a favorite toggle on Listen and Radio.

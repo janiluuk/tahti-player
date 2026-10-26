@@ -6,15 +6,7 @@ import {
   ListMusicIcon,
   NewspaperIcon,
 } from 'lucide-react';
-import {
-  lazy,
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -36,7 +28,6 @@ import {
   TAHTI_RADIO_SLUG,
 } from '../api/client';
 import type { OnAirChannel } from '../api/listen';
-import { fetchStationNowPlaying } from '../api/radio-now-playing';
 import type { TahtiPlayable } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
@@ -48,24 +39,15 @@ import {
 } from '../components/listen-view/HomeHighlights';
 import { HomeNews } from '../components/listen-view/HomeNews';
 import { ListenSection } from '../components/listen-view/ListenSection';
-import {
-  RadioRowCard,
-  type RadioRowItem,
-} from '../components/listen-view/RadioRowCard';
+import { RadioStationsRow } from '../components/listen-view/RadioStationsRow';
 import { useListenSections } from '../components/listen-view/useListenSections';
 import { WelcomeStrip } from '../components/listen-view/WelcomeStrip';
 import { useListenerWidgetBlocks } from '../components/ListenerWidgetsSection';
 import { ListenWidgetStoreDialog } from '../components/ListenWidgetStoreDialog';
-import { PageError, PageLoading } from '../components/PageStates';
+import { PageLoading } from '../components/PageStates';
 import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
 import { RadioListItem } from '../components/RadioListItem';
-import { RemoveWidgetDialog } from '../components/RemoveWidgetDialog';
-import {
-  radioStation,
-  radioStationIdForPlayable,
-  radioStationPlayable,
-} from '../content/radioStations';
-import { usePolling } from '../hooks/usePolling';
+import { radioStationIdForPlayable } from '../content/radioStations';
 import { scheduleIdleRoutePrefetch } from '../lib/idleRoutePrefetch';
 import { prefetchListenCardIntent } from '../lib/intentRoutePrefetch';
 import { resolveLocalPlayableForReplay } from '../lib/nativeLibrary';
@@ -98,7 +80,6 @@ const LISTEN_SECTION_TABS = [
   },
 ];
 
-const NOW_PLAYING_POLL_MS = 45_000;
 const RECENTLY_PLAYED_LIMIT = 20;
 const RADIO_BLOCK_ID = 'radio';
 
@@ -148,11 +129,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     select: (state) => state.location.pathname,
   });
   const tab = activeListenTab(pathname) ?? tabProp;
-  const [presetNowPlaying, setPresetNowPlaying] = useState<
-    Record<string, string>
-  >({});
   const play = usePlayerStore((s) => s.play);
-  const playFromList = usePlayerStore((s) => s.playFromList);
   const currentId = usePlayerStore((s) => s.currentId);
   const playbackStatus = usePlayerStore((s) => s.status);
   const setPlaybackStatus = usePlayerStore((s) => s.setStatus);
@@ -161,61 +138,11 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const signedIn = Boolean(user);
   const sections = useListenSections(signedIn, user?.id ?? '');
   const radio = sections.radio.data;
-  const radioPresets = sections.presets.data;
-  const setRadioPresets = sections.setPresets;
-  const enabledStationIds = useListenerWidgetsStore((s) => s.enabledStationIds);
   const listenOrder = useListenerWidgetsStore((s) => s.listenOrder);
   const setListenOrder = useListenerWidgetsStore((s) => s.setListenOrder);
   const widgetBlocks = useListenerWidgetBlocks();
   const [reordering, setReordering] = useState(false);
-  const stationOverrides = useListenerWidgetsStore((s) => s.stationOverrides);
-  const toggleStation = useListenerWidgetsStore((s) => s.toggleStation);
-  const [pendingStationRemoval, setPendingStationRemoval] = useState<{
-    id: string;
-    label: string;
-  } | null>(null);
-  const nowPlayingRefreshInFlight = useRef(false);
-
-  const refreshPresetNowPlaying = useCallback(async () => {
-    if (radioPresets.length === 0 || nowPlayingRefreshInFlight.current) {
-      return;
-    }
-    nowPlayingRefreshInFlight.current = true;
-    try {
-      const entries = await Promise.all(
-        radioPresets.map(async (preset) => {
-          const title = await fetchStationNowPlaying({
-            programmingUrl: preset.programmingUrl,
-            streamUrl: preset.streamUrl,
-          });
-          return [preset.id, title] as const;
-        }),
-      );
-      const next: Record<string, string> = {};
-      for (const [id, title] of entries) {
-        if (title) {
-          next[id] = title;
-        }
-      }
-      setPresetNowPlaying(next);
-    } catch {
-      return;
-    } finally {
-      nowPlayingRefreshInFlight.current = false;
-    }
-  }, [radioPresets]);
-
-  useEffect(() => {
-    void refreshPresetNowPlaying();
-  }, [refreshPresetNowPlaying]);
-
   useEffect(() => scheduleIdleRoutePrefetch(), []);
-
-  usePolling(
-    () => void refreshPresetNowPlaying(),
-    NOW_PLAYING_POLL_MS,
-    radioPresets.length > 0,
-  );
 
   const playNow = async (slug: string) => {
     const { playable } = await fetchChannel(slug);
@@ -269,72 +196,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
         });
     });
 
-  // Catalog stations (packages/tahti-web/src/content/radioStations.ts) fill
-  // in any station that doesn't already have a board-curated preset enabled
-  // for it (matched by name, same link used above for cover editing) — the
-  // preset's admin-uploaded artwork wins when both exist for the same station.
-  const radioItems = useMemo<RadioRowItem[]>(() => {
-    const presetNames = new Set(radioPresets.map((preset) => preset.name));
-    const catalog = enabledStationIds
-      .map((id) => {
-        const station = radioStation(id);
-        return station ? { ...station, ...stationOverrides[id] } : undefined;
-      })
-      .filter((station) => station != null)
-      .filter((station) => !presetNames.has(station.name));
-    return [
-      ...radioPresets.map((preset) => ({
-        id: `radio-preset:${preset.id}`,
-        title: preset.name,
-        kind: 'preset' as const,
-        preset,
-      })),
-      ...catalog.map((station) => ({
-        id: `radio-widget:${station.id}`,
-        title: station.name,
-        kind: 'catalog' as const,
-        station,
-      })),
-    ];
-  }, [radioPresets, enabledStationIds, stationOverrides]);
-
-  const radioRowPlayables = useMemo(() => {
-    const playables: TahtiPlayable[] = [];
-    for (const item of radioItems) {
-      if (item.kind === 'preset') {
-        const streamUrl = item.preset.streamUrl;
-        if (!streamUrl) {
-          continue;
-        }
-        playables.push({
-          id: item.id,
-          kind: 'radio',
-          title: presetNowPlaying[item.preset.id] ?? item.preset.name,
-          artist: item.preset.name,
-          coverUrl: item.preset.iconUrl ?? undefined,
-          streamUrl,
-          protocol: 'https',
-          sourceProvider: 'internet-radio',
-        });
-        continue;
-      }
-      const streamUrl = item.station.streamUrl;
-      if (!streamUrl) {
-        continue;
-      }
-      playables.push(radioStationPlayable({ ...item.station, streamUrl }));
-    }
-    return playables;
-  }, [radioItems, presetNowPlaying]);
-
-  const playRadioRowStation = (playableId: string) => {
-    const index = radioRowPlayables.findIndex((row) => row.id === playableId);
-    if (index < 0) {
-      return;
-    }
-    playFromList(radioRowPlayables, index);
-  };
-
   const onAirItems = useMemo<OnAirRowItem[]>(
     () =>
       sections.onAir.data.map((channel) => ({
@@ -357,27 +218,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
         playable: entry.playable,
       })),
     [history],
-  );
-
-  const renderRadioItem = (item: RadioRowItem) => (
-    <RadioRowCard
-      item={item}
-      isPlaying={isActive(item.id)}
-      nowPlaying={
-        item.kind === 'preset' ? presetNowPlaying[item.preset.id] : undefined
-      }
-      onPlay={() => togglePlayback(item.id, () => playRadioRowStation(item.id))}
-      onCoverChange={(presetId, iconUrl) =>
-        setRadioPresets((current) =>
-          current.map((entry) =>
-            entry.id === presetId ? { ...entry, iconUrl } : entry,
-          ),
-        )
-      }
-      onRemove={(station) =>
-        setPendingStationRemoval({ id: station.id, label: station.name })
-      }
-    />
   );
 
   const renderOnAirItem = ({ channel }: OnAirRowItem) => {
@@ -617,38 +457,12 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
       id: RADIO_BLOCK_ID,
       label: 'Radio',
       content: (
-        <ListenSection
-          data-testid="listen-radio"
-          title="Radio"
-          badge="Internet radio"
-          badgeColor="cyan"
-          status={radioItems.length > 0 ? 'ready' : sections.presets.status}
-          empty={radioItems.length === 0}
-          emptyTitle="No radio stations yet"
-          emptyDescription={
-            signedIn ? 'Add stations from the widget store.' : undefined
-          }
+        <RadioStationsRow
+          presets={sections.presets}
+          setPresets={sections.setPresets}
           onRetry={() => sections.retry('presets')}
-        >
-          <CardsRow
-            data-testid="listen-radio"
-            title="Radio"
-            badge="Internet radio"
-            badgeColor="cyan"
-            items={radioItems}
-            labels={{
-              ...ROW_LABELS,
-              filterPlaceholder: 'Filter stations…',
-            }}
-            renderItem={renderRadioItem}
-          />
-          {sections.presets.status === 'error' ? (
-            <PageError
-              title="Curated stations couldn't load"
-              onRetry={() => sections.retry('presets')}
-            />
-          ) : null}
-        </ListenSection>
+          signedIn={signedIn}
+        />
       ),
     },
     {
@@ -750,18 +564,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               onReorder={setListenOrder}
             />
             {widgetBlocks.dialog}
-
-            <RemoveWidgetDialog
-              isOpen={pendingStationRemoval != null}
-              label={pendingStationRemoval?.label ?? ''}
-              onCancel={() => setPendingStationRemoval(null)}
-              onConfirm={() => {
-                if (pendingStationRemoval) {
-                  toggleStation(pendingStationRemoval.id);
-                }
-                setPendingStationRemoval(null);
-              }}
-            />
           </div>
         ) : null}
       </ViewShell>

@@ -17,7 +17,11 @@ const playableId = (station: MyRadioStation) => `radio:my-${station.id}`;
 
 /** The listener's own internet radio stations: add by stream URL, play,
  * remove. Streams play straight from the station, not through Tahti. */
-export function MyRadioStations() {
+export function MyRadioStations({
+  onChange,
+}: {
+  onChange?: (stations: MyRadioStation[]) => void;
+} = {}) {
   const play = usePlayerStore((s) => s.play);
   const currentId = usePlayerStore((s) => s.currentId);
   const status = usePlayerStore((s) => s.status);
@@ -38,6 +42,12 @@ export function MyRadioStations() {
   };
 
   useEffect(load, []);
+
+  useEffect(() => {
+    if (stations) {
+      onChange?.(stations);
+    }
+  }, [onChange, stations]);
 
   const add = async (event: FormEvent) => {
     event.preventDefault();

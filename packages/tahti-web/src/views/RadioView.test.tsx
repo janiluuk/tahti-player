@@ -15,6 +15,8 @@ import {
 } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { useLibraryStore } from '../stores/libraryStore';
+import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { RadioView } from './RadioView';
 
 let recentFailure: string | null = null;
@@ -253,5 +255,58 @@ describe('RadioView up next', () => {
     expect(
       within(rotation).getByText('Could not load the rotation'),
     ).toBeTruthy();
+  });
+});
+
+describe('RadioView internet radio stations', () => {
+  beforeEach(() => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+    useLibraryStore.setState({ favoriteTracks: [] });
+    useSettingsModalStore.setState({ isOpen: false });
+  });
+
+  afterEach(() => {
+    cleanup();
+    vi.unstubAllEnvs();
+  });
+
+  const renderRadio = async () => {
+    const router = createRouter({
+      routeTree: createRootRoute({ component: RadioView }),
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+  };
+
+  it('shows the station row and keeps favorites in their own row', async () => {
+    await renderRadio();
+    expect(screen.queryByTestId('radio-favorites')).toBeNull();
+    const row = screen.getByTestId('radio-stations-row');
+    const helsinki = within(row)
+      .getByRole('link', { name: 'Radio Helsinki' })
+      .closest('[data-testid="card"]') as HTMLElement;
+    await act(async () => {
+      fireEvent.click(
+        within(helsinki).getByRole('button', { name: 'Favorite' }),
+      );
+    });
+    const favorites = screen.getByTestId('radio-favorites');
+    expect(
+      within(favorites).getByRole('link', { name: 'Radio Helsinki' }),
+    ).toBeTruthy();
+  });
+
+  it('opens the radio directory from the add stations area', async () => {
+    await renderRadio();
+    const panel = screen.getByTestId('radio-add-stations');
+    fireEvent.click(
+      within(panel).getByRole('button', { name: /Browse stations/ }),
+    );
+    const state = useSettingsModalStore.getState();
+    expect(state.isOpen).toBe(true);
+    expect(state.activeTab).toBe('plugin-store');
+    expect(state.pluginCategory).toBe('radio');
   });
 });
