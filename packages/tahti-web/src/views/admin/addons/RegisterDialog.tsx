@@ -73,6 +73,7 @@ export function RegisterDialog({
           />
         </div>
         <Input
+          autoComplete="off"
           label="Name"
           value={draft.name}
           placeholder="Live status"

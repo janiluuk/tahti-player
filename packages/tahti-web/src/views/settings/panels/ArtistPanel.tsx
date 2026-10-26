@@ -328,6 +328,7 @@ export function ArtistPanel() {
           />
           {profile.countryCode && (
             <Input
+              autoComplete="address-level2"
               label="City / location"
               value={profile.defaultLocation ?? ''}
               onChange={(e) =>

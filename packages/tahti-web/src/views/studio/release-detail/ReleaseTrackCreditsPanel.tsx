@@ -72,6 +72,7 @@ function TrackCreditsRow({
               onValueChange={(role) => update(index, { role })}
             />
             <Input
+              autoComplete="off"
               value={credit.name}
               placeholder="Name"
               disabled={saving}

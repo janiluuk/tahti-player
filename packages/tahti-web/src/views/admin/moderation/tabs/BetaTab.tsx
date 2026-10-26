@@ -282,6 +282,7 @@ export function BetaTab() {
                 autoFocus
               />
               <Input
+                autoComplete="off"
                 label="Artist name"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}

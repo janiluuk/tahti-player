@@ -58,6 +58,7 @@ export function PlaylistNameDialog({
         }}
       >
         <Input
+          autoComplete="off"
           label="Name"
           value={name}
           autoFocus

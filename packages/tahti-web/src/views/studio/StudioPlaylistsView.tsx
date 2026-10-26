@@ -131,6 +131,7 @@ export function StudioPlaylistsView() {
               <Dialog.Title>New playlist</Dialog.Title>
               <div className="mt-4 flex flex-col gap-3">
                 <Input
+                  autoComplete="off"
                   label="Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}

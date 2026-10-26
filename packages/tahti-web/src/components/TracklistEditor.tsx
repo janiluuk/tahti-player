@@ -306,6 +306,7 @@ export const TracklistEditor: FC<Props> = ({
                 {selected ? (
                   <div className="border-border bg-background-secondary/30 relative rounded-xl border p-3">
                     <Input
+                      autoComplete="off"
                       label={`Artist for “${selected.title}”`}
                       placeholder="Artist name, or @username to tag a Tahti artist"
                       value={selected.artist ?? ''}

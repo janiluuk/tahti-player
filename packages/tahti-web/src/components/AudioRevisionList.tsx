@@ -246,6 +246,7 @@ export function AudioRevisionList({
           }}
         />
         <Input
+          autoComplete="off"
           label="Revision name"
           value={label}
           onChange={(event) => setLabel(event.target.value)}

@@ -285,6 +285,10 @@ function DestinationDialog({
             />
             {isCustom && (
               <Input
+                inputMode="url"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 label="RTMP address"
                 value={rtmpUrl}
                 onChange={(event) => setRtmpUrl(event.target.value)}

@@ -135,6 +135,10 @@ export function MulticastConfigureDialog({
             {isCustom ? (
               <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_8rem]">
                 <Input
+                  inputMode="url"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
                   label="RTMP address"
                   value={address}
                   onChange={(event) => setAddress(event.target.value)}

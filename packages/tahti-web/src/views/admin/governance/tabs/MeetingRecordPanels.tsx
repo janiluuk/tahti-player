@@ -139,6 +139,7 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
       )}
       <div className="flex flex-col gap-2">
         <Input
+          autoComplete="off"
           label="Member name"
           value={name}
           onChange={(event) => setName(event.target.value)}

@@ -344,6 +344,7 @@ export function OnboardingView() {
                       ]}
                     />
                     <Input
+                      autoComplete="address-level2"
                       label="City / location"
                       value={defaultLocation}
                       onChange={(e) => setDefaultLocation(e.target.value)}

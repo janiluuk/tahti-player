@@ -408,6 +408,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       {overlay.streamOverlayShowTitle ? (
         <>
           <Input
+            autoComplete="off"
             label="Overlay title"
             placeholder="Your display name"
             maxLength={80}

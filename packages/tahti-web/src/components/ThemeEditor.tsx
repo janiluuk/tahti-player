@@ -418,6 +418,7 @@ export function ThemeEditor() {
       <div className="flex flex-wrap items-end gap-2">
         <div className="min-w-0 flex-1">
           <Input
+            autoComplete="off"
             label="Name"
             value={name}
             error={nameError}

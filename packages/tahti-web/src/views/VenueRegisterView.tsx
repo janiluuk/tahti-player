@@ -130,6 +130,7 @@ export function VenueRegisterView() {
           maxLength={120}
         />
         <Input
+          autoComplete="off"
           label="Street address"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
@@ -137,6 +138,7 @@ export function VenueRegisterView() {
           maxLength={200}
         />
         <Input
+          autoComplete="off"
           label="City"
           value={city}
           onChange={(e) => setCity(e.target.value)}
