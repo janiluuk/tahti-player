@@ -5497,3 +5497,9 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 - The day/night timer runs only in dynamic mode.
 - Card / Badge / CardsRow / MediaArtwork / ListenSection stories checked in all six stock themes, light and dark: 72 renders, no errors, no text under 4.5:1.
 - Not done, by decision: lazy-loading the preset themes. They are about 10 KB gzipped of the 461 KB `TahtiApp` chunk, the default theme (Gruvbox) is one of them, and Settings lists all of them, so a split would add a request before the first theme application.
+
+## 2026-10-26 — Radio Helsinki now-playing lag
+
+- Cause: the API scraped radiohelsinki.fi's server-rendered song, which sits behind the site's page cache and trailed the site's own player (it polls `wp-content/djonline.js` every 20 s) by several songs.
+- tahti-org `fix/radio-helsinki-live-feed`: read the live feed first, fall back to the page; API cache 60 s → 20 s.
+- tahti-web (#1485): client programme cache 60 s → 20 s.
