@@ -98,6 +98,7 @@ export function GovernanceMembersView() {
       {user && !loading && (
         <>
           <Input
+            enterKeyHint="search"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}

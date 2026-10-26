@@ -89,6 +89,7 @@ export function ChannelModeratorsPanel() {
         )}
         <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-end">
           <Input
+            enterKeyHint="go"
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}

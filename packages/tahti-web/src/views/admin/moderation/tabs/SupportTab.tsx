@@ -199,6 +199,7 @@ export function SupportTab() {
         />
         <div className="w-full shrink-0 xl:max-w-sm">
           <Input
+            enterKeyHint="search"
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -376,6 +377,7 @@ export function SupportTab() {
                 {msg && <p className="text-xs">{msg}</p>}
                 <div className="flex gap-2">
                   <Input
+                    enterKeyHint="send"
                     value={reply}
                     onChange={(e) => setReply(e.target.value)}
                     placeholder="Write a reply…"

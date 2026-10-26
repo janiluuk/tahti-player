@@ -37,6 +37,7 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
     <>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <Input
+          enterKeyHint="search"
           type="search"
           aria-label="Search sounds"
           value={query}

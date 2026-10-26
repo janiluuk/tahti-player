@@ -275,6 +275,7 @@ export function FilesBrowserTab() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
         <Input
+          enterKeyHint="search"
           type="search"
           aria-label="Search files"
           placeholder="Search by title, artist, or username…"

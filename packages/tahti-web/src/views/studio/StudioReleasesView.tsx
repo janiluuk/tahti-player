@@ -242,6 +242,7 @@ export function StudioReleasesView() {
             ) : (
               <>
                 <Input
+                  enterKeyHint="search"
                   type="search"
                   aria-label="Search releases"
                   value={query}

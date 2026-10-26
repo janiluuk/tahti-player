@@ -313,6 +313,7 @@ export function RadioBrowserDirectoryCard() {
                   <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-2">
                       <Input
+                        enterKeyHint="search"
                         size="sm"
                         type="search"
                         value={query}

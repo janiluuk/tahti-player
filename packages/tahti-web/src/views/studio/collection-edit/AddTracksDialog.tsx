@@ -72,6 +72,7 @@ export function AddTracksDialog({
       </Dialog.Description>
       <div className="mt-4 flex min-w-0 flex-col gap-3">
         <Input
+          enterKeyHint="search"
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}

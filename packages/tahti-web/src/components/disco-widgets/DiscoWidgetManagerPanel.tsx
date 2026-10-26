@@ -255,6 +255,7 @@ export function DiscoWidgetManagerPanel({
               Browse the store
             </h3>
             <Input
+              enterKeyHint="search"
               type="search"
               placeholder="Search widgets…"
               value={search}

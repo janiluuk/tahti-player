@@ -93,6 +93,7 @@ export function BrowserLocalFiles() {
       ) : (
         <>
           <Input
+            enterKeyHint="search"
             type="search"
             label="Search local files"
             placeholder="Title, artist, or file name"

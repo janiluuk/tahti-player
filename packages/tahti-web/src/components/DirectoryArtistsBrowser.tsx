@@ -143,6 +143,7 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
       <div className="border-border bg-background-secondary/40 flex flex-col gap-3 rounded-xl border p-3 sm:p-4">
         <div className="flex flex-wrap items-center gap-2">
           <Input
+            enterKeyHint="search"
             type="search"
             label="Search"
             value={query}

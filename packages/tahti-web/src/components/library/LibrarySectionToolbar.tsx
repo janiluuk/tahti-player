@@ -22,6 +22,7 @@ export function LibrarySectionToolbar({
     <div className={`flex flex-col gap-4 ${className ?? ''}`.trim()}>
       {onQueryChange ? (
         <Input
+          enterKeyHint="search"
           type="search"
           value={query ?? ''}
           onChange={(event) => onQueryChange(event.target.value)}
