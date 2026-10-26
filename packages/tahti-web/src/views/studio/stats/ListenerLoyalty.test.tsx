@@ -37,7 +37,7 @@ describe('ListenerLoyalty', () => {
       screen.getByText(/65 % got halfway · 30 % listened to the end/),
     ).toBeTruthy();
     expect(screen.getByTestId('loyalty-chart').textContent).toBe(
-      '0%,10%,20%,30%,40%,50%,60%,70%,80%,90%,100%',
+      '0,10,20,30,40,50,60,70,80,90,100',
     );
   });
 

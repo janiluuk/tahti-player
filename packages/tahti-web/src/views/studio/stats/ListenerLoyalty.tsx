@@ -69,15 +69,19 @@ export function ListenerLoyalty({
               ({loyalty.total.toLocaleString()} listens)
             </span>
           </p>
-          <div className="h-44 w-full">
+          <div
+            className="h-44 w-full"
+            aria-label="Share still listening by % of track"
+          >
             <DayOfWeekChart
               values={loyalty.points.map((point) => point.share * 100)}
               labels={{
-                weekdays: loyalty.points.map((point) => `${point.percent}%`),
+                weekdays: loyalty.points.map((point) => String(point.percent)),
               }}
               formatValue={(value) => `${Math.round(value)} % still listening`}
             />
           </div>
+          <p className="text-foreground-secondary text-xs">% of the track</p>
         </div>
       )}
     </StudioPanel>
