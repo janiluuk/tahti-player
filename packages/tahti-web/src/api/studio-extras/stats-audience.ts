@@ -66,8 +66,8 @@ const MOCK_AUDIENCE: Record<StatsAudienceDimension, [string, number][]> = {
   ],
   deviceVendor: [
     ['Apple', 344],
-    ['Samsung', 152],
     ['Unknown', 214],
+    ['Samsung', 152],
     ['Google', 61],
     ['Other', 49],
   ],
