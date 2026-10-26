@@ -47,110 +47,118 @@ export function RegisterDialog({
           ? 'Changes the name, description, author, cover and categories. The slug and type stay as registered.'
           : 'Creates a draft add-on. It stays invisible everywhere until a bundle version is published (the upload button on its card) and approved.'}
       </Dialog.Description>
-      <div className="flex flex-col gap-4">
-        <div className="grid gap-4 sm:grid-cols-2">
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSave();
+        }}
+      >
+        <div className="flex flex-col gap-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Input
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              label="Slug"
+              value={draft.slug}
+              placeholder="live-status"
+              disabled={editing !== null}
+              onChange={(event) =>
+                onChange({ ...draft, slug: event.target.value })
+              }
+              description="Lowercase letters, numbers, and hyphens."
+            />
+            <Select
+              label="Add-on type"
+              value={draft.scope}
+              disabled={editing !== null}
+              onValueChange={(value) =>
+                onChange({ ...draft, scope: value as AdminAddonScope })
+              }
+              options={SCOPES.map((scope) => ({
+                id: scope.id,
+                label: scope.label,
+              }))}
+            />
+          </div>
           <Input
-            autoCapitalize="none"
-            autoCorrect="off"
-            spellCheck={false}
-            label="Slug"
-            value={draft.slug}
-            placeholder="live-status"
-            disabled={editing !== null}
+            autoComplete="off"
+            label="Name"
+            value={draft.name}
+            placeholder="Live status"
             onChange={(event) =>
-              onChange({ ...draft, slug: event.target.value })
+              onChange({ ...draft, name: event.target.value })
             }
-            description="Lowercase letters, numbers, and hyphens."
           />
-          <Select
-            label="Add-on type"
-            value={draft.scope}
-            disabled={editing !== null}
-            onValueChange={(value) =>
-              onChange({ ...draft, scope: value as AdminAddonScope })
+          <Textarea
+            label="Description"
+            value={draft.description}
+            rows={3}
+            placeholder="What does this add-on show or do?"
+            onChange={(event) =>
+              onChange({ ...draft, description: event.target.value })
             }
-            options={SCOPES.map((scope) => ({
-              id: scope.id,
-              label: scope.label,
-            }))}
           />
-        </div>
-        <Input
-          autoComplete="off"
-          label="Name"
-          value={draft.name}
-          placeholder="Live status"
-          onChange={(event) => onChange({ ...draft, name: event.target.value })}
-        />
-        <Textarea
-          label="Description"
-          value={draft.description}
-          rows={3}
-          placeholder="What does this add-on show or do?"
-          onChange={(event) =>
-            onChange({ ...draft, description: event.target.value })
-          }
-        />
-        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Input
+              label="Author"
+              value={draft.authorName}
+              placeholder="Tahti"
+              onChange={(event) =>
+                onChange({ ...draft, authorName: event.target.value })
+              }
+            />
+            <ImageUploadField
+              label="Add-on cover"
+              description="JPEG, PNG, WebP, or GIF"
+              value={draft.iconUrl ?? ''}
+              onChange={(iconUrl) => onChange({ ...draft, iconUrl })}
+            />
+          </div>
           <Input
-            label="Author"
-            value={draft.authorName}
-            placeholder="Tahti"
+            label="Parameters / categories"
+            value={draft.categories.join(', ')}
+            placeholder="stats, social, events"
+            description="Comma-separated categories used to filter and describe the add-on."
             onChange={(event) =>
-              onChange({ ...draft, authorName: event.target.value })
+              onChange({
+                ...draft,
+                categories: event.target.value
+                  .split(',')
+                  .map((category) => category.trim())
+                  .filter(Boolean),
+              })
             }
           />
-          <ImageUploadField
-            label="Add-on cover"
-            description="JPEG, PNG, WebP, or GIF"
-            value={draft.iconUrl ?? ''}
-            onChange={(iconUrl) => onChange({ ...draft, iconUrl })}
-          />
+          {error ? <InlineError>{error}</InlineError> : null}
         </div>
-        <Input
-          label="Parameters / categories"
-          value={draft.categories.join(', ')}
-          placeholder="stats, social, events"
-          description="Comma-separated categories used to filter and describe the add-on."
-          onChange={(event) =>
-            onChange({
-              ...draft,
-              categories: event.target.value
-                .split(',')
-                .map((category) => category.trim())
-                .filter(Boolean),
-            })
-          }
-        />
-        {error ? <InlineError>{error}</InlineError> : null}
-      </div>
-      <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
-        <Button
-          type="button"
-          disabled={
-            pending ||
-            !draft.slug.trim() ||
-            !draft.name.trim() ||
-            !draft.description.trim() ||
-            !draft.authorName.trim() ||
-            draft.categories.length === 0
-          }
-          onClick={onSave}
-        >
-          {editing ? (
-            <>
-              <SaveIcon size={15} aria-hidden className="mr-1.5" />
-              Save changes
-            </>
-          ) : (
-            <>
-              <PlusIcon size={15} aria-hidden className="mr-1.5" />
-              Register add-on
-            </>
-          )}
-        </Button>
-      </Dialog.Actions>
+        <Dialog.Actions>
+          <Dialog.Close>Cancel</Dialog.Close>
+          <Button
+            disabled={
+              pending ||
+              !draft.slug.trim() ||
+              !draft.name.trim() ||
+              !draft.description.trim() ||
+              !draft.authorName.trim() ||
+              draft.categories.length === 0
+            }
+            type="submit"
+          >
+            {editing ? (
+              <>
+                <SaveIcon size={15} aria-hidden className="mr-1.5" />
+                Save changes
+              </>
+            ) : (
+              <>
+                <PlusIcon size={15} aria-hidden className="mr-1.5" />
+                Register add-on
+              </>
+            )}
+          </Button>
+        </Dialog.Actions>
+      </form>
     </Dialog.Root>
   );
 }

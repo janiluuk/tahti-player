@@ -1,3 +1,16 @@
+## 2026-10-26 - UX batch 107 thirty Enter-submits slices
+
+Thirty input groups that only submitted on a button click are now real
+forms, so Enter submits them (and stays blocked while the submit button is
+disabled): set-up and reset password, 2FA confirm and disable, station URL
+resolve, add-on register, multicast destination (dialog and section),
+navigation draft top-level and sub-item, stats custom period, tracklist pin,
+Discord bot settings, channel slug check and custom domain, internet radio
+preset, smart playlist, studio event, news post edit, motion edit,
+smart-link fill, ledger entry, social auto-post, station ID clip, theme name,
+show defaults, hearthis.at username and search, episode public details and
+broadcast show info. Navigation widget test added. tahti-web `0.0.265`.
+
 ## 2026-10-26 - UX batch 104 thirty machine-text and number field slices
 
 Seventeen fields that hold machine text turn off auto-capitalise,

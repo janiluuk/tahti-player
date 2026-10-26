@@ -55,7 +55,30 @@ function LedgerEntryForm({ onSaved }: { onSaved: () => void }) {
   const [error, setError] = useState<string | null>(null);
 
   return (
-    <div className="border-border mb-4 flex flex-col gap-3 border-b pb-4">
+    <form
+      className="border-border mb-4 flex flex-col gap-3 border-b pb-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        const eur = Number(amount.replace(',', '.'));
+        setSaving(true);
+        setError(null);
+        void createLedgerEntry({
+          category,
+          amountCents: Number.isFinite(eur) ? Math.round(eur * 100) : NaN,
+          description,
+          externalRef,
+          periodStart,
+          periodEnd,
+        }).then((result) => {
+          setSaving(false);
+          if (!result.ok) {
+            setError(result.error);
+            return;
+          }
+          onSaved();
+        });
+      }}
+    >
       <div className="grid gap-3 sm:grid-cols-2">
         <Select
           label="Category"
@@ -108,29 +131,10 @@ function LedgerEntryForm({ onSaved }: { onSaved: () => void }) {
           disabled={!amount.trim() || !description.trim()}
           saving={saving}
           label="Save entry"
-          onClick={() => {
-            const eur = Number(amount.replace(',', '.'));
-            setSaving(true);
-            setError(null);
-            void createLedgerEntry({
-              category,
-              amountCents: Number.isFinite(eur) ? Math.round(eur * 100) : NaN,
-              description,
-              externalRef,
-              periodStart,
-              periodEnd,
-            }).then((result) => {
-              setSaving(false);
-              if (!result.ok) {
-                setError(result.error);
-                return;
-              }
-              onSaved();
-            });
-          }}
+          type="submit"
         />
       </div>
-    </div>
+    </form>
   );
 }
 

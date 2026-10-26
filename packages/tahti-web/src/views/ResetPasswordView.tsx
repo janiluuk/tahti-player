@@ -117,7 +117,13 @@ export function ResetPasswordView() {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <form
+          className="flex flex-col gap-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onSubmit();
+          }}
+        >
           <Input
             label="New password"
             variant="password"
@@ -139,10 +145,10 @@ export function ResetPasswordView() {
           />
           {mismatch && <InlineError>Passwords don&apos;t match.</InlineError>}
           {error && <InlineError>{error}</InlineError>}
-          <Button disabled={!canSubmit} onClick={onSubmit}>
+          <Button disabled={!canSubmit} type="submit">
             {loading ? 'Saving…' : 'Reset password & sign in'}
           </Button>
-        </div>
+        </form>
       )}
     </div>
   );

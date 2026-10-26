@@ -125,165 +125,177 @@ export function SmartPlaylistDialog({
         A smart playlist follows your rules: it updates by itself as ratings,
         plays, tags and analysis change.
       </Dialog.Description>
-      <div className="flex max-h-[60vh] flex-col gap-3 overflow-y-auto py-2">
-        <Input
-          autoComplete="off"
-          label="Name"
-          value={draft.name}
-          onChange={(event) =>
-            setDraft((current) => ({ ...current, name: event.target.value }))
-          }
-        />
-        <div className="flex flex-col gap-1">
-          <span className="text-sm font-medium" aria-hidden>
-            Include tracks that match
-          </span>
-          <FilterChips
-            aria-label="Include tracks that match"
-            items={[
-              { id: 'all', label: 'All of the rules' },
-              { id: 'any', label: 'Any of the rules' },
-            ]}
-            selected={draft.matchAll ? 'all' : 'any'}
-            onChange={(id) =>
-              setDraft((current) => ({ ...current, matchAll: id === 'all' }))
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          void save();
+        }}
+      >
+        <div className="flex max-h-[60vh] flex-col gap-3 overflow-y-auto py-2">
+          <Input
+            autoComplete="off"
+            label="Name"
+            value={draft.name}
+            onChange={(event) =>
+              setDraft((current) => ({ ...current, name: event.target.value }))
             }
           />
-        </div>
-        <ul className="flex flex-col gap-2" aria-label="Rules">
-          {draft.rules.map((rule, index) => (
-            <li
-              key={index}
-              className="border-border flex flex-wrap items-end gap-2 rounded-md border p-2"
-            >
-              <Select
-                label="Field"
-                value={rule.field}
-                onValueChange={(field) =>
-                  setRule(index, withField(rule, field as typeof rule.field))
-                }
-                options={RULE_FIELDS.map((f) => ({ id: f.id, label: f.label }))}
-              />
-              <Select
-                label="Condition"
-                value={rule.op}
-                onValueChange={(op) =>
-                  setRule(index, { ...rule, op: op as typeof rule.op })
-                }
-                options={opsFor(rule.field)}
-              />
-              {needsValue(rule.op) ? (
-                <SmartRuleValueInput
-                  rule={rule}
-                  which="value"
-                  label="Value"
-                  onChange={(value) => setRule(index, { ...rule, value })}
-                />
-              ) : null}
-              {needsSecondValue(rule.op) ? (
-                <SmartRuleValueInput
-                  rule={rule}
-                  which="value2"
-                  label="and"
-                  onChange={(value2) => setRule(index, { ...rule, value2 })}
-                />
-              ) : null}
-              <Tooltip content={`Remove rule ${index + 1}`} side="top">
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  intent="danger"
-                  aria-label={`Remove rule ${index + 1}`}
-                  onClick={() =>
-                    setDraft((current) => ({
-                      ...current,
-                      rules: current.rules.filter((_, i) => i !== index),
-                    }))
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-medium" aria-hidden>
+              Include tracks that match
+            </span>
+            <FilterChips
+              aria-label="Include tracks that match"
+              items={[
+                { id: 'all', label: 'All of the rules' },
+                { id: 'any', label: 'Any of the rules' },
+              ]}
+              selected={draft.matchAll ? 'all' : 'any'}
+              onChange={(id) =>
+                setDraft((current) => ({ ...current, matchAll: id === 'all' }))
+              }
+            />
+          </div>
+          <ul className="flex flex-col gap-2" aria-label="Rules">
+            {draft.rules.map((rule, index) => (
+              <li
+                key={index}
+                className="border-border flex flex-wrap items-end gap-2 rounded-md border p-2"
+              >
+                <Select
+                  label="Field"
+                  value={rule.field}
+                  onValueChange={(field) =>
+                    setRule(index, withField(rule, field as typeof rule.field))
                   }
-                >
-                  <TrashIcon size={14} aria-hidden />
-                </Button>
-              </Tooltip>
-            </li>
-          ))}
-        </ul>
-        <div>
+                  options={RULE_FIELDS.map((f) => ({
+                    id: f.id,
+                    label: f.label,
+                  }))}
+                />
+                <Select
+                  label="Condition"
+                  value={rule.op}
+                  onValueChange={(op) =>
+                    setRule(index, { ...rule, op: op as typeof rule.op })
+                  }
+                  options={opsFor(rule.field)}
+                />
+                {needsValue(rule.op) ? (
+                  <SmartRuleValueInput
+                    rule={rule}
+                    which="value"
+                    label="Value"
+                    onChange={(value) => setRule(index, { ...rule, value })}
+                  />
+                ) : null}
+                {needsSecondValue(rule.op) ? (
+                  <SmartRuleValueInput
+                    rule={rule}
+                    which="value2"
+                    label="and"
+                    onChange={(value2) => setRule(index, { ...rule, value2 })}
+                  />
+                ) : null}
+                <Tooltip content={`Remove rule ${index + 1}`} side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    intent="danger"
+                    aria-label={`Remove rule ${index + 1}`}
+                    onClick={() =>
+                      setDraft((current) => ({
+                        ...current,
+                        rules: current.rules.filter((_, i) => i !== index),
+                      }))
+                    }
+                  >
+                    <TrashIcon size={14} aria-hidden />
+                  </Button>
+                </Tooltip>
+              </li>
+            ))}
+          </ul>
+          <div>
+            <Button
+              className="gap-1.5"
+              size="sm"
+              variant="text"
+              onClick={() =>
+                setDraft((current) => ({
+                  ...current,
+                  rules: [...current.rules, newRule()],
+                }))
+              }
+            >
+              <PlusIcon size={14} aria-hidden />
+              Add rule
+            </Button>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <Select
+              label="Sort by"
+              value={draft.sort}
+              onValueChange={(sort) =>
+                setDraft((current) => ({
+                  ...current,
+                  sort: sort as typeof current.sort,
+                }))
+              }
+              options={SMART_SORTS}
+            />
+            <Select
+              label="Order"
+              value={draft.descending ? 'desc' : 'asc'}
+              onValueChange={(value) =>
+                setDraft((current) => ({
+                  ...current,
+                  descending: value === 'desc',
+                }))
+              }
+              options={[
+                { id: 'asc', label: 'Ascending' },
+                { id: 'desc', label: 'Descending' },
+              ]}
+            />
+            <Input
+              type="number"
+              label="Limit to first … tracks (optional)"
+              value={draft.limit === null ? '' : String(draft.limit)}
+              onChange={(event) => {
+                const value = event.target.value.trim();
+                setDraft((current) => ({
+                  ...current,
+                  limit:
+                    value === ''
+                      ? null
+                      : Math.max(1, Math.floor(Number(value))),
+                }));
+              }}
+            />
+          </div>
+          <p className="text-sm" role="status" data-testid="smart-preview">
+            {problem ? (
+              <span className="text-accent-red-strong">{problem}</span>
+            ) : matches === null ? (
+              'Checking…'
+            ) : (
+              `${matches.toLocaleString('en-US')} ${matches === 1 ? 'track matches' : 'tracks match'} right now`
+            )}
+          </p>
+        </div>
+        <Dialog.Actions>
+          <Dialog.Close>Cancel</Dialog.Close>
           <Button
             className="gap-1.5"
-            size="sm"
-            variant="text"
-            onClick={() =>
-              setDraft((current) => ({
-                ...current,
-                rules: [...current.rules, newRule()],
-              }))
-            }
+            disabled={saving || problem !== null || draft.name.trim() === ''}
+            type="submit"
           >
-            <PlusIcon size={14} aria-hidden />
-            Add rule
+            {saving ? <Loader size="inline" shape="circle" /> : null}
+            Save
           </Button>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          <Select
-            label="Sort by"
-            value={draft.sort}
-            onValueChange={(sort) =>
-              setDraft((current) => ({
-                ...current,
-                sort: sort as typeof current.sort,
-              }))
-            }
-            options={SMART_SORTS}
-          />
-          <Select
-            label="Order"
-            value={draft.descending ? 'desc' : 'asc'}
-            onValueChange={(value) =>
-              setDraft((current) => ({
-                ...current,
-                descending: value === 'desc',
-              }))
-            }
-            options={[
-              { id: 'asc', label: 'Ascending' },
-              { id: 'desc', label: 'Descending' },
-            ]}
-          />
-          <Input
-            type="number"
-            label="Limit to first … tracks (optional)"
-            value={draft.limit === null ? '' : String(draft.limit)}
-            onChange={(event) => {
-              const value = event.target.value.trim();
-              setDraft((current) => ({
-                ...current,
-                limit:
-                  value === '' ? null : Math.max(1, Math.floor(Number(value))),
-              }));
-            }}
-          />
-        </div>
-        <p className="text-sm" role="status" data-testid="smart-preview">
-          {problem ? (
-            <span className="text-accent-red-strong">{problem}</span>
-          ) : matches === null ? (
-            'Checking…'
-          ) : (
-            `${matches.toLocaleString('en-US')} ${matches === 1 ? 'track matches' : 'tracks match'} right now`
-          )}
-        </p>
-      </div>
-      <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
-        <Button
-          className="gap-1.5"
-          disabled={saving || problem !== null || draft.name.trim() === ''}
-          onClick={() => void save()}
-        >
-          {saving ? <Loader size="inline" shape="circle" /> : null}
-          Save
-        </Button>
-      </Dialog.Actions>
+        </Dialog.Actions>
+      </form>
     </Dialog.Root>
   );
 }

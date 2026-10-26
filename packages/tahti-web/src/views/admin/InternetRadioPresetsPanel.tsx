@@ -259,145 +259,150 @@ export function InternetRadioPresetsPanel() {
         <Dialog.Description>
           Shown as a default in the Listen page radio feed once enabled.
         </Dialog.Description>
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col items-center gap-2 self-center">
-            <RadioStationCover
-              src={draft.iconUrl || ''}
-              label={draft.name.trim() || 'Station'}
-              stationName={draft.name.trim() || 'Station'}
-              catalogStationId={catalogStationIdForName(draft.name)}
-              presetId={editingId ?? undefined}
-              persist={Boolean(editingId)}
-              className="h-28 w-28 overflow-hidden rounded-lg"
-              onCoverChange={(iconUrl) => {
-                setDraft((current) => ({ ...current, iconUrl }));
-                if (editingId) {
-                  setPresets((current) =>
-                    current.map((item) =>
-                      item.id === editingId ? { ...item, iconUrl } : item,
-                    ),
-                  );
-                }
-              }}
-            />
-            <span className="text-foreground-secondary text-xs">
-              Station logo — JPEG, PNG, or WebP. Hover the image to replace.
-            </span>
-            {catalogLogoForName(draft.name) ? (
-              <Button
-                className="gap-1.5"
-                type="button"
-                size="xs"
-                variant="text"
-                disabled={
-                  pending || draft.iconUrl === catalogLogoForName(draft.name)
-                }
-                onClick={() => {
-                  const logoUrl = catalogLogoForName(draft.name);
-                  if (!logoUrl) {
-                    return;
-                  }
-                  setDraft((current) => ({ ...current, iconUrl: logoUrl }));
-                  if (!editingId) {
-                    return;
-                  }
-                  void persistRadioStationCover({
-                    catalogStationId: catalogStationIdForName(draft.name),
-                    presetId: editingId,
-                    stationName: draft.name.trim() || 'Station',
-                    logoUrl,
-                  }).then((result) => {
-                    if (!result.ok) {
-                      setError(result.error);
-                      return;
-                    }
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            save();
+          }}
+        >
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col items-center gap-2 self-center">
+              <RadioStationCover
+                src={draft.iconUrl || ''}
+                label={draft.name.trim() || 'Station'}
+                stationName={draft.name.trim() || 'Station'}
+                catalogStationId={catalogStationIdForName(draft.name)}
+                presetId={editingId ?? undefined}
+                persist={Boolean(editingId)}
+                className="h-28 w-28 overflow-hidden rounded-lg"
+                onCoverChange={(iconUrl) => {
+                  setDraft((current) => ({ ...current, iconUrl }));
+                  if (editingId) {
                     setPresets((current) =>
                       current.map((item) =>
-                        item.id === editingId
-                          ? { ...item, iconUrl: logoUrl }
-                          : item,
+                        item.id === editingId ? { ...item, iconUrl } : item,
                       ),
                     );
-                  });
+                  }
                 }}
+              />
+              <span className="text-foreground-secondary text-xs">
+                Station logo — JPEG, PNG, or WebP. Hover the image to replace.
+              </span>
+              {catalogLogoForName(draft.name) ? (
+                <Button
+                  className="gap-1.5"
+                  type="button"
+                  size="xs"
+                  variant="text"
+                  disabled={
+                    pending || draft.iconUrl === catalogLogoForName(draft.name)
+                  }
+                  onClick={() => {
+                    const logoUrl = catalogLogoForName(draft.name);
+                    if (!logoUrl) {
+                      return;
+                    }
+                    setDraft((current) => ({ ...current, iconUrl: logoUrl }));
+                    if (!editingId) {
+                      return;
+                    }
+                    void persistRadioStationCover({
+                      catalogStationId: catalogStationIdForName(draft.name),
+                      presetId: editingId,
+                      stationName: draft.name.trim() || 'Station',
+                      logoUrl,
+                    }).then((result) => {
+                      if (!result.ok) {
+                        setError(result.error);
+                        return;
+                      }
+                      setPresets((current) =>
+                        current.map((item) =>
+                          item.id === editingId
+                            ? { ...item, iconUrl: logoUrl }
+                            : item,
+                        ),
+                      );
+                    });
+                  }}
+                >
+                  <ImageIcon size={14} aria-hidden />
+                  Use catalog logo
+                </Button>
+              ) : null}
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Input
+                autoComplete="off"
+                label="Name"
+                value={draft.name}
+                placeholder="Radio Helsinki"
+                onChange={(event) =>
+                  setDraft({ ...draft, name: event.target.value })
+                }
+              />
+              <Input
+                label="Genre"
+                value={draft.genre ?? ''}
+                placeholder="World"
+                onChange={(event) =>
+                  setDraft({ ...draft, genre: event.target.value })
+                }
+              />
+            </div>
+            <Textarea
+              label="Description"
+              value={draft.description ?? ''}
+              rows={2}
+              placeholder="What listeners should expect from this station."
+              onChange={(event) =>
+                setDraft({ ...draft, description: event.target.value })
+              }
+            />
+            <Input
+              inputMode="url"
+              label="Stream URL"
+              value={draft.streamUrl ?? ''}
+              placeholder="https://stream.example.com/live.mp3"
+              description="Direct, playable HTTPS stream URL."
+              onChange={(event) =>
+                setDraft({ ...draft, streamUrl: event.target.value })
+              }
+            />
+            <Input
+              inputMode="url"
+              label="Programming URL (optional)"
+              value={draft.programmingUrl ?? ''}
+              placeholder="https://example.com/now-playing"
+              description="“What's on now” endpoint, if the station exposes one — display-only."
+              onChange={(event) =>
+                setDraft({ ...draft, programmingUrl: event.target.value })
+              }
+            />
+            {error ? <InlineError>{error}</InlineError> : null}
+          </div>
+          <Dialog.Actions>
+            <Dialog.Close>Cancel</Dialog.Close>
+            {editingId ? (
+              <SaveButton
+                disabled={pending || !draft.name.trim()}
+                saving={pending}
+                label="Save changes"
+                type="submit"
+              />
+            ) : (
+              <Button
+                className="gap-1.5"
+                disabled={pending || !draft.name.trim()}
+                type="submit"
               >
-                <ImageIcon size={14} aria-hidden />
-                Use catalog logo
+                <PlusIcon size={14} aria-hidden />
+                Add station
               </Button>
-            ) : null}
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Input
-              autoComplete="off"
-              label="Name"
-              value={draft.name}
-              placeholder="Radio Helsinki"
-              onChange={(event) =>
-                setDraft({ ...draft, name: event.target.value })
-              }
-            />
-            <Input
-              label="Genre"
-              value={draft.genre ?? ''}
-              placeholder="World"
-              onChange={(event) =>
-                setDraft({ ...draft, genre: event.target.value })
-              }
-            />
-          </div>
-          <Textarea
-            label="Description"
-            value={draft.description ?? ''}
-            rows={2}
-            placeholder="What listeners should expect from this station."
-            onChange={(event) =>
-              setDraft({ ...draft, description: event.target.value })
-            }
-          />
-          <Input
-            inputMode="url"
-            label="Stream URL"
-            value={draft.streamUrl ?? ''}
-            placeholder="https://stream.example.com/live.mp3"
-            description="Direct, playable HTTPS stream URL."
-            onChange={(event) =>
-              setDraft({ ...draft, streamUrl: event.target.value })
-            }
-          />
-          <Input
-            inputMode="url"
-            label="Programming URL (optional)"
-            value={draft.programmingUrl ?? ''}
-            placeholder="https://example.com/now-playing"
-            description="“What's on now” endpoint, if the station exposes one — display-only."
-            onChange={(event) =>
-              setDraft({ ...draft, programmingUrl: event.target.value })
-            }
-          />
-          {error ? <InlineError>{error}</InlineError> : null}
-        </div>
-        <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
-          {editingId ? (
-            <SaveButton
-              type="button"
-              disabled={pending || !draft.name.trim()}
-              saving={pending}
-              label="Save changes"
-              onClick={save}
-            />
-          ) : (
-            <Button
-              className="gap-1.5"
-              type="button"
-              disabled={pending || !draft.name.trim()}
-              onClick={save}
-            >
-              <PlusIcon size={14} aria-hidden />
-              Add station
-            </Button>
-          )}
-        </Dialog.Actions>
+            )}
+          </Dialog.Actions>
+        </form>
       </Dialog.Root>
     </StudioPanel>
   );

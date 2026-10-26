@@ -118,78 +118,85 @@ export function MulticastConfigureDialog({
           ? 'Update the destination label and whether it mirrors your live stream.'
           : 'Enter the credential this platform uses for live streaming. Custom RTMP also needs its server address and port.'}
       </Dialog.Description>
-      <div className="mt-4 flex flex-col gap-3">
-        <Input
-          label="Label (optional)"
-          value={label}
-          onChange={(event) => setLabel(event.target.value)}
-          placeholder={multicastProviderLabel(provider)}
-        />
-        {existing ? (
-          <p className="text-foreground-secondary text-xs">
-            {existing.rtmpUrl}
-            {existing.keyLast4 ? ` · key ···${existing.keyLast4}` : ''}
-          </p>
-        ) : (
-          <>
-            {isCustom ? (
-              <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_8rem]">
-                <Input
-                  inputMode="url"
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  label="RTMP address"
-                  value={address}
-                  onChange={(event) => setAddress(event.target.value)}
-                  placeholder="rtmp://stream.example.com/live"
-                />
-                <Input
-                  label="Port"
-                  value={port}
-                  onChange={(event) => setPort(event.target.value)}
-                  placeholder="1935"
-                  inputMode="numeric"
-                />
-              </div>
-            ) : (
-              <p className="text-foreground-secondary text-xs">
-                Ingest server:{' '}
-                {multicastProviders.find((item) => item.id === provider)
-                  ?.rtmpUrlHint ?? 'the platform chooses the ingest server'}
-              </p>
-            )}
-            <Input
-              label={isCustom ? 'Stream key' : 'Stream key / API key'}
-              value={streamKey}
-              onChange={(event) => setStreamKey(event.target.value)}
-              placeholder={
-                isCustom ? 'Paste stream key' : 'Paste platform credential'
-              }
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          save();
+        }}
+      >
+        <div className="mt-4 flex flex-col gap-3">
+          <Input
+            label="Label (optional)"
+            value={label}
+            onChange={(event) => setLabel(event.target.value)}
+            placeholder={multicastProviderLabel(provider)}
+          />
+          {existing ? (
+            <p className="text-foreground-secondary text-xs">
+              {existing.rtmpUrl}
+              {existing.keyLast4 ? ` · key ···${existing.keyLast4}` : ''}
+            </p>
+          ) : (
+            <>
+              {isCustom ? (
+                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_8rem]">
+                  <Input
+                    inputMode="url"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    label="RTMP address"
+                    value={address}
+                    onChange={(event) => setAddress(event.target.value)}
+                    placeholder="rtmp://stream.example.com/live"
+                  />
+                  <Input
+                    label="Port"
+                    value={port}
+                    onChange={(event) => setPort(event.target.value)}
+                    placeholder="1935"
+                    inputMode="numeric"
+                  />
+                </div>
+              ) : (
+                <p className="text-foreground-secondary text-xs">
+                  Ingest server:{' '}
+                  {multicastProviders.find((item) => item.id === provider)
+                    ?.rtmpUrlHint ?? 'the platform chooses the ingest server'}
+                </p>
+              )}
+              <Input
+                label={isCustom ? 'Stream key' : 'Stream key / API key'}
+                value={streamKey}
+                onChange={(event) => setStreamKey(event.target.value)}
+                placeholder={
+                  isCustom ? 'Paste stream key' : 'Paste platform credential'
+                }
+              />
+            </>
+          )}
+          <div className="flex items-center justify-between gap-3 text-sm">
+            <span>Enabled — mirror the live stream here</span>
+            <Toggle
+              label="Enabled — mirror the live stream here"
+              checked={enabled}
+              onChange={setEnabled}
             />
-          </>
-        )}
-        <div className="flex items-center justify-between gap-3 text-sm">
-          <span>Enabled — mirror the live stream here</span>
-          <Toggle
-            label="Enabled — mirror the live stream here"
-            checked={enabled}
-            onChange={setEnabled}
-          />
+          </div>
+          {mirror.visible ? (
+            <RotationMirrorToggle
+              checked={mirror.checked}
+              onChange={mirror.setChecked}
+              disabled={saving}
+            />
+          ) : null}
+          {error ? <InlineError>{error}</InlineError> : null}
         </div>
-        {mirror.visible ? (
-          <RotationMirrorToggle
-            checked={mirror.checked}
-            onChange={mirror.setChecked}
-            disabled={saving}
-          />
-        ) : null}
-        {error ? <InlineError>{error}</InlineError> : null}
-      </div>
-      <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
-        <SaveButton saving={saving} label="Save destination" onClick={save} />
-      </Dialog.Actions>
+        <Dialog.Actions>
+          <Dialog.Close>Cancel</Dialog.Close>
+          <SaveButton saving={saving} label="Save destination" type="submit" />
+        </Dialog.Actions>
+      </form>
     </Dialog.Root>
   );
 }

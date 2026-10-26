@@ -102,7 +102,13 @@ export function NavigationStructureWidget() {
         ))}
       </ul>
 
-      <div className="border-border mt-4 grid gap-2 border-t pt-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+      <form
+        className="border-border mt-4 grid gap-2 border-t pt-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end"
+        onSubmit={(event) => {
+          event.preventDefault();
+          add();
+        }}
+      >
         <Input
           label="Label"
           placeholder="Community"
@@ -117,14 +123,14 @@ export function NavigationStructureWidget() {
         />
         <Button
           size="sm"
-          onClick={add}
+          type="submit"
           disabled={!label.trim() || !path.trim()}
           className="gap-1.5"
         >
           <PlusIcon size={15} aria-hidden />
           Add top-level item
         </Button>
-      </div>
+      </form>
     </div>
   );
 }
@@ -150,7 +156,13 @@ function AddChildForm({
   };
 
   return (
-    <div className="border-border bg-background-secondary/40 mt-1 grid gap-2 rounded-md border p-2 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-end">
+    <form
+      className="border-border bg-background-secondary/40 mt-1 grid gap-2 rounded-md border p-2 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-end"
+      onSubmit={(event) => {
+        event.preventDefault();
+        submit();
+      }}
+    >
       <Input
         label="Label"
         placeholder="Sub-item"
@@ -163,17 +175,13 @@ function AddChildForm({
         value={path}
         onChange={(event) => setPath(event.target.value)}
       />
-      <Button
-        size="sm"
-        onClick={submit}
-        disabled={!label.trim() || !path.trim()}
-      >
+      <Button size="sm" type="submit" disabled={!label.trim() || !path.trim()}>
         Add
       </Button>
       <Button size="sm" variant="text" onClick={onCancel}>
         Cancel
       </Button>
-    </div>
+    </form>
   );
 }
 

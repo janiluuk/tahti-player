@@ -155,7 +155,28 @@ export function AdminNewsView() {
                     {posts.map((post) =>
                       editingId === post.id ? (
                         <li key={post.id} className="py-3 first:pt-0 last:pb-0">
-                          <div className="flex flex-col gap-3">
+                          <form
+                            className="flex flex-col gap-3"
+                            onSubmit={(event) => {
+                              event.preventDefault();
+                              setBusy(true);
+                              void updateNewsPost(post.id, {
+                                headline: editHeadline.trim(),
+                                summary: editSummary.trim(),
+                                imageUrl: editImageUrl.trim() || null,
+                                linkUrl: editLinkUrl.trim() || null,
+                                linkLabel: editLinkLabel.trim() || null,
+                              }).then((r) => {
+                                setBusy(false);
+                                if (!r.ok) {
+                                  setMsg(r.error);
+                                  return;
+                                }
+                                setEditingId(null);
+                                reload();
+                              });
+                            }}
+                          >
                             <Input
                               label="Headline"
                               value={editHeadline}
@@ -199,29 +220,9 @@ export function AdminNewsView() {
                               >
                                 Cancel
                               </Button>
-                              <SaveButton
-                                saving={busy}
-                                onClick={() => {
-                                  setBusy(true);
-                                  void updateNewsPost(post.id, {
-                                    headline: editHeadline.trim(),
-                                    summary: editSummary.trim(),
-                                    imageUrl: editImageUrl.trim() || null,
-                                    linkUrl: editLinkUrl.trim() || null,
-                                    linkLabel: editLinkLabel.trim() || null,
-                                  }).then((r) => {
-                                    setBusy(false);
-                                    if (!r.ok) {
-                                      setMsg(r.error);
-                                      return;
-                                    }
-                                    setEditingId(null);
-                                    reload();
-                                  });
-                                }}
-                              />
+                              <SaveButton saving={busy} type="submit" />
                             </div>
-                          </div>
+                          </form>
                         </li>
                       ) : (
                         <li

@@ -214,7 +214,13 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
             title="Public show details"
             description="What listeners see when they open this show from the Tahti Radio schedule."
           >
-            <div className="flex flex-col gap-3">
+            <form
+              className="flex flex-col gap-3"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void savePublicDetails();
+              }}
+            >
               <Input
                 label="Episode title"
                 value={publicTitle}
@@ -231,10 +237,10 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                 <SaveButton
                   saving={savingDetails}
                   label="Save public details"
-                  onClick={() => void savePublicDetails()}
+                  type="submit"
                 />
               </div>
-            </div>
+            </form>
           </StudioPanel>
 
           {needsApproval && (

@@ -105,7 +105,25 @@ export function SecurityTotpPanel() {
         )}
 
         {setup && (
-          <div className="flex flex-col gap-3">
+          <form
+            className="flex flex-col gap-3"
+            onSubmit={(event) => {
+              event.preventDefault();
+              setPending(true);
+              setError(null);
+              void confirmTotp(confirmCode).then((res) => {
+                setPending(false);
+                if (!res.ok) {
+                  setError(res.error);
+                  return;
+                }
+                setBackupCodes(res.backupCodes);
+                setSetup(null);
+                setConfirmCode('');
+                setEnabled(true);
+              });
+            }}
+          >
             <p className="text-foreground-secondary text-xs">
               Scan this QR code with your authenticator app, then enter the
               6-digit code it generates.
@@ -142,21 +160,7 @@ export function SecurityTotpPanel() {
               <Button
                 size="sm"
                 disabled={pending || confirmCode.trim().length < 6}
-                onClick={() => {
-                  setPending(true);
-                  setError(null);
-                  void confirmTotp(confirmCode).then((res) => {
-                    setPending(false);
-                    if (!res.ok) {
-                      setError(res.error);
-                      return;
-                    }
-                    setBackupCodes(res.backupCodes);
-                    setSetup(null);
-                    setConfirmCode('');
-                    setEnabled(true);
-                  });
-                }}
+                type="submit"
               >
                 <ShieldCheckIcon size={15} aria-hidden className="mr-1.5" />
                 Confirm
@@ -173,7 +177,7 @@ export function SecurityTotpPanel() {
                 Cancel
               </Button>
             </div>
-          </div>
+          </form>
         )}
 
         {enabled && !disabling && (
@@ -188,7 +192,24 @@ export function SecurityTotpPanel() {
         )}
 
         {enabled && disabling && (
-          <div className="flex flex-col gap-2">
+          <form
+            className="flex flex-col gap-2"
+            onSubmit={(event) => {
+              event.preventDefault();
+              setPending(true);
+              setError(null);
+              void disableTotp(disablePassword).then((res) => {
+                setPending(false);
+                if (!res.ok) {
+                  setError(res.error);
+                  return;
+                }
+                setEnabled(false);
+                setDisabling(false);
+                setDisablePassword('');
+              });
+            }}
+          >
             <Input
               label="Current password"
               variant="password"
@@ -200,20 +221,7 @@ export function SecurityTotpPanel() {
               <Button
                 size="sm"
                 disabled={pending || !disablePassword}
-                onClick={() => {
-                  setPending(true);
-                  setError(null);
-                  void disableTotp(disablePassword).then((res) => {
-                    setPending(false);
-                    if (!res.ok) {
-                      setError(res.error);
-                      return;
-                    }
-                    setEnabled(false);
-                    setDisabling(false);
-                    setDisablePassword('');
-                  });
-                }}
+                type="submit"
               >
                 <ShieldOffIcon size={15} aria-hidden className="mr-1.5" />
                 Confirm disable
@@ -230,7 +238,7 @@ export function SecurityTotpPanel() {
                 Cancel
               </Button>
             </div>
-          </div>
+          </form>
         )}
 
         {error && <InlineError>{error}</InlineError>}

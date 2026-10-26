@@ -46,7 +46,13 @@ export function RangeControls({ state }: { state: StatsData }) {
       />
       {range === 'custom' ? (
         <StudioPanel className="!p-4" title="Custom period">
-          <div className="flex flex-wrap items-end gap-3">
+          <form
+            className="flex flex-wrap items-end gap-3"
+            onSubmit={(event) => {
+              event.preventDefault();
+              applyCustomRange();
+            }}
+          >
             <Input
               type="date"
               label="From"
@@ -65,11 +71,11 @@ export function RangeControls({ state }: { state: StatsData }) {
             <Button
               size="sm"
               disabled={!customFrom || !customTo || customTo < customFrom}
-              onClick={applyCustomRange}
+              type="submit"
             >
               Apply period
             </Button>
-          </div>
+          </form>
           {appliedCustom ? (
             <p className="text-foreground-secondary mt-2 text-xs">
               Showing {formatDate(appliedCustom.from)} –{' '}

@@ -97,7 +97,13 @@ export function AddStationUrlDialog({
         it's listed there.
       </Dialog.Description>
       <div className="mt-4 flex flex-col gap-3">
-        <div className="flex flex-wrap gap-2">
+        <form
+          className="flex flex-wrap gap-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void resolve();
+          }}
+        >
           <Input
             inputMode="url"
             aria-label="Stream URL"
@@ -113,15 +119,14 @@ export function AddStationUrlDialog({
             placeholder="https://example.com/stream.m3u8"
           />
           <Button
-            type="button"
             size="sm"
             variant="secondary"
             disabled={!draft.trim() || busy}
-            onClick={() => void resolve()}
+            type="submit"
           >
             {busy ? 'Testing…' : 'Resolve & test'}
           </Button>
-        </div>
+        </form>
         {resolution && (
           <div className="border-border flex flex-col gap-1 rounded-lg border px-3 py-2 text-sm">
             <span className="font-medium">

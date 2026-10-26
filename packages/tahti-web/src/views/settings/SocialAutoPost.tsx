@@ -133,68 +133,76 @@ function PlatformForm({
             : 'Not connected'}
         </span>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <form
+        className="flex flex-col gap-3"
+        onSubmit={(event) => {
+          event.preventDefault();
+          save();
+        }}
+      >
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Input
+            label={copy.accountLabel}
+            value={account}
+            placeholder={copy.accountPlaceholder}
+            onChange={(event) => setAccount(event.target.value)}
+          />
+          <Input
+            label={copy.secretLabel}
+            type="password"
+            autoComplete="off"
+            value={secret}
+            placeholder={
+              status.connected ? 'Leave blank to keep the saved one' : ''
+            }
+            onChange={(event) => setSecret(event.target.value)}
+          />
+        </div>
+        <div className="flex flex-wrap gap-4">
+          <Toggle
+            label="Post new releases"
+            checked={onRelease}
+            onChange={setOnRelease}
+          />
+          <Toggle
+            label="Post when I go live"
+            checked={onLive}
+            onChange={setOnLive}
+          />
+        </div>
         <Input
-          label={copy.accountLabel}
-          value={account}
-          placeholder={copy.accountPlaceholder}
-          onChange={(event) => setAccount(event.target.value)}
+          label="Post text"
+          value={template}
+          maxLength={copy.templateMax}
+          onChange={(event) => setTemplate(event.target.value)}
         />
-        <Input
-          label={copy.secretLabel}
-          type="password"
-          autoComplete="off"
-          value={secret}
-          placeholder={
-            status.connected ? 'Leave blank to keep the saved one' : ''
-          }
-          onChange={(event) => setSecret(event.target.value)}
-        />
-      </div>
-      <div className="flex flex-wrap gap-4">
-        <Toggle
-          label="Post new releases"
-          checked={onRelease}
-          onChange={setOnRelease}
-        />
-        <Toggle
-          label="Post when I go live"
-          checked={onLive}
-          onChange={setOnLive}
-        />
-      </div>
-      <Input
-        label="Post text"
-        value={template}
-        maxLength={copy.templateMax}
-        onChange={(event) => setTemplate(event.target.value)}
-      />
-      <SettingsHint>
-        Fills in {'{artist}'}, {'{release}'}, {'{smart_link}'} and{' '}
-        {'{channel_url}'}.{' '}
-        {status.connected
-          ? ''
-          : `Connecting posts a short test message to your ${copy.name} account.`}
-      </SettingsHint>
-      {error ? <InlineError>{error}</InlineError> : null}
-      <div className="flex flex-wrap justify-end gap-2">
-        {status.connected ? (
-          <Button
-            size="sm"
-            variant="secondary"
-            intent="danger"
-            onClick={() => setConfirmDisconnect(true)}
-          >
-            Disconnect
-          </Button>
-        ) : null}
-        <SaveButton
-          label={status.connected ? 'Save' : `Connect ${copy.name}`}
-          saving={saving}
-          disabled={saving || !canSave}
-          onClick={save}
-        />
-      </div>
+        <SettingsHint>
+          Fills in {'{artist}'}, {'{release}'}, {'{smart_link}'} and{' '}
+          {'{channel_url}'}.{' '}
+          {status.connected
+            ? ''
+            : `Connecting posts a short test message to your ${copy.name} account.`}
+        </SettingsHint>
+        {error ? <InlineError>{error}</InlineError> : null}
+        <div className="flex flex-wrap justify-end gap-2">
+          {status.connected ? (
+            <Button
+              size="sm"
+              variant="secondary"
+              intent="danger"
+              onClick={() => setConfirmDisconnect(true)}
+            >
+              Disconnect
+            </Button>
+          ) : null}
+          <SaveButton
+            label={status.connected ? 'Save' : `Connect ${copy.name}`}
+            saving={saving}
+            disabled={saving || !canSave}
+            type="submit"
+          />
+        </div>
+      </form>
       <ConfirmDialog
         isOpen={confirmDisconnect}
         title={`Disconnect ${copy.name}?`}
