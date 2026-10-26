@@ -623,6 +623,9 @@ export function ListenAddonsPanel({
                         }}
                       >
                         <Input
+                          autoCapitalize="none"
+                          autoCorrect="off"
+                          spellCheck={false}
                           label="Your hearthis.at username"
                           value={hearthisUsername}
                           onChange={(event) =>

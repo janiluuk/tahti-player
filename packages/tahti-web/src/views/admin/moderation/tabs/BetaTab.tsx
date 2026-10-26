@@ -276,6 +276,9 @@ export function BetaTab() {
           >
             <div className="mt-4 flex flex-col gap-3">
               <Input
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 label="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}

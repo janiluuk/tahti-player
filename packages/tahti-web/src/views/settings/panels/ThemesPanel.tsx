@@ -367,6 +367,9 @@ export function ThemesPanel() {
                   variable overrides) to add it without a code change.
                 </SettingsHint>
                 <Textarea
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
                   aria-label="Theme JSON"
                   tone="secondary"
                   className="font-mono text-xs"

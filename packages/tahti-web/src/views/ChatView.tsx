@@ -30,6 +30,9 @@ export function ChatView({ slug }: { slug?: string }) {
         }}
       >
         <Input
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           label="Channel slug"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}

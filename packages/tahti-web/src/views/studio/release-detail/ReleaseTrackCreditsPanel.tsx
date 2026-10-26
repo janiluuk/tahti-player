@@ -80,6 +80,9 @@ function TrackCreditsRow({
               onChange={(event) => update(index, { name: event.target.value })}
             />
             <Input
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               value={credit.artistUsername ? `@${credit.artistUsername}` : ''}
               placeholder="@username"
               disabled={saving}

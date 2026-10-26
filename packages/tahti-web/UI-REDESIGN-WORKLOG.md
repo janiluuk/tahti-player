@@ -1,3 +1,9 @@
+## 2026-10-26 - UX batch 104 (machine text, number keypads)
+
+Keys, tokens, slugs, JSON / CSV and nine more username fields no longer get
+auto-capitalised, autocorrected or spell-checked on phones; release IDs get
+the numeric keypad and the two money fields the decimal keypad. Bumped
+tahti-web `0.0.263`.
 ## 2026-10-26 - UX batch 105 (autofill)
 
 Name fields for playlists, tiers, themes, presets, credits and other people,

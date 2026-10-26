@@ -79,6 +79,9 @@ export function VerifyView() {
       ) : (
         <div className="flex flex-col gap-3">
           <Input
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             label="Verification token"
             value={token}
             onChange={(e) => setToken(e.target.value)}

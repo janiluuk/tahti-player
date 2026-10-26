@@ -64,6 +64,9 @@ export function ManageDialog({
             />
           </div>
           <Textarea
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             label="Default settings (JSON)"
             description="Starting settings every new install gets. Leave empty to clear. Existing installs are not changed."
             aria-invalid={configError ? true : undefined}

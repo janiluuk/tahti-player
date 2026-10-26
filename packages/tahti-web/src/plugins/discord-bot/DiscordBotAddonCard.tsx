@@ -197,6 +197,9 @@ export function DiscordBotAddonCard() {
         </Dialog.Description>
         <div className="mt-4 flex flex-col gap-4">
           <Input
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             label="Application / Client ID"
             description="From Discord Developer Portal → General Information."
             value={clientId}
@@ -206,6 +209,9 @@ export function DiscordBotAddonCard() {
             data-testid="discord-bot-client-id"
           />
           <Input
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             type="password"
             variant="password"
             label="Bot token"

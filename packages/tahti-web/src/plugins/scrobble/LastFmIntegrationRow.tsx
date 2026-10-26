@@ -141,12 +141,18 @@ export function LastFmIntegrationRow() {
               account only.
             </p>
             <Input
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               label="Last.fm API key"
               autoComplete="off"
               value={apiKey}
               onChange={(event) => setApiKey(event.target.value)}
             />
             <Input
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               label="Shared secret"
               type="password"
               variant="password"

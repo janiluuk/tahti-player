@@ -114,6 +114,9 @@ export function VenueRegisterView() {
         }}
       >
         <Input
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           label="URL slug"
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
