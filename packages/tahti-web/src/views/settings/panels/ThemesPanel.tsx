@@ -452,6 +452,7 @@ export function ThemesPanel() {
           <Dialog.Title>Rename theme</Dialog.Title>
           <div className="mt-4">
             <Input
+              autoComplete="off"
               label="Name"
               value={renamingTheme?.name ?? ''}
               onChange={(e) =>

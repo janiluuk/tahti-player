@@ -59,6 +59,7 @@ function MemberForm({
     >
       <div className="min-w-0 flex-1">
         <Input
+          autoComplete="off"
           label="Name"
           value={name}
           maxLength={100}

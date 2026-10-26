@@ -251,6 +251,7 @@ export function ApiTokensPanel() {
             <div className="border-border flex flex-col gap-3 border-t pt-4">
               {error ? <InlineError>{error}</InlineError> : null}
               <Input
+                autoComplete="off"
                 label="Name"
                 value={name}
                 maxLength={64}

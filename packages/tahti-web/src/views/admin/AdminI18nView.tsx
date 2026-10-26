@@ -236,6 +236,7 @@ export function AdminI18nView() {
                       autoFocus
                     />
                     <Input
+                      autoComplete="off"
                       label="Name (e.g. Swedish)"
                       value={name}
                       onChange={(e) => setName(e.target.value)}

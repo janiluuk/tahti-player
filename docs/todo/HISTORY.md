@@ -1,3 +1,15 @@
+## 2026-10-26 - UX batch 105 thirty-one autofill slices
+
+Browsers offered the listener's own name or address in fields that hold
+something else. `autoComplete="off"` on twenty-one name fields for objects
+or other people (API token, audio revision, fan / purchase tier, playlist x3,
+smart playlist, theme x2, overlay title, language, radio preset, add-on,
+auditor, AGM and meeting member, beta artist, band member, track credit),
+the four venue address fields (details form and registration), event
+location and the tracklist artist. Onboarding and settings city use
+`address-level2`, since that is the listener's own city. The two RTMP
+address fields get the URL keyboard with autocorrect off. tahti-web
+`0.0.262`.
 ## 2026-10-26 - UX batch 103 thirty URL and handle field slices
 
 Twenty-four URL fields get `inputMode="url"` so phones show the URL keyboard

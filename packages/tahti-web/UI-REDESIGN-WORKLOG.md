@@ -1,3 +1,9 @@
+## 2026-10-26 - UX batch 105 (autofill)
+
+Name fields for playlists, tiers, themes, presets, credits and other people,
+and venue address fields, no longer get the listener's own name or address
+suggested by browser autofill; the listener's own city does. RTMP address
+fields get the URL keyboard. Bumped tahti-web `0.0.262`.
 ## 2026-10-26 - UX batch 103 (URL keyboards, username fields)
 
 Twenty-four URL fields bring up the URL keyboard on phones, and six username

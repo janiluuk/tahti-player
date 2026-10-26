@@ -299,6 +299,7 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
             placeholder="Optional venue"
           />
           <Input
+            autoComplete="off"
             label="Location"
             value={location}
             onChange={(event) => setLocation(event.target.value)}

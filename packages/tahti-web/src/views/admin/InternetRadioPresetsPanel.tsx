@@ -328,6 +328,7 @@ export function InternetRadioPresetsPanel() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Input
+              autoComplete="off"
               label="Name"
               value={draft.name}
               placeholder="Radio Helsinki"

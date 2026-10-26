@@ -114,6 +114,7 @@ function AddAuditorForm({ onAdded }: { onAdded: () => void }) {
       <Toggle label="Deputy" showLabel checked={deputy} onChange={setDeputy} />
       <div className="flex flex-wrap gap-2">
         <Input
+          autoComplete="off"
           label="Name"
           value={name}
           maxLength={200}

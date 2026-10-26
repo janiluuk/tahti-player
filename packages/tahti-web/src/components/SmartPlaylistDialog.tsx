@@ -127,6 +127,7 @@ export function SmartPlaylistDialog({
       </Dialog.Description>
       <div className="flex max-h-[60vh] flex-col gap-3 overflow-y-auto py-2">
         <Input
+          autoComplete="off"
           label="Name"
           value={draft.name}
           onChange={(event) =>

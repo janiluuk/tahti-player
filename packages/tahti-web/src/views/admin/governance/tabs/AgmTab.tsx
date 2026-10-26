@@ -233,6 +233,7 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
       )}
       <div className="flex flex-wrap items-end gap-2">
         <Input
+          autoComplete="off"
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Member name"

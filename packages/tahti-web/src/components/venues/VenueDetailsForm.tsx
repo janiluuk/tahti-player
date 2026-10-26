@@ -72,18 +72,21 @@ export function VenueDetailsForm({
       }}
     >
       <Input
+        autoComplete="off"
         label="Name"
         value={name}
         maxLength={120}
         onChange={(e) => setName(e.target.value)}
       />
       <Input
+        autoComplete="off"
         label="Street address"
         value={address}
         maxLength={200}
         onChange={(e) => setAddress(e.target.value)}
       />
       <Input
+        autoComplete="off"
         label="City"
         value={city}
         maxLength={80}
