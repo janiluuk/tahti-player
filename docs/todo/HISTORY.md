@@ -5508,3 +5508,13 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 
 - `/radio` now shows, below Tahti Radio: a **Favorite stations** row (radio favorites, only when there are any), the **Radio** station row shared with Listen (`RadioStationsRow`: curated presets, enabled catalog stations and the listener's own stations, with now-playing), and an **Add stations** area (Browse stations → Settings → Add-ons → Radio directory; Add your own → stream-URL form from `MyRadioStations`, sign-in first).
 - Station cards gained a favorite toggle on Listen and Radio.
+
+## 2026-10-27 — Cross-repo batch 111: listener stats, radio, releases
+
+- **Studio audience stats** (tahti-org #883 with #884–#889, #892–#895, #897; tahti-player #1488–#1494, #1497, #1498 via #1490): listen sessions record coarse device labels (no raw UA), referrer host, GeoLite city and furthest position; Studio → Stats → Plays has stacked downloads + smart-link clicks per day with Download CSV, countries + cities beside the map, a loyalty curve and an Audience panel (browser, OS, device type, device company, source, listened on, Ignore bot traffic) built on the new `ShareList` ui component; track insights show the same per sound; Minutes listened is real. Shares only, under 5 listens fold into Other.
+- **Heartbeat** (#1492): sends the entry referrer host, track position and a final ping when a track stops.
+- **Listener + privacy**: History → "Across your devices" (#1499, org #894); `/privacy` lists what listening statistics store (#1496); the data export includes your listen sessions (org #895); account deletion unlinks them (org #896); board `/api/admin/stats/listening` (org #897, no web panel yet).
+- **Release delete** (org #890, web #1495): Studio release header → Delete release; refused once sent for distribution.
+- **Radio now-playing**: NRJ / Radio Nova read their own station (radioplay.fi → rayo.fi page listed ~40 Bauer stations and the parser took the last one) and Bauer's per-station listen API first (org #891). Finnish scrapers todo closed: UA + kill switch already existed; YleX's ICY StreamTitle is empty and Nelonen's HLS segments carry no ID3 track tags, so Radio Rock / Suomipop / YleX stay without now-playing.
+- **Checked, nothing to do**: the member meeting-conflicts route already existed (org #825); `/api/me/channel-funnel-stats` only bundles data the web already loads.
+- **Left**: Storybook story for the Stats → Plays panels; board listening panel in tahti-web; channel blocks (org `/api/me/channel/blocks`) vs the web's own channel layout system needs a decision before wiring.
