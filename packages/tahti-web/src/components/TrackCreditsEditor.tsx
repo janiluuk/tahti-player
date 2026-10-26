@@ -89,6 +89,9 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
                   }}
                 />
                 <Input
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
                   value={
                     credit.artistUsername ? `@${credit.artistUsername}` : ''
                   }

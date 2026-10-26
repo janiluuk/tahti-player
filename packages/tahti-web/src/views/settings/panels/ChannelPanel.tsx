@@ -217,6 +217,9 @@ export function ChannelPanel() {
           content: (
             <div className="flex flex-col gap-6">
               <Input
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 label="Channel slug / username"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}

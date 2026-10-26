@@ -230,6 +230,9 @@ export function AdminI18nView() {
                 >
                   <div className="mt-4 flex flex-col gap-3">
                     <Input
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      spellCheck={false}
                       label="Code (e.g. sv)"
                       value={code}
                       onChange={(e) => setCode(e.target.value)}

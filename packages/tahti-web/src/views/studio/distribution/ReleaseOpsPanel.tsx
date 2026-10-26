@@ -301,6 +301,8 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
       <div className="grid gap-2 sm:grid-cols-2">
         {activeMethods.has('upc') && (
           <Input
+            inputMode="numeric"
+            spellCheck={false}
             label="UPC / EAN"
             value={form?.upc ?? ''}
             disabled={busy}
@@ -341,6 +343,8 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         )}
         {activeMethods.has('discogs') && (
           <Input
+            inputMode="numeric"
+            spellCheck={false}
             label="Discogs release ID"
             value={form?.discogsReleaseId ?? ''}
             disabled={busy}

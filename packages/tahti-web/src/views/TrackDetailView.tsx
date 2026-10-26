@@ -118,6 +118,7 @@ export function TrackDetailView({
           </Dialog.Description>
           <div className="mt-4">
             <Input
+              inputMode="decimal"
               label="Amount (€)"
               value={pwywAmt}
               onChange={(e) => setPwywAmt(e.target.value)}

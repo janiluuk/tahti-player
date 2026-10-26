@@ -51,6 +51,9 @@ export function AdminTestNotificationPanel() {
         }}
       >
         <Input
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           label="Username"
           value={username}
           maxLength={33}

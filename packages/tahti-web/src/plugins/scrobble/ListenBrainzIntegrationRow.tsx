@@ -111,6 +111,9 @@ export function ListenBrainzIntegrationRow() {
         </Dialog.Description>
         <div className="mt-4 flex flex-col gap-3">
           <Input
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             label="User token"
             type="password"
             autoComplete="off"

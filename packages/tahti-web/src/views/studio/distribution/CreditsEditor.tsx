@@ -60,6 +60,9 @@ export function CreditsEditor({
               }}
             />
             <Input
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               value={credit.artistUsername ? `@${credit.artistUsername}` : ''}
               placeholder="@username"
               disabled={busy}

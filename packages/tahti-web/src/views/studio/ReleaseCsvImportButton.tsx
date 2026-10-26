@@ -86,6 +86,9 @@ export function ReleaseCsvImportButton({
             onFiles={(files) => void readFile(files[0])}
           />
           <Textarea
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             aria-label="CSV rows"
             rows={8}
             value={csv}

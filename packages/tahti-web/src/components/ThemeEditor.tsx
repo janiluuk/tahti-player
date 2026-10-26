@@ -514,6 +514,9 @@ export function ThemeEditor() {
           library.
         </Dialog.Description>
         <Textarea
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           tone="secondary"
           value={importJson}
           onChange={(event) => {

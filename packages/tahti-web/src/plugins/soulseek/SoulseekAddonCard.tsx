@@ -47,6 +47,9 @@ export function SoulseekAddonCard() {
         </Dialog.Description>
         <div className="mt-4 flex flex-col gap-3">
           <Input
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             label="Soulseek username"
             description="Saved locally when the native bridge ships. Not sent to Tahti."
             value={username}

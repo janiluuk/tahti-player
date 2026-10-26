@@ -1,3 +1,15 @@
+## 2026-10-26 - UX batch 104 thirty machine-text and number field slices
+
+Seventeen fields that hold machine text turn off auto-capitalise,
+autocorrect and spellcheck: Discord client ID and bot token, Last.fm API key
+and shared secret, ListenBrainz token, verification token, channel slug x5
+(chat, admin rotation / tracks, channel settings, add-on register), venue
+URL slug, theme JSON x2, add-on default settings JSON, release CSV import,
+language code. UPC / EAN and Discogs release ID also get the numeric
+keypad; fan tier price and tip amount get the decimal keypad. Nine more
+username fields get the same treatment as batch 103 (hearthis username x2,
+credits x3, admin delete confirm, Soulseek, test notification, beta
+invite). tahti-web `0.0.263`.
 ## 2026-10-26 - UX batch 105 thirty-one autofill slices
 
 Browsers offered the listener's own name or address in fields that hold

@@ -230,6 +230,7 @@ export function FanTiersEditor() {
               autoFocus
             />
             <Input
+              inputMode="decimal"
               label="Price (€ / month)"
               value={eurosAmt}
               onChange={(e) => setEurosAmt(e.target.value)}

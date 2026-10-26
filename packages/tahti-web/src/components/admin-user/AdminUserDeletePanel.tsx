@@ -89,6 +89,9 @@ export function AdminUserDeletePanel({
           their username, {user.username}, to confirm.
         </Dialog.Description>
         <Input
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           aria-label="Username to confirm"
           value={typed}
           onChange={(event) => setTyped(event.target.value)}

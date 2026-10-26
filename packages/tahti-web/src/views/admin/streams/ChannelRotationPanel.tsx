@@ -133,6 +133,9 @@ export function ChannelRotationPanel() {
         }}
       >
         <Input
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           label="Channel slug"
           value={slugInput}
           onChange={(event) => setSlugInput(event.target.value)}
