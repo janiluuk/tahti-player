@@ -1,4 +1,4 @@
-import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
+import { useNavigate, useRouterState } from '@tanstack/react-router';
 import {
   BarChart3Icon,
   Code2Icon,
@@ -12,15 +12,19 @@ import {
   PencilIcon,
   PlayIcon,
   Share2Icon,
+  Trash2Icon,
   UploadIcon,
   UsersIcon,
   Wand2Icon,
 } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   backButtonCornerClassName,
   BackButtonLink,
   Button,
+  ButtonLink,
   Dialog,
   EmptyState,
   FilePicker,
@@ -31,6 +35,7 @@ import {
   TrackTable,
 } from '@tahti-player/ui';
 
+import { deleteStudioRelease } from '../../api/studio';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { CoverArtGenerator } from '../../components/CoverArtGenerator';
 import {
@@ -98,6 +103,21 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   } = useReleaseDetail(id);
 
   const navigate = useNavigate();
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const removeRelease = async () => {
+    setDeleting(true);
+    const result = await deleteStudioRelease(id);
+    setDeleting(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    toast.success('Release deleted.');
+    void navigate({ to: '/studio/releases' });
+  };
+
   const searchTab = useRouterState({
     select: (s) => {
       const raw = s.location.search;
@@ -175,14 +195,26 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
               actions={
                 <>
                   <Tooltip content="Open release embed" side="top">
-                    <Link
+                    <ButtonLink
                       to="/r/$slug"
                       params={{ slug: release.smartLinkSlug }}
-                      className="bg-background border-border text-foreground flex size-9 items-center justify-center rounded-md border-(length:--border-width)"
+                      size="icon"
+                      variant="secondary"
                       aria-label="Open release embed"
                     >
                       <Code2Icon size={16} aria-hidden />
-                    </Link>
+                    </ButtonLink>
+                  </Tooltip>
+                  <Tooltip content="Delete release" side="top">
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      aria-label="Delete release"
+                      disabled={deleting}
+                      onClick={() => setConfirmDelete(true)}
+                    >
+                      <Trash2Icon size={16} aria-hidden />
+                    </Button>
                   </Tooltip>
                   <SaveButton saving={saving} onClick={() => void save()} />
                 </>
@@ -266,6 +298,18 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
               onConfirm={() => {
                 setConfirmPublish(false);
                 void publish();
+              }}
+            />
+
+            <ConfirmDialog
+              isOpen={confirmDelete}
+              title="Delete this release?"
+              description="Its tracklist, smart link and stats are removed. Tracks you uploaded stay in your library. This can't be undone."
+              confirmLabel="Delete release"
+              onCancel={() => setConfirmDelete(false)}
+              onConfirm={() => {
+                setConfirmDelete(false);
+                void removeRelease();
               }}
             />
 
