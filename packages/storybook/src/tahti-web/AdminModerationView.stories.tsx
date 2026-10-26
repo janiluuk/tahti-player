@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminModerationView } from '@tahti-web/views/admin/moderation/AdminModerationView';
 import type { AdminModerationTabId } from '@tahti-web/views/admin/moderation/moderationNav';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -45,12 +45,11 @@ export const Default: Story = {
   render: renderTab(),
   play: async ({ canvasElement }) => {
     const canvas = await expectQueue(canvasElement, 'Support');
-    await expect(
-      await canvas.findByRole('heading', {
-        level: 2,
-        name: 'Cannot connect OBS to multistream target',
-      }),
-    ).toBeVisible();
+    const ticket = await canvas.findByRole('heading', {
+      level: 2,
+      name: 'Cannot connect OBS to multistream target',
+    });
+    await waitFor(() => expect(ticket).toBeVisible());
     await expect(
       canvas.getByRole('textbox', { name: 'Reply to ticket' }),
     ).toBeVisible();
