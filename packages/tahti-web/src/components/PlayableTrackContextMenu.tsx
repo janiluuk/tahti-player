@@ -197,6 +197,7 @@ export function PlayableTrackContextMenu({
                   <div onKeyDown={(event) => event.stopPropagation()}>
                     <Input
                       aria-label="Filter playlists"
+                      type="search"
                       size="sm"
                       variant="borderless"
                       placeholder="Filter playlists"

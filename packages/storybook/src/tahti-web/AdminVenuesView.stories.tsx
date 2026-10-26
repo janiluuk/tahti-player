@@ -41,7 +41,7 @@ export const Search: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await canvas.findByText('Northern Lights Hall');
-    const search = canvas.getByRole('textbox', { name: 'Search venues' });
+    const search = canvas.getByRole('searchbox', { name: 'Search venues' });
     await userEvent.type(search, 'Tampere');
     await expect(await canvas.findByText('No venues found')).toBeVisible();
     await userEvent.clear(search);

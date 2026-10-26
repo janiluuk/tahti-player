@@ -42,6 +42,7 @@ export function ForgotPasswordView() {
 
       <div className="flex flex-col gap-3">
         <Input
+          inputMode="email"
           label="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}

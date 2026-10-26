@@ -1,3 +1,16 @@
+## 2026-10-26 - UX batch 102 thirty-one search, email and link slices
+
+Twenty-one search and filter fields use `type="search"` (searchbox role,
+Escape clears): artist directory, playlist filter, releases, history,
+hearthis, governance members, help, admin top lists / users / venues /
+member picker / member register / Selects / support / files, Studio
+collections / editor library / shows / add tracks / recordings / smart link
+library. Five email fields get `inputMode="email"` and `autoComplete="email"`
+(sign in, sign up, newsletter, support contact, forgot password). The
+top bar upload button, Verify "Continue to login" and the episode
+review "Back to show" are `ButtonLink`s, so they can be opened in a new tab.
+`ExternalLink` and `ButtonAnchor` with `target="_blank"` tell screen readers
+"(opens in a new tab)". tahti-web `0.0.259`.
 ## 2026-10-24 - UX batch 101 sixty tooltip, field-name and heading slices
 
 Twenty-two icon-only buttons that had no tooltip get one (page comments

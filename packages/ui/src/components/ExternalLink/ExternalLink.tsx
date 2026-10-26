@@ -2,6 +2,7 @@ import { ExternalLinkIcon } from 'lucide-react';
 import { ComponentPropsWithoutRef, forwardRef } from 'react';
 
 import { cn } from '../../utils';
+import { NewTabHint } from './NewTabHint';
 
 export type ExternalLinkProps = Omit<
   ComponentPropsWithoutRef<'a'>,
@@ -27,6 +28,7 @@ export const ExternalLink = forwardRef<HTMLAnchorElement, ExternalLinkProps>(
       >
         {children}
         {showIcon ? <ExternalLinkIcon size={12} aria-hidden /> : null}
+        <NewTabHint />
       </a>
     );
   },

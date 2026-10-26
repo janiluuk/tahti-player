@@ -42,7 +42,7 @@ export const FromEmailLink: Story = {
     ).toBeVisible();
     await expect(canvas.getByText('Mock verify OK')).toBeVisible();
     await expect(
-      canvas.getByRole('button', { name: 'Continue to login' }),
+      canvas.getByRole('link', { name: 'Continue to login' }),
     ).toBeVisible();
   },
 };

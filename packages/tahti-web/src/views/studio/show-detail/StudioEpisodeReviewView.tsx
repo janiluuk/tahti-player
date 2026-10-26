@@ -1,4 +1,3 @@
-import { useNavigate } from '@tanstack/react-router';
 import { CheckIcon, RadioIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -38,7 +37,6 @@ import { trimToCuts } from '../episodeTrim';
 import { episodeStatusLabel } from '../StudioShowsView';
 
 export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
-  const navigate = useNavigate();
   const [episode, setEpisode] = useState<StudioEpisode | null>(null);
   const [show, setShow] = useState<StudioShowSeries | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -336,18 +334,14 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
 
           {msg && <p className="text-sm">{msg}</p>}
 
-          <Button
+          <ButtonLink
+            to="/studio/shows/$id"
+            params={{ id: episode.showId }}
             size="sm"
             variant="text"
-            onClick={() =>
-              void navigate({
-                to: '/studio/shows/$id',
-                params: { id: episode.showId },
-              })
-            }
           >
             Back to show
-          </Button>
+          </ButtonLink>
         </ViewShell>
       </div>
     </StudioGate>

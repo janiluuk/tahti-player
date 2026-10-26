@@ -72,6 +72,8 @@ export function SupportContactForm({
       <SectionTitle title="Contact support" wrap className="font-display" />
       {!email && (
         <Input
+          inputMode="email"
+          autoComplete="email"
           label="Your email"
           value={contactEmail}
           onChange={(e) => setContactEmail(e.target.value)}

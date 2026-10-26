@@ -56,10 +56,9 @@ describe('AnnualReportCorrection', () => {
     expect(
       await screen.findByText('Grant total was missing December.'),
     ).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Download' })).toHaveAttribute(
-      'href',
-      'https://files.example/rev1.md',
-    );
+    expect(
+      screen.getByRole('link', { name: 'Download (opens in a new tab)' }),
+    ).toHaveAttribute('href', 'https://files.example/rev1.md');
   });
 
   it('offers no correction for a draft or a held report', () => {

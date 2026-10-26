@@ -1,3 +1,9 @@
+## 2026-10-26 - UX batch 102 (search fields, email keyboards, new-tab links)
+
+Twenty-one search fields are `type="search"`, five email fields bring up the
+email keyboard and autofill, three navigation buttons are real links, and
+links that open a new tab say so to screen readers (`ExternalLink`,
+`ButtonAnchor`). Bumped tahti-web `0.0.259`.
 ## 2026-10-24 - UX batch 101 (tooltips, field names, SectionTitle)
 
 Twenty-two icon-only buttons show a tooltip, twenty-two unnamed fields get an

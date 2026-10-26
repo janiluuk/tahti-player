@@ -45,7 +45,9 @@ export const TiersAndTipJar: Story = {
     await expect(
       canvas.getByRole('list', { name: 'Patron perks' }),
     ).toHaveTextContent('Monthly thank-you mix');
-    const tipJar = canvas.getByRole('link', { name: 'Tip jar' });
+    const tipJar = canvas.getByRole('link', {
+      name: 'Tip jar (opens in a new tab)',
+    });
     await expect(tipJar).toHaveAttribute('href', TIP_JAR_URL);
     await expect(tipJar).toHaveAttribute('target', '_blank');
     await expect(tipJar).toHaveAttribute('rel', 'noopener noreferrer');
@@ -62,7 +64,9 @@ export const PriceListOnly: Story = {
     await expect(
       canvas.getByText('Fan tiers: Supporter (€5), Patron (€15)'),
     ).toBeVisible();
-    await expect(canvas.queryByRole('link', { name: 'Tip jar' })).toBeNull();
+    await expect(
+      canvas.queryByRole('link', { name: 'Tip jar (opens in a new tab)' }),
+    ).toBeNull();
   },
 };
 
@@ -75,7 +79,9 @@ export const InvalidTipJar: Story = {
   args: { tiers: [], tipJarUrl: 'javascript:alert(1)' },
   play: async ({ canvasElement }) => {
     await expect(
-      within(canvasElement).queryByRole('link', { name: 'Tip jar' }),
+      within(canvasElement).queryByRole('link', {
+        name: 'Tip jar (opens in a new tab)',
+      }),
     ).toBeNull();
   },
 };

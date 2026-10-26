@@ -83,7 +83,9 @@ export const AnnualReports: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      await canvas.findByRole('link', { name: 'Annual report 2025' }),
+      await canvas.findByRole('link', {
+        name: 'Annual report 2025 (opens in a new tab)',
+      }),
     ).toBeVisible();
     await expect(canvas.getByText(/filed with the register/)).toBeVisible();
   },

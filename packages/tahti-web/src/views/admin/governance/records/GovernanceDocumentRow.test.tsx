@@ -27,10 +27,9 @@ describe('GovernanceDocumentRow', () => {
         <GovernanceDocumentRow document={document} />
       </ul>,
     );
-    expect(screen.getByRole('link', { name: 'Rules' })).toHaveAttribute(
-      'href',
-      'https://files.example/rules.pdf',
-    );
+    expect(
+      screen.getByRole('link', { name: 'Rules (opens in a new tab)' }),
+    ).toHaveAttribute('href', 'https://files.example/rules.pdf');
     expect(screen.getByText(/v2 · Published/)).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'Legal hold: Rules v2' }),

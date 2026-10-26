@@ -30,10 +30,14 @@ type Story = StoryObj<typeof meta>;
 export const Open: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const track = await canvas.findByRole('link', { name: 'Night Drive' });
+    const track = await canvas.findByRole('link', {
+      name: 'Night Drive (opens in a new tab)',
+    });
     await expect(track).toHaveAttribute('href', '/t/arch-sub-1');
     await expect(
-      canvas.getByRole('link', { name: 'Comment by @aurora-fan' }),
+      canvas.getByRole('link', {
+        name: 'Comment by @aurora-fan (opens in a new tab)',
+      }),
     ).toBeVisible();
     await expect(
       canvas.getByText('Nobody wants to hear this, quit already.'),
@@ -48,7 +52,9 @@ export const Open: Story = {
 export const All: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await canvas.findByRole('link', { name: 'Night Drive' });
+    await canvas.findByRole('link', {
+      name: 'Night Drive (opens in a new tab)',
+    });
     await userEvent.click(canvas.getByRole('tab', { name: /All/ }));
     await waitFor(() =>
       expect(

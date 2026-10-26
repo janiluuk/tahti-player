@@ -380,6 +380,7 @@ export function StudioCollectionsView() {
           <StudioPanel>
             <div className="mb-4 flex flex-col gap-3">
               <Input
+                type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search collections…"

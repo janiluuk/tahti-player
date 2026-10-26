@@ -2,6 +2,7 @@ import { createLink } from '@tanstack/react-router';
 import { ComponentPropsWithoutRef, forwardRef } from 'react';
 
 import { cn } from '../../utils';
+import { NewTabHint } from '../ExternalLink/NewTabHint';
 import { buttonVariants, type ButtonVariantProps } from './Button';
 
 export type ButtonAnchorProps = ComponentPropsWithoutRef<'a'> &
@@ -13,7 +14,18 @@ export type ButtonAnchorProps = ComponentPropsWithoutRef<'a'> &
 /** A plain `<a>` styled as a `Button`, for external URLs and downloads. */
 export const ButtonAnchor = forwardRef<HTMLAnchorElement, ButtonAnchorProps>(
   function ButtonAnchor(
-    { variant, size, intent, className, disabled, href, tabIndex, ...rest },
+    {
+      variant,
+      size,
+      intent,
+      className,
+      disabled,
+      href,
+      tabIndex,
+      target,
+      children,
+      ...rest
+    },
     ref,
   ) {
     return (
@@ -27,8 +39,12 @@ export const ButtonAnchor = forwardRef<HTMLAnchorElement, ButtonAnchorProps>(
           disabled && 'pointer-events-none cursor-not-allowed opacity-50',
           className,
         )}
+        target={target}
         {...rest}
-      />
+      >
+        {children}
+        {target === '_blank' ? <NewTabHint /> : null}
+      </a>
     );
   },
 );

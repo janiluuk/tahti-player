@@ -326,6 +326,7 @@ export function StudioEditorListView() {
               </Tabs.Root>
               <div className="flex min-w-0 flex-col gap-3">
                 <Input
+                  type="search"
                   value={libraryQuery}
                   onChange={(event) => setLibraryQuery(event.target.value)}
                   placeholder="Search library…"

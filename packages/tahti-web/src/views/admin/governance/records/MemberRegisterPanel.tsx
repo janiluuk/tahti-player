@@ -75,6 +75,7 @@ export function MemberRegisterPanel() {
       ) : (
         <div className="flex flex-col gap-2">
           <Input
+            type="search"
             label="Find a member"
             placeholder="Name, username or member number"
             value={query}

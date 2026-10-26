@@ -288,6 +288,7 @@ export function HelpHubView() {
             Guide index
           </p>
           <Input
+            type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search guides…"

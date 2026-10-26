@@ -104,10 +104,14 @@ export const ContentReportsTab: Story = {
   play: async ({ canvasElement }) => {
     const canvas = await expectQueue(canvasElement, 'Content reports');
     await expect(
-      await canvas.findByRole('link', { name: 'Night Drive' }),
+      await canvas.findByRole('link', {
+        name: 'Night Drive (opens in a new tab)',
+      }),
     ).toBeVisible();
     await expect(
-      canvas.getByRole('link', { name: 'Comment by @aurora-fan' }),
+      canvas.getByRole('link', {
+        name: 'Comment by @aurora-fan (opens in a new tab)',
+      }),
     ).toBeVisible();
     await expect(
       canvas.getByRole('button', { name: 'Delete comment' }),

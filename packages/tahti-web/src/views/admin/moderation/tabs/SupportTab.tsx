@@ -199,6 +199,7 @@ export function SupportTab() {
         />
         <div className="w-full shrink-0 xl:max-w-sm">
           <Input
+            type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search subject, message, requester…"

@@ -145,6 +145,7 @@ export function ReleasesPanel({
   return (
     <div className="flex flex-col gap-3">
       <Input
+        type="search"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search releases…"

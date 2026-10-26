@@ -69,6 +69,7 @@ export function MemberPicker({
   return (
     <div className="flex flex-col gap-1">
       <Input
+        type="search"
         label={label}
         placeholder="Search members by name or username"
         value={query}
