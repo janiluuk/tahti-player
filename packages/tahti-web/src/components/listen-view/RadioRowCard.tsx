@@ -4,6 +4,7 @@ import { XIcon } from 'lucide-react';
 import { Button, Card, Tooltip } from '@tahti-player/ui';
 
 import type { EnabledInternetRadioPreset } from '../../api/client';
+import type { MyRadioStation } from '../../api/my-radio-stations';
 import {
   RADIO_STATIONS,
   stationNowPlayingSource,
@@ -21,7 +22,8 @@ export type RadioRowItem =
       kind: 'preset';
       preset: EnabledInternetRadioPreset;
     }
-  | { id: string; title: string; kind: 'catalog'; station: RadioStation };
+  | { id: string; title: string; kind: 'catalog'; station: RadioStation }
+  | { id: string; title: string; kind: 'mine'; station: MyRadioStation };
 
 /** One card in the Listen "Radio" row: a board-curated preset, or a catalog
  * station the listener enabled (removable). */
@@ -32,6 +34,8 @@ export function RadioRowCard({
   onPlay,
   onCoverChange,
   onRemove,
+  favorited,
+  onFavorite,
 }: {
   item: RadioRowItem;
   isPlaying: boolean;
@@ -39,8 +43,38 @@ export function RadioRowCard({
   onPlay: () => void;
   onCoverChange: (presetId: string, iconUrl: string | null) => void;
   onRemove: (station: RadioStation) => void;
+  favorited?: boolean;
+  onFavorite?: () => void;
 }) {
   const warmRadioRoute = () => prefetchListenCardIntent('radio');
+  if (item.kind === 'mine') {
+    const { station } = item;
+    return (
+      <Card
+        surface="neutral"
+        title={station.name}
+        subtitle={
+          <StationCardSubtitle
+            source={{
+              programmingUrl: station.programmingUrl,
+              streamUrl: station.streamUrl,
+            }}
+            fallback={
+              station.streamUrl
+                ? (station.genre ?? 'Your station')
+                : 'Stream pending'
+            }
+          />
+        }
+        src={station.iconUrl ?? placeholderArtworkUrl(item.id)}
+        isPlaying={isPlaying}
+        playDisabled={!station.streamUrl}
+        onPlay={station.streamUrl ? onPlay : undefined}
+        favorited={favorited}
+        onFavorite={onFavorite}
+      />
+    );
+  }
   if (item.kind === 'preset') {
     const { preset } = item;
     const catalogId = RADIO_STATIONS.find(
@@ -88,6 +122,8 @@ export function RadioRowCard({
               onPlay();
             }
           }}
+          favorited={favorited}
+          onFavorite={onFavorite}
         />
       </div>
     );
@@ -143,6 +179,8 @@ export function RadioRowCard({
         playLabel={streamUrl ? 'Play' : 'Stream pending'}
         playDisabled={!streamUrl}
         onPlay={streamUrl ? onPlay : undefined}
+        favorited={favorited}
+        onFavorite={onFavorite}
       />
     </div>
   );

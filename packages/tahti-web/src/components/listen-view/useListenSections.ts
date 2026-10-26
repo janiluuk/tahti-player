@@ -247,3 +247,15 @@ export function useListenSections(signedIn: boolean, viewerId = '') {
     retry,
   };
 }
+
+export function useRadioPresets() {
+  const [reloadKey, setReloadKey] = useState(0);
+  const [presets, setPresets] = useListenSection(
+    loadPresets,
+    NO_PRESETS,
+    reloadKey,
+    'presets',
+  );
+  const retry = useCallback(() => setReloadKey((key) => key + 1), []);
+  return { presets, setPresets, retry };
+}

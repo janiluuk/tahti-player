@@ -31,6 +31,10 @@ import {
   fetchRadioStation,
   TAHTI_RADIO_SLUG,
 } from '../api/client';
+import {
+  fetchMyRadioStations,
+  type MyRadioStation,
+} from '../api/my-radio-stations';
 import type { RadioFeatureHistoryItem } from '../api/radio-public';
 import {
   fetchRadioShowUpcoming,
@@ -45,6 +49,8 @@ import type {
   TahtiPlayable,
 } from '../api/types';
 import { ChannelVisualizer } from '../components/ChannelVisualizer';
+import { RadioStationsRow } from '../components/listen-view/RadioStationsRow';
+import { useRadioPresets } from '../components/listen-view/useListenSections';
 import {
   MediaIconActions,
   playQueueFavoriteActions,
@@ -55,6 +61,8 @@ import {
   PageErrorBanner,
   PageLoading,
 } from '../components/PageStates';
+import { AddStationsPanel } from '../components/radio/AddStationsPanel';
+import { FavoriteStationsRow } from '../components/radio/FavoriteStationsRow';
 import { RadioBookingCalendar } from '../components/RadioBookingCalendar';
 import { RadioUpNextPanel } from '../components/RadioUpNextPanel';
 import { Eyebrow } from '../components/tahti/Eyebrow';
@@ -97,6 +105,8 @@ export function RadioView() {
   >({});
   const [infoTrack, setInfoTrack] = useState<TrackInfo | null>(null);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [ownStations, setOwnStations] = useState<MyRadioStation[]>([]);
+  const radioPresets = useRadioPresets();
 
   const user = useAuthStore((s) => s.user);
   const play = usePlayerStore((s) => s.play);
@@ -179,6 +189,23 @@ export function RadioView() {
   useEffect(() => {
     reload();
   }, []);
+
+  const signedIn = Boolean(user);
+  useEffect(() => {
+    if (!signedIn) {
+      setOwnStations([]);
+      return;
+    }
+    let cancelled = false;
+    void fetchMyRadioStations().then((result) => {
+      if (!cancelled) {
+        setOwnStations(result.data ?? []);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [signedIn]);
 
   usePolling(() => {
     void fetchRadioStation().then((response) => {
@@ -662,6 +689,22 @@ export function RadioView() {
           </section>
         </div>
       )}
+
+      <section
+        className="mt-8 flex flex-col gap-6"
+        data-testid="radio-stations"
+      >
+        <FavoriteStationsRow />
+        <RadioStationsRow
+          presets={radioPresets.presets}
+          setPresets={radioPresets.setPresets}
+          onRetry={radioPresets.retry}
+          ownStations={ownStations}
+          signedIn={signedIn}
+          data-testid="radio-stations-row"
+        />
+        <AddStationsPanel onOwnStationsChange={setOwnStations} />
+      </section>
 
       <TrackInfoDialog
         isOpen={Boolean(infoTrack)}
