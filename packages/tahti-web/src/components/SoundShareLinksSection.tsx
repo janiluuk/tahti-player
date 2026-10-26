@@ -180,7 +180,13 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
         <PageEmpty title="No share links yet." />
       )}
 
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+      <form
+        className="flex flex-col gap-2 sm:flex-row sm:items-end"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void create();
+        }}
+      >
         <Input
           autoCapitalize="none"
           autoCorrect="off"
@@ -209,11 +215,11 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
             label: days === 0 ? 'Never' : `${days} day${days === 1 ? '' : 's'}`,
           }))}
         />
-        <Button size="sm" disabled={busy} onClick={() => void create()}>
+        <Button size="sm" disabled={busy} type="submit">
           <CheckIcon size={14} aria-hidden className="mr-1.5" />
           Create link
         </Button>
-      </div>
+      </form>
       <ConfirmDialog
         isOpen={pendingRevokeId !== null}
         title="Revoke this share link?"

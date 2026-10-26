@@ -122,21 +122,29 @@ export function PublishToReleaseSection({
               ]}
             />
           ) : null}
-          <Input
-            label="Track title on the release"
-            placeholder={title}
-            value={trackTitle}
-            maxLength={200}
-            onChange={(event) => setTrackTitle(event.target.value)}
-          />
-          <Button
-            size="sm"
-            className="self-start"
-            disabled={busy || !releaseId}
-            onClick={() => void submit()}
+          <form
+            className="contents"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void submit();
+            }}
           >
-            {busy ? 'Adding…' : 'Add to release'}
-          </Button>
+            <Input
+              label="Track title on the release"
+              placeholder={title}
+              value={trackTitle}
+              maxLength={200}
+              onChange={(event) => setTrackTitle(event.target.value)}
+            />
+            <Button
+              size="sm"
+              className="self-start"
+              disabled={busy || !releaseId}
+              type="submit"
+            >
+              {busy ? 'Adding…' : 'Add to release'}
+            </Button>
+          </form>
           {added ? (
             <p className="text-sm" role="status">
               Added to{' '}

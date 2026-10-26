@@ -230,51 +230,58 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
         relative major/minor). Correct them below; corrections are never
         overwritten by re-analysis.
       </p>
-      <div className="mt-2 grid grid-cols-2 gap-2">
-        <Input
-          type="number"
-          label="Your BPM"
-          placeholder={
-            detail?.bpmEstimate ? String(rounded(detail.bpmEstimate)) : ''
-          }
-          value={bpmText}
-          onChange={(event) => setBpmText(event.target.value)}
-        />
-        <Input
-          label="Your key"
-          placeholder={detail?.keyEstimate ?? 'Am, F#, 8A'}
-          value={keyText}
-          onChange={(event) => setKeyText(event.target.value)}
-        />
-      </div>
-      <div className="mt-2 flex flex-wrap gap-1">
-        <Button
-          size="sm"
-          variant="secondary"
-          disabled={!dirty || busy !== null}
-          onClick={() => void save()}
-          className="gap-1.5"
-        >
-          {busy === 'save' ? <Loader size="inline" shape="circle" /> : null}
-          Save correction
-        </Button>
-        <Button
-          size="sm"
-          variant="text"
-          disabled={busy !== null}
-          onClick={() => void analyze()}
-          className="gap-1.5"
-        >
-          {busy === 'analyze' ? (
-            <Loader size="inline" shape="circle" />
-          ) : detail?.analyzed ? (
-            <Undo2Icon size={14} aria-hidden />
-          ) : (
-            <ActivityIcon size={14} aria-hidden />
-          )}
-          {detail?.analyzed ? 'Re-analyze' : 'Analyze'}
-        </Button>
-      </div>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          void save();
+        }}
+      >
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          <Input
+            type="number"
+            label="Your BPM"
+            placeholder={
+              detail?.bpmEstimate ? String(rounded(detail.bpmEstimate)) : ''
+            }
+            value={bpmText}
+            onChange={(event) => setBpmText(event.target.value)}
+          />
+          <Input
+            label="Your key"
+            placeholder={detail?.keyEstimate ?? 'Am, F#, 8A'}
+            value={keyText}
+            onChange={(event) => setKeyText(event.target.value)}
+          />
+        </div>
+        <div className="mt-2 flex flex-wrap gap-1">
+          <Button
+            size="sm"
+            variant="secondary"
+            disabled={!dirty || busy !== null}
+            type="submit"
+            className="gap-1.5"
+          >
+            {busy === 'save' ? <Loader size="inline" shape="circle" /> : null}
+            Save correction
+          </Button>
+          <Button
+            size="sm"
+            variant="text"
+            disabled={busy !== null}
+            onClick={() => void analyze()}
+            className="gap-1.5"
+          >
+            {busy === 'analyze' ? (
+              <Loader size="inline" shape="circle" />
+            ) : detail?.analyzed ? (
+              <Undo2Icon size={14} aria-hidden />
+            ) : (
+              <ActivityIcon size={14} aria-hidden />
+            )}
+            {detail?.analyzed ? 'Re-analyze' : 'Analyze'}
+          </Button>
+        </div>
+      </form>
     </section>
   );
 }

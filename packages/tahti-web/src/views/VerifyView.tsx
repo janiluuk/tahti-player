@@ -77,7 +77,13 @@ export function VerifyView() {
           <ButtonLink to="/login">Continue to login</ButtonLink>
         </Box>
       ) : (
-        <div className="flex flex-col gap-3">
+        <form
+          className="flex flex-col gap-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onSubmit();
+          }}
+        >
           <Input
             autoCapitalize="none"
             autoCorrect="off"
@@ -91,10 +97,10 @@ export function VerifyView() {
           {message && !error && (
             <p className="text-foreground-secondary text-sm">{message}</p>
           )}
-          <Button disabled={loading || !token.trim()} onClick={onSubmit}>
+          <Button disabled={loading || !token.trim()} type="submit">
             {loading ? 'Verifying…' : 'Verify email'}
           </Button>
-        </div>
+        </form>
       )}
 
       <p className="text-foreground-secondary text-sm">

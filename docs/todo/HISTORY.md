@@ -1,3 +1,15 @@
+## 2026-10-26 - UX batch 108 thirty more Enter-submits slices
+
+Thirty more input groups become forms, so Enter submits them, and a disabled
+submit button still blocks it: forgot password, email verification, save
+queue (local and cloud playlist), channel preset save, ListenBrainz token,
+motion comment, news feed URL, announcement trim (admin and channel), share
+link create, radio submission, episode details, audio revision, new playlist
+in Add to playlist, pinned announcement, publish to release, SoundCloud
+profile URL, stash share, inline radio playlist, conflict declaration, annual
+report year, release track upload, motion draft, board resolution, API token,
+artist identity and social links, organize files (a move still asks first)
+and BPM / key correction. Save-queue Enter test added. tahti-web `0.0.266`.
 ## 2026-10-26 - UX batch 107 thirty Enter-submits slices
 
 Thirty input groups that only submitted on a button click are now real

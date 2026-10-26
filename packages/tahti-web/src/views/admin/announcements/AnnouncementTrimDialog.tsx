@@ -134,41 +134,49 @@ export function AnnouncementTrimDialog({
         ) : !error ? (
           <InlineLoader label="Loading the original upload…" />
         ) : null}
-        <div className="grid grid-cols-2 gap-3">
-          {FIELDS.map((field) => (
-            <Input
-              key={field.key}
-              type="number"
-              variant="number"
-              size="sm"
-              min={0}
-              max={field.key.startsWith('fade') ? 30 : undefined}
-              step={0.1}
-              label={field.label}
-              value={fields[field.key]}
-              onChange={(event) =>
-                setFields((current) => ({
-                  ...current,
-                  [field.key]: event.target.value,
-                }))
-              }
-            />
-          ))}
-        </div>
-        {durationSec != null ? (
-          <p className="text-foreground-secondary text-xs">
-            The original is {durationSec} s long.
-          </p>
-        ) : null}
-        {error ? <InlineError>{error}</InlineError> : null}
-        <div className="border-border flex justify-end gap-2 border-t pt-4">
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button type="button" disabled={pending} onClick={submit}>
-            {pending ? 'Rendering…' : 'Render trim'}
-          </Button>
-        </div>
+        <form
+          className="flex flex-col gap-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            submit();
+          }}
+        >
+          <div className="grid grid-cols-2 gap-3">
+            {FIELDS.map((field) => (
+              <Input
+                key={field.key}
+                type="number"
+                variant="number"
+                size="sm"
+                min={0}
+                max={field.key.startsWith('fade') ? 30 : undefined}
+                step={0.1}
+                label={field.label}
+                value={fields[field.key]}
+                onChange={(event) =>
+                  setFields((current) => ({
+                    ...current,
+                    [field.key]: event.target.value,
+                  }))
+                }
+              />
+            ))}
+          </div>
+          {durationSec != null ? (
+            <p className="text-foreground-secondary text-xs">
+              The original is {durationSec} s long.
+            </p>
+          ) : null}
+          {error ? <InlineError>{error}</InlineError> : null}
+          <div className="border-border flex justify-end gap-2 border-t pt-4">
+            <Button type="button" variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button disabled={pending} type="submit">
+              {pending ? 'Rendering…' : 'Render trim'}
+            </Button>
+          </div>
+        </form>
       </div>
     </Dialog.Root>
   );

@@ -151,53 +151,57 @@ export function StudioRadioSubmissionPanel() {
         <Dialog.Description>
           Select up to {MAX_TRACKS} single audio files from your library.
         </Dialog.Description>
-        <div className="mt-4 flex max-h-72 flex-col gap-2 overflow-y-auto">
-          {candidates.map((item) => {
-            const existing = submitted.get(item.id);
-            const checked = selected.includes(item.id);
-            return (
-              <div
-                key={item.id}
-                className="border-border flex items-center gap-3 rounded-lg border p-3"
-              >
-                <span className="min-w-0 flex-1 text-sm">{item.title}</span>
-                <span className="text-foreground-secondary text-xs">
-                  {existing ? statusLabel(existing.status) : 'Ready'}
-                </span>
-                <Toggle
-                  label={`Select ${item.title}`}
-                  checked={checked}
-                  disabled={
-                    Boolean(existing) ||
-                    (!checked && selected.length >= MAX_TRACKS)
-                  }
-                  onChange={(next) =>
-                    setSelected((current) =>
-                      next
-                        ? [...current, item.id]
-                        : current.filter((id) => id !== item.id),
-                    )
-                  }
-                />
-              </div>
-            );
-          })}
-        </div>
-        <Input
-          label="Note (optional)"
-          value={note}
-          onChange={(event) => setNote(event.target.value)}
-          placeholder="Tell the reviewers about this submission"
-        />
-        <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
-          <Button
-            disabled={busy || selected.length === 0}
-            onClick={() => void submit()}
-          >
-            Submit {selected.length || ''}
-          </Button>
-        </Dialog.Actions>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            void submit();
+          }}
+        >
+          <div className="mt-4 flex max-h-72 flex-col gap-2 overflow-y-auto">
+            {candidates.map((item) => {
+              const existing = submitted.get(item.id);
+              const checked = selected.includes(item.id);
+              return (
+                <div
+                  key={item.id}
+                  className="border-border flex items-center gap-3 rounded-lg border p-3"
+                >
+                  <span className="min-w-0 flex-1 text-sm">{item.title}</span>
+                  <span className="text-foreground-secondary text-xs">
+                    {existing ? statusLabel(existing.status) : 'Ready'}
+                  </span>
+                  <Toggle
+                    label={`Select ${item.title}`}
+                    checked={checked}
+                    disabled={
+                      Boolean(existing) ||
+                      (!checked && selected.length >= MAX_TRACKS)
+                    }
+                    onChange={(next) =>
+                      setSelected((current) =>
+                        next
+                          ? [...current, item.id]
+                          : current.filter((id) => id !== item.id),
+                      )
+                    }
+                  />
+                </div>
+              );
+            })}
+          </div>
+          <Input
+            label="Note (optional)"
+            value={note}
+            onChange={(event) => setNote(event.target.value)}
+            placeholder="Tell the reviewers about this submission"
+          />
+          <Dialog.Actions>
+            <Dialog.Close>Cancel</Dialog.Close>
+            <Button disabled={busy || selected.length === 0} type="submit">
+              Submit {selected.length || ''}
+            </Button>
+          </Dialog.Actions>
+        </form>
       </Dialog.Root>
     </>
   );

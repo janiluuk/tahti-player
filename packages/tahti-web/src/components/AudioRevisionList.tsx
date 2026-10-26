@@ -228,7 +228,13 @@ export function AudioRevisionList({
         </p>
       </div>
 
-      <div className="border-border flex flex-col gap-3 rounded-lg border p-3">
+      <form
+        className="border-border flex flex-col gap-3 rounded-lg border p-3"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void onSaveRevision();
+        }}
+      >
         <FilePicker
           labels={{
             title: 'Save a new audio revision',
@@ -251,14 +257,10 @@ export function AudioRevisionList({
           value={label}
           onChange={(event) => setLabel(event.target.value)}
         />
-        <Button
-          size="sm"
-          disabled={!file || uploading}
-          onClick={() => void onSaveRevision()}
-        >
+        <Button size="sm" disabled={!file || uploading} type="submit">
           {uploading ? 'Saving revision…' : 'Save as new revision'}
         </Button>
-      </div>
+      </form>
 
       {canCompare && versionA && versionB ? (
         <div

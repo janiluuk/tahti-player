@@ -70,22 +70,29 @@ export function SaveQueueAsPlaylistDialog({ isOpen, onClose }: Props) {
         {localCount > 0 &&
           ` ${localCount} local ${localCount === 1 ? 'file lives' : 'files live'} on this device and can’t be added to a cloud playlist — use “Save queue as local playlist” to keep ${localCount === 1 ? 'it' : 'them'}.`}
       </Dialog.Description>
-      <Input
-        label="Playlist name"
-        value={name}
-        onChange={(event) => setName(event.target.value)}
-        autoFocus
-      />
-      {error && <InlineError className="mt-2">{error}</InlineError>}
-      <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
-        <Button
-          disabled={busy || !name.trim() || soundIds.length === 0}
-          onClick={() => void handleSave()}
-        >
-          {busy ? 'Saving…' : 'Save playlist'}
-        </Button>
-      </Dialog.Actions>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          void handleSave();
+        }}
+      >
+        <Input
+          label="Playlist name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          autoFocus
+        />
+        {error && <InlineError className="mt-2">{error}</InlineError>}
+        <Dialog.Actions>
+          <Dialog.Close>Cancel</Dialog.Close>
+          <Button
+            disabled={busy || !name.trim() || soundIds.length === 0}
+            type="submit"
+          >
+            {busy ? 'Saving…' : 'Save playlist'}
+          </Button>
+        </Dialog.Actions>
+      </form>
     </Dialog.Root>
   );
 }

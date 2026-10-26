@@ -127,4 +127,23 @@ describe('SaveQueueLocalDialog', () => {
       ),
     ).toBeTruthy();
   });
+  it('saves when the name field is submitted with Enter', async () => {
+    const fake = createFakePlaylists({ a: { title: 'Local a' } });
+    usePlayerStore.getState().play(local('a'));
+    render(
+      <SaveQueueLocalDialog
+        isOpen
+        onClose={() => undefined}
+        library={{ playlists: fake.api } as unknown as TahtiNativeLibrary}
+      />,
+    );
+    const dialog = await screen.findByRole('dialog');
+    const name = within(dialog).getByLabelText('Playlist name');
+    fireEvent.change(name, { target: { value: 'Quick save' } });
+    fireEvent.submit(name.closest('form') as HTMLFormElement);
+
+    await waitFor(() =>
+      expect(fake.api.addTracks).toHaveBeenCalledWith('pl-1', ['a']),
+    );
+  });
 });

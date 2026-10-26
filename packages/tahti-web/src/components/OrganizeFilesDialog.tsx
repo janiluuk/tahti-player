@@ -165,102 +165,110 @@ export function OrganizeFilesDialog({
           Nothing changes until you confirm, existing files are never
           overwritten, and the library keeps each track’s playlists and edits.
         </Dialog.Description>
-        <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto py-2 text-sm">
-          <div className="flex items-end gap-2">
-            <div className="min-w-0 flex-1">
-              <Input
-                label="Destination folder"
-                value={destination}
-                readOnly
-                placeholder="Choose a folder…"
-              />
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (move) {
+              setConfirmingMove(true);
+            } else {
+              void run();
+            }
+          }}
+        >
+          <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto py-2 text-sm">
+            <div className="flex items-end gap-2">
+              <div className="min-w-0 flex-1">
+                <Input
+                  label="Destination folder"
+                  value={destination}
+                  readOnly
+                  placeholder="Choose a folder…"
+                />
+              </div>
+              <Button
+                className="gap-1.5"
+                variant="secondary"
+                onClick={() => void pick()}
+              >
+                <FolderOpenIcon size={14} aria-hidden />
+                Choose…
+              </Button>
             </div>
-            <Button
-              className="gap-1.5"
-              variant="secondary"
-              onClick={() => void pick()}
-            >
-              <FolderOpenIcon size={14} aria-hidden />
-              Choose…
-            </Button>
-          </div>
-          <Input
-            label="Layout"
-            value={template}
-            onChange={(event) => setTemplate(event.target.value)}
-            placeholder={DEFAULT_TEMPLATE}
-          />
-          <p className="text-foreground-secondary text-xs">
-            Use {'{artist}'}, {'{albumArtist}'}, {'{album}'}, {'{title}'},{' '}
-            {'{track}'}, {'{disc}'}, {'{year}'}, {'{genre}'}; “/” starts a
-            folder. The file extension is kept.
-          </p>
-          <Toggle
-            label="Move files instead of copying (changes your originals)"
-            checked={move}
-            onChange={setMove}
-          />
-          <Toggle
-            label="If a file already exists, keep both (otherwise skip it)"
-            checked={keepBoth}
-            onChange={setKeepBoth}
-          />
-          {error ? (
-            <p role="alert" className="text-accent-red-strong">
-              {error}
+            <Input
+              label="Layout"
+              value={template}
+              onChange={(event) => setTemplate(event.target.value)}
+              placeholder={DEFAULT_TEMPLATE}
+            />
+            <p className="text-foreground-secondary text-xs">
+              Use {'{artist}'}, {'{albumArtist}'}, {'{album}'}, {'{title}'},{' '}
+              {'{track}'}, {'{disc}'}, {'{year}'}, {'{genre}'}; “/” starts a
+              folder. The file extension is kept.
             </p>
-          ) : checking ? (
-            <p className="text-foreground-secondary flex items-center gap-2">
-              <Loader size="inline" shape="circle" />
-              Checking…
-            </p>
-          ) : plan ? (
-            <div className="flex flex-col gap-1">
-              <p role="status">
-                {n(plan.ready)} {files(plan.ready)} will be{' '}
-                {move ? 'moved' : 'copied'}
-                {plan.unchanged
-                  ? `; ${n(plan.unchanged)} already in place`
-                  : ''}
-                {plan.collisions
-                  ? `; ${n(plan.collisions)} skipped (name taken)`
-                  : ''}
-                {plan.missing ? `; ${n(plan.missing)} missing on disk` : ''}.
+            <Toggle
+              label="Move files instead of copying (changes your originals)"
+              checked={move}
+              onChange={setMove}
+            />
+            <Toggle
+              label="If a file already exists, keep both (otherwise skip it)"
+              checked={keepBoth}
+              onChange={setKeepBoth}
+            />
+            {error ? (
+              <p role="alert" className="text-accent-red-strong">
+                {error}
               </p>
-              {!move && plan.originalsInWatchedFolders > 0 ? (
-                <p className="text-foreground-secondary text-xs">
-                  {n(plan.originalsInWatchedFolders)} originals sit in a watched
-                  folder and will be added again as new tracks by the next scan.
+            ) : checking ? (
+              <p className="text-foreground-secondary flex items-center gap-2">
+                <Loader size="inline" shape="circle" />
+                Checking…
+              </p>
+            ) : plan ? (
+              <div className="flex flex-col gap-1">
+                <p role="status">
+                  {n(plan.ready)} {files(plan.ready)} will be{' '}
+                  {move ? 'moved' : 'copied'}
+                  {plan.unchanged
+                    ? `; ${n(plan.unchanged)} already in place`
+                    : ''}
+                  {plan.collisions
+                    ? `; ${n(plan.collisions)} skipped (name taken)`
+                    : ''}
+                  {plan.missing ? `; ${n(plan.missing)} missing on disk` : ''}.
                 </p>
-              ) : null}
-              {plan.items
-                .filter((item) => item.status === 'ready')
-                .slice(0, 5)
-                .map((item) => (
-                  <Tooltip
-                    key={item.id}
-                    content={`${item.from} → ${item.to}`}
-                    side="top"
-                  >
-                    <p className="text-foreground-secondary truncate text-xs">
-                      → {item.to}
-                    </p>
-                  </Tooltip>
-                ))}
-            </div>
-          ) : null}
-        </div>
-        <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
-          <Button
-            className="gap-1.5"
-            disabled={!canRun}
-            onClick={() => (move ? setConfirmingMove(true) : void run())}
-          >
-            {busy ? <Loader size="inline" shape="circle" /> : null}
-            {move ? 'Move files' : 'Copy files'}
-          </Button>
-        </Dialog.Actions>
+                {!move && plan.originalsInWatchedFolders > 0 ? (
+                  <p className="text-foreground-secondary text-xs">
+                    {n(plan.originalsInWatchedFolders)} originals sit in a
+                    watched folder and will be added again as new tracks by the
+                    next scan.
+                  </p>
+                ) : null}
+                {plan.items
+                  .filter((item) => item.status === 'ready')
+                  .slice(0, 5)
+                  .map((item) => (
+                    <Tooltip
+                      key={item.id}
+                      content={`${item.from} → ${item.to}`}
+                      side="top"
+                    >
+                      <p className="text-foreground-secondary truncate text-xs">
+                        → {item.to}
+                      </p>
+                    </Tooltip>
+                  ))}
+              </div>
+            ) : null}
+          </div>
+          <Dialog.Actions>
+            <Dialog.Close>Cancel</Dialog.Close>
+            <Button className="gap-1.5" disabled={!canRun} type="submit">
+              {busy ? <Loader size="inline" shape="circle" /> : null}
+              {move ? 'Move files' : 'Copy files'}
+            </Button>
+          </Dialog.Actions>
+        </form>
       </Dialog.Root>
       <ConfirmDialog
         isOpen={confirmingMove}

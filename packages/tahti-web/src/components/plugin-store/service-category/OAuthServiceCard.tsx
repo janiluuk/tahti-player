@@ -408,26 +408,36 @@ export function OAuthServiceCard({
                   {scMessage}
                 </p>
               )}
-              <Input
-                inputMode="url"
-                label="SoundCloud profile URL"
-                value={profileDraft}
-                onChange={(e) => setProfileDraft(e.target.value)}
-                placeholder="https://soundcloud.com/your-name"
-              />
-              <div className="flex items-center gap-2">
-                <SaveButton
-                  size="sm"
-                  disabled={!profileDraft.trim() || profileDraft === profileUrl}
-                  label="Save profile URL"
-                  onClick={() => void saveProfileUrl()}
+              <form
+                className="contents"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void saveProfileUrl();
+                }}
+              >
+                <Input
+                  inputMode="url"
+                  label="SoundCloud profile URL"
+                  value={profileDraft}
+                  onChange={(e) => setProfileDraft(e.target.value)}
+                  placeholder="https://soundcloud.com/your-name"
                 />
-                {profileMsg && (
-                  <p className="text-foreground-secondary text-xs">
-                    {profileMsg}
-                  </p>
-                )}
-              </div>
+                <div className="flex items-center gap-2">
+                  <SaveButton
+                    size="sm"
+                    disabled={
+                      !profileDraft.trim() || profileDraft === profileUrl
+                    }
+                    label="Save profile URL"
+                    type="submit"
+                  />
+                  {profileMsg && (
+                    <p className="text-foreground-secondary text-xs">
+                      {profileMsg}
+                    </p>
+                  )}
+                </div>
+              </form>
             </div>
           )}
         </>

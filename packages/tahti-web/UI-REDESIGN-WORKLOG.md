@@ -1,3 +1,9 @@
+## 2026-10-26 - UX batch 108 (more Enter submits)
+
+Thirty more single-action groups submit on Enter: account recovery and
+verification, playlist and preset saves, comments and announcements, studio
+upload / publish / revision tools, governance records, API tokens and artist
+settings. Bumped tahti-web `0.0.266`.
 ## 2026-10-26 - UX batch 107 (Enter submits)
 
 Thirty forms that needed a mouse click now submit on Enter: password set-up

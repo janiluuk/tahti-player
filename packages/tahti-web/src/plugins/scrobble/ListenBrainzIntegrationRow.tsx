@@ -109,35 +109,42 @@ export function ListenBrainzIntegrationRow() {
           it, stores it encrypted, and never shows it again. Eligible Tahti
           listens are submitted as ListenBrainz listens — not charts.
         </Dialog.Description>
-        <div className="mt-4 flex flex-col gap-3">
-          <Input
-            autoCapitalize="none"
-            autoCorrect="off"
-            spellCheck={false}
-            label="User token"
-            type="password"
-            autoComplete="off"
-            description="From listenbrainz.org → Settings → Music / User token."
-            value={token}
-            onChange={(event) => setToken(event.target.value)}
-          />
-          {installed ? (
-            <p className="text-foreground-secondary text-sm">
-              Already connected. Saving a new token replaces the stored one.
-            </p>
-          ) : null}
-        </div>
-        <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
-          <SaveButton
-            size="sm"
-            saving={busy}
-            disabled={busy || !token.trim()}
-            onClick={() => void saveAndEnable()}
-            label={installed ? 'Update token' : 'Save and enable'}
-            savingLabel="Saving…"
-          />
-        </Dialog.Actions>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            void saveAndEnable();
+          }}
+        >
+          <div className="mt-4 flex flex-col gap-3">
+            <Input
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              label="User token"
+              type="password"
+              autoComplete="off"
+              description="From listenbrainz.org → Settings → Music / User token."
+              value={token}
+              onChange={(event) => setToken(event.target.value)}
+            />
+            {installed ? (
+              <p className="text-foreground-secondary text-sm">
+                Already connected. Saving a new token replaces the stored one.
+              </p>
+            ) : null}
+          </div>
+          <Dialog.Actions>
+            <Dialog.Close>Cancel</Dialog.Close>
+            <SaveButton
+              size="sm"
+              saving={busy}
+              disabled={busy || !token.trim()}
+              type="submit"
+              label={installed ? 'Update token' : 'Save and enable'}
+              savingLabel="Saving…"
+            />
+          </Dialog.Actions>
+        </form>
       </Dialog.Root>
     </>
   );

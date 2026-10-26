@@ -157,7 +157,24 @@ export function MotionDiscussion({
             </ul>
           )}
           {canPost && (
-            <div className="flex flex-wrap gap-2">
+            <form
+              className="flex flex-wrap gap-2"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void postMotionComment(motion.id, commentBody.trim()).then(
+                  (r) => {
+                    if (!r.ok) {
+                      onMessage(r.error);
+                      return;
+                    }
+                    setComments((prev) => [...prev, r.data]);
+                    setCommentBody('');
+                    onMessage('Comment posted.');
+                    onChanged();
+                  },
+                );
+              }}
+            >
               <Input
                 className="min-w-[200px] flex-1"
                 value={commentBody}
@@ -165,27 +182,10 @@ export function MotionDiscussion({
                 aria-label="Add a comment"
                 placeholder="Add a comment…"
               />
-              <Button
-                size="sm"
-                disabled={!commentBody.trim()}
-                onClick={() => {
-                  void postMotionComment(motion.id, commentBody.trim()).then(
-                    (r) => {
-                      if (!r.ok) {
-                        onMessage(r.error);
-                        return;
-                      }
-                      setComments((prev) => [...prev, r.data]);
-                      setCommentBody('');
-                      onMessage('Comment posted.');
-                      onChanged();
-                    },
-                  );
-                }}
-              >
+              <Button size="sm" disabled={!commentBody.trim()} type="submit">
                 Post
               </Button>
-            </div>
+            </form>
           )}
         </div>
       )}

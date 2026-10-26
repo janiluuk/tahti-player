@@ -462,7 +462,13 @@ export const ChannelRadioPlaylistPanel: FC = () => {
             </div>
 
             {creating ? (
-              <div className="border-border bg-background-secondary flex flex-col gap-2 rounded-lg border p-3">
+              <form
+                className="border-border bg-background-secondary flex flex-col gap-2 rounded-lg border p-3"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void createInline();
+                }}
+              >
                 <Input
                   label="Playlist name"
                   value={newName}
@@ -473,12 +479,12 @@ export const ChannelRadioPlaylistPanel: FC = () => {
                   <Button
                     size="sm"
                     disabled={busy || !newName.trim()}
-                    onClick={() => void createInline()}
+                    type="submit"
                   >
                     Create
                   </Button>
                 </div>
-              </div>
+              </form>
             ) : null}
           </div>
 

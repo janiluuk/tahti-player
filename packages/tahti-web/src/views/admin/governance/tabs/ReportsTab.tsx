@@ -38,7 +38,22 @@ export function ReportsTab() {
   return (
     <>
       <StudioPanel title="Generate report">
-        <div className="flex flex-wrap items-end gap-2">
+        <form
+          className="flex flex-wrap items-end gap-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            setBusy(true);
+            setError(null);
+            void generateAdminAnnualReport(Number(year)).then((result) => {
+              setBusy(false);
+              if (!result.ok) {
+                setError(result.error);
+                return;
+              }
+              void load();
+            });
+          }}
+        >
           <div className="w-28">
             <Input
               label="Year"
@@ -50,18 +65,7 @@ export function ReportsTab() {
           <Button
             size="sm"
             disabled={busy || !/^20\d{2}$/.test(year)}
-            onClick={() => {
-              setBusy(true);
-              setError(null);
-              void generateAdminAnnualReport(Number(year)).then((result) => {
-                setBusy(false);
-                if (!result.ok) {
-                  setError(result.error);
-                  return;
-                }
-                void load();
-              });
-            }}
+            type="submit"
           >
             {busy ? (
               <Loader size="inline" shape="circle" className="mr-1.5" />
@@ -70,7 +74,7 @@ export function ReportsTab() {
             )}
             {busy ? 'Generating…' : 'Generate report'}
           </Button>
-        </div>
+        </form>
         {error ? <InlineError className="mt-2">{error}</InlineError> : null}
       </StudioPanel>
       <StudioPanel title="Generated reports">

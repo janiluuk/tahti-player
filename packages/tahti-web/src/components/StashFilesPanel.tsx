@@ -368,7 +368,13 @@ export const StashFilesPanel = ({
                 </div>
 
                 {sharingFileId === file.id ? (
-                  <div className="border-border bg-background-secondary mt-3 grid gap-2 rounded-lg border p-3 sm:grid-cols-2">
+                  <form
+                    className="border-border bg-background-secondary mt-3 grid gap-2 rounded-lg border p-3 sm:grid-cols-2"
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      void createShare(file);
+                    }}
+                  >
                     <div className="sm:col-span-2">
                       <Input
                         autoCapitalize="none"
@@ -406,16 +412,12 @@ export const StashFilesPanel = ({
                       }))}
                     />
                     <div className="flex justify-end sm:col-span-2">
-                      <Button
-                        size="sm"
-                        disabled={busy}
-                        onClick={() => void createShare(file)}
-                      >
+                      <Button size="sm" disabled={busy} type="submit">
                         <Share2Icon size={14} aria-hidden className="mr-1.5" />
                         Grant access
                       </Button>
                     </div>
-                  </div>
+                  </form>
                 ) : null}
 
                 {file.shares.length > 0 ? (
