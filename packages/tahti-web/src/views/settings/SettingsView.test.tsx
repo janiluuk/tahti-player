@@ -39,7 +39,7 @@ describe('SettingsView', () => {
       '',
       '/settings/account?tab=subscriptions&fansubs=portal',
     );
-    render(<SettingsView sectionId="account" />);
+    render(<SettingsView />);
     const state = useSettingsModalStore.getState();
     expect(state.isOpen).toBe(true);
     expect(state.activeTab).toBe('account');
@@ -48,13 +48,13 @@ describe('SettingsView', () => {
 
   it('ignores unknown account tabs', () => {
     window.history.replaceState(null, '', '/settings/account?tab=nope');
-    render(<SettingsView sectionId="account" />);
+    render(<SettingsView />);
     expect(useSettingsModalStore.getState().accountSection).toBeNull();
   });
 
   it('opens Account on API tokens from a dashboard bookmark', () => {
     window.history.replaceState(null, '', '/settings/account?tab=api-tokens');
-    render(<SettingsView sectionId="account" />);
+    render(<SettingsView />);
     const state = useSettingsModalStore.getState();
     expect(state.isOpen).toBe(true);
     expect(state.accountSection).toBe('api-tokens');
@@ -62,16 +62,29 @@ describe('SettingsView', () => {
 
   it('opens Artist Connections from a dashboard bookmark', () => {
     window.history.replaceState(null, '', '/settings/artist?tab=connections');
-    render(<SettingsView sectionId="artist" />);
+    render(<SettingsView />);
     const state = useSettingsModalStore.getState();
     expect(state.isOpen).toBe(true);
     expect(state.activeTab).toBe('artist');
     expect(state.artistSection).toBe('connections');
   });
 
+  it('follows the URL section when the route remounts mid-navigation', () => {
+    useSettingsModalStore.setState({ isOpen: true, activeTab: 'themes' });
+    window.history.replaceState(null, '', '/settings/themes');
+    render(<SettingsView />);
+    expect(useSettingsModalStore.getState().activeTab).toBe('themes');
+  });
+
+  it('opens Account on a bare /settings', () => {
+    window.history.replaceState(null, '', '/settings');
+    render(<SettingsView />);
+    expect(useSettingsModalStore.getState().activeTab).toBe('account');
+  });
+
   it('does not reopen while a close is navigating away from /settings', () => {
     window.history.replaceState(null, '', '/');
-    render(<SettingsView sectionId="account" />);
+    render(<SettingsView />);
 
     expect(useSettingsModalStore.getState().isOpen).toBe(false);
   });
@@ -79,7 +92,7 @@ describe('SettingsView', () => {
   it('stays closed after Close while the URL is still /settings', () => {
     window.history.replaceState(null, '', '/settings/account');
     useSettingsModalStore.getState().close();
-    render(<SettingsView sectionId="account" />);
+    render(<SettingsView />);
 
     expect(useSettingsModalStore.getState().isOpen).toBe(false);
   });

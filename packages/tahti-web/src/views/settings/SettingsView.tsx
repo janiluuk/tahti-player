@@ -39,7 +39,7 @@ function isAccountSettingsSection(
 /** Deep link `/settings` → Nuclear SettingsPanel modal. Also the landing
  * pad for OAuth connect callbacks (see cutoverReturns.ts) - `?status=` and
  * `?social=` are surfaced as a toast, same as the retired Sources page did. */
-export function SettingsView({ sectionId }: { sectionId?: string }) {
+export function SettingsView() {
   const open = useSettingsModalStore((s) => s.open);
   const searchStr = useRouterState({
     select: (state) => state.location.searchStr,
@@ -48,6 +48,7 @@ export function SettingsView({ sectionId }: { sectionId?: string }) {
     select: (state) => state.location.pathname,
   });
   const toastedCallbackRef = useRef<string | null>(null);
+  const sectionId = pathname.match(/^\/settings\/([^/]+)/)?.[1];
   const section: SettingsSectionId = isSettingsSectionId(sectionId)
     ? sectionId
     : 'account';
