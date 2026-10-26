@@ -254,7 +254,13 @@ export function ArtistPanel() {
       content: !profile ? (
         profilePending
       ) : (
-        <div className="flex flex-col gap-6">
+        <form
+          className="flex flex-col gap-6"
+          onSubmit={(event) => {
+            event.preventDefault();
+            saveArtistInfo();
+          }}
+        >
           <Input
             label="Display name"
             value={profile.displayName}
@@ -346,14 +352,10 @@ export function ArtistPanel() {
             }
           />
           <div className="flex justify-end">
-            <SaveButton
-              saving={busy}
-              label="Save identity"
-              onClick={saveArtistInfo}
-            />
+            <SaveButton saving={busy} label="Save identity" type="submit" />
           </div>
           {msg && <SettingsHint>{msg}</SettingsHint>}
-        </div>
+        </form>
       ),
     },
     {
@@ -462,60 +464,63 @@ export function ArtistPanel() {
             Add the places listeners can find you. These links appear as branded
             buttons on your public artist profile.
           </SettingsHint>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {(
-              [
-                ['website', 'Website'],
-                ['instagram', 'Instagram'],
-                ['bandcamp', 'Bandcamp'],
-                ['soundcloud', 'SoundCloud'],
-                ['youtube', 'YouTube'],
-                ['hearthisAt', 'hearthis.at'],
-                ['mixcloud', 'Mixcloud'],
-                ['twitch', 'Twitch'],
-                ['kick', 'Kick'],
-                ['spotify', 'Spotify'],
-                ['discord', 'Discord'],
-                ['tiktok', 'TikTok'],
-                ['twitter', 'X / Twitter'],
-                ['facebook', 'Facebook'],
-              ] as const
-            ).map(([key, label]) => (
-              <label key={key} className="flex min-w-0 flex-col gap-1.5">
-                <span className="text-foreground flex items-center gap-2 text-sm font-semibold">
-                  <SocialLinkIcon label={label} url={social[key]} />
-                  {label}
-                </span>
-                <Input
-                  aria-label={label}
-                  value={social[key]}
-                  placeholder={`https://…/${label.toLowerCase()}`}
-                  onChange={(e) =>
-                    setSocial({ ...social, [key]: e.target.value })
-                  }
-                />
-              </label>
-            ))}
-          </div>
-          <div className="flex justify-end">
-            <SaveButton
-              label="Save social links"
-              onClick={() => {
-                if (!social) {
+          <form
+            className="flex flex-col gap-6"
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (!social) {
+                return;
+              }
+              void patchSocialConnections(social).then((result) => {
+                if (!result.ok) {
+                  setSocialMsg(result.error);
                   return;
                 }
-                void patchSocialConnections(social).then((result) => {
-                  if (!result.ok) {
-                    setSocialMsg(result.error);
-                    return;
-                  }
-                  setSocialMsg('Connections saved.');
-                  setSocial(result.data);
-                  toast.success('Connections saved.');
-                });
-              }}
-            />
-          </div>
+                setSocialMsg('Connections saved.');
+                setSocial(result.data);
+                toast.success('Connections saved.');
+              });
+            }}
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              {(
+                [
+                  ['website', 'Website'],
+                  ['instagram', 'Instagram'],
+                  ['bandcamp', 'Bandcamp'],
+                  ['soundcloud', 'SoundCloud'],
+                  ['youtube', 'YouTube'],
+                  ['hearthisAt', 'hearthis.at'],
+                  ['mixcloud', 'Mixcloud'],
+                  ['twitch', 'Twitch'],
+                  ['kick', 'Kick'],
+                  ['spotify', 'Spotify'],
+                  ['discord', 'Discord'],
+                  ['tiktok', 'TikTok'],
+                  ['twitter', 'X / Twitter'],
+                  ['facebook', 'Facebook'],
+                ] as const
+              ).map(([key, label]) => (
+                <label key={key} className="flex min-w-0 flex-col gap-1.5">
+                  <span className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                    <SocialLinkIcon label={label} url={social[key]} />
+                    {label}
+                  </span>
+                  <Input
+                    aria-label={label}
+                    value={social[key]}
+                    placeholder={`https://…/${label.toLowerCase()}`}
+                    onChange={(e) =>
+                      setSocial({ ...social, [key]: e.target.value })
+                    }
+                  />
+                </label>
+              ))}
+            </div>
+            <div className="flex justify-end">
+              <SaveButton label="Save social links" type="submit" />
+            </div>
+          </form>
           {socialMsg && <SettingsHint>{socialMsg}</SettingsHint>}
           <NewsFeedUrlField />
           <SocialAutoPost />

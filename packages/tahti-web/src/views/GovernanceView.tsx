@@ -619,7 +619,34 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               </span>
             </Tooltip>
           </div>
-          <div className="flex flex-col gap-2">
+          <form
+            className="flex flex-col gap-2"
+            onSubmit={(event) => {
+              event.preventDefault();
+              setSubmittingDraft(true);
+              const openAt = new Date().toISOString();
+              const closeAt = new Date(
+                Date.now() + 14 * 24 * 60 * 60 * 1000,
+              ).toISOString();
+              void createGovernanceMotion({
+                title: draftTitle.trim(),
+                description: draftDescription.trim(),
+                openAt,
+                closeAt,
+                advisory: true,
+              }).then((result) => {
+                setSubmittingDraft(false);
+                if (!result.ok) {
+                  setActionMsg(result.error);
+                  return;
+                }
+                setDraftTitle('');
+                setDraftDescription('');
+                setActionMsg('Motion draft submitted for board review.');
+                reload();
+              });
+            }}
+          >
             <Input
               value={draftTitle}
               onChange={(event) => setDraftTitle(event.target.value)}
@@ -645,34 +672,11 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                 !draftTitle.trim() ||
                 !draftDescription.trim()
               }
-              onClick={() => {
-                setSubmittingDraft(true);
-                const openAt = new Date().toISOString();
-                const closeAt = new Date(
-                  Date.now() + 14 * 24 * 60 * 60 * 1000,
-                ).toISOString();
-                void createGovernanceMotion({
-                  title: draftTitle.trim(),
-                  description: draftDescription.trim(),
-                  openAt,
-                  closeAt,
-                  advisory: true,
-                }).then((result) => {
-                  setSubmittingDraft(false);
-                  if (!result.ok) {
-                    setActionMsg(result.error);
-                    return;
-                  }
-                  setDraftTitle('');
-                  setDraftDescription('');
-                  setActionMsg('Motion draft submitted for board review.');
-                  reload();
-                });
-              }}
+              type="submit"
             >
               {submittingDraft ? 'Submitting…' : 'Submit draft'}
             </Button>
-          </div>
+          </form>
         </GovernancePanel>
       )}
 

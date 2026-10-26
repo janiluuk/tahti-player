@@ -40,7 +40,13 @@ export function ForgotPasswordView() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <form
+        className="flex flex-col gap-3"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSubmit();
+        }}
+      >
         <Input
           inputMode="email"
           label="Email"
@@ -52,10 +58,10 @@ export function ForgotPasswordView() {
         {message ? (
           <p className="text-accent-green-strong text-sm">{message}</p>
         ) : null}
-        <Button disabled={!canSubmit} onClick={onSubmit}>
+        <Button disabled={!canSubmit} type="submit">
           {loading ? 'Sending…' : 'Send reset link'}
         </Button>
-      </div>
+      </form>
     </div>
   );
 }

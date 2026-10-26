@@ -74,7 +74,13 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
       description="Short messages shown above chat on your channel. Keep up to three current announcements."
     >
       <div className="flex flex-col gap-3">
-        <div className="flex gap-2">
+        <form
+          className="flex gap-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void publish();
+          }}
+        >
           <Input
             label=""
             value={body}
@@ -87,12 +93,12 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
               variant="secondary"
               aria-label="Pin announcement"
               disabled={busy || !body.trim()}
-              onClick={() => void publish()}
+              type="submit"
             >
               <SendIcon size={16} aria-hidden />
             </Button>
           </Tooltip>
-        </div>
+        </form>
         {loading ? (
           <InlineLoader label="Loading announcements…" />
         ) : loadError ? (

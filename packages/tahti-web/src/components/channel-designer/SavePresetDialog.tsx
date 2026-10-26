@@ -30,19 +30,26 @@ export function SavePresetDialog({
       <Dialog.Description>
         Save the current look under a name so you can switch back to it later.
       </Dialog.Description>
-      <Input
-        label="Preset name"
-        value={presetNameInput}
-        onChange={(event) => onNameChange(event.target.value)}
-        placeholder="e.g. Neon night"
-        autoFocus
-      />
-      <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
-        <Button disabled={presetBusy} onClick={onConfirm}>
-          Save preset
-        </Button>
-      </Dialog.Actions>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          onConfirm();
+        }}
+      >
+        <Input
+          label="Preset name"
+          value={presetNameInput}
+          onChange={(event) => onNameChange(event.target.value)}
+          placeholder="e.g. Neon night"
+          autoFocus
+        />
+        <Dialog.Actions>
+          <Dialog.Close>Cancel</Dialog.Close>
+          <Button disabled={presetBusy} type="submit">
+            Save preset
+          </Button>
+        </Dialog.Actions>
+      </form>
     </Dialog.Root>
   );
 }

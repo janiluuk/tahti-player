@@ -146,7 +146,13 @@ export function AddToPlaylistDialog({
           ))
         )}
       </div>
-      <div className="border-border flex items-end gap-2 border-t pt-3">
+      <form
+        className="border-border flex items-end gap-2 border-t pt-3"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void addTo('new', () => library.playlists.create(name.trim()));
+        }}
+      >
         <Input
           label="New playlist"
           placeholder="Playlist name"
@@ -157,15 +163,13 @@ export function AddToPlaylistDialog({
         <Button
           variant="secondary"
           disabled={!name.trim() || busy !== null}
-          onClick={() =>
-            void addTo('new', () => library.playlists.create(name.trim()))
-          }
+          type="submit"
           className="gap-1.5"
         >
           {busy === 'new' ? <Loader size="inline" shape="circle" /> : null}
           Create and add
         </Button>
-      </div>
+      </form>
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
       </Dialog.Actions>

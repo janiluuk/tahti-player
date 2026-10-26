@@ -61,7 +61,13 @@ export function EpisodeEditorRow({
         </Button>
       </div>
 
-      <div className="mt-4 grid gap-3">
+      <form
+        className="mt-4 grid gap-3"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void save();
+        }}
+      >
         <Input
           label="Episode title"
           value={title}
@@ -80,13 +86,9 @@ export function EpisodeEditorRow({
           ) : (
             <span />
           )}
-          <SaveButton
-            saving={saving}
-            label="Save episode"
-            onClick={() => void save()}
-          />
+          <SaveButton saving={saving} label="Save episode" type="submit" />
         </div>
-      </div>
+      </form>
 
       {statsOpen ? (
         <div className="border-border bg-background-secondary/40 mt-4 grid gap-3 rounded-lg border p-3 sm:grid-cols-2 lg:grid-cols-4">

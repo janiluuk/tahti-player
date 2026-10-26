@@ -84,52 +84,56 @@ export function NewReleaseTrackUploadDialog({
       <Dialog.Description>
         Adds a track to this release from an audio file on your device.
       </Dialog.Description>
-      <div className="flex flex-col gap-3 py-3">
-        <FilePicker
-          labels={{
-            title: 'Audio file',
-            description: 'WAV, FLAC, MP3, AAC or AIFF',
-            browse: 'Choose audio file',
-          }}
-          accept={RELEASE_TRACK_AUDIO_TYPES.join(',')}
-          disabled={busy}
-          selectedFiles={file ? [file] : []}
-          onFiles={(files) => {
-            const picked = files[0];
-            if (!picked) {
-              return;
-            }
-            setFile(picked);
-            if (!title.trim()) {
-              setTitle(titleFromFilename(picked.name));
-            }
-          }}
-        />
-        <Input
-          label="Track title"
-          value={title}
-          disabled={busy}
-          onChange={(event) => setTitle(event.target.value)}
-        />
-        {uploading ? (
-          <ReleaseTrackUploadProgress
-            title={title.trim() || 'track'}
-            progress={progress}
-            onCancel={cancel}
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          void submit();
+        }}
+      >
+        <div className="flex flex-col gap-3 py-3">
+          <FilePicker
+            labels={{
+              title: 'Audio file',
+              description: 'WAV, FLAC, MP3, AAC or AIFF',
+              browse: 'Choose audio file',
+            }}
+            accept={RELEASE_TRACK_AUDIO_TYPES.join(',')}
+            disabled={busy}
+            selectedFiles={file ? [file] : []}
+            onFiles={(files) => {
+              const picked = files[0];
+              if (!picked) {
+                return;
+              }
+              setFile(picked);
+              if (!title.trim()) {
+                setTitle(titleFromFilename(picked.name));
+              }
+            }}
           />
-        ) : null}
-      </div>
-      <Dialog.Actions>
-        <Button variant="text" disabled={busy} onClick={close}>
-          Cancel
-        </Button>
-        <Button
-          disabled={busy || !file || !title.trim()}
-          onClick={() => void submit()}
-        >
-          {busy ? 'Uploading…' : 'Upload track'}
-        </Button>
-      </Dialog.Actions>
+          <Input
+            label="Track title"
+            value={title}
+            disabled={busy}
+            onChange={(event) => setTitle(event.target.value)}
+          />
+          {uploading ? (
+            <ReleaseTrackUploadProgress
+              title={title.trim() || 'track'}
+              progress={progress}
+              onCancel={cancel}
+            />
+          ) : null}
+        </div>
+        <Dialog.Actions>
+          <Button variant="text" disabled={busy} onClick={close}>
+            Cancel
+          </Button>
+          <Button disabled={busy || !file || !title.trim()} type="submit">
+            {busy ? 'Uploading…' : 'Upload track'}
+          </Button>
+        </Dialog.Actions>
+      </form>
     </Dialog.Root>
   );
 }

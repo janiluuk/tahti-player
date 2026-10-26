@@ -248,7 +248,13 @@ export function ApiTokensPanel() {
               New token
             </Button>
           ) : (
-            <div className="border-border flex flex-col gap-3 border-t pt-4">
+            <form
+              className="border-border flex flex-col gap-3 border-t pt-4"
+              onSubmit={(event) => {
+                event.preventDefault();
+                createToken();
+              }}
+            >
               {error ? <InlineError>{error}</InlineError> : null}
               <Input
                 autoComplete="off"
@@ -279,7 +285,7 @@ export function ApiTokensPanel() {
                 <Button
                   size="sm"
                   disabled={saving || name.trim().length === 0}
-                  onClick={createToken}
+                  type="submit"
                 >
                   {saving ? 'Creating…' : 'Create token'}
                 </Button>
@@ -294,7 +300,7 @@ export function ApiTokensPanel() {
                   Cancel
                 </Button>
               </div>
-            </div>
+            </form>
           )}
         </div>
       )}

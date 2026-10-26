@@ -81,31 +81,36 @@ export function AnnouncementTrimDialog({
         Seconds from the start of the clip you uploaded. Trimming again always
         starts from that original.
       </Dialog.Description>
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        {field('startSec', 'Start (s)')}
-        {field('endSec', 'End (s)')}
-        {field('fadeInSec', 'Fade in (s)')}
-        {field('fadeOutSec', 'Fade out (s)')}
-      </div>
-      {typeof result === 'string' ? (
-        <InlineError textSize="xs" className="mt-2">
-          {result}
-        </InlineError>
-      ) : null}
-      <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
-        <Button
-          size="sm"
-          disabled={busy || typeof result === 'string'}
-          onClick={() => {
-            if (clip && typeof result !== 'string') {
-              onSubmit(clip, result);
-            }
-          }}
-        >
-          {busy ? 'Saving…' : 'Trim clip'}
-        </Button>
-      </Dialog.Actions>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (clip && typeof result !== 'string') {
+            onSubmit(clip, result);
+          }
+        }}
+      >
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          {field('startSec', 'Start (s)')}
+          {field('endSec', 'End (s)')}
+          {field('fadeInSec', 'Fade in (s)')}
+          {field('fadeOutSec', 'Fade out (s)')}
+        </div>
+        {typeof result === 'string' ? (
+          <InlineError textSize="xs" className="mt-2">
+            {result}
+          </InlineError>
+        ) : null}
+        <Dialog.Actions>
+          <Dialog.Close>Cancel</Dialog.Close>
+          <Button
+            size="sm"
+            disabled={busy || typeof result === 'string'}
+            type="submit"
+          >
+            {busy ? 'Saving…' : 'Trim clip'}
+          </Button>
+        </Dialog.Actions>
+      </form>
     </Dialog.Root>
   );
 }

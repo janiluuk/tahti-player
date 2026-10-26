@@ -79,24 +79,31 @@ export function SaveQueueLocalDialog({ isOpen, onClose, library }: Props) {
           ? ` ${streamed} streamed ${streamed === 1 ? 'track (Tahti, radio or live)' : 'tracks (Tahti, radio or live)'} can’t be stored locally and ${streamed === 1 ? 'isn’t' : 'aren’t'} included — use “Save queue to cloud playlist” for those.`
           : ''}
       </Dialog.Description>
-      <Input
-        label="Playlist name"
-        value={name}
-        autoFocus
-        error={error ?? undefined}
-        onChange={(event) => setName(event.target.value)}
-      />
-      <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
-        <Button
-          className="gap-1.5"
-          disabled={busy || !name.trim() || trackIds.length === 0}
-          onClick={() => void save()}
-        >
-          {busy ? <Loader size="inline" shape="circle" /> : null}
-          Save local playlist
-        </Button>
-      </Dialog.Actions>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          void save();
+        }}
+      >
+        <Input
+          label="Playlist name"
+          value={name}
+          autoFocus
+          error={error ?? undefined}
+          onChange={(event) => setName(event.target.value)}
+        />
+        <Dialog.Actions>
+          <Dialog.Close>Cancel</Dialog.Close>
+          <Button
+            className="gap-1.5"
+            disabled={busy || !name.trim() || trackIds.length === 0}
+            type="submit"
+          >
+            {busy ? <Loader size="inline" shape="circle" /> : null}
+            Save local playlist
+          </Button>
+        </Dialog.Actions>
+      </form>
     </Dialog.Root>
   );
 }

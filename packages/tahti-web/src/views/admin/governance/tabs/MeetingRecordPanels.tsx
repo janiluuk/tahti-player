@@ -137,7 +137,29 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
           ))}
         </ul>
       )}
-      <div className="flex flex-col gap-2">
+      <form
+        className="flex flex-col gap-2"
+        onSubmit={(event) => {
+          event.preventDefault();
+          setSaving(true);
+          setError(null);
+          void declareAdminGovernanceConflict(meetingId, {
+            displayName: name,
+            matter,
+            recused,
+          }).then((result) => {
+            setSaving(false);
+            if (!result.ok) {
+              setError(result.error);
+              return;
+            }
+            setRecords((current) => [...(current ?? []), result.data]);
+            setName('');
+            setMatter('');
+            setRecused(true);
+          });
+        }}
+      >
         <Input
           autoComplete="off"
           label="Member name"
@@ -161,30 +183,12 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
           <Button
             size="sm"
             disabled={saving || !name.trim() || !matter.trim()}
-            onClick={() => {
-              setSaving(true);
-              setError(null);
-              void declareAdminGovernanceConflict(meetingId, {
-                displayName: name,
-                matter,
-                recused,
-              }).then((result) => {
-                setSaving(false);
-                if (!result.ok) {
-                  setError(result.error);
-                  return;
-                }
-                setRecords((current) => [...(current ?? []), result.data]);
-                setName('');
-                setMatter('');
-                setRecused(true);
-              });
-            }}
+            type="submit"
           >
             {saving ? 'Recording…' : 'Record declaration'}
           </Button>
         </div>
-      </div>
+      </form>
     </CollapsibleRecord>
   );
 }
