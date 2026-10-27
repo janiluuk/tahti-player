@@ -24,6 +24,7 @@ const TOPIC: discussions.DiscussionTopic = {
   createdAt: '2026-10-19T10:00:00.000Z',
   following: true,
   muted: true,
+  unreadCount: 3,
 };
 
 function renderView() {
@@ -84,6 +85,7 @@ describe('DiscussionsView', () => {
     expect(screen.getByLabelText('Pinned')).toBeInTheDocument();
     expect(screen.getByText('Muted')).toBeInTheDocument();
     expect(screen.getByText(/2 replies/)).toBeInTheDocument();
+    expect(screen.getByText('3 new replies')).toBeInTheDocument();
   });
 
   it('shows the API reason with a retry when the list fails', async () => {
@@ -101,6 +103,29 @@ describe('DiscussionsView', () => {
       await screen.findByRole('link', { name: /Festival stage 2027/ }),
     ).toBeInTheDocument();
     expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('filters to closed topics and back', async () => {
+    vi.spyOn(discussions, 'fetchDiscussionTopics').mockResolvedValue({
+      data: [
+        TOPIC,
+        {
+          ...TOPIC,
+          id: 't2',
+          title: 'Fee 2026',
+          status: 'CLOSED',
+          pinned: false,
+        },
+      ],
+      meta: { source: 'api' },
+    });
+    renderView();
+    await screen.findByRole('link', { name: /Festival stage 2027/ });
+    fireEvent.click(screen.getByRole('radio', { name: 'Closed' }));
+    expect(
+      screen.queryByRole('link', { name: /Festival stage 2027/ }),
+    ).toBeNull();
+    expect(screen.getByRole('link', { name: /Fee 2026/ })).toBeInTheDocument();
   });
 
   it('says when there are no topics yet', async () => {
