@@ -29,6 +29,7 @@ export function StudioDistributionView() {
   );
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [royaltiesError, setRoyaltiesError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -39,6 +40,9 @@ export function StudioDistributionView() {
         setAllRoyalties(roy.data ?? []);
         setLoadError(
           rel.meta.source === 'api' ? (rel.meta.reason ?? null) : null,
+        );
+        setRoyaltiesError(
+          roy.meta.source === 'api' ? (roy.meta.reason ?? null) : null,
         );
       })
       .catch(() => toast.error('Could not load your releases.'))
@@ -99,6 +103,14 @@ export function StudioDistributionView() {
               ))
             )}
           </section>
+
+          {!loading && royaltiesError ? (
+            <PageErrorBanner
+              title="Could not load your royalty reports."
+              description={royaltiesError}
+              onRetry={() => setAttempt((n) => n + 1)}
+            />
+          ) : null}
 
           {allRoyalties.length > 0 && (
             <StudioPanel title="All royalty reports">
