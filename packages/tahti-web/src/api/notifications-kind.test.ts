@@ -36,6 +36,8 @@ describe('notificationKindOf', () => {
     expect(notificationKindOf('BACKGROUND_JOB_DONE')).toBe('music');
     expect(notificationKindOf('BACKGROUND_JOB_FAILED')).toBe('music');
     expect(notificationKindOf('MEMBERSHIP_ENDED')).toBe('money');
+    expect(notificationKindOf('DISCUSSION_REPLY')).toBe('governance');
+    expect(notificationKindOf('DISCUSSION_OPENED')).toBe('governance');
   });
 
   it('labels a type by its kind', () => {
