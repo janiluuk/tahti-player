@@ -110,6 +110,76 @@ function NewTopicForm({ onCreated }: { onCreated: () => void }) {
   );
 }
 
+function EditTopicForm({
+  topic,
+  onDone,
+}: {
+  topic: DiscussionTopic;
+  onDone: (saved: boolean) => void;
+}) {
+  const [title, setTitle] = useState(topic.title);
+  const [body, setBody] = useState(topic.body);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const changed = title.trim() !== topic.title || body.trim() !== topic.body;
+  const valid = title.trim().length >= 3 && body.trim().length > 0;
+
+  const save = async () => {
+    setBusy(true);
+    setError(null);
+    const result = await updateDiscussionTopic(topic.id, {
+      title: title.trim(),
+      body: body.trim(),
+    });
+    setBusy(false);
+    if (!result.ok) {
+      setError(result.error);
+      return;
+    }
+    toast.success('Topic updated.');
+    onDone(true);
+  };
+
+  return (
+    <form
+      className="flex w-full flex-col gap-3"
+      onSubmit={(event) => {
+        event.preventDefault();
+        void save();
+      }}
+    >
+      <Input
+        label="Title"
+        value={title}
+        maxLength={160}
+        onChange={(event) => setTitle(event.target.value)}
+        required
+      />
+      <Textarea
+        label="Topic text"
+        value={body}
+        maxLength={10000}
+        rows={5}
+        onChange={(event) => setBody(event.target.value)}
+      />
+      {error ? <InlineError>{error}</InlineError> : null}
+      <div className="flex gap-2">
+        <Button type="submit" size="sm" disabled={busy || !changed || !valid}>
+          {busy ? 'Saving…' : 'Save'}
+        </Button>
+        <Button
+          type="button"
+          size="sm"
+          variant="text"
+          onClick={() => onDone(false)}
+        >
+          Cancel
+        </Button>
+      </div>
+    </form>
+  );
+}
+
 function TopicRow({
   topic,
   onChanged,
@@ -118,6 +188,7 @@ function TopicRow({
   onChanged: () => void;
 }) {
   const [busy, setBusy] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const update = async (input: UpdateDiscussionTopicInput, done: string) => {
     setBusy(true);
@@ -130,6 +201,22 @@ function TopicRow({
     toast.success(done);
     onChanged();
   };
+
+  if (editing) {
+    return (
+      <li className="py-2">
+        <EditTopicForm
+          topic={topic}
+          onDone={(saved) => {
+            setEditing(false);
+            if (saved) {
+              onChanged();
+            }
+          }}
+        />
+      </li>
+    );
+  }
 
   return (
     <li className="flex flex-wrap items-center justify-between gap-2 py-2">
@@ -157,6 +244,14 @@ function TopicRow({
         </span>
       </div>
       <div className="flex gap-2">
+        <Button
+          size="sm"
+          variant="text"
+          disabled={busy}
+          onClick={() => setEditing(true)}
+        >
+          Edit
+        </Button>
         <Button
           size="sm"
           variant="secondary"

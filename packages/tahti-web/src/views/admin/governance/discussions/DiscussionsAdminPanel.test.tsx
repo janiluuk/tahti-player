@@ -77,6 +77,32 @@ describe('DiscussionsAdminPanel', () => {
     );
   });
 
+  it("edits a topic's title and text", async () => {
+    vi.spyOn(discussions, 'fetchDiscussionTopics').mockResolvedValue({
+      data: [TOPIC],
+      meta: { source: 'api' },
+    });
+    const update = vi
+      .spyOn(discussions, 'updateDiscussionTopic')
+      .mockResolvedValue({ ok: true, data: TOPIC });
+    await renderWithRouter(<DiscussionsAdminPanel />, {
+      paths: ['/governance/discussions/$id'],
+    });
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }));
+    const save = screen.getByRole('button', { name: 'Save' });
+    expect(save).toBeDisabled();
+    fireEvent.change(screen.getByLabelText('Title'), {
+      target: { value: 'Festival stage 2027 — line-up' },
+    });
+    fireEvent.click(save);
+    await waitFor(() =>
+      expect(update).toHaveBeenCalledWith('t1', {
+        title: 'Festival stage 2027 — line-up',
+        body: 'Who plays?',
+      }),
+    );
+  });
+
   it('shows why the topics could not load', async () => {
     vi.spyOn(discussions, 'fetchDiscussionTopics').mockResolvedValue({
       data: [],
