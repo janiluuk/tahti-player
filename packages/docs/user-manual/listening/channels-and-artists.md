@@ -11,6 +11,18 @@ Every artist has two public pages:
 
 A channel also opens at `<slug>.tahti.live`, as in the old app. `radio.tahti.live` opens Radio.
 
+## Track rows
+
+A channel's **Tracks**, an artist's **Popular tracks**, playlists and Listen's **New tracks** show each track as a row:
+
+- The round **play** button, the artist and the title (which opens the track page).
+- The **genre** and the **length** at the top right.
+- The **waveform**. Click or drag it to jump within the track that's playing.
+- Below it: **♡ with a count** to love the track (signed in), **add to queue**, **＋ add to a playlist** (signed in) and **⤓ download** when the artist allows downloads. If the artist asks you to follow or share first, the download opens the track page to do that.
+- On the right: when the track came out, and how many likes, plays and downloads it has.
+
+The buttons above the list switch between large rows, smaller rows, a grid and a plain list, and **Sort** orders the tracks. Both choices are remembered.
+
 ## Follow an artist
 
 Signed in, press **Follow** on the channel header (or the heart on the channel's player when they're on air). The button changes to **Following**. You'll see their new posts and releases in your **Feed**, and they appear under **Favorites**.
