@@ -48,4 +48,26 @@ describe('AmbientTrackRow', () => {
       'on ',
     );
   });
+
+  it('shows a like toggle with its count and keeps likes out of the stats', () => {
+    const onToggle = vi.fn();
+    render(
+      <AmbientTrackRow
+        trackId="t-like"
+        title="Late Session"
+        artist="Yaniho"
+        ambientRgb={null}
+        stats={{ likes: 3, plays: 9 }}
+        like={{ liked: false, count: 3, onToggle }}
+      />,
+    );
+    const button = screen.getByRole('button', {
+      name: 'Like Late Session (3 likes)',
+    });
+    expect(button.getAttribute('aria-pressed')).toBe('false');
+    button.click();
+    expect(onToggle).toHaveBeenCalled();
+    expect(screen.queryByLabelText('3 likes')).toBeNull();
+    expect(screen.getByLabelText('9 plays')).toBeTruthy();
+  });
 });
