@@ -126,6 +126,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Channel/ChannelSlideshowBackdrop` | `tahti-web/ChannelSlideshowBackdrop.stories.tsx` |
 | `Tahti/Channel/ChannelStagePlayer` | `tahti-web/ChannelStagePlayer.stories.tsx` |
 | `Tahti/Channel/ChannelStageTrackMeta` | `tahti-web/ChannelStageTrackMeta.stories.tsx` |
+| `Tahti/Studio/ChannelStoreEditor` | `tahti-web/ChannelStoreEditor.stories.tsx` |
 | `Tahti/Channel/ChannelTextOverlayEditor` | `tahti-web/ChannelTextOverlayEditor.stories.tsx` |
 | `Tahti/Channel/ChannelTextOverlayView` | `tahti-web/ChannelTextOverlayView.stories.tsx` |
 | `Tahti/Channel/ChannelTopBar` | `tahti-web/ChannelTopBar.stories.tsx` |
