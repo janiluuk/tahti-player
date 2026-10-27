@@ -8,7 +8,7 @@ import {
   Outlet,
   RouterProvider,
 } from '@tanstack/react-router';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { withMockAuth } from './_lib/decorators';
 
@@ -64,13 +64,18 @@ export const Preview: Story = {
       'href',
       '/tahti-api/api/admin/grants/export.csv?year=2026',
     );
-    await expect(
-      await canvas.findByRole('link', { name: 'Northern Lights' }),
-    ).toBeVisible();
-    await expect(
-      canvas.getByRole('link', { name: 'Kaiku Collective' }),
-    ).toBeVisible();
-    await expect(canvas.getByText(/allocations = pool/)).toBeVisible();
+    const northern = await canvas.findByRole('link', {
+      name: 'Northern Lights',
+    });
+    await waitFor(() => expect(northern).toBeVisible());
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('link', { name: 'Kaiku Collective' }),
+      ).toBeVisible(),
+    );
+    await waitFor(() =>
+      expect(canvas.getByText(/allocations = pool/)).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('button', { name: 'Approve distribution' }),
     ).toBeEnabled();

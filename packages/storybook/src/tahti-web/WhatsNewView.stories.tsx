@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { WhatsNewView } from '@tahti-web/views/WhatsNewView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 import { findDialog } from './_lib/play';
@@ -26,7 +26,8 @@ export const Default: Story = {
     await expect(
       await canvas.findByRole('heading', { name: "What's New" }),
     ).toBeVisible();
-    await expect(canvas.getByText(/7–20 Oct 2026/)).toBeVisible();
+    const period = await canvas.findByText(/7–20 Oct 2026/);
+    await waitFor(() => expect(period).toBeVisible());
     const openFull = await canvas.findByRole('button', {
       name: /Read full update for 7–20 Oct 2026/i,
     });

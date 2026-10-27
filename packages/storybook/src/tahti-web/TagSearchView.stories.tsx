@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TagSearchView } from '@tahti-web/views/TagSearchView';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { TAG, tagTracksData } from './_fixtures/discover';
 import { withTahtiRouter } from './_lib/decorators';
@@ -52,8 +52,7 @@ export const NoResults: Story = {
 export const NoTag: Story = {
   args: { tag: undefined },
   play: async ({ canvasElement }) => {
-    await expect(
-      await within(canvasElement).findByText('No tag chosen'),
-    ).toBeVisible();
+    const empty = await within(canvasElement).findByText('No tag chosen');
+    await waitFor(() => expect(empty).toBeVisible());
   },
 };
