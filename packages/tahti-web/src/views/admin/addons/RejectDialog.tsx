@@ -31,7 +31,7 @@ export function RejectDialog({
     >
       <Dialog.Title>Reject {addon?.name}?</Dialog.Title>
       <Dialog.Description>
-        A reason is required — it&apos;s shown to the author.
+        A reason is required — the author is notified with it.
       </Dialog.Description>
       <form
         className="contents"
