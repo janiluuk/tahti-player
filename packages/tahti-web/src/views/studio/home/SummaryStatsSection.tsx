@@ -9,6 +9,7 @@ import {
 import { ButtonLink } from '@tahti-player/ui';
 
 import { PageEmpty, PageError } from '../../../components/PageStates';
+import { STUDIO_METRIC_TONES } from '../stats/metricTones';
 import { SummaryStat } from './HomeTiles';
 import type { StudioHomeState } from './useStudioHome';
 
@@ -33,24 +34,28 @@ export function SummaryStatsSection({ state }: { state: StudioHomeState }) {
             value={stats.playsToday}
             note="Open detailed stats"
             icon={RadioIcon}
+            tone={STUDIO_METRIC_TONES.plays}
           />
           <SummaryStat
             label="Total plays"
             value={stats.playsTotal}
             note="All-time audience"
             icon={BarChart3Icon}
+            tone={STUDIO_METRIC_TONES.plays}
           />
           <SummaryStat
             label="Total downloads"
             value={stats.downloadsTotal}
             note={`${stats.downloadsToday.toLocaleString()} today`}
             icon={UploadCloudIcon}
+            tone={STUDIO_METRIC_TONES.downloads}
           />
           <SummaryStat
             label="Followers"
             value={stats.followerCount}
             note="Audience overview"
             icon={UsersIcon}
+            tone={STUDIO_METRIC_TONES.followers}
           />
         </section>
       )}
