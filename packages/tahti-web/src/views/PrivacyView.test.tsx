@@ -44,5 +44,6 @@ describe('PrivacyView', () => {
     expect(item?.textContent).toContain('listening sessions');
     expect(item?.textContent).toContain('venues you run');
     expect(item?.textContent).toContain('restrictions the board');
+    expect(item?.textContent).toContain('API tokens');
   });
 });
