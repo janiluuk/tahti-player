@@ -10,6 +10,7 @@ import {
   stationNowPlayingSource,
   type RadioStation,
 } from '../../content/radioStations';
+import { useImageWithFallback } from '../../hooks/useImageWithFallback';
 import { prefetchListenCardIntent } from '../../lib/intentRoutePrefetch';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { RadioStationCoverEditButton } from '../RadioStationCover';
@@ -47,6 +48,14 @@ export function RadioRowCard({
   onFavorite?: () => void;
 }) {
   const warmRadioRoute = () => prefetchListenCardIntent('radio');
+  const catalogStation =
+    item.kind === 'preset'
+      ? RADIO_STATIONS.find((station) => station.name === item.preset.name)
+      : undefined;
+  const presetLogo = useImageWithFallback(
+    item.kind === 'preset' ? item.preset.iconUrl : null,
+    catalogStation?.logoUrl,
+  );
   if (item.kind === 'mine') {
     const { station } = item;
     return (
@@ -77,9 +86,7 @@ export function RadioRowCard({
   }
   if (item.kind === 'preset') {
     const { preset } = item;
-    const catalogId = RADIO_STATIONS.find(
-      (station) => station.name === preset.name,
-    )?.id;
+    const catalogId = catalogStation?.id;
     return (
       <div
         className="group relative w-fit"
@@ -114,7 +121,7 @@ export function RadioRowCard({
               ? 'Off air'
               : (nowPlaying ?? preset.genre ?? 'Internet radio')
           }
-          src={preset.iconUrl ?? placeholderArtworkUrl(item.id)}
+          src={presetLogo ?? placeholderArtworkUrl(item.id)}
           isPlaying={isPlaying}
           playDisabled={!preset.streamUrl}
           onPlay={() => {
