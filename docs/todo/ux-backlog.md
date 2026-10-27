@@ -58,8 +58,11 @@ new surface, one PR per row.
   Partial: `PlayableAmbientTrackList` (Collection, SmartLink, Favorites,
   Listen new tracks, artist popular) has a persisted Sort menu (title,
   artist, newest, duration) on top of its existing size / List switcher
-  (2026-10-21 / batch 87) and a Grid view (batch 90). Left: channel blocks /
-  local files.
+  (2026-10-21 / batch 87) and a Grid view (batch 90). Left: channel blocks.
+  - 2026-10-27: browser local files (`BrowserLocalFiles`) are on
+    `PlayableAmbientTrackList`, which gained `onRemove` (a Remove row
+    action) and passes `selectable` / `onBulkRemove` to its List view.
+    Left: channel blocks.
 - [x] `StudioShowsView` search + clear (already); `MyVenuesView` search + clear (batch 80).
 - [ ] Library trio (`LibraryMediaView` / `LibraryEmbedsView` /
   `LibrarySmartLinksView`): converge on a shared library row with FilterChips +
