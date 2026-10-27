@@ -76,6 +76,8 @@ First subagent was **wrong** on this class of issues. These are all wired correc
 
 ## 7. E2e coverage gaps (66 % of routes)
 
+**Studio stats/updates/audience:** `e2e/routes-studio-stats.spec.ts` visits `/studio/stats` (+ `plays`, `top-lists` tabs), `/studio/insights`, `/studio/stats/detail`, `/studio/insights/release-tracks/$id` (from a release stats tab), `/studio/updates` (+ newsletter), `/studio/audience` (+ tiers), the `/studio/revenue` redirects, `/studio/stripe` and `/studio/distribution`, and switches their Studio tabs.
+
 **13 e2e files**, ~41 unique route visits (out of 180). Key missing areas:
 
 | Area | Routes with zero e2e visit | Count |
