@@ -1,0 +1,26 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Breadcrumbs > (Snapshot) renders a trail with separators 1`] = `
+<nav
+  aria-label="Breadcrumb"
+  class="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
+  data-testid="breadcrumbs"
+>
+  <a
+    class="hover:underline"
+    href="/admin"
+  >
+    Admin
+  </a>
+  <span
+    aria-hidden="true"
+  >
+    →
+  </span>
+  <span
+    aria-current="page"
+  >
+    Moderation
+  </span>
+</nav>
+`;

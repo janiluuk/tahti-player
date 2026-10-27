@@ -70,6 +70,11 @@ First subagent was **wrong** on this class of issues. These are all wired correc
 
 **Done (verified 2026-10-27):** `AdminGovernanceView` shows Admin → Governance → <tab>, and `AdminGrantCycleView` shows Admin → Governance → Grants → <year>.
 
+- 2026-10-27 (batch 90): the 23 hand-rolled admin breadcrumb `<nav>`s now
+  use one `@tahti-player/ui` component (`Breadcrumbs`, `BreadcrumbLink`,
+  `BreadcrumbCurrent`, Storybook `Components/Breadcrumbs`), so every trail
+  has the same label, separator and `aria-current` (section 10 consistency).
+
 `AdminGrantCycleView` is a child route (`/admin/governance/$tab?tab=grants`) with the admin section tabs as chrome. It has an arrow-left return to `/admin/governance` in `AdminGate.tsx:40`, but the path inside `/admin/governance/$tab` is not breadcrumb-visible (you must click the "Governance" tab in chrome nav). This mirrors the pattern for all 3 tabbed admin routes (`governance/$tab`, `moderation/$tab`, `orphan-pages/$tab`). **Low severity** — chrome tabs show you where you are, but a user clicking through from a governance meeting note will not see the breadcrumb `/admin › Governance › Grants › Cycle`. Minor UX polish target.
 
 ---

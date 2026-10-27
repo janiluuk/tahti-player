@@ -1,26 +1,11 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as admin from '../../api/admin';
+import { renderWithRouter } from '../../test/renderWithRouter';
 import { AdminDashboardView } from './AdminDashboardView';
 
-vi.mock('@tanstack/react-router', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@tanstack/react-router')>()),
-  Link: ({
-    children,
-    to,
-    className,
-  }: {
-    children: React.ReactNode;
-    to: string;
-    className?: string;
-  }) => (
-    <a href={to} className={className}>
-      {children}
-    </a>
-  ),
-}));
 vi.mock('../../components/AdminGate', () => ({
   AdminGate: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
@@ -40,7 +25,7 @@ describe('AdminDashboardView', () => {
     const fetch = vi
       .spyOn(admin, 'fetchAdminDashboard')
       .mockRejectedValueOnce(new Error('HTTP 503'));
-    render(<AdminDashboardView />);
+    await renderWithRouter(<AdminDashboardView />);
 
     expect(screen.getByTestId('admin-nav')).toBeTruthy();
     expect(

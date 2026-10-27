@@ -1,7 +1,9 @@
-import { Link } from '@tanstack/react-router';
 import { PlusIcon } from 'lucide-react';
 
 import {
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
   Button,
   FilterChips,
   InlineError,
@@ -85,16 +87,10 @@ export function AdminAddonsView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/addons">
           <div className="flex max-w-5xl flex-col gap-6">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-            >
-              <Link to="/admin" className="hover:underline">
-                Admin
-              </Link>
-              <span aria-hidden>→</span>
-              <span aria-current="page">Add-ons</span>
-            </nav>
+            <Breadcrumbs>
+              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbCurrent>Add-ons</BreadcrumbCurrent>
+            </Breadcrumbs>
             <ViewShell
               title="Add-ons"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
