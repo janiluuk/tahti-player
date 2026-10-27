@@ -89,6 +89,5 @@ ignore:
   - 'packages/tools/**'
   - 'packages/player/src-tauri/**'
   - '**/*.test-wrapper.tsx'
-  - 'packages/player/src/test/**'
   - 'packages/player/src/services/tauri/bindings.ts'
   - 'packages/plugin-sdk/src/**'

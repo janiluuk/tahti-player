@@ -25,7 +25,7 @@ git rebase upstream/master   # or merge
 
 ## Plugin & theme registry
 
-Marketplace plugins and themes are both served from a single combined repo, [github.com/janiluuk/tahti-registry](https://github.com/janiluuk/tahti-registry) (`plugins.json` + `themes.json`, fetched directly from `raw.githubusercontent.com` — no CDN layer). It replaces the two separate upstream repos (`NuclearPlayer/plugin-registry`, `NuclearPlayer/theme-registry`), which were served via jsDelivr. Client references: [`packages/player/src/apis/pluginMarketplaceApi.ts`](./packages/player/src/apis/pluginMarketplaceApi.ts), [`packages/player/src/apis/themeRegistryApi.ts`](./packages/player/src/apis/themeRegistryApi.ts). Sibling checkout: `../tahti-registry`. After adding a plugin, users must see it in that repo; after changing one, bump `version` in the plugin **and** in the catalog (auto-update reads the catalog). See `AGENTS.md`.
+Marketplace plugins and themes are both served from a single combined repo, [github.com/janiluuk/tahti-registry](https://github.com/janiluuk/tahti-registry) (`plugins.json` + `themes.json`, fetched directly from `raw.githubusercontent.com` — no CDN layer). It replaces the two separate upstream repos (`NuclearPlayer/plugin-registry`, `NuclearPlayer/theme-registry`), which were served via jsDelivr. The Nuclear desktop clients (`packages/player/src/apis/pluginMarketplaceApi.ts`, `themeRegistryApi.ts`) were removed with the dead desktop UI in 2026-10 (last at `d703e03cf`); tahti-web has no catalog client yet. Sibling checkout: `../tahti-registry`. After adding a plugin, users must see it in that repo; after changing one, bump `version` in the plugin **and** in the catalog (auto-update reads the catalog). See `AGENTS.md`.
 
 ## Tahti package
 

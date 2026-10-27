@@ -38,6 +38,15 @@ re-filed.
     shared components (player bar, queue, sound provider, search box, ...),
     hooks, global shortcuts, the old remote-control client, and
     `shortcutsStore`.
+  - 2026-10-27, removal 4/5 (`chore/batch-90-dead-ui-services`): Nuclear's
+    stores, services (plugin runtime, stream resolution, MCP/MPD bridge, HTTP
+    API, playlist files), API clients, utils, types and test fixtures.
+    `packages/player/src` now holds only `main.tsx`, `remote.tsx`, the
+    `desktop*.ts` wiring and the Tauri bindings.
+  - 2026-10-27, removal 5/5 (`chore/batch-90-dead-ui-deps`): 33 dependencies
+    and 12 dev dependencies of `@tahti-player/player` that only the removed
+    code used. CI builds plugin-sdk and hifi in their own step, and their
+    changes no longer trigger a desktop release.
 - **Auth flows' `.catch(() => undefined)`** (`VerifyView`, `ResetPasswordView`,
   `SetupPasswordView`): incorrect. `authStore` sets `error` before rejecting and
   each view renders it with `InlineError`; the catch only stops an unhandled
