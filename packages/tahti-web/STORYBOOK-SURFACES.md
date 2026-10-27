@@ -224,6 +224,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Page/PageHeader` | `tahti-web/PageHeader.stories.tsx` |
 | `Tahti/Page/PageStates` | `tahti-web/PageStates.stories.tsx` |
 | `Tahti/Widgets/PageTourSpotlight` | `tahti-web/PageTourSpotlight.stories.tsx` |
+| `Tahti/Misc/PasswordEmailSettings` | `tahti-web/PasswordEmailSettings.stories.tsx` |
 | `Tahti/Studio/PinnedAnnouncementsPanel` | `tahti-web/PinnedAnnouncementsPanel.stories.tsx` |
 | `Tahti/Library/PlayableAmbientTrackList` | `tahti-web/PlayableAmbientTrackList.stories.tsx` |
 | `Tahti/Track/PlayableTrackContextMenu` | `tahti-web/PlayableTrackContextMenu.stories.tsx` |
