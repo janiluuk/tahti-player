@@ -341,6 +341,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/Badge` | `Badge.stories.tsx` |
 | `Layout/BottomBar` | `BottomBar.stories.tsx` |
 | `Components/Box` | `Box.stories.tsx` |
+| `Components/Breadcrumbs` | `Breadcrumbs.stories.tsx` |
 | `Components/Button` | `Button.stories.tsx` |
 | `Components/ButtonLink` | `ButtonLink.stories.tsx` |
 | `Components/HistoryCharts/CalendarHeatmap` | `CalendarHeatmap.stories.tsx` |

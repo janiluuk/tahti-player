@@ -1,9 +1,11 @@
-import { Link } from '@tanstack/react-router';
 import { ArrowLeftIcon, PlayIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
   Badge,
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
   Button,
   ButtonLink,
   Tooltip,
@@ -48,28 +50,16 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/storage">
           <div className="mx-auto flex max-w-4xl flex-col gap-6">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-            >
-              <Link to="/admin" className="hover:underline">
-                Admin
-              </Link>
-              <span aria-hidden>→</span>
-              <Link to="/admin/storage" className="hover:underline">
-                Storage
-              </Link>
-              <span aria-hidden>→</span>
-              <Link
-                to="/admin/storage"
-                search={{ tab: 'files' }}
-                className="hover:underline"
-              >
+            <Breadcrumbs>
+              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin/storage">Storage</BreadcrumbLink>
+              <BreadcrumbLink to="/admin/storage" search={{ tab: 'files' }}>
                 Files
-              </Link>
-              <span aria-hidden>→</span>
-              <span aria-current="page">{detail?.displayName ?? 'User'}</span>
-            </nav>
+              </BreadcrumbLink>
+              <BreadcrumbCurrent>
+                {detail?.displayName ?? 'User'}
+              </BreadcrumbCurrent>
+            </Breadcrumbs>
             <ButtonLink
               className="w-fit"
               to="/admin/storage"

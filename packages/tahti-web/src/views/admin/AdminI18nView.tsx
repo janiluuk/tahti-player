@@ -1,9 +1,11 @@
-import { Link } from '@tanstack/react-router';
 import { PlusIcon, UploadIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
   Badge,
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
   Button,
   Dialog,
   FilePicker,
@@ -99,16 +101,10 @@ export function AdminI18nView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/i18n">
           <div className="flex max-w-4xl flex-col gap-6">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-            >
-              <Link to="/admin" className="hover:underline">
-                Admin
-              </Link>
-              <span aria-hidden>→</span>
-              <span aria-current="page">Languages</span>
-            </nav>
+            <Breadcrumbs>
+              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbCurrent>Languages</BreadcrumbCurrent>
+            </Breadcrumbs>
             <ViewShell
               title="Languages"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
