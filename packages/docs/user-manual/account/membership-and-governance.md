@@ -16,6 +16,7 @@ Open **Governance** (`/governance`; artists also see it as **Studio → Governan
 - **Meetings:** agendas, documents and decisions of meetings and the AGM.
 - **Members:** the member register.
 - **History:** decided motions and the decision log.
+- **Discussions** (`/governance/discussions`): topics the board opens for members to talk through. Reply to join in; replying follows the topic so new replies notify you, and **Mute notifications** keeps following quietly. You can remove your own reply while the topic is open. A discussion isn't a vote; decisions go through motions. The board opens, edits, pins and closes topics in **Admin → Governance → Discussions**.
 - **Feature requests:** suggest and vote on improvements to Tahti.
 - **Board:** the current board, board elections (stand for election or withdraw while nominations are open), annual reports, and the association's registered details and auditors.
 

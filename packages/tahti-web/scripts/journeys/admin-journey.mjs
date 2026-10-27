@@ -80,6 +80,7 @@ const ADMIN_SWEEP = [
   ['/admin/storage?tab=files', 'admin-storage-files'],
   ['/admin/financial', 'admin-financial'],
   ['/admin/governance', 'admin-governance'],
+  ['/admin/governance/discussions', 'admin-governance-discussions'],
   ['/admin/grants', 'admin-grants'],
   ['/admin/agm', 'admin-agm'],
   ['/admin/missed-shows', 'admin-missed-shows'],

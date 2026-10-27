@@ -186,6 +186,9 @@ describe('DiscussionTopicView', () => {
     expect(
       screen.queryByRole('button', { name: /Remove the reply/ }),
     ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Report the reply by Liis Kask' }),
+    ).toBeInTheDocument();
   });
 
   it('says why a topic could not load', async () => {
