@@ -22,6 +22,7 @@ import { RadioView } from './RadioView';
 let recentFailure: string | null = null;
 let stationFailure: string | null = null;
 let relayLive = false;
+let relayFailure: string | null = null;
 let rotationFailure: string | null = null;
 const ROTATION = [
   {
@@ -61,7 +62,9 @@ vi.mock('../api/client', async (importOriginal) => {
             },
           }
         : { live: false, channel: null },
-      meta: { source: 'api' as const },
+      meta: relayFailure
+        ? { source: 'api' as const, reason: relayFailure }
+        : { source: 'api' as const },
     }),
     fetchRadioRecentlyPlayed: async () => ({
       data: [],
@@ -165,6 +168,32 @@ describe('RadioView failed sections', () => {
       fireEvent.click(screen.getByRole('tab', { name: /Just played/ }));
     });
     expect(screen.getByText('No recent plays logged yet.')).toBeTruthy();
+  });
+});
+
+describe('RadioView member relay failure', () => {
+  afterEach(() => {
+    cleanup();
+    relayFailure = null;
+  });
+
+  it('says the member relay could not be checked, with a retry', async () => {
+    relayFailure = 'HTTP 503';
+    const router = createRouter({
+      routeTree: createRootRoute({ component: RadioView }),
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+    expect(screen.getByText('Could not check the member relay.')).toBeTruthy();
+    expect(screen.getByText('HTTP 503')).toBeTruthy();
+
+    relayFailure = null;
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    });
+    expect(screen.queryByText('Could not check the member relay.')).toBeNull();
   });
 });
 

@@ -137,18 +137,18 @@ export function PrivacyView() {
             events, comments, chat messages and track reactions, likes, reposts,
             follows, messages you sent, purchases and subscriptions, support
             requests and your replies, feature requests and governance activity
-            (comments, seconds, your votes and correction requests), the radio
-            stations, themes and embeds you added, downloads, Tahti Jams,
-            listening sessions, the venues you run and venue shows you booked,
-            tracks you sent to Tahti Radio and stations you suggested, your fan
-            subscription tiers and store items, any restrictions the board
-            placed on your account, your notifications, grants and
-            fan-subscription payouts, the add-ons you published or installed,
-            your signed-in devices and API tokens (names only, never the
-            secrets), the private-track shares and green-room invites you made
-            or received, your email address change requests, and your
-            notification and visibility settings. Other people appear by
-            username only.
+            (comments, seconds, your votes, correction requests, your discussion
+            replies and the discussions you follow), the radio stations, themes
+            and embeds you added, downloads, Tahti Jams, listening sessions, the
+            venues you run and venue shows you booked, tracks you sent to Tahti
+            Radio and stations you suggested, your fan subscription tiers and
+            store items, any restrictions the board placed on your account, your
+            notifications, grants and fan-subscription payouts, the add-ons you
+            published or installed, your signed-in devices and API tokens (names
+            only, never the secrets), the private-track shares and green-room
+            invites you made or received, your email address change requests,
+            and your notification and visibility settings. Other people appear
+            by username only.
           </li>
           <li>
             <strong className="text-foreground">Objection</strong> — object to
