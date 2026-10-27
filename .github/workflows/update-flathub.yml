@@ -75,4 +75,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.FLATHUB_TOKEN }}
           VERSION: ${{ steps.version.outputs.version }}
-        run: ./scripts/flatpak-update-flathub.sh "$VERSION"
+        run: node packages/tahti-ops/src/cli.mjs package flatpak flathub "$VERSION"
