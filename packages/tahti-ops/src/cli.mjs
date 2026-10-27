@@ -2,6 +2,11 @@
 import { parseArgs } from 'node:util';
 
 import { runBackupStatus } from './commands/backup-status.mjs';
+import {
+  BASELINE_FILE,
+  LINE_LIMIT,
+  runCheckSize,
+} from './commands/check-size.mjs';
 import { deployTargets, runDeploy } from './commands/deploy.mjs';
 import { desktopModes, runDesktop } from './commands/desktop.mjs';
 import { runE2e } from './commands/e2e.mjs';
@@ -143,15 +148,16 @@ function takeOption(args, name) {
 COMMANDS.push(
   {
     path: ['desktop'],
-    usage: 'tahti-ops desktop <run|launch|dev|bundle> [--dry-run]',
+    usage: 'tahti-ops desktop <run|launch|dev|bundle|android> [--dry-run]',
     summary:
-      'Build and launch the desktop app, run it in dev mode, or bundle it',
+      'Build and launch the desktop app, run it in dev mode, bundle it, or run it on Android',
     details: `Modes:
 ${Object.entries(desktopModes())
   .map(([mode, text]) => `  ${mode.padEnd(8)} ${text}`)
   .join('\n')}
 
-Needs Rust and the Tauri system packages (see AGENTS.md → Environment).`,
+Needs Rust and the Tauri system packages (see AGENTS.md → Environment).
+android runs \`tauri android init\` first when src-tauri/gen/android is missing.`,
     passthrough: true,
     run: (_parsed, argv) => {
       const { dryRun, args } = splitDryRun(argv);
@@ -247,6 +253,27 @@ A change in packages/ui often changes player snapshots too:
         return updateSnapshots(rest.slice(1), { dryRun, only });
       }
       throw new OpsError('Try: tahti-ops snapshots list | update <group…|all>');
+    },
+  },
+  {
+    path: ['check', 'size'],
+    usage: 'tahti-ops check size [--update|--prune]',
+    summary: `Fail when a source file over ${LINE_LIMIT} lines appears or grows`,
+    details: `Scans packages/tahti-web/src, packages/player/src and src-tauri/src
+(tests, stories, mocks and generated files excluded). Files already over the
+limit are pinned in ${BASELINE_FILE} and may only shrink.
+  --update   Rewrite the baseline to every file currently over the limit
+  --prune    Drop pins for files now under the limit or gone`,
+    options: {
+      update: { type: 'boolean', default: false },
+      prune: { type: 'boolean', default: false },
+    },
+    run: ({ values }) => {
+      if (values.update && values.prune) {
+        throw new OpsError('Use either --update or --prune, not both');
+      }
+      const mode = values.update ? 'update' : values.prune ? 'prune' : 'check';
+      return runCheckSize({ mode });
     },
   },
 );
