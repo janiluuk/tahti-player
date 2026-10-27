@@ -24,6 +24,7 @@ const TOPIC: discussions.DiscussionTopic = {
   createdAt: '2026-10-19T10:00:00.000Z',
   following: true,
   muted: true,
+  unreadCount: 3,
 };
 
 function renderView() {
@@ -84,6 +85,7 @@ describe('DiscussionsView', () => {
     expect(screen.getByLabelText('Pinned')).toBeInTheDocument();
     expect(screen.getByText('Muted')).toBeInTheDocument();
     expect(screen.getByText(/2 replies/)).toBeInTheDocument();
+    expect(screen.getByText('3 new replies')).toBeInTheDocument();
   });
 
   it('shows the API reason with a retry when the list fails', async () => {

@@ -38,6 +38,13 @@ function TopicRow({ topic }: { topic: DiscussionTopic }) {
             <PinIcon size={14} aria-label="Pinned" className="shrink-0" />
           ) : null}
           <span className="font-semibold hover:underline">{topic.title}</span>
+          {topic.unreadCount ? (
+            <Badge variant="pill" color="orange">
+              {topic.unreadCount === 1
+                ? '1 new reply'
+                : `${topic.unreadCount} new replies`}
+            </Badge>
+          ) : null}
           {topic.status === 'CLOSED' ? (
             <Badge variant="pill" color="secondary">
               Closed
