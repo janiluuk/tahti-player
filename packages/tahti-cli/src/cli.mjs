@@ -116,7 +116,8 @@ you revoke them at tahti.live → Settings → Account → API tokens.`,
     path: ['library', 'list'],
     usage: 'tahti library list [--sort <order>] [--json]',
     summary: 'List your own library sounds',
-    details: `Calls GET /api/me/sound (up to 100 items).
+    details: `Calls GET /api/me/sound (up to 100 items). When the API sends public
+totals, the table adds PLAYS, LIKES and DLS (counted downloads) columns.
   --sort <order>   One of: ${LIBRARY_SORTS.join(', ')} (default: newest)`,
     options: { ...JSON_OPTION, sort: { type: 'string' } },
     run: (config, { values }) =>

@@ -35,10 +35,33 @@ export function formatSoundRow(sound) {
   ];
 }
 
+function count(value) {
+  return value == null ? '' : String(value);
+}
+
+/** Plays, likes and downloads columns appear when the API sends the totals
+ * (tahti-org GET /api/me/sound with public counts). */
 export function formatLibraryTable(sounds) {
+  const withTotals = sounds.some(
+    (sound) =>
+      sound.playCount != null ||
+      sound.likeCount != null ||
+      sound.downloadCount != null,
+  );
+  if (!withTotals) {
+    return formatTable(
+      ['ID', 'TITLE', 'STATUS', 'DURATION'],
+      sounds.map(formatSoundRow),
+    );
+  }
   return formatTable(
-    ['ID', 'TITLE', 'STATUS', 'DURATION'],
-    sounds.map(formatSoundRow),
+    ['ID', 'TITLE', 'STATUS', 'DURATION', 'PLAYS', 'LIKES', 'DLS'],
+    sounds.map((sound) => [
+      ...formatSoundRow(sound),
+      count(sound.playCount),
+      count(sound.likeCount),
+      count(sound.downloadCount),
+    ]),
   );
 }
 
