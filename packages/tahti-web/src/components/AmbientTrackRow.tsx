@@ -305,6 +305,7 @@ function AmbientTrackRowView({
             label={title}
             durationSec={durationSec ?? undefined}
             onSeek={onSeek}
+            tone={density === 'comfortable' ? 'bold' : 'quiet'}
             className={layout.wave}
           />
         )}
