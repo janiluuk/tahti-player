@@ -116,6 +116,8 @@ Every command accepts `--json` (prints the API response unchanged) and
 | `tahti purchases [--json]` | `GET /api/me/purchases` | Paid purchases, newest first (date, artist, tier, amount in euros, tracks it unlocked) |
 | `tahti blocks list [--json]` | `GET /api/me/blocks` | Accounts you have blocked (username, name, date) |
 | `tahti blocks add <username>` / `tahti blocks remove <username>` | `POST /api/me/blocks`, `DELETE /api/me/blocks/:username` | Blocks or unblocks; a block also removes follows, loves, reposts and subscriptions between you, and unblocking does not restore them; needs the `write` scope |
+| `tahti discussions list [--json]` | `GET /api/v1/governance/discussions` | Board-opened discussion topics: id, title, replies, new replies, last activity, pinned/closed/following/muted; members only |
+| `tahti discussions show <id> [--json]` | `GET /api/v1/governance/discussions/:id` | The topic text and its replies, oldest first; opening a followed topic marks it read |
 | `tahti mentions [--limit <n>] [--json]` | `GET /api/me/mentions` | Where other artists @mentioned you, newest first (date, who, bio/announcement/release/newsletter/tracklist/chat, title or link); `--limit` is 1-50 |
 | `tahti messages list [--json]` | `GET /api/me/messages/conversations` | Conversations (who, unread, updated, start of the last message) and the unread total; does not mark anything read |
 | `tahti messages send <username> <message...>` | `POST /api/me/messages/conversations`, `POST /api/me/messages/conversations/:id/messages` | Sends one message, starting the conversation if needed; needs the `write` scope |
