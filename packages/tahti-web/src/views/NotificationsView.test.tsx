@@ -83,7 +83,7 @@ describe('NotificationsView', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Show older' }));
     expect(await screen.findByText('Title c')).toBeTruthy();
-    expect(fetch).toHaveBeenLastCalledWith('b');
+    expect(fetch).toHaveBeenLastCalledWith('b', undefined);
     expect(screen.queryByRole('button', { name: 'Show older' })).toBeNull();
 
     fireEvent.click(screen.getByRole('button', { name: 'Mark read: Title a' }));
@@ -145,6 +145,29 @@ describe('NotificationsView', () => {
       (screen.getByRole('button', { name: 'Clear read' }) as HTMLButtonElement)
         .disabled,
     ).toBe(true);
+  });
+
+  it('filters by kind and offers Show all when a kind is empty', async () => {
+    const fetch = vi
+      .spyOn(api, 'fetchNotifications')
+      .mockImplementation(async (_before, kind) => ({
+        data: kind === 'money' ? [] : [note(kind ?? 'all')],
+        unreadCount: 1,
+        hasMore: false,
+        meta: { source: 'api' },
+      }));
+    renderView();
+
+    expect(await screen.findByText('Title all')).toBeTruthy();
+    fireEvent.click(screen.getByRole('radio', { name: 'Social' }));
+    expect(await screen.findByText('Title social')).toBeTruthy();
+    expect(fetch).toHaveBeenLastCalledWith(undefined, 'social');
+
+    fireEvent.click(screen.getByRole('radio', { name: 'Money' }));
+    expect(await screen.findByText('Nothing of this kind')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Show all' }));
+    expect(await screen.findByText('Title all')).toBeTruthy();
+    expect(fetch).toHaveBeenLastCalledWith(undefined, undefined);
   });
 
   it('shows a retry when the inbox fails to load', async () => {

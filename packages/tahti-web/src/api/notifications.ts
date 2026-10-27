@@ -152,16 +152,31 @@ export async function fetchStickyNotifications(): Promise<{
 
 export const NOTIFICATION_PAGE_SIZE = 20;
 
+/** Inbox filters, as tahti-org groups them (`?kind=`, NOTIFICATION_KIND_TYPES
+ * in `@tahti/shared`); `other` is every type outside the named groups. */
+export const NOTIFICATION_KINDS = [
+  { id: 'social', label: 'Social' },
+  { id: 'music', label: 'Music' },
+  { id: 'money', label: 'Money' },
+  { id: 'governance', label: 'Governance' },
+  { id: 'other', label: 'Other' },
+] as const;
+
+export type NotificationKind = (typeof NOTIFICATION_KINDS)[number]['id'];
+
 /** One page of the inbox, newest first. `before` is the id of the oldest
  * notification already shown, to read the page after it. */
-export async function fetchNotifications(before?: string): Promise<{
+export async function fetchNotifications(
+  before?: string,
+  kind?: NotificationKind,
+): Promise<{
   data: TahtiNotification[];
   unreadCount: number;
   hasMore: boolean;
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
-    const data = before ? [] : mockNotifications(true);
+    const data = before || kind ? [] : mockNotifications(true);
     return {
       data,
       unreadCount: data.filter((item) => !item.readAt).length,
@@ -175,6 +190,9 @@ export async function fetchNotifications(before?: string): Promise<{
     });
     if (before) {
       params.set('before', before);
+    }
+    if (kind) {
+      params.set('kind', kind);
     }
     const { data } = await requestJson<{
       notifications: TahtiNotification[];
