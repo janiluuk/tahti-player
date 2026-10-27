@@ -103,4 +103,7 @@ new surface, one PR per row.
     playlist, save queue), sound shares, editor projects, events.
   - 2026-10-27 (batch 90): new-release toast has Undo (`DELETE
     /api/me/releases/:id`), via shared `lib/undoToast.ts`.
+  - 2026-10-27 (batch 90): release publish toast has Undo (PATCH
+    `state: DRAFT`), via shared `lib/undoToast.ts`. The follower notice and
+    social post queued on publish are not recalled.
 
