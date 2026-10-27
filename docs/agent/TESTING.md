@@ -123,11 +123,10 @@ it('shows empty state when no playlists', async () => {
 ## CI pipeline (`.github/workflows/ci.yml`)
 
 - **`changes`** decides what runs. A PR that only touches Markdown, `docs/`, `packages/docs/` or images skips everything below; the `CI` gate counts skipped jobs as passed.
-- **`build-player`**: size guard, then the player build (frontend-only, or full Tauri when `src-tauri/` changed). It builds every workspace package, so it is also the "everything builds" check.
-- **`lint`** and **`test-core`** run only the packages a PR affects and their dependents (`turbo --affected` against the PR base); pushes to master run every package.
+- **`build-player`** ("Build + lint"): size guard, lint, the API-routes check (tahti-web's API paths against the latest tahti-org OpenAPI export), then the player build (frontend-only, or full Tauri when `src-tauri/` changed). It builds every workspace package, so it is also the "everything builds" check. Each step runs even when an earlier one failed, so one run reports them all.
+- Lint and **`test-core`** run only the packages a PR affects and their dependents (`turbo --affected` against the PR base); pushes to master run every package.
 - **`test-web`**: tahti-web's Vitest suite in three shards (`--shard=N/3`), straight through Vitest with no build (workspace packages export their sources).
-- **`storybook`**: story plays in four shards; shard 1 also checks `STORYBOOK-SURFACES.md`.
-- **`api-routes`**: tahti-web's API paths against the latest tahti-org OpenAPI export.
+- **`storybook`**: story plays as six Vitest shards (one Chromium page per shard; past ~100 story files the renderer crashes), run three at a time on two runners ("plays 1/2", "plays 2/2"); group 1 also checks `STORYBOOK-SURFACES.md`.
 - **Coverage** (`coverage.yml`) runs on master pushes and by hand only.
 - Shared setup (Node 24, pnpm store cache, frozen install, optional turbo cache) is the composite action `.github/actions/setup`.
 
