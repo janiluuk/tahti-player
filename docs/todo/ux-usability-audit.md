@@ -9,11 +9,6 @@ re-filed.
 
 ## To do (verified)
 
-- [ ] **Distribution: failed royalties load is silent.** `StudioDistributionView`
-  reads `fetchAllRoyalties()` but ignores its `meta.reason`; on an API error the
-  royalties section just disappears. Show a `PageErrorBanner` with Retry.
-  (The audit's "no loading guard" is wrong: the releases list has
-  `PageLoading` / `PageError`.)
 - [ ] **Radio: member relay failure is silent.** `RadioView.reload()` handles
   station, recent and featured errors, but `fetchRadio()` (the member live relay)
   has no error path, so a failed read just hides the relay. Recent, featured,
