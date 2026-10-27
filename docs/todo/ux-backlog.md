@@ -34,6 +34,10 @@ new surface, one PR per row.
     albums, SoundCloud tracks), the hearthis.at Search submit and the
     disabled Soulseek "Desktop only" are `secondary`; Connect / Import all /
     Import selected stay primary.
+  - 2026-10-27: Studio list views - per-row Edit / Send / open-in-editor and
+    the empty-state duplicate of the header "+" are `secondary`; the header
+    "+" and dialog submits stay primary (Playlists, Collections, Releases,
+    Editor, Updates).
 - [x] Optional `DiscoverGatewayBackground` on flat Listen surfaces (batch 80).
 
 ## Track lists: ambient rows, view modes, sort
