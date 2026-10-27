@@ -1,5 +1,11 @@
 export type AdminGovernanceTabId =
-  'overview' | 'reports' | 'grants' | 'agm' | 'board' | 'records';
+  | 'overview'
+  | 'reports'
+  | 'grants'
+  | 'agm'
+  | 'board'
+  | 'discussions'
+  | 'records';
 
 export type AdminGovernanceTabItem = {
   id: AdminGovernanceTabId;
@@ -17,6 +23,7 @@ export const ADMIN_GOVERNANCE_TABS: AdminGovernanceTabItem[] = [
   { id: 'grants', label: 'Grants' },
   { id: 'agm', label: 'AGM' },
   { id: 'board', label: 'Board' },
+  { id: 'discussions', label: 'Discussions' },
   { id: 'records', label: 'Records' },
 ];
 
