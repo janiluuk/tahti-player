@@ -10,6 +10,11 @@ Tahti Player exposes player functionality to plugins through the **host pattern*
 2. API class - what plugins actually call (SDK, wraps the host)
 3. Host implementation - bridges the API to player internals (player)
 
+{% hint style="warning" %}
+The desktop app now runs the Tahti web UI, which does not load SDK plugins. The
+player-side host implementations described below were removed in 2026-10.
+{% endhint %}
+
 Plugins call methods on an API class (e.g. `api.Queue.addToQueue()`), which holds a reference to the host and delegates to it.
 
 ## The three layers

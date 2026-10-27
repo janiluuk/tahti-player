@@ -76,7 +76,7 @@ pnpm --filter @tahti-player/ui test -- src/components/Badge/Badge.test.tsx
 
 ## Design & tooling
 
-Neo-brutalist, purposeful motion, no generic AI chrome. pnpm workspaces, Turborepo, Vite, Vitest, ESLint+Prettier, Husky. TanStack Router regenerates on dev.
+Neo-brutalist, purposeful motion, no generic AI chrome. pnpm workspaces, Turborepo, Vite, Vitest, ESLint+Prettier, Husky.
 
 ## Pitfalls
 

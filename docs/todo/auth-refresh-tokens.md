@@ -94,6 +94,19 @@ repo. Needs the user's go-ahead before tahti-org work starts.
   verify sleep/wake / offline cold start (adapter + notes shipped; plugin TBD).
 - Eventually drop cookie-session once all clients are on tokens.
 
+- 2026-10-27 (batch 90): desktop keychain storage. Rust `auth_keychain`
+  (`keyring` 4: macOS Keychain, Windows Credential Manager, Secret Service
+  over zbus on Linux) behind `auth_refresh_token_get` / `_set` commands;
+  malformed values are refused or dropped, errors never carry the token.
+  `packages/player/src/desktopAuthStorage.ts` exposes it to tahti-web as
+  `globalThis.__TAHTI_NATIVE_AUTH_STORAGE__` (inert until tahti-web reads it).
+- 2026-10-27 (batch 90): `AuthSession.restore()` for stored-token clients
+  (cold start trades the saved refresh token for an access token; a rejected
+  token is cleared; offline or 5xx keeps it and retries on `online`/focus;
+  keychain read/write failures fail closed). tahti-web uses
+  `globalThis.__TAHTI_NATIVE_AUTH_STORAGE__` when the desktop app provides
+  it, sends `refreshTokenDelivery: 'body'` at login only there, and `/me`
+  waits for the restore and sends the bearer token. Browsers are unchanged.
 - 2026-10-27 (batch 90): first server-side cookie cutover step. tahti-org
   login / login-totp return `refreshToken` in the JSON body only when the
   client sends `refreshTokenDelivery: 'body'`; browsers get it only as the

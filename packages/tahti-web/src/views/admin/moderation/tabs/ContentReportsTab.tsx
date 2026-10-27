@@ -219,6 +219,7 @@ const TARGET_OPTIONS: { id: TargetFilter; label: string }[] = [
   { id: 'COLLECTION', label: 'Collections' },
   { id: 'COMMENT', label: 'Comments' },
   { id: 'MOTION_COMMENT', label: 'Motion comments' },
+  { id: 'DISCUSSION_POST', label: 'Discussion replies' },
 ];
 
 /** Content reports tab — ported as-is from the standalone admin route (see

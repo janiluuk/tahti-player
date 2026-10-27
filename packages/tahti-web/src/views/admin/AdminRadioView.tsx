@@ -1,4 +1,4 @@
-import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
+import { useNavigate, useRouterState } from '@tanstack/react-router';
 import {
   ArrowLeftToLineIcon,
   BanIcon,
@@ -12,7 +12,15 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Badge, Button, Tabs, ViewShell } from '@tahti-player/ui';
+import {
+  Badge,
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
+  Button,
+  Tabs,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchAdminRadio,
@@ -148,22 +156,13 @@ export function AdminRadioView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/radio">
           <div className="flex max-w-4xl flex-col gap-6">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-            >
-              <Link to="/admin" className="hover:underline">
-                Admin
-              </Link>
-              <span aria-hidden>→</span>
-              <Link to="/admin/radio" className="hover:underline">
-                Radio
-              </Link>
-              <span aria-hidden>→</span>
-              <span aria-current="page">
+            <Breadcrumbs>
+              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin/radio">Radio</BreadcrumbLink>
+              <BreadcrumbCurrent>
                 {ADMIN_RADIO_TAB_LABELS[activeTab]}
-              </span>
-            </nav>
+              </BreadcrumbCurrent>
+            </Breadcrumbs>
             <ViewShell
               title="Radio"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}

@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import {
+  fetchChannelBlocks,
+  type PublicChannelBlock,
+} from '../../api/channel-blocks';
+import {
   fetchChannel,
   fetchChannelSound,
   fetchProfile,
@@ -75,6 +79,7 @@ function useChannelSection<T>(
 
 const NO_SOUNDS: ChannelSoundItem[] = [];
 const NO_WIDGETS: DiscoWidgetRenderItem[] = [];
+const NO_BLOCKS: PublicChannelBlock[] = [];
 
 /** Loads everything a channel page shows. The channel itself is the primary
  * content: `loading` covers only it, so the header and player render as soon
@@ -181,6 +186,14 @@ export function useChannelData(slug: string, refreshKey: number) {
     NO_WIDGETS,
     fetchChannelDiscoWidgets,
   );
+  // Reloads with the widgets; a failed read only drops the layout, and the
+  // add-ons then render in the plain list.
+  const blocks = useChannelSection(
+    slug,
+    reloadKeys.widgets,
+    NO_BLOCKS,
+    fetchChannelBlocks,
+  );
   const shows = useChannelSection<PublicRadioShow | null>(
     slug,
     reloadKeys.shows,
@@ -196,6 +209,7 @@ export function useChannelData(slug: string, refreshKey: number) {
     channel,
     sounds: sounds.data,
     discoWidgets: widgets.data,
+    channelBlocks: blocks.data,
     liveShows: shows.data,
     artistSocialLinks,
     loading,

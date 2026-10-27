@@ -26,7 +26,7 @@ const configurePluginFor = (id: IntegrationId) =>
 
 /** OAuth sources whose configure dialog lists the account's tracks to
  * import. The others connect, but there is nothing to import from them yet. */
-const OAUTH_IMPORT_UI = new Set<IntegrationId>(['soundcloud']);
+const OAUTH_IMPORT_UI = new Set<IntegrationId>(['soundcloud', 'google-drive']);
 
 /** Sources the upload page can import from: through a configure dialog, or
  * a Studio page to go to. Anything else would be a card that leads nowhere. */
