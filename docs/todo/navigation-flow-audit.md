@@ -81,7 +81,7 @@ First subagent was **wrong** on this class of issues. These are all wired correc
 | Area | Routes with zero e2e visit | Count |
 | --- | --- | --- |
 | **Governance** | `/governance`, `/governance/members`, `/governance/meetings/$id`, `/governance/motions/$id`, `/public-governance-history`, `/feature-requests` | 6 |
-| **Listen (discover/feed/radio/show)** | `/listen/feed`, `/discover`, `/radio`, `schedule`, `/radio/show/$channelSlug`, `/themes`, `/search` | 7 |
+| **Listen (discover/feed/radio/show)** | `/listen/feed` (`/discover`, `/radio`, `/schedule`, `/radio/show/$channelSlug`, `/themes`, `/search` covered by `e2e/routes-discover-radio.spec.ts`) | 1 |
 | **Public/reader** | `/subscribe/$username`, `/r/$slug`, `/t/$id`, `/v/$slug`, `/embed/*, terms, privacy, agpl, about, how-it-works, what-is-it` | 12 |
 | **Library deep** | `/library/favorites`, `/library/history`, `/library/local`, `/library/media`, `/library/embeds`, `/library/smartlinks`, `/library/recordings` | 7 |
 | **Studio content ops** | All studio sound/release/collection event/edit/playlist/show-episode review, all studio stats sub-pages, studio updates, audience/revenue/stripe, distribution, moderation, revenue, stash, channel-branding, go-live sessions/green-room | ~30 |
