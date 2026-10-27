@@ -1,10 +1,5 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import {
-  DownloadIcon,
-  ListPlusIcon,
-  PencilIcon,
-  TrashIcon,
-} from 'lucide-react';
+import { DownloadIcon, PencilIcon, PlusIcon, TrashIcon } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
@@ -187,7 +182,7 @@ export function PlayableAmbientTrackList({
                           id: 'add-to-playlist',
                           label: `Add ${item.title} to a playlist`,
                           title: 'Add to playlist',
-                          icon: <ListPlusIcon size={16} />,
+                          icon: <PlusIcon size={16} />,
                           onClick: () =>
                             setPlaylistTarget({ soundId, title: item.title }),
                         },
