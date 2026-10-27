@@ -145,8 +145,9 @@ export function PrivacyView() {
             placed on your account, your notifications, grants and
             fan-subscription payouts, the add-ons you published or installed,
             your signed-in devices and API tokens (names only, never the
-            secrets), and the private-track shares and green-room invites you
-            made or received. Other people appear by username only.
+            secrets), the private-track shares and green-room invites you made
+            or received, and your email address change requests. Other people
+            appear by username only.
           </li>
           <li>
             <strong className="text-foreground">Objection</strong> — object to
