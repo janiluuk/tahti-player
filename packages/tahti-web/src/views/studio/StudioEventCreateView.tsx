@@ -201,6 +201,9 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                   />
                   <Input
                     inputMode="url"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
                     label="Tickets / event link (optional)"
                     value={eventUrl}
                     onChange={(event) => setEventUrl(event.target.value)}

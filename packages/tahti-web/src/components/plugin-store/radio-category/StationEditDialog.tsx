@@ -99,6 +99,9 @@ export function StationEditDialog({
           <div className="flex flex-col gap-1.5 sm:col-span-2">
             <Input
               inputMode="url"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               label="Programming source / stream URL"
               value={streamUrl}
               onChange={(e) => {
@@ -128,6 +131,9 @@ export function StationEditDialog({
           </div>
           <Input
             inputMode="url"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             name="detailUrl"
             label="Station details URL"
             defaultValue={station.detailUrl}

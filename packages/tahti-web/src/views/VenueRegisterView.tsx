@@ -185,6 +185,9 @@ export function VenueRegisterView() {
         />
         <Input
           inputMode="url"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           label="Venue website (optional)"
           value={pageUrl}
           onChange={(e) => setPageUrl(e.target.value)}

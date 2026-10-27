@@ -137,6 +137,9 @@ export function SpotifyCard({ plugin }: { plugin: ServicePlugin }) {
         >
           <Input
             inputMode="url"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             label="Spotify artist URL"
             value={artistUrl}
             onChange={(event) => setArtistUrl(event.target.value)}

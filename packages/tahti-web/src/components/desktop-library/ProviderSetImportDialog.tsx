@@ -229,6 +229,9 @@ export function ProviderSetImportDialog({
             <div className="min-w-0 flex-1">
               <Input
                 inputMode="url"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 label="Set link"
                 placeholder={source.linkPlaceholder}
                 value={state.link}

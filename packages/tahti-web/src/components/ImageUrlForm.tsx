@@ -40,6 +40,9 @@ export function ImageUrlForm({
     >
       <Input
         inputMode="url"
+        autoCapitalize="none"
+        autoCorrect="off"
+        spellCheck={false}
         label="Image URL"
         description="A direct link to a JPEG, PNG or WebP image. Tahti keeps its own copy."
         value={url}

@@ -73,6 +73,9 @@ export function SupportContactForm({
       {!email && (
         <Input
           inputMode="email"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           autoComplete="email"
           label="Your email"
           value={contactEmail}

@@ -106,6 +106,9 @@ export function AddStationUrlDialog({
         >
           <Input
             inputMode="url"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             aria-label="Stream URL"
             className="min-w-0 flex-1 basis-48"
             size="sm"
@@ -163,6 +166,9 @@ export function AddStationUrlDialog({
         />
         <Input
           inputMode="url"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           size="sm"
           label="Programme schedule link (optional)"
           value={programmingUrl}
