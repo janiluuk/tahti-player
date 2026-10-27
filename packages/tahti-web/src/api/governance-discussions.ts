@@ -30,6 +30,8 @@ export type DiscussionPost = {
 
 export type DiscussionTopicDetail = DiscussionTopic & {
   posts: DiscussionPost[];
+  /** True when replies older than the first one shown exist. */
+  hasEarlierPosts?: boolean;
 };
 
 export type DiscussionParticipation = { following: boolean; muted: boolean };
@@ -287,6 +289,32 @@ export async function removeDiscussionPost(
     return {
       ok: false,
       error: errorMessage(err, 'Could not remove the reply'),
+    };
+  }
+}
+
+/** The page of replies before `beforeId`, oldest first. */
+export async function fetchEarlierDiscussionPosts(
+  id: string,
+  beforeId: string,
+): Promise<
+  DiscussionResult<{ posts: DiscussionPost[]; hasEarlierPosts: boolean }>
+> {
+  if (isForceMock()) {
+    return { ok: true, data: { posts: [], hasEarlierPosts: false } };
+  }
+  try {
+    const { data } = await requestJson<{
+      posts: DiscussionPost[];
+      hasEarlierPosts: boolean;
+    }>(
+      `/api/v1/governance/discussions/${encodeURIComponent(id)}/posts?before=${encodeURIComponent(beforeId)}`,
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: errorMessage(err, 'Could not load earlier replies'),
     };
   }
 }

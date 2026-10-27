@@ -7,6 +7,7 @@ import { Badge, Button, Textarea, ViewShell } from '@tahti-player/ui';
 import {
   editDiscussionPost,
   fetchDiscussionTopic,
+  fetchEarlierDiscussionPosts,
   removeDiscussionPost,
   replyToDiscussion,
   setDiscussionFollow,
@@ -223,6 +224,26 @@ export function DiscussionTopicView({ id }: { id: string }) {
   const [attempt, setAttempt] = useState(0);
   const [removing, setRemoving] = useState<DiscussionPost | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [loadingEarlier, setLoadingEarlier] = useState(false);
+
+  const showEarlier = async () => {
+    const first = topic?.posts[0];
+    if (!topic || !first) {
+      return;
+    }
+    setLoadingEarlier(true);
+    const result = await fetchEarlierDiscussionPosts(topic.id, first.id);
+    setLoadingEarlier(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setTopic({
+      ...topic,
+      posts: [...result.data.posts, ...topic.posts],
+      hasEarlierPosts: result.data.hasEarlierPosts,
+    });
+  };
   const isBoard = hasAccountRole(user, 'BOARD');
 
   useEffect(() => {
@@ -326,79 +347,93 @@ export function DiscussionTopicView({ id }: { id: string }) {
 
           <section className="flex flex-col gap-3" aria-label="Replies">
             <h2 className="text-lg font-semibold">
-              {topic.posts.length === 1
+              {Math.max(topic.postCount, topic.posts.length) === 1
                 ? '1 reply'
-                : `${topic.posts.length} replies`}
+                : `${Math.max(topic.postCount, topic.posts.length)} replies`}
             </h2>
             {topic.posts.length === 0 ? (
               <p className="text-foreground-secondary text-sm">
                 No replies yet.
               </p>
             ) : (
-              <ul className="border-border divide-border divide-y rounded-md border text-sm">
-                {topic.posts.map((post) => (
-                  <li key={post.id} className="px-3 py-2">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <p className="text-foreground-secondary text-xs">
-                        {post.author}, {postedAt(post.createdAt)}
-                        {post.editedAt ? ' (edited)' : null}
-                      </p>
-                      <span className="flex items-center gap-1">
-                        {post.mine ? null : (
-                          <ReportButton
-                            targetType="DISCUSSION_POST"
-                            targetId={post.id}
-                            label={`the reply by ${post.author}`}
-                            defaultReason="HARASSMENT"
-                            variant="text"
-                          />
-                        )}
-                        {post.mine &&
-                        topic.status === 'OPEN' &&
-                        editingId !== post.id ? (
-                          <Button
-                            size="sm"
-                            variant="text"
-                            aria-label="Edit your reply"
-                            onClick={() => setEditingId(post.id)}
-                          >
-                            Edit
-                          </Button>
-                        ) : null}
-                        {canRemove(post) ? (
-                          <Button
-                            size="sm"
-                            variant="text"
-                            aria-label={`Remove the reply by ${post.author}`}
-                            onClick={() => setRemoving(post)}
-                          >
-                            Remove
-                          </Button>
-                        ) : null}
-                      </span>
-                    </div>
-                    {editingId === post.id ? (
-                      <EditReplyForm
-                        topicId={topic.id}
-                        post={post}
-                        onDone={(saved) => {
-                          setEditingId(null);
-                          if (saved) {
-                            setTopic({
-                              ...topic,
-                              posts: topic.posts.map((p) =>
-                                p.id === saved.id ? saved : p,
-                              ),
-                            });
-                          }
-                        }}
-                      />
-                    ) : (
-                      <p className="mt-1 whitespace-pre-wrap">{post.body}</p>
-                    )}
-                  </li>
-                ))}
-              </ul>
+              <>
+                {topic.hasEarlierPosts ? (
+                  <div>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={loadingEarlier}
+                      onClick={() => void showEarlier()}
+                    >
+                      {loadingEarlier ? 'Loading…' : 'Show earlier replies'}
+                    </Button>
+                  </div>
+                ) : null}
+                <ul className="border-border divide-border divide-y rounded-md border text-sm">
+                  {topic.posts.map((post) => (
+                    <li key={post.id} className="px-3 py-2">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <p className="text-foreground-secondary text-xs">
+                          {post.author}, {postedAt(post.createdAt)}
+                          {post.editedAt ? ' (edited)' : null}
+                        </p>
+                        <span className="flex items-center gap-1">
+                          {post.mine ? null : (
+                            <ReportButton
+                              targetType="DISCUSSION_POST"
+                              targetId={post.id}
+                              label={`the reply by ${post.author}`}
+                              defaultReason="HARASSMENT"
+                              variant="text"
+                            />
+                          )}
+                          {post.mine &&
+                          topic.status === 'OPEN' &&
+                          editingId !== post.id ? (
+                            <Button
+                              size="sm"
+                              variant="text"
+                              aria-label="Edit your reply"
+                              onClick={() => setEditingId(post.id)}
+                            >
+                              Edit
+                            </Button>
+                          ) : null}
+                          {canRemove(post) ? (
+                            <Button
+                              size="sm"
+                              variant="text"
+                              aria-label={`Remove the reply by ${post.author}`}
+                              onClick={() => setRemoving(post)}
+                            >
+                              Remove
+                            </Button>
+                          ) : null}
+                        </span>
+                      </div>
+                      {editingId === post.id ? (
+                        <EditReplyForm
+                          topicId={topic.id}
+                          post={post}
+                          onDone={(saved) => {
+                            setEditingId(null);
+                            if (saved) {
+                              setTopic({
+                                ...topic,
+                                posts: topic.posts.map((p) =>
+                                  p.id === saved.id ? saved : p,
+                                ),
+                              });
+                            }
+                          }}
+                        />
+                      ) : (
+                        <p className="mt-1 whitespace-pre-wrap">{post.body}</p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </>
             )}
           </section>
 
