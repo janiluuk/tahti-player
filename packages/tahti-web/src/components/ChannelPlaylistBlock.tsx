@@ -1,7 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Card, CardGrid, EmptyState } from '@tahti-player/ui';
+import { Card, CardGrid } from '@tahti-player/ui';
 
 import { fetchCollection } from '../api/client';
 import type { PublicCollection, TahtiPlayable } from '../api/types';
@@ -38,8 +38,7 @@ function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
 }
 
 const NO_PLAYABLE_TRACKS = (
-  <EmptyState
-    size="sm"
+  <PageEmpty
     title="No playable tracks yet"
     description="This playlist has no playable tracks yet."
   />

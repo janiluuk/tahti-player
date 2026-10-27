@@ -48,7 +48,7 @@ test('desktop chrome stays mounted from Listen through Library, Studio and Admin
   // screen until it is acknowledged, so the tab is chosen by keyboard.
   await page
     .locator(STUDIO_NAV)
-    .getByRole('tab', { name: 'Releases', exact: true })
+    .getByRole('tab', { name: 'Music', exact: true })
     .press('Enter');
   await expect(page).toHaveURL(/\/studio\/releases$/);
   await expectChrome(page, [SHELL, TOP_NAV, SIDEBAR, STUDIO_NAV]);

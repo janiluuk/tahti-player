@@ -28,6 +28,23 @@ describe('StudioNav nested sub-tab row', () => {
     expect(nestedTabRows()).toHaveLength(0);
   });
 
+  it('keeps the same Broadcast tabs on Go live and Channel', () => {
+    const names = (current: string) => {
+      const { unmount } = render(<StudioNav current={current} />);
+      const tabs = screen
+        .getByRole('tablist', { name: 'Broadcast pages' })
+        .querySelectorAll('[role="tab"]');
+      const labels = [...tabs].map((tab) => tab.textContent);
+      unmount();
+      return labels;
+    };
+
+    const onGoLive = names('/studio/go-live?tab=credentials');
+    const onChannel = names('/studio/channel?tab=setup');
+    expect(onChannel).toEqual(onGoLive);
+    expect(onGoLive.join(' ')).not.toMatch(/Prep|Credentials|Green room/);
+  });
+
   it('renders the sub-tab row when the tab has sub-tabs', () => {
     render(<StudioNav current="/studio/stats?tab=plays" />);
 
@@ -39,9 +56,9 @@ describe('StudioNav nested sub-tab row', () => {
 
   it.each([
     ['/studio', false],
-    ['/studio/releases', false],
-    ['/studio/distribution', false],
-    ['/studio/editor', false],
+    ['/studio/releases', true],
+    ['/studio/distribution', true],
+    ['/studio/editor', true],
     ['/studio/stats', true],
     ['/studio/governance', true],
     ['/studio/updates', true],

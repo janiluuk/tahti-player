@@ -13,6 +13,7 @@ import { isPinned } from '../../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../../lib/soundId';
+import { PageEmpty } from '../PageStates';
 import { PlayableAmbientTrackList } from '../PlayableAmbientTrackList';
 import { ProfileSection } from '../ProfileSection';
 import { releasePlayables } from '../ReleaseTracklistDialog';
@@ -134,54 +135,62 @@ export function ArtistReleasesGrid({
   const navigate = useNavigate();
   return (
     <ProfileSection title="Releases" data-testid="artist-releases">
-      <CardGrid className="grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] pr-0">
-        {releases.map(({ release, playable }) => {
-          const playables = releasePlayables(release, artistName, channelSlug);
-          const totalSec = (release.tracks ?? []).reduce(
-            (total, track) => total + (track.durationSec ?? 0),
-            0,
-          );
-          const subtitle = [
-            isPinned(release) ? 'Pinned' : null,
-            release.type ?? 'Release',
-            release.tracks?.length ? `${release.tracks.length} tracks` : null,
-            totalSec > 0 ? formatDuration(totalSec) : null,
-          ]
-            .filter(Boolean)
-            .join(' · ');
-          return (
-            <Card
-              key={release.id}
-              className="w-full"
-              title={release.title}
-              subtitle={subtitle}
-              src={release.artworkUrl ?? placeholderArtworkUrl(release.id)}
-              onClick={
-                release.smartLinkSlug
-                  ? () =>
-                      void navigate({
-                        to: '/r/$slug',
-                        params: { slug: release.smartLinkSlug! },
-                      })
-                  : undefined
-              }
-              onTitleClick={() => onTitleClick(release)}
-              onPlay={playable ? () => onPlayRelease(release) : undefined}
-              playLabel={`Play ${release.title}`}
-              onQueue={
-                playables.length > 0
-                  ? () => onQueueRelease(release, playables)
-                  : undefined
-              }
-              queueLabel={`Queue ${release.title}`}
-              onFavorite={
-                playable ? () => onToggleFavorite(playable) : undefined
-              }
-              favorited={playable ? isFavorite(playable) : false}
-            />
-          );
-        })}
-      </CardGrid>
+      {releases.length === 0 ? (
+        <PageEmpty title="No releases yet." />
+      ) : (
+        <CardGrid className="grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] pr-0">
+          {releases.map(({ release, playable }) => {
+            const playables = releasePlayables(
+              release,
+              artistName,
+              channelSlug,
+            );
+            const totalSec = (release.tracks ?? []).reduce(
+              (total, track) => total + (track.durationSec ?? 0),
+              0,
+            );
+            const subtitle = [
+              isPinned(release) ? 'Pinned' : null,
+              release.type ?? 'Release',
+              release.tracks?.length ? `${release.tracks.length} tracks` : null,
+              totalSec > 0 ? formatDuration(totalSec) : null,
+            ]
+              .filter(Boolean)
+              .join(' · ');
+            return (
+              <Card
+                key={release.id}
+                className="w-full"
+                title={release.title}
+                subtitle={subtitle}
+                src={release.artworkUrl ?? placeholderArtworkUrl(release.id)}
+                onClick={
+                  release.smartLinkSlug
+                    ? () =>
+                        void navigate({
+                          to: '/r/$slug',
+                          params: { slug: release.smartLinkSlug! },
+                        })
+                    : undefined
+                }
+                onTitleClick={() => onTitleClick(release)}
+                onPlay={playable ? () => onPlayRelease(release) : undefined}
+                playLabel={`Play ${release.title}`}
+                onQueue={
+                  playables.length > 0
+                    ? () => onQueueRelease(release, playables)
+                    : undefined
+                }
+                queueLabel={`Queue ${release.title}`}
+                onFavorite={
+                  playable ? () => onToggleFavorite(playable) : undefined
+                }
+                favorited={playable ? isFavorite(playable) : false}
+              />
+            );
+          })}
+        </CardGrid>
+      )}
     </ProfileSection>
   );
 }
@@ -196,31 +205,37 @@ export function ArtistPlaylistsGrid({
   const navigate = useNavigate();
   return (
     <ProfileSection title="Playlists" data-testid="artist-playlists">
-      <CardGrid className="grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] pr-0">
-        {collections.map((collection) => (
-          <Card
-            key={collection.slug}
-            className="w-full"
-            title={collection.name}
-            subtitle={[
-              `${collection.itemCount} item${collection.itemCount === 1 ? '' : 's'}`,
-              collection.type
-                ? `${collection.type.charAt(0)}${collection.type.slice(1).toLowerCase()}`
-                : null,
-              collection.isFeatured ? 'Featured' : null,
-            ]
-              .filter(Boolean)
-              .join(' · ')}
-            src={collection.coverUrl ?? placeholderArtworkUrl(collection.slug)}
-            onClick={() =>
-              void navigate({
-                to: '/u/$username/c/$slug',
-                params: { username, slug: collection.slug },
-              })
-            }
-          />
-        ))}
-      </CardGrid>
+      {collections.length === 0 ? (
+        <PageEmpty title="No playlists yet." />
+      ) : (
+        <CardGrid className="grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] pr-0">
+          {collections.map((collection) => (
+            <Card
+              key={collection.slug}
+              className="w-full"
+              title={collection.name}
+              subtitle={[
+                `${collection.itemCount} item${collection.itemCount === 1 ? '' : 's'}`,
+                collection.type
+                  ? `${collection.type.charAt(0)}${collection.type.slice(1).toLowerCase()}`
+                  : null,
+                collection.isFeatured ? 'Featured' : null,
+              ]
+                .filter(Boolean)
+                .join(' · ')}
+              src={
+                collection.coverUrl ?? placeholderArtworkUrl(collection.slug)
+              }
+              onClick={() =>
+                void navigate({
+                  to: '/u/$username/c/$slug',
+                  params: { username, slug: collection.slug },
+                })
+              }
+            />
+          ))}
+        </CardGrid>
+      )}
     </ProfileSection>
   );
 }

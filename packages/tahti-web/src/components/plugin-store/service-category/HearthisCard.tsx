@@ -32,11 +32,13 @@ import {
 } from '../../../api/sources';
 import {
   createStudioCollection,
+  deleteStudioCollection,
   fetchStudioCollections,
   patchStudioCollection,
 } from '../../../api/studio';
 import { fetchMeProfile, patchMeProfile } from '../../../api/studio-extras';
 import type { StudioCollection } from '../../../api/studio-types';
+import { toastWithUndo } from '../../../lib/undoToast';
 import { hearthisSourceAdapter } from '../../../plugins/import-sources';
 import { useAuthStore } from '../../../stores/authStore';
 import { usePlayerStore } from '../../../stores/playerStore';
@@ -242,8 +244,18 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
     setDestinationCollections((current) => [created.data, ...current]);
     setDestinationId(created.data.id);
     setNewDestinationName('');
-    toast.success(`Created playlist “${created.data.name}”.`);
-    return created.data.id;
+    const createdId = created.data.id;
+    toastWithUndo(`Created playlist “${created.data.name}”.`, {
+      undo: () => deleteStudioCollection(created.data.slug),
+      undoneMessage: `Removed “${created.data.name}”.`,
+      onUndone: () => {
+        setDestinationCollections((current) =>
+          current.filter((collection) => collection.id !== createdId),
+        );
+        setDestinationId((current) => (current === createdId ? '' : current));
+      },
+    });
+    return createdId;
   };
 
   // Kept in a ref as well as state: several imports can finish in a row
@@ -556,6 +568,8 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                 enterKeyHint="search"
                 aria-label="Search hearthis.at"
                 type="search"
+                autoCorrect="off"
+                spellCheck={false}
                 className="min-w-0 flex-1 basis-40"
                 size="sm"
                 value={q}

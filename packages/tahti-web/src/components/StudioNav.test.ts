@@ -11,10 +11,12 @@ import {
 import {
   AUDIENCE_SUBNAV_ITEMS,
   BROADCAST_SUBNAV_ITEMS,
+  CATALOG_SUBNAV_ITEMS,
   getStudioPrimaryRoute,
   getStudioSubmenuItems,
   isAudienceSubnavActive,
   isBroadcastSubnavActive,
+  isCatalogSubnavActive,
   isStudioAudienceGroup,
   isStudioBroadcastGroup,
   litStudioSubmenuDestinations,
@@ -53,15 +55,14 @@ describe('StudioNav section coverage', () => {
       ]),
     );
     expect(destinations).toEqual(
-      expect.arrayContaining([
-        '/studio/releases',
-        '/studio/distribution',
-        '/studio/editor',
-        '/studio/go-live',
-      ]),
+      expect.arrayContaining(['/studio/releases', '/studio/go-live']),
+    );
+    expect(destinations).not.toEqual(
+      expect.arrayContaining(['/studio/distribution', '/studio/editor']),
     );
     expect(getStudioPrimaryRoute('/studio/releases')).toBe('/studio');
     expect(getStudioPrimaryRoute('/studio/distribution')).toBe('/studio');
+    expect(getStudioPrimaryRoute('/studio/editor')).toBe('/studio');
     expect(getStudioPrimaryRoute('/studio/go-live')).toBe('/studio');
   });
 
@@ -70,10 +71,10 @@ describe('StudioNav section coverage', () => {
       ['/studio', '/studio'],
       ['/studio/stats', '/studio/stats'],
       ['/studio/insights', '/studio/stats'],
-      ['/studio/editor', '/studio/editor'],
-      ['/studio/mastering/arch-1', '/studio/editor'],
+      ['/studio/editor', '/studio/releases'],
+      ['/studio/mastering/arch-1', '/studio/releases'],
       ['/studio/releases', '/studio/releases'],
-      ['/studio/distribution', '/studio/distribution'],
+      ['/studio/distribution', '/studio/releases'],
       ['/studio/go-live', '/studio/go-live'],
       ['/studio/info', '/studio/go-live'],
       ['/studio/schedule', '/studio/go-live'],
@@ -161,6 +162,23 @@ describe('StudioNav section coverage', () => {
       isBroadcastSubnavActive(location, item.to),
     ).map((item) => item.to);
     expect(lit).toEqual(['/studio/channel']);
+  });
+
+  it('lights the right Music sub-tab for releases, distribution, and editor', () => {
+    const covered: [string, string][] = [
+      ['/studio/releases', '/studio/releases'],
+      ['/studio/releases/rel-1', '/studio/releases'],
+      ['/studio/distribution', '/studio/distribution'],
+      ['/studio/editor', '/studio/editor'],
+      ['/studio/editor/proj-1', '/studio/editor'],
+      ['/studio/mastering/arch-1', '/studio/editor'],
+    ];
+    for (const [location, expectedTo] of covered) {
+      const lit = CATALOG_SUBNAV_ITEMS.filter((item) =>
+        isCatalogSubnavActive(location, item.to),
+      ).map((item) => item.to);
+      expect(lit, location).toEqual([expectedTo]);
+    }
   });
 
   it('lights the right Audience sub-tab for overview, tiers, and Stripe', () => {

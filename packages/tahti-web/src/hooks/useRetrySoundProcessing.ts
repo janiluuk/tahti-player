@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { retrySoundProcessing } from '../api/studio';
@@ -27,22 +27,27 @@ export function useRetrySoundProcessing(onRetried: (id: string) => void): {
 } {
   const [retryingId, setRetryingId] = useState<string | null>(null);
   const startJobs = useProcessingJobsStore((state) => state.start);
+  const onRetriedRef = useRef(onRetried);
+  onRetriedRef.current = onRetried;
 
-  const retry = async (item: Pick<StudioSound, 'id' | 'title'>) => {
-    setRetryingId(item.id);
-    try {
-      const result = await retrySoundProcessing(item.id);
-      if (!result.ok) {
-        toast.error(result.error);
-        return;
+  const retry = useCallback(
+    async (item: Pick<StudioSound, 'id' | 'title'>) => {
+      setRetryingId(item.id);
+      try {
+        const result = await retrySoundProcessing(item.id);
+        if (!result.ok) {
+          toast.error(result.error);
+          return;
+        }
+        startJobs([{ id: item.id, title: item.title, status: 'PENDING' }]);
+        onRetriedRef.current(item.id);
+        toast.success(`Processing "${item.title}" again`);
+      } finally {
+        setRetryingId(null);
       }
-      startJobs([{ id: item.id, title: item.title, status: 'PENDING' }]);
-      onRetried(item.id);
-      toast.success(`Processing "${item.title}" again`);
-    } finally {
-      setRetryingId(null);
-    }
-  };
+    },
+    [startJobs],
+  );
 
   return { retry, retryingId };
 }

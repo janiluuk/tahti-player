@@ -185,6 +185,7 @@ export function SoundRow({
           <Tooltip content="Play · Shift+click to queue" side="top">
             <Button
               size="icon-sm"
+              variant="secondary"
               disabled={processing || busyId === item.id}
               onClick={(event) => {
                 void playItem(item.id, item.title, {
@@ -203,6 +204,7 @@ export function SoundRow({
           >
             <Button
               size="icon-sm"
+              variant="secondary"
               disabled={busyId === item.id}
               onClick={(event) => {
                 void playEmbedItem(item, { queue: event.shiftKey });

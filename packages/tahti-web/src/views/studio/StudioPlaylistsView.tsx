@@ -24,6 +24,7 @@ import {
 
 import {
   createStudioCollection,
+  deleteStudioCollection,
   fetchStudioCollections,
 } from '../../api/studio';
 import type { StudioCollection } from '../../api/studio-types';
@@ -34,6 +35,7 @@ import {
 } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { toastWithUndo } from '../../lib/undoToast';
 import { LibrarySectionTabs } from '../LibraryView';
 
 function isPlaylist(c: StudioCollection) {
@@ -83,9 +85,19 @@ export function StudioPlaylistsView() {
         toast.error(r.error);
         return;
       }
+      const created = r.data;
       setCreateOpen(false);
       setName('');
       reload();
+      toastWithUndo(`Created ${created.name}.`, {
+        undo: () => deleteStudioCollection(created.slug),
+        undoneMessage: `Removed ${created.name}.`,
+        onUndone: () => {
+          setRows((current) =>
+            current.filter((row) => row.slug !== created.slug),
+          );
+        },
+      });
     } catch {
       toast.error('Could not create the playlist.');
     } finally {

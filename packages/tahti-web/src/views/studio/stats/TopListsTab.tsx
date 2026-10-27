@@ -1,11 +1,12 @@
 import { useNavigate } from '@tanstack/react-router';
 
-import { EmptyState, FilterChips, TopList } from '@tahti-player/ui';
+import { FilterChips, TopList } from '@tahti-player/ui';
 
 import type {
   StatsTopListDimension,
   StatsTopListSort,
 } from '../../../api/studio-extras';
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { countryFlagAndName } from '../../../lib/countries';
 import {
@@ -58,10 +59,7 @@ export function TopListsTab({
           />
         </div>
         {topLists.length === 0 ? (
-          <EmptyState
-            size="sm"
-            title="No listens recorded for this period yet"
-          />
+          <PageEmpty title="No listens recorded for this period yet" />
         ) : (
           <div className="grid gap-5 md:grid-cols-2">
             {topLists.map((bucket) => (
@@ -89,7 +87,7 @@ export function TopListsTab({
       </StudioPanel>
       <StudioPanel>
         {tracks.length === 0 ? (
-          <EmptyState size="sm" title="No track stats yet" />
+          <PageEmpty title="No track stats yet" />
         ) : (
           <TopList
             title={`Top tracks · ${topRangeLabel}`}
@@ -112,7 +110,7 @@ export function TopListsTab({
 
       <StudioPanel>
         {countries.length === 0 ? (
-          <EmptyState size="sm" title="No country data yet" />
+          <PageEmpty title="No country data yet" />
         ) : (
           <TopList
             title={`Top countries · ${topRangeLabel}`}

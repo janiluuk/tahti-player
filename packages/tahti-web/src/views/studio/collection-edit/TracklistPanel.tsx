@@ -1,5 +1,6 @@
-import { EmptyState, TrackTable } from '@tahti-player/ui';
+import { TrackTable } from '@tahti-player/ui';
 
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { trackTableLabels } from '../../../lib/trackTableLabels';
 import { useStudioContributions } from '../useStudioContributions';
@@ -40,7 +41,7 @@ export function TracklistPanel({
       </div>
 
       {items.length === 0 ? (
-        <EmptyState size="sm" title="No tracks yet — add sound items below." />
+        <PageEmpty title="No tracks yet — add sound items below." />
       ) : (
         <div className="min-h-[200px]">
           <TrackTable

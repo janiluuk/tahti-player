@@ -57,9 +57,15 @@ export function SectionTabs({
         selectedIndex={Math.max(0, selectedIndex)}
         onChange={(index) => {
           const next = items[index];
-          if (next) {
-            void navigate({ to: next.to as never });
+          if (!next) {
+            return;
           }
+          const [path, query] = next.to.split('?');
+          const search = Object.fromEntries(new URLSearchParams(query ?? ''));
+          void navigate({
+            to: path as never,
+            search: search as never,
+          });
         }}
         tabClassName={
           selectedIndex < 0

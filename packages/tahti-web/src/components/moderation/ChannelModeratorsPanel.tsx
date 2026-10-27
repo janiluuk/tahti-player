@@ -2,7 +2,7 @@ import { Trash2Icon, UserRoundPlusIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, EmptyState, Input, Tooltip } from '@tahti-player/ui';
+import { Button, Input, Tooltip } from '@tahti-player/ui';
 
 import {
   addModerator,
@@ -11,7 +11,7 @@ import {
   type ModeratorRow,
 } from '../../api/artist-settings';
 import { ConfirmDialog } from '../ConfirmDialog';
-import { PageLoading } from '../PageStates';
+import { PageEmpty, PageLoading } from '../PageStates';
 import { StudioPanel } from '../StudioPanel';
 
 /** The people the channel owner trusts to moderate the channel's chat:
@@ -62,7 +62,7 @@ export function ChannelModeratorsPanel() {
         {loading ? (
           <PageLoading label="Loading…" />
         ) : mods.length === 0 ? (
-          <EmptyState size="sm" title="No moderators yet" />
+          <PageEmpty title="No moderators yet" />
         ) : (
           <ul className="flex flex-col gap-2">
             {mods.map((moderator) => (

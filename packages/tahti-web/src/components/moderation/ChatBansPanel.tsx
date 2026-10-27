@@ -2,7 +2,7 @@ import { Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, EmptyState, Tooltip } from '@tahti-player/ui';
+import { Button, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchChatBans,
@@ -10,7 +10,7 @@ import {
   type ChatBan,
 } from '../../api/artist-settings';
 import { useAuthStore } from '../../stores/authStore';
-import { PageLoading } from '../PageStates';
+import { PageEmpty, PageLoading } from '../PageStates';
 import { StudioPanel } from '../StudioPanel';
 import { moderationTime } from './moderationTime';
 
@@ -54,7 +54,7 @@ export function ChatBansPanel({ slug: slugProp }: Props) {
       {loading ? (
         <PageLoading label="Loading…" />
       ) : bans.length === 0 ? (
-        <EmptyState size="sm" title="Nobody is banned" />
+        <PageEmpty title="Nobody is banned" />
       ) : (
         <ul className="flex flex-col gap-2">
           {bans.map((ban) => (

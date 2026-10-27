@@ -4,12 +4,9 @@ import {
   BookOpenIcon,
   CalendarDaysIcon,
   CalendarIcon,
-  CastIcon,
   CreditCardIcon,
-  Disc3Icon,
   FileTextIcon,
   HeartIcon,
-  KeyRoundIcon,
   LandmarkIcon,
   LayersIcon,
   LayoutDashboardIcon,
@@ -35,14 +32,6 @@ import { SidebarNavigationItem } from '@tahti-player/ui';
 import { useStripeConfigured } from '../hooks/useStripeConfigured';
 import type { TourStep } from '../lib/pageTour';
 import { matchesSectionRoute } from '../lib/sectionNavigation';
-import {
-  GO_LIVE_TAB_LABELS,
-  GO_LIVE_TABS,
-  goLiveTabPath,
-  isGoLiveSessionRoute,
-  isGoLiveSessionTabActive,
-  type GoLiveTabId,
-} from '../views/studio/go-live/goLiveTabs';
 import { SectionTabs } from './SectionTabs';
 
 type StudioSubmenuLabelKey =
@@ -97,18 +86,8 @@ export const SUBMENUS = {
     },
     {
       to: '/studio/releases',
-      labelKey: 'studio.releases',
+      labelKey: 'studio.music',
       icon: <ListMusicIcon size={16} />,
-    },
-    {
-      to: '/studio/distribution',
-      labelKey: 'studio.distribution',
-      icon: <Share2Icon size={16} />,
-    },
-    {
-      to: '/studio/editor',
-      labelKey: 'studio.editor',
-      icon: <SlidersHorizontalIcon size={16} />,
     },
     {
       to: '/studio/go-live',
@@ -155,6 +134,26 @@ export const BROADCAST_SUBNAV_ITEMS = [
   },
 ] as const;
 
+/** Releases, Distribution and Editor are one job (publish music). One Studio
+ * "Music" tab stays lit; the three pages live in `CatalogSubNav`. */
+export const CATALOG_SUBNAV_ITEMS = [
+  {
+    to: '/studio/releases',
+    labelKey: 'studio.releases' as const,
+    icon: <ListMusicIcon size={16} />,
+  },
+  {
+    to: '/studio/distribution',
+    labelKey: 'studio.distribution' as const,
+    icon: <Share2Icon size={16} />,
+  },
+  {
+    to: '/studio/editor',
+    labelKey: 'studio.editor' as const,
+    icon: <SlidersHorizontalIcon size={16} />,
+  },
+] as const;
+
 /** Audience used to grow a sibling "Stripe" Studio tab when Connect was
  * configured. Mirror Broadcast: one Studio "Audience" tab stays lit for the
  * whole group, and Overview / Tiers / Stripe live in `AudienceSubNav`. */
@@ -195,6 +194,11 @@ export const STATS_SUBNAV_ITEMS = [
     labelKey: 'studio.topLists' as const,
     icon: <ListOrderedIcon size={16} />,
   },
+  {
+    to: '/studio/insights',
+    labelKey: 'studio.insights' as const,
+    icon: <TrendingUpIcon size={16} />,
+  },
 ] as const;
 
 export const GOVERNANCE_SUBNAV_ITEMS = [
@@ -233,17 +237,26 @@ export const UPDATES_SUBNAV_ITEMS = [
   },
 ] as const;
 
+const pathMatches = (pathname: string, prefix: string) =>
+  pathname === prefix || pathname.startsWith(`${prefix}/`);
+
 const TAB_SUBNAV_GROUPS = [
-  { path: '/studio/stats', label: 'Stats pages', items: STATS_SUBNAV_ITEMS },
   {
-    path: '/studio/governance',
-    label: 'Governance pages',
-    items: GOVERNANCE_SUBNAV_ITEMS,
+    label: 'Stats pages',
+    items: STATS_SUBNAV_ITEMS,
+    match: (pathname: string) =>
+      pathMatches(pathname, '/studio/stats') ||
+      pathMatches(pathname, '/studio/insights'),
   },
   {
-    path: '/studio/updates',
+    label: 'Governance pages',
+    items: GOVERNANCE_SUBNAV_ITEMS,
+    match: (pathname: string) => pathMatches(pathname, '/studio/governance'),
+  },
+  {
     label: 'Posts pages',
     items: UPDATES_SUBNAV_ITEMS,
+    match: (pathname: string) => pathMatches(pathname, '/studio/updates'),
   },
 ] as const;
 
@@ -252,13 +265,21 @@ const tabParam = (url: string | undefined) => {
   return tab === 'feature-requests' ? 'topics' : tab;
 };
 
-export const isTabSubnavActive = (current: string | undefined, to: string) =>
-  current?.split('?')[0] === to.split('?')[0] &&
-  tabParam(current) === tabParam(to);
+export const isTabSubnavActive = (current: string | undefined, to: string) => {
+  const pathname = current?.split('?')[0];
+  if (to === '/studio/insights') {
+    return (
+      pathname === '/studio/insights' ||
+      pathname?.startsWith('/studio/insights/') === true ||
+      pathname === '/studio/stats/detail'
+    );
+  }
+  return pathname === to.split('?')[0] && tabParam(current) === tabParam(to);
+};
 
 const findTabSubnavGroup = (current: string | undefined) => {
-  const pathname = current?.split('?')[0];
-  return TAB_SUBNAV_GROUPS.find((item) => item.path === pathname);
+  const pathname = current?.split('?')[0] ?? '';
+  return TAB_SUBNAV_GROUPS.find((item) => item.match(pathname));
 };
 
 function TabSubNav({ current }: { current?: string }) {
@@ -373,8 +394,12 @@ const isSubmenuActive = (current: string | undefined, to: string) => {
       pathname?.startsWith('/studio/insights/') === true
     );
   }
-  if (to === '/studio/editor') {
+  if (to === '/studio/releases') {
     return (
+      pathname === '/studio/releases' ||
+      pathname?.startsWith('/studio/releases/') === true ||
+      pathname === '/studio/distribution' ||
+      pathname?.startsWith('/studio/distribution/') === true ||
       pathname === '/studio/editor' ||
       pathname?.startsWith('/studio/editor/') === true ||
       pathname === '/studio/mastering' ||
@@ -455,6 +480,56 @@ export function isStudioBroadcastGroup(current: string | undefined): boolean {
   );
 }
 
+export function isStudioCatalogGroup(current: string | undefined): boolean {
+  const pathname = current?.split('?')[0] ?? '';
+  return (
+    pathname === '/studio/releases' ||
+    pathname.startsWith('/studio/releases/') ||
+    pathname === '/studio/distribution' ||
+    pathname.startsWith('/studio/distribution/') ||
+    pathname === '/studio/editor' ||
+    pathname.startsWith('/studio/editor/') ||
+    pathname === '/studio/mastering' ||
+    pathname.startsWith('/studio/mastering/')
+  );
+}
+
+export const isCatalogSubnavActive = (
+  current: string | undefined,
+  to: string,
+) => {
+  const pathname = current?.split('?')[0] ?? '';
+  if (to === '/studio/releases') {
+    return pathMatches(pathname, '/studio/releases');
+  }
+  if (to === '/studio/distribution') {
+    return pathMatches(pathname, '/studio/distribution');
+  }
+  if (to === '/studio/editor') {
+    return (
+      pathMatches(pathname, '/studio/editor') ||
+      pathMatches(pathname, '/studio/mastering')
+    );
+  }
+  return pathname === to;
+};
+
+export function CatalogSubNav({ current }: { current?: string }) {
+  const { t } = useTranslation('web');
+  return (
+    <SectionTabs
+      aria-label="Music pages"
+      items={CATALOG_SUBNAV_ITEMS.map((item) => ({
+        id: item.to,
+        to: item.to,
+        label: t(item.labelKey),
+        icon: item.icon,
+        active: isCatalogSubnavActive(current, item.to),
+      }))}
+    />
+  );
+}
+
 export function isStudioAudienceGroup(current: string | undefined): boolean {
   const pathname = current?.split('?')[0] ?? '';
   return (
@@ -482,45 +557,6 @@ export function BroadcastSubNav({ current }: { current?: string }) {
         icon: item.icon,
         active: isBroadcastSubnavActive(current, item.to),
       }))}
-    />
-  );
-}
-
-const GO_LIVE_SESSION_ICONS: Record<GoLiveTabId, ReactNode> = {
-  prep: <RadioTowerIcon size={16} />,
-  credentials: <KeyRoundIcon size={16} />,
-  recording: <Disc3Icon size={16} />,
-  destinations: <CastIcon size={16} />,
-  'green-room': <MicIcon size={16} />,
-};
-
-/**
- * On `/studio/go-live`, replace BroadcastSubNav with Prep session tabs plus
- * Schedule/Events/Shows/Channel/Radio as siblings — one nested strip instead
- * of Broadcast pages + in-page Prep tabs (artist-lifecycle P2).
- */
-export function GoLiveSessionSubNav({ current }: { current?: string }) {
-  const { t } = useTranslation('web');
-  const sessionItems = GO_LIVE_TABS.map((tab) => ({
-    id: goLiveTabPath(tab),
-    to: goLiveTabPath(tab),
-    label: GO_LIVE_TAB_LABELS[tab],
-    icon: GO_LIVE_SESSION_ICONS[tab],
-    active: isGoLiveSessionTabActive(current, tab),
-  }));
-  const siblingItems = BROADCAST_SUBNAV_ITEMS.filter(
-    (item) => item.to !== '/studio/go-live',
-  ).map((item) => ({
-    id: item.to,
-    to: item.to,
-    label: t(item.labelKey),
-    icon: item.icon,
-    active: isBroadcastSubnavActive(current, item.to),
-  }));
-  return (
-    <SectionTabs
-      aria-label="Go live session"
-      items={[...sessionItems, ...siblingItems]}
     />
   );
 }
@@ -574,8 +610,8 @@ export function AudienceSubNav({ current }: { current?: string }) {
 }
 
 export const hasStudioNestedNav = (current: string | undefined) =>
-  isGoLiveSessionRoute(current) ||
   isStudioBroadcastGroup(current) ||
+  isStudioCatalogGroup(current) ||
   isStudioAudienceGroup(current) ||
   findTabSubnavGroup(current) !== undefined;
 
@@ -624,7 +660,7 @@ function StudioNavigation({ current }: { current?: string }) {
   }
 
   const showBroadcast = isStudioBroadcastGroup(current);
-  const showGoLiveSession = isGoLiveSessionRoute(current);
+  const showCatalog = isStudioCatalogGroup(current);
   const showAudience = isStudioAudienceGroup(current);
 
   return (
@@ -651,11 +687,8 @@ function StudioNavigation({ current }: { current?: string }) {
           data-studio-nested-nav
           data-testid="studio-nested-nav"
         >
-          {showGoLiveSession ? (
-            <GoLiveSessionSubNav current={current} />
-          ) : showBroadcast ? (
-            <BroadcastSubNav current={current} />
-          ) : null}
+          {showBroadcast ? <BroadcastSubNav current={current} /> : null}
+          {showCatalog ? <CatalogSubNav current={current} /> : null}
           {showAudience ? <AudienceSubNav current={current} /> : null}
           <TabSubNav current={current} />
         </div>

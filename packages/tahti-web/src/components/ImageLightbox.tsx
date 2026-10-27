@@ -6,13 +6,9 @@ import {
 } from 'lucide-react';
 import { FC, useEffect, useRef } from 'react';
 
-import {
-  Button,
-  Dialog,
-  EmptyState,
-  ImageReveal,
-  Tooltip,
-} from '@tahti-player/ui';
+import { Button, Dialog, ImageReveal, Tooltip } from '@tahti-player/ui';
+
+import { PageEmpty } from './PageStates';
 
 export type LightboxImage = {
   imageUrl: string;
@@ -78,8 +74,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
               </Button>
             </Tooltip>
           </div>
-          <EmptyState
-            size="sm"
+          <PageEmpty
             title="No photos to show"
             description="This gallery is empty."
           />

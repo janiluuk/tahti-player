@@ -119,7 +119,11 @@ export function FeatureRequestsView({
           </ButtonLink>
         )}
         {user && !forbidden ? (
-          <Button size="sm" onClick={() => setComposerOpen((v) => !v)}>
+          <Button
+            size="sm"
+            variant={composerOpen ? 'secondary' : 'default'}
+            onClick={() => setComposerOpen((v) => !v)}
+          >
             {composerOpen ? 'Cancel' : 'Propose an idea'}
           </Button>
         ) : null}

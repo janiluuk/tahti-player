@@ -1,3 +1,17 @@
+## 2026-10-27 - UX batch 113 (thirty empty states)
+
+Thirty-two list empties (events, chat, stats, revenue, collections, search,
+and the rest of the batch) render through `PageEmpty`. Bumped tahti-web
+`0.0.273`.
+
+## 2026-10-27 - Studio nav: stable Broadcast and Music tabs
+
+Broadcast chrome no longer swaps in Prep / Credentials / Recording /
+Destinations / Green room beside Schedule and Channel. Those session tabs
+live on the Go live page, so opening Channel keeps the same Broadcast row.
+Releases, Distribution and Editor sit under one Music tab. Stats tabs stay
+up on Insights. Bumped tahti-web `0.0.272`.
+
 ## 2026-10-27 - UX batch 111 (URL and email keyboards)
 
 Thirty link and email fields stop phone keyboards from capitalising the

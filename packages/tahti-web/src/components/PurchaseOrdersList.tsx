@@ -1,13 +1,13 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Button, EmptyState } from '@tahti-player/ui';
+import { Button } from '@tahti-player/ui';
 
 import {
   fetchMyPurchaseOrders,
   type PurchaseOrderRow,
 } from '../api/purchase-tiers';
-import { PageError, PageLoading } from './PageStates';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 const PAGE_SIZE = 20;
 
@@ -54,8 +54,7 @@ export function PurchaseOrdersList() {
   }
   if (orders.length === 0) {
     return (
-      <EmptyState
-        size="sm"
+      <PageEmpty
         title="No track sales yet"
         description="Paid purchases of your tracks show up here."
       />

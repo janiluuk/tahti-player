@@ -6,7 +6,6 @@ import {
   Alert,
   Button,
   ButtonLink,
-  EmptyState,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -27,7 +26,7 @@ import {
 import { FanSubOrderBreakdown } from '../../components/FanSubOrderBreakdown';
 import { FanSubscriptionStats } from '../../components/FanSubscriptionStats';
 import { FanTiersEditor } from '../../components/FanTiersEditor';
-import { PageError } from '../../components/PageStates';
+import { PageEmpty, PageError } from '../../components/PageStates';
 import { PurchaseOrdersList } from '../../components/PurchaseOrdersList';
 import { PurchaseTiersEditor } from '../../components/PurchaseTiersEditor';
 import { StudioGate } from '../../components/StudioGate';
@@ -200,15 +199,12 @@ export function StudioRevenueView() {
             </div>
           ) : connect && !connect.stripeConfigured ? (
             <StudioPanel title="Payments">
-              <EmptyState
-                size="sm"
+              <PageEmpty
                 data-testid="revenue-stripe-disconnected"
                 title="Stripe is not connected"
                 description="Connect Stripe before fan subscriptions, track sales, or grant payouts can reach you."
                 action={
-                  <ButtonLink to="/studio/stripe" size="sm">
-                    Open Stripe setup
-                  </ButtonLink>
+                  <ButtonLink to="/studio/stripe">Open Stripe setup</ButtonLink>
                 }
               />
             </StudioPanel>
@@ -222,16 +218,11 @@ export function StudioRevenueView() {
             </StudioPanel>
           ) : hasFanTiers === false ? (
             <StudioPanel title="Fan subscriptions">
-              <EmptyState
-                size="sm"
+              <PageEmpty
                 data-testid="fan-subs-empty-state"
                 title="No fan subscriptions yet"
                 description="Set up subscription tiers so fans can support you directly."
-                action={
-                  <Button size="sm" onClick={openTiers}>
-                    Open tiers editor
-                  </Button>
-                }
+                action={<Button onClick={openTiers}>Open tiers editor</Button>}
               />
             </StudioPanel>
           ) : (
@@ -308,7 +299,7 @@ export function StudioRevenueView() {
 
               <StudioPanel title="Past grants">
                 {grants.length === 0 ? (
-                  <EmptyState size="sm" title="No disbursements yet" />
+                  <PageEmpty title="No disbursements yet" />
                 ) : (
                   <ul className="divide-border divide-y">
                     {grants.map((g) => (

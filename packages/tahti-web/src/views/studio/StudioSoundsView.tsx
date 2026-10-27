@@ -1,4 +1,4 @@
-import { Button, EmptyState, ViewShell } from '@tahti-player/ui';
+import { Button, ViewShell } from '@tahti-player/ui';
 
 import { AddToMusicActions } from '../../components/AddToMusicActions';
 import {
@@ -58,8 +58,7 @@ export function StudioSoundsView() {
                 }
               />
             ) : filtered.length === 0 ? (
-              <EmptyState
-                size="sm"
+              <PageEmpty
                 title="No sounds yet"
                 description="Upload a file or import from Sources. Sounds can be tracks, clips, DJ sets, shows, or episodes."
                 action={

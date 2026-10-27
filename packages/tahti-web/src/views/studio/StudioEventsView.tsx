@@ -12,7 +12,6 @@ import { toast } from 'sonner';
 import {
   Button,
   ButtonLink,
-  EmptyState,
   ExternalLink,
   Tabs,
   Tooltip,
@@ -20,7 +19,7 @@ import {
 } from '@tahti-player/ui';
 
 import { deleteEvent, fetchMyEvents, type ArtistEvent } from '../../api/events';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 
@@ -47,7 +46,7 @@ export function StudioEventsView() {
 
   const renderEvents = (items: ArtistEvent[]) =>
     items.length === 0 ? (
-      <EmptyState size="sm" title="No events listed yet" />
+      <PageEmpty title="No events listed yet" />
     ) : (
       <ul className="flex flex-col gap-2">
         {items.map((event) => (

@@ -24,6 +24,13 @@ new surface, one PR per row.
 - [x] `GovernanceView` "No motions returned." → `PageEmpty` (already on master)
 - [x] History / Releases filter: clear-filter (batch 79; HelpView already clears)
 - [x] `ReleasesPanel` filtered-empty + clear (batch 79)
+- [x] Thirty-two more list empties use `PageEmpty` (batch 113): events,
+  delivery reports, smart-link tracks, chat bans / messages, moderators,
+  sounds, track sales, channel playlist and chat, stats top lists, release
+  credits and fingerprint, take morph, revenue Stripe / tiers / disbursements,
+  Discover and channel add-on gates, lightbox, notifications, posts and
+  drafts, collections, recordings, add-to-playlist, global search, stash,
+  studio home broadcasts.
 
 ## Liveliness
 

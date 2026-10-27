@@ -26,7 +26,6 @@ import {
   Button,
   ButtonLink,
   Dialog,
-  EmptyState,
   FilePicker,
   SaveButton,
   Tabs,
@@ -577,8 +576,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                           }
                         />
                       ) : (
-                        <EmptyState
-                          size="sm"
+                        <PageEmpty
                           title="No tracks on this release yet"
                           description="Add tracks first, then credit the people on each one."
                         />
@@ -612,8 +610,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                         );
                         if (fingerprintable.length === 0) {
                           return (
-                            <EmptyState
-                              size="sm"
+                            <PageEmpty
                               title="No tracks have audio uploaded yet"
                               description="Fingerprinting needs a track's audio file on file first."
                             />

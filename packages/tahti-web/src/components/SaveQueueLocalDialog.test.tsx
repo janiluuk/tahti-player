@@ -1,4 +1,5 @@
 import {
+  act,
   cleanup,
   fireEvent,
   render,
@@ -6,13 +7,18 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { toast } from 'sonner';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { TahtiPlayable } from '../api/types';
 import type { TahtiNativeLibrary } from '../lib/nativeLibrary';
 import { usePlayerStore } from '../stores/playerStore';
 import { createFakePlaylists } from '../test/fakePlaylists';
 import { localQueueSplit, SaveQueueLocalDialog } from './SaveQueueLocalDialog';
+
+vi.mock('sonner', () => ({
+  toast: { success: vi.fn(), error: vi.fn() },
+}));
 
 const local = (id: string): TahtiPlayable => ({
   id: `local:${id}`,
@@ -83,6 +89,37 @@ describe('SaveQueueLocalDialog', () => {
       expect(fake.api.addTracks).toHaveBeenCalledWith('pl-1', ['b', 'a']),
     );
     expect(fake.titles('pl-1')).toEqual(['Local b', 'Local a']);
+  });
+
+  it('offers Undo, which deletes the new local playlist', async () => {
+    const fake = createFakePlaylists({ a: { title: 'Local a' } });
+    usePlayerStore.getState().play(local('a'));
+    render(
+      <SaveQueueLocalDialog
+        isOpen
+        onClose={() => undefined}
+        library={{ playlists: fake.api } as unknown as TahtiNativeLibrary}
+      />,
+    );
+    const dialog = await screen.findByRole('dialog');
+    fireEvent.change(within(dialog).getByLabelText('Playlist name'), {
+      target: { value: 'Saved queue' },
+    });
+    fireEvent.click(
+      within(dialog).getByRole('button', { name: 'Save local playlist' }),
+    );
+
+    await waitFor(() => expect(toast.success).toHaveBeenCalled());
+    const [message, options] = vi.mocked(toast.success).mock.calls.at(-1) as [
+      string,
+      { action: { label: string; onClick: () => void } },
+    ];
+    expect(message).toBe('Saved 1 track to “Saved queue”.');
+    expect(options.action.label).toBe('Undo');
+    await act(async () => options.action.onClick());
+
+    await waitFor(() => expect(fake.api.delete).toHaveBeenCalledWith('pl-1'));
+    expect(toast.success).toHaveBeenLastCalledWith('Removed “Saved queue”.');
   });
 
   it('cannot save when the queue has no local tracks, and reports a name clash', async () => {

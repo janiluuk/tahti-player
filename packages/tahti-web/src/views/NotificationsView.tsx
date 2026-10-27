@@ -1,7 +1,13 @@
 import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { Badge, Button, FilterChips, ViewShell } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  FilterChips,
+  InlineError,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   clearReadNotifications,
@@ -227,11 +233,7 @@ export function NotificationsView() {
           onChange={(id) => setKind(id as 'all' | NotificationKind)}
           aria-label="Filter notifications by kind"
         />
-        {actionError ? (
-          <p role="alert" className="text-accent-red-strong text-sm">
-            {actionError}
-          </p>
-        ) : null}
+        {actionError ? <InlineError>{actionError}</InlineError> : null}
         {error && items.length === 0 ? (
           <PageError
             title="Could not load notifications"

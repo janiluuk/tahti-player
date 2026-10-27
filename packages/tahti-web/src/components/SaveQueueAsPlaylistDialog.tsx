@@ -2,8 +2,13 @@ import { useState } from 'react';
 
 import { Button, Dialog, InlineError, Input } from '@tahti-player/ui';
 
-import { addStudioCollectionItem, createStudioCollection } from '../api/studio';
+import {
+  addStudioCollectionItem,
+  createStudioCollection,
+  deleteStudioCollection,
+} from '../api/studio';
 import { soundIdFromPlayableId } from '../lib/soundId';
+import { toastWithUndo } from '../lib/undoToast';
 import { usePlayerStore } from '../stores/playerStore';
 
 type Props = {
@@ -56,6 +61,10 @@ export function SaveQueueAsPlaylistDialog({ isOpen, onClose }: Props) {
     setBusy(false);
     setName('');
     onClose();
+    toastWithUndo(`Saved ${created.data.name}.`, {
+      undo: () => deleteStudioCollection(created.data.slug),
+      undoneMessage: `Removed ${created.data.name}.`,
+    });
   };
 
   return (

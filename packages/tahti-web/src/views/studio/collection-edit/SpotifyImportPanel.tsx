@@ -17,6 +17,7 @@ import {
   spotifyCoverUrl,
   type SpotifyTrack,
 } from '../../../api/sources/spotify-collection';
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 
 type Mode = 'search' | 'mine' | 'artist';
@@ -111,6 +112,8 @@ export function SpotifyImportPanel({
           >
             <Input
               className="flex-1"
+              type={mode === 'artist' ? undefined : 'search'}
+              enterKeyHint={mode === 'artist' ? undefined : 'search'}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               aria-label={
@@ -128,11 +131,14 @@ export function SpotifyImportPanel({
           </form>
         ) : null}
         {results === null ? null : results.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">
-            {mode === 'mine'
-              ? 'No tracks found. Link your Spotify artist profile in Add-ons → Spotify first.'
-              : 'No tracks found.'}
-          </p>
+          <PageEmpty
+            title="No tracks found."
+            description={
+              mode === 'mine'
+                ? 'Link your Spotify artist profile in Add-ons → Spotify first.'
+                : undefined
+            }
+          />
         ) : (
           <ul aria-label="Spotify tracks" className="flex flex-col gap-2">
             {results.map((track) => (
@@ -151,6 +157,7 @@ export function SpotifyImportPanel({
                 </div>
                 <Button
                   size="sm"
+                  variant="secondary"
                   disabled={addingUri === track.uri || added.has(track.uri)}
                   onClick={() => void add(track)}
                 >

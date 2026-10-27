@@ -58,6 +58,12 @@ export function GenrePicker({ value, onChange }: Props) {
           onValueChange={addCustom}
           normalize={capitalizeGenre}
           className="max-w-xs"
+          inputProps={{
+            type: 'search',
+            enterKeyHint: 'done',
+            autoCorrect: 'off',
+            spellCheck: false,
+          }}
         />
       )}
       <p className="text-foreground-secondary text-xs">

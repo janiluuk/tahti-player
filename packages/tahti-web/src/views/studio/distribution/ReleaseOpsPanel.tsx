@@ -7,6 +7,7 @@ import {
   Badge,
   Button,
   ExternalLink,
+  InlineError,
   Input,
   SaveButton,
   SelectableTiles,
@@ -298,6 +299,11 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
           onChange={(ids) => setActiveMethods(new Set(ids))}
           className="text-xs sm:grid-cols-2 lg:grid-cols-4"
         />
+        {activeMethods.size === 0 ? (
+          <InlineError announce={false} textSize="xs" className="mt-2">
+            Select at least one catalog method to save catalog details.
+          </InlineError>
+        ) : null}
       </div>
 
       <div className="grid gap-2 sm:grid-cols-2">
@@ -389,7 +395,12 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
       <CreditsEditor credits={credits} setCredits={setCredits} busy={busy} />
 
       <div className="flex flex-wrap gap-2">
-        <SaveButton saving={busy} label="Save catalog" onClick={saveCatalog} />
+        <SaveButton
+          saving={busy}
+          disabled={activeMethods.size === 0}
+          label="Save catalog"
+          onClick={saveCatalog}
+        />
         <Button
           size="sm"
           variant="secondary"

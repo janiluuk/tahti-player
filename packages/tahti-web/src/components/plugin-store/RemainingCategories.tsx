@@ -1,13 +1,7 @@
 import { Cast, InfoIcon, SettingsIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import {
-  Box,
-  Button,
-  EmptyState,
-  PluginStoreItem,
-  Tooltip,
-} from '@tahti-player/ui';
+import { Box, Button, PluginStoreItem, Tooltip } from '@tahti-player/ui';
 
 import {
   deleteRtmpTarget,
@@ -33,7 +27,7 @@ import {
   MulticastConfigureDialog,
   type MulticastConfiguring,
 } from '../MulticastConfigureDialog';
-import { PageError, PageLoading } from '../PageStates';
+import { PageEmpty, PageError, PageLoading } from '../PageStates';
 import { AudioPluginToggleRow } from './shared';
 
 // ── Multicast / Audio tools ─────────────────────────────────────────────────
@@ -222,8 +216,7 @@ export function DiscoveryCategory() {
 
   if (!user) {
     return (
-      <EmptyState
-        size="sm"
+      <PageEmpty
         title="Sign in to install Discover add-ons"
         description="Add-ons on your Listen and Discover pages need an account."
       />
@@ -337,8 +330,7 @@ export function ChannelCategory() {
 
   if (!user?.channel) {
     return (
-      <EmptyState
-        size="sm"
+      <PageEmpty
         title="Set up a channel first"
         description="Go live or finish channel setup to install add-ons on your public page."
       />
