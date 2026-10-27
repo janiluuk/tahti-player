@@ -93,6 +93,21 @@ export function NotificationsPanel() {
           Tahti · @aurora_fi subscribed (€5/mo)
         </p>
       </StudioPanel>
+      {prefs.notifyStudioJobsInApp === undefined ? null : (
+        <StudioPanel
+          title="Studio work"
+          description="When an upload can't be processed, or a render, stems split, export, import or distribution finishes or fails."
+        >
+          <SettingsToggle
+            label="In-app"
+            value={prefs.notifyStudioJobsInApp}
+            onChange={(value) => toggle('notifyStudioJobsInApp', value)}
+          />
+          <p className="border-border bg-background mt-4 rounded-lg border px-3 py-2 text-xs">
+            Tahti · Your edit of &ldquo;Night drive&rdquo; is ready
+          </p>
+        </StudioPanel>
+      )}
       <StudioPanel
         title="Listener actions"
         description="A daily email digest of new chat messages, comments, and broadcast feedback."
