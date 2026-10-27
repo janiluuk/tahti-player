@@ -24,6 +24,7 @@ const PAGE_TITLES: [string, string][] = [
   ['/listen/favorites', 'Favorites'],
   ['/library/favorites', 'Favorites'],
   ['/feed', 'Feed'],
+  ['/notifications', 'Notifications'],
   ['/listen/feed', 'Feed'],
   ['/history', 'History'],
   ['/listen/history', 'History'],

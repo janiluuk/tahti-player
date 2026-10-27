@@ -140,4 +140,43 @@ describe('MySupportTickets', () => {
     expect(screen.getByText('Open')).toBeTruthy();
     expect((box as HTMLTextAreaElement).value).toBe('');
   });
+  it('marks an open request resolved, and says so when that fails', async () => {
+    vi.spyOn(support, 'fetchMySupportTickets').mockResolvedValue({
+      ok: true,
+      tickets: [
+        {
+          id: '3',
+          subject: 'Upload stuck',
+          message: 'It stops at 99 %',
+          category: 'TECHNICAL',
+          status: 'OPEN',
+          createdAt: '2026-09-01T10:00:00.000Z',
+          updatedAt: '2026-09-01T10:00:00.000Z',
+          replies: [],
+        },
+      ],
+    });
+    const close = vi
+      .spyOn(support, 'closeSupportTicket')
+      .mockResolvedValueOnce({ ok: false, error: 'HTTP 500' })
+      .mockResolvedValueOnce({ ok: true });
+    await act(async () => {
+      render(<MySupportTickets />);
+    });
+    const button = screen.getByRole('button', {
+      name: 'Mark resolved: Upload stuck',
+    });
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    expect(screen.getByRole('alert').textContent).toBe('HTTP 500');
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    expect(close).toHaveBeenCalledWith('3');
+    expect(screen.getByText('Resolved')).toBeTruthy();
+    expect(
+      screen.queryByRole('button', { name: 'Mark resolved: Upload stuck' }),
+    ).toBeNull();
+  });
 });

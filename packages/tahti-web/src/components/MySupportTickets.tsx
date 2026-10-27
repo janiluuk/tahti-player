@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { Badge, Button, InlineLoader, Textarea } from '@tahti-player/ui';
 
 import {
+  closeSupportTicket,
   fetchMySupportTickets,
   replyToSupportTicket,
   type MySupportTicket,
@@ -110,6 +111,28 @@ export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
     };
   }, [refreshKey, attempt]);
 
+  const [closeError, setCloseError] = useState<{
+    ticketId: string;
+    message: string;
+  } | null>(null);
+  const [closing, setClosing] = useState<string | null>(null);
+
+  const closeTicket = async (ticketId: string) => {
+    setClosing(ticketId);
+    setCloseError(null);
+    const result = await closeSupportTicket(ticketId);
+    setClosing(null);
+    if (!result.ok) {
+      setCloseError({ ticketId, message: result.error });
+      return;
+    }
+    setTickets((current) =>
+      (current ?? []).map((ticket) =>
+        ticket.id === ticketId ? { ...ticket, status: 'RESOLVED' } : ticket,
+      ),
+    );
+  };
+
   const addReply = (ticketId: string, reply: MySupportTicketReply) => {
     setTickets((current) =>
       (current ?? []).map((ticket) =>
@@ -203,6 +226,27 @@ export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
                   ticket={ticket}
                   onSent={(reply) => addReply(ticket.id, reply)}
                 />
+                {ticket.status !== 'RESOLVED' ? (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="text"
+                      aria-label={`Mark resolved: ${ticket.subject}`}
+                      disabled={closing === ticket.id}
+                      onClick={() => void closeTicket(ticket.id)}
+                    >
+                      Mark resolved
+                    </Button>
+                    {closeError?.ticketId === ticket.id ? (
+                      <span
+                        role="alert"
+                        className="text-accent-red-strong text-xs"
+                      >
+                        {closeError.message}
+                      </span>
+                    ) : null}
+                  </div>
+                ) : null}
               </li>
             );
           })}
