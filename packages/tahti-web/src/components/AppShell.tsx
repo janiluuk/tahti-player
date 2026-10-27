@@ -360,7 +360,7 @@ export function AppShell() {
     authHydrated && !userId && !isAnonymousRouteAllowed(pathname);
 
   useEffect(() => {
-    startAuthSession();
+    void startAuthSession();
   }, []);
 
   useEffect(() => {
