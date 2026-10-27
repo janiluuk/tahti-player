@@ -534,7 +534,7 @@ export function FilesBrowserTab() {
             ? `Delete "${pendingDeleteFile.title}" permanently?`
             : 'Delete file?'
         }
-        description="This removes the file from platform storage."
+        description="This removes the file from platform storage. The artist is notified that the board removed it."
         confirmLabel="Delete"
         onCancel={() => setPendingDeleteFile(null)}
         onConfirm={() => {
