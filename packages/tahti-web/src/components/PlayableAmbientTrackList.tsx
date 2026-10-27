@@ -121,11 +121,7 @@ export function PlayableAmbientTrackList({
                 liked: likedIds.has(soundId),
                 count: likeCounts[soundId] ?? publicLikes,
                 onToggle: () => {
-                  void toggleLike(
-                    item.channelSlug!,
-                    soundId,
-                    likeCounts[soundId] ?? publicLikes,
-                  ).then((error) => {
+                  void toggleLike(item.channelSlug!, soundId).then((error) => {
                     if (error) {
                       toast.error(error);
                     }
