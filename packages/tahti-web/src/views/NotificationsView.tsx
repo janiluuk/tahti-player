@@ -35,6 +35,11 @@ function NotificationText({
 }) {
   return (
     <>
+      {notification.type === 'BACKGROUND_JOB_FAILED' ? (
+        <Badge variant="pill" color="red" className="mr-1.5 align-middle">
+          Failed
+        </Badge>
+      ) : null}
       <span className="font-semibold">{notification.title}</span>
       {notification.body ? (
         <span className="text-foreground-secondary mt-0.5 block">
