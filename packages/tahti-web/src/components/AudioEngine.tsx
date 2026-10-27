@@ -1,5 +1,5 @@
 import type Hls from 'hls.js';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import type { QueueItem } from '@tahti-player/model';
 
@@ -24,6 +24,13 @@ import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 
 const LISTEN_EVENT_AFTER_SEC = 15;
 
+const streamsWithoutCors = new Set<string>();
+
+/** Forgets which stream URLs failed to load with CORS this session. */
+export function clearStreamsWithoutCors() {
+  streamsWithoutCors.clear();
+}
+
 /**
  * Mounts a hidden <audio> element driven by the player store.
  * Live / radio: HLS via hls.js (or native Safari).
@@ -38,6 +45,7 @@ export function AudioEngine() {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const gainRef = useRef<GainNode | null>(null);
   const normalizationRef = useRef(1);
+  const [elementGeneration, setElementGeneration] = useState(0);
 
   const current = usePlayerStore(selectCurrentItem);
   const restoredPending = usePlayerStore((s) => s.restoredPending);
@@ -46,6 +54,7 @@ export function AudioEngine() {
   const muted = usePlayerStore((s) => s.muted);
   const fadeLevel = usePlayerStore((s) => s.fadeLevel);
   const seekTarget = usePlayerStore((s) => s.seekTarget);
+  const reloadNonce = usePlayerStore((s) => s.reloadNonce);
   const setStatus = usePlayerStore((s) => s.setStatus);
   const setProgress = usePlayerStore((s) => s.setProgress);
   const clearSeekTarget = usePlayerStore((s) => s.clearSeekTarget);
@@ -57,6 +66,20 @@ export function AudioEngine() {
   const setAudioElement = usePlayerStore((s) => s.setAudioElement);
   const normalizationMode = usePlaybackPrefsStore((s) => s.normalization);
 
+  // A media element source is permanent, and the Web Audio spec makes it
+  // output silence for a source loaded without CORS. A stream that only
+  // plays without CORS therefore needs an element the graph never captured.
+  const replaceCapturedElement = useCallback(() => {
+    sourceRef.current?.disconnect();
+    gainRef.current?.disconnect();
+    analyserRef.current?.disconnect();
+    sourceRef.current = null;
+    gainRef.current = null;
+    analyserRef.current = null;
+    setAnalyser(null);
+    setElementGeneration((generation) => generation + 1);
+  }, [setAnalyser]);
+
   const playable = useMemo(
     () => (current ? playableFromQueueItem(current) : null),
     [current],
@@ -67,7 +90,7 @@ export function AudioEngine() {
   useEffect(() => {
     setAudioElement(audioRef.current);
     return () => setAudioElement(null);
-  }, [setAudioElement]);
+  }, [setAudioElement, elementGeneration]);
 
   const currentIsHls =
     playable != null && !playable.embed && isHlsStream(playable);
@@ -102,7 +125,7 @@ export function AudioEngine() {
     if (!muted && audioCtxRef.current?.state === 'suspended') {
       void audioCtxRef.current.resume().catch(() => undefined);
     }
-  }, [applyNormalization, muted]);
+  }, [applyNormalization, muted, elementGeneration]);
 
   const applyNormalizationRef = useRef(applyNormalization);
   applyNormalizationRef.current = applyNormalization;
@@ -209,7 +232,7 @@ export function AudioEngine() {
       return;
     }
     const ensureGraph = () => {
-      if (canAirPlay()) {
+      if (canAirPlay() || audio.crossOrigin !== 'anonymous') {
         return;
       }
       try {
@@ -255,7 +278,7 @@ export function AudioEngine() {
     return () => {
       audio.removeEventListener('play', onPlay);
     };
-  }, [setAnalyser]);
+  }, [setAnalyser, elementGeneration]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -280,6 +303,11 @@ export function AudioEngine() {
 
     const url = playable.streamUrl;
     const isHls = isHlsStream(playable);
+    const knownWithoutCors = !isHls && streamsWithoutCors.has(url);
+    if (knownWithoutCors && sourceRef.current) {
+      replaceCapturedElement();
+      return;
+    }
 
     const cleanup = () => {
       hlsRef.current?.destroy();
@@ -328,30 +356,34 @@ export function AudioEngine() {
       updatePositionState(audio.currentTime, duration, audio.playbackRate);
     };
     // crossOrigin is required for the shared analyser (see the graph
-    // effect above) -- without it, connecting a MediaElementAudioSourceNode
-    // to a cross-origin stream still plays audio fine but the analyser
-    // reads back all-zero frequency data, so every visualizer looks dead
-    // even though sound is coming out. If the stream host doesn't
-    // actually serve CORS headers, forcing crossOrigin instead makes the
-    // browser refuse to load it -- fall back to a plain, non-CORS load
-    // so playback still works (that one source just won't visualize).
-    let triedFallback = false;
+    // effect above): a media element source fed by a non-CORS stream
+    // outputs silence, not just a dead visualizer. A host without CORS
+    // headers (or a redirect without them) makes the CORS load fail, so
+    // that stream falls back to a plain load on an element outside the
+    // graph -- it plays, it just won't visualize.
+    let triedFallback = knownWithoutCors;
     const onError = () => {
       if (audio.crossOrigin && !triedFallback) {
         triedFallback = true;
-        audio.crossOrigin = null;
         if (isHls && hlsRef.current) {
+          audio.crossOrigin = null;
           hlsRef.current.loadSource(url);
-        } else {
-          audio.src = url;
-          void audio.play().catch(() => setStatus('paused'));
+          return;
         }
+        streamsWithoutCors.add(url);
+        if (sourceRef.current) {
+          replaceCapturedElement();
+          return;
+        }
+        audio.crossOrigin = null;
+        audio.src = url;
+        void audio.play().catch(() => setStatus('paused'));
         return;
       }
       setStatus('error', 'Playback error');
     };
 
-    audio.crossOrigin = canAirPlay() ? null : 'anonymous';
+    audio.crossOrigin = canAirPlay() || knownWithoutCors ? null : 'anonymous';
     audio.addEventListener('playing', onPlaying);
     audio.addEventListener('waiting', onWaiting);
     audio.addEventListener('pause', onPause);
@@ -419,7 +451,13 @@ export function AudioEngine() {
       audio.removeEventListener('error', onError);
       cleanup();
     };
-  }, [playable?.id, playable?.streamUrl, restoredPending]);
+  }, [
+    playable?.id,
+    playable?.streamUrl,
+    restoredPending,
+    reloadNonce,
+    elementGeneration,
+  ]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -449,7 +487,12 @@ export function AudioEngine() {
 
   return (
     <>
-      <audio ref={audioRef} preload="none" className="hidden" />
+      <audio
+        key={elementGeneration}
+        ref={audioRef}
+        preload="none"
+        className="hidden"
+      />
       <ListenEventReporter
         soundId={listenSoundId(playable)}
         reported={listenReportedRef}

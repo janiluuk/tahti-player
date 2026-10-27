@@ -19,6 +19,8 @@ type Props = {
   provider: EmbedProvider;
   embedUri: string;
   className?: string;
+  /** Render as a plain block when the caller already owns the list item. */
+  as?: 'li' | 'div';
 };
 
 /**
@@ -29,7 +31,13 @@ type Props = {
  * The iframe only mounts after the listener clicks play, so the provider
  * never sees a listener's IP just from browsing the collection page.
  */
-export function EmbedTrackRow({ title, provider, embedUri, className }: Props) {
+export function EmbedTrackRow({
+  title,
+  provider,
+  embedUri,
+  className,
+  as: Container = 'li',
+}: Props) {
   const [embedOpen, setEmbedOpen] = useState(false);
   const src = embedSrcFor(provider, embedUri);
   const label = EMBED_PROVIDER_LABEL[provider];
@@ -68,7 +76,7 @@ export function EmbedTrackRow({ title, provider, embedUri, className }: Props) {
   };
 
   return (
-    <li
+    <Container
       className={`border-border overflow-hidden rounded-lg border ${className ?? ''}`}
     >
       {provider === 'HEARTHIS' && isCurrent ? (
@@ -116,6 +124,6 @@ export function EmbedTrackRow({ title, provider, embedUri, className }: Props) {
           </span>
         </Button>
       )}
-    </li>
+    </Container>
   );
 }

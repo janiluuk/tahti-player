@@ -1,7 +1,11 @@
-import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { ViewShell } from '@tahti-player/ui';
+import {
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchAdminFinancial,
@@ -37,16 +41,10 @@ export function AdminFinancialView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/financial">
           <div className="flex max-w-4xl flex-col gap-6">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-            >
-              <Link to="/admin" className="hover:underline">
-                Admin
-              </Link>
-              <span aria-hidden>→</span>
-              <span aria-current="page">Financial</span>
-            </nav>
+            <Breadcrumbs>
+              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbCurrent>Financial</BreadcrumbCurrent>
+            </Breadcrumbs>
             <ViewShell
               title="Financial"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}

@@ -16,6 +16,7 @@ import { useAuthStore } from '../../stores/authStore';
 import { StudioCollectionsView } from './StudioCollectionsView';
 
 const createStudioCollection = vi.fn();
+const deleteStudioCollection = vi.fn();
 
 vi.mock('sonner', () => ({
   toast: { error: vi.fn(), success: vi.fn() },
@@ -35,6 +36,8 @@ const fetchStudioCollections = vi.fn(async () => ({
 vi.mock('../../api/studio', () => ({
   createStudioCollection: (...args: unknown[]) =>
     createStudioCollection(...args),
+  deleteStudioCollection: (...args: unknown[]) =>
+    deleteStudioCollection(...args),
   fetchStudioCollections: (...args: unknown[]) =>
     fetchStudioCollections(...args),
 }));
@@ -174,6 +177,54 @@ describe('StudioCollectionsView create', () => {
     expect(router.state.location.pathname).toBe('/studio/playlists/warmup');
   });
 
+  it('offers Undo, which deletes the new collection and leaves its editor', async () => {
+    createStudioCollection.mockResolvedValue({
+      ok: true,
+      data: { slug: 'night-drive', name: 'Night drive', style: 'ALBUM' },
+    });
+    deleteStudioCollection.mockResolvedValue({ ok: true });
+    const router = await renderCollections();
+
+    await createCollection('Night drive');
+    expect(await screen.findByText('Designer night-drive')).toBeInTheDocument();
+
+    const [message, options] = vi.mocked(toast.success).mock.calls.at(-1) as [
+      string,
+      { action: { label: string; onClick: () => void } },
+    ];
+    expect(message).toBe('Created Night drive.');
+    expect(options.action.label).toBe('Undo');
+    await act(async () => options.action.onClick());
+
+    await waitFor(() =>
+      expect(router.state.location.pathname).toBe('/studio/collections'),
+    );
+    expect(deleteStudioCollection).toHaveBeenCalledWith('night-drive');
+    expect(toast.success).toHaveBeenLastCalledWith('Removed Night drive.');
+  });
+
+  it('keeps the editor open when the undo is refused', async () => {
+    createStudioCollection.mockResolvedValue({
+      ok: true,
+      data: { slug: 'night-drive', name: 'Night drive', style: 'ALBUM' },
+    });
+    deleteStudioCollection.mockResolvedValue({ ok: false, error: 'Nope' });
+    const router = await renderCollections();
+
+    await createCollection('Night drive');
+    await screen.findByText('Designer night-drive');
+    const [, options] = vi.mocked(toast.success).mock.calls.at(-1) as [
+      string,
+      { action: { onClick: () => void } },
+    ];
+    await act(async () => options.action.onClick());
+
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Nope'));
+    expect(router.state.location.pathname).toBe(
+      '/studio/collections/night-drive',
+    );
+  });
+
   it('stays on the list when creating fails', async () => {
     createStudioCollection.mockResolvedValue({ ok: false, error: 'Nope' });
     const router = await renderCollections();
@@ -210,6 +261,9 @@ describe('StudioCollectionsView list order', () => {
     expect(
       newer.compareDocumentPosition(older) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
+    for (const edit of screen.getAllByRole('link', { name: 'Edit' })) {
+      expect(edit).not.toHaveClass('bg-primary');
+    }
   });
 });
 

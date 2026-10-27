@@ -14,6 +14,8 @@ description: Albums, EPs and singles, collections and playlists, smart links, ca
 
 A release's tabs include **Stats**, **Smart links** (the `/r/<slug>` page that lists where to listen, with click counts) and **Export**.
 
+To remove a release, use **Delete release** on its page. Its tracklist, smart link and stats are removed; the tracks you uploaded stay in your library.
+
 After you publish, the release page offers to **register it on MusicBrainz**, the open music database players and stores use. Choose **Always offer this** or **Don't ask again**; the prepared form opens on MusicBrainz for you to submit.
 
 ## Collections and playlists
@@ -23,6 +25,7 @@ After you publish, the release page offers to **register it on MusicBrainz**, th
 - **New collection** (the **+**) creates one; pick its style.
 - On its page, **+** (**Add content**) adds tracks from your library. Tracks still being processed are shown but can't be added until they're ready.
 - Set its visibility (Public, Unlisted or Private), design its cover and text layer, and delete it from the **⋮** menu.
+- **Sort** orders its track list (default order, title, artist, newest release, shortest or longest first); the choice is remembered.
 
 Public playlists can be subscribed to, embedded and played together in a [Jam](../listening/jam.md).
 

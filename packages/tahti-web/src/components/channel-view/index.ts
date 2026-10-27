@@ -18,6 +18,8 @@ export { ChannelLiveTracklist } from './ChannelLiveTracklist';
 export { ChannelStagePlayer } from './ChannelStagePlayer';
 export { ChannelTopBar } from './ChannelTopBar';
 export { ChannelUpcomingShows } from './ChannelUpcomingShows';
+export { ChannelExtrasSections } from './ChannelExtrasSections';
+export { ChannelLiveChatNotice } from './ChannelLiveChatNotice';
 export { ChannelPageActions } from './ChannelPageActions';
 export { useChannelData } from './useChannelData';
 export { useChannelLinksDraft } from './useChannelLinksDraft';

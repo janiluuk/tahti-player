@@ -38,6 +38,7 @@ import type {
 import { ChannelTextOverlayView } from '../components/ChannelTextOverlayView';
 import { CollaborativePlaylistAdd } from '../components/CollaborativePlaylistAdd';
 import { CollectionContribution } from '../components/CollectionContribution';
+import { CollectionTrackList } from '../components/CollectionTrackList';
 import { EmbedButton } from '../components/EmbedButton';
 import {
   EntitySocialHeader,
@@ -45,7 +46,6 @@ import {
 } from '../components/EntitySocialHeader';
 import { PageFrame } from '../components/PageHeader';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
-import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
 import { ReportButton } from '../components/ReportButton';
 import { RssFeedButton } from '../components/RssFeedButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
@@ -529,30 +529,20 @@ export function CollectionView({ slug }: { slug: string }) {
         align={collection.textLayerAlign}
       />
 
-      {playables.length > 0 && (
-        <div className="shadow-float rounded-[var(--radius-card)]">
-          <PlayableAmbientTrackList
-            items={playables}
-            compactActions
-            emptyMessage="No tracks yet."
-            getAnnotation={(item) => {
-              const line = contributions.get(item.id);
-              return line ? <CollectionContribution line={line} /> : null;
-            }}
-          />
-        </div>
-      )}
-
-      {playables.length === 0 && (
-        <PageEmpty
-          title="No tracks in this playlist"
-          description={
-            isOwner
-              ? 'Add tracks from search results or your library.'
-              : "This playlist doesn't have any tracks yet."
-          }
-        />
-      )}
+      <CollectionTrackList
+        items={playables}
+        compactActions
+        getAnnotation={(item) => {
+          const line = contributions.get(item.id);
+          return line ? <CollectionContribution line={line} /> : null;
+        }}
+        empty={{
+          title: 'No tracks in this playlist',
+          description: isOwner
+            ? 'Add tracks from search results or your library.'
+            : "This playlist doesn't have any tracks yet.",
+        }}
+      />
 
       {collection.items.some((i) => i.release && !i.sound) && (
         <section className="flex flex-col gap-2">

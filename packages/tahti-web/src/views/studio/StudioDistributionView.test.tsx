@@ -54,4 +54,32 @@ describe('StudioDistributionView', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByText('No releases yet')).toBeTruthy();
   });
+
+  it('says the royalty reports failed to load instead of hiding them', async () => {
+    vi.spyOn(studio, 'fetchStudioReleases').mockResolvedValue({
+      data: { releases: [] },
+      meta: { source: 'api' },
+    } as never);
+    const royalties = vi
+      .spyOn(distribution, 'fetchAllRoyalties')
+      .mockResolvedValue({
+        data: [],
+        meta: { source: 'api', reason: 'Revelator is unavailable' },
+      } as never);
+    await renderWithRouter(<StudioDistributionView />);
+    expect(
+      await screen.findByText('Could not load your royalty reports.'),
+    ).toBeTruthy();
+    expect(screen.getByText('Revelator is unavailable')).toBeTruthy();
+
+    royalties.mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    } as never);
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(await screen.findByText('No releases yet')).toBeTruthy();
+    expect(
+      screen.queryByText('Could not load your royalty reports.'),
+    ).toBeNull();
+  });
 });

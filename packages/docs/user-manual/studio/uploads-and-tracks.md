@@ -47,6 +47,23 @@ In the track's edit dialog (**Sharing** and access tabs):
 
 Tracks from hearthis.at, Mixcloud, Spotify and Bandcamp can also be linked rather than copied: Tahti keeps the link and the provider's player plays them.
 
+### Mikseri.net
+
+Music you have on [Mikseri.net](https://www.mikseri.net) can be added to a collection as an embed. Open the collection in **Studio** and find **Add your music from Mikseri.net**:
+
+1. Paste the Mikseri track page (`mikseri.net/artists/<artist>/<song>/<id>/`), the official track embed URL, or the numeric track ID. Artist pages aren't accepted, only song pages.
+2. Enter the track title and artist name, and optionally a genre (used by collection filters).
+3. Turn on **Rights confirmed** (you own the track or have permission to embed it) and add it.
+
+Tahti stores only the embed reference and your details; the audio stays on Mikseri.net and plays in its player.
+
+If the board has blocked your uploads, Upload and the import panels say so instead of starting an import.
+
+## Library → Sounds
+
+- Switch between the card view and a **list view**: a plain table with a small preview, the status and the details of each track. The size control makes rows more or less compact.
+- Select tracks and press **Add to a release** to put them on an existing release. If you have none yet, it offers to create one first.
+
 ## Other Library tabs
 
 - **Recordings:** your past broadcasts, ready to publish as tracks.

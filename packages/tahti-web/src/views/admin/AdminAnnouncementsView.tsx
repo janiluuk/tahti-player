@@ -1,9 +1,11 @@
-import { Link } from '@tanstack/react-router';
 import { PlayIcon, ScissorsIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
   Badge,
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
   Button,
   FilePicker,
   Input,
@@ -80,16 +82,10 @@ export function AdminAnnouncementsView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/announcements">
           <div className="flex flex-col gap-6">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-            >
-              <Link to="/admin" className="hover:underline">
-                Admin
-              </Link>
-              <span aria-hidden>→</span>
-              <span aria-current="page">Announcements</span>
-            </nav>
+            <Breadcrumbs>
+              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbCurrent>Announcements</BreadcrumbCurrent>
+            </Breadcrumbs>
             <ViewShell
               title="Announcements"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}

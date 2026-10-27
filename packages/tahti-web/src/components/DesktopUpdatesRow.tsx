@@ -1,3 +1,5 @@
+import { useShallow } from 'zustand/react/shallow';
+
 import { Button, InlineError, Meter } from '@tahti-player/ui';
 
 import { useDesktopUpdateStore } from '../lib/updates/desktopUpdates';
@@ -15,7 +17,19 @@ export function DesktopUpdatesRow() {
     check,
     install,
     relaunch,
-  } = useDesktopUpdateStore();
+  } = useDesktopUpdateStore(
+    useShallow((s) => ({
+      status: s.status,
+      update: s.update,
+      progress: s.progress,
+      error: s.error,
+      checkOnStart: s.checkOnStart,
+      setCheckOnStart: s.setCheckOnStart,
+      check: s.check,
+      install: s.install,
+      relaunch: s.relaunch,
+    })),
+  );
   const version = __APP_VERSION__.split('+')[0];
   return (
     <div className="flex flex-col gap-3" data-testid="integration-updates">

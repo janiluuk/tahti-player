@@ -1,7 +1,12 @@
-import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Badge, ViewShell } from '@tahti-player/ui';
+import {
+  Badge,
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchAdminIntegrationStatus,
@@ -403,16 +408,10 @@ export function AdminVendorsView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/vendors">
           <div className="flex max-w-5xl flex-col gap-6">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-            >
-              <Link to="/admin" className="hover:underline">
-                Admin
-              </Link>
-              <span aria-hidden>→</span>
-              <span aria-current="page">Vendors</span>
-            </nav>
+            <Breadcrumbs>
+              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbCurrent>Vendors</BreadcrumbCurrent>
+            </Breadcrumbs>
             <AdminVendorsContent />
           </div>
         </AdminPageLayout>

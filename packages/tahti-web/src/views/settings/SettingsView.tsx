@@ -4,9 +4,11 @@ import { toast } from 'sonner';
 
 import { pluginAudienceForTarget } from '../../content/pluginStoreCategories';
 import {
+  CHANNEL_SETTINGS_SECTIONS,
   useSettingsModalStore,
   type AccountSettingsSection,
   type ArtistSettingsSection,
+  type ChannelSettingsSection,
 } from '../../stores/settingsModalStore';
 import { isSettingsSectionId, type SettingsSectionId } from './settingsNav';
 import { socialCallbackToast } from './socialCallback';
@@ -34,6 +36,12 @@ function isAccountSettingsSection(
   value: string | null,
 ): value is AccountSettingsSection {
   return value === 'subscriptions' || value === 'api-tokens';
+}
+
+function isChannelSettingsSection(
+  value: string | null,
+): value is ChannelSettingsSection {
+  return CHANNEL_SETTINGS_SECTIONS.some((id) => id === value);
 }
 
 /** Deep link `/settings` → Nuclear SettingsPanel modal. Also the landing
@@ -75,6 +83,7 @@ export function SettingsView() {
       category ? pluginAudienceForTarget(category) : undefined,
       section === 'artist' && isArtistSettingsSection(tab) ? tab : undefined,
       section === 'account' && isAccountSettingsSection(tab) ? tab : undefined,
+      section === 'channel' && isChannelSettingsSection(tab) ? tab : undefined,
     );
     if (!isSettingsSectionId(sectionId)) {
       useSettingsModalStore.setState({ openedToSection: false });

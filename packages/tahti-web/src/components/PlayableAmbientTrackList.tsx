@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
-import { PencilIcon } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { PencilIcon, TrashIcon } from 'lucide-react';
+import { useMemo, type ReactNode } from 'react';
 
 import { Select } from '@tahti-player/ui';
 
@@ -33,6 +33,9 @@ export function PlayableAmbientTrackList({
   compactActions,
   playAll = false,
   onEdit,
+  onRemove,
+  selectable = false,
+  onBulkRemove,
   getTrackMeta,
   defaultDensity = 'compact',
 }: {
@@ -42,7 +45,14 @@ export function PlayableAmbientTrackList({
   compactActions?: boolean;
   playAll?: boolean;
   onEdit?: (item: TahtiPlayable) => void;
-  /** Genre and public totals for a track, when the page has them. */
+  /** Same contract as `PlayableTrackTable`'s: only for items the viewer
+   * owns outright, removed without a confirmation dialog. */
+  onRemove?: (item: TahtiPlayable) => void;
+  /** Multi-select and bulk actions live in the List view. */
+  selectable?: boolean;
+  onBulkRemove?: (items: TahtiPlayable[]) => void;
+  /** Genre and public totals for a track, when the page has them. Keep it
+   * stable (useMemo / useCallback): the rows are memoized on it. */
   getTrackMeta?: (
     item: TahtiPlayable,
   ) => { genre?: string | null; stats?: AmbientTrackStats } | undefined;
@@ -60,75 +70,128 @@ export function PlayableAmbientTrackList({
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
   const [sort, setSort] = useTrackSort();
-  const sorted = sortTracks(items, sort);
+  const sorted = useMemo(() => sortTracks(items, sort), [items, sort]);
 
-  const listItems: AmbientTrackListItem[] = sorted.map((item) => {
-    const isCurrent = currentId === item.id;
-    const isPlaying =
-      isCurrent && (status === 'playing' || status === 'loading');
-    const soundId = soundIdFromPlayableId(item.id);
-    const rest = sorted.filter((other) => other.id !== item.id);
-    const annotation = getAnnotation?.(item);
-    const meta = getTrackMeta?.(item);
-    return {
-      id: item.id,
-      trackId: item.id,
-      title: item.title,
-      titleNode: soundId ? (
-        <Link to="/t/$id" params={{ id: soundId }} className="hover:underline">
-          {item.title}
-        </Link>
-      ) : undefined,
-      belowTitle: annotation ? (
-        <div className="text-foreground-secondary text-xs">{annotation}</div>
-      ) : undefined,
-      artist: item.artist,
-      coverUrl: item.coverUrl,
-      durationLabel:
-        item.durationSec != null ? formatDuration(item.durationSec) : undefined,
-      durationSec: item.durationSec ?? null,
-      genreLabel: meta?.genre ?? undefined,
-      stats: meta?.stats,
-      peaks: item.peaks ?? null,
-      progress: isCurrent && duration > 0 ? currentTime / duration : 0,
-      isPlaying,
-      onPlay: () => {
-        if (isCurrent) {
-          setStatus(isPlaying ? 'paused' : 'playing');
-          return;
-        }
-        play(item, { enqueueRest: rest });
-      },
-      onSeek:
-        isCurrent && duration > 0
-          ? (fraction) => seekTo(fraction * duration)
-          : undefined,
-      actions: (
-        <MediaIconActions
-          actions={playQueueFavoriteActions({
-            onPlay: () => play(item, { enqueueRest: rest }),
-            onQueue: () => enqueue(item),
-            queued: queue.some((queued) => queued.id === item.id),
-            onFavorite: () => toggleFavoriteTrack(item),
-            favorited: favoriteTracks.some((fav) => fav.id === item.id),
-          })
-            .filter((action) => action.id !== 'play')
-            .concat(
-              onEdit
-                ? [
-                    {
-                      id: 'edit',
-                      label: 'Edit',
-                      icon: <PencilIcon size={16} />,
-                      onClick: () => onEdit(item),
-                    },
-                  ]
-                : [],
-            )}
-        />
-      ),
-    };
-  });
+  // Built without the playback position: a progress tick then only replaces
+  // the current row, and the memoized rows skip re-rendering.
+  const baseItems = useMemo(
+    () =>
+      sorted.map((item): AmbientTrackListItem => {
+        const isCurrent = currentId === item.id;
+        const isPlaying =
+          isCurrent && (status === 'playing' || status === 'loading');
+        const soundId = soundIdFromPlayableId(item.id);
+        const rest = sorted.filter((other) => other.id !== item.id);
+        const annotation = getAnnotation?.(item);
+        const meta = getTrackMeta?.(item);
+        return {
+          id: item.id,
+          trackId: item.id,
+          title: item.title,
+          titleNode: soundId ? (
+            <Link
+              to="/t/$id"
+              params={{ id: soundId }}
+              className="hover:underline"
+            >
+              {item.title}
+            </Link>
+          ) : undefined,
+          belowTitle: annotation ? (
+            <div className="text-foreground-secondary text-xs">
+              {annotation}
+            </div>
+          ) : undefined,
+          artist: item.artist,
+          coverUrl: item.coverUrl,
+          durationLabel:
+            item.durationSec != null
+              ? formatDuration(item.durationSec)
+              : undefined,
+          durationSec: item.durationSec ?? null,
+          genreLabel: meta?.genre ?? undefined,
+          stats: meta?.stats,
+          peaks: item.peaks ?? null,
+          progress: 0,
+          isPlaying,
+          onPlay: () => {
+            if (isCurrent) {
+              setStatus(isPlaying ? 'paused' : 'playing');
+              return;
+            }
+            play(item, { enqueueRest: rest });
+          },
+          actions: (
+            <MediaIconActions
+              actions={playQueueFavoriteActions({
+                onPlay: () => play(item, { enqueueRest: rest }),
+                onQueue: () => enqueue(item),
+                queued: queue.some((queued) => queued.id === item.id),
+                onFavorite: () => toggleFavoriteTrack(item),
+                favorited: favoriteTracks.some((fav) => fav.id === item.id),
+              })
+                .filter((action) => action.id !== 'play')
+                .concat(
+                  onEdit
+                    ? [
+                        {
+                          id: 'edit',
+                          label: 'Edit',
+                          icon: <PencilIcon size={16} />,
+                          onClick: () => onEdit(item),
+                        },
+                      ]
+                    : [],
+                )
+                .concat(
+                  onRemove
+                    ? [
+                        {
+                          id: 'remove',
+                          label: `Remove ${item.title}`,
+                          title: 'Remove',
+                          icon: <TrashIcon size={16} />,
+                          onClick: () => onRemove(item),
+                        },
+                      ]
+                    : [],
+                )}
+            />
+          ),
+        };
+      }),
+    [
+      sorted,
+      currentId,
+      status,
+      queue,
+      favoriteTracks,
+      getAnnotation,
+      getTrackMeta,
+      onEdit,
+      onRemove,
+      play,
+      enqueue,
+      setStatus,
+      toggleFavoriteTrack,
+    ],
+  );
+
+  const listItems = useMemo(
+    () =>
+      duration > 0
+        ? baseItems.map((item) =>
+            item.id === currentId
+              ? {
+                  ...item,
+                  progress: currentTime / duration,
+                  onSeek: (fraction: number) => seekTo(fraction * duration),
+                }
+              : item,
+          )
+        : baseItems,
+    [baseItems, currentId, currentTime, duration, seekTo],
+  );
 
   return (
     <AmbientTrackList
@@ -155,6 +218,9 @@ export function PlayableAmbientTrackList({
           compactActions={compactActions}
           getAnnotation={getAnnotation}
           onEdit={onEdit}
+          onRemove={onRemove}
+          selectable={selectable}
+          onBulkRemove={onBulkRemove}
         />
       )}
     />

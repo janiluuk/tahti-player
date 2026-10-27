@@ -17,7 +17,7 @@ import {
   playableFromLocalTrack,
   useLocalLibraryStore,
 } from '../../stores/localLibraryStore';
-import { PlayableTrackTable } from '../PlayableTrackTable';
+import { PlayableAmbientTrackList } from '../PlayableAmbientTrackList';
 
 const FILE_LABELS = {
   title: 'Add audio files',
@@ -153,7 +153,7 @@ export function BrowserLocalFiles() {
             ) : null
           ) : (
             <div className="min-h-0 flex-1 overflow-y-auto">
-              <PlayableTrackTable
+              <PlayableAmbientTrackList
                 items={playableItems}
                 selectable
                 onRemove={(item) => {

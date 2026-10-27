@@ -135,6 +135,17 @@ describe('StudioUpdatesView newsletter send confirmation', () => {
     );
   });
 
+  it('keeps the per-draft Send off the primary fill so the page has one green action', async () => {
+    await renderView('newsletter');
+
+    expect(screen.getByRole('button', { name: 'New draft' })).toHaveClass(
+      'bg-primary',
+    );
+    expect(screen.getByRole('button', { name: /Send/ })).not.toHaveClass(
+      'bg-primary',
+    );
+  });
+
   it('sends nothing when the confirmation is cancelled', async () => {
     await renderView('newsletter');
     await act(async () =>

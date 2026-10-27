@@ -201,6 +201,7 @@ export function StudioUpdatesView({
                       <Tooltip content="New post" side="top">
                         <Button
                           size="icon-sm"
+                          variant="secondary"
                           onClick={() => setPostEditor({})}
                           aria-label="New post"
                         >
@@ -318,6 +319,7 @@ export function StudioUpdatesView({
                       <Tooltip content="New draft" side="top">
                         <Button
                           size="icon-sm"
+                          variant="secondary"
                           onClick={() => setDraftOpen(true)}
                           aria-label="New draft"
                         >
@@ -357,6 +359,7 @@ export function StudioUpdatesView({
                       {(!d.state || d.state === 'DRAFT') && !d.sentAt && (
                         <Button
                           size="sm"
+                          variant="secondary"
                           disabled={sendingId !== null}
                           onClick={() => setPendingSend(d)}
                         >

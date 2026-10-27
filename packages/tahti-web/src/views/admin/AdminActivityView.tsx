@@ -72,6 +72,7 @@ const ACTION_SCOPE: Record<string, string> = {
   MOTION_OPEN: 'governance',
   MOTION_CLOSE: 'governance',
   MOTION_COMMENT_CREATE: 'governance',
+  DISCUSSION_POST_REMOVE: 'governance',
   VOTE_CAST: 'governance',
   FEATURE_REQUEST_CREATE: 'governance',
   FEATURE_REQUEST_VOTE: 'governance',
@@ -129,6 +130,10 @@ function messageFor(entry: AdminActivityEntry): string {
       return `${actor} removed their vote from ${subject}`;
     case 'MOTION_COMMENT_CREATE':
       return `${actor} commented on ${subject}`;
+    case 'DISCUSSION_POST_REMOVE':
+      return meta.byAuthor === true
+        ? `${actor} removed their reply in a discussion`
+        : `${actor} removed a reply in a discussion`;
     case 'FEATURE_REQUEST_COMMENT_CREATE':
       return `${actor} commented on ${subject}`;
     case 'FAN_SUBSCRIPTION_CREATE': {

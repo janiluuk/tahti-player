@@ -3,7 +3,6 @@ import { toast } from 'sonner';
 
 import {
   Button,
-  ButtonLink,
   ExternalLink,
   InlineLoader,
   Input,
@@ -16,9 +15,9 @@ import type { BandcampAlbum, SoundcloudTrack } from '../../../api/sources';
 import { fetchMeProfile, patchMeProfile } from '../../../api/studio-extras';
 import { oauthAdapterFor } from '../../../plugins/import-sources';
 import { usePluginInstallStore } from '../../../stores/pluginInstallStore';
-import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import type { ServiceAction, ServicePlugin } from '../serviceCatalog';
 import { ConfigurableCard } from '../shared';
+import { GoogleDriveImport } from './GoogleDriveImport';
 import { ServerSetupHelp } from './ServerSetupHelp';
 
 export function OAuthServiceCard({
@@ -291,21 +290,10 @@ export function OAuthServiceCard({
             </p>
           )}
           {adapter.id === 'google-drive' && (
-            <div className="border-border flex flex-col gap-2 border-t pt-3">
-              <p className="text-foreground-secondary text-sm">
-                Picking files from Google Drive isn't available here yet.
-                Download them from Drive and upload them instead.
-              </p>
-              <ButtonLink
-                to="/library/upload"
-                size="sm"
-                variant="secondary"
-                className="self-start"
-                onClick={() => useSettingsModalStore.getState().close()}
-              >
-                Upload files
-              </ButtonLink>
-            </div>
+            <GoogleDriveImport
+              adapter={adapter}
+              onConnectionLost={() => setStatusTick((n) => n + 1)}
+            />
           )}
           {adapter.id === 'bandcamp' && (
             <div className="border-border flex flex-col gap-3 border-t pt-3">
@@ -348,6 +336,7 @@ export function OAuthServiceCard({
                       </div>
                       <Button
                         size="sm"
+                        variant="secondary"
                         disabled={bandcampImporting !== null}
                         onClick={() => void importBandcampAlbum(album)}
                       >
@@ -394,6 +383,7 @@ export function OAuthServiceCard({
                       </span>
                       <Button
                         size="sm"
+                        variant="secondary"
                         disabled={scBusy}
                         onClick={() => void importSoundcloud([track], false)}
                       >

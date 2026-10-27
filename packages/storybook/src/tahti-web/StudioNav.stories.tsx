@@ -17,6 +17,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Overview: Story = {
   args: { current: '/studio', global: true },
+  play: async ({ canvasElement }) => {
+    await expect(
+      within(canvasElement).getByRole('tablist', { name: 'Studio pages' }),
+    ).toBeVisible();
+    await expect(
+      canvasElement.querySelector('[data-studio-nested-nav]'),
+    ).toBeNull();
+  },
 };
 
 export const PerformActive: Story = {

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { TahtiPlayable } from '@tahti-web/api/types';
 import { PlayableAmbientTrackList } from '@tahti-web/components/PlayableAmbientTrackList';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 import { withinBody } from './_lib/play';
@@ -110,5 +110,31 @@ export const SortByTitle: Story = {
         'Polar Static',
       ]),
     );
+  },
+};
+
+export const Removable: Story = {
+  name: 'Removable (local files)',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'With `onRemove` each row gets a Remove action; with `selectable` and `onBulkRemove` the List view keeps multi-select and bulk remove. Used by the browser local files panel.',
+      },
+    },
+  },
+  args: { onRemove: fn(), selectable: true, onBulkRemove: fn() },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      await canvas.findByRole('button', { name: 'Remove After Hours' }),
+    );
+    await expect(args.onRemove).toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'After Hours' }),
+    );
+    await userEvent.click(canvas.getByRole('radio', { name: 'List' }));
+    await expect(
+      (await canvas.findAllByRole('checkbox')).length,
+    ).toBeGreaterThan(1);
   },
 };

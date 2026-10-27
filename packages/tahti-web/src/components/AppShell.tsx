@@ -35,6 +35,7 @@ import { isAnonymousRouteAllowed } from '../layout/anonymousRoutes';
 import {
   isFullBleedRoute,
   MAIN_CONTENT_PADDING,
+  MAIN_SCROLLPORT_SHADOW_ROOM,
 } from '../layout/contentPadding';
 import { hasAccountRole, hasStudioAccess } from '../lib/accountRoles';
 import { diagnosticsEnabled } from '../lib/buildPolicy';
@@ -359,7 +360,7 @@ export function AppShell() {
     authHydrated && !userId && !isAnonymousRouteAllowed(pathname);
 
   useEffect(() => {
-    startAuthSession();
+    void startAuthSession();
   }, []);
 
   useEffect(() => {
@@ -670,7 +671,9 @@ export function AppShell() {
                 tabIndex={-1}
                 className={cn(
                   'focus-visible:ring-primary h-full min-w-0 overflow-x-hidden overflow-y-auto outline-none focus-visible:ring-2 focus-visible:ring-inset',
-                  fullBleedRoute && MAIN_CONTENT_PADDING,
+                  fullBleedRoute
+                    ? MAIN_CONTENT_PADDING
+                    : MAIN_SCROLLPORT_SHADOW_ROOM,
                 )}
                 data-studio-shell
               >

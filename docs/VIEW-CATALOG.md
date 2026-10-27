@@ -13,59 +13,15 @@ Legend:
 
 ## Desktop Player (`packages/player`)
 
-### Routed Views
-
-| View                                  | Route                           | File                                          | Storybook | Candidate For                                                                                                                                                         |
-| ------------------------------------- | ------------------------------- | --------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Dashboard](#dashboard)               | `/dashboard`                    | `src/views/Dashboard/Dashboard.tsx`           | No Story  | CardsRow, TopList, CardGrid — all have shared UI stories but not wired for player                                                                                     |
-| [Search](#search)                     | `/search?q=`                    | `src/views/Search/Search.tsx`                 | No Story  | Tabs, CardGrid, EmptyState                                                                                                                                            |
-| [Album Detail](#album-detail)         | `/album/$providerId/$albumId`   | `src/views/Album/Album.tsx`                   | No Story  | ViewShell, MediaArtwork, TrackTable                                                                                                                                   |
-| [Artist Detail](#artist-detail)       | `/artist/$providerId/$artistId` | `src/views/Artist/Artist.tsx`                 | No Story  | CardsRow, TopList, MediaArtwork — 3 confirmed Badge-pill duplicates in child widgets (ArtistSocialHeader.tsx:135, ArtistBioHeader.tsx:88,97), see sweep section below |
-| [Favorite Albums](#favorite-albums)   | `/favorites/albums`             | `src/views/Favorites/FavoriteAlbums.tsx`      | No Story  | CardGrid, EmptyState                                                                                                                                                  |
-| [Favorite Artists](#favorite-artists) | `/favorites/artists`            | `src/views/Favorites/FavoriteArtists.tsx`     | No Story  | CardGrid, EmptyState                                                                                                                                                  |
-| [Favorite Tracks](#favorite-tracks)   | `/favorites/tracks`             | `src/views/Favorites/FavoriteTracks.tsx`      | No Story  | TrackTable, EmptyState                                                                                                                                                |
-| [Playlists](#playlists)               | `/playlists/`                   | `src/views/Playlists/Playlists.tsx`           | No Story  | CardGrid, FilterChips, EmptyState                                                                                                                                     |
-| [Playlist Detail](#playlist-detail)   | `/playlists/$playlistId`        | `src/views/PlaylistDetail/PlaylistDetail.tsx` | No Story  | TrackTable, ViewShell                                                                                                                                                 |
-| [Playlist Import](#playlist-import)   | `/playlists/import/$providerId` | `src/views/PlaylistImport/PlaylistImport.tsx` | No Story  | Input, Button                                                                                                                                                         |
-| [History](#history)                   | `/history`                      | `src/views/History/History.tsx`               | No Story  | Tabs, CalendarHeatmap, DayOfWeekChart, ListeningClock, TopList                                                                                                        |
-| [Sources](#sources)                   | `/sources`                      | `src/views/Sources/Sources.tsx`               | No Story  | SettingsPanel, Toggle, Select                                                                                                                                         |
-
-### Settings Modal Views
-
-| View                                      | Modal Tab  | File                                                | Storybook | Candidate For                      |
-| ----------------------------------------- | ---------- | --------------------------------------------------- | --------- | ---------------------------------- |
-| [Settings](#settings)                     | General    | `src/views/Settings/Settings.tsx`                   | Has Story | — (covered by SettingsPanel story) |
-| [Keyboard Shortcuts](#keyboard-shortcuts) | Shortcuts  | `src/views/KeyboardShortcuts/KeyboardShortcuts.tsx` | No Story  | KeyCombo                           |
-| [Plugins](#plugins)                       | Plugins    | `src/views/Plugins/Plugins.tsx`                     | Has Story | PluginItem, PluginStoreItem        |
-| [Themes](#themes)                         | Themes     | `src/views/Themes/Themes.tsx`                       | Has Story | ThemeStoreItem                     |
-| [Logs](#logs)                             | Logs       | `src/views/Logs/Logs.tsx`                           | Has Story | LogViewer                          |
-| [What's New](#whats-new)                  | What's New | `src/views/WhatsNew/WhatsNew.tsx`                   | No Story  | Timeline components                |
+The desktop app renders tahti-web (`packages/player/src/main.tsx` calls
+`mountTahtiApp`), so its views are the Tahti Web views below. Nuclear's own
+desktop views were removed in 2026-10.
 
 ### Served to other devices by the desktop app
 
 | View                         | Route                                  | File                                          | Storybook | Candidate For                                                         |
 | ---------------------------- | -------------------------------------- | --------------------------------------------- | --------- | --------------------------------------------------------------------- |
 | [Tahti Jam remote](#tahti-jam-remote) | `/remote` on the Jam server (LAN, port 4120-4129) | `packages/tahti-web/src/remote/JamRemote.tsx` | Has Story | TahtiJam components; not the `/jam/$code` shared listening sessions |
-
-### Player Sub-Components (no stories, candidates)
-
-| Component            | File                                                      | Potential Story                                                   |
-| -------------------- | --------------------------------------------------------- | ----------------------------------------------------------------- |
-| AlbumHeader          | `src/views/Album/components/AlbumHeader.tsx`              | MediaArtwork + metadata layout                                    |
-| AlbumTrackList       | `src/views/Album/components/AlbumTrackList.tsx`           | TrackTable wrapper                                                |
-| ArtistAlbumsGrid     | `src/views/Artist/components/ArtistAlbumsGrid.tsx`        | CardGrid wrapper                                                  |
-| ArtistBioHeader      | `src/views/Artist/components/ArtistBioHeader.tsx`         | Artist header — 2 confirmed Badge-pill duplicates at lines 88, 97 |
-| ArtistPopularTracks  | `src/views/Artist/components/ArtistPopularTracks.tsx`     | TrackTable subset                                                 |
-| ArtistSimilarArtists | `src/views/Artist/components/ArtistSimilarArtists.tsx`    | CardGrid wrapper                                                  |
-| DashboardCardsWidget | `src/views/Dashboard/components/DashboardCardsWidget.tsx` | CardsRow wrapper                                                  |
-| DashboardEmptyState  | `src/views/Dashboard/components/DashboardEmptyState.tsx`  | EmptyState variant                                                |
-| HistoryBody          | `src/views/History/components/HistoryBody.tsx`            | Tabs + Charts composition                                         |
-| HistoryList          | `src/views/History/components/HistoryList.tsx`            | HistoryDayGroup list                                              |
-| HistoryStats         | `src/views/History/components/HistoryStats.tsx`           | Charts composition                                                |
-| PlaylistCardGrid     | `src/views/Playlists/components/PlaylistCardGrid.tsx`     | CardGrid wrapper                                                  |
-| PlaylistDetailHeader | `src/views/Playlists/components/PlaylistDetailHeader.tsx` | PageHeader variant                                                |
-| SearchEmptyState     | `src/views/Search/SearchEmptyState.tsx`                   | EmptyState variant                                                |
-| TimelineEntry        | `src/views/WhatsNew/TimelineEntry.tsx`                    | Changelog timeline                                                |
 
 ---
 
@@ -91,7 +47,7 @@ Legend:
 | View                              | Route                     | File                            | Storybook | Candidate For                                                                                                                                |
 | --------------------------------- | ------------------------- | ------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Artist Profile](#artist-profile) | `/u/$username`            | `src/views/ArtistView.tsx`      | No Story  | EntitySocialHeader, PlayableTrackTable, Tabs, CardGrid, GlowMediaTile                                                                                            |
-| [Channel](#channel)               | `/channel/$slug`          | `src/views/ChannelView.tsx`     | Has Story | ChannelBackdropCard, ChannelVisualizer, Tabs, FilterChips, StatChip — 2 confirmed pill duplicates (lines 885, 1027), see sweep section below |
+| [Channel](#channel)               | `/channel/$slug`          | `src/views/ChannelView.tsx`     | Has Story | ChannelBackdropCard, ChannelVisualizer, Tabs, FilterChips, StatChip, ChannelBlocksSection — 2 confirmed pill duplicates (lines 885, 1027), see sweep section below |
 | [Collection](#collection)         | `/u/$username/c/$slug`    | `src/views/CollectionView.tsx`  | No Story  | PlayableTrackTable, PageHeader                                                                                                               |
 | [Track Detail](#track-detail)     | `/t/$id`                  | `src/views/TrackDetailView.tsx` | Has Story | —                                                                                                                                            |
 | [Smart Link](#smart-link)         | `/r/$slug`                | `src/views/SmartLinkView.tsx`   | No Story  | PlayableTrackTable, PageHeader                                                                                                               |
@@ -197,6 +153,8 @@ pro-editor `MasteringPanel`/`StemsPanel`/`PluginControls`.
 | [Governance Members](#governance-members)               | `/governance/members`          | `src/views/GovernanceMembersView.tsx`       | No Story  | Table, Card layout                                                                                                                                                            |
 | [Governance Meeting Detail](#governance-meeting-detail) | `/governance/meetings/$id`     | `src/views/GovernanceMeetingDetailView.tsx` | No Story  | Card layout                                                                                                                                                                   |
 | [Governance Motion Detail](#governance-motion-detail)   | `/governance/motions/$id`      | `src/views/GovernanceMotionDetailView.tsx`  | No Story  | Card layout                                                                                                                                                                   |
+| Discussions                                             | `/governance/discussions`      | `src/views/DiscussionsView.tsx`             | Has Story | Topic list: pinned, closed, following/muted badges; members only                                                                                                               |
+| Discussion topic                                        | `/governance/discussions/$id`  | `src/views/DiscussionTopicView.tsx`         | Has Story | Topic body, replies, reply form; closed topics take no replies                                                                                                                 |
 | [Feature Requests](#feature-requests)                   | `/governance/feature-requests` | `src/views/FeatureRequestsView.tsx`         | No Story  | Card layout, Badge                                                                                                                                                            |
 | [Governance History](#governance-history)               | `/governance/history`          | `src/views/PublicGovernanceHistoryView.tsx` | No Story  | Card layout                                                                                                                                                                   |
 | [Transparency](#transparency)                           | `/transparency`                | `src/views/TransparencyView.tsx`            | No Story  | StatChip, CardsRow                                                                                                                                                            |
@@ -286,7 +244,6 @@ pro-editor `MasteringPanel`/`StemsPanel`/`PluginControls`.
 
 | Package                                                                  | Total Views                                 | Has Story | No Story | Candidates                                                                            |
 | ------------------------------------------------------------------------ | ------------------------------------------- | --------- | -------- | ------------------------------------------------------------------------------------- |
-| `packages/player`                                                        | 18 routed + 6 settings + ~30 sub-components | 3         | 21       | 15+ (CardGrid, TrackTable, EmptyState reuse)                                          |
 | `packages/tahti-web` core (Listen/Discovery + Artist/Channel/Collection) | 17                                          | 4         | 13       | 8+ (AppShell, PageHeader, GlowMediaTile)                                              |
 | `packages/tahti-web` auth                                                | 9                                           | 1         | 8        | 3 (AuthDialog, Input, Button) — Account/Settings now has a story via `SettingsPanels` |
 | `packages/tahti-web` library                                             | 7                                           | 0         | 7        | 4 (CardGrid, Tabs, TrackTable)                                                        |
@@ -312,8 +269,6 @@ These shared components are used across many views but lack dedicated Storybook 
 | **SectionTabs**                | Studio, Admin navigation                      | Has story                                                    |
 | **GlowMediaTile**              | Discover, Library, Collection views           | Has story                                                    |
 | **EntitySocialHeader**         | Artist, Channel, Collection pages             | Has story                                                    |
-| **CardGrid** (desktop)         | Dashboard, Favorites, Playlists, Library      | Shared UI story only                                         |
-| **TrackTable** (desktop)       | Favorites, Playlist, Album, History           | Shared UI story only                                         |
 | **FilterChips**                | Discover, Library, Studio                     | Shared UI story only                                         |
 | **LegalDocShell**              | Terms, Privacy, AGPL, About                   | Has story                                                    |
 | **InPageNav**                  | Long-form pages                               | Has story                                                    |
@@ -335,8 +290,6 @@ Verified by reading actual imports (not guessed) for input/pill/badge/filter-chi
 | `tahti-web/src/views/TrackDetailView.tsx:~509` ("Private" pill)                                              | View already imports `Input`/`Button`/`Dialog` from ui but not `Badge`                                                                                                       |
 | `tahti-web/src/components/HelpLayer.tsx`, `ChannelBackdropCard.tsx`                                          | Same pill-button pattern                                                                                                                                                     |
 | `tahti-web/src/views/ChannelView.tsx:885` (quick-add stage chip)                                             | Closer to `FilterChips`/`StudioToggleChip` shape than plain `Badge`                                                                                                          |
-| `player/src/views/Artist/components/ArtistSocialHeader.tsx:135-138` (location pill)                          | Raw `<span>`, icon+text                                                                                                                                                      |
-| `player/src/views/Artist/components/ArtistBioHeader.tsx:88-94` (genre/mood tags), `:97-101` ("on tour" flag) | Both already sit in a file that imports `Box`/`Loader`/`StatChip` — looks like an oversight, not a deliberate departure                                                      |
 | `tahti-web/src/views/TransparencyResolutionsView.tsx:106-114` (3 vote-count pills)                           | Raw `<span className="border-border rounded border px-2 py-1">` per YES/NO/ABSTAIN count                                                                                     |
 
 **Duplicates of `FilterChips`** (`packages/ui/src/components/FilterChips`, has story) — reimplemented toggle-chip selection:
@@ -364,15 +317,13 @@ Verified by reading actual imports (not guessed) for input/pill/badge/filter-chi
 
 | Location                                                         | Wraps                  | Notes                                                             |
 | ---------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------- |
-| `packages/player/src/views/Settings/TextField.tsx`               | `Input`                | Pure pass-through rename of `value`/`setValue`, no added behavior |
 | `tahti-web/src/views/studio/StudioStripeView.tsx` → `StatusPill` | `Badge variant="pill"` | Adds only a ✓/○ glyph prefix                                      |
-| `packages/player/src/views/Sources/components/ProviderPill.tsx`  | `Badge variant="pill"` | Adds only an icon + `gap-1`                                       |
 
 **Also found (not a chip/badge, but same easy-fix shape):** `GovernanceView.tsx:~475` uses a raw `<textarea>` with manual classes instead of `Textarea` (already used elsewhere, e.g. `FeatureRequestsView.tsx`).
 
 **New-primitive candidates** (nothing to reuse yet — not swaps): selectable tile w/ label+hint (`OnboardingView.tsx` artist-kind + appearance toggle groups); `Meter`/`DonutChart` (`AdminStorageView.tsx` progress bar + conic-gradient donut, and `AdminI18nView.tsx:142` translation-progress bar); shared list-row selection style (`AdminUsersView.tsx` user picker); shared image-thumbnail-grid picker (`AdminArtworkPresetsView.tsx`, `StudioReleaseDetailView.tsx` library-picker rows — low priority, has a "Added" `<span>` at line 1077 that's a soft `Badge` candidate).
 
-**Checked and NOT candidates** (legitimately distinct use cases): `SearchBox.tsx` (player, already composes `Input`); `SubgenreTagInput.tsx` (removable free-text tags — different interaction than `Badge`/`FilterChips`, worth a future look but not a swap); `ChannelView.tsx:1027` social-link pill (interactive icon+link); `AdminUsersView.tsx` selectable list rows (no shared list-row primitive exists yet — legit gap); `StudioPanel.tsx` outer shell (structurally close to `Box` but adds header layout `Box` lacks — low-risk future unification, not a pure duplicate); `JamView.tsx` participant chips (avatar+name, richer than plain `Badge`); `AgmTab.tsx:436` raw `<input type="file">` (a hidden-input upload trigger, not a text-input duplicate — `FilePicker` may not fit this exact label-wrapped pattern without changes); ~65 Admin/Auth/Library/Help/Legal/Utility/Embed views already fully on shared primitives with zero hand-rolled duplicates found (see prior-pass note below for the input/pill/chip inventory that established this).
+**Checked and NOT candidates** (legitimately distinct use cases): `SubgenreTagInput.tsx` (removable free-text tags — different interaction than `Badge`/`FilterChips`, worth a future look but not a swap); `ChannelView.tsx:1027` social-link pill (interactive icon+link); `AdminUsersView.tsx` selectable list rows (no shared list-row primitive exists yet — legit gap); `StudioPanel.tsx` outer shell (structurally close to `Box` but adds header layout `Box` lacks — low-risk future unification, not a pure duplicate); `JamView.tsx` participant chips (avatar+name, richer than plain `Badge`); `AgmTab.tsx:436` raw `<input type="file">` (a hidden-input upload trigger, not a text-input duplicate — `FilePicker` may not fit this exact label-wrapped pattern without changes); ~65 Admin/Auth/Library/Help/Legal/Utility/Embed views already fully on shared primitives with zero hand-rolled duplicates found (see prior-pass note below for the input/pill/chip inventory that established this).
 
 **Coverage note:** full app now swept for input/pill/filter-chip patterns — all ~140 views across `packages/player` and `packages/tahti-web` (2026-09-12 pass covered ~25 views + the `Input`/`Badge`/`FilterChips` primitive inventory; 2026-09-14 pass covered the remaining ~115). **Fix pass done 2026-09-14** — most of the findings above have been swapped to `Badge`/`FilterChips`/`Input`/`Textarea` (`StudioToggleChip` and `PerkChip` deleted entirely in favor of `FilterChips`, which gained `disabled` and per-item `icon` support to make that possible); a handful turned out not to be real duplicates on closer inspection (action buttons, a curve-preview picker, tile grids with descriptions) and were corrected or fixed differently (e.g. `Button` instead of `Badge`). See `docs/todo/storybook-theme-unification-sweep.md` for the full fixed/corrected/remaining breakdown. Other primitive categories (`Table`, `Card`, `Dialog`, `Select`) were not in scope for this sweep.
 
@@ -385,4 +336,4 @@ To update this catalog:
 1. Scan `packages/*/src/views/` for new/removed view files
 2. Cross-reference with `packages/storybook/src/**/*.stories.tsx`
 3. Update Storybook status and candidate flags
-4. Regenerate route links from router config (`packages/player/src/routes/`, `packages/tahti-web/src/router.tsx`)
+4. Regenerate route links from router config (`packages/tahti-web/src/router.tsx`)

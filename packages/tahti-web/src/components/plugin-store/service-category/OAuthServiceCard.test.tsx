@@ -96,6 +96,15 @@ describe('OAuthServiceCard', () => {
     expect((buttons[1] as HTMLButtonElement).disabled).toBe(false);
   });
 
+  it('keeps the per-album Import buttons off the primary fill', async () => {
+    render(<OAuthServiceCard plugin={plugin} action={action} />);
+    await open();
+    const buttons = await screen.findAllByRole('button', { name: 'Import' });
+    for (const button of buttons) {
+      expect(button.className).not.toMatch(/\bbg-primary\b/);
+    }
+  });
+
   it('a throwing disconnect toasts and releases the button', async () => {
     adapter.disconnect.mockRejectedValue(new Error('x'));
     render(<OAuthServiceCard plugin={plugin} action={action} />);

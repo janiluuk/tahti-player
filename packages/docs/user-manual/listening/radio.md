@@ -17,9 +17,15 @@ Open **Radio** in the sidebar:
 
 ## Internet radio
 
-Listen and Radio also list internet radio stations (YleX, Radio Helsinki, Radio Rock, Suomipop, NRJ, Radio Nova and others). A station card plays the stream; its title opens the station page with what's on, when the station publishes it.
+Listen and Radio also list internet radio stations (YleX, Radio Helsinki, Radio Rock, Suomipop, NRJ, Radio Nova and others). A station card plays the stream; its title opens the station page with what's on, when the station publishes it. The heart on a card adds the station to your favorites.
 
-Add your own stations in **Settings → Playback**. Choose which stations show on Listen from the widget store (**+** on Listen).
+Below Tahti Radio, the **Radio** page shows:
+
+- **Favorite stations**, once you have some.
+- The **Radio** row: the curated stations, the ones you turned on, and your own.
+- **Add stations**: **Browse stations** opens the radio directory in Add-ons; **Add your own** takes a stream URL.
+
+You can also add your own stations in **Settings → Playback**, and choose which stations show on Listen from the widget store (**+** on Listen).
 
 {% hint style="info" %}
 Some stations block playback from other websites. If a station won't start, the player says so; try again later or open the station's own site.

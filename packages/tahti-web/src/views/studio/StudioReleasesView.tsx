@@ -29,6 +29,7 @@ import {
 
 import {
   createStudioRelease,
+  deleteStudioRelease,
   fetchStudioReleases,
   patchStudioReleaseVisual,
 } from '../../api/studio';
@@ -38,6 +39,7 @@ import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { resolveNewReleaseVisualizer } from '../../lib/releaseVisualizer';
+import { toastWithUndo } from '../../lib/undoToast';
 import { ReleaseCsvImportButton } from './ReleaseCsvImportButton';
 import { ReleasePinButton } from './ReleasePinButton';
 
@@ -128,7 +130,15 @@ export function StudioReleasesView() {
     if (!visualResult.ok) {
       toast.error('Release created, but its visualizer could not be saved.');
     }
-    toast.success(`Created ${r.data.title}.`);
+    const created = r.data;
+    toastWithUndo(`Created ${created.title}.`, {
+      undo: () => deleteStudioRelease(created.id),
+      undoneMessage: `Removed ${created.title}.`,
+      onUndone: () =>
+        setReleases((current) =>
+          current.filter((release) => release.id !== created.id),
+        ),
+    });
     closeCreate();
     reload();
   };
@@ -231,6 +241,7 @@ export function StudioReleasesView() {
                   <Tooltip content="New release" side="top">
                     <Button
                       size="icon-sm"
+                      variant="secondary"
                       onClick={() => setCreateOpen(true)}
                       aria-label="New release"
                     >

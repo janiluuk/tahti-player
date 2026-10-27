@@ -1,10 +1,12 @@
-import { Link } from '@tanstack/react-router';
 import { ExternalLinkIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
   Alert,
   Badge,
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
   Button,
   ButtonAnchor,
   ButtonLink,
@@ -86,16 +88,10 @@ export function AdminDashboardView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin">
           <div className="flex flex-col gap-6">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-            >
-              <Link to="/admin" className="hover:underline">
-                Admin
-              </Link>
-              <span aria-hidden>→</span>
-              <span aria-current="page">Dashboard</span>
-            </nav>
+            <Breadcrumbs>
+              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbCurrent>Dashboard</BreadcrumbCurrent>
+            </Breadcrumbs>
             <ViewShell
               title="Dashboard"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}

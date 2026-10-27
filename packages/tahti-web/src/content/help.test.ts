@@ -75,6 +75,22 @@ describe('earnings help', () => {
   });
 });
 
+describe('governance help', () => {
+  it('explains discussions and that they are not votes', () => {
+    const discussions = getHelpArticle('governance')?.sections.find(
+      (section) => section.heading === 'Discussions',
+    );
+    expect(
+      discussions?.body.some((line) =>
+        line.includes('/governance/discussions'),
+      ),
+    ).toBe(true);
+    expect(discussions?.body.some((line) => line.includes('not a vote'))).toBe(
+      true,
+    );
+  });
+});
+
 describe('member governance and venue help', () => {
   it('names the member governance panels', () => {
     const member = getHelpArticle('tier-limits')?.sections.find(

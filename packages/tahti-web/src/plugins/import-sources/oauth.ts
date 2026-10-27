@@ -2,8 +2,10 @@ import {
   disconnectIntegration,
   fetchBandcampAlbums,
   fetchConnectionStatus,
+  fetchGoogleDrivePickerConfig,
   fetchSoundcloudTracks,
   importBandcampAlbum,
+  importGoogleDriveFiles,
   importSoundcloudTracks,
   oauthStartUrl,
   SOURCE_DEFS,
@@ -55,6 +57,8 @@ export const soundcloudSourceAdapter: SoundcloudSourceAdapter = {
 export const googleDriveSourceAdapter: GoogleDriveSourceAdapter = {
   ...oauthBase('google-drive'),
   id: 'google-drive',
+  pickerConfig: fetchGoogleDrivePickerConfig,
+  importFiles: importGoogleDriveFiles,
 };
 
 export const mixcloudSourceAdapter: MixcloudSourceAdapter = {

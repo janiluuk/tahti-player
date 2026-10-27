@@ -50,6 +50,7 @@ export class AuthSession {
   private started = false;
   private onFocus: (() => void) | null = null;
   private onOnline: (() => void) | null = null;
+  private restorePending = false;
 
   constructor(config: AuthSessionConfig) {
     this.config = {
@@ -121,6 +122,39 @@ export class AuthSession {
     return this.refreshPromise;
   }
 
+  /**
+   * Cold start for stored-token clients (desktop keychain, CLI): trades the
+   * saved refresh token for an access token. Resolves `true` when signed in.
+   * A rejected token is cleared; when offline or the server fails, the token
+   * is kept and the restore is retried on the next `online` / focus event.
+   */
+  async restore(): Promise<boolean> {
+    if (this.state.status === 'signed-in') {
+      return true;
+    }
+    if (this.config.cookieRefresh) {
+      return false;
+    }
+    let stored: string | null;
+    try {
+      stored = await this.config.storage.getRefreshToken();
+    } catch {
+      this.restorePending = false;
+      return false;
+    }
+    if (!stored) {
+      this.restorePending = false;
+      return false;
+    }
+    const token = await this.refresh();
+    if (token) {
+      this.restorePending = false;
+      return true;
+    }
+    this.restorePending = Boolean(await this.readStoredToken());
+    return false;
+  }
+
   async fetchWithAuth(
     input: RequestInfo | URL,
     init?: RequestInit,
@@ -182,10 +216,10 @@ export class AuthSession {
     }
     if (typeof window !== 'undefined') {
       this.onFocus = () => {
-        void this.refreshIfDue();
+        void this.resumeOrRefresh();
       };
       this.onOnline = () => {
-        void this.refreshIfDue();
+        void this.resumeOrRefresh();
       };
       window.addEventListener('focus', this.onFocus);
       window.addEventListener('online', this.onOnline);
@@ -218,10 +252,16 @@ export class AuthSession {
   private async runRefresh(): Promise<string | null> {
     const previous = this.state.status === 'signed-in' ? this.state : null;
     this.setState({ status: 'refreshing' });
+    let refreshToken: string | null = null;
+    if (!this.config.cookieRefresh) {
+      try {
+        refreshToken = await this.config.storage.getRefreshToken();
+      } catch {
+        this.restoreAfterFailedRefresh(previous);
+        return null;
+      }
+    }
     try {
-      const refreshToken = this.config.cookieRefresh
-        ? null
-        : await this.config.storage.getRefreshToken();
       if (!this.config.cookieRefresh && !refreshToken) {
         await this.clearLocal({ broadcast: true });
         return null;
@@ -245,11 +285,7 @@ export class AuthSession {
         return null;
       }
       if (!response.ok) {
-        if (previous) {
-          this.applySignedIn({ ...previous, broadcast: false });
-        } else {
-          this.setState({ status: 'signed-out' });
-        }
+        this.restoreAfterFailedRefresh(previous);
         return null;
       }
       const data = (await response.json()) as RefreshResponse;
@@ -265,16 +301,38 @@ export class AuthSession {
       return data.accessToken;
     } catch (err) {
       if (isNetworkError(err)) {
-        if (previous) {
-          this.applySignedIn({ ...previous, broadcast: false });
-        } else {
-          this.setState({ status: 'signed-out' });
-        }
+        this.restoreAfterFailedRefresh(previous);
         return null;
       }
       await this.clearLocal({ broadcast: true });
       return null;
     }
+  }
+
+  private restoreAfterFailedRefresh(
+    previous: Extract<AuthSessionState, { status: 'signed-in' }> | null,
+  ): void {
+    if (previous) {
+      this.applySignedIn({ ...previous, broadcast: false });
+    } else {
+      this.setState({ status: 'signed-out' });
+    }
+  }
+
+  private async readStoredToken(): Promise<string | null> {
+    try {
+      return await this.config.storage.getRefreshToken();
+    } catch {
+      return null;
+    }
+  }
+
+  private async resumeOrRefresh(): Promise<void> {
+    if (this.restorePending && this.state.status === 'signed-out') {
+      await this.restore();
+      return;
+    }
+    await this.refreshIfDue();
   }
 
   private async refreshIfDue(): Promise<void> {
@@ -312,7 +370,13 @@ export class AuthSession {
   }
 
   private async clearLocal(opts: { broadcast: boolean }): Promise<void> {
-    await this.config.storage.setRefreshToken(null);
+    this.restorePending = false;
+    try {
+      await this.config.storage.setRefreshToken(null);
+    } catch {
+      // The in-memory session still ends; a stale stored token is rejected
+      // by the server on the next restore.
+    }
     if (this.proactiveTimer) {
       clearTimeout(this.proactiveTimer);
       this.proactiveTimer = null;

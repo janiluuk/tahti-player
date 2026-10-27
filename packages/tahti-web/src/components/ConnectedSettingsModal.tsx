@@ -59,6 +59,7 @@ export function ConnectedSettingsModal() {
   const openedToSection = useSettingsModalStore((s) => s.openedToSection);
   const artistSection = useSettingsModalStore((s) => s.artistSection);
   const accountSection = useSettingsModalStore((s) => s.accountSection);
+  const channelSection = useSettingsModalStore((s) => s.channelSection);
   const pluginCategory = useSettingsModalStore((s) => s.pluginCategory);
   const user = useAuthStore((s) => s.user);
   const openAuth = useAuthModalStore((s) => s.open);
@@ -101,6 +102,7 @@ export function ConnectedSettingsModal() {
       section: resolvedTab,
       artistSection,
       accountSection,
+      channelSection,
       pluginCategory,
     });
     if (!locationHref.startsWith('/settings')) {
@@ -112,6 +114,7 @@ export function ConnectedSettingsModal() {
   }, [
     accountSection,
     artistSection,
+    channelSection,
     isOpen,
     locationHref,
     navigate,

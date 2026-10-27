@@ -1,4 +1,8 @@
-import { getAuthSession } from './auth-session-client';
+import {
+  getAuthSession,
+  usesNativeAuthStorage,
+  whenAuthSessionRestored,
+} from './auth-session-client';
 import { requestJson } from './client-request';
 import { apiBase } from './http';
 import { mockFixture, type PasswordLinkInfo } from './mock-overrides';
@@ -16,6 +20,12 @@ type LoginTokenFields = {
   expiresIn?: number;
   refreshToken?: string;
 };
+
+/** Only the desktop app, which keeps the token in the OS keychain, asks for
+ * the refresh token in the response body; browsers get it as an HttpOnly cookie. */
+function refreshTokenDelivery(): { refreshTokenDelivery?: 'body' } {
+  return usesNativeAuthStorage() ? { refreshTokenDelivery: 'body' } : {};
+}
 
 async function captureLoginTokens(
   data: LoginTokenFields,
@@ -45,9 +55,14 @@ export async function fetchAuthMe(): Promise<{
   // Signed-out visitors always get 401 here. Handle it as a normal null
   // session without throwing, so the browser console stays quiet.
   try {
+    await whenAuthSessionRestored();
+    const accessToken = getAuthSession().getAccessToken();
     const res = await fetch(`${apiBase()}/api/auth/me`, {
       credentials: 'include',
-      headers: { Accept: 'application/json' },
+      headers: {
+        Accept: 'application/json',
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
     });
     if (res.status === 401) {
       return { data: null, meta: { source: 'api' } };
@@ -105,6 +120,7 @@ export async function loginRequest(
           typeof navigator !== 'undefined'
             ? navigator.userAgent.slice(0, 120)
             : undefined,
+        ...refreshTokenDelivery(),
       }),
     });
     if (data.requiresTotp && data.challengeId) {
@@ -161,6 +177,7 @@ export async function loginTotpRequest(
             typeof navigator !== 'undefined'
               ? navigator.userAgent.slice(0, 120)
               : undefined,
+          ...refreshTokenDelivery(),
         }),
       },
     );

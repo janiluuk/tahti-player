@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import {
   FileWarningIcon,
   FlagIcon,
@@ -10,7 +10,12 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { ViewShell } from '@tahti-player/ui';
+import {
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchAdminDashboard } from '../../../api/admin';
 import { AdminGate } from '../../../components/AdminGate';
@@ -98,16 +103,10 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
           moderationPendingCount={pendingCount}
         >
           <div className="flex max-w-5xl flex-col gap-6">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-            >
-              <Link to="/admin" className="hover:underline">
-                Admin
-              </Link>
-              <span aria-hidden>→</span>
-              <span aria-current="page">Moderation</span>
-            </nav>
+            <Breadcrumbs>
+              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbCurrent>Moderation</BreadcrumbCurrent>
+            </Breadcrumbs>
             <ModerationTabs
               activeId={
                 ADMIN_MODERATION_TABS[selectedIndex < 0 ? 0 : selectedIndex].id
