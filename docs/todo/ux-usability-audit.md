@@ -10,7 +10,16 @@ re-filed.
 ## To do (verified)
 
 - [ ] **`useScheduleForm` holds 29 `useState` calls.** A reducer would make the
+- [ ] **Radio: member relay failure is silent.** `RadioView.reload()` handles
+  station, recent and featured errors, but `fetchRadio()` (the member live relay)
+  has no error path, so a failed read just hides the relay. Recent, featured,
+  rotation and upcoming already show per-section errors.
+- [x] **`useScheduleForm` holds 29 `useState` calls.** A reducer would make the
   editor's state easier to follow. Refactor only; no user-visible bug found.
+  - 2026-10-27 (batch 90): state and transitions moved to
+    `schedule/scheduleFormReducer.ts` (`useReducer`, no `useState` left); the
+    hook's returned API is unchanged. 11 hook characterization tests were
+    added first and pass before and after.
 - [ ] **`React.memo` on hot `@tahti-player/ui` components** — 7 components already
   use `memo`. Profile a data-dense view (Library tracks, Studio sounds) before
   adding more; no measured problem yet.
