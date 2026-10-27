@@ -113,7 +113,10 @@ export function AddonCard({
         </Tooltip>
         {addon.status === 'PENDING' && (
           <>
-            <Tooltip content={`Approve ${addon.name}`} side="top">
+            <Tooltip
+              content={`Approve ${addon.name} (the author is notified)`}
+              side="top"
+            >
               <Button
                 type="button"
                 size="icon-sm"
