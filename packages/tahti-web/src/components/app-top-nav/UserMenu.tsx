@@ -108,15 +108,14 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
 
           {isMobile ? (
             <>
-              <Button
-                variant="text"
-                size="flexible"
-                className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs active:scale-100"
+              <Link
+                to="/notifications"
+                className="hover:bg-background-secondary flex items-center gap-2 rounded-md px-2.5 py-2 text-xs"
                 role="menuitem"
                 onClick={() => {
                   setOpen(false);
                   setMessagesOpen(false);
-                  setNotificationsOpen(true);
+                  setNotificationsOpen(false);
                 }}
               >
                 <BellIcon size={14} />
@@ -130,7 +129,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
                     {Math.min(9, unreadNotificationCount)}
                   </Badge>
                 ) : null}
-              </Button>
+              </Link>
               <Button
                 variant="text"
                 size="flexible"
