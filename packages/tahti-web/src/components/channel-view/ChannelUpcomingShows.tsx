@@ -5,7 +5,7 @@ import {
   fetchChannelSchedule,
   type PublicChannelSchedule,
 } from '../../api/channel-schedule';
-import { PageError } from '../PageStates';
+import { PageEmpty, PageError } from '../PageStates';
 import { Eyebrow } from '../tahti/Eyebrow';
 
 const MAX_VISIBLE = 10;
@@ -60,9 +60,9 @@ export function ChannelUpcomingShows({ slug }: { slug: string }) {
   }
   if (schedule.shows.length === 0) {
     return (
-      <p className="text-foreground-secondary text-sm" role="status">
-        No upcoming shows booked.
-      </p>
+      <div role="status">
+        <PageEmpty title="No upcoming shows booked." />
+      </div>
     );
   }
 

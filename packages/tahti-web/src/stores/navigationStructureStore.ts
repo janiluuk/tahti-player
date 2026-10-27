@@ -25,7 +25,6 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
   { id: 'discover', label: 'Discover', path: '/discover' },
   { id: 'favorites', label: 'Favorites', path: '/favorites' },
   { id: 'library', label: 'Library', path: '/library' },
-  { id: 'chat', label: 'Chat', path: '/chat' },
   {
     id: 'studio',
     label: 'Studio',
@@ -66,16 +65,27 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
           },
         ],
       },
-      { id: 'studio-releases', label: 'Releases', path: '/studio/releases' },
       {
-        id: 'studio-distribution',
-        label: 'Distribution',
-        path: '/studio/distribution',
+        id: 'studio-releases',
+        label: 'Music',
+        path: '/studio/releases',
+        children: [
+          {
+            id: 'studio-music-releases',
+            label: 'Releases',
+            path: '/studio/releases',
+          },
+          {
+            id: 'studio-distribution',
+            label: 'Distribution',
+            path: '/studio/distribution',
+          },
+          { id: 'studio-editor', label: 'Editor', path: '/studio/editor' },
+        ],
       },
-      { id: 'studio-editor', label: 'Editor', path: '/studio/editor' },
       {
         id: 'studio-go-live',
-        label: 'Go Live',
+        label: 'Broadcast',
         path: '/studio/go-live',
         children: [
           {

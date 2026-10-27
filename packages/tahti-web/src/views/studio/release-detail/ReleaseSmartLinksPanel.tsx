@@ -18,7 +18,7 @@ import {
   Button,
   ButtonLink,
   Dialog,
-  EmptyState,
+  InlineError,
   Input,
   SaveButton,
   Select,
@@ -37,6 +37,7 @@ import type {
   StudioSound,
 } from '../../../api/studio-types';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import {
   composeDspUrl,
@@ -248,6 +249,9 @@ export function ReleaseSmartLinksPanel({
   );
 
   const targetValue = (key: string) => targets[key] ?? '';
+  const emptyEnabledDsps = DSP_SERVICES.filter(
+    (service) => dspPrefixes[service.key] && !targetValue(service.key).trim(),
+  );
   const updateTarget = (key: string, value: string) =>
     setTargets((current) => ({ ...current, [key]: value }));
 
@@ -299,6 +303,12 @@ export function ReleaseSmartLinksPanel({
             </Link>{' '}
             (import, embed, or export) to use those add-on stream URLs.
           </p>
+        ) : null}
+        {emptyEnabledDsps.length >= 2 ? (
+          <InlineError announce={false} textSize="xs" className="mt-2">
+            Missing smart-link URLs:{' '}
+            {emptyEnabledDsps.map((service) => service.label).join(', ')}.
+          </InlineError>
         ) : null}
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {DSP_SERVICES.map((target) => {
@@ -367,8 +377,7 @@ export function ReleaseSmartLinksPanel({
         description="Arrange the release order, play a track, remove it, add audio from your library or upload it from your device."
       >
         {tracks.length === 0 ? (
-          <EmptyState
-            size="sm"
+          <PageEmpty
             title="No tracks yet"
             description="Add tracks from your library or upload audio files to build this release."
           />
@@ -554,9 +563,27 @@ export function ReleaseSmartLinksPanel({
             );
           })}
           {filteredSounds.length === 0 && (
-            <p className="text-foreground-secondary py-6 text-sm">
-              No library items match.
-            </p>
+            <PageEmpty
+              title={
+                query.trim()
+                  ? `No library items match “${query.trim()}”.`
+                  : 'No library items match.'
+              }
+              action={
+                query.trim() || contentType !== 'ALL' ? (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      setQuery('');
+                      setContentType('ALL');
+                    }}
+                  >
+                    Clear search
+                  </Button>
+                ) : undefined
+              }
+            />
           )}
         </div>
         <Dialog.Actions>

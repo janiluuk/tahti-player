@@ -1,15 +1,9 @@
 import { BellIcon } from 'lucide-react';
 
-import {
-  Badge,
-  Button,
-  ButtonLink,
-  EmptyState,
-  Tooltip,
-} from '@tahti-player/ui';
+import { Badge, Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
-import { PageError } from '../PageStates';
+import { PageEmpty, PageError } from '../PageStates';
 import { iconBtnClass } from './shared';
 import { type TopNavState } from './useTopNavState';
 
@@ -103,11 +97,7 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
               onRetry={() => void loadNotifications()}
             />
           ) : notifications.length === 0 ? (
-            <EmptyState
-              size="sm"
-              title="No notifications yet"
-              className="py-3"
-            />
+            <PageEmpty title="No notifications yet" className="py-3" />
           ) : (
             <ul className="tahti-hide-scrollbar flex max-h-80 flex-col gap-1 overflow-y-auto">
               {notifications.map((notification) => (

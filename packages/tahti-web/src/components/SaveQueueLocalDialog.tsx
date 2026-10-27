@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 import { Button, Dialog, Input, Loader } from '@tahti-player/ui';
 
 import type { TahtiNativeLibrary } from '../lib/nativeLibrary';
+import { toastWithUndo } from '../lib/undoToast';
 import { usePlayerStore } from '../stores/playerStore';
 
 const LOCAL_PREFIX = 'local:';
@@ -51,13 +51,20 @@ export function SaveQueueLocalDialog({ isOpen, onClose, library }: Props) {
     try {
       const playlist = await library.playlists.create(trimmed);
       const added = await library.playlists.addTracks(playlist.id, trackIds);
-      toast.success(
-        `Saved ${added.toLocaleString('en-US')} ${added === 1 ? 'track' : 'tracks'} to “${playlist.name}”.`,
-        added < trackIds.length
-          ? {
-              description: `${trackIds.length - added} local ${trackIds.length - added === 1 ? 'file is' : 'files are'} not in your library and weren’t saved.`,
-            }
-          : undefined,
+      const skippedCount = trackIds.length - added;
+      const skippedNote =
+        skippedCount > 0
+          ? ` ${skippedCount} local ${skippedCount === 1 ? 'file is' : 'files are'} not in your library and weren’t saved.`
+          : '';
+      toastWithUndo(
+        `Saved ${added.toLocaleString('en-US')} ${added === 1 ? 'track' : 'tracks'} to “${playlist.name}”.${skippedNote}`,
+        {
+          undo: async () => {
+            await library.playlists.delete(playlist.id);
+            return { ok: true as const };
+          },
+          undoneMessage: `Removed “${playlist.name}”.`,
+        },
       );
       setName('');
       onClose();

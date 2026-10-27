@@ -26,7 +26,6 @@ import {
   DataTableHead,
   DataTableHeaderCell,
   DataTableRow,
-  EmptyState,
   ExternalLink,
   HorizontalScroll,
   Input,
@@ -39,6 +38,7 @@ import {
 import { HelpKeyboardShortcuts } from '../components/HelpKeyboardShortcuts';
 import { HelpLinkCard } from '../components/HelpLinkCard';
 import { PageFrame, PageHeader } from '../components/PageHeader';
+import { PageEmpty } from '../components/PageStates';
 import { SupportCenter } from '../components/SupportCenter';
 import { SERVICE_DOCUMENTS } from '../content/documentLinks';
 import {
@@ -309,7 +309,7 @@ export function HelpHubView() {
         </div>
 
         {visibleGroups.length === 0 ? (
-          <EmptyState
+          <PageEmpty
             title="No guides match"
             description={`Try another search${query ? ` instead of “${query}”` : ''}.`}
             action={
@@ -401,7 +401,8 @@ export function HelpArticleView({ slug }: { slug: string }) {
   if (!article) {
     return (
       <PageFrame maxWidth="3xl">
-        <EmptyState
+        <PageEmpty
+          icon="alert"
           title="Article not found"
           description={`No help page for ${slug}.`}
           action={

@@ -7,7 +7,6 @@ import { renderTakeMorph, type MorphCurve } from '@tahti-player/audio-rack';
 import {
   Button,
   Dialog,
-  EmptyState,
   InlineError,
   InlineLoader,
   Select,
@@ -20,6 +19,7 @@ import {
   fetchVersionDownloadUrl,
   type SoundVersion,
 } from '../../../api/sound-versions';
+import { PageEmpty } from '../../../components/PageStates';
 import {
   defaultMorphPair,
   metamorphClipName,
@@ -235,8 +235,7 @@ export function TakeMetamorphDialog({
         {versions === null ? (
           <InlineLoader label="Loading versions…" />
         ) : versions.length < 2 ? (
-          <EmptyState
-            size="sm"
+          <PageEmpty
             title="Two versions needed"
             description="Upload or render another revision of this sound first, then morph between them."
           />

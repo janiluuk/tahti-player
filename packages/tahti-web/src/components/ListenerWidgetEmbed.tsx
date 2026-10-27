@@ -1,7 +1,13 @@
 import { XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Box, Button, InlineLoader, Tooltip } from '@tahti-player/ui';
+import {
+  Box,
+  Button,
+  InlineError,
+  InlineLoader,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   fetchSpotifyPlaylistTracks,
@@ -12,7 +18,7 @@ import type { TahtiPlayable } from '../api/types';
 import { listenerWidgetType } from '../content/listenerWidgets';
 import { playableFromEmbed } from '../lib/embedPlayback';
 import type { ListenerWidgetInstance } from '../stores/listenerWidgetsStore';
-import { PlayableTrackTable } from './PlayableTrackTable';
+import { PlayableAmbientTrackList } from './PlayableAmbientTrackList';
 
 function spotifyTracksToPlayables(tracks: SpotifyTrack[]): TahtiPlayable[] {
   return tracks.map((track) =>
@@ -99,11 +105,9 @@ function SpotifyPlaylistTracks({
         <InlineLoader label="Loading playlist…" className="py-6" />
       ) : null}
       {status === 'ready' ? (
-        <PlayableTrackTable
+        <PlayableAmbientTrackList
           items={items}
           emptyMessage="This playlist has no tracks."
-          filterable={false}
-          quietHeader
           compactActions
         />
       ) : null}
@@ -125,10 +129,10 @@ function SpotifyPlaylistTracks({
               loading="lazy"
             />
           ) : (
-            <p className="text-destructive text-xs" role="alert">
+            <InlineError textSize="xs">
               Couldn&apos;t load this Spotify playlist — remove it and try a
               public playlist link again.
-            </p>
+            </InlineError>
           )}
         </div>
       ) : null}

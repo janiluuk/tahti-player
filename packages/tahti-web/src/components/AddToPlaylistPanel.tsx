@@ -9,16 +9,18 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, EmptyState, Input, Toggle } from '@tahti-player/ui';
+import { Button, Dialog, Input, Toggle } from '@tahti-player/ui';
 
 import {
   addStudioCollectionItem,
   createStudioCollection,
+  deleteStudioCollection,
   fetchStudioCollections,
 } from '../api/studio';
 import type { StudioCollection } from '../api/studio-types';
+import { toastWithUndo } from '../lib/undoToast';
 import { useAuthStore } from '../stores/authStore';
-import { PageLoading } from './PageStates';
+import { PageEmpty, PageLoading } from './PageStates';
 
 type Props = {
   isOpen: boolean;
@@ -172,6 +174,21 @@ export function AddToPlaylistPanel({
           ? `Created “${name}” and added ${trackCount(add.added)}`
           : `Created “${name}” and added the track`,
       );
+      toastWithUndo(`Created ${created.data.name}.`, {
+        undo: () => deleteStudioCollection(created.data.slug),
+        undoneMessage: `Removed ${created.data.name}.`,
+        onUndone: () => {
+          setCollections((prev) =>
+            prev ? prev.filter((c) => c.slug !== created.data.slug) : prev,
+          );
+          setAddedSlugs((prev) => {
+            const next = new Set(prev);
+            next.delete(created.data.slug);
+            return next;
+          });
+          setNote(null);
+        },
+      });
     } finally {
       setCreatingBusy(false);
     }
@@ -258,17 +275,12 @@ export function AddToPlaylistPanel({
               <span className="text-[11px] leading-tight">New playlist</span>
             </Button>
             {collections.length === 0 && (
-              <EmptyState
-                size="sm"
+              <PageEmpty
                 className="col-span-full"
                 title="No playlists yet"
                 description="Create one to save this track."
                 action={
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => setCreating(true)}
-                  >
+                  <Button variant="secondary" onClick={() => setCreating(true)}>
                     New
                   </Button>
                 }

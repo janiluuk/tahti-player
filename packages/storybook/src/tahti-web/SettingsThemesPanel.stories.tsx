@@ -18,7 +18,7 @@ const meta: Meta<typeof ThemesPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Themes: light / dark switch and the Dynamic theme toggle, then Browse (built-in and imported themes, with Apply and Configure), Editor and Import JSON. The plays only read and type, so they never change the theme the rest of Storybook runs in.',
+          'Settings → Themes: light / dark switch and the Dynamic theme toggle, then Browse (built-in and imported themes, with Apply and Configure) and Editor. Import JSON lives inside the editor. The plays only read and type, so they never change the theme the rest of Storybook runs in.',
       },
     },
   },
@@ -53,7 +53,7 @@ export const Browse: Story = {
 export const ImportJson: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await selectTab(canvas, 'Import JSON');
+    await selectTab(canvas, 'Editor');
     await expectVisible(
       canvas.getByRole('heading', { name: 'Import a theme' }),
     );
@@ -61,7 +61,10 @@ export const ImportJson: Story = {
       name: 'Import & apply',
     });
     await expect(importButton).toBeDisabled();
-    await userEvent.type(canvas.getByRole('textbox'), 'not json');
+    await userEvent.type(
+      canvas.getByRole('textbox', { name: 'Theme JSON' }),
+      'not json',
+    );
     await userEvent.click(importButton);
     await expectVisible(await canvas.findByText('Not valid JSON.'));
   },

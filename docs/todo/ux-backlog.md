@@ -24,6 +24,25 @@ new surface, one PR per row.
 - [x] `GovernanceView` "No motions returned." → `PageEmpty` (already on master)
 - [x] History / Releases filter: clear-filter (batch 79; HelpView already clears)
 - [x] `ReleasesPanel` filtered-empty + clear (batch 79)
+- [x] Thirty-two more list empties use `PageEmpty` (batch 113): events,
+  delivery reports, smart-link tracks, chat bans / messages, moderators,
+  sounds, track sales, channel playlist and chat, stats top lists, release
+  credits and fingerprint, take morph, revenue Stripe / tiers / disbursements,
+  Discover and channel add-on gates, lightbox, notifications, posts and
+  drafts, collections, recordings, add-to-playlist, global search, stash,
+  studio home broadcasts.
+- [x] Thirty more list empties use `PageEmpty` (batch 114): fan room, local
+  playlists, Radio Browser, release stats and versions, studio releases and
+  playlists, history, venues, profile sections, plugin store, help, desktop
+  library, channel comments, discover widgets, upload recordings, smart
+  links, disco widgets, browser local files. Load errors and access gates stay.
+- [x] Paragraph empties, confirm-before-delete, and undo on create (batch 115):
+  E2E gallery, association profile, upcoming shows, Bandcamp and SoundCloud
+  import empties, discussion replies, meeting conflicts, report versions,
+  editor seed, release library picker, show slots. Events, theme submissions,
+  radio presets, stream destinations, conflict notes, comments, and disco
+  widgets confirm before remove. Event, post, share, destination, and comment
+  creates can be undone.
 
 ## Liveliness
 

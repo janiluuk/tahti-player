@@ -1,15 +1,9 @@
 import { Link } from '@tanstack/react-router';
 import { CalendarIcon, RadioIcon } from 'lucide-react';
 
-import {
-  Badge,
-  Button,
-  ButtonLink,
-  EmptyState,
-  ViewShell,
-} from '@tahti-player/ui';
+import { Badge, Button, ButtonLink, ViewShell } from '@tahti-player/ui';
 
-import { PageError } from '../../components/PageStates';
+import { PageEmpty, PageError } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { useStripeConfigured } from '../../hooks/useStripeConfigured';
 import { accountRoleLabel, getAccountRole } from '../../lib/accountRoles';
@@ -123,15 +117,12 @@ export function StudioHomeView() {
                     onRetry={reloadOverview}
                   />
                 ) : recentBroadcasts.length === 0 ? (
-                  <EmptyState
-                    size="sm"
+                  <PageEmpty
                     className="border-border rounded-xl border"
                     title="No broadcasts yet"
                     description="Go live when you are ready — finished shows land here as recordings."
                     action={
-                      <ButtonLink to="/studio/go-live" size="sm">
-                        Go live
-                      </ButtonLink>
+                      <ButtonLink to="/studio/go-live">Go live</ButtonLink>
                     }
                   />
                 ) : (

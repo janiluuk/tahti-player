@@ -15,6 +15,7 @@ import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
 import { assignStripeRedirectUrl } from '../../lib/stripeRedirect';
 import { formatTimedCommentBody } from '../../lib/timedComment';
+import { toastWithUndo } from '../../lib/undoToast';
 import { resolveTrackAccessGate } from './resolveAccessGate';
 import { type TrackDetailState } from './useTrackDetail';
 
@@ -162,8 +163,18 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
       setCommentError(result.error);
       return;
     }
-    setComments((current) => [...current, result.data]);
+    const created = result.data;
+    setComments((current) => [...current, created]);
     setCommentBody('');
+    toastWithUndo('Comment posted.', {
+      undo: () => deleteComment(created.id),
+      undoneMessage: 'Comment removed.',
+      onUndone: () => {
+        setComments((current) =>
+          current.filter((comment) => comment.id !== created.id),
+        );
+      },
+    });
   };
 
   const canDeleteComment = (comment: TrackComment) =>

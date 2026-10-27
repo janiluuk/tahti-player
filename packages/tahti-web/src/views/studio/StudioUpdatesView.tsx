@@ -12,7 +12,6 @@ import { toast } from 'sonner';
 import {
   Button,
   Dialog,
-  EmptyState,
   ImageReveal,
   Tooltip,
   ViewShell,
@@ -29,7 +28,11 @@ import {
 } from '../../api/studio-extras';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ImageLightbox } from '../../components/ImageLightbox';
-import { PageError, PageErrorBanner } from '../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+} from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { newsletterDeliverySummary } from '../../lib/newsletterDelivery';
@@ -183,8 +186,7 @@ export function StudioUpdatesView({
           {tab === 'posts' && (
             <StudioPanel>
               {posts.length === 0 ? (
-                <EmptyState
-                  size="sm"
+                <PageEmpty
                   title="No posts yet"
                   description={
                     isEmpty
@@ -193,7 +195,10 @@ export function StudioUpdatesView({
                   }
                   action={
                     isEmpty ? (
-                      <Button size="sm" onClick={() => setPostEditor({})}>
+                      <Button
+                        variant="secondary"
+                        onClick={() => setPostEditor({})}
+                      >
                         <PlusIcon size={16} aria-hidden className="mr-1.5" />
                         Write a post
                       </Button>
@@ -301,8 +306,7 @@ export function StudioUpdatesView({
           {tab === 'newsletter' && (
             <StudioPanel>
               {drafts.length === 0 ? (
-                <EmptyState
-                  size="sm"
+                <PageEmpty
                   title="No drafts yet"
                   description={
                     isEmpty
@@ -311,7 +315,7 @@ export function StudioUpdatesView({
                   }
                   action={
                     isEmpty ? (
-                      <Button size="sm" onClick={() => setDraftOpen(true)}>
+                      <Button onClick={() => setDraftOpen(true)}>
                         <PlusIcon size={16} aria-hidden className="mr-1.5" />
                         New draft
                       </Button>

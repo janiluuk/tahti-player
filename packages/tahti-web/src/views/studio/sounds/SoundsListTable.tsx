@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 import {
   Badge,
@@ -86,7 +86,7 @@ const soundRowLabel = (sound: StudioSound) => sound.title;
 /** Library → Sounds as a plain data table: a mini cover that previews the
  * track, then one column per field. Columns, widths and sort are kept on
  * this device. */
-export function SoundsListTable({
+function SoundsListTableView({
   items,
   state,
 }: {
@@ -248,3 +248,5 @@ export function SoundsListTable({
     />
   );
 }
+
+export const SoundsListTable = memo(SoundsListTableView);

@@ -20,7 +20,7 @@ import {
   MultitrackTimeline,
   normalizeTimeline,
 } from '../../components/MultitrackTimeline';
-import { PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 
@@ -193,10 +193,11 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                   </div>
                 </dl>
                 {!project.soundId && (
-                  <p className="text-foreground-secondary mt-4 text-sm">
-                    No archive seed — create a project from an archive item, or
-                    open Library → Audio editor.
-                  </p>
+                  <PageEmpty
+                    className="mt-4"
+                    title="No archive seed"
+                    description="Create a project from an archive item, or open Library → Audio editor."
+                  />
                 )}
               </StudioPanel>
             </ViewShell>

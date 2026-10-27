@@ -102,6 +102,12 @@ export function TagChipInput({
           onValueChange={add}
           normalize={(raw) => raw.trim().slice(0, maxLength)}
           className="max-w-sm"
+          inputProps={{
+            type: 'search',
+            enterKeyHint: 'done',
+            autoCorrect: 'off',
+            spellCheck: false,
+          }}
         />
       ) : null}
       <p className="text-foreground-secondary text-xs">

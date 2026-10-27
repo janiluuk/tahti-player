@@ -19,6 +19,7 @@ import {
 
 import {
   createStudioCollection,
+  deleteStudioCollection,
   fetchEditorSource,
   fetchStudioCollection,
   fetchStudioCollections,
@@ -33,6 +34,7 @@ import {
   type ProgrammeView,
 } from '../api/studio-extras';
 import type { StudioCollection, StudioRelease } from '../api/studio-types';
+import { toastWithUndo } from '../lib/undoToast';
 import { usePlayerStore } from '../stores/playerStore';
 import { ChannelRotationEditor } from './ChannelRotationEditor';
 import { PageError } from './PageStates';
@@ -297,7 +299,18 @@ export const ChannelRadioPlaylistPanel: FC = () => {
     setNewName('');
     setPlaylists((current) => [created.data, ...current]);
     setSelectedSlug(created.data.slug);
-    toast.success(`Created “${created.data.name}”.`);
+    toastWithUndo(`Created “${created.data.name}”.`, {
+      undo: () => deleteStudioCollection(created.data.slug),
+      undoneMessage: `Removed “${created.data.name}”.`,
+      onUndone: () => {
+        setPlaylists((current) =>
+          current.filter((playlist) => playlist.slug !== created.data.slug),
+        );
+        setSelectedSlug((current) =>
+          current === created.data.slug ? '' : current,
+        );
+      },
+    });
   };
 
   const playRotationItem = async (item: ProgrammeItem) => {

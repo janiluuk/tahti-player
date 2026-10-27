@@ -1,13 +1,7 @@
 import { Cast, InfoIcon, SettingsIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import {
-  Box,
-  Button,
-  EmptyState,
-  PluginStoreItem,
-  Tooltip,
-} from '@tahti-player/ui';
+import { Box, Button, PluginStoreItem, Tooltip } from '@tahti-player/ui';
 
 import {
   deleteRtmpTarget,
@@ -28,12 +22,13 @@ import {
   useDiscoverStore,
   type DiscoverWidgetId,
 } from '../../stores/discoverStore';
+import { ConfirmDialog } from '../ConfirmDialog';
 import { DiscoWidgetManagerPanel } from '../disco-widgets/DiscoWidgetManagerPanel';
 import {
   MulticastConfigureDialog,
   type MulticastConfiguring,
 } from '../MulticastConfigureDialog';
-import { PageError, PageLoading } from '../PageStates';
+import { PageEmpty, PageError, PageLoading } from '../PageStates';
 import { AudioPluginToggleRow } from './shared';
 
 // ── Multicast / Audio tools ─────────────────────────────────────────────────
@@ -45,6 +40,7 @@ export function MulticastCategory() {
   );
 
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [pendingRemove, setPendingRemove] = useState<RtmpTarget | null>(null);
 
   const reload = () => {
     void fetchRtmpTargets().then((r) => {
@@ -128,9 +124,7 @@ export function MulticastCategory() {
                           variant="text"
                           intent="danger"
                           aria-label={`Remove ${destination.label}`}
-                          onClick={() =>
-                            void deleteRtmpTarget(target.id).then(reload)
-                          }
+                          onClick={() => setPendingRemove(target)}
                         >
                           <XIcon size={15} aria-hidden />
                         </Button>
@@ -153,6 +147,31 @@ export function MulticastCategory() {
           }}
         />
       ) : null}
+      <ConfirmDialog
+        isOpen={pendingRemove !== null}
+        title={
+          pendingRemove
+            ? `Remove ${pendingRemove.label ?? 'this destination'}?`
+            : 'Remove destination?'
+        }
+        description="This stream destination stops receiving the broadcast."
+        confirmLabel="Remove"
+        onCancel={() => setPendingRemove(null)}
+        onConfirm={() => {
+          const target = pendingRemove;
+          if (!target) {
+            return;
+          }
+          setPendingRemove(null);
+          void deleteRtmpTarget(target.id).then((result) => {
+            if (!result.ok) {
+              setLoadError(result.error);
+              return;
+            }
+            reload();
+          });
+        }}
+      />
     </div>
   );
 }
@@ -222,8 +241,7 @@ export function DiscoveryCategory() {
 
   if (!user) {
     return (
-      <EmptyState
-        size="sm"
+      <PageEmpty
         title="Sign in to install Discover add-ons"
         description="Add-ons on your Listen and Discover pages need an account."
       />
@@ -337,8 +355,7 @@ export function ChannelCategory() {
 
   if (!user?.channel) {
     return (
-      <EmptyState
-        size="sm"
+      <PageEmpty
         title="Set up a channel first"
         description="Go live or finish channel setup to install add-ons on your public page."
       />

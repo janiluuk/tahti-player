@@ -5,7 +5,7 @@ import {
   PencilIcon,
   RotateCcwIcon,
 } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 
 import {
   Button,
@@ -199,9 +199,6 @@ function toHostedListItem(
   playback: {
     currentId: string | null;
     status: string;
-    currentTime: number;
-    duration: number;
-    seekTo: (sec: number) => void;
   },
   retry: {
     retry: (item: Pick<StudioSound, 'id' | 'title'>) => Promise<void>;
@@ -218,10 +215,6 @@ function toHostedListItem(
   const isPlaying =
     isCurrent &&
     (playback.status === 'playing' || playback.status === 'loading');
-  const progress =
-    isCurrent && playback.duration > 0
-      ? playback.currentTime / playback.duration
-      : 0;
   const peaks = item.peaks ?? null;
 
   const titleNode: ReactNode = <SoundTitle item={item} />;
@@ -258,7 +251,7 @@ function toHostedListItem(
     durationSec: item.durationSec ?? null,
     stats: soundRowStats(item),
     peaks,
-    progress,
+    progress: 0,
     isPlaying,
     onPlay: isProcessingSound(item)
       ? undefined
@@ -269,10 +262,6 @@ function toHostedListItem(
           }
           void playItem(item.id, item.title);
         },
-    onSeek:
-      isCurrent && playback.duration > 0
-        ? (fraction) => playback.seekTo(fraction * playback.duration)
-        : undefined,
     actions: <SoundRowActions item={item} state={state} />,
   };
 }
@@ -322,7 +311,6 @@ export function SoundsAmbientList({
   const currentTime = usePlayerStore((s) => s.currentTime);
   const duration = usePlayerStore((s) => s.duration);
   const seekTo = usePlayerStore((s) => s.seekTo);
-  const playback = { currentId, status, currentTime, duration, seekTo };
   const { retry, retryingId } = useRetrySoundProcessing((id) =>
     state.setItems((prev) =>
       prev.map((sound) =>
@@ -333,10 +321,37 @@ export function SoundsAmbientList({
     ),
   );
 
-  const hosted = items.filter((item) => !isEmbedSound(item));
-  const embeds = items.filter(isEmbedSound);
-  const listItems = hosted.map((item) =>
-    toHostedListItem(item, state, playback, { retry, retryingId }),
+  const hosted = useMemo(
+    () => items.filter((item) => !isEmbedSound(item)),
+    [items],
+  );
+  const embeds = useMemo(() => items.filter(isEmbedSound), [items]);
+  const baseItems = useMemo(
+    () =>
+      hosted.map((item) =>
+        toHostedListItem(
+          item,
+          state,
+          { currentId, status },
+          { retry, retryingId },
+        ),
+      ),
+    [hosted, state, currentId, status, retry, retryingId],
+  );
+  const listItems = useMemo(
+    () =>
+      duration > 0
+        ? baseItems.map((item) =>
+            item.trackId === currentId
+              ? {
+                  ...item,
+                  progress: currentTime / duration,
+                  onSeek: (fraction: number) => seekTo(fraction * duration),
+                }
+              : item,
+          )
+        : baseItems,
+    [baseItems, currentId, currentTime, duration, seekTo],
   );
 
   return (

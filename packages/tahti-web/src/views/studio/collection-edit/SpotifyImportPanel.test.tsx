@@ -59,9 +59,10 @@ describe('SpotifyImportPanel', () => {
     await act(async () => {
       fireEvent.click(screen.getByRole('radio', { name: 'Your tracks' }));
     });
+    expect(screen.getByText('No tracks found.')).toBeTruthy();
     expect(
       screen.getByText(
-        'No tracks found. Link your Spotify artist profile in Add-ons → Spotify first.',
+        'Link your Spotify artist profile in Add-ons → Spotify first.',
       ),
     ).toBeTruthy();
   });

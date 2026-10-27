@@ -19,6 +19,7 @@ import {
   type GovernanceConflictDeclaration,
   type GovernanceNoticeDelivery,
 } from '../../../../api/admin';
+import { ConfirmDialog } from '../../../../components/ConfirmDialog';
 import { PageEmpty } from '../../../../components/PageStates';
 
 export function CollapsibleRecord({
@@ -66,6 +67,8 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
   const [recused, setRecused] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pendingRemove, setPendingRemove] =
+    useState<GovernanceConflictDeclaration | null>(null);
 
   useEffect(() => {
     if (!open) {
@@ -91,9 +94,7 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
       {records === null ? (
         <InlineLoader label="Loading…" textSize="xs" />
       ) : records.length === 0 ? (
-        <p className="text-foreground-secondary text-xs">
-          No conflicts declared for this meeting.
-        </p>
+        <PageEmpty title="No conflicts declared for this meeting." />
       ) : (
         <ul className="divide-border mb-3 divide-y text-sm">
           {records.map((record) => (
@@ -111,20 +112,7 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
                     size="xs"
                     variant="secondary"
                     aria-label={`Remove declaration: ${record.displayName}`}
-                    onClick={() => {
-                      setError(null);
-                      void removeAdminGovernanceConflict(record.id).then(
-                        (result) => {
-                          if (!result.ok) {
-                            setError(result.error);
-                            return;
-                          }
-                          setRecords((current) =>
-                            (current ?? []).filter((r) => r.id !== record.id),
-                          );
-                        },
-                      );
-                    }}
+                    onClick={() => setPendingRemove(record)}
                   >
                     Remove
                   </Button>
@@ -190,6 +178,34 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
           </Button>
         </div>
       </form>
+      <ConfirmDialog
+        isOpen={pendingRemove !== null}
+        title={
+          pendingRemove
+            ? `Remove the declaration for ${pendingRemove.displayName}?`
+            : 'Remove declaration?'
+        }
+        description="The conflict note leaves this meeting's record."
+        confirmLabel="Remove"
+        onCancel={() => setPendingRemove(null)}
+        onConfirm={() => {
+          const record = pendingRemove;
+          if (!record) {
+            return;
+          }
+          setPendingRemove(null);
+          setError(null);
+          void removeAdminGovernanceConflict(record.id).then((result) => {
+            if (!result.ok) {
+              setError(result.error);
+              return;
+            }
+            setRecords((current) =>
+              (current ?? []).filter((item) => item.id !== record.id),
+            );
+          });
+        }}
+      />
     </CollapsibleRecord>
   );
 }

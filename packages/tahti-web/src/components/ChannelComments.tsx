@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
-import { Button, EmptyState, Textarea } from '@tahti-player/ui';
+import { Button, Textarea } from '@tahti-player/ui';
 
 import {
   fetchChannelComments,
@@ -9,9 +9,12 @@ import {
 } from '../api/channel-comments';
 import { deleteComment } from '../api/comments';
 import type { TrackComment } from '../api/types';
+import { toastWithUndo } from '../lib/undoToast';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { CommentItem } from './CommentItem';
+import { ConfirmDialog } from './ConfirmDialog';
+import { PageEmpty } from './PageStates';
 
 const MAX_COMMENT_LENGTH = 2000;
 
@@ -31,6 +34,7 @@ export function ChannelComments({
   const [body, setBody] = useState('');
   const [posting, setPosting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -49,6 +53,9 @@ export function ChannelComments({
     return null;
   }
 
+  const pendingComment =
+    comments.find((comment) => comment.id === pendingDeleteId) ?? null;
+
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     const trimmed = body.trim();
@@ -62,8 +69,18 @@ export function ChannelComments({
       toast.error(result.error);
       return;
     }
-    setComments((current) => [...(current ?? []), result.data]);
+    const created = result.data;
+    setComments((current) => [...(current ?? []), created]);
     setBody('');
+    toastWithUndo('Comment posted.', {
+      undo: () => deleteComment(created.id),
+      undoneMessage: 'Comment removed.',
+      onUndone: () => {
+        setComments((current) =>
+          (current ?? []).filter((comment) => comment.id !== created.id),
+        );
+      },
+    });
   };
 
   const remove = async (id: string) => {
@@ -85,8 +102,7 @@ export function ChannelComments({
         Comments
       </h2>
       {comments.length === 0 ? (
-        <EmptyState
-          size="sm"
+        <PageEmpty
           className="items-start p-0 text-left"
           title="No comments yet"
           description={
@@ -116,7 +132,7 @@ export function ChannelComments({
               comment={comment}
               onDelete={
                 user && (isOwner || comment.authorUsername === user.username)
-                  ? () => void remove(comment.id)
+                  ? () => setPendingDeleteId(comment.id)
                   : undefined
               }
               deleting={deletingId === comment.id}
@@ -164,6 +180,21 @@ export function ChannelComments({
           Log in to comment
         </Button>
       ) : null}
+      <ConfirmDialog
+        isOpen={pendingDeleteId !== null}
+        title="Remove this comment?"
+        description={pendingComment?.body ?? 'The comment leaves this channel.'}
+        confirmLabel="Remove"
+        onCancel={() => setPendingDeleteId(null)}
+        onConfirm={() => {
+          const id = pendingDeleteId;
+          if (!id) {
+            return;
+          }
+          setPendingDeleteId(null);
+          void remove(id);
+        }}
+      />
     </section>
   );
 }

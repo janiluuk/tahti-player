@@ -39,6 +39,18 @@ export const SignedInVisitor: Story = {
     await userEvent.click(
       canvas.getByRole('button', { name: 'Delete comment by Liina' }),
     );
+    const confirmation = within(canvasElement.ownerDocument.body).getByRole(
+      'dialog',
+      { name: 'Remove this comment?' },
+    );
+    await userEvent.click(
+      within(confirmation).getByRole('button', { name: 'Remove' }),
+    );
+    await waitFor(() =>
+      expect(
+        within(canvasElement.ownerDocument.body).queryByRole('dialog'),
+      ).toBeNull(),
+    );
     await waitFor(() =>
       expect(within(list).getAllByRole('listitem')).toHaveLength(2),
     );

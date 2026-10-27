@@ -57,11 +57,15 @@ export function PageEmpty({
   description,
   action,
   icon = 'inbox',
+  className,
+  'data-testid': testId,
 }: {
   title: string;
   description?: string;
   action?: ReactNode;
   icon?: 'inbox' | 'package' | 'radio' | 'alert';
+  className?: string;
+  'data-testid'?: string;
 }) {
   const Icon =
     icon === 'radio'
@@ -74,6 +78,8 @@ export function PageEmpty({
   return (
     <EmptyState
       size="sm"
+      className={className}
+      data-testid={testId}
       icon={<Icon size={40} className="opacity-40" />}
       title={title}
       description={description}

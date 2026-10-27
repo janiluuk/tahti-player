@@ -1,14 +1,8 @@
-import { LibraryIcon, TrashIcon } from 'lucide-react';
+import { TrashIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import {
-  Button,
-  EmptyState,
-  FilePicker,
-  Input,
-  Tooltip,
-} from '@tahti-player/ui';
+import { Button, FilePicker, Input, Tooltip } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../../api/types';
 import {
@@ -17,6 +11,7 @@ import {
   playableFromLocalTrack,
   useLocalLibraryStore,
 } from '../../stores/localLibraryStore';
+import { PageEmpty } from '../PageStates';
 import { PlayableAmbientTrackList } from '../PlayableAmbientTrackList';
 
 const FILE_LABELS = {
@@ -83,9 +78,7 @@ export function BrowserLocalFiles() {
         browser imports remain available.
       </p>
       {tracks.length === 0 ? (
-        <EmptyState
-          size="sm"
-          icon={<LibraryIcon size={28} className="opacity-50" />}
+        <PageEmpty
           title="Local library"
           description="Import files to play them in the Tahti player. Soulseek search lands here after the desktop add-on is connected."
           className="flex-1"
@@ -135,8 +128,7 @@ export function BrowserLocalFiles() {
           ) : null}
           {playableItems.length === 0 ? (
             unresolvedTracks.length === 0 ? (
-              <EmptyState
-                size="sm"
+              <PageEmpty
                 title="No local files found"
                 description={`Nothing matches “${query.trim()}”.`}
                 className="flex-1"

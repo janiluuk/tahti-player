@@ -25,7 +25,9 @@ export function RemoveWidgetDialog({
       </Dialog.Description>
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
-        <Button onClick={onConfirm}>Remove</Button>
+        <Button variant="secondary" intent="danger" onClick={onConfirm}>
+          Remove
+        </Button>
       </Dialog.Actions>
     </Dialog.Root>
   );

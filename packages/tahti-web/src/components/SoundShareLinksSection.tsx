@@ -17,6 +17,7 @@ import {
   revokeSoundShare,
   type SoundShare,
 } from '../api/studio';
+import { toastWithUndo } from '../lib/undoToast';
 import { ConfirmDialog } from './ConfirmDialog';
 import { PageEmpty, PageError } from './PageStates';
 
@@ -89,9 +90,18 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
       toast.error(result.error);
       return;
     }
-    setShares((current) => [...current, result.data]);
+    const created = result.data;
+    setShares((current) => [...current, created]);
     setGranteeUsername('');
-    toast.success('Share link created.');
+    toastWithUndo('Share link created.', {
+      undo: () => revokeSoundShare(soundId, created.id),
+      undoneMessage: 'Share link removed.',
+      onUndone: () => {
+        setShares((current) =>
+          current.filter((share) => share.id !== created.id),
+        );
+      },
+    });
   };
 
   const revoke = async (shareId: string) => {

@@ -12,7 +12,6 @@ import {
   ButtonAnchor,
   ClampedText,
   CopyButton,
-  EmptyState,
   ExternalLink,
 } from '@tahti-player/ui';
 
@@ -111,7 +110,8 @@ export function VenueDetailView({ slug }: { slug: string }) {
     return (
       <PageFrame maxWidth="3xl">
         {backLink}
-        <EmptyState
+        <PageEmpty
+          icon="alert"
           title="Venue not found"
           description={`No verified venue matches "${slug}".`}
           action={

@@ -14,6 +14,7 @@ import {
 
 import {
   createEditorProject,
+  deleteEditorProject,
   fetchEditorProjects,
   fetchStudioSounds,
 } from '../../api/studio';
@@ -27,6 +28,7 @@ import {
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { contentTypeLabel } from '../../content/contentTypes';
+import { toastWithUndo } from '../../lib/undoToast';
 
 export function StudioEditorListView() {
   const [projects, setProjects] = useState<EditorProjectRow[]>([]);
@@ -113,9 +115,20 @@ export function StudioEditorListView() {
           setMessage(r.error);
           return;
         }
-        setMessage(`Created ${r.data.title}`);
+        const created = r.data;
+        setMessage(`Created ${created.title}`);
         closeCreate();
         reload();
+        toastWithUndo(`Created ${created.title}.`, {
+          undo: () => deleteEditorProject(created.id),
+          undoneMessage: `Removed ${created.title}.`,
+          onUndone: () => {
+            setMessage(null);
+            setProjects((current) =>
+              current.filter((project) => project.id !== created.id),
+            );
+          },
+        });
       })
       .catch(() => {
         setBusy(false);

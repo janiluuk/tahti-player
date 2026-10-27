@@ -352,9 +352,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
                 : `${Math.max(topic.postCount, topic.posts.length)} replies`}
             </h2>
             {topic.posts.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No replies yet.
-              </p>
+              <PageEmpty title="No replies yet." />
             ) : (
               <>
                 {topic.hasEarlierPosts ? (

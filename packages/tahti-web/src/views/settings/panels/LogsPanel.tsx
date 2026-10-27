@@ -68,12 +68,13 @@ export function LogsPanel() {
           <div className="flex flex-wrap items-center gap-2">
             <LogViewer.SearchInput />
             <div className="flex gap-2">
-              <Button size="sm" onClick={clearClientLogs}>
+              <Button size="sm" variant="secondary" onClick={clearClientLogs}>
                 <Trash2 className="mr-1 size-4" aria-hidden />
                 Clear
               </Button>
               <Button
                 size="sm"
+                variant="secondary"
                 disabled={logs.length === 0}
                 onClick={() => exportLogs(serializeClientLogs(logs))}
               >

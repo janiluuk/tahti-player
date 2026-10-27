@@ -3,7 +3,7 @@ import { ArrowLeftIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { EmptyState, ViewShell } from '@tahti-player/ui';
+import { ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import { fetchAllRoyalties } from '../../api/distribution';
 import { fetchStudioReleases } from '../../api/studio';
@@ -12,6 +12,7 @@ import type {
   StudioRelease,
 } from '../../api/studio-types';
 import {
+  PageEmpty,
   PageError,
   PageErrorBanner,
   PageLoading,
@@ -84,17 +85,17 @@ export function StudioDistributionView() {
                 onRetry={() => setAttempt((n) => n + 1)}
               />
             ) : releases.length === 0 ? (
-              <EmptyState
-                size="sm"
+              <PageEmpty
                 title="No releases yet"
                 description="Create one under Releases first."
                 action={
-                  <Link
+                  <ButtonLink
                     to="/studio/releases"
-                    className="text-sm underline underline-offset-2"
+                    size="sm"
+                    variant="secondary"
                   >
                     Releases
-                  </Link>
+                  </ButtonLink>
                 }
               />
             ) : (

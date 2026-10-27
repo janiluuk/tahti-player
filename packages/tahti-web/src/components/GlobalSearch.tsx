@@ -12,7 +12,6 @@ import {
   Button,
   ButtonLink,
   cn,
-  EmptyState,
   ImageReveal,
   Input,
   Loader,
@@ -28,6 +27,7 @@ import type {
 } from '../api/types';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { formatDuration } from '../lib/playableToTrack';
+import { PageEmpty } from './PageStates';
 
 const EMPTY: SearchResponse = { tracks: [], artists: [], collections: [] };
 const DEBOUNCE_MS = 250;
@@ -304,8 +304,7 @@ export function GlobalSearch({
               <p className="text-foreground-secondary text-sm">Searching…</p>
             </div>
           ) : !hasResults ? (
-            <EmptyState
-              size="sm"
+            <PageEmpty
               title={`No results for “${trimmed}”.`}
               description="Try another spelling, or browse Discover and Radio."
               action={

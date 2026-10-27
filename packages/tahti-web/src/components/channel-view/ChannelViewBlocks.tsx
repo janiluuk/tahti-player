@@ -307,15 +307,21 @@ export function renderChannelBlock(
         (ctx.liveShows.upcomingEpisodes.length === 0 &&
           ctx.liveShows.pastEpisodes.length === 0)
       ) {
-        return editing ? (
-          <div className="px-4 py-3 text-sm">
+        return (
+          <section
+            className={`flex flex-col gap-2 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
+          >
             <h2 className="text-sm font-bold tracking-tight">Live shows</h2>
             <PageEmpty
               title="No scheduled or past broadcasts yet"
-              description="This block shows once there are some."
+              description={
+                editing
+                  ? 'This block shows once there are some.'
+                  : 'Upcoming shows and past recordings will appear here.'
+              }
             />
-          </div>
-        ) : null;
+          </section>
+        );
       }
       return (
         <section

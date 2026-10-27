@@ -2,7 +2,6 @@ import {
   ArrowLeftIcon,
   DownloadIcon,
   LinkIcon,
-  ListMusicIcon,
   PencilIcon,
   PlayIcon,
   ShuffleIcon,
@@ -31,6 +30,7 @@ import type {
 import { preparePlayables } from '../../lib/nativePlayback';
 import { usePlayerStore } from '../../stores/playerStore';
 import { ConfirmDialog } from '../ConfirmDialog';
+import { PageEmpty } from '../PageStates';
 import { PlaylistExportDialog } from '../PlaylistExportDialog';
 import { PlaylistNameDialog } from '../PlaylistNameDialog';
 import { PLAYLIST_COLUMNS, playPlaylist, summaryLine } from './shared';
@@ -378,9 +378,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
         </Tooltip>
       </div>
       {entries.length === 0 && !loading ? (
-        <EmptyState
-          size="sm"
-          icon={<ListMusicIcon size={28} className="opacity-50" />}
+        <PageEmpty
           title="This playlist is empty"
           description="Select tracks in Tracks and choose Add to playlist, or save your queue here."
           className="flex-1"

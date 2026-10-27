@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { Button, ButtonLink, EmptyState, Input } from '@tahti-player/ui';
+import { Button, ButtonLink, Input } from '@tahti-player/ui';
 
 import {
   fetchChatAccess,
@@ -25,6 +25,7 @@ import { ChatListeningNow } from './ChatListeningNow';
 import { ChatNotice } from './ChatNotice';
 import { ChatReactionBar } from './ChatReactionBar';
 import { FanChatRoom } from './FanChatRoom';
+import { PageEmpty } from './PageStates';
 
 const HANDLE_KEY = 'tahti-web-chat-handle';
 const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
@@ -588,8 +589,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         className={`space-y-2 overflow-y-auto px-3 py-2 text-sm ${rail ? 'min-h-0 flex-1' : 'flex-1'}`}
       >
         {messages.length === 0 && (
-          <EmptyState
-            size="sm"
+          <PageEmpty
             title="No messages yet"
             description="Say hi to start the chat."
           />

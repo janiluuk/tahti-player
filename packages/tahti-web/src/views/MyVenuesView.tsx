@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   ButtonLink,
-  EmptyState,
   Input,
   SectionTitle,
   ViewShell,
@@ -130,7 +129,7 @@ export function MyVenuesView() {
         label="All venues"
       />
       {!user ? (
-        <EmptyState
+        <PageEmpty
           title="Sign in to manage your venues"
           action={
             <Link
@@ -152,7 +151,7 @@ export function MyVenuesView() {
           }}
         />
       ) : venues.length === 0 ? (
-        <EmptyState
+        <PageEmpty
           title="No venues yet"
           description="Register a venue to list it in the directory and book shows there."
           action={registerLink}

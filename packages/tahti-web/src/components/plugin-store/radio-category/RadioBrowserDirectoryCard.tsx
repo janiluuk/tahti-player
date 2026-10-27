@@ -4,7 +4,6 @@ import { toast } from 'sonner';
 
 import {
   Button,
-  EmptyState,
   FilterChips,
   Input,
   Select,
@@ -34,6 +33,7 @@ import {
 } from '../../../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../../../stores/playerStore';
 import { useRadioBrowserStore } from '../../../stores/radioBrowserStore';
+import { PageEmpty } from '../../PageStates';
 import { AudioPluginToggleRow, ConfigurableCard } from '../shared';
 import { AddStationUrlDialog } from './AddStationUrlDialog';
 import { StationDetailsDialog } from './StationDetailsDialog';
@@ -221,8 +221,7 @@ export function RadioBrowserDirectoryCard() {
                         </Button>
                       </div>
                       {savedStations.length === 0 ? (
-                        <EmptyState
-                          size="sm"
+                        <PageEmpty
                           title="No saved stations yet"
                           description="Save stations from Browser to show them on Listen."
                         />
@@ -394,8 +393,7 @@ export function RadioBrowserDirectoryCard() {
                           : ''}
                       </h3>
                       {results.length === 0 ? (
-                        <EmptyState
-                          size="sm"
+                        <PageEmpty
                           title="No stations found"
                           description="Try another search or clear the filters."
                         />

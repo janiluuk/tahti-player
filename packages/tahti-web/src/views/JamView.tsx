@@ -1,21 +1,9 @@
 import { useNavigate } from '@tanstack/react-router';
-import {
-  LogInIcon,
-  LogOutIcon,
-  PauseIcon,
-  PlayIcon,
-  XIcon,
-} from 'lucide-react';
+import { LogOutIcon, PauseIcon, PlayIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import {
-  Badge,
-  Button,
-  CopyButton,
-  EmptyState,
-  TahtiJam,
-} from '@tahti-player/ui';
+import { Badge, Button, CopyButton, TahtiJam } from '@tahti-player/ui';
 
 import {
   endJam,
@@ -29,6 +17,7 @@ import type { JamParticipant } from '../api/types';
 import { ChannelVisualizer } from '../components/ChannelVisualizer';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { JamParticipantList } from '../components/JamParticipantList';
+import { PageEmpty } from '../components/PageStates';
 import { useJamGuestPlayback, useJamState } from '../hooks/useJam';
 import { useJamCoControl, useJamHostSync } from '../hooks/useJamControl';
 import { canControlJam, toggledJamState } from '../lib/jamPlayback';
@@ -173,13 +162,14 @@ export function JamView({ code }: { code: string }) {
   if (!userId) {
     return (
       <TahtiJam data-testid="jam-view">
-        <EmptyState
-          icon={<LogInIcon size={48} />}
-          title="Log in to join this Jam"
-          description="A Jam plays the host's music in sync for everyone in it, so the host needs to see who joined."
-          action={<Button onClick={() => openAuth('login')}>Log in</Button>}
-          className="flex-1"
-        />
+        <div className="flex flex-1 flex-col justify-center">
+          <PageEmpty
+            icon="inbox"
+            title="Log in to join this Jam"
+            description="A Jam plays the host's music in sync for everyone in it, so the host needs to see who joined."
+            action={<Button onClick={() => openAuth('login')}>Log in</Button>}
+          />
+        </div>
       </TahtiJam>
     );
   }
@@ -197,16 +187,17 @@ export function JamView({ code }: { code: string }) {
   if (joinError) {
     return (
       <TahtiJam data-testid="jam-view">
-        <EmptyState
-          icon={<XIcon size={48} />}
-          title="Jam not found"
-          description={
-            joinError ||
-            'That code is not an open Jam. Check the link, or go back to Listen.'
-          }
-          action={backToListen}
-          className="flex-1"
-        />
+        <div className="flex flex-1 flex-col justify-center">
+          <PageEmpty
+            icon="alert"
+            title="Jam not found"
+            description={
+              joinError ||
+              'That code is not an open Jam. Check the link, or go back to Listen.'
+            }
+            action={backToListen}
+          />
+        </div>
       </TahtiJam>
     );
   }
@@ -214,13 +205,14 @@ export function JamView({ code }: { code: string }) {
   if (ended) {
     return (
       <TahtiJam data-testid="jam-view">
-        <EmptyState
-          icon={<XIcon size={48} />}
-          title="This Jam has ended"
-          description="The host closed the session."
-          action={backToListen}
-          className="flex-1"
-        />
+        <div className="flex flex-1 flex-col justify-center">
+          <PageEmpty
+            icon="alert"
+            title="This Jam has ended"
+            description="The host closed the session."
+            action={backToListen}
+          />
+        </div>
       </TahtiJam>
     );
   }
@@ -228,13 +220,14 @@ export function JamView({ code }: { code: string }) {
   if (removed) {
     return (
       <TahtiJam data-testid="jam-view">
-        <EmptyState
-          icon={<XIcon size={48} />}
-          title="You are no longer in this Jam"
-          description="The host removed you from the session."
-          action={backToListen}
-          className="flex-1"
-        />
+        <div className="flex flex-1 flex-col justify-center">
+          <PageEmpty
+            icon="alert"
+            title="You are no longer in this Jam"
+            description="The host removed you from the session."
+            action={backToListen}
+          />
+        </div>
       </TahtiJam>
     );
   }

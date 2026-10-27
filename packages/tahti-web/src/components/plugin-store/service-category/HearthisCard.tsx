@@ -32,11 +32,13 @@ import {
 } from '../../../api/sources';
 import {
   createStudioCollection,
+  deleteStudioCollection,
   fetchStudioCollections,
   patchStudioCollection,
 } from '../../../api/studio';
 import { fetchMeProfile, patchMeProfile } from '../../../api/studio-extras';
 import type { StudioCollection } from '../../../api/studio-types';
+import { toastWithUndo } from '../../../lib/undoToast';
 import { hearthisSourceAdapter } from '../../../plugins/import-sources';
 import { useAuthStore } from '../../../stores/authStore';
 import { usePlayerStore } from '../../../stores/playerStore';
@@ -94,16 +96,6 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
 
   useEffect(() => {
     usePluginInstallStore.getState().setInstalled(plugin.id, Boolean(handle));
-    // The frontend has always treated "has a saved hearthis.at handle" as
-    // "plugin installed", but /api/v1/imports/hearthis/add requires an
-    // actual hearthis-import IntegrationCredential row — nothing ever
-    // created one, so every import (any playlist, any track) 400'd with
-    // "Install the hearthis.at import plugin first". hearthis-import has
-    // no real fields (public API, no key needed — see
-    // packages/shared/src/integration-providers.ts), so this is just an
-    // idempotent upsert to bring the backend row in line with what the UI
-    // already implied was true. Also covers accounts that saved their
-    // handle before this fix shipped.
     if (handle) {
       installMeIntegration('hearthis-import', {}).catch(() => undefined);
     }
@@ -242,13 +234,20 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
     setDestinationCollections((current) => [created.data, ...current]);
     setDestinationId(created.data.id);
     setNewDestinationName('');
-    toast.success(`Created playlist “${created.data.name}”.`);
-    return created.data.id;
+    const createdId = created.data.id;
+    toastWithUndo(`Created playlist “${created.data.name}”.`, {
+      undo: () => deleteStudioCollection(created.data.slug),
+      undoneMessage: `Removed “${created.data.name}”.`,
+      onUndone: () => {
+        setDestinationCollections((current) =>
+          current.filter((collection) => collection.id !== createdId),
+        );
+        setDestinationId((current) => (current === createdId ? '' : current));
+      },
+    });
+    return createdId;
   };
 
-  // Kept in a ref as well as state: several imports can finish in a row
-  // (multi-collection import), and each must add to the ids the previous one
-  // recorded rather than to the render's stale snapshot.
   const importedRef = useRef(importedIds);
   importedRef.current = importedIds;
   const markImported = (trackIds: string[]) => {
@@ -359,7 +358,6 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       );
       markImported(result.items.map((item) => item.trackId));
       if (coverUrl) {
-        // A cover failure shouldn't hide that the tracks did import.
         await patchStudioCollection(created.data.slug, { coverUrl }).catch(
           () => undefined,
         );
@@ -556,6 +554,8 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                 enterKeyHint="search"
                 aria-label="Search hearthis.at"
                 type="search"
+                autoCorrect="off"
+                spellCheck={false}
                 className="min-w-0 flex-1 basis-40"
                 size="sm"
                 value={q}

@@ -1,8 +1,10 @@
 import { Link } from '@tanstack/react-router';
+import { useState } from 'react';
 
 import { Button, MediaArtwork } from '@tahti-player/ui';
 
 import { CommentItem } from '../../components/CommentItem';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty } from '../../components/PageStates';
 import { cn } from '../../lib/cn';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
@@ -26,6 +28,9 @@ export function TrackBody({ page }: { page: TrackPage }) {
     removeComment,
     deletingCommentId,
   } = page;
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const pendingComment =
+    comments.find((comment) => comment.id === pendingDeleteId) ?? null;
 
   return (
     <section className="bg-background px-6 py-8 md:px-10">
@@ -117,7 +122,7 @@ export function TrackBody({ page }: { page: TrackPage }) {
                       }
                       onDelete={
                         canDeleteComment(comment)
-                          ? () => void removeComment(comment.id)
+                          ? () => setPendingDeleteId(comment.id)
                           : undefined
                       }
                       deleting={deletingCommentId === comment.id}
@@ -207,6 +212,21 @@ export function TrackBody({ page }: { page: TrackPage }) {
           ) : null}
         </div>
       </div>
+      <ConfirmDialog
+        isOpen={pendingDeleteId !== null}
+        title="Remove this comment?"
+        description={pendingComment?.body ?? 'The comment leaves this track.'}
+        confirmLabel="Remove"
+        onCancel={() => setPendingDeleteId(null)}
+        onConfirm={() => {
+          const id = pendingDeleteId;
+          if (!id) {
+            return;
+          }
+          setPendingDeleteId(null);
+          void removeComment(id);
+        }}
+      />
     </section>
   );
 }

@@ -13,7 +13,6 @@ import {
   Button,
   ButtonLink,
   Dialog,
-  EmptyState,
   FilterChips,
   Input,
   MediaArtwork,
@@ -32,7 +31,7 @@ import {
   type StudioEpisode,
   type StudioShowSeries,
 } from '../../api/shows';
-import { PageError, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { ShowImagePicker } from '../../components/ShowImagePicker';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -255,14 +254,14 @@ export function StudioShowsView() {
                 onRetry={reload}
               />
             ) : shows.length === 0 ? (
-              <EmptyState
-                size="sm"
+              <PageEmpty
                 title="No shows yet"
                 description="Create one to start numbering episodes."
                 action={
                   <Tooltip content="New show" side="top">
                     <Button
                       size="icon-sm"
+                      variant="secondary"
                       onClick={() => setCreateOpen(true)}
                       aria-label="New show"
                     >
@@ -286,8 +285,7 @@ export function StudioShowsView() {
                   }
                 />
                 {filteredShows.length === 0 ? (
-                  <EmptyState
-                    size="sm"
+                  <PageEmpty
                     title="No shows match this search."
                     action={
                       <Button

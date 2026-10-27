@@ -2,14 +2,7 @@ import { PlayIcon, Share2Icon, Trash2Icon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import {
-  Button,
-  EmptyState,
-  FilePicker,
-  Input,
-  Select,
-  Tooltip,
-} from '@tahti-player/ui';
+import { Button, FilePicker, Input, Select, Tooltip } from '@tahti-player/ui';
 
 import {
   createStashShare,
@@ -27,9 +20,10 @@ import {
   patchStudioSound,
 } from '../api/studio';
 import type { StudioCollection, StudioSound } from '../api/studio-types';
+import { toastWithUndo } from '../lib/undoToast';
 import { usePlayerStore } from '../stores/playerStore';
 import { ConfirmDialog } from './ConfirmDialog';
-import { PageError } from './PageStates';
+import { PageEmpty, PageError } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 const EXPIRY_OPTIONS = [1, 3, 7, 30, 0] as const;
@@ -159,7 +153,14 @@ export const StashFilesPanel = ({
       ? `Shared ${file.filename} with @${username}.`
       : `Created access for ${file.filename}.`;
     setMessage(okMessage);
-    toast.success(okMessage);
+    const created = result.data;
+    toastWithUndo(okMessage, {
+      undo: () => revokeStashShare(created.id),
+      undoneMessage: 'Share access removed.',
+      onUndone: () => {
+        void reload();
+      },
+    });
     await reload();
   };
 
@@ -231,8 +232,7 @@ export const StashFilesPanel = ({
               onRetry={() => setMoveListsAttempt((current) => current + 1)}
             />
           ) : soundItems.length === 0 && collections.length === 0 ? (
-            <EmptyState
-              size="sm"
+            <PageEmpty
               title="Nothing to move"
               description="Everything in your library is already private or there is nothing to move."
             />
@@ -294,7 +294,7 @@ export const StashFilesPanel = ({
             onRetry={() => void reload()}
           />
         ) : files.length === 0 ? (
-          <EmptyState size="sm" title="No stash files yet" />
+          <PageEmpty title="No stash files yet" />
         ) : (
           <ul className="divide-border divide-y">
             {files.map((file) => (

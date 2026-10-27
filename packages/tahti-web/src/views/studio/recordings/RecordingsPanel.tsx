@@ -2,15 +2,13 @@ import { Link } from '@tanstack/react-router';
 import { RadioIcon, SearchIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import {
-  Button,
-  ButtonLink,
-  EmptyState,
-  Input,
-  Select,
-} from '@tahti-player/ui';
+import { Button, ButtonLink, Input, Select } from '@tahti-player/ui';
 
-import { PageError, PageLoading } from '../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { TrackEditDialog } from '../../../components/TrackEditDialog';
 import type { SortKey } from './helpers';
@@ -78,8 +76,7 @@ export function RecordingsPanel({
             onRetry={reload}
           />
         ) : filtered.length === 0 ? (
-          <EmptyState
-            size="sm"
+          <PageEmpty
             title={
               recordings.length === 0
                 ? 'No recorded shows yet'
@@ -92,7 +89,7 @@ export function RecordingsPanel({
             }
             action={
               recordings.length === 0 ? (
-                <ButtonLink to="/studio/go-live" size="sm" variant="secondary">
+                <ButtonLink to="/studio/go-live" variant="secondary">
                   <RadioIcon size={14} aria-hidden className="mr-1" />
                   Open broadcast studio
                 </ButtonLink>

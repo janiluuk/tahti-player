@@ -14,7 +14,6 @@ import {
   Button,
   ButtonLink,
   Dialog,
-  EmptyState,
   Input,
   MediaArtwork,
   Toggle,
@@ -24,16 +23,19 @@ import {
 
 import {
   createStudioCollection,
+  deleteStudioCollection,
   fetchStudioCollections,
 } from '../../api/studio';
 import type { StudioCollection } from '../../api/studio-types';
 import {
+  PageEmpty,
   PageError,
   PageErrorBanner,
   PageLoading,
 } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { toastWithUndo } from '../../lib/undoToast';
 import { LibrarySectionTabs } from '../LibraryView';
 
 function isPlaylist(c: StudioCollection) {
@@ -83,9 +85,19 @@ export function StudioPlaylistsView() {
         toast.error(r.error);
         return;
       }
+      const created = r.data;
       setCreateOpen(false);
       setName('');
       reload();
+      toastWithUndo(`Created ${created.name}.`, {
+        undo: () => deleteStudioCollection(created.slug),
+        undoneMessage: `Removed ${created.name}.`,
+        onUndone: () => {
+          setRows((current) =>
+            current.filter((row) => row.slug !== created.slug),
+          );
+        },
+      });
     } catch {
       toast.error('Could not create the playlist.');
     } finally {
@@ -186,8 +198,7 @@ export function StudioPlaylistsView() {
                 onRetry={reload}
               />
             ) : rows.length === 0 ? (
-              <EmptyState
-                icon={<ListMusicIcon size={40} className="opacity-40" />}
+              <PageEmpty
                 title="No playlists yet"
                 description="Create a playlist to organize tracks and releases."
                 action={

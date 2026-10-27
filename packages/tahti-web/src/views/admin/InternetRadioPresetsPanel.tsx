@@ -26,6 +26,7 @@ import {
   type AdminInternetRadioPreset,
   type AdminInternetRadioPresetInput,
 } from '../../api/admin';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { RadioStationCover } from '../../components/RadioStationCover';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -74,6 +75,8 @@ export function InternetRadioPresetsPanel() {
   const [draft, setDraft] =
     useState<AdminInternetRadioPresetInput>(EMPTY_PRESET_DRAFT);
   const [pending, setPending] = useState(false);
+  const [pendingRemove, setPendingRemove] =
+    useState<AdminInternetRadioPreset | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const reload = () => {
@@ -225,15 +228,7 @@ export function InternetRadioPresetsPanel() {
                   className="gap-1.5"
                   size="sm"
                   variant="text"
-                  onClick={() => {
-                    void deleteAdminInternetRadioPreset(preset.id).then(
-                      (result) => {
-                        if (result.ok) {
-                          reload();
-                        }
-                      },
-                    );
-                  }}
+                  onClick={() => setPendingRemove(preset)}
                 >
                   <Trash2Icon size={14} aria-hidden />
                   Remove
@@ -411,6 +406,29 @@ export function InternetRadioPresetsPanel() {
           </Dialog.Actions>
         </form>
       </Dialog.Root>
+      <ConfirmDialog
+        isOpen={pendingRemove !== null}
+        title={
+          pendingRemove ? `Remove ${pendingRemove.name}?` : 'Remove station?'
+        }
+        description="Listeners lose this preset from the radio directory."
+        confirmLabel="Remove"
+        onCancel={() => setPendingRemove(null)}
+        onConfirm={() => {
+          const preset = pendingRemove;
+          if (!preset) {
+            return;
+          }
+          setPendingRemove(null);
+          void deleteAdminInternetRadioPreset(preset.id).then((result) => {
+            if (!result.ok) {
+              setError(result.error);
+              return;
+            }
+            reload();
+          });
+        }}
+      />
     </StudioPanel>
   );
 }

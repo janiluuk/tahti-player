@@ -50,11 +50,12 @@ export const BlockEmpty: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const empty = await canvas.findByTestId('empty-state');
-    await expect(empty).toHaveTextContent('No playable tracks yet');
-    await expect(empty).toHaveTextContent(
-      'This playlist has no playable tracks yet.',
-    );
+    await expect(
+      await canvas.findByText('No playable tracks yet'),
+    ).toBeVisible();
+    await expect(
+      canvas.getByText('This playlist has no playable tracks yet.'),
+    ).toBeVisible();
   },
 };
 
@@ -67,7 +68,9 @@ export const BlockEmptyCards: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByTestId('empty-state')).toBeVisible();
+    await expect(
+      await canvas.findByText('No playable tracks yet'),
+    ).toBeVisible();
   },
 };
 

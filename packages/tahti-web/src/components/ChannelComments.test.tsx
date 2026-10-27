@@ -5,6 +5,7 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
   within,
 } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -86,6 +87,15 @@ describe('ChannelComments', () => {
         })[0]!,
       );
     });
+    await act(async () => {
+      fireEvent.click(
+        within(
+          screen.getByRole('dialog', { name: 'Remove this comment?' }),
+        ).getByRole('button', { name: 'Remove' }),
+      );
+    });
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    await waitFor(() => expect(del).toHaveBeenCalledWith('c1'));
     expect(del).toHaveBeenCalledWith('c1');
     expect(within(list).getAllByRole('listitem')).toHaveLength(2);
   });

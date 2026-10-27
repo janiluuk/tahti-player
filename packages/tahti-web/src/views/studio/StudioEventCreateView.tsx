@@ -16,6 +16,7 @@ import {
 import { fetchVenues } from '../../api/client';
 import {
   createEvent,
+  deleteEvent,
   fetchMyEvents,
   updateEvent,
   type ArtistEvent,
@@ -25,6 +26,7 @@ import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { toDatetimeLocalValue } from '../../lib/datetimeLocal';
+import { toastWithUndo } from '../../lib/undoToast';
 
 /** Add a new event, or edit an existing one when `eventId` is given. */
 export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
@@ -122,6 +124,18 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                       if (!result.ok) {
                         toast.error(result.error);
                         return;
+                      }
+                      if (!editing) {
+                        const created = result.data;
+                        toastWithUndo(`Created ${created.title}.`, {
+                          undo: () => deleteEvent(created.id),
+                          undoneMessage: `Removed ${created.title}.`,
+                          onUndone: () => {
+                            window.dispatchEvent(
+                              new Event('tahti-studio-events'),
+                            );
+                          },
+                        });
                       }
                       void navigate({ to: '/studio/events' });
                     })

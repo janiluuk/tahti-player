@@ -1,22 +1,17 @@
-import { ChevronDownIcon, FileJson, XIcon } from 'lucide-react';
+import { ChevronDownIcon, XIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import {
-  applyAdvancedTheme,
-  clearAdvancedTheme,
-  type AdvancedTheme,
-} from '@tahti-player/themes';
+import { applyAdvancedTheme, type AdvancedTheme } from '@tahti-player/themes';
 import {
   Box,
   Button,
-  Dialog,
   Input,
   Slider,
   Textarea,
   Tooltip,
 } from '@tahti-player/ui';
 
-import { useThemeStore } from '../plugins/themes';
+import { activeThemeRecord, useThemeStore } from '../plugins/themes';
 
 type VarField = { key: string; label: string };
 
@@ -89,6 +84,30 @@ type ThemeDraftSnapshot = {
   lightValues: Record<string, string>;
   darkValues: Record<string, string>;
 };
+
+function themeDraftFromActive(): ThemeDraftSnapshot {
+  const active = activeThemeRecord();
+  if (active) {
+    return {
+      name: active.name,
+      lightValues: { ...(active.vars ?? {}) },
+      darkValues: { ...(active.dark ?? {}) },
+    };
+  }
+  const { themeId, themes, dark } = useThemeStore.getState();
+  const basic = themes.find((theme) => theme.id === themeId);
+  const tokens = Object.fromEntries(
+    VAR_GROUPS.flatMap((group) => group.fields).flatMap((field) => {
+      const value = currentValue(field.key);
+      return value ? [[field.key, value] as const] : [];
+    }),
+  );
+  return {
+    name: basic?.name ?? 'My theme',
+    lightValues: dark ? {} : tokens,
+    darkValues: dark ? tokens : {},
+  };
+}
 
 function draftsEqual(a: ThemeDraftSnapshot, b: ThemeDraftSnapshot): boolean {
   return (
@@ -202,7 +221,9 @@ function ColorTokenRow({
   onClear,
 }: ColorTokenRowProps) {
   const display = value || placeholder;
-  const [hue, saturation, lightness] = hexToHsl(display);
+  const [hue, saturation, lightness] = expanded
+    ? hexToHsl(display)
+    : [0, 0, 0.5];
   const overridden = value.trim() !== '';
 
   return (
@@ -317,19 +338,15 @@ function ColorTokenRow({
 export function ThemeEditor() {
   const dark = useThemeStore((state) => state.dark);
   const importCustomTheme = useThemeStore((state) => state.importCustomTheme);
+  const [initialDraft] = useState(themeDraftFromActive);
 
-  const [name, setName] = useState('My theme');
-  const [lightValues, setLightValues] = useState<Record<string, string>>({});
-  const [darkValues, setDarkValues] = useState<Record<string, string>>({});
-  const [savedDraft, setSavedDraft] = useState<ThemeDraftSnapshot>(() => ({
-    name: 'My theme',
-    lightValues: {},
-    darkValues: {},
-  }));
+  const [name, setName] = useState(initialDraft.name);
+  const [lightValues, setLightValues] = useState(initialDraft.lightValues);
+  const [darkValues, setDarkValues] = useState(initialDraft.darkValues);
+  const [savedDraft, setSavedDraft] = useState(initialDraft);
   const [nameError, setNameError] = useState<string | undefined>();
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
-  const [importOpen, setImportOpen] = useState(false);
   const [importJson, setImportJson] = useState('');
   const [importMsg, setImportMsg] = useState<string | null>(null);
 
@@ -345,22 +362,31 @@ export function ThemeEditor() {
     }),
     [name, lightValues, darkValues],
   );
-
-  useEffect(() => {
-    applyAdvancedTheme(draft);
-  }, [draft]);
-
-  useEffect(() => clearAdvancedTheme, []);
-
-  useEffect(() => {
-    setExpandedKey(null);
-  }, [dark]);
-
   const currentDraft = useMemo<ThemeDraftSnapshot>(
     () => ({ name, lightValues, darkValues }),
     [name, lightValues, darkValues],
   );
   const hasUnsavedChanges = !draftsEqual(currentDraft, savedDraft);
+
+  useEffect(() => {
+    if (hasUnsavedChanges) {
+      applyAdvancedTheme(draft);
+      return;
+    }
+    const state = useThemeStore.getState();
+    state.setTheme(state.themeId);
+  }, [draft, dark, hasUnsavedChanges]);
+
+  useEffect(() => {
+    return () => {
+      const state = useThemeStore.getState();
+      state.setTheme(state.themeId);
+    };
+  }, []);
+
+  useEffect(() => {
+    setExpandedKey(null);
+  }, [dark]);
 
   const save = () => {
     const trimmed = name.trim();
@@ -405,9 +431,22 @@ export function ThemeEditor() {
       setImportMsg(result.error);
       return;
     }
-    setImportMsg('Theme imported and applied.');
+    const imported = useThemeStore.getState().customThemes[result.id];
+    if (imported) {
+      const next: ThemeDraftSnapshot = {
+        name: imported.name,
+        lightValues: { ...(imported.vars ?? {}) },
+        darkValues: { ...(imported.dark ?? {}) },
+      };
+      setName(next.name);
+      setLightValues(next.lightValues);
+      setDarkValues(next.darkValues);
+      setSavedDraft(next);
+    }
     setImportJson('');
-    setImportOpen(false);
+    setImportMsg(null);
+    setNameError(undefined);
+    setSaveMsg('Theme imported and applied.');
   };
 
   return (
@@ -444,16 +483,6 @@ export function ThemeEditor() {
         <Button size="sm" type="submit">
           Save
         </Button>
-        <Tooltip content="Import theme JSON" side="top">
-          <Button
-            size="icon-sm"
-            variant="secondary"
-            aria-label="Import theme JSON"
-            onClick={() => setImportOpen(true)}
-          >
-            <FileJson size={16} aria-hidden />
-          </Button>
-        </Tooltip>
       </form>
       <p className="text-foreground-secondary text-xs">
         Editing the <strong>{dark ? 'dark' : 'light'}</strong> variant. Use the
@@ -509,16 +538,12 @@ export function ThemeEditor() {
         </span>
       ) : null}
 
-      <Dialog.Root
-        isOpen={importOpen}
-        onClose={() => setImportOpen(false)}
-        className="max-w-xl"
-      >
-        <Dialog.Title>Import theme JSON</Dialog.Title>
-        <Dialog.Description>
-          Paste a version 1 theme. It is validated before being added to your
-          library.
-        </Dialog.Description>
+      <div className="border-border flex flex-col gap-2 rounded-lg border p-3">
+        <h3 className="text-sm font-bold">Import a theme</h3>
+        <p className="text-foreground-secondary text-xs">
+          Paste a theme JSON (version, name, and light or dark colour overrides)
+          to load it into this editor.
+        </p>
         <Textarea
           autoCapitalize="none"
           autoCorrect="off"
@@ -529,23 +554,27 @@ export function ThemeEditor() {
             setImportJson(event.target.value);
             setImportMsg(null);
           }}
-          rows={10}
+          rows={6}
           className="font-mono text-xs"
           placeholder={
-            '{\n  "version": 1,\n  "name": "My theme",\n  "vars": {}\n}'
+            '{\n  "version": 1,\n  "name": "My theme",\n  "vars": { "primary": "oklch(0.7 0.15 250)" }\n}'
           }
           aria-label="Theme JSON"
         />
-        {importMsg ? (
-          <p className="text-accent-red-strong text-xs">{importMsg}</p>
-        ) : null}
-        <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
-          <Button onClick={importTheme} disabled={!importJson.trim()}>
-            Import and apply
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            size="sm"
+            onClick={importTheme}
+            disabled={!importJson.trim()}
+          >
+            Import & apply
           </Button>
-        </Dialog.Actions>
-      </Dialog.Root>
+          {importMsg ? (
+            <span className="text-accent-red-strong text-xs">{importMsg}</span>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 }

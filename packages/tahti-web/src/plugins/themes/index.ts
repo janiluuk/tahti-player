@@ -1,4 +1,5 @@
 export {
+  activeThemeRecord,
   isDynamicDark,
   isPresetCustomThemeId,
   systemPrefersDark,

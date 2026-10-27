@@ -1,8 +1,8 @@
 import { useId, type ComponentProps, type ReactNode } from 'react';
 
-import { cn, EmptyState, SectionTitle } from '@tahti-player/ui';
+import { cn, SectionTitle } from '@tahti-player/ui';
 
-import { PageError, PageLoading } from './PageStates';
+import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 export type ProfileSectionStatus = 'loading' | 'error' | 'ready';
 
@@ -50,11 +50,7 @@ export function ProfileSection({
           onRetry={onRetry}
         />
       ) : empty ? (
-        <EmptyState
-          size="sm"
-          title={empty.title}
-          description={empty.description}
-        />
+        <PageEmpty title={empty.title} description={empty.description} />
       ) : (
         children
       )}

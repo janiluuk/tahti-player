@@ -8,6 +8,7 @@ import {
   type AdminAnnualReport,
   type AnnualReportRevision,
 } from '../../../../api/admin/admin-annual-reports';
+import { PageEmpty } from '../../../../components/PageStates';
 
 function formatDay(iso: string): string {
   return new Date(iso).toLocaleDateString(undefined, {
@@ -113,9 +114,7 @@ export function AnnualReportCorrection({
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       {revisions !== null ? (
         revisions.length === 0 ? (
-          <p className="text-foreground-secondary text-xs">
-            No earlier versions are kept.
-          </p>
+          <PageEmpty title="No earlier versions are kept." />
         ) : (
           <ul aria-label="Earlier versions" className="flex flex-col gap-1">
             {revisions.map((revision) => (

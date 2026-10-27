@@ -1,7 +1,7 @@
 import { SendIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, EmptyState } from '@tahti-player/ui';
+import { Button } from '@tahti-player/ui';
 
 import {
   fetchDistributionStatus,
@@ -12,7 +12,11 @@ import type {
   RevelatorRoyaltyReportRow,
 } from '../../../api/studio-types';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
-import { PageError, PageLoading } from '../../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageLoading,
+} from '../../../components/PageStates';
 import { euros } from './distribution-helpers';
 
 export function DeliveryTab({
@@ -164,8 +168,7 @@ export function DeliveryTab({
               onRetry={onRetryRoyalties}
             />
           ) : royalties.length === 0 ? (
-            <EmptyState
-              size="sm"
+            <PageEmpty
               title="No reports yet"
               description="Synced monthly after DSP delivery."
             />

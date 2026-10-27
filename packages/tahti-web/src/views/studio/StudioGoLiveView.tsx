@@ -1,6 +1,6 @@
-import { useRouterState } from '@tanstack/react-router';
+import { useNavigate, useRouterState } from '@tanstack/react-router';
 
-import { Badge, ButtonLink, Dialog, ViewShell } from '@tahti-player/ui';
+import { Badge, ButtonLink, Dialog, Tabs, ViewShell } from '@tahti-player/ui';
 
 import {
   BroadcastPreflightPanel,
@@ -12,7 +12,12 @@ import { HelpLayer } from '../../components/HelpLayer';
 import { StudioGate } from '../../components/StudioGate';
 import { OnAirBadge } from '../../components/tahti/OnAirBadge';
 import { BroadcastCredentialsPanel } from './go-live/BroadcastCredentialsPanel';
-import { goLiveTabFromSearch, type GoLiveTabId } from './go-live/goLiveTabs';
+import {
+  GO_LIVE_TAB_LABELS,
+  GO_LIVE_TABS,
+  goLiveTabFromSearch,
+  type GoLiveTabId,
+} from './go-live/goLiveTabs';
 import { GreenRoomSessionPanel } from './go-live/GreenRoomSessionPanel';
 import { MultistreamPanel } from './go-live/MultistreamPanel';
 import { RecordingPanel } from './go-live/RecordingPanel';
@@ -169,6 +174,7 @@ export function StudioGoLiveView() {
     },
   });
   const activeTab = goLiveTabFromSearch(searchTab);
+  const navigate = useNavigate();
 
   const {
     channelState,
@@ -190,6 +196,28 @@ export function StudioGoLiveView() {
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6">
         <ViewShell title="Go live" classes={{ root: 'px-0 pt-0' }}>
+          <Tabs.Root
+            selectedIndex={GO_LIVE_TABS.indexOf(activeTab)}
+            onChange={(index) => {
+              const next = GO_LIVE_TABS[index];
+              if (!next) {
+                return;
+              }
+              void navigate({
+                to: '/studio/go-live',
+                search: next === 'prep' ? {} : { tab: next },
+              });
+            }}
+          >
+            <Tabs.List
+              aria-label="Go live session"
+              className="mb-4 w-fit flex-wrap"
+            >
+              {GO_LIVE_TABS.map((tab) => (
+                <Tabs.Tab key={tab}>{GO_LIVE_TAB_LABELS[tab]}</Tabs.Tab>
+              ))}
+            </Tabs.List>
+          </Tabs.Root>
           <div className="mb-4 flex flex-wrap items-center gap-2">
             {slug && (
               <ChannelShareButton

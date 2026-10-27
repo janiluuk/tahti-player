@@ -18,7 +18,6 @@ import {
   Button,
   ButtonLink,
   Dialog,
-  EmptyState,
   FilterChips,
   ImageReveal,
   Input,
@@ -42,7 +41,7 @@ import type {
 } from '../../api/studio-types';
 import type { TahtiPlayable } from '../../api/types';
 import { SubscribedCollections } from '../../components/library/SubscribedCollections';
-import { PageError, PageLoading } from '../../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioCollectionMoreMenu } from '../../components/StudioCollectionMoreMenu';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -462,8 +461,7 @@ export function StudioCollectionsView() {
                 }}
               />
             ) : rows.length === 0 ? (
-              <EmptyState
-                size="sm"
+              <PageEmpty
                 title={
                   canCreate ? 'No collections yet' : 'No collections saved yet'
                 }
@@ -492,12 +490,10 @@ export function StudioCollectionsView() {
                 }
               />
             ) : filteredRows.length === 0 ? (
-              <EmptyState
-                size="sm"
+              <PageEmpty
                 title="No collections match these filters."
                 action={
                   <Button
-                    size="sm"
                     variant="secondary"
                     onClick={() => {
                       setQuery('');

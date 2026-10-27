@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
-  EmptyState,
   ImageReveal,
   InlineError,
   Input,
@@ -26,7 +25,8 @@ import {
   type DiscoWidgetScope,
   type DiscoWidgetStoreItem,
 } from '../../api/disco-widgets';
-import { PageLoading } from '../PageStates';
+import { ConfirmDialog } from '../ConfirmDialog';
+import { PageEmpty, PageLoading } from '../PageStates';
 import { useChannelAddonBlocks } from './useChannelAddonBlocks';
 
 const WIDTH_OPTIONS: { id: ChannelBlockWidth; label: string }[] = [
@@ -52,6 +52,7 @@ export function DiscoWidgetManagerPanel({
   const [installingId, setInstallingId] = useState<string | null>(null);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pendingRemoveId, setPendingRemoveId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [configuringId, setConfiguringId] = useState<string | null>(null);
   const layout = useChannelAddonBlocks(scope === 'ARTIST');
@@ -206,8 +207,7 @@ export function DiscoWidgetManagerPanel({
       ) : (
         <>
           {installs.length === 0 ? (
-            <EmptyState
-              size="sm"
+            <PageEmpty
               title="Nothing installed yet"
               description="Add one from the store below."
             />
@@ -291,7 +291,7 @@ export function DiscoWidgetManagerPanel({
                           size="sm"
                           variant="text"
                           disabled={isPending}
-                          onClick={() => void handleRemove(install.id)}
+                          onClick={() => setPendingRemoveId(install.id)}
                         >
                           Remove
                         </Button>
@@ -327,8 +327,7 @@ export function DiscoWidgetManagerPanel({
               .
             </p>
             {filtered.length === 0 ? (
-              <EmptyState
-                size="sm"
+              <PageEmpty
                 title={
                   widgets.length === 0
                     ? 'No widgets available'
@@ -450,6 +449,28 @@ export function DiscoWidgetManagerPanel({
           <Dialog.Close>Done</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
+      <ConfirmDialog
+        isOpen={pendingRemoveId !== null}
+        title={
+          pendingRemoveId
+            ? `Remove ${
+                installs.find((install) => install.id === pendingRemoveId)
+                  ?.widget.name ?? 'this widget'
+              }?`
+            : 'Remove widget?'
+        }
+        description="It leaves this page. You can install it again from the list."
+        confirmLabel="Remove"
+        onCancel={() => setPendingRemoveId(null)}
+        onConfirm={() => {
+          const id = pendingRemoveId;
+          if (!id) {
+            return;
+          }
+          setPendingRemoveId(null);
+          void handleRemove(id);
+        }}
+      />
     </div>
   );
 }

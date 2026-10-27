@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import {
   Button,
   ButtonLink,
-  EmptyState,
   TabLabel,
   Tabs,
   Tooltip,
@@ -13,7 +12,12 @@ import {
 
 import { fetchStudioSounds } from '../../api/studio';
 import type { StudioSound } from '../../api/studio-types';
-import { PageError, PageGate, PageLoading } from '../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageGate,
+  PageLoading,
+} from '../../components/PageStates';
 import { StashFilesPanel } from '../../components/StashFilesPanel';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -141,13 +145,12 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
             onRetry={() => setAttempt((n) => n + 1)}
           />
         ) : items.length === 0 ? (
-          <EmptyState
-            size="sm"
+          <PageEmpty
             title="No tracks in your stash yet"
             description="Upload a private track, then move it here when you are ready to edit or share by link."
             className="mt-4"
             action={
-              <ButtonLink to="/studio/upload" size="sm" variant="secondary">
+              <ButtonLink to="/studio/upload" variant="secondary">
                 Upload a track
               </ButtonLink>
             }

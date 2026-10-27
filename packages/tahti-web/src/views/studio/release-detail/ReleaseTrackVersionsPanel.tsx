@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Badge, Button, EmptyState, FilePicker, Input } from '@tahti-player/ui';
+import { Badge, Button, FilePicker, Input } from '@tahti-player/ui';
 
 import {
   activateReleaseTrackVersion,
@@ -11,6 +11,7 @@ import {
   type ReleaseTrackVersion,
 } from '../../../api/release-track-versions';
 import type { StudioRelease } from '../../../api/studio-types';
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { usePolling } from '../../../hooks/usePolling';
 import { formatDuration } from '../../../lib/playableToTrack';
@@ -193,8 +194,7 @@ export function ReleaseTrackVersionsPanel({
       description="Earlier and replacement masters of each track. The active one is what listeners hear and what gets distributed."
     >
       {tracks.length === 0 ? (
-        <EmptyState
-          size="sm"
+        <PageEmpty
           title="No tracks on this release yet"
           description="Add tracks first, then manage their versions."
         />

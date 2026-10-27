@@ -1,3 +1,41 @@
+## 2026-10-27 - UX batch 115 (empties, confirms, undo)
+
+Plain-text empties (shows, replies, import catalogs, the release library
+picker, and the rest of the batch) use `PageEmpty`. One-click deletes ask
+first. New events, posts, share links, stream destinations, and comments can
+be undone. Bumped tahti-web `0.0.277`.
+
+## 2026-10-27 - Theme editor keeps the current theme
+
+Settings → Themes → Editor opens on the theme already applied, instead of a
+blank draft that wiped it. Import JSON sits inside that editor. Bumped
+tahti-web `0.0.276`.
+
+## 2026-10-27 - Chat leaves the sidebar footer
+
+The left panel footer is Help center and Settings. Channel chat still opens
+from a channel page. Bumped tahti-web `0.0.275`.
+
+## 2026-10-27 - UX batch 114 (thirty more empty states)
+
+Thirty more list empties (playlists, history, venues, help, desktop library,
+discover widgets, and the rest of the batch) render through `PageEmpty`.
+Load errors and access gates stay as they were. Bumped tahti-web `0.0.274`.
+
+## 2026-10-27 - UX batch 113 (thirty empty states)
+
+Thirty-two list empties (events, chat, stats, revenue, collections, search,
+and the rest of the batch) render through `PageEmpty`. Bumped tahti-web
+`0.0.273`.
+
+## 2026-10-27 - Studio nav: stable Broadcast and Music tabs
+
+Broadcast chrome no longer swaps in Prep / Credentials / Recording /
+Destinations / Green room beside Schedule and Channel. Those session tabs
+live on the Go live page, so opening Channel keeps the same Broadcast row.
+Releases, Distribution and Editor sit under one Music tab. Stats tabs stay
+up on Insights. Bumped tahti-web `0.0.272`.
+
 ## 2026-10-27 - UX batch 111 (URL and email keyboards)
 
 Thirty link and email fields stop phone keyboards from capitalising the

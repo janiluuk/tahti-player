@@ -5,6 +5,7 @@ import {
   fireEvent,
   render,
   screen,
+  within,
 } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -114,6 +115,15 @@ describe('ConflictsPanel removal', () => {
         }),
       );
     });
+    await act(async () => {
+      fireEvent.click(
+        within(
+          screen.getByRole('dialog', {
+            name: 'Remove the declaration for Aino Virtanen?',
+          }),
+        ).getByRole('button', { name: 'Remove' }),
+      );
+    });
     expect(remove).toHaveBeenCalledWith('c1');
     expect(screen.queryByText('Grant application from her label')).toBeNull();
   });
@@ -138,6 +148,15 @@ describe('ConflictsPanel removal', () => {
         screen.getByRole('button', {
           name: 'Remove declaration: Aino Virtanen',
         }),
+      );
+    });
+    await act(async () => {
+      fireEvent.click(
+        within(
+          screen.getByRole('dialog', {
+            name: 'Remove the declaration for Aino Virtanen?',
+          }),
+        ).getByRole('button', { name: 'Remove' }),
       );
     });
     expect(screen.getByRole('alert').textContent).toContain('approved minutes');

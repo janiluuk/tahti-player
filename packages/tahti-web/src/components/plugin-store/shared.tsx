@@ -4,7 +4,6 @@ import { createContext, useContext, useState } from 'react';
 import {
   Button,
   Dialog,
-  EmptyState,
   PluginStoreItem,
   TabLabel,
   Tabs,
@@ -12,6 +11,7 @@ import {
 } from '@tahti-player/ui';
 
 import { usePluginInstallStore } from '../../stores/pluginInstallStore';
+import { PageEmpty } from '../PageStates';
 
 /** Set by a page that wants a plugin's configure dialog on its own, without
  * the store card around it: the card then renders only its dialog, already
@@ -146,8 +146,7 @@ export function InstalledAvailableTabs({
         </Tabs.List>
       </Tabs.Root>
       {visibleIds.length === 0 ? (
-        <EmptyState
-          size="sm"
+        <PageEmpty
           title={tab === 'installed' ? 'Nothing installed' : 'All installed'}
           description={tab === 'installed' ? emptyInstalled : emptyAvailable}
         />
