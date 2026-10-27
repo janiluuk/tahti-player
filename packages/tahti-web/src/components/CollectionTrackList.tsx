@@ -1,6 +1,7 @@
 import { useId, type ReactNode } from 'react';
 
 import type { TahtiPlayable } from '../api/types';
+import type { AmbientTrackStats } from './AmbientTrackRow';
 import { PageEmpty } from './PageStates';
 import { PlayableAmbientTrackList } from './PlayableAmbientTrackList';
 import { Eyebrow } from './tahti/Eyebrow';
@@ -11,6 +12,13 @@ type CollectionTrackListProps = {
   empty?: { title: string; description?: string } | null;
   compactActions?: boolean;
   getAnnotation?: (item: TahtiPlayable) => ReactNode;
+  getTrackMeta?: (item: TahtiPlayable) =>
+    | {
+        genre?: string | null;
+        stats?: AmbientTrackStats;
+        downloadable?: boolean;
+      }
+    | undefined;
 };
 
 /** The track list of a playlist or release page: framed ambient rows, or
@@ -22,6 +30,7 @@ export function CollectionTrackList({
   empty,
   compactActions,
   getAnnotation,
+  getTrackMeta,
 }: CollectionTrackListProps) {
   const headingId = useId();
   if (items.length === 0) {
@@ -45,6 +54,7 @@ export function CollectionTrackList({
           items={items}
           compactActions={compactActions}
           getAnnotation={getAnnotation}
+          getTrackMeta={getTrackMeta}
         />
       </div>
     </section>
