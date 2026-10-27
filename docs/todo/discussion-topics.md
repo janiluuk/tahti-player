@@ -8,8 +8,8 @@ The API shipped in tahti-org #991–#998: the board opens topics (`/api/admin/di
 
 - [x] Member topic list `/governance/discussions` + Governance quick link
 - [x] Topic page `/governance/discussions/$id`: body, replies, reply form
-- [ ] Follow / mute controls on the topic page
-- [ ] Remove your own reply; board removes any
+- [x] Follow / mute controls on the topic page
+- [x] Remove your own reply; board removes any
 - [ ] Admin → Governance: open a topic (title, body, pin)
 - [ ] Admin: pin / close / reopen / edit a topic
 - [ ] Notification kinds mirror (`DISCUSSION_OPENED`, `DISCUSSION_REPLY` under Governance)

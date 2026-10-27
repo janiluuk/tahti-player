@@ -131,6 +131,63 @@ describe('DiscussionTopicView', () => {
     expect(screen.queryByLabelText('Your reply')).not.toBeInTheDocument();
   });
 
+  it('follows, then mutes the topic', async () => {
+    vi.spyOn(discussions, 'fetchDiscussionTopic').mockResolvedValue({
+      data: TOPIC,
+      meta: { source: 'api' },
+    });
+    const follow = vi
+      .spyOn(discussions, 'setDiscussionFollow')
+      .mockResolvedValue({ ok: true, data: { following: true, muted: false } });
+    const mute = vi
+      .spyOn(discussions, 'setDiscussionMute')
+      .mockResolvedValue({ ok: true, data: { following: true, muted: true } });
+    renderView();
+    fireEvent.click(await screen.findByRole('button', { name: 'Follow' }));
+    await waitFor(() => expect(follow).toHaveBeenCalledWith('t1', true));
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Mute notifications' }),
+    );
+    await waitFor(() => expect(mute).toHaveBeenCalledWith('t1', true));
+    expect(
+      await screen.findByRole('button', { name: 'Unmute' }),
+    ).toBeInTheDocument();
+  });
+
+  it('removes your own reply after confirming', async () => {
+    vi.spyOn(discussions, 'fetchDiscussionTopic').mockResolvedValue({
+      data: {
+        ...TOPIC,
+        posts: [{ ...TOPIC.posts[0]!, author: 'Member', mine: true }],
+      },
+      meta: { source: 'api' },
+    });
+    const remove = vi
+      .spyOn(discussions, 'removeDiscussionPost')
+      .mockResolvedValue({ ok: true, data: null });
+    renderView();
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Remove the reply by Member' }),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Remove' }));
+    await waitFor(() => expect(remove).toHaveBeenCalledWith('t1', '1'));
+    await waitFor(() =>
+      expect(screen.queryByText('An ambient set?')).not.toBeInTheDocument(),
+    );
+  });
+
+  it("a member can't remove someone else's reply", async () => {
+    vi.spyOn(discussions, 'fetchDiscussionTopic').mockResolvedValue({
+      data: TOPIC,
+      meta: { source: 'api' },
+    });
+    renderView();
+    await screen.findByText('An ambient set?');
+    expect(
+      screen.queryByRole('button', { name: /Remove the reply/ }),
+    ).not.toBeInTheDocument();
+  });
+
   it('says why a topic could not load', async () => {
     vi.spyOn(discussions, 'fetchDiscussionTopic').mockResolvedValue({
       data: null,

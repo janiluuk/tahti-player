@@ -22,6 +22,7 @@ export type DiscussionPost = {
   body: string;
   author: string;
   createdAt: string;
+  mine?: boolean;
 };
 
 export type DiscussionTopicDetail = DiscussionTopic & {
@@ -176,6 +177,7 @@ export async function replyToDiscussion(
       body: trimmed,
       author: MOCK_SELF,
       createdAt: new Date().toISOString(),
+      mine: true,
     };
     updateMockTopic(id, (t) => ({
       ...t,
