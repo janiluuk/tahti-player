@@ -299,6 +299,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/StudioShowsView` | `tahti-web/StudioShowsView.stories.tsx` |
 | `Tahti/Studio/StudioSoundView` | `tahti-web/StudioSoundView.stories.tsx` |
 | `Tahti/Studio/StudioSoundsView` | `tahti-web/StudioSoundsView.stories.tsx` |
+| `Tahti/Studio/Stats/Audience panels` | `tahti-web/StudioStatsAudience.stories.tsx` |
 | `Tahti/Studio/StudioStripeView` | `tahti-web/StudioStripeView.stories.tsx` |
 | `Tahti/Studio/StudioUpdatesView` | `tahti-web/StudioUpdatesView.stories.tsx` |
 | `Tahti/Track/SubgenreTagInput` | `tahti-web/SubgenreTagInput.stories.tsx` |
