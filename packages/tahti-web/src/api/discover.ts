@@ -268,6 +268,13 @@ type WireGalleryItem = {
   bannerUrl: string | null;
   durationSec: number | null;
   audioUrl: string | null;
+  genre?: string | null;
+  peaks?: number[] | null;
+  createdAt?: string;
+  downloadsEnabled?: boolean;
+  likeCount?: number;
+  playCount?: number;
+  downloadCount?: number;
 };
 
 function galleryItemToTrack(item: WireGalleryItem): DiscoverTrackItem {
@@ -280,6 +287,13 @@ function galleryItemToTrack(item: WireGalleryItem): DiscoverTrackItem {
     coverUrl: item.bannerUrl,
     durationSec: item.durationSec,
     audioUrl: item.audioUrl,
+    genre: item.genre,
+    peaks: item.peaks,
+    createdAt: item.createdAt,
+    downloadsEnabled: item.downloadsEnabled,
+    likeCount: item.likeCount,
+    playCount: item.playCount,
+    downloadCount: item.downloadCount,
   };
 }
 
