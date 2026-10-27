@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { exportTrack, fetchTrackExportStatus } from '../api/sources';
-import { TrackExportPanel } from './TrackExportPanel';
+import { EXPORT_STATUS_POLL_MS, TrackExportPanel } from './TrackExportPanel';
 
 vi.mock('../api/sources', () => ({
   exportTrack: vi.fn(),
@@ -88,5 +88,42 @@ describe('TrackExportPanel', () => {
       fireEvent.click(screen.getByRole('button', { name: /Export/ }));
     });
     expect(screen.getByText('Queued for upload.')).toBeTruthy();
+  });
+  it('sends a failed upload again with Try again', async () => {
+    await renderPanel({ status: 'FAILED', url: null, error: 'Token expired' });
+    vi.mocked(exportTrack).mockResolvedValue({
+      ok: true,
+      status: { status: 'PENDING', url: null, error: null },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+    });
+    expect(exportTrack).toHaveBeenCalledWith('s1', 'mixcloud');
+    expect(screen.getByText('Queued for upload.')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Try again' })).toBeNull();
+  });
+
+  it('checks a queued upload again until it finishes', async () => {
+    vi.useFakeTimers();
+    try {
+      await renderPanel({ status: 'PENDING', url: null, error: null });
+      expect(screen.getByText('Queued for upload.')).toBeTruthy();
+      vi.mocked(fetchTrackExportStatus).mockResolvedValue({
+        status: 'DONE',
+        url: 'https://www.mixcloud.com/me/mix/',
+        error: null,
+      });
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(EXPORT_STATUS_POLL_MS);
+      });
+      expect(screen.getByText('Uploaded to Mixcloud.')).toBeTruthy();
+      expect(fetchTrackExportStatus).toHaveBeenCalledTimes(2);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(EXPORT_STATUS_POLL_MS * 2);
+      });
+      expect(fetchTrackExportStatus).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

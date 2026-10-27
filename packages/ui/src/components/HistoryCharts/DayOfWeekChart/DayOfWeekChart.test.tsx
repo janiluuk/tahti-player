@@ -27,4 +27,21 @@ describe('DayOfWeekChart', () => {
 
     expect(container).toMatchSnapshot();
   });
+
+  it('stacks a second series on the first', async () => {
+    vi.useFakeTimers();
+    const { container } = render(
+      <DayOfWeekChart
+        values={[1, 2, 3, 4, 5, 6, 7]}
+        stackValues={[1, 1, 1, 1, 1, 1, 1]}
+        labels={labels}
+        formatValue={(value) => `${value}`}
+        data-test-resize-observer-inline-size={600}
+        data-test-resize-observer-block-size={320}
+      />,
+    );
+    await act(() => vi.advanceTimersByTimeAsync(5_000));
+    vi.useRealTimers();
+    expect(container.querySelectorAll('.recharts-bar')).toHaveLength(2);
+  });
 });

@@ -7,11 +7,13 @@ import {
   clearReadNotifications,
   dismissNotification,
   fetchNotifications,
+  fetchNotificationUnreadCounts,
   markAllNotificationsRead,
   NOTIFICATION_KINDS,
   notificationKindLabel,
   removeNotification,
   type NotificationKind,
+  type NotificationUnreadCounts,
   type TahtiNotification,
 } from '../api/notifications';
 import { PageEmpty, PageError } from '../components/PageStates';
@@ -55,6 +57,7 @@ export function NotificationsView() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [kind, setKind] = useState<'all' | NotificationKind>('all');
   const kindParam = kind === 'all' ? undefined : kind;
+  const [counts, setCounts] = useState<NotificationUnreadCounts | null>(null);
 
   const latestLoad = useRef(0);
 
@@ -79,6 +82,21 @@ export function NotificationsView() {
       void load();
     }
   }, [user, load]);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    let cancelled = false;
+    void fetchNotificationUnreadCounts().then((result) => {
+      if (!cancelled) {
+        setCounts(result);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, unreadCount]);
 
   const loadOlder = async () => {
     const oldest = items[items.length - 1];
@@ -190,7 +208,16 @@ export function NotificationsView() {
           </div>
         </div>
         <FilterChips
-          items={[{ id: 'all', label: 'All' }, ...NOTIFICATION_KINDS]}
+          items={[
+            { id: 'all', label: 'All' },
+            ...NOTIFICATION_KINDS.map((item) => {
+              const unread = counts?.byKind[item.id] ?? 0;
+              return {
+                id: item.id,
+                label: unread > 0 ? `${item.label} (${unread})` : item.label,
+              };
+            }),
+          ]}
           selected={kind}
           onChange={(id) => setKind(id as 'all' | NotificationKind)}
           aria-label="Filter notifications by kind"

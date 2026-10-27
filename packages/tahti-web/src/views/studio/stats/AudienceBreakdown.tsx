@@ -24,7 +24,18 @@ const DIMENSIONS: { id: StatsAudienceDimension; title: string }[] = [
   { id: 'deviceType', title: 'Device type' },
   { id: 'deviceVendor', title: 'Device company' },
   { id: 'source', title: 'Source' },
+  { id: 'surface', title: 'Listened on' },
 ];
+
+const SURFACE_LABELS: Record<string, string> = {
+  CHANNEL_PAGE: 'Channel page',
+  TAHTI_RADIO: 'Tahti Radio',
+  ARTIST_PROFILE: 'Artist profile',
+  DISCOVER: 'Discover',
+  LIBRARY: 'Library',
+  EMBED: 'Embeds',
+  OTHER: 'Elsewhere on Tahti',
+};
 
 const DEVICE_ICONS: Record<string, ReactNode> = {
   Desktop: <MonitorIcon size={14} />,
@@ -118,7 +129,10 @@ export function AudienceBreakdown({
               headingLevel={3}
               items={(audience[id]?.items ?? []).map((item) => ({
                 id: item.name,
-                label: item.name,
+                label:
+                  id === 'surface'
+                    ? (SURFACE_LABELS[item.name] ?? item.name)
+                    : item.name,
                 share: item.share,
                 icon: id === 'deviceType' ? DEVICE_ICONS[item.name] : undefined,
               }))}

@@ -52,6 +52,7 @@ const signedIn = {
 describe('NotificationsView', () => {
   beforeEach(() => {
     useAuthStore.setState({ user: signedIn, hydrated: true, loading: false });
+    vi.spyOn(api, 'fetchNotificationUnreadCounts').mockResolvedValue(null);
   });
   afterEach(() => {
     useAuthStore.setState({ user: null, hydrated: true, loading: false });
@@ -147,27 +148,37 @@ describe('NotificationsView', () => {
     ).toBe(true);
   });
 
-  it('filters by kind and offers Show all when a kind is empty', async () => {
-    const fetch = vi
-      .spyOn(api, 'fetchNotifications')
-      .mockImplementation(async (_before, kind) => ({
-        data: kind === 'money' ? [] : [note(kind ?? 'all')],
-        unreadCount: 1,
-        hasMore: false,
-        meta: { source: 'api' },
-      }));
+  it('shows unread counts on the kind chips and refreshes them', async () => {
+    vi.spyOn(api, 'fetchNotifications').mockResolvedValue({
+      data: [note('a')],
+      unreadCount: 1,
+      hasMore: false,
+      meta: { source: 'api' },
+    });
+    vi.spyOn(api, 'dismissNotification').mockResolvedValue(undefined);
+    const counts = vi
+      .spyOn(api, 'fetchNotificationUnreadCounts')
+      .mockResolvedValueOnce({
+        total: 3,
+        byKind: { social: 2, music: 0, money: 1, governance: 0, other: 0 },
+      })
+      .mockResolvedValue({
+        total: 2,
+        byKind: { social: 1, music: 0, money: 1, governance: 0, other: 0 },
+      });
     renderView();
 
-    expect(await screen.findByText('Title all')).toBeTruthy();
-    fireEvent.click(screen.getByRole('radio', { name: 'Social' }));
-    expect(await screen.findByText('Title social')).toBeTruthy();
-    expect(fetch).toHaveBeenLastCalledWith(undefined, 'social');
+    expect(
+      await screen.findByRole('radio', { name: 'Social (2)' }),
+    ).toBeTruthy();
+    expect(screen.getByRole('radio', { name: 'Money (1)' })).toBeTruthy();
+    expect(screen.getByRole('radio', { name: 'Music' })).toBeTruthy();
 
-    fireEvent.click(screen.getByRole('radio', { name: 'Money' }));
-    expect(await screen.findByText('Nothing of this kind')).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: 'Show all' }));
-    expect(await screen.findByText('Title all')).toBeTruthy();
-    expect(fetch).toHaveBeenLastCalledWith(undefined, undefined);
+    fireEvent.click(screen.getByRole('button', { name: 'Mark read: Title a' }));
+    expect(
+      await screen.findByRole('radio', { name: 'Social (1)' }),
+    ).toBeTruthy();
+    expect(counts.mock.calls.length).toBeGreaterThanOrEqual(2);
   });
 
   it('labels each row with its kind under All only', async () => {
@@ -179,7 +190,7 @@ describe('NotificationsView', () => {
     });
     renderView();
     expect(await screen.findByText(/^Money ·/)).toBeTruthy();
-    fireEvent.click(screen.getByRole('radio', { name: 'Money' }));
+    fireEvent.click(screen.getByRole('radio', { name: /^Money/ }));
     await waitFor(() => expect(screen.queryByText(/^Money ·/)).toBeNull());
   });
 

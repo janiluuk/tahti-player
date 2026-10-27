@@ -46,6 +46,10 @@ describe('metadataForPath', () => {
     expect(metadataForPath(path).title).toBe(title);
   });
 
+  it('names the notifications page', () => {
+    expect(metadataForPath('/notifications').title).toContain('Notifications');
+  });
+
   it('does not mistake a longer first segment for a known page', () => {
     expect(metadataForPath('/helpers').title).toBe(
       'Tahti · Independent music, live',

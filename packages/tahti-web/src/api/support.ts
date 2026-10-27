@@ -137,3 +137,25 @@ export async function replyToSupportTicket(
     };
   }
 }
+
+/** Mark one of your own support requests resolved (tahti-org
+ * `POST /api/me/support/tickets/:id/close`). Replying reopens it. */
+export async function closeSupportTicket(
+  ticketId: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    return { ok: true };
+  }
+  try {
+    await requestJson<{ status: 'RESOLVED' }>(
+      `/api/me/support/tickets/${encodeURIComponent(ticketId)}/close`,
+      { method: 'POST' },
+    );
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not close the request',
+    };
+  }
+}
