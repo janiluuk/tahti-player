@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button, FilterChips } from '@tahti-player/ui';
+import { FilterChips } from '@tahti-player/ui';
 
 import type { IntegrationId } from '../api/sources';
 import { fetchStudioSounds } from '../api/studio';
 import type { StudioSound } from '../api/studio-types';
 import { EmbedTrackRow } from '../components/EmbedTrackRow';
+import { LibraryFilteredEmpty } from '../components/library/LibraryFilteredEmpty';
 import { LibrarySectionToolbar } from '../components/library/LibrarySectionToolbar';
 import { LibrarySortSelect } from '../components/library/LibrarySortSelect';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
@@ -39,6 +40,7 @@ export function LibraryEmbedsView() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [providerFilter, setProviderFilter] = useState<string>('ALL');
+  const [query, setQuery] = useState('');
   const [sort, setSort] = useState<LibrarySort>('newest');
 
   useEffect(() => {
@@ -57,12 +59,16 @@ export function LibraryEmbedsView() {
   }, [attempt]);
 
   const groups = useMemo(() => {
+    const needle = query.trim().toLowerCase();
     const byProvider = new Map<EmbedProvider, EmbedItem[]>();
     for (const item of items ?? []) {
       if (!isEmbedItem(item)) {
         continue;
       }
       if (providerFilter !== 'ALL' && item.embedProvider !== providerFilter) {
+        continue;
+      }
+      if (needle && !item.title.toLowerCase().includes(needle)) {
         continue;
       }
       const list = byProvider.get(item.embedProvider) ?? [];
@@ -85,7 +91,7 @@ export function LibraryEmbedsView() {
             ),
           ] as [EmbedProvider, EmbedItem[]],
       );
-  }, [items, providerFilter, sort]);
+  }, [items, providerFilter, query, sort]);
 
   const providerChips = useMemo(() => {
     const ids = new Set<EmbedProvider>();
@@ -114,7 +120,12 @@ export function LibraryEmbedsView() {
     <div className="flex flex-col gap-8">
       <SoundCloudEmbedsPanel />
       {hasAnyEmbeds ? (
-        <LibrarySectionToolbar>
+        <LibrarySectionToolbar
+          query={query}
+          onQueryChange={setQuery}
+          searchPlaceholder="Search embeds…"
+          searchLabel="Search embeds"
+        >
           {providerChips.length > 2 ? (
             <FilterChips
               items={providerChips}
@@ -141,29 +152,22 @@ export function LibraryEmbedsView() {
         />
       ) : null}
       {!loadError && groups.length === 0 ? (
-        <PageEmpty
-          title={
-            hasAnyEmbeds
-              ? 'No embeds match this filter'
-              : 'No imported embeds yet'
-          }
-          description={
-            hasAnyEmbeds
-              ? undefined
-              : 'Tracks imported from hearthis.at, Mixcloud, Spotify, or Bandcamp show up here, grouped by provider, once you import some from Settings → Add-ons → Import.'
-          }
-          action={
-            hasAnyEmbeds ? (
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => setProviderFilter('ALL')}
-              >
-                Clear filter
-              </Button>
-            ) : undefined
-          }
-        />
+        hasAnyEmbeds ? (
+          <LibraryFilteredEmpty
+            noun="embeds"
+            query={query}
+            filtered={providerFilter !== 'ALL'}
+            onClear={() => {
+              setQuery('');
+              setProviderFilter('ALL');
+            }}
+          />
+        ) : (
+          <PageEmpty
+            title="No imported embeds yet"
+            description="Tracks imported from hearthis.at, Mixcloud, Spotify, or Bandcamp show up here, grouped by provider, once you import some from Settings → Add-ons → Import."
+          />
+        )
       ) : null}
       {groups.map(([provider, providerItems]) => (
         <section key={provider} className="flex flex-col gap-3">

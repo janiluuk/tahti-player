@@ -56,6 +56,11 @@ new surface, one PR per row.
   `PageError` (batch 81); Embeds PageError even with partial data (batch 82);
   shared `LibrarySectionToolbar` on Media + SmartLinks (batch 83); Embeds
   (batch 85); client sort Select on Media/Embeds/SmartLinks (batch 87).
+  - 2026-10-27: Media (file name) and Embeds (title) get the toolbar search
+    SmartLinks already had, and all three use one `LibraryFilteredEmpty`
+    (names the search, one button clears search and chips). Left: the
+    shared row itself (Media is a card grid, Embeds a provider widget, so
+    only SmartLinks has a plain row today).
 
 ## Shared surfaces (de-duplication)
 

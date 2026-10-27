@@ -17,6 +17,7 @@ import {
   type UserMediaFile,
 } from '../api/user-media';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { LibraryFilteredEmpty } from '../components/library/LibraryFilteredEmpty';
 import { LibrarySectionToolbar } from '../components/library/LibrarySectionToolbar';
 import { LibrarySortSelect } from '../components/library/LibrarySortSelect';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
@@ -38,6 +39,7 @@ export function LibraryMediaView() {
     null,
   );
   const [kindFilter, setKindFilter] = useState<string>('ALL');
+  const [query, setQuery] = useState('');
   const [sort, setSort] = useState<LibrarySort>('newest');
 
   const reload = async () => {
@@ -65,21 +67,23 @@ export function LibraryMediaView() {
   }, [files]);
 
   const visibleFiles = useMemo(() => {
-    const filtered =
-      kindFilter === 'ALL'
-        ? files
-        : files.filter((f) =>
-            kindFilter === 'VIDEO'
-              ? f.contentType.startsWith('video/')
-              : !f.contentType.startsWith('video/'),
-          );
+    const needle = query.trim().toLowerCase();
+    const filtered = files.filter((f) => {
+      if (
+        kindFilter !== 'ALL' &&
+        (kindFilter === 'VIDEO') !== f.contentType.startsWith('video/')
+      ) {
+        return false;
+      }
+      return !needle || f.filename.toLowerCase().includes(needle);
+    });
     return sortLibraryItems(
       filtered,
       sort,
       (f) => f.filename,
       (f) => f.createdAt,
     );
-  }, [files, kindFilter, sort]);
+  }, [files, kindFilter, query, sort]);
 
   const remove = async (file: UserMediaFile) => {
     const previous = files;
@@ -110,7 +114,12 @@ export function LibraryMediaView() {
         <PageEmpty title="No media files yet. Add background images or a Video loop backdrop from Artist → Branding." />
       ) : (
         <div className="flex flex-col gap-4">
-          <LibrarySectionToolbar>
+          <LibrarySectionToolbar
+            query={query}
+            onQueryChange={setQuery}
+            searchPlaceholder="Search media files…"
+            searchLabel="Search media files"
+          >
             {kindChips.length > 2 ? (
               <FilterChips
                 items={kindChips}
@@ -128,17 +137,14 @@ export function LibraryMediaView() {
             ) : null}
           </LibrarySectionToolbar>
           {visibleFiles.length === 0 ? (
-            <PageEmpty
-              title="No media files match this filter"
-              action={
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => setKindFilter('ALL')}
-                >
-                  Clear filter
-                </Button>
-              }
+            <LibraryFilteredEmpty
+              noun="media files"
+              query={query}
+              filtered={kindFilter !== 'ALL'}
+              onClear={() => {
+                setQuery('');
+                setKindFilter('ALL');
+              }}
             />
           ) : (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

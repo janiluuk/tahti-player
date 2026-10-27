@@ -3,7 +3,6 @@ import { ExternalLinkIcon, Link2Icon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
-  Button,
   ButtonLink,
   EmptyState,
   FilterChips,
@@ -13,9 +12,10 @@ import {
 
 import { fetchStudioReleases } from '../api/studio';
 import type { StudioRelease } from '../api/studio-types';
+import { LibraryFilteredEmpty } from '../components/library/LibraryFilteredEmpty';
 import { LibrarySectionToolbar } from '../components/library/LibrarySectionToolbar';
 import { LibrarySortSelect } from '../components/library/LibrarySortSelect';
-import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import { PageError, PageLoading } from '../components/PageStates';
 import { StudioGate } from '../components/StudioGate';
 import { StudioPanel } from '../components/StudioPanel';
 import { sortLibraryItems, type LibrarySort } from '../lib/librarySort';
@@ -165,24 +165,14 @@ export function LibrarySmartLinksView() {
                 ) : null}
               </LibrarySectionToolbar>
               {filtered.length === 0 ? (
-                <PageEmpty
-                  title={
-                    query.trim()
-                      ? `No smartlinks match “${query.trim()}”`
-                      : 'No smartlinks match this filter'
-                  }
-                  action={
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => {
-                        setQuery('');
-                        setDspFilter('ALL');
-                      }}
-                    >
-                      {dspFilter !== 'ALL' ? 'Clear filters' : 'Clear search'}
-                    </Button>
-                  }
+                <LibraryFilteredEmpty
+                  noun="smartlinks"
+                  query={query}
+                  filtered={dspFilter !== 'ALL'}
+                  onClear={() => {
+                    setQuery('');
+                    setDspFilter('ALL');
+                  }}
                 />
               ) : (
                 <ul className="divide-border divide-y">

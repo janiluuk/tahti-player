@@ -31,4 +31,36 @@ describe('LibraryEmbedsView', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByText('No imported embeds yet')).toBeTruthy();
   });
+
+  it('searches embeds by title and clears the search from the empty state', async () => {
+    vi.spyOn(studio, 'fetchStudioSounds').mockResolvedValue({
+      data: [
+        {
+          id: 'e1',
+          title: 'Harbour Dub',
+          embedProvider: 'MIXCLOUD',
+          embedUri: 'https://www.mixcloud.com/ada/harbour-dub/',
+        },
+        {
+          id: 'e2',
+          title: 'Polar Set',
+          embedProvider: 'MIXCLOUD',
+          embedUri: 'https://www.mixcloud.com/ada/polar-set/',
+        },
+      ],
+      meta: { source: 'api' },
+    } as never);
+    await renderWithRouter(<LibraryEmbedsView />);
+    expect(await screen.findByText('Harbour Dub')).toBeTruthy();
+
+    const search = screen.getByRole('searchbox', { name: 'Search embeds' });
+    fireEvent.change(search, { target: { value: 'polar' } });
+    expect(screen.queryByText('Harbour Dub')).toBeNull();
+    expect(screen.getByText('Polar Set')).toBeTruthy();
+
+    fireEvent.change(search, { target: { value: 'nothing' } });
+    expect(screen.getByText('No embeds match “nothing”')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Clear search' }));
+    expect(screen.getByText('Harbour Dub')).toBeTruthy();
+  });
 });
