@@ -148,6 +148,42 @@ function TrackStats({
   );
 }
 
+export type AmbientTrackLike = {
+  liked: boolean;
+  count: number;
+  onToggle: () => void;
+  disabled?: boolean;
+};
+
+function LikeToggle({
+  like,
+  title,
+}: {
+  like: AmbientTrackLike;
+  title: string;
+}) {
+  return (
+    <Button
+      size="sm"
+      variant="text"
+      onClick={like.onToggle}
+      disabled={like.disabled}
+      aria-pressed={like.liked}
+      aria-label={`${like.liked ? 'Unlike' : 'Like'} ${title} (${like.count} likes)`}
+      className="gap-1.5 px-1.5 tabular-nums"
+    >
+      <HeartIcon
+        size={16}
+        aria-hidden
+        className={cn(
+          like.liked && 'fill-accent-red-strong text-accent-red-strong',
+        )}
+      />
+      <span aria-hidden>{like.count.toLocaleString()}</span>
+    </Button>
+  );
+}
+
 export type AmbientTrackRowProps = {
   trackId: string;
   title: string;
@@ -165,6 +201,9 @@ export type AmbientTrackRowProps = {
   /** Public totals and the release date, shown bottom-right like a
    * hearthis.at row. Each part shows only when present. */
   stats?: AmbientTrackStats;
+  /** A like toggle with its public count, shown first in the actions row
+   * (the count then leaves the stats line). */
+  like?: AmbientTrackLike;
   peaks?: number[] | null;
   /** Playback position, 0–1. */
   progress?: number;
@@ -195,6 +234,7 @@ function AmbientTrackRowView({
   durationSec,
   genreLabel,
   stats,
+  like,
   peaks,
   progress = 0,
   density = 'comfortable',
@@ -305,14 +345,19 @@ function AmbientTrackRowView({
             label={title}
             durationSec={durationSec ?? undefined}
             onSeek={onSeek}
+            tone={density === 'comfortable' ? 'bold' : 'quiet'}
             className={layout.wave}
           />
         )}
-        {actions || stats ? (
+        {actions || stats || like ? (
           <div className="flex flex-wrap items-center gap-1.5">
+            {like ? <LikeToggle like={like} title={title} /> : null}
             {actions}
             {stats ? (
-              <TrackStats stats={stats} className={layout.meta} />
+              <TrackStats
+                stats={like ? { ...stats, likes: undefined } : stats}
+                className={layout.meta}
+              />
             ) : null}
           </div>
         ) : null}

@@ -1,20 +1,25 @@
-import { Link } from '@tanstack/react-router';
-import { PencilIcon, TrashIcon } from 'lucide-react';
-import { useMemo, type ReactNode } from 'react';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { DownloadIcon, PencilIcon, PlusIcon, TrashIcon } from 'lucide-react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { toast } from 'sonner';
 
 import { Select } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
 import { formatDuration } from '../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../lib/soundId';
+import { downloadTrackFromRow } from '../lib/trackDownload';
 import {
   sortTracks,
   TRACK_SORT_OPTIONS,
   useTrackSort,
   type TrackSort,
 } from '../lib/trackSort';
+import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
+import { useSoundLikesStore } from '../stores/soundLikesStore';
+import { AddToPlaylistPanel } from './AddToPlaylistPanel';
 import {
   AmbientTrackList,
   type AmbientTrackListItem,
@@ -53,9 +58,14 @@ export function PlayableAmbientTrackList({
   onBulkRemove?: (items: TahtiPlayable[]) => void;
   /** Genre and public totals for a track, when the page has them. Keep it
    * stable (useMemo / useCallback): the rows are memoized on it. */
-  getTrackMeta?: (
-    item: TahtiPlayable,
-  ) => { genre?: string | null; stats?: AmbientTrackStats } | undefined;
+  getTrackMeta?: (item: TahtiPlayable) =>
+    | {
+        genre?: string | null;
+        stats?: AmbientTrackStats;
+        /** The artist allows downloads: the row offers a download action. */
+        downloadable?: boolean;
+      }
+    | undefined;
   defaultDensity?: AmbientTrackRowDensity;
 }) {
   const play = usePlayerStore((s) => s.play);
@@ -69,6 +79,21 @@ export function PlayableAmbientTrackList({
   const setStatus = usePlayerStore((s) => s.setStatus);
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
+  const navigate = useNavigate();
+  const [playlistTarget, setPlaylistTarget] = useState<{
+    soundId: string;
+    title: string;
+  } | null>(null);
+  const userId = useAuthStore((s) => s.user?.id ?? null);
+  const likedIds = useSoundLikesStore((s) => s.liked);
+  const likeCounts = useSoundLikesStore((s) => s.counts);
+  const loadLikes = useSoundLikesStore((s) => s.load);
+  const toggleLike = useSoundLikesStore((s) => s.toggle);
+  useEffect(() => {
+    if (userId && getTrackMeta) {
+      void loadLikes(userId);
+    }
+  }, [userId, getTrackMeta, loadLikes]);
   const [sort, setSort] = useTrackSort();
   const sorted = useMemo(() => sortTracks(items, sort), [items, sort]);
 
@@ -84,6 +109,21 @@ export function PlayableAmbientTrackList({
         const rest = sorted.filter((other) => other.id !== item.id);
         const annotation = getAnnotation?.(item);
         const meta = getTrackMeta?.(item);
+        const publicLikes = meta?.stats?.likes;
+        const like =
+          userId && soundId && item.channelSlug && publicLikes != null
+            ? {
+                liked: likedIds.has(soundId),
+                count: likeCounts[soundId] ?? publicLikes,
+                onToggle: () => {
+                  void toggleLike(item.channelSlug!, soundId).then((error) => {
+                    if (error) {
+                      toast.error(error);
+                    }
+                  });
+                },
+              }
+            : undefined;
         return {
           id: item.id,
           trackId: item.id,
@@ -111,6 +151,7 @@ export function PlayableAmbientTrackList({
           durationSec: item.durationSec ?? null,
           genreLabel: meta?.genre ?? undefined,
           stats: meta?.stats,
+          like,
           peaks: item.peaks ?? null,
           progress: 0,
           isPlaying,
@@ -130,7 +171,55 @@ export function PlayableAmbientTrackList({
                 onFavorite: () => toggleFavoriteTrack(item),
                 favorited: favoriteTracks.some((fav) => fav.id === item.id),
               })
-                .filter((action) => action.id !== 'play')
+                .filter(
+                  (action) =>
+                    action.id !== 'play' && !(like && action.id === 'favorite'),
+                )
+                .concat(
+                  userId && soundId && item.kind === 'sound' && !item.embed
+                    ? [
+                        {
+                          id: 'add-to-playlist',
+                          label: `Add ${item.title} to a playlist`,
+                          title: 'Add to playlist',
+                          icon: <PlusIcon size={16} />,
+                          onClick: () =>
+                            setPlaylistTarget({ soundId, title: item.title }),
+                        },
+                      ]
+                    : [],
+                )
+                .concat(
+                  meta?.downloadable && soundId && item.channelSlug
+                    ? [
+                        {
+                          id: 'download',
+                          label: `Download ${item.title}`,
+                          title: 'Download',
+                          icon: <DownloadIcon size={16} />,
+                          onClick: () => {
+                            void downloadTrackFromRow(
+                              item.channelSlug!,
+                              soundId,
+                              item.title,
+                            ).then((outcome) => {
+                              if (outcome.kind === 'gated') {
+                                toast.info(
+                                  'The artist asks you to follow or share before downloading.',
+                                );
+                                void navigate({
+                                  to: '/t/$id',
+                                  params: { id: soundId },
+                                });
+                              } else if (outcome.kind === 'failed') {
+                                toast.error(outcome.error);
+                              }
+                            });
+                          },
+                        },
+                      ]
+                    : [],
+                )
                 .concat(
                   onEdit
                     ? [
@@ -168,6 +257,11 @@ export function PlayableAmbientTrackList({
       favoriteTracks,
       getAnnotation,
       getTrackMeta,
+      userId,
+      likedIds,
+      likeCounts,
+      toggleLike,
+      navigate,
       onEdit,
       onRemove,
       play,
@@ -194,35 +288,45 @@ export function PlayableAmbientTrackList({
   );
 
   return (
-    <AmbientTrackList
-      items={listItems}
-      allowGrid
-      defaultDensity={defaultDensity}
-      emptyMessage={emptyMessage}
-      toolbarEnd={
-        items.length > 1 ? (
-          <Select
-            className="w-44"
-            aria-label="Sort tracks"
-            options={TRACK_SORT_OPTIONS}
-            value={sort}
-            onValueChange={(value) => setSort(value as TrackSort)}
+    <>
+      <AmbientTrackList
+        items={listItems}
+        allowGrid
+        defaultDensity={defaultDensity}
+        emptyMessage={emptyMessage}
+        toolbarEnd={
+          items.length > 1 ? (
+            <Select
+              className="w-44"
+              aria-label="Sort tracks"
+              options={TRACK_SORT_OPTIONS}
+              value={sort}
+              onValueChange={(value) => setSort(value as TrackSort)}
+            />
+          ) : undefined
+        }
+        renderList={() => (
+          <PlayableTrackTable
+            items={sorted}
+            emptyMessage={emptyMessage}
+            playAll={playAll}
+            compactActions={compactActions}
+            getAnnotation={getAnnotation}
+            onEdit={onEdit}
+            onRemove={onRemove}
+            selectable={selectable}
+            onBulkRemove={onBulkRemove}
           />
-        ) : undefined
-      }
-      renderList={() => (
-        <PlayableTrackTable
-          items={sorted}
-          emptyMessage={emptyMessage}
-          playAll={playAll}
-          compactActions={compactActions}
-          getAnnotation={getAnnotation}
-          onEdit={onEdit}
-          onRemove={onRemove}
-          selectable={selectable}
-          onBulkRemove={onBulkRemove}
+        )}
+      />
+      {playlistTarget ? (
+        <AddToPlaylistPanel
+          isOpen
+          soundId={playlistTarget.soundId}
+          trackTitle={playlistTarget.title}
+          onClose={() => setPlaylistTarget(null)}
         />
-      )}
-    />
+      ) : null}
+    </>
   );
 }

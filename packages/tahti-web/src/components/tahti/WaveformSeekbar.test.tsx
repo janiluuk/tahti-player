@@ -136,4 +136,19 @@ describe('WaveformSeekbar', () => {
     fireEvent.pointerLeave(slider);
     expect(screen.queryByTestId('waveform-seekbar-hover')).toBeNull();
   });
+
+  it('draws unplayed bars near the text colour in the bold tone', () => {
+    const { container } = render(
+      <WaveformSeekbar
+        trackId="bold"
+        progress={0}
+        peaks={[40, 200, 120]}
+        bars={3}
+        tone="bold"
+      />,
+    );
+    const bars = container.querySelectorAll('span.flex-1');
+    expect(bars.length).toBe(3);
+    expect(bars[0]!.className).toContain('bg-foreground/55');
+  });
 });

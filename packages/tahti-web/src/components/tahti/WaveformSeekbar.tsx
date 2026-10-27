@@ -82,6 +82,7 @@ export function WaveformSeekbar({
   live = false,
   playedColor,
   unplayedColor,
+  tone = 'quiet',
   label,
   durationSec,
   className,
@@ -101,6 +102,9 @@ export function WaveformSeekbar({
   live?: boolean;
   playedColor?: string;
   unplayedColor?: string;
+  /** `bold` draws unplayed bars near the text colour, for large rows where
+   * the waveform is the main visual (like a hearthis.at row). */
+  tone?: 'quiet' | 'bold';
   /** Track title for the slider's accessible name. */
   label?: string;
   /** Enables 5 s keyboard steps and "1:05 of 3:20" value text. */
@@ -266,7 +270,10 @@ export function WaveformSeekbar({
               i < filledCount
                 ? !playedColor &&
                     (hasPeaks ? 'bg-primary' : 'bg-foreground-secondary/40')
-                : !unplayedColor && 'bg-foreground-secondary/20',
+                : !unplayedColor &&
+                    (tone === 'bold' && hasPeaks
+                      ? 'bg-foreground/55'
+                      : 'bg-foreground-secondary/20'),
             )}
             style={{
               height: `${h}%`,
