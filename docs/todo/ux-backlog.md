@@ -69,4 +69,8 @@ new surface, one PR per row.
 ## Studio functional
 
 - [ ] Undo for publish / create flows (none in Studio).
+  - 2026-10-27 (batch 90): Studio > Collections new-collection toast has
+    Undo (`DELETE /api/me/collections/:slug`), which also leaves the new
+    collection's editor. Left: other create paths (playlists view, add-to-
+    playlist, save queue), sound shares, editor projects, events.
 
