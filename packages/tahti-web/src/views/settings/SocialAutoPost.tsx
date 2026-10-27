@@ -180,7 +180,7 @@ function PlatformForm({
           Fills in {'{artist}'}, {'{release}'}, {'{smart_link}'} and{' '}
           {'{channel_url}'}.{' '}
           {status.connected
-            ? ''
+            ? `If a post to ${copy.name} fails, we notify you.`
             : `Connecting posts a short test message to your ${copy.name} account.`}
         </SettingsHint>
         {error ? <InlineError>{error}</InlineError> : null}
