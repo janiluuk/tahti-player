@@ -46,5 +46,6 @@ describe('PrivacyView', () => {
     expect(item?.textContent).toContain('restrictions the board');
     expect(item?.textContent).toContain('API tokens');
     expect(item?.textContent).toContain('green-room invites');
+    expect(item?.textContent).toContain('email address change requests');
   });
 });
