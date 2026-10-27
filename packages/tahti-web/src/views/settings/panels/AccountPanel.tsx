@@ -49,6 +49,7 @@ import type {
 } from '../../../api/types';
 import { ApiTokensPanel } from '../../../components/ApiTokensPanel';
 import { BlockedAccounts } from '../../../components/BlockedAccounts';
+import { ChangePasswordForm } from '../../../components/ChangePasswordForm';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { DevicesSessionsPanel } from '../../../components/DevicesSessionsPanel';
 import { FanSubscriptionsBillingButton } from '../../../components/FanSubscriptionsBillingButton';
@@ -183,6 +184,12 @@ export function AccountPanel() {
           </div>
         </div>
       ),
+    },
+    {
+      id: 'password-email',
+      label: 'Password & email',
+      icon: <KeyRound size={14} />,
+      content: <ChangePasswordForm />,
     },
     {
       id: 'devices',

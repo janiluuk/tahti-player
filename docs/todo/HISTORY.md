@@ -5530,3 +5530,19 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 - **Mixcloud export** (org #913; web #1508): a failed upload can be sent again (Try again), and a queued one is followed until it finishes.
 - **Checked, nothing to do**: refresh tokens die with sessions and are refused for deleted accounts; chat reactions already honour bans, blocks and chat-off; the moderator notice already links to `/moderate/:slug`; beta applications are legacy (registration is open), so no web form was added.
 - **Left**: tahti-org release to refresh `openapi.json`, then remove the batch's allowlist entries; listen-session retention (privacy/product call).
+
+## 2026-10-27 — Cross-repo batch 113: restrictions that hold, board decisions people hear about, export gaps
+
+- **Account restrictions** (org #917–#923, #920; web #1515, #1516, #1518, #1534, #1537): an upload ban now also stops SoundCloud/Google Drive imports, hearthis.at/Mixcloud/Spotify imports and editor publish-to-release/clips; a booking ban stops venue shows; a sign-in ban signs the account out everywhere. The account is notified of upload/booking bans and their lifting (`ACCOUNT_RESTRICTED`) and can read its active ones (`GET /api/me/restrictions`): Upload, Schedule, a venue's Book a show form, the collection editor's imports and Settings → Account say so up front. Admin → Users → Restrictions says what each type blocks and who is told.
+- **Board decisions now reach the person** (org #924–#931; web #1517, #1519, #1522–#1524): venue verified/unverified (owner), Tahti Radio submission accepted (and made public), radio station suggestion reviewed (listener), channel forced offline, track edited by the board (changed fields only), a show booked at your venue, a venue show cancelled (the other side), a fan cancelling a subscription (Money moves). The inbox files them under Music/Money; the Admin screens say who is notified.
+- **Data export** (org #932–#935; web #1521): venues and venue shows, account restrictions (without the issuer), Tahti Radio submissions and station suggestions, fan tiers and store items.
+- **Account deletion** (org #936): upcoming venue shows are cancelled.
+- **Web**: track downloads use the API's `/sounds/` path, not the old `/archive/` alias (#1520).
+- **Checked, nothing to do**: hearthis.at Sets are already read straight from hearthis.at by the web, so `/api/v1/imports/hearthis/me-sets` stays unused.
+
+## 2026-10-27 — Cross-repo batch 114: suspensions, board changes and removals, more export
+
+- **Suspension** (org #937, #938, #951, #952; web #1525): suspending or reinstating emails the account (reason, support address, sign-in link); sign-in, the 2FA step (also for a suspension mid-login) and API/JWT requests answer with the board's reason instead of "invalid token".
+- **Board changes the account hears about** (org #939–#945, #949, #950; web #1526–#1532, #1535–#1536): Tahti Selects pick, Tahti Radio opt-out/opt-in, channel kind, storage target (binary GB), plan/membership/board seat (`BOARD_ACCOUNT_CHANGE`), annual grants (`GRANT_AWARDED`, sets `notifiedAt`, Money moves), add-on approve/reject/disable with the board's note, a track deleted from Admin → Files and a comment the board removed (`CONTENT_REMOVED_BY_BOARD`; an artist deleting comments on their own track stays silent). Each Admin screen says who is notified; Settings → Notifications → Revenue moves lists cancellations and grants.
+- **Data export** (org #946–#948; web #1533): notifications, grants and fan-subscription payouts, published and installed add-ons, signed-in devices and API tokens (names and prefixes only).
+- **Left**: tahti-org release to refresh `openapi.json`, then remove `/api/me/restrictions` (and batch 112's) from `api-routes-allowlist.json`; org `NOTIFICATION_KIND_TYPES` for the batch 113–114 types follows once they are all merged (the web already files them).
