@@ -172,6 +172,34 @@ From `@tahti-player/tahti-web` (mock data for stable docs captures; beta uses th
 
 *Admin dashboard — health, activity, and moderation at a glance.*
 
+### Desktop library (DJ)
+
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/desktop-dj-settings-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/desktop-dj-settings-v1.png" alt="DJ settings: key notation, tempo range, and half and double tempo" /></picture>
+
+*DJ settings — Musical, Camelot, or Open Key, and how wide a tempo match may be.*
+
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/desktop-dj-catalog-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/desktop-dj-catalog-v1.png" alt="Local files list with a coloured dot beside each key" /></picture>
+
+*Key column — a colour dot for each key on the wheel.*
+
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/desktop-mixes-well-with-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/desktop-mixes-well-with-v1.png" alt="Mixes well with: same key, one step on the wheel, relative major or minor" /></picture>
+
+*Mixes well with — neighbouring keys and a tempo within the range you set.*
+
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/desktop-bpm-tools-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/desktop-bpm-tools-v1.png" alt="Tap tempo, half tempo, and double tempo on the analysis panel" /></picture>
+
+*Tap, half, and double — a correction stays put when the file is analysed again.*
+
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/desktop-prepare-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/desktop-prepare-v1.png" alt="Track details with Add to Prepare" /></picture>
+
+*Prepare — P, or Add to Prepare, files tracks on a playlist named Prepare.*
+
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/desktop-copy-last-session-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/desktop-copy-last-session-v1.png" alt="Listening history dialog with Copy last session" /></picture>
+
+*Copy last session — the newest local listens with no gap over 60 minutes, as a numbered tracklist.*
+
+The same pictures are in the user manual: [Mixing your local library](./packages/docs/user-manual/desktop/mixing.md).
+
 More studio captures: [`packages/tahti-web/docs/redesign-shots/`](./packages/tahti-web/docs/redesign-shots/).
 
 ## Guide

@@ -51,6 +51,7 @@ In the desktop app's library table (the keyboard icon above the table shows this
 | Clear the selection | `Esc` |
 | Add to queue | `Q` |
 | Show details | `I` |
+| Add to the Prepare playlist | `P` |
 | Edit tags | `E` |
 | Reveal in folder | `R` |
 | Remove from library | `Delete` |

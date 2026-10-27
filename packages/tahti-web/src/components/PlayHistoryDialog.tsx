@@ -1,12 +1,23 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, InlineError, Loader } from '@tahti-player/ui';
+import {
+  Button,
+  CopyButton,
+  Dialog,
+  InlineError,
+  Loader,
+} from '@tahti-player/ui';
 
 import type {
   NativePlayLogEntry,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
+import {
+  formatTracklist,
+  latestSession,
+  SET_GAP_MINUTES,
+} from '../lib/setTracklist';
 import { ConfirmDialog } from './ConfirmDialog';
 import { PageEmpty, PageError } from './PageStates';
 
@@ -29,6 +40,7 @@ export function PlayHistoryDialog({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmClear, setConfirmClear] = useState(false);
+  const session = useMemo(() => latestSession(entries), [entries]);
 
   const load = useCallback(
     async (offset: number) => {
@@ -126,7 +138,23 @@ export function PlayHistoryDialog({
             </Button>
           ) : null}
         </div>
+        {session.length > 0 ? (
+          <p className="text-foreground-secondary text-xs">
+            Your last session is {session.length}{' '}
+            {session.length === 1 ? 'track' : 'tracks'} with no break longer
+            than {SET_GAP_MINUTES} minutes. Copy it as a numbered tracklist to
+            post with a mix.
+          </p>
+        ) : null}
         <Dialog.Actions>
+          {session.length > 0 ? (
+            <CopyButton
+              text={formatTracklist(session)}
+              label="Copy last session"
+              variant="text"
+              toastMessage="Tracklist copied."
+            />
+          ) : null}
           <Button
             variant="text"
             intent="danger"

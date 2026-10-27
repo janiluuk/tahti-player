@@ -162,6 +162,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Discover/DiscoverGatewayBackground` | `tahti-web/DiscoverGatewayBackground.stories.tsx` |
 | `Tahti/Discover/DiscoverView` | `tahti-web/DiscoverView.stories.tsx` |
 | `Tahti/Governance/Discussions` | `tahti-web/DiscussionsView.stories.tsx` |
+| `Tahti/Desktop/DjSettingsPopover` | `tahti-web/DjSettingsPopover.stories.tsx` |
 | `Tahti/Track/DownloadGateDialog` | `tahti-web/DownloadGateDialog.stories.tsx` |
 | `Tahti/Track/DownloadsSwitch` | `tahti-web/DownloadsSwitch.stories.tsx` |
 | `Tahti/Studio/E2eRunGallery` | `tahti-web/E2eRunGallery.stories.tsx` |
@@ -196,6 +197,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Misc/ItunesImportDialog` | `tahti-web/ItunesImportDialog.stories.tsx` |
 | `Tahti/Desktop/JamRemote` | `tahti-web/JamRemote.stories.tsx` |
 | `Tahti/Social/JamView` | `tahti-web/JamView.stories.tsx` |
+| `Tahti/Desktop/KeyCell` | `tahti-web/KeyCell.stories.tsx` |
 | `Tahti/Reference/Latest view surfaces` | `tahti-web/LatestViewSurfaces.stories.tsx` |
 | `Tahti/Widgets/LegalDocShell` | `tahti-web/LegalDocShell.stories.tsx` |
 | `Tahti/Widgets/ListenAddonsPanel` | `tahti-web/ListenAddonsPanel.stories.tsx` |
@@ -205,6 +207,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/ListenerWidgetEmbed` | `tahti-web/ListenerWidgetEmbed.stories.tsx` |
 | `Tahti/Widgets/ListenerWidgetsSection` | `tahti-web/ListenerWidgetsSection.stories.tsx` |
 | `Tahti/Widgets/ListenerWorldMap` | `tahti-web/ListenerWorldMap.stories.tsx` |
+| `Tahti/Desktop/LocalLibraryFilters` | `tahti-web/LocalLibraryFilters.stories.tsx` |
 | `Tahti/Auth/LoginView` | `tahti-web/LoginView.stories.tsx` |
 | `Tahti/Widgets/MapCommentForm` | `tahti-web/MapCommentForm.stories.tsx` |
 | `Tahti/Media/MediaIconActions` | `tahti-web/MediaIconActions.stories.tsx` |
@@ -212,6 +215,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/MermaidDiagram` | `tahti-web/MermaidDiagram.stories.tsx` |
 | `Tahti/Social/MessagesView` | `tahti-web/MessagesView.stories.tsx` |
 | `Tahti/Studio/CollectionEdit/MikseriImportPanel` | `tahti-web/MikseriImportPanel.stories.tsx` |
+| `Tahti/Desktop/MixableTracksSection` | `tahti-web/MixableTracksSection.stories.tsx` |
 | `Tahti/Chrome/MobileChrome` | `tahti-web/MobileChrome.stories.tsx` |
 | `Tahti/Listen/ModerateChannelView` | `tahti-web/ModerateChannelView.stories.tsx` |
 | `Tahti/Broadcast/MulticastConfigureDialog` | `tahti-web/MulticastConfigureDialog.stories.tsx` |
@@ -232,6 +236,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/PageTourSpotlight` | `tahti-web/PageTourSpotlight.stories.tsx` |
 | `Tahti/Misc/PasswordEmailSettings` | `tahti-web/PasswordEmailSettings.stories.tsx` |
 | `Tahti/Studio/PinnedAnnouncementsPanel` | `tahti-web/PinnedAnnouncementsPanel.stories.tsx` |
+| `Tahti/Desktop/PlayHistoryDialog` | `tahti-web/PlayHistoryDialog.stories.tsx` |
 | `Tahti/Library/PlayableAmbientTrackList` | `tahti-web/PlayableAmbientTrackList.stories.tsx` |
 | `Tahti/Track/PlayableTrackContextMenu` | `tahti-web/PlayableTrackContextMenu.stories.tsx` |
 | `Tahti/Track/PlayableTrackTable` | `tahti-web/PlayableTrackTable.stories.tsx` |
@@ -287,6 +292,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Misc/SidebarBuildInfo` | `tahti-web/SidebarBuildInfo.stories.tsx` |
 | `Tahti/Auth/SignupPaymentView` | `tahti-web/SignupPaymentView.stories.tsx` |
 | `Tahti/Release/SmartLinkView` | `tahti-web/SmartLinkView.stories.tsx` |
+| `Tahti/Desktop/SmartRuleValueInput` | `tahti-web/SmartRuleValueInput.stories.tsx` |
 | `Tahti/Misc/SourceServiceIcon` | `tahti-web/SourceServiceIcon.stories.tsx` |
 | `Tahti/Studio/StashFilesPanel` | `tahti-web/StashFilesPanel.stories.tsx` |
 | `Tahti/Player/StemMixer` | `tahti-web/StemMixer.stories.tsx` |
@@ -323,6 +329,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Settings/ThemeVisualizationSettings` | `tahti-web/ThemeVisualizationSettings.stories.tsx` |
 | `Tahti/Track/TimelineReactionBar` | `tahti-web/TimelineReactionBar.stories.tsx` |
 | `Tahti/Track/TrackAccessGate` | `tahti-web/TrackAccessGate.stories.tsx` |
+| `Tahti/Desktop/TrackAnalysisSection` | `tahti-web/TrackAnalysisSection.stories.tsx` |
 | `Tahti/Track/TrackDetailView` | `tahti-web/TrackDetailView.stories.tsx` |
 | `Tahti/Track/TrackEditDialog` | `tahti-web/TrackEditDialog.stories.tsx` |
 | `Tahti/Track/TrackExportPanel` | `tahti-web/TrackExportPanel.stories.tsx` |

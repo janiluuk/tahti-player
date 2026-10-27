@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Button, Dialog, FilterChips, Input, Select } from '@tahti-player/ui';
 
+import { keyInputError } from '../lib/musicalKey';
 import {
   countActiveFilters,
   EMPTY_TRACK_FILTERS,
@@ -144,6 +145,7 @@ export function LocalLibraryFilters({
           <Input
             label="Key (e.g. Am, F#, 8A)"
             value={draft.key ?? ''}
+            error={keyInputError(draft.key ?? '') ?? undefined}
             onChange={(event) =>
               set({ key: event.target.value.trim() || null })
             }
@@ -290,6 +292,7 @@ export function LocalLibraryFilters({
         </Button>
         <Dialog.Close>Cancel</Dialog.Close>
         <Button
+          disabled={keyInputError(draft.key ?? '') !== null}
           onClick={() => {
             onApply(draft);
             onClose();

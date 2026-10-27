@@ -11,6 +11,8 @@ import {
   type TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
 import { formatDuration } from '../lib/playableToTrack';
+import { prepareTracks } from './desktop-library/prepareTracks';
+import { MixableTracksSection } from './MixableTracksSection';
 import { TrackAnalysisSection } from './TrackAnalysisSection';
 
 const blank = (value: string | number | null | undefined) =>
@@ -171,6 +173,14 @@ export function TrackInspectorDialog({
             onChanged={onChanged}
           />
         ) : null}
+        {track && library && track.available ? (
+          <MixableTracksSection
+            library={library}
+            track={track}
+            onPlay={onPlay}
+            onQueue={onQueue}
+          />
+        ) : null}
       </div>
       {track ? (
         <Dialog.Actions>
@@ -181,6 +191,12 @@ export function TrackInspectorDialog({
               </Button>
               <Button variant="text" onClick={() => onQueue(track)}>
                 Add to queue
+              </Button>
+              <Button
+                variant="text"
+                onClick={() => void prepareTracks([track.id])}
+              >
+                Add to Prepare
               </Button>
               <Button variant="text" onClick={() => onReveal(track)}>
                 Reveal in folder

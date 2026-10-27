@@ -14,6 +14,7 @@ export const LIBRARY_SHORTCUTS: ReadonlyArray<[string, string]> = [
   ['i', 'Show details'],
   ['e', 'Edit tags'],
   ['r', 'Reveal in folder'],
+  ['p', 'Add to the Prepare playlist'],
   ['delete', 'Remove from library'],
 ];
 
@@ -31,7 +32,7 @@ export function LibraryShortcutsHelp() {
     >
       <p className="pb-2 text-sm font-semibold">Keyboard shortcuts</p>
       <p className="pb-2 text-xs opacity-80">
-        Click the track list or Tab to it first. Q, E and Delete act on the
+        Click the track list or Tab to it first. Q, E, P and Delete act on the
         whole selection when the focused track is part of it.
       </p>
       <dl className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-1.5 text-xs">

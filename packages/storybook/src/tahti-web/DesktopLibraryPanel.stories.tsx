@@ -1,8 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DesktopLibraryPanel } from '@tahti-web/components/DesktopLibraryPanel';
 import type { TahtiNativeLibrary } from '@tahti-web/lib/nativeLibrary';
+import { useDjPrefsStore } from '@tahti-web/stores/djPrefsStore';
 import { useLocalLibraryStore } from '@tahti-web/stores/localLibraryStore';
 import { useEffect, useRef } from 'react';
+import { expect, within } from 'storybook/test';
+
+import { djLibrary } from './_fixtures/dj-library';
 
 const meta: Meta<typeof DesktopLibraryPanel> = {
   title: 'Tahti/Misc/DesktopLibraryPanel',
@@ -288,4 +292,42 @@ export const MissingNativeFile: Story = {
       );
     },
   ],
+};
+
+export const DjCatalog: Story = {
+  decorators: [
+    (Story) => {
+      const previousLibrary = useRef(globalThis.__TAHTI_NATIVE_LIBRARY__);
+      useDjPrefsStore.setState({
+        keyNotation: 'camelot',
+        bpmTolerance: 6,
+        halfDouble: true,
+      });
+      const previousCapabilities = useRef(
+        globalThis.__TAHTI_NATIVE_CAPABILITIES__,
+      );
+      globalThis.__TAHTI_NATIVE_LIBRARY__ = djLibrary();
+      globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+      useEffect(
+        () => () => {
+          globalThis.__TAHTI_NATIVE_LIBRARY__ = previousLibrary.current;
+          globalThis.__TAHTI_NATIVE_CAPABILITIES__ =
+            previousCapabilities.current;
+        },
+        [],
+      );
+      return (
+        <div className="border-border h-[46rem] w-[88rem] border">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByText('Aurora Drive')).toBeVisible();
+    await expect(
+      canvas.getByRole('button', { name: 'DJ settings' }),
+    ).toBeVisible();
+  },
 };

@@ -1,14 +1,29 @@
-import { ActivityIcon, Undo2Icon } from 'lucide-react';
+import { ActivityIcon, HandIcon, Undo2Icon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Input, Loader } from '@tahti-player/ui';
+import { Button, Input, Loader, Tooltip } from '@tahti-player/ui';
 
+import {
+  addTap,
+  bpmInputError,
+  doubleBpm,
+  halveBpm,
+  tempoFromTaps,
+} from '../lib/bpm';
+import {
+  formatKey,
+  keyInputError,
+  keyName,
+  parseKey,
+  type KeyNotation,
+} from '../lib/musicalKey';
 import type {
   NativeAnalysisDetail,
   NativeLibraryTrack,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
+import { useDjPrefsStore } from '../stores/djPrefsStore';
 import { runAnalysis } from './LocalLibraryAnalysis';
 
 /** Waveform of the stored peaks; decorative, the numbers below carry the meaning. */
@@ -50,7 +65,13 @@ const percent = (value: number | null) =>
 /** Label/value rows for the analysis, with each value's origin spelled out. */
 export function analysisRows(
   detail: NativeAnalysisDetail,
+  notation: KeyNotation = 'musical',
 ): Array<{ label: string; value: string }> {
+  const showKey = (raw: string) => {
+    const shown = formatKey(raw, notation) ?? raw;
+    const key = parseKey(raw);
+    return notation !== 'musical' && key ? `${shown} · ${keyName(key)}` : shown;
+  };
   const rows: Array<{ label: string; value: string }> = [];
   const bpm =
     detail.userBpm !== null
@@ -62,11 +83,11 @@ export function analysisRows(
           : '—';
   const key =
     detail.userKey !== null
-      ? `${detail.userKey} (your correction)`
+      ? `${showKey(detail.userKey)} (your correction)`
       : detail.tagKey !== null
-        ? `${detail.tagKey} (from the file's tag)`
+        ? `${showKey(detail.tagKey)} (from the file's tag)`
         : detail.keyEstimate !== null
-          ? `${detail.keyEstimate} (estimate${percent(detail.keyConfidence)})`
+          ? `${showKey(detail.keyEstimate)} (estimate${percent(detail.keyConfidence)})`
           : '—';
   rows.push({ label: 'BPM', value: bpm }, { label: 'Key', value: key });
   const replayGain = (gain?: number | null, peak?: number | null) =>
@@ -120,6 +141,26 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
   const [bpmText, setBpmText] = useState('');
   const [keyText, setKeyText] = useState('');
   const [busy, setBusy] = useState<'analyze' | 'save' | null>(null);
+  const [taps, setTaps] = useState<number[]>([]);
+  const notation = useDjPrefsStore((state) => state.keyNotation);
+  const bpmError = bpmInputError(bpmText);
+  const keyError = keyInputError(keyText);
+  const tapped = tempoFromTaps(taps);
+  const baseBpm =
+    bpmText.trim() !== '' && !bpmError
+      ? Number(bpmText)
+      : (detail?.bpm ?? null);
+  const half = baseBpm ? halveBpm(baseBpm) : null;
+  const double = baseBpm ? doubleBpm(baseBpm) : null;
+
+  const tap = () => {
+    const next = addTap(taps, performance.now());
+    setTaps(next);
+    const bpm = tempoFromTaps(next);
+    if (bpm !== null) {
+      setBpmText(String(bpm));
+    }
+  };
 
   const load = useCallback(async () => {
     try {
@@ -127,6 +168,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
       setDetail(next);
       setBpmText(next.userBpm === null ? '' : String(next.userBpm));
       setKeyText(next.userKey ?? '');
+      setTaps([]);
     } catch {
       setDetail(null);
     }
@@ -152,11 +194,10 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
     if (!detail) {
       return;
     }
-    const bpm = bpmText.trim() === '' ? 0 : Number(bpmText);
-    if (!Number.isFinite(bpm)) {
-      toast.error('BPM must be a number.');
+    if (bpmError || keyError) {
       return;
     }
+    const bpm = bpmText.trim() === '' ? 0 : Number(bpmText);
     setBusy('save');
     try {
       const undo = await library.analysis.setCorrections(
@@ -207,7 +248,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
       {detail?.analyzed ? <Waveform peaks={detail.peaks} /> : null}
       {detail ? (
         <dl className="mt-1 grid grid-cols-[8rem_1fr] gap-x-3 gap-y-1 text-sm">
-          {analysisRows(detail).map((row) => (
+          {analysisRows(detail, notation).map((row) => (
             <div key={row.label} className="contents">
               <dt className="text-foreground-secondary">{row.label}</dt>
               <dd className="min-w-0 break-words">{row.value}</dd>
@@ -244,20 +285,71 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
               detail?.bpmEstimate ? String(rounded(detail.bpmEstimate)) : ''
             }
             value={bpmText}
+            error={bpmError ?? undefined}
             onChange={(event) => setBpmText(event.target.value)}
           />
           <Input
             label="Your key"
             placeholder={detail?.keyEstimate ?? 'Am, F#, 8A'}
             value={keyText}
+            error={keyError ?? undefined}
             onChange={(event) => setKeyText(event.target.value)}
           />
+        </div>
+        <div
+          className="mt-2 flex flex-wrap items-center gap-1"
+          data-testid="bpm-tools"
+        >
+          <Tooltip content="Tap along with the beat" side="top">
+            <Button
+              size="sm"
+              variant="text"
+              className="gap-1.5"
+              onClick={tap}
+              aria-label="Tap tempo"
+            >
+              <HandIcon size={14} aria-hidden />
+              Tap
+            </Button>
+          </Tooltip>
+          <span
+            className="text-foreground-secondary text-xs tabular-nums"
+            aria-live="polite"
+          >
+            {taps.length === 0
+              ? 'Tap along with the beat to set the BPM.'
+              : tapped === null
+                ? 'Keep tapping…'
+                : `${tapped} BPM from ${taps.length} taps`}
+          </span>
+          <Button
+            size="sm"
+            variant="text"
+            disabled={half === null}
+            onClick={() => half !== null && setBpmText(String(half))}
+            aria-label={
+              half === null ? 'Half tempo' : `Half tempo, ${half} BPM`
+            }
+          >
+            ½×
+          </Button>
+          <Button
+            size="sm"
+            variant="text"
+            disabled={double === null}
+            onClick={() => double !== null && setBpmText(String(double))}
+            aria-label={
+              double === null ? 'Double tempo' : `Double tempo, ${double} BPM`
+            }
+          >
+            2×
+          </Button>
         </div>
         <div className="mt-2 flex flex-wrap gap-1">
           <Button
             size="sm"
             variant="secondary"
-            disabled={!dirty || busy !== null}
+            disabled={!dirty || busy !== null || !!bpmError || !!keyError}
             type="submit"
             className="gap-1.5"
           >
