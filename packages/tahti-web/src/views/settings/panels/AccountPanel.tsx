@@ -572,7 +572,7 @@ function PrivacyDataPanel({ username }: { username: string }) {
               follows, messages you sent, purchases, subscriptions, support
               requests, governance activity, downloads, listening, venues, radio
               submissions, store tiers, restrictions, notifications, grants,
-              add-ons and devices, as JSON
+              add-ons, devices and shares, as JSON
             </span>
           </span>
         </ButtonAnchor>
