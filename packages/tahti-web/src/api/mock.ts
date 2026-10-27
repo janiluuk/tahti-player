@@ -710,6 +710,7 @@ function buildMockSoundItems(slug: string): ChannelSoundItem[] {
     likeCount: (i * 3 + 2) % 7,
     playCount: 64 - i * 7 > 3 ? 64 - i * 7 : 3,
     downloadCount: (i * 5 + 4) % 13,
+    downloadsEnabled: i % 3 !== 2,
     ...(i === 0 ? { pinnedAt: '2026-07-15T12:00:00.000Z' } : {}),
   }));
   if (slug === 'northern-lights') {
@@ -1022,6 +1023,7 @@ function buildMockProfile(username: string): PublicProfile {
       playCount: 57 - i * 9,
       likeCount: 3 - (i % 3),
       downloadCount: 15 - i * 4 > 0 ? 15 - i * 4 : 0,
+      downloadsEnabled: i % 3 !== 2,
     })),
     fanTiers: [
       {

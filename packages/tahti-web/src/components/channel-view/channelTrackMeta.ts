@@ -2,9 +2,13 @@ import type { ChannelSoundItem, TahtiPlayable } from '../../api/types';
 import { soundIdFromPlayableId } from '../../lib/soundId';
 import type { AmbientTrackStats } from '../AmbientTrackRow';
 
-export type ChannelTrackMeta = (
-  item: TahtiPlayable,
-) => { genre?: string | null; stats?: AmbientTrackStats } | undefined;
+export type ChannelTrackMeta = (item: TahtiPlayable) =>
+  | {
+      genre?: string | null;
+      stats?: AmbientTrackStats;
+      downloadable?: boolean;
+    }
+  | undefined;
 
 /** Genre and public totals for each channel track row, looked up from the
  * channel's items by sound id. */
@@ -18,6 +22,7 @@ export function channelTrackMeta(sounds: ChannelSoundItem[]): ChannelTrackMeta {
     }
     return {
       genre: item.genre ?? null,
+      downloadable: item.downloadsEnabled === true,
       stats: {
         releaseDate: item.createdAt ?? null,
         likes: item.likeCount,
