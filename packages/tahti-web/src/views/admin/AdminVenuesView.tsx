@@ -2,7 +2,15 @@ import { Link } from '@tanstack/react-router';
 import { CheckIcon, MapPinIcon, XIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button, InlineError, Input, ViewShell } from '@tahti-player/ui';
+import {
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
+  Button,
+  InlineError,
+  Input,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchAdminVenues,
@@ -85,16 +93,10 @@ export function AdminVenuesView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/venues">
           <div className="flex max-w-4xl flex-col gap-6">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-            >
-              <Link to="/admin" className="hover:underline">
-                Admin
-              </Link>
-              <span aria-hidden>→</span>
-              <span aria-current="page">Venues</span>
-            </nav>
+            <Breadcrumbs>
+              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbCurrent>Venues</BreadcrumbCurrent>
+            </Breadcrumbs>
             <ViewShell
               title="Venues"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}

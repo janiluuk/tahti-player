@@ -1,5 +1,9 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 
+import {
+  movedSettingsSection,
+  movedSettingsTarget,
+} from '../lib/movedSettingsSections';
 import { appLayoutRoute } from './router-core';
 import { FeedView, OnboardingView, SettingsView } from './router-lazy-views';
 
@@ -13,21 +17,9 @@ export const settingsSectionRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/settings/$section',
   beforeLoad: ({ params }) => {
-    // Former Settings → Audience / money panels now live under Studio.
-    if (params.section === 'fan-tiers') {
-      throw redirect({ to: '/studio/audience', search: { tab: 'tiers' } });
-    }
-    if (
-      params.section === 'audience' ||
-      params.section === 'money' ||
-      params.section === 'fan-subs'
-    ) {
-      throw redirect({
-        to:
-          params.section === 'audience'
-            ? '/studio/audience'
-            : '/studio/revenue',
-      });
+    const moved = movedSettingsSection(params.section);
+    if (moved) {
+      throw redirect(movedSettingsTarget(moved));
     }
   },
   component: () => <SettingsView />,

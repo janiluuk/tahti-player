@@ -1,8 +1,14 @@
-import { Link, useSearch } from '@tanstack/react-router';
+import { useSearch } from '@tanstack/react-router';
 import { CloudIcon, HardDriveIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Tabs, ViewShell } from '@tahti-player/ui';
+import {
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
+  Tabs,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
@@ -20,22 +26,13 @@ export function AdminStorageView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/storage">
           <div className="flex max-w-6xl flex-col gap-6">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-            >
-              <Link to="/admin" className="hover:underline">
-                Admin
-              </Link>
-              <span aria-hidden>→</span>
-              <Link to="/admin/storage" className="hover:underline">
-                Storage
-              </Link>
-              <span aria-hidden>→</span>
-              <span aria-current="page">
+            <Breadcrumbs>
+              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin/storage">Storage</BreadcrumbLink>
+              <BreadcrumbCurrent>
                 {tab === 'files' ? 'Files' : 'Storage'}
-              </span>
-            </nav>
+              </BreadcrumbCurrent>
+            </Breadcrumbs>
             <ViewShell
               title="Storage"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}

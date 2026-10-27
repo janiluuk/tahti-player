@@ -75,6 +75,7 @@ export function MobileBottomNav({
     <nav
       className="border-border bg-background z-40 flex h-16 shrink-0 items-stretch justify-around border-t px-1 pt-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] md:hidden"
       aria-label="Primary"
+      data-testid="mobile-bottom-nav"
       style={{ minHeight: 'var(--mobile-nav-h, 64px)' }}
     >
       {items.map((item) => {
@@ -210,6 +211,7 @@ export function MobileDrawer({
           role="dialog"
           aria-modal
           aria-label={title}
+          data-testid="mobile-drawer"
         >
           <motion.div
             className="absolute inset-0"

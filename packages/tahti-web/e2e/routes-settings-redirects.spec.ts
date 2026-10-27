@@ -12,22 +12,22 @@ const movedSettings: RouteVisit[] = [
   {
     path: '/settings/money',
     heading: /^Audience$/,
-    url: /\/studio\/audience$/,
+    url: /\/studio\/audience\?movedFrom=money$/,
   },
   {
     path: '/settings/fan-subs',
     heading: /^Audience$/,
-    url: /\/studio\/audience$/,
+    url: /\/studio\/audience\?movedFrom=fan-subs$/,
   },
   {
     path: '/settings/fan-tiers',
     heading: 'Fan subscription tiers',
-    url: /\/studio\/audience\?tab=tiers$/,
+    url: /\/studio\/audience\?tab=tiers&movedFrom=fan-tiers$/,
   },
   {
     path: '/settings/audience',
     heading: /^Audience$/,
-    url: /\/studio\/audience$/,
+    url: /\/studio\/audience\?movedFrom=audience$/,
   },
 ];
 

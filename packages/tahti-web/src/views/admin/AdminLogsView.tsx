@@ -1,4 +1,4 @@
-import { Link, useSearch } from '@tanstack/react-router';
+import { useSearch } from '@tanstack/react-router';
 import {
   ActivityIcon,
   ContainerIcon,
@@ -9,6 +9,9 @@ import { useEffect, useMemo, useState } from 'react';
 
 import {
   Alert,
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
   ButtonAnchor,
   LogViewer,
   Tabs,
@@ -180,22 +183,13 @@ export function AdminLogsView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/logs">
           <div className="flex max-w-6xl flex-col gap-6">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-            >
-              <Link to="/admin" className="hover:underline">
-                Admin
-              </Link>
-              <span aria-hidden>→</span>
-              <Link to="/admin/logs" className="hover:underline">
-                Logs
-              </Link>
-              <span aria-hidden>→</span>
-              <span aria-current="page">
+            <Breadcrumbs>
+              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin/logs">Logs</BreadcrumbLink>
+              <BreadcrumbCurrent>
                 {LOGS_TAB_LABELS[TAB_IDS[selectedIndex] ?? 'activity']}
-              </span>
-            </nav>
+              </BreadcrumbCurrent>
+            </Breadcrumbs>
             <ViewShell
               title="Logs"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}

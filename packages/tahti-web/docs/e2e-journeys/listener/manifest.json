@@ -30,5 +30,13 @@
   {
     "file": "08-fan-tier-subscribe.png",
     "label": "Fan tier subscribe (buy side)"
+  },
+  {
+    "file": "09-discussions.png",
+    "label": "Governance discussions"
+  },
+  {
+    "file": "10-discussion-topic.png",
+    "label": "A discussion topic with replies"
   }
 ]

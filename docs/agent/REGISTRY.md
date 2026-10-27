@@ -6,10 +6,11 @@ Extracted from root `AGENTS.md` for on-demand reading.
 
 The official marketplace catalog — what users see in the player Store — is
 [github.com/janiluuk/tahti-registry](https://github.com/janiluuk/tahti-registry)
-(`plugins.json`, `themes/`, generated `themes.json`). The player fetches it from
-`https://raw.githubusercontent.com/janiluuk/tahti-registry/master` via
-`packages/player/src/apis/pluginMarketplaceApi.ts` and
-`packages/player/src/apis/themeRegistryApi.ts`. It replaces the upstream
+(`plugins.json`, `themes/`, generated `themes.json`). It is served from
+`https://raw.githubusercontent.com/janiluuk/tahti-registry/master`. The Nuclear
+desktop client that fetched it (`packages/player/src/apis/pluginMarketplaceApi.ts`,
+`themeRegistryApi.ts`) was removed with the dead desktop UI in 2026-10 (last at
+`d703e03cf`); tahti-web has no catalog client yet. It replaces the upstream
 `NuclearPlayer/plugin-registry` and `NuclearPlayer/theme-registry` repos.
 
 Do not confuse it with the player's **runtime** install list (`plugins.json` on

@@ -1,6 +1,7 @@
 export * from './ActionSheet';
 export * from './Alert';
 export * from './BackButton';
+export * from './Breadcrumbs';
 export * from './Badge';
 export * from './BottomBar';
 export * from './Box';

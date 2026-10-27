@@ -275,6 +275,7 @@ function EmbedSoundCard({
         title={item.title}
         provider={provider}
         embedUri={embedUri}
+        as="div"
       />
       <div className="flex flex-wrap items-center justify-between gap-2 px-1">
         <p className="text-foreground-secondary min-w-0 flex-1 text-xs">

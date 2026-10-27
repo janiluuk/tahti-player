@@ -6,11 +6,7 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "types": [
-      "vitest/globals",
-      "@testing-library/jest-dom",
-      "vite-plugin-svgr/client"
-    ],
+    "types": ["vitest/globals", "vite-plugin-svgr/client"],
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,

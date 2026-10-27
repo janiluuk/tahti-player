@@ -33,6 +33,15 @@ export {
   searchSpotify,
   spotifyCoverUrl,
 } from './sources/spotify-collection';
+export type {
+  GoogleDrivePickedFile,
+  GoogleDrivePickerConfig,
+  GoogleDrivePickerConfigResult,
+} from './sources/google-drive';
+export {
+  fetchGoogleDrivePickerConfig,
+  importGoogleDriveFiles,
+} from './sources/google-drive';
 export type { BandcampAlbum } from './sources/bandcamp';
 export { fetchBandcampAlbums, importBandcampAlbum } from './sources/bandcamp';
 export type { MixcloudCloudcast } from './sources/mixcloud';
