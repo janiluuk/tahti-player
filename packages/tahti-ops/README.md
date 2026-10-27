@@ -52,6 +52,10 @@ pnpm tahti-ops stack smoke
 pnpm tahti-ops backup status --dry-run
 pnpm tahti-ops backup status
 
+# AUR tahti-player-bin (CI: update-aur.yml after a release)
+pnpm tahti-ops package aur 1.48.0 --dry-run
+pnpm tahti-ops package aur 1.48.0 --no-push   # render + print PKGBUILD/.SRCINFO (Arch, makepkg)
+
 # production deploys (needs SSH to the fleet)
 pnpm tahti-ops deploy stack --dry-run
 pnpm tahti-ops deploy all
@@ -76,6 +80,7 @@ Progress lines go to stderr (`→` / `✓` / `✗`); script stdout is unchanged.
 | `packages/tahti-web/deploy/deploy-vimage.sh`, `pnpm deploy:tahti-beta` | `pnpm tahti-ops deploy web` |
 | `packages/tahti-web/scripts/run-e2e-journeys.sh` | `pnpm tahti-ops e2e journeys` |
 | `vitest run -u` per package | `pnpm tahti-ops snapshots update <group>` |
+| `scripts/update-aur.sh --version X [--dry-run]` (removed) | `pnpm tahti-ops package aur X [--no-push]` |
 
 Cron entries may still call `backup.sh` directly on the host; operators use
 `tahti-ops` from this monorepo.

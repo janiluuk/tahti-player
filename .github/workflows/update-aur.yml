@@ -57,7 +57,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.store.outputs.enabled == 'true'
-        run: pacman -Syu --noconfirm base-devel git openssh curl
+        run: pacman -Syu --noconfirm base-devel git openssh nodejs
 
       - name: Checkout code
         if: steps.store.outputs.enabled == 'true'
@@ -76,4 +76,4 @@ jobs:
         if: steps.store.outputs.enabled == 'true'
         env:
           VERSION: ${{ steps.version.outputs.version }}
-        run: ./scripts/update-aur.sh --version "$VERSION"
+        run: node packages/tahti-ops/src/cli.mjs package aur "$VERSION"

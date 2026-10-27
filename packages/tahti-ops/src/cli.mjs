@@ -6,6 +6,7 @@ import { deployTargets, runDeploy } from './commands/deploy.mjs';
 import { desktopModes, runDesktop } from './commands/desktop.mjs';
 import { runE2e } from './commands/e2e.mjs';
 import { runEnv } from './commands/env.mjs';
+import { runPackageAur } from './commands/package-aur.mjs';
 import {
   listSnapshots,
   snapshotGroups,
@@ -171,6 +172,30 @@ Arguments after -- go to the test runner, e.g.
       const { dryRun, args } = splitDryRun(argv);
       const { value: envFile, rest } = takeOption(args, '--env-file');
       return runE2e(rest[0], rest.slice(1), { dryRun, envFile });
+    },
+  },
+  {
+    path: ['package', 'aur'],
+    usage: 'tahti-ops package aur <version> [--no-push] [--dry-run]',
+    summary:
+      'Publish tahti-player-bin <version> to the AUR (PKGBUILD + .SRCINFO)',
+    details: `Hashes the released player@<version> .deb, renders
+packaging/aur/tahti-player-bin/PKGBUILD.template, generates .SRCINFO with
+makepkg (Arch only), then commits and pushes to the AUR repo over SSH.
+Run by .github/workflows/update-aur.yml after a release.
+
+  --no-push   Render and print PKGBUILD and .SRCINFO without touching the AUR
+  --dry-run   Print each step without running it`,
+    passthrough: true,
+    run: (_parsed, argv) => {
+      const { dryRun, args } = splitDryRun(argv);
+      const push = !args.includes('--no-push');
+      const rest = args.filter((arg) => arg !== '--no-push');
+      const unknown = rest.find((arg) => arg.startsWith('-'));
+      if (unknown) {
+        throw new OpsError(`Unknown option: ${unknown}`);
+      }
+      return runPackageAur(rest[0], { dryRun, push });
     },
   },
   {
