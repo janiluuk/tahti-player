@@ -15,6 +15,16 @@ export type ArtistSettingsSection =
 
 export type AccountSettingsSection = 'subscriptions' | 'api-tokens';
 
+export const CHANNEL_SETTINGS_SECTIONS = [
+  'appearance',
+  'discovery',
+  'domain',
+  'chat',
+  'moderators',
+] as const;
+
+export type ChannelSettingsSection = (typeof CHANNEL_SETTINGS_SECTIONS)[number];
+
 type SettingsModalState = {
   isOpen: boolean;
   activeTab: SettingsSectionId;
@@ -28,6 +38,8 @@ type SettingsModalState = {
   artistSection: ArtistSettingsSection | null;
   /** Sub-tab when activeTab === 'account'. */
   accountSection: AccountSettingsSection | null;
+  /** Sub-tab when activeTab === 'channel'. */
+  channelSection: ChannelSettingsSection | null;
   openedToSection: boolean;
   /**
    * After Close while the URL is still `/settings…`, SettingsView must not
@@ -41,6 +53,7 @@ type SettingsModalState = {
     pluginCategory?: PluginCategoryTarget,
     artistSection?: ArtistSettingsSection,
     accountSection?: AccountSettingsSection,
+    channelSection?: ChannelSettingsSection,
   ) => void;
   close: () => void;
   setActiveTab: (tab: SettingsSectionId) => void;
@@ -53,9 +66,10 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
   pluginCategory: null,
   artistSection: null,
   accountSection: null,
+  channelSection: null,
   openedToSection: false,
   dismissRouteOpen: false,
-  open: (tab, pluginCategory, artistSection, accountSection) =>
+  open: (tab, pluginCategory, artistSection, accountSection, channelSection) =>
     set((state) => ({
       isOpen: true,
       dismissRouteOpen: false,
@@ -66,9 +80,15 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
       pluginCategory: pluginCategory ?? null,
       artistSection: artistSection ?? null,
       accountSection: accountSection ?? null,
+      channelSection: channelSection ?? null,
     })),
   close: () => set({ isOpen: false, dismissRouteOpen: true }),
   setActiveTab: (tab) =>
-    set({ activeTab: tab, artistSection: null, accountSection: null }),
+    set({
+      activeTab: tab,
+      artistSection: null,
+      accountSection: null,
+      channelSection: null,
+    }),
   clearDismissRouteOpen: () => set({ dismissRouteOpen: false }),
 }));

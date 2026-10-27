@@ -19,6 +19,12 @@ describe('buildSettingsPath', () => {
         accountSection: 'api-tokens',
       }),
     ).toBe('/settings/account?tab=api-tokens');
+    expect(
+      buildSettingsPath({
+        section: 'channel',
+        channelSection: 'moderators',
+      }),
+    ).toBe('/settings/channel?tab=moderators');
   });
 
   it('adds plugin-store category and ignores mismatched sub-fields', () => {

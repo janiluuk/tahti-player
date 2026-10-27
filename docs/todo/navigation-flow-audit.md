@@ -128,6 +128,8 @@ The biggest **user-facing** gaps:
 
 **File:** `routes-settings.tsx:12-24` — `/settings/audience`, `/settings/money`, `/settings/fan-subs`, `/settings/fan-tiers` all redirect to `/studio/audience?tab=…`. The route definition exists for backward compatibility but there is no visible indicator in a browser's address bar that the URL has changed. A user who bookmarks `/settings/money` and shares it will land on Studio → Audience, which may be confusing (the page header says "Audience", not "Money settings"). Consider adding a redirect notice or updating the tab label to read "Revenue" instead of "Money".
 
+**E2e:** `e2e/routes-settings-redirects.spec.ts` asserts the final URL of every moved section (`/settings/fan-tiers` now opens the Tiers tab), every Settings section, and the old Studio bookmarks (`/studio/info`, `sounds`, `archive`, `recordings`, `collections`, `playlists`, `upload`, `stash`, `venues`, `setup-channel`, `branding`, `moderation`). `/studio/moderation` and `/settings/channel?tab=moderators` now keep the Moderators tab.
+
 ---
 
 ## 10. Cross-page navigation — no consistent link color/arrow between sections

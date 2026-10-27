@@ -30,6 +30,7 @@ describe('SettingsView', () => {
       dismissRouteOpen: false,
       artistSection: null,
       accountSection: null,
+      channelSection: null,
     });
   });
 
@@ -58,6 +59,14 @@ describe('SettingsView', () => {
     const state = useSettingsModalStore.getState();
     expect(state.isOpen).toBe(true);
     expect(state.accountSection).toBe('api-tokens');
+  });
+
+  it('opens Channel on the moderators tab from a moderation link', () => {
+    window.history.replaceState(null, '', '/settings/channel?tab=moderators');
+    render(<SettingsView />);
+    const state = useSettingsModalStore.getState();
+    expect(state.activeTab).toBe('channel');
+    expect(state.channelSection).toBe('moderators');
   });
 
   it('opens Artist Connections from a dashboard bookmark', () => {
