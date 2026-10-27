@@ -62,6 +62,11 @@ new surface, one PR per row.
 - [ ] One entity-profile section stack (tracks table + releases grid +
   collections grid) for ArtistView and ChannelView
   (`artist-view/ArtistReferenceSections.tsx` vs `channel-view/ChannelViewBlocks.tsx`).
+  - 2026-10-27 (batch 90): shared `ProfileSection` (heading + loading /
+    error / empty) on the artist popular, related, releases and playlists
+    sections and the channel Tracks block. Left: one tracks list for both
+    (channel blocks wait on the ambient-rows item) and a releases / playlists
+    grid on the channel page.
 - [ ] One collection surface for CollectionView / SmartLinkView /
   StudioCollectionsView (same track list + empty message, rendered 3×).
 - After moving files, update `docs/VIEW-CATALOG.md`.
