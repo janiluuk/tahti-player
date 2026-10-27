@@ -33,7 +33,7 @@ export const TopicList: Story = {
     );
     await expect(links[1]).toHaveTextContent('Membership fee for 2026');
     await expect(canvas.getByLabelText('Pinned')).toBeVisible();
-    await expect(canvas.getByText('Closed')).toBeVisible();
+    await expect(within(list).getByText('Closed')).toBeVisible();
     await expect(canvas.getByText('1 new reply')).toBeVisible();
   },
 };
