@@ -199,6 +199,30 @@ describe('SmartLinkView', () => {
     );
   });
 
+  it('lists the playable tracks under a Tracks heading', async () => {
+    await renderSmartLink({
+      tracks: [
+        {
+          id: 't1',
+          soundId: 's1',
+          title: 'Opening',
+          position: 1,
+          audioUrl: 'https://cdn/t1.opus',
+          gate: null,
+        },
+      ],
+    });
+    const tracks = screen.getByRole('region', { name: 'Tracks' });
+    expect(within(tracks).getByRole('link', { name: 'Opening' })).toBeTruthy();
+    expect(screen.queryByText('No playable tracks yet')).toBeNull();
+  });
+
+  it('says so when no track can play and none is locked', async () => {
+    await renderSmartLink({ tracks: [] });
+    expect(screen.getByText('No playable tracks yet')).toBeTruthy();
+    expect(screen.queryByRole('region', { name: 'Tracks' })).toBeNull();
+  });
+
   it('shows a locked state for gated tracks instead of a play button', async () => {
     await renderSmartLink({
       tracks: [
@@ -213,6 +237,7 @@ describe('SmartLinkView', () => {
       ],
     });
     expect(screen.queryByRole('button', { name: /Play all/ })).toBeNull();
+    expect(screen.queryByText('No playable tracks yet')).toBeNull();
     const locked = screen.getByRole('region', { name: 'Locked tracks' });
     expect(within(locked).getByText('Fan subscribers only')).toBeTruthy();
     expect(

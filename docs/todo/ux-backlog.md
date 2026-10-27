@@ -64,6 +64,12 @@ new surface, one PR per row.
   (`artist-view/ArtistReferenceSections.tsx` vs `channel-view/ChannelViewBlocks.tsx`).
 - [ ] One collection surface for CollectionView / SmartLinkView /
   StudioCollectionsView (same track list + empty message, rendered 3×).
+  - 2026-10-27 (batch 90): shared `CollectionTrackList` (framed ambient
+    rows + empty state) on CollectionView and SmartLinkView; a smart link
+    with no playable and no locked tracks now says so. Left: StudioCollectionsView
+    lists collections, not tracks; the Studio editor tracklist
+    (`collection-edit/TracklistPanel.tsx`, reorderable `TrackTable`) still
+    has its own empty state.
 - After moving files, update `docs/VIEW-CATALOG.md`.
 
 ## Studio functional
