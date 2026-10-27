@@ -205,6 +205,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Community/MentionTextarea` | `tahti-web/MentionTextarea.stories.tsx` |
 | `Tahti/Widgets/MermaidDiagram` | `tahti-web/MermaidDiagram.stories.tsx` |
 | `Tahti/Social/MessagesView` | `tahti-web/MessagesView.stories.tsx` |
+| `Tahti/Studio/CollectionEdit/MikseriImportPanel` | `tahti-web/MikseriImportPanel.stories.tsx` |
 | `Tahti/Chrome/MobileChrome` | `tahti-web/MobileChrome.stories.tsx` |
 | `Tahti/Listen/ModerateChannelView` | `tahti-web/ModerateChannelView.stories.tsx` |
 | `Tahti/Broadcast/MulticastConfigureDialog` | `tahti-web/MulticastConfigureDialog.stories.tsx` |

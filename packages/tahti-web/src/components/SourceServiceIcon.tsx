@@ -3,6 +3,7 @@ import {
   AudioWaveform,
   Fingerprint,
   Link2,
+  ListMusic,
   Radio,
   RadioTower,
   Upload,
@@ -34,6 +35,7 @@ const TILE: Record<
   // hearthis.at's own embed widget color (see hcolor in lib/embedSrc.ts) —
   // no distinctive wordmark to draw, so a plain waveform glyph stands in.
   hearthis: { bg: '#55acee', fg: '#fff', Icon: AudioWaveform },
+  mikseri: { bg: '#dc2626', fg: '#fff', Icon: ListMusic },
   broadcast: { bg: '#0ea5e9', fg: '#fff', Icon: Radio },
   radio: { bg: '#7c3aed', fg: '#fff', Icon: RadioTower },
   musicbrainz: { bg: '#ba478f', fg: '#fff', Icon: Fingerprint },
@@ -168,6 +170,8 @@ export function sourceTileSubtitle(id: IntegrationId): string {
       return 'Search & queue';
     case 'hearthis':
       return 'Search & embed';
+    case 'mikseri':
+      return 'Paste & embed';
     case 'broadcast':
       return 'Live captures';
     case 'radio':

@@ -19,6 +19,7 @@ const PROVIDER_SOURCE_ICON_ID: Record<EmbedProvider, IntegrationId> = {
   MIXCLOUD: 'mixcloud',
   SPOTIFY: 'spotify',
   BANDCAMP: 'bandcamp',
+  MIKSERI: 'mikseri',
 };
 
 type EmbedItem = StudioSound & {

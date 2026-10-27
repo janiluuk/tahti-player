@@ -17,5 +17,6 @@
   "/api/me/stats/locations": "Ships in tahti-org #883 (merged 2026-10-27); OpenAPI release not refreshed yet. The panel shows a retry or hides itself until it is deployed.",
   "/api/me/stats/loyalty": "Ships in tahti-org #883 (merged 2026-10-27); OpenAPI release not refreshed yet. The panel shows a retry or hides itself until it is deployed.",
   "/api/me/support/tickets/:param/close": "Ships in tahti-org #912; OpenAPI release not refreshed yet. Help \u2192 Your requests shows the API's error next to Mark resolved until it is deployed.",
-  "/api/v1/events/upcoming": "The route ships in tahti-org #879, which is not in a tahti-org release yet. The front page's Coming up row hides itself when the list is empty or the request fails."
+  "/api/v1/events/upcoming": "The route ships in tahti-org #879, which is not in a tahti-org release yet. The front page's Coming up row hides itself when the list is empty or the request fails.",
+  "/api/v1/imports/mikseri/add": "Ships in tahti-org #966; OpenAPI release not refreshed yet. The Studio collection panel \"Add your music from Mikseri.net\" shows the API error until it is deployed."
 }

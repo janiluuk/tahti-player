@@ -16,7 +16,7 @@ import {
   fetchTotpStatus,
   setupTotp,
 } from '../api/security';
-import { PageLoading } from './PageStates';
+import { PageError, PageLoading } from './PageStates';
 
 function formatSecret(secret: string): string {
   return secret.replace(/(.{4})/g, '$1 ').trim();
@@ -24,6 +24,8 @@ function formatSecret(secret: string): string {
 
 export function SecurityTotpPanel() {
   const [enabled, setEnabled] = useState<boolean | null>(null);
+  const [statusError, setStatusError] = useState<string | null>(null);
+  const [statusAttempt, setStatusAttempt] = useState(0);
   const [setup, setSetup] = useState<{
     secret: string;
     otpauthUri: string;
@@ -36,15 +38,41 @@ export function SecurityTotpPanel() {
   const [pending, setPending] = useState(false);
 
   useEffect(() => {
-    void fetchTotpStatus().then((r) => {
-      setEnabled(r.data.enabled);
-    });
-  }, []);
+    let active = true;
+    setEnabled(null);
+    setStatusError(null);
+    void fetchTotpStatus()
+      .then((result) => {
+        if (active) {
+          setEnabled(result.data.enabled);
+        }
+      })
+      .catch((cause: unknown) => {
+        if (active) {
+          setStatusError(
+            cause instanceof Error
+              ? cause.message
+              : 'Two-factor authentication is unavailable.',
+          );
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, [statusAttempt]);
 
   if (enabled === null) {
     return (
       <SectionShell title="Two-factor authentication">
-        <PageLoading label="Loading two-factor authentication…" />
+        {statusError ? (
+          <PageError
+            title="Could not load two-factor authentication"
+            description={statusError}
+            onRetry={() => setStatusAttempt((attempt) => attempt + 1)}
+          />
+        ) : (
+          <PageLoading label="Loading two-factor authentication…" />
+        )}
       </SectionShell>
     );
   }
@@ -171,6 +199,7 @@ export function SecurityTotpPanel() {
               <Button
                 size="sm"
                 variant="text"
+                type="button"
                 onClick={() => {
                   setSetup(null);
                   setConfirmCode('');
@@ -232,6 +261,7 @@ export function SecurityTotpPanel() {
               <Button
                 size="sm"
                 variant="text"
+                type="button"
                 onClick={() => {
                   setDisabling(false);
                   setDisablePassword('');

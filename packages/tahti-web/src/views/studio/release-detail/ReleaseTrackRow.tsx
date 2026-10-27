@@ -33,7 +33,7 @@ export function ReleaseTrackRow({
   const [downloading, setDownloading] = useState(false);
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
   const [embed, setEmbed] = useState<{
-    provider: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP';
+    provider: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | 'MIKSERI';
     uri: string;
   } | null>(null);
 

@@ -22,6 +22,7 @@ const SIBLING_IMPORT_PLUGIN_IDS = [
   'bandcamp',
   'google-drive',
   'hearthis',
+  'mikseri',
   'mixcloud',
   'mixcloud-embed',
   'radio',

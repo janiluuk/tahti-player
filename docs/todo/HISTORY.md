@@ -5559,6 +5559,18 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 - **Data export** (org #946–#948; web #1533): notifications, grants and fan-subscription payouts, published and installed add-ons, signed-in devices and API tokens (names and prefixes only).
 - **Left**: see batch 115.
 
+## 2026-10-27 — Authenticator app QR setup and login
+
+- Hardened Settings → Account two-factor authentication with a recoverable status error, QR/manual-key enrollment coverage, confirmation, backup-code reveal, and safe form cancellation.
+- The login challenge now explains and accepts both authenticator and backup codes; store coverage verifies that no session is established until the TOTP challenge completes.
+- Confirmed the existing client calls match the `../tahti-org` TOTP and login-challenge contracts; no sibling changes were needed.
+
+## 2026-10-27 — Mikseri.net official embed integration
+
+- Added configurable track and personal-playlist widgets plus Top 40 by major genre, Listataivas, weekly, and promoted presets using Mikseri's official iframe contract.
+- Added an explicit-load left-sidebar player and Studio collection import for artist-owned tracks with rights confirmation and manual metadata.
+- Coordinated the sibling API/database contract for validated `MIKSERI` embed-only sounds; no scraping, audio download, or re-hosting is performed.
+
 ## 2026-10-27 — Cross-repo batch 115: account security, shares and green rooms
 
 - **Password** (org #953, #954, #968; web #1538, #1543, #1544): change it in Settings → Account → Password & email (current password needed; other devices signed out; earlier reset links voided); a change or reset is emailed. The reset, set-password and sign-up forms now check the API's real rules (10+ characters, lower, upper, number) instead of "8 characters".

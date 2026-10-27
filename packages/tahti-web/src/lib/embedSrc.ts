@@ -3,7 +3,8 @@ import type { EmbedPlaybackProvider } from '../api/types';
 /** Providers whose tracks are referenced, never re-hosted: the backend
  * stores only an embedUri and marks the archive item EMBED_ONLY, so the
  * audio and artwork have to come from the provider's own widget. */
-export type EmbedProvider = 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP';
+export type EmbedProvider =
+  'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | 'MIKSERI';
 
 /** Lowercase playback key used on `TahtiPlayable.embed.provider`; the
  * lowercase of the API's `EmbedProvider` is itself the playback form. */
@@ -60,6 +61,22 @@ export function bandcampEmbedSrc(uri: string): string {
   return `https://bandcamp.com/EmbeddedPlayer/${spec}/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/`;
 }
 
+export function mikseriEmbedSrc(uri: string): string | null {
+  let url: URL;
+  try {
+    url = new URL(uri);
+  } catch {
+    return null;
+  }
+  if (
+    url.hostname.replace(/^www\./, '').toLowerCase() !== 'mikseri.net' ||
+    (url.pathname !== '/embed/' && url.pathname !== '/embed')
+  ) {
+    return null;
+  }
+  return url.toString();
+}
+
 export function embedSrcFor(
   provider: EmbedProvider,
   uri: string,
@@ -74,6 +91,8 @@ export function embedSrcFor(
       return spotifyEmbedSrc(uri);
     case 'BANDCAMP':
       return bandcampEmbedSrc(uri);
+    case 'MIKSERI':
+      return mikseriEmbedSrc(uri);
     default:
       return null;
   }
@@ -84,6 +103,7 @@ export const EMBED_PROVIDER_LABEL: Record<EmbedProvider, string> = {
   MIXCLOUD: 'Mixcloud',
   SPOTIFY: 'Spotify',
   BANDCAMP: 'Bandcamp',
+  MIKSERI: 'Mikseri.net',
 };
 
 /** Widget heights differ enough that one value looks broken on the others. */
@@ -92,6 +112,7 @@ export const EMBED_PROVIDER_HEIGHT: Record<EmbedProvider, number> = {
   MIXCLOUD: 120,
   SPOTIFY: 152,
   BANDCAMP: 120,
+  MIKSERI: 190,
 };
 
 /** Display name keyed by the lowercase playback form found on
@@ -105,4 +126,5 @@ export const EMBED_PLAYBACK_PROVIDER_LABEL: Record<
   mixcloud: EMBED_PROVIDER_LABEL.MIXCLOUD,
   spotify: EMBED_PROVIDER_LABEL.SPOTIFY,
   bandcamp: EMBED_PROVIDER_LABEL.BANDCAMP,
+  mikseri: EMBED_PROVIDER_LABEL.MIKSERI,
 };

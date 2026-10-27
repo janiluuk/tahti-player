@@ -1,4 +1,10 @@
-import { Heart, Newspaper, SettingsIcon, Youtube } from 'lucide-react';
+import {
+  Heart,
+  ListMusic,
+  Newspaper,
+  SettingsIcon,
+  Youtube,
+} from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
 import {
@@ -7,6 +13,7 @@ import {
   Input,
   MediaArtwork,
   PluginStoreItem,
+  Select,
   TabLabel,
   Tabs,
   Toggle,
@@ -17,6 +24,8 @@ import { fetchMeProfile, patchMeProfile } from '../api/studio-extras';
 import {
   fetchHearthisUserSets,
   LISTENER_WIDGET_TYPES,
+  MIKSERI_MAJOR_GENRES,
+  mikseriChartEmbedUrl,
   resolveHearthisPageEmbedUrl,
   resolveListenerWidgetInput,
   soundcloudProfileUrl,
@@ -112,6 +121,9 @@ function listenAddonIcon(typeId: string): ReactNode {
   if (typeId === 'youtube') {
     return <Youtube className="size-6" aria-hidden />;
   }
+  if (typeId === 'mikseri') {
+    return <ListMusic className="size-6" aria-hidden />;
+  }
   if (
     typeId === 'soundcloud' ||
     typeId === 'spotify' ||
@@ -162,6 +174,7 @@ export function ListenAddonsPanel({
   const [addingHearthisSetId, setAddingHearthisSetId] = useState<string | null>(
     null,
   );
+  const [mikseriGenreId, setMikseriGenreId] = useState('0');
 
   useEffect(() => {
     void fetchMeProfile()
@@ -290,6 +303,23 @@ export function ListenAddonsPanel({
       return;
     }
     addInstance('hearthis', embedUrl, set.title);
+  };
+
+  const addMikseriChart = (
+    chart: 'top40' | 'weekly' | 'promoted' | 'listataivas',
+  ) => {
+    const genre = MIKSERI_MAJOR_GENRES.find(
+      (item) => item.id === mikseriGenreId,
+    );
+    const label =
+      chart === 'top40'
+        ? `Mikseri Top 40 · ${genre?.label ?? 'All genres'}`
+        : chart === 'weekly'
+          ? 'Mikseri weekly songs'
+          : chart === 'promoted'
+            ? 'Mikseri promoted songs'
+            : 'Mikseri Listataivas';
+    addInstance('mikseri', mikseriChartEmbedUrl(chart, mikseriGenreId), label);
   };
 
   const addNewsFeed = () => {
@@ -690,6 +720,51 @@ export function ListenAddonsPanel({
                       ) : null}
                     </div>
                   )}
+                  {type.id === 'mikseri' ? (
+                    <div className="border-border flex flex-col gap-3 border-t pt-3">
+                      <p className="text-foreground-secondary text-xs">
+                        Add an official Mikseri chart. Top 40 can be limited to
+                        one major genre; add another widget for each additional
+                        genre you want to follow.
+                      </p>
+                      <Select
+                        label="Top 40 genre"
+                        value={mikseriGenreId}
+                        onValueChange={setMikseriGenreId}
+                        options={[...MIKSERI_MAJOR_GENRES]}
+                      />
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => addMikseriChart('top40')}
+                        >
+                          Add Top 40
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => addMikseriChart('listataivas')}
+                        >
+                          Add Listataivas
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => addMikseriChart('weekly')}
+                        >
+                          Add weekly songs
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => addMikseriChart('promoted')}
+                        >
+                          Add promoted songs
+                        </Button>
+                      </div>
+                    </div>
+                  ) : null}
                   <p className="text-foreground-secondary text-xs">
                     {type.helpText}
                   </p>

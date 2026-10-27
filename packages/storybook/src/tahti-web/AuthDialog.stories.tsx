@@ -99,7 +99,7 @@ export const Join: Story = {
   },
 };
 
-/** A wrong 6-digit code shows the error and keeps the dialog open. */
+/** A wrong code shows the error and keeps the dialog open. */
 export const TwoFactorChallenge: Story = {
   decorators: [withAuthModal('login', 'challenge-mock-1')],
   play: async ({ canvasElement }) => {
@@ -107,8 +107,8 @@ export const TwoFactorChallenge: Story = {
     const verify = dialog.getByRole('button', { name: 'Verify' });
     await expect(verify).toBeDisabled();
     await userEvent.type(
-      dialog.getByLabelText('Authentication code'),
-      '999999',
+      dialog.getByLabelText('Authentication or backup code'),
+      'ABCD-9999',
     );
     await expect(verify).toBeEnabled();
     await userEvent.click(verify);

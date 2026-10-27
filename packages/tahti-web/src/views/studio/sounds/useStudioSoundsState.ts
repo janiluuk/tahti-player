@@ -35,6 +35,7 @@ export const EMBED_FILTERS: Array<{ id: EmbedFilter; label: string }> = [
   { id: 'MIXCLOUD', label: 'Mixcloud' },
   { id: 'SPOTIFY', label: 'Spotify' },
   { id: 'BANDCAMP', label: 'Bandcamp' },
+  { id: 'MIKSERI', label: 'Mikseri.net' },
 ];
 
 export const SORT_FIELDS: Array<{ id: SortField; label: string }> = [

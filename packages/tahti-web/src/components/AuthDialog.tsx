@@ -116,7 +116,7 @@ export const AuthDialog: FC = () => {
       </Dialog.Title>
       <Dialog.Description>
         {totpChallengeId
-          ? 'Enter the 6-digit code from your authenticator app.'
+          ? 'Enter the 6-digit code from your authenticator app or a backup code.'
           : mode === 'join'
             ? 'Create an account, then verify your email.'
             : 'Sign in to unlock your library, studio, and chat.'}
@@ -125,11 +125,12 @@ export const AuthDialog: FC = () => {
       {totpChallengeId ? (
         <div className="mt-4 flex flex-col gap-3">
           <Input
-            label="Authentication code"
+            label="Authentication or backup code"
             value={totpCode}
             onChange={(e) => setTotpCode(e.target.value.trim())}
             autoComplete="one-time-code"
-            inputMode="numeric"
+            autoCapitalize="characters"
+            spellCheck={false}
           />
           {error ? <AuthDialogError message={error} /> : null}
           <Dialog.Actions>
