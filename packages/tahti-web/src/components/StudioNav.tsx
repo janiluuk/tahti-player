@@ -256,10 +256,14 @@ export const isTabSubnavActive = (current: string | undefined, to: string) =>
   current?.split('?')[0] === to.split('?')[0] &&
   tabParam(current) === tabParam(to);
 
+const findTabSubnavGroup = (current: string | undefined) => {
+  const pathname = current?.split('?')[0];
+  return TAB_SUBNAV_GROUPS.find((item) => item.path === pathname);
+};
+
 function TabSubNav({ current }: { current?: string }) {
   const { t } = useTranslation('web');
-  const pathname = current?.split('?')[0];
-  const group = TAB_SUBNAV_GROUPS.find((item) => item.path === pathname);
+  const group = findTabSubnavGroup(current);
   if (!group) {
     return null;
   }
@@ -569,6 +573,12 @@ export function AudienceSubNav({ current }: { current?: string }) {
   );
 }
 
+export const hasStudioNestedNav = (current: string | undefined) =>
+  isGoLiveSessionRoute(current) ||
+  isStudioBroadcastGroup(current) ||
+  isStudioAudienceGroup(current) ||
+  findTabSubnavGroup(current) !== undefined;
+
 export const StudioNav = ({ current }: { current?: string }) => (
   <StudioNavigation current={current} />
 );
@@ -635,15 +645,21 @@ function StudioNavigation({ current }: { current?: string }) {
           }))}
         />
       </div>
-      <div className={STUDIO_NESTED_NAV_SLOT} data-studio-nested-nav>
-        {showGoLiveSession ? (
-          <GoLiveSessionSubNav current={current} />
-        ) : showBroadcast ? (
-          <BroadcastSubNav current={current} />
-        ) : null}
-        {showAudience ? <AudienceSubNav current={current} /> : null}
-        <TabSubNav current={current} />
-      </div>
+      {hasStudioNestedNav(current) ? (
+        <div
+          className={STUDIO_NESTED_NAV_SLOT}
+          data-studio-nested-nav
+          data-testid="studio-nested-nav"
+        >
+          {showGoLiveSession ? (
+            <GoLiveSessionSubNav current={current} />
+          ) : showBroadcast ? (
+            <BroadcastSubNav current={current} />
+          ) : null}
+          {showAudience ? <AudienceSubNav current={current} /> : null}
+          <TabSubNav current={current} />
+        </div>
+      ) : null}
     </div>
   );
 }
