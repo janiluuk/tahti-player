@@ -6,7 +6,6 @@ import { toast } from 'sonner';
 import {
   backButtonCornerClassName,
   BackButtonLink,
-  Button,
   ClampedText,
   Dialog,
   Tooltip,
@@ -27,14 +26,15 @@ import { AutoplayUnmuteNotice } from '../components/AutoplayUnmuteNotice';
 import {
   ChannelBlockFrame,
   ChannelEditToolbar,
+  ChannelExtrasSections,
   ChannelHeroBlock,
   ChannelLayersPanel,
+  ChannelLiveChatNotice,
   ChannelLiveTracklist,
   ChannelNotFound,
   ChannelPageBackdrop,
   ChannelStagePlayer,
   ChannelTopBar,
-  ChannelUpcomingShows,
   heroVisualizerSettingsFor,
   renderChannelBlock,
   useChannelData,
@@ -45,8 +45,6 @@ import {
 import { ChannelPageActions } from '../components/channel-view/ChannelPageActions';
 import { ChannelComments } from '../components/ChannelComments';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
-import { ChannelBlocksSection } from '../components/disco-widgets/ChannelBlocksSection';
-import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import {
   EntitySocialHeader,
   type EntitySocialStat,
@@ -60,7 +58,6 @@ import { useHasFanTiers } from '../hooks/useHasFanTiers';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { hasAccountRole } from '../lib/accountRoles';
 import { avatarPoster } from '../lib/avatarPoster';
-import { withoutPlacedAddons } from '../lib/channelBlockLayout';
 import {
   BACKDROP_FOLDED_ITEM_TYPES,
   getLayoutPreset,
@@ -720,28 +717,17 @@ export function ChannelView({ slug }: { slug: string }) {
             );
           })}
         </div>
-        {!editing ? <ChannelUpcomingShows slug={slug} /> : null}
-        {!editing ? <ChannelBlocksSection blocks={channelBlocks} /> : null}
         {!editing ? (
-          <DiscoWidgetsSection
-            widgets={withoutPlacedAddons(discoWidgets, channelBlocks)}
-            status={sectionStatus.widgets}
-            onRetry={() => retrySection('widgets')}
+          <ChannelExtrasSections
+            slug={slug}
+            blocks={channelBlocks}
+            widgets={discoWidgets}
+            widgetsStatus={sectionStatus.widgets}
+            onRetryWidgets={() => retrySection('widgets')}
           />
         ) : null}
         {!editing && live && chatOn ? (
-          <div className="border-border bg-background-secondary/50 mt-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-3">
-            <div>
-              <p className="text-sm font-semibold">Live chat is open</p>
-              <p className="text-foreground-secondary text-xs">
-                Talk with the artist and other listeners while the show is on
-                air. Comments below are for the archive, not the live room.
-              </p>
-            </div>
-            <Button size="sm" onClick={openChat} aria-label="Open live chat">
-              Open live chat
-            </Button>
-          </div>
+          <ChannelLiveChatNotice onOpenChat={openChat} />
         ) : null}
         {!editing ? <ChannelComments slug={slug} isOwner={isOwner} /> : null}
       </div>
