@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 import { fetchMyLikes } from '../api/likes';
-import { setSoundLiked } from '../api/sound-likes';
+import { setSoundEngagement } from '../api/sound-engagement';
 
 type SoundLikesState = {
   /** Sound ids the signed-in listener liked, loaded once per sign-in. */
@@ -10,11 +10,7 @@ type SoundLikesState = {
   counts: Record<string, number>;
   loadedFor: string | null;
   load: (userId: string) => Promise<void>;
-  toggle: (
-    channelSlug: string,
-    soundId: string,
-    currentCount: number,
-  ) => Promise<string | null>;
+  toggle: (channelSlug: string, soundId: string) => Promise<string | null>;
   reset: () => void;
 };
 
@@ -30,26 +26,26 @@ export const useSoundLikesStore = create<SoundLikesState>((set, get) => ({
     const result = await fetchMyLikes();
     set({ liked: new Set(result.data.map((track) => track.id)) });
   },
-  toggle: async (channelSlug, soundId, currentCount) => {
+  toggle: async (channelSlug, soundId) => {
     const wasLiked = get().liked.has(soundId);
-    const result = await setSoundLiked(
+    const result = await setSoundEngagement(
+      'like',
       channelSlug,
       soundId,
       !wasLiked,
-      currentCount,
     );
     if (!result.ok) {
       return result.error;
     }
     const liked = new Set(get().liked);
-    if (result.data.liked) {
+    if (result.data.active) {
       liked.add(soundId);
     } else {
       liked.delete(soundId);
     }
     set({
       liked,
-      counts: { ...get().counts, [soundId]: result.data.likeCount },
+      counts: { ...get().counts, [soundId]: result.data.count },
     });
     return null;
   },
