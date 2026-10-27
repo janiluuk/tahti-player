@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import * as restrictions from '../../api/me-restrictions';
 import * as venuesManage from '../../api/venues-manage';
 import { VenueShowsSection } from './VenueShowsSection';
 
@@ -87,6 +88,16 @@ describe('VenueShowsSection', () => {
       description: 'Club night',
     });
     await waitFor(() => expect(onChanged).toHaveBeenCalled());
+  });
+
+  it('says so when the board has blocked bookings', async () => {
+    vi.spyOn(restrictions, 'fetchMyRestrictions').mockResolvedValue([
+      { type: 'LIVE_SHOW_BOOKING', reason: 'No-shows', expiresAt: null },
+    ]);
+    render(<VenueShowsSection venue={venue} onChanged={vi.fn()} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Book a show' }));
+    expect(await screen.findByText('Booking shows is blocked')).toBeTruthy();
+    expect(screen.getByText('Reason: No-shows')).toBeTruthy();
   });
 
   it('refuses a show without a start or ending before it starts', () => {

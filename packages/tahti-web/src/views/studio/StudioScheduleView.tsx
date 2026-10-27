@@ -4,6 +4,7 @@ import { Button, ImageReveal, Tooltip, ViewShell } from '@tahti-player/ui';
 
 import { ChannelRadioPlaylistPanel } from '../../components/ChannelRadioPlaylistPanel';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { RestrictionNotice } from '../../components/RestrictionNotice';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import {
@@ -47,6 +48,7 @@ export function StudioScheduleView() {
             </Tooltip>
           }
         >
+          <RestrictionNotice type="LIVE_SHOW_BOOKING" />
           <ScheduledTimes items={scheduledTimes} onEdit={openEditor} />
 
           {scheduledShows.length > 0 ? (
