@@ -114,7 +114,7 @@ export function RadioStationSuggestionsTab() {
                 {row.status === 'PENDING' && (
                   <div className="flex flex-col gap-2">
                     <Textarea
-                      label="Rejection note (optional)"
+                      label="Note to the listener (optional)"
                       tone="secondary"
                       value={notes[row.id] ?? ''}
                       onChange={(e) =>
@@ -138,7 +138,7 @@ export function RadioStationSuggestionsTab() {
                                 setMsg(r.error);
                               } else {
                                 setMsg(
-                                  `Approved ${row.name}. It's added to the internet radio presets switched off — turn it on from Admin → Radio.`,
+                                  `Approved ${row.name}. It's added to the internet radio presets switched off — turn it on from Admin → Radio. The listener who suggested it is notified.`,
                                 );
                                 reload();
                               }
@@ -175,7 +175,9 @@ export function RadioStationSuggestionsTab() {
                             if (!r.ok) {
                               setMsg(r.error);
                             } else {
-                              setMsg(`Rejected ${row.name}.`);
+                              setMsg(
+                                `Rejected ${row.name}. The listener who suggested it is notified, with your note.`,
+                              );
                               reload();
                             }
                           });
