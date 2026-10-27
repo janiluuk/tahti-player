@@ -2,7 +2,12 @@ import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export type ContentReportTarget =
-  'SOUND_ITEM' | 'RELEASE' | 'CHANNEL' | 'COLLECTION' | 'COMMENT';
+  | 'SOUND_ITEM'
+  | 'RELEASE'
+  | 'CHANNEL'
+  | 'COLLECTION'
+  | 'COMMENT'
+  | 'DISCUSSION_POST';
 
 export type ContentReportReason =
   'COPYRIGHT' | 'HARASSMENT' | 'SPAM' | 'ILLEGAL_CONTENT' | 'OTHER';

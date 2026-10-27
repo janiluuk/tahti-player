@@ -38,6 +38,7 @@ describe('notificationKindOf', () => {
     expect(notificationKindOf('MEMBERSHIP_ENDED')).toBe('money');
     expect(notificationKindOf('DISCUSSION_REPLY')).toBe('governance');
     expect(notificationKindOf('DISCUSSION_OPENED')).toBe('governance');
+    expect(notificationKindOf('DISCUSSION_CLOSED')).toBe('governance');
   });
 
   it('labels a type by its kind', () => {
