@@ -49,6 +49,7 @@ import type {
 } from '../../../api/types';
 import { ApiTokensPanel } from '../../../components/ApiTokensPanel';
 import { BlockedAccounts } from '../../../components/BlockedAccounts';
+import { ChangeEmailForm } from '../../../components/ChangeEmailForm';
 import { ChangePasswordForm } from '../../../components/ChangePasswordForm';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { DevicesSessionsPanel } from '../../../components/DevicesSessionsPanel';
@@ -189,7 +190,12 @@ export function AccountPanel() {
       id: 'password-email',
       label: 'Password & email',
       icon: <KeyRound size={14} />,
-      content: <ChangePasswordForm />,
+      content: (
+        <div className="flex flex-col gap-8">
+          <ChangePasswordForm />
+          <ChangeEmailForm currentEmail={user.email ?? null} />
+        </div>
+      ),
     },
     {
       id: 'devices',
