@@ -18,8 +18,6 @@ const relPaths = [
   'packages/player/src-tauri/src/mcp/mod.rs',
   'packages/player/src-tauri/src/mcp/tools.rs',
   'packages/player/src-tauri/src/mcp/metadata.rs',
-  'packages/player/src/services/mcp/mcpHandler.ts',
-  'packages/player/src/services/mcp/index.ts',
   'packages/plugin-sdk/src/mcp/meta.ts',
   'packages/plugin-sdk/src/mcp/index.ts',
 ];

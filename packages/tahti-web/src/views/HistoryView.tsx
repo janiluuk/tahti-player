@@ -7,8 +7,8 @@ import { HistoryListSection } from '../components/history/HistoryListSection';
 import { HistoryStatsSection } from '../components/history/HistoryStatsSection';
 import { useLibraryStore } from '../stores/libraryStore';
 
-/** Ported from Nuclear desktop's History view (packages/player/src/views/
- * History) — same two-tab layout (Stats / Listening history) and the same
+/** Ported from Nuclear desktop's History view — same two-tab layout
+ * (Stats / Listening history) and the same
  * `@tahti-player/ui` chart/list components. Nuclear's version reads a
  * local SQLite play log with per-play listening duration; this reads
  * Tahti's lighter localStorage `history` (a play-event timestamp, deduped

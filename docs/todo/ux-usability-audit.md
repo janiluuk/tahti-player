@@ -26,6 +26,27 @@ re-filed.
   `mountTahtiApp`; `index.html` loads only `main.tsx`). Nuclear's views are
   never rendered, so fixing them changes nothing for users. Removing that dead
   UI is the useful follow-up, not polishing it.
+  - 2026-10-27, removal 1/5 (`chore/batch-90-dead-ui-shell`): Nuclear's app
+    shell (`App`, `initPlayerApp`), file routes, `routeTree.gen.ts`, devtools,
+    integration tests and the view tests that mount the whole app.
+  - 2026-10-27, removal 2/5 (`chore/batch-90-dead-ui-views`): every view under
+    `packages/player/src/views/` (Album, Artist, Dashboard, Favorites,
+    History, Playlists, PlaylistDetail, PlaylistImport, Search, Settings,
+    Sources, Plugins, Themes, Logs, ...), the settings modal and top bar that
+    mounted them, and `public/logo-icon-on-white.png`.
+  - 2026-10-27, removal 3/5 (`chore/batch-90-dead-ui-components`): Nuclear's
+    shared components (player bar, queue, sound provider, search box, ...),
+    hooks, global shortcuts, the old remote-control client, and
+    `shortcutsStore`.
+  - 2026-10-27, removal 4/5 (`chore/batch-90-dead-ui-services`): Nuclear's
+    stores, services (plugin runtime, stream resolution, MCP/MPD bridge, HTTP
+    API, playlist files), API clients, utils, types and test fixtures.
+    `packages/player/src` now holds only `main.tsx`, `remote.tsx`, the
+    `desktop*.ts` wiring and the Tauri bindings.
+  - 2026-10-27, removal 5/5 (`chore/batch-90-dead-ui-deps`): 33 dependencies
+    and 12 dev dependencies of `@tahti-player/player` that only the removed
+    code used. CI builds plugin-sdk and hifi in their own step, and their
+    changes no longer trigger a desktop release.
 - **Auth flows' `.catch(() => undefined)`** (`VerifyView`, `ResetPasswordView`,
   `SetupPasswordView`): incorrect. `authStore` sets `error` before rejecting and
   each view renders it with `InlineError`; the catch only stops an unhandled
