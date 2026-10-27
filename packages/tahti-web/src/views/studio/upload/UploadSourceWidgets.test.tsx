@@ -42,9 +42,10 @@ describe('UploadSourceWidgets', () => {
     });
     await renderWithRouter(<UploadSourceWidgets />);
     await screen.findByText('SoundCloud');
-    for (const name of ['Bandcamp', 'Google Drive', 'Mixcloud']) {
+    for (const name of ['Bandcamp', 'Mixcloud']) {
       expect(screen.queryByText(name)).toBeNull();
     }
+    expect(screen.getByText('Google Drive')).toBeTruthy();
     expect(screen.getByText('hearthis.at')).toBeTruthy();
   });
 });
