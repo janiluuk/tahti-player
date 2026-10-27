@@ -31,6 +31,11 @@ new surface, one PR per row.
   Discover and channel add-on gates, lightbox, notifications, posts and
   drafts, collections, recordings, add-to-playlist, global search, stash,
   studio home broadcasts.
+- [x] Thirty more list empties use `PageEmpty` (batch 114): fan room, local
+  playlists, Radio Browser, release stats and versions, studio releases and
+  playlists, history, venues, profile sections, plugin store, help, desktop
+  library, channel comments, discover widgets, upload recordings, smart
+  links, disco widgets, browser local files. Load errors and access gates stay.
 
 ## Liveliness
 

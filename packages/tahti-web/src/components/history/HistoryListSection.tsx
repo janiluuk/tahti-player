@@ -1,10 +1,9 @@
-import { FilterIcon, HistoryIcon, PlayIcon, PlusIcon } from 'lucide-react';
+import { FilterIcon, PlayIcon, PlusIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
   Button,
-  EmptyState,
   HistoryDayGroup,
   HistoryRow,
   Input,
@@ -132,9 +131,8 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
 
   if (history.length === 0) {
     return (
-      <EmptyState
+      <PageEmpty
         data-testid="history-empty-state"
-        icon={<HistoryIcon size={48} />}
         title="Nothing played yet"
         description="Tracks you play show up here after about 30 seconds (or half the track, if it's shorter)."
         className="flex-1"

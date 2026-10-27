@@ -2,7 +2,6 @@ import { Link } from '@tanstack/react-router';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
-  InboxIcon,
   SettingsIcon,
   XIcon,
 } from 'lucide-react';
@@ -12,7 +11,6 @@ import {
   Button,
   ButtonLink,
   Dialog,
-  EmptyState,
   ImageReveal,
   Loader,
   Tooltip,
@@ -22,7 +20,7 @@ import type { DiscoverArtistOfWeek } from '../../api/discover';
 import type { LatestRelease } from '../../api/latest-releases';
 import type { DiscoverCollection, DiscoverTrackItem } from '../../api/types';
 import type { DiscoverWidgetId } from '../../stores/discoverStore';
-import { PageError } from '../PageStates';
+import { PageEmpty, PageError } from '../PageStates';
 import { WidgetTrackRow } from './WidgetTrackRow';
 
 const MAX_ROWS = 8;
@@ -260,11 +258,7 @@ export function WidgetCard({
           ))}
         </div>
       ) : items.length === 0 ? (
-        <EmptyState
-          size="sm"
-          icon={<InboxIcon size={20} aria-hidden />}
-          title={emptyMessage}
-        />
+        <PageEmpty title={emptyMessage} />
       ) : (
         <div className="flex flex-col gap-0.5">
           {items.slice(0, MAX_ROWS).map((item, index) => (

@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 
 import {
   ButtonLink,
-  EmptyState,
   FilterChips,
   ImageReveal,
   Tooltip,
@@ -15,7 +14,7 @@ import type { StudioRelease } from '../api/studio-types';
 import { LibraryFilteredEmpty } from '../components/library/LibraryFilteredEmpty';
 import { LibrarySectionToolbar } from '../components/library/LibrarySectionToolbar';
 import { LibrarySortSelect } from '../components/library/LibrarySortSelect';
-import { PageError, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { StudioGate } from '../components/StudioGate';
 import { StudioPanel } from '../components/StudioPanel';
 import { sortLibraryItems, type LibrarySort } from '../lib/librarySort';
@@ -122,15 +121,7 @@ export function LibrarySmartLinksView() {
               }}
             />
           ) : releases.length === 0 ? (
-            <EmptyState
-              size="sm"
-              icon={
-                <Link2Icon
-                  size={28}
-                  className="text-foreground-secondary"
-                  aria-hidden
-                />
-              }
+            <PageEmpty
               title="No releases yet"
               description="Create a release to get its public smartlink page."
               action={

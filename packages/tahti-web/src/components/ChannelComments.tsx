@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
-import { Button, EmptyState, Textarea } from '@tahti-player/ui';
+import { Button, Textarea } from '@tahti-player/ui';
 
 import {
   fetchChannelComments,
@@ -12,6 +12,7 @@ import type { TrackComment } from '../api/types';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { CommentItem } from './CommentItem';
+import { PageEmpty } from './PageStates';
 
 const MAX_COMMENT_LENGTH = 2000;
 
@@ -85,8 +86,7 @@ export function ChannelComments({
         Comments
       </h2>
       {comments.length === 0 ? (
-        <EmptyState
-          size="sm"
+        <PageEmpty
           className="items-start p-0 text-left"
           title="No comments yet"
           description={

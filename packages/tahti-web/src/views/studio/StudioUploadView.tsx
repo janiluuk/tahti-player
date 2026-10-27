@@ -11,7 +11,6 @@ import { useEffect, useState } from 'react';
 import {
   Button,
   ButtonLink,
-  EmptyState,
   FilePicker,
   InlineError,
   InlineLoader,
@@ -25,7 +24,7 @@ import {
 } from '../../api/broadcast';
 import { fetchEditorSource, uploadSoundFile } from '../../api/studio';
 import { ImportJobsPanel } from '../../components/ImportJobsPanel';
-import { PageError } from '../../components/PageStates';
+import { PageEmpty, PageError } from '../../components/PageStates';
 import { RestrictionNotice } from '../../components/RestrictionNotice';
 import { StudioGate } from '../../components/StudioGate';
 import { WaveformSeekbar } from '../../components/tahti/WaveformSeekbar';
@@ -280,8 +279,7 @@ export function StudioUploadView() {
                   }}
                 />
               ) : recordings.length === 0 ? (
-                <EmptyState
-                  size="sm"
+                <PageEmpty
                   className="mt-4"
                   title="No recordings yet"
                   action={

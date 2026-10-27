@@ -25,7 +25,6 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
   { id: 'discover', label: 'Discover', path: '/discover' },
   { id: 'favorites', label: 'Favorites', path: '/favorites' },
   { id: 'library', label: 'Library', path: '/library' },
-  { id: 'chat', label: 'Chat', path: '/chat' },
   {
     id: 'studio',
     label: 'Studio',

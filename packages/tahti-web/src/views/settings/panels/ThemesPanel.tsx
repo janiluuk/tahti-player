@@ -5,7 +5,6 @@ import {
   Pencil,
   Settings2 as Settings2Icon,
   Share2Icon,
-  Upload,
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -16,7 +15,6 @@ import {
   Dialog,
   Input,
   Tabs,
-  Textarea,
   ThemeController,
   ThemeStoreItem,
   Toggle,
@@ -52,7 +50,6 @@ export function ThemesPanel() {
     colorMode,
     setTheme,
     setColorMode,
-    importCustomTheme,
     renameCustomTheme,
     removeCustomTheme,
   } = useThemeStore(
@@ -64,7 +61,6 @@ export function ThemesPanel() {
       colorMode: s.colorMode,
       setTheme: s.setTheme,
       setColorMode: s.setColorMode,
-      importCustomTheme: s.importCustomTheme,
       renameCustomTheme: s.renameCustomTheme,
       removeCustomTheme: s.removeCustomTheme,
     })),
@@ -89,8 +85,7 @@ export function ThemesPanel() {
     });
   }, [signedIn]);
   useEffect(loadSubmissions, [loadSubmissions]);
-  const [themeJson, setThemeJson] = useState('');
-  const [importMsg, setImportMsg] = useState<string | null>(null);
+  const [themeSection, setThemeSection] = useState(0);
   const [configuringThemeId, setConfiguringThemeId] = useState<string | null>(
     null,
   );
@@ -173,6 +168,8 @@ export function ThemesPanel() {
 
       <Tabs
         listClassName="flex-wrap"
+        selectedIndex={themeSection}
+        onChange={setThemeSection}
         items={[
           {
             id: 'browse',
@@ -366,65 +363,7 @@ export function ThemesPanel() {
             id: 'editor',
             label: 'Editor',
             icon: <Pencil size={14} />,
-            content: <ThemeEditor />,
-          },
-          {
-            id: 'import',
-            label: 'Import JSON',
-            icon: <Upload size={14} />,
-            content: (
-              <div className="border-border flex flex-col gap-3 rounded-lg border p-4">
-                <h3 className="font-bold">Import a theme</h3>
-                <SettingsHint>
-                  Paste a theme JSON (matches @tahti-player/themes'
-                  AdvancedThemeSchema — version, name, and vars / dark CSS
-                  variable overrides) to add it without a code change.
-                </SettingsHint>
-                <Textarea
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  aria-label="Theme JSON"
-                  tone="secondary"
-                  className="font-mono text-xs"
-                  rows={6}
-                  value={themeJson}
-                  onChange={(e) => setThemeJson(e.target.value)}
-                  placeholder={
-                    '{\n  "version": 1,\n  "name": "My theme",\n  "vars": { "primary": "oklch(0.7 0.15 250)" }\n}'
-                  }
-                />
-                <div className="flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    disabled={!themeJson.trim()}
-                    onClick={() => {
-                      let parsed: unknown;
-                      try {
-                        parsed = JSON.parse(themeJson);
-                      } catch {
-                        setImportMsg('Not valid JSON.');
-                        return;
-                      }
-                      const result = importCustomTheme(parsed);
-                      if (!result.ok) {
-                        setImportMsg(result.error);
-                      } else {
-                        setImportMsg(null);
-                        setThemeJson('');
-                      }
-                    }}
-                  >
-                    Import & apply
-                  </Button>
-                  {importMsg && (
-                    <span className="text-accent-red-strong text-xs">
-                      {importMsg}
-                    </span>
-                  )}
-                </div>
-              </div>
-            ),
+            content: themeSection === 1 ? <ThemeEditor /> : null,
           },
         ]}
       />

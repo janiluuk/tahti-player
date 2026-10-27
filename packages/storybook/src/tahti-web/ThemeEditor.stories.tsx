@@ -38,11 +38,12 @@ export const DiscardUnsavedChanges: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const name = await canvas.findByLabelText('Name');
+    const initial = (name as HTMLInputElement).value;
     await userEvent.clear(name);
     await userEvent.type(name, 'Draft rename');
     await expect(canvas.getByRole('button', { name: 'Discard' })).toBeVisible();
     await userEvent.click(canvas.getByRole('button', { name: 'Discard' }));
-    await expect(name).toHaveValue('My theme');
+    await expect(name).toHaveValue(initial);
     await expect(canvas.queryByRole('button', { name: 'Discard' })).toBeNull();
   },
 };

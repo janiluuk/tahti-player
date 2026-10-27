@@ -2,7 +2,6 @@ import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
-  EmptyState,
   SegmentedControl,
   StatTile,
   TopList,
@@ -16,7 +15,7 @@ import {
   type TrackInsights,
 } from '../../../api/track-insights';
 import { ListenerWorldMap } from '../../../components/ListenerWorldMap';
-import { PageLoading } from '../../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { StatNumber } from '../../../components/tahti/StatNumber';
 import { formatPlayCount } from '../../../lib/topListEntries';
@@ -93,8 +92,7 @@ export function ReleaseStatsPanel({
 
   if (tracks.length === 0) {
     return (
-      <EmptyState
-        size="sm"
+      <PageEmpty
         title="No tracks yet"
         description="Add tracks to this release to see its stats."
       />

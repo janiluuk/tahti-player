@@ -89,7 +89,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Chat',
         body: [
-          'Live chat lives on each channel page (and at /chat/$slug for that channel). Open Chat from the sidebar footer (phone: More) to pick a channel, or open a channel that is on air or has chat enabled.',
+          'Live chat lives on each channel page (and at /chat/$slug for that channel). Open a channel that is on air or has chat enabled.',
           'Messages (under Library) are private direct messages between accounts, not channel chat.',
           'Anonymous joining on a live channel may require hCaptcha. Moderators can mute or remove disruptive messages.',
         ],

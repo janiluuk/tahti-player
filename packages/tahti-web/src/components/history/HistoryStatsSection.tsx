@@ -1,4 +1,3 @@
-import { ChartColumnIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import {
@@ -6,7 +5,6 @@ import {
   CalendarHeatmap,
   cn,
   DayOfWeekChart,
-  EmptyState,
   HorizontalScroll,
   ListeningClock,
   Select,
@@ -31,6 +29,7 @@ import {
 } from '../../lib/historyStats';
 import { useThemeStore } from '../../plugins/themes';
 import type { HistoryEntry } from '../../stores/libraryStore';
+import { PageEmpty } from '../PageStates';
 
 const TOP_LIST_SIZE = 10;
 
@@ -89,9 +88,8 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
 
   if (history.length === 0) {
     return (
-      <EmptyState
+      <PageEmpty
         data-testid="history-stats-empty"
-        icon={<ChartColumnIcon size={48} />}
         title="Nothing to show yet"
         description="Stats build up after about 30 seconds of play (or half the track). Come back once you've listened to something."
         className="flex-1"
@@ -178,9 +176,8 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
           </Box>
         </div>
       ) : (
-        <EmptyState
+        <PageEmpty
           data-testid="history-stats-empty"
-          icon={<ChartColumnIcon size={48} />}
           title="Nothing in this range"
           description="Try a wider range, or come back once you've listened to something more recently."
           className="flex-1"

@@ -466,3 +466,8 @@ export const useThemeStore = create<ThemeState>()(
     },
   ),
 );
+
+export function activeThemeRecord(): AdvancedTheme | null {
+  const { themeId, customThemes } = useThemeStore.getState();
+  return customThemes[themeId] ?? PRESET_CUSTOM_THEMES[themeId] ?? null;
+}

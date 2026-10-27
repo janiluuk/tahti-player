@@ -14,7 +14,6 @@ import {
   Button,
   ButtonLink,
   Dialog,
-  EmptyState,
   Input,
   MediaArtwork,
   Toggle,
@@ -29,6 +28,7 @@ import {
 } from '../../api/studio';
 import type { StudioCollection } from '../../api/studio-types';
 import {
+  PageEmpty,
   PageError,
   PageErrorBanner,
   PageLoading,
@@ -198,8 +198,7 @@ export function StudioPlaylistsView() {
                 onRetry={reload}
               />
             ) : rows.length === 0 ? (
-              <EmptyState
-                icon={<ListMusicIcon size={40} className="opacity-40" />}
+              <PageEmpty
                 title="No playlists yet"
                 description="Create a playlist to organize tracks and releases."
                 action={

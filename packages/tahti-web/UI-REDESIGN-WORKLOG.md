@@ -1,3 +1,20 @@
+## 2026-10-27 - Theme editor keeps the current theme
+
+Settings → Themes → Editor opens on the theme already applied, instead of a
+blank draft that wiped it. Import JSON sits inside that editor. Bumped
+tahti-web `0.0.276`.
+
+## 2026-10-27 - Chat leaves the sidebar footer
+
+The left panel footer is Help center and Settings. Channel chat still opens
+from a channel page. Bumped tahti-web `0.0.275`.
+
+## 2026-10-27 - UX batch 114 (thirty more empty states)
+
+Thirty more list empties (playlists, history, venues, help, desktop library,
+discover widgets, and the rest of the batch) render through `PageEmpty`.
+Load errors and access gates stay as they were. Bumped tahti-web `0.0.274`.
+
 ## 2026-10-27 - UX batch 113 (thirty empty states)
 
 Thirty-two list empties (events, chat, stats, revenue, collections, search,

@@ -24,6 +24,7 @@ import {
 } from '../LocalLibraryBrowse';
 import { LocalLibraryTools } from '../LocalLibraryTools';
 import { LocalPlaylists } from '../LocalPlaylists';
+import { PageEmpty } from '../PageStates';
 import { BrowserLocalFiles } from './BrowserLocalFiles';
 import { LibraryRootsBlock } from './LibraryRootsBlock';
 import { NativeTrackTable } from './NativeTrackTable';
@@ -235,9 +236,7 @@ export function DesktopLibraryContent({
             onAddToPlaylist={selection.addGroupToPlaylist}
           />
         ) : (
-          <EmptyState
-            size="sm"
-            icon={<LibraryIcon size={28} className="opacity-50" />}
+          <PageEmpty
             title={
               facetLoading
                 ? 'Loading…'
@@ -330,9 +329,7 @@ export function DesktopLibraryContent({
               className="flex-1"
             />
           ) : hasActiveScope && !loading && !busy ? (
-            <EmptyState
-              size="sm"
-              icon={<ListFilterIcon size={28} className="opacity-50" />}
+            <PageEmpty
               title="No tracks match"
               description="Nothing in your library fits the current search, group and filters."
               action={
@@ -343,9 +340,7 @@ export function DesktopLibraryContent({
               className="flex-1"
             />
           ) : (
-            <EmptyState
-              size="sm"
-              icon={<LibraryIcon size={28} className="opacity-50" />}
+            <PageEmpty
               title="Desktop library"
               description={
                 loading || busy

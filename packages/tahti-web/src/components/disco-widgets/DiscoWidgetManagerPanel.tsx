@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
-  EmptyState,
   ImageReveal,
   InlineError,
   Input,
@@ -26,7 +25,7 @@ import {
   type DiscoWidgetScope,
   type DiscoWidgetStoreItem,
 } from '../../api/disco-widgets';
-import { PageLoading } from '../PageStates';
+import { PageEmpty, PageLoading } from '../PageStates';
 import { useChannelAddonBlocks } from './useChannelAddonBlocks';
 
 const WIDTH_OPTIONS: { id: ChannelBlockWidth; label: string }[] = [
@@ -206,8 +205,7 @@ export function DiscoWidgetManagerPanel({
       ) : (
         <>
           {installs.length === 0 ? (
-            <EmptyState
-              size="sm"
+            <PageEmpty
               title="Nothing installed yet"
               description="Add one from the store below."
             />
@@ -327,8 +325,7 @@ export function DiscoWidgetManagerPanel({
               .
             </p>
             {filtered.length === 0 ? (
-              <EmptyState
-                size="sm"
+              <PageEmpty
                 title={
                   widgets.length === 0
                     ? 'No widgets available'

@@ -1,7 +1,6 @@
 import {
   CopyIcon,
   DownloadIcon,
-  ListMusicIcon,
   PencilIcon,
   PlayIcon,
   PlusIcon,
@@ -26,6 +25,7 @@ import type {
   TahtiNativeLibrary,
 } from '../../lib/nativeLibrary';
 import { ConfirmDialog } from '../ConfirmDialog';
+import { PageEmpty } from '../PageStates';
 import { PlaylistExportDialog } from '../PlaylistExportDialog';
 import { PlaylistImportDialog } from '../PlaylistImportDialog';
 import { PlaylistNameDialog } from '../PlaylistNameDialog';
@@ -147,9 +147,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
       ) : playlists === null ? (
         <InlineLoader label="Loading…" className="flex-1 justify-center" />
       ) : playlists.length === 0 ? (
-        <EmptyState
-          size="sm"
-          icon={<ListMusicIcon size={28} className="opacity-50" />}
+        <PageEmpty
           title="No playlists yet"
           description="Create one here, or select tracks in Tracks and choose Add to playlist."
           action={

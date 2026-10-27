@@ -19,7 +19,6 @@ import {
   ButtonLink,
   CopyButton,
   Dialog,
-  EmptyState,
   ExternalLink,
   FilterChips,
   Input,
@@ -233,8 +232,7 @@ export function StudioReleasesView() {
                 }}
               />
             ) : releases.length === 0 ? (
-              <EmptyState
-                size="sm"
+              <PageEmpty
                 title="No releases yet"
                 description="Create one to share a public link."
                 action={

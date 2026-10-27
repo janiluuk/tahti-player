@@ -1,7 +1,7 @@
 import { ArrowLeftIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-import { Button, EmptyState, Input, Tooltip } from '@tahti-player/ui';
+import { Button, Input, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchFanChatHistory,
@@ -11,6 +11,7 @@ import {
 import { centrifugoWsUrl } from '../lib/centrifugoWsUrl';
 import { chatErrorFor } from '../lib/chatErrors';
 import { ChatAvatar } from './ChatAvatar';
+import { PageEmpty } from './PageStates';
 
 type FanMessage = { id: string; handle: string; text: string };
 
@@ -244,8 +245,7 @@ export function FanChatRoom({
         className={`space-y-2 overflow-y-auto px-3 py-2 text-sm ${rail ? 'min-h-0 flex-1' : 'flex-1'}`}
       >
         {messages.length === 0 && (
-          <EmptyState
-            size="sm"
+          <PageEmpty
             title="Just fans in here"
             description="Only the artist and their subscribers see this room."
           />
