@@ -2,6 +2,11 @@
 import { parseArgs } from 'node:util';
 
 import { runBackupStatus } from './commands/backup-status.mjs';
+import {
+  BASELINE_FILE,
+  LINE_LIMIT,
+  runCheckSize,
+} from './commands/check-size.mjs';
 import { deployTargets, runDeploy } from './commands/deploy.mjs';
 import { desktopModes, runDesktop } from './commands/desktop.mjs';
 import { runE2e } from './commands/e2e.mjs';
@@ -223,6 +228,27 @@ A change in packages/ui often changes player snapshots too:
         return updateSnapshots(rest.slice(1), { dryRun, only });
       }
       throw new OpsError('Try: tahti-ops snapshots list | update <group…|all>');
+    },
+  },
+  {
+    path: ['check', 'size'],
+    usage: 'tahti-ops check size [--update|--prune]',
+    summary: `Fail when a source file over ${LINE_LIMIT} lines appears or grows`,
+    details: `Scans packages/tahti-web/src, packages/player/src and src-tauri/src
+(tests, stories, mocks and generated files excluded). Files already over the
+limit are pinned in ${BASELINE_FILE} and may only shrink.
+  --update   Rewrite the baseline to every file currently over the limit
+  --prune    Drop pins for files now under the limit or gone`,
+    options: {
+      update: { type: 'boolean', default: false },
+      prune: { type: 'boolean', default: false },
+    },
+    run: ({ values }) => {
+      if (values.update && values.prune) {
+        throw new OpsError('Use either --update or --prune, not both');
+      }
+      const mode = values.update ? 'update' : values.prune ? 'prune' : 'check';
+      return runCheckSize({ mode });
     },
   },
 );
