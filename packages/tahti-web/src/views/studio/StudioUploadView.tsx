@@ -247,7 +247,8 @@ export function StudioUploadView() {
               <p className="text-foreground-secondary mt-3 text-xs">
                 Upload first and we’ll read the embedded title and artist
                 metadata. If the file has none, its filename is used and you can
-                name it in the editor afterwards.
+                name it in the editor afterwards. You can leave this page while
+                it processes; if it can&apos;t be processed, we notify you.
               </p>
               {message && <InlineError>{message}</InlineError>}
               <div className="flex flex-wrap gap-2">
