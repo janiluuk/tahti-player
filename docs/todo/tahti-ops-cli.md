@@ -27,6 +27,7 @@ install the product CLI without deploy SSH tooling.
 | `tahti-ops e2e journeys\|tasks\|playwright` | `run-e2e-journeys.sh`, `*-tasks-journey.mjs`, `pnpm test:e2e` | `--env-file` for real-backend credentials |
 | `tahti-ops snapshots list\|update` | `vitest run -u` per package, `generate-storybook-surfaces.mjs` | groups ui player hifi surfaces, or all; `--only <test>`; prints changed `.snap` files |
 | `tahti-ops deploy web\|storybook` | `deploy-vimage.sh` in each package | `--ci` dispatches `deploy-tahti-web-selfhosted.yml` |
+| `tahti-ops check size` | `scripts/check-file-size.mjs` (deleted) | `--update` / `--prune`; baseline stays in `scripts/file-size-baseline.json`; CI via `pnpm check:file-size` |
 
 Shared: `--help`, `--dry-run`, `TAHTI_ORG_ROOT`, short `→` / `✓` / `✗` labels.
 
@@ -36,6 +37,10 @@ Shared: `--help`, `--dry-run`, `TAHTI_ORG_ROOT`, short `→` / `✓` / `✗` lab
 - `deploy-vimage.sh` (tahti-web, Storybook) tried `nvm use 22` before 24; this repo needs Node 24 — fixed to prefer 24.
 - `build:linux:run` and `player:build:run` were the same script (the Linux one only checks `uname`); both now point at `tahti-ops desktop run`.
 - Two web deploy paths exist: `deploy-vimage.sh` from a laptop over SSH, and the self-hosted CI workflow (fails when `/srv/tahti-beta/deploy` drifts to another owner; #1413 swaps the config in by rename). `tahti-ops deploy web [--ci]` exposes both.
+
+## Progress
+
+- 2026-10-27: `tahti-ops check size [--update|--prune]` replaces `scripts/check-file-size.mjs` (deleted). `pnpm check:file-size` (CI "File size guard") now calls it; same limit, roots and baseline file.
 
 ## Script → command inventory
 
@@ -85,7 +90,7 @@ Shared: `--help`, `--dry-run`, `TAHTI_ORG_ROOT`, short `→` / `✓` / `✗` lab
 | flatpak-*.sh / update-aur.sh | `package flatpak` / `package aur` | planned |
 | deploy-production.sh | `deploy web` | planned |
 | scripts/ci/* | keep CI-only; optional `ci digest` | planned |
-| check-file-size.mjs | `check size` | planned |
+| check-file-size.mjs | `check size` | shipped (script deleted) |
 | generate-storybook-surfaces.mjs | `storybook surfaces` | planned |
 | close-external-issue.cjs | `github …` | planned |
 

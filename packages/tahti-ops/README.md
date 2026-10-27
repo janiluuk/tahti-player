@@ -52,6 +52,10 @@ pnpm tahti-ops stack smoke
 pnpm tahti-ops backup status --dry-run
 pnpm tahti-ops backup status
 
+# source file size guard (CI: pnpm check:file-size)
+pnpm tahti-ops check size           # fail when a file over 800 lines appears or grows
+pnpm tahti-ops check size --prune   # drop pins for files you split
+
 # production deploys (needs SSH to the fleet)
 pnpm tahti-ops deploy stack --dry-run
 pnpm tahti-ops deploy all
@@ -76,6 +80,7 @@ Progress lines go to stderr (`→` / `✓` / `✗`); script stdout is unchanged.
 | `packages/tahti-web/deploy/deploy-vimage.sh`, `pnpm deploy:tahti-beta` | `pnpm tahti-ops deploy web` |
 | `packages/tahti-web/scripts/run-e2e-journeys.sh` | `pnpm tahti-ops e2e journeys` |
 | `vitest run -u` per package | `pnpm tahti-ops snapshots update <group>` |
+| `node scripts/check-file-size.mjs` (removed) | `pnpm tahti-ops check size` (= `pnpm check:file-size`) |
 
 Cron entries may still call `backup.sh` directly on the host; operators use
 `tahti-ops` from this monorepo.
