@@ -6,6 +6,7 @@ import {
   Mic,
   RssIcon,
 } from 'lucide-react';
+import { useCallback, useMemo } from 'react';
 
 import { Badge, Button, StatChip, Tooltip } from '@tahti-player/ui';
 
@@ -21,11 +22,12 @@ import type { ListenerWidgetInstance } from '../../stores/listenerWidgetsStore';
 import { ChannelPlaylistBlock } from '../ChannelPlaylistBlock';
 import { ListenerWidgetEmbed } from '../ListenerWidgetEmbed';
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
-import { PlayableTrackTable } from '../PlayableTrackTable';
+import { PlayableAmbientTrackList } from '../PlayableAmbientTrackList';
 import { ProfileSection } from '../ProfileSection';
 import { ShowEpisodeList } from '../ShowEpisodeList';
 import { SocialLinkIcon } from '../SocialLinkIcon';
 import { Eyebrow } from '../tahti/Eyebrow';
+import type { ChannelTrackMeta } from './channelTrackMeta';
 import { RadioProgrammingGrid } from './RadioProgrammingGrid';
 import type { ChannelSection, ChannelSectionStatus } from './useChannelData';
 
@@ -44,6 +46,8 @@ export type ChannelBlockRenderContext = {
   isOwner: boolean;
   pinnedPlayables: TahtiPlayable[];
   catalogPlayables: TahtiPlayable[];
+  /** Genre and public totals per track row (from the channel's items). */
+  getTrackMeta: ChannelTrackMeta;
   channelLinksDraft: ChannelLink[];
   liveShows: PublicRadioShow | null;
   sectionStatus: Record<ChannelSection, ChannelSectionStatus>;
@@ -52,6 +56,32 @@ export type ChannelBlockRenderContext = {
   onOpenChat: () => void;
   listenerWidgetInstances: ListenerWidgetInstance[];
 };
+
+function ChannelTrackRows({ ctx }: { ctx: ChannelBlockRenderContext }) {
+  const pinnedIds = useMemo(
+    () => new Set(ctx.pinnedPlayables.map((item) => item.id)),
+    [ctx.pinnedPlayables],
+  );
+  const items = useMemo(
+    () => [...ctx.pinnedPlayables, ...ctx.catalogPlayables],
+    [ctx.pinnedPlayables, ctx.catalogPlayables],
+  );
+  const pinnedNote = useCallback(
+    (item: TahtiPlayable) =>
+      pinnedIds.has(item.id) ? <Eyebrow tone="muted">Pinned</Eyebrow> : null,
+    [pinnedIds],
+  );
+  return (
+    <PlayableAmbientTrackList
+      items={items}
+      playAll
+      defaultDensity="comfortable"
+      getTrackMeta={ctx.getTrackMeta}
+      getAnnotation={pinnedIds.size > 0 ? pinnedNote : undefined}
+      emptyMessage="No public tracks for this channel yet."
+    />
+  );
+}
 
 /** Renders one `ChannelPageItem`'s block content. `hero` is handled
  * directly in `ChannelView.tsx` before this is ever called for it -- the
@@ -90,35 +120,7 @@ export function renderChannelBlock(
                 }
           }
         >
-          {ctx.pinnedPlayables.length > 0 && (
-            <div className="flex flex-col gap-2">
-              <Eyebrow tone="muted">Pinned</Eyebrow>
-              <PlayableTrackTable
-                items={ctx.pinnedPlayables}
-                emptyMessage="No pinned tracks."
-                playAll={false}
-                filterable={false}
-                addAllToQueue={false}
-                quietHeader
-                hideArtist={ctx.isOwner}
-              />
-            </div>
-          )}
-          <div className="flex flex-col gap-2">
-            {ctx.pinnedPlayables.length > 0 && (
-              <Eyebrow tone="muted">Catalog</Eyebrow>
-            )}
-            <PlayableTrackTable
-              items={ctx.catalogPlayables}
-              emptyMessage={
-                ctx.pinnedPlayables.length > 0
-                  ? 'No other public tracks.'
-                  : 'No public tracks for this channel yet.'
-              }
-              quietHeader
-              hideArtist={ctx.isOwner}
-            />
-          </div>
+          <ChannelTrackRows ctx={ctx} />
         </ProfileSection>
       );
     }

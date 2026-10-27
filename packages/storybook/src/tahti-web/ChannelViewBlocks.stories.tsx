@@ -47,9 +47,9 @@ export const Tracks: Story = {
     const pinned = canvas.getByText('Pinned');
     await expect(pinned).toBeVisible();
     await expect(pinned).toHaveClass('text-foreground-secondary');
-    const catalog = canvas.getByText('Catalog');
-    await expect(catalog).toBeVisible();
-    await expect(catalog).toHaveClass('text-foreground-secondary');
+    await expect(
+      canvas.getAllByTestId('ambient-track-row').length,
+    ).toBeGreaterThan(1);
     await expect(canvas.getByText('Polar Static')).toBeVisible();
     await expect(canvas.getByText('Snowline')).toBeVisible();
   },

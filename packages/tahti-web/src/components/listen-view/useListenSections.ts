@@ -21,7 +21,11 @@ import {
   fetchRadioStation,
   type EnabledInternetRadioPreset,
 } from '../../api/radio-public';
-import type { PublicChannel, TahtiPlayable } from '../../api/types';
+import type {
+  DiscoverTrackItem,
+  PublicChannel,
+  TahtiPlayable,
+} from '../../api/types';
 import { discoverTrackPlayable } from '../../lib/discoverTrackPlayable';
 import { isPlausiblePublicName } from '../../lib/publicDisplayName';
 
@@ -70,14 +74,40 @@ async function loadPresets(): Promise<EnabledInternetRadioPreset[]> {
   return unwrap(await fetchEnabledInternetRadioPresets());
 }
 
+const latestTrackSources = new WeakMap<TahtiPlayable, DiscoverTrackItem>();
+
+/** Genre, public totals and the download flag for a Listen "New tracks"
+ * row: looked up from the API item the playable was built from. */
+export function latestTrackMeta(playable: TahtiPlayable) {
+  const item = latestTrackSources.get(playable);
+  if (!item) {
+    return undefined;
+  }
+  return {
+    genre: item.genre ?? null,
+    downloadable: item.downloadsEnabled === true,
+    stats: {
+      releaseDate: item.createdAt ?? null,
+      likes: item.likeCount,
+      plays: item.playCount,
+      downloads: item.downloadCount,
+    },
+  };
+}
+
 async function loadLatestTracks(): Promise<TahtiPlayable[]> {
   const tracks = unwrap(
     await fetchLatestTracks({ genres: [], contentTypes: [] }),
   );
-  return tracks
-    .map(discoverTrackPlayable)
-    .filter((item): item is TahtiPlayable => item !== null)
-    .slice(0, LATEST_TRACKS_LIMIT);
+  const playables: TahtiPlayable[] = [];
+  for (const track of tracks) {
+    const playable = discoverTrackPlayable(track);
+    if (playable) {
+      latestTrackSources.set(playable, track);
+      playables.push(playable);
+    }
+  }
+  return playables.slice(0, LATEST_TRACKS_LIMIT);
 }
 
 /** Signed-in listeners see their own widgets first, then the homepage ones

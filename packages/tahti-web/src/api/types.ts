@@ -152,6 +152,13 @@ export type ChannelSoundItem = {
   audioUrl?: string | null;
   genre?: string | null;
   createdAt?: string;
+  likeCount?: number;
+  playCount?: number;
+  downloadCount?: number;
+  /** [0..255] amplitude buckets for the row waveform. */
+  peaks?: number[] | null;
+  /** False = the artist turned downloads off. */
+  downloadsEnabled?: boolean;
   /** Origin provider when imported (soundcloud, bandcamp, …). */
   sourceProvider?: string | null;
   /** Present when API serializes Stage pins (profile always; channel items may omit). */
@@ -202,6 +209,8 @@ export type PublicProfileTrack = {
   genre?: string | null;
   /** [0..255] amplitude buckets for the row waveform. */
   peaks?: number[] | null;
+  /** False = the artist turned downloads off. */
+  downloadsEnabled?: boolean;
 };
 
 export type PublicProfileRelease = {
@@ -265,6 +274,14 @@ export type CollectionSound = {
   embedProvider?:
     'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | 'MIKSERI' | null;
   embedUri?: string | null;
+  createdAt?: string;
+  genre?: string | null;
+  /** [0..255] amplitude buckets for the row waveform. */
+  peaks?: number[] | null;
+  downloadsEnabled?: boolean;
+  likeCount?: number;
+  playCount?: number;
+  downloadCount?: number;
 };
 
 export type CollectionItem = {
@@ -753,6 +770,13 @@ export type DiscoverTrackItem = {
   listens?: number;
   /** Aggregate LOVE reactions from the community. */
   loves?: number;
+  /** Track-row extras from /api/discover/latest-tracks. */
+  peaks?: number[] | null;
+  createdAt?: string;
+  downloadsEnabled?: boolean;
+  likeCount?: number;
+  playCount?: number;
+  downloadCount?: number;
 };
 
 export type DiscoverCollection = {

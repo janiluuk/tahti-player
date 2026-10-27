@@ -76,12 +76,16 @@ function surfaceOf(element: Element): string {
   return getComputedStyle(document.body).backgroundColor;
 }
 
-/** Track titles keep the theme's text colour on the theme's table, whatever the channel's own colour scheme paints around them. */
+/** Track titles keep the theme's text colour on the row's own surface, whatever the channel's own colour scheme paints around them. */
 async function expectReadableTrackTitles(canvasElement: HTMLElement) {
   const canvas = within(canvasElement);
-  const rows = await canvas.findAllByTestId('track-row', {}, { timeout: 5000 });
+  const rows = await canvas.findAllByTestId(
+    'ambient-track-row',
+    {},
+    { timeout: 5000 },
+  );
   for (const row of rows) {
-    const text = row.querySelector('td button.text-left') ?? row;
+    const text = row.querySelector('h3') ?? row;
     const ratio = contrast(getComputedStyle(text).color, surfaceOf(text));
     await expect(ratio).toBeGreaterThanOrEqual(4.5);
   }

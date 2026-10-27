@@ -35,6 +35,7 @@ export function profileTrackMeta(tracks: PublicProfileTrack[]) {
     }
     return {
       genre: track.genre ?? null,
+      downloadable: track.downloadsEnabled === true && Boolean(track.playUrl),
       stats: {
         releaseDate: track.createdAt ?? null,
         likes: track.likeCount,

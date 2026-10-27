@@ -43,6 +43,7 @@ import {
   usePresetLookDraft,
 } from '../components/channel-view';
 import { ChannelPageActions } from '../components/channel-view/ChannelPageActions';
+import { channelTrackMeta } from '../components/channel-view/channelTrackMeta';
 import { ChannelComments } from '../components/ChannelComments';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
 import {
@@ -191,6 +192,8 @@ export function ChannelView({ slug }: { slug: string }) {
         .filter((p): p is TahtiPlayable => Boolean(p)),
     };
   }, [sounds, slug]);
+
+  const getTrackMeta = useMemo(() => channelTrackMeta(sounds), [sounds]);
 
   const lookExtras = useMemo(() => {
     if (!channel) {
@@ -487,6 +490,7 @@ export function ChannelView({ slug }: { slug: string }) {
           isOwner,
           pinnedPlayables,
           catalogPlayables,
+          getTrackMeta,
           channelLinksDraft,
           liveShows,
           sectionStatus,

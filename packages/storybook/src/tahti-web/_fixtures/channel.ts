@@ -117,6 +117,7 @@ export function blockContext(
     isOwner: false,
     pinnedPlayables: PINNED_PLAYABLES,
     catalogPlayables: CATALOG_PLAYABLES,
+    getTrackMeta: () => undefined,
     channelLinksDraft: [],
     liveShows: LIVE_SHOWS,
     sectionStatus: { sounds: 'ready', widgets: 'ready', shows: 'ready' },

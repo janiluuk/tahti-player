@@ -52,6 +52,23 @@ export function formatUploadDate(value: string | undefined): string | null {
   }).format(date);
 }
 
+/** Public totals for one of your tracks, when the API sent them. */
+export function soundRowStats(item: StudioSound) {
+  if (
+    item.playCount == null &&
+    item.likeCount == null &&
+    item.downloadCount == null
+  ) {
+    return undefined;
+  }
+  return {
+    releaseDate: item.releasedAt ?? item.createdAt ?? null,
+    likes: item.likeCount,
+    plays: item.playCount,
+    downloads: item.downloadCount,
+  };
+}
+
 function isEmbedSound(item: StudioSound): boolean {
   return Boolean(item.embedProvider && item.embedUri);
 }
@@ -239,6 +256,7 @@ function toHostedListItem(
     durationLabel:
       item.durationSec != null ? formatDuration(item.durationSec) : undefined,
     durationSec: item.durationSec ?? null,
+    stats: soundRowStats(item),
     peaks,
     progress,
     isPlaying,
