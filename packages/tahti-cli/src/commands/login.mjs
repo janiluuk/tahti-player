@@ -87,6 +87,7 @@ export async function runDeviceLogin(
         email: creds.email,
         password: creds.password,
         deviceLabel,
+        refreshTokenDelivery: 'body',
       }),
     });
   } catch (error) {

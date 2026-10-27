@@ -107,6 +107,12 @@ repo. Needs the user's go-ahead before tahti-org work starts.
   `globalThis.__TAHTI_NATIVE_AUTH_STORAGE__` when the desktop app provides
   it, sends `refreshTokenDelivery: 'body'` at login only there, and `/me`
   waits for the restore and sends the bearer token. Browsers are unchanged.
+- 2026-10-27 (batch 90): first server-side cookie cutover step. tahti-org
+  login / login-totp return `refreshToken` in the JSON body only when the
+  client sends `refreshTokenDelivery: 'body'`; browsers get it only as the
+  HttpOnly `tahti_refresh` cookie, so page scripts never see it. CLI
+  `tahti login --device` (and the desktop app, separate PR) send the opt-in.
+  Ship the player side before the tahti-org change reaches production.
 
 ### Phase 4 (this slice)
 
