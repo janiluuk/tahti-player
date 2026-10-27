@@ -1,3 +1,8 @@
+## 2026-10-27 - UX batch 111 (URL and email keyboards)
+
+Thirty link and email fields stop phone keyboards from capitalising the
+first letter or autocorrecting the address. Bumped tahti-web `0.0.270`.
+
 ## 2026-10-26 - UX batch 110 (more forms)
 
 Thirty more groups submit with Enter, including chat, messages, support

@@ -167,6 +167,9 @@ export const AuthDialog: FC = () => {
         >
           <Input
             inputMode="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             label="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -202,6 +205,9 @@ export const AuthDialog: FC = () => {
             <div className="sm:col-span-2">
               <Input
                 inputMode="email"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 label="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

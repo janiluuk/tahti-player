@@ -49,6 +49,9 @@ export function ForgotPasswordView() {
       >
         <Input
           inputMode="email"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           label="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}

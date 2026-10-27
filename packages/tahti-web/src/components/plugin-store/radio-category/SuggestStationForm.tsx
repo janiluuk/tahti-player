@@ -99,6 +99,9 @@ export function SuggestStationForm() {
             />
             <Input
               inputMode="url"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               label="Logo URL"
               value={logoUrl}
               onChange={(e) => setLogoUrl(e.target.value)}
@@ -106,6 +109,9 @@ export function SuggestStationForm() {
             />
             <Input
               inputMode="url"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               label="Stream URL"
               value={streamUrl}
               onChange={(e) => setStreamUrl(e.target.value)}
