@@ -64,6 +64,13 @@ describe('ApiTokensPanel', () => {
     ).toBeTruthy();
   });
 
+  it('says a new token is emailed', async () => {
+    await renderPanel([]);
+    expect(
+      screen.getByText(/we email you whenever a new one is made/),
+    ).toBeTruthy();
+  });
+
   it('marks an expired token and says when a live one expires', async () => {
     await renderPanel([
       { ...base, id: 't1', name: 'old', expiresAt: '2020-01-01T00:00:00.000Z' },

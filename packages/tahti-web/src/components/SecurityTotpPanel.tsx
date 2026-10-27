@@ -52,6 +52,9 @@ export function SecurityTotpPanel() {
   return (
     <SectionShell title="Two-factor authentication">
       <div className="flex flex-col gap-4">
+        <p className="text-foreground-secondary text-sm">
+          We email you whenever two-step sign-in is turned on or off.
+        </p>
         <p className="text-sm">
           Status:{' '}
           <span className="font-medium">
