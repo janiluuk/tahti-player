@@ -22,6 +22,8 @@ pnpm release:prepare X.Y.Z
 git push origin player@X.Y.Z
 ```
 
+`pnpm tahti-ops release prepare X.Y.Z` does the same and checks that the tag is new first; `--dry-run` shows the steps, `--build` also builds the Tauri bundle locally.
+
 `release:prepare` does everything that's needed for a release. Do not bump versions or edit any files by hand when preparing a release.
 
 The `release-player.yml` workflow creates a GitHub release with platform binaries.

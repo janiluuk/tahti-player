@@ -52,6 +52,10 @@ pnpm tahti-ops stack smoke
 pnpm tahti-ops backup status --dry-run
 pnpm tahti-ops backup status
 
+# desktop release: bump, metainfo, commit, tag player@X (= pnpm release:prepare)
+pnpm tahti-ops release prepare 1.48.0 --dry-run
+pnpm tahti-ops release prepare 1.48.0 --build   # also build the Tauri bundle locally
+
 # Flatpak (needs flatpak-node-generator + python3)
 pnpm tahti-ops package flatpak sources                    # pnpm/cargo sources into packaging/flatpak
 pnpm tahti-ops package flatpak flathub 1.48.0 --dry-run   # CI: update-flathub.yml (GH_TOKEN)
@@ -80,6 +84,7 @@ Progress lines go to stderr (`→` / `✓` / `✗`); script stdout is unchanged.
 | `packages/tahti-web/deploy/deploy-vimage.sh`, `pnpm deploy:tahti-beta` | `pnpm tahti-ops deploy web` |
 | `packages/tahti-web/scripts/run-e2e-journeys.sh` | `pnpm tahti-ops e2e journeys` |
 | `vitest run -u` per package | `pnpm tahti-ops snapshots update <group>` |
+| `scripts/deploy-production.sh` (removed) | `pnpm tahti-ops release prepare <version> --build` |
 | `scripts/flatpak-generate-sources.sh`, `scripts/flatpak-update-flathub.sh` (removed) | `pnpm tahti-ops package flatpak sources` / `flathub <version>` |
 
 Cron entries may still call `backup.sh` directly on the host; operators use
