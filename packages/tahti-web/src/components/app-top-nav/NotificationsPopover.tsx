@@ -1,6 +1,12 @@
 import { BellIcon } from 'lucide-react';
 
-import { Badge, Button, EmptyState, Tooltip } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  ButtonLink,
+  EmptyState,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { PageError } from '../PageStates';
@@ -64,8 +70,16 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
           className="border-border bg-background absolute top-[calc(100%+6px)] right-0 z-40 w-72 rounded-lg border p-2 shadow-lg"
           role="menu"
         >
-          <div className="px-2 py-1">
+          <div className="flex items-center justify-between gap-2 px-2 py-1">
             <span className="text-sm font-semibold">Notifications</span>
+            <ButtonLink
+              to="/notifications"
+              size="xs"
+              variant="text"
+              onClick={() => setNotificationsOpen(false)}
+            >
+              See all
+            </ButtonLink>
           </div>
           {notificationsError && notifications.length > 0 ? (
             <div
