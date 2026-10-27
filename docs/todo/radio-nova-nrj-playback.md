@@ -28,6 +28,19 @@ Radio Nova and NRJ do not play. The other curated stations are not reported.
 - The production CSP allows `media-src https:` and `connect-src https:`, so
   CSP is not blocking the audio element.
 
+- 2026-10-27: cause found. `stream-redirect.bauermedia.fi` answers the
+  302 without `Access-Control-Allow-Origin` (the target
+  `streaming.radioplay.fi` does send it), so the `crossOrigin = 'anonymous'`
+  load fails and `AudioEngine.onError` reloads without CORS. By then the
+  `play` event has already routed the element through the Web Audio graph
+  (`createMediaElementSource`), and a media element source fed by a
+  non-CORS resource outputs silence. The player says "playing" and nothing
+  is heard. Fixed client-side in `fix/radio-cors-fallback-silence`: the
+  graph is only built for CORS loads, and a stream that needs the no-CORS
+  fallback plays on a fresh `<audio>` element outside the graph (no
+  visualizer for those stations). Verify on production after deploy, then
+  close this file.
+
 ## To check
 
 1. Reproduce on production in a real browser (Chrome and Firefox, desktop and
