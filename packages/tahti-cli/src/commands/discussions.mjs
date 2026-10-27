@@ -51,14 +51,52 @@ export async function runDiscussionsList(config, { json = false } = {}) {
   return formatDiscussionsTable(result.topics);
 }
 
-export async function runDiscussionsShow(config, id, { json = false } = {}) {
+function formatReplies(posts) {
+  return posts
+    .map(
+      (post) =>
+        `${authorName(post.author)}, ${formatDate(post.createdAt)}${post.editedAt ? ' (edited)' : ''} (#${post.id})\n${post.body}`,
+    )
+    .join('\n\n');
+}
+
+function earlierHint(id, posts) {
+  return `Earlier replies: tahti discussions show ${id} --before ${posts[0].id}`;
+}
+
+export async function runDiscussionsShow(
+  config,
+  id,
+  { json = false, before } = {},
+) {
   if (!id?.trim()) {
     throw new CliError(
       'Give a topic id.\nRun `tahti discussions list` to find one.',
     );
   }
+  const topicId = id.trim();
+  if (before) {
+    const cursor = String(before).trim().replace(/^#/, '');
+    if (!/^\d+$/.test(cursor)) {
+      throw new CliError('--before takes a reply number, such as 123.');
+    }
+    const page = await apiGet(
+      `/api/v1/governance/discussions/${encodeURIComponent(topicId)}/posts?before=${cursor}`,
+      config,
+    );
+    if (json) {
+      return JSON.stringify(page, null, 2);
+    }
+    if (page.posts.length === 0) {
+      return 'No earlier replies.';
+    }
+    const more = page.hasEarlierPosts
+      ? `\n\n${earlierHint(topicId, page.posts)}`
+      : '';
+    return `${formatReplies(page.posts)}${more}`;
+  }
   const topic = await apiGet(
-    `/api/v1/governance/discussions/${encodeURIComponent(id.trim())}`,
+    `/api/v1/governance/discussions/${encodeURIComponent(topicId)}`,
     config,
   );
   if (json) {
@@ -71,17 +109,14 @@ export async function runDiscussionsShow(config, id, { json = false } = {}) {
     ['State', topicState(topic) || 'open'],
   ]);
   const replies =
-    topic.posts.length === 0
-      ? 'No replies yet.'
-      : topic.posts
-          .map(
-            (post) =>
-              `${authorName(post.author)}, ${formatDate(post.createdAt)} (#${post.id})\n${post.body}`,
-          )
-          .join('\n\n');
-  return `${header}\n\n${topic.body}\n\n--- ${topic.posts.length} ${
-    topic.posts.length === 1 ? 'reply' : 'replies'
-  } ---\n\n${replies}`;
+    topic.posts.length === 0 ? 'No replies yet.' : formatReplies(topic.posts);
+  const total = Math.max(topic.postCount ?? 0, topic.posts.length);
+  const more = topic.hasEarlierPosts
+    ? `\n\n${earlierHint(topicId, topic.posts)}`
+    : '';
+  return `${header}\n\n${topic.body}\n\n--- ${total} ${
+    total === 1 ? 'reply' : 'replies'
+  } ---\n\n${replies}${more}`;
 }
 
 function topicPath(id) {
@@ -115,6 +150,23 @@ export async function runDiscussionsFollow(config, id, following) {
   return result.following
     ? 'Following: new replies notify you.'
     : 'No longer following this topic.';
+}
+
+export async function runDiscussionsEdit(config, id, postId, words) {
+  const path = topicPath(id);
+  const body = words.join(' ').trim();
+  if (!postId?.trim() || !body) {
+    throw new CliError(
+      'Give the topic id, the reply number and the new text.\nRun `tahti discussions edit --help` for usage.',
+    );
+  }
+  await apiSendJson(
+    'PATCH',
+    `${path}/posts/${encodeURIComponent(postId.trim().replace(/^#/, ''))}`,
+    { body },
+    config,
+  );
+  return 'Reply updated.';
 }
 
 export async function runDiscussionsMute(config, id, muted) {

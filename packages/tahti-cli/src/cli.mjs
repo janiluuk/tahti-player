@@ -15,6 +15,7 @@ import {
 import { runCollectionsList } from './commands/collections-list.mjs';
 import { runCollectionsShow } from './commands/collections-show.mjs';
 import {
+  runDiscussionsEdit,
   runDiscussionsFollow,
   runDiscussionsList,
   runDiscussionsMute,
@@ -542,14 +543,20 @@ Members only.`,
   },
   {
     path: ['discussions', 'show'],
-    usage: 'tahti discussions show <id> [--json]',
+    usage: 'tahti discussions show <id> [--before <reply#>] [--json]',
     summary: 'Read a discussion topic and its replies',
-    details: `Calls GET /api/v1/governance/discussions/:id: the topic text and every reply,
-oldest first. Opening a topic you follow marks its replies read.`,
-    options: JSON_OPTION,
+    details: `Calls GET /api/v1/governance/discussions/:id: the topic text and its latest
+replies, oldest first. Opening a topic you follow marks its replies read.
+  --before <reply#>   The page of replies before that one
+                      (GET .../:id/posts?before=); long threads print the
+                      command to run`,
+    options: { ...JSON_OPTION, before: { type: 'string' } },
     positionals: 1,
     run: (config, { positionals, values }) =>
-      runDiscussionsShow(config, positionals[0], { json: values.json }),
+      runDiscussionsShow(config, positionals[0], {
+        json: values.json,
+        before: values.before,
+      }),
   },
   {
     path: ['discussions', 'reply'],
@@ -563,6 +570,24 @@ characters. Needs a token with the write scope.`,
     positionals: Infinity,
     run: (config, { positionals }) =>
       runDiscussionsReply(config, positionals[0], positionals.slice(1)),
+  },
+  {
+    path: ['discussions', 'edit'],
+    usage: 'tahti discussions edit <id> <reply#> <text...>',
+    summary: 'Fix one of your own replies',
+    details: `Calls PATCH /api/v1/governance/discussions/:id/posts/:postId with the words
+after the reply number (shown as #123 by \`tahti discussions show\`). Only your
+own replies, while the topic is open; the reply is marked edited. Needs a
+token with the write scope.`,
+    options: {},
+    positionals: Infinity,
+    run: (config, { positionals }) =>
+      runDiscussionsEdit(
+        config,
+        positionals[0],
+        positionals[1],
+        positionals.slice(2),
+      ),
   },
   {
     path: ['discussions', 'follow'],
