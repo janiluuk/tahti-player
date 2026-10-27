@@ -241,6 +241,10 @@ export function AccountPanel() {
               }}
             />
             <MembershipInvoices />
+            <SettingsHint>
+              We email you before your membership year ends, and notify you if
+              it lapses and the account goes back to Free.
+            </SettingsHint>
           </div>
         ),
     },
