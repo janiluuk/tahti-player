@@ -385,4 +385,4 @@ To update this catalog:
 1. Scan `packages/*/src/views/` for new/removed view files
 2. Cross-reference with `packages/storybook/src/**/*.stories.tsx`
 3. Update Storybook status and candidate flags
-4. Regenerate route links from router config (`packages/player/src/routes/`, `packages/tahti-web/src/router.tsx`)
+4. Regenerate route links from router config (`packages/tahti-web/src/router.tsx`)
