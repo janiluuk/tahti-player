@@ -33,6 +33,9 @@ describe('notificationKindOf', () => {
     expect(notificationKindOf('ADDON_REVIEWED')).toBe('other');
     expect(notificationKindOf('TRACK_SHARED')).toBe('social');
     expect(notificationKindOf('GREEN_ROOM_INVITE')).toBe('social');
+    expect(notificationKindOf('BACKGROUND_JOB_DONE')).toBe('music');
+    expect(notificationKindOf('BACKGROUND_JOB_FAILED')).toBe('music');
+    expect(notificationKindOf('MEMBERSHIP_ENDED')).toBe('money');
   });
 
   it('labels a type by its kind', () => {
