@@ -197,6 +197,11 @@ export type PublicProfileTrack = {
   likeCount?: number;
   commentCount?: number;
   repostCount?: number;
+  playCount?: number;
+  downloadCount?: number;
+  genre?: string | null;
+  /** [0..255] amplitude buckets for the row waveform. */
+  peaks?: number[] | null;
 };
 
 export type PublicProfileRelease = {

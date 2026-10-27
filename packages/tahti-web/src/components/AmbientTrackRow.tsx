@@ -1,7 +1,13 @@
-import { PauseIcon, PlayIcon } from 'lucide-react';
+import {
+  CirclePlayIcon,
+  DownloadIcon,
+  HeartIcon,
+  PauseIcon,
+  PlayIcon,
+} from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button, MediaArtwork, Tooltip } from '@tahti-player/ui';
+import { Badge, Button, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 import { useDominantColor } from '../lib/useDominantColor';
@@ -27,6 +33,9 @@ const DENSITY_LAYOUT: Record<
     pad: string;
     gap: string;
     art: 'sm' | 'thumb' | 'md';
+    artClass?: string;
+    play: string;
+    playIcon: number;
     artist: string;
     title: string;
     meta: string;
@@ -35,19 +44,24 @@ const DENSITY_LAYOUT: Record<
   }
 > = {
   comfortable: {
-    pad: 'gap-3 p-3',
-    gap: 'gap-1.5',
+    pad: 'gap-4 p-4',
+    gap: 'gap-2',
     art: 'md',
-    artist: 'text-xs',
-    title: 'text-base',
+    artClass: 'size-20 min-w-20 sm:size-28 sm:min-w-28',
+    play: 'size-11 border-2',
+    playIcon: 20,
+    artist: 'text-sm',
+    title: 'text-lg sm:text-xl',
     meta: 'text-xs',
-    bars: 72,
-    wave: 'h-11',
+    bars: 96,
+    wave: 'h-14',
   },
   compact: {
     pad: 'gap-2 p-2',
     gap: 'gap-1',
     art: 'thumb',
+    play: 'size-8 border-2',
+    playIcon: 14,
     artist: 'text-[11px]',
     title: 'text-sm',
     meta: 'text-[11px]',
@@ -58,6 +72,8 @@ const DENSITY_LAYOUT: Record<
     pad: 'gap-2 px-2 py-1.5',
     gap: 'gap-0.5',
     art: 'sm',
+    play: 'size-7 border',
+    playIcon: 12,
     artist: 'text-[10px]',
     title: 'text-xs',
     meta: 'text-[10px]',
@@ -65,6 +81,72 @@ const DENSITY_LAYOUT: Record<
     wave: 'h-4',
   },
 };
+
+export type AmbientTrackStats = {
+  releaseDate?: string | null;
+  likes?: number;
+  plays?: number;
+  downloads?: number;
+};
+
+function formatStatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString(undefined, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+}
+
+function TrackStats({
+  stats,
+  className,
+}: {
+  stats: AmbientTrackStats;
+  className: string;
+}) {
+  const parts: ReactNode[] = [];
+  if (stats.releaseDate) {
+    parts.push(<span key="date">on {formatStatDate(stats.releaseDate)}</span>);
+  }
+  const counts: Array<[string, number | undefined, ReactNode, string]> = [
+    ['likes', stats.likes, <HeartIcon size={14} aria-hidden />, 'likes'],
+    ['plays', stats.plays, <CirclePlayIcon size={14} aria-hidden />, 'plays'],
+    [
+      'downloads',
+      stats.downloads,
+      <DownloadIcon size={14} aria-hidden />,
+      'downloads',
+    ],
+  ];
+  for (const [key, value, icon, noun] of counts) {
+    if (value != null) {
+      parts.push(
+        <span
+          key={key}
+          className="inline-flex items-center gap-1"
+          aria-label={`${value} ${noun}`}
+        >
+          {icon}
+          <span aria-hidden>{value.toLocaleString()}</span>
+        </span>,
+      );
+    }
+  }
+  if (parts.length === 0) {
+    return null;
+  }
+  return (
+    <div
+      className={cn(
+        'text-foreground-secondary ml-auto flex flex-wrap items-center gap-3 tabular-nums',
+        className,
+      )}
+      data-testid="ambient-track-stats"
+    >
+      {parts}
+    </div>
+  );
+}
 
 export type AmbientTrackRowProps = {
   trackId: string;
@@ -80,6 +162,9 @@ export type AmbientTrackRowProps = {
    * preview hover times. */
   durationSec?: number | null;
   genreLabel?: string;
+  /** Public totals and the release date, shown bottom-right like a
+   * hearthis.at row. Each part shows only when present. */
+  stats?: AmbientTrackStats;
   peaks?: number[] | null;
   /** Playback position, 0–1. */
   progress?: number;
@@ -109,6 +194,7 @@ export function AmbientTrackRow({
   durationLabel,
   durationSec,
   genreLabel,
+  stats,
   peaks,
   progress = 0,
   density = 'comfortable',
@@ -123,7 +209,6 @@ export function AmbientTrackRow({
   const sampled = useDominantColor(ambientRgb === undefined ? coverUrl : null);
   const rgb = ambientRgb === undefined ? sampled : ambientRgb;
   const layout = DENSITY_LAYOUT[density];
-  const meta = [genreLabel, durationLabel].filter(Boolean).join(' · ');
 
   return (
     <article
@@ -139,7 +224,7 @@ export function AmbientTrackRow({
       <MediaArtwork
         src={coverUrl ?? undefined}
         size={layout.art}
-        className="shrink-0"
+        className={cn('shrink-0', layout.artClass)}
         imageReveal={Boolean(coverUrl)}
       />
       <div className={cn('flex min-w-0 flex-1 flex-col', layout.gap)}>
@@ -155,12 +240,19 @@ export function AmbientTrackRow({
                 variant="secondary"
                 onClick={onPlay}
                 aria-label={isPlaying ? `Pause ${title}` : `Play ${title}`}
-                className="shrink-0"
+                className={cn(
+                  'border-foreground shrink-0 rounded-full bg-transparent shadow-none',
+                  layout.play,
+                )}
               >
                 {isPlaying ? (
-                  <PauseIcon size={14} aria-hidden />
+                  <PauseIcon size={layout.playIcon} aria-hidden />
                 ) : (
-                  <PlayIcon size={14} aria-hidden />
+                  <PlayIcon
+                    size={layout.playIcon}
+                    aria-hidden
+                    className="translate-x-px"
+                  />
                 )}
               </Button>
             </Tooltip>
@@ -175,24 +267,26 @@ export function AmbientTrackRow({
               {artist}
             </p>
             <h3
-              className={cn(
-                'text-foreground truncate font-semibold',
-                layout.title,
-              )}
+              className={cn('text-foreground truncate font-bold', layout.title)}
             >
               {titleNode ?? title}
             </h3>
             {belowTitle}
           </div>
-          {meta ? (
-            <p
+          {genreLabel || durationLabel ? (
+            <div
               className={cn(
-                'text-foreground-secondary shrink-0 text-right',
+                'text-foreground-secondary flex shrink-0 flex-col items-end gap-1 text-right tabular-nums',
                 layout.meta,
               )}
             >
-              {meta}
-            </p>
+              {genreLabel ? (
+                <Badge variant="pill" color="secondary">
+                  {genreLabel}
+                </Badge>
+              ) : null}
+              {durationLabel ? <span>{durationLabel}</span> : null}
+            </div>
           ) : null}
         </div>
         {media ? (
@@ -214,8 +308,13 @@ export function AmbientTrackRow({
             className={layout.wave}
           />
         )}
-        {actions ? (
-          <div className="flex flex-wrap items-center gap-1.5">{actions}</div>
+        {actions || stats ? (
+          <div className="flex flex-wrap items-center gap-1.5">
+            {actions}
+            {stats ? (
+              <TrackStats stats={stats} className={layout.meta} />
+            ) : null}
+          </div>
         ) : null}
       </div>
     </article>
