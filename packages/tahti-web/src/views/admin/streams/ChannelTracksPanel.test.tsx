@@ -48,6 +48,9 @@ describe('ChannelTracksPanel', () => {
     expect(fetch).toHaveBeenCalledWith('moon');
 
     fireEvent.click(screen.getByRole('button', { name: 'Edit Aamu' }));
+    expect(
+      screen.getByText(/The artist is notified of which details you changed/),
+    ).toBeTruthy();
     fireEvent.change(screen.getByLabelText('Title'), {
       target: { value: 'Aamu II' },
     });
