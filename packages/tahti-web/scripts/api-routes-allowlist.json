@@ -8,5 +8,8 @@
   "/api/me/sessions": "Ships in tahti-org #880 (merged); OpenAPI release not refreshed yet.",
   "/api/me/sessions/:param": "Ships in tahti-org #880 (merged); OpenAPI release not refreshed yet.",
   "/api/me/stats/audience": "Ships in tahti-org #883 (merged 2026-10-27); OpenAPI release not refreshed yet. The Studio stats panels show a retry until it is deployed.",
+  "/api/me/stats/listening": "Ships in tahti-org #883 (merged 2026-10-27); OpenAPI release not refreshed yet. The panel shows a retry or hides itself until it is deployed.",
+  "/api/me/stats/locations": "Ships in tahti-org #883 (merged 2026-10-27); OpenAPI release not refreshed yet. The panel shows a retry or hides itself until it is deployed.",
+  "/api/me/stats/loyalty": "Ships in tahti-org #883 (merged 2026-10-27); OpenAPI release not refreshed yet. The panel shows a retry or hides itself until it is deployed.",
   "/api/v1/events/upcoming": "The route ships in tahti-org #879, which is not in a tahti-org release yet. The front page's Coming up row hides itself when the list is empty or the request fails."
 }
