@@ -177,6 +177,8 @@ const NOTIFICATION_KIND_TYPES: Record<
     'CHAT_MENTION',
     'PLAYLIST_TRACK_ADDED',
     'MODERATOR_ADDED',
+    'TRACK_SHARED',
+    'GREEN_ROOM_INVITE',
   ],
   music: [
     'NEW_POST',
