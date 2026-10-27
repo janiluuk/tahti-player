@@ -101,7 +101,9 @@ export function RadioView() {
   const [loading, setLoading] = useState(true);
   const [stationError, setStationError] = useState<string | null>(null);
   const [sectionErrors, setSectionErrors] = useState<
-    Partial<Record<'upcoming' | 'rotation' | 'recent' | 'featured', string>>
+    Partial<
+      Record<'upcoming' | 'rotation' | 'recent' | 'featured' | 'relay', string>
+    >
   >({});
   const [infoTrack, setInfoTrack] = useState<TrackInfo | null>(null);
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -174,6 +176,10 @@ export function RadioView() {
       setFeatured(featuredRes.data);
       setSectionErrors((current) => ({
         ...current,
+        relay:
+          memberRelay.meta.source === 'api'
+            ? memberRelay.meta.reason
+            : undefined,
         recent:
           recentRes.meta.source === 'api' ? recentRes.meta.reason : undefined,
         featured:
@@ -371,6 +377,12 @@ export function RadioView() {
                 </Link>
               </span>
             </Box>
+          ) : sectionErrors.relay ? (
+            <PageErrorBanner
+              title="Could not check the member relay."
+              description={sectionErrors.relay}
+              onRetry={reload}
+            />
           ) : null}
 
           {!online ? (
