@@ -12,6 +12,7 @@ const PREFS = {
   notifyMoneyMovesInApp: true,
   notifyListenerActivityEmail: true,
   notifyWeeklyRecapEmail: true,
+  notifyStudioJobsInApp: true,
 };
 
 let prefsFailure: string | null = null;
@@ -47,6 +48,7 @@ describe('NotificationsPanel', () => {
     render(<NotificationsPanel />);
     expect(await screen.findByText('Revenue moves')).toBeTruthy();
     expect(screen.getByText(/you are awarded a grant/)).toBeTruthy();
+    expect(screen.getByText('Studio work')).toBeTruthy();
     expect(screen.queryAllByRole('note')).toHaveLength(0);
     expect(screen.getByText(/3 new chat messages/)).toBeTruthy();
     expect(screen.getByText(/1,247 plays/)).toBeTruthy();

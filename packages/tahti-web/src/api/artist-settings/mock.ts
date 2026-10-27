@@ -13,6 +13,7 @@ export let mockNotifications: NotificationPrefs = {
   notifyMoneyMovesInApp: true,
   notifyListenerActivityEmail: true,
   notifyWeeklyRecapEmail: true,
+  notifyStudioJobsInApp: true,
 };
 
 export let mockGreenRoom: GreenRoomPrefs = {

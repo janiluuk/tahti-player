@@ -13,6 +13,8 @@ export type NotificationPrefs = {
   notifyMoneyMovesInApp: boolean;
   notifyListenerActivityEmail: boolean;
   notifyWeeklyRecapEmail: boolean;
+  /** Absent until the API has the switch (tahti-org #988). */
+  notifyStudioJobsInApp?: boolean;
 };
 
 export async function fetchNotificationPrefs(): Promise<{
