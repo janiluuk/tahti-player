@@ -101,6 +101,7 @@ describe('login and logout', () => {
       email: 'aurora@example.com',
       password: 'secret',
       deviceLabel: 'test-cli',
+      refreshTokenDelivery: 'body',
     });
     const saved = JSON.parse(await readFile(path, 'utf8'));
     expect(saved.accessToken).toBe('jwt-access');

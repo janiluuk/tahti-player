@@ -94,6 +94,13 @@ repo. Needs the user's go-ahead before tahti-org work starts.
   verify sleep/wake / offline cold start (adapter + notes shipped; plugin TBD).
 - Eventually drop cookie-session once all clients are on tokens.
 
+- 2026-10-27 (batch 90): first server-side cookie cutover step. tahti-org
+  login / login-totp return `refreshToken` in the JSON body only when the
+  client sends `refreshTokenDelivery: 'body'`; browsers get it only as the
+  HttpOnly `tahti_refresh` cookie, so page scripts never see it. CLI
+  `tahti login --device` (and the desktop app, separate PR) send the opt-in.
+  Ship the player side before the tahti-org change reaches production.
+
 ### Phase 4 (this slice)
 
 - `createNodeConfigFileStorage` + `createInjectedStorage` in
