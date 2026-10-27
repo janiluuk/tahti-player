@@ -5,7 +5,7 @@ import {
   render,
   screen,
 } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as api from '../api/account-credentials';
 import { ChangeEmailForm } from './ChangeEmailForm';
@@ -14,6 +14,10 @@ describe('ChangeEmailForm', () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+  });
+
+  beforeEach(() => {
+    vi.spyOn(api, 'fetchPendingEmailChange').mockResolvedValue(null);
   });
 
   it('sends the confirmation link and says where it went', async () => {
@@ -58,5 +62,26 @@ describe('ChangeEmailForm', () => {
       );
     });
     expect(screen.getByText('Another account uses that address')).toBeTruthy();
+  });
+
+  it('shows a pending change and cancels it', async () => {
+    vi.spyOn(api, 'fetchPendingEmailChange').mockResolvedValue({
+      newEmail: 'new@example.com',
+      expiresAt: '2026-10-28T12:00:00.000Z',
+    });
+    const cancel = vi
+      .spyOn(api, 'cancelEmailChange')
+      .mockResolvedValue({ ok: true, message: 'Cancelled.' });
+    await act(async () => {
+      render(<ChangeEmailForm currentEmail="old@example.com" />);
+    });
+    expect(
+      screen.getByText(/Waiting for confirmation at new@example.com/),
+    ).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Cancel change' }));
+    });
+    expect(cancel).toHaveBeenCalled();
+    expect(screen.queryByText(/Waiting for confirmation/)).toBeNull();
   });
 });

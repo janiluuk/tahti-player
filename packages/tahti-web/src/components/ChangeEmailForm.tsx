@@ -1,8 +1,13 @@
-import { useId, useState } from 'react';
+import { useCallback, useEffect, useId, useState } from 'react';
 
 import { Button, InlineError, Input } from '@tahti-player/ui';
 
-import { requestEmailChange } from '../api/account-credentials';
+import {
+  cancelEmailChange,
+  fetchPendingEmailChange,
+  requestEmailChange,
+  type PendingEmailChange,
+} from '../api/account-credentials';
 
 /** Settings → Account → Password & email: move the account to another
  * address. Nothing changes until the link sent there is opened. */
@@ -17,6 +22,30 @@ export function ChangeEmailForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState<string | null>(null);
+  const [pending, setPending] = useState<PendingEmailChange | null>(null);
+  const [cancelling, setCancelling] = useState(false);
+
+  const loadPending = useCallback(() => {
+    void fetchPendingEmailChange().then(setPending);
+  }, []);
+
+  useEffect(() => {
+    loadPending();
+  }, [loadPending]);
+
+  const cancel = () => {
+    setCancelling(true);
+    setError(null);
+    void cancelEmailChange().then((result) => {
+      setCancelling(false);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      setSent(null);
+      setPending(null);
+    });
+  };
 
   const canSubmit = !saving && newEmail.includes('@') && password.length > 0;
 
@@ -35,6 +64,7 @@ export function ChangeEmailForm({
       }
       setPassword('');
       setSent(result.message);
+      loadPending();
     });
   };
 
@@ -43,6 +73,28 @@ export function ChangeEmailForm({
       <h3 id={headingId} className="font-semibold">
         Change email
       </h3>
+      {pending ? (
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          <span>
+            Waiting for confirmation at {pending.newEmail} (the link works until{' '}
+            {new Date(pending.expiresAt).toLocaleString(undefined, {
+              day: 'numeric',
+              month: 'short',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+            ).
+          </span>
+          <Button
+            size="sm"
+            variant="secondary"
+            disabled={cancelling}
+            onClick={cancel}
+          >
+            {cancelling ? 'Cancelling…' : 'Cancel change'}
+          </Button>
+        </div>
+      ) : null}
       {currentEmail ? (
         <p className="text-foreground-secondary text-sm">
           Now: {currentEmail}. We send a link to the new address, and tell this
