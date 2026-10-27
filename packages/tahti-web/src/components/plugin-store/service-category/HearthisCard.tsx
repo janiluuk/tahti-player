@@ -562,7 +562,12 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Search, or paste a profile link or @handle"
               />
-              <Button size="sm" disabled={!q.trim() || searching} type="submit">
+              <Button
+                size="sm"
+                variant="secondary"
+                disabled={!q.trim() || searching}
+                type="submit"
+              >
                 <SearchIcon size={16} aria-hidden className="mr-1.5" />
                 {searching ? 'Searching…' : 'Search'}
               </Button>
