@@ -29,7 +29,7 @@ describe('fetchPublicSoundDownload', () => {
       filename: 'a.flac',
     });
     const url = String(fetchSpy.mock.calls[0]![0]);
-    expect(url).toContain('/api/v1/c/night-drive/archive/snd1/download?');
+    expect(url).toContain('/api/v1/c/night-drive/sounds/snd1/download?');
     expect(url).toContain('&key=tok%20en');
   });
 
