@@ -4,6 +4,11 @@
  */
 export const MAIN_CONTENT_PADDING = 'p-6 md:p-8';
 
+/** Pulls the scrollport's right edge into Main's padding by the same amount
+ * it pads back, so the offset shadow of the rightmost control isn't clipped
+ * by the scrollport's overflow. */
+export const MAIN_SCROLLPORT_SHADOW_ROOM = '-mr-2 pr-2';
+
 /**
  * Pages that paint their own background to the pane edges (they cancel the
  * inset with negative margins). The inset has to scroll with them, or the
