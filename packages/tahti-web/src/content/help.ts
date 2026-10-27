@@ -301,6 +301,13 @@ export const HELP_ARTICLES: HelpArticle[] = [
           'When processing finishes, the indicator clears and a notification links you directly to the track. Processing can take time for long recordings or provider imports.',
         ],
       },
+      {
+        heading: 'Add music from Mikseri.net',
+        body: [
+          'Open a collection in Studio and use "Add your music from Mikseri.net": paste the Mikseri song page, its official embed URL, or the numeric track ID, then enter the title and artist name.',
+          'Confirm that you own the track or have permission to embed it. Tahti keeps only the embed reference and your details; the audio stays on Mikseri.net and plays in its player.',
+        ],
+      },
     ],
   },
   {
@@ -579,6 +586,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: 'What appears here',
         body: [
           'The notification bell shows activity that matters to your account, including likes on your content, new followers, and completed processing jobs.',
+          'See all in the bell opens /notifications: filter by kind (Social, Music, Money, Governance, Other) with unread counts on each chip, mark single notifications read or remove them, or Clear read.',
           'Processing notifications link back to the finished track so you can review its metadata and publishing settings.',
           'The blue light in the top-left navigation is reserved for work still in progress; open it to see the current status.',
         ],
@@ -719,6 +727,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Use the form below for account, billing, engagement, or technical issues.',
           'Include a short description so the team can help quickly. Signed-in requests use your account email automatically.',
+          'Your earlier requests are listed with the replies. Mark resolved closes one once you are sorted; replying to a resolved request reopens it.',
         ],
       },
     ],

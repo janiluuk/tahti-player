@@ -9,6 +9,8 @@ Every artist has two public pages:
 - **Channel** (`/channel/<slug>`): their live stage. When they're broadcasting you hear the show; when they're off air it plays their 24/7 rotation or archive, and lists their tracks, releases, schedule and comments.
 - **Artist profile** (`/u/<username>`): their music, releases, playlists, photos, press kit and links.
 
+A channel also opens at `<slug>.tahti.live`, as in the old app. `radio.tahti.live` opens Radio.
+
 ## Follow an artist
 
 Signed in, press **Follow** on the channel header (or the heart on the channel's player when they're on air). The button changes to **Following**. You'll see their new posts and releases in your **Feed**, and they appear under **Favorites**.
