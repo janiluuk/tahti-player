@@ -52,6 +52,10 @@ pnpm tahti-ops stack smoke
 pnpm tahti-ops backup status --dry-run
 pnpm tahti-ops backup status
 
+# desktop release: bump, metainfo, commit, tag player@X (= pnpm release:prepare)
+pnpm tahti-ops release prepare 1.48.0 --dry-run
+pnpm tahti-ops release prepare 1.48.0 --build   # also build the Tauri bundle locally
+
 # source file size guard (CI: pnpm check:file-size)
 pnpm tahti-ops check size           # fail when a file over 800 lines appears or grows
 pnpm tahti-ops check size --prune   # drop pins for files you split
@@ -80,6 +84,7 @@ Progress lines go to stderr (`→` / `✓` / `✗`); script stdout is unchanged.
 | `packages/tahti-web/deploy/deploy-vimage.sh`, `pnpm deploy:tahti-beta` | `pnpm tahti-ops deploy web` |
 | `packages/tahti-web/scripts/run-e2e-journeys.sh` | `pnpm tahti-ops e2e journeys` |
 | `vitest run -u` per package | `pnpm tahti-ops snapshots update <group>` |
+| `scripts/deploy-production.sh` (removed) | `pnpm tahti-ops release prepare <version> --build` |
 | `node scripts/check-file-size.mjs` (removed) | `pnpm tahti-ops check size` (= `pnpm check:file-size`) |
 
 Cron entries may still call `backup.sh` directly on the host; operators use

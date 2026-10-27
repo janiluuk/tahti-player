@@ -11,6 +11,7 @@ import { deployTargets, runDeploy } from './commands/deploy.mjs';
 import { desktopModes, runDesktop } from './commands/desktop.mjs';
 import { runE2e } from './commands/e2e.mjs';
 import { runEnv } from './commands/env.mjs';
+import { runReleasePrepare } from './commands/release.mjs';
 import {
   listSnapshots,
   snapshotGroups,
@@ -67,6 +68,30 @@ Examples:
     },
     run: ({ values }) =>
       runBackupStatus({ dryRun: Boolean(values['dry-run']) }),
+  },
+  {
+    path: ['release', 'prepare'],
+    usage: 'tahti-ops release prepare <version> [--build] [--dry-run]',
+    summary:
+      'Bump the desktop version, update the metainfo, commit and tag player@<version>',
+    details: `Runs packages/tools/src/prepare-release.mjs (same as pnpm release:prepare),
+then prints the push command. Pushing the tag starts release-player.yml.
+  --build     Also build the Tauri bundle locally afterwards
+  --dry-run   Print each step without running it
+
+Example:
+  tahti-ops release prepare 1.48.0 --dry-run`,
+    passthrough: true,
+    run: (_parsed, argv) => {
+      const { dryRun, args } = splitDryRun(argv);
+      const build = args.includes('--build');
+      const rest = args.filter((arg) => arg !== '--build');
+      const unknown = rest.find((arg) => arg.startsWith('-'));
+      if (unknown) {
+        throw new OpsError(`Unknown option: ${unknown}`);
+      }
+      return runReleasePrepare(rest[0], { dryRun, build });
+    },
   },
   {
     path: ['deploy'],
