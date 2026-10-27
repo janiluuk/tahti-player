@@ -770,6 +770,13 @@ export type DiscoverTrackItem = {
   listens?: number;
   /** Aggregate LOVE reactions from the community. */
   loves?: number;
+  /** Track-row extras from /api/discover/latest-tracks. */
+  peaks?: number[] | null;
+  createdAt?: string;
+  downloadsEnabled?: boolean;
+  likeCount?: number;
+  playCount?: number;
+  downloadCount?: number;
 };
 
 export type DiscoverCollection = {
