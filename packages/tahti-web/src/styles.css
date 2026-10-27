@@ -11,6 +11,7 @@ body,
   height: 100%;
   max-height: 100%;
   overflow: hidden;
+  /* eslint-disable-next-line css/use-baseline -- stops pull-to-refresh and scroll chaining in the app shell; unsupported browsers just keep the default */
   overscroll-behavior: none;
   margin: 0;
   -webkit-tap-highlight-color: transparent;
