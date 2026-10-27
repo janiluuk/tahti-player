@@ -10,14 +10,14 @@ import { act, render } from '@testing-library/react';
 import type { ReactNode } from 'react';
 
 /**
- * Renders `ui` at `/` inside a real memory router, so `Link`/`ButtonLink`
+ * Renders `ui` at `/` (or `at`, e.g. `/?tab=x`) inside a real memory router, so `Link`/`ButtonLink`
  * get proper hrefs and clicks navigate. Each of `paths` is registered as a
  * stub route, letting a test assert where a click went via the returned
  * router's `state.location.pathname`.
  */
 export async function renderWithRouter(
   ui: ReactNode,
-  { paths = [] }: { paths?: string[] } = {},
+  { paths = [], at = '/' }: { paths?: string[]; at?: string } = {},
 ) {
   const rootRoute = createRootRoute({ component: () => <Outlet /> });
   const indexRoute = createRoute({
@@ -34,7 +34,7 @@ export async function renderWithRouter(
   );
   const router = createRouter({
     routeTree: rootRoute.addChildren([indexRoute, ...stubRoutes]),
-    history: createMemoryHistory({ initialEntries: ['/'] }),
+    history: createMemoryHistory({ initialEntries: [at] }),
   });
   let result!: ReturnType<typeof render>;
   await act(async () => {

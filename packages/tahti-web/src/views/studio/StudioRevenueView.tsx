@@ -33,6 +33,10 @@ import { PurchaseTiersEditor } from '../../components/PurchaseTiersEditor';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
+import {
+  movedSettingsSection,
+  movedSettingsSectionLabel,
+} from '../../lib/movedSettingsSections';
 import { mergeRevenueOrders } from '../../lib/revenueOrders';
 import { useTourStore } from '../../stores/tourStore';
 
@@ -47,8 +51,12 @@ function euros(cents: number | string): string {
 export function StudioRevenueView() {
   const openTour = useTourStore((state) => state.start);
   const navigate = useNavigate();
-  const search = useSearch({ strict: false }) as { tab?: string };
+  const search = useSearch({ strict: false }) as {
+    tab?: string;
+    movedFrom?: unknown;
+  };
   const showTiers = search.tab === 'tiers';
+  const movedFrom = movedSettingsSection(search.movedFrom);
   const [connect, setConnect] = useState<FanConnectStatus | null>(null);
   const [fanPayouts, setFanPayouts] = useState<FanPayoutStats | null>(null);
   const [hasFanTiers, setHasFanTiers] = useState<boolean | null>(null);
@@ -109,6 +117,14 @@ export function StudioRevenueView() {
     void navigate({ to: '/studio/audience', search: { tab: 'tiers' } });
   };
 
+  const dismissMovedNotice = () => {
+    void navigate({
+      to: '/studio/audience',
+      search: showTiers ? { tab: 'tiers' } : {},
+      replace: true,
+    });
+  };
+
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-4 px-1 py-2">
@@ -116,6 +132,28 @@ export function StudioRevenueView() {
           title={showTiers ? 'Tiers' : 'Audience'}
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
+          {movedFrom ? (
+            <Alert
+              tone="info"
+              title="This page has moved"
+              data-testid="settings-moved-notice"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span>
+                  Settings › {movedSettingsSectionLabel(movedFrom)} is now
+                  Studio › {showTiers ? 'Tiers' : 'Audience'}. Update any
+                  bookmark that pointed to the old address.
+                </span>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={dismissMovedNotice}
+                >
+                  Dismiss
+                </Button>
+              </div>
+            </Alert>
+          ) : null}
           {!showTiers ? (
             <div className="flex items-center gap-2">
               <ButtonLink

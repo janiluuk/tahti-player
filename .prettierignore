@@ -7,5 +7,4 @@ src-tauri/Cargo.lock
 .astro/
 utilities.css
 packages/player/src/services/tauri/bindings.ts
-packages/player/src/routeTree.gen.ts
 packages/tahti-web/docs/redesign-reference/

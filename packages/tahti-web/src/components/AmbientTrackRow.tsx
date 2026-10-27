@@ -1,5 +1,5 @@
 import { PauseIcon, PlayIcon } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { memo, type ReactNode } from 'react';
 
 import { Button, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
@@ -99,7 +99,7 @@ export type AmbientTrackRowProps = {
   ambientRgb?: [number, number, number] | null;
 };
 
-export function AmbientTrackRow({
+function AmbientTrackRowView({
   trackId,
   title,
   titleNode,
@@ -221,3 +221,7 @@ export function AmbientTrackRow({
     </article>
   );
 }
+
+/** Memoized: list owners rebuild only the rows whose props changed (the
+ * current row on a progress tick), so long lists don't redraw every second. */
+export const AmbientTrackRow = memo(AmbientTrackRowView);

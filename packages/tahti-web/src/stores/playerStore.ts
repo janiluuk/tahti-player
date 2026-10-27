@@ -55,6 +55,8 @@ type PlayerState = {
   playerBarVisible: boolean;
   /** Set by UI; AudioEngine applies to the media element then clears. */
   seekTarget: number | null;
+  /** Bumped by `retry`; AudioEngine reloads the current source when it changes. */
+  reloadNonce: number;
   /** Real waveform peaks for the current track (not stored on QueueItem /
    * Nuclear Track). Cleared when switching to a track without known peaks. */
   currentPeaks: number[] | null;
@@ -102,6 +104,9 @@ type PlayerState = {
   shuffleQueueOrder: () => void;
   hidePlayerBar: () => void;
   setStatus: (status: PlaybackStatus, error?: string | null) => void;
+  /** Loads the current source again after a stream error, keeping the queue.
+   * `setStatus('playing')` from the error state does the same. */
+  retry: () => void;
   setProgress: (currentTime: number, duration: number) => void;
   setVolume: (volume: number) => void;
   toggleMute: () => void;
@@ -212,6 +217,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   lastRadioPlayable: null,
   playerBarVisible: true,
   seekTarget: null,
+  reloadNonce: 0,
   currentPeaks: null,
   peaksById: {},
   analyser: null,
@@ -552,13 +558,32 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   hidePlayerBar: () => set({ playerBarVisible: false }),
 
-  setStatus: (status, error = null) =>
+  setStatus: (status, error = null) => {
+    // A failed element can't be played again in place; a play request
+    // after an error has to load the source from scratch.
+    if (status === 'playing' && get().status === 'error') {
+      get().retry();
+      return;
+    }
     set((s) => ({
       status,
       error,
       restoredPending:
         status === 'playing' || status === 'loading' ? null : s.restoredPending,
-    })),
+    }));
+  },
+
+  retry: () =>
+    set((s) =>
+      s.currentId
+        ? {
+            status: 'loading',
+            error: null,
+            restoredPending: null,
+            reloadNonce: s.reloadNonce + 1,
+          }
+        : {},
+    ),
 
   setProgress: (currentTime, duration) => set({ currentTime, duration }),
 
