@@ -13,7 +13,7 @@ describe('RadioScheduleView', () => {
   });
 
   it('says the week failed to load instead of showing every slot free', async () => {
-    const fetch = vi.spyOn(shows, 'fetchShowBookings').mockResolvedValue({
+    const fetch = vi.spyOn(shows, 'fetchRadioCalendar').mockResolvedValue({
       data: [],
       meta: { source: 'api', reason: 'HTTP 502' },
     });

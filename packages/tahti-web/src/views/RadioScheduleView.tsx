@@ -27,6 +27,7 @@ import {
 import {
   cancelShowBooking,
   createShowBooking,
+  fetchRadioCalendar,
   fetchShowBookings,
   SHOW_SLOT_MAX_HOURS,
   updateShowBooking,
@@ -68,6 +69,7 @@ export function RadioScheduleView() {
   const user = useAuthStore((s) => s.user);
   const openChannelSetup = useChannelSetupModalStore((s) => s.open);
   const ownChannelSlug = user?.channel?.slug ?? null;
+  const signedIn = Boolean(user);
 
   const [station, setStation] = useState<StationFilter>('radio');
   const search = useSearch({ strict: false }) as { station?: StationFilter };
@@ -106,7 +108,7 @@ export function RadioScheduleView() {
     setMessage(null);
     const { from, to } = weekRangeIso(weekStart);
     let cancelled = false;
-    void fetchShowBookings(from, to).then((r) => {
+    void fetchRadioCalendar(from, to, { signedIn }).then((r) => {
       if (cancelled) {
         return;
       }
@@ -117,7 +119,7 @@ export function RadioScheduleView() {
     return () => {
       cancelled = true;
     };
-  }, [weekStart, weekAttempt]);
+  }, [weekStart, weekAttempt, signedIn]);
 
   useEffect(() => {
     if (!ownChannelSlug) {
