@@ -45,6 +45,7 @@ import {
 import { ChannelPageActions } from '../components/channel-view/ChannelPageActions';
 import { ChannelComments } from '../components/ChannelComments';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
+import { ChannelBlocksSection } from '../components/disco-widgets/ChannelBlocksSection';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import {
   EntitySocialHeader,
@@ -59,6 +60,7 @@ import { useHasFanTiers } from '../hooks/useHasFanTiers';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { hasAccountRole } from '../lib/accountRoles';
 import { avatarPoster } from '../lib/avatarPoster';
+import { withoutPlacedAddons } from '../lib/channelBlockLayout';
 import {
   BACKDROP_FOLDED_ITEM_TYPES,
   getLayoutPreset,
@@ -111,6 +113,7 @@ export function ChannelView({ slug }: { slug: string }) {
     channel,
     sounds,
     discoWidgets,
+    channelBlocks,
     liveShows,
     artistSocialLinks,
     loading,
@@ -718,9 +721,10 @@ export function ChannelView({ slug }: { slug: string }) {
           })}
         </div>
         {!editing ? <ChannelUpcomingShows slug={slug} /> : null}
+        {!editing ? <ChannelBlocksSection blocks={channelBlocks} /> : null}
         {!editing ? (
           <DiscoWidgetsSection
-            widgets={discoWidgets}
+            widgets={withoutPlacedAddons(discoWidgets, channelBlocks)}
             status={sectionStatus.widgets}
             onRetry={() => retrySection('widgets')}
           />

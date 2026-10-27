@@ -10,10 +10,12 @@ import {
   InlineError,
   Input,
   PluginStoreItem,
+  SegmentedControl,
   Toggle,
   Tooltip,
 } from '@tahti-player/ui';
 
+import type { ChannelBlockWidth } from '../../api/channel-blocks';
 import {
   createDiscoWidgetInstall,
   fetchDiscoWidgetInstalls,
@@ -25,6 +27,13 @@ import {
   type DiscoWidgetStoreItem,
 } from '../../api/disco-widgets';
 import { PageLoading } from '../PageStates';
+import { useChannelAddonBlocks } from './useChannelAddonBlocks';
+
+const WIDTH_OPTIONS: { id: ChannelBlockWidth; label: string }[] = [
+  { id: 'FULL', label: 'Full' },
+  { id: 'HALF', label: 'Half' },
+  { id: 'THIRD', label: 'Third' },
+];
 
 export function DiscoWidgetManagerPanel({
   scope,
@@ -45,6 +54,7 @@ export function DiscoWidgetManagerPanel({
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [configuringId, setConfiguringId] = useState<string | null>(null);
+  const layout = useChannelAddonBlocks(scope === 'ARTIST');
 
   useEffect(() => {
     let cancelled = false;
@@ -93,6 +103,27 @@ export function DiscoWidgetManagerPanel({
       return;
     }
     setInstalls((prev) => [...prev, result.data]);
+    const layoutError = await layout.place(result.data.id, [
+      ...installs.map((install) => install.id),
+      result.data.id,
+    ]);
+    if (layoutError) {
+      setError(layoutError);
+    }
+  }
+
+  async function handleWidth(id: string, width: ChannelBlockWidth) {
+    setError(null);
+    setPendingId(id);
+    const layoutError = await layout.setWidth(
+      id,
+      width,
+      installs.map((install) => install.id),
+    );
+    setPendingId(null);
+    if (layoutError) {
+      setError(layoutError);
+    }
   }
 
   async function handleToggle(id: string, enabled: boolean) {
@@ -128,10 +159,18 @@ export function DiscoWidgetManagerPanel({
       patchDiscoWidgetInstall(scope, a.id, { position: b.position }),
       patchDiscoWidgetInstall(scope, b.id, { position: a.position }),
     ]);
-    setPendingId(null);
     if (resA.error || resB.error) {
+      setPendingId(null);
       setError(resA.error ?? resB.error ?? 'Failed to reorder');
       return;
+    }
+    const order = installs.map((install) => install.id);
+    order[index] = b.id;
+    order[swapWith] = a.id;
+    const layoutError = await layout.reorder(order);
+    setPendingId(null);
+    if (layoutError) {
+      setError(layoutError);
     }
     setInstalls((prev) => {
       const next = [...prev];
@@ -151,6 +190,10 @@ export function DiscoWidgetManagerPanel({
       return;
     }
     setInstalls((prev) => prev.filter((install) => install.id !== id));
+    const layoutError = await layout.unplace(id);
+    if (layoutError) {
+      setError(layoutError);
+    }
   }
 
   return (
@@ -226,6 +269,16 @@ export function DiscoWidgetManagerPanel({
                             </Button>
                           </Tooltip>
                         )}
+                        {scope === 'ARTIST' ? (
+                          <SegmentedControl
+                            aria-label={`Width of ${install.widget.name} on your channel`}
+                            options={WIDTH_OPTIONS}
+                            value={layout.widthOf(install.id)}
+                            onChange={(width) =>
+                              void handleWidth(install.id, width)
+                            }
+                          />
+                        ) : null}
                         <Toggle
                           label="Enabled"
                           checked={install.enabled}
