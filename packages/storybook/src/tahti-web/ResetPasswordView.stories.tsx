@@ -53,10 +53,8 @@ export const ValidLink: Story = {
     });
     await expect(submit).toBeDisabled();
 
-    await userEvent.type(canvas.getByLabelText('New password'), 'short');
-    await expect(
-      canvas.getByText('Password must be at least 8 characters.'),
-    ).toBeVisible();
+    await userEvent.type(canvas.getByLabelText('New password'), 'Short1');
+    await expect(canvas.getByText('Use at least 10 characters.')).toBeVisible();
 
     await userEvent.type(canvas.getByLabelText('New password'), '-enough');
     await userEvent.type(
@@ -69,7 +67,7 @@ export const ValidLink: Story = {
     await userEvent.clear(canvas.getByLabelText('Confirm new password'));
     await userEvent.type(
       canvas.getByLabelText('Confirm new password'),
-      'short-enough',
+      'Short1-enough',
     );
     await expect(canvas.queryByText("Passwords don't match.")).toBeNull();
     await expect(submit).toBeEnabled();
@@ -85,10 +83,10 @@ export const PasswordReset: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await canvas.findByText(/Hi New Artist/);
-    await userEvent.type(canvas.getByLabelText('New password'), 'new-secret-1');
+    await userEvent.type(canvas.getByLabelText('New password'), 'New-secret-1');
     await userEvent.type(
       canvas.getByLabelText('Confirm new password'),
-      'new-secret-1',
+      'New-secret-1',
     );
     await userEvent.click(
       canvas.getByRole('button', { name: 'Reset password & sign in' }),
