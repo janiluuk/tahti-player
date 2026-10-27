@@ -26,6 +26,8 @@ From the top:
 | **Radio** | Internet radio stations (Finnish and international). See [Radio](radio.md). |
 | **Widgets** | Disco-widgets you installed from Settings → Add-ons. |
 
+New visitors, and listeners who haven't played anything yet, see the **Radio** row first; once you've played something, Tahti Radio and Recently played lead again.
+
 Every row has a filter box and arrows to scroll it. On a card, the play button starts that track or channel and the queue button lines it up next; the title opens its page.
 
 If one section can't load, it says so and offers **Retry** without blocking the rest of the page.
@@ -39,4 +41,8 @@ The tabs at the top of Listen:
 
 ## Personalise it
 
-Signed-in listeners can add widgets to Listen with the **+** button at the top right (Settings → Add-ons → Discovery), and choose which internet radio stations appear.
+Signed-in listeners can add widgets to Listen with the **+** button at the top right (Settings → Add-ons → Discovery), and choose which internet radio stations appear. A new widget goes to the top.
+
+**Order** in the Listen header shows a drag handle on every section and widget; drag them (or move them with the keyboard) into the order you want. Your order is kept and wins over the defaults.
+
+Articles in a news widget open inside Tahti with their text and image, and **Read on** the source site if you want the original. The News add-on also offers DJ and music-production feeds.

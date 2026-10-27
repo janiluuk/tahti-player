@@ -6,7 +6,14 @@ description: Plays, listeners and top lists, per-track insights, fan tiers, sell
 
 ## Stats
 
-**Studio → Stats** has **Plays & listeners** (with a range picker and a detail view) and **Top lists**. Each track's **Insights** tab shows its own plays and listeners, and the listener map shows where people listen from. Artists see anonymous counts, never who listened.
+**Studio → Stats** has **Plays & listeners** (with a range picker and a detail view) and **Top lists**. Artists see anonymous counts, never who listened. For the selected range, **Plays** shows:
+
+- **Plays over time**, split into downloads and smart-link clicks per day. **Download CSV** saves the range as date, plays, downloads and smart-link clicks.
+- The **listener map**, with **Countries** and **Cities** lists showing each one's share of listens. A city only appears once enough people listened from it.
+- **Listener loyalty**: the share of listens still going at each tenth of a track, summed up as how many got halfway and how many listened to the end.
+- **Audience**: the share of listens by browser, operating system, device type and maker, where the listen came from (the referring site) and what it was listened on. Bot traffic is left out by default.
+
+Each track's **Insights** tab shows the same listener panels narrowed to that track, for 7 days, 30 days or all time.
 
 The Studio home shows plays today, total plays and downloads, and followers. The Stats overview also shows how download gates (follow or share to download) convert.
 
