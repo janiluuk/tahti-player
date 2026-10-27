@@ -7,6 +7,10 @@ import { desktopModes, runDesktop } from './commands/desktop.mjs';
 import { runE2e } from './commands/e2e.mjs';
 import { runEnv } from './commands/env.mjs';
 import {
+  runFlathubUpdate,
+  runFlatpakSources,
+} from './commands/package-flatpak.mjs';
+import {
   listSnapshots,
   snapshotGroups,
   updateSnapshots,
@@ -93,6 +97,40 @@ Examples:
         dryRun,
         extraArgs: args.slice(1),
       });
+    },
+  },
+  {
+    path: ['package', 'flatpak'],
+    usage:
+      'tahti-ops package flatpak <sources [--out <dir>]|flathub <version>> [--dry-run]',
+    summary:
+      'Generate Flatpak dependency sources, or open the Flathub update PR for a release',
+    details: `Actions:
+  sources [--out <dir>]  Write pnpm-sources.json and cargo-sources.json
+                         (default dir: packaging/flatpak, gitignored)
+  flathub <version>      Clone flathub/live.tahti.player, regenerate sources, fill
+                         live.tahti.player.yml.template for player@<version>, push a
+                         branch and open a PR (needs GH_TOKEN). Run by update-flathub.yml.
+
+Needs flatpak-node-generator and python3 (skipped on --dry-run).
+  --dry-run   Print each step without running it`,
+    passthrough: true,
+    run: (_parsed, argv) => {
+      const { dryRun, args } = splitDryRun(argv);
+      const { value: outDir, rest } = takeOption(args, '--out');
+      const unknown = rest.find((arg) => arg.startsWith('-'));
+      if (unknown) {
+        throw new OpsError(`Unknown option: ${unknown}`);
+      }
+      if (rest[0] === 'sources') {
+        return runFlatpakSources({ dryRun, outDir });
+      }
+      if (rest[0] === 'flathub') {
+        return runFlathubUpdate(rest[1], { dryRun });
+      }
+      throw new OpsError(
+        'Try: tahti-ops package flatpak sources | flathub <version>',
+      );
     },
   },
 ];

@@ -52,6 +52,10 @@ pnpm tahti-ops stack smoke
 pnpm tahti-ops backup status --dry-run
 pnpm tahti-ops backup status
 
+# Flatpak (needs flatpak-node-generator + python3)
+pnpm tahti-ops package flatpak sources                    # pnpm/cargo sources into packaging/flatpak
+pnpm tahti-ops package flatpak flathub 1.48.0 --dry-run   # CI: update-flathub.yml (GH_TOKEN)
+
 # production deploys (needs SSH to the fleet)
 pnpm tahti-ops deploy stack --dry-run
 pnpm tahti-ops deploy all
@@ -76,6 +80,7 @@ Progress lines go to stderr (`→` / `✓` / `✗`); script stdout is unchanged.
 | `packages/tahti-web/deploy/deploy-vimage.sh`, `pnpm deploy:tahti-beta` | `pnpm tahti-ops deploy web` |
 | `packages/tahti-web/scripts/run-e2e-journeys.sh` | `pnpm tahti-ops e2e journeys` |
 | `vitest run -u` per package | `pnpm tahti-ops snapshots update <group>` |
+| `scripts/flatpak-generate-sources.sh`, `scripts/flatpak-update-flathub.sh` (removed) | `pnpm tahti-ops package flatpak sources` / `flathub <version>` |
 
 Cron entries may still call `backup.sh` directly on the host; operators use
 `tahti-ops` from this monorepo.
