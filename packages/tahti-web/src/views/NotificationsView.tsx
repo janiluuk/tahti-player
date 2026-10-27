@@ -4,9 +4,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { Badge, Button, ViewShell } from '@tahti-player/ui';
 
 import {
+  clearReadNotifications,
   dismissNotification,
   fetchNotifications,
   markAllNotificationsRead,
+  removeNotification,
   type TahtiNotification,
 } from '../api/notifications';
 import { PageEmpty, PageError } from '../components/PageStates';
@@ -113,6 +115,26 @@ export function NotificationsView() {
     }
   };
 
+  const removeOne = async (id: string) => {
+    try {
+      await removeNotification(id);
+      setItems((current) => current.filter((item) => item.id !== id));
+    } catch {
+      setActionError('Could not remove the notification.');
+    }
+  };
+
+  const clearRead = async () => {
+    try {
+      await clearReadNotifications();
+      setItems((current) => current.filter((item) => !item.readAt));
+    } catch {
+      setActionError('Could not clear read notifications.');
+    }
+  };
+
+  const hasRead = items.some((item) => item.readAt);
+
   if (hydrated && !user) {
     return (
       <ViewShell title="Notifications" classes={{ root: 'px-0 pt-0' }}>
@@ -137,14 +159,24 @@ export function NotificationsView() {
           <p className="text-foreground-secondary text-sm">
             {unreadCount === 0 ? 'All caught up' : `${unreadCount} unread`}
           </p>
-          <Button
-            size="sm"
-            variant="secondary"
-            disabled={unreadCount === 0}
-            onClick={() => void markAllRead()}
-          >
-            Mark all read
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={unreadCount === 0}
+              onClick={() => void markAllRead()}
+            >
+              Mark all read
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={!hasRead}
+              onClick={() => void clearRead()}
+            >
+              Clear read
+            </Button>
+          </div>
         </div>
         {actionError ? (
           <p role="alert" className="text-accent-red-strong text-sm">
@@ -221,7 +253,16 @@ export function NotificationsView() {
                     >
                       Mark read
                     </Button>
-                  ) : null}
+                  ) : (
+                    <Button
+                      size="xs"
+                      variant="text"
+                      aria-label={`Remove: ${notification.title}`}
+                      onClick={() => void removeOne(notification.id)}
+                    >
+                      Remove
+                    </Button>
+                  )}
                 </li>
               );
             })}

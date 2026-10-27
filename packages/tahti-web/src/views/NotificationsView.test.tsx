@@ -111,6 +111,42 @@ describe('NotificationsView', () => {
     expect(screen.getByRole('button', { name: 'Acknowledge' })).toBeTruthy();
   });
 
+  it('removes a read notification and clears every read one', async () => {
+    vi.spyOn(api, 'fetchNotifications').mockResolvedValue({
+      data: [
+        note('new'),
+        note('old1', { readAt: '2026-10-26T10:00:00.000Z' }),
+        note('old2', { readAt: '2026-10-25T10:00:00.000Z' }),
+      ],
+      unreadCount: 1,
+      hasMore: false,
+      meta: { source: 'api' },
+    });
+    const remove = vi
+      .spyOn(api, 'removeNotification')
+      .mockResolvedValue(undefined);
+    const clear = vi.spyOn(api, 'clearReadNotifications').mockResolvedValue(1);
+    renderView();
+
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Remove: Title old1' }),
+    );
+    await waitFor(() => expect(remove).toHaveBeenCalledWith('old1'));
+    await waitFor(() => expect(screen.queryByText('Title old1')).toBeNull());
+    expect(
+      screen.queryByRole('button', { name: 'Remove: Title new' }),
+    ).toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Clear read' }));
+    await waitFor(() => expect(clear).toHaveBeenCalled());
+    await waitFor(() => expect(screen.queryByText('Title old2')).toBeNull());
+    expect(screen.getByText('Title new')).toBeTruthy();
+    expect(
+      (screen.getByRole('button', { name: 'Clear read' }) as HTMLButtonElement)
+        .disabled,
+    ).toBe(true);
+  });
+
   it('shows a retry when the inbox fails to load', async () => {
     vi.spyOn(api, 'fetchNotifications').mockResolvedValue({
       data: [],

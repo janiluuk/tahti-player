@@ -214,3 +214,31 @@ export async function markAllNotificationsRead(): Promise<void> {
     method: 'POST',
   });
 }
+
+/** Removes one notification (tahti-org `DELETE /api/me/notifications/:id`).
+ * An unacknowledged sticky notice can't be removed; the API answers 409. */
+export async function removeNotification(id: string): Promise<void> {
+  if (isForceMock()) {
+    dismissMockNotification(id);
+    return;
+  }
+  await requestJson<void>(`/api/me/notifications/${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+  });
+}
+
+/** Removes every notification already read; returns how many went. */
+export async function clearReadNotifications(): Promise<number> {
+  if (isForceMock()) {
+    const read = mockNotifications(true).filter((item) => item.readAt);
+    for (const item of read) {
+      dismissMockNotification(item.id);
+    }
+    return read.length;
+  }
+  const { data } = await requestJson<{ removed: number }>(
+    '/api/me/notifications?read=true',
+    { method: 'DELETE' },
+  );
+  return data.removed;
+}
