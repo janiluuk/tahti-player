@@ -20,7 +20,7 @@ export default meta;
 type Story = StoryObj;
 
 /**
- * Channel page playlist widget. Empty playlist covered by Block — Empty. Still missing: private / 404 load failure (use a bad slug), long titles wrapping under Cards.
+ * Channel page playlist widget. The tracklist display is the ambient track list (size / grid / list switcher and a remembered sort), same as Collection and SmartLink pages. Empty playlist covered by Block — Empty. Still missing: private / 404 load failure (use a bad slug), long titles wrapping under Cards.
  */
 export const BlockTracklist: Story = {
   name: 'Block — Tracklist',
@@ -32,6 +32,13 @@ export const BlockTracklist: Story = {
       />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByTestId('ambient-track-list')).toBeVisible();
+    await expect(
+      canvas.getByRole('radiogroup', { name: 'Track size' }),
+    ).toBeVisible();
+  },
 };
 
 export const BlockEmpty: Story = {

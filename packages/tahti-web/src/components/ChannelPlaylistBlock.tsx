@@ -9,7 +9,7 @@ import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { usePlayerStore } from '../stores/playerStore';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
-import { PlayableTrackTable } from './PlayableTrackTable';
+import { PlayableAmbientTrackList } from './PlayableAmbientTrackList';
 
 function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
   const out: TahtiPlayable[] = [];
@@ -24,6 +24,7 @@ function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
       kind: 'sound',
       title: sound.title,
       artist: col.user.displayName,
+      durationSec: sound.durationSec ?? null,
       coverUrl:
         sound.bannerUrl ??
         col.coverUrl ??
@@ -204,7 +205,7 @@ export function ChannelPlaylistBlock({
           })}
         </CardGrid>
       ) : (
-        <PlayableTrackTable items={playables} />
+        <PlayableAmbientTrackList items={playables} compactActions />
       )}
     </section>
   );

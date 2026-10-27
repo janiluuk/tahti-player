@@ -39,6 +39,10 @@ new surface, one PR per row.
   Partial: Favorites (batch 84); CollectionView + SmartLinkView (batch 85);
   Listen new tracks + artist popular (batch 87); artist liked tracks (batch
   91). Left: channel page blocks (waits on the channel redesign).
+  - 2026-10-27: the channel Playlist widget (`ChannelPlaylistBlock`,
+    tracklist display) is on `PlayableAmbientTrackList` and passes the
+    sound's `durationSec`. Collection items carry no `peaks` yet, so rows
+    draw the placeholder waveform. Channel Tracks / Pinned blocks still left.
 - [ ] `PlayableTrackTable` view mode (dense / expanded / grid) + client sort,
   persisted (pattern: player `usePlaylistSort`). Fixes ListenView,
   CollectionView, SmartLinkView, FavoritesView, ChannelViewBlocks,
