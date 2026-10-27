@@ -15,6 +15,7 @@ export type DiscussionTopic = {
   createdAt: string;
   following: boolean;
   muted: boolean;
+  unreadCount?: number;
 };
 
 export type DiscussionPost = {
@@ -22,6 +23,7 @@ export type DiscussionPost = {
   body: string;
   author: string;
   createdAt: string;
+  mine?: boolean;
 };
 
 export type DiscussionTopicDetail = DiscussionTopic & {
@@ -47,8 +49,9 @@ let mockTopics: DiscussionTopicDetail[] = [
     postCount: 2,
     lastPostAt: new Date(Date.now() - 3 * HOUR).toISOString(),
     createdAt: new Date(Date.now() - 48 * HOUR).toISOString(),
-    following: false,
+    following: true,
     muted: false,
+    unreadCount: 1,
     posts: [
       {
         id: '1',
@@ -93,6 +96,7 @@ function summary(topic: DiscussionTopicDetail): DiscussionTopic {
     createdAt: topic.createdAt,
     following: topic.following,
     muted: topic.muted,
+    unreadCount: topic.unreadCount,
   };
 }
 
@@ -145,8 +149,9 @@ export async function fetchDiscussionTopic(id: string): Promise<{
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
+    const topic = updateMockTopic(id, (t) => ({ ...t, unreadCount: 0 }));
     return {
-      data: mockTopics.find((t) => t.id === id) ?? null,
+      data: topic ?? null,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -176,6 +181,7 @@ export async function replyToDiscussion(
       body: trimmed,
       author: MOCK_SELF,
       createdAt: new Date().toISOString(),
+      mine: true,
     };
     updateMockTopic(id, (t) => ({
       ...t,

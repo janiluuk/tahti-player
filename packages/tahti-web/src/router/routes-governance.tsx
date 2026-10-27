@@ -2,6 +2,8 @@ import { createRoute } from '@tanstack/react-router';
 
 import { appLayoutRoute } from './router-core';
 import {
+  DiscussionsView,
+  DiscussionTopicView,
   FeatureRequestsView,
   GovernanceMeetingDetailView,
   GovernanceMembersView,
@@ -50,4 +52,19 @@ export const featureRequestsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/governance/feature-requests',
   component: FeatureRequestsView,
+});
+
+export const discussionsRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/governance/discussions',
+  component: DiscussionsView,
+});
+
+export const discussionTopicRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/governance/discussions/$id',
+  component: function DiscussionTopicRoute() {
+    const { id } = discussionTopicRoute.useParams();
+    return <DiscussionTopicView id={id} />;
+  },
 });

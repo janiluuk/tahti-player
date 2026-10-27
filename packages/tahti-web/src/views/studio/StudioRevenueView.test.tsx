@@ -70,4 +70,35 @@ describe('StudioRevenueView', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByText('No fan subscriptions yet')).toBeTruthy();
   });
+
+  it('tells a Settings bookmark visitor that the page moved, until dismissed', async () => {
+    vi.spyOn(fanTiers, 'fetchMyFanTiers').mockResolvedValue({
+      data: [],
+      meta,
+    });
+    const { router } = await renderWithRouter(<StudioRevenueView />, {
+      at: '/?movedFrom=money',
+      paths: ['/studio/audience'],
+    });
+    const notice = await screen.findByTestId('settings-moved-notice');
+    expect(notice.textContent).toContain('This page has moved');
+    expect(notice.textContent).toContain('Settings › Money is now');
+    expect(notice.textContent).toContain('Studio › Audience');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
+    await vi.waitFor(() =>
+      expect(router.state.location.pathname).toBe('/studio/audience'),
+    );
+    expect(router.state.location.search).toEqual({});
+  });
+
+  it('shows no moved notice on a normal visit', async () => {
+    vi.spyOn(fanTiers, 'fetchMyFanTiers').mockResolvedValue({
+      data: [],
+      meta,
+    });
+    await renderWithRouter(<StudioRevenueView />);
+    expect(await screen.findByText('No fan subscriptions yet')).toBeTruthy();
+    expect(screen.queryByTestId('settings-moved-notice')).toBeNull();
+  });
 });

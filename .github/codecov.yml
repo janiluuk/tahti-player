@@ -88,8 +88,6 @@ ignore:
   - '**/*.d.ts'
   - 'packages/tools/**'
   - 'packages/player/src-tauri/**'
-  - '**/routeTree.gen.ts'
   - '**/*.test-wrapper.tsx'
-  - 'packages/player/src/test/**'
   - 'packages/player/src/services/tauri/bindings.ts'
   - 'packages/plugin-sdk/src/**'
