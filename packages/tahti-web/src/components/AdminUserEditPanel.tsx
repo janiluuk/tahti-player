@@ -160,7 +160,9 @@ export function AdminUserEditPanel({
     syncDetail(result.data);
     setSuspendReason('');
     setStatus(
-      result.data.suspendedAt ? 'Account suspended.' : 'Account restored.',
+      result.data.suspendedAt
+        ? 'Account suspended. They were emailed your reason.'
+        : 'Account restored. They were emailed a sign-in link.',
     );
   };
 
@@ -437,8 +439,8 @@ export function AdminUserEditPanel({
             detail.suspendedAt
               ? `Suspended ${new Date(detail.suspendedAt).toLocaleString()}${
                   detail.suspendReason ? ` · ${detail.suspendReason}` : ''
-                }`
-              : 'Suspension blocks sign-in immediately and is audited.'
+                }. Restoring it emails them a sign-in link.`
+              : 'Suspension blocks sign-in immediately and is audited. They are emailed your reason, and see it when they try to sign in.'
           }
         >
           {!detail.suspendedAt ? (
