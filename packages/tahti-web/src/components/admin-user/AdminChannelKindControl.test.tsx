@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { toast } from 'sonner';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as admin from '../../api/admin';
@@ -23,6 +24,9 @@ describe('AdminChannelKindControl', () => {
     expect(
       screen.getByRole('radio', { name: 'Radio' }).getAttribute('aria-checked'),
     ).toBe('true');
+    expect(toast.success).toHaveBeenCalledWith(
+      'kaski now shows as a radio station. Its owner was notified.',
+    );
   });
 
   it('goes back to the saved type when the API refuses', async () => {

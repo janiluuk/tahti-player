@@ -394,7 +394,7 @@ export function AdminUserEditPanel({
       <div className="grid gap-4 @3xl:grid-cols-2">
         <StudioPanel
           title="Account details"
-          description="Edit access, membership, and governance roles."
+          description="Edit access, membership, and governance roles. Changing the plan, membership or board seat notifies the account."
         >
           <form
             className="flex flex-col gap-3"

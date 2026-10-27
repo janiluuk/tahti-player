@@ -37,8 +37,8 @@ export function AdminChannelKindControl({
     setKind(result.channelKind);
     toast.success(
       result.channelKind === 'RADIO'
-        ? `${slug} now shows as a radio station.`
-        : `${slug} now shows as an artist channel.`,
+        ? `${slug} now shows as a radio station. Its owner was notified.`
+        : `${slug} now shows as an artist channel. Its owner was notified.`,
     );
   };
 
