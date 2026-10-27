@@ -96,6 +96,8 @@ First subagent was **wrong** on this class of issues. These are all wired correc
 | **Public/reader** | Covered by `e2e/routes-public-reader.spec.ts`: `/subscribe/$username`, `/r/$slug`, `/t/$id`, `/v/$slug`, `/embed/*`, terms, privacy, agpl, about, how-it-works, what-is-it | 0 |
 | **Governance** | `/governance`, `/governance/members`, `/governance/meetings/$id`, `/governance/motions/$id`, `/public-governance-history`, `/feature-requests` | 6 |
 | **Listen (discover/feed/radio/show)** | `/listen/feed` (`/discover`, `/radio`, `/schedule`, `/radio/show/$channelSlug`, `/themes`, `/search` covered by `e2e/routes-discover-radio.spec.ts`) | 1 |
+| **Governance** | `/governance`, `/governance/members`, `/governance/meetings/$id`, `/governance/motions/$id`, `/public-governance-history`, `/feature-requests` | 6 |
+| **Listen (discover/feed/radio/show)** | `/discover`, `/radio`, `schedule`, `/radio/show/$channelSlug`, `/themes`, `/search` (`/listen/feed`, `/listen/favorites`, `/listen/history` covered by `e2e/routes-listen.spec.ts`) | 6 |
 | **Public/reader** | `/subscribe/$username`, `/r/$slug`, `/t/$id`, `/v/$slug`, `/embed/*, terms, privacy, agpl, about, how-it-works, what-is-it` | 12 |
 | **Library deep** | `/library/favorites`, `/library/history`, `/library/local`, `/library/media`, `/library/embeds`, `/library/smartlinks`, `/library/recordings` | 7 |
 | **Public/reader** | `/subscribe/$username`, `/r/$slug`, `/t/$id`, `/v/$slug`, `/embed/*, terms, privacy, agpl, about, how-it-works, what-is-it` | 12 |
