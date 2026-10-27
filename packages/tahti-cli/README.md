@@ -121,6 +121,7 @@ Every command accepts `--json` (prints the API response unchanged) and
 | `tahti discussions reply <id> <text...>` | `POST /api/v1/governance/discussions/:id/posts` | Reply to a topic (follows it); write scope |
 | `tahti discussions follow\|unfollow <id>` | `PUT /api/v1/governance/discussions/:id/follow` | Follow a topic without replying, or stop following; write scope |
 | `tahti discussions mute\|unmute <id>` | `PUT /api/v1/governance/discussions/:id/mute` | Keep following without notifications, or turn them back on; write scope |
+| `tahti like\|unlike <channel> <track-id>` | `POST\|DELETE /api/v1/c/:channel/sounds/:id/like` | Love a track or take it back; prints the new public count; write scope |
 | `tahti mentions [--limit <n>] [--json]` | `GET /api/me/mentions` | Where other artists @mentioned you, newest first (date, who, bio/announcement/release/newsletter/tracklist/chat, title or link); `--limit` is 1-50 |
 | `tahti messages list [--json]` | `GET /api/me/messages/conversations` | Conversations (who, unread, updated, start of the last message) and the unread total; does not mark anything read |
 | `tahti messages send <username> <message...>` | `POST /api/me/messages/conversations`, `POST /api/me/messages/conversations/:id/messages` | Sends one message, starting the conversation if needed; needs the `write` scope |
