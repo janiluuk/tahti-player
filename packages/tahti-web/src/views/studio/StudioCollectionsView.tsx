@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import {
   Disc3Icon,
   DiscAlbumIcon,
@@ -32,6 +32,7 @@ import {
 
 import {
   createStudioCollection,
+  deleteStudioCollection,
   fetchStudioCollection,
   fetchStudioCollections,
 } from '../../api/studio';
@@ -52,6 +53,7 @@ import {
 import { hasStudioAccess } from '../../lib/accountRoles';
 import { toEmbedPlaybackProvider } from '../../lib/embedSrc';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
+import { toastWithUndo } from '../../lib/undoToast';
 import { useAuthStore } from '../../stores/authStore';
 import { usePlayerStore } from '../../stores/playerStore';
 import { LibrarySectionTabs } from '../LibraryView';
@@ -147,6 +149,7 @@ export function StudioCollectionsView() {
   const [playingSlug, setPlayingSlug] = useState<string | null>(null);
   const canCreate = hasStudioAccess(user);
   const navigate = useNavigate();
+  const router = useRouter();
   const [rows, setRows] = useState<StudioCollection[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -213,11 +216,28 @@ export function StudioCollectionsView() {
           toast.error(r.error);
           return;
         }
+        const created = r.data;
+        const editorPath = editorRouteFor(created).replace(
+          '$slug',
+          created.slug,
+        );
         closeCreate();
         reload();
+        toastWithUndo(`Created ${created.name}.`, {
+          undo: () => deleteStudioCollection(created.slug),
+          undoneMessage: `Removed ${created.name}.`,
+          onUndone: () => {
+            setRows((current) =>
+              current.filter((row) => row.slug !== created.slug),
+            );
+            if (router.state.location.pathname === editorPath) {
+              void navigate({ to: '/studio/collections' });
+            }
+          },
+        });
         void navigate({
-          to: editorRouteFor(r.data),
-          params: { slug: r.data.slug },
+          to: editorRouteFor(created),
+          params: { slug: created.slug },
         });
       })
       .catch(() => {
