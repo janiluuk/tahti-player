@@ -199,6 +199,11 @@ function ReportActions({
           </Button>
         ) : null}
       </div>
+      {confirmingDelete ? (
+        <p className="text-foreground-secondary text-xs">
+          The commenter is notified that the board removed their comment.
+        </p>
+      ) : null}
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}
     </div>
   );

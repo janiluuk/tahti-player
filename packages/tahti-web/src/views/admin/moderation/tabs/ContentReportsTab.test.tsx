@@ -94,6 +94,9 @@ describe('ContentReportsTab', () => {
       }),
     ]);
     fireEvent.click(screen.getByRole('button', { name: 'Delete comment' }));
+    expect(
+      screen.getByText(/The commenter is notified that the board removed/),
+    ).toBeTruthy();
     expect(remove).not.toHaveBeenCalled();
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Confirm delete' }));
