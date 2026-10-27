@@ -274,6 +274,14 @@ export type CollectionSound = {
   embedProvider?:
     'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | 'MIKSERI' | null;
   embedUri?: string | null;
+  createdAt?: string;
+  genre?: string | null;
+  /** [0..255] amplitude buckets for the row waveform. */
+  peaks?: number[] | null;
+  downloadsEnabled?: boolean;
+  likeCount?: number;
+  playCount?: number;
+  downloadCount?: number;
 };
 
 export type CollectionItem = {
