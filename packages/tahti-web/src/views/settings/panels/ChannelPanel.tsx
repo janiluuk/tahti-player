@@ -36,28 +36,29 @@ import {
   parseGenreTags,
 } from '../../../lib/genres';
 import { useAuthStore } from '../../../stores/authStore';
+import {
+  CHANNEL_SETTINGS_SECTIONS,
+  useSettingsModalStore,
+  type ChannelSettingsSection,
+} from '../../../stores/settingsModalStore';
 import { StudioBrandingPanel } from '../../studio/StudioBrandingView';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
 import { ChannelAutoplayToggle } from './ChannelAutoplayToggle';
 import { channelRenameNote } from './channelRenameNote';
 
-const CHANNEL_TABS = [
-  'appearance',
-  'discovery',
-  'domain',
-  'chat',
-  'moderators',
-];
-
 /** The tab a link asked for with `?tab=` (for example `?tab=moderators`),
  * or the first tab. */
-function initialTabIndex(): number {
-  const tab = new URLSearchParams(window.location.search).get('tab');
-  return Math.max(0, CHANNEL_TABS.indexOf(tab ?? ''));
+function tabIndexFor(section: ChannelSettingsSection | null): number {
+  const tab = section ?? new URLSearchParams(window.location.search).get('tab');
+  return Math.max(
+    0,
+    CHANNEL_SETTINGS_SECTIONS.findIndex((id) => id === tab),
+  );
 }
 
 export function ChannelPanel() {
   const user = useAuthStore((s) => s.user);
+  const channelSection = useSettingsModalStore((s) => s.channelSection);
   const channel = user?.channel;
   const [channelProfile, setChannelProfile] = useState<ProfileFields | null>(
     null,
@@ -130,8 +131,9 @@ export function ChannelPanel() {
 
   return (
     <Tabs
+      key={channelSection ?? 'default'}
       listClassName="flex-wrap"
-      defaultIndex={initialTabIndex()}
+      defaultIndex={tabIndexFor(channelSection)}
       items={[
         {
           id: 'appearance',
