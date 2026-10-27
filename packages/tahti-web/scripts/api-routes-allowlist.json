@@ -1,5 +1,6 @@
 {
   "/api/admin/i18n/languages": "The API has no translation routes. Admin \u2192 Languages shows \"Not available yet\" on a 404 instead of offering Add/Import.",
+  "/api/admin/stats/listening": "Ships in tahti-org #883 (merged 2026-10-27); OpenAPI release not refreshed yet. Admin \u2192 Content shows a retry on the Listening panel until it is deployed.",
   "/api/auth/token/refresh": "Ships in tahti-org #880 (merged); OpenAPI release not refreshed yet.",
   "/api/me/channel/autoplay": "The route ships in tahti-org #761, which is not in a tahti-org release yet. The Autoplay toggle is hidden when the read fails.",
   "/api/me/listening": "Ships in tahti-org #883 (merged 2026-10-27); OpenAPI release not refreshed yet. The panel shows a retry or hides itself until it is deployed.",
