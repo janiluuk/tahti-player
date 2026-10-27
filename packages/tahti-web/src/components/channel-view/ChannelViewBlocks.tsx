@@ -7,7 +7,7 @@ import {
   RssIcon,
 } from 'lucide-react';
 
-import { Badge, Button, EmptyState, StatChip, Tooltip } from '@tahti-player/ui';
+import { Badge, Button, StatChip, Tooltip } from '@tahti-player/ui';
 
 import type { ChannelLink } from '../../api/channel-design';
 import type { PublicRadioShow } from '../../api/shows';
@@ -22,6 +22,7 @@ import { ChannelPlaylistBlock } from '../ChannelPlaylistBlock';
 import { ListenerWidgetEmbed } from '../ListenerWidgetEmbed';
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
 import { PlayableTrackTable } from '../PlayableTrackTable';
+import { ProfileSection } from '../ProfileSection';
 import { ShowEpisodeList } from '../ShowEpisodeList';
 import { SocialLinkIcon } from '../SocialLinkIcon';
 import { Eyebrow } from '../tahti/Eyebrow';
@@ -66,66 +67,61 @@ export function renderChannelBlock(
   switch (item.type) {
     case 'hero':
       return null;
-    case 'sound':
+    case 'sound': {
+      const hasTracks =
+        ctx.pinnedPlayables.length > 0 || ctx.catalogPlayables.length > 0;
       return (
-        <section id="channel-block-sound" className="flex flex-col gap-4">
-          {!editing && (
-            <h2 className="text-xl font-bold tracking-tight">Tracks</h2>
+        <ProfileSection
+          id="channel-block-sound"
+          className="gap-4"
+          title={editing ? undefined : 'Tracks'}
+          status={ctx.sectionStatus.sounds}
+          loadingLabel="Loading tracks…"
+          errorTitle="Tracks couldn't load"
+          errorDescription="The rest of the channel still works."
+          onRetry={() => ctx.onRetrySection('sounds')}
+          empty={
+            hasTracks
+              ? null
+              : {
+                  title: 'No public tracks yet',
+                  description:
+                    'When this channel publishes tracks, they show up here. Offline listening still works from Discover and Radio.',
+                }
+          }
+        >
+          {ctx.pinnedPlayables.length > 0 && (
+            <div className="flex flex-col gap-2">
+              <Eyebrow tone="muted">Pinned</Eyebrow>
+              <PlayableTrackTable
+                items={ctx.pinnedPlayables}
+                emptyMessage="No pinned tracks."
+                playAll={false}
+                filterable={false}
+                addAllToQueue={false}
+                quietHeader
+                hideArtist={ctx.isOwner}
+              />
+            </div>
           )}
-          {ctx.sectionStatus.sounds === 'loading' ? (
-            <PageLoading label="Loading tracks…" />
-          ) : ctx.sectionStatus.sounds === 'error' ? (
-            <PageError
-              title="Tracks couldn't load"
-              description="The rest of the channel still works."
-              onRetry={() => ctx.onRetrySection('sounds')}
-            />
-          ) : null}
-          {ctx.sectionStatus.sounds === 'ready' &&
-          ctx.pinnedPlayables.length === 0 &&
-          ctx.catalogPlayables.length === 0 ? (
-            <EmptyState
-              size="sm"
-              title="No public tracks yet"
-              description="When this channel publishes tracks, they show up here. Offline listening still works from Discover and Radio."
-            />
-          ) : null}
-          {ctx.sectionStatus.sounds === 'ready' &&
-            ctx.pinnedPlayables.length > 0 && (
-              <div className="flex flex-col gap-2">
-                <Eyebrow tone="muted">Pinned</Eyebrow>
-                <PlayableTrackTable
-                  items={ctx.pinnedPlayables}
-                  emptyMessage="No pinned tracks."
-                  playAll={false}
-                  filterable={false}
-                  addAllToQueue={false}
-                  quietHeader
-                  hideArtist={ctx.isOwner}
-                />
-              </div>
+          <div className="flex flex-col gap-2">
+            {ctx.pinnedPlayables.length > 0 && (
+              <Eyebrow tone="muted">Catalog</Eyebrow>
             )}
-          {ctx.sectionStatus.sounds === 'ready' &&
-            (ctx.pinnedPlayables.length > 0 ||
-              ctx.catalogPlayables.length > 0) && (
-              <div className="flex flex-col gap-2">
-                {ctx.pinnedPlayables.length > 0 && (
-                  <Eyebrow tone="muted">Catalog</Eyebrow>
-                )}
-                <PlayableTrackTable
-                  items={ctx.catalogPlayables}
-                  emptyMessage={
-                    ctx.pinnedPlayables.length > 0
-                      ? 'No other public tracks.'
-                      : 'No public tracks for this channel yet.'
-                  }
-                  quietHeader
-                  hideArtist={ctx.isOwner}
-                />
-              </div>
-            )}
-        </section>
+            <PlayableTrackTable
+              items={ctx.catalogPlayables}
+              emptyMessage={
+                ctx.pinnedPlayables.length > 0
+                  ? 'No other public tracks.'
+                  : 'No public tracks for this channel yet.'
+              }
+              quietHeader
+              hideArtist={ctx.isOwner}
+            />
+          </div>
+        </ProfileSection>
       );
+    }
     case 'chat':
       // Chat lives in the Nuclear right rail only — never embed a second panel.
       return (

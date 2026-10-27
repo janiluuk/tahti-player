@@ -1,6 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 
-import { Card, CardGrid, MediaArtwork, SectionTitle } from '@tahti-player/ui';
+import { Card, CardGrid, MediaArtwork } from '@tahti-player/ui';
 
 import type {
   PublicProfileCollection,
@@ -12,6 +12,7 @@ import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../../lib/soundId';
 import { PlayableAmbientTrackList } from '../PlayableAmbientTrackList';
+import { ProfileSection } from '../ProfileSection';
 import { releasePlayables } from '../ReleaseTracklistDialog';
 import { TopListRankBadges } from './TopListRankBadges';
 
@@ -30,8 +31,7 @@ export function ArtistPopularTracks({
   onEditTrack: (soundId: string | null) => void;
 }) {
   return (
-    <section className="flex min-w-0 flex-col" data-testid="artist-popular">
-      <SectionTitle title="Popular tracks" />
+    <ProfileSection title="Popular tracks" data-testid="artist-popular">
       <TopListRankBadges items={items} />
       <PlayableAmbientTrackList
         items={items}
@@ -43,7 +43,7 @@ export function ArtistPopularTracks({
             : undefined
         }
       />
-    </section>
+    </ProfileSection>
   );
 }
 
@@ -53,8 +53,7 @@ export function ArtistRelatedArtists({
   artists: RelatedArtist[];
 }) {
   return (
-    <section className="flex min-w-0 flex-col" data-testid="artist-related">
-      <SectionTitle title="Related artists" />
+    <ProfileSection title="Related artists" data-testid="artist-related">
       <ul className="divide-border bg-primary text-primary-foreground border-border divide-y-(length:--border-width) border-(length:--border-width)">
         {artists.map((related) => (
           <li key={related.username}>
@@ -73,7 +72,7 @@ export function ArtistRelatedArtists({
           </li>
         ))}
       </ul>
-    </section>
+    </ProfileSection>
   );
 }
 
@@ -104,8 +103,7 @@ export function ArtistReleasesGrid({
 }) {
   const navigate = useNavigate();
   return (
-    <section className="flex flex-col" data-testid="artist-releases">
-      <SectionTitle title="Releases" />
+    <ProfileSection title="Releases" data-testid="artist-releases">
       <CardGrid className="grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] pr-0">
         {releases.map(({ release, playable }) => {
           const playables = releasePlayables(release, artistName, channelSlug);
@@ -154,7 +152,7 @@ export function ArtistReleasesGrid({
           );
         })}
       </CardGrid>
-    </section>
+    </ProfileSection>
   );
 }
 
@@ -167,8 +165,7 @@ export function ArtistPlaylistsGrid({
 }) {
   const navigate = useNavigate();
   return (
-    <section className="flex flex-col" data-testid="artist-playlists">
-      <SectionTitle title="Playlists" />
+    <ProfileSection title="Playlists" data-testid="artist-playlists">
       <CardGrid className="grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] pr-0">
         {collections.map((collection) => (
           <Card
@@ -194,6 +191,6 @@ export function ArtistPlaylistsGrid({
           />
         ))}
       </CardGrid>
-    </section>
+    </ProfileSection>
   );
 }
