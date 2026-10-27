@@ -14,6 +14,13 @@ import {
 } from './commands/collections-edit.mjs';
 import { runCollectionsList } from './commands/collections-list.mjs';
 import { runCollectionsShow } from './commands/collections-show.mjs';
+import {
+  runDiscussionsFollow,
+  runDiscussionsList,
+  runDiscussionsMute,
+  runDiscussionsReply,
+  runDiscussionsShow,
+} from './commands/discussions.mjs';
 import { runFeed } from './commands/feed.mjs';
 import { runHearthisDownloadSet } from './commands/hearthis-download-set.mjs';
 import { runHearthisSet } from './commands/hearthis-set.mjs';
@@ -519,6 +526,86 @@ write scope.`,
     options: {},
     positionals: 1,
     run: (config, { positionals }) => runBlocksRemove(config, positionals[0]),
+  },
+  {
+    path: ['discussions', 'list'],
+    usage: 'tahti discussions list [--json]',
+    summary: 'List the discussion topics the board opened for members',
+    details: `Calls GET /api/v1/governance/discussions: pinned topics first, then by
+latest activity, with reply counts, new replies since you last opened a
+topic you follow, and whether it is pinned, closed, followed or muted.
+Members only.`,
+    options: JSON_OPTION,
+    run: (config, { values }) =>
+      runDiscussionsList(config, { json: values.json }),
+  },
+  {
+    path: ['discussions', 'show'],
+    usage: 'tahti discussions show <id> [--json]',
+    summary: 'Read a discussion topic and its replies',
+    details: `Calls GET /api/v1/governance/discussions/:id: the topic text and every reply,
+oldest first. Opening a topic you follow marks its replies read.`,
+    options: JSON_OPTION,
+    positionals: 1,
+    run: (config, { positionals, values }) =>
+      runDiscussionsShow(config, positionals[0], { json: values.json }),
+  },
+  {
+    path: ['discussions', 'reply'],
+    usage: 'tahti discussions reply <id> <text...>',
+    summary: 'Reply to a discussion topic',
+    details: `Calls POST /api/v1/governance/discussions/:id/posts with the words after the
+id as one reply (up to 5000 characters). Replying follows the topic. A
+closed topic takes no replies. Quote the text if it contains shell
+characters. Needs a token with the write scope.`,
+    options: {},
+    positionals: Infinity,
+    run: (config, { positionals }) =>
+      runDiscussionsReply(config, positionals[0], positionals.slice(1)),
+  },
+  {
+    path: ['discussions', 'follow'],
+    usage: 'tahti discussions follow <id>',
+    summary: 'Follow a discussion topic without replying',
+    details: `Calls PUT /api/v1/governance/discussions/:id/follow. New replies notify you.
+Needs a token with the write scope.`,
+    options: {},
+    positionals: 1,
+    run: (config, { positionals }) =>
+      runDiscussionsFollow(config, positionals[0], true),
+  },
+  {
+    path: ['discussions', 'unfollow'],
+    usage: 'tahti discussions unfollow <id>',
+    summary: 'Stop following a discussion topic',
+    details: `Calls PUT /api/v1/governance/discussions/:id/follow. Replying again follows
+it again. Needs a token with the write scope.`,
+    options: {},
+    positionals: 1,
+    run: (config, { positionals }) =>
+      runDiscussionsFollow(config, positionals[0], false),
+  },
+  {
+    path: ['discussions', 'mute'],
+    usage: 'tahti discussions mute <id>',
+    summary: 'Keep following a topic without notifications',
+    details: `Calls PUT /api/v1/governance/discussions/:id/mute. Needs a token with the
+write scope.`,
+    options: {},
+    positionals: 1,
+    run: (config, { positionals }) =>
+      runDiscussionsMute(config, positionals[0], true),
+  },
+  {
+    path: ['discussions', 'unmute'],
+    usage: 'tahti discussions unmute <id>',
+    summary: 'Get notified of new replies again',
+    details: `Calls PUT /api/v1/governance/discussions/:id/mute. Needs a token with the
+write scope.`,
+    options: {},
+    positionals: 1,
+    run: (config, { positionals }) =>
+      runDiscussionsMute(config, positionals[0], false),
   },
   {
     path: ['mentions'],
