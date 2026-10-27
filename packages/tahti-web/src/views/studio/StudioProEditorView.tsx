@@ -310,8 +310,8 @@ function ProEditor({ soundId }: { soundId: string }) {
       if (result.status === 'PENDING' || result.status === 'PROCESSING') {
         setRenderPendingVersionId(result.versionId);
         text = activate
-          ? `Rendering — this version will go live once it's ready…`
-          : `Rendering as a new revision — the current live version is untouched…`;
+          ? `Rendering — this version will go live once it's ready. You can close the editor; we notify you when it's done.`
+          : `Rendering as a new revision — the current live version is untouched. You can close the editor; we notify you when it's done.`;
       } else {
         text = activate
           ? `Render started — version ${result.versionId} will go live, ${result.status.toLowerCase()}.`

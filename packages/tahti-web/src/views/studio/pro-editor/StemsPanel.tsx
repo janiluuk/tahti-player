@@ -98,7 +98,9 @@ export function StemsPanel({
 
   const requestSplit = async () => {
     setRequesting(true);
-    toast.info(`Splitting into ${setLabel.toLowerCase()}…`);
+    toast.info(
+      `Splitting into ${setLabel.toLowerCase()}… We notify you when the stems are ready.`,
+    );
     try {
       const result = await requestSoundStems(soundId, activeStemSet);
       if (!result.ok) {
