@@ -5,6 +5,7 @@ import {
 } from '@tahti-player/ui';
 
 import { PageError, PageLoading } from '../../components/PageStates';
+import { RestrictionNotice } from '../../components/RestrictionNotice';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { LibrarySectionTabs } from '../LibraryView';
@@ -65,6 +66,7 @@ export function StudioCollectionEditView({
               <DetailsPanel state={state} />
               <TextLayerPanel slug={slug} />
               <TracklistPanel state={state} isAlbumLike={isAlbumLike} />
+              {col.id ? <RestrictionNotice type="UPLOAD" /> : null}
               {col.id ? (
                 <MixcloudImportPanel
                   collectionId={col.id}

@@ -17,6 +17,12 @@ import { StudioCollectionEditView } from './StudioCollectionEditView';
 
 const TEST_ROW_HEIGHT = 42;
 
+vi.mock('../../api/me-restrictions', () => ({
+  fetchMyRestrictions: vi.fn(async () => [
+    { type: 'UPLOAD', reason: 'Copyright strikes', expiresAt: null },
+  ]),
+}));
+
 vi.mock('@tanstack/react-virtual', () => ({
   useVirtualizer: (opts: { count: number }) => {
     const count = Math.max(0, Number(opts?.count ?? 0));
@@ -38,12 +44,14 @@ const addStudioCollectionItem = vi.fn();
 let collectionName = 'Original Name';
 let collectionItems: StudioCollection['items'] = [];
 let collectionFailure: string | null = null;
+let collectionId: string | undefined;
 const sounds: StudioSound[] = [
   { id: 'sound-1', title: 'Bonus Track', status: 'READY' },
 ];
 
 function makeCollection(): StudioCollection {
   return {
+    ...(collectionId ? { id: collectionId } : {}),
     slug: 'my-album',
     name: collectionName,
     isPublic: true,
@@ -192,6 +200,15 @@ describe('StudioCollectionEditView contributions', () => {
       'Added by @mira · “Perfect opener”',
     );
     expect(document.body.textContent).not.toContain('mira@example.com');
+  });
+  it('says when imports are blocked by an upload ban', async () => {
+    collectionId = 'col-1';
+    try {
+      await renderView();
+      expect(await screen.findByText('Uploads are blocked')).toBeTruthy();
+    } finally {
+      collectionId = undefined;
+    }
   });
 });
 
