@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { mockFetchJson, TEST_CONFIG } from '../test-helpers';
 import {
+  runDiscussionsEdit,
   runDiscussionsFollow,
   runDiscussionsList,
   runDiscussionsMute,
@@ -111,6 +112,37 @@ describe('tahti discussions', () => {
     mockFetchJson({ following: true, muted: true });
     expect(await runDiscussionsMute(TEST_CONFIG, 'topic-1', true)).toContain(
       'Muted',
+    );
+  });
+
+  it('edits a reply by its number', async () => {
+    const fetchMock = mockFetchJson({ id: '7', body: 'Fixed', editedAt: 'x' });
+    expect(
+      await runDiscussionsEdit(TEST_CONFIG, 'topic-1', '#7', ['Fixed']),
+    ).toBe('Reply updated.');
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe(
+      'https://api.example.test/api/v1/governance/discussions/topic-1/posts/7',
+    );
+    expect(init.method).toBe('PATCH');
+    expect(JSON.parse(init.body)).toEqual({ body: 'Fixed' });
+  });
+
+  it('marks edited replies in show', async () => {
+    mockFetchJson({
+      ...TOPIC,
+      posts: [
+        {
+          id: '7',
+          body: 'Fixed',
+          author: 'Aino',
+          createdAt: '2026-10-20T10:00:00.000Z',
+          editedAt: '2026-10-20T11:00:00.000Z',
+        },
+      ],
+    });
+    expect(await runDiscussionsShow(TEST_CONFIG, 'topic-1')).toContain(
+      '(edited) (#7)',
     );
   });
 });

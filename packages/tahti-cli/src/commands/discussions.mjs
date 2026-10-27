@@ -76,7 +76,7 @@ export async function runDiscussionsShow(config, id, { json = false } = {}) {
       : topic.posts
           .map(
             (post) =>
-              `${authorName(post.author)}, ${formatDate(post.createdAt)} (#${post.id})\n${post.body}`,
+              `${authorName(post.author)}, ${formatDate(post.createdAt)}${post.editedAt ? ' (edited)' : ''} (#${post.id})\n${post.body}`,
           )
           .join('\n\n');
   return `${header}\n\n${topic.body}\n\n--- ${topic.posts.length} ${
@@ -115,6 +115,23 @@ export async function runDiscussionsFollow(config, id, following) {
   return result.following
     ? 'Following: new replies notify you.'
     : 'No longer following this topic.';
+}
+
+export async function runDiscussionsEdit(config, id, postId, words) {
+  const path = topicPath(id);
+  const body = words.join(' ').trim();
+  if (!postId?.trim() || !body) {
+    throw new CliError(
+      'Give the topic id, the reply number and the new text.\nRun `tahti discussions edit --help` for usage.',
+    );
+  }
+  await apiSendJson(
+    'PATCH',
+    `${path}/posts/${encodeURIComponent(postId.trim().replace(/^#/, ''))}`,
+    { body },
+    config,
+  );
+  return 'Reply updated.';
 }
 
 export async function runDiscussionsMute(config, id, muted) {

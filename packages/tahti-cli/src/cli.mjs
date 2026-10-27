@@ -15,6 +15,7 @@ import {
 import { runCollectionsList } from './commands/collections-list.mjs';
 import { runCollectionsShow } from './commands/collections-show.mjs';
 import {
+  runDiscussionsEdit,
   runDiscussionsFollow,
   runDiscussionsList,
   runDiscussionsMute,
@@ -562,6 +563,24 @@ characters. Needs a token with the write scope.`,
     positionals: Infinity,
     run: (config, { positionals }) =>
       runDiscussionsReply(config, positionals[0], positionals.slice(1)),
+  },
+  {
+    path: ['discussions', 'edit'],
+    usage: 'tahti discussions edit <id> <reply#> <text...>',
+    summary: 'Fix one of your own replies',
+    details: `Calls PATCH /api/v1/governance/discussions/:id/posts/:postId with the words
+after the reply number (shown as #123 by \`tahti discussions show\`). Only your
+own replies, while the topic is open; the reply is marked edited. Needs a
+token with the write scope.`,
+    options: {},
+    positionals: Infinity,
+    run: (config, { positionals }) =>
+      runDiscussionsEdit(
+        config,
+        positionals[0],
+        positionals[1],
+        positionals.slice(2),
+      ),
   },
   {
     path: ['discussions', 'follow'],
