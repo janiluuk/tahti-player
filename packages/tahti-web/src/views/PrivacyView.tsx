@@ -131,9 +131,15 @@ export function PrivacyView() {
             account and personal data.
           </li>
           <li>
-            <strong className="text-foreground">Portability</strong> — export
-            your data (releases, archive, analytics) in machine-readable format
-            from the dashboard settings.
+            <strong className="text-foreground">Portability</strong> — download
+            your data as JSON from Settings → Account → Data export: your
+            profile, uploads, releases with their tracks, collections, posts,
+            events, comments, chat messages and track reactions, likes, reposts,
+            follows, messages you sent, purchases and subscriptions, support
+            requests and your replies, feature requests and governance activity
+            (comments, seconds, your votes and correction requests), the radio
+            stations, themes and embeds you added, downloads, Tahti Jams and
+            listening sessions. Other people appear by username only.
           </li>
           <li>
             <strong className="text-foreground">Objection</strong> — object to
