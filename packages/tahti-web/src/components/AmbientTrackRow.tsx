@@ -215,7 +215,7 @@ function AmbientTrackRowView({
       data-testid="ambient-track-row"
       data-density={density}
       className={cn(
-        'border-border/40 flex w-full min-w-0 rounded-lg border',
+        'border-border/40 bg-background-secondary text-foreground flex w-full min-w-0 rounded-lg border',
         layout.pad,
         className,
       )}

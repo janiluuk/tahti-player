@@ -152,6 +152,11 @@ export type ChannelSoundItem = {
   audioUrl?: string | null;
   genre?: string | null;
   createdAt?: string;
+  likeCount?: number;
+  playCount?: number;
+  downloadCount?: number;
+  /** [0..255] amplitude buckets for the row waveform. */
+  peaks?: number[] | null;
   /** Origin provider when imported (soundcloud, bandcamp, …). */
   sourceProvider?: string | null;
   /** Present when API serializes Stage pins (profile always; channel items may omit). */

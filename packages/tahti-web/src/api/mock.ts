@@ -695,7 +695,7 @@ function buildMockSoundItems(slug: string): ChannelSoundItem[] {
     '2026-04-18T21:00:00.000Z',
     '2026-03-22T19:15:00.000Z',
   ];
-  const items = content.trackTitles.map((title, i) => ({
+  const items: ChannelSoundItem[] = content.trackTitles.map((title, i) => ({
     id: `${slug}-archive-${i + 1}`,
     title,
     artistName: artist,
@@ -706,6 +706,10 @@ function buildMockSoundItems(slug: string): ChannelSoundItem[] {
     audioUrl: i === durations.length - 1 && i % 2 === 0 ? DEMO_HLS : DEMO_MP3,
     genre: primaryGenre,
     createdAt: dates[i % dates.length],
+    peaks: mockPeaks(`${slug}-archive-${i + 1}`),
+    likeCount: (i * 3 + 2) % 7,
+    playCount: 64 - i * 7 > 3 ? 64 - i * 7 : 3,
+    downloadCount: (i * 5 + 4) % 13,
     ...(i === 0 ? { pinnedAt: '2026-07-15T12:00:00.000Z' } : {}),
   }));
   if (slug === 'northern-lights') {
@@ -1316,6 +1320,7 @@ export function soundItemToPlayable(
     sourceProvider: item.sourceProvider ?? 'tahti',
     durationSec: item.durationSec,
     releaseDate: item.createdAt ?? null,
+    peaks: item.peaks ?? null,
   };
 }
 
