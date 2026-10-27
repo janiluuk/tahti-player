@@ -5604,3 +5604,11 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 - **Docs** (#1571): user manual, Help center and every manual screenshot refreshed for Mikseri, notifications, Settings security, stats, Radio, Listen, releases and the Gruvbox Light default.
 - **Fixes**: Favorites cards match Listen (#1572); rightmost header buttons keep their shadow (#1573); admin shell found by `data-admin-shell` in layout-stability e2e (#1594).
 - **Artist track rows** (org #1007; web #1639): Popular tracks follow the hearthis.at-style reference — round play button, bold title, genre pill and duration, real waveform from the profile's peaks, and date / likes / plays / downloads.
+
+## 2026-10-27 — batch 119: reference track rows everywhere, discussion edits and paging
+
+- **Track rows** (org #1008, #1009, #1010, #1013, #1014; web #1643–#1645, #1647–#1650, #1653, #1658, #1659, #1661, #1664, #1665): the channel page's Tracks block, artist Popular tracks, playlists, Listen's New tracks and Studio → Sounds all use the reference row — round play, genre pill and length, a bold real waveform, love with count (`api/sound-engagement`), queue, ＋ add to playlist, download when allowed (gated tracks open the track page), and date · likes · plays · downloads. Rows paint their own surface, so titles keep their contrast on any channel colour scheme (the dim-title report).
+- **Discussions** (org #1011, #1012; web #1651, #1652; CLI #1654, #1662): edit your own reply ("edited"), latest replies first with Show earlier replies / `--before`.
+- **CLI** (#1655, #1663): `tahti like | unlike`; `library list` gains plays, likes and downloads.
+- **Docs** (#1656, #1657, #1664): user manual and Help center explain track rows; README channel and artist shots retaken. Workplan and ux-backlog entries for shipped work removed (#1642, #1660).
+
