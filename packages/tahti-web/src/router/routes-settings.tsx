@@ -14,19 +14,19 @@ export const settingsSectionRoute = createRoute({
   path: '/settings/$section',
   beforeLoad: ({ params }) => {
     // Former Settings → Audience / money panels now live under Studio.
+    if (params.section === 'fan-tiers') {
+      throw redirect({ to: '/studio/audience', search: { tab: 'tiers' } });
+    }
     if (
       params.section === 'audience' ||
       params.section === 'money' ||
-      params.section === 'fan-subs' ||
-      params.section === 'fan-tiers'
+      params.section === 'fan-subs'
     ) {
       throw redirect({
         to:
-          params.section === 'money' ||
-          params.section === 'fan-subs' ||
-          params.section === 'fan-tiers'
-            ? '/studio/revenue'
-            : '/studio/audience',
+          params.section === 'audience'
+            ? '/studio/audience'
+            : '/studio/revenue',
       });
     }
   },
