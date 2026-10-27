@@ -159,7 +159,7 @@ export function RadioSubmissionsTab() {
 
               <div className="mt-4 flex flex-col gap-3">
                 <Textarea
-                  label="Rejection note (optional)"
+                  label="Note to the artist (optional)"
                   tone="secondary"
                   value={notes[active.id] ?? ''}
                   onChange={(e) =>
@@ -218,6 +218,10 @@ export function RadioSubmissionsTab() {
                     Reject
                   </Button>
                 </div>
+                <p className="text-foreground-secondary text-xs">
+                  The artist is notified when you approve (a private track is
+                  made public), and when you reject with a note.
+                </p>
               </div>
             </StudioPanel>
           )}
