@@ -63,7 +63,7 @@ function TrackEditDialog({
       <Dialog.Title>Edit track</Dialog.Title>
       <Dialog.Description>
         Changes are logged in the audit log and show on the artist's channel
-        right away.
+        right away. The artist is notified of which details you changed.
       </Dialog.Description>
       <div className="mt-4 flex flex-col gap-3">
         <Input

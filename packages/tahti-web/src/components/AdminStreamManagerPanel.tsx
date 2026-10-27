@@ -282,7 +282,8 @@ export function AdminStreamManagerPanel({
                         onClick={() =>
                           run(stream.slug, forceStreamOffline, {
                             title: `Force ${stream.slug} offline?`,
-                            description: 'This ends the broadcast immediately.',
+                            description:
+                              'This ends the broadcast immediately. The artist is notified that the board took it off the air.',
                             confirmLabel: 'Take offline',
                           })
                         }
