@@ -27,6 +27,14 @@ describe('ImageUrlForm', () => {
     expect(input.value).toBe('');
   });
 
+  it('keeps phone keyboards from capitalising or correcting the link', () => {
+    render(<ImageUrlForm busy={false} onSubmit={vi.fn()} />);
+    const input = screen.getByLabelText('Image URL');
+    expect(input.getAttribute('autocapitalize')).toBe('none');
+    expect(input.getAttribute('autocorrect')).toBe('off');
+    expect(input.getAttribute('spellcheck')).toBe('false');
+  });
+
   it('keeps the link when the image was refused', async () => {
     const onSubmit = vi.fn().mockResolvedValue(false);
     render(<ImageUrlForm busy={false} onSubmit={onSubmit} />);

@@ -198,6 +198,9 @@ export function AdminNewsView() {
                             />
                             <Input
                               inputMode="url"
+                              autoCapitalize="none"
+                              autoCorrect="off"
+                              spellCheck={false}
                               label="Link URL"
                               value={editLinkUrl}
                               onChange={(event) =>
@@ -345,6 +348,9 @@ export function AdminNewsView() {
                 />
                 <Input
                   inputMode="url"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
                   label="Link URL"
                   value={linkUrl}
                   onChange={(event) => setLinkUrl(event.target.value)}

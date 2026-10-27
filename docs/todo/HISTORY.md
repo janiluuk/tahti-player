@@ -1,3 +1,15 @@
+## 2026-10-27 - UX batch 111 thirty URL and email keyboard slices
+
+Fields that only set `inputMode="url"` or `inputMode="email"` still got
+auto-capitalise, autocorrect and spellcheck, which phone keyboards apply
+unless the input type is url or email. Twenty-five URL fields and five email
+fields turn them off: RSS and news feed, image, SoundCloud track and profile,
+channel backdrop, provider set link, DSP paste, Spotify artist, add / suggest
+/ edit station stream and programme links, venue website, my radio stations,
+tip jar, event tickets, update post link, admin news links x2, internet radio
+presets x2, AGM document URL; sign-in and sign-up email, forgot password,
+support contact and newsletter. tahti-web `0.0.270`.
+
 ## 2026-10-26 - UX batch 110 thirty more form slices
 
 Thirty more input groups become real forms, so Enter (or Cmd/Ctrl+Enter in a

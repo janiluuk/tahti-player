@@ -40,6 +40,9 @@ export function DspUrlPasteCard() {
       </p>
       <Input
         inputMode="url"
+        autoCapitalize="none"
+        autoCorrect="off"
+        spellCheck={false}
         aria-label="Streaming service URL"
         className="w-full"
         size="sm"

@@ -58,6 +58,9 @@ export function NewsFeedUrlField() {
       >
         <Input
           inputMode="url"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           label="Feed URL"
           value={url}
           placeholder="https://example.com/feed.xml"

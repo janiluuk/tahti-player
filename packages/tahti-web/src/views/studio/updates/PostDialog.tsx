@@ -189,6 +189,9 @@ export function PostDialog({
             <Input
               label="Link (optional)"
               inputMode="url"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               placeholder="https://"
               value={linkUrl}
               onChange={(e) => setLinkUrl(e.target.value)}

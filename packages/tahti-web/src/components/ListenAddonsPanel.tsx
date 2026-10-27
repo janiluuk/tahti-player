@@ -450,6 +450,9 @@ export function ListenAddonsPanel({
                   />
                   <Input
                     inputMode="url"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
                     label="RSS feed URL"
                     value={newsFeedUrl}
                     onChange={(event) => {

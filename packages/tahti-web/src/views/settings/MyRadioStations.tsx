@@ -162,6 +162,9 @@ export function MyRadioStations({
         />
         <Input
           inputMode="url"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           label="Stream URL"
           value={streamUrl}
           placeholder="https://stream.example.com/live.mp3"
