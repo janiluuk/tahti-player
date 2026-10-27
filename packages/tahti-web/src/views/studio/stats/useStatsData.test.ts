@@ -14,6 +14,7 @@ const {
   fetchStatsTopLists,
   fetchStatsPlaysHourly,
   fetchGrantEstimate,
+  fetchStatsListening,
 } = vi.hoisted(() => ({
   fetchStatsSummary: vi.fn(),
   fetchStatsPlays: vi.fn(),
@@ -25,6 +26,7 @@ const {
   fetchStatsTopLists: vi.fn(),
   fetchStatsPlaysHourly: vi.fn(),
   fetchGrantEstimate: vi.fn(),
+  fetchStatsListening: vi.fn(),
 }));
 
 vi.mock('../../../api/studio-extras', () => ({
@@ -37,6 +39,7 @@ vi.mock('../../../api/studio-extras', () => ({
   fetchChannelLiveStats,
   fetchStatsTopLists,
   fetchStatsPlaysHourly,
+  fetchStatsListening,
 }));
 
 vi.mock('../../../api/revenue', () => ({ fetchGrantEstimate }));
@@ -79,6 +82,31 @@ describe('useStatsData top-list-only refetch', () => {
     );
     fetchStatsTopLists.mockResolvedValue(empty([]));
     fetchGrantEstimate.mockResolvedValue(empty(null));
+    fetchStatsListening.mockResolvedValue(empty(null));
+  });
+
+  it('shows minutes listened from listen sessions when the API has them', async () => {
+    fetchStatsListening.mockResolvedValue(
+      empty({ listens: 12, minutes: 95, averageMinutes: 7.9 }),
+    );
+    const { result } = renderHook(() => useStatsData());
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(fetchStatsListening).toHaveBeenCalledWith({ range: '30' });
+    expect(
+      result.current.keyMetrics.find(
+        (metric) => metric.label === 'Minutes listened',
+      ),
+    ).toMatchObject({ value: 95, note: '12 listens · 7.9 min on average' });
+  });
+
+  it('keeps the delivery estimate when listen sessions are unavailable', async () => {
+    const { result } = renderHook(() => useStatsData());
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(
+      result.current.keyMetrics.find(
+        (metric) => metric.label === 'Minutes listened',
+      )?.note,
+    ).toBe('Estimated from 30d delivery at 192 kbps');
   });
 
   it('refetches only the top lists when dimension or sort changes', async () => {

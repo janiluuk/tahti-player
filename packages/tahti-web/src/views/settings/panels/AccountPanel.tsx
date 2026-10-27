@@ -551,8 +551,9 @@ function PrivacyDataPanel({ username }: { username: string }) {
           <span>
             <span className="block text-sm font-semibold">Data export</span>
             <span className="text-foreground-secondary block text-xs">
-              Your profile, uploads, posts, comments, likes, follows, messages
-              you sent, purchases and subscriptions, as JSON
+              Your profile, uploads, releases, posts, comments, chat, likes,
+              follows, messages you sent, purchases, subscriptions, support
+              requests, governance activity, downloads and listening, as JSON
             </span>
           </span>
         </ButtonAnchor>

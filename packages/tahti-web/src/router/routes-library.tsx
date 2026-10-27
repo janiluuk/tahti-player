@@ -23,6 +23,7 @@ import {
   MoreView,
   MyVenuesView,
   NewsView,
+  NotificationsView,
   SmartLinkView,
   StudioCollectionEditView,
   StudioCollectionsView,
@@ -204,6 +205,12 @@ export const favoritesRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/favorites',
   component: FavoritesView,
+});
+
+export const notificationsRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/notifications',
+  component: NotificationsView,
 });
 
 export const historyRoute = createRoute({

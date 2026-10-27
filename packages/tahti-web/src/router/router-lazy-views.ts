@@ -304,6 +304,10 @@ export const FavoritesView = lazyRouteComponent(
   () => import('../views/FavoritesView'),
   'FavoritesView',
 );
+export const NotificationsView = lazyRouteComponent(
+  () => import('../views/NotificationsView'),
+  'NotificationsView',
+);
 export const GreenRoomView = lazyRouteComponent(
   () => import('../views/GreenRoomView'),
   'GreenRoomView',

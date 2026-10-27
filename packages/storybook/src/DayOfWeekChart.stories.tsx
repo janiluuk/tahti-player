@@ -35,3 +35,16 @@ export const Default: Story = {
     </div>
   ),
 };
+
+export const Stacked: Story = {
+  render: () => (
+    <div className="bg-background h-80 w-[36rem] rounded-md p-6">
+      <DayOfWeekChart
+        values={[12, 18, 9, 4, 22, 30, 25]}
+        stackValues={[3, 6, 2, 1, 8, 11, 7]}
+        labels={sampleProps.labels}
+        formatValue={(value) => `${value} plays`}
+      />
+    </div>
+  ),
+};

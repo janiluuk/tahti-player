@@ -19,6 +19,9 @@ const MIXCLOUD_TARGET = EXPORT_TARGETS.find(
   (target) => target.id === 'mixcloud' && target.supportsTracks,
 );
 
+/** How often a queued or running upload is checked again. */
+export const EXPORT_STATUS_POLL_MS = 10_000;
+
 function describe(status: TrackExportStatus): string {
   switch (status.status) {
     case 'DONE':
@@ -52,6 +55,42 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
       cancelled = true;
     };
   }, [soundId]);
+
+  const inFlight =
+    status?.status === 'PENDING' || status?.status === 'UPLOADING';
+
+  useEffect(() => {
+    if (!inFlight) {
+      return;
+    }
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      void fetchTrackExportStatus(soundId, 'mixcloud').then((result) => {
+        if (!cancelled && result) {
+          setStatus(result);
+        }
+      });
+    }, EXPORT_STATUS_POLL_MS);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [inFlight, soundId, status]);
+
+  const startExport = () => {
+    setExporting(true);
+    setError(null);
+    setConnectUrl(null);
+    void exportTrack(soundId, 'mixcloud').then((result) => {
+      setExporting(false);
+      if (result.ok) {
+        setStatus(result.status);
+      } else {
+        setError(result.error);
+        setConnectUrl(result.connectUrl ?? null);
+      }
+    });
+  };
 
   if (!MIXCLOUD_TARGET) {
     return null;
@@ -102,11 +141,21 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
             </ButtonAnchor>
           </Tooltip>
         ) : failed ? (
-          <AlertCircleIcon
-            size={18}
-            className="text-accent-red-strong"
-            aria-hidden
-          />
+          <>
+            <AlertCircleIcon
+              size={18}
+              className="text-accent-red-strong"
+              aria-hidden
+            />
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={exporting}
+              onClick={startExport}
+            >
+              {exporting ? 'Sending…' : 'Try again'}
+            </Button>
+          </>
         ) : status ? (
           <CheckCircle2Icon
             size={18}
@@ -118,20 +167,7 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
             size="sm"
             variant="secondary"
             disabled={loading || exporting}
-            onClick={() => {
-              setExporting(true);
-              setError(null);
-              setConnectUrl(null);
-              void exportTrack(soundId, 'mixcloud').then((result) => {
-                setExporting(false);
-                if (result.ok) {
-                  setStatus(result.status);
-                } else {
-                  setError(result.error);
-                  setConnectUrl(result.connectUrl ?? null);
-                }
-              });
-            }}
+            onClick={startExport}
           >
             <UploadIcon size={14} className="mr-1.5" aria-hidden />
             {exporting ? 'Adding…' : 'Export'}
