@@ -15,5 +15,5 @@ The API shipped in tahti-org #991–#998: the board opens topics (`/api/admin/di
 - [x] Admin: edit a topic's title and body
 - [x] Notification kinds mirror (`DISCUSSION_OPENED`, `DISCUSSION_REPLY` under Governance)
 - [ ] Storybook stories for the list and topic page; VIEW-CATALOG status
-- [ ] Privacy & data copy lists discussion replies and follows; Help center governance guide
+- [x] Privacy & data copy lists discussion replies and follows; Help center governance guide
 - [ ] Drop the allowlisted discussion paths once tahti-org publishes a release
