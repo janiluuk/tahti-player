@@ -1,10 +1,12 @@
 import { Link, useNavigate } from '@tanstack/react-router';
+import { useMemo } from 'react';
 
 import { Card, CardGrid, MediaArtwork } from '@tahti-player/ui';
 
 import type {
   PublicProfileCollection,
   PublicProfileRelease,
+  PublicProfileTrack,
   TahtiPlayable,
 } from '../../api/types';
 import { isPinned } from '../../lib/pinnedTracks';
@@ -21,21 +23,48 @@ export type RelatedArtist = {
   displayName: string;
 };
 
+/** Genre and public totals for a popular-track row, from the profile's
+ * track list (matched by sound id). */
+export function profileTrackMeta(tracks: PublicProfileTrack[]) {
+  const byId = new Map(tracks.map((track) => [track.id, track]));
+  return (item: TahtiPlayable) => {
+    const soundId = soundIdFromPlayableId(item.id);
+    const track = soundId ? byId.get(soundId) : undefined;
+    if (!track) {
+      return undefined;
+    }
+    return {
+      genre: track.genre ?? null,
+      stats: {
+        releaseDate: track.createdAt ?? null,
+        likes: track.likeCount,
+        plays: track.playCount,
+        downloads: track.downloadCount,
+      },
+    };
+  };
+}
+
 export function ArtistPopularTracks({
   items,
+  tracks = [],
   isOwner,
   onEditTrack,
 }: {
   items: TahtiPlayable[];
+  tracks?: PublicProfileTrack[];
   isOwner: boolean;
   onEditTrack: (soundId: string | null) => void;
 }) {
+  const getTrackMeta = useMemo(() => profileTrackMeta(tracks), [tracks]);
   return (
     <ProfileSection title="Popular tracks" data-testid="artist-popular">
       <TopListRankBadges items={items} />
       <PlayableAmbientTrackList
         items={items}
         playAll
+        defaultDensity="comfortable"
+        getTrackMeta={getTrackMeta}
         emptyMessage="No playable tracks on this profile."
         onEdit={
           isOwner

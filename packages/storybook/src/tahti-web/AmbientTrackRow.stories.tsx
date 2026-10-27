@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AmbientTrackRow } from '@tahti-web/components/AmbientTrackRow';
 import { useState } from 'react';
+import { expect, within } from 'storybook/test';
 
 import { Button } from '@tahti-player/ui';
 
@@ -58,6 +59,18 @@ export const Comfortable: Story = {
     density: 'comfortable',
     ambientRgb: [72, 48, 140],
     actions: likeAdd,
+    stats: {
+      releaseDate: '2026-10-17T12:00:00.000Z',
+      likes: 3,
+      plays: 31,
+      downloads: 15,
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('Progressive House')).toBeVisible();
+    await expect(canvas.getByLabelText('31 plays')).toBeVisible();
+    await expect(canvas.getByLabelText('15 downloads')).toBeVisible();
   },
 };
 

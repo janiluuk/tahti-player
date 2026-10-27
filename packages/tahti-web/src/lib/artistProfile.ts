@@ -180,5 +180,6 @@ export function profileTrackToPlayable(
     channelSlug,
     durationSec: track.durationSec ?? undefined,
     releaseDate: track.createdAt ?? null,
+    peaks: track.peaks ?? null,
   };
 }

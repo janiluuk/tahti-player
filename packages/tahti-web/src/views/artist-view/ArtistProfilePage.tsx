@@ -435,6 +435,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
             >
               <ArtistPopularTracks
                 items={popularPlayables}
+                tracks={profile.tracks}
                 isOwner={isOwner}
                 onEditTrack={setEditingSoundId}
               />

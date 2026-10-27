@@ -19,6 +19,10 @@ import {
   AmbientTrackList,
   type AmbientTrackListItem,
 } from './AmbientTrackList';
+import type {
+  AmbientTrackRowDensity,
+  AmbientTrackStats,
+} from './AmbientTrackRow';
 import { MediaIconActions, playQueueFavoriteActions } from './MediaIconActions';
 import { PlayableTrackTable } from './PlayableTrackTable';
 
@@ -32,6 +36,8 @@ export function PlayableAmbientTrackList({
   onRemove,
   selectable = false,
   onBulkRemove,
+  getTrackMeta,
+  defaultDensity = 'compact',
 }: {
   items: TahtiPlayable[];
   emptyMessage?: string;
@@ -45,6 +51,12 @@ export function PlayableAmbientTrackList({
   /** Multi-select and bulk actions live in the List view. */
   selectable?: boolean;
   onBulkRemove?: (items: TahtiPlayable[]) => void;
+  /** Genre and public totals for a track, when the page has them. Keep it
+   * stable (useMemo / useCallback): the rows are memoized on it. */
+  getTrackMeta?: (
+    item: TahtiPlayable,
+  ) => { genre?: string | null; stats?: AmbientTrackStats } | undefined;
+  defaultDensity?: AmbientTrackRowDensity;
 }) {
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
@@ -71,6 +83,7 @@ export function PlayableAmbientTrackList({
         const soundId = soundIdFromPlayableId(item.id);
         const rest = sorted.filter((other) => other.id !== item.id);
         const annotation = getAnnotation?.(item);
+        const meta = getTrackMeta?.(item);
         return {
           id: item.id,
           trackId: item.id,
@@ -96,6 +109,8 @@ export function PlayableAmbientTrackList({
               ? formatDuration(item.durationSec)
               : undefined,
           durationSec: item.durationSec ?? null,
+          genreLabel: meta?.genre ?? undefined,
+          stats: meta?.stats,
           peaks: item.peaks ?? null,
           progress: 0,
           isPlaying,
@@ -152,6 +167,7 @@ export function PlayableAmbientTrackList({
       queue,
       favoriteTracks,
       getAnnotation,
+      getTrackMeta,
       onEdit,
       onRemove,
       play,
@@ -181,7 +197,7 @@ export function PlayableAmbientTrackList({
     <AmbientTrackList
       items={listItems}
       allowGrid
-      defaultDensity="compact"
+      defaultDensity={defaultDensity}
       emptyMessage={emptyMessage}
       toolbarEnd={
         items.length > 1 ? (

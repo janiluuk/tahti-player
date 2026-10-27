@@ -739,6 +739,8 @@ function buildMockSoundItems(slug: string): ChannelSoundItem[] {
  * deterministic envelope keyed by id so mock track pages still exercise the
  * "peaks came from the API" code path distinctly from the client-only
  * fallback bars WaveformSeekbar draws when `peaks` is null. */
+const MOCK_PROFILE_GENRES = ['Progressive House', 'Techno', 'Ambient'];
+
 function mockPeaks(id: string, buckets = 100): number[] {
   let seed = 0;
   for (let i = 0; i < id.length; i++) {
@@ -1011,6 +1013,11 @@ function buildMockProfile(username: string): PublicProfile {
       createdAt: a.createdAt,
       pinned: Boolean(a.pinnedAt),
       pinnedAt: a.pinnedAt ?? null,
+      peaks: mockPeaks(a.id),
+      genre: MOCK_PROFILE_GENRES[i % MOCK_PROFILE_GENRES.length],
+      playCount: 57 - i * 9,
+      likeCount: 3 - (i % 3),
+      downloadCount: 15 - i * 4 > 0 ? 15 - i * 4 : 0,
     })),
     fanTiers: [
       {
