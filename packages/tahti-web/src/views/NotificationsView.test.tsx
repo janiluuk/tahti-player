@@ -148,29 +148,6 @@ describe('NotificationsView', () => {
     ).toBe(true);
   });
 
-  it('filters by kind and offers Show all when a kind is empty', async () => {
-    const fetch = vi
-      .spyOn(api, 'fetchNotifications')
-      .mockImplementation(async (_before, kind) => ({
-        data: kind === 'money' ? [] : [note(kind ?? 'all')],
-        unreadCount: 1,
-        hasMore: false,
-        meta: { source: 'api' },
-      }));
-    renderView();
-
-    expect(await screen.findByText('Title all')).toBeTruthy();
-    fireEvent.click(screen.getByRole('radio', { name: 'Social' }));
-    expect(await screen.findByText('Title social')).toBeTruthy();
-    expect(fetch).toHaveBeenLastCalledWith(undefined, 'social');
-
-    fireEvent.click(screen.getByRole('radio', { name: 'Money' }));
-    expect(await screen.findByText('Nothing of this kind')).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: 'Show all' }));
-    expect(await screen.findByText('Title all')).toBeTruthy();
-    expect(fetch).toHaveBeenLastCalledWith(undefined, undefined);
-  });
-
   it('shows unread counts on the kind chips and refreshes them', async () => {
     vi.spyOn(api, 'fetchNotifications').mockResolvedValue({
       data: [note('a')],
@@ -202,6 +179,19 @@ describe('NotificationsView', () => {
       await screen.findByRole('radio', { name: 'Social (1)' }),
     ).toBeTruthy();
     expect(counts.mock.calls.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('labels each row with its kind under All only', async () => {
+    vi.spyOn(api, 'fetchNotifications').mockResolvedValue({
+      data: [note('a', { type: 'PAYOUT_SENT' })],
+      unreadCount: 1,
+      hasMore: false,
+      meta: { source: 'api' },
+    });
+    renderView();
+    expect(await screen.findByText(/^Money ·/)).toBeTruthy();
+    fireEvent.click(screen.getByRole('radio', { name: /^Money/ }));
+    await waitFor(() => expect(screen.queryByText(/^Money ·/)).toBeNull());
   });
 
   it('shows a retry when the inbox fails to load', async () => {

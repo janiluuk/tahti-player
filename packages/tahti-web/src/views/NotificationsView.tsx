@@ -10,6 +10,7 @@ import {
   fetchNotificationUnreadCounts,
   markAllNotificationsRead,
   NOTIFICATION_KINDS,
+  notificationKindLabel,
   removeNotification,
   type NotificationKind,
   type NotificationUnreadCounts,
@@ -288,12 +289,16 @@ export function NotificationsView() {
                     ) : (
                       <NotificationText notification={notification} />
                     )}
-                    <time
-                      dateTime={notification.createdAt}
-                      className="text-foreground-secondary mt-1 block text-xs"
-                    >
-                      {formatWhen(notification.createdAt)}
-                    </time>
+                    <p className="text-foreground-secondary mt-1 text-xs">
+                      {kind === 'all' ? (
+                        <span>
+                          {notificationKindLabel(notification.type)} ·{' '}
+                        </span>
+                      ) : null}
+                      <time dateTime={notification.createdAt}>
+                        {formatWhen(notification.createdAt)}
+                      </time>
+                    </p>
                   </div>
                   {needsAck ? (
                     <Button
