@@ -37,6 +37,24 @@ missing, fall back to the username, never to an email. The API rejects email
 display names (`../tahti-org` `safeDisplayName` / `containsEmailAddress` in
 `@tahti/shared`); don't add a client-side fallback that reintroduces one.
 
+## Token log for expensive lookups
+
+Keep a running log in `.agent-token-log.md` at the repo root (gitignored,
+never committed). After an operation that took a lot of reading or searching
+to work out (locating where something lives, tracing a data flow,
+reverse-engineering a script, rebuilding context on a subsystem), append one
+line:
+
+```
+- 2026-10-27 · ~40k tokens · where the artist profile's track rows get their data (profile API → useArtistCatalog → PlayableAmbientTrackList → AmbientTrackRow)
+```
+
+Before a similar dig, check the log. If the same thing already cost a similar
+amount once, don't just pay it again: add a `docs/todo/` item (and INDEX row)
+to document that part clearly (a short map in the relevant doc, AGENTS.md
+table or code comment-free README section) so the next lookup is cheap. Note
+in the log line that a todo was filed.
+
 ## Do not
 
 - Skim all of `docs/todo/` or the full UI redesign worklog to find “what’s next”.
