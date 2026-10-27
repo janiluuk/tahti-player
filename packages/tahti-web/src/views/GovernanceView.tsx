@@ -5,6 +5,7 @@ import {
   HelpCircleIcon,
   HistoryIcon,
   LandmarkIcon,
+  MessagesSquareIcon,
   ScrollTextIcon,
   UsersIcon,
   VoteIcon,
@@ -80,6 +81,11 @@ function LoadErrorCaption({
 }
 
 const QUICK_LINKS = [
+  {
+    to: '/governance/discussions' as const,
+    label: 'Discussions',
+    icon: MessagesSquareIcon,
+  },
   {
     to: '/governance/feature-requests' as const,
     label: 'Feature requests',
