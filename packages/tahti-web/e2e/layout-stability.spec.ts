@@ -142,7 +142,7 @@ test('Admin shell stays full-width and keeps navigation geometry stable', async 
   await expectStableShell(
     page,
     adminRoutes,
-    '.admin-page-layout, .admin-moderation-layout',
+    '[data-admin-shell]',
     '[data-admin-section-tabs]',
     '[data-admin-section-menu]',
   );
@@ -194,9 +194,7 @@ test('Studio and Admin shells remain reachable on mobile without horizontal over
   for (const route of adminRoutes) {
     await page.goto(route);
     await page.waitForTimeout(500);
-    const shell = page
-      .locator('.admin-page-layout, .admin-moderation-layout')
-      .first();
+    const shell = page.locator('[data-admin-shell]').first();
     await expect(shell).toBeVisible();
     await expect(
       shell.locator('[data-admin-section-tabs]').first(),
