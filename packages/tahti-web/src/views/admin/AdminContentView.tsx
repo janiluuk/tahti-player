@@ -18,6 +18,7 @@ import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
+import { AdminListeningPanel } from './AdminListeningPanel';
 
 function formatDuration(durationSec: number | null | undefined): string {
   if (durationSec == null) {
@@ -199,6 +200,7 @@ export function AdminContentView() {
                       )}
                     </StudioPanel>
                   </div>
+                  <AdminListeningPanel />
                 </>
               )}
             </ViewShell>
