@@ -26,6 +26,11 @@ describe('notificationKindOf', () => {
     }
     expect(notificationKindOf('FAN_SUB_CANCELED')).toBe('money');
     expect(notificationKindOf('ACCOUNT_RESTRICTED')).toBe('other');
+    expect(notificationKindOf('TAHTI_SELECTS_PICK')).toBe('music');
+    expect(notificationKindOf('TAHTI_RADIO_INCLUSION_CHANGED')).toBe('music');
+    expect(notificationKindOf('GRANT_AWARDED')).toBe('money');
+    expect(notificationKindOf('BOARD_ACCOUNT_CHANGE')).toBe('other');
+    expect(notificationKindOf('ADDON_REVIEWED')).toBe('other');
   });
 
   it('labels a type by its kind', () => {
