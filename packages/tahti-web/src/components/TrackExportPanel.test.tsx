@@ -87,7 +87,9 @@ describe('TrackExportPanel', () => {
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Export/ }));
     });
-    expect(screen.getByText('Queued for upload.')).toBeTruthy();
+    expect(
+      screen.getByText('Queued for upload. We notify you when it is done.'),
+    ).toBeTruthy();
   });
   it('sends a failed upload again with Try again', async () => {
     await renderPanel({ status: 'FAILED', url: null, error: 'Token expired' });
@@ -99,7 +101,9 @@ describe('TrackExportPanel', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
     });
     expect(exportTrack).toHaveBeenCalledWith('s1', 'mixcloud');
-    expect(screen.getByText('Queued for upload.')).toBeTruthy();
+    expect(
+      screen.getByText('Queued for upload. We notify you when it is done.'),
+    ).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Try again' })).toBeNull();
   });
 
@@ -107,7 +111,9 @@ describe('TrackExportPanel', () => {
     vi.useFakeTimers();
     try {
       await renderPanel({ status: 'PENDING', url: null, error: null });
-      expect(screen.getByText('Queued for upload.')).toBeTruthy();
+      expect(
+        screen.getByText('Queued for upload. We notify you when it is done.'),
+      ).toBeTruthy();
       vi.mocked(fetchTrackExportStatus).mockResolvedValue({
         status: 'DONE',
         url: 'https://www.mixcloud.com/me/mix/',

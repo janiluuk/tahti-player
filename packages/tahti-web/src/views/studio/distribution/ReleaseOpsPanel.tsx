@@ -200,7 +200,9 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         }
         return;
       }
-      toast.success('Submitted to Revelator.');
+      toast.success(
+        'Queued for distribution. We notify you once it is sent, or if it fails.',
+      );
       setCatalog((prev) =>
         prev ? { ...prev, revelatorStatus: r.data.revelatorStatus } : prev,
       );
