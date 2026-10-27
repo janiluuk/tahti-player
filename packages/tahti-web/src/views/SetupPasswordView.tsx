@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Box, Button, InlineError, Input } from '@tahti-player/ui';
 
 import { fetchSetupPasswordInfo } from '../api/client';
+import { PASSWORD_RULES_HINT, passwordProblem } from '../lib/passwordRules';
 import { useAuthStore } from '../stores/authStore';
 
 function tokenFromSearch(): string {
@@ -49,9 +50,13 @@ export function SetupPasswordView() {
   }, [token]);
 
   const mismatch = confirm.length > 0 && password !== confirm;
-  const tooShort = password.length > 0 && password.length < 8;
+  const problem = password.length > 0 ? passwordProblem(password) : null;
   const canSubmit =
-    Boolean(token) && password.length >= 8 && password === confirm && !loading;
+    Boolean(token) &&
+    password.length > 0 &&
+    !problem &&
+    password === confirm &&
+    !loading;
 
   const onSubmit = () => {
     if (!canSubmit) {
@@ -124,13 +129,11 @@ export function SetupPasswordView() {
             variant="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            description="At least 8 characters"
+            description={PASSWORD_RULES_HINT}
             autoComplete="new-password"
             autoFocus
           />
-          {tooShort && (
-            <InlineError>Password must be at least 8 characters.</InlineError>
-          )}
+          {problem && <InlineError>{problem}</InlineError>}
           <Input
             label="Confirm password"
             variant="password"
