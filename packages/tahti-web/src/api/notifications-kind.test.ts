@@ -31,6 +31,8 @@ describe('notificationKindOf', () => {
     expect(notificationKindOf('GRANT_AWARDED')).toBe('money');
     expect(notificationKindOf('BOARD_ACCOUNT_CHANGE')).toBe('other');
     expect(notificationKindOf('ADDON_REVIEWED')).toBe('other');
+    expect(notificationKindOf('TRACK_SHARED')).toBe('social');
+    expect(notificationKindOf('GREEN_ROOM_INVITE')).toBe('social');
   });
 
   it('labels a type by its kind', () => {
