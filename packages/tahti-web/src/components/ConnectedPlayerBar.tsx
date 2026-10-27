@@ -211,7 +211,9 @@ export function ConnectedPlayerBar() {
           className="text-accent-red-strong text-xs"
           data-testid="player-error-note"
         >
-          {isLive ? 'Can’t connect — press play to retry' : 'Can’t play this'}
+          {isLive
+            ? 'Can’t connect — press play to retry'
+            : 'Can’t play this. Press play to try again.'}
         </div>
       ) : null}
     </div>

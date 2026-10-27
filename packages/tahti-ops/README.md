@@ -16,6 +16,7 @@ pnpm tahti-ops desktop run        # release build, then launch   (= pnpm desktop
 pnpm tahti-ops desktop launch     # launch the last build (Linux)
 pnpm tahti-ops desktop dev        # dev mode with hot reload     (= pnpm desktop:dev)
 pnpm tahti-ops desktop bundle     # installers / packages
+pnpm tahti-ops desktop android    # debug build on a device/emulator (JDK 17+, ANDROID_HOME)
 
 # tests
 pnpm tahti-ops test               # every package                (= pnpm test:all)
@@ -56,6 +57,14 @@ pnpm tahti-ops backup status
 pnpm tahti-ops release prepare 1.48.0 --dry-run
 pnpm tahti-ops release prepare 1.48.0 --build   # also build the Tauri bundle locally
 
+# source file size guard (CI: pnpm check:file-size)
+pnpm tahti-ops check size           # fail when a file over 800 lines appears or grows
+pnpm tahti-ops check size --prune   # drop pins for files you split
+
+# AUR tahti-player-bin (CI: update-aur.yml after a release)
+pnpm tahti-ops package aur 1.48.0 --dry-run
+pnpm tahti-ops package aur 1.48.0 --no-push   # render + print PKGBUILD/.SRCINFO (Arch, makepkg)
+
 # production deploys (needs SSH to the fleet)
 pnpm tahti-ops deploy stack --dry-run
 pnpm tahti-ops deploy all
@@ -77,10 +86,13 @@ Progress lines go to stderr (`→` / `✓` / `✗`); script stdout is unchanged.
 | (all three deploys) | `pnpm tahti-ops deploy all` (= `pnpm deploy:prod`) |
 | `scripts/build-and-run-player.sh`, `pnpm player:build:run`, `pnpm build:linux:run` | `pnpm tahti-ops desktop run` (= `pnpm desktop`) |
 | `scripts/run-linux.sh`, `pnpm player:run` | `pnpm tahti-ops desktop launch` |
+| `scripts/build-and-run-android.sh` (removed), `pnpm build:android:run` | `pnpm tahti-ops desktop android` |
 | `packages/tahti-web/deploy/deploy-vimage.sh`, `pnpm deploy:tahti-beta` | `pnpm tahti-ops deploy web` |
 | `packages/tahti-web/scripts/run-e2e-journeys.sh` | `pnpm tahti-ops e2e journeys` |
 | `vitest run -u` per package | `pnpm tahti-ops snapshots update <group>` |
 | `scripts/deploy-production.sh` (removed) | `pnpm tahti-ops release prepare <version> --build` |
+| `node scripts/check-file-size.mjs` (removed) | `pnpm tahti-ops check size` (= `pnpm check:file-size`) |
+| `scripts/update-aur.sh --version X [--dry-run]` (removed) | `pnpm tahti-ops package aur X [--no-push]` |
 
 Cron entries may still call `backup.sh` directly on the host; operators use
 `tahti-ops` from this monorepo.

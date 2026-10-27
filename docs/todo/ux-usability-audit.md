@@ -9,6 +9,7 @@ re-filed.
 
 ## To do (verified)
 
+- [ ] **`useScheduleForm` holds 29 `useState` calls.** A reducer would make the
 - [ ] **Radio: member relay failure is silent.** `RadioView.reload()` handles
   station, recent and featured errors, but `fetchRadio()` (the member live relay)
   has no error path, so a failed read just hides the relay. Recent, featured,

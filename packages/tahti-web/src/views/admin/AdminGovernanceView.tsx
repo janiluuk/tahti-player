@@ -4,6 +4,7 @@ import {
   FileTextIcon,
   FlagIcon,
   FolderOpenIcon,
+  MessagesSquareIcon,
   ShieldCheckIcon,
   UsersIcon,
 } from 'lucide-react';
@@ -12,6 +13,7 @@ import { ViewShell } from '@tahti-player/ui';
 
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
+import { DiscussionsAdminPanel } from './governance/discussions/DiscussionsAdminPanel';
 import {
   ADMIN_GOVERNANCE_TABS,
   DEFAULT_ADMIN_GOVERNANCE_TAB,
@@ -41,6 +43,8 @@ function tabContent(id: AdminGovernanceTabId) {
       return <AgmTab />;
     case 'board':
       return <BoardTab />;
+    case 'discussions':
+      return <DiscussionsAdminPanel />;
     case 'records':
       return <RecordsTab />;
   }
@@ -52,6 +56,7 @@ const GOVERNANCE_TAB_ICONS: Record<AdminGovernanceTabId, typeof FlagIcon> = {
   grants: BanknoteIcon,
   agm: UsersIcon,
   board: ShieldCheckIcon,
+  discussions: MessagesSquareIcon,
   records: FolderOpenIcon,
 };
 

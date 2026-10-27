@@ -73,6 +73,8 @@ import {
   prodSubscribeAliasRoute,
 } from './router/routes-embed';
 import {
+  discussionsRoute,
+  discussionTopicRoute,
   featureRequestsRoute,
   governanceMeetingDetailRoute,
   governanceMembersRoute,
@@ -335,6 +337,8 @@ const routeTree = rootRoute.addChildren([
     governanceMembersRoute,
     governanceMeetingDetailRoute,
     publicGovernanceHistoryRoute,
+    discussionsRoute,
+    discussionTopicRoute,
     featureRequestsRoute,
     aboutRoute,
     whatIsItRoute,
