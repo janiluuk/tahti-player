@@ -141,8 +141,11 @@ export function PrivacyView() {
             stations, themes and embeds you added, downloads, Tahti Jams,
             listening sessions, the venues you run and venue shows you booked,
             tracks you sent to Tahti Radio and stations you suggested, your fan
-            subscription tiers and store items, and any restrictions the board
-            placed on your account. Other people appear by username only.
+            subscription tiers and store items, any restrictions the board
+            placed on your account, your notifications, grants and
+            fan-subscription payouts, the add-ons you published or installed,
+            and your signed-in devices and API tokens (names only, never the
+            secrets). Other people appear by username only.
           </li>
           <li>
             <strong className="text-foreground">Objection</strong> — object to
