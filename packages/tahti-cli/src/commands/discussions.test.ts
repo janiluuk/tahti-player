@@ -65,7 +65,7 @@ describe('tahti discussions', () => {
       'https://api.example.test/api/v1/governance/discussions/topic-1',
     );
     expect(output).toContain('Who plays?');
-    expect(output).toContain('--- 1 reply ---');
+    expect(output).toContain('--- 2 replies ---');
     expect(output).toContain('An ambient set?');
     expect(output).toContain('a member');
     expect(output).not.toContain('@example.com');
@@ -144,5 +144,50 @@ describe('tahti discussions', () => {
     expect(await runDiscussionsShow(TEST_CONFIG, 'topic-1')).toContain(
       '(edited) (#7)',
     );
+  });
+
+  it('points at earlier replies and pages with --before', async () => {
+    mockFetchJson({
+      ...TOPIC,
+      postCount: 101,
+      hasEarlierPosts: true,
+      posts: [
+        {
+          id: '12',
+          body: 'Latest page',
+          author: 'Aino',
+          createdAt: '2026-10-20T10:00:00.000Z',
+        },
+      ],
+    });
+    const output = await runDiscussionsShow(TEST_CONFIG, 'topic-1');
+    expect(output).toContain('--- 101 replies ---');
+    expect(output).toContain('tahti discussions show topic-1 --before 12');
+
+    const fetchMock = mockFetchJson({
+      posts: [
+        {
+          id: '3',
+          body: 'Early on',
+          author: 'Liis',
+          createdAt: '2026-10-19T10:00:00.000Z',
+        },
+      ],
+      hasEarlierPosts: false,
+    });
+    const page = await runDiscussionsShow(TEST_CONFIG, 'topic-1', {
+      before: '#12',
+    });
+    expect(fetchMock.mock.calls[0][0]).toBe(
+      'https://api.example.test/api/v1/governance/discussions/topic-1/posts?before=12',
+    );
+    expect(page).toContain('Early on');
+    expect(page).not.toContain('--before');
+  });
+
+  it('rejects a --before that is not a reply number', async () => {
+    await expect(
+      runDiscussionsShow(TEST_CONFIG, 'topic-1', { before: 'abc' }),
+    ).rejects.toThrow('--before takes a reply number');
   });
 });
