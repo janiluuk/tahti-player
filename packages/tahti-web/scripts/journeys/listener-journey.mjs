@@ -3,7 +3,8 @@
  * Listener journey — signs in as `listener@tahti.live` (mock mode's plain
  * listener account) and browses library, history, favorites, messages, settings, and
  * views a paid fan-tier subscribe page as a signed-in listener (buy side of
- * paid content — pairs with artist-journey.mjs's add-ons/export sell side).
+ * paid content — pairs with artist-journey.mjs's add-ons/export sell side),
+ * then the board's discussion topics.
  *
  *   VITE_FORCE_MOCK=1 pnpm --filter @tahti-player/tahti-web dev -- --port 5195
  *   node scripts/journeys/listener-journey.mjs
@@ -45,6 +46,16 @@ const steps = [
     path: `/subscribe/${ARTIST}`,
     file: '08-fan-tier-subscribe.png',
     label: 'Fan tier subscribe (buy side)',
+  },
+  {
+    path: '/governance/discussions',
+    file: '09-discussions.png',
+    label: 'Governance discussions',
+  },
+  {
+    path: '/governance/discussions/topic-festival-2027',
+    file: '10-discussion-topic.png',
+    label: 'A discussion topic with replies',
   },
 ];
 

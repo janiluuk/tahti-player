@@ -53,6 +53,19 @@ function GovernanceGuideTab() {
           browser back and shared links without losing your place.
         </p>
       </SectionShell>
+      <SectionShell title="Discussions">
+        <p className="text-sm leading-relaxed">
+          The board opens discussion topics for members to talk something
+          through before anything is decided. Open them from Governance →
+          Discussions; every member is notified when a topic opens.
+        </p>
+        <p className="text-foreground-secondary mt-2 text-sm leading-relaxed">
+          Replying follows a topic, so new replies notify you; mute it to keep
+          following without notifications. You can remove your own reply while
+          the topic is open. A discussion is not a vote: decisions go through
+          motions.
+        </p>
+      </SectionShell>
       <SectionShell title="Advisory consultation and official votes">
         <p className="text-sm leading-relaxed">
           Advisory discussions and votes collect member input. They are clearly
