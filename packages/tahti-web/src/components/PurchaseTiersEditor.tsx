@@ -24,7 +24,7 @@ function euros(cents: number): string {
   return `€${(cents / 100).toFixed(cents % 100 === 0 ? 0 : 2)}`;
 }
 
-export function PurchaseTiersEditor() {
+export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
   const [tiers, setTiers] = useState<PurchaseTierRow[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -45,6 +45,7 @@ export function PurchaseTiersEditor() {
       setTiers(r.data);
       setLoadError(r.meta.source === 'api' ? (r.meta.reason ?? null) : null);
       setLoaded(true);
+      onChanged?.();
     });
   };
 
@@ -74,6 +75,7 @@ export function PurchaseTiersEditor() {
       return;
     }
     setStoreEnabledState(r.storeEnabled);
+    onChanged?.();
   };
 
   const closeCreate = () => {
@@ -97,13 +99,14 @@ export function PurchaseTiersEditor() {
       {storeEnabled !== null && (
         <div className="border-border flex items-center justify-between gap-3 rounded-lg border px-3 py-2">
           <div>
-            <p className="text-sm font-medium">Store section</p>
+            <p className="text-sm font-medium">Show the Store</p>
             <p className="text-foreground-secondary text-xs">
-              Show your active tiers in a Store section on your artist page.
+              Turn this on and the Store section appears on your channel page.
+              Leave it off and fans never see it.
             </p>
           </div>
           <Toggle
-            label="Show a Store section on your artist page"
+            label="Show the Store on your channel page"
             checked={storeEnabled}
             disabled={savingStore}
             onChange={(next) => void toggleStore(next)}
@@ -112,8 +115,7 @@ export function PurchaseTiersEditor() {
       )}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-foreground-secondary text-xs">
-          One-time purchase tiers for individual tracks — assign one from a
-          track's edit dialog.
+          A price is what a fan pays. Add one, then put tracks on it below.
         </p>
         <Tooltip
           content="New purchase tier"
@@ -144,8 +146,8 @@ export function PurchaseTiersEditor() {
         />
       ) : tiers.length === 0 ? (
         <PageEmpty
-          title="No purchase tiers yet"
-          description="Add a tier, then assign it to a track from its edit dialog."
+          title="No prices yet"
+          description="Add a price first. Then choose which tracks use it in the list below."
         />
       ) : (
         <ul className="flex flex-col gap-2">

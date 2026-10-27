@@ -7,7 +7,6 @@ import {
   backButtonCornerClassName,
   BackButtonLink,
   ClampedText,
-  Dialog,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -43,7 +42,9 @@ import {
   usePresetLookDraft,
 } from '../components/channel-view';
 import { ChannelPageActions } from '../components/channel-view/ChannelPageActions';
+import { ChannelStoreSection } from '../components/channel-view/ChannelStoreSection';
 import { channelTrackMeta } from '../components/channel-view/channelTrackMeta';
+import { StreamManagerDialog } from '../components/channel-view/StreamManagerDialog';
 import { ChannelComments } from '../components/ChannelComments';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
 import {
@@ -51,7 +52,6 @@ import {
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
 import { PageError, PageLoading } from '../components/PageStates';
-import { StreamManagerPanel } from '../components/StreamManagerPanel';
 import { listenerWidgetType } from '../content/listenerWidgets';
 import { useChannelAutoplay } from '../hooks/useChannelAutoplay';
 import { useChannelLayoutEditing } from '../hooks/useChannelLayoutEditing';
@@ -114,6 +114,7 @@ export function ChannelView({ slug }: { slug: string }) {
     channelBlocks,
     liveShows,
     artistSocialLinks,
+    storefront,
     loading,
     channelFailed,
     retryChannel,
@@ -721,6 +722,12 @@ export function ChannelView({ slug }: { slug: string }) {
             );
           })}
         </div>
+        <ChannelStoreSection
+          storefront={storefront}
+          username={channel.user.username}
+          isOwner={isOwner}
+          hidden={editing || isRadioChannel}
+        />
         {!editing ? (
           <ChannelExtrasSections
             slug={slug}
@@ -746,20 +753,13 @@ export function ChannelView({ slug }: { slug: string }) {
     return (
       <>
         {pageBody}
-        <Dialog.Root
+        <StreamManagerDialog
           isOpen={streamManagerOpen}
           onClose={() => setStreamManagerOpen(false)}
-          className="max-w-xl"
-        >
-          <Dialog.Title>Stream Manager</Dialog.Title>
-          <div className="mt-4">
-            <StreamManagerPanel
-              slug={channel.slug}
-              channelState={channel.state}
-              readOnly={!isOwner && !isAdministrator}
-            />
-          </div>
-        </Dialog.Root>
+          slug={channel.slug}
+          channelState={channel.state}
+          readOnly={!isOwner && !isAdministrator}
+        />
       </>
     );
   }

@@ -1,3 +1,9 @@
+## 2026-10-27 - Channel store editor
+
+Studio → Audience → Tiers → Channel store tells the artist to turn the Store on, add a
+price, then put tracks on that price. Those tracks show in the Store section
+on the channel page and the artist page. Bumped tahti-web `0.0.278`.
+
 ## 2026-10-27 - UX batch 115 (empties, confirms, undo)
 
 Plain-text empties (shows, replies, import catalogs, the release library

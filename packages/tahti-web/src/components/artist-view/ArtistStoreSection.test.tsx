@@ -92,6 +92,30 @@ describe('ArtistStoreSection', () => {
     ).toBeTruthy();
   });
 
+  it('lists the tracks the artist put in the store', async () => {
+    const checkout = vi
+      .spyOn(purchaseTiers, 'checkoutPurchaseTier')
+      .mockResolvedValue({ ok: true, activated: true });
+    render(
+      <ArtistStoreSection
+        username="aino"
+        tiers={tiers}
+        items={[{ id: 'track-9', title: 'Night drive', tierId: 'tier-1' }]}
+        paymentsReady
+        isOwner={false}
+      />,
+    );
+    expect(screen.getByText('Night drive')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Buy Single' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Buy Night drive' }));
+    await vi.waitFor(() =>
+      expect(checkout).toHaveBeenCalledWith('aino', 'tier-1', {
+        trackTitle: 'Night drive',
+        trackId: 'track-9',
+      }),
+    );
+  });
+
   it('does not offer the owner their own tiers', () => {
     render(
       <ArtistStoreSection

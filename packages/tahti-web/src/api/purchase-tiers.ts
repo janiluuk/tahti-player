@@ -17,7 +17,11 @@ import {
   mockFallbackMeta,
 } from './mode';
 import { requestJson } from './request-json';
-import { setMockSoundPurchaseAccess } from './studio';
+import {
+  applySavedMockSoundAccess,
+  setMockSoundPurchaseAccess,
+} from './studio';
+import { mockSoundStore } from './studio/studio-mock';
 
 export type PurchaseTierRow = {
   id: string;
@@ -350,13 +354,75 @@ export async function fetchMyPurchaseOrders(): Promise<{
   }
 }
 
-let mockStoreEnabled = false;
+const STORE_ENABLED_KEY = 'tahti-mock-store-enabled';
+
+function readStoreEnabled(): Record<string, boolean> {
+  if (typeof localStorage === 'undefined') {
+    return {};
+  }
+  try {
+    const raw = localStorage.getItem(STORE_ENABLED_KEY);
+    const parsed = raw ? (JSON.parse(raw) as Record<string, boolean>) : {};
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeStoreEnabled(username: string, storeEnabled: boolean): void {
+  const flags = readStoreEnabled();
+  flags[username] = storeEnabled;
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(STORE_ENABLED_KEY, JSON.stringify(flags));
+  }
+}
+
+export function readMockStorefront(username: string): {
+  storeEnabled: boolean;
+  tiers: PublicStoreTier[];
+  items: { id: string; title: string; tierId: string }[];
+} {
+  applySavedMockSoundAccess();
+  const storeEnabled = readStoreEnabled()[username] === true;
+  const tiers = (
+    readAllTiers().find((entry) => entry.artistUsername === username)?.tiers ??
+    []
+  )
+    .filter((tier) => tier.active)
+    .map((tier) => ({
+      id: tier.id,
+      name: tier.name,
+      description: tier.description,
+      priceCents: tier.priceCents,
+      priceOptional: tier.priceOptional,
+    }));
+  const tierIds = new Set(tiers.map((tier) => tier.id));
+  const items = storeEnabled
+    ? mockSoundStore.flatMap((sound) =>
+        sound.accessMode === 'PURCHASE' &&
+        sound.purchaseTierId &&
+        tierIds.has(sound.purchaseTierId)
+          ? [
+              {
+                id: sound.id,
+                title: sound.title,
+                tierId: sound.purchaseTierId,
+              },
+            ]
+          : [],
+      )
+    : [];
+  return { storeEnabled, tiers: storeEnabled ? tiers : [], items };
+}
 
 export async function fetchStoreSettings(): Promise<
   { ok: true; storeEnabled: boolean } | { ok: false; error: string }
 > {
   if (isForceMock()) {
-    return { ok: true, storeEnabled: mockStoreEnabled };
+    return {
+      ok: true,
+      storeEnabled: readStoreEnabled()[artistKey()] === true,
+    };
   }
   try {
     const { data } = await requestJson<{ storeEnabled: boolean }>(
@@ -375,7 +441,7 @@ export async function setStoreEnabled(
   storeEnabled: boolean,
 ): Promise<{ ok: true; storeEnabled: boolean } | { ok: false; error: string }> {
   if (isForceMock()) {
-    mockStoreEnabled = storeEnabled;
+    writeStoreEnabled(artistKey(), storeEnabled);
     return { ok: true, storeEnabled };
   }
   try {
