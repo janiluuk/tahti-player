@@ -1,4 +1,4 @@
-import { apiGet, CliError } from '../api-client.mjs';
+import { apiGet, apiPost, apiSendJson, CliError } from '../api-client.mjs';
 import {
   formatDate,
   formatDetails,
@@ -82,4 +82,44 @@ export async function runDiscussionsShow(config, id, { json = false } = {}) {
   return `${header}\n\n${topic.body}\n\n--- ${topic.posts.length} ${
     topic.posts.length === 1 ? 'reply' : 'replies'
   } ---\n\n${replies}`;
+}
+
+function topicPath(id) {
+  if (!id?.trim()) {
+    throw new CliError(
+      'Give a topic id.\nRun `tahti discussions list` to find one.',
+    );
+  }
+  return `/api/v1/governance/discussions/${encodeURIComponent(id.trim())}`;
+}
+
+export async function runDiscussionsReply(config, id, words) {
+  const path = topicPath(id);
+  const body = words.join(' ').trim();
+  if (!body) {
+    throw new CliError(
+      'Give the reply text after the topic id.\nRun `tahti discussions reply --help` for usage.',
+    );
+  }
+  const post = await apiPost(`${path}/posts`, { body }, config);
+  return `Replied (#${post.id}). You follow this topic now.`;
+}
+
+export async function runDiscussionsFollow(config, id, following) {
+  const result = await apiSendJson(
+    'PUT',
+    `${topicPath(id)}/follow`,
+    { following },
+    config,
+  );
+  return result.following
+    ? 'Following: new replies notify you.'
+    : 'No longer following this topic.';
+}
+
+export async function runDiscussionsMute(config, id, muted) {
+  await apiSendJson('PUT', `${topicPath(id)}/mute`, { muted }, config);
+  return muted
+    ? 'Muted: you still follow it, without notifications.'
+    : 'Unmuted: new replies notify you again.';
 }
