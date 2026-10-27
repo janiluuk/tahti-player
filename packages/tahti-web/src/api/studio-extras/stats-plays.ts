@@ -7,7 +7,20 @@ export type StatsPlaysRange = '1' | '7' | '30' | 'all' | 'custom';
 export type StatsPlaysDay = {
   date: string;
   plays: number;
+  downloads?: number;
+  smartLinkClicks?: number;
 };
+
+function mockDay(date: string, i: number): StatsPlaysDay {
+  const downloads = 14 + ((i * 11) % 60);
+  const smartLinkClicks = 6 + ((i * 7) % 20);
+  return {
+    date,
+    plays: downloads + smartLinkClicks,
+    downloads,
+    smartLinkClicks,
+  };
+}
 
 export type StatsPlaysCountry = {
   countryCode: string;
@@ -54,10 +67,7 @@ export function mockDaily(days: number): StatsPlaysDay[] {
   return Array.from({ length: days }, (_, i) => {
     const d = new Date();
     d.setUTCDate(d.getUTCDate() - (days - 1 - i));
-    return {
-      date: d.toISOString().slice(0, 10),
-      plays: 20 + ((i * 17) % 80),
-    };
+    return mockDay(d.toISOString().slice(0, 10), i);
   });
 }
 
@@ -78,10 +88,7 @@ export function mockDailyBetween(from: string, to: string): StatsPlaysDay[] {
     cursor <= end;
     cursor.setUTCDate(cursor.getUTCDate() + 1)
   ) {
-    days.push({
-      date: cursor.toISOString().slice(0, 10),
-      plays: 20 + ((i * 17) % 80),
-    });
+    days.push(mockDay(cursor.toISOString().slice(0, 10), i));
     i += 1;
   }
   return days;
@@ -107,8 +114,14 @@ export async function fetchStatsPlays(
     return {
       data: {
         totalPlays: daily.reduce((sum, day) => sum + day.plays, 0),
-        totalDownloads: 120,
-        totalSmartLinkClicks: 45,
+        totalDownloads: daily.reduce(
+          (sum, day) => sum + (day.downloads ?? 0),
+          0,
+        ),
+        totalSmartLinkClicks: daily.reduce(
+          (sum, day) => sum + (day.smartLinkClicks ?? 0),
+          0,
+        ),
         daily,
         downloadCountries: [
           { countryCode: 'FI', displayName: 'Finland', count: 80 },

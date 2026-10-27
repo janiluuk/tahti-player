@@ -67,6 +67,7 @@ describe('AudienceBreakdown', () => {
       'Device type',
       'Device company',
       'Source',
+      'Listened on',
     ]) {
       expect(within(panel).getByRole('heading', { name: title })).toBeTruthy();
     }
@@ -80,6 +81,26 @@ describe('AudienceBreakdown', () => {
     });
   });
 
+  it('names listening surfaces in plain words', async () => {
+    fetchAudience.mockImplementation(async (dimension) =>
+      share(
+        dimension,
+        dimension === 'surface'
+          ? [
+              ['TAHTI_RADIO', 3],
+              ['EMBED', 1],
+            ]
+          : [['Chrome', 4]],
+      ),
+    );
+    await act(async () => {
+      render(<AudienceBreakdown window={{ range: '7' }} />);
+    });
+    expect(screen.getByText('Tahti Radio')).toBeTruthy();
+    expect(screen.getByText('Embeds')).toBeTruthy();
+    expect(screen.queryByText('TAHTI_RADIO')).toBeNull();
+  });
+
   it('asks again with bots once the toggle is off', async () => {
     await act(async () => {
       render(<AudienceBreakdown window={{ range: '30' }} />);
@@ -90,7 +111,7 @@ describe('AudienceBreakdown', () => {
       );
     });
     expect(fetchAudience).toHaveBeenLastCalledWith(
-      'source',
+      'surface',
       expect.objectContaining({ includeBots: true }),
     );
   });

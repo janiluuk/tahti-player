@@ -20,4 +20,6 @@ export type DayOfWeekChartProps = Omit<ComponentProps<'div'>, 'children'> & {
   labels: DayOfWeekChartLabels;
   formatValue: (value: number) => string;
   onBarClick?: (index: number) => void;
+  /** A second series drawn on top of `values`; the tooltip shows the sum. */
+  stackValues?: number[];
 };
