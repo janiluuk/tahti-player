@@ -16,5 +16,7 @@ export function discoverTrackPlayable(
     protocol: item.audioUrl.includes('.m3u8') ? 'hls' : 'https',
     channelSlug: item.channelSlug,
     durationSec: item.durationSec ?? undefined,
+    releaseDate: item.createdAt ?? null,
+    peaks: item.peaks ?? null,
   };
 }

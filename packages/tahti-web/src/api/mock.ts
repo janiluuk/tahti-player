@@ -1023,6 +1023,7 @@ function buildMockProfile(username: string): PublicProfile {
       playCount: 57 - i * 9,
       likeCount: 3 - (i % 3),
       downloadCount: 15 - i * 4 > 0 ? 15 - i * 4 : 0,
+      downloadsEnabled: i % 3 !== 2,
     })),
     fanTiers: [
       {

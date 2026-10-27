@@ -50,6 +50,7 @@ import { ReportButton } from '../components/ReportButton';
 import { RssFeedButton } from '../components/RssFeedButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
+import { collectionTrackMeta } from '../lib/collectionTrackMeta';
 import { contrastingText } from '../lib/colorScheme';
 import { toEmbedPlaybackProvider } from '../lib/embedSrc';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
@@ -119,6 +120,9 @@ function collectionSoundToPlayable(
       streamUrl: sound.audioUrl,
       protocol: sound.audioUrl.includes('.m3u8') ? 'hls' : 'https',
       channelSlug: sound.channel?.slug,
+      durationSec: sound.durationSec ?? undefined,
+      releaseDate: sound.createdAt ?? null,
+      peaks: sound.peaks ?? null,
     };
   }
   if (sound.embedProvider && sound.embedUri) {
@@ -249,6 +253,10 @@ export function CollectionView({ slug }: { slug: string }) {
     };
   }, [slug]);
 
+  const trackMeta = useMemo(
+    () => (collection ? collectionTrackMeta(collection) : undefined),
+    [collection],
+  );
   const playables = useMemo(
     () => (collection ? collectionToPlayables(collection) : []),
     [collection],
@@ -531,6 +539,7 @@ export function CollectionView({ slug }: { slug: string }) {
 
       <CollectionTrackList
         items={playables}
+        getTrackMeta={trackMeta}
         compactActions
         getAnnotation={(item) => {
           const line = contributions.get(item.id);

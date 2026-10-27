@@ -40,7 +40,10 @@ import {
 import { HomeNews } from '../components/listen-view/HomeNews';
 import { ListenSection } from '../components/listen-view/ListenSection';
 import { RadioStationsRow } from '../components/listen-view/RadioStationsRow';
-import { useListenSections } from '../components/listen-view/useListenSections';
+import {
+  latestTrackMeta,
+  useListenSections,
+} from '../components/listen-view/useListenSections';
 import { WelcomeStrip } from '../components/listen-view/WelcomeStrip';
 import { useListenerWidgetBlocks } from '../components/ListenerWidgetsSection';
 import { ListenWidgetStoreDialog } from '../components/ListenWidgetStoreDialog';
@@ -447,6 +450,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               <PlayableAmbientTrackList
                 items={sections.latestTracks.data}
                 playAll
+                getTrackMeta={latestTrackMeta}
               />
             </div>
           </section>
