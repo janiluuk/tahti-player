@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { PencilIcon } from 'lucide-react';
+import { PencilIcon, TrashIcon } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
 
 import { Select } from '@tahti-player/ui';
@@ -29,6 +29,9 @@ export function PlayableAmbientTrackList({
   compactActions,
   playAll = false,
   onEdit,
+  onRemove,
+  selectable = false,
+  onBulkRemove,
 }: {
   items: TahtiPlayable[];
   emptyMessage?: string;
@@ -36,6 +39,12 @@ export function PlayableAmbientTrackList({
   compactActions?: boolean;
   playAll?: boolean;
   onEdit?: (item: TahtiPlayable) => void;
+  /** Same contract as `PlayableTrackTable`'s: only for items the viewer
+   * owns outright, removed without a confirmation dialog. */
+  onRemove?: (item: TahtiPlayable) => void;
+  /** Multi-select and bulk actions live in the List view. */
+  selectable?: boolean;
+  onBulkRemove?: (items: TahtiPlayable[]) => void;
 }) {
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
@@ -118,6 +127,19 @@ export function PlayableAmbientTrackList({
                         },
                       ]
                     : [],
+                )
+                .concat(
+                  onRemove
+                    ? [
+                        {
+                          id: 'remove',
+                          label: `Remove ${item.title}`,
+                          title: 'Remove',
+                          icon: <TrashIcon size={16} />,
+                          onClick: () => onRemove(item),
+                        },
+                      ]
+                    : [],
                 )}
             />
           ),
@@ -131,6 +153,7 @@ export function PlayableAmbientTrackList({
       favoriteTracks,
       getAnnotation,
       onEdit,
+      onRemove,
       play,
       enqueue,
       setStatus,
@@ -179,6 +202,9 @@ export function PlayableAmbientTrackList({
           compactActions={compactActions}
           getAnnotation={getAnnotation}
           onEdit={onEdit}
+          onRemove={onRemove}
+          selectable={selectable}
+          onBulkRemove={onBulkRemove}
         />
       )}
     />
