@@ -6,10 +6,17 @@ import { Badge, Button, Textarea, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchDiscussionTopic,
+  removeDiscussionPost,
   replyToDiscussion,
+  setDiscussionFollow,
+  setDiscussionMute,
+  type DiscussionPost,
   type DiscussionTopicDetail,
 } from '../api/governance-discussions';
+import { ConfirmDialog } from '../components/ConfirmDialog';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import { ReportButton } from '../components/ReportButton';
+import { hasAccountRole } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
@@ -81,12 +88,76 @@ function ReplyForm({
   );
 }
 
+function FollowControls({
+  topic,
+  onChange,
+}: {
+  topic: DiscussionTopicDetail;
+  onChange: (following: boolean, muted: boolean) => void;
+}) {
+  const [busy, setBusy] = useState(false);
+
+  const run = async (
+    action: () => ReturnType<typeof setDiscussionFollow>,
+    done: string,
+  ) => {
+    setBusy(true);
+    const result = await action();
+    setBusy(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    onChange(result.data.following, result.data.muted);
+    toast.success(done);
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <Button
+        size="sm"
+        variant="secondary"
+        disabled={busy}
+        onClick={() =>
+          void run(
+            () => setDiscussionFollow(topic.id, !topic.following),
+            topic.following
+              ? 'You no longer follow this topic.'
+              : 'You follow this topic; new replies notify you.',
+          )
+        }
+      >
+        {topic.following ? 'Unfollow' : 'Follow'}
+      </Button>
+      {topic.following ? (
+        <Button
+          size="sm"
+          variant="text"
+          disabled={busy}
+          onClick={() =>
+            void run(
+              () => setDiscussionMute(topic.id, !topic.muted),
+              topic.muted
+                ? 'Replies notify you again.'
+                : 'Muted: you still follow it, without notifications.',
+            )
+          }
+        >
+          {topic.muted ? 'Unmute' : 'Mute notifications'}
+        </Button>
+      ) : null}
+    </div>
+  );
+}
+
 export function DiscussionTopicView({ id }: { id: string }) {
   const user = useAuthStore((s) => s.user);
   const [topic, setTopic] = useState<DiscussionTopicDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
+  const [removing, setRemoving] = useState<DiscussionPost | null>(null);
+  const isBoard = hasAccountRole(user, 'BOARD');
 
   useEffect(() => {
     if (!user) {
@@ -110,6 +181,29 @@ export function DiscussionTopicView({ id }: { id: string }) {
   }, [user, id, attempt]);
 
   const reload = () => setAttempt((n) => n + 1);
+
+  const canRemove = (post: DiscussionPost) =>
+    isBoard || (Boolean(post.mine) && topic?.status !== 'CLOSED');
+
+  const confirmRemove = () => {
+    const target = removing;
+    setRemoving(null);
+    if (!target || !topic) {
+      return;
+    }
+    void removeDiscussionPost(topic.id, target.id).then((result) => {
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      toast.success('Reply removed.');
+      setTopic({
+        ...topic,
+        posts: topic.posts.filter((p) => p.id !== target.id),
+        postCount: Math.max(0, topic.postCount - 1),
+      });
+    });
+  };
 
   return (
     <ViewShell
@@ -156,6 +250,12 @@ export function DiscussionTopicView({ id }: { id: string }) {
               ) : null}
             </p>
             <p className="text-sm whitespace-pre-wrap">{topic.body}</p>
+            <FollowControls
+              topic={topic}
+              onChange={(following, muted) =>
+                setTopic({ ...topic, following, muted })
+              }
+            />
           </section>
 
           <section className="flex flex-col gap-3" aria-label="Replies">
@@ -172,9 +272,32 @@ export function DiscussionTopicView({ id }: { id: string }) {
               <ul className="border-border divide-border divide-y rounded-md border text-sm">
                 {topic.posts.map((post) => (
                   <li key={post.id} className="px-3 py-2">
-                    <p className="text-foreground-secondary text-xs">
-                      {post.author}, {postedAt(post.createdAt)}
-                    </p>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-foreground-secondary text-xs">
+                        {post.author}, {postedAt(post.createdAt)}
+                      </p>
+                      <span className="flex items-center gap-1">
+                        {post.mine ? null : (
+                          <ReportButton
+                            targetType="DISCUSSION_POST"
+                            targetId={post.id}
+                            label={`the reply by ${post.author}`}
+                            defaultReason="HARASSMENT"
+                            variant="text"
+                          />
+                        )}
+                        {canRemove(post) ? (
+                          <Button
+                            size="sm"
+                            variant="text"
+                            aria-label={`Remove the reply by ${post.author}`}
+                            onClick={() => setRemoving(post)}
+                          >
+                            Remove
+                          </Button>
+                        ) : null}
+                      </span>
+                    </div>
                     <p className="mt-1 whitespace-pre-wrap">{post.body}</p>
                   </li>
                 ))}
@@ -191,6 +314,18 @@ export function DiscussionTopicView({ id }: { id: string }) {
           )}
         </>
       )}
+      <ConfirmDialog
+        isOpen={removing !== null}
+        title="Remove this reply?"
+        description={
+          removing && !removing.mine
+            ? 'It is deleted for every member, and the removal is logged.'
+            : 'It is deleted for every member.'
+        }
+        confirmLabel="Remove"
+        onCancel={() => setRemoving(null)}
+        onConfirm={confirmRemove}
+      />
     </ViewShell>
   );
 }
