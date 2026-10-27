@@ -48,6 +48,7 @@ import {
 import {
   accountRoute,
   applyRoute,
+  emailChangeRoute,
   forgotPasswordRoute,
   joinRoute,
   loginRoute,
@@ -319,6 +320,7 @@ const routeTree = rootRoute.addChildren([
     signupRoute,
     signupPaymentRoute,
     verifyRoute,
+    emailChangeRoute,
     newsletterConfirmedRoute,
     newsletterUnsubscribedRoute,
     newsletterUnsubscribeRoute,

@@ -55,3 +55,20 @@ export async function requestEmailChange(
     return failure(err, 'Could not start the email change');
   }
 }
+
+/** Finishes an email change from the link sent to the new address
+ * (`POST /api/auth/email-change/confirm`); works signed out. */
+export async function confirmEmailChange(token: string): Promise<Result> {
+  if (isForceMock()) {
+    return { ok: true, message: 'Your account now uses the new address.' };
+  }
+  try {
+    const { data } = await requestJson<{ message: string }>(
+      '/api/auth/email-change/confirm',
+      { method: 'POST', body: JSON.stringify({ token }) },
+    );
+    return { ok: true, message: data.message };
+  } catch (err) {
+    return failure(err, 'Could not confirm the new address');
+  }
+}
