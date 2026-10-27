@@ -170,6 +170,19 @@ describe('NotificationsView', () => {
     expect(fetch).toHaveBeenLastCalledWith(undefined, undefined);
   });
 
+  it('labels each row with its kind under All only', async () => {
+    vi.spyOn(api, 'fetchNotifications').mockResolvedValue({
+      data: [note('a', { type: 'PAYOUT_SENT' })],
+      unreadCount: 1,
+      hasMore: false,
+      meta: { source: 'api' },
+    });
+    renderView();
+    expect(await screen.findByText(/^Money ·/)).toBeTruthy();
+    fireEvent.click(screen.getByRole('radio', { name: 'Money' }));
+    await waitFor(() => expect(screen.queryByText(/^Money ·/)).toBeNull());
+  });
+
   it('shows a retry when the inbox fails to load', async () => {
     vi.spyOn(api, 'fetchNotifications').mockResolvedValue({
       data: [],

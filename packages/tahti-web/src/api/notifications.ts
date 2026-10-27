@@ -164,6 +164,68 @@ export const NOTIFICATION_KINDS = [
 
 export type NotificationKind = (typeof NOTIFICATION_KINDS)[number]['id'];
 
+const NOTIFICATION_KIND_TYPES: Record<
+  Exclude<NotificationKind, 'other'>,
+  readonly string[]
+> = {
+  social: [
+    'NEW_FOLLOWER',
+    'NEW_LIKE',
+    'NEW_REPOST',
+    'NEW_COMMENT',
+    'NEW_MESSAGE',
+    'CHAT_MENTION',
+    'PLAYLIST_TRACK_ADDED',
+    'MODERATOR_ADDED',
+  ],
+  music: [
+    'NEW_POST',
+    'NEW_TRACK',
+    'NEW_RELEASE',
+    'NEW_EVENT',
+    'CHANNEL_LIVE',
+    'STREAMING_COPY_READY',
+    'RADIO_SUBMISSION_REJECTED',
+    'THEME_UNDER_REVIEW',
+    'THEME_APPROVED',
+    'THEME_REJECTED',
+  ],
+  money: [
+    'NEW_FAN_SUBSCRIBER',
+    'NEW_PURCHASE',
+    'PAYOUT_SENT',
+    'FAN_SUB_PAYMENT_FAILED',
+    'FAN_SUB_EXPIRED',
+  ],
+  governance: [
+    'MOTION_OPENED',
+    'MOTION_RESULT',
+    'MOTION_SECONDED',
+    'MOTION_COMMENT',
+    'MOTION_CIRCULATED',
+    'CORRECTION_RESOLVED',
+    'ELECTION_OPENED',
+    'ELECTION_RESULT',
+    'FEATURE_REQUEST_UPDATED',
+  ],
+};
+
+/** The filter a notification type falls under (tahti-org
+ * `notificationKindOf`); anything outside the named groups is `other`. */
+export function notificationKindOf(type: string): NotificationKind {
+  for (const [kind, types] of Object.entries(NOTIFICATION_KIND_TYPES)) {
+    if (types.includes(type)) {
+      return kind as NotificationKind;
+    }
+  }
+  return 'other';
+}
+
+export function notificationKindLabel(type: string): string {
+  const kind = notificationKindOf(type);
+  return NOTIFICATION_KINDS.find((item) => item.id === kind)?.label ?? 'Other';
+}
+
 /** One page of the inbox, newest first. `before` is the id of the oldest
  * notification already shown, to read the page after it. */
 export async function fetchNotifications(
