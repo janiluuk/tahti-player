@@ -42,5 +42,7 @@ describe('PrivacyView', () => {
     expect(item?.textContent).toContain('releases with their tracks');
     expect(item?.textContent).toContain('your votes');
     expect(item?.textContent).toContain('listening sessions');
+    expect(item?.textContent).toContain('venues you run');
+    expect(item?.textContent).toContain('restrictions the board');
   });
 });
