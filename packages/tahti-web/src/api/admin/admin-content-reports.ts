@@ -15,7 +15,8 @@ export type AdminContentReportRow = {
     | 'CHANNEL'
     | 'COLLECTION'
     | 'MOTION_COMMENT'
-    | 'COMMENT';
+    | 'COMMENT'
+    | 'DISCUSSION_POST';
   targetId: string;
   /** Title of the reported thing, or who wrote the comment. Null once it's gone. */
   targetLabel?: string | null;

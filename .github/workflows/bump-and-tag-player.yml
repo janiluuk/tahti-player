@@ -9,10 +9,8 @@ on:
     branches: [master]
     paths:
       - 'packages/player/**'
-      - 'packages/hifi/**'
       - 'packages/i18n/**'
       - 'packages/model/**'
-      - 'packages/plugin-sdk/**'
       - 'packages/tailwind-config/**'
       - 'packages/themes/**'
       - 'packages/ui/**'

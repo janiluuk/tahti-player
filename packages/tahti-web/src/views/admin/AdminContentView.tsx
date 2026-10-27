@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import {
   Clock3Icon,
   FileAudioIcon,
@@ -7,7 +6,14 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { ButtonLink, Tooltip, ViewShell } from '@tahti-player/ui';
+import {
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
+  ButtonLink,
+  Tooltip,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchAdminContentOverview,
@@ -55,16 +61,10 @@ export function AdminContentView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/content">
           <div className="flex flex-col gap-6">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-            >
-              <Link to="/admin" className="hover:underline">
-                Admin
-              </Link>
-              <span aria-hidden>→</span>
-              <span aria-current="page">Content</span>
-            </nav>
+            <Breadcrumbs>
+              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbCurrent>Content</BreadcrumbCurrent>
+            </Breadcrumbs>
             <ViewShell
               title="Content"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}

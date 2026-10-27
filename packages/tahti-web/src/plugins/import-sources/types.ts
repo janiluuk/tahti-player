@@ -2,6 +2,8 @@ import type { FetchMeta } from '../../api/client';
 import type {
   BandcampAlbum,
   ConnectionStatus,
+  GoogleDrivePickedFile,
+  GoogleDrivePickerConfigResult,
   HearthisLibrary,
   HearthisTrack,
   IntegrationId,
@@ -64,6 +66,10 @@ export type SoundcloudSourceAdapter = OAuthAdapterBase & {
 
 export type GoogleDriveSourceAdapter = OAuthAdapterBase & {
   id: 'google-drive';
+  pickerConfig(): Promise<GoogleDrivePickerConfigResult>;
+  importFiles(
+    files: GoogleDrivePickedFile[],
+  ): Promise<{ ok: true; count: number } | { ok: false; error: string }>;
 };
 
 export type MixcloudSourceAdapter = OAuthAdapterBase & {

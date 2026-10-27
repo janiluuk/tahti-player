@@ -16,6 +16,7 @@ import {
   type TahtiNativeLibrary,
 } from '../../tahti-web/src/lib/nativeLibrary';
 import { mountTahtiApp } from '../../tahti-web/src/TahtiApp';
+import { installDesktopAuthStorage } from './desktopAuthStorage';
 import {
   initDesktopDiscord,
   initDesktopJam,
@@ -604,6 +605,7 @@ if (!rootElement) {
 
 await installDesktopMcp();
 installDesktopUpdater();
+installDesktopAuthStorage();
 await mountTahtiApp(rootElement);
 void initDesktopMcp();
 void initDesktopMpd();

@@ -54,16 +54,33 @@ How these were found:
   channel page via `/api/v1/channels/:slug/addons`, but the legacy order/width
   (Full / Half / Third) and logo block (`/api/me/channel/blocks*`,
   `/api/v1/channels/:slug/blocks`) have no editor or renderer.
+  - 2026-10-27 (batch 90): renderer and add-on width editor. The channel page
+    reads `/blocks` and lays out logo and add-on blocks in 6-unit rows (same
+    packing as tahti-org); add-ons not in the layout still list below. Studio
+    add-ons (artist scope) get a Full / Half / Third width per add-on; the
+    first change lays out every add-on in list order, and Move up/down,
+    install and remove keep the layout in step. Left: an editor for logo
+    blocks (upload via `/api/me/media`) and a check on beta.
 - [ ] **Google Drive import** (parity): API exists (`/api/me/google-drive/picker-config`,
   `/import`, cloud-import jobs); tahti-web connects Drive but has no Picker.
   Import progress for queued jobs is shown on Upload (#1412).
+  - 2026-10-27 (batch 90): Picker added. Drive's configure dialog (Sources
+    and Studio → Upload's Import sources) has "Choose files from Drive":
+    picker-config → Google Picker (audio only, multi-select) → POST
+    `/import` in batches of 20. nginx CSP allows `apis.google.com` scripts
+    and the `docs.google.com` frame. Left: check against real Picker keys on
+    beta (needs `GOOGLE_DRIVE_*` incl. the developer key on the API).
 - [x] MusicBrainz prompt re-enable toggle in Settings → Artist → Connections
   (batch 79).
 
 ## Listener
 
-- [ ] Player "Try again" after a stream error (#1406 announces failures; a
+- [x] Player "Try again" after a stream error (#1406 announces failures; a
   reload needs an `AudioEngine` change).
+  - 2026-10-27 (batch 90): `playerStore.retry()` bumps a reload nonce that
+    `AudioEngine` reloads the source on. The toast's Try again and any play
+    press from the error state use it and keep the queue (Try again used to
+    replace the queue with the one track).
 - [x] History empty copy explains the ~30 s play-report threshold (batch 79).
 - [x] Play button shows loading while `status === 'loading'` (MediaArtwork +
   player bar; batch 79).

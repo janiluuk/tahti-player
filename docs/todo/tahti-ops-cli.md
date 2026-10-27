@@ -28,6 +28,9 @@ install the product CLI without deploy SSH tooling.
 | `tahti-ops snapshots list\|update` | `vitest run -u` per package, `generate-storybook-surfaces.mjs` | groups ui player hifi surfaces, or all; `--only <test>`; prints changed `.snap` files |
 | `tahti-ops deploy web\|storybook` | `deploy-vimage.sh` in each package | `--ci` dispatches `deploy-tahti-web-selfhosted.yml` |
 | `tahti-ops release prepare <version>` | `scripts/deploy-production.sh` (deleted) | wraps `prepare-release.mjs`; `--build` adds `tauri build`; refuses an existing tag |
+| `tahti-ops check size` | `scripts/check-file-size.mjs` (deleted) | `--update` / `--prune`; baseline stays in `scripts/file-size-baseline.json`; CI via `pnpm check:file-size` |
+| `tahti-ops package aur <version>` | `scripts/update-aur.sh` (deleted) | `--no-push` = old script `--dry-run`; `--dry-run` prints steps only; `update-aur.yml` installs `nodejs` and calls it |
+| `tahti-ops package flatpak sources\|flathub` | `scripts/flatpak-generate-sources.sh`, `scripts/flatpak-update-flathub.sh` (deleted) | `--out <dir>`; `flathub <version>` needs `GH_TOKEN`; `update-flathub.yml` calls it |
 
 Shared: `--help`, `--dry-run`, `TAHTI_ORG_ROOT`, short `→` / `✓` / `✗` labels.
 
@@ -42,6 +45,9 @@ Shared: `--help`, `--dry-run`, `TAHTI_ORG_ROOT`, short `→` / `✓` / `✗` lab
 
 - 2026-10-27: `tahti-ops release prepare <version> [--build] [--dry-run]` replaces `scripts/deploy-production.sh` (deleted). Runs `prepare-release.mjs` (bump, metainfo, commit, tag), optional `tauri build`, prints the push command.
 - 2026-10-27: `tahti-ops desktop android` replaces `scripts/build-and-run-android.sh` (deleted). Same JDK / `ANDROID_HOME` preflight (skipped on `--dry-run`), `tauri android init` when `gen/android` is missing, then `tauri android run --debug`; `pnpm build:android:run` calls it.
+- 2026-10-27: `tahti-ops check size [--update|--prune]` replaces `scripts/check-file-size.mjs` (deleted). `pnpm check:file-size` (CI "File size guard") now calls it; same limit, roots and baseline file.
+- 2026-10-27: `tahti-ops package aur <version> [--no-push] [--dry-run]` replaces `scripts/update-aur.sh` (deleted), ported to Node (sha256 via fetch, template fill, makepkg as `builduser` when root, clone/commit/push). `update-aur.yml` installs `nodejs` in the Arch container and calls the CLI.
+- 2026-10-27: `tahti-ops package flatpak sources [--out <dir>]` and `package flatpak flathub <version> [--dry-run]` replace `scripts/flatpak-generate-sources.sh` and `scripts/flatpak-update-flathub.sh` (deleted), ported to Node. Fixes the pnpm tarball name (the old script kept the `+sha512…` suffix of `packageManager`). `update-flathub.yml` calls the CLI.
 
 ## Script → command inventory
 
@@ -88,10 +94,10 @@ Shared: `--help`, `--dry-run`, `TAHTI_ORG_ROOT`, short `→` / `✓` / `✗` lab
 | Script | Proposed surface | Status |
 | --- | --- | --- |
 | build-and-run-*.sh / run-linux.sh | `desktop run` / `launch` / `android` | shipped (android script deleted) |
-| flatpak-*.sh / update-aur.sh | `package flatpak` / `package aur` | planned |
+| flatpak-*.sh / update-aur.sh | `package flatpak` / `package aur` | shipped (scripts deleted) |
 | deploy-production.sh | `release prepare` | shipped (script deleted) |
 | scripts/ci/* | keep CI-only; optional `ci digest` | planned |
-| check-file-size.mjs | `check size` | planned |
+| check-file-size.mjs | `check size` | shipped (script deleted) |
 | generate-storybook-surfaces.mjs | `storybook surfaces` | planned |
 | close-external-issue.cjs | `github …` | planned |
 

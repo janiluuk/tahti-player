@@ -32,7 +32,7 @@ async function expectSection(canvasElement: HTMLElement, label: string) {
   const sections = within(
     canvas.getByRole('tablist', { name: 'Governance sections' }),
   );
-  await expect(sections.getAllByRole('tab')).toHaveLength(6);
+  await expect(sections.getAllByRole('tab')).toHaveLength(7);
   await expect(sections.getByRole('tab', { name: label })).toHaveAttribute(
     'aria-selected',
     'true',
@@ -185,5 +185,22 @@ export const RecordsTab: Story = {
       await canvas.findByText('Disputed minutes', { exact: false }),
     ).toBeVisible();
     await expect(await canvas.findByText('Anna Virtanen')).toBeVisible();
+  },
+};
+/** Discussions: the mock app's pinned open topic and closed topic, with
+ * Pin / Close controls and the form to open a new one. */
+export const DiscussionsTab: Story = {
+  render: renderTab('discussions'),
+  play: async ({ canvasElement }) => {
+    const canvas = await expectSection(canvasElement, 'Discussions');
+    await expect(
+      await canvas.findByRole('link', {
+        name: 'A Tahti stage at a summer festival in 2027?',
+      }),
+    ).toBeVisible();
+    await expect(canvas.getByRole('button', { name: 'Unpin' })).toBeVisible();
+    await expect(canvas.getByRole('button', { name: 'Reopen' })).toBeVisible();
+    await userEvent.click(canvas.getByRole('button', { name: 'Open a topic' }));
+    await expect(canvas.getByRole('textbox', { name: 'Title' })).toBeVisible();
   },
 };

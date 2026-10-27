@@ -32,7 +32,7 @@ function EmbedChrome({ children }: { children: ReactNode }) {
       <div className="bg-background text-foreground flex min-h-screen flex-col">
         <AudioEngine />
         <ListenHeartbeat />
-        <div className="flex-1 p-3">{children}</div>
+        <main className="flex-1 p-3">{children}</main>
         <ConnectedPlayerBar />
       </div>
     </HearthisEmbedHostProvider>
@@ -132,9 +132,9 @@ export function EmbedChannelView({ slug }: { slug: string }) {
               />
             ) : null}
             <div className="min-w-0 flex-1">
-              <p className="font-display truncate text-base font-bold">
+              <h1 className="font-display truncate text-base font-bold">
                 {data.artist.displayName}
-              </p>
+              </h1>
               <p className="text-foreground-secondary truncate text-xs">
                 @{data.artist.username}
                 {data.state === 'LIVE' ? ' — LIVE' : ' — offline'}{' '}
@@ -189,9 +189,9 @@ export function EmbedReleaseView({ id }: { id: string }) {
               />
             ) : null}
             <div className="min-w-0 flex-1">
-              <p className="font-display truncate text-base font-bold">
+              <h1 className="font-display truncate text-base font-bold">
                 {data.title}
-              </p>
+              </h1>
               <p className="text-foreground-secondary truncate text-xs">
                 {data.artist.displayName}{' '}
               </p>
@@ -285,9 +285,9 @@ export function EmbedCollectionView({
               />
             ) : null}
             <div className="min-w-0 flex-1">
-              <p className="font-display truncate text-base font-bold">
+              <h1 className="font-display truncate text-base font-bold">
                 {data.name}
-              </p>
+              </h1>
               <p className="text-foreground-secondary truncate text-xs">
                 {data.artist.displayName}{' '}
               </p>
