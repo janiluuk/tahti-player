@@ -14,7 +14,6 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 
 - [ ] **Listen-studio UX & visual sweep (2026-10-19)** — open items (liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle, remaining empty states) are in [ux-backlog](../../docs/todo/ux-backlog.md); beta → main-site findings in [beta-launch-findings](../../docs/todo/beta-launch-findings.md).
 - [ ] **Stay signed in on every client (JWT + refresh tokens)** — short-lived JWT access tokens with rotating, reuse-detected refresh tokens; per-device sessions instead of "every login signs out all other devices"; one self-contained client package (`@tahti-player/auth-session`) shared by web, desktop and CLI, plus one token module in `../tahti-org`. Leaf: [auth-refresh-tokens.md](../../docs/todo/auth-refresh-tokens.md).
-- [ ] **(Later) Discussion topics, not just feature requests** — `admin/moderation/tabs/FeatureRequestsTab.tsx` currently only handles feature-request tickets. Add admin-creatable discussion topics as a distinct concept (not a feature request). Participants get notified on new updates to a topic they're in; users can mute a specific topic.
 
 ## Reference
 

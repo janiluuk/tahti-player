@@ -42,6 +42,27 @@ describe('formatLibraryTable', () => {
   });
 });
 
+describe('formatLibraryTable with public totals', () => {
+  it('adds plays, likes and downloads columns', () => {
+    const table = formatLibraryTable([
+      {
+        id: 'a1',
+        title: 'Set',
+        status: 'READY',
+        durationSec: 61,
+        playCount: 57,
+        likeCount: 3,
+        downloadCount: 4,
+      },
+    ]);
+    const [header, row] = table.split('\n');
+    expect(header).toContain('PLAYS');
+    expect(header).toContain('LIKES');
+    expect(header).toContain('DLS');
+    expect(row).toMatch(/57\s+3\s+4$/);
+  });
+});
+
 describe('fetchLibrarySounds', () => {
   afterEach(() => {
     vi.unstubAllGlobals();

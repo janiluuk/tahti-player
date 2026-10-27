@@ -75,6 +75,18 @@ describe('earnings help', () => {
   });
 });
 
+describe('track rows help', () => {
+  it('explains what a track row shows and does', () => {
+    const rows = getHelpArticle('player')?.sections.find(
+      (section) => section.heading === 'Track rows',
+    );
+    expect(rows?.body.some((line) => line.includes('loves the track'))).toBe(
+      true,
+    );
+    expect(rows?.body.some((line) => line.includes('download'))).toBe(true);
+  });
+});
+
 describe('governance help', () => {
   it('explains discussions and that they are not votes', () => {
     const discussions = getHelpArticle('governance')?.sections.find(

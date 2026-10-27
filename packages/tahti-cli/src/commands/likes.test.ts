@@ -1,7 +1,7 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, runSetLiked, vi } from 'vitest';
 
 import { mockFetchJson, TEST_CONFIG } from '../test-helpers';
-import { runLikes } from './likes.mjs';
+import { runLikes, runSetLiked } from './likes.mjs';
 
 const LIKES = {
   items: [
@@ -47,6 +47,26 @@ describe('runLikes', () => {
   it('rejects a --limit over 100', async () => {
     await expect(runLikes(TEST_CONFIG, { limit: '101' })).rejects.toThrow(
       'Invalid --limit',
+    );
+  });
+
+  it('loves and unloves a track by channel and id', async () => {
+    const fetchMock = mockFetchJson({ liked: true, likeCount: 4 });
+    expect(await runSetLiked(TEST_CONFIG, '@yaniho', 's1', true)).toBe(
+      'Loved. The track has 4 likes.',
+    );
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe('https://api.example.test/api/v1/c/yaniho/sounds/s1/like');
+    expect(init.method).toBe('POST');
+    mockFetchJson({ liked: false, likeCount: 1 });
+    expect(await runSetLiked(TEST_CONFIG, 'yaniho', 's1', false)).toBe(
+      'Unloved. The track has 1 like.',
+    );
+  });
+
+  it('needs a channel and a track id', async () => {
+    await expect(runSetLiked(TEST_CONFIG, 'yaniho', '', true)).rejects.toThrow(
+      'Give the channel and the track id',
     );
   });
 });
