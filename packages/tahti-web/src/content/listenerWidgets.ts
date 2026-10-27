@@ -91,6 +91,11 @@ export const MIKSERI_MAJOR_GENRES = [
   { id: '11', label: 'Other' },
 ] as const;
 
+// Song pages are /artists/<artist>/<song>/<id>/. Artist pages also carry a
+// numeric id (/artists/<name>.<id>.php, /artists/?id=<id>), so a looser
+// "path ends in digits" rule would embed an artist id as a track.
+const MIKSERI_SONG_PAGE_PATH = /^\/artists\/[^/]+\/[^/]+\/(\d+)\/?$/;
+
 export function mikseriEmbedUrl(input: string): string | null {
   const trimmed = input.trim();
   if (/^\d+$/.test(trimmed)) {
@@ -114,8 +119,7 @@ export function mikseriEmbedUrl(input: string): string | null {
     }
     return `https://www.mikseri.net/embed/?type=${encodeURIComponent(type)}&parameter=${encodeURIComponent(parameter)}`;
   }
-  const segment = url.pathname.split('/').filter(Boolean).at(-1) ?? '';
-  const trackId = segment.match(/(?:^|\.)(\d+)$/)?.[1];
+  const trackId = url.pathname.match(MIKSERI_SONG_PAGE_PATH)?.[1];
   if (trackId) {
     return `https://www.mikseri.net/embed/?type=1&parameter=${trackId}`;
   }

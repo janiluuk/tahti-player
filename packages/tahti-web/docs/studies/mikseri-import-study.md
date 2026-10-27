@@ -60,7 +60,10 @@ personal playlists (`type=2`), Top 40 (`type=5`), genre/tag lists (`8`, `9`,
 `14`), weekly songs (`11`), promoted songs (`12`), and Listataivas (`15`).
 Top 40 major genres use `parameter=0-<genre>-1`. Studio collection import is
 deliberately narrower: only a numeric track ID, Mikseri track page, or official
-`type=1` embed is accepted.
+`type=1` embed is accepted. Track pages are `/artists/<artist>/<song>/<id>/`;
+artist pages also carry a numeric ID (`/artists/<name>.<id>.php`,
+`/artists/?id=<id>`), so only the song-page shape is mapped to a track embed.
+These formats come from search-engine results, not from crawling Mikseri.
 
 ## Recommendation
 

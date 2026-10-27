@@ -30,14 +30,24 @@ describe('Mikseri listener embed', () => {
       'https://www.mikseri.net/embed/?type=1&parameter=635878',
     );
     expect(
-      mikseriEmbedUrl('https://mikseri.net/artists/example/song.635878/'),
+      mikseriEmbedUrl('https://www.mikseri.net/artists/example/song/635878/'),
     ).toBe('https://www.mikseri.net/embed/?type=1&parameter=635878');
     expect(
       mikseriEmbedUrl('https://mikseri.net/embed/?type=2&parameter=my-list'),
     ).toBe('https://www.mikseri.net/embed/?type=2&parameter=my-list');
   });
 
-  it('rejects unrelated hosts and unsupported embed types', () => {
+  it('rejects artist pages, unrelated hosts and unsupported embed types', () => {
+    expect(
+      mikseriEmbedUrl('https://www.mikseri.net/artists/example.121009.php'),
+    ).toBeNull();
+    expect(
+      mikseriEmbedUrl('https://www.mikseri.net/artists/example.121009'),
+    ).toBeNull();
+    expect(
+      mikseriEmbedUrl('https://www.mikseri.net/artists/?id=145802'),
+    ).toBeNull();
+    expect(mikseriEmbedUrl('https://www.mikseri.net/music/635878')).toBeNull();
     expect(
       mikseriEmbedUrl('https://example.com/embed/?type=1&parameter=1'),
     ).toBeNull();
