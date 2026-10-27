@@ -13,13 +13,13 @@ import {
 import { fetchSmartLink } from '../api/client';
 import { recordSmartLinkClick } from '../api/smart-link-clicks';
 import type { SmartLinkView as SmartLinkData } from '../api/types';
+import { CollectionTrackList } from '../components/CollectionTrackList';
 import { EmbedButton } from '../components/EmbedButton';
 import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
-import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
 import { ReleaseTrackDownloads } from '../components/ReleaseTrackDownloads';
 import { ReportButton } from '../components/ReportButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
@@ -32,7 +32,10 @@ import {
   SmartLinkLockedTracks,
   SmartLinkReleaseCredits,
 } from './smart-link/SmartLinkReleaseDetails';
-import { smartLinkPlayables } from './smart-link/smartLinkTracks';
+import {
+  smartLinkLockedTracks,
+  smartLinkPlayables,
+} from './smart-link/smartLinkTracks';
 
 type SmartLinkViewProps = { slug: string };
 
@@ -212,12 +215,18 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
         ) : null}
       </EntitySocialHeader>
 
-      {playables.length > 0 ? (
-        <section className="flex flex-col gap-3">
-          <Eyebrow>Tracks</Eyebrow>
-          <PlayableAmbientTrackList items={playables} />
-        </section>
-      ) : null}
+      <CollectionTrackList
+        items={playables}
+        title="Tracks"
+        empty={
+          smartLinkLockedTracks(data).length === 0
+            ? {
+                title: 'No playable tracks yet',
+                description: 'Listen on the services below.',
+              }
+            : null
+        }
+      />
 
       <SmartLinkLockedTracks data={data} />
 
