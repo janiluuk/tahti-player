@@ -3,6 +3,11 @@ import {
   readAudioFileDuration,
 } from '../lib/audioFileDuration';
 import type { FetchMeta } from './client';
+import {
+  mockClipSource,
+  registerMockClipSource,
+  removeMockClipSource,
+} from './clip-editor-mock';
 import { apiBase } from './http';
 import {
   allowMockFallback,
@@ -20,6 +25,11 @@ export type AnnouncementClip = {
   renderStatus: 'READY' | 'PROCESSING' | 'ERROR';
   isProfileBackground?: boolean;
   contentType: 'CLIP';
+  scheduleMode?: 'AFTER_EVERY' | 'EVERY_NTH' | 'RANDOM';
+  everyNth?: number | null;
+  placement?: 'BETWEEN' | 'BEFORE' | 'AFTER';
+  targetSoundId?: string | null;
+  draftStatus?: 'READY' | 'PROCESSING' | 'ERROR' | null;
 };
 
 export type PinnedAnnouncement = {
@@ -179,24 +189,34 @@ export async function uploadAnnouncementClip(file: File): Promise<
     }
   | { ok: false; error: string }
 > {
+  if (file.size > 50 * 1024 * 1024 || file.size === 0) {
+    return {
+      ok: false,
+      error: 'Choose an audio file between 1 byte and 50 MB.',
+    };
+  }
   const title = file.name.replace(/\.[^.]+$/, '').trim() || 'Announcement';
   if (isForceMock()) {
     const clip: AnnouncementClip = {
       id: `announcement-${Date.now()}`,
       title,
       durationSec: null,
-      isEnabled: true,
+      isEnabled: false,
+      scheduleMode: 'AFTER_EVERY',
       renderStatus: 'READY',
       isProfileBackground: false,
       contentType: 'CLIP',
     };
+    registerMockClipSource(clip.id, file);
     mockClips.unshift(clip);
     return { ok: true, clip };
   }
   try {
-    const durationSec = announcementDurationSec(
-      await readAudioFileDuration(file),
-    );
+    const duration = await readAudioFileDuration(file);
+    if (duration !== undefined && duration > 600) {
+      return { ok: false, error: 'Clips can be up to 10 minutes long.' };
+    }
+    const durationSec = announcementDurationSec(duration);
     const prepared = await requestJson<{ uploadId: string; uploadUrl: string }>(
       '/api/me/announcements/prepare',
       {
@@ -278,6 +298,7 @@ export async function deleteAnnouncementClip(
   if (isForceMock()) {
     const index = mockClips.findIndex((item) => item.id === id);
     if (index >= 0) {
+      removeMockClipSource(id);
       mockClips.splice(index, 1);
     }
     return { ok: true };
@@ -326,6 +347,9 @@ export async function fetchAnnouncementPreview(id: string): Promise<
     }
   | { ok: false; error: string }
 > {
+  if (isForceMock()) {
+    return { ok: true, url: mockClipSource(id).url };
+  }
   try {
     const source = await requestJson<{ url: string }>(
       `/api/me/announcements/${encodeURIComponent(id)}/editor/source`,

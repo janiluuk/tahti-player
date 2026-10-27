@@ -2,7 +2,6 @@ import { Navigate, useNavigate, useSearch } from '@tanstack/react-router';
 import {
   DoorOpenIcon,
   ListMusicIcon,
-  MegaphoneIcon,
   MessageSquareIcon,
   PinIcon,
   PlusIcon,
@@ -62,7 +61,6 @@ const CHANNEL_SECTION_TABS = [
 const RADIO_SETTING_TABS = [
   { id: 'stream' as const, label: 'Stream', icon: RadioTowerIcon },
   { id: 'rotation' as const, label: '24/7', icon: ListMusicIcon },
-  { id: 'announcements' as const, label: 'Announcements', icon: MegaphoneIcon },
   { id: 'pinned' as const, label: 'Pinned', icon: PinIcon },
   { id: 'tahti-radio' as const, label: 'Tahti Radio', icon: RadioIcon },
   { id: 'multicast' as const, label: 'Multicast', icon: WifiIcon },
@@ -157,7 +155,7 @@ export function StudioChannelView() {
   useEffect(() => {
     if (isDeepLinkedRadioTab(search.tab)) {
       setTab('radio');
-      setRadioTab(search.tab);
+      setRadioTab(search.tab === 'announcements' ? 'rotation' : search.tab);
       return;
     }
     if (isTab(search.tab) && (search.tab !== 'setup' || !channel)) {
@@ -299,9 +297,8 @@ export function StudioChannelView() {
                     <RotationSourcePicker slug={channel.slug} />
                   ) : null}
                   <ChannelRadioPlaylistPanel />
+                  <ChannelAnnouncementsPanel />
                 </>
-              ) : radioTab === 'announcements' ? (
-                <ChannelAnnouncementsPanel />
               ) : radioTab === 'pinned' ? (
                 channel?.slug ? (
                   <PinnedAnnouncementsPanel slug={channel.slug} />

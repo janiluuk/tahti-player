@@ -5612,3 +5612,6 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 - **CLI** (#1655, #1663): `tahti like | unlike`; `library list` gains plays, likes and downloads.
 - **Docs** (#1656, #1657, #1664): user manual and Help center explain track rows; README channel and artist shots retaken. Workplan and ux-backlog entries for shipped work removed (#1642, #1660).
 
+## 2026-10-27 — 24/7 channel clip editor
+
+Studio → Channel → Radio → 24/7 now includes a clip library and editor with voice recording, waveform trim and preview, vocal presets and effects, explicit activation, placement between rotation programs, and easy deletion. Uploaded masters remain unchanged; processed clips are lossless WAV. Existing Announcements links land on the 24/7 section.

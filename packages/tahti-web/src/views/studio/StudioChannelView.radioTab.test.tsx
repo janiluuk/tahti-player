@@ -105,9 +105,6 @@ describe('StudioChannelView radio tabs', () => {
   it('writes the inner radio tab to the URL', async () => {
     const { router } = await renderChannel('/studio/channel?tab=radio');
 
-    await clickTab('Announcements');
-    expect(router.state.location.search).toEqual({ tab: 'announcements' });
-
     await clickTab('Pinned');
     expect(router.state.location.search).toEqual({ tab: 'pinned' });
 
@@ -122,6 +119,15 @@ describe('StudioChannelView radio tabs', () => {
     await renderChannel('/studio/channel?tab=pinned');
 
     expect(screen.getByRole('tab', { name: 'Pinned' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+  });
+
+  it('keeps radio navigation mounted and opens 24/7 for legacy clip links', async () => {
+    await renderChannel('/studio/channel?tab=announcements');
+    expect(screen.getAllByRole('tablist').length).toBeGreaterThan(0);
+    expect(screen.getByRole('tab', { name: '24/7' })).toHaveAttribute(
       'aria-selected',
       'true',
     );
