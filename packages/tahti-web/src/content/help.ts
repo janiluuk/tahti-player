@@ -570,6 +570,42 @@ export const HELP_ARTICLES: HelpArticle[] = [
     ],
   },
   {
+    slug: 'governance',
+    title: 'Governance for members',
+    description:
+      'Motions and votes, board discussions, feature requests and correcting the record.',
+    productionPath: '/governance',
+    sections: [
+      {
+        heading: 'Motions and votes',
+        body: [
+          'Open Governance (/governance; artists also find it in Studio → Governance). A motion starts as a draft that members second; once it has enough seconds the board opens it for voting.',
+          'Read a motion, discuss it in its comments, and vote while it is open. Its page shows who seconded it, the result certificate once it closes, and the meeting it was taken up at.',
+        ],
+      },
+      {
+        heading: 'Discussions',
+        body: [
+          'Governance → Discussions (/governance/discussions) lists topics the board opened for members to talk through. Every member is notified when a topic opens.',
+          'Reply to join in; replying follows the topic, so new replies notify you and the list shows how many you have not read. Mute notifications keeps following quietly. You can remove your own reply while the topic is open, and report a reply that should not be there.',
+          'A discussion is not a vote: decisions go through motions.',
+        ],
+      },
+      {
+        heading: 'Feature requests',
+        body: [
+          'Governance → Feature requests is where members suggest and vote on improvements to Tahti. The board reviews them each quarter and publishes what it decided.',
+        ],
+      },
+      {
+        heading: 'Correcting the record',
+        body: [
+          'Something wrong in your member details or a published record? Request a correction on Governance; the board answers there, and you can withdraw the request while it waits.',
+        ],
+      },
+    ],
+  },
+  {
     slug: 'notifications',
     title: 'Notifications',
     description:
