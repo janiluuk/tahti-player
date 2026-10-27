@@ -82,6 +82,13 @@ export const RemoveEvent: Story = {
     await userEvent.click(
       canvas.getAllByRole('button', { name: 'Remove' })[0]!,
     );
+    const confirmation = within(canvasElement.ownerDocument.body).getByRole(
+      'dialog',
+      { name: 'Remove “Album release show”?' },
+    );
+    await userEvent.click(
+      within(confirmation).getByRole('button', { name: 'Remove' }),
+    );
     await waitFor(() =>
       expect(canvas.queryByText('Album release show')).toBeNull(),
     );

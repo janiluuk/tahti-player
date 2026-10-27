@@ -245,7 +245,11 @@ export const NoShowsPublic: Story = {
     ctx: blockContext({ liveShows: null }),
   },
   play: async ({ canvasElement }) => {
-    await expect(canvasElement.textContent?.trim()).toBe('');
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('Live shows')).toBeVisible();
+    await expect(
+      canvas.getByText('No scheduled or past broadcasts yet'),
+    ).toBeVisible();
   },
 };
 
