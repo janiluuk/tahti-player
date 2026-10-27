@@ -94,6 +94,13 @@ repo. Needs the user's go-ahead before tahti-org work starts.
   verify sleep/wake / offline cold start (adapter + notes shipped; plugin TBD).
 - Eventually drop cookie-session once all clients are on tokens.
 
+- 2026-10-27 (batch 90): desktop keychain storage. Rust `auth_keychain`
+  (`keyring` 4: macOS Keychain, Windows Credential Manager, Secret Service
+  over zbus on Linux) behind `auth_refresh_token_get` / `_set` commands;
+  malformed values are refused or dropped, errors never carry the token.
+  `packages/player/src/desktopAuthStorage.ts` exposes it to tahti-web as
+  `globalThis.__TAHTI_NATIVE_AUTH_STORAGE__` (inert until tahti-web reads it).
+
 ### Phase 4 (this slice)
 
 - `createNodeConfigFileStorage` + `createInjectedStorage` in
