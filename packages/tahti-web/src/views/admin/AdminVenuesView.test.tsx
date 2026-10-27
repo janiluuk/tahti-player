@@ -54,6 +54,9 @@ describe('admin venues list', () => {
     const nav = await screen.findByRole('navigation', { name: 'Breadcrumb' });
     expect(nav.textContent).toContain('Admin');
     expect(nav.textContent).toContain('Venues');
+    expect(
+      screen.getByText(/notifies the person who registered it/),
+    ).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute(
       'href',
       '/admin',
