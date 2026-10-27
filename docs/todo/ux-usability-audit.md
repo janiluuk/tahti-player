@@ -13,10 +13,6 @@ re-filed.
   station, recent and featured errors, but `fetchRadio()` (the member live relay)
   has no error path, so a failed read just hides the relay. Recent, featured,
   rotation and upcoming already show per-section errors.
-- [ ] **Two unselected Zustand subscriptions.** `ThemesPanel` (`useThemeStore()`)
-  and `DesktopUpdatesRow` (`useDesktopUpdateStore()`) re-render on every store
-  change. Use selectors. (The audit's `useFavoritesStore()` example is in the
-  dead desktop UI, see below.)
 - [ ] **`useScheduleForm` holds 29 `useState` calls.** A reducer would make the
   editor's state easier to follow. Refactor only; no user-visible bug found.
 - [ ] **`React.memo` on hot `@tahti-player/ui` components** — 7 components already
