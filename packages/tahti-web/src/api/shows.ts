@@ -36,6 +36,7 @@ export {
   updateShowBooking,
   cancelShowBooking,
 } from './shows/bookings';
+export { fetchRadioCalendar } from './shows/radio-calendar';
 export type {
   PublicRadioSlot,
   RadioShowNowPlayingTrack,

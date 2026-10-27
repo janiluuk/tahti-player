@@ -15,6 +15,7 @@ import {
 } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { StudioShowBooking } from '../api/shows';
 import { useLibraryStore } from '../stores/libraryStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { RadioView } from './RadioView';
@@ -24,6 +25,8 @@ let stationFailure: string | null = null;
 let relayLive = false;
 let relayFailure: string | null = null;
 let rotationFailure: string | null = null;
+const calendarRequests: Array<{ signedIn: boolean }> = [];
+let calendarBookings: StudioShowBooking[] = [];
 const ROTATION = [
   {
     id: 'rot-a',
@@ -94,10 +97,14 @@ vi.mock('../api/shows', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../api/shows')>();
   return {
     ...actual,
-    fetchShowBookings: async () => ({
-      data: [],
-      meta: { source: 'api' as const },
-    }),
+    fetchRadioCalendar: async (
+      _from: string,
+      _to: string,
+      options: { signedIn: boolean },
+    ) => {
+      calendarRequests.push(options);
+      return { data: calendarBookings, meta: { source: 'api' as const } };
+    },
     fetchRadioShowUpcoming: async () => ({
       data: rotationFailure ? [] : ROTATION,
       meta: rotationFailure
@@ -268,6 +275,28 @@ describe('RadioView up next', () => {
     expect(screen.getByRole('tab', { name: /Up next/ }).textContent).toContain(
       '2',
     );
+  });
+
+  it('shows anonymous visitors the booked live shows from the public calendar', async () => {
+    calendarRequests.length = 0;
+    calendarBookings = [
+      {
+        id: 'slot-1',
+        startAt: new Date(Date.now() + 2 * 3600_000).toISOString(),
+        endAt: new Date(Date.now() + 3 * 3600_000).toISOString(),
+        note: 'Late night ambient',
+        showType: 'LIVE_SET',
+        channelSlug: 'northern-lights',
+        username: 'northern-lights',
+        displayName: 'Northern Lights',
+        isMine: false,
+      },
+    ];
+    await renderRadio();
+    const shows = await screen.findByTestId('radio-up-next-shows');
+    expect(within(shows).getByText(/Late night ambient/)).toBeTruthy();
+    expect(calendarRequests).toEqual([{ signedIn: false }]);
+    calendarBookings = [];
   });
 
   it('hides the rotation while a member is live on the relay', async () => {

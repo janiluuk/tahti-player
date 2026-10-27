@@ -37,8 +37,8 @@ import {
 } from '../api/my-radio-stations';
 import type { RadioFeatureHistoryItem } from '../api/radio-public';
 import {
+  fetchRadioCalendar,
   fetchRadioShowUpcoming,
-  fetchShowBookings,
   type RadioShowUpcomingTrack,
   type StudioShowBooking,
 } from '../api/shows';
@@ -111,6 +111,7 @@ export function RadioView() {
   const radioPresets = useRadioPresets();
 
   const user = useAuthStore((s) => s.user);
+  const signedIn = Boolean(user);
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
   const currentId = usePlayerStore((s) => s.currentId);
@@ -127,7 +128,7 @@ export function RadioView() {
     const to = new Date(
       Date.now() + UPCOMING_WINDOW_DAYS * 24 * 3600_000,
     ).toISOString();
-    void fetchShowBookings(from, to).then((r) => {
+    void fetchRadioCalendar(from, to, { signedIn }).then((r) => {
       setSectionErrors((current) => ({
         ...current,
         upcoming: r.meta.source === 'api' ? r.meta.reason : undefined,
@@ -189,14 +190,16 @@ export function RadioView() {
       }));
       setLoading(false);
     });
-    reloadUpcoming();
   };
 
   useEffect(() => {
     reload();
   }, []);
 
-  const signedIn = Boolean(user);
+  useEffect(() => {
+    reloadUpcoming();
+  }, [signedIn]);
+
   useEffect(() => {
     if (!signedIn) {
       setOwnStations([]);
