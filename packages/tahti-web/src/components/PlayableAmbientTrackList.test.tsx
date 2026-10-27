@@ -3,6 +3,7 @@ import { act, cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { TahtiPlayable } from '../api/types';
+import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { renderWithRouter } from '../test/renderWithRouter';
 import { PlayableAmbientTrackList } from './PlayableAmbientTrackList';
@@ -83,5 +84,44 @@ describe('PlayableAmbientTrackList during playback', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Seek Track 3' }));
     expect(usePlayerStore.getState().seekTarget).toBe(100);
+  });
+});
+
+describe('PlayableAmbientTrackList row actions', () => {
+  afterEach(() => {
+    cleanup();
+    useAuthStore.setState({ user: null, hydrated: true, loading: false });
+  });
+
+  it('offers Add to playlist to a signed-in listener and opens the picker', async () => {
+    useAuthStore.setState({
+      user: {
+        id: 'u1',
+        email: 'listener@tahti.live',
+        username: 'listener',
+        displayName: 'Listener',
+        role: 'LISTENER',
+        isBoard: false,
+        isMember: false,
+      },
+      hydrated: true,
+      loading: false,
+    });
+    await renderWithRouter(
+      <PlayableAmbientTrackList items={items.slice(0, 2)} />,
+    );
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Add Track 0 to a playlist' }),
+    );
+    expect(await screen.findByText('Add to playlist')).toBeTruthy();
+  });
+
+  it('does not offer it signed out', async () => {
+    await renderWithRouter(
+      <PlayableAmbientTrackList items={items.slice(0, 2)} />,
+    );
+    expect(
+      screen.queryByRole('button', { name: 'Add Track 0 to a playlist' }),
+    ).toBeNull();
   });
 });

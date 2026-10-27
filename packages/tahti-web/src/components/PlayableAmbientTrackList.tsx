@@ -1,6 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import { DownloadIcon, PencilIcon, TrashIcon } from 'lucide-react';
-import { useEffect, useMemo, type ReactNode } from 'react';
+import { DownloadIcon, PencilIcon, PlusIcon, TrashIcon } from 'lucide-react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
 import { Select } from '@tahti-player/ui';
@@ -19,6 +19,7 @@ import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useSoundLikesStore } from '../stores/soundLikesStore';
+import { AddToPlaylistPanel } from './AddToPlaylistPanel';
 import {
   AmbientTrackList,
   type AmbientTrackListItem,
@@ -79,6 +80,10 @@ export function PlayableAmbientTrackList({
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
   const navigate = useNavigate();
+  const [playlistTarget, setPlaylistTarget] = useState<{
+    soundId: string;
+    title: string;
+  } | null>(null);
   const userId = useAuthStore((s) => s.user?.id ?? null);
   const likedIds = useSoundLikesStore((s) => s.liked);
   const likeCounts = useSoundLikesStore((s) => s.counts);
@@ -111,11 +116,7 @@ export function PlayableAmbientTrackList({
                 liked: likedIds.has(soundId),
                 count: likeCounts[soundId] ?? publicLikes,
                 onToggle: () => {
-                  void toggleLike(
-                    item.channelSlug!,
-                    soundId,
-                    likeCounts[soundId] ?? publicLikes,
-                  ).then((error) => {
+                  void toggleLike(item.channelSlug!, soundId).then((error) => {
                     if (error) {
                       toast.error(error);
                     }
@@ -173,6 +174,20 @@ export function PlayableAmbientTrackList({
                 .filter(
                   (action) =>
                     action.id !== 'play' && !(like && action.id === 'favorite'),
+                )
+                .concat(
+                  userId && soundId && item.kind === 'sound' && !item.embed
+                    ? [
+                        {
+                          id: 'add-to-playlist',
+                          label: `Add ${item.title} to a playlist`,
+                          title: 'Add to playlist',
+                          icon: <PlusIcon size={16} />,
+                          onClick: () =>
+                            setPlaylistTarget({ soundId, title: item.title }),
+                        },
+                      ]
+                    : [],
                 )
                 .concat(
                   meta?.downloadable && soundId && item.channelSlug
@@ -273,35 +288,45 @@ export function PlayableAmbientTrackList({
   );
 
   return (
-    <AmbientTrackList
-      items={listItems}
-      allowGrid
-      defaultDensity={defaultDensity}
-      emptyMessage={emptyMessage}
-      toolbarEnd={
-        items.length > 1 ? (
-          <Select
-            className="w-44"
-            aria-label="Sort tracks"
-            options={TRACK_SORT_OPTIONS}
-            value={sort}
-            onValueChange={(value) => setSort(value as TrackSort)}
+    <>
+      <AmbientTrackList
+        items={listItems}
+        allowGrid
+        defaultDensity={defaultDensity}
+        emptyMessage={emptyMessage}
+        toolbarEnd={
+          items.length > 1 ? (
+            <Select
+              className="w-44"
+              aria-label="Sort tracks"
+              options={TRACK_SORT_OPTIONS}
+              value={sort}
+              onValueChange={(value) => setSort(value as TrackSort)}
+            />
+          ) : undefined
+        }
+        renderList={() => (
+          <PlayableTrackTable
+            items={sorted}
+            emptyMessage={emptyMessage}
+            playAll={playAll}
+            compactActions={compactActions}
+            getAnnotation={getAnnotation}
+            onEdit={onEdit}
+            onRemove={onRemove}
+            selectable={selectable}
+            onBulkRemove={onBulkRemove}
           />
-        ) : undefined
-      }
-      renderList={() => (
-        <PlayableTrackTable
-          items={sorted}
-          emptyMessage={emptyMessage}
-          playAll={playAll}
-          compactActions={compactActions}
-          getAnnotation={getAnnotation}
-          onEdit={onEdit}
-          onRemove={onRemove}
-          selectable={selectable}
-          onBulkRemove={onBulkRemove}
+        )}
+      />
+      {playlistTarget ? (
+        <AddToPlaylistPanel
+          isOpen
+          soundId={playlistTarget.soundId}
+          trackTitle={playlistTarget.title}
+          onClose={() => setPlaylistTarget(null)}
         />
-      )}
-    />
+      ) : null}
+    </>
   );
 }

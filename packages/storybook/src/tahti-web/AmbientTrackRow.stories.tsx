@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AmbientTrackRow } from '@tahti-web/components/AmbientTrackRow';
 import { useState } from 'react';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { Button } from '@tahti-player/ui';
 
@@ -87,6 +87,56 @@ export const Compact: Story = {
     density: 'compact',
     ambientRgb: [160, 40, 90],
     actions: likeAdd,
+  },
+};
+
+/** The reference row: love with count, then actions, stats on the right.
+ * Loving moves the count from 3 to 4 and fills the heart. */
+export const WithLove: Story = {
+  render: function WithLoveStory() {
+    const [liked, setLiked] = useState(false);
+    return (
+      <AmbientTrackRow
+        trackId="story-love"
+        title="Set of progressive house & techno, 03.10.2026"
+        artist="Yaniho"
+        coverUrl={COVER_B}
+        genreLabel="Progressive House"
+        durationLabel="35:56"
+        peaks={mockAmbientPeaks(2)}
+        density="comfortable"
+        ambientRgb={[96, 92, 40]}
+        like={{
+          liked,
+          count: liked ? 3 : 2,
+          onToggle: () => setLiked((value) => !value),
+        }}
+        stats={{
+          releaseDate: '2026-10-03T12:00:00.000Z',
+          likes: 2,
+          plays: 57,
+          downloads: 4,
+        }}
+        actions={
+          <Button size="sm" variant="text">
+            Add to queue
+          </Button>
+        }
+      />
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const love = canvas.getByRole('button', {
+      name: /Like Set of progressive house/,
+    });
+    await expect(love).toHaveAttribute('aria-pressed', 'false');
+    await userEvent.click(love);
+    await expect(
+      canvas.getByRole('button', { name: /Unlike Set of progressive house/ }),
+    ).toHaveAttribute('aria-pressed', 'true');
+    await expect(canvas.getByLabelText('57 plays')).toBeVisible();
+    await expect(canvas.queryByLabelText('2 likes')).toBeNull();
   },
 };
 
