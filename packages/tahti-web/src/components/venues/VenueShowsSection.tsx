@@ -150,7 +150,7 @@ export function VenueShowsSection({
         title="Cancel this show?"
         description={
           cancelling
-            ? `${formatShow(cancelling)} will be taken off the venue page and its calendar feed.`
+            ? `${formatShow(cancelling)} will be taken off the venue page and its calendar feed. If an artist booked it, they are notified.`
             : ''
         }
         confirmLabel="Cancel show"

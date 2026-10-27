@@ -120,6 +120,9 @@ describe('VenueShowsSection', () => {
       screen.getAllByRole('button', { name: /^Cancel show on/ }),
     ).toHaveLength(1);
     fireEvent.click(screen.getByRole('button', { name: /^Cancel show on/ }));
+    expect(
+      screen.getByText(/If an artist booked it, they are notified\.$/),
+    ).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Cancel show' }));
     expect(cancel).toHaveBeenCalledWith('kuudes-linja', 's1');
     await waitFor(() => expect(onChanged).toHaveBeenCalled());
