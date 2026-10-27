@@ -252,6 +252,10 @@ export const VerifyView = lazyRouteComponent(
   () => import('../views/VerifyView'),
   'VerifyView',
 );
+export const EmailChangeView = lazyRouteComponent(
+  () => import('../views/EmailChangeView'),
+  'EmailChangeView',
+);
 export const AgplView = lazyRouteComponent(
   () => import('../views/AgplView'),
   'AgplView',

@@ -51,10 +51,8 @@ export const ValidInvite: Story = {
     const submit = canvas.getByRole('button', { name: 'Set password' });
     await expect(submit).toBeDisabled();
 
-    await userEvent.type(canvas.getByLabelText('Password'), 'short');
-    await expect(
-      canvas.getByText('Password must be at least 8 characters.'),
-    ).toBeVisible();
+    await userEvent.type(canvas.getByLabelText('Password'), 'Short1');
+    await expect(canvas.getByText('Use at least 10 characters.')).toBeVisible();
     await userEvent.type(canvas.getByLabelText('Password'), '-enough');
     await userEvent.type(canvas.getByLabelText('Confirm password'), 'other');
     await expect(canvas.getByText("Passwords don't match.")).toBeVisible();
@@ -71,10 +69,10 @@ export const PasswordSet: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await canvas.findByText(/Welcome, New Artist/);
-    await userEvent.type(canvas.getByLabelText('Password'), 'first-secret');
+    await userEvent.type(canvas.getByLabelText('Password'), 'First-secret1');
     await userEvent.type(
       canvas.getByLabelText('Confirm password'),
-      'first-secret',
+      'First-secret1',
     );
     await userEvent.click(canvas.getByRole('button', { name: 'Set password' }));
     await expect(

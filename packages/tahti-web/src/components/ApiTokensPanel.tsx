@@ -117,7 +117,8 @@ export function ApiTokensPanel() {
     <SectionShell title="API tokens">
       <p className="text-foreground-secondary mb-4 text-sm">
         Personal tokens for scripts and third-party integrations. Each token is
-        shown only once when created.
+        shown only once when created, and we email you whenever a new one is
+        made.
       </p>
       <div className="mb-4 flex flex-col gap-2" data-testid="api-tokens-mcp">
         <p className="text-foreground-secondary text-sm">

@@ -85,7 +85,7 @@ export const Join: Story = {
       dialog.getByLabelText('Collective name'),
       'Aurora Unit',
     );
-    await userEvent.type(dialog.getByLabelText('Password'), 'secret-pass');
+    await userEvent.type(dialog.getByLabelText('Password'), 'Secret-pass1');
     await userEvent.type(dialog.getByLabelText('Confirm password'), 'other');
     await expect(dialog.getByText('Passwords do not match.')).toBeVisible();
     await expect(create).toBeDisabled();
@@ -93,7 +93,7 @@ export const Join: Story = {
     await userEvent.clear(dialog.getByLabelText('Confirm password'));
     await userEvent.type(
       dialog.getByLabelText('Confirm password'),
-      'secret-pass',
+      'Secret-pass1',
     );
     await waitFor(() => expect(create).toBeEnabled());
   },
