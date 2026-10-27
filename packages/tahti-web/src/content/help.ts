@@ -645,6 +645,37 @@ export const HELP_ARTICLES: HelpArticle[] = [
     ],
   },
   {
+    slug: 'studio-notices',
+    title: 'Notices about your Studio work',
+    description:
+      'What Tahti tells you about uploads, renders, exports and distribution, and how to turn it off.',
+    productionPath: '/help/studio-notices',
+    sections: [
+      {
+        heading: 'You can leave the page',
+        body: [
+          'Uploads, editor renders, stem splits, broadcast recordings, exports to Mixcloud and hearthis.at, imports and distribution all run in the background. You can close the page; the bell and /notifications tell you how each one ended.',
+          'Finished work links to the track or release. Failed work is marked Failed and says what to do next.',
+        ],
+      },
+      {
+        heading: 'What you are told about',
+        body: [
+          'A new upload is ready, or could not be processed. A replacement version could not be processed.',
+          'An editor render or stem split is ready or failed. A broadcast recording was saved as a track or a draft.',
+          'A Mixcloud or hearthis.at export finished or failed. A release was sent for distribution, or could not be. A release track matches a recording already in AcoustID.',
+          'An import from SoundCloud, Google Drive or hearthis.at failed. An automatic social post did not go out. Your membership ended.',
+        ],
+      },
+      {
+        heading: 'Turning them off',
+        body: [
+          'Settings → Notifications → Studio work has an In-app switch for these notices. Membership and payment notices follow Revenue moves instead.',
+        ],
+      },
+    ],
+  },
+  {
     slug: 'account-security',
     title: 'Keeping your account safe',
     description:
