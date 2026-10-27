@@ -135,14 +135,13 @@ export default defineConfig(({ mode }) => {
       // Node 25+ ships a global localStorage without getItem unless given
       // --localstorage-file; it shadows jsdom's Storage.
       execArgv: ['--no-experimental-webstorage'],
-      setupFiles: ['./src/test/setup.ts'],
+      passWithNoTests: true,
       reporters: vitestCiReporters(import.meta.url),
       outputFile: { junit: './test-results/junit.xml' },
       coverage: {
         reporter: ['text', 'lcov', 'html'],
         exclude: [
           'node_modules/',
-          'src/test/',
           '**/*.test.{ts,tsx}',
           '**/*.config.{ts,js}',
           'dist/',

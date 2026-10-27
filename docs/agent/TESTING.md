@@ -43,7 +43,7 @@ Don't start with unit tests for internal utilities (grouping functions, registri
 
 ### Test Wrappers for Views
 
-Player views and some components use a `*.test-wrapper.tsx` file that creates a domain-specific abstraction layer over the DOM. This lets tests read like user stories, and if the implementation changes, only the wrapper needs updating.
+Some components (e.g. `packages/ui/src/components/CardsRow/CardsRow.test-wrapper.tsx`) use a `*.test-wrapper.tsx` file that creates a domain-specific abstraction layer over the DOM. This lets tests read like user stories, and if the implementation changes, only the wrapper needs updating.
 
 **Wrapper conventions:**
 - Use **getters** for element queries: `get emptyState()`, `get cards()` — not `getEmptyState()`
@@ -56,11 +56,11 @@ Player views and some components use a `*.test-wrapper.tsx` file that creates a 
 
 ### Test fixtures
 
-To populate the app with testing data, use fixtures. See `packages/player/src/test/fixtures` for examples.
+To populate the app with testing data, use fixtures. See `packages/hifi/src/test/fixtures` and `packages/tahti-web/src/test/` for examples.
 
 ### Wrapper fixtures
 
-Test wrappers can expose a `fixtures` object with factory methods that return pre-configured builders for common test scenarios. This keeps test setup readable and co-located with the wrapper, while the raw fixture data itself lives in `packages/player/src/test/fixtures/`.
+Test wrappers can expose a `fixtures` object with factory methods that return pre-configured builders for common test scenarios. This keeps test setup readable and co-located with the wrapper, while the raw fixture data itself lives in the package's `src/test/fixtures/`.
 
 ```tsx
 // Dashboard.test-wrapper.tsx
@@ -84,7 +84,7 @@ DashboardWrapper.seedProvider(DashboardWrapper.fixtures.topTracksProvider());
 
 ### The builder pattern for tests
 
-We use builders to create test data and various entities cleanly. You can see them in `packages/player/src/test/builders`.
+We use builders to create test data and various entities cleanly. You can see them in `packages/hifi/src/test/builders`.
 
 - A builder is a class that has an instance of the object it's building
 - When the builder is instantiated, it creates a default object with reasonable defaults

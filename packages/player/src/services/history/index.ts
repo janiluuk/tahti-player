@@ -1,1 +1,0 @@
-export { initHistoryService } from './historyService';
