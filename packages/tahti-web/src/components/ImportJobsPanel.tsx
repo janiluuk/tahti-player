@@ -78,6 +78,9 @@ export function ImportJobsPanel() {
       >
         Import progress
       </h2>
+      <p className="text-foreground-secondary text-xs">
+        If an import fails, we notify you.
+      </p>
       <ul className="flex flex-col gap-2 text-sm">
         {jobs.map((job) => (
           <li

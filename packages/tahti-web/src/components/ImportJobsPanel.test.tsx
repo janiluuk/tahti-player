@@ -51,6 +51,9 @@ describe('ImportJobsPanel', () => {
     ).toHaveAttribute('href', '/studio/sounds/s9');
     expect(screen.getByText('Google Drive')).toBeVisible();
     expect(screen.getByText('Failed: Not audio')).toBeVisible();
+    expect(
+      screen.getByText('If an import fails, we notify you.'),
+    ).toBeVisible();
   });
 
   it('is hidden when there are no imports', async () => {
