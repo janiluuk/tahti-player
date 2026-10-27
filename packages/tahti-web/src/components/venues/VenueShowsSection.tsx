@@ -10,6 +10,7 @@ import {
 } from '../../api/venues-manage';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { PageEmpty } from '../PageStates';
+import { RestrictionNotice } from '../RestrictionNotice';
 
 function formatShow(show: VenueBroadcast): string {
   const start = new Date(show.startAt);
@@ -162,6 +163,7 @@ export function VenueShowsSection({
           }
         }}
       />
+      {booking ? <RestrictionNotice type="LIVE_SHOW_BOOKING" /> : null}
       {booking ? (
         <form
           className="flex flex-col gap-2"
