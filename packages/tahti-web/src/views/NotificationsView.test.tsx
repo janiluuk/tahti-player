@@ -52,6 +52,7 @@ const signedIn = {
 describe('NotificationsView', () => {
   beforeEach(() => {
     useAuthStore.setState({ user: signedIn, hydrated: true, loading: false });
+    vi.spyOn(api, 'fetchNotificationUnreadCounts').mockResolvedValue(null);
   });
   afterEach(() => {
     useAuthStore.setState({ user: null, hydrated: true, loading: false });
@@ -168,6 +169,39 @@ describe('NotificationsView', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Show all' }));
     expect(await screen.findByText('Title all')).toBeTruthy();
     expect(fetch).toHaveBeenLastCalledWith(undefined, undefined);
+  });
+
+  it('shows unread counts on the kind chips and refreshes them', async () => {
+    vi.spyOn(api, 'fetchNotifications').mockResolvedValue({
+      data: [note('a')],
+      unreadCount: 1,
+      hasMore: false,
+      meta: { source: 'api' },
+    });
+    vi.spyOn(api, 'dismissNotification').mockResolvedValue(undefined);
+    const counts = vi
+      .spyOn(api, 'fetchNotificationUnreadCounts')
+      .mockResolvedValueOnce({
+        total: 3,
+        byKind: { social: 2, music: 0, money: 1, governance: 0, other: 0 },
+      })
+      .mockResolvedValue({
+        total: 2,
+        byKind: { social: 1, music: 0, money: 1, governance: 0, other: 0 },
+      });
+    renderView();
+
+    expect(
+      await screen.findByRole('radio', { name: 'Social (2)' }),
+    ).toBeTruthy();
+    expect(screen.getByRole('radio', { name: 'Money (1)' })).toBeTruthy();
+    expect(screen.getByRole('radio', { name: 'Music' })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Mark read: Title a' }));
+    expect(
+      await screen.findByRole('radio', { name: 'Social (1)' }),
+    ).toBeTruthy();
+    expect(counts.mock.calls.length).toBeGreaterThanOrEqual(2);
   });
 
   it('shows a retry when the inbox fails to load', async () => {

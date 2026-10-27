@@ -260,3 +260,35 @@ export async function clearReadNotifications(): Promise<number> {
   );
   return data.removed;
 }
+
+export type NotificationUnreadCounts = {
+  total: number;
+  byKind: Record<NotificationKind, number>;
+};
+
+/** Unread notifications per kind (tahti-org
+ * `GET /api/me/notifications/unread-counts`); null when it can't be read, so
+ * the filter chips simply show no counts. */
+export async function fetchNotificationUnreadCounts(): Promise<NotificationUnreadCounts | null> {
+  if (isForceMock()) {
+    const unread = mockNotifications(true).filter((item) => !item.readAt);
+    return {
+      total: unread.length,
+      byKind: {
+        social: 0,
+        music: 0,
+        money: 0,
+        governance: 0,
+        other: unread.length,
+      },
+    };
+  }
+  try {
+    const { data } = await requestJson<NotificationUnreadCounts>(
+      '/api/me/notifications/unread-counts',
+    );
+    return data;
+  } catch {
+    return null;
+  }
+}
