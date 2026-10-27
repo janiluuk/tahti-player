@@ -105,7 +105,13 @@ const GUIDE_GROUPS: Array<{
     title: 'Account and support',
     description: 'Understand limits, shortcuts, and where to get help.',
     icon: ShieldCheckIcon,
-    slugs: ['tier-limits', 'account-security', 'keyboard-shortcuts', 'support'],
+    slugs: [
+      'tier-limits',
+      'account-security',
+      'studio-notices',
+      'keyboard-shortcuts',
+      'support',
+    ],
   },
   {
     id: 'admin',

@@ -135,3 +135,12 @@ describe('account security help', () => {
     expect(text).toContain('at least 10 characters');
   });
 });
+
+describe('studio notices help', () => {
+  it('lists the background work notices and the switch', () => {
+    const article = getHelpArticle('studio-notices');
+    const text = article?.sections.flatMap((section) => section.body).join(' ');
+    expect(text).toContain('Settings → Notifications → Studio work');
+    expect(text).toContain('could not be processed');
+  });
+});
