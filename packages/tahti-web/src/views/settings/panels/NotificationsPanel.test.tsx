@@ -46,6 +46,7 @@ describe('NotificationsPanel', () => {
   it('shows what each email looks like now that Tahti sends them', async () => {
     render(<NotificationsPanel />);
     expect(await screen.findByText('Revenue moves')).toBeTruthy();
+    expect(screen.getByText(/you are awarded a grant/)).toBeTruthy();
     expect(screen.queryAllByRole('note')).toHaveLength(0);
     expect(screen.getByText(/3 new chat messages/)).toBeTruthy();
     expect(screen.getByText(/1,247 plays/)).toBeTruthy();

@@ -75,7 +75,7 @@ export function NotificationsPanel() {
     <div className="flex flex-col gap-4">
       <StudioPanel
         title="Revenue moves"
-        description="When fan subscriptions arrive or payouts complete."
+        description="When fans subscribe or cancel, someone buys a track, a payout completes or you are awarded a grant."
       >
         <div className="flex flex-col gap-3">
           <SettingsToggle
