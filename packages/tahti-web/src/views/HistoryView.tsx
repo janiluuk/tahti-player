@@ -2,6 +2,7 @@ import { BarChart3Icon, HistoryIcon } from 'lucide-react';
 
 import { Tabs, ViewShell } from '@tahti-player/ui';
 
+import { AcrossDevicesPanel } from '../components/history/AcrossDevicesPanel';
 import { HistoryListSection } from '../components/history/HistoryListSection';
 import { HistoryStatsSection } from '../components/history/HistoryStatsSection';
 import { useLibraryStore } from '../stores/libraryStore';
@@ -30,7 +31,12 @@ export function HistoryView({ embedded = false }: { embedded?: boolean }) {
           id: 'stats',
           label: 'Stats',
           icon: <BarChart3Icon size={14} />,
-          content: <HistoryStatsSection history={history} />,
+          content: (
+            <div className="flex flex-col gap-6">
+              <AcrossDevicesPanel />
+              <HistoryStatsSection history={history} />
+            </div>
+          ),
         },
         {
           id: 'listening-history',
