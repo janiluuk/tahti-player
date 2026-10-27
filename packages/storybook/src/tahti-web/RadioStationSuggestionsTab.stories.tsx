@@ -37,7 +37,7 @@ export const Default: Story = {
     await expect(
       canvas.getAllByRole('button', { name: 'Reject' }),
     ).toHaveLength(2);
-    const note = canvas.getAllByLabelText(/rejection note/i)[0]!;
+    const note = canvas.getAllByLabelText(/note to the listener/i)[0]!;
     await userEvent.type(note, 'Stream is offline');
     await expect(note).toHaveValue('Stream is offline');
   },
