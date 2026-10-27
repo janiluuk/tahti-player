@@ -1,7 +1,6 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
   CalendarDaysIcon,
-  CalendarIcon,
   HeartIcon,
   HistoryIcon,
   ListOrderedIcon,
@@ -63,12 +62,14 @@ import {
 } from '../components/PageStates';
 import { AddStationsPanel } from '../components/radio/AddStationsPanel';
 import { FavoriteStationsRow } from '../components/radio/FavoriteStationsRow';
+import { RadioBookedShowsPanel } from '../components/radio/RadioBookedShowsPanel';
 import { RadioBookingCalendar } from '../components/RadioBookingCalendar';
 import { RadioUpNextPanel } from '../components/RadioUpNextPanel';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { TrackInfoDialog, type TrackInfo } from '../components/TrackInfoDialog';
 import { usePolling } from '../hooks/usePolling';
+import { RADIO_TABS, radioTabFromSearch } from '../lib/radioTabs';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -109,6 +110,20 @@ export function RadioView() {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [ownStations, setOwnStations] = useState<MyRadioStation[]>([]);
   const radioPresets = useRadioPresets();
+  const search = useSearch({ strict: false }) as { tab?: string };
+  const activeTab = radioTabFromSearch(search.tab);
+  const navigate = useNavigate();
+  const selectTab = (index: number) => {
+    const next = RADIO_TABS[index];
+    if (!next) {
+      return;
+    }
+    void navigate({
+      to: '/radio',
+      search: next === 'up-next' ? {} : { tab: next },
+      replace: true,
+    });
+  };
 
   const user = useAuthStore((s) => s.user);
   const signedIn = Boolean(user);
@@ -242,7 +257,6 @@ export function RadioView() {
           title: relay.channel.title,
         }
       : null;
-  const upcomingCount = (memberLive ? 0 : rotation.length) + upcoming.length;
   const TAGLINE =
     '24/7 community radio — always on. Fair rotation when nobody is booked.';
   const description = [TAGLINE, station?.user.bio]
@@ -328,16 +342,6 @@ export function RadioView() {
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
-              <Tooltip content="Full programme schedule" side="top">
-                <ButtonLink
-                  to="/schedule"
-                  size="icon-sm"
-                  variant="secondary"
-                  aria-label="Open programme schedule"
-                >
-                  <CalendarDaysIcon size={16} aria-hidden />
-                </ButtonLink>
-              </Tooltip>
               <Tooltip content="Open Tahti Radio channel" side="top">
                 <ButtonLink
                   to="/channel/$slug"
@@ -349,18 +353,6 @@ export function RadioView() {
                   <RadioTowerIcon size={16} aria-hidden />
                 </ButtonLink>
               </Tooltip>
-              {user && (
-                <Tooltip content="Book a slot" side="top">
-                  <Button
-                    size="icon-sm"
-                    variant="secondary"
-                    aria-label="Open booking calendar"
-                    onClick={() => setCalendarOpen(true)}
-                  >
-                    <CalendarIcon size={16} aria-hidden />
-                  </Button>
-                </Tooltip>
-              )}
             </div>
           </header>
 
@@ -511,21 +503,36 @@ export function RadioView() {
             <Tabs
               listClassName="border-border border-b"
               panelClassName="pt-3"
+              selectedIndex={RADIO_TABS.indexOf(activeTab)}
+              onChange={selectTab}
               items={[
                 {
                   id: 'up-next',
                   label: 'Up next',
                   icon: <ListOrderedIcon size={14} />,
-                  count: upcomingCount > 0 ? upcomingCount : undefined,
+                  count:
+                    !memberLive && rotation.length > 0
+                      ? rotation.length
+                      : undefined,
                   content: (
                     <RadioUpNextPanel
                       onRotation={!memberLive}
                       rotation={rotation}
                       rotationError={sectionErrors.rotation}
                       onRetryRotation={reloadRotation}
+                    />
+                  ),
+                },
+                {
+                  id: 'shows',
+                  label: 'Shows',
+                  icon: <CalendarDaysIcon size={14} />,
+                  count: upcoming.length > 0 ? upcoming.length : undefined,
+                  content: (
+                    <RadioBookedShowsPanel
                       bookings={upcoming}
-                      bookingsError={sectionErrors.upcoming}
-                      onRetryBookings={reloadUpcoming}
+                      error={sectionErrors.upcoming}
+                      onRetry={reloadUpcoming}
                       onBook={user ? () => setCalendarOpen(true) : undefined}
                     />
                   ),
