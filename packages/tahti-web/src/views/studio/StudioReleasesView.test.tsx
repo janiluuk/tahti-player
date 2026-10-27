@@ -78,6 +78,54 @@ describe('StudioReleasesView', () => {
     expect(screen.getByLabelText('Title')).toBeTruthy();
   });
 
+  it('offers Undo after creating a release, which deletes it again', async () => {
+    const created = {
+      ...release,
+      id: 'rel-2',
+      title: 'Night Drive',
+      state: 'DRAFT',
+    } as StudioRelease;
+    vi.spyOn(studio, 'fetchStudioReleases')
+      .mockResolvedValueOnce({ data: list([release]), meta: { source: 'api' } })
+      .mockResolvedValue({
+        data: list([release, created]),
+        meta: { source: 'api' },
+      });
+    vi.spyOn(studio, 'createStudioRelease').mockResolvedValue({
+      ok: true,
+      data: created,
+    } as never);
+    vi.spyOn(studio, 'patchStudioReleaseVisual').mockResolvedValue({
+      ok: true,
+    } as never);
+    const remove = vi
+      .spyOn(studio, 'deleteStudioRelease')
+      .mockResolvedValue({ ok: true });
+    await renderWithRouter(<StudioReleasesView />);
+    await screen.findByText('After Hours');
+    fireEvent.click(screen.getAllByRole('button', { name: 'New release' })[0]!);
+    fireEvent.change(await screen.findByLabelText('Title'), {
+      target: { value: 'Night Drive' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+    expect(await screen.findByText('Night Drive')).toBeTruthy();
+
+    const [message, options] = toast.success.mock.calls.at(-1) as [
+      string,
+      { action: { label: string; onClick: () => void } },
+    ];
+    expect(message).toBe('Created Night Drive.');
+    expect(options.action.label).toBe('Undo');
+    options.action.onClick();
+
+    await vi.waitFor(() =>
+      expect(toast.success).toHaveBeenLastCalledWith('Removed Night Drive.'),
+    );
+    expect(remove).toHaveBeenCalledWith('rel-2');
+    expect(screen.queryByText('Night Drive')).toBeNull();
+    expect(screen.getByText('After Hours')).toBeTruthy();
+  });
+
   it('links each release to its Stats tab', async () => {
     vi.spyOn(studio, 'fetchStudioReleases').mockResolvedValue({
       data: list([release]),

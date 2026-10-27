@@ -101,4 +101,6 @@ new surface, one PR per row.
     Undo (`DELETE /api/me/collections/:slug`), which also leaves the new
     collection's editor. Left: other create paths (playlists view, add-to-
     playlist, save queue), sound shares, editor projects, events.
+  - 2026-10-27 (batch 90): new-release toast has Undo (`DELETE
+    /api/me/releases/:id`), via shared `lib/undoToast.ts`.
 
