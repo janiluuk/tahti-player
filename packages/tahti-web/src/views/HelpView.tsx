@@ -107,6 +107,7 @@ const GUIDE_GROUPS: Array<{
     icon: ShieldCheckIcon,
     slugs: [
       'tier-limits',
+      'governance',
       'account-security',
       'studio-notices',
       'keyboard-shortcuts',

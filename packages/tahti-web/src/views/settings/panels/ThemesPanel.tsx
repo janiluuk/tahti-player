@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { useShallow } from 'zustand/react/shallow';
 
 import {
   Button,
@@ -54,7 +55,20 @@ export function ThemesPanel() {
     importCustomTheme,
     renameCustomTheme,
     removeCustomTheme,
-  } = useThemeStore();
+  } = useThemeStore(
+    useShallow((s) => ({
+      themes: s.themes,
+      customThemes: s.customThemes,
+      themeId: s.themeId,
+      dark: s.dark,
+      colorMode: s.colorMode,
+      setTheme: s.setTheme,
+      setColorMode: s.setColorMode,
+      importCustomTheme: s.importCustomTheme,
+      renameCustomTheme: s.renameCustomTheme,
+      removeCustomTheme: s.removeCustomTheme,
+    })),
+  );
   const signedIn = useAuthStore((s) => Boolean(s.user));
   const [submissions, setSubmissions] = useState<MyTheme[]>([]);
   const [submissionsError, setSubmissionsError] = useState<string | null>(null);

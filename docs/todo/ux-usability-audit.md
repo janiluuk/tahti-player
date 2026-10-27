@@ -9,15 +9,6 @@ re-filed.
 
 ## To do (verified)
 
-- [ ] **Distribution: failed royalties load is silent.** `StudioDistributionView`
-  reads `fetchAllRoyalties()` but ignores its `meta.reason`; on an API error the
-  royalties section just disappears. Show a `PageErrorBanner` with Retry.
-  (The audit's "no loading guard" is wrong: the releases list has
-  `PageLoading` / `PageError`.)
-- [ ] **Two unselected Zustand subscriptions.** `ThemesPanel` (`useThemeStore()`)
-  and `DesktopUpdatesRow` (`useDesktopUpdateStore()`) re-render on every store
-  change. Use selectors. (The audit's `useFavoritesStore()` example is in the
-  dead desktop UI, see below.)
 - [ ] **`useScheduleForm` holds 29 `useState` calls.** A reducer would make the
   editor's state easier to follow. Refactor only; no user-visible bug found.
 - [ ] **`React.memo` on hot `@tahti-player/ui` components** — 7 components already

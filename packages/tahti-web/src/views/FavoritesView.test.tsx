@@ -58,6 +58,19 @@ describe('FavoritesView', () => {
     vi.restoreAllMocks();
   });
 
+  it('shows favorite channels as neutral cards like Listen', async () => {
+    useLibraryStore.setState({
+      favoriteChannels: [{ slug: 'aurora', displayName: 'Aurora Drift' }],
+    });
+    renderFavorites();
+    const link = await screen.findByRole('link', { name: 'Aurora Drift' });
+    expect(link).toHaveAttribute('href', '/channel/aurora');
+    expect(link.closest('[data-testid="card"]')).toHaveAttribute(
+      'data-surface',
+      'neutral',
+    );
+  });
+
   it('says where to find tracks when none are favorited', async () => {
     renderFavorites();
 

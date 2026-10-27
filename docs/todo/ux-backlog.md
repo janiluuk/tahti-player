@@ -68,6 +68,5 @@ new surface, one PR per row.
 
 ## Studio functional
 
-- [ ] Add selected Sounds to a release (bulk action; needs a picker).
 - [ ] Undo for publish / create flows (none in Studio).
 

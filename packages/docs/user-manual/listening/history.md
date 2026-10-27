@@ -8,4 +8,6 @@ description: A record of what you have played
 
 <figure><img src="../../.gitbook/assets/listening-history.png" alt="Listening history list of recently played tracks"><figcaption><p>Listen → History</p></figcaption></figure>
 
-The history is kept for your account in this browser (or the desktop app). It is not uploaded to Tahti: artists see anonymous play counts, never who listened.
+This list is kept for your account in this browser (or the desktop app). Plays you made on a device while signed out carry over the first time you sign in there.
+
+Signed in, **Stats** also starts with **Across your devices**: your listening on every browser and app where you're signed in, from Tahti's listening records. Artists only ever see anonymous totals, never who listened.

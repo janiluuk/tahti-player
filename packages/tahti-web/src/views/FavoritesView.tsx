@@ -13,10 +13,6 @@ import {
 import { fetchChannel } from '../api/client';
 import { fetchMyLikes, likedTrackToPlayable } from '../api/likes';
 import type { TahtiPlayable } from '../api/types';
-import {
-  MediaIconActions,
-  playQueueFavoriteActions,
-} from '../components/MediaIconActions';
 import { PageEmpty, PageError } from '../components/PageStates';
 import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
@@ -111,84 +107,93 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
             }
           />
         ) : (
-          <CardGrid className="grid-cols-[repeat(auto-fit,minmax(7.5rem,1fr))] sm:grid-cols-[repeat(auto-fit,minmax(10rem,1fr))]">
-            {favoriteChannels.map((ch) => (
-              <div key={ch.slug} className="flex flex-col gap-2">
-                <Link to="/channel/$slug" params={{ slug: ch.slug }}>
-                  <Card
-                    title={ch.displayName}
-                    subtitle={ch.slug}
-                    src={ch.avatarUrl ?? placeholderArtworkUrl(ch.slug)}
-                  />
-                </Link>
-                <MediaIconActions
-                  className="px-1"
-                  actions={playQueueFavoriteActions({
-                    onPlay: () => {
-                      void fetchChannel(ch.slug).then(({ playable }) => {
-                        if (playable) {
-                          play(playable);
-                        }
-                      });
-                    },
-                    onTogglePause: () =>
-                      setPlayerStatus(
-                        playerStatus === 'playing' || playerStatus === 'loading'
-                          ? 'paused'
-                          : 'playing',
-                      ),
-                    // A channel's live playable id is always `live:<slug>`
-                    // (see api/client.ts's fetchChannel), so this is
-                    // knowable without fetching first.
-                    isPlaying:
-                      currentId === `live:${ch.slug}` &&
-                      (playerStatus === 'playing' ||
-                        playerStatus === 'loading'),
-                    onQueue: () => {
-                      void fetchChannel(ch.slug).then(({ playable }) => {
-                        if (playable) {
-                          enqueue(playable);
-                        }
-                      });
-                    },
-                    onFavorite: () => toggleFavoriteChannel(ch),
-                    favorited: true,
-                    queueLabel: 'Queue channel',
-                  })}
+          <CardGrid className="grid-cols-[repeat(auto-fill,11.5rem)]">
+            {favoriteChannels.map((ch) => {
+              const channelPlaying =
+                currentId === `live:${ch.slug}` &&
+                (playerStatus === 'playing' || playerStatus === 'loading');
+              return (
+                <Card
+                  key={ch.slug}
+                  surface="neutral"
+                  src={ch.avatarUrl ?? placeholderArtworkUrl(ch.slug)}
+                  title={
+                    <Link
+                      to="/channel/$slug"
+                      params={{ slug: ch.slug }}
+                      className="hover:underline"
+                    >
+                      {ch.displayName}
+                    </Link>
+                  }
+                  subtitle={ch.slug}
+                  isPlaying={channelPlaying}
+                  playLabel={`Play ${ch.displayName}`}
+                  pauseLabel={`Pause ${ch.displayName}`}
+                  onPlay={() => {
+                    if (channelPlaying) {
+                      setPlayerStatus('paused');
+                      return;
+                    }
+                    if (currentId === `live:${ch.slug}`) {
+                      setPlayerStatus('playing');
+                      return;
+                    }
+                    void fetchChannel(ch.slug).then(({ playable }) => {
+                      if (playable) {
+                        play(playable);
+                      }
+                    });
+                  }}
+                  onQueue={() => {
+                    void fetchChannel(ch.slug).then(({ playable }) => {
+                      if (playable) {
+                        enqueue(playable);
+                      }
+                    });
+                  }}
+                  queueLabel={`Queue ${ch.displayName}`}
+                  onFavorite={() => toggleFavoriteChannel(ch)}
+                  favorited
                 />
-              </div>
-            ))}
-            {radioFavorites.map((radio) => (
-              <div key={radio.id} className="flex flex-col gap-2">
-                <Link to="/radio">
-                  <Card
-                    title={radio.artist || radio.title}
-                    src={radio.coverUrl ?? placeholderArtworkUrl(radio.id)}
-                  />
-                </Link>
-                <MediaIconActions
-                  className="px-1"
-                  actions={playQueueFavoriteActions({
-                    onPlay: () => play(radio),
-                    onTogglePause: () =>
-                      setPlayerStatus(
-                        playerStatus === 'playing' || playerStatus === 'loading'
-                          ? 'paused'
-                          : 'playing',
-                      ),
-                    isPlaying:
-                      radio.id === currentId &&
-                      (playerStatus === 'playing' ||
-                        playerStatus === 'loading'),
-                    onQueue: () => enqueue(radio),
-                    onFavorite: () =>
-                      useLibraryStore.getState().toggleFavoriteTrack(radio),
-                    favorited: true,
-                    queueLabel: 'Queue station',
-                  })}
+              );
+            })}
+            {radioFavorites.map((radio) => {
+              const name = radio.artist || radio.title;
+              const radioPlaying =
+                radio.id === currentId &&
+                (playerStatus === 'playing' || playerStatus === 'loading');
+              return (
+                <Card
+                  key={radio.id}
+                  surface="neutral"
+                  src={radio.coverUrl ?? placeholderArtworkUrl(radio.id)}
+                  title={
+                    <Link to="/radio" className="hover:underline">
+                      {name}
+                    </Link>
+                  }
+                  isPlaying={radioPlaying}
+                  playLabel={`Play ${name}`}
+                  pauseLabel={`Pause ${name}`}
+                  onPlay={() => {
+                    if (radioPlaying) {
+                      setPlayerStatus('paused');
+                    } else if (radio.id === currentId) {
+                      setPlayerStatus('playing');
+                    } else {
+                      play(radio);
+                    }
+                  }}
+                  onQueue={() => enqueue(radio)}
+                  queueLabel={`Queue ${name}`}
+                  onFavorite={() =>
+                    useLibraryStore.getState().toggleFavoriteTrack(radio)
+                  }
+                  favorited
                 />
-              </div>
-            ))}
+              );
+            })}
           </CardGrid>
         )}
       </SectionShell>
