@@ -645,6 +645,38 @@ export const HELP_ARTICLES: HelpArticle[] = [
     ],
   },
   {
+    slug: 'account-security',
+    title: 'Keeping your account safe',
+    description:
+      'Change your password or email, use two-step sign-in, and know which changes we email you about.',
+    productionPath: '/help/account-security',
+    sections: [
+      {
+        heading: 'Password and email',
+        body: [
+          'Change your password in Settings → Account → Password & email. You need the current one; every other device is signed out, and any password-reset link sent earlier stops working.',
+          'To change your email, enter the new address and your password. We send a link to the new address and nothing changes until it is opened (within 24 hours). Your current address is told straight away, and you can cancel a waiting change in the same place.',
+          'Passwords need at least 10 characters, with a lowercase letter, an uppercase letter and a number.',
+        ],
+      },
+      {
+        heading: 'Two-step sign-in, devices and tokens',
+        body: [
+          'Turn on two-step sign-in in Settings → Account → Two-factor authentication, and keep the backup codes somewhere safe.',
+          'Settings → Account → Devices lists every signed-in device; sign out one, or all of them.',
+          'API tokens give scripts access to your account. Revoke any you no longer use.',
+        ],
+      },
+      {
+        heading: 'Emails we send about your account',
+        body: [
+          'We email your account address when: your password is changed or reset; your email change is requested, and when it is done (to the old address); two-step sign-in is turned on or off; a device that has not signed in before signs in; a new API token is created; the board suspends or reinstates the account.',
+          'If one of these was not you, reset your password straight away and write to support@tahti.live.',
+        ],
+      },
+    ],
+  },
+  {
     slug: 'support',
     title: 'Contact support',
     description:
