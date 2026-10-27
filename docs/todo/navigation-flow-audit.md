@@ -113,6 +113,8 @@ The biggest **user-facing** gaps:
 
 **File:** `e2e/layout-stability.spec.ts:130-133,144-146` — Studio shell checks use `[data-studio-shell]`, `[data-studio-navigation]`, `[data-admin-section-tabs]`. These are good. But some views reference chrome elements via CSS selectors (`.admin-page-layout`) rather than stable `data-testid` attributes, making them brittle to class-name changes in Tailwind builds. Minor polish target.
 
+**Mobile chrome:** `MobileBottomNav` carries `data-testid="mobile-bottom-nav"` and `MobileDrawer` `data-testid="mobile-drawer"`. `e2e/nav-chrome.spec.ts` walks Listen → Studio → Admin → Library on desktop and Listen → Studio → More drawer → Library on a phone, asserting the shell, top nav, sidebar / bottom nav, Studio tabs and admin shell by these hooks.
+
 ---
 
 ## 9. Settings `$section` redirect — intentional but a source of dead links on bookmarks ✅
