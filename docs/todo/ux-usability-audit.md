@@ -14,10 +14,6 @@ re-filed.
   royalties section just disappears. Show a `PageErrorBanner` with Retry.
   (The audit's "no loading guard" is wrong: the releases list has
   `PageLoading` / `PageError`.)
-- [ ] **Radio: member relay failure is silent.** `RadioView.reload()` handles
-  station, recent and featured errors, but `fetchRadio()` (the member live relay)
-  has no error path, so a failed read just hides the relay. Recent, featured,
-  rotation and upcoming already show per-section errors.
 - [ ] **Two unselected Zustand subscriptions.** `ThemesPanel` (`useThemeStore()`)
   and `DesktopUpdatesRow` (`useDesktopUpdateStore()`) re-render on every store
   change. Use selectors. (The audit's `useFavoritesStore()` example is in the
