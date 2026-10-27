@@ -31,6 +31,8 @@ These are valid for bookmarks/redirects, but 6 of them have **zero inbound `<Lin
 
 Not regressions — these are historical merges. All renderable, none lead to 404. But they create a **silent fragility**: if `AdminModerationView` ever drops one of those tabs (e.g., `admin/support`, `admin/reports`), there's no nav-chrome assert that will surface it. The `AdminNav.tsx` array is not exhaustive — several routes are only reachable via tab redirects or deep links. Not a bug today; a maintainability risk if the admin nav grows further.
 
+**E2e:** `e2e/routes-admin-deep.spec.ts` now asserts every redirect above (plus `/admin/beta`, `/admin/files`, `/admin/reports`, `/admin/radio-submissions`, `/admin/radio-station-suggestions`, `/admin/content-reports`, `/admin/feature-requests`, `/admin/missed-shows`) lands on the right page and selected tab inside `[data-admin-shell]`, and opens `/admin/grants/$year` and `/admin/storage/$userId` from their lists.
+
 ---
 
 ## 3. Listen sub-routes (`/listen/*`) have no dedicated nav chrome entries
@@ -64,6 +66,8 @@ Checked:
 
 First subagent was **wrong** on this class of issues. These are all wired correctly.
 
+**E2e:** `e2e/routes-studio-content.spec.ts` opens the release (+ stats tab), collection, playlist, sound, sound editor, mastering, editor project, event add/edit, show (+ episodes tab) and episode review pages from their list pages.
+
 ---
 
 ## 6. Admin governance views — no per-level breadcrumbs ✅
@@ -81,13 +85,15 @@ First subagent was **wrong** on this class of issues. These are all wired correc
 
 ## 7. E2e coverage gaps (66 % of routes)
 
+**Studio stats/updates/audience:** `e2e/routes-studio-stats.spec.ts` visits `/studio/stats` (+ `plays`, `top-lists` tabs), `/studio/insights`, `/studio/stats/detail`, `/studio/insights/release-tracks/$id` (from a release stats tab), `/studio/updates` (+ newsletter), `/studio/audience` (+ tiers), the `/studio/revenue` redirects, `/studio/stripe` and `/studio/distribution`, and switches their Studio tabs.
+
 **13 e2e files**, ~41 unique route visits (out of 180). Key missing areas:
 
 | Area | Routes with zero e2e visit | Count |
 | --- | --- | --- |
-| **Governance** | `/governance`, `/governance/members`, `/governance/meetings/$id`, `/governance/motions/$id`, `/public-governance-history`, `/feature-requests` | 6 |
+| **Governance** | Covered by `e2e/routes-governance.spec.ts`: `/governance`, `/governance/members`, `/governance/meetings/$id`, `/governance/motions/$id`, `/governance/history`, `/governance/feature-requests` | 0 |
 | **Listen (discover/feed/radio/show)** | `/listen/feed`, `/discover`, `/radio`, `schedule`, `/radio/show/$channelSlug`, `/themes`, `/search` | 7 |
-| **Public/reader** | `/subscribe/$username`, `/r/$slug`, `/t/$id`, `/v/$slug`, `/embed/*, terms, privacy, agpl, about, how-it-works, what-is-it` | 12 |
+| **Public/reader** | Covered by `e2e/routes-public-reader.spec.ts`: `/subscribe/$username`, `/r/$slug`, `/t/$id`, `/v/$slug`, `/embed/*`, terms, privacy, agpl, about, how-it-works, what-is-it | 0 |
 | **Library deep** | `/library/favorites`, `/library/history`, `/library/local`, `/library/media`, `/library/embeds`, `/library/smartlinks`, `/library/recordings` | 7 |
 | **Studio content ops** | All studio sound/release/collection event/edit/playlist/show-episode review, all studio stats sub-pages, studio updates, audience/revenue/stripe, distribution, moderation, revenue, stash, channel-branding, go-live sessions/green-room | ~30 |
 | **Admin deep** | `/admin/activity`, `/admin/addons`, `/admin/beta`, `/admin/disco-widgets`, `/admin/files`, `/admin/grants/$year`, `/admin/orphan-pages/$tab`, `/admin/reports`, `/admin/radio-submissions`, `/admin/radio-station-suggestions`, `/admin/support`, `/admin/feature-requests`, `/admin/content-reports`, `/admin/moderation/$tab` | ~14 |
@@ -110,6 +116,11 @@ The biggest **user-facing** gaps:
 ## 9. Settings `$section` redirect — intentional but a source of dead links on bookmarks ✅
 
 **Done (verified 2026-10-27):** `/settings/money`, `/settings/fan-subs` and `/settings/fan-tiers` now land on Studio → Revenue, and `/settings/audience` on Studio → Audience.
+
+- 2026-10-27 (batch 90): the four old sections now redirect straight to
+  `/studio/audience?movedFrom=<section>` (`fan-tiers` opens the Tiers tab),
+  and Studio › Audience shows a dismissible "This page has moved" notice
+  naming the old Settings section (`lib/movedSettingsSections.ts`).
 
 **File:** `routes-settings.tsx:12-24` — `/settings/audience`, `/settings/money`, `/settings/fan-subs`, `/settings/fan-tiers` all redirect to `/studio/audience?tab=…`. The route definition exists for backward compatibility but there is no visible indicator in a browser's address bar that the URL has changed. A user who bookmarks `/settings/money` and shares it will land on Studio → Audience, which may be confusing (the page header says "Audience", not "Money settings"). Consider adding a redirect notice or updating the tab label to read "Revenue" instead of "Money".
 

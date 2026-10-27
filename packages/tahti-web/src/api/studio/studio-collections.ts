@@ -158,6 +158,7 @@ export async function fetchStudioCollection(slug: string): Promise<{
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
+    const listed = getMockCollectionStore().find((row) => row.slug === slug);
     return {
       data: {
         id: `mock-collection-${slug}`,
@@ -170,6 +171,7 @@ export async function fetchStudioCollection(slug: string): Promise<{
               ? 'ALBUM'
               : 'PLAYLIST',
         isPublic: true,
+        ...listed,
         items: mockSoundStore.map((a, i) => ({
           id: `ci-${a.id}`,
           position: i,
