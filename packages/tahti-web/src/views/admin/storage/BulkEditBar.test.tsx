@@ -125,6 +125,9 @@ describe('BulkEditBar', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Delete 2' }));
     expect(fetchSpy).not.toHaveBeenCalled();
     expect(screen.getByText('Delete 2 files permanently?')).toBeTruthy();
+    expect(
+      screen.getByText(/Each artist is notified that the board removed/),
+    ).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
     await waitFor(() => expect(onDeleted).toHaveBeenCalledWith(1, 1));
