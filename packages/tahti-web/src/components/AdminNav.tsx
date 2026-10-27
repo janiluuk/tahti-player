@@ -386,7 +386,7 @@ export function AdminPageLayout({
   const { tabs, menu } = useAdminNavParts(current, moderationPendingCount);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3" data-admin-shell>
       {tabs}
       {menu}
       <div className="min-w-0 flex-1">{children}</div>

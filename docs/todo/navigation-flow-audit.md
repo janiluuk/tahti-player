@@ -66,7 +66,9 @@ First subagent was **wrong** on this class of issues. These are all wired correc
 
 ---
 
-## 6. Admin governance views — no per-level breadcrumbs
+## 6. Admin governance views — no per-level breadcrumbs ✅
+
+**Done (verified 2026-10-27):** `AdminGovernanceView` shows Admin → Governance → <tab>, and `AdminGrantCycleView` shows Admin → Governance → Grants → <year>.
 
 `AdminGrantCycleView` is a child route (`/admin/governance/$tab?tab=grants`) with the admin section tabs as chrome. It has an arrow-left return to `/admin/governance` in `AdminGate.tsx:40`, but the path inside `/admin/governance/$tab` is not breadcrumb-visible (you must click the "Governance" tab in chrome nav). This mirrors the pattern for all 3 tabbed admin routes (`governance/$tab`, `moderation/$tab`, `orphan-pages/$tab`). **Low severity** — chrome tabs show you where you are, but a user clicking through from a governance meeting note will not see the breadcrumb `/admin › Governance › Grants › Cycle`. Minor UX polish target.
 
@@ -92,13 +94,17 @@ The biggest **user-facing** gaps:
 
 ---
 
-## 8. Missing `data-testid` on nav chrome elements (layout-stability fragile)
+## 8. Missing `data-testid` on nav chrome elements (layout-stability fragile) ✅
+
+**Done:** `AdminPageLayout` carries `data-admin-shell`; `layout-stability.spec.ts` finds the admin shell by it instead of the `.admin-page-layout` / `.admin-moderation-layout` classes.
 
 **File:** `e2e/layout-stability.spec.ts:130-133,144-146` — Studio shell checks use `[data-studio-shell]`, `[data-studio-navigation]`, `[data-admin-section-tabs]`. These are good. But some views reference chrome elements via CSS selectors (`.admin-page-layout`) rather than stable `data-testid` attributes, making them brittle to class-name changes in Tailwind builds. Minor polish target.
 
 ---
 
-## 9. Settings `$section` redirect — intentional but a source of dead links on bookmarks
+## 9. Settings `$section` redirect — intentional but a source of dead links on bookmarks ✅
+
+**Done (verified 2026-10-27):** `/settings/money`, `/settings/fan-subs` and `/settings/fan-tiers` now land on Studio → Revenue, and `/settings/audience` on Studio → Audience.
 
 **File:** `routes-settings.tsx:12-24` — `/settings/audience`, `/settings/money`, `/settings/fan-subs`, `/settings/fan-tiers` all redirect to `/studio/audience?tab=…`. The route definition exists for backward compatibility but there is no visible indicator in a browser's address bar that the URL has changed. A user who bookmarks `/settings/money` and shares it will land on Studio → Audience, which may be confusing (the page header says "Audience", not "Money settings"). Consider adding a redirect notice or updating the tab label to read "Revenue" instead of "Money".
 
