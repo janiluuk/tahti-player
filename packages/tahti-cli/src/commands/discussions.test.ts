@@ -1,7 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { mockFetchJson, TEST_CONFIG } from '../test-helpers';
-import { runDiscussionsList, runDiscussionsShow } from './discussions.mjs';
+import {
+  runDiscussionsFollow,
+  runDiscussionsList,
+  runDiscussionsMute,
+  runDiscussionsReply,
+  runDiscussionsShow,
+} from './discussions.mjs';
 
 const TOPIC = {
   id: 'topic-1',
@@ -67,6 +73,44 @@ describe('tahti discussions', () => {
   it('needs a topic id', async () => {
     await expect(runDiscussionsShow(TEST_CONFIG, '')).rejects.toThrow(
       'Give a topic id',
+    );
+  });
+
+  it('replies with the words after the id', async () => {
+    const fetchMock = mockFetchJson({ id: '9', body: 'Count me in' });
+    const output = await runDiscussionsReply(TEST_CONFIG, 'topic-1', [
+      'Count',
+      'me',
+      'in',
+    ]);
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe(
+      'https://api.example.test/api/v1/governance/discussions/topic-1/posts',
+    );
+    expect(init.method).toBe('POST');
+    expect(JSON.parse(init.body)).toEqual({ body: 'Count me in' });
+    expect(output).toContain('#9');
+  });
+
+  it('needs reply text', async () => {
+    await expect(
+      runDiscussionsReply(TEST_CONFIG, 'topic-1', []),
+    ).rejects.toThrow('Give the reply text');
+  });
+
+  it('follows and mutes', async () => {
+    const fetchMock = mockFetchJson({ following: true, muted: false });
+    expect(await runDiscussionsFollow(TEST_CONFIG, 'topic-1', true)).toContain(
+      'Following',
+    );
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe(
+      'https://api.example.test/api/v1/governance/discussions/topic-1/follow',
+    );
+    expect(init.method).toBe('PUT');
+    mockFetchJson({ following: true, muted: true });
+    expect(await runDiscussionsMute(TEST_CONFIG, 'topic-1', true)).toContain(
+      'Muted',
     );
   });
 });
