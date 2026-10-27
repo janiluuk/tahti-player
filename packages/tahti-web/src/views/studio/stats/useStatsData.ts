@@ -13,6 +13,7 @@ import {
   fetchChannelEgressStats,
   fetchChannelLiveStats,
   fetchListenerGeo,
+  fetchStatsListening,
   fetchStatsPlays,
   fetchStatsPlaysHourly,
   fetchStatsSummary,
@@ -22,6 +23,7 @@ import {
   type ChannelEgressStats,
   type ChannelLiveStats,
   type ListenerGeoPoint,
+  type StatsListening,
   type StatsPlays,
   type StatsPlaysRange,
   type StatsSummary,
@@ -97,6 +99,7 @@ export function useStatsData() {
   const [egress, setEgress] = useState<ChannelEgressStats>(EMPTY_EGRESS);
   const [live, setLive] = useState<ChannelLiveStats>(EMPTY_LIVE);
   const [grant, setGrant] = useState<GrantEstimate | null>(null);
+  const [listening, setListening] = useState<StatsListening | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -156,6 +159,11 @@ export function useStatsData() {
       fetchChannelEgressStats(),
       fetchChannelLiveStats(),
       fetchGrantEstimate(),
+      fetchStatsListening(
+        range === 'custom' && appliedCustom
+          ? { range: 'custom', from: appliedCustom.from, to: appliedCustom.to }
+          : { range },
+      ),
     ])
       .then(
         ([
@@ -167,6 +175,7 @@ export function useStatsData() {
           egressResult,
           liveResult,
           grantResult,
+          listeningResult,
         ]) => {
           if (cancelled) {
             return;
@@ -191,6 +200,7 @@ export function useStatsData() {
           setEgress(egressResult.data);
           setLive(liveResult.data);
           setGrant(grantResult.data);
+          setListening(listeningResult.data);
         },
       )
       .catch(() => {
@@ -328,12 +338,19 @@ export function useStatsData() {
       note: 'Current audience',
       icon: UsersIcon,
     },
-    {
-      label: 'Minutes listened',
-      value: minutesListened,
-      note: `Estimated from ${egress.windowDays}d delivery at 192 kbps`,
-      icon: UsersIcon,
-    },
+    listening
+      ? {
+          label: 'Minutes listened',
+          value: listening.minutes,
+          note: `${listening.listens.toLocaleString()} listens · ${listening.averageMinutes.toLocaleString()} min on average`,
+          icon: UsersIcon,
+        }
+      : {
+          label: 'Minutes listened',
+          value: minutesListened,
+          note: `Estimated from ${egress.windowDays}d delivery at 192 kbps`,
+          icon: UsersIcon,
+        },
     {
       label: 'Minutes streamed',
       value: minutesStreamed,
