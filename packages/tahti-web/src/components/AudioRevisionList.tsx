@@ -206,7 +206,7 @@ export function AudioRevisionList({
     setFile(null);
     setLabel('');
     setMessage(
-      `Saved as v${result.versionNumber} — not live yet. Preview it, then use this version when you want it public.`,
+      `Saved as v${result.versionNumber} — not live yet. Preview it, then use this version when you want it public. If it can't be processed, we notify you.`,
     );
     load();
   };

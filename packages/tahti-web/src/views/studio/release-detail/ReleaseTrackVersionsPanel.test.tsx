@@ -7,6 +7,7 @@ import {
   screen,
   within,
 } from '@testing-library/react';
+import { toast } from 'sonner';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as api from '../../../api/release-track-versions';
@@ -111,5 +112,8 @@ describe('ReleaseTrackVersionsPanel', () => {
       'Processing',
     );
     expect(screen.getByRole('button', { name: 'Add a version' })).toBeTruthy();
+    expect(toast.success).toHaveBeenCalledWith(
+      expect.stringContaining("if it can't be, we notify you."),
+    );
   });
 });
