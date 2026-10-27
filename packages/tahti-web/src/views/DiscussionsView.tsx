@@ -1,8 +1,8 @@
 import { Link } from '@tanstack/react-router';
 import { BellOffIcon, PinIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { Badge, Button, ViewShell } from '@tahti-player/ui';
+import { Badge, Button, FilterChips, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchDiscussionTopics,
@@ -16,6 +16,28 @@ import {
 } from '../components/PageStates';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
+
+type TopicFilter = 'all' | 'open' | 'following' | 'closed';
+
+const FILTERS: Array<{ id: TopicFilter; label: string }> = [
+  { id: 'all', label: 'All' },
+  { id: 'open', label: 'Open' },
+  { id: 'following', label: 'Following' },
+  { id: 'closed', label: 'Closed' },
+];
+
+function matchesFilter(topic: DiscussionTopic, filter: TopicFilter): boolean {
+  switch (filter) {
+    case 'open':
+      return topic.status === 'OPEN';
+    case 'closed':
+      return topic.status === 'CLOSED';
+    case 'following':
+      return topic.following;
+    default:
+      return true;
+  }
+}
 
 function lastActivity(iso: string): string {
   return new Date(iso).toLocaleDateString(undefined, {
@@ -78,6 +100,11 @@ export function DiscussionsView() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
+  const [filter, setFilter] = useState<TopicFilter>('all');
+  const shown = useMemo(
+    () => topics.filter((topic) => matchesFilter(topic, filter)),
+    [topics, filter],
+  );
 
   useEffect(() => {
     if (!user) {
@@ -147,11 +174,39 @@ export function DiscussionsView() {
               description="When the board opens a topic, it shows up here and you get a notification."
             />
           ) : (
-            <ul className="flex flex-col gap-2" aria-label="Discussion topics">
-              {topics.map((topic) => (
-                <TopicRow key={topic.id} topic={topic} />
-              ))}
-            </ul>
+            <>
+              <FilterChips
+                items={FILTERS}
+                selected={filter}
+                onChange={(id) => setFilter(id as TopicFilter)}
+                aria-label="Filter discussions"
+              />
+              {shown.length === 0 ? (
+                <PageEmpty
+                  icon="inbox"
+                  title="No topics here"
+                  description="Try another filter."
+                  action={
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => setFilter('all')}
+                    >
+                      Show all
+                    </Button>
+                  }
+                />
+              ) : (
+                <ul
+                  className="flex flex-col gap-2"
+                  aria-label="Discussion topics"
+                >
+                  {shown.map((topic) => (
+                    <TopicRow key={topic.id} topic={topic} />
+                  ))}
+                </ul>
+              )}
+            </>
           )}
         </>
       )}
