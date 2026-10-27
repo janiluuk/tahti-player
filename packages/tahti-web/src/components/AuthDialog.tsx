@@ -10,6 +10,7 @@ import {
   SegmentedControl,
 } from '@tahti-player/ui';
 
+import { PASSWORD_RULES_HINT, passwordProblem } from '../lib/passwordRules';
 import {
   persistPendingArtistKind,
   type ArtistKind,
@@ -17,8 +18,6 @@ import {
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { UsernameAvailabilityHint } from './UsernameAvailabilityHint';
-
-const MINIMUM_PASSWORD_LENGTH = 8;
 
 const ARTIST_KIND_OPTIONS = [
   { id: 'SINGLE' as const, label: 'Artist' },
@@ -99,6 +98,7 @@ export const AuthDialog: FC = () => {
     : mode === 'join'
       ? 'Join'
       : 'Log in';
+  const passwordIssue = password.length > 0 ? passwordProblem(password) : null;
   const passwordsDoNotMatch =
     confirmPassword.length > 0 && password !== confirmPassword;
 
@@ -247,7 +247,7 @@ export const AuthDialog: FC = () => {
               size="sm"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              description="Min 8 characters"
+              description={PASSWORD_RULES_HINT}
               autoComplete="new-password"
             />
             <Input
@@ -259,6 +259,7 @@ export const AuthDialog: FC = () => {
               autoComplete="new-password"
             />
           </div>
+          {passwordIssue ? <AuthDialogError message={passwordIssue} /> : null}
           {passwordsDoNotMatch ? (
             <AuthDialogError message="Passwords do not match." />
           ) : null}
@@ -274,7 +275,8 @@ export const AuthDialog: FC = () => {
               disabled={
                 loading ||
                 !email ||
-                password.length < MINIMUM_PASSWORD_LENGTH ||
+                !password ||
+                Boolean(passwordIssue) ||
                 !confirmPassword ||
                 passwordsDoNotMatch ||
                 !username ||
