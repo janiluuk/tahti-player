@@ -1,8 +1,8 @@
 # Board-created discussion topics in tahti-web
 
-**Status:** partial
+**Status:** blocked
 
-The API shipped in tahti-org #991–#998: the board opens topics (`/api/admin/discussions`), members read, reply, follow, mute and remove their replies (`/api/v1/governance/discussions/...`), with `DISCUSSION_OPENED` / `DISCUSSION_REPLY` notices, data export and account deletion handled. Web client: #1570.
+The API shipped in tahti-org #991–#1003 (plus #999 `mine`, #1000 reports, #1001 unread counts, #1002 close notices, #1003 export of opened topics): the board opens topics (`/api/admin/discussions`), members read, reply, follow, mute and remove their replies (`/api/v1/governance/discussions/...`), with `DISCUSSION_OPENED` / `DISCUSSION_REPLY` notices, data export and account deletion handled. Web: #1570, #1574–#1580, #1584, #1585, #1589, #1591–#1593; CLI: #1586, #1587. Everything below is shipped except the allowlist cleanup, which waits on a tahti-org release that publishes the new paths in `openapi.json`.
 
 ## To do (web)
 

@@ -5595,3 +5595,12 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 ## 2026-10-27 — ux-backlog: bulk add to a release
 
 - Library → Sounds → select tracks → **Add to a release** shipped in #1203 (2026-10-19); the open row in `ux-backlog.md` is removed.
+
+## 2026-10-27 — batch 118: board discussions, UX audit, CLI, docs
+
+- **Discussions** (org #991–#1003; web #1570, #1574–#1580, #1584, #1585, #1589, #1591–#1593): the board opens, edits, pins and closes topics (Admin → Governance → Discussions); members read, reply, follow, mute, remove their own replies and report others' on `/governance/discussions`. Unread counts and filter chips on the list, latest discussions on Governance, `DISCUSSION_OPENED` / `_REPLY` / `_CLOSED` notices under Governance, audit + Activity for reply removals, data export (replies, follows, opened topics) and account deletion, Storybook stories, mock e2e journey screenshots, privacy copy, governance guide, Help center article and user manual. Allowlist cleanup waits on a tahti-org release (`discussion-topics.md`, blocked).
+- **CLI** (#1586, #1587): `tahti discussions list | show | reply | follow | unfollow | mute | unmute`.
+- **UX audit #1568** (verified in #1569): Distribution royalty-report errors (#1581), Radio member-relay errors (#1582), selected store fields in Themes and desktop updates (#1583); the schedule-form reducer (#1609) and memoized track rows (#1633) shipped in a parallel batch. `ux-usability-audit.md` folded and removed.
+- **Docs** (#1571): user manual, Help center and every manual screenshot refreshed for Mikseri, notifications, Settings security, stats, Radio, Listen, releases and the Gruvbox Light default.
+- **Fixes**: Favorites cards match Listen (#1572); rightmost header buttons keep their shadow (#1573); admin shell found by `data-admin-shell` in layout-stability e2e (#1594).
+- **Artist track rows** (org #1007; web #1639): Popular tracks follow the hearthis.at-style reference — round play button, bold title, genre pill and duration, real waveform from the profile's peaks, and date / likes / plays / downloads.
