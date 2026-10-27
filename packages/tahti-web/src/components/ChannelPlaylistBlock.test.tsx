@@ -44,4 +44,50 @@ describe('ChannelPlaylistBlock', () => {
     expect(await screen.findByText('No playable tracks yet')).toBeTruthy();
     expect(fetchCollection).toHaveBeenCalledTimes(2);
   });
+
+  it('lists the playlist as ambient rows with the size switcher and sort', async () => {
+    vi.spyOn(client, 'fetchCollection').mockResolvedValue({
+      data: {
+        slug: 'night-mix',
+        name: 'Night Mix',
+        description: null,
+        coverUrl: null,
+        isPublic: true,
+        collaborative: false,
+        user: { username: 'ada', displayName: 'Ada' },
+        items: [
+          {
+            position: 0,
+            release: null,
+            sound: {
+              id: 's1',
+              title: 'Aurora',
+              durationSec: 245,
+              audioUrl: 'https://cdn.example/aurora.mp3',
+            },
+          },
+          {
+            position: 1,
+            release: null,
+            sound: {
+              id: 's2',
+              title: 'Borealis',
+              durationSec: 120,
+              audioUrl: 'https://cdn.example/borealis.mp3',
+            },
+          },
+        ],
+        links: { page: '/u/ada/c/night-mix', rss: '' },
+      },
+      meta: { source: 'api' },
+    });
+    render(<ChannelPlaylistBlock playlistSlug="night-mix" />);
+
+    const list = await screen.findByTestId('ambient-track-list');
+    expect(list).toHaveTextContent('Aurora');
+    expect(list).toHaveTextContent('Borealis');
+    expect(list).toHaveTextContent('4:05');
+    expect(screen.getByRole('radiogroup', { name: 'Track size' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Sort tracks' })).toBeTruthy();
+  });
 });
