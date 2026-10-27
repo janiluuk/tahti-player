@@ -5580,3 +5580,14 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 - **Inbox kinds** (org #967): `NOTIFICATION_KIND_TYPES` files every notice type from batches 113–115 like the web does.
 - **Storybook**: Password & email settings story (#1550).
 - **Left**: tahti-org release to refresh `openapi.json`, then drop the allowlisted routes (`/api/me/restrictions`, `/api/me/password`, `/api/me/email`, `/api/auth/email-change/confirm`, batch 112's).
+
+## 2026-10-27 — Cross-repo batch 116: background work reports back
+
+- **Job outcome notices** (org #974–#982, #984, #985, #989): new `BACKGROUND_JOB_DONE` / `BACKGROUND_JOB_FAILED` and `notifyJobOutcome` in `@tahti/db`. The artist hears when a new upload is ready or can't be processed; replacement versions fail; editor renders and stem splits finish or fail; a broadcast recording is saved as a track or draft; Mixcloud / hearthis.at exports and Revelator delivery finish or fail; SoundCloud / Drive / hearthis.at imports fail; an automatic social post doesn't go out; a release track matches a known recording. Final BullMQ attempt only.
+- **Membership** (org #986): a lapsed membership tells the member (`MEMBERSHIP_ENDED`) instead of silently dropping to Free.
+- **Switch and kinds** (org #987, #988; web #1555, #1560): Studio work notices file under Music (membership under Money); Settings → Notifications → Studio work turns them off (`notifyStudioJobsInApp`).
+- **Web copy** (#1556–#1559, #1562, #1563, #1564, #1566): Upload, imports, the editor, stems, exports, distribution, social auto-post, membership, version uploads and the recording setting say what you're notified about; failed work gets a Failed badge in the inbox; Help → Notices about your Studio work.
+- **Export** (org #990; web #1565): the profile in the data export includes notification and visibility settings.
+- **YleX logo** (org #983; web #1554): the preset pointed at a dead Yle CDN image; it now uses the copy Tahti serves, and station cards fall back to the bundled logo if a station image disappears.
+- **Flaky Storybook plays** (#1561): WhatsNewView, TagSearchView and AdminGrantCycleView wait for the entrance animation instead of checking one frame.
+- **Left**: tahti-org release to refresh `openapi.json` and drop the allowlisted routes.
