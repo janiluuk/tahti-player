@@ -3,6 +3,7 @@
   "/api/admin/stats/listening": "Ships in tahti-org #883 (merged 2026-10-27); OpenAPI release not refreshed yet. Admin \u2192 Content shows a retry on the Listening panel until it is deployed.",
   "/api/auth/token/refresh": "Ships in tahti-org #880 (merged); OpenAPI release not refreshed yet.",
   "/api/me/channel/autoplay": "The route ships in tahti-org #761, which is not in a tahti-org release yet. The Autoplay toggle is hidden when the read fails.",
+  "/api/me/email": "Ships in tahti-org #958; OpenAPI release not refreshed yet. Settings \u2192 Account \u2192 Password & email shows the API error until it is deployed.",
   "/api/me/listening": "Ships in tahti-org #883 (merged 2026-10-27); OpenAPI release not refreshed yet. The panel shows a retry or hides itself until it is deployed.",
   "/api/me/moderate/:param/chat/messages": "The route ships in tahti-org #754, which is not in a tahti-org release yet. Settings \u2192 Chat shows the API's error in place of the message list until it is deployed.",
   "/api/me/notifications/unread-counts": "Ships in tahti-org #914; OpenAPI release not refreshed yet. The filter chips on /notifications show no counts until it is deployed.",
