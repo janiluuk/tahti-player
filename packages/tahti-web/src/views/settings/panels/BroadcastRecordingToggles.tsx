@@ -41,7 +41,7 @@ export function BroadcastRecordingToggles() {
       {autoRecord !== null ? (
         <SettingsToggle
           label="Record my broadcasts"
-          description="Save each finished broadcast to your library as a recording."
+          description="Save each finished broadcast to your library as a recording. We notify you when it is saved, or if it could not be."
           value={autoRecord}
           onChange={(value) => {
             const previous = autoRecord;

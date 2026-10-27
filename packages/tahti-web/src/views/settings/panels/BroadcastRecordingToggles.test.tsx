@@ -51,6 +51,9 @@ describe('BroadcastRecordingToggles', () => {
   it('saves auto-record and hides auto-publish when recording is off', async () => {
     await renderToggles(false, true);
     expect(
+      screen.getByText(/We notify you when it is saved, or if it could not be/),
+    ).toBeTruthy();
+    expect(
       screen.queryByRole('switch', {
         name: 'Publish recordings automatically',
       }),
