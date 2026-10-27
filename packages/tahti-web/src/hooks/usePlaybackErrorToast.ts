@@ -1,15 +1,16 @@
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
-import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
+import { usePlayerStore } from '../stores/playerStore';
 
 /** Says so when playback fails, once per failure: a stream that won't load
  * otherwise only flips the play button back. Offers Try again to reload the
- * current queue item. */
+ * current queue item without touching the rest of the queue. */
 export function usePlaybackErrorToast(title: string | undefined) {
   const status = usePlayerStore((s) => s.status);
   const isLive = usePlayerStore((s) => s.isLive);
   const currentId = usePlayerStore((s) => s.currentId);
+  const reloadNonce = usePlayerStore((s) => s.reloadNonce);
   const announced = useRef<string | null>(null);
 
   useEffect(() => {
@@ -19,7 +20,7 @@ export function usePlaybackErrorToast(title: string | undefined) {
       }
       return;
     }
-    const key = currentId ?? '';
+    const key = `${currentId ?? ''}:${reloadNonce}`;
     if (announced.current === key) {
       return;
     }
@@ -33,23 +34,9 @@ export function usePlaybackErrorToast(title: string | undefined) {
         id: 'playback-error',
         action: {
           label: 'Try again',
-          onClick: () => {
-            const {
-              queue,
-              currentId: id,
-              play,
-              setStatus,
-            } = usePlayerStore.getState();
-            const row = id ? queue.find((item) => item.id === id) : undefined;
-            const playable = row ? playableFromQueueItem(row) : null;
-            if (playable) {
-              play(playable);
-              return;
-            }
-            setStatus('playing');
-          },
+          onClick: () => usePlayerStore.getState().retry(),
         },
       },
     );
-  }, [status, isLive, currentId, title]);
+  }, [status, isLive, currentId, reloadNonce, title]);
 }
