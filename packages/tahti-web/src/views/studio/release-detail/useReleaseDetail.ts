@@ -20,6 +20,7 @@ import type {
 } from '../../../api/studio-types';
 import type { TahtiPlayable } from '../../../api/types';
 import { playableFromStudioHearthis } from '../../../lib/embedPlayback';
+import { toastWithUndo } from '../../../lib/undoToast';
 import { useAuthStore } from '../../../stores/authStore';
 import { usePlayerStore } from '../../../stores/playerStore';
 
@@ -167,7 +168,11 @@ export function useReleaseDetail(id: string) {
         return;
       }
       setRelease(r.data);
-      toast.success('Published.');
+      toastWithUndo('Published.', {
+        undo: () => patchStudioRelease(id, { state: 'DRAFT' }),
+        undoneMessage: 'Back to draft.',
+        onUndone: (result) => setRelease(result.data),
+      });
     } catch {
       toast.error('Could not publish the release.');
     } finally {
