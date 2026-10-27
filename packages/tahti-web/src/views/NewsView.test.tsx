@@ -25,4 +25,14 @@ describe('NewsView', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByText('No announcements yet.')).toBeTruthy();
   });
+
+  it('has the corner back arrow instead of a Help center link', async () => {
+    vi.spyOn(client, 'fetchAnnouncements').mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    });
+    await renderWithRouter(<NewsView />);
+    expect(await screen.findByRole('button', { name: 'Back' })).toBeTruthy();
+    expect(screen.queryByRole('link', { name: /Help center/ })).toBeNull();
+  });
 });
