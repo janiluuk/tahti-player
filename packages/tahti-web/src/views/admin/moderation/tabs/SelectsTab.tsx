@@ -366,7 +366,9 @@ export function SelectsTab() {
         <Dialog.Title>Add content to Tahti Selects</Dialog.Title>
         <Dialog.Description>
           Browse public, ready archive content. Select one or more tracks, then
-          add them to the end of the rotation.
+          add them to the end of the rotation. Each artist is notified that
+          their track was picked; filling the rotation from the most-played list
+          sends nothing.
         </Dialog.Description>
         <div className="grid min-h-96 gap-4 md:grid-cols-[12rem_minmax(0,1fr)]">
           <nav
