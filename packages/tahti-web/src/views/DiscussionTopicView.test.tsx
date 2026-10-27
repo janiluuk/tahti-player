@@ -176,6 +176,41 @@ describe('DiscussionTopicView', () => {
     );
   });
 
+  it('edits your own reply and marks it edited', async () => {
+    vi.spyOn(discussions, 'fetchDiscussionTopic').mockResolvedValue({
+      data: {
+        ...TOPIC,
+        posts: [{ ...TOPIC.posts[0]!, author: 'Member', mine: true }],
+      },
+      meta: { source: 'api' },
+    });
+    const edit = vi.spyOn(discussions, 'editDiscussionPost').mockResolvedValue({
+      ok: true,
+      data: {
+        ...TOPIC.posts[0]!,
+        author: 'Member',
+        body: 'An ambient set, late.',
+        mine: true,
+        editedAt: '2026-10-21T10:00:00.000Z',
+      },
+    });
+    renderView();
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Edit your reply' }),
+    );
+    fireEvent.change(screen.getByLabelText('Edit your reply'), {
+      target: { value: 'An ambient set, late.' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(() =>
+      expect(edit).toHaveBeenCalledWith('t1', '1', 'An ambient set, late.'),
+    );
+    expect(
+      await screen.findByText('An ambient set, late.'),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/\(edited\)/)).toBeInTheDocument();
+  });
+
   it("a member can't remove someone else's reply", async () => {
     vi.spyOn(discussions, 'fetchDiscussionTopic').mockResolvedValue({
       data: TOPIC,
@@ -189,6 +224,39 @@ describe('DiscussionTopicView', () => {
     expect(
       screen.getByRole('button', { name: 'Report the reply by Liis Kask' }),
     ).toBeInTheDocument();
+  });
+
+  it('loads earlier replies above the latest page', async () => {
+    vi.spyOn(discussions, 'fetchDiscussionTopic').mockResolvedValue({
+      data: { ...TOPIC, postCount: 2, hasEarlierPosts: true },
+      meta: { source: 'api' },
+    });
+    const earlier = vi
+      .spyOn(discussions, 'fetchEarlierDiscussionPosts')
+      .mockResolvedValue({
+        ok: true,
+        data: {
+          posts: [
+            {
+              id: '0',
+              body: 'The very first reply',
+              author: 'Aino',
+              createdAt: '2026-10-19T12:00:00.000Z',
+            },
+          ],
+          hasEarlierPosts: false,
+        },
+      });
+    renderView();
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Show earlier replies' }),
+    );
+    await waitFor(() => expect(earlier).toHaveBeenCalledWith('t1', '1'));
+    expect(await screen.findByText('The very first reply')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Show earlier replies' }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText('2 replies')).toBeInTheDocument();
   });
 
   it('says why a topic could not load', async () => {
