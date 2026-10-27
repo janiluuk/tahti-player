@@ -83,7 +83,7 @@ First subagent was **wrong** on this class of issues. These are all wired correc
 | **Governance** | `/governance`, `/governance/members`, `/governance/meetings/$id`, `/governance/motions/$id`, `/public-governance-history`, `/feature-requests` | 6 |
 | **Listen (discover/feed/radio/show)** | `/listen/feed`, `/discover`, `/radio`, `schedule`, `/radio/show/$channelSlug`, `/themes`, `/search` | 7 |
 | **Public/reader** | `/subscribe/$username`, `/r/$slug`, `/t/$id`, `/v/$slug`, `/embed/*, terms, privacy, agpl, about, how-it-works, what-is-it` | 12 |
-| **Library deep** | `/library/favorites`, `/library/history`, `/library/local`, `/library/media`, `/library/embeds`, `/library/smartlinks`, `/library/recordings` | 7 |
+| **Library deep** | Covered by `e2e/routes-library.spec.ts`: `/library/favorites`, `/library/history`, `/library/local`, `/library/media`, `/library/embeds`, `/library/smartlinks`, `/library/recordings` (plus sounds, collections, stash) | 0 |
 | **Studio content ops** | All studio sound/release/collection event/edit/playlist/show-episode review, all studio stats sub-pages, studio updates, audience/revenue/stripe, distribution, moderation, revenue, stash, channel-branding, go-live sessions/green-room | ~30 |
 | **Admin deep** | `/admin/activity`, `/admin/addons`, `/admin/beta`, `/admin/disco-widgets`, `/admin/files`, `/admin/grants/$year`, `/admin/orphan-pages/$tab`, `/admin/reports`, `/admin/radio-submissions`, `/admin/radio-station-suggestions`, `/admin/support`, `/admin/feature-requests`, `/admin/content-reports`, `/admin/moderation/$tab` | ~14 |
 
