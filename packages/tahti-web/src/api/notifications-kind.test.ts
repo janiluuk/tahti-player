@@ -12,6 +12,22 @@ describe('notificationKindOf', () => {
     expect(notificationKindOf('SOMETHING_NEW')).toBe('other');
   });
 
+  it('files the board-decision, venue and cancellation notices', () => {
+    for (const type of [
+      'RADIO_SUBMISSION_ACCEPTED',
+      'RADIO_STATION_REVIEWED',
+      'TRACK_EDITED_BY_BOARD',
+      'CHANNEL_FORCED_OFFLINE',
+      'VENUE_VERIFIED',
+      'VENUE_SHOW_BOOKED',
+      'VENUE_SHOW_CANCELED',
+    ]) {
+      expect(notificationKindOf(type)).toBe('music');
+    }
+    expect(notificationKindOf('FAN_SUB_CANCELED')).toBe('money');
+    expect(notificationKindOf('ACCOUNT_RESTRICTED')).toBe('other');
+  });
+
   it('labels a type by its kind', () => {
     expect(notificationKindLabel('MOTION_OPENED')).toBe('Governance');
     expect(notificationKindLabel('POLICY')).toBe('Other');

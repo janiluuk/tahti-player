@@ -20,9 +20,12 @@ const TYPE_LABELS: Record<AccountRestrictionType, string> = {
 };
 
 const TYPE_HELP: Record<AccountRestrictionType, string> = {
-  LOGIN: 'Blocks signing in.',
-  UPLOAD: 'Blocks uploading tracks, sounds and release audio.',
-  LIVE_SHOW_BOOKING: 'Blocks scheduling new live shows.',
+  LOGIN:
+    'Blocks signing in and signs the account out on every device. No notification is sent.',
+  UPLOAD:
+    'Blocks uploads and imports (SoundCloud, Google Drive, hearthis.at, Mixcloud, Spotify) and editor tracks. The user is notified with the reason, and again when you lift it.',
+  LIVE_SHOW_BOOKING:
+    'Blocks scheduling live shows and booking venue shows. The user is notified with the reason, and again when you lift it.',
 };
 
 const DURATIONS = [

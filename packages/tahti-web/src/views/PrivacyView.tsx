@@ -138,8 +138,11 @@ export function PrivacyView() {
             follows, messages you sent, purchases and subscriptions, support
             requests and your replies, feature requests and governance activity
             (comments, seconds, your votes and correction requests), the radio
-            stations, themes and embeds you added, downloads, Tahti Jams and
-            listening sessions. Other people appear by username only.
+            stations, themes and embeds you added, downloads, Tahti Jams,
+            listening sessions, the venues you run and venue shows you booked,
+            tracks you sent to Tahti Radio and stations you suggested, your fan
+            subscription tiers and store items, and any restrictions the board
+            placed on your account. Other people appear by username only.
           </li>
           <li>
             <strong className="text-foreground">Objection</strong> — object to

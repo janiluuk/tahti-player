@@ -46,7 +46,7 @@ export async function fetchPublicSoundDownload(
     return { ok: true, url: DEMO_MP3, filename: 'tahti-sound.mp3' };
   }
   const fp = encodeURIComponent(listenerFingerprint());
-  const path = `/api/v1/c/${encodeURIComponent(channelSlug)}/archive/${encodeURIComponent(itemId)}/download`;
+  const path = `/api/v1/c/${encodeURIComponent(channelSlug)}/sounds/${encodeURIComponent(itemId)}/download`;
   let lastError = 'Download unavailable';
   for (const format of [SOUND_DOWNLOAD_SOURCE_FORMAT, undefined]) {
     const query = format ? `?fp=${fp}&format=${format}` : `?fp=${fp}`;
