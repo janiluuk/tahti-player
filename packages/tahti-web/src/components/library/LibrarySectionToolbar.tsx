@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 
 import { Input } from '@tahti-player/ui';
 
+import { cn } from '../../lib/cn';
+
 export function LibrarySectionToolbar({
   query,
   onQueryChange,
@@ -19,7 +21,7 @@ export function LibrarySectionToolbar({
   children?: ReactNode;
 }) {
   return (
-    <div className={`flex flex-col gap-4 ${className ?? ''}`.trim()}>
+    <div className={cn('flex flex-col gap-4', className)}>
       {onQueryChange ? (
         <Input
           enterKeyHint="search"

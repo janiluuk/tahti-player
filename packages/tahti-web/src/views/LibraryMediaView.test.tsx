@@ -100,4 +100,43 @@ describe('LibraryMediaView', () => {
     fireEvent.click(await screen.findByRole('option', { name: 'Name A–Z' }));
     expect(names()).toEqual(['a-mid.png', 'b-old.png', 'c-new.png']);
   });
+
+  it('searches media by file name and clears search and filter together', async () => {
+    vi.spyOn(userMedia, 'fetchUserMedia').mockResolvedValue({
+      data: [
+        {
+          id: '1',
+          filename: 'bg.png',
+          url: 'https://x/bg.png',
+          contentType: 'image/png',
+          sizeBytes: 1024,
+        },
+        {
+          id: '2',
+          filename: 'loop.mp4',
+          url: 'https://x/loop.mp4',
+          contentType: 'video/mp4',
+          sizeBytes: 2048,
+        },
+      ],
+      meta: { source: 'api' },
+    } as never);
+    render(<LibraryMediaView />);
+    await screen.findByText('bg.png');
+
+    fireEvent.change(
+      screen.getByRole('searchbox', { name: 'Search media files' }),
+      {
+        target: { value: 'loop' },
+      },
+    );
+    expect(screen.queryByText('bg.png')).toBeNull();
+    expect(screen.getByText('loop.mp4')).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('radio', { name: 'Images' }));
+    expect(screen.getByText('No media files match “loop”')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
+    expect(screen.getByText('bg.png')).toBeTruthy();
+    expect(screen.getByText('loop.mp4')).toBeTruthy();
+  });
 });
