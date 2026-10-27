@@ -298,6 +298,7 @@ export function AdminRadioView() {
 
                           <StudioPanel
                             title={`Eligible channels (${data.eligible.length})`}
+                            description="Opting a channel out, or back in, notifies its owner."
                           >
                             {data.eligible.length === 0 ? (
                               <PageEmpty title="No member channels are live right now" />

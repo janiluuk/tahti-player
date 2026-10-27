@@ -59,5 +59,6 @@ describe('AdminRadioView', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     await screen.findByRole('tablist');
     expect(screen.queryByText('Could not load Tahti Radio')).toBeNull();
+    expect(screen.getByText(/notifies its owner/)).toBeTruthy();
   });
 });
