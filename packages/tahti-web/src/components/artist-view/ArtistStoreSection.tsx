@@ -8,6 +8,7 @@ import {
   checkoutPurchaseTier,
   type PublicStoreTier,
 } from '../../api/purchase-tiers';
+import type { StoreListing } from '../../lib/channelStore';
 import { assignStripeRedirectUrl } from '../../lib/stripeRedirect';
 import { useAuthStore } from '../../stores/authStore';
 import { Eyebrow } from '../tahti/Eyebrow';
@@ -20,10 +21,12 @@ function StoreTierRow({
   username,
   tier,
   canBuy,
+  listing,
 }: {
   username: string;
   tier: PublicStoreTier;
   canBuy: boolean;
+  listing?: StoreListing;
 }) {
   const signedIn = Boolean(useAuthStore((state) => state.user));
   const [amount, setAmount] = useState((tier.priceCents / 100).toString());
@@ -45,7 +48,8 @@ function StoreTierRow({
     }
     setBusy(true);
     const result = await checkoutPurchaseTier(username, tier.id, {
-      amountCents,
+      ...(amountCents !== undefined ? { amountCents } : {}),
+      ...(listing ? { trackTitle: listing.title, trackId: listing.id } : {}),
     });
     setBusy(false);
     if (!result.ok) {
@@ -65,8 +69,9 @@ function StoreTierRow({
     <li className="flex flex-wrap items-center justify-between gap-3 p-3 text-sm">
       <div className="min-w-0">
         <p className="font-medium">
-          {tier.name}{' '}
+          {listing?.title ?? tier.name}{' '}
           <span className="text-foreground-secondary">
+            {listing ? `${tier.name} · ` : ''}
             {tier.priceOptional
               ? `pay what you want (suggested ${euros(tier.priceCents)})`
               : euros(tier.priceCents)}
@@ -85,14 +90,14 @@ function StoreTierRow({
               className="w-20"
               inputMode="decimal"
               value={amount}
-              aria-label={`Amount in euros for ${tier.name}`}
+              aria-label={`Amount in euros for ${listing?.title ?? tier.name}`}
               onChange={(event) => setAmount(event.target.value)}
             />
           ) : null}
           <Button
             size="sm"
             disabled={busy}
-            aria-label={`Buy ${tier.name}`}
+            aria-label={`Buy ${listing?.title ?? tier.name}`}
             onClick={() => void buy()}
           >
             <ShoppingBagIcon size={14} aria-hidden className="mr-1.5" />
@@ -109,13 +114,22 @@ export function ArtistStoreSection({
   tiers,
   paymentsReady,
   isOwner,
+  items = [],
 }: {
   username: string;
   tiers: PublicStoreTier[];
   paymentsReady: boolean;
   isOwner: boolean;
+  items?: StoreListing[];
 }) {
-  if (tiers.length === 0) {
+  const rows =
+    items.length > 0
+      ? items.flatMap((listing) => {
+          const tier = tiers.find((row) => row.id === listing.tierId);
+          return tier ? [{ listing, tier }] : [];
+        })
+      : tiers.map((tier) => ({ listing: undefined, tier }));
+  if (rows.length === 0) {
     return null;
   }
   return (
@@ -129,11 +143,12 @@ export function ArtistStoreSection({
         </p>
       ) : null}
       <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
-        {tiers.map((tier) => (
+        {rows.map(({ listing, tier }) => (
           <StoreTierRow
-            key={tier.id}
+            key={listing?.id ?? tier.id}
             username={username}
             tier={tier}
+            listing={listing}
             canBuy={paymentsReady && !isOwner}
           />
         ))}

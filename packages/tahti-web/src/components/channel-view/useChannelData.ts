@@ -17,6 +17,10 @@ import type { FetchMeta } from '../../api/mode';
 import { RequestJsonError } from '../../api/request-json';
 import { fetchPublicRadioShow, type PublicRadioShow } from '../../api/shows';
 import type { ChannelSoundItem, PublicChannel } from '../../api/types';
+import {
+  resolveStorefront,
+  type ChannelStorefront,
+} from '../../lib/channelStore';
 import { syncDocumentMetadata } from '../../lib/seo';
 
 export type ChannelSectionStatus = 'loading' | 'ready' | 'error';
@@ -92,6 +96,7 @@ export function useChannelData(slug: string, refreshKey: number) {
   const [artistSocialLinks, setArtistSocialLinks] = useState<
     Record<string, string>
   >({});
+  const [storefront, setStorefront] = useState<ChannelStorefront | null>(null);
   const [loading, setLoading] = useState(true);
   const [channelFailed, setChannelFailed] = useState(false);
   const [channelAttempt, setChannelAttempt] = useState(0);
@@ -104,6 +109,7 @@ export function useChannelData(slug: string, refreshKey: number) {
   useEffect(() => {
     setLoading(true);
     setChannelFailed(false);
+    setStorefront(null);
   }, [slug]);
 
   useEffect(() => {
@@ -147,6 +153,7 @@ export function useChannelData(slug: string, refreshKey: number) {
                 : current,
             );
             setArtistSocialLinks(profile.data.artist.socialLinks ?? {});
+            setStorefront(resolveStorefront(profile.data));
           })
           .catch(() => {});
       })
@@ -212,6 +219,7 @@ export function useChannelData(slug: string, refreshKey: number) {
     channelBlocks: blocks.data,
     liveShows: shows.data,
     artistSocialLinks,
+    storefront,
     loading,
     channelFailed,
     retryChannel,

@@ -23,12 +23,12 @@ import {
   type GrantEstimate,
   type GrantRow,
 } from '../../api/revenue';
+import { ChannelStoreEditor } from '../../components/ChannelStoreEditor';
 import { FanSubOrderBreakdown } from '../../components/FanSubOrderBreakdown';
 import { FanSubscriptionStats } from '../../components/FanSubscriptionStats';
 import { FanTiersEditor } from '../../components/FanTiersEditor';
 import { PageEmpty, PageError } from '../../components/PageStates';
 import { PurchaseOrdersList } from '../../components/PurchaseOrdersList';
-import { PurchaseTiersEditor } from '../../components/PurchaseTiersEditor';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
@@ -185,10 +185,10 @@ export function StudioRevenueView() {
                 <FanTiersEditor />
               </StudioPanel>
               <StudioPanel
-                title="One-time purchase tiers"
-                description="Sell individual tracks. Assign a tier to a track from its edit dialog."
+                title="Channel store"
+                description="Follow the steps. Nothing is for sale on your channel page until you put it in the Store."
               >
-                <PurchaseTiersEditor />
+                <ChannelStoreEditor />
               </StudioPanel>
               <StudioPanel
                 title="Track sales"

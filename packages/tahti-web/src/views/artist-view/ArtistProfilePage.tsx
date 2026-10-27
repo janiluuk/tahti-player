@@ -74,6 +74,7 @@ import {
 } from '../../lib/artistProfile';
 import { resolveArtworkVisualizerPreset } from '../../lib/artworkVisualizer';
 import { artistHeroImage } from '../../lib/avatarTheme';
+import { resolveStorefront } from '../../lib/channelStore';
 import { colorSchemeCssVars } from '../../lib/colorScheme';
 import { countryName } from '../../lib/countries';
 import { isPinned } from '../../lib/pinnedTracks';
@@ -123,6 +124,10 @@ export function ArtistProfilePage({ username }: { username: string }) {
     taggedIn,
     mentionsError,
   } = useArtistProfileLoad(username, isOwnerEarly);
+  const storefront = useMemo(
+    () => (profile ? resolveStorefront(profile) : null),
+    [profile],
+  );
 
   const {
     channelVisual,
@@ -511,12 +516,15 @@ export function ArtistProfilePage({ username }: { username: string }) {
 
       <ArtistSupportNote tiers={fanTiers} tipJarUrl={artist.tipJarUrl} />
 
-      <ArtistStoreSection
-        username={artist.username}
-        tiers={profile.purchaseTiers ?? []}
-        paymentsReady={profile.storePaymentsReady !== false}
-        isOwner={isOwner}
-      />
+      {storefront ? (
+        <ArtistStoreSection
+          username={artist.username}
+          tiers={storefront.tiers}
+          items={storefront.items}
+          paymentsReady={storefront.paymentsReady}
+          isOwner={isOwner}
+        />
+      ) : null}
 
       {mentionsError && taggedIn.length === 0 ? (
         <p className="text-foreground-secondary text-xs" role="status">

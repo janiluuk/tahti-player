@@ -21,6 +21,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
+| open    | [channel-store-editor.md](channel-store-editor.md) | Studio editor that puts tracks in the channel page Store section |
 | open    | [ux-batch-115-thirty-slices.md](ux-batch-115-thirty-slices.md) | Paragraph empties, confirm-before-delete, and undo on create |
 | open    | [ux-batch-114-thirty-slices.md](ux-batch-114-thirty-slices.md) | Thirty more list empties now use PageEmpty |
 | open    | [ux-batch-113-thirty-slices.md](ux-batch-113-thirty-slices.md) | Thirty list empties now use PageEmpty |

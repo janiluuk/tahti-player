@@ -25,6 +25,7 @@ export async function fetchStudioSounds(): Promise<{
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
+    applySavedMockSoundAccess();
     return {
       data: mockFixture('studioSounds', [...mockSoundStore]),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -254,6 +255,38 @@ export async function patchStudioSound(
  * on `mockSoundStore`, so `fetchStudioSound`/`TrackEditDialog` see the
  * change immediately — `setSoundAccess` (purchase-tiers.ts) calls
  * this in mock mode instead of duplicating the store lookup. */
+const SOUND_ACCESS_KEY = 'tahti-mock-sound-access';
+
+type SavedSoundAccess = {
+  accessMode: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
+  purchaseTierId: string | null;
+};
+
+function readSavedSoundAccess(): Record<string, SavedSoundAccess> {
+  if (typeof localStorage === 'undefined') {
+    return {};
+  }
+  try {
+    const raw = localStorage.getItem(SOUND_ACCESS_KEY);
+    const parsed = raw
+      ? (JSON.parse(raw) as Record<string, SavedSoundAccess>)
+      : {};
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+export function applySavedMockSoundAccess(): void {
+  const saved = readSavedSoundAccess();
+  for (const [id, access] of Object.entries(saved)) {
+    const idx = mockSoundStore.findIndex((row) => row.id === id);
+    if (idx >= 0) {
+      mockSoundStore[idx] = { ...mockSoundStore[idx]!, ...access };
+    }
+  }
+}
+
 export function setMockSoundPurchaseAccess(
   id: string,
   accessMode: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE',
@@ -266,6 +299,11 @@ export function setMockSoundPurchaseAccess(
       accessMode,
       purchaseTierId,
     };
+  }
+  if (typeof localStorage !== 'undefined') {
+    const saved = readSavedSoundAccess();
+    saved[id] = { accessMode, purchaseTierId };
+    localStorage.setItem(SOUND_ACCESS_KEY, JSON.stringify(saved));
   }
 }
 

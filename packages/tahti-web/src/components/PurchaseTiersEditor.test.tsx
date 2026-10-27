@@ -25,7 +25,7 @@ describe('PurchaseTiersEditor store section', () => {
     });
     render(<PurchaseTiersEditor />);
     const toggle = await screen.findByRole('switch', {
-      name: 'Show a Store section on your artist page',
+      name: 'Show the Store on your channel page',
     });
     expect(toggle.getAttribute('aria-checked')).toBe('true');
   });
@@ -40,7 +40,7 @@ describe('PurchaseTiersEditor store section', () => {
       .mockResolvedValue({ ok: true, storeEnabled: true });
     render(<PurchaseTiersEditor />);
     const toggle = await screen.findByRole('switch', {
-      name: 'Show a Store section on your artist page',
+      name: 'Show the Store on your channel page',
     });
     fireEvent.click(toggle);
     expect(save).toHaveBeenCalledWith(true);
@@ -58,7 +58,7 @@ describe('PurchaseTiersEditor store section', () => {
     expect(screen.queryByRole('switch')).toBeNull();
   });
 
-  it('says the tiers failed to load instead of "No purchase tiers yet"', async () => {
+  it('says the tiers failed to load instead of "No prices yet"', async () => {
     vi.spyOn(purchaseTiers, 'fetchStoreSettings').mockResolvedValue({
       ok: true,
       storeEnabled: false,
@@ -73,9 +73,9 @@ describe('PurchaseTiersEditor store section', () => {
     expect(
       await screen.findByText('Could not load your purchase tiers'),
     ).toBeTruthy();
-    expect(screen.queryByText('No purchase tiers yet')).toBeNull();
+    expect(screen.queryByText('No prices yet')).toBeNull();
     fetch.mockResolvedValue({ data: [], meta: { source: 'api' } });
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
-    expect(await screen.findByText('No purchase tiers yet')).toBeTruthy();
+    expect(await screen.findByText('No prices yet')).toBeTruthy();
   });
 });

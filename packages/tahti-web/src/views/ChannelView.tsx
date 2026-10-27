@@ -22,6 +22,7 @@ import {
 } from '../api/channel-design';
 import { soundItemToPlayable } from '../api/client';
 import type { ChannelSoundItem, TahtiPlayable } from '../api/types';
+import { ArtistStoreSection } from '../components/artist-view/ArtistStoreSection';
 import { AutoplayUnmuteNotice } from '../components/AutoplayUnmuteNotice';
 import {
   ChannelBlockFrame,
@@ -114,6 +115,7 @@ export function ChannelView({ slug }: { slug: string }) {
     channelBlocks,
     liveShows,
     artistSocialLinks,
+    storefront,
     loading,
     channelFailed,
     retryChannel,
@@ -721,6 +723,18 @@ export function ChannelView({ slug }: { slug: string }) {
             );
           })}
         </div>
+        {!editing &&
+        !isRadioChannel &&
+        storefront &&
+        storefront.tiers.length > 0 ? (
+          <ArtistStoreSection
+            username={channel.user.username}
+            tiers={storefront.tiers}
+            items={storefront.items}
+            paymentsReady={storefront.paymentsReady}
+            isOwner={isOwner}
+          />
+        ) : null}
         {!editing ? (
           <ChannelExtrasSections
             slug={slug}

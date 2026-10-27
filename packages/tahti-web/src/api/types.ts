@@ -211,6 +211,8 @@ export type PublicProfileTrack = {
   peaks?: number[] | null;
   /** False = the artist turned downloads off. */
   downloadsEnabled?: boolean;
+  accessMode?: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
+  purchaseTierId?: string | null;
 };
 
 export type PublicProfileRelease = {
