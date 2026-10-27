@@ -105,6 +105,29 @@ describe('DiscussionsView', () => {
     expect(fetch).toHaveBeenCalledTimes(2);
   });
 
+  it('filters to closed topics and back', async () => {
+    vi.spyOn(discussions, 'fetchDiscussionTopics').mockResolvedValue({
+      data: [
+        TOPIC,
+        {
+          ...TOPIC,
+          id: 't2',
+          title: 'Fee 2026',
+          status: 'CLOSED',
+          pinned: false,
+        },
+      ],
+      meta: { source: 'api' },
+    });
+    renderView();
+    await screen.findByRole('link', { name: /Festival stage 2027/ });
+    fireEvent.click(screen.getByRole('radio', { name: 'Closed' }));
+    expect(
+      screen.queryByRole('link', { name: /Festival stage 2027/ }),
+    ).toBeNull();
+    expect(screen.getByRole('link', { name: /Fee 2026/ })).toBeInTheDocument();
+  });
+
   it('says when there are no topics yet', async () => {
     vi.spyOn(discussions, 'fetchDiscussionTopics').mockResolvedValue({
       data: [],
