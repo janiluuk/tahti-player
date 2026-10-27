@@ -34,6 +34,10 @@ re-filed.
     History, Playlists, PlaylistDetail, PlaylistImport, Search, Settings,
     Sources, Plugins, Themes, Logs, ...), the settings modal and top bar that
     mounted them, and `public/logo-icon-on-white.png`.
+  - 2026-10-27, removal 3/5 (`chore/batch-90-dead-ui-components`): Nuclear's
+    shared components (player bar, queue, sound provider, search box, ...),
+    hooks, global shortcuts, the old remote-control client, and
+    `shortcutsStore`.
 - **Auth flows' `.catch(() => undefined)`** (`VerifyView`, `ResetPasswordView`,
   `SetupPasswordView`): incorrect. `authStore` sets `error` before rejecting and
   each view renders it with `InlineError`; the catch only stops an unhandled
