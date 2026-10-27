@@ -117,15 +117,16 @@ function takeOption(args, name) {
 COMMANDS.push(
   {
     path: ['desktop'],
-    usage: 'tahti-ops desktop <run|launch|dev|bundle> [--dry-run]',
+    usage: 'tahti-ops desktop <run|launch|dev|bundle|android> [--dry-run]',
     summary:
-      'Build and launch the desktop app, run it in dev mode, or bundle it',
+      'Build and launch the desktop app, run it in dev mode, bundle it, or run it on Android',
     details: `Modes:
 ${Object.entries(desktopModes())
   .map(([mode, text]) => `  ${mode.padEnd(8)} ${text}`)
   .join('\n')}
 
-Needs Rust and the Tauri system packages (see AGENTS.md → Environment).`,
+Needs Rust and the Tauri system packages (see AGENTS.md → Environment).
+android runs \`tauri android init\` first when src-tauri/gen/android is missing.`,
     passthrough: true,
     run: (_parsed, argv) => {
       const { dryRun, args } = splitDryRun(argv);
