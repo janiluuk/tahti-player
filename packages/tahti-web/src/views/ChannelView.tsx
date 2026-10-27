@@ -6,7 +6,6 @@ import { toast } from 'sonner';
 import {
   backButtonCornerClassName,
   BackButtonLink,
-  Button,
   ClampedText,
   Dialog,
   Tooltip,
@@ -27,14 +26,15 @@ import { AutoplayUnmuteNotice } from '../components/AutoplayUnmuteNotice';
 import {
   ChannelBlockFrame,
   ChannelEditToolbar,
+  ChannelExtrasSections,
   ChannelHeroBlock,
   ChannelLayersPanel,
+  ChannelLiveChatNotice,
   ChannelLiveTracklist,
   ChannelNotFound,
   ChannelPageBackdrop,
   ChannelStagePlayer,
   ChannelTopBar,
-  ChannelUpcomingShows,
   heroVisualizerSettingsFor,
   renderChannelBlock,
   useChannelData,
@@ -45,7 +45,6 @@ import {
 import { ChannelPageActions } from '../components/channel-view/ChannelPageActions';
 import { ChannelComments } from '../components/ChannelComments';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
-import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import {
   EntitySocialHeader,
   type EntitySocialStat,
@@ -111,6 +110,7 @@ export function ChannelView({ slug }: { slug: string }) {
     channel,
     sounds,
     discoWidgets,
+    channelBlocks,
     liveShows,
     artistSocialLinks,
     loading,
@@ -717,27 +717,17 @@ export function ChannelView({ slug }: { slug: string }) {
             );
           })}
         </div>
-        {!editing ? <ChannelUpcomingShows slug={slug} /> : null}
         {!editing ? (
-          <DiscoWidgetsSection
+          <ChannelExtrasSections
+            slug={slug}
+            blocks={channelBlocks}
             widgets={discoWidgets}
-            status={sectionStatus.widgets}
-            onRetry={() => retrySection('widgets')}
+            widgetsStatus={sectionStatus.widgets}
+            onRetryWidgets={() => retrySection('widgets')}
           />
         ) : null}
         {!editing && live && chatOn ? (
-          <div className="border-border bg-background-secondary/50 mt-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-3">
-            <div>
-              <p className="text-sm font-semibold">Live chat is open</p>
-              <p className="text-foreground-secondary text-xs">
-                Talk with the artist and other listeners while the show is on
-                air. Comments below are for the archive, not the live room.
-              </p>
-            </div>
-            <Button size="sm" onClick={openChat} aria-label="Open live chat">
-              Open live chat
-            </Button>
-          </div>
+          <ChannelLiveChatNotice onOpenChat={openChat} />
         ) : null}
         {!editing ? <ChannelComments slug={slug} isOwner={isOwner} /> : null}
       </div>

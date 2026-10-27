@@ -75,6 +75,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Channel/ChannelAirBadge` | `tahti-web/ChannelAirBadge.stories.tsx` |
 | `Tahti/Channel/ChannelBackdropCard` | `tahti-web/ChannelBackdropCard.stories.tsx` |
 | `Tahti/Channel/ChannelBlockFrame` | `tahti-web/ChannelBlockFrame.stories.tsx` |
+| `Tahti/Widgets/ChannelBlocksSection` | `tahti-web/ChannelBlocksSection.stories.tsx` |
 | `Tahti/Channel/ChannelChatPanel` | `tahti-web/ChannelChatPanel.stories.tsx` |
 | `Tahti/Channel/ChannelComments` | `tahti-web/ChannelComments.stories.tsx` |
 | `Tahti/Artist/ChannelControlsWidget` | `tahti-web/ChannelControlsWidget.stories.tsx` |
