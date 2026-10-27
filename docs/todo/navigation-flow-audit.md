@@ -94,6 +94,9 @@ First subagent was **wrong** on this class of issues. These are all wired correc
 | **Governance** | Covered by `e2e/routes-governance.spec.ts`: `/governance`, `/governance/members`, `/governance/meetings/$id`, `/governance/motions/$id`, `/governance/history`, `/governance/feature-requests` | 0 |
 | **Listen (discover/feed/radio/show)** | `/listen/feed`, `/discover`, `/radio`, `schedule`, `/radio/show/$channelSlug`, `/themes`, `/search` | 7 |
 | **Public/reader** | Covered by `e2e/routes-public-reader.spec.ts`: `/subscribe/$username`, `/r/$slug`, `/t/$id`, `/v/$slug`, `/embed/*`, terms, privacy, agpl, about, how-it-works, what-is-it | 0 |
+| **Governance** | `/governance`, `/governance/members`, `/governance/meetings/$id`, `/governance/motions/$id`, `/public-governance-history`, `/feature-requests` | 6 |
+| **Listen (discover/feed/radio/show)** | `/listen/feed` (`/discover`, `/radio`, `/schedule`, `/radio/show/$channelSlug`, `/themes`, `/search` covered by `e2e/routes-discover-radio.spec.ts`) | 1 |
+| **Public/reader** | `/subscribe/$username`, `/r/$slug`, `/t/$id`, `/v/$slug`, `/embed/*, terms, privacy, agpl, about, how-it-works, what-is-it` | 12 |
 | **Library deep** | `/library/favorites`, `/library/history`, `/library/local`, `/library/media`, `/library/embeds`, `/library/smartlinks`, `/library/recordings` | 7 |
 | **Public/reader** | `/subscribe/$username`, `/r/$slug`, `/t/$id`, `/v/$slug`, `/embed/*, terms, privacy, agpl, about, how-it-works, what-is-it` | 12 |
 | **Library deep** | Covered by `e2e/routes-library.spec.ts`: `/library/favorites`, `/library/history`, `/library/local`, `/library/media`, `/library/embeds`, `/library/smartlinks`, `/library/recordings` (plus sounds, collections, stash) | 0 |
