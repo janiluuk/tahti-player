@@ -41,5 +41,6 @@ describe('AdminGrantCycleView', () => {
     } as never);
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByText(/No artist activity in/)).toBeTruthy();
+    expect(screen.getByText(/notifies each of them of their/)).toBeTruthy();
   });
 });

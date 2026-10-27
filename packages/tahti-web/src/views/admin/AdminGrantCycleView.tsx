@@ -243,7 +243,8 @@ export function AdminGrantCycleView() {
                     <StudioPanel title="Approve disbursement">
                       <p className="text-foreground-secondary text-sm">
                         This creates grant ledger entries for {eligible.length}{' '}
-                        eligible artists.
+                        eligible artists and notifies each of them of their
+                        grant, by email too where they asked for money notices.
                       </p>
                       {error ? (
                         <InlineError className="mt-2">{error}</InlineError>
