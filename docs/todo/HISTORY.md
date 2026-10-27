@@ -5591,3 +5591,7 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 - **YleX logo** (org #983; web #1554): the preset pointed at a dead Yle CDN image; it now uses the copy Tahti serves, and station cards fall back to the bundled logo if a station image disappears.
 - **Flaky Storybook plays** (#1561): WhatsNewView, TagSearchView and AdminGrantCycleView wait for the entrance animation instead of checking one frame.
 - **Left**: tahti-org release to refresh `openapi.json` and drop the allowlisted routes.
+
+## 2026-10-27 — ux-backlog: bulk add to a release
+
+- Library → Sounds → select tracks → **Add to a release** shipped in #1203 (2026-10-19); the open row in `ux-backlog.md` is removed.
