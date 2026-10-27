@@ -194,6 +194,21 @@ describe('NotificationsView', () => {
     await waitFor(() => expect(screen.queryByText(/^Money ·/)).toBeNull());
   });
 
+  it('marks failed Studio work', async () => {
+    vi.spyOn(api, 'fetchNotifications').mockResolvedValue({
+      data: [
+        note('a', { type: 'BACKGROUND_JOB_FAILED', title: 'Upload failed' }),
+        note('b', { type: 'BACKGROUND_JOB_DONE', title: 'Render ready' }),
+      ],
+      unreadCount: 2,
+      hasMore: false,
+      meta: { source: 'api' },
+    });
+    renderView();
+    expect(await screen.findByText('Upload failed')).toBeTruthy();
+    expect(screen.getAllByText('Failed')).toHaveLength(1);
+  });
+
   it('shows a retry when the inbox fails to load', async () => {
     vi.spyOn(api, 'fetchNotifications').mockResolvedValue({
       data: [],
