@@ -71,7 +71,7 @@ function TrackVersions({
     setLabel('');
     setAdding(false);
     toast.success(
-      'Version uploaded. It can be made active once it is processed.',
+      "Version uploaded. It can be made active once it is processed; if it can't be, we notify you.",
     );
   };
 
