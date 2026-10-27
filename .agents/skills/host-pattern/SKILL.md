@@ -65,6 +65,10 @@ Reference: `packages/plugin-sdk/src/api/queue.ts`, `packages/plugin-sdk/src/api/
 
 ## Connecting to TahtiAPI
 
+> The player-side files below (`createPluginAPI.ts`, `*Host.ts`, stores) were
+> removed with the dead Nuclear desktop UI in 2026-10; read them with
+> `git show `d703e03cf`:<path>`. Nothing in the shipped app loads SDK plugins.
+
 ```typescript
 // packages/plugin-sdk/src/api/index.ts
 import type { YourDomainHost } from '../types/yourDomain';

@@ -125,11 +125,11 @@ The 2026-10 axe and keyboard sweeps (`docs/todo/HISTORY.md`, batch 59) settled t
 
 ### Desktop features (where new work goes)
 
-Since 2026-09-01 the desktop app mounts tahti-web (`packages/player/src/main.tsx` → `mountTahtiApp`); Nuclear's `initPlayerApp`, its stores, hosts and bridge no longer run. Desktop features belong in `packages/tahti-web`, using natives the Tauri shell hands over as `globalThis.__TAHTI_NATIVE_*__` (examples: MCP `src/lib/mcp/`, MPD `src/lib/mpd/`, Discord `src/lib/discord/`, Tahti Jam `src/lib/jam/`, updates `src/lib/updates/`, wired from `packages/player/src/desktop*.ts`). Before touching anything under `packages/player/src`, check it is reachable from `main.tsx`.
+Since 2026-09-01 the desktop app mounts tahti-web (`packages/player/src/main.tsx` → `mountTahtiApp`); Nuclear's desktop UI (`initPlayerApp`, views, stores, hosts, bridge, plugin runtime) was removed in 2026-10; read it with `git show `d703e03cf`:<path>`. Desktop features belong in `packages/tahti-web`, using natives the Tauri shell hands over as `globalThis.__TAHTI_NATIVE_*__` (examples: MCP `src/lib/mcp/`, MPD `src/lib/mpd/`, Discord `src/lib/discord/`, Tahti Jam `src/lib/jam/`, updates `src/lib/updates/`, wired from `packages/player/src/desktop*.ts`). `packages/player/src` now holds only that entry, the desktop wiring and the generated Tauri bindings.
 
 ### Adding New Domains (legacy Nuclear plugin SDK)
 
-Kept for the legacy SDK only; the shipped app does not load these plugins. A "domain" is a feature area exposed to plugins (e.g., settings, queue, favorites). When adding a new domain:
+Kept for the legacy SDK only; the shipped app does not load these plugins, and the player-side stores and hosts (steps 3-4) were removed with the Nuclear desktop UI (last at `d703e03cf`). A "domain" is a feature area exposed to plugins (e.g., settings, queue, favorites). When adding a new domain:
 
 1. **Types** (`packages/plugin-sdk/src/types/myDomain.ts`)
    - Define the `MyDomainHost` interface (the contract between player and SDK)
@@ -150,7 +150,7 @@ Kept for the legacy SDK only; the shipped app does not load these plugins. A "do
 
 ### External API Clients
 
-In tahti-web, API modules live in `packages/tahti-web/src/api/` and use `requestJson` / `getJson` (credentials included, API `issues`/`error` become the thrown message). Legacy player clients live in `packages/player/src/apis/` (`ApiClient` base class, fetch→json→Zod).
+In tahti-web, API modules live in `packages/tahti-web/src/api/` and use `requestJson` / `getJson` (credentials included, API `issues`/`error` become the thrown message).
 
 - Validate external data with Zod schemas
 - Export singleton instances
