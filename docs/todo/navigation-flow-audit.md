@@ -31,6 +31,8 @@ These are valid for bookmarks/redirects, but 6 of them have **zero inbound `<Lin
 
 Not regressions — these are historical merges. All renderable, none lead to 404. But they create a **silent fragility**: if `AdminModerationView` ever drops one of those tabs (e.g., `admin/support`, `admin/reports`), there's no nav-chrome assert that will surface it. The `AdminNav.tsx` array is not exhaustive — several routes are only reachable via tab redirects or deep links. Not a bug today; a maintainability risk if the admin nav grows further.
 
+**E2e:** `e2e/routes-admin-deep.spec.ts` now asserts every redirect above (plus `/admin/beta`, `/admin/files`, `/admin/reports`, `/admin/radio-submissions`, `/admin/radio-station-suggestions`, `/admin/content-reports`, `/admin/feature-requests`, `/admin/missed-shows`) lands on the right page and selected tab inside `[data-admin-shell]`, and opens `/admin/grants/$year` and `/admin/storage/$userId` from their lists.
+
 ---
 
 ## 3. Listen sub-routes (`/listen/*`) have no dedicated nav chrome entries
