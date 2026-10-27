@@ -77,7 +77,7 @@ const shots = [
     story: 'tahti-desktop-playhistorydialog--last-session',
     file: 'desktop-copy-last-session',
     viewport: { width: 900, height: 720 },
-    ready: 'Copy last session',
+    ready: 'Your last session',
   },
 ];
 

@@ -84,17 +84,8 @@ The first time, the app creates **Prepare**. Tracks already on that playlist are
 
 The keyboard list (the keyboard icon above the table) includes **P**. See [Keyboard shortcuts](../reference/keyboard-shortcuts.md).
 
-## Copy the last session
+## Resume the last session
 
-**Library tools → History** lists local listens on this computer, newest first. A listen counts after 30 seconds of a local track. This list is separate from [Listening history](../listening/history.md), which is the plays kept for your account.
+**Library tools → History** lists local listens on this computer, newest first. Each row shows when you played it in ordinary language (a few minutes ago, yesterday, or a short date). A listen counts after 30 seconds of a local track. This list is separate from [Listening history](../listening/history.md), which is the plays kept for your account.
 
-<figure><img src="../../.gitbook/assets/desktop-copy-last-session.png" alt="Listening history dialog with Copy last session. The note says the last session is 4 tracks with no break longer than 60 minutes"><figcaption><p>Copy last session from local listening history</p></figcaption></figure>
-
-**Copy last session** copies the newest run of those listens as a numbered tracklist, oldest first. A gap longer than 60 minutes ends the session, so an earlier listen stays in the full list and stays out of the copy. Times in the copy are your local time:
-
-```
-01. 22:19 Pohjola Unit – Aurora Drive
-02. 22:26 Vesi – Harbour Lights
-```
-
-The confirmation says **Tracklist copied.**
+The play icon is **Resume**. It plays the newest run of those listens, oldest first. A gap longer than 60 minutes ends the session, so an earlier listen stays in the full list and is not part of Resume. A track whose file is gone is skipped. If none of the session can be played, the app says so. The trash icon is **Clear history**, and it asks before deleting the list.

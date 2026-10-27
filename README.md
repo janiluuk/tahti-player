@@ -194,9 +194,9 @@ From `@tahti-player/tahti-web` (mock data for stable docs captures; beta uses th
 
 *Prepare — P, or Add to Prepare, files tracks on a playlist named Prepare.*
 
-<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/desktop-copy-last-session-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/desktop-copy-last-session-v1.png" alt="Listening history dialog with Copy last session" /></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/desktop-copy-last-session-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/desktop-copy-last-session-v1.png" alt="Listening history of local files, newest first" /></picture>
 
-*Copy last session — the newest local listens with no gap over 60 minutes, as a numbered tracklist.*
+*Listening history — when you played each file, and Resume for the latest session.*
 
 The same pictures are in the user manual: [Mixing your local library](./packages/docs/user-manual/desktop/mixing.md).
 

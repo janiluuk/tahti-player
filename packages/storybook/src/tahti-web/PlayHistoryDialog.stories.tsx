@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PlayHistoryDialog } from '@tahti-web/components/PlayHistoryDialog';
+import { humanizePastDate } from '@tahti-web/lib/humanizeDate';
+import { playedAtDate } from '@tahti-web/lib/setTracklist';
 import { expect, fn, within } from 'storybook/test';
 
-import { djLibrary } from './_fixtures/dj-library';
+import { DJ_PLAY_HISTORY, djLibrary } from './_fixtures/dj-library';
 
 const meta: Meta<typeof PlayHistoryDialog> = {
   title: 'Tahti/Desktop/PlayHistoryDialog',
@@ -22,10 +24,23 @@ type Story = StoryObj<typeof meta>;
 export const LastSession: Story = {
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
+    const resume = await body.findByRole('button', { name: 'Resume' });
+    await expect(resume).toBeEnabled();
     await expect(
-      await body.findByRole('button', { name: /Copy last session/ }),
+      body.getByRole('button', { name: 'Clear history' }),
+    ).toBeEnabled();
+    await expect(
+      body.queryByRole('button', { name: /Copy last session/ }),
+    ).toBeNull();
+    await expect(body.queryByRole('button', { name: 'Done' })).toBeNull();
+    const newest = DJ_PLAY_HISTORY[0]!;
+    const row = body.getByText(/Sauna Steam/).closest('li')!;
+    await expect(
+      within(row).getByText(
+        humanizePastDate(playedAtDate(newest.playedAt)!.toISOString()),
+      ),
     ).toBeVisible();
-    await expect(body.getByText(/Your last session is 4 tracks/)).toBeVisible();
+    await expect(body.queryByText(`${newest.playedAt} UTC`)).toBeNull();
   },
 };
 
@@ -34,8 +49,9 @@ export const Empty: Story = {
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
     await expect(await body.findByText(/Nothing yet/)).toBeVisible();
+    await expect(body.getByRole('button', { name: 'Resume' })).toBeDisabled();
     await expect(
-      body.queryByRole('button', { name: /Copy last session/ }),
-    ).toBeNull();
+      body.getByRole('button', { name: 'Clear history' }),
+    ).toBeDisabled();
   },
 };
