@@ -194,6 +194,7 @@ export function StudioPlaylistsView() {
                   <Tooltip content="New playlist" side="top">
                     <Button
                       size="icon-sm"
+                      variant="secondary"
                       onClick={() => setCreateOpen(true)}
                       aria-label="New playlist"
                     >
@@ -252,6 +253,7 @@ export function StudioPlaylistsView() {
                       to="/studio/collections/$slug"
                       params={{ slug: c.slug }}
                       size="sm"
+                      variant="secondary"
                     >
                       <PencilIcon size={14} aria-hidden className="mr-1.5" />
                       Edit

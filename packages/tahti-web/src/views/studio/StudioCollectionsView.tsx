@@ -477,6 +477,7 @@ export function StudioCollectionsView() {
                     <Tooltip content="New collection" side="top">
                       <Button
                         size="icon-sm"
+                        variant="secondary"
                         onClick={() => setCreateOpen(true)}
                         aria-label="New collection"
                       >
@@ -593,6 +594,7 @@ export function StudioCollectionsView() {
                       to={editorRouteFor(c)}
                       params={{ slug: c.slug }}
                       size="sm"
+                      variant="secondary"
                     >
                       Edit
                     </ButtonLink>

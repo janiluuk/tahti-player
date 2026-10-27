@@ -231,6 +231,7 @@ export function StudioReleasesView() {
                   <Tooltip content="New release" side="top">
                     <Button
                       size="icon-sm"
+                      variant="secondary"
                       onClick={() => setCreateOpen(true)}
                       aria-label="New release"
                     >

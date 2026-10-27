@@ -375,6 +375,7 @@ export function StudioEditorListView() {
                           params={{ id: item.id }}
                           onClick={() => setLibraryOpen(false)}
                           size="sm"
+                          variant="secondary"
                         >
                           <AudioLinesIcon
                             size={14}

@@ -261,6 +261,9 @@ describe('StudioCollectionsView list order', () => {
     expect(
       newer.compareDocumentPosition(older) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
+    for (const edit of screen.getAllByRole('link', { name: 'Edit' })) {
+      expect(edit).not.toHaveClass('bg-primary');
+    }
   });
 });
 
