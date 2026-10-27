@@ -29,6 +29,11 @@ re-filed.
   - 2026-10-27, removal 1/5 (`chore/batch-90-dead-ui-shell`): Nuclear's app
     shell (`App`, `initPlayerApp`), file routes, `routeTree.gen.ts`, devtools,
     integration tests and the view tests that mount the whole app.
+  - 2026-10-27, removal 2/5 (`chore/batch-90-dead-ui-views`): every view under
+    `packages/player/src/views/` (Album, Artist, Dashboard, Favorites,
+    History, Playlists, PlaylistDetail, PlaylistImport, Search, Settings,
+    Sources, Plugins, Themes, Logs, ...), the settings modal and top bar that
+    mounted them, and `public/logo-icon-on-white.png`.
 - **Auth flows' `.catch(() => undefined)`** (`VerifyView`, `ResetPasswordView`,
   `SetupPasswordView`): incorrect. `authStore` sets `error` before rejecting and
   each view renders it with `InlineError`; the catch only stops an unhandled
