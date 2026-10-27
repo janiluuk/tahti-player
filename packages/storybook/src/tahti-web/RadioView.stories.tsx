@@ -25,7 +25,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Signed out: on air with the 24/7 rotation, the member relay banner, and
-// the Up next / Just played / Featured tabs. No booking button.
+// the Up next / Shows / Just played / Featured tabs.
 export const Visitor: Story = {
   decorators: [withMockAuth(null)],
   play: async ({ canvasElement }) => {
@@ -33,9 +33,6 @@ export const Visitor: Story = {
     await expect(
       await canvas.findByText(/Live now on the member relay/),
     ).toBeVisible();
-    await expect(
-      canvas.queryByRole('button', { name: 'Open booking calendar' }),
-    ).toBeNull();
   },
 };
 
@@ -85,13 +82,34 @@ export const Featured: Story = {
   },
 };
 
+// Signed out: the Shows tab lists the booked live shows day by day, with
+// the full schedule link and no booking button.
+export const ShowsVisitor: Story = {
+  name: 'Shows tab, signed out',
+  decorators: [withMockAuth(null)],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByRole('button', { name: 'Play Radio' });
+    await selectTab(canvas, /Shows/);
+    const shows = await canvas.findByTestId('radio-booked-shows');
+    await expect(
+      within(shows).getByRole('link', { name: /Full schedule/ }),
+    ).toBeVisible();
+    await expect(
+      within(shows).queryByRole('button', { name: /Book a slot/ }),
+    ).toBeNull();
+  },
+};
+
 export const BookASlot: Story = {
-  name: 'Signed in, open booking calendar',
+  name: 'Shows tab, signed in, open booking calendar',
   decorators: [withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    await canvas.findByRole('button', { name: 'Play Radio' });
+    await selectTab(canvas, /Shows/);
     await userEvent.click(
-      await canvas.findByRole('button', { name: 'Open booking calendar' }),
+      await canvas.findByRole('button', { name: /Book a slot/ }),
     );
     await findDialog(canvasElement, /schedule/);
   },

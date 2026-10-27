@@ -2,6 +2,7 @@
 import {
   createMemoryHistory,
   createRootRoute,
+  createRoute,
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
@@ -16,6 +17,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { StudioShowBooking } from '../api/shows';
+import { parseRadioSearch } from '../lib/radioTabs';
 import { useLibraryStore } from '../stores/libraryStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { RadioView } from './RadioView';
@@ -249,14 +251,22 @@ describe('RadioView up next', () => {
     rotationFailure = null;
   });
 
-  const renderRadio = async () => {
+  const renderRadio = async (path = '/radio') => {
+    const rootRoute = createRootRoute();
+    const radioRoute = createRoute({
+      getParentRoute: () => rootRoute,
+      path: '/radio',
+      validateSearch: parseRadioSearch,
+      component: RadioView,
+    });
     const router = createRouter({
-      routeTree: createRootRoute({ component: RadioView }),
-      history: createMemoryHistory({ initialEntries: ['/'] }),
+      routeTree: rootRoute.addChildren([radioRoute]),
+      history: createMemoryHistory({ initialEntries: [path] }),
     });
     await act(async () => {
       render(<RouterProvider router={router} />);
     });
+    return router;
   };
 
   it('lists the rotation tracks coming next while the rotation plays', async () => {
@@ -292,8 +302,8 @@ describe('RadioView up next', () => {
         isMine: false,
       },
     ];
-    await renderRadio();
-    const shows = await screen.findByTestId('radio-up-next-shows');
+    await renderRadio('/radio?tab=shows');
+    const shows = await screen.findByTestId('radio-booked-shows');
     expect(within(shows).getByText(/Late night ambient/)).toBeTruthy();
     expect(calendarRequests).toEqual([{ signedIn: false }]);
     calendarBookings = [];
@@ -302,8 +312,21 @@ describe('RadioView up next', () => {
   it('hides the rotation while a member is live on the relay', async () => {
     relayLive = true;
     await renderRadio();
-    await screen.findByTestId('radio-up-next-shows');
+    await screen.findByText('A member set is on air');
     expect(screen.queryByTestId('radio-up-next-rotation')).toBeNull();
+  });
+
+  it('keeps the booked shows in their own tab, remembered in the URL', async () => {
+    const router = await renderRadio();
+    expect(screen.queryByTestId('radio-booked-shows')).toBeNull();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: /Shows/ }));
+    });
+    expect(screen.getByTestId('radio-booked-shows')).toBeTruthy();
+    expect(router.state.location.search).toEqual({ tab: 'shows' });
+    expect(
+      screen.getByRole('link', { name: /Full schedule/ }).getAttribute('href'),
+    ).toBe('/schedule');
   });
 
   it('says the rotation failed to load instead of showing nothing', async () => {

@@ -1,6 +1,7 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 
 import { parseDiscoverSearch } from '../lib/discoverTabs';
+import { parseRadioSearch } from '../lib/radioTabs';
 import { ListenView } from '../views/ListenView';
 import { appLayoutRoute } from './router-core';
 import {
@@ -42,6 +43,7 @@ export const listenHistoryRoute = createRoute({
 export const radioRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/radio',
+  validateSearch: parseRadioSearch,
   component: RadioView,
 });
 
