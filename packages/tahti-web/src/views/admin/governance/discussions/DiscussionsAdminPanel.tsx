@@ -273,7 +273,7 @@ function TopicRow({
             void update(
               { status: topic.status === 'OPEN' ? 'CLOSED' : 'OPEN' },
               topic.status === 'OPEN'
-                ? 'Topic closed to replies.'
+                ? 'Topic closed to replies. Its followers are told.'
                 : 'Topic reopened.',
             )
           }

@@ -15,6 +15,7 @@ import {
 } from '../api/governance-discussions';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import { ReportButton } from '../components/ReportButton';
 import { hasAccountRole } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -275,16 +276,27 @@ export function DiscussionTopicView({ id }: { id: string }) {
                       <p className="text-foreground-secondary text-xs">
                         {post.author}, {postedAt(post.createdAt)}
                       </p>
-                      {canRemove(post) ? (
-                        <Button
-                          size="sm"
-                          variant="text"
-                          aria-label={`Remove the reply by ${post.author}`}
-                          onClick={() => setRemoving(post)}
-                        >
-                          Remove
-                        </Button>
-                      ) : null}
+                      <span className="flex items-center gap-1">
+                        {post.mine ? null : (
+                          <ReportButton
+                            targetType="DISCUSSION_POST"
+                            targetId={post.id}
+                            label={`the reply by ${post.author}`}
+                            defaultReason="HARASSMENT"
+                            variant="text"
+                          />
+                        )}
+                        {canRemove(post) ? (
+                          <Button
+                            size="sm"
+                            variant="text"
+                            aria-label={`Remove the reply by ${post.author}`}
+                            onClick={() => setRemoving(post)}
+                          >
+                            Remove
+                          </Button>
+                        ) : null}
+                      </span>
                     </div>
                     <p className="mt-1 whitespace-pre-wrap">{post.body}</p>
                   </li>

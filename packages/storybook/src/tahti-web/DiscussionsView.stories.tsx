@@ -34,10 +34,11 @@ export const TopicList: Story = {
     await expect(links[1]).toHaveTextContent('Membership fee for 2026');
     await expect(canvas.getByLabelText('Pinned')).toBeVisible();
     await expect(canvas.getByText('Closed')).toBeVisible();
+    await expect(canvas.getByText('1 new reply')).toBeVisible();
   },
 };
 
-/** An open topic with replies; follow it, then post a reply. */
+/** An open topic you follow, with replies; post a reply. */
 export const OpenTopic: Story = {
   render: () => (
     <div className="p-6">
@@ -49,7 +50,9 @@ export const OpenTopic: Story = {
     await expect(
       await canvas.findByText('I would love to play a late ambient set.'),
     ).toBeVisible();
-    await expect(canvas.getByRole('button', { name: 'Follow' })).toBeVisible();
+    await expect(
+      canvas.getByRole('button', { name: 'Unfollow' }),
+    ).toBeVisible();
     await userEvent.type(
       canvas.getByRole('textbox', { name: 'Your reply' }),
       'Count me in',
