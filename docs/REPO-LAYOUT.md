@@ -36,7 +36,7 @@ Ignored local directories you may see: `node_modules/`, `.turbo/`, `snapshot-dig
 
 | Path | What it is | Used by |
 | --- | --- | --- |
-| `packaging/aur/tahti-player-bin/PKGBUILD.template` | AUR `tahti-player-bin` PKGBUILD | `scripts/update-aur.sh` ← `.github/workflows/update-aur.yml` |
+| `packaging/aur/tahti-player-bin/PKGBUILD.template` | AUR `tahti-player-bin` PKGBUILD | `tahti-ops package aur` ← `.github/workflows/update-aur.yml` |
 | `packaging/flatpak/live.tahti.player.yml` | Flatpak manifest for local from-source builds (`flatpak-builder ... packaging/flatpak/live.tahti.player.yml`) | Manual |
 | `packaging/flatpak/live.tahti.player.yml.template` | Flathub manifest, filled with tag/commit/pnpm version | `scripts/flatpak-update-flathub.sh` ← `.github/workflows/update-flathub.yml` |
 | `packaging/flatpak/icons/` | App icons; the snap installs the 512px one too | Flatpak manifests, `snap/snapcraft.yaml` |
