@@ -5,6 +5,10 @@ from the marketplace catalog. Implementation lives in
 [janiluuk/tahti-plugin-registry](https://github.com/janiluuk/tahti-plugin-registry) (persistence, `@tahti-player/plugin-registry`)
 and `packages/player/src/services/plugins/` (lifecycle).
 
+> **2026-10:** the player-side lifecycle, marketplace client and test fixtures
+> named below were removed with the dead Nuclear desktop UI (the desktop app
+> mounts tahti-web since 2026-09-01). Read them with `git show `d703e03cf`:<path>`.
+
 ## Three things called "registry"
 
 Only the first is what `@tahti-player/plugin-registry` implements.
