@@ -6208,3 +6208,7 @@ Settings → Account → Two-factor authentication now recovers from status-load
 ## 2026-10-27 — Mikseri.net official embeds (0.0.271)
 
 Settings → Add-ons can now add Mikseri tracks, personal playlists, Listataivas, weekly/promoted songs, and Top 40 widgets filtered by major genre. The newest configured widget is available from the left rail behind an explicit third-party-player load action. Studio collections can reference an artist-owned Mikseri track with manual title, artist, and genre metadata after rights confirmation; Tahti stores only the official embed URL and never scrapes or copies audio. Added focused tests and a Storybook surface for the Studio form.
+
+## 2026-10-27 — 24/7 channel clip editor (0.0.272)
+
+Studio → Channel → Radio → 24/7 now manages station IDs and voice clips alongside the rotation. Record lossless WAV voice takes, upload audio, trim and preview, shape the voice with presets and effects, place clips between programs, then save inactive or activate. Lossless source masters remain unchanged. Added editor and recording tests, Storybook surfaces, and a focused browser flow.

@@ -441,3 +441,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Welcome` | `Welcome.stories.tsx` |
 
 If nothing matches: add a story with today’s states, flag `Missing states:` / `Orphan:`.
+
+| `Tahti/Studio/ChannelAnnouncementsPanel` | `tahti-web/ChannelAnnouncementsPanel.stories.tsx` |
+| `Tahti/Studio/ClipEditorDialog` | `tahti-web/ClipEditorDialog.stories.tsx` |

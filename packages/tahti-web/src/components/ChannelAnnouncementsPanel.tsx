@@ -1,13 +1,14 @@
-import { PlayIcon, ScissorsIcon, Trash2Icon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { PencilIcon, PlayIcon, Trash2Icon } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
   Button,
+  Dialog,
   FilePicker,
+  InlineError,
   SectionTitle,
   Toggle,
-  Tooltip,
 } from '@tahti-player/ui';
 
 import {
@@ -15,41 +16,39 @@ import {
   fetchAnnouncementClips,
   fetchAnnouncementPreview,
   patchAnnouncementClip,
-  renderAnnouncementTrim,
   setProfileBackgroundClip,
   uploadAnnouncementClip,
   type AnnouncementClip,
-  type AnnouncementTrim,
 } from '../api/announcements';
+import { fetchProgramme, type ProgrammeItem } from '../api/studio-extras';
 import { usePolling } from '../hooks/usePolling';
-import { AnnouncementTrimDialog } from './AnnouncementTrimDialog';
-import { ConfirmDialog } from './ConfirmDialog';
+import { ClipEditorDialog } from './channel-clips/ClipEditorDialog';
+import { VoiceRecorder } from './channel-clips/VoiceRecorder';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
-
-const formatDuration = (seconds: number | null) => {
-  if (seconds == null) {
-    return '—';
-  }
-  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
-};
-
-const RENDER_POLL_MS = 5_000;
 
 export function ChannelAnnouncementsPanel() {
   const [clips, setClips] = useState<AnnouncementClip[]>([]);
+  const [programs, setPrograms] = useState<ProgrammeItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [recording, setRecording] = useState(false);
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [editor, setEditor] = useState<AnnouncementClip | null>(null);
   const [pendingDelete, setPendingDelete] = useState<AnnouncementClip | null>(
     null,
   );
-  const [trimClip, setTrimClip] = useState<AnnouncementClip | null>(null);
-  const [trimming, setTrimming] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const previewRequest = useRef(0);
+  const mounted = useRef(true);
 
-  const reload = () => {
+  const reload = useCallback(() => {
     void fetchAnnouncementClips().then((result) => {
+      if (!mounted.current) {
+        return;
+      }
       const reason =
         result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
       setLoadError(reason);
@@ -58,62 +57,80 @@ export function ChannelAnnouncementsPanel() {
       }
       setLoading(false);
     });
-  };
-
-  useEffect(reload, []);
+  }, []);
+  useEffect(() => {
+    mounted.current = true;
+    reload();
+    return () => {
+      mounted.current = false;
+      previewRequest.current++;
+    };
+  }, [reload]);
   usePolling(
     reload,
-    RENDER_POLL_MS,
-    clips.some((clip) => clip.renderStatus === 'PROCESSING'),
+    5000,
+    clips.some(
+      (c) => c.renderStatus === 'PROCESSING' || c.draftStatus === 'PROCESSING',
+    ),
   );
 
-  const trim = async (clip: AnnouncementClip, values: AnnouncementTrim) => {
-    setTrimming(true);
-    const result = await renderAnnouncementTrim(clip.id, values);
-    setTrimming(false);
+  const openEditor = async (clip: AnnouncementClip) => {
+    previewRequest.current++;
+    setPreviewId(null);
+    setPreviewUrl(null);
+    const result = await fetchProgramme();
+    if (!mounted.current) {
+      return;
+    }
+    setPrograms(
+      result.data.items.filter(
+        (p) => p.isFallback && p.status === 'READY' && !p.embedProvider,
+      ),
+    );
+    setEditor(clip);
+  };
+  const upload = async (file: File) => {
+    setUploading(true);
+    const result = await uploadAnnouncementClip(file);
+    if (!mounted.current) {
+      return;
+    }
+    setUploading(false);
     if (!result.ok) {
       toast.error(result.error);
       return;
     }
-    setTrimClip(null);
-    setClips((current) =>
-      current.map((item) =>
-        item.id === clip.id
-          ? { ...item, renderStatus: result.renderStatus }
-          : item,
-      ),
-    );
-    toast.success('Trimming — the clip updates when it is done.');
+    setClips((current) => [result.clip, ...current]);
+    setRecording(false);
+    toast.success('Clip uploaded inactive. Preview it before activating.');
+    await openEditor(result.clip);
   };
-
-  const toggle = (clip: AnnouncementClip) => {
-    const next = !clip.isEnabled;
-    setClips((current) =>
-      current.map((item) =>
-        item.id === clip.id ? { ...item, isEnabled: next } : item,
-      ),
-    );
-    void patchAnnouncementClip(clip.id, { isEnabled: next }).then((result) => {
-      if (!result.ok) {
-        setClips((current) =>
-          current.map((item) =>
-            item.id === clip.id ? { ...item, isEnabled: !next } : item,
-          ),
-        );
-        toast.error(result.error);
-      }
+  const toggle = async (clip: AnnouncementClip) => {
+    setBusyId(clip.id);
+    const result = await patchAnnouncementClip(clip.id, {
+      isEnabled: !clip.isEnabled,
     });
+    setBusyId(null);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setClips((current) =>
+      current.map((c) => (c.id === clip.id ? result.clip : c)),
+    );
   };
-
   const preview = async (clip: AnnouncementClip) => {
+    const request = ++previewRequest.current;
+    setPreviewUrl(null);
     if (previewId === clip.id) {
       setPreviewId(null);
-      setPreviewUrl(null);
       return;
     }
     setPreviewId(clip.id);
-    setPreviewUrl(null);
     const result = await fetchAnnouncementPreview(clip.id);
+    if (request !== previewRequest.current) {
+      return;
+    }
     if (!result.ok) {
       setPreviewId(null);
       toast.error(result.error);
@@ -121,73 +138,79 @@ export function ChannelAnnouncementsPanel() {
     }
     setPreviewUrl(result.url);
   };
-
-  const setPageMusic = async (clip: AnnouncementClip) => {
-    const nextId = clip.isProfileBackground ? null : clip.id;
-    const result = await setProfileBackgroundClip(nextId);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
-    setClips((current) =>
-      current.map((item) => ({
-        ...item,
-        isProfileBackground: nextId != null && item.id === nextId,
-      })),
+  const pageMusic = async (clip: AnnouncementClip) => {
+    setBusyId(clip.id);
+    const result = await setProfileBackgroundClip(
+      clip.isProfileBackground ? null : clip.id,
     );
-    toast.success(nextId ? 'Page music enabled.' : 'Page music disabled.');
-  };
-
-  const remove = async (clip: AnnouncementClip) => {
-    const result = await deleteAnnouncementClip(clip.id);
+    setBusyId(null);
     if (!result.ok) {
       toast.error(result.error);
       return;
     }
-    setClips((current) => current.filter((item) => item.id !== clip.id));
-    if (previewId === clip.id) {
+    reload();
+  };
+  const remove = async () => {
+    if (!pendingDelete || busyId) {
+      return;
+    }
+    setBusyId(pendingDelete.id);
+    setDeleteError('');
+    const result = await deleteAnnouncementClip(pendingDelete.id);
+    setBusyId(null);
+    if (!result.ok) {
+      setDeleteError(result.error);
+      return;
+    }
+    setClips((current) => current.filter((c) => c.id !== pendingDelete.id));
+    if (previewId === pendingDelete.id) {
+      previewRequest.current++;
       setPreviewId(null);
       setPreviewUrl(null);
     }
+    setPendingDelete(null);
   };
 
   return (
-    <section className="border-border bg-background-secondary/40 flex flex-col gap-5 rounded-xl border p-4 shadow-sm sm:p-5">
-      <div>
-        <SectionTitle
-          title="Station announcements"
-          wrap
-          className="font-display tracking-tight"
-        />
-        <p className="text-foreground-secondary mt-1 text-sm">
-          Upload short station IDs, shoutouts, or interstitials for your 24/7
-          rotation. Enable them here, then turn the rotation switch on in the
-          24/7 tab.
-        </p>
+    <section
+      id="channel-clips"
+      className="border-border bg-background-secondary/40 flex flex-col gap-5 rounded-xl border p-4 sm:p-5"
+    >
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <SectionTitle title="Clips between programs" wrap />
+          <p className="text-foreground-secondary mt-1 text-sm">
+            Station IDs, voice links, and announcements for your 24/7 rotation.
+            Turn on “Play clips between programs” in the settings above.
+          </p>
+        </div>
+        <Button
+          variant="secondary"
+          disabled={uploading}
+          onClick={() => setRecording((v) => !v)}
+        >
+          {recording ? 'Close recorder' : 'Record voice'}
+        </Button>
       </div>
+      {recording && (
+        <VoiceRecorder
+          disabled={uploading}
+          onUse={(file) => void upload(file)}
+        />
+      )}
       <FilePicker
-        accept="audio/*"
+        accept="audio/*,.wav,.flac,.aiff,.aif"
         disabled={uploading}
         labels={{
-          title: uploading ? 'Uploading announcement…' : 'Announcement audio',
-          description: 'Choose a short MP3, WAV, FLAC, or AIFF clip.',
+          title: uploading ? 'Uploading clip…' : 'Upload audio',
+          description:
+            'WAV, FLAC, AIFF, or other audio · up to 10 minutes / 50 MB. Originals stay unchanged.',
           browse: uploading ? 'Uploading…' : 'Choose audio',
         }}
         onFiles={(files) => {
-          const file = files[0];
-          if (!file) {
-            return;
+          if (files[0]) {
+            void upload(files[0]);
           }
-          setUploading(true);
-          void uploadAnnouncementClip(file).then((result) => {
-            setUploading(false);
-            if (!result.ok) {
-              toast.error(result.error);
-              return;
-            }
-            setClips((current) => [result.clip, ...current]);
-            toast.success('Announcement uploaded.');
-          });
         }}
       />
       {loading ? (
@@ -199,101 +222,147 @@ export function ChannelAnnouncementsPanel() {
           onRetry={reload}
         />
       ) : clips.length === 0 ? (
-        <PageEmpty title="No announcement clips yet" />
+        <PageEmpty
+          title="No announcement clips yet"
+          description="Give your channel a voice. Record a station ID or upload an announcement."
+        />
       ) : (
         <ul className="border-border divide-border divide-y rounded-lg border">
           {clips.map((clip) => (
             <li key={clip.id} className="flex flex-wrap items-center gap-3 p-3">
               <div className="min-w-40 flex-1">
-                <div className="text-sm font-semibold">{clip.title}</div>
-                <div className="text-foreground-secondary text-xs">
-                  {formatDuration(clip.durationSec)} ·{' '}
-                  {clip.renderStatus.toLowerCase()}
-                </div>
+                <div className="font-semibold">{clip.title}</div>
+                <p className="text-foreground-secondary text-xs">
+                  {clip.durationSec == null
+                    ? 'Duration pending'
+                    : `${clip.durationSec} s`}{' '}
+                  · {clip.isEnabled ? 'Enabled in rotation' : 'Inactive'}
+                  {clip.draftStatus
+                    ? ` · Preview ${clip.draftStatus.toLowerCase()}`
+                    : ''}
+                </p>
+                <p className="text-foreground-secondary text-xs">
+                  {clip.placement === 'BEFORE'
+                    ? 'Before selected program'
+                    : clip.placement === 'AFTER'
+                      ? 'After selected program'
+                      : clip.scheduleMode === 'AFTER_EVERY'
+                        ? 'After every program'
+                        : clip.scheduleMode === 'EVERY_NTH'
+                          ? `Every ${clip.everyNth} programs`
+                          : 'Occasionally between programs'}
+                </p>
               </div>
-              <span className="flex items-center gap-2 text-xs">
-                <Toggle
-                  checked={clip.isEnabled}
-                  onChange={() => toggle(clip)}
-                  aria-label={`Enable ${clip.title}`}
-                />
-                <span aria-hidden>{clip.isEnabled ? 'On' : 'Off'}</span>
-              </span>
-              <Tooltip content="Preview" side="top">
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  aria-label={`Preview ${clip.title}`}
-                  onClick={() => void preview(clip)}
-                >
-                  <PlayIcon size={16} aria-hidden />
-                </Button>
-              </Tooltip>
+              <Toggle
+                aria-label={`Enable ${clip.title}`}
+                checked={clip.isEnabled}
+                disabled={busyId !== null || clip.renderStatus !== 'READY'}
+                onChange={() => void toggle(clip)}
+              />
+              <Button
+                size="icon-sm"
+                variant="text"
+                aria-label={`Preview ${clip.title}`}
+                onClick={() => void preview(clip)}
+              >
+                <PlayIcon size={16} />
+              </Button>
               <Button
                 size="sm"
-                variant={clip.isProfileBackground ? undefined : 'secondary'}
-                disabled={clip.renderStatus !== 'READY'}
-                onClick={() => void setPageMusic(clip)}
+                variant="secondary"
+                disabled={clip.renderStatus === 'PROCESSING'}
+                onClick={() => void openEditor(clip)}
               >
-                {clip.isProfileBackground
-                  ? 'Page music on'
-                  : 'Use as page music'}
+                <PencilIcon size={14} className="mr-1" />
+                Edit
               </Button>
-              <Tooltip content="Trim" side="top">
+              <Button
+                size="icon-sm"
+                variant="text"
+                aria-label={`Delete ${clip.title}`}
+                onClick={() => {
+                  setDeleteError('');
+                  setPendingDelete(clip);
+                }}
+              >
+                <Trash2Icon size={16} />
+              </Button>
+              <details className="basis-full text-xs">
+                <summary className="cursor-pointer">Page music</summary>
                 <Button
-                  size="icon-sm"
-                  variant="text"
-                  aria-label={`Trim ${clip.title}`}
-                  disabled={clip.renderStatus === 'PROCESSING'}
-                  onClick={() => setTrimClip(clip)}
+                  size="sm"
+                  variant="secondary"
+                  disabled={busyId !== null || clip.renderStatus !== 'READY'}
+                  onClick={() => void pageMusic(clip)}
                 >
-                  <ScissorsIcon size={16} aria-hidden />
+                  {clip.isProfileBackground
+                    ? 'Remove page music'
+                    : 'Use as page music'}
                 </Button>
-              </Tooltip>
-              <Tooltip content="Delete" side="top">
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  aria-label={`Delete ${clip.title}`}
-                  onClick={() => setPendingDelete(clip)}
-                >
-                  <Trash2Icon size={16} aria-hidden />
-                </Button>
-              </Tooltip>
-              {previewId === clip.id && previewUrl ? (
-                <audio
-                  src={previewUrl}
-                  controls
-                  autoPlay
-                  className="basis-full"
-                />
-              ) : null}
+              </details>
+              {previewId === clip.id &&
+                (previewUrl ? (
+                  <audio
+                    src={previewUrl}
+                    aria-label={`Preview ${clip.title}`}
+                    controls
+                    autoPlay
+                    className="w-full"
+                  />
+                ) : (
+                  <p role="status">Loading preview…</p>
+                ))}
             </li>
           ))}
         </ul>
       )}
-      <AnnouncementTrimDialog
-        clip={trimClip}
-        busy={trimming}
-        onClose={() => setTrimClip(null)}
-        onSubmit={(clip, values) => void trim(clip, values)}
-      />
-      <ConfirmDialog
+      {editor && (
+        <ClipEditorDialog
+          key={editor.id}
+          clip={editor}
+          programs={programs}
+          onClose={() => {
+            setEditor(null);
+            reload();
+          }}
+          onSaved={() => {
+            setEditor(null);
+            reload();
+            toast.success(
+              'Clip saved. Rotation changes apply when the station refreshes its playlist.',
+            );
+          }}
+        />
+      )}
+      <Dialog.Root
         isOpen={pendingDelete !== null}
-        title={
-          pendingDelete ? `Delete “${pendingDelete.title}”?` : 'Delete clip?'
-        }
-        description="This removes the announcement from your station rotation."
-        confirmLabel="Delete"
-        onCancel={() => setPendingDelete(null)}
-        onConfirm={() => {
-          const clip = pendingDelete;
-          setPendingDelete(null);
-          if (clip) {
-            void remove(clip);
+        onClose={() => {
+          if (!busyId) {
+            setPendingDelete(null);
           }
         }}
-      />
+      >
+        <Dialog.Title>Delete “{pendingDelete?.title}”?</Dialog.Title>
+        <Dialog.Description>
+          This removes the clip and its rotation placement.
+          {pendingDelete?.isProfileBackground
+            ? ' It also removes your page background music.'
+            : ''}
+        </Dialog.Description>
+        {deleteError && <InlineError>{deleteError}</InlineError>}
+        <Dialog.Actions>
+          <Button
+            variant="secondary"
+            disabled={busyId !== null}
+            onClick={() => setPendingDelete(null)}
+          >
+            Cancel
+          </Button>
+          <Button disabled={busyId !== null} onClick={() => void remove()}>
+            {busyId ? 'Deleting…' : 'Delete'}
+          </Button>
+        </Dialog.Actions>
+      </Dialog.Root>
     </section>
   );
 }

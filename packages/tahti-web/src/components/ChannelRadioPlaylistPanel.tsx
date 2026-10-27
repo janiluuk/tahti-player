@@ -517,8 +517,8 @@ export const ChannelRadioPlaylistPanel: FC = () => {
             />
 
             <Toggle
-              label="Artist announcements"
-              description="Include your station IDs and clips"
+              label="Play clips between programs"
+              description="Include active clips from the editor below"
               showLabel
               labelPosition="start"
               checked={announcementsEnabled}
