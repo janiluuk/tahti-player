@@ -59,6 +59,7 @@ import {
   PageError,
   PageLoading,
 } from '../../../components/PageStates';
+import { RestrictionNotices } from '../../../components/RestrictionNotice';
 import { SecurityTotpPanel } from '../../../components/SecurityTotpPanel';
 import {
   fanSubscriptionStatusLabel,
@@ -407,26 +408,29 @@ export function AccountPanel() {
   const landing = accountTabLanding(accountSection);
 
   return (
-    <Tabs
-      key={accountSection ?? 'session'}
-      className="min-w-0"
-      listClassName="flex-wrap"
-      defaultIndex={landing.group}
-      items={groupAccountTabs(tabItems).map(({ group, tabs }, index) => ({
-        id: group.id,
-        label: group.label,
-        icon: <group.Icon size={14} />,
-        content: (
-          <Tabs
-            className="min-w-0"
-            listClassName="border-border flex-wrap gap-1 border-b pb-2"
-            panelClassName="pt-3"
-            defaultIndex={index === landing.group ? landing.tab : 0}
-            items={tabs}
-          />
-        ),
-      }))}
-    />
+    <div className="flex min-w-0 flex-col gap-4">
+      <RestrictionNotices />
+      <Tabs
+        key={accountSection ?? 'session'}
+        className="min-w-0"
+        listClassName="flex-wrap"
+        defaultIndex={landing.group}
+        items={groupAccountTabs(tabItems).map(({ group, tabs }, index) => ({
+          id: group.id,
+          label: group.label,
+          icon: <group.Icon size={14} />,
+          content: (
+            <Tabs
+              className="min-w-0"
+              listClassName="border-border flex-wrap gap-1 border-b pb-2"
+              panelClassName="pt-3"
+              defaultIndex={index === landing.group ? landing.tab : 0}
+              items={tabs}
+            />
+          ),
+        }))}
+      />
+    </div>
   );
 }
 
