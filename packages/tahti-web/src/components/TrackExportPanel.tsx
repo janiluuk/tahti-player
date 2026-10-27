@@ -29,9 +29,9 @@ function describe(status: TrackExportStatus): string {
     case 'FAILED':
       return status.error ? `Upload failed: ${status.error}` : 'Upload failed.';
     case 'UPLOADING':
-      return 'Uploading to Mixcloud…';
+      return 'Uploading to Mixcloud… We notify you when it is done.';
     default:
-      return 'Queued for upload.';
+      return 'Queued for upload. We notify you when it is done.';
   }
 }
 
