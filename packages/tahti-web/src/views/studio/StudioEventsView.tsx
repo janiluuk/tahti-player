@@ -19,6 +19,7 @@ import {
 } from '@tahti-player/ui';
 
 import { deleteEvent, fetchMyEvents, type ArtistEvent } from '../../api/events';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -26,6 +27,7 @@ import { StudioPanel } from '../../components/StudioPanel';
 export function StudioEventsView() {
   const [events, setEvents] = useState<ArtistEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pendingRemove, setPendingRemove] = useState<ArtistEvent | null>(null);
 
   const reload = () => {
     void fetchMyEvents().then((r) => {
@@ -35,6 +37,12 @@ export function StudioEventsView() {
   };
 
   useEffect(reload, []);
+
+  useEffect(() => {
+    const refresh = () => reload();
+    window.addEventListener('tahti-studio-events', refresh);
+    return () => window.removeEventListener('tahti-studio-events', refresh);
+  }, []);
 
   const now = Date.now();
   const upcomingEvents = events.filter(
@@ -95,15 +103,7 @@ export function StudioEventsView() {
               <Button
                 size="sm"
                 variant="text"
-                onClick={() => {
-                  void deleteEvent(event.id).then((result) => {
-                    if (!result.ok) {
-                      toast.error(result.error);
-                    } else {
-                      reload();
-                    }
-                  });
-                }}
+                onClick={() => setPendingRemove(event)}
               >
                 <Trash2Icon size={14} aria-hidden className="mr-1.5" />
                 Remove
@@ -173,6 +173,30 @@ export function StudioEventsView() {
             ]}
           />
         </ViewShell>
+        <ConfirmDialog
+          isOpen={pendingRemove !== null}
+          title={
+            pendingRemove ? `Remove “${pendingRemove.title}”?` : 'Remove event?'
+          }
+          description="The event leaves your upcoming and past lists."
+          confirmLabel="Remove"
+          onCancel={() => setPendingRemove(null)}
+          onConfirm={() => {
+            const event = pendingRemove;
+            if (!event) {
+              return;
+            }
+            setPendingRemove(null);
+            void deleteEvent(event.id).then((result) => {
+              if (!result.ok) {
+                toast.error(result.error);
+                return;
+              }
+              toast.success(`Removed “${event.title}”.`);
+              reload();
+            });
+          }}
+        />
       </div>
     </StudioGate>
   );

@@ -1,4 +1,5 @@
 import { ExternalLinkIcon, RotateCcwIcon, Trash2Icon } from 'lucide-react';
+import { useState } from 'react';
 
 import { Badge, Button, ButtonAnchor, Tooltip } from '@tahti-player/ui';
 
@@ -8,6 +9,7 @@ import {
   themeSubmissionStatus,
   type MyTheme,
 } from '../api/me-themes';
+import { ConfirmDialog } from './ConfirmDialog';
 
 function statusColor(theme: MyTheme): 'green' | 'yellow' | 'red' | 'secondary' {
   if (theme.visibility === 'REJECTED') {
@@ -28,6 +30,8 @@ export function ThemeSubmissions({
   onChanged: () => void;
   onError: (message: string) => void;
 }) {
+  const [pendingDelete, setPendingDelete] = useState<MyTheme | null>(null);
+
   if (themes.length === 0) {
     return null;
   }
@@ -101,7 +105,7 @@ export function ThemeSubmissions({
                     size="icon-sm"
                     variant="text"
                     aria-label={`Delete the ${theme.name} submission`}
-                    onClick={() => run(deleteMyTheme(theme.id))}
+                    onClick={() => setPendingDelete(theme)}
                   >
                     <Trash2Icon size={14} aria-hidden />
                   </Button>
@@ -111,6 +115,25 @@ export function ThemeSubmissions({
           </li>
         ))}
       </ul>
+      <ConfirmDialog
+        isOpen={pendingDelete !== null}
+        title={
+          pendingDelete
+            ? `Delete the ${pendingDelete.name} submission?`
+            : 'Delete submission?'
+        }
+        description="The theme leaves your submissions. An applied copy on this device is left as it is."
+        confirmLabel="Delete"
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={() => {
+          const theme = pendingDelete;
+          if (!theme) {
+            return;
+          }
+          setPendingDelete(null);
+          run(deleteMyTheme(theme.id));
+        }}
+      />
     </div>
   );
 }

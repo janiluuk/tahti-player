@@ -15,6 +15,7 @@ import type { BandcampAlbum, SoundcloudTrack } from '../../../api/sources';
 import { fetchMeProfile, patchMeProfile } from '../../../api/studio-extras';
 import { oauthAdapterFor } from '../../../plugins/import-sources';
 import { usePluginInstallStore } from '../../../stores/pluginInstallStore';
+import { PageEmpty } from '../../PageStates';
 import type { ServiceAction, ServicePlugin } from '../serviceCatalog';
 import { ConfigurableCard } from '../shared';
 import { GoogleDriveImport } from './GoogleDriveImport';
@@ -301,9 +302,9 @@ export function OAuthServiceCard({
               {bandcampBusy ? (
                 <InlineLoader label="Loading your releases…" />
               ) : bandcampAlbums.length === 0 ? (
-                <p className="text-foreground-secondary text-sm">
-                  {bandcampMessage ?? 'No Bandcamp releases were found.'}
-                </p>
+                <PageEmpty
+                  title={bandcampMessage ?? 'No Bandcamp releases were found.'}
+                />
               ) : !bandcampImportAvailable ? (
                 <p className="text-foreground-secondary text-sm">
                   {bandcampMessage ??
@@ -368,9 +369,7 @@ export function OAuthServiceCard({
                 )}
               </div>
               {scTracks.length === 0 ? (
-                <p className="text-foreground-secondary text-sm">
-                  No downloadable tracks on this SoundCloud account.
-                </p>
+                <PageEmpty title="No downloadable tracks on this SoundCloud account." />
               ) : (
                 <ul className="flex flex-col gap-2">
                   {scTracks.map((track) => (

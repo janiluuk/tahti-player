@@ -222,9 +222,10 @@ export function OverviewTab({
             <strong>{new Date(nextSlotHint.startAt).toLocaleString()}</strong>
           </p>
         ) : (
-          <p className="text-foreground-secondary text-sm">
-            No upcoming slots — book an interval for this show.
-          </p>
+          <PageEmpty
+            title="No upcoming slots"
+            description="Book an interval for this show."
+          />
         )}
         <div className="mt-3 flex flex-wrap gap-2">
           <ButtonLink to="/studio/go-live" size="sm" variant="text">

@@ -17,6 +17,7 @@ import {
   type E2eTriage,
   type E2eTriageKind,
 } from '../content/e2eRuns';
+import { PageEmpty } from './PageStates';
 
 type StatusFilter = 'all' | 'failed' | 'passed' | 'triaged';
 
@@ -62,9 +63,10 @@ function StatusBadge({ status }: { status: E2eStatus }) {
 function StepStrip({ test }: { test: E2eTest }) {
   if (!test.steps.length) {
     return (
-      <p className="text-foreground-secondary px-4 pb-4 text-sm">
-        No screenshots were captured for this test.
-      </p>
+      <PageEmpty
+        className="px-4 pb-4"
+        title="No screenshots were captured for this test."
+      />
     );
   }
   return (
@@ -240,9 +242,7 @@ export function E2eRunGallery() {
           ))}
         </ul>
       ) : (
-        <p className="text-foreground-secondary text-sm">
-          No tests match this filter.
-        </p>
+        <PageEmpty title="No tests match this filter." />
       )}
     </section>
   );

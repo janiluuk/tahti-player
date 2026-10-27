@@ -12,6 +12,7 @@ import { Button, Dialog, FilePicker, Input, Textarea } from '@tahti-player/ui';
 
 import {
   createArtistPost,
+  deleteArtistPost,
   isScheduledPost,
   updateArtistPost,
   uploadArtistPostImage,
@@ -23,6 +24,7 @@ import {
   toDatetimeLocalValue,
 } from '../../../lib/datetimeLocal';
 import { isHttpUrl } from '../../../lib/parseRss';
+import { toastWithUndo } from '../../../lib/undoToast';
 import { PostPreview } from './PostPreview';
 
 /** Compose a new post, or edit `post` when given. A new post can be
@@ -124,13 +126,21 @@ export function PostDialog({
           return;
         }
       }
-      toast.success(
-        isScheduledPost(result.data)
-          ? `Post scheduled for ${new Date(result.data.publishAt).toLocaleString()}.`
-          : editing
-            ? 'Post saved.'
-            : 'Post published.',
-      );
+      const savedMessage = isScheduledPost(result.data)
+        ? `Post scheduled for ${new Date(result.data.publishAt).toLocaleString()}.`
+        : editing
+          ? 'Post saved.'
+          : 'Post published.';
+      if (editing) {
+        toast.success(savedMessage);
+      } else {
+        const created = result.data;
+        toastWithUndo(savedMessage, {
+          undo: () => deleteArtistPost(created.id),
+          undoneMessage: 'Post removed.',
+          onUndone: () => onSaved(),
+        });
+      }
       onSaved();
       onClose();
     } catch {

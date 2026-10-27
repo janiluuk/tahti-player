@@ -20,6 +20,7 @@ import {
   patchStudioSound,
 } from '../api/studio';
 import type { StudioCollection, StudioSound } from '../api/studio-types';
+import { toastWithUndo } from '../lib/undoToast';
 import { usePlayerStore } from '../stores/playerStore';
 import { ConfirmDialog } from './ConfirmDialog';
 import { PageEmpty, PageError } from './PageStates';
@@ -152,7 +153,14 @@ export const StashFilesPanel = ({
       ? `Shared ${file.filename} with @${username}.`
       : `Created access for ${file.filename}.`;
     setMessage(okMessage);
-    toast.success(okMessage);
+    const created = result.data;
+    toastWithUndo(okMessage, {
+      undo: () => revokeStashShare(created.id),
+      undoneMessage: 'Share access removed.',
+      onUndone: () => {
+        void reload();
+      },
+    });
     await reload();
   };
 

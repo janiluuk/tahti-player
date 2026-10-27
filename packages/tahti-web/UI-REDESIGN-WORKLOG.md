@@ -1,3 +1,10 @@
+## 2026-10-27 - UX batch 115 (empties, confirms, undo)
+
+Plain-text empties (shows, replies, import catalogs, the release library
+picker, and the rest of the batch) use `PageEmpty`. One-click deletes ask
+first. New events, posts, share links, stream destinations, and comments can
+be undone. Bumped tahti-web `0.0.277`.
+
 ## 2026-10-27 - Theme editor keeps the current theme
 
 Settings → Themes → Editor opens on the theme already applied, instead of a

@@ -29,10 +29,12 @@ import {
   type RtmpTarget,
   type RtmpTargetScope,
 } from '../api/broadcast';
+import { toastWithUndo } from '../lib/undoToast';
 import {
   multicastProviders,
   type MulticastProviderId,
 } from '../plugins/multicast';
+import { ConfirmDialog } from './ConfirmDialog';
 import { PageError, PageErrorBanner, PageLoading } from './PageStates';
 import {
   RotationMirrorToggle,
@@ -127,6 +129,7 @@ function DestinationDialog({
     | null
   >(null);
   const [error, setError] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [savedTarget, setSavedTarget] = useState(state.target);
   const mirror = useRotationMirror(state.target, scope);
 
@@ -187,6 +190,16 @@ function DestinationDialog({
       setSavedTarget(result.target);
       setStreamKey('');
       onSaved(result.target);
+      const created = result.target;
+      const createdName = created.label ?? 'destination';
+      toastWithUndo(`Saved ${createdName}.`, {
+        undo: () => deleteRtmpTarget(created.id, scope),
+        undoneMessage: `Removed ${createdName}.`,
+        onUndone: () => {
+          setSavedTarget(null);
+          onDeleted();
+        },
+      });
     });
   };
 
@@ -373,17 +386,7 @@ function DestinationDialog({
               intent="danger"
               variant="secondary"
               disabled={deleting}
-              onClick={() => {
-                setDeleting(true);
-                void deleteRtmpTarget(savedTarget.id, scope).then((result) => {
-                  setDeleting(false);
-                  if (!result.ok) {
-                    setError(result.error);
-                    return;
-                  }
-                  onDeleted();
-                });
-              }}
+              onClick={() => setConfirmDelete(true)}
             >
               {deleting ? 'Removing…' : 'Remove'}
             </Button>
@@ -406,6 +409,32 @@ function DestinationDialog({
             ))}
         </Dialog.Actions>
       </form>
+      <ConfirmDialog
+        isOpen={confirmDelete && savedTarget !== null}
+        title={
+          savedTarget
+            ? `Remove ${savedTarget.label ?? 'this destination'}?`
+            : 'Remove destination?'
+        }
+        description="This stream destination stops receiving the broadcast."
+        confirmLabel="Remove"
+        onCancel={() => setConfirmDelete(false)}
+        onConfirm={() => {
+          if (!savedTarget) {
+            return;
+          }
+          setConfirmDelete(false);
+          setDeleting(true);
+          void deleteRtmpTarget(savedTarget.id, scope).then((result) => {
+            setDeleting(false);
+            if (!result.ok) {
+              setError(result.error);
+              return;
+            }
+            onDeleted();
+          });
+        }}
+      />
     </Dialog.Root>
   );
 }

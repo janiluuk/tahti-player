@@ -25,6 +25,7 @@ import {
   type DiscoWidgetScope,
   type DiscoWidgetStoreItem,
 } from '../../api/disco-widgets';
+import { ConfirmDialog } from '../ConfirmDialog';
 import { PageEmpty, PageLoading } from '../PageStates';
 import { useChannelAddonBlocks } from './useChannelAddonBlocks';
 
@@ -51,6 +52,7 @@ export function DiscoWidgetManagerPanel({
   const [installingId, setInstallingId] = useState<string | null>(null);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pendingRemoveId, setPendingRemoveId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [configuringId, setConfiguringId] = useState<string | null>(null);
   const layout = useChannelAddonBlocks(scope === 'ARTIST');
@@ -289,7 +291,7 @@ export function DiscoWidgetManagerPanel({
                           size="sm"
                           variant="text"
                           disabled={isPending}
-                          onClick={() => void handleRemove(install.id)}
+                          onClick={() => setPendingRemoveId(install.id)}
                         >
                           Remove
                         </Button>
@@ -447,6 +449,28 @@ export function DiscoWidgetManagerPanel({
           <Dialog.Close>Done</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
+      <ConfirmDialog
+        isOpen={pendingRemoveId !== null}
+        title={
+          pendingRemoveId
+            ? `Remove ${
+                installs.find((install) => install.id === pendingRemoveId)
+                  ?.widget.name ?? 'this widget'
+              }?`
+            : 'Remove widget?'
+        }
+        description="It leaves this page. You can install it again from the list."
+        confirmLabel="Remove"
+        onCancel={() => setPendingRemoveId(null)}
+        onConfirm={() => {
+          const id = pendingRemoveId;
+          if (!id) {
+            return;
+          }
+          setPendingRemoveId(null);
+          void handleRemove(id);
+        }}
+      />
     </div>
   );
 }

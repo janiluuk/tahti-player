@@ -8,7 +8,7 @@ import {
   type AssociationProfile,
   type GovernanceAuditor,
 } from '../../api/governance-association';
-import { PageError } from '../PageStates';
+import { PageEmpty, PageError } from '../PageStates';
 import { GovernancePanel } from './GovernancePanel';
 
 function auditorRole(auditor: GovernanceAuditor): string {
@@ -118,16 +118,12 @@ export function AssociationPanel() {
               ) : null}
             </dl>
           ) : (
-            <p className="text-foreground-secondary text-sm">
-              The board has not entered the association's details yet.
-            </p>
+            <PageEmpty title="The board has not entered the association's details yet." />
           )}
           <div className="flex flex-col gap-1">
             <h3 className="text-sm font-semibold">Auditors</h3>
             {profile.auditors.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No auditor or operations inspector is serving.
-              </p>
+              <PageEmpty title="No auditor or operations inspector is serving." />
             ) : (
               <ul className="flex flex-col gap-1">
                 {profile.auditors.map((auditor) => (

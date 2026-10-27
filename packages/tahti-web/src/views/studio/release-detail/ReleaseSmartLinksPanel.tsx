@@ -563,9 +563,27 @@ export function ReleaseSmartLinksPanel({
             );
           })}
           {filteredSounds.length === 0 && (
-            <p className="text-foreground-secondary py-6 text-sm">
-              No library items match.
-            </p>
+            <PageEmpty
+              title={
+                query.trim()
+                  ? `No library items match “${query.trim()}”.`
+                  : 'No library items match.'
+              }
+              action={
+                query.trim() || contentType !== 'ALL' ? (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      setQuery('');
+                      setContentType('ALL');
+                    }}
+                  >
+                    Clear search
+                  </Button>
+                ) : undefined
+              }
+            />
           )}
         </div>
         <Dialog.Actions>

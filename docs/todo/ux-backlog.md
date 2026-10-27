@@ -36,6 +36,13 @@ new surface, one PR per row.
   playlists, history, venues, profile sections, plugin store, help, desktop
   library, channel comments, discover widgets, upload recordings, smart
   links, disco widgets, browser local files. Load errors and access gates stay.
+- [x] Paragraph empties, confirm-before-delete, and undo on create (batch 115):
+  E2E gallery, association profile, upcoming shows, Bandcamp and SoundCloud
+  import empties, discussion replies, meeting conflicts, report versions,
+  editor seed, release library picker, show slots. Events, theme submissions,
+  radio presets, stream destinations, conflict notes, comments, and disco
+  widgets confirm before remove. Event, post, share, destination, and comment
+  creates can be undone.
 
 ## Liveliness
 
