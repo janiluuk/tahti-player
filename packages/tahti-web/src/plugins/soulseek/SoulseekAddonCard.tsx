@@ -73,6 +73,7 @@ export function SoulseekAddonCard() {
             <Button
               aria-description="Soulseek connects from the desktop player only."
               size="sm"
+              variant="secondary"
               disabled
             >
               Desktop only

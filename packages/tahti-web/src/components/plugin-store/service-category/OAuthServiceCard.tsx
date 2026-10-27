@@ -336,6 +336,7 @@ export function OAuthServiceCard({
                       </div>
                       <Button
                         size="sm"
+                        variant="secondary"
                         disabled={bandcampImporting !== null}
                         onClick={() => void importBandcampAlbum(album)}
                       >
@@ -382,6 +383,7 @@ export function OAuthServiceCard({
                       </span>
                       <Button
                         size="sm"
+                        variant="secondary"
                         disabled={scBusy}
                         onClick={() => void importSoundcloud([track], false)}
                       >

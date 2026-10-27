@@ -30,6 +30,10 @@ new surface, one PR per row.
 - [ ] De-green `Button` (primary-heavy everywhere; Cards and the MediaArtwork
   overlay were already neutralised). Partial: Governance attention panel +
   stream PlaylistDialog selected row (batch 81).
+  - 2026-10-27: Settings → Add-ons import cards - per-row Import (Bandcamp
+    albums, SoundCloud tracks), the hearthis.at Search submit and the
+    disabled Soulseek "Desktop only" are `secondary`; Connect / Import all /
+    Import selected stay primary.
 - [x] Optional `DiscoverGatewayBackground` on flat Listen surfaces (batch 80).
 
 ## Track lists: ambient rows, view modes, sort
