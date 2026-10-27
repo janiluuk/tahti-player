@@ -49,13 +49,25 @@ describe('AuthDialog', () => {
     useAuthStore.setState({ error: null });
     render(<AuthDialog />);
     fireEvent.change(screen.getByLabelText('Password'), {
-      target: { value: 'password-a' },
+      target: { value: 'Password-A1' },
     });
     fireEvent.change(screen.getByLabelText('Confirm password'), {
-      target: { value: 'password-b' },
+      target: { value: 'Password-B1' },
     });
     const alert = screen.getByRole('alert');
     expect(alert).toHaveAttribute('aria-live', 'polite');
     expect(alert).toHaveTextContent('Passwords do not match.');
+  });
+
+  it('names the password rule a new password breaks', () => {
+    useAuthModalStore.setState({ mode: 'join' });
+    useAuthStore.setState({ error: null });
+    render(<AuthDialog />);
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'password-a' },
+    });
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Add an uppercase letter.',
+    );
   });
 });

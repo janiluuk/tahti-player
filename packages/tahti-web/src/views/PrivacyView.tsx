@@ -144,8 +144,10 @@ export function PrivacyView() {
             subscription tiers and store items, any restrictions the board
             placed on your account, your notifications, grants and
             fan-subscription payouts, the add-ons you published or installed,
-            and your signed-in devices and API tokens (names only, never the
-            secrets). Other people appear by username only.
+            your signed-in devices and API tokens (names only, never the
+            secrets), the private-track shares and green-room invites you made
+            or received, and your email address change requests. Other people
+            appear by username only.
           </li>
           <li>
             <strong className="text-foreground">Objection</strong> — object to

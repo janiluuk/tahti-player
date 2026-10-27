@@ -76,6 +76,7 @@ export function GreenRoomInviteForm({
             spellCheck={false}
             label="Invite by handle"
             placeholder="@username"
+            description="They get a notification with a link to join."
             value={handle}
             onChange={(event) => setHandle(event.target.value)}
           />

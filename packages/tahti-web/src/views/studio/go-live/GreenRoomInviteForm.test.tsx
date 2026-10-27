@@ -53,6 +53,9 @@ describe('GreenRoomInviteForm', () => {
     expect(
       screen.queryByRole('button', { name: /Mod \(moderator\)/ }),
     ).toBeNull();
+    expect(
+      screen.getByText('They get a notification with a link to join.'),
+    ).toBeTruthy();
     fireEvent.change(screen.getByLabelText('Invite by handle'), {
       target: { value: ' @fan ' },
     });
