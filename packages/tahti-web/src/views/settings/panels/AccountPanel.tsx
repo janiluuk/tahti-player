@@ -554,7 +554,8 @@ function PrivacyDataPanel({ username }: { username: string }) {
               Your profile, uploads, releases, posts, comments, chat, likes,
               follows, messages you sent, purchases, subscriptions, support
               requests, governance activity, downloads, listening, venues, radio
-              submissions, store tiers and restrictions, as JSON
+              submissions, store tiers, restrictions, notifications, grants,
+              add-ons and devices, as JSON
             </span>
           </span>
         </ButtonAnchor>
