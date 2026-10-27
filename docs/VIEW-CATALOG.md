@@ -80,6 +80,7 @@ desktop views were removed in 2026-10.
 | [Library Embeds](#library-embeds)           | (library)             | `src/views/LibraryEmbedsView.tsx`     | No Story  | EmbedTrackRow list                                                                                                               |
 | [Library Media](#library-media)             | (library)             | `src/views/LibraryMediaView.tsx`      | No Story  | ImageLightbox, CardGrid                                                                                                          |
 | [Library Smart Links](#library-smart-links) | `/library/smartlinks` | `src/views/LibrarySmartLinksView.tsx` | No Story  | CardGrid                                                                                                                         |
+| [Local files](#local-files) | `/library/local` (desktop app; the browser redirects to `/library`) | `src/views/LibraryView.tsx` tab `local` → `DesktopLibraryPanel` | Has Story | `Tahti/Misc/DesktopLibraryPanel` (`DjCatalog`), `Tahti/Desktop/DjSettingsPopover`, `KeyCell`, `MixableTracksSection`, `TrackAnalysisSection`, `PlayHistoryDialog`, `SmartRuleValueInput`, `LocalLibraryFilters` |
 
 ### Studio Views (Artist Dashboard)
 
@@ -247,7 +248,7 @@ pro-editor `MasteringPanel`/`StemsPanel`/`PluginControls`.
 | ------------------------------------------------------------------------ | ------------------------------------------- | --------- | -------- | ------------------------------------------------------------------------------------- |
 | `packages/tahti-web` core (Listen/Discovery + Artist/Channel/Collection) | 17                                          | 4         | 13       | 8+ (AppShell, PageHeader, GlowMediaTile)                                              |
 | `packages/tahti-web` auth                                                | 9                                           | 1         | 8        | 3 (AuthDialog, Input, Button) — Account/Settings now has a story via `SettingsPanels` |
-| `packages/tahti-web` library                                             | 7                                           | 0         | 7        | 4 (CardGrid, Tabs, TrackTable)                                                        |
+| `packages/tahti-web` library                                             | 8                                           | 1         | 7        | 4 (CardGrid, Tabs, TrackTable)                                                        |
 | `packages/tahti-web` studio                                              | 32                                          | 9         | 23             | 12+ (StudioPanel, Form, ImageUploadField)                                             |
 | `packages/tahti-web` governance                                          | 10                                          | 0         | 10       | 2 (Tabs, Card layout)                                                                 |
 | `packages/tahti-web` help/legal                                          | 9                                           | 1         | 8        | 2 (LegalDocShell)                                                                     |

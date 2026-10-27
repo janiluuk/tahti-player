@@ -105,7 +105,7 @@ describe('TrackDetailsBlock', () => {
       />,
     );
     expect(screen.getByText('CC BY-SA')).toBeInTheDocument();
-    expect(screen.getByText('8A')).toBeInTheDocument();
+    expect(screen.getByText('Am')).toBeInTheDocument();
   });
 
   it('renders nothing when the track has no details or failed to load', () => {

@@ -1,6 +1,13 @@
 import { Input, Select } from '@tahti-player/ui';
 
+import {
+  camelotNumber,
+  formatKey,
+  parseKey,
+  type KeyNotation,
+} from '../lib/musicalKey';
 import type { NativeSmartRule } from '../lib/nativeLibrary';
+import { useDjPrefsStore } from '../stores/djPrefsStore';
 import { fieldKind } from './smartPlaylistRules';
 
 const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -9,6 +16,26 @@ const KEY_OPTIONS = NOTES.flatMap((note) => [
   { id: note, label: `${note} major` },
   { id: `${note}m`, label: `${note} minor` },
 ]);
+
+export function keyOptions(notation: KeyNotation) {
+  if (notation === 'musical') {
+    return KEY_OPTIONS;
+  }
+  return KEY_OPTIONS.map((option) => {
+    const key = parseKey(option.id)!;
+    return {
+      option,
+      number: camelotNumber(key),
+      minor: key.minor,
+      code: formatKey(option.id, notation)!,
+    };
+  })
+    .sort((a, b) => a.number - b.number || Number(b.minor) - Number(a.minor))
+    .map(({ option, code }) => ({
+      id: option.id,
+      label: `${code} · ${option.label}`,
+    }));
+}
 
 const RATING_OPTIONS = [0, 1, 2, 3, 4, 5].map((stars) => ({
   id: String(stars),
@@ -42,6 +69,7 @@ type Props = {
 export function SmartRuleValueInput({ rule, which, label, onChange }: Props) {
   const value = rule[which] ?? '';
   const kind = fieldKind(rule.field);
+  const notation = useDjPrefsStore((state) => state.keyNotation);
 
   if (kind === 'days') {
     const relative = rule.op === 'inLastDays' || rule.op === 'notInLastDays';
@@ -71,7 +99,7 @@ export function SmartRuleValueInput({ rule, which, label, onChange }: Props) {
         label={label}
         value={value || 'C'}
         onValueChange={onChange}
-        options={KEY_OPTIONS}
+        options={keyOptions(notation)}
       />
     );
   }

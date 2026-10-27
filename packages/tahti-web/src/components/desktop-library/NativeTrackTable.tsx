@@ -6,7 +6,9 @@ import type { usePersistedCatalogTable } from '../../hooks/usePersistedCatalogTa
 import { saveViewStateDeferred } from '../../lib/localLibraryViewState';
 import type { NativeLibraryTrack } from '../../lib/nativeLibrary';
 import { NATIVE_TRACK_COLUMNS } from '../nativeTrackColumns';
+import { DjSettingsPopover } from './DjSettingsPopover';
 import { LibraryShortcutsHelp } from './LibraryShortcutsHelp';
+import { prepareTracks } from './prepareTracks';
 import { SelectionToolbar } from './SelectionToolbar';
 import type { TrackBatchDialog } from './TrackBatchDialogs';
 import { TrackRowActions } from './TrackRowActions';
@@ -112,6 +114,10 @@ export function NativeTrackTable({
               onQueue(track);
             }
             return;
+          case 'p':
+            event.preventDefault();
+            void prepareTracks(targets);
+            return;
           case 'r':
             if (track.available) {
               event.preventDefault();
@@ -153,9 +159,11 @@ export function NativeTrackTable({
             onAddToPlaylist={selection.addSelectionToPlaylist}
             onRemove={() => onRemove([...selection.selectedIds], null)}
           />
+          <DjSettingsPopover />
           <LibraryShortcutsHelp />
         </>
       }
+      actionsWidth={248}
       renderActions={(track) => (
         <TrackRowActions
           track={track}

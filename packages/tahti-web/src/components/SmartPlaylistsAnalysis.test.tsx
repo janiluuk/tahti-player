@@ -240,4 +240,70 @@ describe('TrackAnalysisSection', () => {
       expect(setCorrections).toHaveBeenCalledWith(['t1'], 64, ''),
     );
   });
+
+  function renderSection() {
+    const setCorrections = vi.fn().mockResolvedValue([]);
+    const library = {
+      analysis: {
+        detail: vi.fn().mockResolvedValue(detail({ bpm: 70, bpmEstimate: 70 })),
+        setCorrections,
+        restoreCorrections: vi.fn(),
+        analyze: vi.fn(),
+      },
+    } as unknown as TahtiNativeLibrary;
+    render(
+      <TrackAnalysisSection
+        library={library}
+        track={{ id: 't1', available: true } as never}
+      />,
+    );
+    return setCorrections;
+  }
+
+  it('fixes a half-tempo estimate with the double button', async () => {
+    const setCorrections = renderSection();
+    await screen.findByTestId('waveform');
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Double tempo, 140 BPM' }),
+    );
+    expect(screen.getByLabelText('Your BPM')).toHaveValue(140);
+    fireEvent.click(screen.getByRole('button', { name: /Save correction/ }));
+    await waitFor(() =>
+      expect(setCorrections).toHaveBeenCalledWith(['t1'], 140, ''),
+    );
+  });
+
+  it('sets the BPM from taps', async () => {
+    renderSection();
+    await screen.findByTestId('waveform');
+    let now = 0;
+    vi.spyOn(performance, 'now').mockImplementation(() => now);
+    for (const at of [0, 500, 1000, 1500]) {
+      now = at;
+      fireEvent.click(screen.getByRole('button', { name: 'Tap tempo' }));
+    }
+    expect(screen.getByLabelText('Your BPM')).toHaveValue(120);
+    expect(screen.getByText('120 BPM from 4 taps')).toBeInTheDocument();
+    vi.restoreAllMocks();
+  });
+
+  it('refuses a key it cannot read before it reaches the library', async () => {
+    const setCorrections = renderSection();
+    await screen.findByTestId('waveform');
+    fireEvent.change(screen.getByLabelText('Your key'), {
+      target: { value: 'banana' },
+    });
+    expect(screen.getByText(/Use a key like/)).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Save correction/ }),
+    ).toBeDisabled();
+    expect(setCorrections).not.toHaveBeenCalled();
+  });
+
+  it('shows keys in Camelot when chosen', () => {
+    const rows = Object.fromEntries(
+      analysisRows(detail(), 'camelot').map((r) => [r.label, r.value]),
+    );
+    expect(rows.Key).toBe('8A · Am (estimate (40% sure))');
+  });
 });

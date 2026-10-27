@@ -15,6 +15,7 @@ import {
 } from '../lib/nativeLibrary';
 import { formatDuration } from '../lib/playableToTrack';
 import { TRACK_COLOR_CSS } from '../lib/trackColors';
+import { KeyCell } from './desktop-library/KeyCell';
 
 const dash = (value: string | number | null | undefined) =>
   value === null || value === undefined || value === '' ? '—' : String(value);
@@ -232,7 +233,7 @@ export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
     header: 'Key',
     width: 70,
     sortable: true,
-    render: (track) => dash(track.musicalKey),
+    render: (track) => <KeyCell value={track.musicalKey} />,
   },
   {
     id: 'loudness',

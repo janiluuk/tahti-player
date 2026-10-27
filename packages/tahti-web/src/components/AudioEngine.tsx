@@ -61,6 +61,8 @@ export function AudioEngine() {
   const next = usePlayerStore((s) => s.next);
   const previous = usePlayerStore((s) => s.previous);
   const seekBy = usePlayerStore((s) => s.seekBy);
+  const seekTo = usePlayerStore((s) => s.seekTo);
+  const retry = usePlayerStore((s) => s.retry);
   const skipSeconds = usePlaybackPrefsStore((s) => s.skipSeconds);
   const setAnalyser = usePlayerStore((s) => s.setAnalyser);
   const setAudioElement = usePlayerStore((s) => s.setAudioElement);
@@ -176,6 +178,12 @@ export function AudioEngine() {
     navigator.mediaSession.setActionHandler('seekbackward', (details) =>
       seekBy(-(details.seekOffset ?? skipSeconds)),
     );
+    setOptionalAction('seekto', (details) => {
+      if (typeof details.seekTime === 'number') {
+        seekTo(details.seekTime);
+      }
+    });
+    setOptionalAction('stop', () => setStatus('paused'));
     return () => {
       navigator.mediaSession.setActionHandler('play', null);
       navigator.mediaSession.setActionHandler('pause', null);
@@ -183,8 +191,41 @@ export function AudioEngine() {
       navigator.mediaSession.setActionHandler('nexttrack', null);
       navigator.mediaSession.setActionHandler('seekforward', null);
       navigator.mediaSession.setActionHandler('seekbackward', null);
+      setOptionalAction('seekto', null);
+      setOptionalAction('stop', null);
     };
-  }, [setStatus, previous, next, seekBy, skipSeconds]);
+  }, [setStatus, previous, next, seekBy, seekTo, skipSeconds]);
+
+  const playableId = playable?.id;
+  useEffect(() => {
+    clearPositionState();
+  }, [playableId]);
+
+  useEffect(() => {
+    const onOnline = () => {
+      if (usePlayerStore.getState().status === 'error') {
+        retry();
+      }
+    };
+    const onVisible = () => {
+      const audio = audioRef.current;
+      if (
+        document.visibilityState === 'visible' &&
+        audio &&
+        audio.paused &&
+        !audio.ended &&
+        usePlayerStore.getState().status === 'playing'
+      ) {
+        setStatus('paused');
+      }
+    };
+    window.addEventListener('online', onOnline);
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      window.removeEventListener('online', onOnline);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, [retry, setStatus]);
 
   const hasPlayable = playable != null;
   const stationNowPlaying = usePlayerStationNowPlaying(playable);
@@ -515,6 +556,31 @@ function listenSoundId(playable: TahtiPlayable | null): string | null {
     return null;
   }
   return playable.id.slice('sound:'.length) || null;
+}
+
+function setOptionalAction(
+  action: MediaSessionAction,
+  handler: MediaSessionActionHandler | null,
+) {
+  try {
+    navigator.mediaSession.setActionHandler(action, handler);
+  } catch {
+    return;
+  }
+}
+
+function clearPositionState() {
+  if (
+    !('mediaSession' in navigator) ||
+    typeof navigator.mediaSession.setPositionState !== 'function'
+  ) {
+    return;
+  }
+  try {
+    navigator.mediaSession.setPositionState();
+  } catch {
+    return;
+  }
 }
 
 function updatePositionState(

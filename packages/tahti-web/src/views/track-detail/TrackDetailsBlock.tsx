@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { Badge } from '@tahti-player/ui';
 
 import type { PublicTrackDetail } from '../../api/types';
+import { KeyCell } from '../../components/desktop-library/KeyCell';
 import { hasTrackDetailFacts, trackDetailFacts } from './trackDetails';
 
 function Row({ label, children }: { label: string; children: ReactNode }) {
@@ -65,7 +66,11 @@ export function TrackDetailsBlock({
             <span className="tabular-nums">{bpm}</span>
           </Row>
         ) : null}
-        {musicalKey ? <Row label="Key">{musicalKey}</Row> : null}
+        {musicalKey ? (
+          <Row label="Key">
+            <KeyCell value={musicalKey} />
+          </Row>
+        ) : null}
         {license ? <Row label="Licence">{license}</Row> : null}
         {credits.length > 0 ? (
           <Row label="Credits">

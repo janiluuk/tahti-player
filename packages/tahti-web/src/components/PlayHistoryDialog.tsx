@@ -1,12 +1,21 @@
-import { useCallback, useEffect, useState } from 'react';
+import { PlayIcon, Trash2Icon } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, InlineError, Loader } from '@tahti-player/ui';
+import { Button, Dialog, InlineError, Loader, Tooltip } from '@tahti-player/ui';
 
+import { humanizePastDate } from '../lib/humanizeDate';
 import type {
   NativePlayLogEntry,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
+import { preparePlayables } from '../lib/nativePlayback';
+import {
+  latestSession,
+  playedAtDate,
+  SET_GAP_MINUTES,
+} from '../lib/setTracklist';
+import { usePlayerStore } from '../stores/playerStore';
 import { ConfirmDialog } from './ConfirmDialog';
 import { PageEmpty, PageError } from './PageStates';
 
@@ -29,6 +38,15 @@ export function PlayHistoryDialog({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmClear, setConfirmClear] = useState(false);
+  const play = usePlayerStore((state) => state.play);
+  const session = useMemo(() => latestSession(entries), [entries]);
+  const sessionIds = useMemo(
+    () =>
+      session
+        .map((entry) => entry.trackId)
+        .filter((id): id is string => Boolean(id)),
+    [session],
+  );
 
   const load = useCallback(
     async (offset: number) => {
@@ -59,6 +77,24 @@ export function PlayHistoryDialog({
       void load(0);
     }
   }, [isOpen, load]);
+
+  const resume = async () => {
+    try {
+      const playables = await preparePlayables(library, sessionIds, 'session');
+      const [head, ...rest] = playables;
+      if (!head) {
+        toast.error('None of these tracks can be played.');
+        return;
+      }
+      play(head, { enqueueRest: rest });
+    } catch (failure) {
+      toast.error(
+        failure instanceof Error
+          ? failure.message
+          : 'Could not play this session.',
+      );
+    }
+  };
 
   const clear = async () => {
     try {
@@ -104,7 +140,10 @@ export function PlayHistoryDialog({
                     {entry.artist ? ` — ${entry.artist}` : ''}
                   </span>
                   <span className="text-foreground-secondary shrink-0 text-xs">
-                    {entry.playedAt} UTC
+                    {humanizePastDate(
+                      playedAtDate(entry.playedAt)?.toISOString() ??
+                        entry.playedAt,
+                    )}
                   </span>
                 </li>
               ))}
@@ -126,16 +165,37 @@ export function PlayHistoryDialog({
             </Button>
           ) : null}
         </div>
+        {session.length > 0 ? (
+          <p className="text-foreground-secondary text-xs">
+            Your last session is {session.length}{' '}
+            {session.length === 1 ? 'track' : 'tracks'} with no break longer
+            than {SET_GAP_MINUTES} minutes.
+          </p>
+        ) : null}
         <Dialog.Actions>
-          <Button
-            variant="text"
-            intent="danger"
-            disabled={total === 0}
-            onClick={() => setConfirmClear(true)}
-          >
-            Clear history
-          </Button>
-          <Dialog.Close>Done</Dialog.Close>
+          <Tooltip content="Resume" side="top">
+            <Button
+              size="icon"
+              variant="text"
+              aria-label="Resume"
+              disabled={sessionIds.length === 0}
+              onClick={() => void resume()}
+            >
+              <PlayIcon size={16} aria-hidden />
+            </Button>
+          </Tooltip>
+          <Tooltip content="Clear history" side="top">
+            <Button
+              size="icon"
+              variant="text"
+              intent="danger"
+              aria-label="Clear history"
+              disabled={total === 0}
+              onClick={() => setConfirmClear(true)}
+            >
+              <Trash2Icon size={16} aria-hidden />
+            </Button>
+          </Tooltip>
         </Dialog.Actions>
       </Dialog.Root>
       <ConfirmDialog

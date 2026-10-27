@@ -238,6 +238,7 @@ describe('AudioEngine MediaSession integration', () => {
   it('updates position state on the existing progress throttle', () => {
     const audio = renderEngine();
     act(() => usePlayerStore.getState().play(trackA));
+    setPositionState.mockClear();
 
     tick(audio, 1);
     tick(audio, 1.25, 250);
@@ -272,6 +273,7 @@ describe('AudioEngine MediaSession integration', () => {
   it('skips position state for streams without a finite duration', () => {
     const audio = renderEngine();
     act(() => usePlayerStore.getState().play(trackA));
+    setPositionState.mockClear();
 
     now += 1000;
     setAudioClock(audio, 10, Number.POSITIVE_INFINITY);
@@ -293,5 +295,58 @@ describe('AudioEngine MediaSession integration', () => {
 
     expect(postListenEvent).toHaveBeenCalledTimes(1);
     expect(postListenEvent).toHaveBeenCalledWith('a');
+  });
+
+  it('clears the lock-screen scrubber when the track changes', () => {
+    renderEngine();
+    act(() => usePlayerStore.getState().play(trackA));
+    setPositionState.mockClear();
+    act(() => usePlayerStore.getState().play(trackB));
+    expect(setPositionState).toHaveBeenCalledWith();
+  });
+
+  it('seeks from the lock-screen scrubber and stops from the stop button', () => {
+    renderEngine();
+    act(() => usePlayerStore.getState().play(trackA));
+    usePlayerStore.setState({ duration: 120, isLive: false });
+    const handlers = new Map(
+      vi
+        .mocked(navigator.mediaSession.setActionHandler)
+        .mock.calls.filter(([, handler]) => handler !== null),
+    );
+    act(() => handlers.get('seekto')?.({ action: 'seekto', seekTime: 42 }));
+    expect(usePlayerStore.getState().currentTime).toBe(42);
+    act(() => usePlayerStore.getState().setStatus('playing'));
+    act(() => handlers.get('stop')?.({ action: 'stop' }));
+    expect(usePlayerStore.getState().status).toBe('paused');
+  });
+
+  it('reloads a failed stream when the network comes back', () => {
+    renderEngine();
+    act(() => usePlayerStore.getState().play(trackA));
+    act(() => usePlayerStore.getState().setStatus('error', 'Playback error'));
+    const nonce = usePlayerStore.getState().reloadNonce;
+    act(() => {
+      window.dispatchEvent(new Event('online'));
+    });
+    expect(usePlayerStore.getState().reloadNonce).toBe(nonce + 1);
+  });
+
+  it('shows paused after the system paused audio in the background', () => {
+    const audio = renderEngine();
+    act(() => usePlayerStore.getState().play(trackA));
+    act(() => usePlayerStore.getState().setStatus('playing'));
+    Object.defineProperty(audio, 'paused', {
+      configurable: true,
+      get: () => true,
+    });
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      get: () => 'visible',
+    });
+    act(() => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    expect(usePlayerStore.getState().status).toBe('paused');
   });
 });

@@ -74,6 +74,8 @@ export type CatalogTableProps<T> = {
   layouts?: CatalogLayoutsApi;
   /** Trailing per-row action buttons. */
   renderActions?: (row: T) => ReactNode;
+  /** Width of the trailing actions column in pixels. */
+  actionsWidth?: number;
   /** Dims the row (e.g. its file is missing). */
   isRowMuted?: (row: T) => boolean;
   rowHeight?: number;
@@ -114,6 +116,7 @@ export function CatalogTable<T>({
   onScrollOffsetChange,
   layouts,
   renderActions,
+  actionsWidth = ACTIONS_WIDTH,
   isRowMuted,
   rowHeight = 48,
   itemNoun = 'items',
@@ -131,14 +134,14 @@ export function CatalogTable<T>({
   const gridTemplate = [
     selectable ? `${SELECT_WIDTH}px` : null,
     ...visibleColumns.map((column) => `${column.pxWidth}px`),
-    renderActions ? `${ACTIONS_WIDTH}px` : null,
+    renderActions ? `${actionsWidth}px` : null,
   ]
     .filter(Boolean)
     .join(' ');
   const contentWidth =
     (selectable ? SELECT_WIDTH : 0) +
     visibleColumns.reduce((sum, column) => sum + column.pxWidth, 0) +
-    (renderActions ? ACTIONS_WIDTH : 0);
+    (renderActions ? actionsWidth : 0);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);

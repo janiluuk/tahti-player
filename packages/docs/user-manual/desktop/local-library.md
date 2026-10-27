@@ -10,7 +10,7 @@ The desktop app keeps a library of the music files on your computer, alongside T
 
 Open **Library → Local files** and add a folder. The app imports MP3, FLAC, WAV, AIFF, M4A, OGG and more, and keeps watching the folder for changes. Local tracks play in the same player and queue as Tahti tracks.
 
-Browse by **Tracks**, **Artists**, **Albums**, **Genres** and **Folders**, with counts, total length and size. Edit tags, and analyse BPM, key and loudness.
+Browse by **Tracks**, **Artists**, **Albums**, **Genres** and **Folders**, with counts, total length and size. Edit tags, and analyse BPM, key and loudness. For key notation, tracks that mix, tempo corrections, and the Prepare playlist, see [Mixing your local library](mixing.md).
 
 ## Playlists of your own files
 

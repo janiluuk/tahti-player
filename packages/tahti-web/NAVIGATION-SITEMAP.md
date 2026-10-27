@@ -61,7 +61,12 @@ Governance, Posts, Audience, Releases, Editor, Broadcast.
 
 Library tabs (`LibraryView`): Overview, Tracks, Collections, Upload,
 Recordings, Media, Stash, Embeds, Smart links, Local files. Upload lands on
-`/library/upload`.
+`/library/upload`. **Local files** (`/library/local`) is a tab only when the
+desktop app is providing the on-disk library; the browser redirects that
+route to `/library`. On that tab the disc icon opens DJ settings (key
+notation, tempo range for mixable tracks, half and double tempo). It is not
+a separate chrome entry. **History** there is the on-device listen log, not
+`/listen/history`.
 
 Settings modal sections (`SETTINGS_NAV`): Account, Artist, Channel & chat,
 Broadcast, Playback, Integrations (group "Settings"); Themes, Add-ons,

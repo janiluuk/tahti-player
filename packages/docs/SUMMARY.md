@@ -52,6 +52,7 @@
 
 * [Installation](user-manual/desktop/installation.md)
 * [Your local music](user-manual/desktop/local-library.md)
+* [Mixing your local library](user-manual/desktop/mixing.md)
 * [Remote control (Tahti Jam)](user-manual/desktop/remote-control.md)
 * [MCP server](integrations/mcp-server.md)
 * [MPD server](integrations/mpd-server.md)

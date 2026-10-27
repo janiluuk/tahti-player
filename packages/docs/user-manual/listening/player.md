@@ -29,3 +29,13 @@ Tracks still being processed after an upload show a **Processing** spinner and c
 {% hint style="info" %}
 The browser asks before you reload or close the tab while something is playing, so a stray click doesn't cut the music.
 {% endhint %}
+
+## On a phone
+
+The lock screen and the system media controls can play, pause, skip, seek to a position, and stop. Stop pauses the player.
+
+If a stream fails and the network comes back, the player tries that stream again on its own.
+
+If the system pauses the audio while Tahti is in the background, the player shows **paused** when you come back.
+
+The app keeps its edges, the bottom bar, and the side drawers clear of the screen's rounded corners and the home indicator.

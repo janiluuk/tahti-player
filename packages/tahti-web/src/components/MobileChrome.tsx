@@ -168,6 +168,8 @@ export function MobileDrawer({
         ? Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
         : [];
     panel?.focus();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -197,6 +199,7 @@ export function MobileDrawer({
     document.addEventListener('keydown', onKeyDown);
     return () => {
       window.clearTimeout(arm);
+      document.body.style.overflow = previousOverflow;
       document.removeEventListener('keydown', onKeyDown);
       previouslyFocused?.focus();
     };
@@ -238,7 +241,7 @@ export function MobileDrawer({
             ref={panelRef}
             tabIndex={-1}
             className={cn(
-              'border-border bg-background absolute inset-y-0 flex flex-col border shadow-lg outline-none',
+              'border-border bg-background absolute inset-y-0 flex flex-col border pt-[env(safe-area-inset-top)] shadow-lg outline-none',
               fullScreen
                 ? 'inset-x-0 w-full'
                 : cn(
@@ -263,16 +266,17 @@ export function MobileDrawer({
               )}
               <Tooltip content="Close" side="top" disabled={!closeTooltipArmed}>
                 <Button
-                  size="icon-sm"
+                  size="icon"
                   variant="text"
                   onClick={onClose}
                   aria-label="Close"
+                  className="size-11"
                 >
                   <XIcon size={16} />
                 </Button>
               </Tooltip>
             </div>
-            <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-auto p-3">
+            <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
               {children}
             </div>
           </motion.div>
