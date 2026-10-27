@@ -85,7 +85,8 @@ export function DevicesSessionsPanel() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <p className="text-foreground/80 text-sm">
           Each sign-in keeps its own session. Signing in elsewhere no longer
-          signs you out here.
+          signs you out here. We email you when a device you haven&apos;t used
+          before signs in.
         </p>
         <Button
           size="sm"

@@ -196,6 +196,7 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
           value={granteeUsername}
           onChange={(e) => setGranteeUsername(e.target.value)}
           placeholder="@username, or leave empty for link access"
+          description="A named member gets a notification with the link."
         />
         <Select
           label="Access"

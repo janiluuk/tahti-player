@@ -182,6 +182,7 @@ export const SIDEBAR_UNLIT_INTENTIONAL: readonly string[] = [
   '/apply',
   '/signup',
   '/verify',
+  '/email-change',
   '/forgot-password',
   '/reset-password',
   '/setup-password',

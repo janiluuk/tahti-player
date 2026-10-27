@@ -2,6 +2,7 @@ import { createRoute, redirect } from '@tanstack/react-router';
 
 import { appLayoutRoute } from './router-core';
 import {
+  EmailChangeView,
   ForgotPasswordView,
   JoinView,
   LoginView,
@@ -47,6 +48,12 @@ export const verifyRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/verify',
   component: VerifyView,
+});
+
+export const emailChangeRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/email-change',
+  component: EmailChangeView,
 });
 
 export const setupPasswordRoute = createRoute({
