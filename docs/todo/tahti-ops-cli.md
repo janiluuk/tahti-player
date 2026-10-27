@@ -22,7 +22,7 @@ install the product CLI without deploy SSH tooling.
 | `tahti-ops deploy minio` | `scripts/deploy_minio_remote.sh` | flags: `--bootstrap-env` |
 | `tahti-ops deploy all` | stack → worker → minio | stops on first failure |
 
-| `tahti-ops desktop run\|launch\|dev\|bundle` | `scripts/build-and-run-player.sh`, `scripts/run-linux.sh`, `pnpm dev`, `pnpm tauri build` | root `pnpm desktop`, `pnpm desktop:dev` |
+| `tahti-ops desktop run\|launch\|dev\|bundle\|android` | `scripts/build-and-run-player.sh`, `scripts/run-linux.sh`, `pnpm dev`, `pnpm tauri build`, `scripts/build-and-run-android.sh` (deleted) | root `pnpm desktop`, `pnpm desktop:dev`, `pnpm build:android:run` |
 | `tahti-ops test [group…]` | `turbo test` / per-package `pnpm --filter … test` | groups web ui player storybook types lint all; args after `--` |
 | `tahti-ops e2e journeys\|tasks\|playwright` | `run-e2e-journeys.sh`, `*-tasks-journey.mjs`, `pnpm test:e2e` | `--env-file` for real-backend credentials |
 | `tahti-ops snapshots list\|update` | `vitest run -u` per package, `generate-storybook-surfaces.mjs` | groups ui player hifi surfaces, or all; `--only <test>`; prints changed `.snap` files |
@@ -42,6 +42,7 @@ Shared: `--help`, `--dry-run`, `TAHTI_ORG_ROOT`, short `→` / `✓` / `✗` lab
 ## Progress
 
 - 2026-10-27: `tahti-ops release prepare <version> [--build] [--dry-run]` replaces `scripts/deploy-production.sh` (deleted). Runs `prepare-release.mjs` (bump, metainfo, commit, tag), optional `tauri build`, prints the push command.
+- 2026-10-27: `tahti-ops desktop android` replaces `scripts/build-and-run-android.sh` (deleted). Same JDK / `ANDROID_HOME` preflight (skipped on `--dry-run`), `tauri android init` when `gen/android` is missing, then `tauri android run --debug`; `pnpm build:android:run` calls it.
 - 2026-10-27: `tahti-ops check size [--update|--prune]` replaces `scripts/check-file-size.mjs` (deleted). `pnpm check:file-size` (CI "File size guard") now calls it; same limit, roots and baseline file.
 
 ## Script → command inventory
@@ -88,7 +89,7 @@ Shared: `--help`, `--dry-run`, `TAHTI_ORG_ROOT`, short `→` / `✓` / `✗` lab
 
 | Script | Proposed surface | Status |
 | --- | --- | --- |
-| build-and-run-*.sh / run-linux.sh | `player build` / `player run` | planned |
+| build-and-run-*.sh / run-linux.sh | `desktop run` / `launch` / `android` | shipped (android script deleted) |
 | flatpak-*.sh / update-aur.sh | `package flatpak` / `package aur` | planned |
 | deploy-production.sh | `release prepare` | shipped (script deleted) |
 | scripts/ci/* | keep CI-only; optional `ci digest` | planned |
