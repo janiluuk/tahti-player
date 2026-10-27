@@ -23,6 +23,13 @@ re-filed.
 - [ ] **`React.memo` on hot `@tahti-player/ui` components** — 7 components already
   use `memo`. Profile a data-dense view (Library tracks, Studio sounds) before
   adding more; no measured problem yet.
+  - 2026-10-27 (batch 90): profiled `PlayableAmbientTrackList` (Favorites,
+    Collections, Listen, artist likes) with 300 tracks while playing: every
+    1 s progress tick re-rendered every row, median commit ~230 ms in jsdom.
+    Memoized tahti-web's `AmbientTrackRow` and built the row props without
+    the position, so a tick redraws only the playing row: ~2.9 ms. The
+    `@tahti-player/ui` components weren't the hot spot; `TrackTable` (List
+    view) and Studio sounds are not profiled yet.
 
 ## Not applicable or incorrect
 
