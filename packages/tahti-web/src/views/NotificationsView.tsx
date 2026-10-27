@@ -1,14 +1,16 @@
 import { Link } from '@tanstack/react-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { Badge, Button, ViewShell } from '@tahti-player/ui';
+import { Badge, Button, FilterChips, ViewShell } from '@tahti-player/ui';
 
 import {
   clearReadNotifications,
   dismissNotification,
   fetchNotifications,
   markAllNotificationsRead,
+  NOTIFICATION_KINDS,
   removeNotification,
+  type NotificationKind,
   type TahtiNotification,
 } from '../api/notifications';
 import { PageEmpty, PageError } from '../components/PageStates';
@@ -50,10 +52,18 @@ export function NotificationsView() {
   const [loadingOlder, setLoadingOlder] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [kind, setKind] = useState<'all' | NotificationKind>('all');
+  const kindParam = kind === 'all' ? undefined : kind;
+
+  const latestLoad = useRef(0);
 
   const load = useCallback(async () => {
+    const attempt = ++latestLoad.current;
     setLoading(true);
-    const result = await fetchNotifications();
+    const result = await fetchNotifications(undefined, kindParam);
+    if (attempt !== latestLoad.current) {
+      return;
+    }
     setItems(result.data);
     setUnreadCount(result.unreadCount);
     setHasMore(result.hasMore);
@@ -61,7 +71,7 @@ export function NotificationsView() {
       result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
     );
     setLoading(false);
-  }, []);
+  }, [kindParam]);
 
   useEffect(() => {
     if (user) {
@@ -75,7 +85,7 @@ export function NotificationsView() {
       return;
     }
     setLoadingOlder(true);
-    const result = await fetchNotifications(oldest.id);
+    const result = await fetchNotifications(oldest.id, kindParam);
     if (result.meta.source === 'api' && result.meta.reason) {
       setActionError('Could not load older notifications.');
     } else {
@@ -178,6 +188,12 @@ export function NotificationsView() {
             </Button>
           </div>
         </div>
+        <FilterChips
+          items={[{ id: 'all', label: 'All' }, ...NOTIFICATION_KINDS]}
+          selected={kind}
+          onChange={(id) => setKind(id as 'all' | NotificationKind)}
+          aria-label="Filter notifications by kind"
+        />
         {actionError ? (
           <p role="alert" className="text-accent-red-strong text-sm">
             {actionError}
@@ -190,11 +206,27 @@ export function NotificationsView() {
             onRetry={() => void load()}
           />
         ) : !loading && items.length === 0 ? (
-          <PageEmpty
-            icon="inbox"
-            title="No notifications yet"
-            description="Follow artists and join the conversation; what happens shows up here."
-          />
+          kind === 'all' ? (
+            <PageEmpty
+              icon="inbox"
+              title="No notifications yet"
+              description="Follow artists and join the conversation; what happens shows up here."
+            />
+          ) : (
+            <PageEmpty
+              icon="inbox"
+              title="Nothing of this kind"
+              action={
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setKind('all')}
+                >
+                  Show all
+                </Button>
+              }
+            />
+          )
         ) : (
           <ul className="flex flex-col gap-2" aria-label="Notifications">
             {items.map((notification) => {
