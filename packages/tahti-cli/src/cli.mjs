@@ -542,14 +542,20 @@ Members only.`,
   },
   {
     path: ['discussions', 'show'],
-    usage: 'tahti discussions show <id> [--json]',
+    usage: 'tahti discussions show <id> [--before <reply#>] [--json]',
     summary: 'Read a discussion topic and its replies',
-    details: `Calls GET /api/v1/governance/discussions/:id: the topic text and every reply,
-oldest first. Opening a topic you follow marks its replies read.`,
-    options: JSON_OPTION,
+    details: `Calls GET /api/v1/governance/discussions/:id: the topic text and its latest
+replies, oldest first. Opening a topic you follow marks its replies read.
+  --before <reply#>   The page of replies before that one
+                      (GET .../:id/posts?before=); long threads print the
+                      command to run`,
+    options: { ...JSON_OPTION, before: { type: 'string' } },
     positionals: 1,
     run: (config, { positionals, values }) =>
-      runDiscussionsShow(config, positionals[0], { json: values.json }),
+      runDiscussionsShow(config, positionals[0], {
+        json: values.json,
+        before: values.before,
+      }),
   },
   {
     path: ['discussions', 'reply'],
