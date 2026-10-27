@@ -109,6 +109,10 @@ export function AdminVenuesView() {
                     onChange={(event) => setQuery(event.target.value)}
                     placeholder="Name, city, slug, or submitter"
                   />
+                  <p className="text-foreground-secondary text-xs">
+                    Verifying a venue, or taking the verification back, notifies
+                    the person who registered it.
+                  </p>
                   {error ? <InlineError>{error}</InlineError> : null}
                   {loading ? (
                     <PageLoading label="Loading venues…" />
