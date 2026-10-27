@@ -1,3 +1,4 @@
+pub mod auth_keychain;
 pub mod bridge;
 pub mod commands;
 pub mod db;
@@ -138,6 +139,8 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
         local_library::itunes_import::library_itunes_pick,
         local_library::itunes_import::library_itunes_preview,
         local_library::itunes_import::library_itunes_commit,
+        auth_keychain::auth_refresh_token_get,
+        auth_keychain::auth_refresh_token_set,
         commands::is_flatpak,
         commands::copy_dir_recursive,
         commands::extract_zip,
