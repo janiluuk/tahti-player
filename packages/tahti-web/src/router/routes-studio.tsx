@@ -1,5 +1,9 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 
+import {
+  movedSettingsSection,
+  type MovedSettingsSection,
+} from '../lib/movedSettingsSections';
 import { StudioSetupChannelRedirect } from '../views/studio/StudioSetupChannelRedirect';
 import { appLayoutRoute } from './router-core';
 import {
@@ -380,8 +384,11 @@ export const studioUpdatesRoute = createRoute({
 export const studioAudienceRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/audience',
-  validateSearch: (search: Record<string, unknown>): { tab?: 'tiers' } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: 'tiers'; movedFrom?: MovedSettingsSection } => ({
     tab: search.tab === 'tiers' ? 'tiers' : undefined,
+    movedFrom: movedSettingsSection(search.movedFrom),
   }),
   component: StudioRevenueView,
 });

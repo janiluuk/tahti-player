@@ -61,6 +61,14 @@ pnpm tahti-ops release prepare 1.48.0 --build   # also build the Tauri bundle lo
 pnpm tahti-ops check size           # fail when a file over 800 lines appears or grows
 pnpm tahti-ops check size --prune   # drop pins for files you split
 
+# AUR tahti-player-bin (CI: update-aur.yml after a release)
+pnpm tahti-ops package aur 1.48.0 --dry-run
+pnpm tahti-ops package aur 1.48.0 --no-push   # render + print PKGBUILD/.SRCINFO (Arch, makepkg)
+
+# Flatpak (needs flatpak-node-generator + python3)
+pnpm tahti-ops package flatpak sources                    # pnpm/cargo sources into packaging/flatpak
+pnpm tahti-ops package flatpak flathub 1.48.0 --dry-run   # CI: update-flathub.yml (GH_TOKEN)
+
 # production deploys (needs SSH to the fleet)
 pnpm tahti-ops deploy stack --dry-run
 pnpm tahti-ops deploy all
@@ -88,6 +96,8 @@ Progress lines go to stderr (`→` / `✓` / `✗`); script stdout is unchanged.
 | `vitest run -u` per package | `pnpm tahti-ops snapshots update <group>` |
 | `scripts/deploy-production.sh` (removed) | `pnpm tahti-ops release prepare <version> --build` |
 | `node scripts/check-file-size.mjs` (removed) | `pnpm tahti-ops check size` (= `pnpm check:file-size`) |
+| `scripts/update-aur.sh --version X [--dry-run]` (removed) | `pnpm tahti-ops package aur X [--no-push]` |
+| `scripts/flatpak-generate-sources.sh`, `scripts/flatpak-update-flathub.sh` (removed) | `pnpm tahti-ops package flatpak sources` / `flathub <version>` |
 
 Cron entries may still call `backup.sh` directly on the host; operators use
 `tahti-ops` from this monorepo.

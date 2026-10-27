@@ -5,6 +5,7 @@ import {
   HelpCircleIcon,
   HistoryIcon,
   LandmarkIcon,
+  MessagesSquareIcon,
   ScrollTextIcon,
   UsersIcon,
   VoteIcon,
@@ -49,6 +50,7 @@ import { CorrectionsPanel } from '../components/governance/CorrectionsPanel';
 import { CurrentBoardPanel } from '../components/governance/CurrentBoardPanel';
 import { ElectionsPanel } from '../components/governance/ElectionsPanel';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
+import { LatestDiscussionsPanel } from '../components/governance/LatestDiscussionsPanel';
 import { MotionCard } from '../components/governance/MotionCard';
 import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
@@ -80,6 +82,11 @@ function LoadErrorCaption({
 }
 
 const QUICK_LINKS = [
+  {
+    to: '/governance/discussions' as const,
+    label: 'Discussions',
+    icon: MessagesSquareIcon,
+  },
   {
     to: '/governance/feature-requests' as const,
     label: 'Feature requests',
@@ -289,6 +296,8 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
           />
         </div>
       )}
+
+      {user && !loading && !forbidden && <LatestDiscussionsPanel />}
 
       {!user && (
         <Box variant="secondary" className="flex flex-col gap-3">

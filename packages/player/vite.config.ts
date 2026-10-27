@@ -5,8 +5,6 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
 import { extname, join, resolve } from 'path';
 import { codecovVitePlugin } from '@codecov/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
-import { devtools } from '@tanstack/devtools-vite';
-import { tanstackRouter } from '@tanstack/router-vite-plugin';
 import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import svgr from 'vite-plugin-svgr';
@@ -95,9 +93,7 @@ export default defineConfig(({ mode }) => {
       'import.meta.env.VITE_TAHTI_API_URL': JSON.stringify(tahtiApiUrl),
     },
     plugins: [
-      devtools(),
       react(),
-      tanstackRouter(),
       tailwindcss(),
       svgr(),
       sharedWebPublic(),
@@ -139,14 +135,13 @@ export default defineConfig(({ mode }) => {
       // Node 25+ ships a global localStorage without getItem unless given
       // --localstorage-file; it shadows jsdom's Storage.
       execArgv: ['--no-experimental-webstorage'],
-      setupFiles: ['./src/test/setup.ts'],
+      passWithNoTests: true,
       reporters: vitestCiReporters(import.meta.url),
       outputFile: { junit: './test-results/junit.xml' },
       coverage: {
         reporter: ['text', 'lcov', 'html'],
         exclude: [
           'node_modules/',
-          'src/test/',
           '**/*.test.{ts,tsx}',
           '**/*.config.{ts,js}',
           'dist/',

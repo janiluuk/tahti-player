@@ -1,9 +1,11 @@
-import { Link } from '@tanstack/react-router';
 import { ExternalLinkIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import {
   Alert,
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
   Button,
   ButtonAnchor,
   ButtonLink,
@@ -33,16 +35,10 @@ export function AdminMonitoringView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/monitoring">
           <div className="flex flex-col gap-6">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-            >
-              <Link to="/admin" className="hover:underline">
-                Admin
-              </Link>
-              <span aria-hidden>→</span>
-              <span aria-current="page">Monitoring</span>
-            </nav>
+            <Breadcrumbs>
+              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbCurrent>Monitoring</BreadcrumbCurrent>
+            </Breadcrumbs>
             <ViewShell
               title="Monitoring"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}

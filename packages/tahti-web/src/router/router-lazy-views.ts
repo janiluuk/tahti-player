@@ -32,6 +32,14 @@ export const MoreView = lazyRouteComponent(
   () => import('../views/MoreView'),
   'MoreView',
 );
+export const DiscussionsView = lazyRouteComponent(
+  () => import('../views/DiscussionsView'),
+  'DiscussionsView',
+);
+export const DiscussionTopicView = lazyRouteComponent(
+  () => import('../views/DiscussionTopicView'),
+  'DiscussionTopicView',
+);
 export const FeatureRequestsView = lazyRouteComponent(
   () => import('../views/FeatureRequestsView'),
   'FeatureRequestsView',

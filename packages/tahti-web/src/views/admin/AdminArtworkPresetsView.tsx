@@ -1,8 +1,10 @@
-import { Link } from '@tanstack/react-router';
 import { PlusIcon, RotateCcwIcon, UploadIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  Breadcrumbs,
   Button,
   Dialog,
   ImageThumbnailPicker,
@@ -153,16 +155,10 @@ export function AdminArtworkPresetsView() {
     <AdminGate>
       <AdminPageLayout current="/admin/artwork-presets">
         <div className="flex flex-col gap-6">
-          <nav
-            aria-label="Breadcrumb"
-            className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs"
-          >
-            <Link to="/admin" className="hover:underline">
-              Admin
-            </Link>
-            <span aria-hidden>→</span>
-            <span aria-current="page">Artwork presets</span>
-          </nav>
+          <Breadcrumbs>
+            <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+            <BreadcrumbCurrent>Artwork presets</BreadcrumbCurrent>
+          </Breadcrumbs>
           <ViewShell
             title="Artwork presets"
             classes={{ root: 'px-0 pt-0', content: 'gap-4' }}

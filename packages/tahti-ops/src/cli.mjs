@@ -11,6 +11,11 @@ import { deployTargets, runDeploy } from './commands/deploy.mjs';
 import { desktopModes, runDesktop } from './commands/desktop.mjs';
 import { runE2e } from './commands/e2e.mjs';
 import { runEnv } from './commands/env.mjs';
+import { runPackageAur } from './commands/package-aur.mjs';
+import {
+  runFlathubUpdate,
+  runFlatpakSources,
+} from './commands/package-flatpak.mjs';
 import { runReleasePrepare } from './commands/release.mjs';
 import {
   listSnapshots,
@@ -125,6 +130,40 @@ Example:
       });
     },
   },
+  {
+    path: ['package', 'flatpak'],
+    usage:
+      'tahti-ops package flatpak <sources [--out <dir>]|flathub <version>> [--dry-run]',
+    summary:
+      'Generate Flatpak dependency sources, or open the Flathub update PR for a release',
+    details: `Actions:
+  sources [--out <dir>]  Write pnpm-sources.json and cargo-sources.json
+                         (default dir: packaging/flatpak, gitignored)
+  flathub <version>      Clone flathub/live.tahti.player, regenerate sources, fill
+                         live.tahti.player.yml.template for player@<version>, push a
+                         branch and open a PR (needs GH_TOKEN). Run by update-flathub.yml.
+
+Needs flatpak-node-generator and python3 (skipped on --dry-run).
+  --dry-run   Print each step without running it`,
+    passthrough: true,
+    run: (_parsed, argv) => {
+      const { dryRun, args } = splitDryRun(argv);
+      const { value: outDir, rest } = takeOption(args, '--out');
+      const unknown = rest.find((arg) => arg.startsWith('-'));
+      if (unknown) {
+        throw new OpsError(`Unknown option: ${unknown}`);
+      }
+      if (rest[0] === 'sources') {
+        return runFlatpakSources({ dryRun, outDir });
+      }
+      if (rest[0] === 'flathub') {
+        return runFlathubUpdate(rest[1], { dryRun });
+      }
+      throw new OpsError(
+        'Try: tahti-ops package flatpak sources | flathub <version>',
+      );
+    },
+  },
 ];
 
 const splitDryRun = (argv) => ({
@@ -202,6 +241,30 @@ Arguments after -- go to the test runner, e.g.
       const { dryRun, args } = splitDryRun(argv);
       const { value: envFile, rest } = takeOption(args, '--env-file');
       return runE2e(rest[0], rest.slice(1), { dryRun, envFile });
+    },
+  },
+  {
+    path: ['package', 'aur'],
+    usage: 'tahti-ops package aur <version> [--no-push] [--dry-run]',
+    summary:
+      'Publish tahti-player-bin <version> to the AUR (PKGBUILD + .SRCINFO)',
+    details: `Hashes the released player@<version> .deb, renders
+packaging/aur/tahti-player-bin/PKGBUILD.template, generates .SRCINFO with
+makepkg (Arch only), then commits and pushes to the AUR repo over SSH.
+Run by .github/workflows/update-aur.yml after a release.
+
+  --no-push   Render and print PKGBUILD and .SRCINFO without touching the AUR
+  --dry-run   Print each step without running it`,
+    passthrough: true,
+    run: (_parsed, argv) => {
+      const { dryRun, args } = splitDryRun(argv);
+      const push = !args.includes('--no-push');
+      const rest = args.filter((arg) => arg !== '--no-push');
+      const unknown = rest.find((arg) => arg.startsWith('-'));
+      if (unknown) {
+        throw new OpsError(`Unknown option: ${unknown}`);
+      }
+      return runPackageAur(rest[0], { dryRun, push });
     },
   },
   {

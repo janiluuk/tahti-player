@@ -157,6 +157,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/DiscoWidgetsSection` | `tahti-web/DiscoWidgetsSection.stories.tsx` |
 | `Tahti/Discover/DiscoverGatewayBackground` | `tahti-web/DiscoverGatewayBackground.stories.tsx` |
 | `Tahti/Discover/DiscoverView` | `tahti-web/DiscoverView.stories.tsx` |
+| `Tahti/Governance/Discussions` | `tahti-web/DiscussionsView.stories.tsx` |
 | `Tahti/Track/DownloadGateDialog` | `tahti-web/DownloadGateDialog.stories.tsx` |
 | `Tahti/Track/DownloadsSwitch` | `tahti-web/DownloadsSwitch.stories.tsx` |
 | `Tahti/Studio/E2eRunGallery` | `tahti-web/E2eRunGallery.stories.tsx` |
@@ -341,6 +342,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/Badge` | `Badge.stories.tsx` |
 | `Layout/BottomBar` | `BottomBar.stories.tsx` |
 | `Components/Box` | `Box.stories.tsx` |
+| `Components/Breadcrumbs` | `Breadcrumbs.stories.tsx` |
 | `Components/Button` | `Button.stories.tsx` |
 | `Components/ButtonLink` | `ButtonLink.stories.tsx` |
 | `Components/HistoryCharts/CalendarHeatmap` | `CalendarHeatmap.stories.tsx` |

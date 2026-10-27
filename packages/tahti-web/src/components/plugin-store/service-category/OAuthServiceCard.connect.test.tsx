@@ -124,7 +124,7 @@ describe('OAuthServiceCard connecting', () => {
     expect(toast.error).not.toHaveBeenCalled();
   });
 
-  it('points a connected Google Drive at uploading instead', async () => {
+  it('offers to choose files from a connected Google Drive', async () => {
     adapter.id = 'google-drive';
     adapter.checkStatus.mockResolvedValue({
       data: { connected: true, configured: true },
@@ -135,11 +135,8 @@ describe('OAuthServiceCard connecting', () => {
       );
       await open();
       expect(
-        await screen.findByText(/Picking files from Google Drive/),
+        await screen.findByRole('button', { name: 'Choose files from Drive' }),
       ).toBeTruthy();
-      expect(
-        screen.getByRole('link', { name: 'Upload files' }).getAttribute('href'),
-      ).toBe('/library/upload');
     } finally {
       adapter.id = 'soundcloud';
     }

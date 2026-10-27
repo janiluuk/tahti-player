@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useReducer } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -8,58 +8,84 @@ import {
   fetchShowSeries,
   scheduleShowEpisode,
   updateShowSeriesRecurrence,
-  type ScheduledShow,
-  type ShowType,
-  type StudioShowSeries,
 } from '../../../api/shows';
 import {
   fetchChannelSchedule,
   fetchUpcomingBroadcasts,
   patchChannelSchedule,
-  type ChannelSchedule,
-  type UpcomingBroadcast,
 } from '../../../api/studio-extras';
 import {
   endAtFor,
   fromLocalParts,
-  toLocalParts,
   type ScheduleCard,
 } from './schedule-helpers';
+import {
+  initialScheduleFormState,
+  scheduleFormReducer,
+  type BroadcastFields,
+  type ScheduleFormAction,
+  type ScheduleFormState,
+} from './scheduleFormReducer';
 
 /** All state and actions behind the Schedule view's broadcast/episode editor. */
 export function useScheduleForm() {
-  const [schedule, setSchedule] = useState<ChannelSchedule | null>(null);
-  const [upcoming, setUpcoming] = useState<UpcomingBroadcast[]>([]);
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
-  const [note, setNote] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [editorOpen, setEditorOpen] = useState(false);
-  const [shows, setShows] = useState<StudioShowSeries[]>([]);
-  const [scheduledShows, setScheduledShows] = useState<ScheduledShow[]>([]);
-  const [selectedShowId, setSelectedShowId] = useState('');
-  const [showDescription, setShowDescription] = useState('');
-  const [showCoverUrl, setShowCoverUrl] = useState('');
-  const [showMode, setShowMode] = useState<'SINGLE' | 'SERIES'>('SERIES');
-  const [showType, setShowType] = useState<ShowType>('LIVE_SET');
-  const [durationHours, setDurationHours] = useState<1 | 2>(1);
-  const [durationMinutes, setDurationMinutes] = useState(0);
-  const [frequencyDays, setFrequencyDays] = useState<number[]>([]);
-  const [venue, setVenue] = useState('');
-  const [location, setLocation] = useState('');
-  const [episodeArtworkUrl, setEpisodeArtworkUrl] = useState('');
-  const [showTagline, setShowTagline] = useState('');
-  const [showScheduleNote, setShowScheduleNote] = useState('');
-  const [showVisibility, setShowVisibility] = useState<'PUBLIC' | 'FAN_ONLY'>(
-    'PUBLIC',
+  const [state, dispatch] = useReducer(
+    scheduleFormReducer,
+    initialScheduleFormState,
   );
-  const [autoPublish, setAutoPublish] = useState(true);
-  const [pendingCancel, setPendingCancel] = useState<ScheduledShow | null>(
-    null,
-  );
-  const [episodeNumberEnabled, setEpisodeNumberEnabled] = useState(true);
-  const [nextEpisodeNumber, setNextEpisodeNumber] = useState(1);
+  const {
+    schedule,
+    upcoming,
+    shows,
+    scheduledShows,
+    editorOpen,
+    selectedShowId,
+    date,
+    time,
+    note,
+    venue,
+    location,
+    episodeArtworkUrl,
+    frequencyDays,
+    durationHours,
+    durationMinutes,
+    showDescription,
+    showCoverUrl,
+    showMode,
+    showType,
+    showTagline,
+    showScheduleNote,
+    showVisibility,
+    autoPublish,
+    episodeNumberEnabled,
+    nextEpisodeNumber,
+  } = state;
+
+  const setters = useMemo(() => {
+    const setter =
+      <Key extends keyof ScheduleFormState>(key: Key) =>
+      (value: ScheduleFormState[Key]) =>
+        dispatch({ type: 'set', key, value } as ScheduleFormAction);
+    return {
+      setDate: setter('date'),
+      setTime: setter('time'),
+      setBusy: setter('busy'),
+      setEditorOpen: setter('editorOpen'),
+      setDurationMinutes: setter('durationMinutes'),
+      setFrequencyDays: setter('frequencyDays'),
+      setVenue: setter('venue'),
+      setLocation: setter('location'),
+      setEpisodeArtworkUrl: setter('episodeArtworkUrl'),
+      setShowTagline: setter('showTagline'),
+      setShowScheduleNote: setter('showScheduleNote'),
+      setShowVisibility: setter('showVisibility'),
+      setAutoPublish: setter('autoPublish'),
+      setPendingCancel: setter('pendingCancel'),
+      setEpisodeNumberEnabled: setter('episodeNumberEnabled'),
+      setNextEpisodeNumber: setter('nextEpisodeNumber'),
+    };
+  }, []);
+  const { setBusy, ...publicSetters } = setters;
 
   useEffect(() => {
     Promise.all([
@@ -67,54 +93,31 @@ export function useScheduleForm() {
       fetchUpcomingBroadcasts(),
       fetchShowSchedule(),
     ])
-      .then(([scheduleResult, upcomingResult, showScheduleResult]) => {
-        const local = toLocalParts(scheduleResult.data.nextBroadcastAt);
-        setSchedule(scheduleResult.data);
-        setDate(local.date);
-        setTime(local.time);
-        setNote(scheduleResult.data.nextBroadcastNote ?? '');
-        setShowType(scheduleResult.data.nextBroadcastShowType ?? 'LIVE_SET');
-        setShowMode(scheduleResult.data.nextBroadcastMode ?? 'SERIES');
-        setShowDescription(scheduleResult.data.nextBroadcastDescription ?? '');
-        setShowCoverUrl(scheduleResult.data.nextBroadcastCoverUrl ?? '');
-        setDurationHours(scheduleResult.data.nextBroadcastDurationHours ?? 1);
-        setUpcoming(upcomingResult.data);
-        setShows(showScheduleResult.data.series);
-        setScheduledShows(showScheduleResult.data.scheduledShows);
-      })
-      .catch(() => toast.error('Could not load your schedule.'))
-      .finally(() => setLoading(false));
+      .then(([scheduleResult, upcomingResult, showScheduleResult]) =>
+        dispatch({
+          type: 'loaded',
+          schedule: scheduleResult.data,
+          upcoming: upcomingResult.data,
+          shows: showScheduleResult.data.series,
+          scheduledShows: showScheduleResult.data.scheduledShows,
+        }),
+      )
+      .catch(() => {
+        toast.error('Could not load your schedule.');
+        dispatch({ type: 'loadFailed' });
+      });
   }, []);
 
   useEffect(() => {
     if (editorOpen) {
-      void fetchShowSeries().then((result) => setShows(result.data));
+      void fetchShowSeries().then((result) =>
+        dispatch({ type: 'showsFetched', shows: result.data }),
+      );
     }
   }, [editorOpen]);
 
-  const selectShow = (showId: string) => {
-    setSelectedShowId(showId);
-    const show = shows.find((candidate) => candidate.id === showId);
-    if (!show) {
-      return;
-    }
-    setNote(show.title);
-    setShowDescription(show.description);
-    setShowCoverUrl(show.coverUrl ?? '');
-    setShowMode(show.mode ?? 'SERIES');
-    setShowType(show.showType);
-    setDurationHours(show.intervalHours);
-    setShowTagline(show.tagline ?? '');
-    setShowScheduleNote(show.scheduleNote ?? '');
-    setShowVisibility(show.visibility ?? 'PUBLIC');
-    setAutoPublish(show.autoPublish ?? true);
-    setEpisodeNumberEnabled(show.episodeNumberEnabled ?? true);
-    setNextEpisodeNumber(show.nextEpisodeNumber);
-    setFrequencyDays(show.recurrenceDays ?? []);
-    setDurationMinutes(
-      (show.recurrenceDurationMin ?? show.intervalHours * 60) % 60,
-    );
-  };
+  const selectShow = (showId: string) =>
+    dispatch({ type: 'showPicked', showId });
 
   const saveRecurringSchedule = async () => {
     const selectedShow = shows.find((show) => show.id === selectedShowId);
@@ -135,11 +138,7 @@ export function useScheduleForm() {
       toast.error(recurrence.error);
       return;
     }
-    setShows((current) =>
-      current.map((show) =>
-        show.id === recurrence.data.id ? recurrence.data : show,
-      ),
-    );
+    dispatch({ type: 'showUpdated', show: recurrence.data });
     toast.success(
       'Recurring schedule saved. Upcoming episodes are being generated.',
     );
@@ -162,10 +161,7 @@ export function useScheduleForm() {
       toast.error(result.error);
       return;
     }
-    setShows((current) =>
-      current.map((show) => (show.id === result.data.id ? result.data : show)),
-    );
-    setFrequencyDays([]);
+    dispatch({ type: 'recurrenceStopped', show: result.data });
     toast.success(
       'Recurring schedule stopped. Existing upcoming episodes remain scheduled.',
     );
@@ -194,14 +190,8 @@ export function useScheduleForm() {
       toast.error(result.error);
       return;
     }
-    setScheduledShows((current) =>
-      [...current, result.data].sort(
-        (left, right) =>
-          new Date(left.startAt).getTime() - new Date(right.startAt).getTime(),
-      ),
-    );
+    dispatch({ type: 'episodeScheduled', episode: result.data });
     toast.success(`${result.data.title} scheduled.`);
-    setEditorOpen(false);
   };
 
   const cancelEpisode = async (id: string) => {
@@ -211,7 +201,7 @@ export function useScheduleForm() {
         toast.error(result.error);
         return;
       }
-      setScheduledShows((current) => current.filter((show) => show.id !== id));
+      dispatch({ type: 'episodeCanceled', id });
       toast.success('Scheduled show canceled.');
     } catch {
       toast.error('Could not cancel the scheduled show.');
@@ -280,39 +270,10 @@ export function useScheduleForm() {
     );
   }, [schedule, upcoming, scheduledShows, shows]);
 
-  const setQuickDate = (value: Date) => {
-    const local = toLocalParts(value.toISOString());
-    setDate(local.date);
-    setTime(local.time);
-  };
+  const setQuickDate = (value: Date) =>
+    dispatch({ type: 'quickDatePicked', at: value });
 
-  const openEditor = () => {
-    if (schedule?.nextBroadcastAt) {
-      const local = toLocalParts(schedule.nextBroadcastAt);
-      setDate(local.date);
-      setTime(local.time);
-      setNote(schedule.nextBroadcastNote ?? '');
-      setShowType(schedule.nextBroadcastShowType ?? 'LIVE_SET');
-      setShowMode(schedule.nextBroadcastMode ?? 'SERIES');
-      setShowDescription(schedule.nextBroadcastDescription ?? '');
-      setShowCoverUrl(schedule.nextBroadcastCoverUrl ?? '');
-      setDurationHours(schedule.nextBroadcastDurationHours ?? 1);
-      setSelectedShowId(
-        schedule.nextBroadcastShowId ??
-          shows.find((show) => show.title === schedule.nextBroadcastNote)?.id ??
-          '',
-      );
-    }
-    if (!schedule?.nextBroadcastAt) {
-      setDate('');
-      setTime('');
-      setNote('');
-      setShowDescription('');
-      setShowCoverUrl('');
-      setSelectedShowId('');
-    }
-    setEditorOpen(true);
-  };
+  const openEditor = () => dispatch({ type: 'editorOpened' });
 
   const saveSchedule = async () => {
     const nextBroadcastAt = fromLocalParts(date, time);
@@ -348,7 +309,7 @@ export function useScheduleForm() {
         return;
       }
       selectedShow = created.data;
-      setShows((current) => [created.data, ...current]);
+      dispatch({ type: 'showCreated', show: created.data });
     }
     const result = await patchChannelSchedule({
       nextBroadcastAt,
@@ -365,55 +326,17 @@ export function useScheduleForm() {
       toast.error(result.error);
       return;
     }
-    setSchedule(result.data);
     toast.success('Next broadcast saved.');
-    setSelectedShowId(selectedShow.id);
-    setEditorOpen(false);
+    dispatch({
+      type: 'scheduleSaved',
+      schedule: result.data,
+      showId: selectedShow.id,
+    });
   };
 
   return {
-    schedule,
-    date,
-    setDate,
-    time,
-    setTime,
-    note,
-    busy,
-    loading,
-    editorOpen,
-    setEditorOpen,
-    shows,
-    scheduledShows,
-    selectedShowId,
-    showDescription,
-    showCoverUrl,
-    showMode,
-    showType,
-    durationHours,
-    durationMinutes,
-    setDurationMinutes,
-    frequencyDays,
-    setFrequencyDays,
-    venue,
-    setVenue,
-    location,
-    setLocation,
-    episodeArtworkUrl,
-    setEpisodeArtworkUrl,
-    showTagline,
-    setShowTagline,
-    showScheduleNote,
-    setShowScheduleNote,
-    showVisibility,
-    setShowVisibility,
-    autoPublish,
-    setAutoPublish,
-    pendingCancel,
-    setPendingCancel,
-    episodeNumberEnabled,
-    setEpisodeNumberEnabled,
-    nextEpisodeNumber,
-    setNextEpisodeNumber,
+    ...state,
+    ...publicSetters,
     selectShow,
     saveRecurringSchedule,
     stopRecurringSchedule,
@@ -423,21 +346,8 @@ export function useScheduleForm() {
     setQuickDate,
     openEditor,
     saveSchedule,
-    onBroadcastFieldsChange: (values: {
-      title: string;
-      description: string;
-      coverUrl: string;
-      mode: 'SINGLE' | 'SERIES';
-      showType: ShowType;
-      durationHours: 1 | 2;
-    }) => {
-      setNote(values.title);
-      setShowDescription(values.description);
-      setShowCoverUrl(values.coverUrl);
-      setShowMode(values.mode);
-      setShowType(values.showType);
-      setDurationHours(values.durationHours);
-    },
+    onBroadcastFieldsChange: (values: BroadcastFields) =>
+      dispatch({ type: 'broadcastFieldsChanged', values }),
   };
 }
 

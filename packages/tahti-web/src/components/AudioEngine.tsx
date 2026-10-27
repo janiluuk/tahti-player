@@ -46,6 +46,7 @@ export function AudioEngine() {
   const muted = usePlayerStore((s) => s.muted);
   const fadeLevel = usePlayerStore((s) => s.fadeLevel);
   const seekTarget = usePlayerStore((s) => s.seekTarget);
+  const reloadNonce = usePlayerStore((s) => s.reloadNonce);
   const setStatus = usePlayerStore((s) => s.setStatus);
   const setProgress = usePlayerStore((s) => s.setProgress);
   const clearSeekTarget = usePlayerStore((s) => s.clearSeekTarget);
@@ -419,7 +420,7 @@ export function AudioEngine() {
       audio.removeEventListener('error', onError);
       cleanup();
     };
-  }, [playable?.id, playable?.streamUrl, restoredPending]);
+  }, [playable?.id, playable?.streamUrl, restoredPending, reloadNonce]);
 
   useEffect(() => {
     const audio = audioRef.current;
