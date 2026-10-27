@@ -3,12 +3,8 @@ import { resolve } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { main } from './cli.mjs';
-import {
-  debUrl,
-  renderTemplate,
-  runPackageAur,
-  sha256OfUrl,
-} from './commands/package-aur.mjs';
+import { debUrl, runPackageAur } from './commands/package-aur.mjs';
+import { renderTemplate, sha256OfUrl } from './packaging.mjs';
 import { playerRoot } from './paths.mjs';
 
 describe('package aur', () => {

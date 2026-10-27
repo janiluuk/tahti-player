@@ -1,4 +1,3 @@
-import { createHash } from 'node:crypto';
 import {
   copyFileSync,
   mkdirSync,
@@ -9,6 +8,7 @@ import {
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
+import { renderTemplate, sha256OfUrl } from '../packaging.mjs';
 import { OpsError, playerRoot } from '../paths.mjs';
 import { runProgram, runSteps } from '../run-script.mjs';
 
@@ -18,26 +18,6 @@ const AUR_REMOTE = 'ssh://aur@aur.archlinux.org/tahti-player-bin.git';
 
 export function debUrl(version) {
   return `https://github.com/janiluuk/tahti-player/releases/download/player@${version}/Tahti_${version}_amd64.deb`;
-}
-
-/** Like `envsubst '$A $B'`: only the named `${VAR}`s are replaced, so
- * PKGBUILD variables such as `${pkgver}` and `${srcdir}` stay as they are. */
-export function renderTemplate(template, vars) {
-  return template.replace(/\$\{([A-Z0-9_]+)\}/g, (match, name) =>
-    Object.hasOwn(vars, name) ? vars[name] : match,
-  );
-}
-
-export async function sha256OfUrl(url, fetchImpl = fetch) {
-  const response = await fetchImpl(url);
-  if (!response.ok) {
-    throw new OpsError(`Download failed (${response.status}): ${url}`);
-  }
-  const hash = createHash('sha256');
-  for await (const chunk of response.body) {
-    hash.update(chunk);
-  }
-  return hash.digest('hex');
 }
 
 function internalStep(label, action) {
