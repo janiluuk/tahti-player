@@ -58,4 +58,24 @@ describe('AuthDialog', () => {
     expect(alert).toHaveAttribute('aria-live', 'polite');
     expect(alert).toHaveTextContent('Passwords do not match.');
   });
+
+  it('accepts a backup code for a two-factor login challenge', () => {
+    const completeTotp = vi.fn(async () => undefined);
+    useAuthStore.setState({
+      error: null,
+      totpChallengeId: 'challenge-1',
+      completeTotp,
+    });
+    render(<AuthDialog />);
+
+    expect(
+      screen.getByText(/authenticator app or a backup code/),
+    ).toBeVisible();
+    fireEvent.change(screen.getByLabelText('Authentication or backup code'), {
+      target: { value: 'ABCD-1111' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Verify' }));
+
+    expect(completeTotp).toHaveBeenCalledWith('ABCD-1111');
+  });
 });

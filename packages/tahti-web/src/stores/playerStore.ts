@@ -147,7 +147,8 @@ function isEmbedProvider(provider: string): provider is EmbedPlaybackProvider {
     provider === 'hearthis' ||
     provider === 'mixcloud' ||
     provider === 'spotify' ||
-    provider === 'bandcamp'
+    provider === 'bandcamp' ||
+    provider === 'mikseri'
   );
 }
 

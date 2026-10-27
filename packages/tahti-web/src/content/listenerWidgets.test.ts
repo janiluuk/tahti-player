@@ -4,6 +4,8 @@ import {
   fetchHearthisUserSets,
   LISTENER_WIDGET_TYPES,
   listenerWidgetType,
+  mikseriChartEmbedUrl,
+  mikseriEmbedUrl,
   resolveHearthisPageEmbedUrl,
   resolveListenerWidgetInput,
   soundcloudProfileUrl,
@@ -17,7 +19,38 @@ describe('Listen store catalog', () => {
       'spotify',
       'hearthis',
       'bandcamp',
+      'mikseri',
     ]);
+  });
+});
+
+describe('Mikseri listener embed', () => {
+  it('normalizes track ids, track pages, and official embed URLs', () => {
+    expect(mikseriEmbedUrl('635878')).toBe(
+      'https://www.mikseri.net/embed/?type=1&parameter=635878',
+    );
+    expect(
+      mikseriEmbedUrl('https://mikseri.net/artists/example/song.635878/'),
+    ).toBe('https://www.mikseri.net/embed/?type=1&parameter=635878');
+    expect(
+      mikseriEmbedUrl('https://mikseri.net/embed/?type=2&parameter=my-list'),
+    ).toBe('https://www.mikseri.net/embed/?type=2&parameter=my-list');
+  });
+
+  it('rejects unrelated hosts and unsupported embed types', () => {
+    expect(
+      mikseriEmbedUrl('https://example.com/embed/?type=1&parameter=1'),
+    ).toBeNull();
+    expect(
+      mikseriEmbedUrl('https://mikseri.net/embed/?type=16&parameter=1'),
+    ).toBeNull();
+  });
+
+  it('builds genre-specific and editorial chart embeds', () => {
+    expect(mikseriChartEmbedUrl('top40', '8')).toContain(
+      'type=5&parameter=0-8-1',
+    );
+    expect(mikseriChartEmbedUrl('listataivas')).toContain('type=15');
   });
 });
 

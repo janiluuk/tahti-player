@@ -229,7 +229,8 @@ The original extraction notes below are kept for history.
   `rtmp-targets.ts` has real ingest URLs baked in for both
   (`PROVIDER_RTMP_URLS`), and both are already options in
   `StudioGoLiveView`'s multistream provider dropdown.
-- **mikseri.net**: requested, spec not provided yet — do not build a UI
-  stub without one; pick this up once specced.
+- **mikseri.net**: official embed integration shipped in tahti-web. It is a
+  repo-native listener widget and Studio reference import, not a downloadable
+  marketplace plugin; it never scrapes or copies Mikseri audio.
 - **Skipped per explicit direction**: NetEase Cloud Music, KHInsider (not
   a fit for this audience).

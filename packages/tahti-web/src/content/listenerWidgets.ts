@@ -12,7 +12,7 @@
  */
 
 export type ListenerWidgetTypeId =
-  'soundcloud' | 'spotify' | 'youtube' | 'hearthis' | 'bandcamp';
+  'soundcloud' | 'spotify' | 'youtube' | 'hearthis' | 'bandcamp' | 'mikseri';
 
 export type ListenerWidgetType = {
   id: ListenerWidgetTypeId;
@@ -64,6 +64,84 @@ function bandcampEmbedUrl(input: string): string | null {
     return null;
   }
   return url.toString();
+}
+
+const MIKSERI_EMBED_TYPES = new Set([
+  '1',
+  '2',
+  '5',
+  '8',
+  '9',
+  '11',
+  '12',
+  '14',
+  '15',
+]);
+
+export const MIKSERI_MAJOR_GENRES = [
+  { id: '0', label: 'All genres' },
+  { id: '2', label: 'Blues / Jazz' },
+  { id: '3', label: 'Funk' },
+  { id: '4', label: 'Hip Hop / Rap' },
+  { id: '5', label: 'Metal' },
+  { id: '6', label: 'Pop / Rock' },
+  { id: '9', label: 'Soul / R&B' },
+  { id: '8', label: 'Electronic' },
+  { id: '10', label: 'Alternative' },
+  { id: '11', label: 'Other' },
+] as const;
+
+export function mikseriEmbedUrl(input: string): string | null {
+  const trimmed = input.trim();
+  if (/^\d+$/.test(trimmed)) {
+    return `https://www.mikseri.net/embed/?type=1&parameter=${trimmed}`;
+  }
+  let url: URL;
+  try {
+    url = new URL(trimmed);
+  } catch {
+    return null;
+  }
+  const host = url.hostname.replace(/^www\./, '').toLowerCase();
+  if (host !== 'mikseri.net') {
+    return null;
+  }
+  if (url.pathname === '/embed/' || url.pathname === '/embed') {
+    const type = url.searchParams.get('type');
+    const parameter = url.searchParams.get('parameter');
+    if (!type || !parameter || !MIKSERI_EMBED_TYPES.has(type)) {
+      return null;
+    }
+    return `https://www.mikseri.net/embed/?type=${encodeURIComponent(type)}&parameter=${encodeURIComponent(parameter)}`;
+  }
+  const segment = url.pathname.split('/').filter(Boolean).at(-1) ?? '';
+  const trackId = segment.match(/(?:^|\.)(\d+)$/)?.[1];
+  if (trackId) {
+    return `https://www.mikseri.net/embed/?type=1&parameter=${trackId}`;
+  }
+  return null;
+}
+
+export function mikseriTrackEmbedUrl(input: string): string | null {
+  const embedUrl = mikseriEmbedUrl(input);
+  if (!embedUrl) {
+    return null;
+  }
+  return new URL(embedUrl).searchParams.get('type') === '1' ? embedUrl : null;
+}
+
+export function mikseriChartEmbedUrl(
+  chart: 'top40' | 'weekly' | 'promoted' | 'listataivas',
+  genreId = '0',
+): string {
+  const config = {
+    top40: ['5', `0-${genreId}-1`],
+    weekly: ['11', '0'],
+    promoted: ['12', '0'],
+    listataivas: ['15', '0'],
+  } as const;
+  const [type, parameter] = config[chart];
+  return `https://www.mikseri.net/embed/?type=${type}&parameter=${parameter}`;
 }
 
 export function soundcloudProfileUrl(input: string): string | null {
@@ -361,6 +439,19 @@ export const LISTENER_WIDGET_TYPES: ListenerWidgetType[] = [
       "On the Bandcamp track/album page, use Share / Embed → paste the generated bandcamp.com/EmbeddedPlayer/… link here (a plain bandcamp.com page URL doesn't carry the id Bandcamp's embed needs).",
     embedHeight: 120,
     toEmbedUrl: bandcampEmbedUrl,
+  },
+  {
+    id: 'mikseri',
+    name: 'Mikseri.net',
+    author: 'Mikseri.net',
+    description:
+      'Play your own Mikseri playlist or track, Top 40 by genre, Listataivas, and other official charts.',
+    category: 'Streaming',
+    placeholder: 'https://www.mikseri.net/embed/?type=2&parameter=…',
+    helpText:
+      'Paste an official Mikseri embed URL, a Mikseri track page, or a numeric track ID.',
+    embedHeight: 190,
+    toEmbedUrl: mikseriEmbedUrl,
   },
 ];
 

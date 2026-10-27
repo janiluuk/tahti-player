@@ -80,7 +80,8 @@ export function playableFromStudioEmbed(item: {
     item.embedProvider !== 'HEARTHIS' &&
     item.embedProvider !== 'MIXCLOUD' &&
     item.embedProvider !== 'SPOTIFY' &&
-    item.embedProvider !== 'BANDCAMP'
+    item.embedProvider !== 'BANDCAMP' &&
+    item.embedProvider !== 'MIKSERI'
   ) {
     return null;
   }
@@ -88,7 +89,8 @@ export function playableFromStudioEmbed(item: {
     return null;
   }
   const provider = toEmbedPlaybackProvider(
-    item.embedProvider as 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP',
+    item.embedProvider as
+      'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | 'MIKSERI',
   );
   return playableFromEmbed(provider, {
     playerId: `sound:${item.id}`,

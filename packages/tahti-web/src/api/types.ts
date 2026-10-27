@@ -159,7 +159,8 @@ export type ChannelSoundItem = {
   /** Set for items Tahti references but never hosts (EMBED_ONLY) — the API
    * already returns these (see routes/channels/items.ts), this type just
    * hadn't declared them. */
-  embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
+  embedProvider?:
+    'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | 'MIKSERI' | null;
   embedUri?: string | null;
 };
 
@@ -182,7 +183,8 @@ export type PublicProfileTrack = {
   bannerUrl?: string | null;
   playUrl?: string | null;
   /** Embed-only tracks have no `playUrl`; the provider widget plays them. */
-  embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
+  embedProvider?:
+    'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | 'MIKSERI' | null;
   embedUri?: string | null;
   releaseSlug?: string | null;
   /** Same field as ChannelSoundItem.createdAt -- carried onto the profile track
@@ -255,7 +257,8 @@ export type CollectionSound = {
   channel?: { slug: string } | null;
   /** Set for items Tahti references but never hosts (EMBED_ONLY) — the
    * provider's widget supplies the audio and artwork. */
-  embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
+  embedProvider?:
+    'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | 'MIKSERI' | null;
   embedUri?: string | null;
 };
 
@@ -333,7 +336,7 @@ export type VenueProfile = VenueDirectoryItem & {
  * player (lowercase, matching `TahtiPlayable.sourceProvider`); mirrors the
  * uppercase `EmbedProvider` in lib/embedSrc that the API surfaces carry. */
 export type EmbedPlaybackProvider =
-  'hearthis' | 'mixcloud' | 'spotify' | 'bandcamp';
+  'hearthis' | 'mixcloud' | 'spotify' | 'bandcamp' | 'mikseri';
 
 /** Playable item in the Tahti listen client (live channel, radio, or archive URL). */
 export type TahtiPlayable = {

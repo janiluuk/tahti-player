@@ -69,6 +69,7 @@ import { ConnectedPlayerBar } from './ConnectedPlayerBar';
 import { ConnectedStatusBar } from './ConnectedStatusBar';
 import { HearthisEmbedHostProvider } from './HearthisEmbedHost';
 import { ListenHeartbeat } from './ListenHeartbeat';
+import { MikseriSidebarWidget } from './MikseriSidebarWidget';
 import { MobileBottomNav, MobileDrawer } from './MobileChrome';
 import { NotificationToasts } from './NotificationToasts';
 import { RouteChunkSkeleton } from './PageStates';
@@ -230,6 +231,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               />
             </div>
           )}
+          {!compact ? <MikseriSidebarWidget /> : null}
         </div>
         <div className="border-border mt-2 flex shrink-0 flex-col gap-2 border-t pt-2">
           <div data-tour-id="nav-chat">

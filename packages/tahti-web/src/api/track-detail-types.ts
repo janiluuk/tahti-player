@@ -16,7 +16,8 @@ export type PublicTrackDetail = {
   audioUrl: string | null;
   /** Set for items Tahti references but never hosts (EMBED_ONLY) — the
    * provider's widget is the only way to play them. */
-  embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
+  embedProvider?:
+    'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | 'MIKSERI' | null;
   embedUri?: string | null;
   bannerUrl: string | null;
   /** Wide backdrop image set in Studio's track editor — shown behind the

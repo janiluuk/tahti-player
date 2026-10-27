@@ -75,3 +75,5 @@ export {
   connectIntegrationMock,
   disconnectIntegration,
 } from './sources/connections';
+export type { MikseriTrackInput } from './sources/mikseri';
+export { addMikseriTrack } from './sources/mikseri';

@@ -6200,3 +6200,11 @@ Settings → Logs is board-only, with links to Admin container logs and Monitori
 ## 2026-10-20 — Admin page comments + atlas CSV export (0.0.233)
 
 Board members open **Page comments** from the right-rail header (same `tahti-web-map-notes` store as the Tahti atlas). Multiple comments per page, edit, resolve/reopen. Atlas **Saved comments** and Screen atlas header both **Export CSV** (status, route, commentary) for handing off fixes. Bumped to `0.0.233`.
+
+## 2026-10-27 — Authenticator setup and login hardening (0.0.271)
+
+Settings → Account → Two-factor authentication now recovers from status-load failures with Retry, and its QR-code enrollment, manual key, confirmation, and one-time backup-code reveal have focused coverage. The login challenge explicitly accepts either a six-digit authenticator code or an alphanumeric backup code, matching the sibling API contract.
+
+## 2026-10-27 — Mikseri.net official embeds (0.0.271)
+
+Settings → Add-ons can now add Mikseri tracks, personal playlists, Listataivas, weekly/promoted songs, and Top 40 widgets filtered by major genre. The newest configured widget is available from the left rail behind an explicit third-party-player load action. Studio collections can reference an artist-owned Mikseri track with manual title, artist, and genre metadata after rights confirmation; Tahti stores only the official embed URL and never scrapes or copies audio. Added focused tests and a Storybook surface for the Studio form.

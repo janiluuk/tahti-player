@@ -12,6 +12,7 @@ import { LibrarySectionTabs } from '../LibraryView';
 import { CollectionDialogs } from './collection-edit/CollectionDialogs';
 import { CollectionHeader } from './collection-edit/CollectionHeader';
 import { DetailsPanel } from './collection-edit/DetailsPanel';
+import { MikseriImportPanel } from './collection-edit/MikseriImportPanel';
 import { MixcloudImportPanel } from './collection-edit/MixcloudImportPanel';
 import { SpotifyImportPanel } from './collection-edit/SpotifyImportPanel';
 import { TextLayerPanel } from './collection-edit/TextLayerPanel';
@@ -69,6 +70,12 @@ export function StudioCollectionEditView({
               {col.id ? <RestrictionNotice type="UPLOAD" /> : null}
               {col.id ? (
                 <MixcloudImportPanel
+                  collectionId={col.id}
+                  onAdded={() => void state.refreshItems()}
+                />
+              ) : null}
+              {col.id ? (
+                <MikseriImportPanel
                   collectionId={col.id}
                   onAdded={() => void state.refreshItems()}
                 />

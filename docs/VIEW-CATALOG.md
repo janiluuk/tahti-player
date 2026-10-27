@@ -177,6 +177,7 @@ Pieces split out of the studio views in the god-module refactor. Stories live in
 | Distribution    | `DeliveryTab`                                                            | `views/studio/distribution/DeliveryTab.tsx`                | `Tahti/Studio/Distribution/DeliveryTab`        |
 | Collection edit | `AddTracksDialog`                                                        | `views/studio/collection-edit/AddTracksDialog.tsx`         | `Tahti/Studio/CollectionEdit/AddTracksDialog`  |
 | Collection edit | `NowPlayingBar`                                                          | `views/studio/collection-edit/NowPlayingBar.tsx`           | `Tahti/Studio/CollectionEdit/NowPlayingBar`    |
+| Collection edit | `MikseriImportPanel`                                                    | `views/studio/collection-edit/MikseriImportPanel.tsx`      | `Tahti/Studio/CollectionEdit/MikseriImportPanel` |
 | Updates         | `PostDialog`, `NewDraftDialog`, `PostPreview`                            | `views/studio/updates/*.tsx`                               | `Tahti/Studio/Updates/*`                       |
 | Branding        | `PressKitPreview`                                                        | `views/studio/branding/PressKitPreview.tsx`                | `Tahti/Studio/Branding/PressKitPreview`        |
 | Show detail     | `EpisodeEditorRow`                                                       | `views/studio/show-detail/EpisodeEditorRow.tsx`            | `Tahti/Studio/ShowDetail/EpisodeEditorRow`     |

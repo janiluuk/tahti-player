@@ -46,7 +46,8 @@ export type ProgrammeItem = {
    * Tahti holds no audio file for these, only a provider widget, so they
    * cannot play unattended in a 24/7 rotation and should never be offered
    * as rotation candidates. */
-  embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
+  embedProvider?:
+    'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | 'MIKSERI' | null;
 };
 
 export type ProgrammeView = {

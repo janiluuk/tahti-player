@@ -118,6 +118,20 @@ describe('playableFromStudioEmbed', () => {
       embed: { provider: 'spotify', embedUri: 'spotify:track:1' },
       artist: 'Unknown',
     });
+
+    const mikseri = playableFromStudioEmbed({
+      id: 'snd-mikseri',
+      title: 'Mikseri track',
+      embedProvider: 'MIKSERI',
+      embedUri: 'https://www.mikseri.net/embed/?type=1&parameter=635878',
+    });
+    expect(mikseri).toMatchObject({
+      sourceProvider: 'mikseri',
+      embed: {
+        provider: 'mikseri',
+        embedUri: 'https://www.mikseri.net/embed/?type=1&parameter=635878',
+      },
+    });
   });
 
   it('falls back to the native path when there is no embed', () => {

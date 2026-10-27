@@ -82,7 +82,8 @@ export type StudioSound = {
   /** Set for EMBED_ONLY items imported by reference (hearthis.at, Mixcloud,
    * Spotify, Bandcamp) — Tahti holds no audio file, so playback only works
    * through the provider's own widget, not the normal editor-source stream. */
-  embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
+  embedProvider?:
+    'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | 'MIKSERI' | null;
   embedUri?: string | null;
   /** Copy pushed to the artist's own hearthis.at account, if any. */
   hearthisExportStatus?:
@@ -222,7 +223,8 @@ export type StudioCollectionItem = {
     genre?: string | null;
     /** Set for EMBED_ONLY items — Tahti holds only the reference, so the
      * provider's widget is the only way to play them. */
-    embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
+    embedProvider?:
+      'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | 'MIKSERI' | null;
     embedUri?: string | null;
     artist?: { username: string; displayName: string } | null;
     /** Gated playback link from the collection route; the editor's own

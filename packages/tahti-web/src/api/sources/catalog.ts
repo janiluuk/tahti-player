@@ -16,6 +16,7 @@ export type IntegrationId =
   | 'url'
   | 'spotify'
   | 'hearthis'
+  | 'mikseri'
   | 'broadcast'
   | 'radio'
   | 'musicbrainz';
@@ -193,6 +194,21 @@ export const SOURCE_DEFS: SourceDef[] = [
     },
   },
   {
+    id: 'mikseri',
+    name: 'Mikseri.net',
+    description:
+      'Add your own Mikseri tracks as official embeds without copying audio.',
+    oauthStartPath: null,
+    studioDeepLink: '/studio/collections',
+    kind: 'tool',
+    capabilities: {
+      connect: false,
+      search: false,
+      import: true,
+      playback: true,
+    },
+  },
+  {
     id: 'radio',
     name: 'Internet radio URL',
     description:
@@ -232,6 +248,7 @@ export async function fetchConnectionStatus(
     id === 'broadcast' ||
     id === 'radio' ||
     id === 'hearthis' ||
+    id === 'mikseri' ||
     id === 'mixcloud-embed'
   ) {
     return {

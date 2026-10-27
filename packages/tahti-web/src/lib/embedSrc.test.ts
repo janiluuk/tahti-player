@@ -15,12 +15,21 @@ const PROVIDERS: EmbedProvider[] = [
   'MIXCLOUD',
   'SPOTIFY',
   'BANDCAMP',
+  'MIKSERI',
 ];
+
+const URI: Record<EmbedProvider, string> = {
+  HEARTHIS: 'demo',
+  MIXCLOUD: 'demo',
+  SPOTIFY: 'demo',
+  BANDCAMP: 'demo',
+  MIKSERI: 'https://www.mikseri.net/embed/?type=1&parameter=635878',
+};
 
 describe('embedSrcFor', () => {
   it('every provider resolves through the dispatcher and has label/height metadata', () => {
     for (const provider of PROVIDERS) {
-      expect(embedSrcFor(provider, 'demo')).toContain('https://');
+      expect(embedSrcFor(provider, URI[provider])).toContain('https://');
       expect(EMBED_PROVIDER_LABEL[provider].length).toBeGreaterThan(0);
       expect(EMBED_PROVIDER_HEIGHT[provider]).toBeGreaterThan(0);
     }

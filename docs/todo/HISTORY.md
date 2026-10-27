@@ -5558,3 +5558,15 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 - **Board changes the account hears about** (org #939–#945, #949, #950; web #1526–#1532, #1535–#1536): Tahti Selects pick, Tahti Radio opt-out/opt-in, channel kind, storage target (binary GB), plan/membership/board seat (`BOARD_ACCOUNT_CHANGE`), annual grants (`GRANT_AWARDED`, sets `notifiedAt`, Money moves), add-on approve/reject/disable with the board's note, a track deleted from Admin → Files and a comment the board removed (`CONTENT_REMOVED_BY_BOARD`; an artist deleting comments on their own track stays silent). Each Admin screen says who is notified; Settings → Notifications → Revenue moves lists cancellations and grants.
 - **Data export** (org #946–#948; web #1533): notifications, grants and fan-subscription payouts, published and installed add-ons, signed-in devices and API tokens (names and prefixes only).
 - **Left**: tahti-org release to refresh `openapi.json`, then remove `/api/me/restrictions` (and batch 112's) from `api-routes-allowlist.json`; org `NOTIFICATION_KIND_TYPES` for the batch 113–114 types follows once they are all merged (the web already files them).
+
+## 2026-10-27 — Authenticator app QR setup and login
+
+- Hardened Settings → Account two-factor authentication with a recoverable status error, QR/manual-key enrollment coverage, confirmation, backup-code reveal, and safe form cancellation.
+- The login challenge now explains and accepts both authenticator and backup codes; store coverage verifies that no session is established until the TOTP challenge completes.
+- Confirmed the existing client calls match the `../tahti-org` TOTP and login-challenge contracts; no sibling changes were needed.
+
+## 2026-10-27 — Mikseri.net official embed integration
+
+- Added configurable track and personal-playlist widgets plus Top 40 by major genre, Listataivas, weekly, and promoted presets using Mikseri's official iframe contract.
+- Added an explicit-load left-sidebar player and Studio collection import for artist-owned tracks with rights confirmation and manual metadata.
+- Coordinated the sibling API/database contract for validated `MIKSERI` embed-only sounds; no scraping, audio download, or re-hosting is performed.

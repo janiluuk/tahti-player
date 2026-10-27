@@ -1,8 +1,9 @@
 # Study: importing from mikseri.net
 
-Requested as a research pass only — no code in this pass. Answers "what would
-it take to let a user import their own tracks from mikseri.net, as files and
-as an embeddable player," per the shapes this repo already supports
+Originally requested as a research pass; updated after the official embed
+contract was captured and implemented. Answers "what would it take to let a
+user import their own tracks from mikseri.net, as files and as an embeddable
+player," per the shapes this repo already supports
 (`src/api/sources.ts`'s `SourceDef`, `src/lib/embedSrc.ts`'s `EmbedProvider`).
 
 ## What mikseri.net is
@@ -52,25 +53,26 @@ embedding). This is the one integration shape that's actually available
 here, the same way hearthis.at/Mixcloud/Spotify/Bandcamp are embed-only in
 this repo today (`EMBED_PROVIDER_LABEL`/`EMBED_PROVIDER_HEIGHT`).
 
-The concrete embed markup/URL shape (what the widget iframe src actually
-looks like, whether it needs a numeric track id or a slug, size/theming
-query params) was **not** captured in this pass — that needs one real
-mikseri.net track page in a browser with "make a player" clicked, to read
-off the generated embed snippet, the same way the existing four providers'
-`*EmbedSrc()` functions were each derived from one real example. Flagging
-that as the concrete next step rather than guessing at a URL shape.
+The official embed builder emits
+`https://www.mikseri.net/embed/?type=<type>&parameter=<parameter>` in a
+450×190 iframe. The implemented allowlist covers individual tracks (`type=1`),
+personal playlists (`type=2`), Top 40 (`type=5`), genre/tag lists (`8`, `9`,
+`14`), weekly songs (`11`), promoted songs (`12`), and Listataivas (`15`).
+Top 40 major genres use `parameter=0-<genre>-1`. Studio collection import is
+deliberately narrower: only a numeric track ID, Mikseri track page, or official
+`type=1` embed is accepted.
 
 ## Recommendation
 
-- **Do build**: a `MIKSERI` `EmbedProvider` entry, once the real embed markup
-  is captured from a live track page — same shape as the existing four,
-  same `EMBED_ONLY` archive-item handling, no new capability class needed.
+- **Shipped**: `MIKSERI` embed playback, artist-owned track references in
+  Studio, personal playlist/track widgets, official chart presets, a Top 40
+  major-genre selector, and an explicit-load left-sidebar widget.
 - **Do not build**: a `SourceDef`/import source for mikseri.net files. There
   is no API to build one against, and the site's `robots.txt` is an explicit,
   documented objection to automated access — going around that with scraping
   would be different in kind from every other source this repo integrates
   with, all of which are either a real OAuth grant or a documented public
   API/embed contract.
-- If file import is wanted later, the actual next step is contacting
+- If file import is wanted later, the actual next step remains contacting
   mikseri.net directly about API or bulk-export access for artists moving
   their own catalog — not scraping.

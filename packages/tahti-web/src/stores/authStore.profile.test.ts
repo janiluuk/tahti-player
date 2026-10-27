@@ -5,6 +5,7 @@ import type { AuthUser } from '../api/types';
 const api = vi.hoisted(() => ({
   fetchAuthMe: vi.fn(),
   loginRequest: vi.fn(),
+  loginTotpRequest: vi.fn(),
   logoutRequest: vi.fn(async () => undefined),
 }));
 
@@ -12,6 +13,7 @@ vi.mock('../api/client', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../api/client')>()),
   fetchAuthMe: api.fetchAuthMe,
   loginRequest: api.loginRequest,
+  loginTotpRequest: api.loginTotpRequest,
   logoutRequest: api.logoutRequest,
 }));
 
@@ -47,6 +49,7 @@ describe('auth store profile loading', () => {
     vi.useFakeTimers();
     api.fetchAuthMe.mockReset();
     api.loginRequest.mockReset();
+    api.loginTotpRequest.mockReset();
     api.loginRequest.mockResolvedValue({ ok: true, user: summary });
     useAuthStore.setState({
       user: null,
@@ -113,5 +116,24 @@ describe('auth store profile loading', () => {
     await useAuthStore.getState().refresh();
     expect(api.fetchAuthMe).toHaveBeenCalledTimes(1);
     expect(useAuthStore.getState().user).toBeNull();
+  });
+
+  it('holds a two-factor challenge until the authenticator code completes login', async () => {
+    api.loginRequest.mockResolvedValue({
+      ok: true,
+      requiresTotp: true,
+      challengeId: 'challenge-1',
+    });
+    api.loginTotpRequest.mockResolvedValue({ ok: true, user: summary });
+    api.fetchAuthMe.mockResolvedValue(ok(profile));
+
+    await useAuthStore.getState().login('yaniho@example.com', 'pw');
+    expect(useAuthStore.getState().user).toBeNull();
+    expect(useAuthStore.getState().totpChallengeId).toBe('challenge-1');
+
+    await useAuthStore.getState().completeTotp('123456');
+    expect(api.loginTotpRequest).toHaveBeenCalledWith('challenge-1', '123456');
+    expect(useAuthStore.getState().totpChallengeId).toBeNull();
+    expect(useAuthStore.getState().user?.channel?.slug).toBe('yaniho');
   });
 });
