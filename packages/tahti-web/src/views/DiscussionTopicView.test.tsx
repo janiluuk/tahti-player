@@ -176,6 +176,41 @@ describe('DiscussionTopicView', () => {
     );
   });
 
+  it('edits your own reply and marks it edited', async () => {
+    vi.spyOn(discussions, 'fetchDiscussionTopic').mockResolvedValue({
+      data: {
+        ...TOPIC,
+        posts: [{ ...TOPIC.posts[0]!, author: 'Member', mine: true }],
+      },
+      meta: { source: 'api' },
+    });
+    const edit = vi.spyOn(discussions, 'editDiscussionPost').mockResolvedValue({
+      ok: true,
+      data: {
+        ...TOPIC.posts[0]!,
+        author: 'Member',
+        body: 'An ambient set, late.',
+        mine: true,
+        editedAt: '2026-10-21T10:00:00.000Z',
+      },
+    });
+    renderView();
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Edit your reply' }),
+    );
+    fireEvent.change(screen.getByLabelText('Edit your reply'), {
+      target: { value: 'An ambient set, late.' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(() =>
+      expect(edit).toHaveBeenCalledWith('t1', '1', 'An ambient set, late.'),
+    );
+    expect(
+      await screen.findByText('An ambient set, late.'),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/\(edited\)/)).toBeInTheDocument();
+  });
+
   it("a member can't remove someone else's reply", async () => {
     vi.spyOn(discussions, 'fetchDiscussionTopic').mockResolvedValue({
       data: TOPIC,

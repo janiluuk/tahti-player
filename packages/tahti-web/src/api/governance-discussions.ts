@@ -24,6 +24,8 @@ export type DiscussionPost = {
   author: string;
   createdAt: string;
   mine?: boolean;
+  /** Set when the author edited the reply. */
+  editedAt?: string | null;
 };
 
 export type DiscussionTopicDetail = DiscussionTopic & {
@@ -286,6 +288,43 @@ export async function removeDiscussionPost(
       ok: false,
       error: errorMessage(err, 'Could not remove the reply'),
     };
+  }
+}
+
+export async function editDiscussionPost(
+  id: string,
+  postId: string,
+  body: string,
+): Promise<DiscussionResult<DiscussionPost>> {
+  const trimmed = body.trim();
+  if (isForceMock()) {
+    const topic = mockTopics.find((t) => t.id === id);
+    const post = topic?.posts.find((p) => p.id === postId);
+    if (!topic || !post) {
+      return { ok: false, error: 'Post not found' };
+    }
+    if (topic.status === 'CLOSED') {
+      return { ok: false, error: 'This topic is closed; its replies are kept' };
+    }
+    const edited = {
+      ...post,
+      body: trimmed,
+      editedAt: new Date().toISOString(),
+    };
+    updateMockTopic(id, (t) => ({
+      ...t,
+      posts: t.posts.map((p) => (p.id === postId ? edited : p)),
+    }));
+    return { ok: true, data: edited };
+  }
+  try {
+    const { data } = await requestJson<DiscussionPost>(
+      `/api/v1/governance/discussions/${encodeURIComponent(id)}/posts/${encodeURIComponent(postId)}`,
+      { method: 'PATCH', body: JSON.stringify({ body: trimmed }) },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return { ok: false, error: errorMessage(err, 'Could not save your reply') };
   }
 }
 
