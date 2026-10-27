@@ -22,6 +22,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |
+| open    | [ux-usability-audit.md](ux-usability-audit.md) | Verified findings from the #1568 UX audit: distribution royalties error, radio relay error, two unselected stores, schedule form reducer, memo after profiling |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |
