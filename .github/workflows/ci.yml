@@ -133,8 +133,8 @@ jobs:
         env:
           TAHTI_OPENAPI: ${{ runner.temp }}/openapi.json
 
-      # Builds every workspace package the player depends on (which is all of
-      # them), so this job is also the "everything builds" check.
+      # Builds every workspace package the player depends on; with the next
+      # step this job is also the "everything builds" check.
       - name: Build player (frontend-only)
         if: ${{ !cancelled() && steps.setup.outcome == 'success' && steps.rust-changes.outputs.rust != 'true' }}
         run: pnpm turbo build:frontend --filter=@tahti-player/player
@@ -145,6 +145,10 @@ jobs:
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+
+      - name: Build plugin-sdk and hifi
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: pnpm turbo build --filter=@tahti-player/plugin-sdk --filter=@tahti-player/hifi
 
   # tahti-web's Vitest suite is the slowest step in CI, so it runs in three
   # shards. Workspace packages export their sources, so no build is needed.

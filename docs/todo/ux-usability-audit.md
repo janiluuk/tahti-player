@@ -43,6 +43,10 @@ re-filed.
     API, playlist files), API clients, utils, types and test fixtures.
     `packages/player/src` now holds only `main.tsx`, `remote.tsx`, the
     `desktop*.ts` wiring and the Tauri bindings.
+  - 2026-10-27, removal 5/5 (`chore/batch-90-dead-ui-deps`): 33 dependencies
+    and 12 dev dependencies of `@tahti-player/player` that only the removed
+    code used. CI builds plugin-sdk and hifi in their own step, and their
+    changes no longer trigger a desktop release.
 - **Auth flows' `.catch(() => undefined)`** (`VerifyView`, `ResetPasswordView`,
   `SetupPasswordView`): incorrect. `authStore` sets `error` before rejecting and
   each view renders it with `InlineError`; the catch only stops an unhandled
