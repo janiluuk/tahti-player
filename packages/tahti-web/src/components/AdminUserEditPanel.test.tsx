@@ -51,5 +51,6 @@ describe('AdminUserEditPanel', () => {
     expect(
       await screen.findByText(/They are emailed your reason/),
     ).toBeTruthy();
+    expect(screen.getByText(/board seat notifies the account/)).toBeTruthy();
   });
 });
