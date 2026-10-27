@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as api from '../api/me-restrictions';
-import { RestrictionNotice } from './RestrictionNotice';
+import { RestrictionNotice, RestrictionNotices } from './RestrictionNotice';
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -35,5 +35,15 @@ describe('RestrictionNotice', () => {
     const { container } = render(<RestrictionNotice type="UPLOAD" />);
     await vi.waitFor(() => expect(fetch).toHaveBeenCalled());
     expect(container.textContent).toBe('');
+  });
+
+  it('lists every active restriction for Settings', async () => {
+    vi.spyOn(api, 'fetchMyRestrictions').mockResolvedValue([
+      { type: 'UPLOAD', reason: 'Copyright strikes', expiresAt: null },
+      { type: 'LIVE_SHOW_BOOKING', reason: 'No-shows', expiresAt: null },
+    ]);
+    render(<RestrictionNotices />);
+    expect(await screen.findByText('Uploads are blocked')).toBeTruthy();
+    expect(screen.getByText('Booking shows is blocked')).toBeTruthy();
   });
 });
