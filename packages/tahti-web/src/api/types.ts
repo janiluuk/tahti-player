@@ -157,6 +157,8 @@ export type ChannelSoundItem = {
   downloadCount?: number;
   /** [0..255] amplitude buckets for the row waveform. */
   peaks?: number[] | null;
+  /** False = the artist turned downloads off. */
+  downloadsEnabled?: boolean;
   /** Origin provider when imported (soundcloud, bandcamp, …). */
   sourceProvider?: string | null;
   /** Present when API serializes Stage pins (profile always; channel items may omit). */

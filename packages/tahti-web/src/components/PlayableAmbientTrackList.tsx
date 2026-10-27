@@ -1,5 +1,5 @@
-import { Link } from '@tanstack/react-router';
-import { PencilIcon, TrashIcon } from 'lucide-react';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { DownloadIcon, PencilIcon, TrashIcon } from 'lucide-react';
 import { useEffect, useMemo, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
@@ -8,6 +8,7 @@ import { Select } from '@tahti-player/ui';
 import type { TahtiPlayable } from '../api/types';
 import { formatDuration } from '../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../lib/soundId';
+import { downloadTrackFromRow } from '../lib/trackDownload';
 import {
   sortTracks,
   TRACK_SORT_OPTIONS,
@@ -56,9 +57,14 @@ export function PlayableAmbientTrackList({
   onBulkRemove?: (items: TahtiPlayable[]) => void;
   /** Genre and public totals for a track, when the page has them. Keep it
    * stable (useMemo / useCallback): the rows are memoized on it. */
-  getTrackMeta?: (
-    item: TahtiPlayable,
-  ) => { genre?: string | null; stats?: AmbientTrackStats } | undefined;
+  getTrackMeta?: (item: TahtiPlayable) =>
+    | {
+        genre?: string | null;
+        stats?: AmbientTrackStats;
+        /** The artist allows downloads: the row offers a download action. */
+        downloadable?: boolean;
+      }
+    | undefined;
   defaultDensity?: AmbientTrackRowDensity;
 }) {
   const play = usePlayerStore((s) => s.play);
@@ -72,6 +78,7 @@ export function PlayableAmbientTrackList({
   const setStatus = usePlayerStore((s) => s.setStatus);
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
+  const navigate = useNavigate();
   const userId = useAuthStore((s) => s.user?.id ?? null);
   const likedIds = useSoundLikesStore((s) => s.liked);
   const likeCounts = useSoundLikesStore((s) => s.counts);
@@ -168,6 +175,37 @@ export function PlayableAmbientTrackList({
                     action.id !== 'play' && !(like && action.id === 'favorite'),
                 )
                 .concat(
+                  meta?.downloadable && soundId && item.channelSlug
+                    ? [
+                        {
+                          id: 'download',
+                          label: `Download ${item.title}`,
+                          title: 'Download',
+                          icon: <DownloadIcon size={16} />,
+                          onClick: () => {
+                            void downloadTrackFromRow(
+                              item.channelSlug!,
+                              soundId,
+                              item.title,
+                            ).then((outcome) => {
+                              if (outcome.kind === 'gated') {
+                                toast.info(
+                                  'The artist asks you to follow or share before downloading.',
+                                );
+                                void navigate({
+                                  to: '/t/$id',
+                                  params: { id: soundId },
+                                });
+                              } else if (outcome.kind === 'failed') {
+                                toast.error(outcome.error);
+                              }
+                            });
+                          },
+                        },
+                      ]
+                    : [],
+                )
+                .concat(
                   onEdit
                     ? [
                         {
@@ -208,6 +246,7 @@ export function PlayableAmbientTrackList({
       likedIds,
       likeCounts,
       toggleLike,
+      navigate,
       onEdit,
       onRemove,
       play,

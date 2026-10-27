@@ -23,10 +23,12 @@ describe('channelTrackMeta', () => {
         likeCount: 3,
         playCount: 31,
         downloadCount: 15,
+        downloadsEnabled: true,
       },
     ]);
     expect(meta(PLAYABLE)).toEqual({
       genre: 'Progressive House',
+      downloadable: true,
       stats: {
         releaseDate: '2026-10-17T12:00:00.000Z',
         likes: 3,
