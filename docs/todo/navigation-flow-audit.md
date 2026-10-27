@@ -64,7 +64,7 @@ Checked:
 
 First subagent was **wrong** on this class of issues. These are all wired correctly.
 
-**E2e:** `e2e/studio-content-ops.spec.ts` opens the release (+ stats tab), collection, playlist, sound, sound editor, mastering, editor project, event add/edit, show (+ episodes tab) and episode review pages from their list pages.
+**E2e:** `e2e/routes-studio-content.spec.ts` opens the release (+ stats tab), collection, playlist, sound, sound editor, mastering, editor project, event add/edit, show (+ episodes tab) and episode review pages from their list pages.
 
 ---
 
