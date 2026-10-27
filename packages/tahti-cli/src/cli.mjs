@@ -32,7 +32,7 @@ import { runLibraryEdit } from './commands/library-edit.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryProcessing } from './commands/library-processing.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
-import { MAX_LIKES_LIMIT, runLikes } from './commands/likes.mjs';
+import { MAX_LIKES_LIMIT, runLikes, runSetLiked } from './commands/likes.mjs';
 import { runLogin, runLogout } from './commands/login.mjs';
 import { MAX_MENTIONS_LIMIT, runMentions } from './commands/mentions.mjs';
 import { runMessagesList, runMessagesSend } from './commands/messages.mjs';
@@ -651,6 +651,29 @@ characters. Needs a token with the write scope.`,
     options: { ...JSON_OPTION, limit: { type: 'string' } },
     run: (config, { values }) =>
       runFeed(config, { json: values.json, limit: values.limit }),
+  },
+  {
+    path: ['like'],
+    usage: 'tahti like <channel> <track-id>',
+    summary: 'Love a track',
+    details: `Calls POST /api/v1/c/:channel/sounds/:id/like and prints the new public
+count. The track id is the one \`tahti likes\` and track links show. Needs a
+token with the write scope.`,
+    options: {},
+    positionals: 2,
+    run: (config, { positionals }) =>
+      runSetLiked(config, positionals[0], positionals[1], true),
+  },
+  {
+    path: ['unlike'],
+    usage: 'tahti unlike <channel> <track-id>',
+    summary: 'Stop loving a track',
+    details: `Calls DELETE /api/v1/c/:channel/sounds/:id/like. Needs a token with the
+write scope.`,
+    options: {},
+    positionals: 2,
+    run: (config, { positionals }) =>
+      runSetLiked(config, positionals[0], positionals[1], false),
   },
   {
     path: ['likes'],
