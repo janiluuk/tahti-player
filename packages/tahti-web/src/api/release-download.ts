@@ -16,6 +16,13 @@ export type SmartLinkTrack = {
   audioUrl?: string | null;
   gate?: TrackAccessGate | null;
   credits?: unknown;
+  /** Track-row extras for tracks linked to a Tahti sound (tahti-org #1018). */
+  genre?: string | null;
+  peaks?: number[] | null;
+  downloadsEnabled?: boolean;
+  likeCount?: number;
+  playCount?: number;
+  downloadCount?: number;
 };
 
 /** Presigned URL for one published release track; the API applies the

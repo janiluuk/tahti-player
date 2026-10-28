@@ -35,6 +35,7 @@ import {
 import {
   smartLinkLockedTracks,
   smartLinkPlayables,
+  smartLinkTrackMeta,
 } from './smart-link/smartLinkTracks';
 
 type SmartLinkViewProps = { slug: string };
@@ -86,6 +87,10 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
 
   const playables = useMemo(
     () => (data ? smartLinkPlayables(data) : []),
+    [data],
+  );
+  const trackMeta = useMemo(
+    () => (data ? smartLinkTrackMeta(data) : undefined),
     [data],
   );
 
@@ -217,6 +222,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
 
       <CollectionTrackList
         items={playables}
+        getTrackMeta={trackMeta}
         title="Tracks"
         empty={
           smartLinkLockedTracks(data).length === 0
