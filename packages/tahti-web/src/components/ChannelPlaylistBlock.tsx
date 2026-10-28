@@ -5,6 +5,7 @@ import { Card, CardGrid } from '@tahti-player/ui';
 
 import { fetchCollection } from '../api/client';
 import type { PublicCollection, TahtiPlayable } from '../api/types';
+import { collectionTrackMeta } from '../lib/collectionTrackMeta';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { usePlayerStore } from '../stores/playerStore';
@@ -32,6 +33,8 @@ function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
       streamUrl: sound.audioUrl,
       protocol: isHls ? 'hls' : 'https',
       channelSlug: sound.channel?.slug,
+      releaseDate: sound.createdAt ?? null,
+      peaks: sound.peaks ?? null,
     });
   }
   return out;
@@ -93,6 +96,10 @@ export function ChannelPlaylistBlock({
     };
   }, [playlistSlug, attempt]);
 
+  const trackMeta = useMemo(
+    () => (collection ? collectionTrackMeta(collection) : undefined),
+    [collection],
+  );
   const playables = useMemo(
     () => (collection ? collectionToPlayables(collection) : []),
     [collection],
@@ -204,7 +211,11 @@ export function ChannelPlaylistBlock({
           })}
         </CardGrid>
       ) : (
-        <PlayableAmbientTrackList items={playables} compactActions />
+        <PlayableAmbientTrackList
+          items={playables}
+          compactActions
+          getTrackMeta={trackMeta}
+        />
       )}
     </section>
   );
