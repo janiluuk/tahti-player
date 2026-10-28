@@ -1640,7 +1640,21 @@ export function mockTrackDetail(id: string): PublicTrackDetail | null {
 }
 
 export function mockProfile(username: string): PublicProfile {
-  return mockFixture('profile', buildMockProfile(username), username);
+  const profile = buildMockProfile(username);
+  const sum = (key: 'playCount' | 'likeCount' | 'downloadCount') =>
+    profile.tracks.reduce((total, track) => total + (track[key] ?? 0), 0);
+  return mockFixture(
+    'profile',
+    {
+      ...profile,
+      totals: {
+        plays: sum('playCount'),
+        likes: sum('likeCount'),
+        downloads: sum('downloadCount'),
+      },
+    },
+    username,
+  );
 }
 
 export function mockCollection(
