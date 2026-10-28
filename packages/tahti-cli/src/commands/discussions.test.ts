@@ -23,6 +23,7 @@ const TOPIC = {
   following: true,
   muted: false,
   unreadCount: 1,
+  lastReplyBy: 'Liis Kask',
 };
 
 describe('tahti discussions', () => {
@@ -39,6 +40,8 @@ describe('tahti discussions', () => {
     expect(output).toContain('topic-1');
     expect(output).toContain('Festival stage 2027');
     expect(output).toContain('pinned, following');
+    expect(output).toContain('LAST REPLY');
+    expect(output).toContain('Liis Kask');
   });
 
   it('says when there are none', async () => {
