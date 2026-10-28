@@ -42,6 +42,7 @@ export function profileTrackMeta(tracks: PublicProfileTrack[]) {
         likes: track.likeCount,
         plays: track.playCount,
         downloads: track.downloadCount,
+        comments: track.commentCount,
       },
     };
   };

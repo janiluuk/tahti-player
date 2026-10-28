@@ -152,6 +152,7 @@ export type ChannelSoundItem = {
   audioUrl?: string | null;
   genre?: string | null;
   createdAt?: string;
+  commentCount?: number;
   likeCount?: number;
   playCount?: number;
   downloadCount?: number;
