@@ -8,9 +8,9 @@ Canonical pointers when both checkouts are open:
 | Fan-sub money flow spec | `../tahti-org/docs/engagement-and-fansubs.md` |
 | Payout runbook + €4.45 caveat | `../tahti-org/docs/flows/payouts.md` |
 | Governance status | `../tahti-org/docs/governance-worklog.md` |
-| Production route map | `../tahti-org/docs/flows/site-map.md` (`/dashboard/*`) |
-| Beta deploy ops | `deploy/README.md` here + `../tahti-org/ops/beta-tahti-live.md` |
-| Cutover gates | `CUTOVER.md` here (prod stub: `../tahti-org/ops/nuclear-web-cutover.md`) |
+| Legacy route map (old `/dashboard/*` URLs, now redirected) | `../tahti-org/docs/flows/site-map.md` |
+| Web deploy ops (every public host) | `deploy/README.md` here + `../tahti-org/ops/beta-tahti-live.md` |
+| Cutover outcome + open host/build items | `CUTOVER.md` here (tahti-org pointer: `../tahti-org/ops/nuclear-web-cutover.md`) |
 | Plugin/theme Store catalog | Sibling `../tahti-registry` (`plugins.json`, `themes/`). After plugin add/change, check that repo (new listing or version bump). |
 
 ## Checkout names

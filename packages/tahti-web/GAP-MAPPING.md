@@ -2,6 +2,8 @@
 
 Audit date: 2026-08-27
 
+**2026-10-28:** the cutover is done - this SPA serves every public host and the legacy Next `apps/web` is removed (tahti-org #1030). The no-drop ledger below is now a regression checklist for the production hosts; its gates were never ticked (verify). Status: [`CUTOVER.md`](CUTOVER.md).
+
 This maps the public Tahti product described at [tahti.live](https://tahti.live/) to the beta SPA in this package (`beta.tahti.live`). “Partial” means the main path exists but important depth or parity is missing. Admin production details are based on the existing port inventory because those routes require board access and cannot be inspected anonymously.
 
 ## Summary
@@ -86,7 +88,7 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 
 This is the decision gate for switching the official listener/artist client. A route that merely redirects to a nearby page is not automatically parity: the target must preserve the user’s task, data, permissions, and return path.
 
-### Must be green before listener/artist cutover
+### Regression checks on the production hosts
 
 | Production surface | Current beta/cutover handling | Gate |
 | --- | --- | --- |
@@ -111,17 +113,15 @@ The production app has dedicated surfaces that the beta currently folds together
 - Production dashboard settings for media, discovery, internet radio, green room, moderators, multistream, distribution, and members are split between Studio, Settings, and Add-ons in beta. Each must have one canonical beta destination and an automated route test.
 - `/dashboard/governance/*` and `/dashboard/messages/*` are represented by the global `/governance` and `/messages` surfaces. Verify artist permissions and thread deep links for both roles, not just listener access.
 
-### Admin cutover boundary
+### Admin
 
-The 2026-10-20 parity sweep found endpoint parity between the Next `/admin/*` pages and the beta admin, including the routes this section used to list (per-channel programme and sounds, announcement editor, disco-widgets and themes, internet radio, missed shows, financial fan-subs / ledger / legacy members, governance audit / reports / resolutions, grant years, support and user detail). Moving `/admin/*` to the beta host no longer drops a capability; keep the moderation and logs deep-link aliases.
+The 2026-10-20 parity sweep found endpoint parity between the former Next `/admin/*` pages and the SPA admin (per-channel programme and sounds, announcement editor, disco-widgets and themes, internet radio, missed shows, financial fan-subs / ledger / legacy members, governance audit / reports / resolutions, grant years, support and user detail). The SPA admin is the board admin since 2026-10-28 ([`docs/DECISIONS.md`](../../docs/DECISIONS.md)); keep the moderation and logs deep-link aliases.
 
 ### Deployment safeguards
 
-- Freeze this mapping with a baseline commit and record the matching `tahti-org` API revision.
-- Run route smoke tests on the cutover candidate for anonymous listener, authenticated listener, artist/channel owner, moderator, and board roles.
+- Run route smoke tests on the production hosts for anonymous listener, authenticated listener, artist/channel owner, moderator, and board roles.
 - Assert that production-only redirects never fall through to a generic page when they carry a task, identifier, upload, OAuth, or payment return state.
 - Verify live API mode has no mock fallback and that all build-time secrets are present, especially hCaptcha, app URL, Centrifugo, and Stripe/OAuth return configuration.
-- Keep Next Admin and the beta client dual-running through soak; only retire beta/Next surfaces after route, permission, and payment-return checks pass on the final host.
 
 ## Evidence
 

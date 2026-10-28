@@ -4,8 +4,7 @@ Short extract from [`FEATURES.md`](FEATURES.md). Agents: prefer this file over t
 
 When an item ships: remove it here **and** from FEATURES Remaining; fold a one-liner to `docs/todo/HISTORY.md`.
 
-- [ ] Production cutover for `apps/web`
 - [ ] Radio channels beyond `tahti-radio`: programming for RADIO channels other than `tahti-radio` (no per-station calendar in the API). Done 2026-09-28: tahti-radio's Programming block lists the week of booked slots (#207); the 6 curated Finnish stations have in-app pages at `/radio/station/$stationId` (#208). 2026-09-30: the board sets a channel's kind (Artist / Radio station) from the admin user panel (#310, API tahti-org#571)
 - [ ] Track visualization video editor: full-screen editor built on PulseForge for making audio-reactive videos of a track. See `docs/todo/track-visualizer-video-editor.md`
 - [ ] Server-side multitrack render (the theDAW multitrack editor runs in the browser beside trim mode)
-- [ ] Three smaller gaps from the 2026-08 route sweeps (guided signup steps, theme PR token, collection/venue bot OG): see "Open from the 2026-08 route sweeps" in [`FEATURES.md`](FEATURES.md)
+- [ ] Smaller gaps from the 2026-08 route sweeps (guided signup steps, theme PR token): see "Open from the 2026-08 route sweeps" in [`FEATURES.md`](FEATURES.md)

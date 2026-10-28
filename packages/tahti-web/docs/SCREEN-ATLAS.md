@@ -1,5 +1,9 @@
 # Screen atlas — app.tahti.live → Nuclear UI
 
+**2026-10-28:** historical. The legacy `apps/web` is removed and this SPA
+(admin included) serves every host. Rows saying **missing** or "keep Next
+admin" are out of date; use [`../NAVIGATION-SITEMAP.md`](../NAVIGATION-SITEMAP.md).
+
 **2026-09-04:** Live map shots live under `public/map/nuclear/` (not only
 `docs/redesign-shots/`). Recapture with `scripts/capture-map-screens.mjs`.
 This inventory table below is historical (2026-08); the `/more` atlas and
@@ -120,9 +124,9 @@ Screenshots are Nuclear UI only (mock or beta). Prod is the source of *what must
 
 ---
 
-## 4. Admin (`/admin/*`) — Nuclear **not started**
+## 4. Admin (`/admin/*`) - 2026-08 snapshot (the SPA admin has since shipped and is canonical)
 
-All **missing** Nuclear UI (keep Next admin until cutover Phase). No Nuclear screenshots.
+2026-08 snapshot: all **missing** at the time. The SPA admin has since shipped (40 routes) and is the board admin.
 
 | Prod | Notes |
 |------|--------|
