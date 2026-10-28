@@ -18,16 +18,16 @@ Or:
 
 SSH target defaults to `vimage` (root@192.168.2.100). Override with `DEPLOY_HOST` / `REMOTE_PATH` / `HOST_PORT`.
 
-## Beta vs prod-shaped builds
+## Build profiles
+
+This container serves production on every tahti.live host. `beta.tahti.live` 301-redirects to `https://tahti.live` (see `nginx.conf`) until a preprod copy exists.
 
 | Profile | How | Diagnostics (`VITE_ENABLE_DIAGNOSTICS`) |
 |---------|-----|----------------------------------------|
-| **beta** (default) | `pnpm deploy:tahti-beta` | On — `/more` + Screen atlas for review |
-| **prod** | `TAHTI_WEB_DEPLOY_PROFILE=prod pnpm deploy:tahti-beta` | Off — prod-shaped SPA |
+| **prod** (default; CI deploys) | `pnpm deploy:tahti-beta` | Off - `/more` and Screen atlas redirect to `/` |
+| **beta** | `TAHTI_WEB_DEPLOY_PROFILE=beta pnpm deploy:tahti-beta` | On - for review builds only, never on the production host |
 
-The CI deploy (`deploy-tahti-web-selfhosted.yml`) builds with diagnostics **on** and without `VITE_HCAPTCHA_SITEKEY`, so production currently runs the beta profile (see CUTOVER "Still open").
-
-Pass `VITE_HCAPTCHA_SITEKEY` in the deploying shell when the API has `HCAPTCHA_SECRET` set; otherwise chat join fails closed. The script forwards the sitekey into the Vite build when present and warns when it is missing.
+hCaptcha: CI passes the repository variable `HCAPTCHA_SITEKEY` as `VITE_HCAPTCHA_SITEKEY`; the manual script forwards `VITE_HCAPTCHA_SITEKEY` from the shell. Set the site key **before** the API gets a real `HCAPTCHA_SECRET`, or signup, password reset and chat join fail. With the API's placeholder secret, hCaptcha is not enforced.
 
 ## What gets installed
 
