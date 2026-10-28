@@ -6,6 +6,7 @@ import {
   runDiscussionsFollow,
   runDiscussionsList,
   runDiscussionsMute,
+  runDiscussionsReadAll,
   runDiscussionsReply,
   runDiscussionsShow,
 } from './discussions.mjs';
@@ -192,5 +193,17 @@ describe('tahti discussions', () => {
     await expect(
       runDiscussionsShow(TEST_CONFIG, 'topic-1', { before: 'abc' }),
     ).rejects.toThrow('--before takes a reply number');
+  });
+
+  it('marks every followed topic read', async () => {
+    const fetchMock = mockFetchJson({ marked: 3 });
+    expect(await runDiscussionsReadAll(TEST_CONFIG)).toBe(
+      'Marked 3 topics read.',
+    );
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe(
+      'https://api.example.test/api/v1/governance/discussions/read-all',
+    );
+    expect(init.method).toBe('POST');
   });
 });

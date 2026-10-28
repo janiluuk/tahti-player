@@ -176,3 +176,14 @@ export async function runDiscussionsMute(config, id, muted) {
     ? 'Muted: you still follow it, without notifications.'
     : 'Unmuted: new replies notify you again.';
 }
+
+export async function runDiscussionsReadAll(config) {
+  const { marked } = await apiPost(
+    '/api/v1/governance/discussions/read-all',
+    {},
+    config,
+  );
+  return marked === 1
+    ? 'Marked 1 topic read.'
+    : `Marked ${marked} topics read.`;
+}
