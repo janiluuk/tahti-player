@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { QueueItem } from '@tahti-player/model';
 
 import { postListenEvent } from '../api/client';
+import { probeRadioStream } from '../api/radio-sources';
 import type { TahtiPlayable } from '../api/types';
 import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { ensureAudioCoreBridge } from '../lib/audioCoreBridge';
@@ -19,8 +20,17 @@ import {
 import { mediaSessionArtwork } from '../lib/mediaSessionArtwork';
 import { getNativeLibrary } from '../lib/nativeLibrary';
 import { normalizationFor } from '../lib/replayGain';
+import {
+  failureFromHlsError,
+  failureFromMediaError,
+  MEDIA_ERR_SRC_NOT_SUPPORTED,
+  STREAM_START_TIMEOUT_MS,
+  streamFailureDescription,
+  type StreamFailure,
+} from '../lib/streamFailure';
 import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
+import { useStationHealthStore } from '../stores/stationHealthStore';
 
 const LISTEN_EVENT_AFTER_SEC = 15;
 
@@ -360,7 +370,33 @@ export function AudioEngine() {
     cleanup();
     setStatus('loading');
 
-    const onPlaying = () => setStatus('playing');
+    const isStation = playable.kind === 'radio' || playable.kind === 'live';
+    let disposed = false;
+    const failStream = (failure: StreamFailure) => {
+      if (disposed) {
+        return;
+      }
+      clearTimeout(startTimer);
+      setStatus('error', streamFailureDescription(failure), failure);
+      if (isStation) {
+        useStationHealthStore.getState().markUnavailable(url, failure);
+      }
+    };
+    const startTimer = isStation
+      ? setTimeout(() => {
+          if (usePlayerStore.getState().status === 'loading') {
+            failStream({ reason: 'timeout' });
+          }
+        }, STREAM_START_TIMEOUT_MS)
+      : undefined;
+
+    const onPlaying = () => {
+      clearTimeout(startTimer);
+      setStatus('playing');
+      if (isStation) {
+        useStationHealthStore.getState().markOk(url);
+      }
+    };
     // The element ran out of data mid-stream (slow network, a seek into an
     // unbuffered part). It fires `playing` again once audio resumes; until
     // then the player is loading, not playing. A pause is left alone.
@@ -421,7 +457,17 @@ export function AudioEngine() {
         void audio.play().catch(() => setStatus('paused'));
         return;
       }
-      setStatus('error', 'Playback error');
+      const code = audio.error?.code;
+      failStream(failureFromMediaError(code));
+      if (isStation && code === MEDIA_ERR_SRC_NOT_SUPPORTED) {
+        void probeRadioStream(url).then((probe) => {
+          if (probe.state === 'failed') {
+            failStream(probe.failure);
+          } else if (probe.state === 'ok') {
+            failStream({ reason: 'unsupported' });
+          }
+        });
+      }
     };
 
     audio.crossOrigin = canAirPlay() || knownWithoutCors ? null : 'anonymous';
@@ -437,7 +483,6 @@ export function AudioEngine() {
       audio.src = url;
       void audio.play().catch(() => setStatus('paused'));
     };
-    let disposed = false;
 
     if (!isHls || prefersNativeHls(audio)) {
       playDirect();
@@ -458,7 +503,7 @@ export function AudioEngine() {
           hlsRef.current = hls;
           hls.on(HlsPlayer.Events.ERROR, (_e, data) => {
             if (data.fatal) {
-              setStatus('error', data.details);
+              failStream(failureFromHlsError(data));
             }
           });
           hls.loadSource(url);
@@ -477,12 +522,13 @@ export function AudioEngine() {
             playDirect();
             return;
           }
-          setStatus('error', 'Playback error');
+          failStream({ reason: 'unreachable' });
         });
     }
 
     return () => {
       disposed = true;
+      clearTimeout(startTimer);
       audio.removeEventListener('playing', onPlaying);
       audio.removeEventListener('waiting', onWaiting);
       audio.removeEventListener('pause', onPause);

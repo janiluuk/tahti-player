@@ -68,6 +68,7 @@ import {
 import { RadioVisualizerHero } from '../components/radio/RadioVisualizerHero';
 import { RadioBookingCalendar } from '../components/RadioBookingCalendar';
 import { RadioUpNextPanel } from '../components/RadioUpNextPanel';
+import { StationUnavailableNotice } from '../components/StationUnavailableNotice';
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { TrackInfoDialog, type TrackInfo } from '../components/TrackInfoDialog';
 import { usePolling } from '../hooks/usePolling';
@@ -500,6 +501,12 @@ export function RadioView() {
               }
             />
           )}
+
+          <StationUnavailableNotice
+            playableId={radioPlayableId}
+            streamUrl={station?.hlsUrl}
+            onPlay={playStation}
+          />
 
           <section className="flex flex-col gap-3">
             <Tabs

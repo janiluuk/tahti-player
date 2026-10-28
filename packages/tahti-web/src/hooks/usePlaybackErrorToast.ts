@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
+import { streamFailureDescription } from '../lib/streamFailure';
 import { usePlayerStore } from '../stores/playerStore';
 
 /** Says so when playback fails, once per failure: a stream that won't load
@@ -9,6 +10,7 @@ import { usePlayerStore } from '../stores/playerStore';
 export function usePlaybackErrorToast(title: string | undefined) {
   const status = usePlayerStore((s) => s.status);
   const isLive = usePlayerStore((s) => s.isLive);
+  const failure = usePlayerStore((s) => s.failure);
   const currentId = usePlayerStore((s) => s.currentId);
   const reloadNonce = usePlayerStore((s) => s.reloadNonce);
   const announced = useRef<string | null>(null);
@@ -20,7 +22,7 @@ export function usePlaybackErrorToast(title: string | undefined) {
       }
       return;
     }
-    const key = `${currentId ?? ''}:${reloadNonce}`;
+    const key = `${currentId ?? ''}:${reloadNonce}:${failure?.reason ?? ''}:${failure?.status ?? ''}`;
     if (announced.current === key) {
       return;
     }
@@ -28,7 +30,11 @@ export function usePlaybackErrorToast(title: string | undefined) {
     const name = title ? `“${title}”` : 'this';
     toast.error(
       isLive
-        ? `Can’t reach ${name} right now. The stream may be off air — try again in a moment.`
+        ? `${title ? `${title} is` : 'This station is'} unavailable. ${
+            failure
+              ? streamFailureDescription(failure)
+              : 'The stream may be off air — try again in a moment.'
+          }`
         : `Can’t play ${name} right now. Try again, or pick another track.`,
       {
         id: 'playback-error',
@@ -38,5 +44,5 @@ export function usePlaybackErrorToast(title: string | undefined) {
         },
       },
     );
-  }, [status, isLive, currentId, reloadNonce, title]);
+  }, [status, isLive, currentId, reloadNonce, title, failure]);
 }

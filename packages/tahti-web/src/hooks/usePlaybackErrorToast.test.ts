@@ -50,7 +50,21 @@ describe('usePlaybackErrorToast', () => {
 
     expect(toast.error).toHaveBeenCalledTimes(1);
     expect(vi.mocked(toast.error).mock.calls[0]![0]).toMatch(
-      /Can’t reach “Tahti Radio” right now/,
+      /Tahti Radio is unavailable\. The stream may be off air/,
+    );
+  });
+
+  it('names why the station failed', () => {
+    renderHook(() => usePlaybackErrorToast('Tahti Radio'));
+
+    act(() =>
+      usePlayerStore
+        .getState()
+        .setStatus('error', 'Playback error', { reason: 'http', status: 404 }),
+    );
+
+    expect(vi.mocked(toast.error).mock.calls[0]![0]).toBe(
+      'Tahti Radio is unavailable. The station’s server answered with HTTP 404.',
     );
   });
 

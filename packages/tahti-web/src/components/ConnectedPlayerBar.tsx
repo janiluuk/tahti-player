@@ -12,6 +12,7 @@ import {
   Badge,
   Button,
   cn,
+  InlineError,
   Loader,
   MediaArtwork,
   PlayerBar,
@@ -24,6 +25,7 @@ import { useIsMobile } from '../hooks/useIsMobile';
 import { usePlaybackErrorToast } from '../hooks/usePlaybackErrorToast';
 import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { soundIdFromPlayableId } from '../lib/soundId';
+import { streamFailureLabel } from '../lib/streamFailure';
 import { useAuthStore } from '../stores/authStore';
 import { useLayoutStore } from '../stores/layoutStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
@@ -44,6 +46,8 @@ export function ConnectedPlayerBar() {
   const queue = usePlayerStore((s) => s.queue);
   const currentId = usePlayerStore((s) => s.currentId);
   const status = usePlayerStore((s) => s.status);
+  const failure = usePlayerStore((s) => s.failure);
+  const retry = usePlayerStore((s) => s.retry);
   const volume = usePlayerStore((s) => s.volume);
   const muted = usePlayerStore((s) => s.muted);
   const isLive = usePlayerStore((s) => s.isLive);
@@ -208,12 +212,17 @@ export function ConnectedPlayerBar() {
       />
       {status === 'error' ? (
         <div
-          className="text-accent-red-strong text-xs"
+          className="flex flex-wrap items-center gap-x-2"
           data-testid="player-error-note"
         >
-          {isLive
-            ? 'Can’t connect — press play to retry'
-            : 'Can’t play this. Press play to try again.'}
+          <InlineError textSize="xs" announce={false}>
+            {isLive
+              ? `Station unavailable${failure ? ` · ${streamFailureLabel(failure)}` : ''}`
+              : 'Can’t play this.'}
+          </InlineError>
+          <Button size="xs" variant="text" onClick={retry}>
+            Try again
+          </Button>
         </div>
       ) : null}
     </div>

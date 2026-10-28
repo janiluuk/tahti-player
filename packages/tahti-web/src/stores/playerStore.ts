@@ -7,6 +7,7 @@ import type { EmbedPlaybackProvider, TahtiPlayable } from '../api/types';
 import { isInternetRadioPlayableId } from '../content/radioStations';
 import { FADE_IN_MS, FADE_OUT_MS, rampLevel } from '../lib/audioFade';
 import { playableToTrack } from '../lib/playableToTrack';
+import type { StreamFailure } from '../lib/streamFailure';
 import { useLayoutStore } from './layoutStore';
 import { useLibraryStore } from './libraryStore';
 import { peaksFor, rememberPeaks, type PeaksCache } from './peaksCache';
@@ -21,6 +22,8 @@ type PlayerState = {
   currentId: string | null;
   status: PlaybackStatus;
   error: string | null;
+  /** Why the current source failed to load, while `status` is `error`. */
+  failure: StreamFailure | null;
   volume: number;
   muted: boolean;
   /** Set while a channel that started on its own is playing muted: holds
@@ -103,7 +106,11 @@ type PlayerState = {
    * place, randomizes everything after it. */
   shuffleQueueOrder: () => void;
   hidePlayerBar: () => void;
-  setStatus: (status: PlaybackStatus, error?: string | null) => void;
+  setStatus: (
+    status: PlaybackStatus,
+    error?: string | null,
+    failure?: StreamFailure | null,
+  ) => void;
   /** Loads the current source again after a stream error, keeping the queue.
    * `setStatus('playing')` from the error state does the same. */
   retry: () => void;
@@ -203,6 +210,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   currentId: null,
   status: 'idle',
   error: null,
+  failure: null,
   volume: 0.85,
   muted: false,
   autoplayRestoreMuted: null,
@@ -249,6 +257,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currentId: head.id,
       status: item.embed ? 'playing' : 'loading',
       error: null,
+      failure: null,
       currentTime: 0,
       duration: 0,
       seekTarget: null,
@@ -280,6 +289,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currentId: item.id,
       status: item.embed ? 'playing' : 'loading',
       error: null,
+      failure: null,
       currentTime: 0,
       duration: 0,
       seekTarget: null,
@@ -382,6 +392,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       status: current ? 'paused' : 'idle',
       restoredPending: current,
       error: null,
+      failure: null,
       currentTime: 0,
       duration: 0,
       seekTarget: null,
@@ -476,6 +487,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currentId: id,
       status: playable?.embed ? 'playing' : 'loading',
       error: null,
+      failure: null,
       currentTime: 0,
       seekTarget: null,
       currentPeaks: peaksFor(get().peaksById, id),
@@ -516,6 +528,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currentId: null,
       status: 'idle',
       error: null,
+      failure: null,
       currentTime: 0,
       duration: 0,
     }),
@@ -558,7 +571,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   hidePlayerBar: () => set({ playerBarVisible: false }),
 
-  setStatus: (status, error = null) => {
+  setStatus: (status, error = null, failure = null) => {
     // A failed element can't be played again in place; a play request
     // after an error has to load the source from scratch.
     if (status === 'playing' && get().status === 'error') {
@@ -568,6 +581,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     set((s) => ({
       status,
       error,
+      failure: status === 'error' ? failure : null,
       restoredPending:
         status === 'playing' || status === 'loading' ? null : s.restoredPending,
     }));
@@ -579,6 +593,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         ? {
             status: 'loading',
             error: null,
+            failure: null,
             restoredPending: null,
             reloadNonce: s.reloadNonce + 1,
           }

@@ -295,6 +295,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Desktop/SmartRuleValueInput` | `tahti-web/SmartRuleValueInput.stories.tsx` |
 | `Tahti/Misc/SourceServiceIcon` | `tahti-web/SourceServiceIcon.stories.tsx` |
 | `Tahti/Studio/StashFilesPanel` | `tahti-web/StashFilesPanel.stories.tsx` |
+| `Tahti/Radio/StationUnavailableNotice` | `tahti-web/StationUnavailableNotice.stories.tsx` |
 | `Tahti/Player/StemMixer` | `tahti-web/StemMixer.stories.tsx` |
 | `Tahti/Studio/StreamManagerPanel` | `tahti-web/StreamManagerPanel.stories.tsx` |
 | `Tahti/Studio/StudioBrandingView` | `tahti-web/StudioBrandingView.stories.tsx` |

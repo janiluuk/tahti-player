@@ -1,3 +1,4 @@
+import type { StreamFailure } from '../lib/streamFailure';
 import type { TahtiPlayable } from './types';
 
 /** A resolved, playable internet radio stream. */
@@ -265,55 +266,114 @@ export type RadioStreamTestResult = {
   message: string;
 };
 
+export type RadioStreamProbe =
+  | { state: 'ok'; status: number }
+  | { state: 'failed'; failure: StreamFailure }
+  /** The browser could not tell: offline, or a host without CORS headers. */
+  | { state: 'unknown' };
+
+const HLS_PLAYLIST_PATTERN = /\.m3u8(\?|$)/i;
+const MAX_PLAYLIST_DEPTH = 2;
+
+function isHlsPlaylist(url: string, contentType: string | null): boolean {
+  return (
+    HLS_PLAYLIST_PATTERN.test(url) ||
+    Boolean(contentType && /mpegurl/i.test(contentType))
+  );
+}
+
+/** First variant of an HLS master playlist, resolved against its URL. */
+function firstHlsVariant(playlist: string, playlistUrl: string): string | null {
+  if (!playlist.includes('#EXT-X-STREAM-INF')) {
+    return null;
+  }
+  const entry = parseM3u(playlist)[0];
+  return entry ? new URL(entry.url, playlistUrl).toString() : null;
+}
+
 /**
- * Best-effort reachability check for a stream URL, run from the browser —
- * there's no server-side test route for arbitrary radio streams (unlike
- * multistream RTMP targets, which the Tahti API tests server-side). A
- * failed fetch here is genuinely ambiguous: it can mean the stream is
- * actually down, or just that its server doesn't set CORS headers on the
- * audio endpoint (common for Icecast/Shoutcast) — the browser reports both
- * as the same opaque network error. `ok: true` is a real, positive signal;
- * `ok: false` is reported honestly as "couldn't verify," not "confirmed
- * down."
+ * Reachability check for a stream URL, run from the browser. An HLS master
+ * playlist is followed to its first variant, since a master can outlive the
+ * encoder that writes the variants. Audio streams are only read to headers.
+ */
+export async function probeRadioStream(
+  streamUrl: string,
+  timeoutMs = 6000,
+): Promise<RadioStreamProbe> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    let url = streamUrl;
+    for (let depth = 0; depth < MAX_PLAYLIST_DEPTH; depth += 1) {
+      const res = await fetch(url, {
+        method: 'GET',
+        signal: controller.signal,
+      });
+      if (!res.ok) {
+        void res.body?.cancel().catch(() => undefined);
+        return {
+          state: 'failed',
+          failure: { reason: 'http', status: res.status },
+        };
+      }
+      if (!isHlsPlaylist(url, res.headers.get('content-type'))) {
+        void res.body?.cancel().catch(() => undefined);
+        return { state: 'ok', status: res.status };
+      }
+      const variant = firstHlsVariant(await res.text(), url);
+      if (!variant) {
+        return { state: 'ok', status: res.status };
+      }
+      url = variant;
+    }
+    return { state: 'ok', status: 200 };
+  } catch (error) {
+    if ((error as Error).name === 'AbortError') {
+      return { state: 'failed', failure: { reason: 'timeout' } };
+    }
+    return { state: 'unknown' };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+/**
+ * Best-effort reachability check with a message for the station dialogs.
+ * There's no server-side test route for arbitrary radio streams. A failed
+ * fetch is ambiguous: the stream may be down, or its server may not send
+ * CORS headers (common for Icecast/Shoutcast), so `ok: false` without a
+ * status reads as "couldn't verify", not "confirmed down".
  */
 export async function testRadioStream(
   streamUrl: string,
   timeoutMs = 6000,
 ): Promise<RadioStreamTestResult> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch(streamUrl, {
-      method: 'GET',
-      signal: controller.signal,
-    });
-    if (res.ok) {
-      return {
-        ok: true,
-        status: res.status,
-        message: `Stream responded (HTTP ${res.status}).`,
-      };
-    }
+  const probe = await probeRadioStream(streamUrl, timeoutMs);
+  if (probe.state === 'ok') {
     return {
-      ok: false,
-      status: res.status,
-      message: `Stream returned HTTP ${res.status}.`,
+      ok: true,
+      status: probe.status,
+      message: `Stream responded (HTTP ${probe.status}).`,
     };
-  } catch (error) {
-    if ((error as Error).name === 'AbortError') {
-      return {
-        ok: false,
-        message: `No response within ${Math.round(timeoutMs / 1000)}s.`,
-      };
-    }
-    return {
-      ok: false,
-      message:
-        "Couldn't reach this stream from your browser — it may be offline, or its server may not allow cross-origin requests (this doesn't always mean the stream is actually down).",
-    };
-  } finally {
-    clearTimeout(timeout);
   }
+  if (probe.state === 'failed' && probe.failure.reason === 'http') {
+    return {
+      ok: false,
+      status: probe.failure.status,
+      message: `Stream returned HTTP ${probe.failure.status}.`,
+    };
+  }
+  if (probe.state === 'failed') {
+    return {
+      ok: false,
+      message: `No response within ${Math.round(timeoutMs / 1000)}s.`,
+    };
+  }
+  return {
+    ok: false,
+    message:
+      "Couldn't reach this stream from your browser — it may be offline, or its server may not allow cross-origin requests (this doesn't always mean the stream is actually down).",
+  };
 }
 
 /**
