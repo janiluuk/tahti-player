@@ -5626,6 +5626,10 @@ Studio → Channel → Radio → 24/7 now includes a clip library and editor wit
 - Also: Discover widget menu readable, new widgets fade in on top, All clears genres (#1679); the channel store editor rebased onto master (#1668).
 
 
+## 2026-10-28 — admin Status shows silent live streams
+
+Admin → Status lists the new `live-streams` check (org #1031): LIVE channels whose HLS playlists stopped updating, with slug and how long. The page now renders the API's 503 body instead of "Could not load status" whenever a check is down.
+
 ## 2026-10-28 — Tahti Radio back on air, Tahti Selects subdomain
 
 - **Tahti Radio** played nothing: after a deploy the orchestrator restarted without its `tahti-channel-tahti-radio` Liquidsoap container, while the channel stayed LIVE with an open broadcast, so the variant playlists were S3 404s. Respawned with the orchestrator's `/restart` (rotation template); both variants and segments serve again. The orchestrator fix so a restart respawns 24/7 channels is a tahti-org PR.
