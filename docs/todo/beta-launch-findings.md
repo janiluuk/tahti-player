@@ -25,17 +25,6 @@ How these were found:
   subdomains open their channel (#1456). Left: a prod SPA image instead of the
   beta container, the apex vs marketing-site decision, and board admin on
   Next vs the SPA admin.
-- [ ] **Tahti Radio does not play.** `cdn.tahti.live/hls-live/tahti-radio/master.m3u8`
-  lists `stream-mp3-192.m3u8` and `stream-aac-320.m3u8`; both 404 (rechecked
-  2026-10-20). The rotation encoder isn't writing HLS.
-  - 2026-10-27: still down, ops-side. `master.m3u8` answers 200 but is
-    stale (`last-modified` 17:47 UTC, 1.5 h before the check); both variant
-    playlists are S3 `NoSuchKey` 404s. `GET /api/channels/tahti-radio` says
-    `state: LIVE` with `nowPlaying: null`. hls.js parses the master, then
-    fails fatally on the variant (`levelLoadError`). Needs the rotation
-    encoder restarted / its HLS output fixed on the stream host; no client
-    change can make it play. The player now names the failure (see
-    `feat/radio-station-unavailable`).
 - [ ] **tahti-org #879** (`GET /api/v1/events/upcoming`) must reach production
   for the front page's Coming up row; until then the row stays hidden.
 - [ ] **Beta content** — test releases ("asdada", "test") show in the front

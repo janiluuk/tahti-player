@@ -26,6 +26,13 @@ describe('subdomainEntry', () => {
     ).toEqual({ kind: 'path', path: '/channel/moon?ref=mail#chat' });
   });
 
+  it('opens the Tahti Selects channel on its subdomain', () => {
+    expect(subdomainEntry(at('https://tahti-selects.tahti.live/'))).toEqual({
+      kind: 'path',
+      path: '/channel/tahti-selects',
+    });
+  });
+
   it('opens the station on radio.tahti.live', () => {
     expect(subdomainEntry(at('https://radio.tahti.live/'))).toEqual({
       kind: 'path',
