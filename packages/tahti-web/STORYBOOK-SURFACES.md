@@ -115,6 +115,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Channel/Designer/LayersMenu` | `tahti-web/ChannelLayersMenu.stories.tsx` |
 | `Tahti/Channel/Designer/LayersPanel` | `tahti-web/ChannelLayersPanel.stories.tsx` |
 | `Tahti/Channel/Designer/LinksEditor` | `tahti-web/ChannelLinksEditor.stories.tsx` |
+| `Tahti/Channel/ChannelListeningPartyBanner` | `tahti-web/ChannelListeningPartyBanner.stories.tsx` |
 | `Tahti/Channel/ChannelLiveTracklist` | `tahti-web/ChannelLiveTracklist.stories.tsx` |
 | `Tahti/Channel/Designer/NavigationEditor` | `tahti-web/ChannelNavigationEditor.stories.tsx` |
 | `Tahti/Channel/ChannelNotFound` | `tahti-web/ChannelNotFound.stories.tsx` |
@@ -207,6 +208,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/ListenerWidgetEmbed` | `tahti-web/ListenerWidgetEmbed.stories.tsx` |
 | `Tahti/Widgets/ListenerWidgetsSection` | `tahti-web/ListenerWidgetsSection.stories.tsx` |
 | `Tahti/Widgets/ListenerWorldMap` | `tahti-web/ListenerWorldMap.stories.tsx` |
+| `Tahti/Release/ListeningPartyView` | `tahti-web/ListeningPartyView.stories.tsx` |
 | `Tahti/Desktop/LocalLibraryFilters` | `tahti-web/LocalLibraryFilters.stories.tsx` |
 | `Tahti/Auth/LoginView` | `tahti-web/LoginView.stories.tsx` |
 | `Tahti/Widgets/MapCommentForm` | `tahti-web/MapCommentForm.stories.tsx` |
@@ -306,6 +308,8 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/StudioGate` | `tahti-web/StudioGate.stories.tsx` |
 | `Tahti/Studio/StudioGoLiveView` | `tahti-web/StudioGoLiveView.stories.tsx` |
 | `Tahti/Studio/StudioHomeView` | `tahti-web/StudioHomeView.stories.tsx` |
+| `Tahti/Studio/StudioListeningPartiesView` | `tahti-web/StudioListeningPartiesView.stories.tsx` |
+| `Tahti/Studio/StudioListeningPartyFormView` | `tahti-web/StudioListeningPartyFormView.stories.tsx` |
 | `Tahti/Studio/StudioModerationView` | `tahti-web/StudioModerationView.stories.tsx` |
 | `Tahti/Studio/StudioNav` | `tahti-web/StudioNav.stories.tsx` |
 | `Tahti/Page/StudioPanel` | `tahti-web/StudioPanel.stories.tsx` |

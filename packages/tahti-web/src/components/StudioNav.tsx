@@ -16,6 +16,7 @@ import {
   ListOrderedIcon,
   MicIcon,
   NewspaperIcon,
+  PartyPopperIcon,
   RadioIcon,
   RadioTowerIcon,
   SendIcon,
@@ -116,6 +117,11 @@ export const BROADCAST_SUBNAV_ITEMS = [
     to: '/studio/events',
     labelKey: 'studio.events' as const,
     icon: <CalendarIcon size={16} />,
+  },
+  {
+    to: '/studio/listening-parties',
+    labelKey: 'studio.listeningParties' as const,
+    icon: <PartyPopperIcon size={16} />,
   },
   {
     to: '/studio/shows',
@@ -329,6 +335,7 @@ const SECTION_PREFIXES: Record<string, readonly string[]> = {
     '/studio/info',
     '/studio/schedule',
     '/studio/events',
+    '/studio/listening-parties',
     '/studio/shows',
     '/studio/channel',
   ],
@@ -373,6 +380,8 @@ const isSubmenuActive = (current: string | undefined, to: string) => {
       pathname === '/studio/schedule' ||
       pathname === '/studio/events' ||
       pathname?.startsWith('/studio/events/') === true ||
+      pathname === '/studio/listening-parties' ||
+      pathname?.startsWith('/studio/listening-parties/') === true ||
       pathname === '/studio/shows' ||
       pathname?.startsWith('/studio/shows/') === true ||
       pathname === '/studio/channel'
@@ -474,6 +483,8 @@ export function isStudioBroadcastGroup(current: string | undefined): boolean {
     pathname === '/studio/schedule' ||
     pathname === '/studio/events' ||
     pathname.startsWith('/studio/events/') ||
+    pathname === '/studio/listening-parties' ||
+    pathname.startsWith('/studio/listening-parties/') ||
     pathname === '/studio/shows' ||
     pathname.startsWith('/studio/shows/') ||
     pathname === '/studio/channel'

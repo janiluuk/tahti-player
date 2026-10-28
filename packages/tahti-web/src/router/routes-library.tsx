@@ -18,6 +18,7 @@ import {
   FavoritesView,
   GreenRoomView,
   JamView,
+  ListeningPartyView,
   MessagesView,
   ModerateChannelView,
   MoreView,
@@ -331,6 +332,15 @@ export const jamRoute = createRoute({
   component: function JamRoute() {
     const { code } = jamRoute.useParams();
     return <JamView code={code} />;
+  },
+});
+
+export const listeningPartyRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/party/$id',
+  component: function ListeningPartyRoute() {
+    const { id } = listeningPartyRoute.useParams();
+    return <ListeningPartyView id={id} />;
   },
 });
 

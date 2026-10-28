@@ -13,6 +13,10 @@ import type { PublicChannelSchedule } from './channel-schedule';
 import type { ArtistEvent } from './events';
 import type { IntegrationView } from './integrations';
 import type { LikedTrack } from './likes';
+import type {
+  ListeningPartyDto,
+  ListeningPartySummaryDto,
+} from './listening-parties';
 import type { LiveTracklistEntry } from './live-tracklist';
 import type { MessageContact } from './message-contacts';
 import type { ConversationDetail, ConversationSummary } from './messages';
@@ -67,6 +71,10 @@ export interface MockFixtures {
     args: [slug: string];
   };
   channelEvents: { data: ArtistEvent[]; args: [slug: string] };
+  channelListeningParties: {
+    data: ListeningPartySummaryDto[];
+    args: [slug: string];
+  };
   channelVisual: { data: ChannelVisual; args: [] };
   channelVisualPresets: { data: ChannelVisualPreset[]; args: [] };
   channelSchedule: { data: PublicChannelSchedule; args: [slug: string] };
@@ -93,10 +101,13 @@ export interface MockFixtures {
   fanTiers: { data: FanTiersResponse; args: [username: string] };
   feed: { data: FeedResponse; args: [] };
   latestTracks: { data: DiscoverTrackItem[]; args: [] };
+  /** `null` is a missing party (the page's not-found state). */
+  listeningParty: { data: ListeningPartyDto | null; args: [id: string] };
   liveTracklist: { data: LiveTracklistEntry[]; args: [slug: string] };
   membership: { data: MembershipStatus | null; args: [] };
   messageContacts: { data: MessageContact[]; args: [] };
   myEvents: { data: ArtistEvent[]; args: [] };
+  myListeningParties: { data: ListeningPartySummaryDto[]; args: [] };
   notifications: {
     data: TahtiNotification[];
     args: [includeInboxExtras: boolean];

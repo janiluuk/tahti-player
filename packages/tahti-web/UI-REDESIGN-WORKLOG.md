@@ -6260,3 +6260,7 @@ Settings → Add-ons can now add Mikseri tracks, personal playlists, Listataivas
 ## 2026-10-27 — 24/7 channel clip editor (0.0.272)
 
 Studio → Channel → Radio → 24/7 now manages station IDs and voice clips alongside the rotation. Record lossless WAV voice takes, upload audio, trim and preview, shape the voice with presets and effects, place clips between programs, then save inactive or activate. Lossless source masters remain unchanged. Added editor and recording tests, Storybook surfaces, and a focused browser flow.
+
+## 2026-10-28 — Listening parties (0.0.280)
+
+New `/party/:id` page: a countdown hero with the host note, the tracklist with the playing track, liner notes and credits, the host's purchase tiers and the host channel chat. Join plays the current track in the app player at the server offset, so a late join lands in sync; the page advances tracks with the timeline and re-seeks on drift. Studio schedules a party from a release header and lists parties under Broadcast → Listening parties with reschedule and cancel; channel pages show a banner for a live or upcoming party. Built against the contract with an offline mock store (tahti-org#1029 is the API half).

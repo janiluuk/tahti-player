@@ -42,7 +42,8 @@ export const MemberProfile: Story = {
   chatAccess, chatToken, liveTracklist, channelSchedule, radioShow,
   radioShowNowPlaying, radioShowUpcoming, radioSlots, showBookings,
   conversations, conversation, messageContacts, myEvents, showSeries,
-  meIntegrations).
+  meIntegrations, listeningParty, channelListeningParties,
+  myListeningParties).
 - A function override can throw to make the call fail the way the API
   would, e.g. `chatToken: () => { throw new Error('banned'); }`.
 - APIs with no offline mock at all (Jam) are stood in for by a story-level

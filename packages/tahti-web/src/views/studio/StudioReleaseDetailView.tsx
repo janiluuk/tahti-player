@@ -9,6 +9,7 @@ import {
   Link2Icon,
   LinkIcon,
   MusicIcon,
+  PartyPopperIcon,
   PencilIcon,
   PlayIcon,
   Share2Icon,
@@ -202,6 +203,18 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                       aria-label="Open release embed"
                     >
                       <Code2Icon size={16} aria-hidden />
+                    </ButtonLink>
+                  </Tooltip>
+                  <Tooltip content="Schedule listening party" side="top">
+                    <ButtonLink
+                      to="/studio/listening-parties/new"
+                      search={{ releaseId: release.id }}
+                      size="icon"
+                      variant="secondary"
+                      aria-label="Schedule listening party"
+                      disabled={!release.tracks?.length}
+                    >
+                      <PartyPopperIcon size={16} aria-hidden />
                     </ButtonLink>
                   </Tooltip>
                   <Tooltip content="Delete release" side="top">

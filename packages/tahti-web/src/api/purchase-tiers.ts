@@ -301,6 +301,29 @@ export function mockOwnsPurchaseTier(tierId: string): boolean {
   return mockUserOwnsPurchaseTier(user.username, tierId);
 }
 
+/** Adds the given tiers to an artist's mock store unless a tier with the
+ * same id is already there, and returns the artist's active tiers. Lets
+ * other mock surfaces (listening parties) sell through the real mock
+ * checkout path. */
+export function ensureMockPurchaseTiers(
+  artistUsername: string,
+  seed: PurchaseTierRow[],
+): PurchaseTierRow[] {
+  const all = readAllTiers();
+  let row = all.find((e) => e.artistUsername === artistUsername);
+  if (!row) {
+    row = { artistUsername, tiers: [] };
+    all.push(row);
+  }
+  const known = new Set(row.tiers.map((tier) => tier.id));
+  const missing = seed.filter((tier) => !known.has(tier.id));
+  if (missing.length > 0) {
+    row.tiers = [...row.tiers, ...missing];
+    writeAllTiers(all);
+  }
+  return row.tiers.filter((tier) => tier.active);
+}
+
 export function findMockPurchaseTier(
   artistUsername: string,
   tierId: string,

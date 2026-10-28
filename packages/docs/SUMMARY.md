@@ -22,6 +22,7 @@
 * [Listening stats](user-manual/listening/stats.md)
 * [Comments, chat and messages](user-manual/listening/comments-and-chat.md)
 * [Listen together (Jam)](user-manual/listening/jam.md)
+* [Listening parties](user-manual/listening/listening-parties.md)
 
 ## For artists (Studio)
 

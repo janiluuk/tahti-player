@@ -328,6 +328,10 @@ export const JamView = lazyRouteComponent(
   () => import('../views/JamView'),
   'JamView',
 );
+export const ListeningPartyView = lazyRouteComponent(
+  () => import('../views/ListeningPartyView'),
+  'ListeningPartyView',
+);
 export const ModerateChannelView = lazyRouteComponent(
   () => import('../views/ModerateChannelView'),
   'ModerateChannelView',
@@ -408,6 +412,14 @@ export const StudioEditorListView = lazyRouteComponent(
 export const StudioEditorProjectView = lazyRouteComponent(
   () => import('../views/studio/StudioEditorProjectView'),
   'StudioEditorProjectView',
+);
+export const StudioListeningPartiesView = lazyRouteComponent(
+  () => import('../views/studio/StudioListeningPartiesView'),
+  'StudioListeningPartiesView',
+);
+export const StudioListeningPartyFormView = lazyRouteComponent(
+  () => import('../views/studio/StudioListeningPartyFormView'),
+  'StudioListeningPartyFormView',
 );
 export const StudioEventsView = lazyRouteComponent(
   () => import('../views/studio/StudioEventsView'),
