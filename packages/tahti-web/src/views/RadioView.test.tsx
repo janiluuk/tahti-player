@@ -143,6 +143,32 @@ describe('RadioView featured history', () => {
   });
 });
 
+describe('RadioView visualizer hero', () => {
+  beforeEach(() => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+  });
+
+  afterEach(() => {
+    cleanup();
+    vi.unstubAllEnvs();
+  });
+
+  it('shows the Tahti Radio logo once, inside the visualizer hero', async () => {
+    const router = createRouter({
+      routeTree: createRootRoute({ component: RadioView }),
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+    const hero = screen.getByTestId('radio-visualizer-hero');
+    expect(screen.getAllByText('TR')).toHaveLength(1);
+    expect(
+      within(within(hero).getByTestId('radio-station-logo')).getByText('TR'),
+    ).toBeTruthy();
+  });
+});
+
 describe('RadioView failed sections', () => {
   beforeEach(() => {
     vi.stubEnv('VITE_FORCE_MOCK', '1');
