@@ -18,6 +18,8 @@ import {
   StudioGoLiveView,
   StudioGovernanceView,
   StudioHomeView,
+  StudioListeningPartiesView,
+  StudioListeningPartyFormView,
   StudioMasteringView,
   StudioPlaylistEditorView,
   StudioProEditorView,
@@ -460,6 +462,36 @@ export const studioEventEditRoute = createRoute({
   component: function StudioEventEditRoute() {
     const { eventId } = studioEventEditRoute.useParams();
     return <StudioEventCreateView eventId={eventId} />;
+  },
+});
+
+export const studioListeningPartiesRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/listening-parties',
+  component: StudioListeningPartiesView,
+});
+
+export const studioListeningPartyCreateRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/listening-parties/new',
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { releaseId?: string } => ({
+    releaseId:
+      typeof search.releaseId === 'string' ? search.releaseId : undefined,
+  }),
+  component: function StudioListeningPartyCreateRoute() {
+    const { releaseId } = studioListeningPartyCreateRoute.useSearch();
+    return <StudioListeningPartyFormView releaseId={releaseId} />;
+  },
+});
+
+export const studioListeningPartyEditRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/listening-parties/$partyId/edit',
+  component: function StudioListeningPartyEditRoute() {
+    const { partyId } = studioListeningPartyEditRoute.useParams();
+    return <StudioListeningPartyFormView partyId={partyId} />;
   },
 });
 

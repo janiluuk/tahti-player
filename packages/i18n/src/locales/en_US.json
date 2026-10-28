@@ -660,6 +660,7 @@
       "onAir": "Go live",
       "schedule": "Schedule",
       "events": "Events",
+      "listeningParties": "Listening parties",
       "shows": "Shows",
       "channel": "Channel"
     },

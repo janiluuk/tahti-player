@@ -103,6 +103,11 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
             label: 'Events',
             path: '/studio/events',
           },
+          {
+            id: 'studio-go-live-listening-parties',
+            label: 'Listening parties',
+            path: '/studio/listening-parties',
+          },
           { id: 'studio-go-live-shows', label: 'Shows', path: '/studio/shows' },
           {
             id: 'studio-go-live-channel',

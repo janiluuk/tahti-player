@@ -413,6 +413,14 @@ export const StudioEditorProjectView = lazyRouteComponent(
   () => import('../views/studio/StudioEditorProjectView'),
   'StudioEditorProjectView',
 );
+export const StudioListeningPartiesView = lazyRouteComponent(
+  () => import('../views/studio/StudioListeningPartiesView'),
+  'StudioListeningPartiesView',
+);
+export const StudioListeningPartyFormView = lazyRouteComponent(
+  () => import('../views/studio/StudioListeningPartyFormView'),
+  'StudioListeningPartyFormView',
+);
 export const StudioEventsView = lazyRouteComponent(
   () => import('../views/studio/StudioEventsView'),
   'StudioEventsView',
