@@ -28,18 +28,25 @@ export const ALL_WIDGET_IDS: DiscoverWidgetId[] = [
   'latest-releases',
 ];
 
+/** Widgets added to the defaults in version 1 of the stored state. */
+const ADDED_IN_V1: DiscoverWidgetId[] = [
+  'tahti-selects',
+  'latest-releases',
+  'loved',
+];
+
 export const DEFAULT_WIDGETS: DiscoverWidgetId[] = [
   'this-week-most-played',
   'new-to-you',
   'latest-tracks',
   'random-artist',
+  ...ADDED_IN_V1,
 ];
 
 type DiscoverState = {
   enabledWidgets: DiscoverWidgetId[];
   genreFilter: string[];
   contentTypeFilter: string[];
-  unheardOnly: boolean;
   /** How many days the random-artist widget keeps the same pick before
    * rotating to a new one. */
   randomArtistRotationDays: number;
@@ -48,7 +55,6 @@ type DiscoverState = {
   moveWidget: (id: DiscoverWidgetId, direction: 'up' | 'down') => void;
   setGenreFilter: (genres: string[]) => void;
   setContentTypeFilter: (types: string[]) => void;
-  setUnheardOnly: (enabled: boolean) => void;
   setRandomArtistRotationDays: (days: number) => void;
 };
 
@@ -58,14 +64,13 @@ export const useDiscoverStore = create<DiscoverState>()(
       enabledWidgets: DEFAULT_WIDGETS,
       genreFilter: [],
       contentTypeFilter: [],
-      unheardOnly: false,
       randomArtistRotationDays: 1,
 
       addWidget: (id) =>
         set((s) =>
           s.enabledWidgets.includes(id)
             ? s
-            : { enabledWidgets: [...s.enabledWidgets, id] },
+            : { enabledWidgets: [id, ...s.enabledWidgets] },
         ),
 
       removeWidget: (id) =>
@@ -90,10 +95,25 @@ export const useDiscoverStore = create<DiscoverState>()(
 
       setGenreFilter: (genres) => set({ genreFilter: genres }),
       setContentTypeFilter: (types) => set({ contentTypeFilter: types }),
-      setUnheardOnly: (enabled) => set({ unheardOnly: enabled }),
       setRandomArtistRotationDays: (days) =>
         set({ randomArtistRotationDays: days }),
     }),
-    { name: 'tahti-web:discover' },
+    {
+      name: 'tahti-web:discover',
+      version: 1,
+      migrate: (persisted, version) => {
+        const state = (persisted ?? {}) as Partial<DiscoverState> & {
+          unheardOnly?: boolean;
+        };
+        delete state.unheardOnly;
+        if (version < 1 && Array.isArray(state.enabledWidgets)) {
+          state.enabledWidgets = [
+            ...state.enabledWidgets,
+            ...ADDED_IN_V1.filter((id) => !state.enabledWidgets!.includes(id)),
+          ];
+        }
+        return state as DiscoverState;
+      },
+    },
   ),
 );
