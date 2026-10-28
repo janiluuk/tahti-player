@@ -1,6 +1,7 @@
 import { Link, useCanGoBack } from '@tanstack/react-router';
 import {
   ActivityIcon,
+  CirclePlayIcon,
   DownloadIcon,
   HeartIcon,
   MessageCircleIcon,
@@ -334,6 +335,15 @@ export function TrackHero({ page }: { page: TrackPage }) {
             {detail?.releasedAt ? (
               <span>{formatReleasedOn(detail.releasedAt)}</span>
             ) : null}
+            {detail?.playCount != null ? (
+              <span
+                className="inline-flex items-center gap-1"
+                aria-label={`${detail.playCount} plays`}
+              >
+                <CirclePlayIcon size={13} aria-hidden />
+                <span aria-hidden>{detail.playCount.toLocaleString()}</span>
+              </span>
+            ) : null}
             <span className="inline-flex items-center gap-1">
               <MessageCircleIcon size={13} aria-hidden />
               {detail?.commentCount ?? comments.length}
@@ -350,7 +360,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
             ) : null}
             <span className="inline-flex items-center gap-1">
               <HeartIcon size={13} aria-hidden />
-              {like.state?.count ?? (favorited ? 1 : 0)}
+              {like.state?.count ?? detail?.likeCount ?? (favorited ? 1 : 0)}
             </span>
             <ActivityIcon size={13} aria-hidden className="opacity-70" />
           </div>

@@ -42,6 +42,7 @@ export const Listener: Story = {
     const canvas = within(canvasElement);
     await canvas.findByRole('button', { name: 'Download' });
     await expect(canvas.queryByRole('button', { name: 'Edit' })).toBeNull();
+    await expect(canvas.getByLabelText(/^\d+ plays$/)).toBeVisible();
   },
 };
 
