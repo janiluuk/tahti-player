@@ -126,6 +126,8 @@ export type PublicChannel = {
    * artist profile (GET /api/v1/u/:username/profile), fetched alongside the
    * channel so the backdrop's Stats element has something real to show. */
   followerCount?: number | null;
+  /** Deduplicated plays across the channel's public tracks (tahti-org #1026). */
+  publicPlays?: number;
 };
 
 export type RadioNowPlaying = {
