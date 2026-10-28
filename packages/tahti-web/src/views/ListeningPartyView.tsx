@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ViewShell } from '@tahti-player/ui';
 
 import type { ListeningPartyDto } from '../api/listening-parties';
+import { ListeningPartyBuyPanel } from '../components/listening-party/ListeningPartyBuyPanel';
 import { ListeningPartyChat } from '../components/listening-party/ListeningPartyChat';
 import { ListeningPartyHero } from '../components/listening-party/ListeningPartyHero';
 import { ListeningPartyJoinButton } from '../components/listening-party/ListeningPartyJoinButton';
@@ -70,6 +71,7 @@ function ListeningPartyPage({
             <ListeningPartyLinerNotes party={party} />
           </div>
           <aside className="flex min-w-0 flex-col gap-6">
+            <ListeningPartyBuyPanel party={party} />
             {clock.state !== 'CANCELED' ? (
               <ListeningPartyChat
                 channelSlug={party.channel.slug}
