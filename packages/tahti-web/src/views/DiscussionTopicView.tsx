@@ -71,6 +71,7 @@ function ReplyForm({
     >
       <Textarea
         label="Your reply"
+        description="Use @username to mention a member; they get a notification."
         value={body}
         maxLength={REPLY_MAX}
         rows={4}
