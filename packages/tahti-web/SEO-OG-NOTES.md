@@ -1,5 +1,12 @@
 # SEO / dynamic OG metadata — research notes and plan
 
+**2026-10-28:** the SPA serves every public host, so this is the only SEO
+path. Bot OG works for a channel on the apex (`/c/tahti-radio` with a
+`facebookexternalhit` user agent returns `og:title`, checked 2026-10-28). The
+full crawler QA across `/u`, `/r`, `/t`, `/v` and collections is still open
+(verify, tracked in [`CUTOVER.md`](./CUTOVER.md)). §6 describes the removed
+Next client and is historical.
+
 **Status (2026-08-24): both parts implemented.** Part 1 (client-side sync
 on real data resolve) landed in `src/lib/seo.ts` /
 `ChannelView`/`ArtistView`/`SmartLinkView`. Part 2 (bot proxy) landed as
@@ -135,7 +142,7 @@ Grepped root and `packages/tahti-web` `package.json` for
 `@playwright/test` (e2e testing only, not rendering). Nothing installed
 addresses this today.
 
-## 6. Next.js (`apps/web`) parity baseline — partial, not full, parity exists
+## 6. Next.js (`apps/web`) parity baseline (historical; `apps/web` removed 2026-10-28)
 
 - `apps/web/src/app/u/[username]/page.tsx:84-121` has real
   `generateMetadata`: title `` `${displayName} (@${username})` ``,

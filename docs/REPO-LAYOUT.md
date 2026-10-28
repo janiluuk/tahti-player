@@ -14,7 +14,7 @@ Only files that a tool requires at the root, or that people expect there, stay a
 | `.node-version`, `.nvmrc` | Node 24 pin, once for fnm/volta/setup-node and once for nvm | Version managers read them from the root |
 | `.gitignore`, `.gitattributes` | Git config | Git |
 | `README.md`, `LICENSE`, `THIRD_PARTY_NOTICES` | Project front page and licensing | Convention, GitHub |
-| `AGENTS.md`, `AGENTS-START-HERE.md`, `CLAUDE.md`, `TAHTI.md` | Agent instructions and the Tahti cutover overview | Agents load them from the root |
+| `AGENTS.md`, `AGENTS-START-HERE.md`, `CLAUDE.md`, `TAHTI.md` | Agent instructions and the Tahti product/repo overview | Agents load them from the root |
 
 ## Root directories
 

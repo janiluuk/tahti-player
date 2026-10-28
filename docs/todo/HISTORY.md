@@ -5634,3 +5634,15 @@ Admin → Status lists the new `live-streams` check (org #1031): LIVE channels w
 
 - **Tahti Radio** played nothing: after a deploy the orchestrator restarted without its `tahti-channel-tahti-radio` Liquidsoap container, while the channel stayed LIVE with an open broadcast, so the variant playlists were S3 404s. Respawned with the orchestrator's `/restart` (rotation template); both variants and segments serve again. The orchestrator fix so a restart respawns 24/7 channels is a tahti-org PR.
 - **Subdomains**: `tahti-selects.tahti.live` opens the Tahti Selects channel (it was on the reserved list); the reserved list matches tahti-org's again. All 24 channel subdomains checked: DNS, TLS and the SPA serve; no channel uses a custom domain.
+
+## 2026-10-28 - final-season hardening: Batch A/B shipped
+
+From the 2026-10-17 security/performance sweep (`final-season-hardening.md`, which keeps only the open P1 #18 and P2 items). tahti-org: avatar URL proxy SSRF (#866), suspended sessions rejected (#867), CDN `cdn.tahti.live` ACAO (#868), `?secret=` scrubbed from request logs (#869), SNS SubscribeURL SSRF (#870), collections `expand=items` take (#871); email-as-display-name rejection was already on `main` (#560). tahti-player: channel / governance hrefs sanitized (#1072), prod diagnostics off + hCaptcha sitekey path (#1073), Stripe checkout/portal URL allowlist (#1074), app/router error boundary (#1075), feed N+1 batching (#1076), virtualized Studio Music list (#1077), SPA document CSP (#1078).
+
+## 2026-10-28 - web cutover complete, docs revised
+
+- **Every host on the SPA:** the 2026-10-21 NPM flip pointed `app.` (#48) and the `*.tahti.live` wildcard (#55) at the `tahti-beta-web` container (vimage `:15180`) beside `beta.` (#61) and the apex (#47). Same-origin `/tahti-api` proxy works on each host.
+- **Next `apps/web` removed** (tahti-org #1030). The SPA admin is the board admin; the 2026-08-17 "Next `/admin/*` stays canonical" decision is superseded (`docs/DECISIONS.md`). Custom-domain host routing (PLAT-051) is gone.
+- **Deploys:** tahti-org `main` deploys production on green CI (`deploy-production.yml` → `deploy_prod.sh`, compose on vimage); the `v*`-tag Swarm path is dormant.
+- **Also closed:** bot OG for collections and venues exists on both sides (tahti-org `routes/og.ts`, `deploy/nginx.conf`); tahti-org #879 (`/api/v1/events/upcoming`) answers on production, so the front page Coming up row is unblocked.
+- **Docs:** `CUTOVER.md` collapsed to the outcome plus open items (prod-profile build/container, hCaptcha sitekey in CI, apex vs `website/`, beta host fate, crawler QA, rollback, regression ledger); `CUTOVER-PHASE0.md` deleted (`docs/ARCHIVE.md`); AGENTS-START-HERE, TAHTI, ARCHITECTURE (live health, deploy), DATA-FLOW, tahti-web AGENTS, FEATURES, GAP-MAPPING, SEO-OG-NOTES, deploy README and todos updated.

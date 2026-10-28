@@ -7,13 +7,13 @@ Status values: `open` | `blocked` | `partial`.
 
 Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
-## Launch: beta.tahti.live → main site
+## Launch follow-up (SPA serves every host since 2026-10-21)
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| partial | [beta-launch-findings.md](beta-launch-findings.md) | Domain switch, #879 to prod, test releases on the front page; open Studio/listener/platform findings from the beta e2e run and the legacy parity sweep |
-| blocked | [final-season-hardening.md](final-season-hardening.md) | Cutover L ops (vend SPA, prod upstream, runbook); DNS map filled — you flip |
-| blocked | [first-100-users-infra.md](first-100-users-infra.md) | Ops verify backups/disk + deploy Swarm fail-closed (#872/#873/#1079 merged); host access required |
+| partial | [beta-launch-findings.md](beta-launch-findings.md) | Test releases on the front page; open Studio/listener/platform findings from the beta e2e run and the legacy parity sweep |
+| open    | [final-season-hardening.md](final-season-hardening.md) | Batch A/B shipped; left: CI assert on `VITE_TAHTI_API_URL` plus P2 hardening (rate-limit fail-closed, CSRF/CORS, CSP enforce, upload magic, SR pass) |
+| blocked | [first-100-users-infra.md](first-100-users-infra.md) | Ops verify backups/disk + rate-limit fail-closed in the production compose file (#872 only set the dormant Swarm stack); host access required |
 | open    | [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md) | Radio Nova + NRJ (Bauer AAC streams) do not play in production; reproduce in a real browser |
 | blocked | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live verify Centrifugo Send on brand-new channel — playbook ready |
 
@@ -31,7 +31,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |
-| partial | [listening-party.md](listening-party.md) | Digital-only v1: `/party/:id`, Studio schedule/manage and channel banner built on mocks; needs tahti-org#1029 merged + deployed and a real-API check; playout, formats/pre-orders/physical remain |
+| partial | [listening-party.md](listening-party.md) | Digital-only v1 merged (tahti-org#1029, tahti-player#1704); real-API check after deploy, then playout, formats/pre-orders/physical |
 
 ## Blocked on a decision, credentials or manual testing
 

@@ -9,7 +9,7 @@ loop for every byte.
 ```mermaid
 flowchart LR
     subgraph Listen
-        L1[Browser / tahti-web] -->|GET channel, sound, tracklist| L2[API]
+        L1[Browser / tahti-web] -->|GET channel, sound, tracklist via /tahti-api| L2[API]
         L2 -->|presigned URL| L3[(MinIO / R2)]
         L1 -.->|stream audio directly| L3
         L1 -.->|direct WS, short-lived JWT| L4[Centrifugo chat]
@@ -55,6 +55,8 @@ The same flow in words:
   process, which takes the artist's RTMP/Icecast source and produces the
   HLS (+ multistream) output listeners actually play from the CDN. Chat
   during a live show rides the same direct-to-Centrifugo path as Listen.
+  If a LIVE channel's playlists stop updating, the `live-streams` status
+  check reports it (see [`ARCHITECTURE.md`](./ARCHITECTURE.md#live-broadcast)).
 
 See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for what each box is (and where
 its code lives); this page is only about the shape of the traffic between

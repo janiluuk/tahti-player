@@ -6,9 +6,9 @@ Read this first. Open one more file only if the table says so. Stop when you hav
 
 | Repo | Path from this monorepo | Role |
 | --- | --- | --- |
-| API + legacy `apps/web` | **`../tahti-org`** | Fastify API, Prisma, `@tahti/shared`, production Next client |
+| API | **`../tahti-org`** | Fastify API, worker, Prisma, `@tahti/shared`, `@tahti/ui`, `@tahti/api-client`, `@tahti/addon-sdk`, marketing `website/`, ops |
 | Marketplace catalog | `../tahti-registry` | Store `plugins.json` / themes |
-| This player fork | `.` (`tahti-player`) | Player fork + `packages/tahti-web` |
+| This player fork | `.` (`tahti-player`) | Player fork + `packages/tahti-web`, the only Tahti web client (every public host, admin included) |
 
 Do not invent sibling API shapes. Inspect `../tahti-org` routes/DTOs first. Do not commit/push/deploy the sibling unless the user asks. Before every push of this repo, rebase onto the latest PR base (usually `origin/master`).
 
@@ -20,8 +20,8 @@ Do not invent sibling API shapes. Inspect `../tahti-org` routes/DTOs first. Do n
 | tahti-web UI / Studio / Listen / Admin | [`packages/tahti-web/AGENTS.md`](packages/tahti-web/AGENTS.md) | Workflow + ViewShell / Storybook rules |
 | What product already does | [`packages/tahti-web/FEATURES-REMAINING.md`](packages/tahti-web/FEATURES-REMAINING.md) | Do not open full FEATURES matrix |
 | Next engineering slices | [`packages/tahti-web/WORKPLAN.md`](packages/tahti-web/WORKPLAN.md) | Open sections only |
-| Cutover / beta vs prod | [`packages/tahti-web/CUTOVER.md`](packages/tahti-web/CUTOVER.md) | Only if cutover/deploy scope |
-| Listener/artist/admin gap ledger | [`packages/tahti-web/GAP-MAPPING.md`](packages/tahti-web/GAP-MAPPING.md) | Only if parity vs `apps/web` |
+| Hosting, deploy, open post-cutover ops | [`packages/tahti-web/CUTOVER.md`](packages/tahti-web/CUTOVER.md) + [`packages/tahti-web/deploy/README.md`](packages/tahti-web/deploy/README.md) | Only if deploy/host scope |
+| Post-cutover regression ledger | [`packages/tahti-web/GAP-MAPPING.md`](packages/tahti-web/GAP-MAPPING.md) | Only if checking a legacy URL or flow still works |
 | Player core / plugins / themes | Root [`AGENTS.md`](AGENTS.md) + [`docs/agent/`](docs/agent/) | Matching on-demand file only |
 | How the system fits together (repos, infra, request flow) | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) + [`docs/DATA-FLOW.md`](docs/DATA-FLOW.md) | Have the "why does X talk to Y" answer |
 | Settled forks / “already decided” | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Matching decision |
@@ -58,8 +58,8 @@ Status values: `open` | `blocked` | `partial` | (file deleted when done — neve
 | `FEATURES-REMAINING.md` | Open product gaps only |
 | `FEATURES.md` | Full capability matrix (shipped + remaining) |
 | `WORKPLAN.md` | Open engineering slices only |
-| `CUTOVER.md` | Beta → prod cutover checklist |
-| `GAP-MAPPING.md` | No-drop ledger vs legacy `apps/web` |
+| `CUTOVER.md` | Cutover outcome (done) + open host/build items |
+| `GAP-MAPPING.md` | Legacy-URL / flow regression ledger (Next `apps/web` removed 2026-10-28) |
 | `UI-REDESIGN-WORKLOG.md` | Chronological ship diary (append only) |
 | `docs/DECISIONS.md` | Settled design forks |
 | `docs/VIEW-CATALOG.md` | View index with Storybook coverage and unification candidates |

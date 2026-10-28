@@ -7,8 +7,8 @@ text list per screenshot (see `src/content/mapScreens.ts`'s `actions` /
 
 Building those per-screen diagrams required grep-verifying every real
 `<Link to="…">` / `navigate({ to: '…' })` in each Nuclear view against the
-`/more` atlas's claims (Tahti/apps/web side not re-verified — separate repo,
-out of scope here). Findings below are real, source-grounded gaps in the
+`/more` atlas's claims (the legacy Next `apps/web` side was not re-verified; it
+was removed on 2026-10-28). Findings below are real, source-grounded gaps in the
 **Nuclear (this client)** navigation graph, not documentation drift.
 
 ## 2026-10-03 - Atlas refresh: redirect targets and resolved orphans

@@ -1,6 +1,6 @@
 # localStorage keys
 
-Audit for CUTOVER.md §1.4 ("Document localStorage keys: theme, chat handle,
+Audit for the (now finished) cutover plan's §1.4 ("Document localStorage keys: theme, chat handle,
 favorites/history scopes"). Everything the app writes to `localStorage`,
 grouped by owner. All keys are plain strings under the origin's storage —
 no IndexedDB, no service worker, nothing Next.js-specific to account for
@@ -43,7 +43,7 @@ key alone (dead, harmless).
 | `tahti.channelPageLayout.{slug}`, `tahti.channelPageLayoutPreset.{slug}` | `channelPageLayout.ts` | Per-channel, per-viewer page-block layout and active preset id |
 | `tahti-web-onboarded:{userId}` | `OnboardingView.tsx` | Per-user "seen the onboarding tour" flag |
 
-## Cutover notes
+## Cutover notes (historical; cutover done 2026-10-21)
 
 - Every key is prefixed `tahti-web`, `tahti-nuclear`, `tahti-studio`, or
   `tahti.` — no collision risk sharing an origin with anything Next-side
