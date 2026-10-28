@@ -1,11 +1,13 @@
 import { Link } from '@tanstack/react-router';
 import { BellOffIcon, PinIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 import { Badge, Button, FilterChips, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchDiscussionTopics,
+  markAllDiscussionsRead,
   type DiscussionTopic,
 } from '../api/governance-discussions';
 import {
@@ -140,6 +142,27 @@ export function DiscussionsView() {
         Topics the board opened for members to talk through. Nothing here is a
         vote; replying follows a topic so you hear about new replies.
       </p>
+      {topics.some((topic) => topic.unreadCount) ? (
+        <div>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() =>
+              void markAllDiscussionsRead().then((result) => {
+                if (!result.ok) {
+                  toast.error(result.error);
+                  return;
+                }
+                setTopics((all) =>
+                  all.map((topic) => ({ ...topic, unreadCount: 0 })),
+                );
+              })
+            }
+          >
+            Mark all read
+          </Button>
+        </div>
+      ) : null}
 
       {!user ? (
         <PageEmpty

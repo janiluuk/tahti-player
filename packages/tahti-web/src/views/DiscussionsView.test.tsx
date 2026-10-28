@@ -5,7 +5,7 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as discussions from '../api/governance-discussions';
@@ -128,6 +128,27 @@ describe('DiscussionsView', () => {
       screen.queryByRole('link', { name: /Festival stage 2027/ }),
     ).toBeNull();
     expect(screen.getByRole('link', { name: /Fee 2026/ })).toBeInTheDocument();
+  });
+
+  it('marks every topic read', async () => {
+    vi.spyOn(discussions, 'fetchDiscussionTopics').mockResolvedValue({
+      data: [TOPIC],
+      meta: { source: 'api' },
+    });
+    const markAll = vi
+      .spyOn(discussions, 'markAllDiscussionsRead')
+      .mockResolvedValue({ ok: true, data: { marked: 1 } });
+    renderView();
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Mark all read' }),
+    );
+    await waitFor(() => expect(markAll).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(screen.queryByText('3 new replies')).not.toBeInTheDocument(),
+    );
+    expect(
+      screen.queryByRole('button', { name: 'Mark all read' }),
+    ).not.toBeInTheDocument();
   });
 
   it('says when there are no topics yet', async () => {
