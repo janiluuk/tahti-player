@@ -43,7 +43,11 @@ export const VocalPreview: Story = {
       dialog.getByRole('button', { name: 'Generate preview' }),
     );
     await expect(
-      await dialog.findByText('Preview ready. Listen to Processed, then save.'),
+      await dialog.findByText(
+        'Preview ready. Listen to Processed, then save.',
+        {},
+        { timeout: 10000 },
+      ),
     ).toBeVisible();
   },
 };

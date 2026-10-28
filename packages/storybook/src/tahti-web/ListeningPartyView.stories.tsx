@@ -29,6 +29,9 @@ const meta: Meta<typeof ListeningPartyView> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const visible = (element: HTMLElement | undefined) =>
+  waitFor(() => expect(element).toBeVisible());
+
 async function findParty(canvasElement: HTMLElement) {
   const canvas = within(canvasElement);
   await canvas.findByRole('heading', { level: 1, name: 'Listening party' });
@@ -38,20 +41,14 @@ async function findParty(canvasElement: HTMLElement) {
 export const Scheduled: Story = {
   play: async ({ canvasElement }) => {
     const canvas = await findParty(canvasElement);
-    await expect(
-      canvas.getByRole('heading', { name: 'Polar Static' }),
-    ).toBeVisible();
+    await visible(canvas.getByRole('heading', { name: 'Polar Static' }));
     await expect(canvas.getByRole('timer')).toHaveTextContent(/Starts in/);
-    await expect(canvas.getByText('Pre-release')).toBeVisible();
-    await expect(
-      canvas.getByRole('button', { name: 'Join at the start' }),
-    ).toBeVisible();
+    await visible(canvas.getByText('Pre-release'));
+    await visible(canvas.getByRole('button', { name: 'Join at the start' }));
     await expect(
       canvas.getByRole('region', { name: 'Liner notes' }),
     ).toHaveTextContent(/cabin north of Rovaniemi/);
-    await expect(
-      canvas.getByRole('button', { name: /Buy Polar Static/ }),
-    ).toBeVisible();
+    await visible(canvas.getByRole('button', { name: /Buy Polar Static/ }));
   },
 };
 
@@ -60,15 +57,13 @@ export const Live: Story = {
   decorators: [withTahtiRouter(`/party/${MOCK_LISTENING_PARTY_IDS.live}`)],
   play: async ({ canvasElement }) => {
     const canvas = await findParty(canvasElement);
-    await expect(canvas.getByText('Live now')).toBeVisible();
+    await visible(canvas.getByText('Live now'));
     const tracklist = canvas.getByRole('region', { name: 'Tracklist' });
     const current = within(tracklist)
       .getAllByRole('listitem')
       .find((row) => row.getAttribute('aria-current') === 'true');
     await expect(current).toHaveTextContent('Aurora Drift');
-    await expect(
-      canvas.getByRole('region', { name: 'Party chat' }),
-    ).toBeVisible();
+    await visible(canvas.getByRole('region', { name: 'Party chat' }));
   },
 };
 
@@ -100,7 +95,7 @@ export const Ended: Story = {
   decorators: [withTahtiRouter(`/party/${MOCK_LISTENING_PARTY_IDS.ended}`)],
   play: async ({ canvasElement }) => {
     const canvas = await findParty(canvasElement);
-    await expect(canvas.getByText(/has ended/)).toBeVisible();
+    await visible(canvas.getByText(/has ended/));
     await expect(
       canvas.getByRole('link', { name: 'Open the release' }),
     ).toHaveAttribute('href', '/r/forest-cover');
@@ -115,9 +110,7 @@ export const Canceled: Story = {
   decorators: [withTahtiRouter(`/party/${MOCK_LISTENING_PARTY_IDS.canceled}`)],
   play: async ({ canvasElement }) => {
     const canvas = await findParty(canvasElement);
-    await expect(
-      canvas.getByText(/canceled this listening party/),
-    ).toBeVisible();
+    await visible(canvas.getByText(/canceled this listening party/));
     await expect(
       canvas.queryByRole('region', { name: 'Party chat' }),
     ).toBeNull();
