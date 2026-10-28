@@ -87,7 +87,9 @@ function TopicRow({ topic }: { topic: DiscussionTopic }) {
         <span className="text-foreground-secondary text-xs">
           Started by {topic.createdBy} ·{' '}
           {topic.postCount === 1 ? '1 reply' : `${topic.postCount} replies`} ·
-          last activity {lastActivity(topic.lastPostAt)}
+          {topic.lastReplyBy
+            ? `last reply by ${topic.lastReplyBy}, ${lastActivity(topic.lastPostAt)}`
+            : `last activity ${lastActivity(topic.lastPostAt)}`}
         </span>
       </Link>
     </li>

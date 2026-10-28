@@ -25,6 +25,7 @@ const TOPIC: discussions.DiscussionTopic = {
   following: true,
   muted: true,
   unreadCount: 3,
+  lastReplyBy: 'Liis Kask',
 };
 
 function renderView() {
@@ -86,6 +87,7 @@ describe('DiscussionsView', () => {
     expect(screen.getByText('Muted')).toBeInTheDocument();
     expect(screen.getByText(/2 replies/)).toBeInTheDocument();
     expect(screen.getByText('3 new replies')).toBeInTheDocument();
+    expect(screen.getByText(/last reply by Liis Kask/)).toBeInTheDocument();
   });
 
   it('shows the API reason with a retry when the list fails', async () => {
