@@ -16,17 +16,12 @@ How these were found:
   over every tahti-org `/api/me/*` and `/api/admin/*` route. Admin has endpoint
   parity.
 
-## Blocking the switch (ops)
+## Ops
 
-- [ ] **Domain switch** — beta.tahti.live becomes the main site. DNS map and
-  runbook: [final-season-hardening.md](final-season-hardening.md). Partial
-  2026-10-21: `app.tahti.live` and the `*.tahti.live` channel wildcard now
-  forward to the beta SPA container (`:15180`), like the apex; channel
-  subdomains open their channel (#1456). Left: a prod SPA image instead of the
-  beta container, the apex vs marketing-site decision, and board admin on
-  Next vs the SPA admin.
-- [ ] **tahti-org #879** (`GET /api/v1/events/upcoming`) must reach production
-  for the front page's Coming up row; until then the row stays hidden.
+The domain switch is done (every host serves the SPA since 2026-10-21;
+Next `apps/web` removed 2026-10-28). Remaining host/build decisions are in
+[`packages/tahti-web/CUTOVER.md`](../../packages/tahti-web/CUTOVER.md).
+
 - [ ] **Beta content** — test releases ("asdada", "test") show in the front
   page's New releases row; unpublish them on the owning account.
 

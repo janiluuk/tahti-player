@@ -1,6 +1,6 @@
 # Feature port checklist — prod Tahti → `@tahti-player/tahti-web`
 
-Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
+Track what was ported from the legacy Next `apps/web` (removed from tahti-org 2026-10-28) into `tahti-web`, now the only Tahti web client.
 
 > **Open work:** unfinished items live in [`WORKPLAN.md`](WORKPLAN.md) and [`docs/todo/INDEX.md`](../../docs/todo/INDEX.md). Shipped rows stay here as the product matrix — do not copy them into WORKPLAN.
 
@@ -21,8 +21,6 @@ Demock waves 0-6 and the first product priorities (album designer, add to playli
 
 **Remaining / partial** — short copy: [`FEATURES-REMAINING.md`](FEATURES-REMAINING.md) (open only; shipped rows in HISTORY)
 
-- [ ] Production cutover for `apps/web`
-
 ## 1. Anonymous listen
 
 | Feature                          | Prod                                | POC                                          | Status     | Notes                                                                                                                                                                      |
@@ -39,7 +37,7 @@ Demock waves 0-6 and the first product priorities (album designer, add to playli
 | Venue register                   | `/venues/register`                  | `/venues/register`                           | `live-api` | `POST /api/v1/venues`; board verifies; Admin → Venues names and links the submitter (#770, needs tahti-org#834)                                                            |
 | Transparency                     | `/transparency`                     | `/transparency`                              | `live-api` |                                                                                                                                                                            |
 | Help                             | `/help/*`                           | `/help`                                      | `live-api` | static articles including disco-widgets; support form posts to API                                                                                                         |
-| Disco-widgets                    | discovery settings + listen/profile | Settings → Add-ons + Listen/channel          | `live-api` | sandboxed iframe; admin catalog stays Next                                                                                                                                 |
+| Disco-widgets                    | discovery settings + listen/profile | Settings → Add-ons + Listen/channel          | `live-api` | sandboxed iframe; admin catalog `/admin/disco-widgets`                                                                                                                           |
 | Legal / about                    | `/about`…                           | same                                         | `partial`  | POC + prod links                                                                                                                                                           |
 | Platform status                  | `/status`                           | `/status`                                    | `live-api` |                                                                                                                                                                            |
 | Marketing home / apply           | `/`, `/apply`                       | —                                            | `missing`  | listen hub is home                                                                                                                                                         |
@@ -126,7 +124,7 @@ Demock waves 0-6 and the first product priorities (album designer, add to playli
 | Screen atlas          | e2e screenshots             | `/more` (Screen atlas)                | `mock-ok`  | curated prod PNGs under `public/map/` + Nuclear routes                                                                                                                                                                                                                                                                                                                                |
 | Content reports queue | `/admin/moderation`         | `/admin/moderation` → Content reports | `live-api` | link and excerpt of what was reported, filter by status and by target type, delete a reported comment                                                                                                                                                                                                                                                                                 |
 | Support queue         | `/admin/support`            | `/admin/moderation` → Support         | `live-api` | reply threads, waiting-on-board count and filter                                                                                                                                                                                                                                                                                                                                      |
-| Board admin           | `/admin/*` (~35 pages Next) | `/admin/*` (40 routes)                | `live-api` | Gated on `user.isBoard`. Users, moderation (content reports, support, themes), financial (fan-sub payouts with retry), grants and grant cycles, governance and AGM, storage per user, radio, Selects, top lists, venues, disco-widgets, add-ons, logs and status. Endpoint parity with the Next admin (2026-10-20 sweep, `docs/todo/HISTORY.md`). |
+| Board admin           | `/admin/*` (~35 pages Next) | `/admin/*` (40 routes)                | `live-api` | Gated on `user.isBoard`. Users, moderation (content reports, support, themes), financial (fan-sub payouts with retry), grants and grant cycles, governance and AGM, storage per user, radio, Selects, top lists, venues, disco-widgets, add-ons, logs and status. Endpoint parity with the former Next admin (2026-10-20 sweep, `docs/todo/HISTORY.md`); the canonical board admin since 2026-10-28. |
 | WebGL visualizer      | channel page                | ChannelView Live                      | `live-api` | full ten-preset Three.js catalog; analyser-reactive and lazy-loaded                                                                                                                                                                                                                                                                                                                   |
 
 ## 7. Desktop Nuclear integrations (not web SPA)
@@ -140,7 +138,7 @@ Demock waves 0-6 and the first product priorities (album designer, add to playli
 | Tahti Jam (phone remote + HTTP API) | Tauri player                   | same Rust server, pairing code added           | **rebuilt** | Remote page `src/remote/` served at `/remote`; answered from tahti-web's player (`src/lib/jam/`); switch with pairing QR in Settings → Integrations in the desktop app                        |
 | App updates                         | Tauri player `updaterStore`    | same Tauri updater, release feed `latest.json` | **rebuilt** | Checked 10 s after start and every 6 h from tahti-web (`src/lib/updates/`), offered in a toast; Check now / Install / Restart and an off switch in Settings → Integrations in the desktop app |
 
-Web cutover (`beta.tahti.live`) does **not** host Nuclear MCP — localhost player control plane. Do not strip `packages/player/src-tauri/src/mcp/` when packaging desktop.
+The web client does **not** host Nuclear MCP — localhost player control plane. Do not strip `packages/player/src-tauri/src/mcp/` when packaging desktop.
 
 ---
 
@@ -179,12 +177,11 @@ Update this file when a row moves from `partial` → `live-api` or a demock wave
 
 ## Open from the 2026-08 route sweeps
 
-The 2026-08-23 and 2026-08-25 comparisons against `tahti-org` `apps/web` are done except the items below. Checked 2026-10-15 and no longer open: buying a single track ("Buy this track" on the track page, the artist's store section); upload processing state (the top bar follows `/api/me/sound/processing` across navigation and refresh, and a failed job can be retried); admin announcement detail, bulk file operations and legacy-member subscriptions (all wired in `api/admin/`); multitrack editing (theDAW's multitrack editor, #598); the Disco-widgets page tour (#787).
+The 2026-08-23 and 2026-08-25 comparisons against the legacy `apps/web` are done except the items below. Checked 2026-10-15 and no longer open: buying a single track ("Buy this track" on the track page, the artist's store section); upload processing state (the top bar follows `/api/me/sound/processing` across navigation and refresh, and a failed job can be retried); admin announcement detail, bulk file operations and legacy-member subscriptions (all wired in `api/admin/`); multitrack editing (theDAW's multitrack editor, #598); the Disco-widgets page tour (#787).
 
 - [ ] Signup profile and broadcaster-intake steps (`/signup/profile`, `/signup/broadcast`) are consolidated into join and checkout rather than kept as guided steps.
 - [ ] Multitrack + viz (theDAW port) runs beside trim mode; server-side multitrack render is still open.
 - [ ] Theme submit → `tahti-registry` pull request: the API worker's GitHub token is not provisioned, so approved themes don't open a PR yet.
-- [ ] Bot OG endpoints for collections and venues (no `/api/og/collection` or `/api/og/venue` in tahti-org).
 
 ### Intentionally consolidated, not missing
 

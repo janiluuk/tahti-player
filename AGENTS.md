@@ -22,7 +22,7 @@ On-demand detail (do not load unless the task needs it):
 
 Tahti Player is a free, open-source music player without ads or tracking, built on [Nuclear](https://github.com/nukeop/nuclear)'s player UI. Desktop app: Tauri (Rust + React), pnpm monorepo + Turborepo.
 
-This repository is the Tahti fork of Nuclear (`janiluuk/tahti-player`). Upstream: `nukeop/nuclear`. Sibling API: **`../tahti-org`**. Marketplace: **`../tahti-registry`**. Cutover overview: [`TAHTI.md`](./TAHTI.md). Listen/studio SPA: `packages/tahti-web` → [`packages/tahti-web/AGENTS.md`](./packages/tahti-web/AGENTS.md).
+This repository is the Tahti fork of Nuclear (`janiluuk/tahti-player`). Upstream: `nukeop/nuclear`. Sibling API: **`../tahti-org`**. Marketplace: **`../tahti-registry`**. Product and repo overview: [`TAHTI.md`](./TAHTI.md). Listen/studio SPA: `packages/tahti-web` → [`packages/tahti-web/AGENTS.md`](./packages/tahti-web/AGENTS.md).
 
 **Themes** = CSS variables → Tailwind. **Plugins** are unsandboxed. Store catalog = `tahti-registry` (not on-disk runtime `plugins.json`).
 

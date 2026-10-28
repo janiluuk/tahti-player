@@ -4,7 +4,7 @@ Package-specific agent instructions. **Start:** [`AGENTS-START-HERE.md`](../../A
 
 ## Two-repo product
 
-`tahti-web` has **no backend**. Sibling checkout **`../tahti-org`** (same parent as this repo, e.g. `/home/jani/workspace/tahti-org` next to `tahti-player`) owns Fastify API, Prisma, `@tahti/shared`, and the production Next.js `apps/web` client being replaced.
+`tahti-web` has **no backend**. Sibling checkout **`../tahti-org`** (same parent as this repo, e.g. `/home/jani/workspace/tahti-org` next to `tahti-player`) owns Fastify API, worker, Prisma and `@tahti/shared` (plus `@tahti/ui`, `@tahti/api-client`, `@tahti/addon-sdk`). Its Next.js `apps/web` was removed on 2026-10-28; this SPA is the only web client.
 
 - HTTP contracts / schema / OG server pieces → `tahti-org/apps/api` + `tahti-org/packages/shared`.
 - Listen/studio UI, routing, client fetch, this SPA’s nginx → here.
@@ -14,9 +14,9 @@ Package-specific agent instructions. **Start:** [`AGENTS-START-HERE.md`](../../A
 
 No route + no DTO ⇒ no real contract — do not invent shapes. Mock explicitly (`MOCKS.md`) or flag sibling API work. See [`docs/PLUGIN-INTEGRATIONS.md`](docs/PLUGIN-INTEGRATIONS.md).
 
-## Cutover, not a prototype
+## Production client, not a prototype
 
-Vite SPA on Nuclear chrome replacing `apps/web` at `app.tahti.live`, live on `beta.tahti.live` against production API. Plans: [`CUTOVER.md`](CUTOVER.md), parity: [`FEATURES.md`](FEATURES.md) (Remaining section), open slices: [`WORKPLAN.md`](WORKPLAN.md), agent todos: [`docs/todo/INDEX.md`](../../docs/todo/INDEX.md).
+Vite SPA on Nuclear chrome serving every public host (apex, `www`, `app`, `beta`, `admin`, `<slug>.tahti.live`, radio, embed) against the production API. Board admin is this SPA's `/admin/*`. Merging `master` deploys it ([`deploy/README.md`](deploy/README.md)). Hosting state and open ops: [`CUTOVER.md`](CUTOVER.md), parity: [`FEATURES.md`](FEATURES.md) (Remaining section), open slices: [`WORKPLAN.md`](WORKPLAN.md), agent todos: [`docs/todo/INDEX.md`](../../docs/todo/INDEX.md).
 
 ## Persistent chrome
 
