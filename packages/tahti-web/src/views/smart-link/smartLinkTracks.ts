@@ -110,6 +110,7 @@ export function smartLinkTrackMeta(data: SmartLinkView) {
         likes: track.likeCount,
         plays: track.playCount,
         downloads: track.downloadCount,
+        comments: track.commentCount,
       },
     };
   };
