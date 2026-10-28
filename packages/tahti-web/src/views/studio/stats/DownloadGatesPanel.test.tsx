@@ -35,6 +35,13 @@ describe('DownloadGatesPanel', () => {
       render(<DownloadGatesPanel active />);
     });
     expect(screen.getByText('214')).toBeTruthy();
+    expect(
+      screen
+        .getAllByText(/^(Downloads|Blocked|Reposts|Followers)$/)
+        .map((label) => label.closest<HTMLElement>('[data-tone]'))
+        .filter((tile) => tile !== null)
+        .map((tile) => tile.dataset.tone),
+    ).toEqual(['primary', 'yellow', 'green', 'purple']);
     const rows = within(screen.getByTestId('download-gates')).getAllByRole(
       'row',
     );

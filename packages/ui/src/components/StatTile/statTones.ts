@@ -4,8 +4,10 @@
  * that fall well under 3:1 on light themes, while `-strong` stays readable in
  * light themes and points back at the accent in dark ones. The value text of
  * a toned stat stays in foreground ink; `edge`, `fill` and the solid icon
- * `chip` (background-coloured icon on the tone) carry the colour. Give each metric one tone and keep it
- * on every surface that shows that metric, instead of cycling by position.
+ * `chip` (background-coloured icon on the tone) carry the colour. Give each
+ * metric one tone and keep it on every surface that shows that metric,
+ * instead of cycling by position. Red is left out: it reads as an error
+ * state, and a dark custom theme (gruvbox) puts its icon chip under 3:1.
  */
 export const STAT_TONES = [
   'primary',
@@ -15,7 +17,6 @@ export const STAT_TONES = [
   'yellow',
   'cyan',
   'orange',
-  'red',
 ] as const;
 
 export type StatTone = (typeof STAT_TONES)[number];
@@ -69,11 +70,5 @@ export const statToneClasses: Record<StatTone, StatToneClasses> = {
     fill: 'bg-accent-orange-strong',
     chip: 'bg-accent-orange-strong text-background',
     edge: 'border-l-accent-orange-strong',
-  },
-  red: {
-    text: 'text-accent-red-strong',
-    fill: 'bg-accent-red-strong',
-    chip: 'bg-accent-red-strong text-background',
-    edge: 'border-l-accent-red-strong',
   },
 };
