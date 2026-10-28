@@ -27,6 +27,8 @@ export const Default: Story = {
       await canvas.findByRole('heading', { name: 'Cron jobs' }),
     ).toBeVisible();
     await expect(canvas.getByText('postgres')).toBeVisible();
+    await expect(canvas.getByText('live-streams')).toBeVisible();
+    await expect(canvas.getByText('6 live streams fresh')).toBeVisible();
     await expect(
       canvas.getByText('1 of 2 offline (no heartbeat recently).'),
     ).toBeVisible();

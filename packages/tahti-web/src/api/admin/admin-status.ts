@@ -1,11 +1,11 @@
 import type { FetchMeta } from '../client';
-import { getJson } from '../http';
+import { apiBase } from '../http';
 import { failMeta, isForceMock } from '../mode';
 
 // ── Status ──────────────────────────────────────────────────────────────────
 
 export type AdminStatusCheck = {
-  state: 'up' | 'down';
+  state: 'up' | 'down' | 'skipped';
   critical: boolean;
   latencyMs?: number;
   detail?: string;
@@ -29,6 +29,12 @@ function mockStatusData(): AdminStatusData {
       icecast: { state: 'up', critical: true, latencyMs: 18 },
       minio: { state: 'up', critical: true, latencyMs: 9 },
       redis: { state: 'up', critical: false, latencyMs: 3 },
+      'live-streams': {
+        state: 'up',
+        critical: true,
+        latencyMs: 24,
+        detail: '6 live streams fresh',
+      },
       email: {
         state: 'up',
         critical: false,
@@ -49,7 +55,16 @@ export async function fetchAdminStatus(): Promise<{
     };
   }
   try {
-    const data = await getJson<AdminStatusData>('/api/v1/status');
+    const res = await fetch(`${apiBase()}/api/v1/status`, {
+      credentials: 'include',
+      headers: { Accept: 'application/json' },
+    });
+    // The API answers 503 with the full body whenever a check is down, which is
+    // exactly when this page needs to render it.
+    if (!res.ok && res.status !== 503) {
+      throw new Error(`/api/v1/status → ${res.status}`);
+    }
+    const data = (await res.json()) as AdminStatusData;
     return { data, meta: { source: 'api' } };
   } catch (err) {
     return { data: null, meta: failMeta(err) };
