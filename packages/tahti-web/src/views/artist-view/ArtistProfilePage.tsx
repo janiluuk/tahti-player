@@ -1,5 +1,8 @@
 import { Link } from '@tanstack/react-router';
 import {
+  CirclePlayIcon,
+  DownloadIcon,
+  HeartIcon,
   ImagesIcon,
   ListMusicIcon,
   MonitorPlayIcon,
@@ -333,6 +336,9 @@ export function ArtistProfilePage({ username }: { username: string }) {
       setFollowList('following'),
     ),
     ...stat('tracks', 'Tracks', profile.tracks.length, MusicIcon),
+    ...stat('plays', 'Plays', profile.totals?.plays, CirclePlayIcon),
+    ...stat('likes', 'Likes', profile.totals?.likes, HeartIcon),
+    ...stat('downloads', 'Downloads', profile.totals?.downloads, DownloadIcon),
     ...stat('collections', 'Playlists', collections.length, ListMusicIcon),
   ];
 

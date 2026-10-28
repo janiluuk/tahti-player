@@ -263,6 +263,8 @@ export type PublicProfile = import('./purchase-tiers').ProfileStore & {
     presskit: string;
   };
   backgroundMusicUrl?: string | null;
+  /** Public totals across the listed tracks (tahti-org #1025). */
+  totals?: { plays: number; likes: number; downloads: number };
 };
 
 export type CollectionSound = {
