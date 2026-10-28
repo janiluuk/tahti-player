@@ -27,5 +27,10 @@
   "/api/v1/governance/discussions/:param/posts/:param": "Ships in tahti-org #991\u2013#998 (discussion topics); OpenAPI release not refreshed yet. Governance \u2192 Discussions shows the API error until it is deployed.",
   "/api/admin/discussions": "Ships in tahti-org #991\u2013#998 (discussion topics); OpenAPI release not refreshed yet. Governance \u2192 Discussions shows the API error until it is deployed.",
   "/api/admin/discussions/:param": "Ships in tahti-org #991\u2013#998 (discussion topics); OpenAPI release not refreshed yet. Governance \u2192 Discussions shows the API error until it is deployed.",
-  "/api/v1/governance/discussions/read-all": "Ships in tahti-org #1024; OpenAPI release not refreshed yet. Mark all read toasts the API error until it is deployed."
+  "/api/v1/governance/discussions/read-all": "Ships in tahti-org #1024; OpenAPI release not refreshed yet. Mark all read toasts the API error until it is deployed.",
+  "/api/v1/listening-parties/:param": "Listening parties ship in the tahti-org feat/listening-party PR; OpenAPI release not refreshed yet. /party/:id and Studio \u2192 Listening parties show the API error until it is deployed.",
+  "/api/channels/:param/listening-parties": "Listening parties ship in the tahti-org feat/listening-party PR; OpenAPI release not refreshed yet. /party/:id and Studio \u2192 Listening parties show the API error until it is deployed.",
+  "/api/me/listening-parties": "Listening parties ship in the tahti-org feat/listening-party PR; OpenAPI release not refreshed yet. /party/:id and Studio \u2192 Listening parties show the API error until it is deployed.",
+  "/api/me/listening-parties/:param": "Listening parties ship in the tahti-org feat/listening-party PR; OpenAPI release not refreshed yet. /party/:id and Studio \u2192 Listening parties show the API error until it is deployed.",
+  "/api/me/listening-parties/:param/cancel": "Listening parties ship in the tahti-org feat/listening-party PR; OpenAPI release not refreshed yet. /party/:id and Studio \u2192 Listening parties show the API error until it is deployed."
 }
