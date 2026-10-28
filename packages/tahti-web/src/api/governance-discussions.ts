@@ -321,6 +321,31 @@ export async function fetchEarlierDiscussionPosts(
   }
 }
 
+/** Marks every followed topic read; answers how many were marked. */
+export async function markAllDiscussionsRead(): Promise<
+  DiscussionResult<{ marked: number }>
+> {
+  if (isForceMock()) {
+    let marked = 0;
+    mockTopics = mockTopics.map((t) => {
+      if (t.following && t.unreadCount) {
+        marked += 1;
+      }
+      return { ...t, unreadCount: 0 };
+    });
+    return { ok: true, data: { marked } };
+  }
+  try {
+    const { data } = await requestJson<{ marked: number }>(
+      '/api/v1/governance/discussions/read-all',
+      { method: 'POST' },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return { ok: false, error: errorMessage(err, 'Could not mark them read') };
+  }
+}
+
 export async function editDiscussionPost(
   id: string,
   postId: string,
