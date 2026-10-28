@@ -56,6 +56,7 @@ import { runReleasesShow } from './commands/releases-show.mjs';
 import { runSearch, SEARCH_PAGE_SIZE } from './commands/search.mjs';
 import { MAX_STASH_LIMIT, runStashList } from './commands/stash-list.mjs';
 import { runStats, STATS_RANGES } from './commands/stats.mjs';
+import { runTrack } from './commands/track.mjs';
 import { runWhoami } from './commands/whoami.mjs';
 import { runShell } from './shell/shell.mjs';
 
@@ -787,6 +788,18 @@ the write scope.`,
     positionals: 2,
     run: (config, { positionals }) =>
       runCollectionsRemove(config, positionals[0], positionals[1]),
+  },
+  {
+    path: ['track'],
+    usage: 'tahti track <id-or-link> [--json]',
+    summary: 'Show a public track and its plays, likes and downloads',
+    details: `Calls GET /api/v1/tracks/:id (public; the token is not sent). Accepts the
+track id or a /t/<id> link. Prints the title, artist, length, genre,
+release date and the public plays, likes, downloads and comments.`,
+    options: JSON_OPTION,
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runTrack(config, positionals[0], { json: values.json }),
   },
   {
     path: ['channel'],
