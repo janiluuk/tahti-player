@@ -1,4 +1,5 @@
 import {
+  ActivityIcon,
   BanIcon,
   CheckCircle2Icon,
   ImageIcon,
@@ -30,11 +31,18 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { RadioStationCover } from '../../components/RadioStationCover';
 import { StudioPanel } from '../../components/StudioPanel';
-import { RADIO_STATIONS } from '../../content/radioStations';
+import { RADIO_STATIONS, type RadioStation } from '../../content/radioStations';
 import {
   persistRadioStationCover,
   toPersistableMediaUrl,
 } from '../../lib/radioStationCover';
+import { useStationHealthStore } from '../../stores/stationHealthStore';
+import {
+  CatalogStationsPanel,
+  StreamUrlText,
+  TahtiRadioStationPanel,
+} from './AdminStationSections';
+import { StationHealthCell } from './StationHealthCell';
 
 const EMPTY_PRESET_DRAFT: AdminInternetRadioPresetInput = {
   name: '',
@@ -52,6 +60,21 @@ function catalogStationIdForName(name: string): string | undefined {
 function catalogLogoForName(name: string): string | undefined {
   return RADIO_STATIONS.find((station) => station.name === name.trim())
     ?.logoUrl;
+}
+
+const HTTPS_PREFIX = 'https://';
+
+function draftFromCatalogStation(
+  station: RadioStation,
+): AdminInternetRadioPresetInput {
+  return {
+    name: station.name,
+    genre: station.genre,
+    description: '',
+    iconUrl: station.logoUrl,
+    programmingUrl: station.programmingUrl ?? '',
+    streamUrl: station.streamUrl ?? '',
+  };
 }
 
 function draftFromPreset(
@@ -78,6 +101,8 @@ export function InternetRadioPresetsPanel() {
   const [pendingRemove, setPendingRemove] =
     useState<AdminInternetRadioPreset | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [listError, setListError] = useState<string | null>(null);
+  const checkStream = useStationHealthStore((s) => s.check);
 
   const reload = () => {
     setLoading(true);
@@ -89,9 +114,9 @@ export function InternetRadioPresetsPanel() {
 
   useEffect(reload, []);
 
-  const openNew = () => {
+  const openNew = (initial = EMPTY_PRESET_DRAFT) => {
     setEditingId(null);
-    setDraft(EMPTY_PRESET_DRAFT);
+    setDraft(initial);
     setError(null);
     setEditorOpen(true);
   };
@@ -105,6 +130,11 @@ export function InternetRadioPresetsPanel() {
 
   const save = () => {
     if (!draft.name.trim()) {
+      return;
+    }
+    const streamUrl = draft.streamUrl?.trim();
+    if (streamUrl && !streamUrl.startsWith(HTTPS_PREFIX)) {
+      setError('Stream URL must start with https://');
       return;
     }
     setPending(true);
@@ -139,296 +169,335 @@ export function InternetRadioPresetsPanel() {
     }).then((result) => {
       if (result.ok) {
         reload();
+      } else {
+        setListError(result.error);
       }
     });
   };
 
-  return (
-    <StudioPanel
-      title={`Internet radio — Listen page defaults (${presets.length})`}
-      description="Stations toggled on here appear in the radio feed on the Listen page for every visitor, signed in or not — not just listeners who add it to their own library."
-      action={
-        <Button size="sm" onClick={openNew}>
-          <PlusIcon size={15} aria-hidden className="mr-1.5" />
-          Add station
-        </Button>
+  const testAll = () => {
+    for (const preset of presets) {
+      if (preset.streamUrl) {
+        void checkStream(preset.streamUrl);
       }
-    >
-      {loading ? (
-        <PageLoading label="Loading stations…" />
-      ) : presets.length === 0 ? (
-        <PageEmpty
-          title="No internet radio stations yet"
-          description="Add one to offer it as a default."
-        />
-      ) : (
-        <ul className="divide-border divide-y">
-          {presets.map((preset) => (
-            <li
-              key={preset.id}
-              className="flex flex-wrap items-center gap-3 py-3 first:pt-0 last:pb-0"
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-6">
+      <TahtiRadioStationPanel />
+      <StudioPanel
+        title={`Internet radio — Listen page defaults (${presets.length})`}
+        description="Stations toggled on here appear in the radio feed on the Listen page for every visitor, signed in or not — not just listeners who add it to their own library."
+        action={
+          <div className="flex flex-wrap gap-2">
+            <Button
+              className="gap-1.5"
+              size="sm"
+              variant="secondary"
+              disabled={presets.length === 0}
+              onClick={testAll}
             >
-              <div className="bg-background-secondary flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg text-xs font-bold">
+              <ActivityIcon size={15} aria-hidden />
+              Test all
+            </Button>
+            <Button size="sm" onClick={() => openNew()}>
+              <PlusIcon size={15} aria-hidden className="mr-1.5" />
+              Add station
+            </Button>
+          </div>
+        }
+      >
+        {listError ? (
+          <InlineError className="mb-3">{listError}</InlineError>
+        ) : null}
+        {loading ? (
+          <PageLoading label="Loading stations…" />
+        ) : presets.length === 0 ? (
+          <PageEmpty
+            title="No internet radio stations yet"
+            description="Add one to offer it as a default."
+          />
+        ) : (
+          <ul className="divide-border divide-y">
+            {presets.map((preset) => (
+              <li
+                key={preset.id}
+                className="flex flex-wrap items-center gap-3 py-3 first:pt-0 last:pb-0"
+              >
+                <div className="bg-background-secondary flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg text-xs font-bold">
+                  <RadioStationCover
+                    src={preset.iconUrl ?? ''}
+                    label={preset.name}
+                    stationName={preset.name}
+                    catalogStationId={catalogStationIdForName(preset.name)}
+                    presetId={preset.id}
+                    onCoverChange={(iconUrl) =>
+                      setPresets((current) =>
+                        current.map((item) =>
+                          item.id === preset.id ? { ...item, iconUrl } : item,
+                        ),
+                      )
+                    }
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="truncate font-medium">{preset.name}</span>
+                    <Badge
+                      variant="pill"
+                      color={preset.enabled ? 'green' : undefined}
+                    >
+                      {preset.enabled ? 'Enabled for everyone' : 'Off'}
+                    </Badge>
+                  </div>
+                  <div className="text-foreground-secondary truncate text-xs">
+                    {preset.genre ?? 'No genre'}
+                  </div>
+                  <StreamUrlText url={preset.streamUrl} />
+                  <StationHealthCell
+                    streamUrl={preset.streamUrl}
+                    name={preset.name}
+                  />
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <Button
+                    className="gap-1.5"
+                    size="sm"
+                    variant={preset.enabled ? 'secondary' : 'default'}
+                    onClick={() => toggleEnabled(preset)}
+                  >
+                    {preset.enabled ? (
+                      <BanIcon size={14} aria-hidden />
+                    ) : (
+                      <CheckCircle2Icon size={14} aria-hidden />
+                    )}
+                    {preset.enabled ? 'Disable' : 'Enable for everyone'}
+                  </Button>
+                  <Button
+                    className="gap-1.5"
+                    size="sm"
+                    variant="text"
+                    onClick={() => openEdit(preset)}
+                  >
+                    <PencilIcon size={14} aria-hidden />
+                    Edit
+                  </Button>
+                  <Button
+                    className="gap-1.5"
+                    size="sm"
+                    variant="text"
+                    onClick={() => setPendingRemove(preset)}
+                  >
+                    <Trash2Icon size={14} aria-hidden />
+                    Remove
+                  </Button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <Dialog.Root
+          isOpen={editorOpen}
+          onClose={() => {
+            if (!pending) {
+              setEditorOpen(false);
+            }
+          }}
+          className="max-w-lg"
+        >
+          <Dialog.Title>
+            {editingId ? 'Edit station' : 'Add internet radio station'}
+          </Dialog.Title>
+          <Dialog.Description>
+            Shown as a default in the Listen page radio feed once enabled.
+          </Dialog.Description>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              save();
+            }}
+          >
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col items-center gap-2 self-center">
                 <RadioStationCover
-                  src={preset.iconUrl ?? ''}
-                  label={preset.name}
-                  stationName={preset.name}
-                  catalogStationId={catalogStationIdForName(preset.name)}
-                  presetId={preset.id}
-                  onCoverChange={(iconUrl) =>
-                    setPresets((current) =>
-                      current.map((item) =>
-                        item.id === preset.id ? { ...item, iconUrl } : item,
-                      ),
-                    )
+                  src={draft.iconUrl || ''}
+                  label={draft.name.trim() || 'Station'}
+                  stationName={draft.name.trim() || 'Station'}
+                  catalogStationId={catalogStationIdForName(draft.name)}
+                  presetId={editingId ?? undefined}
+                  persist={Boolean(editingId)}
+                  className="h-28 w-28 overflow-hidden rounded-lg"
+                  onCoverChange={(iconUrl) => {
+                    setDraft((current) => ({ ...current, iconUrl }));
+                    if (editingId) {
+                      setPresets((current) =>
+                        current.map((item) =>
+                          item.id === editingId ? { ...item, iconUrl } : item,
+                        ),
+                      );
+                    }
+                  }}
+                />
+                <span className="text-foreground-secondary text-xs">
+                  Station logo — JPEG, PNG, or WebP. Hover the image to replace.
+                </span>
+                {catalogLogoForName(draft.name) ? (
+                  <Button
+                    className="gap-1.5"
+                    type="button"
+                    size="xs"
+                    variant="text"
+                    disabled={
+                      pending ||
+                      draft.iconUrl === catalogLogoForName(draft.name)
+                    }
+                    onClick={() => {
+                      const logoUrl = catalogLogoForName(draft.name);
+                      if (!logoUrl) {
+                        return;
+                      }
+                      setDraft((current) => ({ ...current, iconUrl: logoUrl }));
+                      if (!editingId) {
+                        return;
+                      }
+                      void persistRadioStationCover({
+                        catalogStationId: catalogStationIdForName(draft.name),
+                        presetId: editingId,
+                        stationName: draft.name.trim() || 'Station',
+                        logoUrl,
+                      }).then((result) => {
+                        if (!result.ok) {
+                          setError(result.error);
+                          return;
+                        }
+                        setPresets((current) =>
+                          current.map((item) =>
+                            item.id === editingId
+                              ? { ...item, iconUrl: logoUrl }
+                              : item,
+                          ),
+                        );
+                      });
+                    }}
+                  >
+                    <ImageIcon size={14} aria-hidden />
+                    Use catalog logo
+                  </Button>
+                ) : null}
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Input
+                  autoComplete="off"
+                  label="Name"
+                  value={draft.name}
+                  placeholder="Radio Helsinki"
+                  onChange={(event) =>
+                    setDraft({ ...draft, name: event.target.value })
+                  }
+                />
+                <Input
+                  label="Genre"
+                  value={draft.genre ?? ''}
+                  placeholder="World"
+                  onChange={(event) =>
+                    setDraft({ ...draft, genre: event.target.value })
                   }
                 />
               </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="truncate font-medium">{preset.name}</span>
-                  <Badge
-                    variant="pill"
-                    color={preset.enabled ? 'green' : undefined}
-                  >
-                    {preset.enabled ? 'Enabled for everyone' : 'Off'}
-                  </Badge>
-                </div>
-                <div className="text-foreground-secondary truncate text-xs">
-                  {preset.genre ?? 'No genre'} ·{' '}
-                  {preset.streamUrl
-                    ? 'Stream URL set'
-                    : 'No stream URL — won’t be playable'}
-                </div>
-              </div>
-              <div className="flex shrink-0 items-center gap-2">
-                <Button
-                  className="gap-1.5"
-                  size="sm"
-                  variant={preset.enabled ? 'secondary' : 'default'}
-                  onClick={() => toggleEnabled(preset)}
-                >
-                  {preset.enabled ? (
-                    <BanIcon size={14} aria-hidden />
-                  ) : (
-                    <CheckCircle2Icon size={14} aria-hidden />
-                  )}
-                  {preset.enabled ? 'Disable' : 'Enable for everyone'}
-                </Button>
-                <Button
-                  className="gap-1.5"
-                  size="sm"
-                  variant="text"
-                  onClick={() => openEdit(preset)}
-                >
-                  <PencilIcon size={14} aria-hidden />
-                  Edit
-                </Button>
-                <Button
-                  className="gap-1.5"
-                  size="sm"
-                  variant="text"
-                  onClick={() => setPendingRemove(preset)}
-                >
-                  <Trash2Icon size={14} aria-hidden />
-                  Remove
-                </Button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <Dialog.Root
-        isOpen={editorOpen}
-        onClose={() => {
-          if (!pending) {
-            setEditorOpen(false);
-          }
-        }}
-        className="max-w-lg"
-      >
-        <Dialog.Title>
-          {editingId ? 'Edit station' : 'Add internet radio station'}
-        </Dialog.Title>
-        <Dialog.Description>
-          Shown as a default in the Listen page radio feed once enabled.
-        </Dialog.Description>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            save();
-          }}
-        >
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col items-center gap-2 self-center">
-              <RadioStationCover
-                src={draft.iconUrl || ''}
-                label={draft.name.trim() || 'Station'}
-                stationName={draft.name.trim() || 'Station'}
-                catalogStationId={catalogStationIdForName(draft.name)}
-                presetId={editingId ?? undefined}
-                persist={Boolean(editingId)}
-                className="h-28 w-28 overflow-hidden rounded-lg"
-                onCoverChange={(iconUrl) => {
-                  setDraft((current) => ({ ...current, iconUrl }));
-                  if (editingId) {
-                    setPresets((current) =>
-                      current.map((item) =>
-                        item.id === editingId ? { ...item, iconUrl } : item,
-                      ),
-                    );
-                  }
-                }}
-              />
-              <span className="text-foreground-secondary text-xs">
-                Station logo — JPEG, PNG, or WebP. Hover the image to replace.
-              </span>
-              {catalogLogoForName(draft.name) ? (
-                <Button
-                  className="gap-1.5"
-                  type="button"
-                  size="xs"
-                  variant="text"
-                  disabled={
-                    pending || draft.iconUrl === catalogLogoForName(draft.name)
-                  }
-                  onClick={() => {
-                    const logoUrl = catalogLogoForName(draft.name);
-                    if (!logoUrl) {
-                      return;
-                    }
-                    setDraft((current) => ({ ...current, iconUrl: logoUrl }));
-                    if (!editingId) {
-                      return;
-                    }
-                    void persistRadioStationCover({
-                      catalogStationId: catalogStationIdForName(draft.name),
-                      presetId: editingId,
-                      stationName: draft.name.trim() || 'Station',
-                      logoUrl,
-                    }).then((result) => {
-                      if (!result.ok) {
-                        setError(result.error);
-                        return;
-                      }
-                      setPresets((current) =>
-                        current.map((item) =>
-                          item.id === editingId
-                            ? { ...item, iconUrl: logoUrl }
-                            : item,
-                        ),
-                      );
-                    });
-                  }}
-                >
-                  <ImageIcon size={14} aria-hidden />
-                  Use catalog logo
-                </Button>
-              ) : null}
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Input
-                autoComplete="off"
-                label="Name"
-                value={draft.name}
-                placeholder="Radio Helsinki"
+              <Textarea
+                submitOnModEnter
+                label="Description"
+                value={draft.description ?? ''}
+                rows={2}
+                placeholder="What listeners should expect from this station."
                 onChange={(event) =>
-                  setDraft({ ...draft, name: event.target.value })
+                  setDraft({ ...draft, description: event.target.value })
                 }
               />
               <Input
-                label="Genre"
-                value={draft.genre ?? ''}
-                placeholder="World"
+                inputMode="url"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                label="Stream URL"
+                value={draft.streamUrl ?? ''}
+                placeholder="https://stream.example.com/live.mp3"
+                description="Direct, playable HTTPS stream URL."
                 onChange={(event) =>
-                  setDraft({ ...draft, genre: event.target.value })
+                  setDraft({ ...draft, streamUrl: event.target.value })
                 }
               />
-            </div>
-            <Textarea
-              submitOnModEnter
-              label="Description"
-              value={draft.description ?? ''}
-              rows={2}
-              placeholder="What listeners should expect from this station."
-              onChange={(event) =>
-                setDraft({ ...draft, description: event.target.value })
-              }
-            />
-            <Input
-              inputMode="url"
-              autoCapitalize="none"
-              autoCorrect="off"
-              spellCheck={false}
-              label="Stream URL"
-              value={draft.streamUrl ?? ''}
-              placeholder="https://stream.example.com/live.mp3"
-              description="Direct, playable HTTPS stream URL."
-              onChange={(event) =>
-                setDraft({ ...draft, streamUrl: event.target.value })
-              }
-            />
-            <Input
-              inputMode="url"
-              autoCapitalize="none"
-              autoCorrect="off"
-              spellCheck={false}
-              label="Programming URL (optional)"
-              value={draft.programmingUrl ?? ''}
-              placeholder="https://example.com/now-playing"
-              description="“What's on now” endpoint, if the station exposes one — display-only."
-              onChange={(event) =>
-                setDraft({ ...draft, programmingUrl: event.target.value })
-              }
-            />
-            {error ? <InlineError>{error}</InlineError> : null}
-          </div>
-          <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
-            {editingId ? (
-              <SaveButton
-                disabled={pending || !draft.name.trim()}
-                saving={pending}
-                label="Save changes"
-                type="submit"
+              <StationHealthCell
+                streamUrl={draft.streamUrl?.trim() || null}
+                name={draft.name.trim() || 'this'}
               />
-            ) : (
-              <Button
-                className="gap-1.5"
-                disabled={pending || !draft.name.trim()}
-                type="submit"
-              >
-                <PlusIcon size={14} aria-hidden />
-                Add station
-              </Button>
-            )}
-          </Dialog.Actions>
-        </form>
-      </Dialog.Root>
-      <ConfirmDialog
-        isOpen={pendingRemove !== null}
-        title={
-          pendingRemove ? `Remove ${pendingRemove.name}?` : 'Remove station?'
-        }
-        description="Listeners lose this preset from the radio directory."
-        confirmLabel="Remove"
-        onCancel={() => setPendingRemove(null)}
-        onConfirm={() => {
-          const preset = pendingRemove;
-          if (!preset) {
-            return;
+              <Input
+                inputMode="url"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                label="Programming URL (optional)"
+                value={draft.programmingUrl ?? ''}
+                placeholder="https://example.com/now-playing"
+                description="“What's on now” endpoint, if the station exposes one — display-only."
+                onChange={(event) =>
+                  setDraft({ ...draft, programmingUrl: event.target.value })
+                }
+              />
+              {error ? <InlineError>{error}</InlineError> : null}
+            </div>
+            <Dialog.Actions>
+              <Dialog.Close>Cancel</Dialog.Close>
+              {editingId ? (
+                <SaveButton
+                  disabled={pending || !draft.name.trim()}
+                  saving={pending}
+                  label="Save changes"
+                  type="submit"
+                />
+              ) : (
+                <Button
+                  className="gap-1.5"
+                  disabled={pending || !draft.name.trim()}
+                  type="submit"
+                >
+                  <PlusIcon size={14} aria-hidden />
+                  Add station
+                </Button>
+              )}
+            </Dialog.Actions>
+          </form>
+        </Dialog.Root>
+        <ConfirmDialog
+          isOpen={pendingRemove !== null}
+          title={
+            pendingRemove ? `Remove ${pendingRemove.name}?` : 'Remove station?'
           }
-          setPendingRemove(null);
-          void deleteAdminInternetRadioPreset(preset.id).then((result) => {
-            if (!result.ok) {
-              setError(result.error);
+          description="Listeners lose this preset from the radio directory."
+          confirmLabel="Remove"
+          onCancel={() => setPendingRemove(null)}
+          onConfirm={() => {
+            const preset = pendingRemove;
+            if (!preset) {
               return;
             }
-            reload();
-          });
-        }}
+            setPendingRemove(null);
+            void deleteAdminInternetRadioPreset(preset.id).then((result) => {
+              if (!result.ok) {
+                setError(result.error);
+                return;
+              }
+              reload();
+            });
+          }}
+        />
+      </StudioPanel>
+      <CatalogStationsPanel
+        presetNames={new Set(presets.map((preset) => preset.name))}
+        onAdd={(station) => openNew(draftFromCatalogStation(station))}
       />
-    </StudioPanel>
+    </div>
   );
 }

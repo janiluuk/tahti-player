@@ -57,7 +57,7 @@ function fmt(iso: string): string {
 
 const ADMIN_RADIO_TAB_LABELS: Record<AdminRadioTabId, string> = {
   feature: 'Feature',
-  presets: 'Presets',
+  presets: 'Stations',
   'opt-outs': 'Opt-outs',
   history: 'History',
 };
@@ -382,7 +382,7 @@ export function AdminRadioView() {
                     },
                     {
                       id: 'presets',
-                      label: 'Presets',
+                      label: 'Stations',
                       icon: <Settings2Icon size={14} aria-hidden />,
                       content: <InternetRadioPresetsPanel />,
                     },

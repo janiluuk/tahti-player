@@ -35,6 +35,6 @@ export const Default: Story = {
     await expect(
       canvas.getAllByRole('button', { name: 'Opt out' }),
     ).toHaveLength(2);
-    await selectTab(canvas, 'Presets');
+    await selectTab(canvas, 'Stations');
   },
 };
