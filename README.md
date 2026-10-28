@@ -2,7 +2,7 @@
 
 **Tahti Player** is the app for [Tahti](https://tahti.live), a Finnish nonprofit broadcasting platform owned by its members. Independent artists run their own channels: they go live, publish music and earn directly from their fans. Listeners tune in without ads or tracking. The community runs the platform together.
 
-It runs in the browser at **[tahti.live](https://tahti.live)** and as a desktop app for Windows, macOS and Linux.
+It runs in the browser at **[tahti.live](https://tahti.live)** and as a desktop app for Windows, macOS and Linux. iOS and Android supported for mobile. Native chromecast / airplay support.
 
 <picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/listen-home-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/listen-home-v1.png" alt="Listen home with favorites, Tahti Radio and channel discovery" /></picture>
 
