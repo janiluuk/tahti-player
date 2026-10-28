@@ -4,6 +4,14 @@ import userEvent from '@testing-library/user-event';
 import { CardsRowWrapper as Wrapper } from './CardsRow.test-wrapper';
 
 describe('CardsRow', () => {
+  beforeEach(() => {
+    Wrapper.overflow(2000, 800);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('(Snapshot) renders correctly with items', () => {
     const { container } = Wrapper.mount();
     expect(container.firstChild).toMatchSnapshot();
@@ -92,5 +100,27 @@ describe('CardsRow', () => {
     await userEvent.click(Wrapper.card('Clickable Album')!);
 
     expect(handleClick).toHaveBeenCalledOnce();
+  });
+
+  it('hides the filter and scroll buttons when every card fits', () => {
+    Wrapper.overflow(600, 800);
+    Wrapper.mount();
+
+    expect(Wrapper.controls).toHaveClass('hidden');
+  });
+
+  it('shows the filter and scroll buttons when cards overflow the row', () => {
+    Wrapper.mount();
+
+    expect(Wrapper.controls).not.toHaveClass('hidden');
+  });
+
+  it('keeps the filter visible while a filter is applied', async () => {
+    Wrapper.mount();
+    Wrapper.overflow(200, 800);
+
+    await Wrapper.filter.type('midnight');
+
+    expect(Wrapper.controls).not.toHaveClass('hidden');
   });
 });

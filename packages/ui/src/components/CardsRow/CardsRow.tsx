@@ -68,6 +68,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
     scrollContainerRef,
     scrollLeft,
     scrollRight,
+    showControls,
   } = useCardsRow(items);
 
   return (
@@ -87,7 +88,13 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
             </Badge>
           )}
         </div>
-        <div className="flex min-w-64 flex-1 items-center justify-end gap-2">
+        <div
+          data-testid="cards-row-controls"
+          className={cn(
+            'min-w-64 flex-1 items-center justify-end gap-2',
+            showControls ? 'flex' : 'hidden',
+          )}
+        >
           <Input
             data-testid="cards-row-filter"
             size="sm"
