@@ -35,6 +35,11 @@ export const TopicList: Story = {
     await expect(canvas.getByLabelText('Pinned')).toBeVisible();
     await expect(within(list).getByText('Closed')).toBeVisible();
     await expect(canvas.getByText('1 new reply')).toBeVisible();
+    await expect(canvas.getByText(/last reply by Aino Virtanen/)).toBeVisible();
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Mark all read' }),
+    );
+    await expect(canvas.queryByText('1 new reply')).not.toBeInTheDocument();
   },
 };
 
