@@ -1,4 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
+import { AudioLinesIcon, DownloadIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
@@ -17,8 +18,8 @@ import {
 import { ListenerWorldMap } from '../../../components/ListenerWorldMap';
 import { PageEmpty, PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
-import { StatNumber } from '../../../components/tahti/StatNumber';
 import { formatPlayCount } from '../../../lib/topListEntries';
+import { STUDIO_METRIC_TONES } from '../stats/metricTones';
 
 const PERIOD_OPTIONS: SegmentedControlOption<InsightsPeriod>[] = [
   { id: '7d', label: '7d' },
@@ -117,19 +118,15 @@ export function ReleaseStatsPanel({
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             <StatTile
               label="Plays"
-              value={
-                <StatNumber className="text-2xl">
-                  {totals.plays.toLocaleString()}
-                </StatNumber>
-              }
+              value={totals.plays.toLocaleString()}
+              tone={STUDIO_METRIC_TONES.plays}
+              icon={<AudioLinesIcon size={16} />}
             />
             <StatTile
               label="Downloads"
-              value={
-                <StatNumber className="text-2xl">
-                  {totals.downloads.toLocaleString()}
-                </StatNumber>
-              }
+              value={totals.downloads.toLocaleString()}
+              tone={STUDIO_METRIC_TONES.downloads}
+              icon={<DownloadIcon size={16} />}
             />
           </div>
 

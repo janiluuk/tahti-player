@@ -63,6 +63,17 @@ describe('ReleaseStatsPanel', () => {
     expect(screen.getByText('FI 6')).toBeTruthy();
   });
 
+  it('colours plays and downloads like the Studio stats tiles', async () => {
+    render(<ReleaseStatsPanel tracks={tracks} />);
+    const plays = await screen.findByText('40');
+    expect(plays.closest<HTMLElement>('[data-tone]')?.dataset.tone).toBe(
+      'blue',
+    );
+    expect(
+      screen.getByText('7').closest<HTMLElement>('[data-tone]')?.dataset.tone,
+    ).toBe('primary');
+  });
+
   it('ranks tracks by plays and opens a track insights page', async () => {
     render(<ReleaseStatsPanel tracks={tracks} />);
     await screen.findByText('Loud One');

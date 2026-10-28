@@ -9,6 +9,8 @@ export const STUDIO_METRIC_TONES = {
   plays: 'blue',
   downloads: 'primary',
   smartLinkClicks: 'yellow',
+  smartLinkViews: 'orange',
+  clickThrough: 'cyan',
   followers: 'purple',
   minutesListened: 'green',
   minutesStreamed: 'cyan',

@@ -30,6 +30,13 @@ describe('ReleaseSmartLinkStats', () => {
     expect(spy).toHaveBeenCalledWith('r1');
     expect(screen.getByText('200')).toBeTruthy();
     expect(screen.getByText('25%')).toBeTruthy();
+    expect(
+      ['200', '50', '25%'].map(
+        (value) =>
+          screen.getByText(value).closest<HTMLElement>('[data-tone]')?.dataset
+            .tone,
+      ),
+    ).toEqual(['orange', 'yellow', 'cyan']);
     const rows = within(screen.getByTestId('smart-link-clicks')).getAllByRole(
       'listitem',
     );
