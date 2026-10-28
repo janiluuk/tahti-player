@@ -336,6 +336,7 @@ const MENTION_SURFACE_LABELS: Record<string, string> = {
   CHAT: 'Channel chat',
   RELEASE: 'Release notes',
   NEWSLETTER: 'Newsletter',
+  DISCUSSION: 'Discussion reply',
 };
 
 function mentionerDisplayName(mention: PublicMention): string {

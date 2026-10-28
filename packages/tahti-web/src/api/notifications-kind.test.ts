@@ -39,6 +39,7 @@ describe('notificationKindOf', () => {
     expect(notificationKindOf('DISCUSSION_REPLY')).toBe('governance');
     expect(notificationKindOf('DISCUSSION_OPENED')).toBe('governance');
     expect(notificationKindOf('DISCUSSION_CLOSED')).toBe('governance');
+    expect(notificationKindOf('DISCUSSION_MENTION')).toBe('governance');
   });
 
   it('labels a type by its kind', () => {

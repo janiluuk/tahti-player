@@ -2,7 +2,13 @@ import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export type MentionSurface =
-  'BIO' | 'ANNOUNCEMENT' | 'RELEASE' | 'NEWSLETTER' | 'TRACKLIST' | 'CHAT';
+  | 'BIO'
+  | 'ANNOUNCEMENT'
+  | 'RELEASE'
+  | 'NEWSLETTER'
+  | 'TRACKLIST'
+  | 'CHAT'
+  | 'DISCUSSION';
 
 export type Mention = {
   id: string;
@@ -32,6 +38,7 @@ const SURFACE_LABELS: Record<MentionSurface, string> = {
   NEWSLETTER: 'a newsletter',
   TRACKLIST: 'a tracklist',
   CHAT: 'chat',
+  DISCUSSION: 'a discussion',
 };
 
 export function mentionSurfaceLabel(surface: string): string {
