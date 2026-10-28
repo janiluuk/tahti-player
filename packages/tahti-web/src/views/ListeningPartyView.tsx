@@ -1,9 +1,11 @@
 import { ViewShell } from '@tahti-player/ui';
 
 import type { ListeningPartyDto } from '../api/listening-parties';
+import { ListeningPartyHero } from '../components/listening-party/ListeningPartyHero';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { useListeningParty } from '../hooks/useListeningParty';
 import { useListeningPartyTimeline } from '../hooks/useListeningPartyTimeline';
+import { safeCreditName } from '../lib/displayName';
 
 const SHELL_CLASSES = { root: 'px-0 pt-0 mx-auto w-full max-w-6xl' };
 
@@ -21,14 +23,16 @@ function ListeningPartyPage({
   return (
     <ViewShell
       title="Listening party"
-      subtitle={`${party.release.title} · ${party.host.displayName}`}
+      subtitle={`${party.release.title} · ${safeCreditName(party.host.displayName, party.host.username)}`}
       classes={SHELL_CLASSES}
     >
       <div
         className="flex flex-col gap-6"
         data-testid="listening-party"
         data-state={clock.state}
-      />
+      >
+        <ListeningPartyHero party={party} clock={clock} />
+      </div>
     </ViewShell>
   );
 }
