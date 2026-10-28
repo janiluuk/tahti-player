@@ -24,6 +24,7 @@ export type LikedTrack = {
   likeCount?: number;
   playCount?: number;
   downloadCount?: number;
+  commentCount?: number;
 };
 
 const likedTrackSources = new WeakMap<TahtiPlayable, LikedTrack>();
@@ -43,6 +44,7 @@ export function likedTrackMeta(playable: TahtiPlayable) {
       likes: track.likeCount,
       plays: track.playCount,
       downloads: track.downloadCount,
+      comments: track.commentCount,
     },
   };
 }

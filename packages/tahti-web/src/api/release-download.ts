@@ -23,6 +23,7 @@ export type SmartLinkTrack = {
   likeCount?: number;
   playCount?: number;
   downloadCount?: number;
+  commentCount?: number;
 };
 
 /** Presigned URL for one published release track; the API applies the

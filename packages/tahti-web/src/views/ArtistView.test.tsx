@@ -81,6 +81,15 @@ describe('ArtistView', () => {
     ).not.toBeNull();
   });
 
+  it('shows the artist’s total plays, likes and downloads in the header', async () => {
+    const { container } = await renderArtist('northern-lights');
+    const header = container.querySelector(
+      '[data-testid="artist-social-header"]',
+    );
+    expect(header?.textContent).toContain('Plays');
+    expect(header?.textContent).toContain('Downloads');
+  });
+
   it('shows the nameplate pill next to the display name', async () => {
     const original = client.fetchProfile;
     vi.spyOn(client, 'fetchProfile').mockImplementation(async (name) => {
