@@ -128,7 +128,8 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: 'Track rows',
         body: [
           'Channel tracks, an artist’s popular tracks, playlists and Listen’s new tracks show each track as a row: the round play button, the genre and length, and the waveform, which you can click or drag to jump within the playing track.',
-          'Under the waveform: the heart with a count loves the track (signed in), then add to queue, add to a playlist, and download when the artist allows it. On the right are the release date and how many likes, plays and downloads the track has.',
+          'Under the waveform: the heart with a count loves the track (signed in), then add to queue, add to a playlist, and download when the artist allows it. On the right are the release date and how many likes, plays, downloads and comments the track has.',
+          'The same rows show on liked tracks, playlists, release pages and the channel Playlist widget; a track page shows its plays too.',
         ],
       },
     ],
@@ -602,6 +603,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Governance → Discussions (/governance/discussions) lists topics the board opened for members to talk through. Every member is notified when a topic opens.',
           'Reply to join in; replying follows the topic, so new replies notify you and the list shows how many you have not read. Mute notifications keeps following quietly. You can edit or remove your own reply while the topic is open, and report a reply that should not be there. Long threads open on the latest replies; Show earlier replies loads the rest.',
+          'Type @username in a reply to mention a member; they get a notification. The list says who replied last, and Mark all read clears the new-reply counts.',
           'A discussion is not a vote: decisions go through motions.',
         ],
       },
