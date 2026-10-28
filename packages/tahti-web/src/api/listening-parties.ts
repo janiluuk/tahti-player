@@ -66,6 +66,7 @@ export type ListeningPartyDto = {
     title: string;
     type: string;
     artworkUrl: string | null;
+    /** Null until the release is PUBLISHED. */
     smartLinkSlug: string | null;
     releaseDate: string | null;
     isPreRelease: boolean;
@@ -79,6 +80,7 @@ export type ListeningPartyDto = {
   };
   tracks: ListeningPartyTrack[];
   nowPlaying: ListeningPartyNowPlaying | null;
+  /** Empty while the host's store is off or cannot take payments. */
   purchaseTiers: ListeningPartyPurchaseTier[];
 };
 
@@ -149,8 +151,9 @@ export async function fetchListeningParty(id: string): Promise<{
 }
 
 /** Where the player loads a party track. The API answers with a 302 to a
- * short-lived signed URL, and only while the track is playable in the
- * party, so the URL is built fresh for each play. */
+ * signed URL that lives about as long as the track, and only while the
+ * track is playable in the party (403 otherwise), so the URL is built
+ * fresh for each track as it starts. */
 export function listeningPartyTrackStreamUrl(
   partyId: string,
   trackId: string,

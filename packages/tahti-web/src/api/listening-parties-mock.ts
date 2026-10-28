@@ -87,7 +87,8 @@ const POLAR_STATIC: MockRelease = {
   title: 'Polar Static',
   type: 'ALBUM',
   artworkUrl: null,
-  smartLinkSlug: 'polar-static',
+  // The API only exposes the smart link once the release is published.
+  smartLinkSlug: null,
   releaseDate: null,
   isPreRelease: true,
   description: 'Eight pieces built on one modular rig over a winter.',
@@ -370,6 +371,13 @@ export async function createMockListeningParty(
   if (!user) {
     return { ok: false, error: 'Sign in to schedule', status: 401 };
   }
+  if (!user.channel) {
+    return {
+      ok: false,
+      error: 'Set up your channel before scheduling a party',
+      status: 403,
+    };
+  }
   const now = Date.now();
   const timeError = startAtError(body.startAt, now);
   if (timeError) {
@@ -388,7 +396,8 @@ export async function createMockListeningParty(
         title: studio.title,
         type: studio.type,
         artworkUrl: studio.artworkUrl ?? null,
-        smartLinkSlug: studio.smartLinkSlug,
+        smartLinkSlug:
+          studio.state === 'PUBLISHED' ? studio.smartLinkSlug : null,
         releaseDate: studio.releaseDate
           ? new Date(studio.releaseDate).toISOString()
           : null,

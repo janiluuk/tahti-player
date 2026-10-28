@@ -190,6 +190,7 @@ describe('listening parties in the offline mock app', () => {
     const mine = await fetchMyListeningParties();
     expect(mine.data[0]?.id).toBe(created.data.id);
 
+    await cancelListeningParty(created.data.id);
     await expect(cancelListeningParty(created.data.id)).resolves.toMatchObject({
       ok: true,
       data: { state: 'CANCELED' },
@@ -217,6 +218,23 @@ describe('listening parties in the offline mock app', () => {
     await expect(
       cancelListeningParty(MOCK_LISTENING_PARTY_IDS.ended),
     ).resolves.toMatchObject({ ok: false, status: 409 });
+  });
+
+  it('refuses an artist without a channel', async () => {
+    setMockSessionUser({ ...ARTIST, channel: undefined });
+    await expect(
+      createListeningParty({
+        releaseId: 'rel-mock-1',
+        startAt: inMinutes(60 * 24 * 40),
+      }),
+    ).resolves.toMatchObject({ ok: false, status: 403 });
+  });
+
+  it('hides the smart link of an unpublished release', async () => {
+    const live = (await fetchListeningParty(MOCK_LISTENING_PARTY_IDS.live))
+      .data!;
+    expect(live.release.isPreRelease).toBe(true);
+    expect(live.release.smartLinkSlug).toBeNull();
   });
 
   it('gives each mock track real sample audio', () => {
