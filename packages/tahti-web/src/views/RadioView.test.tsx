@@ -143,6 +143,32 @@ describe('RadioView featured history', () => {
   });
 });
 
+describe('RadioView visualizer hero', () => {
+  beforeEach(() => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+  });
+
+  afterEach(() => {
+    cleanup();
+    vi.unstubAllEnvs();
+  });
+
+  it('shows the Tahti Radio logo once, inside the visualizer hero', async () => {
+    const router = createRouter({
+      routeTree: createRootRoute({ component: RadioView }),
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+    const hero = screen.getByTestId('radio-visualizer-hero');
+    expect(screen.getAllByText('TR')).toHaveLength(1);
+    expect(
+      within(within(hero).getByTestId('radio-station-logo')).getByText('TR'),
+    ).toBeTruthy();
+  });
+});
+
 describe('RadioView failed sections', () => {
   beforeEach(() => {
     vi.stubEnv('VITE_FORCE_MOCK', '1');
@@ -327,6 +353,49 @@ describe('RadioView up next', () => {
     expect(
       screen.getByRole('link', { name: /Full schedule/ }).getAttribute('href'),
     ).toBe('/schedule');
+  });
+
+  it('overlays what is playing on the visualizer with the next rotation track', async () => {
+    await renderRadio();
+    const overlay = within(
+      screen.getByTestId('radio-visualizer-hero'),
+    ).getByTestId('radio-now-playing-overlay');
+    expect(within(overlay).getByText('Now playing')).toBeTruthy();
+    expect(
+      within(overlay).getByTestId('radio-now-playing-next').textContent,
+    ).toBe('Next: Polar Night - Northern Lights');
+  });
+
+  it('names the live member set and the next booked show while the relay is live', async () => {
+    relayLive = true;
+    calendarBookings = [
+      {
+        id: 'slot-next',
+        startAt: new Date(Date.now() + 2 * 3600_000).toISOString(),
+        endAt: new Date(Date.now() + 3 * 3600_000).toISOString(),
+        note: 'Late night ambient',
+        showType: 'LIVE_SET',
+        channelSlug: 'northern-lights',
+        username: 'northern-lights',
+        displayName: 'Northern Lights',
+        isMine: false,
+      },
+    ];
+    await renderRadio();
+    const overlay = screen.getByTestId('radio-now-playing-overlay');
+    expect(within(overlay).getByText('Live on the relay')).toBeTruthy();
+    expect(within(overlay).getByText('Moon set')).toBeTruthy();
+    expect(
+      within(overlay).getByTestId('radio-now-playing-next').textContent,
+    ).toMatch(/^Next: Late night ambient - Northern Lights, /);
+    calendarBookings = [];
+  });
+
+  it('leaves out the next line when nothing next is known', async () => {
+    rotationFailure = 'HTTP 503';
+    await renderRadio();
+    const overlay = screen.getByTestId('radio-now-playing-overlay');
+    expect(within(overlay).queryByTestId('radio-now-playing-next')).toBeNull();
   });
 
   it('says the rotation failed to load instead of showing nothing', async () => {

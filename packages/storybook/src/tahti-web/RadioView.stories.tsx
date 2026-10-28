@@ -116,7 +116,7 @@ export const BookASlot: Story = {
 };
 
 export const UpNextRotation: Story = {
-  name: 'Up next: rotation tracks',
+  name: 'Up next: rotation tracks, now-playing overlay',
   decorators: [withMockAuth(MOCK_USERS.listener)],
   parameters: {
     mockData: mockData({
@@ -129,6 +129,11 @@ export const UpNextRotation: Story = {
     await expect(rotation).toBeVisible();
     await expect(within(rotation).getByText('Aurora Drift')).toBeVisible();
     await expect(within(rotation).getAllByRole('listitem')).toHaveLength(3);
+    const overlay = canvas.getByTestId('radio-now-playing-overlay');
+    await expect(within(overlay).getByText('Now playing')).toBeVisible();
+    await expect(
+      within(overlay).getByTestId('radio-now-playing-next'),
+    ).toHaveTextContent(/^Next: /);
   },
 };
 

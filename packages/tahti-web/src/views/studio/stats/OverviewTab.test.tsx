@@ -2,7 +2,7 @@
 import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { EngagementSection } from './OverviewTab';
+import { EngagementSection, KeyMetrics } from './OverviewTab';
 import type { StatsData } from './useStatsData';
 
 vi.mock('@tanstack/react-router', () => ({
@@ -63,5 +63,50 @@ describe('Stats overview, engagement units', () => {
       (bar) => (bar as HTMLElement).style.width,
     );
     expect(bars).toEqual(['0%', '0%', '0%']);
+  });
+});
+
+describe('Stats overview, metric colours', () => {
+  afterEach(cleanup);
+
+  const metricsState = {
+    loading: false,
+    keyMetrics: [
+      { label: 'Plays', value: 10, note: '', icon: () => null, tone: 'blue' },
+      {
+        label: 'Downloads',
+        value: 4,
+        note: '',
+        icon: () => null,
+        tone: 'primary',
+      },
+      {
+        label: 'Followers',
+        value: 2,
+        note: '',
+        icon: () => null,
+        tone: 'purple',
+      },
+    ],
+  } as unknown as StatsData;
+
+  it('gives each key metric its own tone instead of one colour', () => {
+    render(<KeyMetrics state={metricsState} active />);
+    const tones = screen
+      .getAllByTestId('key-metric')
+      .map((metric) => metric.dataset.tone);
+    expect(tones).toEqual(['blue', 'primary', 'purple']);
+    expect(screen.getByText('10')).toHaveClass('text-foreground');
+    expect(screen.getByText('2')).toHaveClass('text-foreground');
+  });
+
+  it('colours each engagement bar by its source', () => {
+    render(<EngagementSection state={state} active />);
+    const meters = screen.getAllByRole('meter', { hidden: true });
+    expect(meters.map((meter) => meter.dataset.tone)).toEqual([
+      'primary',
+      'cyan',
+      'purple',
+    ]);
   });
 });

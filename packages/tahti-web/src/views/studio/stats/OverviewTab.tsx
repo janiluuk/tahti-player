@@ -1,10 +1,10 @@
 import { Link } from '@tanstack/react-router';
 
-import { Meter } from '@tahti-player/ui';
+import { cn, Meter, statToneClasses } from '@tahti-player/ui';
 
 import { StudioPanel } from '../../../components/StudioPanel';
 import { Eyebrow } from '../../../components/tahti/Eyebrow';
-import { StatNumber } from '../../../components/tahti/StatNumber';
+import { ENGAGEMENT_UNIT_TONES } from './metricTones';
 import type { StatsData } from './useStatsData';
 
 function EngagementUnitList({
@@ -32,7 +32,10 @@ function EngagementUnitList({
             aria-hidden
             value={entry.value}
             max={most}
-            barClassName="bg-primary/60"
+            data-tone={ENGAGEMENT_UNIT_TONES[entry.id] ?? 'primary'}
+            barClassName={
+              statToneClasses[ENGAGEMENT_UNIT_TONES[entry.id] ?? 'primary'].fill
+            }
           />
         </li>
       ))}
@@ -55,15 +58,31 @@ export function KeyMetrics({
     >
       {keyMetrics.map((metric) => {
         const Icon = metric.icon;
+        const tone = statToneClasses[metric.tone];
         return (
-          <StudioPanel key={metric.label} className="!p-4 sm:!p-5">
-            <div className="flex items-center justify-between gap-3">
-              <Eyebrow>{metric.label}</Eyebrow>
-              <Icon size={17} aria-hidden className="text-primary-strong" />
+          <StudioPanel
+            key={metric.label}
+            className={cn('border-l-4 !p-4 sm:!p-5', tone.edge)}
+          >
+            <div
+              className="flex items-center justify-between gap-3"
+              data-testid="key-metric"
+              data-tone={metric.tone}
+            >
+              <Eyebrow tone="muted">{metric.label}</Eyebrow>
+              <span
+                aria-hidden
+                className={cn(
+                  'flex size-8 shrink-0 items-center justify-center rounded-md',
+                  tone.chip,
+                )}
+              >
+                <Icon size={17} aria-hidden />
+              </span>
             </div>
-            <StatNumber className="mt-1 block text-3xl">
+            <span className="font-heading text-foreground mt-1 block text-3xl font-bold tabular-nums">
               {loading ? '—' : metric.value.toLocaleString()}
-            </StatNumber>
+            </span>
             <p className="text-foreground-secondary mt-1 text-xs">
               {metric.note}
             </p>

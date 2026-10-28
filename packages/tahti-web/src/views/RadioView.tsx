@@ -15,14 +15,12 @@ import {
   Box,
   Button,
   ButtonLink,
-  ImageReveal,
   MediaArtwork,
   Tabs,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
-import { resolvePublicVisualizerPreset } from '../api/channel-design';
 import {
   fetchRadio,
   fetchRadioFeatureHistory,
@@ -47,7 +45,7 @@ import type {
   RadioRecentlyPlayedItem,
   TahtiPlayable,
 } from '../api/types';
-import { ChannelVisualizer } from '../components/ChannelVisualizer';
+import { useRotationNowPlaying } from '../components/channel-view/useRotationNowPlaying';
 import { RadioStationsRow } from '../components/listen-view/RadioStationsRow';
 import { useRadioPresets } from '../components/listen-view/useListenSections';
 import {
@@ -63,10 +61,14 @@ import {
 import { AddStationsPanel } from '../components/radio/AddStationsPanel';
 import { FavoriteStationsRow } from '../components/radio/FavoriteStationsRow';
 import { RadioBookedShowsPanel } from '../components/radio/RadioBookedShowsPanel';
+import {
+  RadioNowPlayingOverlay,
+  type RadioOverlayItem,
+} from '../components/radio/RadioNowPlayingOverlay';
+import { RadioVisualizerHero } from '../components/radio/RadioVisualizerHero';
 import { RadioBookingCalendar } from '../components/RadioBookingCalendar';
 import { RadioUpNextPanel } from '../components/RadioUpNextPanel';
 import { StationUnavailableNotice } from '../components/StationUnavailableNotice';
-import { Eyebrow } from '../components/tahti/Eyebrow';
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { TrackInfoDialog, type TrackInfo } from '../components/TrackInfoDialog';
 import { usePolling } from '../hooks/usePolling';
@@ -77,6 +79,14 @@ import { usePlayerStore } from '../stores/playerStore';
 
 const UPCOMING_WINDOW_DAYS = 14;
 const UPCOMING_LIMIT = 8;
+
+function formatShowStart(iso: string): string {
+  return new Date(iso).toLocaleString([], {
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
 
 function formatAgo(iso: string): string {
   const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60_000);
@@ -241,7 +251,11 @@ export function RadioView() {
   }, 30_000);
 
   const online = Boolean(station?.hlsUrl);
-  const nowPlaying = station?.nowPlaying;
+  const { nowPlaying, next: nextTrack } = useRotationNowPlaying(
+    TAHTI_RADIO_SLUG,
+    station?.nowPlaying ?? null,
+    station?.nowPlayingNext,
+  );
   const nowPlayingTitle = nowPlaying?.title;
 
   useEffect(() => {
@@ -258,6 +272,29 @@ export function RadioView() {
           title: relay.channel.title,
         }
       : null;
+  const nextRotationTrack = nextTrack ?? rotation[0] ?? null;
+  const nextBooking = upcoming[0] ?? null;
+  const overlayCurrent: RadioOverlayItem | null = memberLive
+    ? { title: memberLive.title ?? 'Live set', subtitle: memberLive.name }
+    : nowPlaying
+      ? {
+          title: nowPlaying.title,
+          subtitle: nowPlaying.artistName,
+          artworkUrl: nowPlaying.artworkUrl,
+        }
+      : null;
+  const overlayNext: RadioOverlayItem | null =
+    !memberLive && nextRotationTrack
+      ? {
+          title: nextRotationTrack.title,
+          subtitle: nextRotationTrack.artistName,
+        }
+      : nextBooking
+        ? {
+            title: nextBooking.note ?? nextBooking.displayName,
+            subtitle: `${nextBooking.displayName}, ${formatShowStart(nextBooking.startAt)}`,
+          }
+        : null;
   const TAGLINE =
     '24/7 community radio — always on. Fair rotation when nobody is booked.';
   const description = [TAGLINE, station?.user.bio]
@@ -311,14 +348,6 @@ export function RadioView() {
         <div className="flex flex-col gap-6">
           <header className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex min-w-0 items-start gap-4">
-              <div className="bg-surface-secondary flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-xl text-2xl font-bold tracking-tight sm:size-24">
-                <ImageReveal
-                  src={stationLogo ?? undefined}
-                  alt=""
-                  className="size-full"
-                  placeholder={<span>TR</span>}
-                />
-              </div>
               <div className="min-w-0 flex-1">
                 <div className="text-foreground text-2xl font-bold tracking-tight">
                   {station.user.displayName}
@@ -398,34 +427,17 @@ export function RadioView() {
               }
             />
           ) : (
-            <Box
-              variant="secondary"
-              className="relative min-h-[220px] overflow-hidden rounded-xl"
-            >
-              <div className="absolute inset-0 opacity-40">
-                <ChannelVisualizer
-                  preset={resolvePublicVisualizerPreset(station.visualPreset)}
-                  colorSchemeJson={station.colorSchemeJson}
-                  className="h-full min-h-[160px] w-full"
-                />
-              </div>
-              <div className="relative z-10 flex flex-col gap-5 p-4 sm:p-5">
-                <div className="flex min-w-0 items-center gap-3">
-                  <MediaArtwork
-                    size="md"
-                    src={nowPlaying?.artworkUrl}
-                    alt=""
-                    className="bg-surface-secondary rounded-lg text-sm font-bold"
-                    placeholder="TR"
-                  />
-                  <div className="min-w-0">
-                    <Eyebrow tone="green">Live now</Eyebrow>
-                    {nowPlaying?.title ? (
-                      <Button
-                        type="button"
-                        variant="text"
-                        size="flexible"
-                        onClick={() =>
+            <RadioVisualizerHero
+              station={station}
+              logoUrl={stationLogo}
+              info={
+                <RadioNowPlayingOverlay
+                  label={memberLive ? 'Live on the relay' : 'Now playing'}
+                  current={overlayCurrent}
+                  next={overlayNext}
+                  onCurrentInfo={
+                    !memberLive && nowPlaying
+                      ? () =>
                           setInfoTrack({
                             title: nowPlaying.title,
                             artistName: nowPlaying.artistName,
@@ -433,22 +445,12 @@ export function RadioView() {
                             artworkUrl: nowPlaying.artworkUrl,
                             meta: 'Live now',
                           })
-                        }
-                        className="text-foreground block max-w-full truncate p-0 text-lg font-bold tracking-tight underline-offset-4 hover:underline"
-                      >
-                        {nowPlaying.title}
-                      </Button>
-                    ) : (
-                      <div className="text-foreground text-lg font-bold tracking-tight">
-                        24/7 rotation
-                      </div>
-                    )}
-                    <div className="text-foreground-secondary truncate text-sm">
-                      {nowPlaying?.artistName ?? 'Tahti Radio'}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-wrap items-start gap-3">
+                      : undefined
+                  }
+                />
+              }
+              actions={
+                <>
                   <MediaIconActions
                     actions={[
                       {
@@ -495,9 +497,9 @@ export function RadioView() {
                   >
                     Open channel
                   </ButtonLink>
-                </div>
-              </div>
-            </Box>
+                </>
+              }
+            />
           )}
 
           <StationUnavailableNotice
