@@ -33,6 +33,7 @@ import {
   type StatsTopListSort,
   type StatsTopTrack,
 } from '../../../api/studio-extras';
+import { STUDIO_METRIC_TONES } from './metricTones';
 
 export const HEATMAP_DAY_THRESHOLD = 30;
 
@@ -319,24 +320,28 @@ export function useStatsData() {
       value: plays.totalPlays,
       note: `${summary.playsToday.toLocaleString()} today`,
       icon: AudioLinesIcon,
+      tone: STUDIO_METRIC_TONES.plays,
     },
     {
       label: 'Downloads',
       value: plays.totalDownloads,
       note: `${summary.downloadsToday.toLocaleString()} today`,
       icon: DownloadIcon,
+      tone: STUDIO_METRIC_TONES.downloads,
     },
     {
       label: 'Smart-link clicks',
       value: plays.totalSmartLinkClicks ?? 0,
       note: 'Selected period',
       icon: ExternalLinkIcon,
+      tone: STUDIO_METRIC_TONES.smartLinkClicks,
     },
     {
       label: 'Followers',
       value: summary.followerCount,
       note: 'Current audience',
       icon: UsersIcon,
+      tone: STUDIO_METRIC_TONES.followers,
     },
     listening
       ? {
@@ -344,18 +349,21 @@ export function useStatsData() {
           value: listening.minutes,
           note: `${listening.listens.toLocaleString()} listens · ${listening.averageMinutes.toLocaleString()} min on average`,
           icon: UsersIcon,
+          tone: STUDIO_METRIC_TONES.minutesListened,
         }
       : {
           label: 'Minutes listened',
           value: minutesListened,
           note: `Estimated from ${egress.windowDays}d delivery at 192 kbps`,
           icon: UsersIcon,
+          tone: STUDIO_METRIC_TONES.minutesListened,
         },
     {
       label: 'Minutes streamed',
       value: minutesStreamed,
       note: `${live.totalBroadcasts} broadcasts in ${live.windowDays}d`,
       icon: RadioTowerIcon,
+      tone: STUDIO_METRIC_TONES.minutesStreamed,
     },
   ];
 

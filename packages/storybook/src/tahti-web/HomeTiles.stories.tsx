@@ -49,18 +49,21 @@ export const SummaryStats: Story = {
           value={128}
           note="+12%"
           icon={UsersIcon}
+          tone="purple"
         />
         <SummaryStat
           label="Plays"
           value={2043}
           note="last 7 days"
           icon={RadioIcon}
+          tone="blue"
         />
         <SummaryStat
           label="Shows"
           value={3}
           note="scheduled"
           icon={CalendarDaysIcon}
+          tone="cyan"
         />
       </div>
     </Group>

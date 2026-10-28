@@ -11,7 +11,12 @@ import {
   type ReactNode,
 } from 'react';
 
-import { useSkipEnterMotion } from '@tahti-player/ui';
+import {
+  cn,
+  statToneClasses,
+  useSkipEnterMotion,
+  type StatTone,
+} from '@tahti-player/ui';
 
 import { Eyebrow } from '../../../components/tahti/Eyebrow';
 
@@ -191,6 +196,7 @@ export type SummaryStatProps = {
   value: number;
   note: string;
   icon: LucideIcon;
+  tone?: StatTone;
 };
 
 export const SummaryStat: FC<SummaryStatProps> = ({
@@ -198,15 +204,28 @@ export const SummaryStat: FC<SummaryStatProps> = ({
   value,
   note,
   icon: Icon,
+  tone = 'primary',
 }) => (
   <HomeTileStaggerWrap>
     <Link
       to="/studio/stats"
       aria-label={`${value.toLocaleString()} ${label.toLowerCase()}`}
-      className="border-border bg-background-secondary/35 hover:bg-background-secondary group flex min-w-0 flex-col gap-2 rounded-xl border p-4 shadow-sm transition-transform hover:-translate-y-0.5"
+      data-tone={tone}
+      className={cn(
+        'border-border bg-background-secondary/35 hover:bg-background-secondary group flex min-w-0 flex-col gap-2 rounded-xl border border-l-4 p-4 shadow-sm transition-transform hover:-translate-y-0.5',
+        statToneClasses[tone].edge,
+      )}
     >
       <span className="text-foreground-secondary flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
-        <Icon size={15} aria-hidden className="text-primary-strong" />
+        <span
+          aria-hidden
+          className={cn(
+            'flex size-6 shrink-0 items-center justify-center rounded-md',
+            statToneClasses[tone].chip,
+          )}
+        >
+          <Icon size={14} aria-hidden />
+        </span>
         {label}
       </span>
       <span className="font-display text-2xl font-extrabold tabular-nums">
