@@ -1,50 +1,46 @@
 # Listening Party
 
-**Status:** blocked
+**Status:** partial
 
-**Blocker:** Needs user go-ahead before tahti-org schema/API work (`ScheduledLiveShow` proposal).
+Artists celebrate a release with fans at a scheduled Listening Party: the album plays once, start to finish, with the tracklist, liner notes, live chat and the artist's purchase options on one page.
 
-Logged 2026-09-19 from a user request. Feature backlog; implementation not yet scoped.
+Digital-only v1 is built on both sides against one contract:
 
-## Feature
+- API: tahti-org#1029 (`feat/listening-party`) - model, routes, shared timeline, chat "Now playing" worker.
+- Web: the tahti-player `feat/listening-party-web` PR - built against the contract with an offline mock store, so it works in dev (`VITE_FORCE_MOCK=1`) and Storybook before the API ships.
 
-Artists can celebrate an album release with their fans at a scheduled Listening Party, sharing the story behind the music as everyone listens together.
+## Contract (v1)
 
-## Requirements
+- Own `ListeningParty` model (`releaseId`, `channelId`, `hostUserId`, `startAt`, `hostNote` Markdown ≤ 2000, `canceledAt`). State is derived, never stored: canceled → CANCELED; before `startAt` → SCHEDULED; before `startAt` + sum of track durations → LIVE; else ENDED.
+- No server playout. The server owns the timeline (`computeListeningPartyTimeline` in `@tahti/shared`, mirrored in `packages/tahti-web/src/lib/listeningPartyTimeline.ts`): tracks in `position` order, no gaps, half-open intervals (at a boundary the next track plays at offset 0; at `endAt` the party is ENDED). Each client plays the tracks itself and seeks to the offset, ticking on the server clock (`serverNow`).
+- Endpoints: `GET /api/v1/listening-parties/:id` (DTO with release, liner notes = `release.commentary`, credits, tracks, `nowPlaying`, `serverNow`, `purchaseTiers`); `GET /api/v1/listening-parties/:id/tracks/:trackId/stream` (302 to a short-lived signed URL; 403 unless LIVE and track ≤ current, for pre-release parties); `GET /api/channels/:slug/listening-parties` (SCHEDULED + LIVE, soonest first, max 10); artist `POST/GET /api/me/listening-parties`, `PATCH /api/me/listening-parties/:id` (409 once started), `POST /api/me/listening-parties/:id/cancel` (409 once ended, idempotent when already canceled).
+- API deviations the web side follows: `release.smartLinkSlug` is null until PUBLISHED; `purchaseTiers` is empty while the store is off or Stripe is not connected (currency always EUR); email-like credit names are dropped server-side; public routes 404 for a suspended/deleted host.
+- Commerce reuses the host's `PurchaseTier`s and the existing `/api/v1/u/:username/purchase-tiers/:tierId/checkout`. Chat reuses the host channel's chat.
 
-- [ ] Fans can pre-order or purchase the album in all available formats directly from the Listening Party.
-- [ ] At showtime, the album plays once from start to finish.
-- [ ] The party features the full tracklist and liner notes.
-- [ ] Live chat lets artists share the story behind the music and celebrate the release with their most loyal fans.
+## Web slices
 
-## Scoping before implementation
+- [x] 16. API types + fetchers (`src/api/listening-parties.ts`)
+- [x] 17. Mock store with SCHEDULED / LIVE / ENDED / CANCELED fixtures (`src/api/listening-parties-mock.ts`; `mockData` keys `listeningParty`, `channelListeningParties`, `myListeningParties`)
+- [x] 18. Client timeline mirror + server-clock tick hook (`useListeningPartyTimeline`)
+- [x] 19. `/party/:id` route + view shell (`ListeningPartyView`)
+- [x] 20. Countdown hero
+- [x] 21. Tracklist with current-track highlight
+- [x] 22. Liner notes + credits
+- [x] 23. Shared playback: Join, late join at offset, auto-advance, drift re-seek > 2 s (`useListeningPartyPlayback`, `lib/listeningPartyPlayback.ts`)
+- [x] 24. Host channel chat (`ChannelChatPanel`)
+- [x] 25. Buy panel (`ArtistStoreSection` + existing checkout)
+- [x] 26. Studio: schedule from a release (`/studio/listening-parties/new?releaseId=`)
+- [x] 27. Studio: my parties with reschedule / cancel (`/studio/listening-parties`, Broadcast sub-nav)
+- [x] 28. Channel page banner (`ChannelListeningPartyBanner`)
+- [x] 29. Storybook stories, STORYBOOK-SURFACES, VIEW-CATALOG
+- [x] 30. Unit tests, user docs (`packages/docs/user-manual/listening/listening-parties.md`)
 
-- [ ] Define scheduling, shared playback timing, and late-join behavior.
-- [ ] Confirm album format availability and pre-order/purchase integration.
-- [ ] Define artist hosting and live-chat moderation controls.
+No Playwright e2e spec: the e2e suite runs against beta's real API, not mocks; the Storybook plays cover the page on mocks.
 
-## What `../tahti-org` already has (surveyed 2026-09-27, read-only)
+## What remains
 
-From `packages/db/prisma/schema.prisma`, `openapi.json` (629 paths) and the route sources. Nothing here was changed.
-
-| Need | Existing contract | Fit |
-| --- | --- | --- |
-| Album, tracklist | `Release` (`type` ALBUM/EP/…, `releaseDate`, `state` DRAFT/PUBLISHED/ARCHIVED) with ordered `ReleaseTrack`s (`position`, `durationSec`, `streamKey` Opus, `flacKey`). Public via `/api/v1/r/{smartLinkSlug}` (smart link payload). | Good. No "announced but not out yet" state: a party before release day needs the tracks playable while `state` is not PUBLISHED. |
-| Liner notes | `Release.description`, `Release.commentary` (Markdown, "artist notes on the release"), `Release.credits` and per-track `ReleaseTrack.credits` (`[{ role, name, artistUsername? }]`), `pLine`/`cLine`/`labelImprint`. | Good: `commentary` is the liner notes. |
-| Scheduling | `ScheduledLiveShow` (`startAt`/`endAt`, `title`, `tagline`, `artworkUrl`, `showType` LIVE_SET/talk, `visibility`, `autoPublish`, `canceledAt`, linked `Broadcast`) under a `LiveShowSeries`; `RadioSlotBooking` for Tahti Radio slots; `/api/channels/{slug}/events` are off-platform gigs (place/location/URL). | Partial: a scheduled show has no link to a release and nothing plays a playlist at `startAt`. |
-| Everyone hears the same thing | Server-side playout exists: Tahti Selects turns a curated rotation into an HLS/Icecast stream by spawning a Liquidsoap container (`POST /api/admin/tahti-selects/stream/start`, `services/orchestrator`), and Tahti Radio drives Liquidsoap over telnet (`services/tahti-radio`). Artist channels go live through `/api/me/channel/go-live` (their own encoder). | Reusable: playing the release's tracks once, in order, through the channel's HLS output gives shared timing and a natural late join (you join where the stream is). Board-only today. |
-| Live chat | Per-channel chat: `ChatMessage` (`fanOnly` sub-channel for subscribers), `/api/chat/{slug}/token` (returns `channelRole` owner/moderator, `supporter`), history, reactions, pinned `announcements` (`/api/me/chat/announcements`), bans (`/api/me/chat/ban`, moderator bans via `/api/me/moderate/{slug}/chat/ban`). | Good as is: the party uses the host channel's chat; the artist is `owner`, and announcements carry "the story behind this track". |
-| Buy / pre-order | `PurchaseTier` (artist-level: name, description, `priceCents`, `priceOptional` pay-what-you-want, linked `sounds`) + `Purchase` (Stripe checkout session, `state`), `/api/v1/u/{username}/purchase-tiers/{tierId}/checkout`. Track downloads via `/api/v1/releases/{smartLinkSlug}/tracks/{trackId}/download`. Revelator handles DSP distribution. | Missing: no tie from a tier to a `Release`, no formats (digital/vinyl/CD/cassette), no pre-order (charge now, deliver on `releaseDate`), no shipping. |
-
-## Additions needed in `../tahti-org` (proposal, needs the user's go-ahead)
-
-1. **Party record.** Either a `ListeningParty` model (`releaseId`, `channelId`, `startAt`, `state` SCHEDULED/LIVE/ENDED/CANCELED, `hostNote`, optional `replayUntil`) or `ScheduledLiveShow` + `releaseId` + a `LISTENING_PARTY` show type. The second reuses the schedule UI, reminders and missed-show handling; recommended.
-2. **Playout.** A worker job that at `startAt` plays the release's tracks once, in `position` order, into the host channel's HLS output (same Liquidsoap path as Tahti Selects, opened to artists for their own release), then sets the party ENDED. Pre-release tracks play only inside the party stream, not as downloads.
-3. **Public party endpoint.** `GET /api/v1/listening-parties/{id}`: release (title, artwork, `commentary`, credits), tracklist with durations, `startAt`, `state`, the server's clock and the current track + offset, so the page can show a countdown, highlight the playing track and join late without drift.
-4. **Commerce.** A `ReleaseOffer` (or `PurchaseTier.releaseId` + `format`): format DIGITAL/VINYL/CD/CASSETTE/BUNDLE, price, `preorder` (charged now, digital delivered on `releaseDate`), stock for physical items, shipping. Digital-only first is the smallest useful slice; physical needs addresses and fulfilment and is a product decision.
-5. **Chat touches (optional).** System messages when a track starts ("Now playing 3/10 · Title"), and a party-only slow mode.
-
-## Proposed order
-
-Digital-only first: (1) + (2) + (3) with the existing chat and the existing artist purchase tiers linked from the page. Formats, pre-orders and physical goods (4) follow as their own project. The web side (a `/party/{id}` page: countdown, tracklist with the current track, liner notes, chat, buy panel) can start against mock data once (3) is agreed.
-
+- [ ] Merge and deploy tahti-org#1029, then verify against the real API (party page in every state, a real late join through the signed stream redirect, Studio create/reschedule/cancel errors) and drop the five `api-routes-allowlist.json` entries once the OpenAPI release has the routes.
+- [ ] Party listening is not reported to listen heartbeats/stats (`ListenHeartbeat` ignores `party:` player ids); decide whether it should count.
+- [ ] Liquidsoap playout into the channel HLS output (same path as Tahti Selects) instead of client-side playback.
+- [ ] Formats, pre-orders and physical goods (`ReleaseOffer` or `PurchaseTier.releaseId` + format; shipping/fulfilment is a product decision).
+- [ ] Optional: party-only chat slow mode.
