@@ -100,6 +100,9 @@ describe('governance help', () => {
     expect(discussions?.body.some((line) => line.includes('not a vote'))).toBe(
       true,
     );
+    expect(discussions?.body.some((line) => line.includes('@username'))).toBe(
+      true,
+    );
   });
 });
 
