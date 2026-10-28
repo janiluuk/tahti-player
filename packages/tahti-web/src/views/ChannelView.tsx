@@ -27,6 +27,7 @@ import {
   ChannelExtrasSections,
   ChannelHeroBlock,
   ChannelLayersPanel,
+  ChannelListeningPartyBanner,
   ChannelLiveChatNotice,
   ChannelLiveTracklist,
   ChannelNotFound,
@@ -674,6 +675,8 @@ export function ChannelView({ slug }: { slug: string }) {
             {stagePlayer}
           </div>
         )}
+
+        {!editing ? <ChannelListeningPartyBanner slug={slug} /> : null}
 
         <div
           key={activeNavTab?.id ?? 'no-tabs'}

@@ -18,6 +18,7 @@ export { ChannelLiveTracklist } from './ChannelLiveTracklist';
 export { ChannelStagePlayer } from './ChannelStagePlayer';
 export { ChannelTopBar } from './ChannelTopBar';
 export { ChannelUpcomingShows } from './ChannelUpcomingShows';
+export { ChannelListeningPartyBanner } from './ChannelListeningPartyBanner';
 export { ChannelExtrasSections } from './ChannelExtrasSections';
 export { ChannelLiveChatNotice } from './ChannelLiveChatNotice';
 export { ChannelPageActions } from './ChannelPageActions';
