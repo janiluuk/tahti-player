@@ -34,6 +34,7 @@ export function collectionTrackMeta(col: PublicCollection) {
         likes: sound.likeCount,
         plays: sound.playCount,
         downloads: sound.downloadCount,
+        comments: sound.commentCount,
       },
     };
   };

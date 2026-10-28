@@ -285,6 +285,7 @@ export type CollectionSound = {
   likeCount?: number;
   playCount?: number;
   downloadCount?: number;
+  commentCount?: number;
 };
 
 export type CollectionItem = {

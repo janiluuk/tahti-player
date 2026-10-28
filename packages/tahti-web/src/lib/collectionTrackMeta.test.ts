@@ -22,6 +22,7 @@ const COLLECTION = {
         likeCount: 2,
         playCount: 57,
         downloadCount: 4,
+        commentCount: 6,
       },
     },
   ],
@@ -39,6 +40,7 @@ describe('collectionTrackMeta', () => {
         likes: 2,
         plays: 57,
         downloads: 4,
+        comments: 6,
       },
     });
   });

@@ -91,6 +91,7 @@ export function latestTrackMeta(playable: TahtiPlayable) {
       likes: item.likeCount,
       plays: item.playCount,
       downloads: item.downloadCount,
+      comments: item.commentCount,
     },
   };
 }
