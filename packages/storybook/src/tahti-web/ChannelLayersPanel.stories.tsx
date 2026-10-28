@@ -186,6 +186,7 @@ export const ApplyPreset: Story = {
   name: 'Apply a layout preset',
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: 'Presets' }));
     await userEvent.click(
       canvas.getByRole('button', { name: /Subtle \/ Solid/ }),
     );

@@ -5650,3 +5650,7 @@ From the 2026-10-17 security/performance sweep (`final-season-hardening.md`, whi
 ## 2026-10-28 — Channel designer clarity
 
 Added persistent editing borders, synchronized canvas/section selection, clearer right-rail controls with icons and width previews, and Revert changes for unsaved layout/look/links. Kept appearance drafts mounted across panel switches and fixed settings-modal control placement and channel navigation. Covered revert and draft retention with component/browser checks.
+
+## 2026-10-28 — Channel designer PR CI fixes
+
+Extracted preset application into a hook to keep ChannelDesigner below the 800-line guard, and updated the LayersPanel preset story to open Presets explicitly. Verified the size guard, all three affected Storybook plays, and 16 focused component tests.

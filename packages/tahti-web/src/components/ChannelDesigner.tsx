@@ -1,16 +1,9 @@
 import { Link } from '@tanstack/react-router';
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 import { SaveButton } from '@tahti-player/ui';
 
 import {
-  fillColorScheme,
   isHeaderImageUrl,
   isValidHeaderBackdropUrl,
   isVisualPreset,
@@ -57,6 +50,7 @@ import { SlideshowControls } from './channel-designer/SlideshowControls';
 import { useChannelLook } from './channel-designer/useChannelLook';
 import { useDockedControlsRail } from './channel-designer/useDockedControlsRail';
 import { useLookVisibility } from './channel-designer/useLookVisibility';
+import { usePresetLookApplication } from './channel-designer/usePresetLookApplication';
 import { usePreviewHighlight } from './channel-designer/usePreviewHighlight';
 import { ChannelElementEditor } from './ChannelElementEditor';
 import { ChannelTextOverlayEditor } from './ChannelTextOverlayEditor';
@@ -225,30 +219,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       busy,
     ]);
 
-    // Applied once the saved look has loaded, so the load cannot overwrite
-    // it; a remount (the panel switched section and back) applies it again
-    // on top of the reloaded look, since it is still unsaved.
-    const appliedPresetTokenRef = useRef<number | null>(null);
-    const lookLoaded = visual !== null;
-    useEffect(() => {
-      if (
-        !presetLook ||
-        !lookLoaded ||
-        appliedPresetTokenRef.current === presetLook.token
-      ) {
-        return;
-      }
-      appliedPresetTokenRef.current = presetLook.token;
-      const { look } = presetLook;
-      applyLocal(
-        {
-          visualPreset: look.visualPreset,
-          headerStyle: look.headerStyle,
-          brandAccentPreset: look.brandAccentPreset,
-        },
-        fillColorScheme(look.colorScheme),
-      );
-    }, [presetLook, lookLoaded]);
+    usePresetLookApplication(presetLook, visual !== null, applyLocal);
 
     const [galleryPickerOpen, setGalleryPickerOpen] = useState(false);
     const [videoUrlOpen, setVideoUrlOpen] = useState(false);
