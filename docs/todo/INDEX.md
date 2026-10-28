@@ -21,6 +21,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
+| open    | [navigation-simplification.md](navigation-simplification.md) | Plan: one tab row per section for Studio (6), Library (5), Admin (6); regroup by context; Co-op sidebar item |
 | open    | [channel-store-editor.md](channel-store-editor.md) | Studio editor that puts tracks in the channel page Store section |
 | open    | [ux-batch-115-thirty-slices.md](ux-batch-115-thirty-slices.md) | Paragraph empties, confirm-before-delete, and undo on create |
 | open    | [ux-batch-114-thirty-slices.md](ux-batch-114-thirty-slices.md) | Thirty more list empties now use PageEmpty |
