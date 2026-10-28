@@ -20,6 +20,7 @@ const TRACK: LikedTrack = {
   likeCount: 2,
   playCount: 57,
   downloadCount: 4,
+  commentCount: 5,
 };
 
 describe('liked tracks as rows', () => {
@@ -41,6 +42,7 @@ describe('liked tracks as rows', () => {
         likes: 2,
         plays: 57,
         downloads: 4,
+        comments: 5,
       },
     });
   });

@@ -19,7 +19,9 @@ A channel's **Tracks**, an artist's **Popular tracks**, playlists and Listen's *
 - The **genre** and the **length** at the top right.
 - The **waveform**. Click or drag it to jump within the track that's playing.
 - Below it: **♡ with a count** to love the track (signed in), **add to queue**, **＋ add to a playlist** (signed in) and **⤓ download** when the artist allows downloads. If the artist asks you to follow or share first, the download opens the track page to do that.
-- On the right: when the track came out, and how many likes, plays and downloads it has.
+- On the right: when the track came out, and how many likes, plays, downloads and comments it has.
+
+The same rows appear on an artist's **Liked tracks**, on Favorites → **Liked on Tahti**, on playlists, on release pages and in a channel's **Playlist** widget. A track's own page shows its plays next to its comments, reposts, downloads and likes.
 
 The buttons above the list switch between large rows, smaller rows, a grid and a plain list, and **Sort** orders the tracks. Both choices are remembered.
 

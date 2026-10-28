@@ -126,6 +126,8 @@ export type PublicChannel = {
    * artist profile (GET /api/v1/u/:username/profile), fetched alongside the
    * channel so the backdrop's Stats element has something real to show. */
   followerCount?: number | null;
+  /** Deduplicated plays across the channel's public tracks (tahti-org #1026). */
+  publicPlays?: number;
 };
 
 export type RadioNowPlaying = {
@@ -263,6 +265,8 @@ export type PublicProfile = import('./purchase-tiers').ProfileStore & {
     presskit: string;
   };
   backgroundMusicUrl?: string | null;
+  /** Public totals across the listed tracks (tahti-org #1025). */
+  totals?: { plays: number; likes: number; downloads: number };
 };
 
 export type CollectionSound = {
