@@ -1,6 +1,6 @@
 # Tahti add-on and plugin integration guide
 
-Agent-facing reference for authoring, reviewing, and extending plugins in this checkout. The GitHub documentation version is [Tahti add-on and plugin authoring](../../docs/plugins/tahti-web-authoring.md), and the copyable standalone example is [`examples/tahti-plugin-example`](../../../examples/tahti-plugin-example).
+Agent-facing reference for authoring, reviewing, and extending plugins in this checkout. The GitHub documentation version is [Tahti add-on and plugin authoring](../../docs/plugins/tahti-web-authoring.md), and the copyable standalone example is [`examples/tahti-plugin-example`](https://github.com/janiluuk/tahti-registry/tree/master/examples/tahti-plugin-example) in `tahti-registry`.
 
 This agent-facing guide explains how to extend the Tahti web client’s add-ons. The UI hosts two
 related kinds of extension:
