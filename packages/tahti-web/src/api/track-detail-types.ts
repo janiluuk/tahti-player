@@ -51,6 +51,9 @@ export type PublicTrackDetail = {
   venue?: { name: string; slug: string } | null;
   commentCount: number;
   downloadCount: number;
+  /** Public totals from tahti-org #1016; absent on older APIs. */
+  likeCount?: number;
+  playCount?: number;
   accessMode?: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
   purchaseTierId?: string | null;
   purchaseTierName?: string | null;

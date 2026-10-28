@@ -884,6 +884,8 @@ function buildMockTrackDetail(id: string): PublicTrackDetail | null {
     peaks: mockPeaks(item.id, isSet ? 220 : 100),
     commentCount: isSet ? 3 : 0,
     downloadCount: isSet ? 13 : 0,
+    likeCount: isSet ? 9 : 2,
+    playCount: isSet ? 214 : 31,
     ...accessExtras,
   };
 }
