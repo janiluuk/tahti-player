@@ -5615,3 +5615,13 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 ## 2026-10-27 — 24/7 channel clip editor
 
 Studio → Channel → Radio → 24/7 now includes a clip library and editor with voice recording, waveform trim and preview, vocal presets and effects, explicit activation, placement between rotation programs, and easy deletion. Uploaded masters remain unchanged; processed clips are lossless WAV. Existing Announcements links land on the 24/7 section.
+
+## 2026-10-28 — batch 120: track rows reach the rest, artist and channel totals, discussion mentions
+
+- **Track rows** (org #1016–#1020, #1023; web #1680–#1685, #1688): the track page shows plays; Favorites → Liked on Tahti, artist liked tracks, smart-link release pages and the channel Playlist widget use the full row (genre, waveform, date · likes · plays · downloads · comments); comment counts reach every list.
+- **Totals** (org #1025, #1026; web #1696, #1697): the artist header shows total plays, likes and downloads; the channel header shows plays.
+- **Discussions** (org #1021, #1022, #1024; web #1686, #1687, #1691, #1695): @mentions notify members and show on the Mentions page; the list says who replied last; Mark all read.
+- **CLI** (#1689, #1690, #1692): `tahti track`, a LAST REPLY column, `discussions read-all`.
+- **Docs** (#1693, #1694): manual and Help center.
+- Also: Discover widget menu readable, new widgets fade in on top, All clears genres (#1679); the channel store editor rebased onto master (#1668).
+
