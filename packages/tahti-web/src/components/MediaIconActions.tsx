@@ -59,8 +59,8 @@ export function MediaIconActions({ actions, className }: Props) {
               flashingId === a.id
             }
             className={cn(
-              (a.active || flashingId === a.id) &&
-                'bg-primary/20 text-primary-strong motion-safe:animate-pulse',
+              a.active && 'text-primary-strong disabled:opacity-100',
+              flashingId === a.id && 'motion-safe:animate-pulse',
             )}
             aria-label={a.label}
             aria-pressed={a.active}

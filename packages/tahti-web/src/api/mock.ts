@@ -1707,5 +1707,14 @@ export function mockTopTracks(sort: 'asc' | 'desc'): DiscoverTrackItem[] {
 }
 
 export function mockLatestTracks(): DiscoverTrackItem[] {
-  return mockFixture('latestTracks', buildMockLatestTracks());
+  return mockFixture(
+    'latestTracks',
+    buildMockLatestTracks().map((track, i) => ({
+      ...track,
+      peaks: track.peaks ?? mockPeaks(track.id),
+      likeCount: track.likeCount ?? (i * 3 + 1) % 6,
+      playCount: track.playCount ?? 48 - i * 5,
+      downloadCount: track.downloadCount ?? (i * 2) % 7,
+    })),
+  );
 }
