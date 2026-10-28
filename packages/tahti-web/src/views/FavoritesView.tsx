@@ -11,7 +11,11 @@ import {
 } from '@tahti-player/ui';
 
 import { fetchChannel } from '../api/client';
-import { fetchMyLikes, likedTrackToPlayable } from '../api/likes';
+import {
+  fetchMyLikes,
+  likedTrackMeta,
+  likedTrackToPlayable,
+} from '../api/likes';
 import type { TahtiPlayable } from '../api/types';
 import { PageEmpty, PageError } from '../components/PageStates';
 import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
@@ -230,6 +234,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
         <SectionShell title="Liked on Tahti">
           <PlayableAmbientTrackList
             items={likedTracks}
+            getTrackMeta={likedTrackMeta}
             emptyMessage="No liked tracks yet."
           />
         </SectionShell>

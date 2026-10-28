@@ -1,7 +1,11 @@
 import { HeartIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { fetchUserLikes, likedTrackToPlayable } from '../../api/likes';
+import {
+  fetchUserLikes,
+  likedTrackMeta,
+  likedTrackToPlayable,
+} from '../../api/likes';
 import type { TahtiPlayable } from '../../api/types';
 import { PageError } from '../PageStates';
 import { PlayableAmbientTrackList } from '../PlayableAmbientTrackList';
@@ -67,6 +71,7 @@ export function ArtistLikes({ username }: { username: string }) {
         items={items}
         playAll={false}
         compactActions
+        getTrackMeta={likedTrackMeta}
         emptyMessage="No liked tracks."
       />
     </section>
