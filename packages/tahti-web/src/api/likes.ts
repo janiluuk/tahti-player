@@ -15,13 +15,43 @@ export type LikedTrack = {
   artistDisplayName: string;
   likedAt: string;
   url: string;
+  /** Track-row extras (tahti-org #1017); absent on older APIs. */
+  durationSec?: number | null;
+  genre?: string | null;
+  peaks?: number[] | null;
+  createdAt?: string;
+  downloadsEnabled?: boolean;
+  likeCount?: number;
+  playCount?: number;
+  downloadCount?: number;
 };
+
+const likedTrackSources = new WeakMap<TahtiPlayable, LikedTrack>();
+
+/** Genre, totals and the download flag for a liked-track row, from the API
+ * item the playable was built from. */
+export function likedTrackMeta(playable: TahtiPlayable) {
+  const track = likedTrackSources.get(playable);
+  if (!track) {
+    return undefined;
+  }
+  return {
+    genre: track.genre ?? null,
+    downloadable: track.downloadsEnabled === true,
+    stats: {
+      releaseDate: track.createdAt ?? null,
+      likes: track.likeCount,
+      plays: track.playCount,
+      downloads: track.downloadCount,
+    },
+  };
+}
 
 export function likedTrackToPlayable(track: LikedTrack): TahtiPlayable | null {
   if (!track.audioUrl) {
     return null;
   }
-  return {
+  const playable: TahtiPlayable = {
     id: `sound:${track.id}`,
     kind: 'sound',
     title: track.title,
@@ -31,7 +61,12 @@ export function likedTrackToPlayable(track: LikedTrack): TahtiPlayable | null {
     protocol: 'https',
     channelSlug: track.channelSlug,
     sourceProvider: 'tahti',
+    durationSec: track.durationSec ?? undefined,
+    releaseDate: track.createdAt ?? null,
+    peaks: track.peaks ?? null,
   };
+  likedTrackSources.set(playable, track);
+  return playable;
 }
 
 /** The tracks you liked anywhere, newest first. Signed-out listeners and
