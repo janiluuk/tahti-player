@@ -16,6 +16,8 @@ export type DiscussionTopic = {
   following: boolean;
   muted: boolean;
   unreadCount?: number;
+  /** Who wrote the latest reply; null before the first one. */
+  lastReplyBy?: string | null;
 };
 
 export type DiscussionPost = {
