@@ -1,16 +1,28 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
+  AwardIcon,
   Blocks,
   ChevronDownIcon,
+  ClockIcon,
   CompassIcon,
+  Disc3Icon,
+  FlameIcon,
+  HeartIcon,
+  ListMusicIcon,
   MapPinIcon,
   PauseIcon,
   PlayIcon,
   Plus,
+  ShuffleIcon,
   SlidersHorizontalIcon,
+  SparklesIcon,
+  StarIcon,
+  TrendingDownIcon,
+  TrendingUpIcon,
   UsersIcon,
   XIcon,
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
@@ -75,6 +87,16 @@ import { usePlayerStore } from '../stores/playerStore';
 
 const ALL_FILTER_ID = '__all__';
 
+/** A multi-select filter with an "All" chip: picking All clears every
+ * specific choice; picking a specific one leaves All. */
+export function allOrSpecific(
+  selected: string[],
+  previous: string[],
+): string[] {
+  const pickedAll = selected.includes(ALL_FILTER_ID) && previous.length > 0;
+  return pickedAll ? [] : selected.filter((id) => id !== ALL_FILTER_ID);
+}
+
 function apiReason(meta: FetchMeta): string | null {
   return meta.source === 'api' ? (meta.reason ?? null) : null;
 }
@@ -91,6 +113,39 @@ const WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
   'public-playlists': 'Public playlists',
   'tahti-selects': 'Tahti Selects',
   'latest-releases': 'Latest releases',
+};
+
+/** What each widget shows, for the Add a widget menu. */
+const WIDGET_MENU: Record<
+  DiscoverWidgetId,
+  { icon: typeof CompassIcon; description: string }
+> = {
+  'this-week-most-played': {
+    icon: TrendingUpIcon,
+    description: 'The week’s most played tracks',
+  },
+  'this-week-least-played': {
+    icon: TrendingDownIcon,
+    description: 'Overlooked tracks from this week',
+  },
+  'new-to-you': {
+    icon: SparklesIcon,
+    description: 'Tracks you have not played yet',
+  },
+  'latest-tracks': { icon: ClockIcon, description: 'Fresh uploads' },
+  'most-played': { icon: FlameIcon, description: 'All-time favourites' },
+  loved: { icon: HeartIcon, description: 'What listeners love most' },
+  'artist-of-the-week': {
+    icon: StarIcon,
+    description: 'One artist in the spotlight',
+  },
+  'random-artist': { icon: ShuffleIcon, description: 'Meet someone new' },
+  'public-playlists': {
+    icon: ListMusicIcon,
+    description: 'Playlists shared by listeners',
+  },
+  'tahti-selects': { icon: AwardIcon, description: 'Hand-picked by Tahti' },
+  'latest-releases': { icon: Disc3Icon, description: 'New albums and EPs' },
 };
 
 const TOP_LIST_WIDGET_IDS = new Set<DiscoverWidgetId>([
@@ -128,13 +183,24 @@ export function DiscoverView() {
   const enabledWidgets = useDiscoverStore((s) => s.enabledWidgets);
   const genreFilter = useDiscoverStore((s) => s.genreFilter);
   const contentTypeFilter = useDiscoverStore((s) => s.contentTypeFilter);
-  const unheardOnly = useDiscoverStore((s) => s.unheardOnly);
-  const addWidget = useDiscoverStore((s) => s.addWidget);
+  const storeAddWidget = useDiscoverStore((s) => s.addWidget);
+  const [justAdded, setJustAdded] = useState<DiscoverWidgetId | null>(null);
+  const addWidget = (id: DiscoverWidgetId) => {
+    storeAddWidget(id);
+    setJustAdded(id);
+  };
+  useEffect(() => {
+    if (!justAdded) {
+      return;
+    }
+    document
+      .querySelector(`[data-widget-id="${justAdded}"]`)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [justAdded]);
   const removeWidget = useDiscoverStore((s) => s.removeWidget);
   const moveWidget = useDiscoverStore((s) => s.moveWidget);
   const setGenreFilter = useDiscoverStore((s) => s.setGenreFilter);
   const setContentTypeFilter = useDiscoverStore((s) => s.setContentTypeFilter);
-  const setUnheardOnly = useDiscoverStore((s) => s.setUnheardOnly);
   const randomArtistRotationDays = useDiscoverStore(
     (s) => s.randomArtistRotationDays,
   );
@@ -148,7 +214,6 @@ export function DiscoverView() {
   const user = useAuthStore((state) => state.user);
   const isAdmin = hasAccountRole(user, 'BOARD');
   const [data, setData] = useState<Record<string, WidgetData>>({});
-  const [unheardIds, setUnheardIds] = useState<Set<string> | null>(null);
   const [genresOpen, setGenresOpen] = useState(false);
   const [contentTypesOpen, setContentTypesOpen] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState<DiscoverSelection | null>(
@@ -182,30 +247,7 @@ export function DiscoverView() {
     return () => {
       cancelled = true;
     };
-  }, [
-    contentTypeFilter,
-    genreFilter,
-    randomArtistRotationDays,
-    unheardOnly,
-    reloadKey,
-  ]);
-
-  useEffect(() => {
-    if (!unheardOnly) {
-      setUnheardIds(null);
-      return;
-    }
-    setUnheardIds(new Set());
-    let cancelled = false;
-    void fetchNewToYou().then((result) => {
-      if (!cancelled) {
-        setUnheardIds(new Set(result.data.map((track) => track.id)));
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [unheardOnly]);
+  }, [contentTypeFilter, genreFilter, randomArtistRotationDays, reloadKey]);
 
   useEffect(() => {
     let cancelled = false;
@@ -316,14 +358,7 @@ export function DiscoverView() {
 
       void load().then((result) => {
         if (!cancelled) {
-          const filteredItems =
-            unheardOnly && unheardIds
-              ? result.items.filter((item) => unheardIds.has(item.id))
-              : result.items;
-          setData((prev) => ({
-            ...prev,
-            [id]: { ...result, items: filteredItems },
-          }));
+          setData((prev) => ({ ...prev, [id]: result }));
         }
       });
     }
@@ -331,14 +366,7 @@ export function DiscoverView() {
     return () => {
       cancelled = true;
     };
-  }, [
-    enabledWidgets,
-    filters,
-    unheardIds,
-    unheardOnly,
-    randomArtistRotationDays,
-    reloadKey,
-  ]);
+  }, [enabledWidgets, filters, randomArtistRotationDays, reloadKey]);
 
   const availableToAdd = ALL_WIDGET_IDS.filter(
     (id) => !enabledWidgets.includes(id),
@@ -471,15 +499,6 @@ export function DiscoverView() {
                   aria-hidden
                 />
               </Button>
-              <FilterChips
-                aria-label="Unheard only"
-                multiple
-                items={[{ id: 'unheard', label: 'Tracks I haven’t heard' }]}
-                selected={unheardOnly ? ['unheard'] : []}
-                onChange={(selected) =>
-                  setUnheardOnly(selected.includes('unheard'))
-                }
-              />
             </div>
             {genresOpen ? (
               <FilterChips
@@ -493,7 +512,7 @@ export function DiscoverView() {
                   genreFilter.length > 0 ? genreFilter : [ALL_FILTER_ID]
                 }
                 onChange={(selected) =>
-                  setGenreFilter(selected.filter((id) => id !== ALL_FILTER_ID))
+                  setGenreFilter(allOrSpecific(selected, genreFilter))
                 }
               />
             ) : null}
@@ -509,7 +528,7 @@ export function DiscoverView() {
                 }
                 onChange={(selected) =>
                   setContentTypeFilter(
-                    selected.filter((id) => id !== ALL_FILTER_ID),
+                    allOrSpecific(selected, contentTypeFilter),
                   )
                 }
               />
@@ -537,55 +556,63 @@ export function DiscoverView() {
             {enabledWidgets.map((id, index) => {
               const widgetData = data[id];
               return (
-                <WidgetCard
+                <motion.div
                   key={id}
-                  id={id}
-                  title={WIDGET_LABELS[id]}
-                  subtitle={widgetData?.subtitle}
-                  loading={widgetData?.loading ?? true}
-                  error={widgetData?.error}
-                  onRetry={() => setReloadKey((n) => n + 1)}
-                  items={widgetData?.items ?? []}
-                  collections={widgetData?.collections}
-                  releases={widgetData?.releases}
-                  artist={widgetData?.artist}
-                  showRank={TOP_LIST_WIDGET_IDS.has(id)}
-                  emptyMessage={
-                    id === 'loved'
-                      ? 'No community-loved tracks yet.'
-                      : id === 'public-playlists'
-                        ? 'No public playlists match these filters yet.'
-                        : id === 'tahti-selects'
-                          ? 'No tracks in the Tahti Selects rotation right now.'
-                          : id === 'latest-releases'
-                            ? 'No releases published yet.'
-                            : 'Nothing here yet.'
-                  }
-                  canMoveUp={index > 0}
-                  canMoveDown={index < enabledWidgets.length - 1}
-                  onMove={moveWidget}
-                  onRemove={removeWidget}
-                  isAdmin={isAdmin}
-                  onSelectTrack={(track) => void selectTrack(track)}
-                  settings={
-                    id === 'random-artist' ? (
-                      <Select
-                        label="Keep the same pick for"
-                        value={String(randomArtistRotationDays)}
-                        onValueChange={(value) =>
-                          setRandomArtistRotationDays(Number(value))
-                        }
-                        options={[
-                          { id: '1', label: '1 day' },
-                          { id: '3', label: '3 days' },
-                          { id: '7', label: '7 days' },
-                          { id: '14', label: '14 days' },
-                          { id: '30', label: '30 days' },
-                        ]}
-                      />
-                    ) : undefined
-                  }
-                />
+                  data-widget-id={id}
+                  className="min-w-0"
+                  initial={id === justAdded ? { opacity: 0, y: 12 } : false}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, ease: 'easeOut' }}
+                >
+                  <WidgetCard
+                    id={id}
+                    title={WIDGET_LABELS[id]}
+                    subtitle={widgetData?.subtitle}
+                    loading={widgetData?.loading ?? true}
+                    error={widgetData?.error}
+                    onRetry={() => setReloadKey((n) => n + 1)}
+                    items={widgetData?.items ?? []}
+                    collections={widgetData?.collections}
+                    releases={widgetData?.releases}
+                    artist={widgetData?.artist}
+                    showRank={TOP_LIST_WIDGET_IDS.has(id)}
+                    emptyMessage={
+                      id === 'loved'
+                        ? 'No community-loved tracks yet.'
+                        : id === 'public-playlists'
+                          ? 'No public playlists match these filters yet.'
+                          : id === 'tahti-selects'
+                            ? 'No tracks in the Tahti Selects rotation right now.'
+                            : id === 'latest-releases'
+                              ? 'No releases published yet.'
+                              : 'Nothing here yet.'
+                    }
+                    canMoveUp={index > 0}
+                    canMoveDown={index < enabledWidgets.length - 1}
+                    onMove={moveWidget}
+                    onRemove={removeWidget}
+                    isAdmin={isAdmin}
+                    onSelectTrack={(track) => void selectTrack(track)}
+                    settings={
+                      id === 'random-artist' ? (
+                        <Select
+                          label="Keep the same pick for"
+                          value={String(randomArtistRotationDays)}
+                          onValueChange={(value) =>
+                            setRandomArtistRotationDays(Number(value))
+                          }
+                          options={[
+                            { id: '1', label: '1 day' },
+                            { id: '3', label: '3 days' },
+                            { id: '7', label: '7 days' },
+                            { id: '14', label: '14 days' },
+                            { id: '30', label: '30 days' },
+                          ]}
+                        />
+                      ) : undefined
+                    }
+                  />
+                </motion.div>
               );
             })}
           </div>
@@ -644,14 +671,26 @@ function DiscoverAddWidgetButton({
           <Blocks size={15} aria-hidden />
         </Button>
       }
-      panelClassName="w-56"
+      panelClassName="w-72 px-1"
     >
       <Popover.Menu>
-        {availableToAdd.map((id) => (
-          <Popover.Item key={id} onClick={() => onAdd(id)}>
-            {WIDGET_LABELS[id]}
-          </Popover.Item>
-        ))}
+        {availableToAdd.map((id) => {
+          const { icon: Icon, description } = WIDGET_MENU[id];
+          return (
+            <Popover.Item
+              key={id}
+              closeOnClick
+              onClick={() => onAdd(id)}
+              icon={<Icon size={16} aria-hidden />}
+              className="rounded-md"
+            >
+              <span className="flex flex-col">
+                <span className="font-semibold">{WIDGET_LABELS[id]}</span>
+                <span className="text-xs opacity-80">{description}</span>
+              </span>
+            </Popover.Item>
+          );
+        })}
       </Popover.Menu>
     </Popover>
   );

@@ -15,7 +15,7 @@ import type { AuthUser } from '../api/types';
 import { parseDiscoverSearch } from '../lib/discoverTabs';
 import { useAuthStore } from '../stores/authStore';
 import { DEFAULT_WIDGETS, useDiscoverStore } from '../stores/discoverStore';
-import { DiscoverView } from './DiscoverView';
+import { allOrSpecific, DiscoverView } from './DiscoverView';
 
 function createDiscoverRouter(initialEntry: string) {
   const rootRoute = createRootRoute({
@@ -113,7 +113,6 @@ describe('DiscoverView', () => {
       enabledWidgets: [...DEFAULT_WIDGETS],
       genreFilter: [],
       contentTypeFilter: [],
-      unheardOnly: false,
       randomArtistRotationDays: 1,
     });
   });
@@ -122,6 +121,11 @@ describe('DiscoverView', () => {
     document.body.replaceChildren();
     vi.unstubAllEnvs();
     vi.unstubAllGlobals();
+  });
+
+  it('has no "Tracks I haven’t heard" filter', async () => {
+    const { container } = await renderDiscover('/discover');
+    expect(container.textContent).not.toContain('haven’t heard');
   });
 
   it('does not render the hero tile', async () => {
@@ -177,5 +181,14 @@ describe('DiscoverView', () => {
     expect(
       container.querySelector('[aria-label="Browse artists"]'),
     ).not.toBeNull();
+  });
+
+  describe('allOrSpecific', () => {
+    it('picking All clears every specific choice', () => {
+      expect(allOrSpecific(['Techno', '__all__'], ['Techno'])).toEqual([]);
+    });
+    it('picking a specific one leaves All', () => {
+      expect(allOrSpecific(['__all__', 'House'], [])).toEqual(['House']);
+    });
   });
 });
