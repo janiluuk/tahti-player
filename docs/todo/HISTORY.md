@@ -5625,3 +5625,8 @@ Studio → Channel → Radio → 24/7 now includes a clip library and editor wit
 - **Docs** (#1693, #1694): manual and Help center.
 - Also: Discover widget menu readable, new widgets fade in on top, All clears genres (#1679); the channel store editor rebased onto master (#1668).
 
+
+## 2026-10-28 — Tahti Radio back on air, Tahti Selects subdomain
+
+- **Tahti Radio** played nothing: after a deploy the orchestrator restarted without its `tahti-channel-tahti-radio` Liquidsoap container, while the channel stayed LIVE with an open broadcast, so the variant playlists were S3 404s. Respawned with the orchestrator's `/restart` (rotation template); both variants and segments serve again. The orchestrator fix so a restart respawns 24/7 channels is a tahti-org PR.
+- **Subdomains**: `tahti-selects.tahti.live` opens the Tahti Selects channel (it was on the reserved list); the reserved list matches tahti-org's again. All 24 channel subdomains checked: DNS, TLS and the SPA serve; no channel uses a custom domain.
