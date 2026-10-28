@@ -9,7 +9,6 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Button, Select, Tooltip } from '@tahti-player/ui';
 
 import {
-  adjacentLookElementId,
   CHANNEL_LOOK_ELEMENTS,
   isChannelLookElementId,
   type ChannelLookElementId,
@@ -65,6 +64,22 @@ export function ChannelElementEditor({
     CHANNEL_LOOK_ELEMENTS.find((element) => element.id === selectedId) ??
     CHANNEL_LOOK_ELEMENTS[0];
   const selectedItem = items.find((item) => item.id === selectedId) ?? items[0];
+  const availableElements = CHANNEL_LOOK_ELEMENTS.filter((element) =>
+    items.some((item) => item.id === element.id),
+  );
+  const selectAdjacent = (direction: -1 | 1) => {
+    const index = availableElements.findIndex(
+      (element) => element.id === selectedId,
+    );
+    const next =
+      availableElements[
+        (index + direction + availableElements.length) %
+          availableElements.length
+      ];
+    if (next) {
+      onSelect(next.id);
+    }
+  };
   const canDisable = selectedMeta?.canDisable === true;
 
   return (
@@ -84,7 +99,7 @@ export function ChannelElementEditor({
                   onSelect(value);
                 }
               }}
-              options={CHANNEL_LOOK_ELEMENTS.map((element) => ({
+              options={availableElements.map((element) => ({
                 id: element.id,
                 label: element.label,
               }))}
@@ -96,7 +111,7 @@ export function ChannelElementEditor({
                 size="icon-sm"
                 variant="secondary"
                 aria-label="Previous section"
-                onClick={() => onSelect(adjacentLookElementId(selectedId, -1))}
+                onClick={() => selectAdjacent(-1)}
               >
                 <ChevronLeftIcon size={16} aria-hidden />
               </Button>
@@ -106,7 +121,7 @@ export function ChannelElementEditor({
                 size="icon-sm"
                 variant="secondary"
                 aria-label="Next section"
-                onClick={() => onSelect(adjacentLookElementId(selectedId, 1))}
+                onClick={() => selectAdjacent(1)}
               >
                 <ChevronRightIcon size={16} aria-hidden />
               </Button>
@@ -141,7 +156,24 @@ export function ChannelElementEditor({
             ) : null}
           </div>
         </div>
-        <p className="text-foreground-secondary text-xs">{selectedMeta.hint}</p>
+        <div className="border-primary bg-primary/10 rounded-md border-l-4 p-3">
+          <p className="text-sm font-semibold">Editing {selectedMeta.label}</p>
+          <p className="text-foreground-secondary mt-1 text-xs">
+            {selectedMeta.hint}
+          </p>
+          {canDisable && (
+            <p className="mt-2 flex items-center gap-1.5 text-xs">
+              {selectedItem?.disabled ? (
+                <EyeOffIcon size={14} aria-hidden />
+              ) : (
+                <EyeIcon size={14} aria-hidden />
+              )}
+              {selectedItem?.disabled
+                ? 'Hidden from your page'
+                : 'Visible on your page'}
+            </p>
+          )}
+        </div>
       </header>
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pt-3">
         <FadeSwitch activeKey={selectedId}>

@@ -27,6 +27,7 @@ import {
   type ChannelLookBundle,
   type ChannelPageItem,
 } from '../lib/channelPageLayout';
+import { useSettingsModalStore } from '../stores/settingsModalStore';
 import {
   AppliedPresetBanner,
   BackdropPanel,
@@ -93,6 +94,9 @@ type Props = {
   presetLook?: { token: number; look: ChannelLookBundle } | null;
   lookOpenSection?: LookSection | null;
   onDirtyChange?: (dirty: boolean) => void;
+  onBusyChange?: (busy: boolean) => void;
+  onLookSelect?: (id: ChannelLookElementId) => void;
+  lookElementIds?: ChannelLookElementId[];
   onLookVisibilityChange?: (
     visibility: Record<ArtistLookBlockId, boolean>,
   ) => void;
@@ -111,6 +115,8 @@ type Props = {
 
 export type ChannelDesignerHandle = {
   save: () => Promise<void>;
+  revert: () => void;
+  busy: boolean;
 };
 
 export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
@@ -129,14 +135,18 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       presetLook,
       lookOpenSection,
       onDirtyChange,
+      onBusyChange,
+      onLookSelect,
+      lookElementIds,
       onLookVisibilityChange,
       layout,
       onLayoutChange,
     }: Props,
     ref,
   ) {
-    const { dockControlsInRail, controlsForRailRef } =
-      useDockedControlsRail(lookOnly);
+    const { dockControlsInRail, controlsForRailRef } = useDockedControlsRail(
+      lookOnly || !livePreview,
+    );
 
     const layoutSlug = channelSlug ?? username;
     const {
@@ -179,6 +189,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       reorderGalleryImage,
       resetConfirmOpen,
       restorePreviousSave,
+      revert,
       revertAppliedPreset,
       save,
       savePresetOpen,
@@ -205,7 +216,14 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       vizPackId,
       setVizPack,
     } = useChannelLook({ layoutSlug, reloadToken, onSaved, onDirtyChange });
-    useImperativeHandle(ref, () => ({ save }), [save]);
+    useEffect(() => {
+      onBusyChange?.(busy);
+    }, [busy, onBusyChange]);
+    useImperativeHandle(ref, () => ({ save, revert, busy }), [
+      save,
+      revert,
+      busy,
+    ]);
 
     // Applied once the saved look has loaded, so the load cannot overwrite
     // it; a remount (the panel switched section and back) applies it again
@@ -604,6 +622,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       <Link
         to="/channel/$slug"
         params={{ slug: channelSlug }}
+        onClick={() => useSettingsModalStore.getState().close()}
         className="text-primary-strong text-sm font-semibold underline-offset-2 hover:underline"
       >
         Open my channel →
@@ -612,6 +631,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       <Link
         to="/u/$username"
         params={{ username }}
+        onClick={() => useSettingsModalStore.getState().close()}
         className="text-primary-strong text-sm font-semibold underline-offset-2 hover:underline"
       >
         Open my channel →
@@ -620,6 +640,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
 
     const selectLookElement = (id: ChannelLookElementId) => {
       setSelectedLookId(id);
+      onLookSelect?.(id);
       flashHighlight(
         id === 'backdrop' ? 'header' : id === 'player' ? 'visualizer' : null,
       );
@@ -647,7 +668,9 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         selectedId={selectedLookId}
         onSelect={selectLookElement}
         onToggleDisabled={toggleSelectedLook}
-        items={lookEditorItems}
+        items={lookEditorItems.filter(
+          (item) => !lookElementIds || lookElementIds.includes(item.id),
+        )}
         className={`${lookOnly || dockControlsInRail ? 'h-full' : ''} ${highlightSection ? 'ring-primary ring-2' : ''}`}
       />
     );
@@ -662,6 +685,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         <div className={`flex flex-col gap-4 ${compact ? '' : 'w-full'}`}>
           <DesignerToolbar
             dirty={dirty}
+            busy={busy}
             hasPreviousSave={previousSave != null}
             onOpenSavePresetModal={openSavePresetModal}
             onRequestReset={() => setResetConfirmOpen(true)}
@@ -713,7 +737,13 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
               slideshowTransition={slideshowTransition}
               slideshowAutoplay={slideshowAutoplay}
               mountVisualizer={hasLivePreview && visualizerEnabled}
-              highlightSection={highlightSection}
+              highlightSection={
+                selectedLookId === 'backdrop'
+                  ? 'header'
+                  : selectedLookId === 'player'
+                    ? 'visualizer'
+                    : null
+              }
               onEditBackdrop={() => {
                 selectLookElement('backdrop');
                 focusPreviewSection(

@@ -3,11 +3,13 @@ import {
   EyeOffIcon,
   GripVerticalIcon,
   ImageIcon,
+  LayersIcon,
   LayoutTemplateIcon,
   PlusIcon,
+  SlidersHorizontalIcon,
   Trash2Icon,
 } from 'lucide-react';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button, Tooltip } from '@tahti-player/ui';
 
@@ -50,29 +52,6 @@ type Props = {
   lookSlot?: React.ReactNode;
 };
 
-function FadeSwitch({
-  activeKey,
-  children,
-}: {
-  activeKey: string;
-  children: ReactNode;
-}) {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    setVisible(false);
-    const frame = requestAnimationFrame(() => setVisible(true));
-    return () => cancelAnimationFrame(frame);
-  }, [activeKey]);
-  return (
-    <div
-      key={activeKey}
-      className={`flex h-full min-h-0 flex-col transition-opacity duration-200 ${visible ? 'opacity-100' : 'opacity-0'}`}
-    >
-      {children}
-    </div>
-  );
-}
-
 function layerLabel(item: ChannelPageItem): string {
   if (item.type === 'playlist' && item.playlistSlug) {
     return item.playlistSlug;
@@ -99,7 +78,7 @@ export function ChannelLayersMenu({
 }: Props) {
   const [dragId, setDragId] = useState<string | null>(null);
   const [panel, setPanel] = useState<'presets' | 'layers' | 'add' | 'look'>(
-    'presets',
+    'layers',
   );
 
   useEffect(() => {
@@ -123,19 +102,28 @@ export function ChannelLayersMenu({
     .map((item) => item.playlistSlug as string);
 
   const backgroundSelected = selectedId === CHANNEL_BACKGROUND_LAYER_ID;
+  const selectedItem = items.find((item) => item.id === selectedId);
 
   return (
     <aside
       data-testid="channel-layers-menu"
-      className="border-border bg-background/75 flex h-full min-h-0 w-full flex-col overflow-hidden border-l backdrop-blur-md sm:w-96 lg:w-[24rem]"
+      className="border-border bg-background/75 flex h-full min-h-0 w-full flex-col overflow-hidden border-l backdrop-blur-md"
     >
       <div className="border-border flex shrink-0 gap-1 border-b p-2">
         {(
           [
-            { id: 'presets' as const, label: 'Presets' },
-            { id: 'layers' as const, label: 'Layers' },
-            { id: 'add' as const, label: 'Add' },
-            { id: 'look' as const, label: 'Look' },
+            {
+              id: 'presets' as const,
+              label: 'Presets',
+              icon: LayoutTemplateIcon,
+            },
+            { id: 'layers' as const, label: 'Layers', icon: LayersIcon },
+            { id: 'add' as const, label: 'Add', icon: PlusIcon },
+            {
+              id: 'look' as const,
+              label: 'Settings',
+              icon: SlidersHorizontalIcon,
+            },
           ] as const
         ).map((t) => (
           <Button
@@ -143,18 +131,43 @@ export function ChannelLayersMenu({
             size="flexible"
             key={t.id}
             type="button"
-            onClick={() => setPanel(t.id)}
+            aria-pressed={panel === t.id}
+            onClick={() => {
+              if (t.id === 'look' && !lookOpenSection) {
+                onSelect(CHANNEL_BACKGROUND_LAYER_ID);
+              }
+              setPanel(t.id);
+            }}
             className={`inline-block flex-1 rounded-md px-1.5 py-1.5 text-[10px] font-medium tracking-wide whitespace-normal uppercase active:scale-100 ${
               panel === t.id
                 ? 'bg-primary text-primary-foreground'
                 : 'text-foreground-secondary hover:text-foreground'
             }`}
           >
+            <t.icon size={17} aria-hidden className="mx-auto mb-1" />
             {t.label}
           </Button>
         ))}
       </div>
 
+      <div className="border-border border-b px-3 py-2">
+        <p className="text-sm font-semibold">
+          {backgroundSelected
+            ? 'Editing Background'
+            : selectedItem
+              ? `Editing ${layerLabel(selectedItem)}`
+              : 'Choose a section to edit'}
+        </p>
+        <p className="text-foreground-secondary mt-1 text-xs">
+          {panel === 'layers'
+            ? 'Select a row to edit. Drag to reorder; use the eye to show or hide.'
+            : panel === 'look'
+              ? 'Settings apply to the selected section. Save changes when ready.'
+              : panel === 'add'
+                ? 'Add a playlist or another section to your page.'
+                : 'Start with a layout, then make it your own.'}
+        </p>
+      </div>
       <div
         className={`min-h-0 flex-1 p-2 ${
           panel === 'look'
@@ -223,7 +236,10 @@ export function ChannelLayersMenu({
                 size="flexible"
                 type="button"
                 className="inline-block min-w-0 flex-1 rounded-none text-left whitespace-normal active:scale-100"
-                onClick={() => onSelect(CHANNEL_BACKGROUND_LAYER_ID)}
+                onClick={() => {
+                  onSelect(CHANNEL_BACKGROUND_LAYER_ID);
+                  setPanel('look');
+                }}
               >
                 <div className="truncate text-xs font-medium">Background</div>
                 <div className="text-foreground-secondary truncate text-[10px]">
@@ -272,7 +288,22 @@ export function ChannelLayersMenu({
                     size="flexible"
                     type="button"
                     className="inline-block min-w-0 flex-1 rounded-none text-left whitespace-normal active:scale-100"
-                    onClick={() => onSelect(item.id)}
+                    onClick={() => {
+                      onSelect(item.id);
+                      if (
+                        [
+                          'hero',
+                          'sound',
+                          'events',
+                          'links',
+                          'playlist',
+                          'feed',
+                          'navigation',
+                        ].includes(item.type)
+                      ) {
+                        setPanel('look');
+                      }
+                    }}
                   >
                     <div className="truncate text-xs font-medium">
                       {meta.label}
@@ -297,11 +328,21 @@ export function ChannelLayersMenu({
                         aria-pressed={(item.width ?? 'full') === width}
                         onClick={() => onResize(item.id, width)}
                       >
-                        {width === 'compact'
-                          ? 'S'
-                          : width === 'wide'
-                            ? 'M'
-                            : 'L'}
+                        <span
+                          aria-hidden
+                          className="flex h-3 w-5 items-center justify-center rounded-sm border border-current"
+                        >
+                          <span
+                            className={`h-1 bg-current ${width === 'compact' ? 'w-2' : width === 'wide' ? 'w-3' : 'w-4'}`}
+                          />
+                        </span>
+                        <span className="mt-0.5 block">
+                          {width === 'compact'
+                            ? '65%'
+                            : width === 'wide'
+                              ? '85%'
+                              : '100%'}
+                        </span>
                       </Button>
                     ))}
                   </div>
@@ -313,7 +354,8 @@ export function ChannelLayersMenu({
                       type="button"
                       size="icon-sm"
                       variant="text"
-                      aria-label={item.visible ? 'Hide' : 'Show'}
+                      aria-label={`${item.visible ? 'Hide' : 'Show'} ${meta.label}`}
+                      aria-pressed={item.visible}
                       onClick={() => onToggleVisible(item.id)}
                     >
                       {item.visible ? (
@@ -328,7 +370,7 @@ export function ChannelLayersMenu({
                       type="button"
                       size="icon-sm"
                       variant="text"
-                      aria-label="Remove from page"
+                      aria-label={`Remove ${meta.label} from page`}
                       onClick={() => onRemove(item.id)}
                     >
                       <Trash2Icon size={14} />
@@ -421,9 +463,13 @@ export function ChannelLayersMenu({
           </div>
         )}
 
-        {panel === 'look' && (
-          <div className="flex min-h-0 flex-1 flex-col">
-            <FadeSwitch activeKey={lookOpenSection ?? 'default'}>
+        {
+          <div
+            className={
+              panel === 'look' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'
+            }
+          >
+            <>
               <div className="flex h-full min-h-0 flex-col">
                 {lookSlot ?? (
                   <p className="text-foreground-secondary text-xs">
@@ -431,9 +477,9 @@ export function ChannelLayersMenu({
                   </p>
                 )}
               </div>
-            </FadeSwitch>
+            </>
           </div>
-        )}
+        }
       </div>
     </aside>
   );

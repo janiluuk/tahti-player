@@ -6264,3 +6264,9 @@ Studio → Channel → Radio → 24/7 now manages station IDs and voice clips al
 ## 2026-10-28 — Listening parties (0.0.280)
 
 New `/party/:id` page: a countdown hero with the host note, the tracklist with the playing track, liner notes and credits, the host's purchase tiers and the host channel chat. Join plays the current track in the app player at the server offset, so a late join lands in sync; the page advances tracks with the timeline and re-seeks on drift. Studio schedules a party from a release header and lists parties under Broadcast → Listening parties with reschedule and cancel; channel pages show a banner for a live or upcoming party. Built against the contract with an offline mock store (tahti-org#1029 is the API half).
+
+## 2026-10-28 — Channel designer clarity
+
+Persistent selected-block borders and Editing labels connect the canvas to the controls. The right rail starts on Layers, uses icon labels and visual width choices, and fits its container. Revert changes restores unsaved layout, appearance, and links. Appearance drafts survive panel switches; visibility stays in the layout draft. Settings keeps controls inside its dialog and Open my channel closes the dialog.
+
+Validation: focused component tests, designer Playwright journeys, type-check and lint. The separate governance navigation check still expects an unavailable Account Governance tab.

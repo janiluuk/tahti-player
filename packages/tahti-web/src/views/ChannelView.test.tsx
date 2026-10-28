@@ -243,6 +243,7 @@ describe('ChannelView', () => {
     expect(await screen.findByText('Channel design')).toBeTruthy();
     patchSpy.mockClear();
 
+    fireEvent.click(screen.getByRole('button', { name: 'Presets' }));
     fireEvent.click(await screen.findByText('Stage / Live'));
     expect(await screen.findByText(/save to keep it/)).toBeTruthy();
     expect(patchSpy).not.toHaveBeenCalled();

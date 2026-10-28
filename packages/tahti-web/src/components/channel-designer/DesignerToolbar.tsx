@@ -10,6 +10,7 @@ import { Button, Popover, Tooltip } from '@tahti-player/ui';
 
 type Props = {
   dirty: boolean;
+  busy?: boolean;
   hasPreviousSave: boolean;
   onOpenSavePresetModal: () => void;
   onRequestReset: () => void;
@@ -22,6 +23,7 @@ type Props = {
  * the "open my channel" link. */
 export function DesignerToolbar({
   dirty,
+  busy = false,
   hasPreviousSave,
   onOpenSavePresetModal,
   onRequestReset,
@@ -54,7 +56,7 @@ export function DesignerToolbar({
           </Popover.Item>
           <Popover.Item
             icon={<RotateCcwIcon size={16} />}
-            disabled={!dirty}
+            disabled={!dirty || busy}
             onClick={onRequestReset}
           >
             Reset
@@ -73,6 +75,14 @@ export function DesignerToolbar({
           </Button>
         </Tooltip>
       ) : null}
+      <Button
+        variant="secondary"
+        disabled={!dirty || busy}
+        onClick={onRequestReset}
+      >
+        <RotateCcwIcon size={15} aria-hidden />
+        Revert changes
+      </Button>
       {saveButton}
       {openChannelLink}
     </div>

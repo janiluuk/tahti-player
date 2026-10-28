@@ -72,6 +72,12 @@ export function useLookVisibility({
   };
 
   const lookBlockVisible = (id: ChannelLookElementId) => {
+    const meta = CHANNEL_LOOK_ELEMENTS.find((element) => element.id === id);
+    if (layout && meta?.layoutType) {
+      return (
+        layout.find((item) => item.type === meta.layoutType)?.visible ?? false
+      );
+    }
     if (!isArtistLookBlockId(id)) {
       return true;
     }
@@ -82,6 +88,9 @@ export function useLookVisibility({
     const meta = CHANNEL_LOOK_ELEMENTS.find((element) => element.id === id);
     if (meta?.layoutType) {
       toggleLayoutType(meta.layoutType);
+      if (layout && onLayoutChange) {
+        return;
+      }
     }
     if (!isArtistLookBlockId(id)) {
       return;

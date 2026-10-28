@@ -147,6 +147,7 @@ export const Interactive: Story = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
+    await userEvent.click(canvas.getByRole('button', { name: 'Presets' }));
     await userEvent.click(canvas.getByRole('button', { name: /^Tahti/ }));
     await expect(args.onApplyPreset).toHaveBeenCalledWith('tahti');
 
@@ -160,9 +161,13 @@ export const Interactive: Story = {
     await expect(layerOrder(canvasElement)[1]).toMatch(/^Tracks/);
 
     const tracksRow = within(layerRow(canvas, /^Tracks/));
-    await userEvent.click(tracksRow.getByRole('button', { name: 'Hide' }));
+    await userEvent.click(
+      tracksRow.getByRole('button', { name: 'Hide Tracks' }),
+    );
     await expect(args.onToggleVisible).toHaveBeenCalledWith('sound');
-    await expect(tracksRow.getByRole('button', { name: 'Show' })).toBeVisible();
+    await expect(
+      tracksRow.getByRole('button', { name: 'Show Tracks' }),
+    ).toBeVisible();
 
     await userEvent.click(
       tracksRow.getByRole('button', { name: 'compact width for Tracks' }),
@@ -189,7 +194,7 @@ export const Interactive: Story = {
 
     await userEvent.click(
       within(layerRow(canvas, /^Live stage/)).getByRole('button', {
-        name: 'Remove from page',
+        name: 'Remove Live stage from page',
       }),
     );
     await expect(args.onRemove).toHaveBeenCalledWith('hero');

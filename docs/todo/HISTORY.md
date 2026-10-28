@@ -5646,3 +5646,7 @@ From the 2026-10-17 security/performance sweep (`final-season-hardening.md`, whi
 - **Deploys:** tahti-org `main` deploys production on green CI (`deploy-production.yml` → `deploy_prod.sh`, compose on vimage); the `v*`-tag Swarm path is dormant.
 - **Also closed:** bot OG for collections and venues exists on both sides (tahti-org `routes/og.ts`, `deploy/nginx.conf`); tahti-org #879 (`/api/v1/events/upcoming`) answers on production, so the front page Coming up row is unblocked.
 - **Docs:** `CUTOVER.md` collapsed to the outcome plus open items (prod-profile build/container, hCaptcha sitekey in CI, apex vs `website/`, beta host fate, crawler QA, rollback, regression ledger); `CUTOVER-PHASE0.md` deleted (`docs/ARCHIVE.md`); AGENTS-START-HERE, TAHTI, ARCHITECTURE (live health, deploy), DATA-FLOW, tahti-web AGENTS, FEATURES, GAP-MAPPING, SEO-OG-NOTES, deploy README and todos updated.
+
+## 2026-10-28 — Channel designer clarity
+
+Added persistent editing borders, synchronized canvas/section selection, clearer right-rail controls with icons and width previews, and Revert changes for unsaved layout/look/links. Kept appearance drafts mounted across panel switches and fixed settings-modal control placement and channel navigation. Covered revert and draft retention with component/browser checks.

@@ -16,6 +16,7 @@ const meta: Meta<typeof ChannelEditToolbar> = {
     mobileMenuOpen: false,
     onToggleMobileMenu: fn(),
     onSave: fn(),
+    onRevert: fn(),
     onDone: fn(),
   },
 };
@@ -27,6 +28,10 @@ export const UnsavedChanges: Story = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText(/unsaved changes/)).toBeVisible();
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Revert changes' }),
+    );
+    await expect(args.onRevert).toHaveBeenCalledOnce();
     await userEvent.click(canvas.getByRole('button', { name: 'Save changes' }));
     await expect(args.onSave).toHaveBeenCalledOnce();
     await userEvent.click(canvas.getByRole('button', { name: 'Done' }));

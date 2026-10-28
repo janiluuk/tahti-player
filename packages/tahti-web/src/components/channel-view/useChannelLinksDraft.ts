@@ -14,13 +14,15 @@ export function useChannelLinksDraft(
   const [links, setLinks] = useState<ChannelLink[]>([]);
   const [dirty, setDirty] = useState(false);
   const dirtyRef = useRef(false);
+  const baseline = useRef<ChannelLink[]>([]);
   dirtyRef.current = dirty;
 
   useEffect(() => {
     if (!channel) {
       return;
     }
-    setLinks(channel.channelLinks ?? []);
+    baseline.current = channel.channelLinks ?? [];
+    setLinks(baseline.current);
     setDirty(false);
   }, [channel?.slug]);
 
@@ -52,9 +54,19 @@ export function useChannelLinksDraft(
     links,
     dirty,
     edit: (next: ChannelLink[]) => {
+      if (!dirty) {
+        baseline.current = links;
+      }
       setLinks(next);
       setDirty(true);
     },
-    markSaved: () => setDirty(false),
+    markSaved: () => {
+      baseline.current = links;
+      setDirty(false);
+    },
+    revert: () => {
+      setLinks(baseline.current);
+      setDirty(false);
+    },
   };
 }
