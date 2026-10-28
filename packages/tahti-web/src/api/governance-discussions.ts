@@ -58,6 +58,7 @@ let mockTopics: DiscussionTopicDetail[] = [
     following: true,
     muted: false,
     unreadCount: 1,
+    lastReplyBy: 'Aino Virtanen',
     posts: [
       {
         id: '1',
@@ -103,6 +104,7 @@ function summary(topic: DiscussionTopicDetail): DiscussionTopic {
     following: topic.following,
     muted: topic.muted,
     unreadCount: topic.unreadCount,
+    lastReplyBy: topic.lastReplyBy,
   };
 }
 
