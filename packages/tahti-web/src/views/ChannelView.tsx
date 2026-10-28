@@ -1,5 +1,4 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
-import { UsersIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -41,16 +40,14 @@ import {
   useEditRail,
   usePresetLookDraft,
 } from '../components/channel-view';
+import { channelHeaderStats } from '../components/channel-view/channelHeaderStats';
 import { ChannelPageActions } from '../components/channel-view/ChannelPageActions';
 import { ChannelStoreSection } from '../components/channel-view/ChannelStoreSection';
 import { channelTrackMeta } from '../components/channel-view/channelTrackMeta';
 import { StreamManagerDialog } from '../components/channel-view/StreamManagerDialog';
 import { ChannelComments } from '../components/ChannelComments';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
-import {
-  EntitySocialHeader,
-  type EntitySocialStat,
-} from '../components/EntitySocialHeader';
+import { EntitySocialHeader } from '../components/EntitySocialHeader';
 import { PageError, PageLoading } from '../components/PageStates';
 import { listenerWidgetType } from '../content/listenerWidgets';
 import { useChannelAutoplay } from '../hooks/useChannelAutoplay';
@@ -570,17 +567,7 @@ export function ChannelView({ slug }: { slug: string }) {
   // instance below; this page-wide ambient one is only the fallback for
   // layouts that don't include a hero block at all.
   const heroVisible = visibleItems.some((item) => item.type === 'hero');
-  const channelHeaderStats: EntitySocialStat[] =
-    channel.followerCount != null && channel.followerCount > 0
-      ? [
-          {
-            key: 'followers',
-            label: 'Followers',
-            value: follow.followerCount ?? channel.followerCount,
-            icon: UsersIcon,
-          },
-        ]
-      : [];
+  const headerStats = channelHeaderStats(channel, follow.followerCount);
 
   const pageBody = (
     <div
@@ -669,7 +656,7 @@ export function ChannelView({ slug }: { slug: string }) {
                   ? channel.videoBackgroundUrl
                   : null
               }
-              stats={channelHeaderStats}
+              stats={headerStats}
               data-testid="channel-social-header"
             />
           </div>
