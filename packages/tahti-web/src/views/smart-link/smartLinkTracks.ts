@@ -83,9 +83,36 @@ export function smartLinkPlayables(data: SmartLinkView): TahtiPlayable[] {
         protocol: streamUrl.includes('.m3u8') ? 'hls' : 'https',
         durationSec: track.durationSec ?? null,
         releaseDate: release.releaseDate ?? null,
+        peaks: track.peaks ?? null,
       },
     ];
   });
+}
+
+/** Genre and public totals for a smart-link row, for tracks linked to a
+ * Tahti sound. Downloads stay on the release's own download flow, so rows
+ * offer no separate download action. */
+export function smartLinkTrackMeta(data: SmartLinkView) {
+  const bySoundId = new Map(
+    tracksOf(data).flatMap((track) =>
+      track.soundId ? [[track.soundId, track] as const] : [],
+    ),
+  );
+  return (playable: TahtiPlayable) => {
+    const track = bySoundId.get(playable.id.replace(/^sound:/, ''));
+    if (!track || track.likeCount == null) {
+      return undefined;
+    }
+    return {
+      genre: track.genre ?? null,
+      stats: {
+        releaseDate: data.release.releaseDate ?? null,
+        likes: track.likeCount,
+        plays: track.playCount,
+        downloads: track.downloadCount,
+      },
+    };
+  };
 }
 
 export function smartLinkLockedTracks(
