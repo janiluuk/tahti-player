@@ -64,6 +64,10 @@ describe('ChannelPlaylistBlock', () => {
               title: 'Aurora',
               durationSec: 245,
               audioUrl: 'https://cdn.example/aurora.mp3',
+              genre: 'Ambient',
+              playCount: 42,
+              likeCount: 3,
+              downloadCount: 1,
             },
           },
           {
@@ -87,6 +91,8 @@ describe('ChannelPlaylistBlock', () => {
     expect(list).toHaveTextContent('Aurora');
     expect(list).toHaveTextContent('Borealis');
     expect(list).toHaveTextContent('4:05');
+    expect(list).toHaveTextContent('Ambient');
+    expect(screen.getByLabelText('42 plays')).toBeTruthy();
     expect(screen.getByRole('radiogroup', { name: 'Track size' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Sort tracks' })).toBeTruthy();
   });
