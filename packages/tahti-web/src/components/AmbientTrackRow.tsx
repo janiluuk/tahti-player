@@ -53,21 +53,22 @@ const DENSITY_LAYOUT: Record<
     playIcon: 20,
     artist: 'text-sm',
     title: 'text-lg sm:text-xl',
-    meta: 'text-xs',
+    meta: 'text-sm',
     bars: 96,
     wave: 'h-14',
   },
   compact: {
-    pad: 'gap-2 p-2',
-    gap: 'gap-1',
-    art: 'thumb',
-    play: 'size-8 border-2',
-    playIcon: 14,
-    artist: 'text-[11px]',
-    title: 'text-sm',
-    meta: 'text-[11px]',
-    bars: 48,
-    wave: 'h-6',
+    pad: 'gap-3 p-2.5',
+    gap: 'gap-1.5',
+    art: 'md',
+    artClass: 'size-16 min-w-16 sm:size-20 sm:min-w-20',
+    play: 'size-9 border-2',
+    playIcon: 16,
+    artist: 'text-xs',
+    title: 'text-sm sm:text-base',
+    meta: 'text-sm',
+    bars: 64,
+    wave: 'h-9',
   },
   dense: {
     pad: 'gap-2 px-2 py-1.5',
@@ -178,7 +179,7 @@ function LikeToggle({
       disabled={like.disabled}
       aria-pressed={like.liked}
       aria-label={`${like.liked ? 'Unlike' : 'Like'} ${title} (${like.count} likes)`}
-      className="gap-1.5 px-1.5 tabular-nums"
+      className="h-8 gap-1.5 px-2 tabular-nums"
     >
       <HeartIcon
         size={16}
@@ -353,7 +354,7 @@ function AmbientTrackRowView({
             label={title}
             durationSec={durationSec ?? undefined}
             onSeek={onSeek}
-            tone={density === 'comfortable' ? 'bold' : 'quiet'}
+            tone={density === 'dense' ? 'quiet' : 'bold'}
             className={layout.wave}
           />
         )}
