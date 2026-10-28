@@ -86,6 +86,19 @@ export const CardsRowWrapper = {
     return within(this.container).queryByTestId('cards-row-badge');
   },
 
+  get controls() {
+    return screen.getByTestId('cards-row-controls');
+  },
+
+  overflow(scrollWidth: number, clientWidth: number) {
+    vi.spyOn(HTMLElement.prototype, 'scrollWidth', 'get').mockReturnValue(
+      scrollWidth,
+    );
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(
+      clientWidth,
+    );
+  },
+
   get nothingFound() {
     return within(this.container).queryByTestId('cards-row-nothing-found');
   },

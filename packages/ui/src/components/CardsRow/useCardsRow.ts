@@ -1,5 +1,5 @@
 import isEmpty from 'lodash-es/isEmpty';
-import { RefObject, useMemo, useRef, useState } from 'react';
+import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 
 import { CardsRowItem } from './CardsRow';
 
@@ -13,6 +13,7 @@ type UseCardsRowResult<T extends CardsRowItem> = {
   scrollContainerRef: RefObject<HTMLDivElement>;
   scrollLeft: () => void;
   scrollRight: () => void;
+  showControls: boolean;
 };
 
 export function useCardsRow<T extends CardsRowItem>(
@@ -30,6 +31,27 @@ export function useCardsRow<T extends CardsRowItem>(
       item.title.toLowerCase().includes(lowerFilter),
     );
   }, [items, filterText]);
+
+  const [overflowing, setOverflowing] = useState(false);
+
+  useEffect(() => {
+    const element = scrollContainerRef.current;
+    if (!element) {
+      return;
+    }
+    const measure = () =>
+      setOverflowing(element.scrollWidth > element.clientWidth + 1);
+    measure();
+    if (typeof ResizeObserver === 'undefined') {
+      return;
+    }
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    for (const child of Array.from(element.children)) {
+      observer.observe(child);
+    }
+    return () => observer.disconnect();
+  }, [filteredItems]);
 
   const scrollLeft = () => {
     scrollContainerRef.current?.scrollBy({
@@ -57,5 +79,6 @@ export function useCardsRow<T extends CardsRowItem>(
     scrollContainerRef,
     scrollLeft,
     scrollRight,
+    showControls: overflowing || !isEmpty(filterText.trim()),
   };
 }
