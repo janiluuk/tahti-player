@@ -22,6 +22,7 @@ export type DiscoverTrackItem = {
   likeCount?: number;
   playCount?: number;
   downloadCount?: number;
+  commentCount?: number;
 };
 
 export type DiscoverCollection = {

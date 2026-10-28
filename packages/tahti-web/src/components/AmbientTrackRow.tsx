@@ -2,6 +2,7 @@ import {
   CirclePlayIcon,
   DownloadIcon,
   HeartIcon,
+  MessageCircleIcon,
   PauseIcon,
   PlayIcon,
 } from 'lucide-react';
@@ -87,6 +88,7 @@ export type AmbientTrackStats = {
   likes?: number;
   plays?: number;
   downloads?: number;
+  comments?: number;
 };
 
 function formatStatDate(iso: string): string {
@@ -116,6 +118,12 @@ function TrackStats({
       stats.downloads,
       <DownloadIcon size={14} aria-hidden />,
       'downloads',
+    ],
+    [
+      'comments',
+      stats.comments,
+      <MessageCircleIcon size={14} aria-hidden />,
+      'comments',
     ],
   ];
   for (const [key, value, icon, noun] of counts) {

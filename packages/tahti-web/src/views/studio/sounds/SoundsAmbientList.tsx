@@ -66,6 +66,7 @@ export function soundRowStats(item: StudioSound) {
     likes: item.likeCount,
     plays: item.playCount,
     downloads: item.downloadCount,
+    comments: item.commentCount,
   };
 }
 

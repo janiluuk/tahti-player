@@ -70,4 +70,17 @@ describe('AmbientTrackRow', () => {
     expect(screen.queryByLabelText('3 likes')).toBeNull();
     expect(screen.getByLabelText('9 plays')).toBeTruthy();
   });
+
+  it('shows the comment count when the source has one', () => {
+    render(
+      <AmbientTrackRow
+        trackId="t-comments"
+        title="Set"
+        artist="Yaniho"
+        ambientRgb={null}
+        stats={{ plays: 9, comments: 4 }}
+      />,
+    );
+    expect(screen.getByLabelText('4 comments')).toBeTruthy();
+  });
 });
