@@ -2,6 +2,7 @@ import { ViewShell } from '@tahti-player/ui';
 
 import type { ListeningPartyDto } from '../api/listening-parties';
 import { ListeningPartyHero } from '../components/listening-party/ListeningPartyHero';
+import { ListeningPartyTracklist } from '../components/listening-party/ListeningPartyTracklist';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { useListeningParty } from '../hooks/useListeningParty';
 import { useListeningPartyTimeline } from '../hooks/useListeningPartyTimeline';
@@ -32,6 +33,11 @@ function ListeningPartyPage({
         data-state={clock.state}
       >
         <ListeningPartyHero party={party} clock={clock} />
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)]">
+          <div className="flex min-w-0 flex-col gap-6">
+            <ListeningPartyTracklist tracks={party.tracks} clock={clock} />
+          </div>
+        </div>
       </div>
     </ViewShell>
   );
