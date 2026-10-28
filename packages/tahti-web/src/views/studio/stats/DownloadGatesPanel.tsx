@@ -1,3 +1,4 @@
+import { BanIcon, DownloadIcon, Repeat2Icon, UsersIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
@@ -22,6 +23,7 @@ import {
   PageLoading,
 } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { STUDIO_METRIC_TONES } from './metricTones';
 
 export function DownloadGatesPanel({ active }: { active: boolean }) {
   const [stats, setStats] = useState<DownloadGateStats | null>(null);
@@ -75,21 +77,29 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <StatTile
             label="Downloads"
+            tone={STUDIO_METRIC_TONES.downloads}
+            icon={<DownloadIcon size={16} />}
             value={stats.totals.countedDownloads.toLocaleString()}
             sublabel="Passed the gate"
           />
           <StatTile
             label="Blocked"
+            tone={STUDIO_METRIC_TONES.gateBlocked}
+            icon={<BanIcon size={16} />}
             value={stats.totals.blockedAttempts.toLocaleString()}
             sublabel="Stopped at a gate"
           />
           <StatTile
             label="Reposts"
+            tone={STUDIO_METRIC_TONES.reposts}
+            icon={<Repeat2Icon size={16} />}
             value={stats.totals.repostAcks.toLocaleString()}
             sublabel="To unlock a download"
           />
           <StatTile
             label="Followers"
+            tone={STUDIO_METRIC_TONES.followers}
+            icon={<UsersIcon size={16} />}
             value={stats.artistFollowerCount.toLocaleString()}
             sublabel="Current audience"
           />

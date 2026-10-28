@@ -12,6 +12,8 @@ export const STUDIO_METRIC_TONES = {
   followers: 'purple',
   minutesListened: 'green',
   minutesStreamed: 'cyan',
+  gateBlocked: 'yellow',
+  reposts: 'green',
 } as const satisfies Record<string, StatTone>;
 
 export const ENGAGEMENT_UNIT_TONES: Record<string, StatTone> = {
