@@ -2,10 +2,18 @@
 
 **Status:** blocked
 
-**Blocker:** Ops host access: verify backup cron/`pnpm tahti-ops backup status`, MinIO disk/DR alias, deploy Swarm `RATE_LIMIT_REDIS_FAIL_OPEN=false`.
+**Blocker:** Ops host access: verify backup cron/`pnpm tahti-ops backup status`, MinIO disk/DR alias, set `RATE_LIMIT_REDIS_FAIL_OPEN=false` in the production compose file (see note).
+
+**Note (2026-10-28):** production runs docker compose on vimage
+(tahti-org `deploy-production.yml` → `scripts/deploy_prod.sh`,
+`infra/docker-compose.stack.yml`); the Swarm `infra/docker-stack.yml` path is
+dormant. #872 set `RATE_LIMIT_REDIS_FAIL_OPEN=false` only in
+`docker-stack.yml`; `docker-compose.stack.yml` does not set it, so production
+is fail-open unless the host `.env` sets it (verify). The compose PgBouncer pool is 25, not 30. Swarm-specific steps
+below need re-checking against compose (verify).
 
 Small-production hardening for ~100 concurrent/registered users on the
-existing Swarm / Caddy / Postgres / Redis / MinIO / Centrifugo stack. Not
+existing compose / Caddy / Postgres / Redis / MinIO / Centrifugo stack. Not
 hyperscale. Complements [`final-season-hardening.md`](final-season-hardening.md)
 (security/cutover); this file is capacity and ops realism.
 

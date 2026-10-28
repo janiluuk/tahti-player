@@ -1,6 +1,6 @@
-# Deploy beta (`beta.tahti.live`)
+# Deploy `tahti-web` (every public host)
 
-Deploys this package onto **vimage** beside production Tahti (`/srv/tahti`), talking to the **public** API.
+Deploys this package onto **vimage** beside the tahti-org stack (`/srv/tahti`), talking to the **public** API. Despite the `beta` names (`tahti-beta-web`, `/srv/tahti-beta`, `deploy:tahti-beta`), this container serves production: since 2026-10-21 Pi4 NPM forwards every public host (apex, `www`, `app`, `beta`, `admin`, `staging`, `<slug>.tahti.live`, radio, embed) to it. Open decisions on a production-named build: [`../CUTOVER.md`](../CUTOVER.md).
 
 ## Quick deploy
 
@@ -23,7 +23,9 @@ SSH target defaults to `vimage` (root@192.168.2.100). Override with `DEPLOY_HOST
 | Profile | How | Diagnostics (`VITE_ENABLE_DIAGNOSTICS`) |
 |---------|-----|----------------------------------------|
 | **beta** (default) | `pnpm deploy:tahti-beta` | On — `/more` + Screen atlas for review |
-| **prod** | `TAHTI_WEB_DEPLOY_PROFILE=prod pnpm deploy:tahti-beta` | Off — cutover / prod-shaped SPA |
+| **prod** | `TAHTI_WEB_DEPLOY_PROFILE=prod pnpm deploy:tahti-beta` | Off — prod-shaped SPA |
+
+The CI deploy (`deploy-tahti-web-selfhosted.yml`) builds with diagnostics **on** and without `VITE_HCAPTCHA_SITEKEY`, so production currently runs the beta profile (see CUTOVER "Still open").
 
 Pass `VITE_HCAPTCHA_SITEKEY` in the deploying shell when the API has `HCAPTCHA_SECRET` set; otherwise chat join fails closed. The script forwards the sitekey into the Vite build when present and warns when it is missing.
 
@@ -31,8 +33,8 @@ Pass `VITE_HCAPTCHA_SITEKEY` in the deploying shell when the API has `HCAPTCHA_S
 
 | Path / port | Role |
 |-------------|------|
-| `/srv/tahti` | Production stack (not modified) |
-| `/srv/tahti-beta` | Beta SPA `dist/` + `deploy/` |
+| `/srv/tahti` | tahti-org stack (not modified) |
+| `/srv/tahti-beta` | SPA `dist/` + `deploy/` (serves production) |
 | `192.168.2.100:15180` | Container `tahti-beta-web` |
 
 ## API wiring
@@ -45,7 +47,7 @@ Production CORS already allows `*.tahti.live`.
 
 ## Nginx Proxy Manager (Pi4)
 
-Configured as Proxy Host **#61**:
+`beta.tahti.live` is Proxy Host **#61**; `app.` (#48), the apex (#47) and the `*.tahti.live` wildcard (#55) forward to the same upstream:
 
 | Field | Value |
 |-------|--------|

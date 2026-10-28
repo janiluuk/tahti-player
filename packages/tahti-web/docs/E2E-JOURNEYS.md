@@ -1,7 +1,7 @@
 # E2E journeys (screenshots)
 
 Four Playwright journeys, one per user category, matching the same split
-used for `tahti-org`'s `apps/web`: **anonymous**, **listener**, **artist**,
+used for the former Next `apps/web` (removed 2026-10-28): **anonymous**, **listener**, **artist**,
 **admin**. Each captures screenshots at 3440×1440 in both light and dark
 `colorMode` (the app's real theme-mode setting — `src/plugins/themes/store.ts`
 — not browser `prefers-color-scheme` emulation, since this app actually

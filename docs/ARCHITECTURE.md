@@ -8,8 +8,8 @@ see [`DATA-FLOW.md`](./DATA-FLOW.md).
 
 | Repo | Role |
 | --- | --- |
-| **`tahti-player`** (this repo) | Desktop player (Tauri) + `tahti-web` (listen/studio SPA) + shared UI/plugin/theme packages. No server code. |
-| **`../tahti-org`** | Fastify API, Prisma/Postgres, BullMQ worker, and the legacy Next.js `apps/web` client this fork is replacing. |
+| **`tahti-player`** (this repo) | Desktop player (Tauri) + `tahti-web` (listen/studio/admin SPA, the only web client) + shared UI/plugin/theme packages. No server code. |
+| **`../tahti-org`** | Fastify API, Prisma/Postgres, BullMQ worker, orchestrator, `@tahti/shared` / `@tahti/ui` / `@tahti/api-client` / `@tahti/addon-sdk`, static marketing `website/`, infra and ops. Its Next.js `apps/web` was removed on 2026-10-28 (#1030). |
 | **`../tahti-registry`** | Static JSON catalog (`plugins.json`, `themes.json`) for the desktop player's marketplace — fetched directly from `raw.githubusercontent.com`, no CDN layer. |
 
 ## System
@@ -63,8 +63,11 @@ flowchart TB
 
 ## Clients
 
-- **`tahti-web`** is a pure Vite SPA — no server of its own. In production it
-  calls the API same-origin through a `/tahti-api` proxy; in dev, either that
+- **`tahti-web`** is a pure Vite SPA — no server of its own. Every public host
+  (apex, `www`, `app`, `beta`, `admin`, `staging`, `<slug>.tahti.live`, radio,
+  embed) goes through Pi4 Nginx Proxy Manager to one nginx container
+  (`tahti-beta-web`, vimage `:15180`) that serves `dist/`. It
+  calls the API same-origin through that container's `/tahti-api` proxy; in dev, either that
   proxy (`VITE_TAHTI_API_PROXY_TARGET`) or an absolute URL
   (`VITE_TAHTI_API_URL`, CORS). `VITE_FORCE_MOCK=1` short-circuits every
   fetcher to fixture data — no network calls, no API needed.
@@ -97,6 +100,24 @@ multistream) that listeners actually play. Chat is a parallel path: the API
 signs a short-lived HS256 JWT and the client uses it to connect **directly**
 to Centrifugo's websocket — chat traffic never round-trips through the API
 after that handshake.
+
+Live health: after a restart the orchestrator respawns the Liquidsoap
+containers of channels still marked LIVE, and its watchdog treats a channel
+with no HLS segments as stale (tahti-org #1028). The API's
+`/api/v1/status` includes a `live-streams` check that lists silent LIVE
+channels (critical for Tahti Radio and the curated rotation), shown on the
+admin Status page and exported as the Prometheus gauge
+`tahti_live_streams_silent` (tahti-org #1031, tahti-player #1703).
+
+## Deploy
+
+- **tahti-player `master`** → CI → `deploy-tahti-web-selfhosted.yml` builds
+  `tahti-web` on vimage and restarts the `tahti-beta-web` container, which
+  serves every public web host. Details: [`packages/tahti-web/deploy/README.md`](../packages/tahti-web/deploy/README.md).
+- **tahti-org `main`** → green CI → `deploy-production.yml` runs
+  `scripts/deploy_prod.sh` (docker compose up `--remove-orphans` on vimage)
+  for the API, worker, orchestrator and the rest of the stack. The `v*`-tag
+  Swarm `deploy.yml` path is dormant.
 
 ## Background jobs
 

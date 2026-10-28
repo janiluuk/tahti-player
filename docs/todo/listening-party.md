@@ -7,7 +7,7 @@ Artists celebrate a release with fans at a scheduled Listening Party: the album 
 Digital-only v1 is built on both sides against one contract:
 
 - API: tahti-org#1029 (`feat/listening-party`) - model, routes, shared timeline, chat "Now playing" worker.
-- Web: the tahti-player `feat/listening-party-web` PR - built against the contract with an offline mock store, so it works in dev (`VITE_FORCE_MOCK=1`) and Storybook before the API ships.
+- Web: tahti-player#1704 - built against the contract with an offline mock store, so it works in dev (`VITE_FORCE_MOCK=1`) and Storybook before the API ships.
 
 ## Contract (v1)
 
@@ -39,7 +39,7 @@ No Playwright e2e spec: the e2e suite runs against beta's real API, not mocks; t
 
 ## What remains
 
-- [ ] Merge and deploy tahti-org#1029, then verify against the real API (party page in every state, a real late join through the signed stream redirect, Studio create/reschedule/cancel errors) and drop the five `api-routes-allowlist.json` entries once the OpenAPI release has the routes.
+- [ ] tahti-org#1029 and tahti-player#1704 merged 2026-10-28; `GET /api/channels/:slug/listening-parties` answers on production. Verify against the real API (party page in every state, a real late join through the signed stream redirect, Studio create/reschedule/cancel errors) and drop the five `api-routes-allowlist.json` entries once the OpenAPI release has the routes.
 - [ ] Party listening is not reported to listen heartbeats/stats (`ListenHeartbeat` ignores `party:` player ids); decide whether it should count.
 - [ ] Liquidsoap playout into the channel HLS output (same path as Tahti Selects) instead of client-side playback.
 - [ ] Formats, pre-orders and physical goods (`ReleaseOffer` or `PurchaseTier.releaseId` + format; shipping/fulfilment is a product decision).
