@@ -103,9 +103,9 @@ jobs:
         # Leave VITE_TAHTI_API_URL unset so the client uses same-origin
         # /tahti-api (proxied to https://api.tahti.live by nginx on vimage).
         run: |
-          env -u VITE_TAHTI_API_URL -u VITE_FORCE_MOCK -u VITE_ALLOW_MOCK_FALLBACK \
+          env -u VITE_TAHTI_API_URL -u VITE_FORCE_MOCK -u VITE_ALLOW_MOCK_FALLBACK -u VITE_ENABLE_DIAGNOSTICS \
             VITE_CENTRIFUGO_WS="${VITE_CENTRIFUGO_WS:-wss://chat.tahti.live/connection/websocket}" \
-            VITE_ENABLE_DIAGNOSTICS=1 \
+            VITE_HCAPTCHA_SITEKEY="${{ vars.HCAPTCHA_SITEKEY }}" \
             pnpm --filter @tahti-player/tahti-web build
 
       - name: Verify build output

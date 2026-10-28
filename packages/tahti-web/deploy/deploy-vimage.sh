@@ -12,8 +12,8 @@
 #   ./packages/tahti-web/deploy/deploy-vimage.sh
 #
 # Profiles:
-#   TAHTI_WEB_DEPLOY_PROFILE=beta (default) — enables VITE_ENABLE_DIAGNOSTICS=1
-#   TAHTI_WEB_DEPLOY_PROFILE=prod — omits diagnostics (cutover / prod-shaped build)
+#   TAHTI_WEB_DEPLOY_PROFILE=prod (default) — omits diagnostics; this container serves production
+#   TAHTI_WEB_DEPLOY_PROFILE=beta — enables VITE_ENABLE_DIAGNOSTICS=1 (/more, Screen atlas) for local review builds
 #
 # Env overrides:
 #   DEPLOY_HOST            SSH host (default: vimage)
@@ -33,7 +33,7 @@ REPO_ROOT="$(cd "$ROOT/../.." && pwd)"
 IMAGE="${DEPLOY_IMAGE:-tahti-beta-web:local}"
 CENTRIFUGO_WS="${VITE_CENTRIFUGO_WS:-wss://chat.tahti.live/connection/websocket}"
 DEPLOY_VERSION="$(date -u +%Y%m%d%H%M%S%3N)"
-PROFILE="${TAHTI_WEB_DEPLOY_PROFILE:-beta}"
+PROFILE="${TAHTI_WEB_DEPLOY_PROFILE:-prod}"
 
 need() {
   command -v "$1" >/dev/null 2>&1 || {

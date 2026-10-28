@@ -37,7 +37,6 @@ import {
   MAIN_SCROLLPORT_SHADOW_ROOM,
 } from '../layout/contentPadding';
 import { hasAccountRole, hasStudioAccess } from '../lib/accountRoles';
-import { diagnosticsEnabled } from '../lib/buildPolicy';
 import { cn } from '../lib/cn';
 import { activeSidebarItem } from '../lib/navigationActive';
 import { navigationPathname } from '../lib/navigationPathname';
@@ -221,7 +220,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               {!isListener && <StudioMainNavItems />}
             </div>
           ) : null}
-          {isLoggedIn && isBoard && diagnosticsEnabled && (
+          {isLoggedIn && isBoard && (
             <div data-tour-id="nav-admin">
               <SidebarNavigationItem
                 to="/admin"
