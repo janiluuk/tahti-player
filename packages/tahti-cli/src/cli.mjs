@@ -19,6 +19,7 @@ import {
   runDiscussionsFollow,
   runDiscussionsList,
   runDiscussionsMute,
+  runDiscussionsReadAll,
   runDiscussionsReply,
   runDiscussionsShow,
 } from './commands/discussions.mjs';
@@ -589,6 +590,16 @@ token with the write scope.`,
         positionals[1],
         positionals.slice(2),
       ),
+  },
+  {
+    path: ['discussions', 'read-all'],
+    usage: 'tahti discussions read-all',
+    summary: 'Mark every discussion you follow as read',
+    details: `Calls POST /api/v1/governance/discussions/read-all, so the NEW column of
+\`tahti discussions list\` goes back to empty. Needs a token with the write
+scope.`,
+    options: {},
+    run: (config) => runDiscussionsReadAll(config),
   },
   {
     path: ['discussions', 'follow'],
