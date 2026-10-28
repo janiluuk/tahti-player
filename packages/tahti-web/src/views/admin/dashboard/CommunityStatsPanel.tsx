@@ -1,6 +1,7 @@
+import { LifeBuoyIcon, MailIcon, MessagesSquareIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { StatTile } from '@tahti-player/ui';
+import { StatTile, type StatTone } from '@tahti-player/ui';
 
 import {
   fetchAdminCommunityStats,
@@ -12,6 +13,12 @@ import { PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 
 const DAYS = 30;
+
+const COMMUNITY_TONES = {
+  chat: 'blue',
+  hello: 'purple',
+  support: 'orange',
+} as const satisfies Record<string, StatTone>;
 
 function formatCount(value: number | null | undefined): string {
   return value == null ? '—' : value.toLocaleString('fi-FI');
@@ -53,10 +60,14 @@ export function CommunityStatsPanel() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatTile
           label="Chat messages, 24 h"
+          tone={COMMUNITY_TONES.chat}
+          icon={<MessagesSquareIcon size={16} />}
           value={formatCount(stats.chatLast24h)}
         />
         <StatTile
           label={`Chat messages, ${DAYS} days`}
+          tone={COMMUNITY_TONES.chat}
+          icon={<MessagesSquareIcon size={16} />}
           value={stats.chatSeries.length > 0 ? formatCount(total) : '—'}
           sublabel={
             busiest
@@ -66,11 +77,15 @@ export function CommunityStatsPanel() {
         />
         <StatTile
           label="hello@ unread"
+          tone={COMMUNITY_TONES.hello}
+          icon={<MailIcon size={16} />}
           value={formatCount(stats.mail?.hello.unseen)}
           sublabel={mailboxSublabel(stats.mail?.hello)}
         />
         <StatTile
           label="support@ unread"
+          tone={COMMUNITY_TONES.support}
+          icon={<LifeBuoyIcon size={16} />}
           value={formatCount(stats.mail?.support.unseen)}
           sublabel={mailboxSublabel(stats.mail?.support)}
         />

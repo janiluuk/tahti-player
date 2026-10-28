@@ -73,4 +73,21 @@ describe('CommunityStatsPanel', () => {
     expect(screen.getByText(/Busiest .*: 1 200/)).toBeTruthy();
     expect(screen.getAllByText('Mail stats unavailable')).toHaveLength(2);
   });
+
+  it('colours chat and each mailbox apart', async () => {
+    vi.spyOn(admin, 'fetchAdminCommunityStats').mockResolvedValue({
+      chatLast24h: 184,
+      chatSeries: [],
+      mail: null,
+    });
+    await act(async () => {
+      render(<CommunityStatsPanel />);
+    });
+    const tone = (label: string) =>
+      screen.getByText(label).closest<HTMLElement>('[data-tone]')?.dataset.tone;
+    expect(tone('Chat messages, 24 h')).toBe('blue');
+    expect(tone('Chat messages, 30 days')).toBe('blue');
+    expect(tone('hello@ unread')).toBe('purple');
+    expect(tone('support@ unread')).toBe('orange');
+  });
 });
