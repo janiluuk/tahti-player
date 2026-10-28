@@ -4,7 +4,10 @@ import { FilterChips, Toggle } from '@tahti-player/ui';
 
 import type { ChannelLink } from '../../api/channel-design';
 import type { PublicChannel } from '../../api/types';
-import type { ChannelLookElementId } from '../../lib/channelLookElements';
+import {
+  CHANNEL_LOOK_ELEMENTS,
+  type ChannelLookElementId,
+} from '../../lib/channelLookElements';
 import {
   addItemType,
   addPlaylistItem,
@@ -59,6 +62,7 @@ type Props = {
   presetLook: { token: number; look: ChannelLookBundle } | null;
   lookTick: number;
   onLookDirtyChange: (dirty: boolean) => void;
+  onLookBusyChange?: (busy: boolean) => void;
   onLookSaved: () => void;
 };
 
@@ -81,6 +85,7 @@ export function ChannelLayersPanel({
   presetLook,
   lookTick,
   onLookDirtyChange,
+  onLookBusyChange,
   onLookSaved,
 }: Props) {
   const selectedType =
@@ -93,9 +98,11 @@ export function ChannelLayersPanel({
       ? 'player'
       : selectedType === 'header'
         ? 'backdrop'
-        : selectedType === 'sound'
-          ? 'tracks'
-          : null;
+        : selectedType === 'events'
+          ? 'shows'
+          : selectedType === 'sound'
+            ? 'tracks'
+            : null;
   const lookOpenSection =
     selectedType === 'links'
       ? 'links'
@@ -175,169 +182,199 @@ export function ChannelLayersPanel({
       }}
       onApplyPreset={onApplyPreset}
       lookSlot={
-        lookOpenSection === 'links' ? (
-          <ChannelLinksEditor links={links} onChange={onLinksChange} />
-        ) : lookOpenSection === 'playlist' && selectedPlaylistItem ? (
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-2">
-              <p className="text-foreground-secondary text-xs">
-                Choose which playlist this block shows.
-              </p>
-              <ChannelPlaylistPicker
-                usedSlugs={layout
-                  .filter(
-                    (item) => item.type === 'playlist' && item.playlistSlug,
-                  )
-                  .map((item) => item.playlistSlug as string)}
-                initialSlug={selectedPlaylistItem.playlistSlug}
-                applyOnChange
-                onPick={(playlistSlug) => {
-                  updateLayout((prev) =>
-                    setPlaylistSlug(
-                      prev,
-                      selectedPlaylistItem.id,
-                      playlistSlug,
-                    ),
-                  );
-                }}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <p className="text-foreground-secondary text-xs">
-                How tracks appear on the page.
-              </p>
-              <FilterChips
-                items={[
-                  { id: 'tracklist', label: 'Tracklist' },
-                  { id: 'cards', label: 'Cards' },
-                ]}
-                selected={selectedPlaylistItem.playlistDisplay ?? 'tracklist'}
-                onChange={(id) => {
-                  if (id !== 'tracklist' && id !== 'cards') {
-                    return;
-                  }
-                  updateLayout((prev) =>
-                    setPlaylistDisplay(prev, selectedPlaylistItem.id, id),
-                  );
-                }}
-                aria-label="Playlist display"
-              />
-            </div>
+        <>
+          <div
+            className={
+              ['links', 'playlist', 'feed', 'navigation'].includes(
+                lookOpenSection ?? '',
+              )
+                ? 'hidden'
+                : 'flex min-h-0 flex-1 flex-col'
+            }
+          >
+            <ChannelDesigner
+              ref={designerRef}
+              lookOnly
+              lookElementIds={CHANNEL_LOOK_ELEMENTS.filter(
+                (element) =>
+                  element.id === 'backdrop' ||
+                  layout.some((item) => item.type === element.layoutType),
+              ).map((element) => element.id)}
+              onLookSelect={(id) =>
+                onSelect(
+                  id === 'backdrop'
+                    ? 'header'
+                    : (layout.find(
+                        (item) =>
+                          item.type ===
+                          CHANNEL_LOOK_ELEMENTS.find(
+                            (element) => element.id === id,
+                          )?.layoutType,
+                      )?.id ?? null),
+                )
+              }
+              presetLook={presetLook}
+              reloadToken={lookTick}
+              displayName={channel.user.displayName}
+              username={channel.user.username}
+              channelSlug={slug}
+              avatarUrl={channel.user.avatarUrl}
+              bio={channel.user.bio}
+              layout={layout}
+              onLayoutChange={(updater) => updateLayout(updater)}
+              lookOpenSection={lookElementId}
+              onDirtyChange={onLookDirtyChange}
+              onBusyChange={onLookBusyChange}
+              onSaved={onLookSaved}
+            />
           </div>
-        ) : lookOpenSection === 'feed' && selectedFeedItem ? (
-          <div className="flex flex-col gap-3">
-            <p className="text-foreground-secondary text-xs">
-              Feed has no live update source wired in yet — these controls shape
-              it for when one exists.
-            </p>
-            <div className="flex flex-col gap-2">
-              <p className="text-foreground-secondary text-xs">
-                Which update types to include.
-              </p>
+          {lookOpenSection === 'links' ? (
+            <ChannelLinksEditor links={links} onChange={onLinksChange} />
+          ) : lookOpenSection === 'playlist' && selectedPlaylistItem ? (
+            <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-2">
-                {FEED_FILTER_OPTIONS.map((option) => {
-                  const filters = selectedFeedItem.feedFilters ?? [];
-                  const checked =
-                    filters.length === 0 || filters.includes(option.id);
-                  return (
-                    <div
-                      key={option.id}
-                      className="flex items-center justify-between gap-3 text-sm"
-                    >
-                      <span>{option.label}</span>
-                      <Toggle
-                        label={option.label}
-                        checked={checked}
-                        onChange={(next) => {
-                          const current =
-                            filters.length === 0
-                              ? FEED_FILTER_OPTIONS.map((o) => o.id)
-                              : filters;
-                          const nextFilters = next
-                            ? [...new Set([...current, option.id])]
-                            : current.filter((id) => id !== option.id);
-                          updateLayout((prev) =>
-                            setFeedFilters(
-                              prev,
-                              selectedFeedItem.id,
-                              nextFilters,
-                            ),
-                          );
-                        }}
-                      />
-                    </div>
-                  );
-                })}
+                <p className="text-foreground-secondary text-xs">
+                  Choose which playlist this block shows.
+                </p>
+                <ChannelPlaylistPicker
+                  usedSlugs={layout
+                    .filter(
+                      (item) => item.type === 'playlist' && item.playlistSlug,
+                    )
+                    .map((item) => item.playlistSlug as string)}
+                  initialSlug={selectedPlaylistItem.playlistSlug}
+                  applyOnChange
+                  onPick={(playlistSlug) => {
+                    updateLayout((prev) =>
+                      setPlaylistSlug(
+                        prev,
+                        selectedPlaylistItem.id,
+                        playlistSlug,
+                      ),
+                    );
+                  }}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <p className="text-foreground-secondary text-xs">
+                  How tracks appear on the page.
+                </p>
+                <FilterChips
+                  items={[
+                    { id: 'tracklist', label: 'Tracklist' },
+                    { id: 'cards', label: 'Cards' },
+                  ]}
+                  selected={selectedPlaylistItem.playlistDisplay ?? 'tracklist'}
+                  onChange={(id) => {
+                    if (id !== 'tracklist' && id !== 'cards') {
+                      return;
+                    }
+                    updateLayout((prev) =>
+                      setPlaylistDisplay(prev, selectedPlaylistItem.id, id),
+                    );
+                  }}
+                  aria-label="Playlist display"
+                />
               </div>
             </div>
-            <div className="flex flex-col gap-2">
+          ) : lookOpenSection === 'feed' && selectedFeedItem ? (
+            <div className="flex flex-col gap-3">
               <p className="text-foreground-secondary text-xs">
-                How updates appear on the page.
+                Feed has no live update source wired in yet — these controls
+                shape it for when one exists.
               </p>
-              <FilterChips
-                items={[
-                  { id: 'tracklist', label: 'Tracklist' },
-                  { id: 'cards', label: 'Cards' },
-                  { id: 'both', label: 'Both' },
-                ]}
-                selected={selectedFeedItem.feedDisplay ?? 'tracklist'}
-                onChange={(id) => {
-                  if (id !== 'tracklist' && id !== 'cards' && id !== 'both') {
-                    return;
-                  }
-                  updateLayout((prev) =>
-                    setFeedDisplay(prev, selectedFeedItem.id, id),
-                  );
-                }}
-                aria-label="Feed display"
-              />
+              <div className="flex flex-col gap-2">
+                <p className="text-foreground-secondary text-xs">
+                  Which update types to include.
+                </p>
+                <div className="flex flex-col gap-2">
+                  {FEED_FILTER_OPTIONS.map((option) => {
+                    const filters = selectedFeedItem.feedFilters ?? [];
+                    const checked =
+                      filters.length === 0 || filters.includes(option.id);
+                    return (
+                      <div
+                        key={option.id}
+                        className="flex items-center justify-between gap-3 text-sm"
+                      >
+                        <span>{option.label}</span>
+                        <Toggle
+                          label={option.label}
+                          checked={checked}
+                          onChange={(next) => {
+                            const current =
+                              filters.length === 0
+                                ? FEED_FILTER_OPTIONS.map((o) => o.id)
+                                : filters;
+                            const nextFilters = next
+                              ? [...new Set([...current, option.id])]
+                              : current.filter((id) => id !== option.id);
+                            updateLayout((prev) =>
+                              setFeedFilters(
+                                prev,
+                                selectedFeedItem.id,
+                                nextFilters,
+                              ),
+                            );
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <p className="text-foreground-secondary text-xs">
+                  How updates appear on the page.
+                </p>
+                <FilterChips
+                  items={[
+                    { id: 'tracklist', label: 'Tracklist' },
+                    { id: 'cards', label: 'Cards' },
+                    { id: 'both', label: 'Both' },
+                  ]}
+                  selected={selectedFeedItem.feedDisplay ?? 'tracklist'}
+                  onChange={(id) => {
+                    if (id !== 'tracklist' && id !== 'cards' && id !== 'both') {
+                      return;
+                    }
+                    updateLayout((prev) =>
+                      setFeedDisplay(prev, selectedFeedItem.id, id),
+                    );
+                  }}
+                  aria-label="Feed display"
+                />
+              </div>
             </div>
-          </div>
-        ) : lookOpenSection === 'navigation' && selectedNavigationItem ? (
-          <ChannelNavigationEditor
-            tabs={selectedNavigationItem.navigationTabs ?? []}
-            candidateItems={layout
-              .filter(
-                (candidate) =>
-                  candidate.visible &&
-                  candidate.type !== 'hero' &&
-                  candidate.type !== 'chat' &&
-                  candidate.type !== 'navigation' &&
-                  !BACKDROP_FOLDED_ITEM_TYPES.includes(
-                    candidate.type as ChannelPageItemType,
-                  ),
-              )
-              .map((candidate) => ({
-                id: candidate.id,
-                label:
-                  candidate.type === 'playlist' && candidate.playlistSlug
-                    ? candidate.playlistSlug
-                    : CHANNEL_PAGE_ITEM_META[candidate.type].label,
-              }))}
-            onChange={(tabs) => {
-              updateLayout((prev) =>
-                setNavigationTabs(prev, selectedNavigationItem.id, tabs),
-              );
-            }}
-          />
-        ) : (
-          <ChannelDesigner
-            ref={designerRef}
-            lookOnly
-            presetLook={presetLook}
-            reloadToken={lookTick}
-            displayName={channel.user.displayName}
-            username={channel.user.username}
-            channelSlug={slug}
-            avatarUrl={channel.user.avatarUrl}
-            bio={channel.user.bio}
-            layout={layout}
-            onLayoutChange={(updater) => updateLayout(updater)}
-            lookOpenSection={lookElementId}
-            onDirtyChange={onLookDirtyChange}
-            onSaved={onLookSaved}
-          />
-        )
+          ) : lookOpenSection === 'navigation' && selectedNavigationItem ? (
+            <ChannelNavigationEditor
+              tabs={selectedNavigationItem.navigationTabs ?? []}
+              candidateItems={layout
+                .filter(
+                  (candidate) =>
+                    candidate.visible &&
+                    candidate.type !== 'hero' &&
+                    candidate.type !== 'chat' &&
+                    candidate.type !== 'navigation' &&
+                    !BACKDROP_FOLDED_ITEM_TYPES.includes(
+                      candidate.type as ChannelPageItemType,
+                    ),
+                )
+                .map((candidate) => ({
+                  id: candidate.id,
+                  label:
+                    candidate.type === 'playlist' && candidate.playlistSlug
+                      ? candidate.playlistSlug
+                      : CHANNEL_PAGE_ITEM_META[candidate.type].label,
+                }))}
+              onChange={(tabs) => {
+                updateLayout((prev) =>
+                  setNavigationTabs(prev, selectedNavigationItem.id, tabs),
+                );
+              }}
+            />
+          ) : null}
+        </>
       }
     />
   );

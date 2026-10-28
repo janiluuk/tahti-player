@@ -95,7 +95,9 @@ export function ChannelBlockFrame({
       className={`group relative ${
         editing
           ? `rounded-xl border border-dashed p-2 ${
-              selected ? 'border-primary bg-primary/5' : 'border-border/80'
+              selected
+                ? 'border-primary bg-primary/5 ring-primary border-solid ring-2'
+                : 'border-border/80'
             } ${item.visible ? '' : 'opacity-40'} ${
               dragId === item.id ? 'opacity-50' : ''
             }`
@@ -150,6 +152,11 @@ export function ChannelBlockFrame({
           >
             <GripVerticalIcon size={12} className="cursor-grab" />
             {metaItem.label}
+            {selected && (
+              <span className="bg-primary text-primary-foreground rounded px-1.5 py-0.5 font-bold">
+                Editing
+              </span>
+            )}
             {!item.visible && <span>(hidden)</span>}
             <span className="text-foreground-secondary/70 normal-case">
               · drag to place

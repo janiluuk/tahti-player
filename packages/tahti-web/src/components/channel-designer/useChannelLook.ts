@@ -165,6 +165,18 @@ export function useChannelLook({
       });
   };
 
+  const revert = () => {
+    if (!baselineSnapshot || busy) {
+      return;
+    }
+    editRevisionRef.current += 1;
+    applySnapshot(baselineSnapshot);
+    setGalleryFiles([]);
+    setGalleryPreviewIndex(0);
+    setAppliedPresetName(null);
+    setDirty(false);
+  };
+
   const retryLoad = () => {
     void loadFromServer();
   };
@@ -688,6 +700,7 @@ export function useChannelLook({
     reorderGalleryImage,
     resetConfirmOpen,
     restorePreviousSave,
+    revert,
     revertAppliedPreset,
     save,
     savePresetOpen,

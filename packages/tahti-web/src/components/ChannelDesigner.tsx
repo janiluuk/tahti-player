@@ -1,16 +1,9 @@
 import { Link } from '@tanstack/react-router';
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 import { SaveButton } from '@tahti-player/ui';
 
 import {
-  fillColorScheme,
   isHeaderImageUrl,
   isValidHeaderBackdropUrl,
   isVisualPreset,
@@ -27,6 +20,7 @@ import {
   type ChannelLookBundle,
   type ChannelPageItem,
 } from '../lib/channelPageLayout';
+import { useSettingsModalStore } from '../stores/settingsModalStore';
 import {
   AppliedPresetBanner,
   BackdropPanel,
@@ -56,6 +50,7 @@ import { SlideshowControls } from './channel-designer/SlideshowControls';
 import { useChannelLook } from './channel-designer/useChannelLook';
 import { useDockedControlsRail } from './channel-designer/useDockedControlsRail';
 import { useLookVisibility } from './channel-designer/useLookVisibility';
+import { usePresetLookApplication } from './channel-designer/usePresetLookApplication';
 import { usePreviewHighlight } from './channel-designer/usePreviewHighlight';
 import { ChannelElementEditor } from './ChannelElementEditor';
 import { ChannelTextOverlayEditor } from './ChannelTextOverlayEditor';
@@ -93,6 +88,9 @@ type Props = {
   presetLook?: { token: number; look: ChannelLookBundle } | null;
   lookOpenSection?: LookSection | null;
   onDirtyChange?: (dirty: boolean) => void;
+  onBusyChange?: (busy: boolean) => void;
+  onLookSelect?: (id: ChannelLookElementId) => void;
+  lookElementIds?: ChannelLookElementId[];
   onLookVisibilityChange?: (
     visibility: Record<ArtistLookBlockId, boolean>,
   ) => void;
@@ -111,6 +109,8 @@ type Props = {
 
 export type ChannelDesignerHandle = {
   save: () => Promise<void>;
+  revert: () => void;
+  busy: boolean;
 };
 
 export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
@@ -129,14 +129,18 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       presetLook,
       lookOpenSection,
       onDirtyChange,
+      onBusyChange,
+      onLookSelect,
+      lookElementIds,
       onLookVisibilityChange,
       layout,
       onLayoutChange,
     }: Props,
     ref,
   ) {
-    const { dockControlsInRail, controlsForRailRef } =
-      useDockedControlsRail(lookOnly);
+    const { dockControlsInRail, controlsForRailRef } = useDockedControlsRail(
+      lookOnly || !livePreview,
+    );
 
     const layoutSlug = channelSlug ?? username;
     const {
@@ -179,6 +183,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       reorderGalleryImage,
       resetConfirmOpen,
       restorePreviousSave,
+      revert,
       revertAppliedPreset,
       save,
       savePresetOpen,
@@ -205,32 +210,16 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       vizPackId,
       setVizPack,
     } = useChannelLook({ layoutSlug, reloadToken, onSaved, onDirtyChange });
-    useImperativeHandle(ref, () => ({ save }), [save]);
-
-    // Applied once the saved look has loaded, so the load cannot overwrite
-    // it; a remount (the panel switched section and back) applies it again
-    // on top of the reloaded look, since it is still unsaved.
-    const appliedPresetTokenRef = useRef<number | null>(null);
-    const lookLoaded = visual !== null;
     useEffect(() => {
-      if (
-        !presetLook ||
-        !lookLoaded ||
-        appliedPresetTokenRef.current === presetLook.token
-      ) {
-        return;
-      }
-      appliedPresetTokenRef.current = presetLook.token;
-      const { look } = presetLook;
-      applyLocal(
-        {
-          visualPreset: look.visualPreset,
-          headerStyle: look.headerStyle,
-          brandAccentPreset: look.brandAccentPreset,
-        },
-        fillColorScheme(look.colorScheme),
-      );
-    }, [presetLook, lookLoaded]);
+      onBusyChange?.(busy);
+    }, [busy, onBusyChange]);
+    useImperativeHandle(ref, () => ({ save, revert, busy }), [
+      save,
+      revert,
+      busy,
+    ]);
+
+    usePresetLookApplication(presetLook, visual !== null, applyLocal);
 
     const [galleryPickerOpen, setGalleryPickerOpen] = useState(false);
     const [videoUrlOpen, setVideoUrlOpen] = useState(false);
@@ -604,6 +593,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       <Link
         to="/channel/$slug"
         params={{ slug: channelSlug }}
+        onClick={() => useSettingsModalStore.getState().close()}
         className="text-primary-strong text-sm font-semibold underline-offset-2 hover:underline"
       >
         Open my channel →
@@ -612,6 +602,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       <Link
         to="/u/$username"
         params={{ username }}
+        onClick={() => useSettingsModalStore.getState().close()}
         className="text-primary-strong text-sm font-semibold underline-offset-2 hover:underline"
       >
         Open my channel →
@@ -620,6 +611,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
 
     const selectLookElement = (id: ChannelLookElementId) => {
       setSelectedLookId(id);
+      onLookSelect?.(id);
       flashHighlight(
         id === 'backdrop' ? 'header' : id === 'player' ? 'visualizer' : null,
       );
@@ -647,7 +639,9 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         selectedId={selectedLookId}
         onSelect={selectLookElement}
         onToggleDisabled={toggleSelectedLook}
-        items={lookEditorItems}
+        items={lookEditorItems.filter(
+          (item) => !lookElementIds || lookElementIds.includes(item.id),
+        )}
         className={`${lookOnly || dockControlsInRail ? 'h-full' : ''} ${highlightSection ? 'ring-primary ring-2' : ''}`}
       />
     );
@@ -662,6 +656,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         <div className={`flex flex-col gap-4 ${compact ? '' : 'w-full'}`}>
           <DesignerToolbar
             dirty={dirty}
+            busy={busy}
             hasPreviousSave={previousSave != null}
             onOpenSavePresetModal={openSavePresetModal}
             onRequestReset={() => setResetConfirmOpen(true)}
@@ -713,7 +708,13 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
               slideshowTransition={slideshowTransition}
               slideshowAutoplay={slideshowAutoplay}
               mountVisualizer={hasLivePreview && visualizerEnabled}
-              highlightSection={highlightSection}
+              highlightSection={
+                selectedLookId === 'backdrop'
+                  ? 'header'
+                  : selectedLookId === 'player'
+                    ? 'visualizer'
+                    : null
+              }
               onEditBackdrop={() => {
                 selectLookElement('backdrop');
                 focusPreviewSection(

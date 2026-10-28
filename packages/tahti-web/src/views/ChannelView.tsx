@@ -96,11 +96,13 @@ export function ChannelView({ slug }: { slug: string }) {
     updateLayout,
     removeLayoutItem,
     saveLayout,
+    revertLayout,
   } = useChannelLayoutEditing(slug);
   const [activeNavTabId, setActiveNavTabId] = useState<string | null>(null);
   const [navTabContentVisible, setNavTabContentVisible] = useState(true);
   const [lookDirty, setLookDirty] = useState(false);
   const [savingLook, setSavingLook] = useState(false);
+  const [lookBusy, setLookBusy] = useState(false);
   const channelDesignerRef = useRef<ChannelDesignerHandle>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(true);
   const [lookTick, setLookTick] = useState(0);
@@ -266,6 +268,7 @@ export function ChannelView({ slug }: { slug: string }) {
         presetLook={presetDraft.pending}
         lookTick={lookTick}
         onLookDirtyChange={setLookDirty}
+        onLookBusyChange={setLookBusy}
         onLookSaved={() => {
           setLookTick((n) => n + 1);
           setLookExtrasTick((n) => n + 1);
@@ -759,9 +762,20 @@ export function ChannelView({ slug }: { slug: string }) {
       <ChannelEditToolbar
         dirty={layoutDirty || lookDirty || linksDirty}
         note={presetNote}
-        saving={savingLook}
+        saving={savingLook || lookBusy}
         mobileMenuOpen={mobileMenuOpen}
         onToggleMobileMenu={() => setMobileMenuOpen((v) => !v)}
+        onRevert={() => {
+          if (savingLook || channelDesignerRef.current?.busy) {
+            return;
+          }
+          channelDesignerRef.current?.revert();
+          revertLayout();
+          linksDraft.revert();
+          presetDraft.clearPending();
+          presetDraft.setNote(null);
+          setLookDirty(false);
+        }}
         onSave={() => void saveAll()}
         onDone={() => void exitEdit()}
       />

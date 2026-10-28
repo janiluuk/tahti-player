@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   loadChannelLayoutPresetId,
@@ -34,6 +34,7 @@ export function useChannelLayoutEditing(slug: string) {
     useState<ChannelLayoutPresetId | null>(() =>
       loadChannelLayoutPresetId(slug),
     );
+  const savedPreset = useRef(activePresetId);
   const [editing, setEditing] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
@@ -43,6 +44,7 @@ export function useChannelLayoutEditing(slug: string) {
   useEffect(() => {
     setLayout(loadChannelPageLayout(slug));
     setActivePresetId(loadChannelLayoutPresetId(slug));
+    savedPreset.current = loadChannelLayoutPresetId(slug);
     setLayoutDirty(false);
   }, [slug]);
 
@@ -62,7 +64,6 @@ export function useChannelLayoutEditing(slug: string) {
     setLayoutDirty(true);
     if (opts?.clearPreset !== false && activePresetId) {
       setActivePresetId(null);
-      saveChannelLayoutPresetId(slug, null);
     }
   };
 
@@ -74,6 +75,7 @@ export function useChannelLayoutEditing(slug: string) {
   };
 
   const saveLayout = () => {
+    savedPreset.current = activePresetId;
     saveChannelPageLayout(slug, layout);
     saveChannelLayoutPresetId(slug, activePresetId);
     setLayoutDirty(false);
@@ -97,5 +99,13 @@ export function useChannelLayoutEditing(slug: string) {
     updateLayout,
     removeLayoutItem,
     saveLayout,
+    revertLayout: () => {
+      setLayout(loadChannelPageLayout(slug));
+      setActivePresetId(savedPreset.current);
+      setLayoutDirty(false);
+      setSelectedId(null);
+      setDragId(null);
+      setMoveDrag(null);
+    },
   };
 }

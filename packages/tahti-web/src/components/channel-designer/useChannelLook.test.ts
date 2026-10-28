@@ -35,6 +35,25 @@ describe('useChannelLook', () => {
     toast.error.mockClear();
   });
 
+  it('reverts unsaved appearance, slideshow and media to the saved baseline', async () => {
+    const { result } = renderHook(() => useChannelLook(options));
+    await waitFor(() => expect(result.current.visual).not.toBeNull());
+    const savedVisual = result.current.visual;
+    const savedInterval = result.current.slideshowInterval;
+    const savedUrl = result.current.videoBackgroundUrl;
+    act(() => {
+      result.current.applyLocal({ topBarText: 'Unsaved banner' });
+      result.current.editSlideshow({ interval: 27 });
+      result.current.editVideoUrl('https://example.com/draft.mp4');
+    });
+    expect(result.current.dirty).toBe(true);
+    act(() => result.current.revert());
+    expect(result.current.visual).toEqual(savedVisual);
+    expect(result.current.slideshowInterval).toBe(savedInterval);
+    expect(result.current.videoBackgroundUrl).toBe(savedUrl);
+    expect(result.current.dirty).toBe(false);
+  });
+
   it('keeps edits made while a save is in flight, and stays dirty', async () => {
     const { result } = renderHook(() => useChannelLook(options));
     await waitFor(() => expect(result.current.visual).not.toBeNull());

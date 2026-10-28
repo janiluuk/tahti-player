@@ -1,3 +1,5 @@
+import { RotateCcwIcon } from 'lucide-react';
+
 import { Button, SaveButton } from '@tahti-player/ui';
 
 export function ChannelEditToolbar({
@@ -7,6 +9,7 @@ export function ChannelEditToolbar({
   mobileMenuOpen,
   onToggleMobileMenu,
   onSave,
+  onRevert,
   onDone,
 }: {
   dirty: boolean;
@@ -15,6 +18,7 @@ export function ChannelEditToolbar({
   mobileMenuOpen: boolean;
   onToggleMobileMenu: () => void;
   onSave: () => void;
+  onRevert: () => void;
   onDone: () => void;
 }) {
   return (
@@ -24,8 +28,8 @@ export function ChannelEditToolbar({
           Channel design
         </div>
         <p className="text-foreground-secondary text-xs">
-          Pick a preset, then drag / hide / add. Layout saves in this browser
-          for now.
+          Select a block on the page or in Layers, then edit its settings.
+          Layout saves in this browser.
           {dirty ? ' · unsaved changes' : ' · saved locally'}
         </p>
         {note && (
@@ -41,6 +45,15 @@ export function ChannelEditToolbar({
         >
           {mobileMenuOpen ? 'Hide menu' : 'Layers menu'}
         </Button>
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={!dirty || saving}
+          onClick={onRevert}
+        >
+          <RotateCcwIcon size={14} aria-hidden />
+          Revert changes
+        </Button>
         <SaveButton
           disabled={!dirty}
           saving={saving}
@@ -48,7 +61,7 @@ export function ChannelEditToolbar({
           savingLabel="Saving…"
           onClick={onSave}
         />
-        <Button size="sm" onClick={onDone}>
+        <Button size="sm" disabled={saving} onClick={onDone}>
           Done
         </Button>
       </div>
