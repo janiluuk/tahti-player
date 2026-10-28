@@ -275,6 +275,7 @@ type WireGalleryItem = {
   likeCount?: number;
   playCount?: number;
   downloadCount?: number;
+  commentCount?: number;
 };
 
 function galleryItemToTrack(item: WireGalleryItem): DiscoverTrackItem {
@@ -294,6 +295,7 @@ function galleryItemToTrack(item: WireGalleryItem): DiscoverTrackItem {
     likeCount: item.likeCount,
     playCount: item.playCount,
     downloadCount: item.downloadCount,
+    commentCount: item.commentCount,
   };
 }
 

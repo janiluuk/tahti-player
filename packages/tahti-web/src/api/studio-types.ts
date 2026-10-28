@@ -78,6 +78,7 @@ export type StudioSound = {
   likeCount?: number;
   playCount?: number;
   downloadCount?: number;
+  commentCount?: number;
   bannerUrl?: string | null;
   /** Wide backdrop image — real Prisma/API field name is `backgroundUrl`
    * (ChannelSoundItem.backgroundUrl); named to match here on purpose so the
