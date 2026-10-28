@@ -28,13 +28,14 @@ function topicState(topic) {
 
 export function formatDiscussionsTable(topics) {
   return formatTable(
-    ['ID', 'TOPIC', 'REPLIES', 'NEW', 'LAST ACTIVITY', 'STATE'],
+    ['ID', 'TOPIC', 'REPLIES', 'NEW', 'LAST ACTIVITY', 'LAST REPLY', 'STATE'],
     topics.map((topic) => [
       topic.id,
       topic.title,
       String(topic.postCount),
       topic.unreadCount ? String(topic.unreadCount) : '',
       formatDate(topic.lastPostAt),
+      topic.lastReplyBy ? authorName(topic.lastReplyBy) : '',
       topicState(topic),
     ]),
   );
