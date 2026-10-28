@@ -65,6 +65,7 @@ import { FavoriteStationsRow } from '../components/radio/FavoriteStationsRow';
 import { RadioBookedShowsPanel } from '../components/radio/RadioBookedShowsPanel';
 import { RadioBookingCalendar } from '../components/RadioBookingCalendar';
 import { RadioUpNextPanel } from '../components/RadioUpNextPanel';
+import { StationUnavailableNotice } from '../components/StationUnavailableNotice';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { TrackInfoDialog, type TrackInfo } from '../components/TrackInfoDialog';
@@ -498,6 +499,12 @@ export function RadioView() {
               </div>
             </Box>
           )}
+
+          <StationUnavailableNotice
+            playableId={radioPlayableId}
+            streamUrl={station?.hlsUrl}
+            onPlay={playStation}
+          />
 
           <section className="flex flex-col gap-3">
             <Tabs

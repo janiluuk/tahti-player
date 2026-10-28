@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { XIcon } from 'lucide-react';
 
-import { Button, Card, Tooltip } from '@tahti-player/ui';
+import { Button, Card, InlineError, Tooltip } from '@tahti-player/ui';
 
 import type { EnabledInternetRadioPreset } from '../../api/client';
 import type { MyRadioStation } from '../../api/my-radio-stations';
@@ -13,7 +13,9 @@ import {
 import { useImageWithFallback } from '../../hooks/useImageWithFallback';
 import { prefetchListenCardIntent } from '../../lib/intentRoutePrefetch';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
+import { streamFailureLabel } from '../../lib/streamFailure';
 import { RadioStationCoverEditButton } from '../RadioStationCover';
+import { useStationFailure } from '../StationUnavailableNotice';
 import { StationCardSubtitle } from './StationCardSubtitle';
 
 export type RadioRowItem =
@@ -56,6 +58,16 @@ export function RadioRowCard({
     item.kind === 'preset' ? item.preset.iconUrl : null,
     catalogStation?.logoUrl,
   );
+  const failure = useStationFailure(
+    item.id,
+    item.kind === 'preset' ? item.preset.streamUrl : item.station.streamUrl,
+  );
+  const unavailable = failure ? (
+    <InlineError textSize="xs" announce={false}>
+      Station unavailable · {streamFailureLabel(failure)}
+    </InlineError>
+  ) : null;
+  const failedPlayLabel = failure ? 'Try again' : undefined;
   if (item.kind === 'mine') {
     const { station } = item;
     return (
@@ -63,18 +75,21 @@ export function RadioRowCard({
         surface="neutral"
         title={station.name}
         subtitle={
-          <StationCardSubtitle
-            source={{
-              programmingUrl: station.programmingUrl,
-              streamUrl: station.streamUrl,
-            }}
-            fallback={
-              station.streamUrl
-                ? (station.genre ?? 'Your station')
-                : 'Stream pending'
-            }
-          />
+          unavailable ?? (
+            <StationCardSubtitle
+              source={{
+                programmingUrl: station.programmingUrl,
+                streamUrl: station.streamUrl,
+              }}
+              fallback={
+                station.streamUrl
+                  ? (station.genre ?? 'Your station')
+                  : 'Stream pending'
+              }
+            />
+          )
         }
+        playLabel={failedPlayLabel}
         src={station.iconUrl ?? placeholderArtworkUrl(item.id)}
         isPlaying={isPlaying}
         playDisabled={!station.streamUrl}
@@ -117,10 +132,12 @@ export function RadioRowCard({
             )
           }
           subtitle={
-            !preset.streamUrl
+            unavailable ??
+            (!preset.streamUrl
               ? 'Off air'
-              : (nowPlaying ?? preset.genre ?? 'Internet radio')
+              : (nowPlaying ?? preset.genre ?? 'Internet radio'))
           }
+          playLabel={failedPlayLabel}
           src={presetLogo ?? placeholderArtworkUrl(item.id)}
           isPlaying={isPlaying}
           playDisabled={!preset.streamUrl}
@@ -172,18 +189,20 @@ export function RadioRowCard({
           </Link>
         }
         subtitle={
-          <StationCardSubtitle
-            source={stationNowPlayingSource(station)}
-            fallback={
-              streamUrl
-                ? `${station.language} · ${station.bitrateKbps}kbps`
-                : 'Off air'
-            }
-          />
+          unavailable ?? (
+            <StationCardSubtitle
+              source={stationNowPlayingSource(station)}
+              fallback={
+                streamUrl
+                  ? `${station.language} · ${station.bitrateKbps}kbps`
+                  : 'Off air'
+              }
+            />
+          )
         }
         src={station.logoUrl}
         isPlaying={isPlaying}
-        playLabel={streamUrl ? 'Play' : 'Stream pending'}
+        playLabel={failedPlayLabel ?? (streamUrl ? 'Play' : 'Stream pending')}
         playDisabled={!streamUrl}
         onPlay={streamUrl ? onPlay : undefined}
         favorited={favorited}

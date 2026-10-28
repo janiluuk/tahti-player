@@ -13,6 +13,7 @@ import {
 } from '@tahti-player/ui';
 
 import { PageEmpty } from '../components/PageStates';
+import { StationUnavailableNotice } from '../components/StationUnavailableNotice';
 import {
   RADIO_STATIONS,
   radioStation,
@@ -139,6 +140,13 @@ export function RadioStationView({ stationId }: { stationId: string }) {
               {onListen ? 'Remove from Listen' : 'Add to Listen'}
             </Button>
           </div>
+          {playable ? (
+            <StationUnavailableNotice
+              playableId={playable.id}
+              streamUrl={playable.streamUrl}
+              onPlay={() => play(playable)}
+            />
+          ) : null}
           <div className="flex flex-col gap-1 text-sm">
             <ExternalLink
               href={station.detailUrl}
