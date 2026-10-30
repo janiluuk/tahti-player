@@ -6279,3 +6279,7 @@ WaveSurfer now renders listing peaks and decodes missing playable audio on visib
 ## 2026-10-30 — Unified track listing panel, radio loop, screen wake lock (0.0.283)
 
 Track lists now render as one framed panel: a header with the item count, sort and the size/grid/list switcher sits above the rows, grid or table inside the same surface; an empty list is a `PageEmpty`. Studio Sounds counts sounds. Repeat while radio plays toggles a station-list loop: next on the last station returns to the first and previous on the first goes to the last. The full-screen player shows station logos on a translucent glass panel. Settings → Playback → "Keep the screen on in full screen" (shown where the Screen Wake Lock API exists) holds a wake lock while the full-screen player plays. Waveform, AmbientTrackRow and AmbientTrackList stories gained play checks, high-resolution, decoded-audio, phone-width and processing variants.
+
+## 2026-10-30 — Artwork preset covers and cover picker (0.0.284)
+
+Admin → Artwork presets now reads and writes the API (tahti-org#1033): a grid of presets with an enable switch and confirm-before-remove, plus Add artwork. Enabled presets become the saved cover of tracks, playlists and channel owners created without one, and a backfill script patches existing items. Opening a cover (track editor, Studio collection, profile picture) shows `CoverArtPickerDialog`: Upload image, then one gallery of your uploaded images and the enabled presets; a pick saves immediately (track covers save with the editor's Save).

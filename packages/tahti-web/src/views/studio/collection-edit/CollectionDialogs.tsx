@@ -4,8 +4,8 @@ import { Dialog, FilePicker } from '@tahti-player/ui';
 
 import { removeStudioCollectionItem } from '../../../api/studio';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
+import { CoverArtPickerDialog } from '../../../components/CoverArtPickerDialog';
 import { ImageSlotPreviewDialog } from '../../../components/imageSlot/ImageSlotPreviewDialog';
-import { ImageUrlForm } from '../../../components/ImageUrlForm';
 import { AddTracksDialog } from './AddTracksDialog';
 import type { CollectionEditState } from './useCollectionEditState';
 
@@ -33,7 +33,9 @@ export function CollectionDialogs({
     setUploadTarget,
     uploadingImage,
     uploadImage,
-    coverFromUrl,
+    coverUrl,
+    uploadCoverFile,
+    applyCover,
     pendingRemove,
     setPendingRemove,
     refreshItems,
@@ -62,45 +64,39 @@ export function CollectionDialogs({
         onPause={() => setStatus('paused')}
         onAdd={(sound) => void addSound(sound)}
       />
+      <CoverArtPickerDialog
+        isOpen={uploadTarget === 'cover'}
+        onClose={() => setUploadTarget(null)}
+        label="Cover art"
+        value={coverUrl}
+        upload={uploadCoverFile}
+        onSelect={applyCover}
+      />
       <Dialog.Root
-        isOpen={uploadTarget !== null}
+        isOpen={uploadTarget === 'backdrop'}
         onClose={() => {
           if (!uploadingImage) {
             setUploadTarget(null);
           }
         }}
       >
-        <Dialog.Title>
-          Upload {uploadTarget === 'cover' ? 'cover' : 'backdrop'}
-        </Dialog.Title>
+        <Dialog.Title>Upload backdrop</Dialog.Title>
         <Dialog.Description>
-          {uploadTarget === 'cover'
-            ? "Choose an image for this collection's cover art."
-            : 'Choose one image for a still backdrop, or several for a slideshow.'}
+          Choose one image for a still backdrop, or several for a slideshow.
         </Dialog.Description>
         <div className="mt-4">
           <FilePicker
             labels={{
-              title:
-                uploadTarget === 'cover' ? 'Cover image' : 'Backdrop images',
+              title: 'Backdrop images',
               description: 'JPEG, PNG, WebP, or GIF',
-              browse: uploadingImage
-                ? 'Uploading…'
-                : uploadTarget === 'cover'
-                  ? 'Choose image'
-                  : 'Choose image(s)',
+              browse: uploadingImage ? 'Uploading…' : 'Choose image(s)',
             }}
             accept="image/jpeg,image/png,image/webp,image/gif"
-            multiple={uploadTarget === 'backdrop'}
+            multiple
             disabled={uploadingImage}
             onFiles={(files) => void uploadImage(files)}
           />
         </div>
-        {uploadTarget === 'cover' ? (
-          <div className="border-border mt-4 border-t pt-4">
-            <ImageUrlForm busy={uploadingImage} onSubmit={coverFromUrl} />
-          </div>
-        ) : null}
         <Dialog.Actions>
           <Dialog.Close>Cancel</Dialog.Close>
         </Dialog.Actions>

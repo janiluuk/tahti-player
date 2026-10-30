@@ -7,16 +7,13 @@ import { uploadUserMediaFile } from '../api/user-media';
 
 type Props = {
   isOpen: boolean;
-  label: string;
   onClose: () => void;
   onUploaded: (url: string) => void;
 };
 
-/** Opened from the hover-upload icon on an artwork preset's preview
- * thumbnail — replaces that preset's image in place. */
+/** Uploads a new image for Admin → Artwork presets. */
 export function ArtworkPresetUploadDialog({
   isOpen,
-  label,
   onClose,
   onUploaded,
 }: Props) {
@@ -52,11 +49,11 @@ export function ArtworkPresetUploadDialog({
       <Dialog.Title>
         <span className="inline-flex items-center gap-2">
           <UploadIcon size={18} aria-hidden />
-          Replace {label}
+          Add artwork
         </span>
       </Dialog.Title>
       <Dialog.Description>
-        Upload a square JPG, PNG, WebP, or GIF to replace this preset.
+        Upload a square JPG, PNG, WebP, or GIF.
       </Dialog.Description>
       <div className="mt-4">
         <FilePicker

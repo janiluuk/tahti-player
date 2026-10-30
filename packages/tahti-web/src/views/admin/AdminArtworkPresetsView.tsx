@@ -1,154 +1,108 @@
-import { PlusIcon, RotateCcwIcon, UploadIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { PlusIcon, Trash2Icon } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
   Breadcrumbs,
   Button,
-  Dialog,
-  ImageThumbnailPicker,
-  Input,
   MediaArtwork,
+  Toggle,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
+import {
+  createAdminArtworkPreset,
+  deleteAdminArtworkPreset,
+  fetchAdminArtworkPresets,
+  patchAdminArtworkPreset,
+  type ArtworkPreset,
+} from '../../api/artwork-presets';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ArtworkPresetUploadDialog } from '../../components/ArtworkPresetUploadDialog';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
-import {
-  GENERATED_ARTWORK_COUNT,
-  generatedArtworkUrl,
-} from '../../lib/placeholderArt';
-import { useAuthStore } from '../../stores/authStore';
+import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
+import { cn } from '../../lib/cn';
 
-function storageKey(userId: string) {
-  return `tahti-admin-artwork-presets:${userId}`;
-}
-
-/** The 16 built-in generated placeholders — fixed content, fixed order,
- * never mutated. A slot can be overridden (see `assignments`), but the
- * default itself always stays available to revert back to. */
-const DEFAULT_ARTWORKS: string[] = Array.from(
-  { length: GENERATED_ARTWORK_COUNT },
-  (_, index) => generatedArtworkUrl(String(index)),
-);
-
-const DEFAULT_NAMES = DEFAULT_ARTWORKS.map(
-  (_, index) => `Artwork ${index + 1}`,
-);
-
-type SavedState = {
-  /** Default-slot index -> the custom-pool URL currently assigned to it.
-   * A slot with no entry here just shows its own DEFAULT_ARTWORKS image. */
-  assignments: Record<number, string>;
-  /** Every custom image the admin has ever uploaded — kept around after a
-   * reset so it can be re-assigned later without re-uploading. */
-  customPool: string[];
-};
-
-function parseSavedState(raw: string): SavedState | null {
-  try {
-    const parsed: unknown = JSON.parse(raw);
-    if (
-      parsed &&
-      typeof parsed === 'object' &&
-      'assignments' in parsed &&
-      'customPool' in parsed
-    ) {
-      const { assignments, customPool } = parsed as Record<string, unknown>;
-      if (
-        assignments &&
-        typeof assignments === 'object' &&
-        Array.isArray(customPool) &&
-        customPool.every((v): v is string => typeof v === 'string')
-      ) {
-        const cleanAssignments: Record<number, string> = {};
-        for (const [key, value] of Object.entries(
-          assignments as Record<string, unknown>,
-        )) {
-          const index = Number(key);
-          if (
-            Number.isInteger(index) &&
-            index >= 0 &&
-            index < GENERATED_ARTWORK_COUNT &&
-            typeof value === 'string'
-          ) {
-            cleanAssignments[index] = value;
-          }
-        }
-        return { assignments: cleanAssignments, customPool };
-      }
-    }
-  } catch {
-    // fall through
-  }
-  return null;
-}
+type LoadState =
+  | { status: 'loading' }
+  | { status: 'error'; message: string }
+  | { status: 'ready'; presets: ArtworkPreset[] };
 
 export function AdminArtworkPresetsView() {
-  const userId = useAuthStore((s) => s.user?.id);
-  const [assignments, setAssignments] = useState<Record<number, string>>({});
-  const [customPool, setCustomPool] = useState<string[]>([]);
-  const [selected, setSelected] = useState(0);
-  const [editorOpen, setEditorOpen] = useState(false);
-  const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
+  const [state, setState] = useState<LoadState>({ status: 'loading' });
   const [uploadOpen, setUploadOpen] = useState(false);
-  /** "slot" (opened from within the editor) auto-assigns the upload to the
-   * slot being edited; "pool" (the top-right "Add new" action) just adds it
-   * to the library without assigning it anywhere. */
-  const [uploadTarget, setUploadTarget] = useState<'slot' | 'pool'>('slot');
-
-  const activeUrls = useMemo(
-    () => DEFAULT_ARTWORKS.map((url, index) => assignments[index] ?? url),
-    [assignments],
+  const [pendingDelete, setPendingDelete] = useState<ArtworkPreset | null>(
+    null,
   );
-  const selectedUrl = activeUrls[selected] ?? '';
-  const selectedIsCustom = assignments[selected] != null;
+
+  const load = useCallback(async () => {
+    setState({ status: 'loading' });
+    const { data, meta } = await fetchAdminArtworkPresets();
+    setState(
+      meta.reason && data.length === 0
+        ? { status: 'error', message: meta.reason }
+        : { status: 'ready', presets: data },
+    );
+  }, []);
 
   useEffect(() => {
-    if (!userId) {
+    void load();
+  }, [load]);
+
+  const replace = (next: ArtworkPreset) =>
+    setState((current) =>
+      current.status === 'ready'
+        ? {
+            ...current,
+            presets: current.presets.map((preset) =>
+              preset.id === next.id ? next : preset,
+            ),
+          }
+        : current,
+    );
+
+  const toggle = async (preset: ArtworkPreset, enabled: boolean) => {
+    replace({ ...preset, enabled });
+    const result = await patchAdminArtworkPreset(preset.id, { enabled });
+    if (!result.ok) {
+      replace(preset);
+      toast.error(result.error);
+    }
+  };
+
+  const add = async (url: string) => {
+    const result = await createAdminArtworkPreset(url);
+    if (!result.ok) {
+      toast.error(result.error);
       return;
     }
-    const stored = window.localStorage.getItem(storageKey(userId));
-    if (!stored) {
+    setState((current) =>
+      current.status === 'ready'
+        ? { ...current, presets: [...current.presets, result.data] }
+        : current,
+    );
+    toast.success('Artwork added.');
+  };
+
+  const remove = async (preset: ArtworkPreset) => {
+    const result = await deleteAdminArtworkPreset(preset.id);
+    if (!result.ok) {
+      toast.error(result.error);
       return;
     }
-    const parsed = parseSavedState(stored);
-    if (parsed) {
-      setAssignments(parsed.assignments);
-      setCustomPool(parsed.customPool);
-    } else {
-      window.localStorage.removeItem(storageKey(userId));
-    }
-  }, [userId]);
-
-  const persist = (next: SavedState) => {
-    if (!userId) {
-      return;
-    }
-    window.localStorage.setItem(storageKey(userId), JSON.stringify(next));
-  };
-
-  const resetToDefaults = () => {
-    setAssignments({});
-    persist({ assignments: {}, customPool });
-  };
-
-  const assignToSelected = (url: string) => {
-    setAssignments((current) => ({ ...current, [selected]: url }));
-  };
-
-  const openSlotEditor = (index: number) => {
-    setSelected(index);
-    setEditorOpen(true);
-  };
-
-  const saveEditor = () => {
-    persist({ assignments, customPool });
-    setEditorOpen(false);
+    setState((current) =>
+      current.status === 'ready'
+        ? {
+            ...current,
+            presets: current.presets.filter((p) => p.id !== preset.id),
+          }
+        : current,
+    );
+    toast.success('Artwork removed.');
   };
 
   return (
@@ -161,158 +115,96 @@ export function AdminArtworkPresetsView() {
           </Breadcrumbs>
           <ViewShell
             title="Artwork presets"
+            subtitle="Enabled artwork becomes the cover of tracks, playlists and channels that have none, and is offered in every cover picker."
             classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             actions={
-              <div className="flex items-center gap-1.5">
-                <Tooltip content="Add new artwork" side="top">
-                  <Button
-                    type="button"
-                    size="icon-sm"
-                    aria-label="Add new artwork"
-                    onClick={() => {
-                      setUploadTarget('pool');
-                      setUploadOpen(true);
-                    }}
-                  >
-                    <PlusIcon size={18} aria-hidden />
-                  </Button>
-                </Tooltip>
-                <Tooltip content="Reset to defaults" side="top">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="icon-sm"
-                    aria-label="Reset to defaults"
-                    onClick={() => setResetConfirmOpen(true)}
-                  >
-                    <RotateCcwIcon size={15} aria-hidden />
-                  </Button>
-                </Tooltip>
-              </div>
+              <Tooltip content="Add artwork" side="top">
+                <Button
+                  type="button"
+                  size="icon-sm"
+                  aria-label="Add artwork"
+                  onClick={() => setUploadOpen(true)}
+                >
+                  <PlusIcon size={18} aria-hidden />
+                </Button>
+              </Tooltip>
             }
           >
-            <ImageThumbnailPicker
-              items={DEFAULT_ARTWORKS.map((_, index) => ({
-                id: String(index),
-                imageUrl: activeUrls[index] ?? '',
-                label: `${DEFAULT_NAMES[index]}${assignments[index] != null ? ' · custom' : ''}`,
-                ariaLabel: `Edit ${DEFAULT_NAMES[index]}`,
-              }))}
-              selected={editorOpen ? String(selected) : null}
-              onSelect={(id) => openSlotEditor(Number(id))}
-            />
+            {state.status === 'loading' ? (
+              <PageLoading label="Loading artwork…" />
+            ) : state.status === 'error' ? (
+              <PageError
+                title="Could not load artwork presets"
+                description={state.message}
+                onRetry={() => void load()}
+              />
+            ) : state.presets.length === 0 ? (
+              <PageEmpty
+                title="No artwork presets yet"
+                description="Add artwork to use it as a default cover."
+              />
+            ) : (
+              <ul
+                className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6"
+                data-testid="artwork-preset-grid"
+              >
+                {state.presets.map((preset, index) => (
+                  <li
+                    key={preset.id}
+                    className="border-border/40 bg-background-secondary flex list-none flex-col overflow-hidden rounded-lg border"
+                  >
+                    <MediaArtwork
+                      src={preset.url}
+                      alt=""
+                      imageReveal={false}
+                      className={cn(
+                        'aspect-square transition-opacity',
+                        !preset.enabled && 'opacity-40',
+                      )}
+                    />
+                    <div className="flex items-center justify-between gap-2 px-2 py-1.5">
+                      <Toggle
+                        label={`Enable artwork ${index + 1}`}
+                        checked={preset.enabled}
+                        onChange={(checked) => void toggle(preset, checked)}
+                      />
+                      <Button
+                        type="button"
+                        variant="text"
+                        size="icon-sm"
+                        aria-label={`Remove artwork ${index + 1}`}
+                        onClick={() => setPendingDelete(preset)}
+                      >
+                        <Trash2Icon size={14} aria-hidden />
+                      </Button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </ViewShell>
         </div>
       </AdminPageLayout>
 
-      <Dialog.Root
-        isOpen={editorOpen}
-        onClose={() => setEditorOpen(false)}
-        className="max-w-md"
-      >
-        <Dialog.Title>{DEFAULT_NAMES[selected] ?? 'Edit artwork'}</Dialog.Title>
-        <div className="flex flex-col gap-4">
-          <div className="group relative aspect-square w-full max-w-64">
-            <MediaArtwork
-              src={selectedUrl}
-              alt="Selected artwork preset"
-              imageReveal={false}
-              className="rounded-xl"
-            />
-            <Button
-              variant="plain"
-              size="flexible"
-              type="button"
-              onClick={() => {
-                setUploadTarget('slot');
-                setUploadOpen(true);
-              }}
-              aria-label={`Upload artwork for ${DEFAULT_NAMES[selected] ?? 'this slot'}`}
-              className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/0 whitespace-normal opacity-0 transition group-hover:bg-black/40 group-hover:opacity-100 active:scale-100"
-            >
-              <UploadIcon size={28} aria-hidden className="text-white" />
-            </Button>
-          </div>
-          <Input
-            label="Editing slot"
-            value={DEFAULT_NAMES[selected] ?? ''}
-            readOnly
-            description={
-              selectedIsCustom
-                ? 'Showing a custom artwork assigned to this slot instead of its default.'
-                : "Showing this slot's default artwork — assign a custom one below, or upload a new one."
-            }
-          />
-          {customPool.length > 0 ? (
-            <div className="flex flex-col gap-1.5">
-              <span className="text-foreground text-sm font-semibold">
-                Assign from your artwork
-              </span>
-              <ImageThumbnailPicker
-                layout="inline"
-                items={customPool.map((url) => ({
-                  id: url,
-                  imageUrl: url,
-                  ariaLabel: 'Assign this artwork to the selected slot',
-                }))}
-                selected={assignments[selected] ?? null}
-                onSelect={assignToSelected}
-                trailingAction={
-                  <Button
-                    variant="plain"
-                    size="flexible"
-                    type="button"
-                    onClick={() => {
-                      setUploadTarget('slot');
-                      setUploadOpen(true);
-                    }}
-                    aria-label="Upload a new artwork"
-                    title="Upload a new artwork"
-                    className="border-border text-foreground-secondary flex size-12 items-center justify-center rounded-md border border-dashed whitespace-normal active:scale-100"
-                  >
-                    <PlusIcon size={16} aria-hidden />
-                  </Button>
-                }
-              />
-            </div>
-          ) : null}
-        </div>
-        <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
-          <Button type="button" onClick={saveEditor}>
-            Save
-          </Button>
-        </Dialog.Actions>
-      </Dialog.Root>
-
       <ConfirmDialog
-        isOpen={resetConfirmOpen}
-        title="Reset artwork presets?"
-        description="This clears every custom artwork assignment and reverts all slots to their default images. Uploaded artwork stays in your library."
-        confirmLabel="Reset"
-        onCancel={() => setResetConfirmOpen(false)}
+        isOpen={pendingDelete !== null}
+        title="Remove this artwork?"
+        description="Covers already saved from it stay as they are."
+        confirmLabel="Remove"
+        onCancel={() => setPendingDelete(null)}
         onConfirm={() => {
-          setResetConfirmOpen(false);
-          resetToDefaults();
+          const preset = pendingDelete;
+          setPendingDelete(null);
+          if (preset) {
+            void remove(preset);
+          }
         }}
       />
 
       <ArtworkPresetUploadDialog
         isOpen={uploadOpen}
-        label={
-          uploadTarget === 'pool'
-            ? 'your library'
-            : (DEFAULT_NAMES[selected] ?? 'preset')
-        }
         onClose={() => setUploadOpen(false)}
-        onUploaded={(url) => {
-          setCustomPool((current) =>
-            current.includes(url) ? current : [...current, url],
-          );
-          if (uploadTarget === 'slot') {
-            assignToSelected(url);
-          }
-        }}
+        onUploaded={(url) => void add(url)}
       />
     </AdminGate>
   );

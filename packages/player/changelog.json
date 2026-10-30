@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-10-30T04:30",
+    "description": "Tracks, playlists and channels without cover art get one of the board's artwork presets. Clicking a cover now offers Upload or a gallery of presets and your own images, and admins switch presets on or off in Admin → Artwork presets.",
+    "type": "improvement",
+    "contributors": ["jani"],
+    "tags": [{ "label": "Web", "color": "blue" }]
+  },
+  {
     "date": "2026-10-30T04:00",
     "description": "Track lists and their size switcher now sit in one panel with a track count. Repeat loops the station list while radio plays, the full-screen station logo sits on frosted glass, and Settings → Playback can keep a phone screen on while the full-screen player plays.",
     "type": "improvement",

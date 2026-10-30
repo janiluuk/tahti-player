@@ -7,6 +7,7 @@ import { Button, HiddenFileInput, MediaArtwork } from '@tahti-player/ui';
 import { uploadUserMediaFile } from '../api/user-media';
 import { cn } from '../lib/cn';
 import { IMAGE_UPLOAD_ACCEPT_ATTR } from '../lib/imageUploadContentType';
+import { CoverArtPickerDialog } from './CoverArtPickerDialog';
 import { ImageSlotDeleteBadge } from './imageSlot/ImageSlotDeleteBadge';
 import { ImageSlotPreviewDialog } from './imageSlot/ImageSlotPreviewDialog';
 import { useImageSlotChrome } from './imageSlot/useImageSlotChrome';
@@ -27,6 +28,12 @@ type Props = {
   upload?: (file: File) => Promise<UploadResult>;
   /** File input `accept`; defaults to the user-media image types. */
   accept?: string;
+  /** Opens the cover picker (upload, presets and the user's own artwork)
+   * instead of the OS file picker or the preview. */
+  gallery?: boolean;
+  /** Saves an image picked from the gallery when it is not already stored
+   * for this slot (the default passes it to `onChange`). */
+  onPick?: (url: string) => Promise<boolean>;
 };
 
 /** A single round, clickable image slot — shows the uploaded image (or a
@@ -43,8 +50,11 @@ export function RoundImageUploadButton({
   className,
   upload = uploadUserMediaFile,
   accept = IMAGE_UPLOAD_ACCEPT_ATTR,
+  gallery = false,
+  onPick,
 }: Props) {
   const [busy, setBusy] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const chrome = useImageSlotChrome({ onClear: () => onChange('') });
 
@@ -75,16 +85,21 @@ export function RoundImageUploadButton({
         variant="text"
         size="flexible"
         onClick={() =>
-          !busy && (value ? chrome.openPreview() : inputRef.current?.click())
+          !busy &&
+          (gallery
+            ? setPickerOpen(true)
+            : value
+              ? chrome.openPreview()
+              : inputRef.current?.click())
         }
         disabled={busy}
         aria-label={
-          value
+          value && !gallery
             ? `Preview ${label.toLowerCase()}`
             : `Change ${label.toLowerCase()}`
         }
         title={
-          value
+          value && !gallery
             ? `Preview ${label.toLowerCase()}`
             : `Change ${label.toLowerCase()}`
         }
@@ -116,6 +131,19 @@ export function RoundImageUploadButton({
         disabled={busy}
         onFiles={(files) => void handleFiles(files)}
       />
+      {gallery ? (
+        <CoverArtPickerDialog
+          isOpen={pickerOpen}
+          onClose={() => setPickerOpen(false)}
+          label={label}
+          value={value}
+          upload={upload}
+          accept={accept}
+          onSelect={(url, source) =>
+            source === 'gallery' && onPick ? onPick(url) : onChange(url)
+          }
+        />
+      ) : null}
       <ImageSlotPreviewDialog
         isOpen={chrome.previewOpen}
         onClose={chrome.closePreview}

@@ -19,7 +19,7 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
   const { avatarUrl, handleAvatarChange, profile, setProfile } = kit;
   const [fetching, setFetching] = useState(false);
 
-  const saveImageUrl = async (sourceUrl: string) => {
+  const storeImageUrl = async (sourceUrl: string) => {
     setFetching(true);
     const result = await setProfileAvatarFromUrl(sourceUrl);
     setFetching(false);
@@ -28,8 +28,15 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
       return false;
     }
     handleAvatarChange(result.url);
-    toast.success('Profile picture saved.');
     return true;
+  };
+
+  const saveImageUrl = async (sourceUrl: string) => {
+    const saved = await storeImageUrl(sourceUrl);
+    if (saved) {
+      toast.success('Profile picture saved.');
+    }
+    return saved;
   };
   return (
     <StudioPanel
@@ -39,6 +46,8 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
       <div className="flex flex-wrap items-center gap-5">
         <RoundImageUploadButton
           label="Profile picture"
+          gallery
+          onPick={storeImageUrl}
           value={avatarUrl}
           sizeClassName="size-32"
           accept={AVATAR_UPLOAD_ACCEPT}

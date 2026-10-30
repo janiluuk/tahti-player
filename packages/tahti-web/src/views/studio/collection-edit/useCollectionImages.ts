@@ -92,6 +92,29 @@ export function useCollectionImages(
     return true;
   };
 
+  const uploadCoverFile = async (
+    file: File,
+  ): Promise<
+    { ok: true; data: { url: string } } | { ok: false; error: string }
+  > => {
+    const result = await uploadCollectionCover(slug, file);
+    return result.ok ? { ok: true, data: { url: result.coverUrl } } : result;
+  };
+
+  /** An uploaded cover is already stored; a gallery pick is saved here. */
+  const applyCover = async (url: string, source: 'upload' | 'gallery') => {
+    if (source === 'gallery') {
+      const result = await patchStudioCollection(slug, { coverUrl: url });
+      if (!result.ok) {
+        toast.error(result.error);
+        return false;
+      }
+    }
+    setCoverUrl(url);
+    setCol((current) => (current ? { ...current, coverUrl: url } : current));
+    return true;
+  };
+
   const removeCover = async () => {
     const result = await patchStudioCollection(slug, { coverUrl: null });
     if (!result.ok) {
@@ -163,6 +186,8 @@ export function useCollectionImages(
     setPendingFrameDelete,
     uploadImage,
     coverFromUrl,
+    uploadCoverFile,
+    applyCover,
     removeCover,
     removeBackdrop,
     removeSlideshowFrame,
