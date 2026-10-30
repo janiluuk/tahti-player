@@ -93,6 +93,7 @@ export function StationIdClipForm({
         <div className="flex flex-col gap-1">
           <Input
             type="number"
+            inputMode="decimal"
             variant="number"
             label="Start (s)"
             size="sm"
@@ -115,6 +116,7 @@ export function StationIdClipForm({
         <div className="flex flex-col gap-1">
           <Input
             type="number"
+            inputMode="decimal"
             variant="number"
             label="End (s)"
             size="sm"

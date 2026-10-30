@@ -228,6 +228,7 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
           {showMode === 'SERIES' && episodeNumberEnabled ? (
             <Input
               type="number"
+              inputMode="numeric"
               variant="number"
               label="Start episode"
               disabled={Boolean(selectedShowId)}

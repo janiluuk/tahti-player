@@ -20,6 +20,7 @@ import {
   revokeApiToken,
   type ApiToken,
 } from '../api/api-tokens';
+import { toastWithUndo } from '../lib/undoToast';
 import { ConfirmDialog } from './ConfirmDialog';
 import {
   PageEmpty,
@@ -98,7 +99,14 @@ export function ApiTokensPanel() {
       setName('');
       setCanWrite(false);
       setExpiry('never');
-      toast.success('API token created.');
+      toastWithUndo('API token created.', {
+        undo: () => revokeApiToken(view.id),
+        undoneMessage: 'API token revoked.',
+        onUndone: () => {
+          setTokens((current) => current.filter((item) => item.id !== view.id));
+          setRevealedToken(null);
+        },
+      });
     });
   };
 

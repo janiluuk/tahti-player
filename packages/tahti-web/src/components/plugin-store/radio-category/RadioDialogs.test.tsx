@@ -8,6 +8,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { RadioStation } from '../../../content/radioStations';
+import { useListenerWidgetsStore } from '../../../stores/listenerWidgetsStore';
 import { AddStationUrlDialog } from './AddStationUrlDialog';
 import { StationEditDialog } from './StationEditDialog';
 import { SuggestStationForm } from './SuggestStationForm';
@@ -130,6 +131,58 @@ describe('AddStationUrlDialog', () => {
       }),
     );
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it('undo removes a newly added station', async () => {
+    resolved('https://b/stream');
+    useListenerWidgetsStore.setState({ savedBrowserStations: [] });
+    const { addSavedBrowserStation } = useListenerWidgetsStore.getState();
+    render(
+      <AddStationUrlDialog onAdd={addSavedBrowserStation} onClose={vi.fn()} />,
+    );
+    fireEvent.change(screen.getByPlaceholderText(/example.com\/stream/), {
+      target: { value: 'https://b/stream' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Resolve & test' }));
+    await screen.findByText(/Plays fine/);
+    fireEvent.click(screen.getByRole('button', { name: /Add to my stations/ }));
+    expect(
+      useListenerWidgetsStore.getState().savedBrowserStations,
+    ).toHaveLength(1);
+    const options = toast.success.mock.calls.at(-1)?.[1] as {
+      action: { label: string; onClick: () => void };
+    };
+    expect(options.action.label).toBe('Undo');
+    options.action.onClick();
+    await waitFor(() =>
+      expect(
+        useListenerWidgetsStore.getState().savedBrowserStations,
+      ).toHaveLength(0),
+    );
+  });
+
+  it('offers no undo when the station was already saved', async () => {
+    resolved('https://c/stream');
+    useListenerWidgetsStore.setState({
+      savedBrowserStations: [
+        { id: 'https://c/stream', name: 'C', streamUrl: 'https://c/stream' },
+      ],
+    });
+    render(
+      <AddStationUrlDialog
+        onAdd={useListenerWidgetsStore.getState().addSavedBrowserStation}
+        onClose={vi.fn()}
+      />,
+    );
+    fireEvent.change(screen.getByPlaceholderText(/example.com\/stream/), {
+      target: { value: 'https://c/stream' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Resolve & test' }));
+    await screen.findByText(/Plays fine/);
+    fireEvent.click(screen.getByRole('button', { name: /Add to my stations/ }));
+    expect(toast.success).toHaveBeenLastCalledWith(
+      'Updated https://c/stream in your stations.',
+    );
   });
 
   it('ignores a slow resolve that finishes after the URL was edited', async () => {

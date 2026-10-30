@@ -178,6 +178,7 @@ export function OverviewTab({
               {episodeNumberEnabled ? (
                 <Input
                   type="number"
+                  inputMode="numeric"
                   variant="number"
                   label="Next episode number"
                   min={1}

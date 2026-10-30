@@ -9,6 +9,7 @@ import {
   fetchStudioCollection,
   fetchStudioSounds,
   patchStudioCollection,
+  removeStudioCollectionItem,
   reorderStudioCollectionItems,
 } from '../../../api/studio';
 import type {
@@ -18,6 +19,7 @@ import type {
 } from '../../../api/studio-types';
 import { useImageSlotChrome } from '../../../components/imageSlot/useImageSlotChrome';
 import { collectionItemToTrack } from '../../../lib/collectionTrackMapping';
+import { toastWithUndo } from '../../../lib/undoToast';
 import { useCollectionImages } from './useCollectionImages';
 import { useCollectionPlayback } from './useCollectionPlayback';
 
@@ -110,13 +112,15 @@ export function useCollectionEditState(slug: string) {
       const fresh = await fetchStudioCollection(slug);
       if (fresh.meta.source === 'api' && fresh.meta.reason) {
         toast.error('Could not refresh the tracklist.');
-        return;
+        return null;
       }
       setCol((current) =>
         current ? { ...current, items: fresh.data.items } : fresh.data,
       );
+      return fresh.data.items;
     } catch {
       toast.error('Could not refresh the tracklist.');
+      return null;
     }
   };
 
@@ -160,10 +164,19 @@ export function useCollectionEditState(slug: string) {
       toast.error(result.error);
       return;
     }
-    toast.success(`${sound.title} added.`);
     // Refresh only the tracklist: a full reload() would reset the details
     // form and drop unsaved edits.
-    void refreshItems();
+    const fresh = await refreshItems();
+    const added = fresh?.filter((item) => item.sound?.id === sound.id).at(-1);
+    if (!added) {
+      toast.success(`${sound.title} added.`);
+      return;
+    }
+    toastWithUndo(`${sound.title} added.`, {
+      undo: () => removeStudioCollectionItem(slug, added.id),
+      undoneMessage: `${sound.title} removed.`,
+      onUndone: () => void refreshItems(),
+    });
   };
 
   const onReorder = (from: number, to: number) => {

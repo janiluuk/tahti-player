@@ -146,6 +146,7 @@ export function AnnouncementTrimDialog({
               <Input
                 key={field.key}
                 type="number"
+                inputMode="decimal"
                 variant="number"
                 size="sm"
                 min={0}

@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { toast } from 'sonner';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as studioExtras from '../api/studio-extras';
@@ -69,5 +70,74 @@ describe('ReleaseTracksToRotation', () => {
       <ReleaseTracksToRotation releases={[]} onAdded={vi.fn()} />,
     );
     expect(container.innerHTML).toBe('');
+  });
+
+  it('undo takes the added track back out of the rotation', async () => {
+    const programme = {
+      fallbackMode: 'ordered' as const,
+      fallbackEnabled: true,
+      fallbackAutoEnroll: false,
+      announcementsEnabled: false,
+      items: [
+        {
+          id: 's0',
+          title: 'Older',
+          status: 'READY',
+          durationSec: 100,
+          isFallback: true,
+          fallbackOrder: 0,
+        },
+        {
+          id: 's1',
+          title: 'Aurora — Dawn',
+          status: 'READY',
+          durationSec: 200,
+          isFallback: true,
+          fallbackOrder: 1,
+        },
+      ],
+      library: [
+        {
+          releaseTrackId: 't1',
+          releaseId: 'r1',
+          releaseTitle: 'Aurora',
+          trackTitle: 'Dawn',
+          durationSec: 200,
+          soundId: 's1',
+        },
+      ],
+    };
+    vi.spyOn(studioExtras, 'addReleaseTrackToProgramme').mockResolvedValue({
+      ok: true,
+      data: programme,
+    });
+    const undone = { ...programme, items: [programme.items[0]] };
+    const patch = vi
+      .spyOn(studioExtras, 'patchProgramme')
+      .mockResolvedValue({ ok: true, data: undone });
+    const onAdded = vi.fn();
+    render(<ReleaseTracksToRotation releases={[release]} onAdded={onAdded} />);
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: 'Add Dawn from Aurora to the rotation',
+      }),
+    );
+    await vi.waitFor(() => expect(toast.success).toHaveBeenCalled());
+    const options = vi.mocked(toast.success).mock.calls.at(-1)?.[1] as {
+      action: { label: string; onClick: () => void };
+    };
+    options.action.onClick();
+    await vi.waitFor(() => expect(onAdded).toHaveBeenLastCalledWith(undone));
+    expect(patch).toHaveBeenCalledWith({
+      items: [
+        { soundId: 's0', isFallback: true, fallbackOrder: 0 },
+        { soundId: 's1', isFallback: false },
+      ],
+    });
+    expect(
+      screen
+        .getByRole('button', { name: 'Add Dawn from Aurora to the rotation' })
+        .hasAttribute('disabled'),
+    ).toBe(false);
   });
 });

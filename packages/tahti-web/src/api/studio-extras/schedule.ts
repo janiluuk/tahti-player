@@ -303,6 +303,19 @@ export async function addReleaseTrackToProgramme(input: {
           fallbackOrder: order,
         },
       ],
+      library: [
+        ...(mockProgramme.library ?? []).filter(
+          (entry) => entry.releaseTrackId !== input.releaseTrackId,
+        ),
+        {
+          releaseTrackId: input.releaseTrackId,
+          releaseId: 'mock-release',
+          releaseTitle: input.title,
+          trackTitle: input.title,
+          durationSec: input.durationSec ?? null,
+          soundId: `release-track-${input.releaseTrackId}`,
+        },
+      ],
     };
     return {
       ok: true,
