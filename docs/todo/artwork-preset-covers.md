@@ -6,4 +6,4 @@ Admin artwork presets live in the API (tahti-org#1033) with an enabled flag. Sou
 
 Left:
 - [ ] Merge tahti-org#1033, then run the backfill on production (dry run first).
-- [ ] Release artwork (Studio release detail) still uses its own upload flow; move it to the picker if wanted.
+- [x] Release artwork (Studio release detail) uses `CoverArtPickerDialog` (upload and gallery) and keeps From URL and Generate.
