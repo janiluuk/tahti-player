@@ -64,6 +64,7 @@ export function AnnouncementTrimDialog({
   const field = (key: keyof AnnouncementTrim, label: string) => (
     <Input
       type="number"
+      inputMode="decimal"
       variant="number"
       label={label}
       size="sm"

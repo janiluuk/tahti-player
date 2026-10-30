@@ -210,6 +210,7 @@ export function AdminAnnouncementsView() {
                           {clip.scheduleMode === 'EVERY_NTH' && (
                             <Input
                               type="number"
+                              inputMode="numeric"
                               variant="number"
                               size="sm"
                               min={2}

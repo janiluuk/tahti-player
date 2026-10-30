@@ -253,6 +253,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
               <div className="grid gap-3 sm:grid-cols-2">
                 <Input
                   type="number"
+                  inputMode="decimal"
                   variant="number"
                   label="Trim start (sec)"
                   min={0}
@@ -262,6 +263,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                 />
                 <Input
                   type="number"
+                  inputMode="decimal"
                   variant="number"
                   label="Trim end (sec, 0 = full)"
                   min={0}

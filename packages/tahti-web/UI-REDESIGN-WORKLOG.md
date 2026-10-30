@@ -6298,3 +6298,7 @@ Library year, length and bitrate filters, smart-playlist limits, clip times, ana
 ## 2026-10-30 — Listing toolbar on one row (0.0.286)
 
 Track listings put the filter box, sort dropdown and size control on one row. The inline size switcher became `TrackViewPicker`: an icon button showing the current view that opens a popover (Large / Medium / Small, plus Grid and List where offered). `AmbientTrackList` gains `toolbarStart` (a filter box leads the row and the toolbar stays up when nothing matches) and `hideViewPicker`. The remembered view moved to `stores/trackListViewStore` (same `localStorage` key) so a picker outside the list stays in sync. Library → Sounds: Sort by and an order icon button move up beside search and Type, with the size picker in that row. Desktop library local files: search moves into the list toolbar. Stories: `AmbientTrackList` TrackSizePopover / FilterSortAndSizeRow / WithGrid plays, `StudioSoundsView` FilterRow.
+
+## 2026-10-30 — UX batch 118: number keyboards and undo on add (0.0.287)
+
+Announcement trim, station-ID clip, episode trim, schedule and show episode numbers, admin "Every Nth" and the broadcast preflight episode field open a numeric or decimal phone keyboard. Creating an API token, adding a release track to the 24/7 rotation, adding a station by URL and adding a sound in the Studio collection editor can be undone from the toast.

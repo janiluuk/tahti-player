@@ -117,4 +117,8 @@ new surface, one PR per row.
     discussion reply, release tracks, pinned announcement, announcement clip,
     artwork preset, radio station, SoundCloud embed, stash upload, gallery
     photos, smart-playlist snapshot, and queue adds.
+  - 2026-10-30 (batch 118): API token create, release track to rotation,
+    station by URL, and Studio collection editor add sound. Left: Mikseri,
+    Mixcloud and Spotify collection imports and collaborative-playlist adds
+    (no item id returned).
 

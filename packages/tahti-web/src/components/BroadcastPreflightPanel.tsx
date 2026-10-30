@@ -248,6 +248,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
           {preflight.plannedLiveShow?.seriesId ? (
             <Input
               type="number"
+              inputMode="numeric"
               variant="number"
               label="Episode"
               size="sm"

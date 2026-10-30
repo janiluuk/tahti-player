@@ -5710,3 +5710,7 @@ Track size is now an icon button with a popover (`TrackViewPicker`) on every `Am
 ## 2026-10-30 - Track size popover is icon-only; sort stays beside it
 
 The `TrackViewPicker` popover is now a vertical strip of view icons (labels in tooltips and for screen readers, current view highlighted). Sort controls and the Track size button sit in one non-wrapping group in the `AmbientTrackList` toolbar and the Library → Sounds filter row, so they never split across lines. Stories: `TrackSizePopover` checks the vertical icon strip, new `SortAndSizeStayTogether`, and `StudioSoundsView` `FilterRow` checks sort + size alignment.
+
+## 2026-10-30 - UX batch 118 ten keyboard and undo slices
+
+Ten number fields set `inputMode` (decimal where they step by 0.1): announcement trim (Studio and admin), station-ID clip start/end, episode review trim start/end, schedule start episode, show next episode number, admin announcement "Every Nth", broadcast preflight episode. Undo on add: API token create revokes the token and hides the revealed secret; add-from-release to the rotation patches the track back out (sound id from the programme `library`, mock now fills it); add station by URL removes it again (no Undo when the URL was already saved, the toast says "Updated"); adding a sound in the Studio collection editor deletes the new item, found by sound id after the tracklist refresh.

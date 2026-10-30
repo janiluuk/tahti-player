@@ -6,6 +6,7 @@ import {
   render,
   screen,
 } from '@testing-library/react';
+import { toast } from 'sonner';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as api from '../api/api-tokens';
@@ -107,6 +108,37 @@ describe('ApiTokensPanel', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Create token' }));
     });
     expect(create).toHaveBeenCalledWith('cli', ['read'], 90);
+  });
+
+  it('undoes a new token by revoking it', async () => {
+    vi.spyOn(api, 'createApiToken').mockResolvedValue({
+      ok: true,
+      data: { ...base, id: 't9', name: 'cli', token: 'tahti_secret' },
+    });
+    const revoke = vi
+      .spyOn(api, 'revokeApiToken')
+      .mockResolvedValue({ ok: true });
+    await renderPanel([]);
+    fireEvent.click(screen.getByRole('button', { name: 'New token' }));
+    fireEvent.change(screen.getByLabelText('Name'), {
+      target: { value: 'cli' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Create token' }));
+    });
+    const options = vi
+      .mocked(toast.success)
+      .mock.calls.find(
+        ([message]) => message === 'API token created.',
+      )?.[1] as {
+      action: { label: string; onClick: () => void };
+    };
+    expect(options.action.label).toBe('Undo');
+    await act(async () => {
+      options.action.onClick();
+    });
+    expect(revoke).toHaveBeenCalledWith('t9');
+    expect(screen.queryByDisplayValue('tahti_secret')).toBeNull();
   });
 
   it('sends no expiry when the token should never expire', async () => {

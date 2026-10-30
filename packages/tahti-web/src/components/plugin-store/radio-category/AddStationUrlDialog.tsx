@@ -12,7 +12,11 @@ import {
   type RadioStreamTestResult,
 } from '../../../api/radio-sources';
 import { flagEmoji } from '../../../lib/countries';
-import type { SavedBrowserStation } from '../../../stores/listenerWidgetsStore';
+import { toastWithUndo } from '../../../lib/undoToast';
+import {
+  useListenerWidgetsStore,
+  type SavedBrowserStation,
+} from '../../../stores/listenerWidgetsStore';
 
 type Resolution = {
   streamUrl: string;
@@ -73,8 +77,14 @@ export function AddStationUrlDialog({
     }
     const { streamUrl, title, found } = resolution;
     const name = found?.name ?? title ?? streamUrl;
+    const id = found?.id ?? streamUrl;
+    const alreadySaved = useListenerWidgetsStore
+      .getState()
+      .savedBrowserStations.some(
+        (station) => station.id === id || station.streamUrl === streamUrl,
+      );
     onAdd({
-      id: found?.id ?? streamUrl,
+      id,
       name,
       streamUrl,
       favicon: found?.favicon,
@@ -84,7 +94,17 @@ export function AddStationUrlDialog({
       description: description.trim() || undefined,
       programmingUrl: programmingUrl.trim() || undefined,
     });
-    toast.success(`Added ${name} to your stations.`);
+    if (alreadySaved) {
+      toast.success(`Updated ${name} in your stations.`);
+    } else {
+      toastWithUndo(`Added ${name} to your stations.`, {
+        undo: async () => {
+          useListenerWidgetsStore.getState().removeSavedBrowserStation(id);
+          return { ok: true as const };
+        },
+        undoneMessage: `Removed ${name} from your stations.`,
+      });
+    }
     onClose();
   };
 

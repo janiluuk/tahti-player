@@ -6,9 +6,23 @@ import { Button } from '@tahti-player/ui';
 
 import {
   addReleaseTrackToProgramme,
+  patchProgramme,
   type ProgrammeView,
 } from '../api/studio-extras';
 import type { StudioRelease } from '../api/studio-types';
+import { toastWithUndo } from '../lib/undoToast';
+
+function withoutFromRotation(programme: ProgrammeView, soundId: string) {
+  return patchProgramme({
+    items: programme.items.map((item) => ({
+      soundId: item.id,
+      isFallback: item.isFallback && item.id !== soundId,
+      ...(item.isFallback && item.id !== soundId && item.fallbackOrder != null
+        ? { fallbackOrder: item.fallbackOrder }
+        : {}),
+    })),
+  });
+}
 
 export function ReleaseTracksToRotation({
   releases,
@@ -52,7 +66,26 @@ export function ReleaseTracksToRotation({
     }
     setAddedIds((current) => new Set(current).add(track.id));
     onAdded(result.data);
-    toast.success(`Added “${track.title}” to the rotation.`);
+    const message = `Added “${track.title}” to the rotation.`;
+    const soundId = result.data.library?.find(
+      (entry) => entry.releaseTrackId === track.id,
+    )?.soundId;
+    if (!soundId) {
+      toast.success(message);
+      return;
+    }
+    toastWithUndo(message, {
+      undo: () => withoutFromRotation(result.data, soundId),
+      undoneMessage: `Removed “${track.title}” from the rotation.`,
+      onUndone: (undone) => {
+        setAddedIds((current) => {
+          const next = new Set(current);
+          next.delete(track.id);
+          return next;
+        });
+        onAdded(undone.data);
+      },
+    });
   };
 
   return (
