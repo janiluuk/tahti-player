@@ -6302,3 +6302,7 @@ Track listings put the filter box, sort dropdown and size control on one row. Th
 ## 2026-10-30 — UX batch 118: number keyboards and undo on add (0.0.287)
 
 Announcement trim, station-ID clip, episode trim, schedule and show episode numbers, admin "Every Nth" and the broadcast preflight episode field open a numeric or decimal phone keyboard. Creating an API token, adding a release track to the 24/7 rotation, adding a station by URL and adding a sound in the Studio collection editor can be undone from the toast.
+
+## 2026-10-30 — Composer submit and release artwork (0.0.288)
+
+News headlines and “Read more” use the shared button and link. Approving a radio submission, publishing a news post, suspending an account, importing theme JSON, booking a radio slot and saving the next broadcast submit from the text area (Cmd/Ctrl+Enter). Draft news, reject, and the weekly schedule stay separate clicks. Studio release artwork opens the shared cover picker (upload and gallery) and still offers a URL and the generator.

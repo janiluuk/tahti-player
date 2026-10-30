@@ -538,7 +538,13 @@ export function ThemeEditor() {
         </span>
       ) : null}
 
-      <div className="border-border flex flex-col gap-2 rounded-lg border p-3">
+      <form
+        className="border-border flex flex-col gap-2 rounded-lg border p-3"
+        onSubmit={(event) => {
+          event.preventDefault();
+          importTheme();
+        }}
+      >
         <h3 className="text-sm font-bold">Import a theme</h3>
         <p className="text-foreground-secondary text-xs">
           Paste a theme JSON (version, name, and light or dark colour overrides)
@@ -560,21 +566,17 @@ export function ThemeEditor() {
             '{\n  "version": 1,\n  "name": "My theme",\n  "vars": { "primary": "oklch(0.7 0.15 250)" }\n}'
           }
           aria-label="Theme JSON"
+          submitOnModEnter
         />
         <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            size="sm"
-            onClick={importTheme}
-            disabled={!importJson.trim()}
-          >
+          <Button type="submit" size="sm" disabled={!importJson.trim()}>
             Import & apply
           </Button>
           {importMsg ? (
             <span className="text-accent-red-strong text-xs">{importMsg}</span>
           ) : null}
         </div>
-      </div>
+      </form>
     </div>
   );
 }

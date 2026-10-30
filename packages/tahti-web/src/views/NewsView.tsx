@@ -2,7 +2,13 @@ import { Link } from '@tanstack/react-router';
 import { CalendarDaysIcon, ExternalLinkIcon, SparklesIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, cn, ImageReveal, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonAnchor,
+  cn,
+  ImageReveal,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchAnnouncements } from '../api/client';
 import type { Announcement } from '../api/types';
@@ -96,26 +102,30 @@ function TimelineEntry({
             />
           ) : null}
           <div className="p-3 sm:p-4">
-            <button
+            <Button
               type="button"
-              className="text-left text-lg font-semibold hover:underline"
+              variant="text"
+              size="flexible"
+              className="h-auto justify-start px-0 text-left text-lg font-semibold whitespace-normal hover:underline"
               onClick={onOpen}
             >
               {entry.headline}
-            </button>
+            </Button>
             <p className="text-foreground-secondary mt-1 text-sm whitespace-pre-wrap">
               {entry.summary}
             </p>
             {linkUrl ? (
-              <a
+              <ButtonAnchor
                 href={linkUrl}
+                variant="text"
+                size="flexible"
                 target={linkUrl.startsWith('/') ? undefined : '_blank'}
                 rel={linkUrl.startsWith('/') ? undefined : 'noreferrer'}
-                className="text-primary-strong mt-3 inline-flex items-center gap-1.5 text-sm font-semibold underline-offset-2 hover:underline"
+                className="text-primary-strong mt-3 h-auto justify-start gap-1.5 px-0 text-sm font-semibold underline-offset-2 hover:underline"
               >
                 {entry.linkLabel?.trim() || 'Read more'}
                 <ExternalLinkIcon size={14} aria-hidden />
-              </a>
+              </ButtonAnchor>
             ) : null}
           </div>
         </div>

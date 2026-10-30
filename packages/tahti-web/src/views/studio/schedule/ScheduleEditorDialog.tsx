@@ -94,7 +94,13 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
       <Dialog.Description>
         This is shown on your public channel so listeners know when to return.
       </Dialog.Description>
-      <div className="mt-4 flex flex-col gap-5">
+      <form
+        className="mt-4 flex flex-col gap-5"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void saveSchedule();
+        }}
+      >
         <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_11rem]">
           <Input
             type="date"
@@ -332,14 +338,14 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
               Schedule episode
             </Button>
             <SaveButton
+              type="submit"
               disabled={loading || !date || !time}
               saving={busy}
               label="Save next broadcast"
-              onClick={() => void saveSchedule()}
             />
           </div>
         </div>
-      </div>
+      </form>
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
       </Dialog.Actions>

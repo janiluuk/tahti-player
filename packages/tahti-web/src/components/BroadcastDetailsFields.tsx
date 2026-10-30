@@ -113,6 +113,7 @@ export function BroadcastDetailsFields({
       <Textarea
         label="Show description"
         tone="secondary"
+        submitOnModEnter
         value={values.description}
         onChange={(event) =>
           onChange({ ...values, description: event.target.value })

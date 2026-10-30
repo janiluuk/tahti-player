@@ -157,7 +157,21 @@ export function RadioSubmissionsTab() {
                 </div>
               </div>
 
-              <div className="mt-4 flex flex-col gap-3">
+              <form
+                className="mt-4 flex flex-col gap-3"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  setBusyId(active.id);
+                  void approveRadioSubmission(active.id).then((r) => {
+                    setBusyId(null);
+                    if (!r.ok) {
+                      setMsg(r.error);
+                    } else {
+                      reload();
+                    }
+                  });
+                }}
+              >
                 <Textarea
                   label="Note to the artist (optional)"
                   tone="secondary"
@@ -169,30 +183,22 @@ export function RadioSubmissionsTab() {
                     }))
                   }
                   rows={2}
+                  submitOnModEnter
                 />
                 <div className="flex flex-wrap gap-2">
                   <Button
+                    type="submit"
                     className="gap-1.5"
                     size="sm"
                     disabled={
                       busyId === active.id || active.status !== 'PENDING'
                     }
-                    onClick={() => {
-                      setBusyId(active.id);
-                      void approveRadioSubmission(active.id).then((r) => {
-                        setBusyId(null);
-                        if (!r.ok) {
-                          setMsg(r.error);
-                        } else {
-                          reload();
-                        }
-                      });
-                    }}
                   >
                     <CheckCircle2Icon size={14} aria-hidden />
                     Approve to radio
                   </Button>
                   <Button
+                    type="button"
                     className="gap-1.5"
                     size="sm"
                     variant="text"
@@ -222,7 +228,7 @@ export function RadioSubmissionsTab() {
                   The artist is notified when you approve (a private track is
                   made public), and when you reject with a note.
                 </p>
-              </div>
+              </form>
             </StudioPanel>
           )}
 
