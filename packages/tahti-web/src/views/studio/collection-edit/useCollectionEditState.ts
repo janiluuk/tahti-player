@@ -156,6 +156,21 @@ export function useCollectionEditState(slug: string) {
     (i) => i.sound && currentId === `sound:${i.sound.id}`,
   );
 
+  const removeAddedSound = async (
+    soundId: string,
+  ): Promise<{ ok: true } | { ok: false; error: string }> => {
+    const fresh = await refreshItems();
+    const item = fresh?.filter((entry) => entry.sound?.id === soundId).at(-1);
+    if (!item) {
+      return { ok: false, error: 'That track is no longer in the tracklist.' };
+    }
+    const result = await removeStudioCollectionItem(slug, item.id);
+    if (result.ok) {
+      void refreshItems();
+    }
+    return result;
+  };
+
   const addSound = async (sound: StudioSound) => {
     setAddBusyId(sound.id);
     const result = await addStudioCollectionItem(slug, sound.id);
@@ -308,6 +323,7 @@ export function useCollectionEditState(slug: string) {
     existingSoundIds,
     nowPlayingItem,
     addSound,
+    removeAddedSound,
     onReorder,
     saveMeta,
     refreshItems,

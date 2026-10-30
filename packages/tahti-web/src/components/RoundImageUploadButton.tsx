@@ -1,5 +1,5 @@
 import { ImageIcon, UploadCloudIcon } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
 import { Button, HiddenFileInput, MediaArtwork } from '@tahti-player/ui';
@@ -34,6 +34,9 @@ type Props = {
   /** Saves an image picked from the gallery when it is not already stored
    * for this slot (the default passes it to `onChange`). */
   onPick?: (url: string) => Promise<boolean>;
+  /** Extra content at the bottom of the gallery picker dialog; `close`
+   * dismisses the dialog, e.g. after an image link is saved. */
+  pickerExtra?: (close: () => void) => ReactNode;
 };
 
 /** A single round, clickable image slot — shows the uploaded image (or a
@@ -52,6 +55,7 @@ export function RoundImageUploadButton({
   accept = IMAGE_UPLOAD_ACCEPT_ATTR,
   gallery = false,
   onPick,
+  pickerExtra,
 }: Props) {
   const [busy, setBusy] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -142,6 +146,7 @@ export function RoundImageUploadButton({
           onSelect={(url, source) =>
             source === 'gallery' && onPick ? onPick(url) : onChange(url)
           }
+          extra={pickerExtra?.(() => setPickerOpen(false))}
         />
       ) : null}
       <ImageSlotPreviewDialog

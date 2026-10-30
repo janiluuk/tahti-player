@@ -6309,3 +6309,7 @@ Favourites is a Library tab at `/library/favorites`. The sidebar item is gone; `
 ## 2026-10-30 — Composer submit and release artwork (0.0.288)
 
 News headlines and “Read more” use the shared button and link. Approving a radio submission, publishing a news post, suspending an account, importing theme JSON, booking a radio slot and saving the next broadcast submit from the text area (Cmd/Ctrl+Enter). Draft news, reject, and the weekly schedule stay separate clicks. Studio release artwork opens the shared cover picker (upload and gallery) and still offers a URL and the generator.
+
+## 2026-10-30 — UX batch 121 (0.0.289)
+
+Raw `<img>` / range `<input>` on the artist now-playing stage, image previews, channel backdrop and clip trim move to `ImageReveal` / `Slider`. Inline Add buttons in the playlist editor and Mixcloud results are secondary. Mikseri, Mixcloud and Spotify imports can be undone. Handle, key, domain and link fields no longer autocorrect.

@@ -19,6 +19,7 @@ import {
 } from '../../../api/sources/mixcloud';
 import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { toastWithUndo } from '../../../lib/undoToast';
 
 type Mode = 'search' | 'mine' | 'profile';
 
@@ -38,9 +39,13 @@ function formatDuration(sec: number): string {
 export function MixcloudImportPanel({
   collectionId,
   onAdded,
+  onUndoAdd,
 }: {
   collectionId: string;
   onAdded: () => void;
+  onUndoAdd: (
+    soundId: string,
+  ) => Promise<{ ok: true } | { ok: false; error: string }>;
 }) {
   const [mode, setMode] = useState<Mode>('search');
   const [query, setQuery] = useState('');
@@ -87,8 +92,17 @@ export function MixcloudImportPanel({
       return;
     }
     setAdded((current) => new Set(current).add(cloudcast.url));
-    toast.success(`${cloudcast.title} added.`);
     onAdded();
+    toastWithUndo(`${cloudcast.title} added.`, {
+      undo: () => onUndoAdd(res.data.soundId),
+      undoneMessage: `${cloudcast.title} removed.`,
+      onUndone: () =>
+        setAdded((current) => {
+          const next = new Set(current);
+          next.delete(cloudcast.url);
+          return next;
+        }),
+    });
   };
 
   return (
@@ -113,6 +127,9 @@ export function MixcloudImportPanel({
             }}
           >
             <Input
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               className="flex-1"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
@@ -163,6 +180,7 @@ export function MixcloudImportPanel({
                 </div>
                 <Button
                   size="sm"
+                  variant="secondary"
                   disabled={
                     addingUrl === cloudcast.url || added.has(cloudcast.url)
                   }

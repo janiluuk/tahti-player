@@ -292,6 +292,10 @@ export function ChannelPanel() {
                 }}
               >
                 <Input
+                  inputMode="url"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
                   label="Custom domain"
                   description={
                     channel?.customDomain

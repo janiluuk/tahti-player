@@ -15,7 +15,13 @@ describe('MikseriImportPanel', () => {
       data: { soundId: 's1', embedUrl: 'https://mikseri.net/embed/' },
     });
     const onAdded = vi.fn();
-    render(<MikseriImportPanel collectionId="c1" onAdded={onAdded} />);
+    render(
+      <MikseriImportPanel
+        collectionId="c1"
+        onAdded={onAdded}
+        onUndoAdd={vi.fn()}
+      />,
+    );
 
     fireEvent.change(screen.getByLabelText('Mikseri track'), {
       target: { value: '635878' },
@@ -43,7 +49,13 @@ describe('MikseriImportPanel', () => {
   });
 
   it('rejects a playlist URL as a collection track', async () => {
-    render(<MikseriImportPanel collectionId="c1" onAdded={vi.fn()} />);
+    render(
+      <MikseriImportPanel
+        collectionId="c1"
+        onAdded={vi.fn()}
+        onUndoAdd={vi.fn()}
+      />,
+    );
     fireEvent.change(screen.getByLabelText('Mikseri track'), {
       target: {
         value: 'https://mikseri.net/embed/?type=2&parameter=playlist',

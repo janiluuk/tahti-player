@@ -1,6 +1,12 @@
 import { LinkIcon } from 'lucide-react';
 
-import { Button, FilePicker, Input, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  FilePicker,
+  ImageReveal,
+  Input,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { youtubeEmbedUrl } from '../../api/channel-design';
 import { Eyebrow } from '../tahti/Eyebrow';
@@ -120,10 +126,11 @@ export function VideoOrImageField({
               allow="autoplay; encrypted-media"
             />
           ) : isImage ? (
-            <img
+            <ImageReveal
               src={displaySrc}
               alt=""
-              className="aspect-video w-full object-cover"
+              className="aspect-video w-full"
+              imgClassName="object-cover"
             />
           ) : (
             <video
