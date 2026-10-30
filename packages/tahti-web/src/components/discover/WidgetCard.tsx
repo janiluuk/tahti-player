@@ -19,8 +19,10 @@ import {
 import type { DiscoverArtistOfWeek } from '../../api/discover';
 import type { LatestRelease } from '../../api/latest-releases';
 import type { DiscoverCollection, DiscoverTrackItem } from '../../api/types';
+import { cn } from '../../lib/cn';
 import type { DiscoverWidgetId } from '../../stores/discoverStore';
 import { PageEmpty, PageError } from '../PageStates';
+import { STRIPED_LIST, STRIPED_ROW } from './listStripes';
 import { WidgetTrackRow } from './WidgetTrackRow';
 
 const MAX_ROWS = 8;
@@ -76,7 +78,7 @@ export function WidgetCard({
   return (
     <section
       id={id}
-      className="group border-border bg-background-secondary flex min-h-[240px] scroll-mt-20 flex-col gap-2 rounded-md border-(length:--border-width) p-3 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] sm:min-h-[280px] sm:gap-3 sm:p-4"
+      className="group/widget border-border bg-background-secondary shadow-float flex min-h-[240px] scroll-mt-20 flex-col gap-2 rounded-md border-(length:--border-width) p-3 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] sm:min-h-[280px] sm:gap-3 sm:p-4"
     >
       <header className="flex items-start justify-between gap-2">
         <div className="min-w-0">
@@ -97,7 +99,7 @@ export function WidgetCard({
                 variant="text"
                 onClick={() => setConfigureOpen(true)}
                 aria-label={`Configure ${title}`}
-                className="opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+                className="opacity-0 transition-opacity group-hover/widget:opacity-100 focus-visible:opacity-100"
               >
                 <SettingsIcon size={14} />
               </Button>
@@ -178,11 +180,11 @@ export function WidgetCard({
           </ButtonLink>
         </div>
       ) : releases.length > 0 ? (
-        <div className="grid gap-2" data-testid="latest-releases">
+        <div className={STRIPED_LIST} data-testid="latest-releases">
           {releases.slice(0, MAX_ROWS).map((release) => (
             <div
               key={release.id}
-              className="border-border bg-background hover:bg-background-tertiary flex items-center gap-3 rounded-md border p-2 transition-colors"
+              className={cn('flex items-center gap-3 p-2', STRIPED_ROW)}
             >
               <Link
                 to="/r/$slug"
@@ -230,7 +232,7 @@ export function WidgetCard({
           ))}
         </div>
       ) : collections.length > 0 ? (
-        <div className="grid gap-2">
+        <div className={STRIPED_LIST} data-testid="public-playlists">
           {collections.slice(0, MAX_ROWS).map((collection) => (
             <Link
               key={`${collection.ownerUsername}:${collection.slug}`}
@@ -239,7 +241,7 @@ export function WidgetCard({
                 username: collection.ownerUsername,
                 slug: collection.slug,
               }}
-              className="border-border bg-background hover:bg-background-tertiary flex items-center gap-3 rounded-md border p-2 transition-colors"
+              className={cn('flex items-center gap-3 p-2', STRIPED_ROW)}
             >
               <ImageReveal
                 src={collection.coverUrl ?? undefined}
@@ -265,7 +267,7 @@ export function WidgetCard({
       ) : items.length === 0 ? (
         <PageEmpty title={emptyMessage} />
       ) : (
-        <div className="flex flex-col gap-0.5">
+        <div className={STRIPED_LIST} data-testid="widget-track-list">
           {items.slice(0, MAX_ROWS).map((item, index) => (
             <WidgetTrackRow
               key={item.id}

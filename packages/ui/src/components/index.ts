@@ -39,6 +39,7 @@ export * from './LogEntry';
 export * from './LogViewer';
 export * from './Loader';
 export * from './Meter';
+export * from './Masonry';
 export * from './Mosaic';
 export * from './SegmentedControl';
 export * from './TahtiJam';

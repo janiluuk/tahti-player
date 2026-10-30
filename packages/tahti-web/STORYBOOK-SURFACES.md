@@ -396,6 +396,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/Loader` | `Loader.stories.tsx` |
 | `Components/LogEntry` | `LogEntry.stories.tsx` |
 | `Components/LogViewer` | `LogViewer.stories.tsx` |
+| `Layout/Masonry` | `Masonry.stories.tsx` |
 | `Components/MediaArtwork` | `MediaArtwork.stories.tsx` |
 | `Components/Meter` | `Meter.stories.tsx` |
 | `Components/Mosaic` | `Mosaic.stories.tsx` |
