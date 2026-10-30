@@ -154,6 +154,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Layout/ConnectedStatusBar` | `tahti-web/ConnectedStatusBar.stories.tsx` |
 | `Tahti/Admin/ContentReportsTab` | `tahti-web/ContentReportsTab.stories.tsx` |
 | `Tahti/Studio/CoverArtGenerator` | `tahti-web/CoverArtGenerator.stories.tsx` |
+| `Tahti/Media/CoverArtPickerDialog` | `tahti-web/CoverArtPickerDialog.stories.tsx` |
 | `Tahti/Studio/Distribution/CreditsEditor` | `tahti-web/CreditsEditor.stories.tsx` |
 | `Tahti/Studio/Distribution/DeliveryTab` | `tahti-web/DeliveryTab.stories.tsx` |
 | `Tahti/Misc/DesktopLibraryPanel` | `tahti-web/DesktopLibraryPanel.stories.tsx` |

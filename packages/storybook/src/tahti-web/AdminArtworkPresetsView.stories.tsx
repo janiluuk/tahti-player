@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminArtworkPresetsView } from '@tahti-web/views/admin/AdminArtworkPresetsView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
-import { expectNoDialog, findDialog } from './_lib/play';
+import { findDialog } from './_lib/play';
 
 const meta: Meta<typeof AdminArtworkPresetsView> = {
   title: 'Tahti/Admin/AdminArtworkPresetsView',
@@ -21,7 +21,7 @@ const render = () => (
   </div>
 );
 
-/** Sixteen default artwork slots, each editable. */
+/** The built-in presets, each with an enable switch and remove. */
 export const Default: Story = {
   render,
   play: async ({ canvasElement }) => {
@@ -29,44 +29,26 @@ export const Default: Story = {
     await expect(
       canvas.getByRole('heading', { level: 1, name: 'Artwork presets' }),
     ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getAllByRole('switch', { name: /^Enable artwork \d+$/ }),
+      ).toHaveLength(16),
+    );
     await expect(
-      canvas.getAllByRole('button', { name: /^Edit Artwork \d+$/ }),
-    ).toHaveLength(16);
-    await expect(
-      canvas.getByRole('button', { name: 'Add new artwork' }),
+      canvas.getByRole('button', { name: 'Add artwork' }),
     ).toBeVisible();
   },
 };
 
-/** Clicking a slot opens its editor, named after the slot. */
-export const EditSlot: Story = {
+/** Remove asks for confirmation first. */
+export const ConfirmRemove: Story = {
   render,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(
-      canvas.getByRole('button', { name: 'Edit Artwork 3' }),
+      await canvas.findByRole('button', { name: 'Remove artwork 3' }),
     );
-    const dialog = await findDialog(canvasElement, 'Artwork 3');
-    await expect(
-      dialog.getByRole('textbox', { name: 'Editing slot' }),
-    ).toHaveValue('Artwork 3');
-    await expect(
-      dialog.getByRole('button', { name: 'Upload artwork for Artwork 3' }),
-    ).toBeInTheDocument();
-    await userEvent.click(dialog.getByRole('button', { name: 'Cancel' }));
-    await expectNoDialog(canvasElement);
-  },
-};
-
-/** Reset asks for confirmation before clearing custom assignments. */
-export const ConfirmReset: Story = {
-  render,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.click(
-      canvas.getByRole('button', { name: 'Reset to defaults' }),
-    );
-    const confirm = await findDialog(canvasElement, 'Reset artwork presets?');
-    await expect(confirm.getByRole('button', { name: 'Reset' })).toBeVisible();
+    const confirm = await findDialog(canvasElement, 'Remove this artwork?');
+    await expect(confirm.getByRole('button', { name: 'Remove' })).toBeVisible();
   },
 };

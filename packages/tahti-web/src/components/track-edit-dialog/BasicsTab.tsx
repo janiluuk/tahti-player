@@ -33,6 +33,7 @@ export function BasicsTab({
         <div className="relative flex items-end gap-4 p-4">
           <RoundImageUploadButton
             label="Cover art"
+            gallery
             value={form.bannerUrl}
             sizeClassName="h-20 w-20 shrink-0 sm:h-24 sm:w-24"
             className="ring-background ring-4"
