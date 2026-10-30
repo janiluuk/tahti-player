@@ -5,6 +5,7 @@ import {
   ChevronDownIcon,
   ClockIcon,
   CompassIcon,
+  DicesIcon,
   Disc3Icon,
   FlameIcon,
   HeartIcon,
@@ -23,7 +24,7 @@ import {
   XIcon,
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   Button,
@@ -63,6 +64,7 @@ import type {
   TahtiPlayable,
 } from '../api/types';
 import { DirectoryArtistsBrowser } from '../components/DirectoryArtistsBrowser';
+import { RandomTrackGenres } from '../components/discover/RandomTrackGenres';
 import { WidgetCard } from '../components/discover/WidgetCard';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { NewsFeedWidget } from '../components/NewsFeedWidget';
@@ -71,6 +73,7 @@ import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { VenuesDirectory } from '../components/VenuesDirectory';
 import { CONTENT_TYPES } from '../content/contentTypes';
 import { hasAccountRole } from '../lib/accountRoles';
+import { ALL_FILTER_ID, allOrSpecific } from '../lib/allOrSpecific';
 import { discoverTabFromSearch, type DiscoverTab } from '../lib/discoverTabs';
 import { PRESET_GENRES } from '../lib/genres';
 import { useAuthStore } from '../stores/authStore';
@@ -85,16 +88,16 @@ import {
 } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
 
-const ALL_FILTER_ID = '__all__';
+export { allOrSpecific };
 
-/** A multi-select filter with an "All" chip: picking All clears every
- * specific choice; picking a specific one leaves All. */
-export function allOrSpecific(
-  selected: string[],
-  previous: string[],
-): string[] {
-  const pickedAll = selected.includes(ALL_FILTER_ID) && previous.length > 0;
-  return pickedAll ? [] : selected.filter((id) => id !== ALL_FILTER_ID);
+function pickRandomTrack(
+  pool: DiscoverTrackItem[],
+  excludeId: string | null,
+): DiscoverTrackItem[] {
+  const candidates =
+    pool.length > 1 ? pool.filter((item) => item.id !== excludeId) : pool;
+  const pick = candidates[Math.floor(Math.random() * candidates.length)];
+  return pick ? [pick] : [];
 }
 
 function apiReason(meta: FetchMeta): string | null {
@@ -113,6 +116,7 @@ const WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
   'public-playlists': 'Public playlists',
   'tahti-selects': 'Tahti Selects',
   'latest-releases': 'Latest releases',
+  'random-track': 'Random track',
 };
 
 /** What each widget shows, for the Add a widget menu. */
@@ -146,6 +150,10 @@ const WIDGET_MENU: Record<
   },
   'tahti-selects': { icon: AwardIcon, description: 'Hand-picked by Tahti' },
   'latest-releases': { icon: Disc3Icon, description: 'New albums and EPs' },
+  'random-track': {
+    icon: DicesIcon,
+    description: 'One track at random from the genres you pick',
+  },
 };
 
 const TOP_LIST_WIDGET_IDS = new Set<DiscoverWidgetId>([
@@ -207,6 +215,9 @@ export function DiscoverView() {
   const setRandomArtistRotationDays = useDiscoverStore(
     (s) => s.setRandomArtistRotationDays,
   );
+  const randomTrackGenres = useDiscoverStore((s) => s.randomTrackGenres);
+  const setRandomTrackGenres = useDiscoverStore((s) => s.setRandomTrackGenres);
+  const randomTrackPool = useRef<DiscoverTrackItem[]>([]);
   const newsInstances = useListenerWidgetsStore((s) => s.instances);
   const newsFeeds = newsWidgetsOn(newsInstances, 'discover');
   const removeNewsFeed = useListenerWidgetsStore((s) => s.removeInstance);
@@ -344,6 +355,27 @@ export function DiscoverView() {
               releases,
             };
           }
+          case 'random-track': {
+            const trackFilters = {
+              genres: randomTrackGenres,
+              contentTypes: [],
+            };
+            const [latest, top] = await Promise.all([
+              fetchLatestTracks(trackFilters),
+              fetchTopTracks('all_time', 'desc', trackFilters),
+            ]);
+            const pool = [
+              ...new Map(
+                [...latest.data, ...top.data].map((item) => [item.id, item]),
+              ).values(),
+            ];
+            randomTrackPool.current = pool;
+            return {
+              loading: false,
+              error: apiReason(latest.meta) ?? apiReason(top.meta),
+              items: pickRandomTrack(pool, null),
+            };
+          }
           case 'tahti-selects': {
             const { data: items, meta } = await fetchTahtiSelects();
             return {
@@ -366,7 +398,30 @@ export function DiscoverView() {
     return () => {
       cancelled = true;
     };
-  }, [enabledWidgets, filters, randomArtistRotationDays, reloadKey]);
+  }, [
+    enabledWidgets,
+    filters,
+    randomArtistRotationDays,
+    randomTrackGenres,
+    reloadKey,
+  ]);
+
+  const shuffleRandomTrack = () =>
+    setData((prev) => {
+      const current = prev['random-track'];
+      return current
+        ? {
+            ...prev,
+            'random-track': {
+              ...current,
+              items: pickRandomTrack(
+                randomTrackPool.current,
+                current.items[0]?.id ?? null,
+              ),
+            },
+          }
+        : prev;
+    });
 
   const availableToAdd = ALL_WIDGET_IDS.filter(
     (id) => !enabledWidgets.includes(id),
@@ -585,7 +640,9 @@ export function DiscoverView() {
                             ? 'No tracks in the Tahti Selects rotation right now.'
                             : id === 'latest-releases'
                               ? 'No releases published yet.'
-                              : 'Nothing here yet.'
+                              : id === 'random-track'
+                                ? 'No tracks in these genres yet.'
+                                : 'Nothing here yet.'
                     }
                     canMoveUp={index > 0}
                     canMoveDown={index < enabledWidgets.length - 1}
@@ -593,6 +650,19 @@ export function DiscoverView() {
                     onRemove={removeWidget}
                     isAdmin={isAdmin}
                     onSelectTrack={(track) => void selectTrack(track)}
+                    toolbar={
+                      id === 'random-track' ? (
+                        <RandomTrackGenres
+                          genres={randomTrackGenres}
+                          onChange={setRandomTrackGenres}
+                          onShuffle={shuffleRandomTrack}
+                          shuffleDisabled={
+                            (widgetData?.loading ?? true) ||
+                            randomTrackPool.current.length < 2
+                          }
+                        />
+                      ) : undefined
+                    }
                     settings={
                       id === 'random-artist' ? (
                         <Select

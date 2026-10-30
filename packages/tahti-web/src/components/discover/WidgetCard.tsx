@@ -45,6 +45,7 @@ export function WidgetCard({
   onSelectTrack,
   isAdmin = false,
   settings,
+  toolbar,
 }: {
   id: DiscoverWidgetId;
   title: string;
@@ -67,6 +68,8 @@ export function WidgetCard({
   /** Optional per-widget configuration, toggled open by the gear button
    * (e.g. the random-artist widget's rotation-length picker). */
   settings?: ReactNode;
+  /** Controls shown under the title for every listener, e.g. a filter. */
+  toolbar?: ReactNode;
 }) {
   const [configureOpen, setConfigureOpen] = useState(false);
 
@@ -135,6 +138,8 @@ export function WidgetCard({
           </Tooltip>
         </div>
       </header>
+
+      {toolbar}
 
       {loading ? (
         <div className="flex flex-1 items-center justify-center">

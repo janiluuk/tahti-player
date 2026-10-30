@@ -6283,3 +6283,7 @@ Track lists now render as one framed panel: a header with the item count, sort a
 ## 2026-10-30 — Artwork preset covers and cover picker (0.0.284)
 
 Admin → Artwork presets now reads and writes the API (tahti-org#1033): a grid of presets with an enable switch and confirm-before-remove, plus Add artwork. Enabled presets become the saved cover of tracks, playlists and channel owners created without one, and a backfill script patches existing items. Opening a cover (track editor, Studio collection, profile picture) shows `CoverArtPickerDialog`: Upload image, then one gallery of your uploaded images and the enabled presets; a pick saves immediately (track covers save with the editor's Save).
+
+## 2026-10-30 — Discover random track widget (0.0.285)
+
+New **Random track** Discover widget (also listed in the plugin store's Discover widgets). It draws one track from latest and all-time top tracks in the chosen genres. The selection defaults to an All genres pill; a dialog picks several genres, and All genres clears the rest (`lib/allOrSpecific.ts`, shared with the page filter). The choice persists in `discoverStore.randomTrackGenres` and shows as pills under the title; the row plays the track and a shuffle button rolls another.

@@ -21,6 +21,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Admin/AdminAnnouncementsView` | `tahti-web/AdminAnnouncementsView.stories.tsx` |
 | `Tahti/Admin/AdminArtworkPresetsView` | `tahti-web/AdminArtworkPresetsView.stories.tsx` |
 | `Tahti/Media/CoverArtPickerDialog` | `tahti-web/CoverArtPickerDialog.stories.tsx` |
+| `Tahti/Discover/RandomTrackGenres` | `tahti-web/RandomTrackGenres.stories.tsx` |
 | `Tahti/Admin/AdminContentView` | `tahti-web/AdminContentView.stories.tsx` |
 | `Tahti/Admin/AdminCronHistoryDialog` | `tahti-web/AdminCronHistoryDialog.stories.tsx` |
 | `Tahti/Admin/AdminDashboardView` | `tahti-web/AdminDashboardView.stories.tsx` |

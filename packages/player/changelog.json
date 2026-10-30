@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-10-30T05:00",
+    "description": "Discover has a Random track widget: it starts on All genres, you can pick several genres in a dialog, your choice is remembered and shown as pills, and you can play the track or roll another.",
+    "type": "feature",
+    "contributors": ["jani"],
+    "tags": [{ "label": "Web", "color": "blue" }]
+  },
+  {
     "date": "2026-10-30T04:30",
     "description": "Tracks, playlists and channels without cover art get one of the board's artwork presets. Clicking a cover now offers Upload or a gallery of presets and your own images, and admins switch presets on or off in Admin → Artwork presets.",
     "type": "improvement",
