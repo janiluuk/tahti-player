@@ -361,3 +361,32 @@ export const ProcessingUpload: Story = {
     }
   },
 };
+
+/** Large rows lead with the artwork: 176px square at desktop width, with
+ * play / pause and the duration overlaid on it instead of a separate play
+ * column. */
+export const ArtworkFirst: Story = {
+  args: {
+    items: ITEMS.map((item) => ({ ...item, onPlay: () => undefined })),
+    persistDensity: false,
+    defaultDensity: 'comfortable',
+  },
+  decorators: [
+    (Story) => (
+      <div className="w-[1024px] max-w-full">
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    const [artwork] = within(canvasElement).getAllByTestId(
+      'ambient-track-row-artwork',
+    );
+    const box = artwork!.getBoundingClientRect();
+    await expect(Math.round(box.width)).toBe(176);
+    await expect(Math.round(box.height)).toBe(176);
+    await expect(
+      within(artwork!).getByTestId('media-artwork-play'),
+    ).toHaveAttribute('aria-label', 'Play Moody Electronica vol. 40');
+  },
+};

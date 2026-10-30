@@ -3,8 +3,6 @@ import {
   DownloadIcon,
   HeartIcon,
   MessageCircleIcon,
-  PauseIcon,
-  PlayIcon,
 } from 'lucide-react';
 import { memo, useEffect, useRef, useState, type ReactNode } from 'react';
 
@@ -12,7 +10,6 @@ import {
   Badge,
   Button,
   MediaArtwork,
-  Tooltip,
   TrackProcessing,
   Waveform,
 } from '@tahti-player/ui';
@@ -40,10 +37,7 @@ const DENSITY_LAYOUT: Record<
   {
     pad: string;
     gap: string;
-    art: 'sm' | 'thumb' | 'md';
-    artClass?: string;
-    play: string;
-    playIcon: number;
+    art: string;
     artist: string;
     title: string;
     meta: string;
@@ -54,10 +48,7 @@ const DENSITY_LAYOUT: Record<
   comfortable: {
     pad: 'gap-3 p-3 sm:gap-4 sm:p-4',
     gap: 'gap-2',
-    art: 'md',
-    artClass: 'size-28 min-w-28',
-    play: 'size-11 border-2',
-    playIcon: 20,
+    art: 'size-24 sm:size-44',
     artist: 'text-sm',
     title: 'text-lg sm:text-xl',
     meta: 'text-sm',
@@ -67,10 +58,7 @@ const DENSITY_LAYOUT: Record<
   compact: {
     pad: 'gap-3 p-2.5',
     gap: 'gap-1.5',
-    art: 'md',
-    artClass: 'size-24 min-w-24 sm:size-20 sm:min-w-20',
-    play: 'size-9 border-2',
-    playIcon: 16,
+    art: 'size-20 sm:size-32',
     artist: 'text-xs',
     title: 'text-sm sm:text-base',
     meta: 'text-sm',
@@ -80,9 +68,7 @@ const DENSITY_LAYOUT: Record<
   dense: {
     pad: 'gap-2 px-2 py-1.5',
     gap: 'gap-0.5',
-    art: 'sm',
-    play: 'size-7 border',
-    playIcon: 12,
+    art: 'size-12',
     artist: 'text-[10px]',
     title: 'text-xs',
     meta: 'text-[10px]',
@@ -311,6 +297,7 @@ function AmbientTrackRowView({
   const sampled = useDominantColor(ambientRgb === undefined ? coverUrl : null);
   const rgb = ambientRgb === undefined ? sampled : ambientRgb;
   const layout = DENSITY_LAYOUT[density];
+  const playable = Boolean(onPlay) && !media && !processing;
 
   return (
     <article
@@ -318,19 +305,35 @@ function AmbientTrackRowView({
       data-testid="ambient-track-row"
       data-density={density}
       className={cn(
-        'border-border/40 bg-background-secondary text-foreground flex w-full min-w-0 rounded-lg border',
+        'group border-border/40 bg-background-secondary text-foreground flex w-full min-w-0 rounded-lg border',
         density !== 'dense' && 'flex-wrap sm:flex-nowrap',
         layout.pad,
         className,
       )}
       style={ambientStyle(rgb)}
     >
-      <MediaArtwork
-        src={coverUrl ?? undefined}
-        size={layout.art}
-        className={cn('shrink-0', layout.artClass)}
-        imageReveal={Boolean(coverUrl)}
-      />
+      <div
+        className={cn(
+          'relative shrink-0 self-start overflow-hidden rounded-md',
+          layout.art,
+        )}
+        data-testid="ambient-track-row-artwork"
+      >
+        <MediaArtwork
+          src={coverUrl ?? undefined}
+          size="fill"
+          imageReveal={Boolean(coverUrl)}
+          isPlaying={isPlaying}
+          onPlay={playable ? onPlay : undefined}
+          playLabel={`Play ${title}`}
+          pauseLabel={`Pause ${title}`}
+        />
+        {durationLabel && density !== 'dense' ? (
+          <span className="pointer-events-none absolute right-1.5 bottom-1.5 rounded bg-black/65 px-1.5 py-0.5 text-xs text-white tabular-nums">
+            {durationLabel}
+          </span>
+        ) : null}
+      </div>
       <div
         className={cn(
           'min-w-0 flex-1 flex-col',
@@ -338,41 +341,8 @@ function AmbientTrackRowView({
           layout.gap,
         )}
       >
-        <div className="grid min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)] items-start gap-2 sm:flex">
-          {onPlay && !media && !processing ? (
-            <Tooltip
-              content={isPlaying ? `Pause ${title}` : `Play ${title}`}
-              side="top"
-              wrapperClassName="shrink-0"
-            >
-              <Button
-                size="icon-sm"
-                variant="secondary"
-                onClick={onPlay}
-                aria-label={isPlaying ? `Pause ${title}` : `Play ${title}`}
-                className={cn(
-                  'border-foreground shrink-0 rounded-full bg-transparent shadow-none',
-                  layout.play,
-                )}
-              >
-                {isPlaying ? (
-                  <PauseIcon size={layout.playIcon} aria-hidden />
-                ) : (
-                  <PlayIcon
-                    size={layout.playIcon}
-                    aria-hidden
-                    className="translate-x-px"
-                  />
-                )}
-              </Button>
-            </Tooltip>
-          ) : null}
-          <div
-            className={cn(
-              'min-w-0 flex-1',
-              (!onPlay || Boolean(media) || processing) && 'col-span-2',
-            )}
-          >
+        <div className="flex min-w-0 flex-1 items-start gap-2">
+          <div className="min-w-0 flex-1">
             <p
               className={cn(
                 'text-foreground-secondary truncate',
@@ -390,10 +360,10 @@ function AmbientTrackRowView({
               {titleNode ?? title}
             </h3>
           </div>
-          {genreLabel || durationLabel ? (
+          {genreLabel || (durationLabel && density === 'dense') ? (
             <div
               className={cn(
-                'text-foreground-secondary col-span-2 flex flex-wrap items-center gap-2 tabular-nums sm:shrink-0 sm:flex-col sm:items-end sm:gap-1 sm:text-right',
+                'text-foreground-secondary hidden shrink-0 flex-col items-end gap-1 text-right tabular-nums sm:flex',
                 layout.meta,
               )}
             >
@@ -402,7 +372,9 @@ function AmbientTrackRowView({
                   {genreLabel}
                 </Badge>
               ) : null}
-              {durationLabel ? <span>{durationLabel}</span> : null}
+              {durationLabel && density === 'dense' ? (
+                <span>{durationLabel}</span>
+              ) : null}
             </div>
           ) : null}
         </div>
