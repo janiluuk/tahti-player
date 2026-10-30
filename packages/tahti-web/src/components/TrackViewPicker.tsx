@@ -1,6 +1,5 @@
 import {
   AlignJustifyIcon,
-  CheckIcon,
   LayoutGridIcon,
   ListIcon,
   Rows2Icon,
@@ -8,8 +7,9 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button, Popover } from '@tahti-player/ui';
+import { Button, Popover, Tooltip } from '@tahti-player/ui';
 
+import { cn } from '../lib/cn';
 import type { TrackListView } from '../stores/trackListViewStore';
 
 export type TrackViewOption = {
@@ -66,7 +66,8 @@ export type TrackViewPickerProps = {
   onChange: (view: TrackListView) => void;
 };
 
-/** Icon button showing the current view; opens a popover to pick another. */
+/** Icon button showing the current view; opens a vertical strip of view
+ * icons to pick another. */
 export function TrackViewPicker({
   options,
   value,
@@ -77,7 +78,7 @@ export function TrackViewPicker({
     <Popover
       anchor="bottom end"
       tooltip={{ content: 'Track size', side: 'top' }}
-      panelClassName="min-w-40"
+      panelClassName="p-1"
       trigger={
         <Button
           variant="secondary"
@@ -89,24 +90,28 @@ export function TrackViewPicker({
         </Button>
       }
     >
-      <Popover.Menu role="menu" aria-label="Track size">
-        {options.map((option) => (
-          <Popover.Item
-            key={option.id}
-            closeOnClick
-            role="menuitemradio"
-            aria-checked={option.id === value}
-            icon={option.icon}
-            onClick={() => onChange(option.id)}
-          >
-            <span className="flex items-center gap-3">
-              {option.label}
-              {option.id === value ? (
-                <CheckIcon size={14} aria-hidden className="text-accent" />
-              ) : null}
-            </span>
-          </Popover.Item>
-        ))}
+      <Popover.Menu role="menu" aria-label="Track size" className="min-w-0">
+        {options.map((option) => {
+          const selected = option.id === value;
+          return (
+            <Tooltip key={option.id} content={option.label} side="left">
+              <Popover.Item
+                closeOnClick
+                role="menuitemradio"
+                aria-checked={selected}
+                align="center"
+                icon={option.icon}
+                className={cn(
+                  'rounded-sm px-2',
+                  selected && 'bg-background-secondary text-accent',
+                )}
+                onClick={() => onChange(option.id)}
+              >
+                <span className="sr-only">{option.label}</span>
+              </Popover.Item>
+            </Tooltip>
+          );
+        })}
       </Popover.Menu>
     </Popover>
   );

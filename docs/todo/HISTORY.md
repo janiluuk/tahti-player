@@ -5706,3 +5706,7 @@ PR #1714 failed on a hand-edited `STORYBOOK-SURFACES.md` and an over-800-line vi
 ## 2026-10-30 - Listing toolbar: filter, sort and size on one row
 
 Track size is now an icon button with a popover (`TrackViewPicker`) on every `AmbientTrackList` / `PlayableAmbientTrackList` listing; `toolbarStart` puts a filter box in the same row (desktop library local files), and Library → Sounds moves Sort by, sort order and the size picker into its search row, sharing the view through `trackListViewStore`. Storybook plays cover the popover, the one-row layout and the Sounds filter row.
+
+## 2026-10-30 - Track size popover is icon-only; sort stays beside it
+
+The `TrackViewPicker` popover is now a vertical strip of view icons (labels in tooltips and for screen readers, current view highlighted). Sort controls and the Track size button sit in one non-wrapping group in the `AmbientTrackList` toolbar and the Library → Sounds filter row, so they never split across lines. Stories: `TrackSizePopover` checks the vertical icon strip, new `SortAndSizeStayTogether`, and `StudioSoundsView` `FilterRow` checks sort + size alignment.
