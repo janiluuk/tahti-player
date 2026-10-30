@@ -278,6 +278,8 @@ const DISCOVER_WIDGET_DETAILS: Record<DiscoverWidgetId, string> = {
     'See the newest albums, EPs and singles and open their smart links.',
   'random-track':
     'Play one track at random from the genres you pick, and roll again.',
+  'community-stories':
+    'Read the newest posts from artists across Tahti as wide story cards.',
 };
 
 const DISCOVER_WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
@@ -293,6 +295,7 @@ const DISCOVER_WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
   'tahti-selects': 'Tahti Selects',
   'latest-releases': 'Latest releases',
   'random-track': 'Random track',
+  'community-stories': 'Community stories',
 };
 
 function DiscoverWidgetPlugins() {

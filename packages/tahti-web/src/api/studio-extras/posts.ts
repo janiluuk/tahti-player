@@ -1,6 +1,7 @@
 import type { FetchMeta } from '.././client';
 import { failMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
+import type { PostCategory } from '../community-stories';
 
 export type ArtistPost = {
   id: string;
@@ -11,6 +12,8 @@ export type ArtistPost = {
   images: string[];
   publishAt: string;
   createdAt: string;
+  /** Sent once tahti-org ships post categories; older APIs leave it out. */
+  category?: PostCategory;
 };
 
 export type NewsletterDraft = {
@@ -122,6 +125,7 @@ export async function createArtistPost(input: {
   linkLabel?: string;
   /** ISO time; omit to publish now, a future time schedules the post. */
   publishAt?: string;
+  category?: PostCategory;
 }): Promise<{ ok: true; data: ArtistPost } | { ok: false; error: string }> {
   if (isForceMock()) {
     const row: ArtistPost = {
@@ -133,6 +137,7 @@ export async function createArtistPost(input: {
       images: [],
       publishAt: input.publishAt ?? new Date().toISOString(),
       createdAt: new Date().toISOString(),
+      category: input.category ?? 'STORY',
     };
     mockPosts = [row, ...mockPosts];
     return { ok: true, data: row };
@@ -159,6 +164,7 @@ export type ArtistPostPatch = {
   linkLabel?: string | null;
   /** ISO time; a future time reschedules, now/past publishes. */
   publishAt?: string;
+  category?: PostCategory;
 };
 
 export async function updateArtistPost(

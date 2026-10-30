@@ -148,6 +148,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Collection/CollectionTrackList` | `tahti-web/CollectionTrackList.stories.tsx` |
 | `Tahti/Collection/CollectionView` | `tahti-web/CollectionView.stories.tsx` |
 | `Tahti/Track/CommentItem` | `tahti-web/CommentItem.stories.tsx` |
+| `Tahti/Discover/CommunityStoriesWidget` | `tahti-web/CommunityStoriesWidget.stories.tsx` |
 | `Tahti/Player/ConnectedPlayerBar` | `tahti-web/ConnectedPlayerBar.stories.tsx` |
 | `Tahti/Player/ConnectedQueuePanel` | `tahti-web/ConnectedQueuePanel.stories.tsx` |
 | `Tahti/Player/ConnectedSettingsModal` | `tahti-web/ConnectedSettingsModal.stories.tsx` |
@@ -432,6 +433,8 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/SortableBlocks` | `SortableBlocks.stories.tsx` |
 | `Components/StatChip` | `StatChip.stories.tsx` |
 | `Components/StatTile` | `StatTile.stories.tsx` |
+| `Layout/StoryCard` | `StoryCard.stories.tsx` |
+| `Layout/StoryRow` | `StoryRow.stories.tsx` |
 | `Layout/Tabs` | `Tabs.stories.tsx` |
 | `Remote/TahtiJam` | `TahtiJam.stories.tsx` |
 | `Remote/TahtiJam/Connecting` | `TahtiJamConnecting.stories.tsx` |
