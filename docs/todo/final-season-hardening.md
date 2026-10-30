@@ -13,9 +13,8 @@ remain below.
 
 ## P1
 
-| # | Item | Repo | Why | Evidence | Size |
-| --- | --- | --- | --- | --- | --- |
-| 18 | **CI assert: no absolute `VITE_TAHTI_API_URL` in the prod build** | tahti-web | Cross-origin API breaks the host-only cookie model. The deploy workflow unsets it but nothing asserts it | `api/http.ts`; `.github/workflows/deploy-tahti-web-selfhosted.yml` | S |
+Shipped: deploy builds fail if the client bundle inlines an absolute
+`VITE_TAHTI_API_URL` (same-origin `/tahti-api` only).
 
 ## P2 - hardening
 

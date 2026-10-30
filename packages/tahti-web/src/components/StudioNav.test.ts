@@ -106,6 +106,10 @@ describe('StudioNav section coverage', () => {
       ['/studio/channel', '/studio/channel'],
       ['/studio/channel?tab=radio', '/studio/channel?tab=radio'],
       ['/studio/channel?tab=multicast', '/studio/channel?tab=radio'],
+      ['/studio/channel?tab=rotation', '/studio/channel?tab=radio'],
+      ['/studio/channel?tab=pinned', '/studio/channel?tab=radio'],
+      ['/studio/channel?tab=tahti-radio', '/studio/channel?tab=radio'],
+      ['/studio/channel?tab=announcements', '/studio/channel?tab=radio'],
     ];
     for (const [location, expectedTo] of covered) {
       const lit = BROADCAST_SUBNAV_ITEMS.filter((item) =>

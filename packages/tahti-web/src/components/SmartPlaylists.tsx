@@ -18,6 +18,7 @@ import type {
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
 import { preparePlayables, shuffled } from '../lib/nativePlayback';
+import { toastWithUndo } from '../lib/undoToast';
 import { usePlayerStore } from '../stores/playerStore';
 import { ConfirmDialog } from './ConfirmDialog';
 import { PageError } from './PageStates';
@@ -281,7 +282,17 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
             snapshotOf.id,
             name,
           );
-          toast.success(`Created “${playlist.name}”.`);
+          toastWithUndo(`Created “${playlist.name}”.`, {
+            undo: async () => {
+              await library.analysis.smart.remove(playlist.id);
+              return { ok: true };
+            },
+            undoneMessage: `Deleted “${playlist.name}”.`,
+            onUndone: () => {
+              onPlaylistCreated();
+              void load();
+            },
+          });
           onPlaylistCreated();
         }}
       />

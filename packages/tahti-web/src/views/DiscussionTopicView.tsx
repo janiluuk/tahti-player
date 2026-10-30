@@ -19,6 +19,7 @@ import { ConfirmDialog } from '../components/ConfirmDialog';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { ReportButton } from '../components/ReportButton';
 import { hasAccountRole } from '../lib/accountRoles';
+import { toastWithUndo } from '../lib/undoToast';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
@@ -57,7 +58,12 @@ function ReplyForm({
       return;
     }
     setBody('');
-    toast.success('Reply posted. You follow this topic now.');
+    const created = result.data;
+    toastWithUndo('Reply posted. You follow this topic now.', {
+      undo: () => removeDiscussionPost(topicId, created.id),
+      undoneMessage: 'Reply removed.',
+      onUndone: () => onPosted(),
+    });
     onPosted();
   };
 
@@ -72,6 +78,7 @@ function ReplyForm({
       <Textarea
         label="Your reply"
         description="Use @username to mention a member; they get a notification."
+        submitOnModEnter
         value={body}
         maxLength={REPLY_MAX}
         rows={4}
@@ -128,6 +135,7 @@ function EditReplyForm({
     >
       <Textarea
         label="Edit your reply"
+        submitOnModEnter
         value={body}
         maxLength={REPLY_MAX}
         rows={3}

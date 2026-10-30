@@ -65,7 +65,13 @@ function TrackEditDialog({
         Changes are logged in the audit log and show on the artist's channel
         right away. The artist is notified of which details you changed.
       </Dialog.Description>
-      <div className="mt-4 flex flex-col gap-3">
+      <form
+        className="mt-4 flex flex-col gap-3"
+        onSubmit={(event) => {
+          event.preventDefault();
+          save();
+        }}
+      >
         <Input
           label="Title"
           value={title}
@@ -90,20 +96,21 @@ function TrackEditDialog({
           value={description}
           maxLength={2000}
           rows={4}
+          submitOnModEnter
           onChange={(event) => setDescription(event.target.value)}
         />
         <Toggle label="Public" checked={isPublic} onChange={setIsPublic} />
         {error ? <InlineError>{error}</InlineError> : null}
-      </div>
-      <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
-        <SaveButton
-          disabled={saving || !title.trim()}
-          saving={saving}
-          label="Save track"
-          onClick={save}
-        />
-      </Dialog.Actions>
+        <Dialog.Actions>
+          <Dialog.Close>Cancel</Dialog.Close>
+          <SaveButton
+            type="submit"
+            disabled={saving || !title.trim()}
+            saving={saving}
+            label="Save track"
+          />
+        </Dialog.Actions>
+      </form>
     </Dialog.Root>
   );
 }

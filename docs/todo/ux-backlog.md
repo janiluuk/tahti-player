@@ -107,4 +107,8 @@ new surface, one PR per row.
   - 2026-10-27 (batch 90): release publish toast has Undo (PATCH
     `state: DRAFT`), via shared `lib/undoToast.ts`. The follower notice and
     social post queued on publish are not recalled.
+  - 2026-10-30 (batch 116): listening party, lineup member, moderator,
+    discussion reply, release tracks, pinned announcement, announcement clip,
+    artwork preset, radio station, SoundCloud embed, stash upload, gallery
+    photos, smart-playlist snapshot, and queue adds.
 

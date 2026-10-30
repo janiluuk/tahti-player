@@ -149,13 +149,20 @@ export function StudioChannelView() {
   const user = useAuthStore((s) => s.user);
   const openChannelSetup = useChannelSetupModalStore((s) => s.open);
   const channel = user?.channel;
-  const [tab, setTab] = useState<Tab>(channel ? 'setup' : 'setup');
+  const [tab, setTab] = useState<Tab>(channel ? 'green-room' : 'setup');
   const [radioTab, setRadioTab] = useState<RadioTab>('stream');
 
   useEffect(() => {
+    if (DESIGNER_TABS.has(search.tab ?? '')) {
+      return;
+    }
     if (isDeepLinkedRadioTab(search.tab)) {
       setTab('radio');
       setRadioTab(search.tab === 'announcements' ? 'rotation' : search.tab);
+      return;
+    }
+    if (channel && (!search.tab || search.tab === 'setup')) {
+      setTab('green-room');
       return;
     }
     if (isTab(search.tab) && (search.tab !== 'setup' || !channel)) {
@@ -165,25 +172,40 @@ export function StudioChannelView() {
       }
     } else if (!channel) {
       setTab('setup');
-    } else if (!search.tab) {
-      // Default to Setup (look / promo), not Green room — lifecycle e2e P2.
-      setTab('setup');
     }
   }, [channel, search.tab]);
 
   useEffect(() => {
-    if (!search.tab) {
+    if (DESIGNER_TABS.has(search.tab ?? '')) {
+      return;
+    }
+    if (!channel && !search.tab) {
       void navigate({
         to: '/studio/channel',
         search: { tab: 'setup' },
         replace: true,
       });
+      return;
     }
-  }, [navigate, search.tab]);
+    if (channel && (!search.tab || search.tab === 'setup')) {
+      void navigate({
+        to: '/studio/channel',
+        search: { tab: 'green-room' },
+        replace: true,
+      });
+    }
+  }, [channel, navigate, search.tab]);
 
-  if (DESIGNER_TABS.has(search.tab ?? '')) {
+  if (search.tab === 'design') {
+    return <Navigate to="/settings/$section" params={{ section: 'channel' }} />;
+  }
+  if (search.tab === 'profile') {
     return (
-      <Navigate to="/studio/branding" search={{ tab: 'channel-designer' }} />
+      <Navigate
+        to="/settings/$section"
+        params={{ section: 'artist' }}
+        search={{ tab: 'branding' }}
+      />
     );
   }
 

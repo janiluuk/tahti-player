@@ -37,6 +37,7 @@ import {
   MAIN_SCROLLPORT_SHADOW_ROOM,
 } from '../layout/contentPadding';
 import { hasAccountRole, hasStudioAccess } from '../lib/accountRoles';
+import { isAudioEditorPath } from '../lib/audioEditorPath';
 import { cn } from '../lib/cn';
 import { activeSidebarItem } from '../lib/navigationActive';
 import { navigationPathname } from '../lib/navigationPathname';
@@ -344,8 +345,7 @@ export function AppShell() {
   const bottomQueueOpen = useLayoutStore((s) => s.bottomQueueOpen);
   const setBottomQueueOpen = useLayoutStore((s) => s.setBottomQueueOpen);
   const previousEditorSidebarState = useRef<boolean | null>(null);
-  const isAudioEditorRoute =
-    /^\/studio\/(?:archive\/[^/]+\/editor|editor\/[^/]+)$/.test(pathname);
+  const isAudioEditorRoute = isAudioEditorPath(pathname);
   const anonymousRouteBlocked =
     authHydrated && !userId && !isAnonymousRouteAllowed(pathname);
 

@@ -10,11 +10,32 @@ import type { TahtiPlayable } from '../api/types';
 import { playableToTrack } from '../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { trackTableLabels } from '../lib/trackTableLabels';
+import { toastWithUndo } from '../lib/undoToast';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useTrackDetailStore } from '../stores/trackDetailStore';
 import { PageEmpty } from './PageStates';
 import { PlayableTrackContextMenu } from './PlayableTrackContextMenu';
+
+function undoQueueAdd(
+  added: TahtiPlayable[],
+  removeFromQueue: (id: string) => void,
+  message: string,
+) {
+  const count = added.length;
+  toastWithUndo(message, {
+    undo: async () => {
+      for (const item of added) {
+        removeFromQueue(item.id);
+      }
+      return { ok: true };
+    },
+    undoneMessage:
+      count === 1
+        ? `Removed “${added[0]?.title ?? 'track'}” from the queue.`
+        : `Removed ${count} tracks from the queue.`,
+  });
+}
 
 type Props = {
   items: TahtiPlayable[];
@@ -66,6 +87,7 @@ export function PlayableTrackTable({
   const navigate = useNavigate();
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
+  const removeFromQueue = usePlayerStore((s) => s.removeFromQueue);
   const queue = usePlayerStore((s) => s.queue);
   const currentId = usePlayerStore((s) => s.currentId);
   const playerStatus = usePlayerStore((s) => s.status);
@@ -139,7 +161,9 @@ export function PlayableTrackTable({
     if (newItems.length === 0) {
       toast.info('All listed tracks are already in the queue.');
     } else {
-      toast.success(
+      undoQueueAdd(
+        newItems,
+        removeFromQueue,
         `Added ${newItems.length} track${newItems.length === 1 ? '' : 's'} to the queue.`,
       );
     }
@@ -210,7 +234,11 @@ export function PlayableTrackTable({
                   return;
                 }
                 enqueue(item);
-                toast.success(`Added “${item.title}” to the queue.`);
+                undoQueueAdd(
+                  [item],
+                  removeFromQueue,
+                  `Added “${item.title}” to the queue.`,
+                );
               }
             },
             onPlayAll: () => {
@@ -252,7 +280,9 @@ export function PlayableTrackTable({
                 enqueue(item);
               }
               if (newItems.length > 0) {
-                toast.success(
+                undoQueueAdd(
+                  newItems,
+                  removeFromQueue,
                   `Added ${newItems.length} track${newItems.length === 1 ? '' : 's'} to the queue.`,
                 );
               }

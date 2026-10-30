@@ -190,7 +190,13 @@ export const StashFilesPanel = ({
         return;
       }
       setMessage(`Uploaded ${file.name}`);
-      toast.success(`Uploaded ${file.name}`);
+      toastWithUndo(`Uploaded ${file.name}`, {
+        undo: () => deleteStashFile(result.id),
+        undoneMessage: `Removed ${file.name}.`,
+        onUndone: () => {
+          void reload();
+        },
+      });
       void reload();
     });
   };

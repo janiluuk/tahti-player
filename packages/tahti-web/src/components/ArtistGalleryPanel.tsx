@@ -24,6 +24,7 @@ import {
   type PressKitImageItem,
   type PublicPressKitImage,
 } from '../api/artist-settings';
+import { toastWithUndo } from '../lib/undoToast';
 import { ConfirmDialog } from './ConfirmDialog';
 import { ImageLightbox } from './ImageLightbox';
 
@@ -65,11 +66,25 @@ export function ArtistGalleryPanel({
     const result = await uploadPressKitImages(files);
     setBusy(false);
     if (result.images.length > 0) {
-      onChange([...images, ...result.images]);
-      toast.success(
-        result.images.length === 1
-          ? 'Photo added.'
-          : `${result.images.length} photos added.`,
+      const added = result.images;
+      onChange([...images, ...added]);
+      toastWithUndo(
+        added.length === 1 ? 'Photo added.' : `${added.length} photos added.`,
+        {
+          undo: async () => {
+            const undone = await Promise.all(
+              added.map((image) => deletePressKitImage(image.id)),
+            );
+            const failed = undone.find((item) => !item.ok);
+            if (failed && !failed.ok) {
+              return failed;
+            }
+            return { ok: true };
+          },
+          undoneMessage:
+            added.length === 1 ? 'Photo removed.' : 'Photos removed.',
+          onUndone: () => onChange(images),
+        },
       );
     }
     if (result.errors.length > 0) {

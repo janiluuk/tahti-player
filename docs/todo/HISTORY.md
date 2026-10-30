@@ -1,3 +1,16 @@
+## 2026-10-30 - UX batch 116 navigation, undo, and composers
+
+Channel owners open Green room instead of a blank Setup tab. Radio deep
+links light Radio. Listeners no longer see Library → Sounds, and the sound
+editor collapses the sidebar. A grant year lights Admin → Community. Old
+channel design links go straight to Settings. Deploy builds fail if the
+client inlines an absolute API origin. Creates that already had a delete or
+cancel can be undone: listening parties, lineup members, moderators,
+discussion replies, release tracks, pins, clips, artwork presets, stations,
+embeds, stash files, gallery photos, smart-playlist copies, and queue adds.
+Cmd/Ctrl+Enter submits the remaining discussion and news composers, and the
+admin channel-track editor is a real form. tahti-web `0.0.286`.
+
 ## 2026-10-27 - UX batch 111 thirty URL and email keyboard slices
 
 Fields that only set `inputMode="url"` or `inputMode="email"` still got

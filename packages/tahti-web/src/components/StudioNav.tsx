@@ -451,22 +451,40 @@ export function litStudioSubmenuDestinations(
     .map((item) => item.to);
 }
 
+const RADIO_CHANNEL_TABS = new Set([
+  'radio',
+  'multicast',
+  'rotation',
+  'announcements',
+  'pinned',
+  'tahti-radio',
+]);
+
+function channelSearchTab(current: string | undefined): string | null {
+  const query = current?.split('?')[1];
+  if (!query) {
+    return null;
+  }
+  return new URLSearchParams(query).get('tab');
+}
+
 export const isBroadcastSubnavActive = (
   current: string | undefined,
   to: string,
 ) => {
   const pathname = current?.split('?')[0];
+  const tab = channelSearchTab(current);
   if (to === '/studio/channel?tab=radio') {
     return (
-      current === '/studio/channel?tab=radio' ||
-      current === '/studio/channel?tab=multicast'
+      pathname === '/studio/channel' &&
+      tab !== null &&
+      RADIO_CHANNEL_TABS.has(tab)
     );
   }
   if (to === '/studio/channel') {
     return (
       pathname === '/studio/channel' &&
-      current !== '/studio/channel?tab=radio' &&
-      current !== '/studio/channel?tab=multicast'
+      (tab === null || !RADIO_CHANNEL_TABS.has(tab))
     );
   }
   if (to === '/studio/go-live') {
