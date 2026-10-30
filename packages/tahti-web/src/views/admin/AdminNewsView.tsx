@@ -322,7 +322,29 @@ export function AdminNewsView() {
 
             <Dialog.Root isOpen={composeOpen} onClose={closeCompose}>
               <Dialog.Title>Write a news post</Dialog.Title>
-              <div className="mt-4 flex flex-col gap-3">
+              <form
+                className="mt-4 flex flex-col gap-3"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  setBusy(true);
+                  void createNewsPost({
+                    headline: headline.trim(),
+                    summary: summary.trim(),
+                    imageUrl: imageUrl.trim() || undefined,
+                    linkUrl: linkUrl.trim() || undefined,
+                    linkLabel: linkLabel.trim() || undefined,
+                    publish: true,
+                  }).then((r) => {
+                    setBusy(false);
+                    if (!r.ok) {
+                      setMsg(r.error);
+                      return;
+                    }
+                    closeCompose();
+                    reload();
+                  });
+                }}
+              >
                 <Input
                   label="Headline"
                   value={headline}
@@ -335,6 +357,7 @@ export function AdminNewsView() {
                   value={summary}
                   onChange={(e) => setSummary(e.target.value)}
                   rows={3}
+                  submitOnModEnter
                 />
                 <ImageUploadField
                   label="News image"
@@ -358,59 +381,42 @@ export function AdminNewsView() {
                   onChange={(event) => setLinkLabel(event.target.value)}
                   placeholder="Read more"
                 />
-              </div>
-              <Dialog.Actions>
-                <Dialog.Close>Cancel</Dialog.Close>
-                <Button
-                  variant="secondary"
-                  disabled={busy || !headline.trim() || !summary.trim()}
-                  onClick={() => {
-                    setBusy(true);
-                    void createNewsPost({
-                      headline: headline.trim(),
-                      summary: summary.trim(),
-                      imageUrl: imageUrl.trim() || undefined,
-                      linkUrl: linkUrl.trim() || undefined,
-                      linkLabel: linkLabel.trim() || undefined,
-                      publish: false,
-                    }).then((r) => {
-                      setBusy(false);
-                      if (!r.ok) {
-                        setMsg(r.error);
-                        return;
-                      }
-                      closeCompose();
-                      reload();
-                    });
-                  }}
-                >
-                  Save as draft
-                </Button>
-                <Button
-                  disabled={busy || !headline.trim() || !summary.trim()}
-                  onClick={() => {
-                    setBusy(true);
-                    void createNewsPost({
-                      headline: headline.trim(),
-                      summary: summary.trim(),
-                      imageUrl: imageUrl.trim() || undefined,
-                      linkUrl: linkUrl.trim() || undefined,
-                      linkLabel: linkLabel.trim() || undefined,
-                      publish: true,
-                    }).then((r) => {
-                      setBusy(false);
-                      if (!r.ok) {
-                        setMsg(r.error);
-                        return;
-                      }
-                      closeCompose();
-                      reload();
-                    });
-                  }}
-                >
-                  {busy ? 'Publishing…' : 'Publish'}
-                </Button>
-              </Dialog.Actions>
+                <Dialog.Actions>
+                  <Dialog.Close>Cancel</Dialog.Close>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    disabled={busy || !headline.trim() || !summary.trim()}
+                    onClick={() => {
+                      setBusy(true);
+                      void createNewsPost({
+                        headline: headline.trim(),
+                        summary: summary.trim(),
+                        imageUrl: imageUrl.trim() || undefined,
+                        linkUrl: linkUrl.trim() || undefined,
+                        linkLabel: linkLabel.trim() || undefined,
+                        publish: false,
+                      }).then((r) => {
+                        setBusy(false);
+                        if (!r.ok) {
+                          setMsg(r.error);
+                          return;
+                        }
+                        closeCompose();
+                        reload();
+                      });
+                    }}
+                  >
+                    Save as draft
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={busy || !headline.trim() || !summary.trim()}
+                  >
+                    {busy ? 'Publishing…' : 'Publish'}
+                  </Button>
+                </Dialog.Actions>
+              </form>
             </Dialog.Root>
             <ConfirmDialog
               isOpen={pendingDeletePost !== null}

@@ -15,7 +15,6 @@ import {
   ChannelView,
   ChatView,
   CollectionView,
-  FavoritesView,
   GreenRoomView,
   JamView,
   ListeningPartyView,
@@ -142,9 +141,7 @@ export const libraryEmbedsRoute = createRoute({
 export const libraryFavoritesRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/favorites',
-  beforeLoad: () => {
-    throw redirect({ to: '/favorites' });
-  },
+  component: () => <LibraryView tab="favorites" />,
 });
 
 export const libraryHistoryRoute = createRoute({
@@ -205,7 +202,9 @@ export const messagesThreadRoute = createRoute({
 export const favoritesRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/favorites',
-  component: FavoritesView,
+  beforeLoad: () => {
+    throw redirect({ to: '/library/favorites' });
+  },
 });
 
 export const notificationsRoute = createRoute({

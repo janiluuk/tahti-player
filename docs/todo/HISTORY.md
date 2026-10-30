@@ -1,3 +1,20 @@
+## 2026-10-30 - Favourites is a Library tab; signed-out menus stay grayed
+
+Favourites left the sidebar for `/library/favorites`. Opening Library or
+Favourites does not open sign-in. Studio, Admin and account-only Library
+tabs stay visible and disabled without an account. The no-login-wall
+principle is in `docs/DECISIONS.md` and `TAHTI.md`. The Studio / Library /
+Admin regroup in `navigation-simplification.md` is still open. tahti-web
+`0.0.288`.
+## 2026-10-30 - UX batch 119 composer submit and release artwork
+
+News headlines and read-more links use the button components. Approving a
+radio submission, publishing news, suspending an account, importing a theme,
+booking a radio slot and saving the next broadcast submit from the text area.
+Studio release artwork uses the shared cover picker and still offers a URL
+and a generator. Channel store editor folded (the editor and public listing
+already shipped). tahti-web `0.0.288`.
+
 ## 2026-10-30 - UX batch 117 forty keyboard, undo, composer and logo slices
 
 Number filters (library year, length, bitrate, BPM, loudness, smart-playlist

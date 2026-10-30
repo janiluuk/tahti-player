@@ -443,31 +443,40 @@ export function AdminUserEditPanel({
               : 'Suspension blocks sign-in immediately and is audited. They are emailed your reason, and see it when they try to sign in.'
           }
         >
-          {!detail.suspendedAt ? (
-            <Textarea
-              label="Suspension reason"
-              tone="secondary"
-              value={suspendReason}
-              onChange={(event) => setSuspendReason(event.target.value)}
-              rows={4}
-              maxLength={500}
-              placeholder="Required before suspending"
-            />
-          ) : null}
-          <Button
-            size="sm"
-            variant={detail.suspendedAt ? 'secondary' : 'text'}
-            disabled={busy}
-            className={
-              detail.suspendedAt
-                ? 'mt-3'
-                : 'text-accent-red-strong hover:text-accent-red-strong mt-3'
-            }
-            onClick={() => void toggleSuspension()}
+          <form
+            className="flex flex-col gap-3"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void toggleSuspension();
+            }}
           >
-            <ShieldAlertIcon size={14} aria-hidden className="mr-1.5" />
-            {detail.suspendedAt ? 'Restore account' : 'Suspend account'}
-          </Button>
+            {!detail.suspendedAt ? (
+              <Textarea
+                label="Suspension reason"
+                tone="secondary"
+                value={suspendReason}
+                onChange={(event) => setSuspendReason(event.target.value)}
+                rows={4}
+                maxLength={500}
+                placeholder="Required before suspending"
+                submitOnModEnter
+              />
+            ) : null}
+            <Button
+              type="submit"
+              size="sm"
+              variant={detail.suspendedAt ? 'secondary' : 'text'}
+              disabled={busy}
+              className={
+                detail.suspendedAt
+                  ? undefined
+                  : 'text-accent-red-strong hover:text-accent-red-strong'
+              }
+            >
+              <ShieldAlertIcon size={14} aria-hidden className="mr-1.5" />
+              {detail.suspendedAt ? 'Restore account' : 'Suspend account'}
+            </Button>
+          </form>
         </StudioPanel>
       </div>
 

@@ -190,6 +190,31 @@ export function useReleaseDetail(id: string) {
     toast.success('Artwork removed.');
   };
 
+  const uploadArtworkFile = async (file: File) => {
+    const result = await uploadReleaseArtwork(id, file);
+    if (!result.ok) {
+      return result;
+    }
+    return { ok: true as const, data: { url: result.artworkUrl } };
+  };
+
+  const selectReleaseArtwork = async (
+    url: string,
+    source: 'upload' | 'gallery',
+  ) => {
+    if (source === 'upload') {
+      setArtworkPreview(url);
+      return true;
+    }
+    const result = await setReleaseArtworkFromUrl(id, url);
+    if (!result.ok) {
+      toast.error(result.error);
+      return false;
+    }
+    setArtworkPreview(result.url);
+    return true;
+  };
+
   const applyArtwork = async (file: File) => {
     setApplyingArtwork(true);
     const result = await uploadReleaseArtwork(id, file);
@@ -288,6 +313,8 @@ export function useReleaseDetail(id: string) {
     removeArtwork,
     applyArtwork,
     applyArtworkFromUrl,
+    uploadArtworkFile,
+    selectReleaseArtwork,
     playFirstTrack,
     updateTrackFingerprint,
   };

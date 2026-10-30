@@ -7,16 +7,13 @@ import {
   LayersIcon,
   LayoutDashboardIcon,
   Link2Icon,
-  LinkIcon,
   MusicIcon,
   PartyPopperIcon,
   PencilIcon,
   PlayIcon,
   Share2Icon,
   Trash2Icon,
-  UploadIcon,
   UsersIcon,
-  Wand2Icon,
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -26,8 +23,6 @@ import {
   BackButtonLink,
   Button,
   ButtonLink,
-  Dialog,
-  FilePicker,
   SaveButton,
   Tabs,
   Textarea,
@@ -38,6 +33,7 @@ import {
 import { deleteStudioRelease } from '../../api/studio';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { CoverArtGenerator } from '../../components/CoverArtGenerator';
+import { CoverArtPickerDialog } from '../../components/CoverArtPickerDialog';
 import {
   EntitySocialHeader,
   type EntitySocialStat,
@@ -98,6 +94,8 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     removeArtwork,
     applyArtwork,
     applyArtworkFromUrl,
+    uploadArtworkFile,
+    selectReleaseArtwork,
     playFirstTrack,
     updateTrackFingerprint,
   } = useReleaseDetail(id);
@@ -243,63 +241,26 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
               </Button>
             </EntitySocialHeader>
 
-            <Dialog.Root
+            <CoverArtPickerDialog
               isOpen={artworkPickerOpen}
               onClose={() => setArtworkPickerOpen(false)}
-              className="max-w-2xl"
-            >
-              <Dialog.Title>Release artwork</Dialog.Title>
-              <Tabs
-                listClassName="border-border mt-4 border-b pb-3"
-                panelClassName="pt-4"
-                items={[
-                  {
-                    id: 'upload',
-                    label: 'Upload',
-                    icon: <UploadIcon size={14} />,
-                    content: (
-                      <FilePicker
-                        labels={{
-                          title: 'Release artwork',
-                          description: 'JPEG, PNG, or WebP',
-                          browse: 'Choose image',
-                        }}
-                        accept="image/jpeg,image/png,image/webp"
-                        onFiles={(files) => {
-                          const file = files[0];
-                          if (!file) {
-                            return;
-                          }
-                          void applyArtwork(file);
-                        }}
-                      />
-                    ),
-                  },
-                  {
-                    id: 'url',
-                    label: 'From URL',
-                    icon: <LinkIcon size={14} />,
-                    content: (
-                      <ImageUrlForm
-                        busy={applyingArtwork}
-                        onSubmit={applyArtworkFromUrl}
-                      />
-                    ),
-                  },
-                  {
-                    id: 'generate',
-                    label: 'Generate',
-                    icon: <Wand2Icon size={14} />,
-                    content: (
-                      <CoverArtGenerator
-                        generating={applyingArtwork}
-                        onGenerate={(file) => void applyArtwork(file)}
-                      />
-                    ),
-                  },
-                ]}
-              />
-            </Dialog.Root>
+              label="Release artwork"
+              value={artworkPreview}
+              upload={uploadArtworkFile}
+              onSelect={selectReleaseArtwork}
+              extra={
+                <>
+                  <ImageUrlForm
+                    busy={applyingArtwork}
+                    onSubmit={applyArtworkFromUrl}
+                  />
+                  <CoverArtGenerator
+                    generating={applyingArtwork}
+                    onGenerate={(file) => void applyArtwork(file)}
+                  />
+                </>
+              }
+            />
 
             <ConfirmDialog
               isOpen={confirmPublish}

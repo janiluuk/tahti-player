@@ -49,6 +49,8 @@ Public API reference: [`https://api.tahti.live/api`](https://api.tahti.live/api)
 
 Because of that, treat every screen as a professional app, not a demo: prioritize clarity, simplicity, and practicality over decoration. Custom Tahti-specific widgets are expected (channels, archives, fingerprinting, fan tiers — none of that exists in stock Nuclear), but they should read as a natural, restrained extension of Nuclear's own design language, not a bolted-on skin. When in doubt, favor the plainer, more legible option.
 
+Do not push a login screen for as long as possible. Show what a visitor can already do. Menus that need an account stay visible and grayed out: they keep their name, they do not navigate, and they do not open sign-in. Ask for an account only when the action itself needs one.
+
 ## Detached from `/home/jani/workspace/nuclear`
 
 The pristine upstream clone at `~/workspace/nuclear` should track `nukeop/nuclear` only. All Tahti work lives **here**.

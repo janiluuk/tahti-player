@@ -50,7 +50,11 @@ export function RejectDialog({
         />
         <Dialog.Actions>
           <Dialog.Close>Cancel</Dialog.Close>
-          <Button disabled={pending || !note.trim()} type="submit">
+          <Button
+            disabled={pending || !note.trim()}
+            intent="danger"
+            type="submit"
+          >
             Reject
           </Button>
         </Dialog.Actions>

@@ -30,7 +30,7 @@ export const listenFavoritesRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/listen/favorites',
   beforeLoad: () => {
-    throw redirect({ to: '/favorites' });
+    throw redirect({ to: '/library/favorites' });
   },
 });
 

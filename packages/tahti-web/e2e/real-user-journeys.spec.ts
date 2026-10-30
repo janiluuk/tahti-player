@@ -201,7 +201,11 @@ test('library is its own sidebar section with Library tabs, not a Studio tab', a
 
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto('/library/favorites');
-  await expect(page).toHaveURL(/\/favorites$/);
+  await expect(page).toHaveURL(/\/library\/favorites$/);
+  await expect(page.getByRole('tab', { name: 'Favorites' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
 });
 
 test('governance: closed motions show their final decision as a permanent history/decision log', async ({

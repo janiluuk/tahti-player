@@ -1,5 +1,5 @@
 import { UploadIcon } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -31,6 +31,7 @@ export type CoverArtPickerDialogProps = {
   ) => Promise<boolean | void> | boolean | void;
   upload?: (file: File) => Promise<UploadResult>;
   accept?: string;
+  extra?: ReactNode;
 };
 
 type GalleryState = { status: 'loading' } | { status: 'ready'; urls: string[] };
@@ -56,6 +57,7 @@ export function CoverArtPickerDialog({
   onSelect,
   upload = uploadUserMediaFile,
   accept = IMAGE_UPLOAD_ACCEPT_ATTR,
+  extra,
 }: CoverArtPickerDialogProps) {
   const [gallery, setGallery] = useState<GalleryState>({ status: 'loading' });
   const [busy, setBusy] = useState(false);
@@ -153,6 +155,7 @@ export function CoverArtPickerDialog({
             }}
           />
         ) : null}
+        {extra}
       </div>
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>

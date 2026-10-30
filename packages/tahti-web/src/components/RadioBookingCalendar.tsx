@@ -588,7 +588,13 @@ export function RadioBookingCalendar({
           })}{' '}
           broadcast.
         </Dialog.Description>
-        <div className="mt-4 flex flex-col gap-3">
+        <form
+          className="mt-4 flex flex-col gap-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void book();
+          }}
+        >
           <Input
             type="time"
             label="Start"
@@ -629,18 +635,18 @@ export function RadioBookingCalendar({
               setDurationHours(values.durationHours);
             }}
           />
-        </div>
-        {msg && (
-          <p className="mt-3 text-sm" role="status">
-            {msg}
-          </p>
-        )}
-        <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
-          <Button size="sm" disabled={busy} onClick={() => void book()}>
-            {busy ? 'Booking…' : `Book ${durationHours}h slot`}
-          </Button>
-        </Dialog.Actions>
+          {msg && (
+            <p className="text-sm" role="status">
+              {msg}
+            </p>
+          )}
+          <Dialog.Actions>
+            <Dialog.Close>Cancel</Dialog.Close>
+            <Button size="sm" type="submit" disabled={busy}>
+              {busy ? 'Booking…' : `Book ${durationHours}h slot`}
+            </Button>
+          </Dialog.Actions>
+        </form>
       </Dialog.Root>
     </>
   );
