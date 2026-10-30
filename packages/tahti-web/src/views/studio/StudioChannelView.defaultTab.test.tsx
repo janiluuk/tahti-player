@@ -100,11 +100,14 @@ async function renderChannel(url: string) {
 }
 
 describe('StudioChannelView default tab', () => {
-  it('replaces a bare /studio/channel with ?tab=setup', async () => {
+  it('opens Green room when the artist already has a channel', async () => {
     const { router, history } = await renderChannel('/studio/channel');
 
-    expect(router.state.location.search).toEqual({ tab: 'setup' });
+    expect(router.state.location.search).toEqual({ tab: 'green-room' });
     expect(history.length).toBe(1);
+    expect(document.body.textContent?.includes('Open Green Room chat')).toBe(
+      true,
+    );
   });
 
   it('keeps an explicit tab', async () => {

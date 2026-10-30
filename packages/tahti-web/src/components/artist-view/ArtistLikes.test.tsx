@@ -4,7 +4,7 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { fetchUserLikes, type LikedTrack } from '../../api/likes';
@@ -62,7 +62,8 @@ describe('ArtistLikes', () => {
     expect(screen.getAllByText('Northern Lights').length).toBeGreaterThan(0);
     expect(screen.queryByText('Gated')).toBeNull();
     expect(screen.getByTestId('ambient-track-list')).toBeTruthy();
-    expect(screen.getByRole('radio', { name: 'Grid' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: /^Track size/ }));
+    expect(screen.getByRole('menuitemradio', { name: 'Grid' })).toBeTruthy();
   });
 
   it('renders nothing when the user hides their likes', async () => {

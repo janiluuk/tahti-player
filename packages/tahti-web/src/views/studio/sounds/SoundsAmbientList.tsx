@@ -366,6 +366,7 @@ export function SoundsAmbientList({
           items={listItems}
           defaultDensity="comfortable"
           itemNoun="sound"
+          hideViewPicker
           emptyMessage={
             embeds.length > 0
               ? 'No hosted sounds match these filters.'

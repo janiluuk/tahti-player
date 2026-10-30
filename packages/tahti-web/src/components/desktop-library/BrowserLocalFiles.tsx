@@ -85,14 +85,49 @@ export function BrowserLocalFiles() {
         />
       ) : (
         <>
-          <Input
-            enterKeyHint="search"
-            type="search"
-            label="Search local files"
-            placeholder="Title, artist, or file name"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <PlayableAmbientTrackList
+              items={playableItems}
+              emptyMessage={
+                query.trim()
+                  ? `No playable files match “${query.trim()}”.`
+                  : 'No playable files. Re-import the files below to play them.'
+              }
+              toolbarStart={
+                <Input
+                  enterKeyHint="search"
+                  type="search"
+                  aria-label="Search local files"
+                  placeholder="Title, artist, or file name"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                />
+              }
+              selectable
+              onRemove={(item) => {
+                const track = playableById.get(item.id);
+                if (!track) {
+                  return;
+                }
+                remove(track.id);
+                toast.success(`Removed “${item.title}”.`);
+              }}
+              onBulkRemove={(items) => {
+                for (const item of items) {
+                  const track = playableById.get(item.id);
+                  if (track) {
+                    remove(track.id);
+                  }
+                }
+                toast.success(
+                  items.length === 1
+                    ? 'Removed 1 track.'
+                    : `Removed ${items.length} tracks.`,
+                );
+              }}
+              compactActions
+            />
+          </div>
           {unresolvedTracks.length > 0 ? (
             <ul className="tahti-hide-scrollbar flex max-h-32 flex-col gap-1 overflow-y-auto">
               {unresolvedTracks.map((track) => (
@@ -126,53 +161,6 @@ export function BrowserLocalFiles() {
               ))}
             </ul>
           ) : null}
-          {playableItems.length === 0 ? (
-            unresolvedTracks.length === 0 ? (
-              <PageEmpty
-                title="No local files found"
-                description={`Nothing matches “${query.trim()}”.`}
-                className="flex-1"
-                action={
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => setQuery('')}
-                  >
-                    Clear search
-                  </Button>
-                }
-              />
-            ) : null
-          ) : (
-            <div className="min-h-0 flex-1 overflow-y-auto">
-              <PlayableAmbientTrackList
-                items={playableItems}
-                selectable
-                onRemove={(item) => {
-                  const track = playableById.get(item.id);
-                  if (!track) {
-                    return;
-                  }
-                  remove(track.id);
-                  toast.success(`Removed “${item.title}”.`);
-                }}
-                onBulkRemove={(items) => {
-                  for (const item of items) {
-                    const track = playableById.get(item.id);
-                    if (track) {
-                      remove(track.id);
-                    }
-                  }
-                  toast.success(
-                    items.length === 1
-                      ? 'Removed 1 track.'
-                      : `Removed ${items.length} tracks.`,
-                  );
-                }}
-                compactActions
-              />
-            </div>
-          )}
         </>
       )}
     </>

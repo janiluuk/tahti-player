@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 
+import { pickTrackView, resetTrackListView } from '../test/trackViewPicker';
 import { AmbientTrackList } from './AmbientTrackList';
 
 const items = [
@@ -18,6 +19,7 @@ const items = [
 describe('AmbientTrackList list view', () => {
   beforeEach(() => {
     localStorage.clear();
+    resetTrackListView();
   });
 
   it('offers List only when a list renderer is given, and remembers it', () => {
@@ -25,7 +27,7 @@ describe('AmbientTrackList list view', () => {
       <AmbientTrackList items={items} renderList={() => <p>raw table</p>} />,
     );
 
-    fireEvent.click(screen.getByRole('radio', { name: 'List' }));
+    pickTrackView('List');
     expect(screen.getByText('raw table')).toBeVisible();
     unmount();
 
@@ -38,6 +40,7 @@ describe('AmbientTrackList list view', () => {
   it('has no List option without a renderer', () => {
     render(<AmbientTrackList items={items} />);
 
-    expect(screen.queryByRole('radio', { name: 'List' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: /^Track size/ }));
+    expect(screen.queryByRole('menuitemradio', { name: 'List' })).toBeNull();
   });
 });

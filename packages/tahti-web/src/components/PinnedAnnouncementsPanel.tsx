@@ -10,6 +10,7 @@ import {
   postPinnedAnnouncement,
   type PinnedAnnouncement,
 } from '../api/announcements';
+import { toastWithUndo } from '../lib/undoToast';
 import { ConfirmDialog } from './ConfirmDialog';
 import { PageEmpty, PageError } from './PageStates';
 import { StudioPanel } from './StudioPanel';
@@ -54,9 +55,15 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
       toast.error(result.error);
       return;
     }
+    const created = result.announcement;
     setBody('');
-    setItems((current) => [result.announcement, ...current].slice(0, 3));
-    toast.success('Announcement pinned.');
+    setItems((current) => [created, ...current].slice(0, 3));
+    toastWithUndo('Announcement pinned.', {
+      undo: () => deletePinnedAnnouncement(created.id),
+      undoneMessage: 'Announcement removed.',
+      onUndone: () =>
+        setItems((current) => current.filter((item) => item.id !== created.id)),
+    });
   };
 
   const remove = async (item: PinnedAnnouncement) => {

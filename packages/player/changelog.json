@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-10-30T07:30",
+    "description": "Track listings fit their controls on one row: the filter box, sort order and a Track size button that opens a menu of Large, Medium, Small, Grid and List. Library → Sounds moves Sort by up beside search, and your size choice is shared across listings.",
+    "type": "improvement",
+    "contributors": ["jani"],
+    "tags": [{ "label": "Web", "color": "blue" }]
+  },
+  {
     "date": "2026-10-30T05:00",
     "description": "Discover has a Random track widget: it starts on All genres, you can pick several genres in a dialog, your choice is remembered and shown as pills, and you can play the track or roll another.",
     "type": "feature",

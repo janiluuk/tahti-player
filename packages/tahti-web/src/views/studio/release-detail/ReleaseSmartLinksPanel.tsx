@@ -48,6 +48,7 @@ import {
   loadDspPluginPrefixes,
   prefixesForServices,
 } from '../../../lib/dspPluginDefaults';
+import { toastWithUndo } from '../../../lib/undoToast';
 import { NewReleaseTrackUploadDialog } from './NewReleaseTrackUploadDialog';
 import { ReleaseTrackAudioUpload } from './ReleaseTrackAudioUpload';
 import { ReleaseTrackRow } from './ReleaseTrackRow';
@@ -236,10 +237,19 @@ export function ReleaseSmartLinksPanel({
       toast.error(result.error);
       return;
     }
-    const next = [...tracks, result.data];
+    const created = result.data;
+    const next = [...tracks, created];
     setTracks(next);
     onReleaseChange({ ...release, tracks: next });
-    toast.success(`${item.title} added to release.`);
+    toastWithUndo(`${item.title} added to release.`, {
+      undo: () => removeStudioReleaseTrack(release.id, created.id),
+      undoneMessage: `${item.title} removed from the release.`,
+      onUndone: () => {
+        const without = next.filter((track) => track.id !== created.id);
+        setTracks(without);
+        onReleaseChange({ ...release, tracks: without });
+      },
+    });
   };
 
   const dspPrefixes = prefixesForServices(pluginPrefixes);

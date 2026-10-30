@@ -113,4 +113,8 @@ new surface, one PR per row.
   - 2026-10-30 (batch 117): a local playlist create or duplicate toast can
     undo by deleting that playlist and reloading the list. Cloud collection
     track adds still have no item id to delete.
+  - 2026-10-30 (batch 116): listening party, lineup member, moderator,
+    discussion reply, release tracks, pinned announcement, announcement clip,
+    artwork preset, radio station, SoundCloud embed, stash upload, gallery
+    photos, smart-playlist snapshot, and queue adds.
 

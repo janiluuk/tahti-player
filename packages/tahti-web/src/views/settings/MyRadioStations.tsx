@@ -11,6 +11,7 @@ import {
   type MyRadioStation,
 } from '../../api/my-radio-stations';
 import { PageEmpty, PageError } from '../../components/PageStates';
+import { toastWithUndo } from '../../lib/undoToast';
 import { usePlayerStore } from '../../stores/playerStore';
 
 const playableId = (station: MyRadioStation) => `radio:my-${station.id}`;
@@ -65,10 +66,19 @@ export function MyRadioStations({
       toast.error(result.error);
       return;
     }
-    setStations((current) => [...(current ?? []), result.data]);
+    const created = result.data;
+    setStations((current) => [...(current ?? []), created]);
     setName('');
     setStreamUrl('');
     setGenre('');
+    toastWithUndo(`Added ${created.name}.`, {
+      undo: () => removeMyRadioStation(created.id),
+      undoneMessage: `Removed ${created.name}.`,
+      onUndone: () =>
+        setStations((current) =>
+          (current ?? []).filter((station) => station.id !== created.id),
+        ),
+    });
   };
 
   const remove = async (id: string) => {

@@ -12,7 +12,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | partial | [beta-launch-findings.md](beta-launch-findings.md) | Test releases on the front page; open Studio/listener/platform findings from the beta e2e run and the legacy parity sweep |
-| open    | [final-season-hardening.md](final-season-hardening.md) | Batch A/B shipped; left: CI assert on `VITE_TAHTI_API_URL` plus P2 hardening (rate-limit fail-closed, CSRF/CORS, CSP enforce, upload magic, SR pass) |
+| open    | [final-season-hardening.md](final-season-hardening.md) | Batch A/B and the deploy-bundle API-origin assert shipped; left: P2 hardening (rate-limit fail-closed, CSRF/CORS, CSP enforce, upload magic, SR pass) |
 | blocked | [first-100-users-infra.md](first-100-users-infra.md) | Ops verify backups/disk + rate-limit fail-closed in the production compose file (#872 only set the dormant Swarm stack); host access required |
 | open    | [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md) | Radio Nova + NRJ (Bauer AAC streams) do not play in production; reproduce in a real browser |
 | blocked | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live verify Centrifugo Send on brand-new channel — playbook ready |
@@ -24,7 +24,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [feed-avatars-random-track-widget.md](feed-avatars-random-track-widget.md) | Random-track widget shipped; feed avatar thumbnails need avatar URLs from the API |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
-| open    | [navigation-simplification.md](navigation-simplification.md) | Plan: one tab row per section for Studio (6), Library (5), Admin (6); regroup by context; Co-op sidebar item |
+| open    | [navigation-simplification.md](navigation-simplification.md) | Plan: one tab row per section for Studio (6), Library (5), Admin (6); regroup by context; Co-op sidebar item. The six listed bugs shipped in batch 116 |
 | open    | [channel-store-editor.md](channel-store-editor.md) | Studio editor that puts tracks in the channel page Store section |
 | open    | [ux-batch-112-forty-slices.md](ux-batch-112-forty-slices.md) | Forty polish slices: ambient lists, undo toasts, de-green, PageEmpty, search keyboard, usability leftovers |
 | open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |

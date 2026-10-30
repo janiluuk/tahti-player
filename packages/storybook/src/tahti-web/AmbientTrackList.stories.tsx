@@ -4,14 +4,15 @@ import {
   type AmbientTrackListItem,
 } from '@tahti-web/components/AmbientTrackList';
 import { useState } from 'react';
-import { expect, waitFor, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
-import { Button } from '@tahti-player/ui';
+import { Button, Input, Select } from '@tahti-player/ui';
 
 import {
   WAVEFORM_DEMO_DURATION,
   WAVEFORM_DEMO_URL,
 } from './_fixtures/waveformAudio';
+import { pickTrackView, withinBody } from './_lib/play';
 import { mockAmbientPeaks } from './mockAmbientPeaks';
 
 const COVER_A = '/mock/northern-lights/cover-first-light.svg';
@@ -83,7 +84,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Listing of ambient+waveform rows with a top track-size control (Large / Medium / Small). Used on Library → Sounds.',
+          'Listing of ambient+waveform rows. The toolbar row holds an optional filter box, sort, and a Track size button whose popover picks Large / Medium / Small (plus Grid / List where offered).',
       },
     },
   },
@@ -140,13 +141,96 @@ export const DenseDefault: Story = {
   },
 };
 
-/** Grid offered (as on Collections, Favorites, Listen): pick it in the
- * switcher to see cover cards with play; the choice is remembered. */
+/** Grid offered (as on Collections, Favorites, Listen): pick it from the
+ * Track size popover to see cover cards with play. */
 export const WithGrid: Story = {
   args: {
     items: ITEMS,
     allowGrid: true,
     persistDensity: false,
+  },
+  play: async ({ canvasElement }) => {
+    await pickTrackView(canvasElement, 'Grid');
+    await waitFor(() =>
+      expect(
+        within(canvasElement).getByTestId('ambient-track-grid'),
+      ).toBeVisible(),
+    );
+  },
+};
+
+/** The Track size popover open: row sizes, Grid and List, current checked. */
+export const TrackSizePopover: Story = {
+  args: {
+    items: ITEMS,
+    allowGrid: true,
+    renderList: () => <p>Plain table</p>,
+    persistDensity: false,
+    defaultDensity: 'compact',
+  },
+  play: async ({ canvasElement }) => {
+    await userEvent.click(
+      within(canvasElement).getByRole('button', {
+        name: 'Track size: Medium',
+      }),
+    );
+    const body = withinBody(canvasElement);
+    await waitFor(() =>
+      expect(body.getByRole('menu', { name: 'Track size' })).toBeVisible(),
+    );
+    await expect(
+      body
+        .getAllByRole('menuitemradio')
+        .map((item: HTMLElement) => item.textContent),
+    ).toEqual(['Large', 'Medium', 'Small', 'Grid', 'List']);
+    await expect(
+      body.getByRole('menuitemradio', { name: 'Medium' }),
+    ).toHaveAttribute('aria-checked', 'true');
+  },
+};
+
+/** A page filter leads the toolbar: filter box, sort and the Track size
+ * button share one row (desktop library local files). */
+export const FilterSortAndSizeRow: Story = {
+  args: {
+    items: ITEMS,
+    persistDensity: false,
+    toolbarStart: (
+      <Input
+        type="search"
+        aria-label="Search tracks"
+        placeholder="Title, artist, or file name"
+      />
+    ),
+    toolbarEnd: (
+      <Select
+        className="w-44"
+        aria-label="Sort tracks"
+        options={[
+          { id: 'default', label: 'Default order' },
+          { id: 'title', label: 'Title A–Z' },
+        ]}
+        value="default"
+        onValueChange={() => undefined}
+      />
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const toolbar = within(
+      within(canvasElement).getByTestId('ambient-track-list-toolbar'),
+    );
+    const controls = [
+      toolbar.getByRole('searchbox', { name: 'Search tracks' }),
+      toolbar.getByRole('button', { name: 'Sort tracks' }),
+      toolbar.getByRole('button', { name: /^Track size/ }),
+    ];
+    const centers = controls.map((control) => {
+      const box = control.getBoundingClientRect();
+      return box.top + box.height / 2;
+    });
+    for (const center of centers) {
+      await expect(Math.abs(center - centers[0])).toBeLessThan(4);
+    }
   },
 };
 

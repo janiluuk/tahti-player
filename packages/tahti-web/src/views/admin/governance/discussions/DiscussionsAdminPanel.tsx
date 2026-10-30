@@ -83,6 +83,7 @@ function NewTopicForm({ onCreated }: { onCreated: () => void }) {
       />
       <Textarea
         label="What should members talk about?"
+        submitOnModEnter
         value={body}
         maxLength={10000}
         rows={5}
@@ -157,6 +158,7 @@ function EditTopicForm({
       />
       <Textarea
         label="Topic text"
+        submitOnModEnter
         value={body}
         maxLength={10000}
         rows={5}

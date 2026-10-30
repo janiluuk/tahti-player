@@ -43,6 +43,7 @@ export function PlayableAmbientTrackList({
   onBulkRemove,
   getTrackMeta,
   defaultDensity = 'compact',
+  toolbarStart,
 }: {
   items: TahtiPlayable[];
   emptyMessage?: string;
@@ -67,6 +68,8 @@ export function PlayableAmbientTrackList({
       }
     | undefined;
   defaultDensity?: AmbientTrackRowDensity;
+  /** Leads the toolbar row beside sort and size, e.g. a filter box. */
+  toolbarStart?: ReactNode;
 }) {
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
@@ -298,6 +301,7 @@ export function PlayableAmbientTrackList({
         allowGrid
         defaultDensity={defaultDensity}
         emptyMessage={emptyMessage}
+        toolbarStart={toolbarStart}
         toolbarEnd={
           items.length > 1 ? (
             <Select

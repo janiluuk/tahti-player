@@ -84,6 +84,7 @@ export function PlatformNewsDialog({
               />
               <Textarea
                 aria-label="Article"
+                submitOnModEnter
                 value={summary}
                 onChange={(event) => setSummary(event.target.value)}
                 maxLength={500}

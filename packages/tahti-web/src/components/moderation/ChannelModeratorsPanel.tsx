@@ -10,6 +10,7 @@ import {
   removeModerator,
   type ModeratorRow,
 } from '../../api/artist-settings';
+import { toastWithUndo } from '../../lib/undoToast';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { PageEmpty, PageLoading } from '../PageStates';
 import { StudioPanel } from '../StudioPanel';
@@ -46,8 +47,14 @@ export function ChannelModeratorsPanel() {
         return;
       }
       setUsername('');
-      toast.success(
-        `Added ${result.data.displayName} as moderator. They've been notified.`,
+      const created = result.data;
+      toastWithUndo(
+        `Added ${created.displayName} as moderator. They've been notified.`,
+        {
+          undo: () => removeModerator(created.id),
+          undoneMessage: `Removed ${created.displayName}.`,
+          onUndone: () => reload(),
+        },
       );
       reload();
     });

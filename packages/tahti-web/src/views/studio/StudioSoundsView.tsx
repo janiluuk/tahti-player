@@ -1,3 +1,5 @@
+import { Navigate } from '@tanstack/react-router';
+
 import { Button, ViewShell } from '@tahti-player/ui';
 
 import { AddToMusicActions } from '../../components/AddToMusicActions';
@@ -9,6 +11,8 @@ import {
 } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { hasStudioAccess } from '../../lib/accountRoles';
+import { useAuthStore } from '../../stores/authStore';
 import { LibrarySectionTabs } from '../LibraryView';
 import { SoundFilters } from './sounds/SoundFilters';
 import { SoundsAmbientList } from './sounds/SoundsAmbientList';
@@ -19,7 +23,15 @@ import { useStudioSoundsState } from './sounds/useStudioSoundsState';
 
 export function StudioSoundsView() {
   const state = useStudioSoundsState();
+  const listener = useAuthStore(
+    (auth) =>
+      Boolean(auth.user) && auth.profileLoaded && !hasStudioAccess(auth.user),
+  );
   const { reload, loading, loadError, items, filtered, clearFilters } = state;
+
+  if (listener) {
+    return <Navigate to="/library" />;
+  }
 
   return (
     <StudioGate requireChannel={false}>
