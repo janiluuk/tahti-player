@@ -6291,3 +6291,7 @@ Admin → Artwork presets now reads and writes the API (tahti-org#1033): a grid 
 ## 2026-10-30 — Discover random track widget (0.0.285)
 
 New **Random track** Discover widget (also listed in the plugin store's Discover widgets). It draws one track from latest and all-time top tracks in the chosen genres. The selection defaults to an All genres pill; a dialog picks several genres, and All genres clears the rest (`lib/allOrSpecific.ts`, shared with the page filter). The choice persists in `discoverStore.randomTrackGenres` and shows as pills under the title; the row plays the track and a shuffle button rolls another.
+
+## 2026-10-30 — Listing toolbar on one row (0.0.286)
+
+Track listings put the filter box, sort dropdown and size control on one row. The inline size switcher became `TrackViewPicker`: an icon button showing the current view that opens a popover (Large / Medium / Small, plus Grid and List where offered). `AmbientTrackList` gains `toolbarStart` (a filter box leads the row and the toolbar stays up when nothing matches) and `hideViewPicker`. The remembered view moved to `stores/trackListViewStore` (same `localStorage` key) so a picker outside the list stays in sync. Library → Sounds: Sort by and an order icon button move up beside search and Type, with the size picker in that row. Desktop library local files: search moves into the list toolbar. Stories: `AmbientTrackList` TrackSizePopover / FilterSortAndSizeRow / WithGrid plays, `StudioSoundsView` FilterRow.

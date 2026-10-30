@@ -7,6 +7,7 @@ import {
   type LocalLibraryTrack,
 } from '../../stores/localLibraryStore';
 import { renderWithRouter } from '../../test/renderWithRouter';
+import { pickTrackView, resetTrackListView } from '../../test/trackViewPicker';
 import { BrowserLocalFiles } from './BrowserLocalFiles';
 
 function localTrack(id: string, title: string): LocalLibraryTrack {
@@ -23,6 +24,7 @@ function localTrack(id: string, title: string): LocalLibraryTrack {
 describe('BrowserLocalFiles', () => {
   beforeEach(() => {
     localStorage.clear();
+    resetTrackListView();
     URL.revokeObjectURL = vi.fn();
     useLocalLibraryStore.setState({
       tracks: [localTrack('a', 'Borealis'), localTrack('b', 'Aurora')],
@@ -33,14 +35,31 @@ describe('BrowserLocalFiles', () => {
     useLocalLibraryStore.setState({ tracks: [] });
   });
 
-  it('lists local files with the track size switcher and sort', async () => {
+  it('puts search, sort and track size in one toolbar row', async () => {
     await renderWithRouter(<BrowserLocalFiles />);
 
     const list = screen.getByTestId('ambient-track-list');
     expect(list).toHaveTextContent('Borealis');
     expect(list).toHaveTextContent('Aurora');
-    expect(screen.getByRole('radiogroup', { name: 'Track size' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Sort tracks' })).toBeTruthy();
+    const toolbar = within(screen.getByTestId('ambient-track-list-toolbar'));
+    expect(
+      toolbar.getByRole('searchbox', { name: 'Search local files' }),
+    ).toBeTruthy();
+    expect(toolbar.getByRole('button', { name: 'Sort tracks' })).toBeTruthy();
+    expect(toolbar.getByRole('button', { name: /^Track size/ })).toBeTruthy();
+  });
+
+  it('keeps the search box when nothing matches', async () => {
+    await renderWithRouter(<BrowserLocalFiles />);
+
+    fireEvent.change(
+      screen.getByRole('searchbox', { name: 'Search local files' }),
+      { target: { value: 'zzz' } },
+    );
+    expect(screen.getByText('No playable files match “zzz”.')).toBeTruthy();
+    expect(
+      screen.getByRole('searchbox', { name: 'Search local files' }),
+    ).toHaveValue('zzz');
   });
 
   it('removes a file from its ambient row', async () => {
@@ -59,7 +78,7 @@ describe('BrowserLocalFiles', () => {
   it('keeps multi-select and bulk remove in the List view', async () => {
     await renderWithRouter(<BrowserLocalFiles />);
 
-    fireEvent.click(screen.getByRole('radio', { name: 'List' }));
+    pickTrackView('List');
     const list = screen.getByTestId('ambient-track-list');
     expect(within(list).getAllByRole('checkbox').length).toBeGreaterThan(1);
   });

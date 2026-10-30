@@ -38,7 +38,7 @@ export const BlockTracklist: Story = {
       expect(canvas.getByTestId('ambient-track-list')).toBeVisible(),
     );
     await expect(
-      canvas.getByRole('radiogroup', { name: 'Track size' }),
+      canvas.getByRole('button', { name: /^Track size/ }),
     ).toBeVisible();
   },
 };

@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { useTrackListViewStore } from '../stores/trackListViewStore';
+import { pickTrackView, resetTrackListView } from '../test/trackViewPicker';
 import { AmbientTrackList } from './AmbientTrackList';
 
 const onPlay = vi.fn();
@@ -20,13 +22,14 @@ const items = [
 describe('AmbientTrackList grid view', () => {
   beforeEach(() => {
     localStorage.clear();
+    resetTrackListView();
     onPlay.mockClear();
   });
 
   it('renders cover cards that play, and remembers the choice', () => {
     const { unmount } = render(<AmbientTrackList items={items} allowGrid />);
 
-    fireEvent.click(screen.getByRole('radio', { name: 'Grid' }));
+    pickTrackView('Grid');
     expect(screen.getByTestId('ambient-track-grid')).toBeVisible();
     expect(screen.getByTestId('ambient-track-list')).toHaveAttribute(
       'data-density',
@@ -39,18 +42,20 @@ describe('AmbientTrackList grid view', () => {
 
     render(<AmbientTrackList items={items} allowGrid />);
     expect(screen.getByTestId('ambient-track-grid')).toBeVisible();
+    expect(localStorage.getItem('tahti.ambientTrackList.density')).toBe('grid');
   });
 
   it('ignores a stored grid choice where grid is not offered', () => {
-    localStorage.setItem('tahti.ambientTrackList.density', 'grid');
+    useTrackListViewStore.setState({ view: 'grid' });
     render(<AmbientTrackList items={items} />);
 
-    expect(screen.queryByRole('radio', { name: 'Grid' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: /^Track size/ }));
+    expect(screen.queryByRole('menuitemradio', { name: 'Grid' })).toBeNull();
     expect(screen.queryByTestId('ambient-track-grid')).toBeNull();
   });
 
   it('shows the empty message in grid view', () => {
-    localStorage.setItem('tahti.ambientTrackList.density', 'grid');
+    useTrackListViewStore.setState({ view: 'grid' });
     render(
       <AmbientTrackList items={[]} allowGrid emptyMessage="Nothing saved." />,
     );

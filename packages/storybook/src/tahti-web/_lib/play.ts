@@ -113,3 +113,19 @@ export async function keyboardMoveDown(handle: HTMLElement) {
     expect(handle.getAttribute('aria-pressed')).not.toBe('true'),
   );
 }
+
+/** Opens a track listing's Track size popover and picks `name`, e.g. 'Grid'.
+ * The popover panel portals out of the canvas. */
+export async function pickTrackView(canvasElement: HTMLElement, name: Name) {
+  await userEvent.click(
+    within(canvasElement).getByRole('button', { name: /^Track size/ }),
+  );
+  await userEvent.click(
+    await withinBody(canvasElement).findByRole('menuitemradio', { name }),
+  );
+  await waitFor(() =>
+    expect(
+      withinBody(canvasElement).queryByRole('menu', { name: 'Track size' }),
+    ).toBeNull(),
+  );
+}

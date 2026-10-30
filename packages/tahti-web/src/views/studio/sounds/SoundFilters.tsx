@@ -1,7 +1,18 @@
-import { ChevronDownIcon, FilterIcon, SearchIcon } from 'lucide-react';
+import {
+  ArrowDownWideNarrowIcon,
+  ArrowUpNarrowWideIcon,
+  ChevronDownIcon,
+  FilterIcon,
+  SearchIcon,
+} from 'lucide-react';
 
 import { Button, Input, Select, Tooltip } from '@tahti-player/ui';
 
+import {
+  trackViewOptions,
+  TrackViewPicker,
+} from '../../../components/TrackViewPicker';
+import { useTrackListViewStore } from '../../../stores/trackListViewStore';
 import {
   CONTENT_TYPE_FILTERS,
   EMBED_FILTERS,
@@ -32,6 +43,11 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
     uploadedTo,
     setUploadedTo,
   } = state;
+  const storedView = useTrackListViewStore((store) => store.view);
+  const setView = useTrackListViewStore((store) => store.setView);
+  const view =
+    storedView === null || storedView === 'grid' ? 'comfortable' : storedView;
+  const sortLabel = sortDescending ? 'Descending' : 'Ascending';
 
   return (
     <>
@@ -49,7 +65,7 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
           }
         />
         <Select
-          label="Type"
+          aria-label="Type"
           value={contentTypeFilter}
           onValueChange={(value) =>
             setContentTypeFilter(value as ContentTypeFilter)
@@ -80,6 +96,36 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
             />
           </Button>
         </Tooltip>
+        <Select
+          aria-label="Sort by"
+          value={sortField}
+          onValueChange={(value) => setSortField(value as SortField)}
+          options={SORT_FIELDS.map((sortOption) => ({
+            id: sortOption.id,
+            label: `By ${sortOption.label.toLowerCase()}`,
+          }))}
+          className="min-w-40"
+        />
+        <Tooltip content={sortLabel} side="top">
+          <Button
+            type="button"
+            size="icon-sm"
+            variant="secondary"
+            aria-label={`Sort order: ${sortLabel}`}
+            onClick={() => setSortDescending((current) => !current)}
+          >
+            {sortDescending ? (
+              <ArrowDownWideNarrowIcon size={15} aria-hidden />
+            ) : (
+              <ArrowUpNarrowWideIcon size={15} aria-hidden />
+            )}
+          </Button>
+        </Tooltip>
+        <TrackViewPicker
+          options={trackViewOptions({ allowList: true })}
+          value={view}
+          onChange={setView}
+        />
         <span className="text-foreground-secondary text-xs">
           Pinned {pinnedCount}
         </span>
@@ -96,23 +142,6 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
             }))}
             className="min-w-40"
           />
-          <Select
-            label="Sort by"
-            value={sortField}
-            onValueChange={(value) => setSortField(value as SortField)}
-            options={SORT_FIELDS.map((sortOption) => ({
-              id: sortOption.id,
-              label: sortOption.label,
-            }))}
-            className="min-w-40"
-          />
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => setSortDescending((current) => !current)}
-          >
-            {sortDescending ? 'Descending' : 'Ascending'}
-          </Button>
           <Input
             type="date"
             label="Uploaded from"

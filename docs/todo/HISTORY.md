@@ -5675,3 +5675,7 @@ Waveform / AmbientTrackRow / AmbientTrackList stories cover 4096-peak, decoded-a
 ## 2026-10-30 - Cheap CI guards move to git hooks; stale story surfaces comment instead of failing
 
 PR #1714 failed on a hand-edited `STORYBOOK-SURFACES.md` and an over-800-line view. The pre-commit hook (`lint-staged.config.mjs`) now regenerates and stages the surfaces file whenever a story or the file is staged, and runs the file-size guard. A new pre-push hook runs `pnpm check:guards` (surfaces `--check` + file size); `--no-verify` skips it. CI no longer fails the Storybook job on stale surfaces: a separate `Story surfaces` job (outside the `CI` gate, same-repo PRs only) posts one sticky PR comment listing added / removed / retitled rows via `generate-storybook-surfaces.mjs --report`, updates it on each push and deletes it once the file is current.
+
+## 2026-10-30 - Listing toolbar: filter, sort and size on one row
+
+Track size is now an icon button with a popover (`TrackViewPicker`) on every `AmbientTrackList` / `PlayableAmbientTrackList` listing; `toolbarStart` puts a filter box in the same row (desktop library local files), and Library → Sounds moves Sort by, sort order and the size picker into its search row, sharing the view through `trackListViewStore`. Storybook plays cover the popover, the one-row layout and the Sounds filter row.
