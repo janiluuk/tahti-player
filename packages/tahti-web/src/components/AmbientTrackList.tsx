@@ -1,21 +1,19 @@
-import {
-  AlignJustifyIcon,
-  LayoutGridIcon,
-  ListIcon,
-  Rows2Icon,
-  Rows3Icon,
-} from 'lucide-react';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 
-import { Card, CardGrid, SegmentedControl } from '@tahti-player/ui';
+import { Card, CardGrid } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
+import {
+  useTrackListViewStore,
+  type TrackListView,
+} from '../stores/trackListViewStore';
 import {
   AmbientTrackRow,
   type AmbientTrackRowDensity,
   type AmbientTrackRowProps,
 } from './AmbientTrackRow';
 import { PageEmpty } from './PageStates';
+import { trackViewOptions, TrackViewPicker } from './TrackViewPicker';
 
 export const AMBIENT_TRACK_DENSITIES: AmbientTrackRowDensity[] = [
   'comfortable',
@@ -23,65 +21,8 @@ export const AMBIENT_TRACK_DENSITIES: AmbientTrackRowDensity[] = [
   'dense',
 ];
 
-const SIZE_OPTIONS = [
-  {
-    id: 'comfortable' as const,
-    label: 'Large',
-    icon: <Rows3Icon size={14} aria-hidden />,
-  },
-  {
-    id: 'compact' as const,
-    label: 'Medium',
-    icon: <Rows2Icon size={14} aria-hidden />,
-  },
-  {
-    id: 'dense' as const,
-    label: 'Small',
-    icon: <AlignJustifyIcon size={14} aria-hidden />,
-  },
-];
-
-const LIST_OPTION = {
-  id: 'list' as const,
-  label: 'List',
-  icon: <ListIcon size={14} aria-hidden />,
-};
-
-const GRID_OPTION = {
-  id: 'grid' as const,
-  label: 'Grid',
-  icon: <LayoutGridIcon size={14} aria-hidden />,
-};
-
 /** A row density, `list` (a plain data table) or `grid` (cover cards). */
-export type AmbientTrackListView = AmbientTrackRowDensity | 'list' | 'grid';
-
-const STORAGE_KEY = 'tahti.ambientTrackList.density';
-
-function readStoredView(
-  fallback: AmbientTrackListView,
-  allowList: boolean,
-  allowGrid: boolean,
-): AmbientTrackListView {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw === 'list' && allowList) {
-      return 'list';
-    }
-    if (raw === 'grid' && allowGrid) {
-      return 'grid';
-    }
-    if (
-      raw &&
-      AMBIENT_TRACK_DENSITIES.includes(raw as AmbientTrackRowDensity)
-    ) {
-      return raw as AmbientTrackRowDensity;
-    }
-  } catch {
-    /* private mode */
-  }
-  return fallback;
-}
+export type AmbientTrackListView = TrackListView;
 
 export type AmbientTrackListItem = Omit<
   AmbientTrackRowProps,
@@ -96,13 +37,19 @@ export type AmbientTrackListProps = {
   density?: AmbientTrackRowDensity;
   defaultDensity?: AmbientTrackRowDensity;
   onDensityChange?: (density: AmbientTrackRowDensity) => void;
-  /** Persist density to localStorage (default true when uncontrolled). */
+  /** Share the remembered view with other track lists (default true when
+   * uncontrolled). */
   persistDensity?: boolean;
   emptyMessage?: string;
   /** What the header counts, e.g. `sound` reads "3 sounds". */
   itemNoun?: string;
-  /** Extra controls beside the size switcher. */
+  /** Leads the toolbar row, e.g. a filter box. With it the toolbar stays
+   * up when `items` is empty, so the filter can be cleared. */
+  toolbarStart?: ReactNode;
+  /** Extra controls before the size picker, e.g. a sort dropdown. */
   toolbarEnd?: ReactNode;
+  /** The page renders the size picker elsewhere (bound to the same store). */
+  hideViewPicker?: boolean;
   /** Offers a List option in the switcher; renders this in place of the rows. */
   renderList?: () => ReactNode;
   /** Offers a Grid option: cover cards with play, no waveform. */
@@ -118,19 +65,24 @@ export function AmbientTrackList({
   persistDensity,
   emptyMessage = 'No tracks yet.',
   itemNoun = 'track',
+  toolbarStart,
   toolbarEnd,
+  hideViewPicker = false,
   renderList,
   allowGrid = false,
   className,
 }: AmbientTrackListProps) {
   const controlled = densityProp !== undefined;
   const shouldPersist = persistDensity ?? !controlled;
-  const [internal, setInternal] = useState<AmbientTrackListView>(() =>
-    shouldPersist
-      ? readStoredView(defaultDensity, Boolean(renderList), allowGrid)
-      : defaultDensity,
-  );
-  const view: AmbientTrackListView = controlled ? densityProp : internal;
+  const storedView = useTrackListViewStore((state) => state.view);
+  const storeView = useTrackListViewStore((state) => state.setView);
+  const [internal, setInternal] =
+    useState<AmbientTrackListView>(defaultDensity);
+  const view: AmbientTrackListView = controlled
+    ? densityProp
+    : shouldPersist
+      ? (storedView ?? defaultDensity)
+      : internal;
   const showList = view === 'list' && Boolean(renderList);
   const showGrid = view === 'grid' && allowGrid;
   const density: AmbientTrackRowDensity =
@@ -140,33 +92,25 @@ export function AmbientTrackList({
     : showGrid
       ? 'grid'
       : density;
-  const options = [
-    ...SIZE_OPTIONS,
-    ...(allowGrid ? [GRID_OPTION] : []),
-    ...(renderList ? [LIST_OPTION] : []),
-  ];
-
-  useEffect(() => {
-    if (!shouldPersist) {
-      return;
-    }
-    try {
-      localStorage.setItem(STORAGE_KEY, view);
-    } catch {
-      /* ignore */
-    }
-  }, [view, shouldPersist]);
+  const options = trackViewOptions({
+    allowGrid,
+    allowList: Boolean(renderList),
+  });
 
   const setView = (next: AmbientTrackListView) => {
     if (!controlled) {
-      setInternal(next);
+      if (shouldPersist) {
+        storeView(next);
+      } else {
+        setInternal(next);
+      }
     }
     if (next !== 'list' && next !== 'grid') {
       onDensityChange?.(next);
     }
   };
 
-  if (items.length === 0) {
+  if (items.length === 0 && !toolbarStart) {
     return (
       <PageEmpty
         title={emptyMessage}
@@ -186,23 +130,38 @@ export function AmbientTrackList({
       data-density={activeView}
     >
       <div
-        className="flex flex-wrap items-center gap-2 px-1"
+        className={cn(
+          'flex items-center gap-2 px-1',
+          toolbarStart ? 'flex-nowrap' : 'flex-wrap',
+        )}
         data-testid="ambient-track-list-toolbar"
       >
-        <span className="text-foreground-secondary me-auto text-xs font-semibold tabular-nums">
+        {toolbarStart ? (
+          <div className="min-w-0 flex-1">{toolbarStart}</div>
+        ) : null}
+        <span
+          className={cn(
+            'text-foreground-secondary shrink-0 text-xs font-semibold tabular-nums',
+            toolbarStart ? 'hidden sm:inline' : 'me-auto',
+          )}
+        >
           {items.length} {items.length === 1 ? itemNoun : `${itemNoun}s`}
         </span>
         {toolbarEnd}
-        <SegmentedControl
-          aria-label="Track size"
-          iconOnly
-          className="bg-background-input"
-          options={options}
-          value={activeView}
-          onChange={setView}
-        />
+        {hideViewPicker ? null : (
+          <TrackViewPicker
+            options={options}
+            value={activeView}
+            onChange={setView}
+          />
+        )}
       </div>
-      {showList && renderList ? (
+      {items.length === 0 ? (
+        <p className="text-foreground-secondary px-1 py-6 text-center text-sm">
+          {emptyMessage}
+        </p>
+      ) : null}
+      {items.length === 0 ? null : showList && renderList ? (
         renderList()
       ) : showGrid ? (
         <CardGrid data-testid="ambient-track-grid">

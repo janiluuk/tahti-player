@@ -11,7 +11,7 @@ import {
   withToaster,
 } from './_fixtures/track-release';
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
-import { findToast } from './_lib/play';
+import { findToast, pickTrackView } from './_lib/play';
 
 const meta: Meta<typeof StudioSoundsView> = {
   title: 'Tahti/Studio/StudioSoundsView',
@@ -36,6 +36,45 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Sounds: Story = {};
+
+/** Search, Type, Sort by, sort order and the Track size button share the
+ * filter row; the size picked there drives the list below. */
+export const FilterRow: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const search = await canvas.findByRole('searchbox', {
+      name: 'Search sounds',
+    });
+    await waitFor(() =>
+      expect(canvas.getByTestId('ambient-track-list')).toBeVisible(),
+    );
+    const row = search.closest('div.flex-wrap');
+    await expect(row).not.toBeNull();
+    const inRow = within(row as HTMLElement);
+    await expect(inRow.getByRole('button', { name: 'Type' })).toBeVisible();
+    await expect(inRow.getByRole('button', { name: 'Sort by' })).toBeVisible();
+    await expect(
+      inRow.getByRole('button', { name: /^Sort order/ }),
+    ).toBeVisible();
+    await expect(
+      inRow.getByRole('button', { name: /^Track size/ }),
+    ).toBeVisible();
+    await expect(
+      within(canvas.getByTestId('ambient-track-list-toolbar')).queryByRole(
+        'button',
+        { name: /^Track size/ },
+      ),
+    ).toBeNull();
+
+    await pickTrackView(canvasElement, 'Small');
+    await waitFor(() =>
+      expect(canvas.getByTestId('ambient-track-list')).toHaveAttribute(
+        'data-density',
+        'dense',
+      ),
+    );
+  },
+};
 
 /** Rows with cover art get a dominant-color ambient wash (library Sounds polish). */
 export const AmbientCovers: Story = {

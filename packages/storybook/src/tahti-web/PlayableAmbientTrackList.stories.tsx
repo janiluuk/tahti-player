@@ -4,7 +4,7 @@ import { PlayableAmbientTrackList } from '@tahti-web/components/PlayableAmbientT
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
-import { withinBody } from './_lib/play';
+import { pickTrackView, withinBody } from './_lib/play';
 
 const track = (
   id: string,
@@ -132,7 +132,7 @@ export const Removable: Story = {
     await expect(args.onRemove).toHaveBeenCalledWith(
       expect.objectContaining({ title: 'After Hours' }),
     );
-    await userEvent.click(canvas.getByRole('radio', { name: 'List' }));
+    await pickTrackView(canvasElement, 'List');
     await expect(
       (await canvas.findAllByRole('checkbox')).length,
     ).toBeGreaterThan(1);
