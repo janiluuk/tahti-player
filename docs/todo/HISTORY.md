@@ -5658,3 +5658,7 @@ Extracted preset application into a hook to keep ChannelDesigner below the 800-l
 ## 2026-10-30 — Storybook waveforms, unified listing panel, radio loop
 
 Waveform / AmbientTrackRow / AmbientTrackList stories cover 4096-peak, decoded-audio, phone-width and processing states with play checks, and are type-checked via `tsconfig.tahti.json`. `AmbientTrackList` frames its count, sort and size switcher with the rows as one panel. Radio repeat loops the station list both ways; full-screen station logos use a glass panel; Playback settings can keep the screen on in full screen (Screen Wake Lock). Folded `storybook-waveforms.md`.
+
+## 2026-10-30 - Cheap CI guards move to git hooks; stale story surfaces comment instead of failing
+
+PR #1714 failed on a hand-edited `STORYBOOK-SURFACES.md` and an over-800-line view. The pre-commit hook (`lint-staged.config.mjs`) now regenerates and stages the surfaces file whenever a story or the file is staged, and runs the file-size guard. A new pre-push hook runs `pnpm check:guards` (surfaces `--check` + file size); `--no-verify` skips it. CI no longer fails the Storybook job on stale surfaces: a separate `Story surfaces` job (outside the `CI` gate, same-repo PRs only) posts one sticky PR comment listing added / removed / retitled rows via `generate-storybook-surfaces.mjs --report`, updates it on each push and deletes it once the file is current.
