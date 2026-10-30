@@ -43,6 +43,7 @@ export function LogsPanel() {
           to="/admin/logs"
           search={{ tab: 'containers' }}
           size="sm"
+          variant="secondary"
           onClick={() => closeSettings()}
         >
           Container logs

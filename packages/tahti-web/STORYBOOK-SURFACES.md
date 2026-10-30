@@ -204,6 +204,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Reference/Latest view surfaces` | `tahti-web/LatestViewSurfaces.stories.tsx` |
 | `Tahti/Widgets/LegalDocShell` | `tahti-web/LegalDocShell.stories.tsx` |
 | `Tahti/Library/LibraryFavorites` | `tahti-web/LibraryFavorites.stories.tsx` |
+| `Tahti/Library/LibraryItemRow` | `tahti-web/LibraryItemRow.stories.tsx` |
 | `Tahti/Widgets/ListenAddonsPanel` | `tahti-web/ListenAddonsPanel.stories.tsx` |
 | `Tahti/Listen/ListenSection` | `tahti-web/ListenSection.stories.tsx` |
 | `Tahti/Listen/ListenView` | `tahti-web/ListenView.stories.tsx` |

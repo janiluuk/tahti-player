@@ -301,7 +301,11 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  <ButtonLink to="/studio/go-live" size="sm">
+                  <ButtonLink
+                    to="/studio/go-live"
+                    size="sm"
+                    variant="secondary"
+                  >
                     <RadioIcon size={14} aria-hidden className="mr-1" />
                     Go Live to record
                   </ButtonLink>

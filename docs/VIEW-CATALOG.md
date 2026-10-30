@@ -78,9 +78,9 @@ desktop views were removed in 2026-10.
 | View                                        | Route                 | File                                  | Storybook | Candidate For                                                                                                                    |
 | ------------------------------------------- | --------------------- | ------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | [Library](#library)                         | `/library`            | `src/views/LibraryView.tsx`           | Has Story | Tabs, SectionTabs, CardGrid. Favorites is a tab (`LibraryFavorites`). Signed-out account tabs stay visible and disabled. |
-| [Library Embeds](#library-embeds)           | (library)             | `src/views/LibraryEmbedsView.tsx`     | No Story  | EmbedTrackRow list                                                                                                               |
-| [Library Media](#library-media)             | (library)             | `src/views/LibraryMediaView.tsx`      | No Story  | ImageLightbox, CardGrid                                                                                                          |
-| [Library Smart Links](#library-smart-links) | `/library/smartlinks` | `src/views/LibrarySmartLinksView.tsx` | No Story  | CardGrid                                                                                                                         |
+| [Library Embeds](#library-embeds)           | (library)             | `src/views/LibraryEmbedsView.tsx`     | No Story  | `LibraryItemRow` (`Tahti/Library/LibraryItemRow`) plus the provider widget |
+| [Library Media](#library-media)             | (library)             | `src/views/LibraryMediaView.tsx`      | No Story  | `LibraryItemRow` — thumbnail, name, open, remove |
+| [Library Smart Links](#library-smart-links) | `/library/smartlinks` | `src/views/LibrarySmartLinksView.tsx` | No Story  | `LibraryItemRow` |
 | [Local files](#local-files) | `/library/local` (desktop app; the browser redirects to `/library`) | `src/views/LibraryView.tsx` tab `local` → `DesktopLibraryPanel` | Has Story | `Tahti/Misc/DesktopLibraryPanel` (`DjCatalog`), `Tahti/Desktop/DjSettingsPopover`, `KeyCell`, `MixableTracksSection`, `TrackAnalysisSection`, `PlayHistoryDialog`, `SmartRuleValueInput`, `LocalLibraryFilters` |
 
 ### Studio Views (Artist Dashboard)

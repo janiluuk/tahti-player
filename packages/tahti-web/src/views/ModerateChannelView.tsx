@@ -96,7 +96,12 @@ export function ModerateChannelView({ slug }: { slug: string }) {
         title="You don't moderate this channel"
         description={`@${user.username} is not a moderator of this channel's chat. Its owner adds moderators in Settings.`}
         action={
-          <ButtonLink to="/channel/$slug" params={{ slug }} size="sm">
+          <ButtonLink
+            to="/channel/$slug"
+            params={{ slug }}
+            size="sm"
+            variant="secondary"
+          >
             Back to the channel
           </ButtonLink>
         }

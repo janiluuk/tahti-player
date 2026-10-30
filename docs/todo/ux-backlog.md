@@ -54,6 +54,12 @@ new surface, one PR per row.
 - [ ] De-green `Button` (primary-heavy everywhere; Cards and the MediaArtwork
   overlay were already neutralised). Partial: Governance attention panel +
   stream PlaylistDialog selected row (batch 81).
+  - 2026-10-30: quieted jumps that were sitting next to a real action
+    or beside an already-secondary control: smart-link empty Create
+    release, container logs, back to the channel, Pro editor, gallery
+    Done, Go Live to record, A/B switch, and the channel live-chat
+    notice. Saves, plays, uploads, and empty-state setup (Stripe, tiers)
+    stay green.
   - 2026-10-30 (batch 120): add-on Reject is danger; Open Storybook and the
     MusicBrainz "open prefilled editor" links are secondary. Primary
     confirms (Rename, Add to queue, Play, Download) stay green.
@@ -73,7 +79,7 @@ new surface, one PR per row.
 ## Track lists: ambient rows, view modes, sort
 
 - [x] `StudioShowsView` search + clear (already); `MyVenuesView` search + clear (batch 80).
-- [ ] Library trio (`LibraryMediaView` / `LibraryEmbedsView` /
+- [x] Library trio (`LibraryMediaView` / `LibraryEmbedsView` /
   `LibrarySmartLinksView`): converge on a shared library row with FilterChips +
   sort (pattern: `studio/sounds/SoundFilters.tsx`). Partial: Embeds FilterChips +
   SmartLinks search (batch 80); Media kind chips + SmartLinks DSP chips + load
@@ -82,13 +88,14 @@ new surface, one PR per row.
   (batch 85); client sort Select on Media/Embeds/SmartLinks (batch 87).
   - 2026-10-27: Media (file name) and Embeds (title) get the toolbar search
     SmartLinks already had, and all three use one `LibraryFilteredEmpty`
-    (names the search, one button clears search and chips). Left: the
-    shared row itself (Media is a card grid, Embeds a provider widget, so
-    only SmartLinks has a plain row today).
+    (names the search, one button clears search and chips).
+  - 2026-10-30: Media, Embeds and Smart links share `LibraryItemRow`
+    (art, title, detail, actions). Media keeps a thumbnail or video in
+    the row. An embed still opens the provider widget from that row.
 
 ## Shared surfaces (de-duplication)
 
-- [ ] One entity-profile section stack (tracks table + releases grid +
+- [x] One entity-profile section stack (tracks table + releases grid +
   collections grid) for ArtistView and ChannelView
   (`artist-view/ArtistReferenceSections.tsx` vs `channel-view/ChannelViewBlocks.tsx`).
   - 2026-10-27 (batch 90): shared `ProfileSection` (heading + loading /
@@ -96,7 +103,11 @@ new surface, one PR per row.
     sections and the channel Tracks block. Left: one tracks list for both
     (channel blocks wait on the ambient-rows item) and a releases / playlists
     grid on the channel page.
-- [ ] One collection surface for CollectionView / SmartLinkView /
+  - 2026-10-30: the channel Tracks block loads the public profile and
+    shows the same releases grid and playlists grid as the artist page
+    (loading, error with retry, empty, play, queue, favorite, tracklist).
+    Radio channels skip them.
+- [x] One collection surface for CollectionView / SmartLinkView /
   StudioCollectionsView (same track list + empty message, rendered 3×).
   - 2026-10-27 (batch 90): shared `CollectionTrackList` (framed ambient
     rows + empty state) on CollectionView and SmartLinkView; a smart link
@@ -104,6 +115,8 @@ new surface, one PR per row.
     lists collections, not tracks; the Studio editor tracklist
     (`collection-edit/TracklistPanel.tsx`, reorderable `TrackTable`) still
     has its own empty state.
+  - 2026-10-30: the editor's empty tracklist uses `CollectionTrackList`.
+    Studio → Collections still lists collections, not tracks.
 - After moving files, update `docs/VIEW-CATALOG.md`.
 
 ## Studio functional

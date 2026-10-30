@@ -128,6 +128,7 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                     to="/studio/sounds/$id/editor"
                     params={{ id: project.soundId }}
                     size="sm"
+                    variant="secondary"
                     aria-label="Open pro editor"
                   >
                     <AudioLinesIcon size={16} aria-hidden className="mr-1.5" />
