@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { WelcomeStrip } from '@tahti-web/components/listen-view/WelcomeStrip';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 
@@ -28,9 +28,11 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Independent music, live.' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Independent music, live.' }),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('link', { name: /Join free/ }),
     ).toHaveAttribute('href', '/join');

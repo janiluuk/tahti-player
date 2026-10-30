@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { StudioSoundView } from '@tahti-web/views/studio/StudioSoundView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import {
   EDIT_SOUND,
@@ -53,7 +53,9 @@ export const StillProcessing: Story = {
   decorators: [withTahtiRouter(`/studio/sounds/${PROCESSING_SOUND.id}`)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText(/Still processing/)).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText(/Still processing/)).toBeVisible(),
+    );
     await expect(canvas.getByTestId('track-processing')).toHaveTextContent(
       'Processing',
     );
@@ -67,16 +69,18 @@ export const ProcessingFailed: Story = {
   decorators: [withTahtiRouter(`/studio/sounds/${FAILED_SOUND.id}`)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText(
-        `Processing failed: ${FAILED_SOUND.processingError}`,
-      ),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByText(`Processing failed: ${FAILED_SOUND.processingError}`),
+      ).toBeVisible(),
+    );
     await userEvent.click(
       canvas.getByRole('button', { name: 'Retry processing' }),
     );
     await findToast(canvasElement, `Processing "${FAILED_SOUND.title}" again`);
-    await expect(await canvas.findByText(/Still processing/)).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText(/Still processing/)).toBeVisible(),
+    );
     await expect(canvas.queryByText(/^Processing failed/)).toBeNull();
   },
 };
@@ -87,9 +91,11 @@ export const ProcessingFailedNoRetry: Story = {
   decorators: [withTahtiRouter(`/studio/sounds/${FAILED_LEGACY_SOUND.id}`)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('Processing failed for this file.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByText('Processing failed for this file.'),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.queryByRole('button', { name: 'Retry processing' }),
     ).toBeNull();

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChannelListeningPartyBanner } from '@tahti-web/components/channel-view';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { CHANNEL_SLUG } from './_fixtures/channel';
 import { withTahtiRouter } from './_lib/decorators';
@@ -28,9 +28,9 @@ type Story = StoryObj<typeof meta>;
 export const LiveNow: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('Listening party · live now'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Listening party · live now')).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('link', { name: 'Join now' }),
     ).toHaveAttribute('href', '/party/lp-mock-live');

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { MixableTracksSection } from '@tahti-web/components/MixableTracksSection';
 import { useDjPrefsStore } from '@tahti-web/stores/djPrefsStore';
-import { expect, fn, within } from 'storybook/test';
+import { expect, fn, waitFor, within } from 'storybook/test';
 
 import { DJ_TRACKS, djLibrary, SOURCE_TRACK } from './_fixtures/dj-library';
 
@@ -37,7 +37,9 @@ type Story = StoryObj<typeof meta>;
 export const Matches: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText('Harbour Lights')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Harbour Lights')).toBeVisible(),
+    );
     await expect(canvas.getByText('Halftime Fog')).toBeVisible();
   },
 };
@@ -54,10 +56,10 @@ export const NeedsAnalysis: Story = {
 export const NoMatches: Story = {
   args: { library: djLibrary({ tracks: [SOURCE_TRACK] }) },
   play: async ({ canvasElement }) => {
-    await expect(
-      await within(canvasElement).findByText(
-        /Nothing in your library matches yet/,
-      ),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        within(canvasElement).getByText(/Nothing in your library matches yet/),
+      ).toBeVisible(),
+    );
   },
 };

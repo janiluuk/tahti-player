@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminContentView } from '@tahti-web/views/admin/AdminContentView';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -27,7 +27,7 @@ export const Default: Story = {
       canvas.getByRole('heading', { level: 1, name: 'Content' }),
     ).toBeVisible();
     await expect(canvas.getByRole('link', { name: 'Top lists' })).toBeVisible();
-    await expect(await canvas.findByText('1,842')).toBeVisible();
+    await waitFor(() => expect(canvas.getByText('1,842')).toBeVisible());
     await expect(canvas.getByText('48,216')).toBeVisible();
     await expect(
       canvas.getByRole('heading', { name: 'Latest content' }),

@@ -65,9 +65,11 @@ export const PinAndUnpin: Story = {
     await userEvent.click(unpin);
     await findToast(canvasElement, 'Unpinned from your profile.');
     await waitFor(() => expect(args.onChange).toHaveBeenLastCalledWith(null));
-    await expect(
-      await canvas.findByRole('button', { name: 'Pin to profile' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('button', { name: 'Pin to profile' }),
+      ).toBeVisible(),
+    );
   },
 };
 

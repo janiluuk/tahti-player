@@ -23,9 +23,9 @@ export const Default: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: "What's New" }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('heading', { name: "What's New" })).toBeVisible(),
+    );
     const period = await canvas.findByText(/7–20 Oct 2026/);
     await waitFor(() => expect(period).toBeVisible());
     const openFull = await canvas.findByRole('button', {

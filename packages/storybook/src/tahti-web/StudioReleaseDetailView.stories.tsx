@@ -50,9 +50,11 @@ async function openSmartLinks(canvasElement: HTMLElement): Promise<Scope> {
 export const Overview: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'After Hours' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'After Hours' }),
+      ).toBeVisible(),
+    );
     await expect(canvas.getByText('ALBUM · PUBLISHED')).toBeVisible();
     await expect(
       canvas.getByRole('button', { name: 'Published' }),
@@ -66,7 +68,9 @@ export const SwitchTabs: Story = {
     const canvas = within(canvasElement);
     await canvas.findByRole('heading', { name: 'After Hours' });
     await selectTab(canvas, 'Smart links');
-    await expect(await canvas.findByText('Smart-link playlist')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Smart-link playlist')).toBeVisible(),
+    );
     await selectTab(canvas, 'Credits');
     await expect(canvas.getByText('Track credits')).toBeVisible();
     await selectTab(canvas, 'Versions');
@@ -85,7 +89,9 @@ export const SwitchTabs: Story = {
 export const SmartLinks: Story = {
   play: async ({ canvasElement }) => {
     const canvas = await openSmartLinks(canvasElement);
-    await expect(await canvas.findByText('Smart link stats')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Smart link stats')).toBeVisible(),
+    );
     await expect(canvas.getByText('482')).toBeVisible();
     await expect(canvas.getByText('20%')).toBeVisible();
     const clicks = within(canvas.getByTestId('smart-link-clicks'));
@@ -106,9 +112,11 @@ export const SmartLinks: Story = {
 export const TrackUploadStates: Story = {
   play: async ({ canvasElement }) => {
     const canvas = await openSmartLinks(canvasElement);
-    await expect(
-      await canvas.findByRole('button', { name: 'Upload audio' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('button', { name: 'Upload audio' }),
+      ).toBeVisible(),
+    );
     await expect(canvas.getByText('Processing failed')).toBeVisible();
     await expect(
       canvas.getByRole('button', { name: 'Upload again' }),
@@ -128,9 +136,11 @@ export const UploadTrackAudio: Story = {
       canvas.getByLabelText('Audio for Polar Night'),
       audioFile(),
     );
-    await expect(
-      await canvas.findByRole('meter', { name: /Uploading Polar Night/ }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('meter', { name: /Uploading Polar Night/ }),
+      ).toBeVisible(),
+    );
     await findToast(
       canvasElement,
       'Audio uploaded. It is being processed now.',
@@ -160,14 +170,16 @@ export const UploadNewTrack: Story = {
       dialog.getByRole('textbox', { name: 'Track title' }),
     ).toHaveValue('midnight-sun');
     await userEvent.click(upload);
-    await expect(
-      await dialog.findByRole('meter', { name: /Uploading midnight-sun/ }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        dialog.getByRole('meter', { name: /Uploading midnight-sun/ }),
+      ).toBeVisible(),
+    );
     await findToast(
       canvasElement,
       'Audio uploaded. It is being processed now.',
     );
-    await expect(await canvas.findByText('midnight-sun')).toBeVisible();
+    await waitFor(() => expect(canvas.getByText('midnight-sun')).toBeVisible());
   },
 };
 

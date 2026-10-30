@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DiscoverView } from '@tahti-web/views/DiscoverView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 import { selectTab } from './_lib/play';
@@ -40,12 +40,18 @@ export const Default: Story = {
       await selectTab(canvas, /Artists/);
       await expect(canvas.queryByTestId('discover-filters')).toBeNull();
       await selectTab(canvas, /Venues/);
-      await expect(
-        await canvas.findByRole('link', { name: 'Register a venue' }),
-      ).toBeVisible();
-      await expect(await canvas.findByText('Kuudes Linja')).toBeVisible();
+      await waitFor(() =>
+        expect(
+          canvas.getByRole('link', { name: 'Register a venue' }),
+        ).toBeVisible(),
+      );
+      await waitFor(() =>
+        expect(canvas.getByText('Kuudes Linja')).toBeVisible(),
+      );
       await selectTab(canvas, /Discover/);
-      await expect(await canvas.findByTestId('discover-filters')).toBeVisible();
+      await waitFor(() =>
+        expect(canvas.getByTestId('discover-filters')).toBeVisible(),
+      );
     });
   },
 };

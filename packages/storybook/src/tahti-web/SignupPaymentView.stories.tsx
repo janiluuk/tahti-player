@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SignupPaymentView } from '@tahti-web/views/SignupPaymentView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import {
   MOCK_USERS,
@@ -66,9 +66,11 @@ export const NotAMember: Story = {
       ),
     ).toBeVisible();
     await userEvent.click(pay);
-    await expect(
-      await canvas.findByText('Membership activated — member #99.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByText('Membership activated — member #99.'),
+      ).toBeVisible(),
+    );
   },
 };
 
@@ -77,9 +79,11 @@ export const ActiveMember: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText(/Membership is active — member #42/),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByText(/Membership is active — member #42/),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('link', { name: 'Account settings →' }),
     ).toBeVisible();

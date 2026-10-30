@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { MulticastConfigureDialog } from '@tahti-web/components/MulticastConfigureDialog';
 import { useState } from 'react';
-import { expect, userEvent } from 'storybook/test';
+import { expect, userEvent, waitFor } from 'storybook/test';
 
 import { findDialog } from './_lib/play';
 
@@ -84,8 +84,8 @@ export const SaveFailure: Story = {
     await userEvent.click(
       dialog.getByRole('button', { name: /save destination/i }),
     );
-    await expect(
-      await dialog.findByText('Ingest rejected the stream key.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(dialog.getByText('Ingest rejected the stream key.')).toBeVisible(),
+    );
   },
 };

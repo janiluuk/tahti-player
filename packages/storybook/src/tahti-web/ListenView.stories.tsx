@@ -41,22 +41,30 @@ export const SignedIn: Story = {
         const [first] = await dashboard.findAllByTestId(section);
         await expect(first).toBeVisible();
       }
-      await expect(
-        await dashboard.findByRole('heading', { name: 'New tracks' }),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(
+          dashboard.getByRole('heading', { name: 'New tracks' }),
+        ).toBeVisible(),
+      );
     });
 
     await step('switch to Feed, History and back', async () => {
       await selectTab(tabs, /Feed/);
-      await expect(
-        await canvas.findByRole('heading', { level: 1, name: 'Feed' }),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(
+          canvas.getByRole('heading', { level: 1, name: 'Feed' }),
+        ).toBeVisible(),
+      );
       await selectTab(tabs, /History/);
-      await expect(
-        await canvas.findByRole('heading', { level: 1, name: 'History' }),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(
+          canvas.getByRole('heading', { level: 1, name: 'History' }),
+        ).toBeVisible(),
+      );
       await selectTab(tabs, /Listen/);
-      await expect(await canvas.findByTestId('listen-dashboard')).toBeVisible();
+      await waitFor(() =>
+        expect(canvas.getByTestId('listen-dashboard')).toBeVisible(),
+      );
     });
   },
 };
@@ -212,6 +220,6 @@ export const NewWidgetOnTop: Story = {
     await expect(dashboardBlockIds(canvasElement)[0]).toBe(
       BROWSER_STATIONS_BLOCK_ID,
     );
-    await expect(await canvas.findByText('KEXP')).toBeVisible();
+    await waitFor(() => expect(canvas.getByText('KEXP')).toBeVisible());
   },
 };

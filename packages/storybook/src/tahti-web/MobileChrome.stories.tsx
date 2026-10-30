@@ -173,7 +173,7 @@ export const Drawer: StoryObj = {
     await waitFor(() => expect(body.queryByRole('dialog')).toBeNull());
 
     await userEvent.click(body.getByRole('button', { name: 'Open drawer' }));
-    await expect(await body.findByRole('dialog')).toBeVisible();
+    await waitFor(() => expect(body.getByRole('dialog')).toBeVisible());
     await expect(body.queryByRole('tooltip')).toBeNull();
     await userEvent.click(panelCloseButton(body));
     await waitFor(() => expect(body.queryByRole('dialog')).toBeNull());

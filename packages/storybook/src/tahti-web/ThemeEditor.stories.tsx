@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ThemeEditor } from '@tahti-web/components/ThemeEditor';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 const meta: Meta<typeof ThemeEditor> = {
   title: 'Tahti/Settings/ThemeEditor',
@@ -28,9 +28,9 @@ export const EmptyNameValidation: Story = {
     const name = await canvas.findByLabelText('Name');
     await userEvent.clear(name);
     await userEvent.click(canvas.getByRole('button', { name: 'Save' }));
-    await expect(
-      await canvas.findByText('Theme name is required.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Theme name is required.')).toBeVisible(),
+    );
   },
 };
 

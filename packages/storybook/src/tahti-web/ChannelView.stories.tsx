@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChannelView } from '@tahti-web/views/ChannelView';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -124,7 +124,7 @@ export const OfflinePhoneLight: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText('Off air')).toBeVisible();
+    await waitFor(() => expect(canvas.getByText('Off air')).toBeVisible());
     await expectReadableTrackTitles(canvasElement);
   },
 };

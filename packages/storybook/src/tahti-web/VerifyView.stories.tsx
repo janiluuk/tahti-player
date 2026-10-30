@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { VerifyView } from '@tahti-web/views/VerifyView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import {
   withMockAuth,
@@ -37,9 +37,11 @@ export const FromEmailLink: Story = {
   beforeEach: withLocationSearch('?token=mock-verify-token'),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Email verified' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Email verified' }),
+      ).toBeVisible(),
+    );
     await expect(canvas.getByText('Mock verify OK')).toBeVisible();
     await expect(
       canvas.getByRole('link', { name: 'Continue to login' }),
@@ -62,9 +64,11 @@ export const PasteToken: Story = {
       'pasted-token',
     );
     await userEvent.click(verify);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Email verified' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Email verified' }),
+      ).toBeVisible(),
+    );
     await expect(canvas.getByRole('link', { name: 'Join' })).toHaveAttribute(
       'href',
       '/join',

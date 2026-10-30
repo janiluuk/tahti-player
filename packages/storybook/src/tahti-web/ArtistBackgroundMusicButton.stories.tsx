@@ -35,13 +35,13 @@ export const Toggle: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: PLAY }));
-    await expect(
-      await canvas.findByRole('button', { name: MUTE }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('button', { name: MUTE })).toBeVisible(),
+    );
     await userEvent.click(canvas.getByRole('button', { name: MUTE }));
-    await expect(
-      await canvas.findByRole('button', { name: PLAY }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('button', { name: PLAY })).toBeVisible(),
+    );
   },
 };
 

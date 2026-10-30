@@ -6,7 +6,7 @@ import {
 } from '@tahti-web/api/internetRadioPresetsMockStore';
 import { useStationHealthStore } from '@tahti-web/stores/stationHealthStore';
 import { InternetRadioPresetsPanel } from '@tahti-web/views/admin/InternetRadioPresetsPanel';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 import { findDialog } from './_lib/play';
@@ -53,11 +53,13 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', {
-        name: 'Internet radio — Listen page defaults (6)',
-      }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', {
+          name: 'Internet radio — Listen page defaults (6)',
+        }),
+      ).toBeVisible(),
+    );
     await expect(canvas.getByText('YleX')).toBeVisible();
     await expect(canvas.getAllByText('Enabled for everyone')).toHaveLength(6);
     await expect(
@@ -83,9 +85,11 @@ export const HealthResults: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('Unavailable · Server error (HTTP 404)'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByText('Unavailable · Server error (HTTP 404)'),
+      ).toBeVisible(),
+    );
   },
 };
 
@@ -94,9 +98,11 @@ export const CatalogStation: Story = {
   decorators: [withoutYleXPreset],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Built-in catalog (1)' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Built-in catalog (1)' }),
+      ).toBeVisible(),
+    );
     await userEvent.click(
       canvas.getByRole('button', { name: 'Add as preset' }),
     );
@@ -132,9 +138,11 @@ export const InsecureStreamUrl: Story = {
       'http://plain.example/live.mp3',
     );
     await userEvent.click(dialog.getByRole('button', { name: 'Add station' }));
-    await expect(
-      await dialog.findByText('Stream URL must start with https://'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        dialog.getByText('Stream URL must start with https://'),
+      ).toBeVisible(),
+    );
   },
 };
 

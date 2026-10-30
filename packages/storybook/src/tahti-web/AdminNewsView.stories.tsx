@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminNewsView } from '@tahti-web/views/admin/AdminNewsView';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 import { openDialog } from './_lib/play';
@@ -23,9 +23,11 @@ export const Default: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('Tahti is open. Come find your next favourite.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByText('Tahti is open. Come find your next favourite.'),
+      ).toBeVisible(),
+    );
     await expect(canvas.getByText('AGM date set for October')).toBeVisible();
     await expect(
       canvas.getByRole('button', { name: 'Unpublish' }),

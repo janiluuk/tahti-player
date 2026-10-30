@@ -77,16 +77,20 @@ export const LiveJoin: Story = {
     await userEvent.click(
       await canvas.findByRole('button', { name: 'Join the party' }),
     );
-    await expect(await canvas.findByText('Listening along')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Listening along')).toBeVisible(),
+    );
     await waitFor(() =>
       expect(usePlayerStore.getState().currentId).toBe(
         `party:${MOCK_LISTENING_PARTY_IDS.live}:lp-track-ps-2`,
       ),
     );
     await userEvent.click(canvas.getByRole('button', { name: 'Leave' }));
-    await expect(
-      await canvas.findByRole('button', { name: 'Join the party' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('button', { name: 'Join the party' }),
+      ).toBeVisible(),
+    );
   },
 };
 
@@ -133,8 +137,10 @@ export const NotFound: Story = {
   args: { id: 'lp-missing' },
   decorators: [withTahtiRouter('/party/lp-missing')],
   play: async ({ canvasElement }) => {
-    await expect(
-      await within(canvasElement).findByText('Listening party not found'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        within(canvasElement).getByText('Listening party not found'),
+      ).toBeVisible(),
+    );
   },
 };

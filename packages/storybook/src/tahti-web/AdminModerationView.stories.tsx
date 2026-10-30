@@ -26,9 +26,11 @@ function renderTab(tab?: AdminModerationTabId) {
 /** Asserts the page heading and that `label` is the selected queue tab. */
 async function expectQueue(canvasElement: HTMLElement, label: string) {
   const canvas = within(canvasElement);
-  await expect(
-    await canvas.findByRole('heading', { level: 1, name: 'Moderation' }),
-  ).toBeVisible();
+  await waitFor(() =>
+    expect(
+      canvas.getByRole('heading', { level: 1, name: 'Moderation' }),
+    ).toBeVisible(),
+  );
   const queues = within(
     canvas.getByRole('tablist', { name: 'Moderation queues' }),
   );
@@ -64,7 +66,9 @@ export const BetaApplicationsTab: Story = {
   render: renderTab('beta'),
   play: async ({ canvasElement }) => {
     const canvas = await expectQueue(canvasElement, 'Beta applications');
-    await expect(await canvas.findByText('Kaiku Collective')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Kaiku Collective')).toBeVisible(),
+    );
     await expect(
       canvas.getByText(
         'Approving creates an artist account and emails a password setup link.',
@@ -83,9 +87,9 @@ export const RadioSubmissionsTab: Story = {
   render: renderTab('radio-submissions'),
   play: async ({ canvasElement }) => {
     const canvas = await expectQueue(canvasElement, 'Radio submissions');
-    await expect(
-      await canvas.findByRole('heading', { name: 'Auditing' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('heading', { name: 'Auditing' })).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('heading', { level: 3, name: 'Moonlight Drive' }),
     ).toBeVisible();
@@ -102,11 +106,13 @@ export const ContentReportsTab: Story = {
   render: renderTab('content-reports'),
   play: async ({ canvasElement }) => {
     const canvas = await expectQueue(canvasElement, 'Content reports');
-    await expect(
-      await canvas.findByRole('link', {
-        name: 'Night Drive (opens in a new tab)',
-      }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('link', {
+          name: 'Night Drive (opens in a new tab)',
+        }),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('link', {
         name: 'Comment by @aurora-fan (opens in a new tab)',
@@ -122,9 +128,11 @@ export const FeatureRequestsTab: Story = {
   render: renderTab('feature-requests'),
   play: async ({ canvasElement }) => {
     const canvas = await expectQueue(canvasElement, 'Feature requests');
-    await expect(
-      await canvas.findByText('Crossfade between archive tracks'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByText('Crossfade between archive tracks'),
+      ).toBeVisible(),
+    );
     await expect(canvas.getByText(/34 votes/)).toBeVisible();
     await expect(
       canvas.getByRole('heading', { name: 'Quarterly review reports' }),
@@ -139,9 +147,9 @@ export const MissedShowsTab: Story = {
   render: renderTab('missed-shows'),
   play: async ({ canvasElement }) => {
     const canvas = await expectQueue(canvasElement, 'Missed shows');
-    await expect(
-      await canvas.findByRole('heading', { name: 'Queue · 2' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('heading', { name: 'Queue · 2' })).toBeVisible(),
+    );
     await expect(canvas.getByText('Friday Frequency')).toBeVisible();
   },
 };
@@ -150,10 +158,12 @@ export const ThemesTab: Story = {
   render: renderTab('themes'),
   play: async ({ canvasElement }) => {
     const canvas = await expectQueue(canvasElement, 'Themes');
-    await expect(
-      await canvas.findByRole('heading', { name: 'Community themes' }),
-    ).toBeVisible();
-    await expect(await canvas.findByText('Revontulet')).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Community themes' }),
+      ).toBeVisible(),
+    );
+    await waitFor(() => expect(canvas.getByText('Revontulet')).toBeVisible());
     await expect(canvas.getByRole('button', { name: 'Approve' })).toBeVisible();
     await expect(canvas.getByRole('button', { name: 'Reject' })).toBeVisible();
   },

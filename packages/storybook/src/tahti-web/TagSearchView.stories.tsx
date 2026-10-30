@@ -28,9 +28,9 @@ type Story = StoryObj<typeof meta>;
 export const WithResults: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: `#${TAG}` }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('heading', { name: `#${TAG}` })).toBeVisible(),
+    );
     await expect(
       await canvas.findByRole('link', { name: /Aurora Drift/ }),
     ).toHaveAttribute('href', '/t/northern-lights-archive-1');

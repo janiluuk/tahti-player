@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { RadioStationSuggestionsTab } from '@tahti-web/views/admin/orphanPages/tabs/RadioStationSuggestionsTab';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -25,9 +25,9 @@ export const Default: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Basso FM' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('heading', { name: 'Basso FM' })).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('heading', { name: 'Lumo Radio' }),
     ).toBeVisible();

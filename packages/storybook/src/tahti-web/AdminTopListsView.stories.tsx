@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminTopListsView } from '@tahti-web/views/admin/AdminTopListsView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -22,9 +22,9 @@ export const Default: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'live sets' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('heading', { name: 'live sets' })).toBeVisible(),
+    );
     await expect(canvas.getByText('Moonlight Drive')).toBeVisible();
     await expect(canvas.getByText('842 listens')).toBeVisible();
     await expect(

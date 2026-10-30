@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CronHistoryDialog } from '@tahti-web/views/admin/status/CronHistoryDialog';
-import { expect, fn, userEvent } from 'storybook/test';
+import { expect, fn, userEvent, waitFor } from 'storybook/test';
 
 import { findDialog } from './_lib/play';
 
@@ -24,7 +24,9 @@ export const Default: Story = {
       canvasElement,
       'radio-rotation-refresh runs',
     );
-    await expect(await dialog.findByText('3 runs, 1 failed.')).toBeVisible();
+    await waitFor(() =>
+      expect(dialog.getByText('3 runs, 1 failed.')).toBeVisible(),
+    );
     await expect(dialog.getAllByRole('listitem')).toHaveLength(3);
     await expect(dialog.getAllByText('SUCCESS')).toHaveLength(2);
     await expect(dialog.getByText('ERROR')).toBeVisible();

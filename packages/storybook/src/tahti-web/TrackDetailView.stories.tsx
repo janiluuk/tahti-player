@@ -279,8 +279,10 @@ export const OverriddenTrack: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Midsummer Overdrive' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Midsummer Overdrive' }),
+      ).toBeVisible(),
+    );
   },
 };

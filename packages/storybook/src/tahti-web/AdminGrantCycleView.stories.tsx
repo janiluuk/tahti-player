@@ -52,12 +52,14 @@ export const Preview: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', {
-        level: 1,
-        name: '2026 grant cycle',
-      }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', {
+          level: 1,
+          name: '2026 grant cycle',
+        }),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('link', { name: 'Board CSV' }),
     ).toHaveAttribute(

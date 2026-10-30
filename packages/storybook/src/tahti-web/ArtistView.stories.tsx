@@ -89,13 +89,13 @@ export const Visitor: Story = {
       const playLabel = `Play ${ARTIST_NAME}'s background music`;
       const muteLabel = `Mute ${ARTIST_NAME}'s background music`;
       await userEvent.click(canvas.getByRole('button', { name: playLabel }));
-      await expect(
-        await canvas.findByRole('button', { name: muteLabel }),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(canvas.getByRole('button', { name: muteLabel })).toBeVisible(),
+      );
       await userEvent.click(canvas.getByRole('button', { name: muteLabel }));
-      await expect(
-        await canvas.findByRole('button', { name: playLabel }),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(canvas.getByRole('button', { name: playLabel })).toBeVisible(),
+      );
     });
 
     await step('report dialog opens and cancels', async () => {
@@ -111,12 +111,16 @@ export const Visitor: Story = {
     });
 
     await step('stage shows likes and upcoming events', async () => {
-      await expect(
-        await canvas.findByRole('region', { name: 'Liked tracks' }),
-      ).toBeVisible();
-      await expect(
-        await canvas.findByText('Polar Static live at Kuudes Linja'),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(
+          canvas.getByRole('region', { name: 'Liked tracks' }),
+        ).toBeVisible(),
+      );
+      await waitFor(() =>
+        expect(
+          canvas.getByText('Polar Static live at Kuudes Linja'),
+        ).toBeVisible(),
+      );
     });
 
     await step('visitor gets Stage and Gallery, no Design', async () => {
@@ -135,9 +139,9 @@ export const Owner: Story = {
       canvas.queryByRole('button', { name: `Report ${ARTIST_NAME}` }),
     ).toBeNull();
     await selectTab(canvas, /Design/);
-    await expect(
-      await canvas.findByRole('link', { name: 'channel page' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('link', { name: 'channel page' })).toBeVisible(),
+    );
     await selectTab(canvas, /Stage/);
   },
 };

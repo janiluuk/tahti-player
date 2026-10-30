@@ -26,9 +26,11 @@ export const Owner: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Northern Lights Hall' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Northern Lights Hall' }),
+      ).toBeVisible(),
+    );
     await expect(canvas.getByText('Verified')).toBeVisible();
   },
 };
@@ -56,9 +58,11 @@ export const EditDetails: Story = {
     await userEvent.clear(capacity);
     await userEvent.type(capacity, '150');
     await userEvent.click(canvas.getByRole('button', { name: 'Save details' }));
-    await expect(
-      await canvas.findByRole('button', { name: 'Edit details' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('button', { name: 'Edit details' }),
+      ).toBeVisible(),
+    );
   },
 };
 
@@ -77,7 +81,9 @@ export const BookShow: Story = {
     await userEvent.click(
       canvas.getByRole('button', { name: 'Book the show' }),
     );
-    await expect(await canvas.findByText('Winter club night')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Winter club night')).toBeVisible(),
+    );
   },
 };
 
@@ -85,7 +91,9 @@ export const CancelShow: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText('Album release show')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Album release show')).toBeVisible(),
+    );
     const [first] = canvas.getAllByRole('button', { name: /^Cancel show on/ });
     await userEvent.click(first!);
     const dialog = within(

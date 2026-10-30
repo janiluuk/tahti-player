@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ClipEditorDialog } from '@tahti-web/components/channel-clips/ClipEditorDialog';
-import { expect, fn, userEvent } from 'storybook/test';
+import { expect, fn, userEvent, waitFor } from 'storybook/test';
 
 import { findDialog } from './_lib/play';
 
@@ -42,13 +42,15 @@ export const VocalPreview: Story = {
     await userEvent.click(
       dialog.getByRole('button', { name: 'Generate preview' }),
     );
-    await expect(
-      await dialog.findByText(
-        'Preview ready. Listen to Processed, then save.',
-        {},
-        { timeout: 10000 },
-      ),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        dialog.getByText(
+          'Preview ready. Listen to Processed, then save.',
+          {},
+          { timeout: 10000 },
+        ),
+      ).toBeVisible(),
+    );
   },
 };
 export const MissingProgram: Story = {

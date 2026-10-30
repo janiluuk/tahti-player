@@ -34,9 +34,9 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('Payout did not arrive'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Payout did not arrive')).toBeVisible(),
+    );
     await expect(canvas.getByText('In progress')).toBeVisible();
     const replies = within(
       canvas.getByRole('list', { name: 'Replies to Payout did not arrive' }),

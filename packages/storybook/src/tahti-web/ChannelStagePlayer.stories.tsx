@@ -79,7 +79,9 @@ export const Live: Story = {
     const canvas = within(canvasElement);
 
     await step('now playing, time left and next track', async () => {
-      await expect(await canvas.findByText('Aurora Drift')).toBeVisible();
+      await waitFor(() =>
+        expect(canvas.getByText('Aurora Drift')).toBeVisible(),
+      );
       await expect(
         canvas.getByRole('meter', { name: /Track progress/ }),
       ).toBeVisible();
@@ -125,7 +127,7 @@ export const SignedOutRotation: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText('Aurora Drift')).toBeVisible();
+    await waitFor(() => expect(canvas.getByText('Aurora Drift')).toBeVisible());
     await expect(
       canvas.queryByRole('button', { name: 'Open chat' }),
     ).toBeNull();
