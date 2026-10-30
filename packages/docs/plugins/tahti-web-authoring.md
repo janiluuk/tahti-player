@@ -28,7 +28,7 @@ Do not call a metadata array a runtime plugin. A registry entry is only active w
 
 ## Standalone plugin recipe
 
-The working example is [`examples/tahti-plugin-example`](../../examples/tahti-plugin-example). It is intentionally small and can be copied as a starting point.
+The working example is [`examples/tahti-plugin-example`](https://github.com/janiluuk/tahti-registry/tree/master/examples/tahti-plugin-example) in the `tahti-registry` repository, next to the rules for listing a plugin. It is intentionally small and can be copied as a starting point.
 
 ```text
 my-plugin/

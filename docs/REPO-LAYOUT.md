@@ -25,7 +25,6 @@ Only files that a tool requires at the root, or that people expect there, stay a
 | `scripts/` | Repo scripts: build-and-run helpers, `ci/` helpers used by workflows, release scripts for AUR and Flathub |
 | `packaging/` | Distribution packaging, see below |
 | `snap/` | Snapcraft project (`snap/snapcraft.yaml`). Snapcraft only finds it at `snap/` in the project root, so it can't move into `packaging/` |
-| `examples/` | Example third-party plugin |
 | `.github/` | Workflows, composite actions, issue templates, and the config files of GitHub-integrated services (below) |
 | `.husky/` | Git hooks (pre-commit runs lint-staged) |
 | `.agents/`, `.cursor/`, `.vscode/` | Agent skills, Cursor rules and cloud environment, editor settings |
