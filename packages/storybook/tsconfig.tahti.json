@@ -8,6 +8,9 @@
     ]
   },
   "include": [
+    "src/Waveform.stories.tsx",
+    "src/tahti-web/AmbientTrackRow.stories.tsx",
+    "src/tahti-web/AmbientTrackList.stories.tsx",
     "src/tahti-web/SectionNavigation.stories.tsx",
     "src/tahti-web/_lib/**/*",
     "src/tahti-web/_fixtures/**/*",

@@ -23,6 +23,7 @@ describe('playerStore playFromList (radio row)', () => {
       status: 'idle',
       isLive: false,
       lastRadioPlayable: null,
+      repeatMode: 'off',
     });
   });
 
@@ -57,5 +58,21 @@ describe('playerStore playFromList (radio row)', () => {
     usePlayerStore.getState().playFromList(list, 1);
     usePlayerStore.getState().next();
     expect(usePlayerStore.getState().currentId).toBe('radio-widget:b');
+  });
+
+  it('loops the station list both ways when repeat is on', () => {
+    const list = [radio('a'), radio('b'), radio('c')];
+    usePlayerStore.getState().playFromList(list, 2);
+    usePlayerStore.getState().cycleRepeat();
+    expect(usePlayerStore.getState().repeatMode).toBe('all');
+
+    usePlayerStore.getState().next();
+    expect(usePlayerStore.getState().currentId).toBe('radio-widget:a');
+
+    usePlayerStore.getState().previous();
+    expect(usePlayerStore.getState().currentId).toBe('radio-widget:c');
+
+    usePlayerStore.getState().cycleRepeat();
+    expect(usePlayerStore.getState().repeatMode).toBe('off');
   });
 });

@@ -623,6 +623,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   cycleRepeat: () => {
     const { isLive, repeatMode } = get();
     if (isLive) {
+      set({ repeatMode: repeatMode === 'off' ? 'all' : 'off' });
       return;
     }
     const idx = REPEAT_CYCLE.indexOf(repeatMode);
@@ -675,7 +676,11 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       get().playQueueIndex(nextItem.id);
       return;
     }
-    if (repeatMode === 'all' && !isLive && queue[0]) {
+    // A station list has no single-item repeat: any repeat loops the list.
+    if (
+      (repeatMode === 'all' || (isLive && repeatMode !== 'off')) &&
+      queue[0]
+    ) {
       get().playQueueIndex(queue[0].id);
       return;
     }
@@ -686,7 +691,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   },
 
   previous: () => {
-    const { queue, currentId, currentTime, isLive } = get();
+    const { queue, currentId, currentTime, isLive, repeatMode } = get();
     if (!currentId || queue.length === 0) {
       return;
     }
@@ -696,8 +701,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       return;
     }
     const idx = queue.findIndex((q) => q.id === currentId);
-    const prev = queue[idx - 1];
-    if (prev) {
+    const prev =
+      queue[idx - 1] ??
+      (isLive && repeatMode !== 'off' ? queue[queue.length - 1] : undefined);
+    if (prev && prev.id !== currentId) {
       get().playQueueIndex(prev.id);
     }
   },

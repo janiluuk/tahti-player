@@ -5654,3 +5654,7 @@ Added persistent editing borders, synchronized canvas/section selection, clearer
 ## 2026-10-28 — Channel designer PR CI fixes
 
 Extracted preset application into a hook to keep ChannelDesigner below the 800-line guard, and updated the LayersPanel preset story to open Presets explicitly. Verified the size guard, all three affected Storybook plays, and 16 focused component tests.
+
+## 2026-10-30 — Storybook waveforms, unified listing panel, radio loop
+
+Waveform / AmbientTrackRow / AmbientTrackList stories cover 4096-peak, decoded-audio, phone-width and processing states with play checks, and are type-checked via `tsconfig.tahti.json`. `AmbientTrackList` frames its count, sort and size switcher with the rows as one panel. Radio repeat loops the station list both ways; full-screen station logos use a glass panel; Playback settings can keep the screen on in full screen (Screen Wake Lock). Folded `storybook-waveforms.md`.

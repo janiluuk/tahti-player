@@ -103,6 +103,8 @@ export function PlaybackPanel() {
   const muted = usePlayerStore((s) => s.muted);
   const channelAutoplay = usePlaybackPrefsStore((s) => s.channelAutoplay);
   const setChannelAutoplay = usePlaybackPrefsStore((s) => s.setChannelAutoplay);
+  const keepScreenOn = usePlaybackPrefsStore((s) => s.keepScreenOn);
+  const setKeepScreenOn = usePlaybackPrefsStore((s) => s.setKeepScreenOn);
   const shuffle = usePlayerStore((s) => s.shuffle);
   const repeatMode = usePlayerStore((s) => s.repeatMode);
   const setVolume = usePlayerStore((s) => s.setVolume);
@@ -143,6 +145,14 @@ export function PlaybackPanel() {
             value={channelAutoplay}
             onChange={(value) => setChannelAutoplay(value)}
           />
+          {'wakeLock' in navigator ? (
+            <SettingsToggle
+              label="Keep the screen on in full screen"
+              description="While the full-screen player is playing, your phone or tablet does not dim or lock."
+              value={keepScreenOn}
+              onChange={(value) => setKeepScreenOn(value)}
+            />
+          ) : null}
           {hasLocalAnalysis ? <NormalizationField /> : null}
         </div>
       </SectionShell>
@@ -166,8 +176,8 @@ export function PlaybackPanel() {
               className="self-start"
             />
             <p className="text-foreground-secondary text-sm select-none">
-              What happens when the queue reaches its last track. Radio and live
-              streams ignore this.
+              What happens when the queue reaches its last track. For radio, any
+              repeat loops the station list.
             </p>
           </div>
         </div>

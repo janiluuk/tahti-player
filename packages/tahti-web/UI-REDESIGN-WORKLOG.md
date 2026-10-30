@@ -6275,3 +6275,7 @@ Validation: focused component tests, designer Playwright journeys, type-check an
 ## 2026-10-30 — Listing waveforms, mobile rows and opening news
 
 WaveSurfer now renders listing peaks and decodes missing playable audio on visibility, caching 4096 samples. Mobile rows use larger art, a readable title and full-width waveform/actions. Pending uploads show an animated processing panel and refresh until ready. News opens in an illustrated modal with humanized calendar dates and board-only editing; opening copy is included in mock content. Discover is denser and channel visualizers default to varied advanced modes. Version 0.0.282. Live news copy still requires an authenticated admin update.
+
+## 2026-10-30 — Unified track listing panel, radio loop, screen wake lock (0.0.283)
+
+Track lists now render as one framed panel: a header with the item count, sort and the size/grid/list switcher sits above the rows, grid or table inside the same surface; an empty list is a `PageEmpty`. Studio Sounds counts sounds. Repeat while radio plays toggles a station-list loop: next on the last station returns to the first and previous on the first goes to the last. The full-screen player shows station logos on a translucent glass panel. Settings → Playback → "Keep the screen on in full screen" (shown where the Screen Wake Lock API exists) holds a wake lock while the full-screen player plays. Waveform, AmbientTrackRow and AmbientTrackList stories gained play checks, high-resolution, decoded-audio, phone-width and processing variants.
