@@ -84,3 +84,34 @@ describe('AmbientTrackRow', () => {
     expect(screen.getByLabelText('4 comments')).toBeTruthy();
   });
 });
+
+it('replaces the waveform with an animated processing state until the upload is ready', () => {
+  const loadAudioUrl = vi.fn();
+  const { rerender } = render(
+    <AmbientTrackRow
+      trackId="new-upload"
+      title="New upload"
+      artist="You"
+      processing
+      onPlay={vi.fn()}
+      loadAudioUrl={loadAudioUrl}
+      ambientRgb={null}
+    />,
+  );
+  expect(screen.getByRole('status')).toHaveTextContent('Processing audio');
+  expect(screen.queryByRole('button', { name: 'Play New upload' })).toBeNull();
+  expect(loadAudioUrl).not.toHaveBeenCalled();
+  rerender(
+    <AmbientTrackRow
+      trackId="new-upload"
+      title="New upload"
+      artist="You"
+      peaks={[0, 255, 40]}
+      durationSec={60}
+      onPlay={vi.fn()}
+      ambientRgb={null}
+    />,
+  );
+  expect(screen.queryByRole('status')).toBeNull();
+  expect(screen.getByRole('button', { name: 'Play New upload' })).toBeVisible();
+});

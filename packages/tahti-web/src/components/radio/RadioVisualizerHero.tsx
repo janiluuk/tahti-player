@@ -2,8 +2,8 @@ import type { ReactNode } from 'react';
 
 import { Box, MediaArtwork } from '@tahti-player/ui';
 
-import { resolvePublicVisualizerPreset } from '../../api/channel-design';
 import type { PublicChannel } from '../../api/types';
+import { radioVisualizerPreset } from '../../lib/radioVisualizer';
 import { ChannelVisualizer } from '../ChannelVisualizer';
 
 /** Radio's on-air hero: the station visualizer as a large backdrop with the
@@ -28,8 +28,9 @@ export function RadioVisualizerHero({
     >
       <div className="absolute inset-0 opacity-80">
         <ChannelVisualizer
-          preset={resolvePublicVisualizerPreset(station.visualPreset)}
+          preset={radioVisualizerPreset(station.slug, station.visualPreset)}
           colorSchemeJson={station.colorSchemeJson}
+          visualSettingsJson={station.visualSettingsJson}
           showModeButtons={false}
           className="size-full"
         />

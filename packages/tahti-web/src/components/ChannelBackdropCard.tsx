@@ -246,6 +246,7 @@ export function ChannelBackdropCard({
             <ChannelVisualizer
               className="absolute inset-0 h-full w-full opacity-95 [filter:saturate(1.3)]"
               preset={resolvePublicVisualizerPreset(visualPreset)}
+              channelKey={username}
               colorScheme={colorScheme}
               colorSchemeJson={colorSchemeJson}
               visualSettingsJson={visualSettingsJson}

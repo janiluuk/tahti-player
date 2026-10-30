@@ -2,8 +2,8 @@ import { RadioTowerIcon } from 'lucide-react';
 
 import { Box, ButtonLink, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
-import { resolvePublicVisualizerPreset } from '../api/channel-design';
 import { prefetchHls } from '../lib/hlsLoader';
+import { radioVisualizerPreset } from '../lib/radioVisualizer';
 import { ChannelVisualizer, type VisualColorScheme } from './ChannelVisualizer';
 
 export type RadioListItemProps = {
@@ -48,7 +48,12 @@ export function RadioListItem({
       {isPlaying ? (
         <div className="pointer-events-none absolute inset-0 opacity-45">
           <ChannelVisualizer
-            preset={resolvePublicVisualizerPreset(visualPreset)}
+            preset={radioVisualizerPreset(
+              openHref.split('/').filter(Boolean).at(-1) === 'radio'
+                ? 'tahti-radio'
+                : openHref.split('/').filter(Boolean).at(-1) || name,
+              visualPreset,
+            )}
             colorScheme={colorScheme}
             colorSchemeJson={colorSchemeJson}
             visualSettingsJson={visualSettingsJson}

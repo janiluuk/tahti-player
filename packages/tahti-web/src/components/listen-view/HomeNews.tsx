@@ -1,4 +1,3 @@
-import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 
 import { ButtonLink, NewsWidget } from '@tahti-player/ui';
@@ -6,6 +5,8 @@ import { ButtonLink, NewsWidget } from '@tahti-player/ui';
 import { fetchAnnouncements } from '../../api/client';
 import { isForceMock } from '../../api/mode';
 import type { Announcement } from '../../api/types';
+import { humanizePastDate } from '../../lib/humanizeDate';
+import { PlatformNewsDialog } from '../PlatformNewsDialog';
 import { ListenSection } from './ListenSection';
 import type { ListenSectionStatus } from './useListenSections';
 
@@ -13,7 +14,7 @@ const LABELS = { nothingFound: 'No news yet.' };
 
 /** The latest Tahti news posts on the front page, linking to /news. */
 export function HomeNews({ limit = 3 }: { limit?: number }) {
-  const navigate = useNavigate();
+  const [selected, setSelected] = useState<Announcement | null>(null);
   const [posts, setPosts] = useState<Announcement[]>([]);
   const [status, setStatus] = useState<ListenSectionStatus>('loading');
   const [attempt, setAttempt] = useState(0);
@@ -42,8 +43,10 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
       id: post.id,
       title: post.headline,
       teaser: post.summary,
-      imageUrl: post.imageUrl ?? undefined,
-      onClick: () => void navigate({ to: '/news' }),
+      imageUrl: post.imageUrl || '/news-opening.svg',
+      publishedAt: post.publishedAt,
+      publishedLabel: humanizePastDate(post.publishedAt),
+      onClick: () => setSelected(post),
     }));
 
   return (
@@ -57,6 +60,19 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
       emptyTitle="No news yet"
       onRetry={retry}
     >
+      {selected ? (
+        <PlatformNewsDialog
+          key={selected.id}
+          post={selected}
+          onClose={() => setSelected(null)}
+          onUpdated={(updated) => {
+            setSelected(updated);
+            setPosts((current) =>
+              current.map((post) => (post.id === updated.id ? updated : post)),
+            );
+          }}
+        />
+      ) : null}
       <div className="flex flex-col gap-2" data-testid="listen-news">
         <NewsWidget
           title="From Tahti"

@@ -136,6 +136,50 @@ export function useStudioSoundsState() {
     reload();
   }, []);
 
+  const hasProcessing = items.some(
+    (item) =>
+      !item.embedProvider &&
+      (item.status === 'PENDING' || item.status === 'PROCESSING'),
+  );
+  useEffect(() => {
+    if (!hasProcessing) {
+      return;
+    }
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout>;
+    const refresh = async () => {
+      try {
+        const result = await fetchStudioSounds();
+        if (
+          !cancelled &&
+          !(result.meta.source === 'api' && result.meta.reason)
+        ) {
+          setItems((current) =>
+            current.map(
+              (item) =>
+                result.data.find((updated) => updated.id === item.id) ?? item,
+            ),
+          );
+        }
+      } catch {
+        return;
+      } finally {
+        if (!cancelled) {
+          timer = setTimeout(() => {
+            void refresh();
+          }, 5000);
+        }
+      }
+    };
+    timer = setTimeout(() => {
+      void refresh();
+    }, 5000);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [hasProcessing]);
+
   const clearFilters = () => {
     setQuery('');
     setEmbedFilter('ALL');

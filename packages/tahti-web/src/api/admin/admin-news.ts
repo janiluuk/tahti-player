@@ -20,9 +20,9 @@ function mockNewsPosts(): AdminNewsPost[] {
   return [
     {
       id: 'news-1',
-      headline: 'Fair-rotation radio now covers 9 channels',
+      headline: 'Tahti is open. Come find your next favourite.',
       summary:
-        'Tahti Radio auto-features any member channel that goes live — no editorial picks.',
+        'The doors are open! Discover independent music, tune into community radio and build a collection that sounds like you.\n\nArtists, this is your stage: share your music, tell your story and bring listeners along. No ads. No tracking. Just music and the people who make it.\n\nPress play, explore a new channel and help shape what comes next.',
       authorName: 'Board',
       publishedAt: '2026-08-10T09:00:00.000Z',
       createdAt: '2026-08-10T08:30:00.000Z',

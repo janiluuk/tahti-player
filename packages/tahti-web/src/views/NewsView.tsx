@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { ExternalLinkIcon, SparklesIcon } from 'lucide-react';
+import { CalendarDaysIcon, ExternalLinkIcon, SparklesIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Button, cn, ImageReveal, ViewShell } from '@tahti-player/ui';
@@ -8,6 +8,8 @@ import { fetchAnnouncements } from '../api/client';
 import type { Announcement } from '../api/types';
 import { HistoryBackButton } from '../components/HistoryBackButton';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import { PlatformNewsDialog } from '../components/PlatformNewsDialog';
+import { humanizePastDate } from '../lib/humanizeDate';
 
 function TimelineNode({ isLatest }: { isLatest?: boolean }) {
   return isLatest ? (
@@ -27,10 +29,12 @@ function TimelineEntry({
   entry,
   isFirst,
   isLast,
+  onOpen,
 }: {
   entry: Announcement;
   isFirst: boolean;
   isLast: boolean;
+  onOpen: () => void;
 }) {
   const safeUrl = (value: string | null | undefined, relative = false) => {
     if (!value) {
@@ -48,7 +52,7 @@ function TimelineEntry({
       return null;
     }
   };
-  const imageUrl = safeUrl(entry.imageUrl);
+  const imageUrl = safeUrl(entry.imageUrl, true) || '/news-opening.svg';
   const linkUrl = safeUrl(entry.linkUrl, true);
 
   return (
@@ -73,12 +77,14 @@ function TimelineEntry({
           <span className="text-foreground-secondary text-xs font-medium">
             {entry.authorName}
           </span>
-          <span className="text-foreground-secondary text-xs">
-            {new Date(entry.publishedAt).toLocaleDateString(undefined, {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric',
-            })}
+          <span className="text-foreground-secondary flex items-center gap-1.5 text-xs">
+            <CalendarDaysIcon size={14} aria-hidden />
+            <time
+              dateTime={entry.publishedAt}
+              title={new Date(entry.publishedAt).toLocaleString()}
+            >
+              {humanizePastDate(entry.publishedAt)}
+            </time>
           </span>
         </div>
         <div className="border-border bg-background-secondary shadow-shadow flex-1 overflow-hidden rounded-md border-(length:--border-width)">
@@ -90,7 +96,13 @@ function TimelineEntry({
             />
           ) : null}
           <div className="p-3 sm:p-4">
-            <p className="text-sm font-semibold">{entry.headline}</p>
+            <button
+              type="button"
+              className="text-left text-lg font-semibold hover:underline"
+              onClick={onOpen}
+            >
+              {entry.headline}
+            </button>
             <p className="text-foreground-secondary mt-1 text-sm whitespace-pre-wrap">
               {entry.summary}
             </p>
@@ -115,6 +127,7 @@ function TimelineEntry({
 const INITIAL_COUNT = 5;
 
 export function NewsView() {
+  const [selected, setSelected] = useState<Announcement | null>(null);
   const [entries, setEntries] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -144,6 +157,19 @@ export function NewsView() {
 
   return (
     <ViewShell title="Platform news" corner={<HistoryBackButton />}>
+      {selected ? (
+        <PlatformNewsDialog
+          key={selected.id}
+          post={selected}
+          onClose={() => setSelected(null)}
+          onUpdated={(updated) => {
+            setSelected(updated);
+            setEntries((current) =>
+              current.map((post) => (post.id === updated.id ? updated : post)),
+            );
+          }}
+        />
+      ) : null}
       <div className="mx-auto flex w-full max-w-2xl flex-col">
         <p className="text-foreground-secondary mb-4 text-sm">
           News, service updates, and posts from the Tahti team.{' '}
@@ -191,6 +217,7 @@ export function NewsView() {
           <TimelineEntry
             key={entry.id}
             entry={entry}
+            onOpen={() => setSelected(entry)}
             isFirst={index === 0}
             isLast={index === visibleEntries.length - 1}
           />

@@ -1516,9 +1516,9 @@ function buildMockAnnouncements(): Announcement[] {
     },
     {
       id: '1',
-      headline: 'Welcome to Tahti',
+      headline: 'Tahti is open. Come find your next favourite.',
       summary:
-        'Search, playlists, radio, and artist studio tools are live in beta. Send feedback from Settings.',
+        'The doors are open! Discover independent music, tune into community radio and build a collection that sounds like you.\n\nArtists, this is your stage: share your music, tell your story and bring listeners along. No ads. No tracking. Just music and the people who make it.\n\nPress play, explore a new channel and help shape what comes next.',
       authorName: 'Tahti team',
       publishedAt: '2026-07-01T08:00:00.000Z',
     },

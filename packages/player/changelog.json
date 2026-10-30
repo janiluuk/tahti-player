@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-10-30T03:30",
+    "description": "Track lists show clearer waveforms and larger artwork on phones, new uploads show processing progress, and Tahti news opens in an illustrated article with publication dates and admin editing. Discover fits more content and radio channels have varied visuals.",
+    "type": "improvement",
+    "contributors": ["jani"],
+    "tags": [{ "label": "Web", "color": "blue" }]
+  },
+  {
     "date": "2026-09-11T11:00",
     "description": "Tahti Player's app header now uses the clean Tahti mark, and the Linux packaging metadata consistently identifies Tahti Player.",
     "type": "improvement",

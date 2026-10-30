@@ -24,7 +24,7 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      await canvas.findByText('Fair-rotation radio now covers 9 channels'),
+      await canvas.findByText('Tahti is open. Come find your next favourite.'),
     ).toBeVisible();
     await expect(canvas.getByText('AGM date set for October')).toBeVisible();
     await expect(

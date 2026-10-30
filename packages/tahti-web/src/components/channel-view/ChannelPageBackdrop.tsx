@@ -123,6 +123,7 @@ export function ChannelPageBackdrop({
               live ? 'opacity-[0.32]' : 'opacity-[0.55]'
             }`}
             preset={resolvePublicVisualizerPreset(channel.visualPreset)}
+            channelKey={channel.slug}
             colorScheme={pageScheme}
             colorSchemeJson={channel.colorSchemeJson}
             visualSettingsJson={channel.visualSettingsJson}

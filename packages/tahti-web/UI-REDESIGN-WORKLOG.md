@@ -6270,3 +6270,8 @@ New `/party/:id` page: a countdown hero with the host note, the tracklist with t
 Persistent selected-block borders and Editing labels connect the canvas to the controls. The right rail starts on Layers, uses icon labels and visual width choices, and fits its container. Revert changes restores unsaved layout, appearance, and links. Appearance drafts survive panel switches; visibility stays in the layout draft. Settings keeps controls inside its dialog and Open my channel closes the dialog.
 
 Validation: focused component tests, designer Playwright journeys, type-check and lint. The separate governance navigation check still expects an unavailable Account Governance tab.
+
+
+## 2026-10-30 — Listing waveforms, mobile rows and opening news
+
+WaveSurfer now renders listing peaks and decodes missing playable audio on visibility, caching 4096 samples. Mobile rows use larger art, a readable title and full-width waveform/actions. Pending uploads show an animated processing panel and refresh until ready. News opens in an illustrated modal with humanized calendar dates and board-only editing; opening copy is included in mock content. Discover is denser and channel visualizers default to varied advanced modes. Version 0.0.282. Live news copy still requires an authenticated admin update.

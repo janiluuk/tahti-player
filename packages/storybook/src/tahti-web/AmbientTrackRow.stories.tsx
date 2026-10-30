@@ -224,3 +224,14 @@ export const Stack: Story = {
     </>
   ),
 };
+
+export const ProcessingUpload: Story = {
+  args: {
+    trackId: 'upload',
+    title: 'New upload',
+    artist: 'You',
+    processing: true,
+    coverUrl: COVER_A,
+    ambientRgb: null,
+  },
+};

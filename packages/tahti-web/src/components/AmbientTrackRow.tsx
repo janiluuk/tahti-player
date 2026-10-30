@@ -6,13 +6,20 @@ import {
   PauseIcon,
   PlayIcon,
 } from 'lucide-react';
-import { memo, type ReactNode } from 'react';
+import { memo, useEffect, useRef, useState, type ReactNode } from 'react';
 
-import { Badge, Button, MediaArtwork, Tooltip } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  MediaArtwork,
+  Tooltip,
+  TrackProcessing,
+  Waveform,
+} from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
+import { formatDuration } from '../lib/playableToTrack';
 import { useDominantColor } from '../lib/useDominantColor';
-import { WaveformSeekbar } from './tahti/WaveformSeekbar';
 
 function ambientStyle(
   rgb: [number, number, number] | null,
@@ -45,10 +52,10 @@ const DENSITY_LAYOUT: Record<
   }
 > = {
   comfortable: {
-    pad: 'gap-4 p-4',
+    pad: 'gap-3 p-3 sm:gap-4 sm:p-4',
     gap: 'gap-2',
     art: 'md',
-    artClass: 'size-20 min-w-20 sm:size-28 sm:min-w-28',
+    artClass: 'size-28 min-w-28',
     play: 'size-11 border-2',
     playIcon: 20,
     artist: 'text-sm',
@@ -61,7 +68,7 @@ const DENSITY_LAYOUT: Record<
     pad: 'gap-3 p-2.5',
     gap: 'gap-1.5',
     art: 'md',
-    artClass: 'size-16 min-w-16 sm:size-20 sm:min-w-20',
+    artClass: 'size-24 min-w-24 sm:size-20 sm:min-w-20',
     play: 'size-9 border-2',
     playIcon: 16,
     artist: 'text-xs',
@@ -214,6 +221,9 @@ export type AmbientTrackRowProps = {
    * (the count then leaves the stats line). */
   like?: AmbientTrackLike;
   peaks?: number[] | null;
+  processing?: boolean;
+  audioUrl?: string;
+  loadAudioUrl?: () => Promise<string | undefined>;
   /** Playback position, 0–1. */
   progress?: number;
   density?: AmbientTrackRowDensity;
@@ -245,6 +255,9 @@ function AmbientTrackRowView({
   stats,
   like,
   peaks,
+  audioUrl,
+  processing = false,
+  loadAudioUrl,
   progress = 0,
   density = 'comfortable',
   isPlaying = false,
@@ -255,16 +268,58 @@ function AmbientTrackRowView({
   className,
   ambientRgb,
 }: AmbientTrackRowProps) {
+  const rowRef = useRef<HTMLElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    if (!rowRef.current || typeof IntersectionObserver === 'undefined') {
+      setVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '100px' },
+    );
+    observer.observe(rowRef.current);
+    return () => observer.disconnect();
+  }, []);
+  const loadAudioRef = useRef(loadAudioUrl);
+  loadAudioRef.current = loadAudioUrl;
+  const canLoadAudio = Boolean(loadAudioUrl);
+  const [loadedAudioUrl, setLoadedAudioUrl] = useState<string>();
+  useEffect(() => {
+    setLoadedAudioUrl(undefined);
+    if (processing || !visible || peaks?.length || audioUrl || !canLoadAudio) {
+      return;
+    }
+    let cancelled = false;
+    void loadAudioRef.current!()
+      .then((url) => {
+        if (!cancelled) {
+          setLoadedAudioUrl(url);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [visible, trackId, peaks, audioUrl, canLoadAudio, processing]);
   const sampled = useDominantColor(ambientRgb === undefined ? coverUrl : null);
   const rgb = ambientRgb === undefined ? sampled : ambientRgb;
   const layout = DENSITY_LAYOUT[density];
 
   return (
     <article
+      ref={rowRef}
       data-testid="ambient-track-row"
       data-density={density}
       className={cn(
         'border-border/40 bg-background-secondary text-foreground flex w-full min-w-0 rounded-lg border',
+        density !== 'dense' && 'flex-wrap sm:flex-nowrap',
         layout.pad,
         className,
       )}
@@ -276,9 +331,15 @@ function AmbientTrackRowView({
         className={cn('shrink-0', layout.artClass)}
         imageReveal={Boolean(coverUrl)}
       />
-      <div className={cn('flex min-w-0 flex-1 flex-col', layout.gap)}>
-        <div className="flex min-w-0 items-start gap-2">
-          {onPlay && !media ? (
+      <div
+        className={cn(
+          'min-w-0 flex-1 flex-col',
+          density === 'dense' ? 'flex' : 'contents sm:flex',
+          layout.gap,
+        )}
+      >
+        <div className="grid min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)] items-start gap-2 sm:flex">
+          {onPlay && !media && !processing ? (
             <Tooltip
               content={isPlaying ? `Pause ${title}` : `Play ${title}`}
               side="top"
@@ -306,7 +367,12 @@ function AmbientTrackRowView({
               </Button>
             </Tooltip>
           ) : null}
-          <div className="min-w-0 flex-1">
+          <div
+            className={cn(
+              'min-w-0 flex-1',
+              (!onPlay || Boolean(media) || processing) && 'col-span-2',
+            )}
+          >
             <p
               className={cn(
                 'text-foreground-secondary truncate',
@@ -316,16 +382,18 @@ function AmbientTrackRowView({
               {artist}
             </p>
             <h3
-              className={cn('text-foreground truncate font-bold', layout.title)}
+              className={cn(
+                'text-foreground line-clamp-2 font-bold sm:truncate',
+                layout.title,
+              )}
             >
               {titleNode ?? title}
             </h3>
-            {belowTitle}
           </div>
           {genreLabel || durationLabel ? (
             <div
               className={cn(
-                'text-foreground-secondary flex shrink-0 flex-col items-end gap-1 text-right tabular-nums',
+                'text-foreground-secondary col-span-2 flex flex-wrap items-center gap-2 tabular-nums sm:shrink-0 sm:flex-col sm:items-end sm:gap-1 sm:text-right',
                 layout.meta,
               )}
             >
@@ -338,7 +406,9 @@ function AmbientTrackRowView({
             </div>
           ) : null}
         </div>
-        {media ? (
+        {processing ? (
+          <TrackProcessing variant="waveform" label="Processing audio…" />
+        ) : media ? (
           <div
             className="border-border w-full min-w-0 overflow-hidden rounded-lg border contain-paint"
             data-testid="ambient-track-row-media"
@@ -346,20 +416,36 @@ function AmbientTrackRowView({
             {media}
           </div>
         ) : (
-          <WaveformSeekbar
-            trackId={trackId}
-            progress={progress}
-            peaks={peaks}
-            bars={layout.bars}
-            label={title}
-            durationSec={durationSec ?? undefined}
-            onSeek={onSeek}
-            tone={density === 'dense' ? 'quiet' : 'bold'}
-            className={layout.wave}
-          />
+          <div className="w-full min-w-0" data-track-id={trackId}>
+            {visible ? (
+              <Waveform
+                progress={progress}
+                peaks={peaks}
+                audioUrl={audioUrl ?? loadedAudioUrl}
+                durationSec={durationSec ?? 1}
+                onSeek={onSeek}
+                aria-label={`Seek ${title}`}
+                aria-valuetext={
+                  durationSec
+                    ? `${formatDuration(progress * durationSec)} of ${formatDuration(durationSec)}`
+                    : undefined
+                }
+                height={
+                  density === 'comfortable'
+                    ? 64
+                    : density === 'compact'
+                      ? 48
+                      : 28
+                }
+              />
+            ) : (
+              <div className={layout.wave} />
+            )}
+          </div>
         )}
+        {belowTitle ? <div className="w-full min-w-0">{belowTitle}</div> : null}
         {actions || stats || like ? (
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div className="flex w-full flex-wrap items-center gap-1.5">
             {like ? <LikeToggle like={like} title={title} /> : null}
             {actions}
             {stats ? (

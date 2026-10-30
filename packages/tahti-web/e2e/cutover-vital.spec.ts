@@ -416,7 +416,7 @@ test('board news supports optional images and links without empty thumbnails', a
 
   const textOnlyEntry = page
     .getByTestId('announcement-entry')
-    .filter({ hasText: 'Fair-rotation radio now covers 9 channels' });
+    .filter({ hasText: 'Tahti is open. Come find your next favourite.' });
   await expect(textOnlyEntry.getByRole('img')).toHaveCount(0);
 });
 

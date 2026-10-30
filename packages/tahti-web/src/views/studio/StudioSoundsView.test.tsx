@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -20,7 +20,9 @@ vi.mock('./sounds/SoundsAmbientList', () => ({
   SoundsAmbientList: ({ items }: { items: StudioSound[] }) => (
     <ul>
       {items.map((item) => (
-        <li key={item.id}>{item.title}</li>
+        <li key={item.id}>
+          {item.title} — {item.status}
+        </li>
       ))}
     </ul>
   ),
@@ -37,6 +39,7 @@ describe('StudioSoundsView', () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it('says the list failed to load instead of "No sounds yet"', async () => {
@@ -50,7 +53,7 @@ describe('StudioSoundsView', () => {
 
     fetch.mockResolvedValue({ data: [sound], meta: { source: 'api' } });
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
-    expect(await screen.findByText('Moonlight Drive')).toBeTruthy();
+    expect(await screen.findByText(/Moonlight Drive/)).toBeTruthy();
   });
 
   it('offers to clear filters that match nothing', async () => {
@@ -59,7 +62,7 @@ describe('StudioSoundsView', () => {
       meta: { source: 'api' },
     });
     await renderWithRouter(<StudioSoundsView />);
-    await screen.findByText('Moonlight Drive');
+    await screen.findByText(/Moonlight Drive/);
     fireEvent.change(screen.getByRole('searchbox'), {
       target: { value: 'zzz' },
     });
@@ -68,6 +71,24 @@ describe('StudioSoundsView', () => {
     ).toBeTruthy();
     expect(screen.queryByText('No sounds yet')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
-    expect(await screen.findByText('Moonlight Drive')).toBeTruthy();
+    expect(await screen.findByText(/Moonlight Drive/)).toBeTruthy();
   });
+
+  it('refreshes a pending upload until processing completes', async () => {
+    const fetch = vi
+      .spyOn(studio, 'fetchStudioSounds')
+      .mockResolvedValueOnce({
+        data: [{ ...sound, status: 'PROCESSING' }],
+        meta: { source: 'api' },
+      })
+      .mockResolvedValue({ data: [sound], meta: { source: 'api' } });
+    const { unmount } = await renderWithRouter(<StudioSoundsView />);
+    await screen.findByText(/PROCESSING/);
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 5100));
+    });
+    expect(await screen.findByText(/READY/)).toBeVisible();
+    expect(fetch).toHaveBeenCalledTimes(2);
+    unmount();
+  }, 10000);
 });

@@ -238,6 +238,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/PageTourSpotlight` | `tahti-web/PageTourSpotlight.stories.tsx` |
 | `Tahti/Misc/PasswordEmailSettings` | `tahti-web/PasswordEmailSettings.stories.tsx` |
 | `Tahti/Studio/PinnedAnnouncementsPanel` | `tahti-web/PinnedAnnouncementsPanel.stories.tsx` |
+| `Tahti/News/PlatformNewsDialog` | `tahti-web/PlatformNewsDialog.stories.tsx` |
 | `Tahti/Desktop/PlayHistoryDialog` | `tahti-web/PlayHistoryDialog.stories.tsx` |
 | `Tahti/Library/PlayableAmbientTrackList` | `tahti-web/PlayableAmbientTrackList.stories.tsx` |
 | `Tahti/Track/PlayableTrackContextMenu` | `tahti-web/PlayableTrackContextMenu.stories.tsx` |

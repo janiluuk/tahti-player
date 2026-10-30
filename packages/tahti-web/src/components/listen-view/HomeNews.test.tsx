@@ -1,4 +1,5 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import * as client from '../../api/client';
@@ -29,7 +30,7 @@ describe('HomeNews', () => {
 
     expect(await screen.findByText('Beta is open')).toBeVisible();
     expect(screen.queryByText('Older post')).toBeNull();
-    fireEvent.click(screen.getByRole('link', { name: 'All news' }));
+    await userEvent.click(screen.getByRole('link', { name: 'All news' }));
     expect(router.state.location.pathname).toBe('/news');
   });
 
@@ -43,4 +44,21 @@ describe('HomeNews', () => {
 
     expect(await screen.findByRole('button', { name: /Retry/ })).toBeVisible();
   });
+});
+
+it('opens the selected article in a modal with artwork and publication date', async () => {
+  vi.spyOn(client, 'fetchAnnouncements').mockResolvedValue({
+    data: [post('opening', 'Tahti is open', '2026-10-30T08:00:00.000Z')],
+    meta: { source: 'api' },
+  });
+  await renderWithRouter(<HomeNews />);
+  await userEvent.click(await screen.findByText('Tahti is open'));
+  expect(await screen.findByRole('dialog')).toBeVisible();
+  expect(screen.getByTestId('news-published-at')).toHaveAttribute(
+    'datetime',
+    '2026-10-30T08:00:00.000Z',
+  );
+  expect(
+    screen.getByRole('img', { name: 'Tahti is open artwork' }),
+  ).toHaveAttribute('src', '/news-opening.svg');
 });
