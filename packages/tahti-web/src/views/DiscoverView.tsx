@@ -1,25 +1,13 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
-  AwardIcon,
   Blocks,
   ChevronDownIcon,
-  ClockIcon,
   CompassIcon,
-  DicesIcon,
-  Disc3Icon,
-  FlameIcon,
-  HeartIcon,
-  ListMusicIcon,
   MapPinIcon,
   PauseIcon,
   PlayIcon,
   Plus,
-  ShuffleIcon,
   SlidersHorizontalIcon,
-  SparklesIcon,
-  StarIcon,
-  TrendingDownIcon,
-  TrendingUpIcon,
   UsersIcon,
   XIcon,
 } from 'lucide-react';
@@ -66,6 +54,12 @@ import type {
 import { DirectoryArtistsBrowser } from '../components/DirectoryArtistsBrowser';
 import { RandomTrackGenres } from '../components/discover/RandomTrackGenres';
 import { WidgetCard } from '../components/discover/WidgetCard';
+import {
+  pickRandomTrack,
+  TOP_LIST_WIDGET_IDS,
+  WIDGET_LABELS,
+  WIDGET_MENU,
+} from '../components/discover/widgetMeta';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { NewsFeedWidget } from '../components/NewsFeedWidget';
 import { PageError } from '../components/PageStates';
@@ -88,79 +82,9 @@ import {
 } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
 
-export { allOrSpecific };
-
-function pickRandomTrack(
-  pool: DiscoverTrackItem[],
-  excludeId: string | null,
-): DiscoverTrackItem[] {
-  const candidates =
-    pool.length > 1 ? pool.filter((item) => item.id !== excludeId) : pool;
-  const pick = candidates[Math.floor(Math.random() * candidates.length)];
-  return pick ? [pick] : [];
-}
-
 function apiReason(meta: FetchMeta): string | null {
   return meta.source === 'api' ? (meta.reason ?? null) : null;
 }
-
-const WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
-  'this-week-most-played': 'This week: most played',
-  'this-week-least-played': 'This week: least played',
-  'new-to-you': 'New to you',
-  'latest-tracks': 'Latest tracks',
-  'most-played': 'Most played',
-  loved: 'Loved by the community',
-  'artist-of-the-week': 'Random artist of the week',
-  'random-artist': 'Random artist pick',
-  'public-playlists': 'Public playlists',
-  'tahti-selects': 'Tahti Selects',
-  'latest-releases': 'Latest releases',
-  'random-track': 'Random track',
-};
-
-/** What each widget shows, for the Add a widget menu. */
-const WIDGET_MENU: Record<
-  DiscoverWidgetId,
-  { icon: typeof CompassIcon; description: string }
-> = {
-  'this-week-most-played': {
-    icon: TrendingUpIcon,
-    description: 'The week’s most played tracks',
-  },
-  'this-week-least-played': {
-    icon: TrendingDownIcon,
-    description: 'Overlooked tracks from this week',
-  },
-  'new-to-you': {
-    icon: SparklesIcon,
-    description: 'Tracks you have not played yet',
-  },
-  'latest-tracks': { icon: ClockIcon, description: 'Fresh uploads' },
-  'most-played': { icon: FlameIcon, description: 'All-time favourites' },
-  loved: { icon: HeartIcon, description: 'What listeners love most' },
-  'artist-of-the-week': {
-    icon: StarIcon,
-    description: 'One artist in the spotlight',
-  },
-  'random-artist': { icon: ShuffleIcon, description: 'Meet someone new' },
-  'public-playlists': {
-    icon: ListMusicIcon,
-    description: 'Playlists shared by listeners',
-  },
-  'tahti-selects': { icon: AwardIcon, description: 'Hand-picked by Tahti' },
-  'latest-releases': { icon: Disc3Icon, description: 'New albums and EPs' },
-  'random-track': {
-    icon: DicesIcon,
-    description: 'One track at random from the genres you pick',
-  },
-};
-
-const TOP_LIST_WIDGET_IDS = new Set<DiscoverWidgetId>([
-  'this-week-most-played',
-  'this-week-least-played',
-  'most-played',
-]);
 
 type WidgetData = {
   loading: boolean;

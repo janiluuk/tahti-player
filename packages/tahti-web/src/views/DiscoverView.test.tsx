@@ -12,10 +12,11 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { AuthUser } from '../api/types';
+import { allOrSpecific } from '../lib/allOrSpecific';
 import { parseDiscoverSearch } from '../lib/discoverTabs';
 import { useAuthStore } from '../stores/authStore';
 import { DEFAULT_WIDGETS, useDiscoverStore } from '../stores/discoverStore';
-import { allOrSpecific, DiscoverView } from './DiscoverView';
+import { DiscoverView } from './DiscoverView';
 
 function createDiscoverRouter(initialEntry: string) {
   const rootRoute = createRootRoute({

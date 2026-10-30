@@ -20,8 +20,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Admin/AdminAnnouncementTrimDialog` | `tahti-web/AdminAnnouncementTrimDialog.stories.tsx` |
 | `Tahti/Admin/AdminAnnouncementsView` | `tahti-web/AdminAnnouncementsView.stories.tsx` |
 | `Tahti/Admin/AdminArtworkPresetsView` | `tahti-web/AdminArtworkPresetsView.stories.tsx` |
-| `Tahti/Media/CoverArtPickerDialog` | `tahti-web/CoverArtPickerDialog.stories.tsx` |
-| `Tahti/Discover/RandomTrackGenres` | `tahti-web/RandomTrackGenres.stories.tsx` |
 | `Tahti/Admin/AdminContentView` | `tahti-web/AdminContentView.stories.tsx` |
 | `Tahti/Admin/AdminCronHistoryDialog` | `tahti-web/AdminCronHistoryDialog.stories.tsx` |
 | `Tahti/Admin/AdminDashboardView` | `tahti-web/AdminDashboardView.stories.tsx` |
@@ -156,6 +154,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Layout/ConnectedStatusBar` | `tahti-web/ConnectedStatusBar.stories.tsx` |
 | `Tahti/Admin/ContentReportsTab` | `tahti-web/ContentReportsTab.stories.tsx` |
 | `Tahti/Studio/CoverArtGenerator` | `tahti-web/CoverArtGenerator.stories.tsx` |
+| `Tahti/Media/CoverArtPickerDialog` | `tahti-web/CoverArtPickerDialog.stories.tsx` |
 | `Tahti/Studio/Distribution/CreditsEditor` | `tahti-web/CreditsEditor.stories.tsx` |
 | `Tahti/Studio/Distribution/DeliveryTab` | `tahti-web/DeliveryTab.stories.tsx` |
 | `Tahti/Misc/DesktopLibraryPanel` | `tahti-web/DesktopLibraryPanel.stories.tsx` |
@@ -268,6 +267,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Admin/RadioStationSuggestionsTab` | `tahti-web/RadioStationSuggestionsTab.stories.tsx` |
 | `Tahti/Listen/RadioStationView` | `tahti-web/RadioStationView.stories.tsx` |
 | `Tahti/Radio/RadioView` | `tahti-web/RadioView.stories.tsx` |
+| `Tahti/Discover/RandomTrackGenres` | `tahti-web/RandomTrackGenres.stories.tsx` |
 | `Tahti/Studio/Home/RecentBroadcastRow` | `tahti-web/RecentBroadcastRow.stories.tsx` |
 | `Tahti/Studio/ReleasePinButton` | `tahti-web/ReleasePinButton.stories.tsx` |
 | `Tahti/Studio/ReleaseTrackAudioUpload` | `tahti-web/ReleaseTrackAudioUpload.stories.tsx` |

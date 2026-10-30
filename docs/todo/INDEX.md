@@ -21,6 +21,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
+| open    | [ci-guard-precommit.md](ci-guard-precommit.md) | Run storybook-surfaces + file-size guards in lint-staged / pre-push so PRs stop failing on them in CI |
 | partial | [feed-avatars-random-track-widget.md](feed-avatars-random-track-widget.md) | Random-track widget shipped; feed avatar thumbnails need avatar URLs from the API |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
