@@ -280,6 +280,8 @@ These shared components are used across many views but lack dedicated Storybook 
 | **EmbedButton**                | Channel, Collection, Release                  | Has story                                                    |
 | **AudioEngine**                | Player playback                               | Has story (non-visual)                                       |
 | **StemMixer**                  | Pro Editor                                    | Has story                                                    |
+| **Waveform** | Player, previews and track listings | `Components/Waveform`: peaks, dynamics, empty, seeking, 4096 peaks, audio decoding, phone width |
+| **AmbientTrackRow / AmbientTrackList** | Library, Sounds, collections | `Tahti/Media/AmbientTrackRow` and `Tahti/Media/AmbientTrackList`: all densities, phone width, decoded audio and processing upload |
 | **WaveformCanvas**             | Editor, Mastering views                       | Has story                                                    |
 
 ### Confirmed Duplicates / No-Ops (2026-09-12/14 sweep — full app, ~140/140 views)

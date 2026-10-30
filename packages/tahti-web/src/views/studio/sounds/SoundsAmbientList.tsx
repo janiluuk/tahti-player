@@ -365,6 +365,7 @@ export function SoundsAmbientList({
         <AmbientTrackList
           items={listItems}
           defaultDensity="comfortable"
+          itemNoun="sound"
           emptyMessage={
             embeds.length > 0
               ? 'No hosted sounds match these filters.'

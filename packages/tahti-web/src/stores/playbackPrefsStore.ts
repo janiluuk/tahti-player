@@ -28,6 +28,9 @@ type PlaybackPrefsState = {
    * The channel's artist has a switch of their own, and both must be on. */
   channelAutoplay: boolean;
   setChannelAutoplay: (value: boolean) => void;
+  /** Hold a screen wake lock while the full-screen player is playing; off by default. */
+  keepScreenOn: boolean;
+  setKeepScreenOn: (value: boolean) => void;
 };
 
 export const usePlaybackPrefsStore = create<PlaybackPrefsState>()(
@@ -39,6 +42,8 @@ export const usePlaybackPrefsStore = create<PlaybackPrefsState>()(
       setNormalization: (normalization) => set({ normalization }),
       channelAutoplay: true,
       setChannelAutoplay: (channelAutoplay) => set({ channelAutoplay }),
+      keepScreenOn: false,
+      setKeepScreenOn: (keepScreenOn) => set({ keepScreenOn }),
     }),
     { name: 'tahti-playback-prefs' },
   ),

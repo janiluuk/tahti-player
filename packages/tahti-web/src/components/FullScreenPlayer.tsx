@@ -13,6 +13,7 @@ import {
 import type { VisualizerMode } from '@tahti-player/visualizer';
 
 import { useIsMobile } from '../hooks/useIsMobile';
+import { useScreenWakeLock } from '../hooks/useScreenWakeLock';
 import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
 import {
   loadChannelVizMode,
@@ -21,6 +22,7 @@ import {
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { useDominantColor } from '../lib/useDominantColor';
 import { useLayoutStore } from '../stores/layoutStore';
+import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
 import { ChannelVisualizer } from './ChannelVisualizer';
@@ -56,6 +58,7 @@ export function FullScreenPlayer() {
   const previous = usePlayerStore((s) => s.previous);
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
   const cycleRepeat = usePlayerStore((s) => s.cycleRepeat);
+  const keepScreenOn = usePlaybackPrefsStore((s) => s.keepScreenOn);
 
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -153,6 +156,7 @@ export function FullScreenPlayer() {
     [channelKey],
   );
   const isPlaying = status === 'playing' || status === 'loading';
+  useScreenWakeLock(open && keepScreenOn && isPlaying);
   const isLoading = status === 'loading';
   const embed = playable?.embed;
 
@@ -252,8 +256,10 @@ export function FullScreenPlayer() {
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-8 overflow-y-auto px-6 pb-10">
         <div
           className={cn(
-            'border-border bg-background-secondary flex aspect-square w-64 shrink-0 items-center justify-center overflow-hidden rounded-xl border shadow-2xl sm:w-80 md:w-96',
-            isLive && 'p-6 sm:p-8',
+            'flex aspect-square w-64 shrink-0 items-center justify-center overflow-hidden rounded-xl border shadow-2xl sm:w-80 md:w-96',
+            isLive
+              ? 'border-white/20 bg-white/10 p-6 inset-ring inset-ring-white/10 backdrop-blur-xl backdrop-saturate-150 sm:p-8'
+              : 'border-border bg-background-secondary',
           )}
         >
           {coverUrl ? (
@@ -306,13 +312,15 @@ export function FullScreenPlayer() {
             isPlaying={isPlaying}
             isLoading={isLoading}
             isShuffleActive={!isLive && shuffle}
-            repeatMode={isLive ? 'off' : repeatMode}
+            repeatMode={
+              isLive ? (repeatMode === 'off' ? 'off' : 'all') : repeatMode
+            }
             showDiscovery={false}
             labels={{
               shuffleOn: isLive ? 'Shuffle (archive only)' : 'Shuffle on',
               shuffleOff: isLive ? 'Shuffle (archive only)' : 'Shuffle off',
-              repeatOff: isLive ? 'Repeat (archive only)' : 'Repeat off',
-              repeatAll: 'Repeat all',
+              repeatOff: isLive ? 'Loop stations off' : 'Repeat off',
+              repeatAll: isLive ? 'Loop stations' : 'Repeat all',
               repeatOne: 'Repeat one',
             }}
             onPlayPause={() => {

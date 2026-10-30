@@ -15,6 +15,7 @@ import {
   type AmbientTrackRowDensity,
   type AmbientTrackRowProps,
 } from './AmbientTrackRow';
+import { PageEmpty } from './PageStates';
 
 export const AMBIENT_TRACK_DENSITIES: AmbientTrackRowDensity[] = [
   'comfortable',
@@ -98,6 +99,8 @@ export type AmbientTrackListProps = {
   /** Persist density to localStorage (default true when uncontrolled). */
   persistDensity?: boolean;
   emptyMessage?: string;
+  /** What the header counts, e.g. `sound` reads "3 sounds". */
+  itemNoun?: string;
   /** Extra controls beside the size switcher. */
   toolbarEnd?: ReactNode;
   /** Offers a List option in the switcher; renders this in place of the rows. */
@@ -114,6 +117,7 @@ export function AmbientTrackList({
   onDensityChange,
   persistDensity,
   emptyMessage = 'No tracks yet.',
+  itemNoun = 'track',
   toolbarEnd,
   renderList,
   allowGrid = false,
@@ -162,27 +166,43 @@ export function AmbientTrackList({
     }
   };
 
+  if (items.length === 0) {
+    return (
+      <PageEmpty
+        title={emptyMessage}
+        className={className}
+        data-testid="ambient-track-list"
+      />
+    );
+  }
+
   return (
     <section
-      className={cn('flex w-full min-w-0 flex-col gap-3', className)}
+      className={cn(
+        'border-border/40 bg-background-secondary/40 flex w-full min-w-0 flex-col gap-2 rounded-[var(--radius-card)] border p-2 sm:p-3',
+        className,
+      )}
       data-testid="ambient-track-list"
       data-density={activeView}
     >
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      <div
+        className="flex flex-wrap items-center gap-2 px-1"
+        data-testid="ambient-track-list-toolbar"
+      >
+        <span className="text-foreground-secondary me-auto text-xs font-semibold tabular-nums">
+          {items.length} {items.length === 1 ? itemNoun : `${itemNoun}s`}
+        </span>
+        {toolbarEnd}
         <SegmentedControl
           aria-label="Track size"
           iconOnly
+          className="bg-background-input"
           options={options}
           value={activeView}
           onChange={setView}
         />
-        {toolbarEnd ? (
-          <div className="flex flex-wrap items-center gap-2">{toolbarEnd}</div>
-        ) : null}
       </div>
-      {items.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">{emptyMessage}</p>
-      ) : showList && renderList ? (
+      {showList && renderList ? (
         renderList()
       ) : showGrid ? (
         <CardGrid data-testid="ambient-track-grid">

@@ -18,7 +18,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Listener/library track row with cover-ambient wash and a scrubbable waveform. Two densities: comfortable (screenshot-like) and compact. Wire into PlayableTrackTable / SoundRow after review.',
+          'Listener/library track row with cover-ambient wash and a scrubbable waveform. Large, medium and small rows use WaveSurfer, with full-width waveforms on phones and an animated processing state.',
       },
     },
   },
@@ -54,6 +54,7 @@ export const Comfortable: Story = {
     coverUrl: COVER_A,
     genreLabel: 'Progressive House',
     durationLabel: '46:03',
+    durationSec: 2763,
     peaks: mockAmbientPeaks(1),
     progress: 0.28,
     density: 'comfortable',
@@ -82,6 +83,7 @@ export const Compact: Story = {
     coverUrl: COVER_B,
     genreLabel: 'Deep House',
     durationLabel: '6:11',
+    durationSec: 371,
     peaks: mockAmbientPeaks(2),
     progress: 0.55,
     density: 'compact',
@@ -92,7 +94,7 @@ export const Compact: Story = {
 
 /** The reference row: love with count, then actions, stats on the right.
  * Loving moves the count from 3 to 4 and fills the heart. */
-export const WithLove: Story = {
+export const WithLove: StoryObj<typeof AmbientTrackRow> = {
   render: function WithLoveStory() {
     const [liked, setLiked] = useState(false);
     return (
@@ -103,6 +105,7 @@ export const WithLove: Story = {
         coverUrl={COVER_B}
         genreLabel="Progressive House"
         durationLabel="35:56"
+        durationSec={2156}
         peaks={mockAmbientPeaks(2)}
         density="comfortable"
         ambientRgb={[96, 92, 40]}
@@ -140,7 +143,7 @@ export const WithLove: Story = {
   },
 };
 
-export const Playing: Story = {
+export const Playing: StoryObj<typeof AmbientTrackRow> = {
   render: function PlayingStory() {
     const [progress, setProgress] = useState(0.42);
     const [playing, setPlaying] = useState(true);
@@ -152,6 +155,7 @@ export const Playing: Story = {
         coverUrl={COVER_A}
         genreLabel="Progressive House"
         durationLabel="46:03"
+        durationSec={2763}
         peaks={mockAmbientPeaks(1)}
         progress={progress}
         density="comfortable"
@@ -168,7 +172,7 @@ export const Playing: Story = {
 export const NoPeaks: Story = {
   args: {
     trackId: 'story-empty',
-    title: 'Still processing',
+    title: 'No waveform data available',
     artist: 'Northern Lights',
     coverUrl: COVER_A,
     durationLabel: '3:20',
@@ -179,7 +183,7 @@ export const NoPeaks: Story = {
   },
 };
 
-export const Stack: Story = {
+export const Stack: StoryObj<typeof AmbientTrackRow> = {
   render: () => (
     <>
       <AmbientTrackRow
@@ -189,6 +193,7 @@ export const Stack: Story = {
         coverUrl={COVER_A}
         genreLabel="Progressive House, Progressive Trance"
         durationLabel="46:03"
+        durationSec={2763}
         peaks={mockAmbientPeaks(1)}
         progress={0.22}
         density="comfortable"
@@ -202,6 +207,7 @@ export const Stack: Story = {
         coverUrl={COVER_B}
         genreLabel="Deep House"
         durationLabel="6:11"
+        durationSec={371}
         peaks={mockAmbientPeaks(3)}
         progress={0.08}
         density="comfortable"
@@ -215,6 +221,7 @@ export const Stack: Story = {
         coverUrl={COVER_B}
         genreLabel="Deep House"
         durationLabel="6:11"
+        durationSec={371}
         peaks={mockAmbientPeaks(3)}
         progress={0.08}
         density="compact"

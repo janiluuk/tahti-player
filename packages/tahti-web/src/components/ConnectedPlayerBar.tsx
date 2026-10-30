@@ -195,13 +195,15 @@ export function ConnectedPlayerBar() {
         isPlaying={isPlaying}
         isLoading={isLoading}
         isShuffleActive={!isLive && shuffle}
-        repeatMode={isLive ? 'off' : repeatMode}
+        repeatMode={
+          isLive ? (repeatMode === 'off' ? 'off' : 'all') : repeatMode
+        }
         showDiscovery={false}
         labels={{
           shuffleOn: isLive ? 'Shuffle (archive only)' : 'Shuffle on',
           shuffleOff: isLive ? 'Shuffle (archive only)' : 'Shuffle off',
-          repeatOff: isLive ? 'Repeat (archive only)' : 'Repeat off',
-          repeatAll: 'Repeat all',
+          repeatOff: isLive ? 'Loop stations off' : 'Repeat off',
+          repeatAll: isLive ? 'Loop stations' : 'Repeat all',
           repeatOne: 'Repeat one',
         }}
         onPlayPause={onPlayPause}
