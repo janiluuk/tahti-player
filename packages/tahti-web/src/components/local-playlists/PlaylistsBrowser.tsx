@@ -24,6 +24,7 @@ import type {
   NativePlaylistSummary,
   TahtiNativeLibrary,
 } from '../../lib/nativeLibrary';
+import { toastWithUndo } from '../../lib/undoToast';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { PageEmpty } from '../PageStates';
 import { PlaylistExportDialog } from '../PlaylistExportDialog';
@@ -239,7 +240,16 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                             const copy = await library.playlists.duplicate(
                               playlist.id,
                             );
-                            toast.success(`Created “${copy.name}”.`);
+                            toastWithUndo(`Created “${copy.name}”.`, {
+                              undo: async () => {
+                                await library.playlists.delete(copy.id);
+                                return { ok: true as const };
+                              },
+                              undoneMessage: `Removed “${copy.name}”.`,
+                              onUndone: () => {
+                                void load();
+                              },
+                            });
                           },
                           'Could not duplicate playlist.',
                         )
@@ -307,7 +317,16 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
         onClose={() => setCreating(false)}
         onSubmit={async (name) => {
           const created = await library.playlists.create(name);
-          toast.success(`Created “${created.name}”.`);
+          toastWithUndo(`Created “${created.name}”.`, {
+            undo: async () => {
+              await library.playlists.delete(created.id);
+              return { ok: true as const };
+            },
+            undoneMessage: `Removed “${created.name}”.`,
+            onUndone: () => {
+              void load();
+            },
+          });
           await load();
         }}
       />

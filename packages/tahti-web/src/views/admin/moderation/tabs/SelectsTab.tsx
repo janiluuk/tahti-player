@@ -506,7 +506,7 @@ export function SelectsTab() {
         </div>
         <Dialog.Actions>
           <Button
-            className="bg-background-secondary"
+            variant="secondary"
             disabled={adding}
             onClick={() => setPickerOpen(false)}
           >

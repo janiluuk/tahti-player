@@ -51,8 +51,13 @@ Next `apps/web` removed 2026-10-28). Remaining host/build decisions are in
     packing as tahti-org); add-ons not in the layout still list below. Studio
     add-ons (artist scope) get a Full / Half / Third width per add-on; the
     first change lays out every add-on in list order, and Move up/down,
-    install and remove keep the layout in step. Left: an editor for logo
-    blocks (upload via `/api/me/media`) and a check on beta.
+    install and remove keep the layout in step.
+  - 2026-10-30 (batch 117): Studio add-ons (artist scope) can add a logo
+    block. The image uploads through `/api/me/media`, then
+    `POST /api/me/channel/blocks` with `type: LOGO` and
+    `{ assetId, url }`. Width is Full / Half / Third, remove deletes the
+    block, and the create toast can undo. Listeners do not see the editor.
+    Left: a check on beta.
 - [ ] **Google Drive import** (parity): API exists (`/api/me/google-drive/picker-config`,
   `/import`, cloud-import jobs); tahti-web connects Drive but has no Picker.
   Import progress for queued jobs is shown on Upload (#1412).

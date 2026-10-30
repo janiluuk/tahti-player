@@ -48,6 +48,13 @@ export function addonInstallIdOf(block: ChannelBlockView): string | null {
     : null;
 }
 
+export function logoUrlOf(block: ChannelBlockView): string | null {
+  const config = block.configJson as { url?: unknown } | null;
+  return block.type === 'LOGO' && typeof config?.url === 'string'
+    ? config.url
+    : null;
+}
+
 export async function fetchChannelBlocks(slug: string): Promise<{
   data: PublicChannelBlock[];
   meta: FetchMeta;
@@ -106,6 +113,40 @@ export async function createAddonBlock(
     return { error: null, data };
   } catch (err) {
     return failure(err, 'Could not place the add-on');
+  }
+}
+
+export async function createLogoBlock(
+  config: { assetId: string; url: string },
+  width: ChannelBlockWidth = 'FULL',
+): Promise<ActionResult<ChannelBlockView>> {
+  if (isForceMock()) {
+    return {
+      error: null,
+      data: {
+        id: `logo-block-${config.assetId}`,
+        type: 'LOGO',
+        width,
+        position: 0,
+        configJson: config,
+      },
+    };
+  }
+  try {
+    const { data } = await requestJson<ChannelBlockView>(
+      '/api/me/channel/blocks',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          type: 'LOGO',
+          width,
+          configJson: config,
+        }),
+      },
+    );
+    return { error: null, data };
+  } catch (err) {
+    return failure(err, 'Could not place the logo');
   }
 }
 

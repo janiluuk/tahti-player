@@ -82,6 +82,8 @@ export function LocalLibraryFilters({
         <div className="grid grid-cols-2 gap-2">
           <Input
             type="number"
+            inputMode="numeric"
+            enterKeyHint="done"
             label="Year from"
             placeholder={options?.yearMin ? String(options.yearMin) : ''}
             value={text(draft.yearMin)}
@@ -89,6 +91,8 @@ export function LocalLibraryFilters({
           />
           <Input
             type="number"
+            inputMode="numeric"
+            enterKeyHint="done"
             label="Year to"
             placeholder={options?.yearMax ? String(options.yearMax) : ''}
             value={text(draft.yearMax)}
@@ -96,6 +100,8 @@ export function LocalLibraryFilters({
           />
           <Input
             type="number"
+            inputMode="numeric"
+            enterKeyHint="done"
             label="Longer than (minutes)"
             value={minutes(draft.durationMin)}
             onChange={(event) => {
@@ -105,6 +111,8 @@ export function LocalLibraryFilters({
           />
           <Input
             type="number"
+            inputMode="numeric"
+            enterKeyHint="done"
             label="Shorter than (minutes)"
             value={minutes(draft.durationMax)}
             onChange={(event) => {
@@ -114,6 +122,8 @@ export function LocalLibraryFilters({
           />
           <Input
             type="number"
+            inputMode="numeric"
+            enterKeyHint="done"
             label="Bitrate at least (kbps)"
             value={text(draft.bitrateMin)}
             onChange={(event) =>
@@ -132,12 +142,16 @@ export function LocalLibraryFilters({
         <div className="grid grid-cols-2 gap-2">
           <Input
             type="number"
+            inputMode="decimal"
+            enterKeyHint="done"
             label="BPM from"
             value={text(draft.bpmMin)}
             onChange={(event) => set({ bpmMin: toNumber(event.target.value) })}
           />
           <Input
             type="number"
+            inputMode="decimal"
+            enterKeyHint="done"
             label="BPM to"
             value={text(draft.bpmMax)}
             onChange={(event) => set({ bpmMax: toNumber(event.target.value) })}
@@ -152,6 +166,8 @@ export function LocalLibraryFilters({
           />
           <Input
             type="number"
+            inputMode="decimal"
+            enterKeyHint="done"
             label="Louder than (LUFS)"
             value={text(draft.loudnessMin)}
             onChange={(event) =>

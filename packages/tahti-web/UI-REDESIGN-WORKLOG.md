@@ -6287,3 +6287,7 @@ Admin → Artwork presets now reads and writes the API (tahti-org#1033): a grid 
 ## 2026-10-30 — Discover random track widget (0.0.285)
 
 New **Random track** Discover widget (also listed in the plugin store's Discover widgets). It draws one track from latest and all-time top tracks in the chosen genres. The selection defaults to an All genres pill; a dialog picks several genres, and All genres clears the rest (`lib/allOrSpecific.ts`, shared with the page filter). The choice persists in `discoverStore.randomTrackGenres` and shows as pills under the title; the row plays the track and a shuffle button rolls another.
+
+## 2026-10-30 — Phone keyboards, undo, composers, logo blocks (0.0.286)
+
+Library year, length and bitrate filters, smart-playlist limits, clip times, analysis BPM and storage quota open the matching phone keyboard. Link and email fields stop auto-correcting. Creating or duplicating a local playlist can be undone. Page-comment edits, pasted tracklists, the artist bio and story, account-deletion requests, correction answers and radio-station approvals submit with Cmd/Ctrl+Enter. Confirm-delete, cancel-election, picker cancel and copy-link are no longer the green primary. Studio add-ons can place a channel logo (upload, width, remove, undo) without touching the profile logo.

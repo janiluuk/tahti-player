@@ -10,6 +10,7 @@ type Props = {
   value: string;
   rows?: number;
   placeholder?: string;
+  submitOnModEnter?: boolean;
   onChange: (value: string) => void;
 };
 
@@ -18,6 +19,7 @@ export function MentionTextarea({
   value,
   rows = 4,
   placeholder,
+  submitOnModEnter = false,
   onChange,
 }: Props) {
   const [matches, setMatches] = useState<MentionUser[]>([]);
@@ -59,6 +61,7 @@ export function MentionTextarea({
         rows={rows}
         value={value}
         placeholder={placeholder}
+        submitOnModEnter={submitOnModEnter}
         onChange={(event) => onChange(event.target.value)}
       />
       {matches.length > 0 ? (

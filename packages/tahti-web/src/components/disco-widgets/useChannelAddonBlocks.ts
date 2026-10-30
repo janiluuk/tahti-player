@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   addonInstallIdOf,
   createAddonBlock,
+  createLogoBlock,
   deleteChannelBlock,
   fetchMyChannelBlocks,
   patchChannelBlockWidth,
@@ -130,6 +131,41 @@ export function useChannelAddonBlocks(enabled: boolean) {
     return created.error ?? syncOrder(created.blocks, installOrder);
   };
 
+  const addLogo = async (config: {
+    assetId: string;
+    url: string;
+  }): Promise<{ error: Failure; block?: ChannelBlockView }> => {
+    const result = await createLogoBlock(config, 'FULL');
+    if (result.error || !result.data) {
+      return { error: result.error ?? 'Could not place the logo' };
+    }
+    setBlocks((prev) => [...prev, result.data]);
+    return { error: null, block: result.data };
+  };
+
+  const removeBlock = async (id: string): Promise<Failure> => {
+    const result = await deleteChannelBlock(id);
+    if (result.error) {
+      return result.error;
+    }
+    setBlocks((prev) => prev.filter((block) => block.id !== id));
+    return null;
+  };
+
+  const setBlockWidth = async (
+    id: string,
+    width: ChannelBlockWidth,
+  ): Promise<Failure> => {
+    const result = await patchChannelBlockWidth(id, width);
+    if (result.error) {
+      return result.error;
+    }
+    setBlocks((prev) =>
+      prev.map((block) => (block.id === id ? { ...block, width } : block)),
+    );
+    return null;
+  };
+
   const unplace = async (installId: string): Promise<Failure> => {
     const existing = blockFor(installId);
     if (!existing) {
@@ -144,10 +180,14 @@ export function useChannelAddonBlocks(enabled: boolean) {
   };
 
   return {
+    blocks,
     widthOf,
     setWidth,
     place,
     unplace,
+    addLogo,
+    removeBlock,
+    setBlockWidth,
     reorder: (installOrder: string[]) => syncOrder(blocks, installOrder),
   };
 }

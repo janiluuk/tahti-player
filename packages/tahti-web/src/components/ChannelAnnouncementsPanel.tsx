@@ -358,7 +358,11 @@ export function ChannelAnnouncementsPanel() {
           >
             Cancel
           </Button>
-          <Button disabled={busyId !== null} onClick={() => void remove()}>
+          <Button
+            intent="danger"
+            disabled={busyId !== null}
+            onClick={() => void remove()}
+          >
             {busyId ? 'Deleting…' : 'Delete'}
           </Button>
         </Dialog.Actions>

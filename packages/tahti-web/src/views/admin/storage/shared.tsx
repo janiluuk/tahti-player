@@ -214,6 +214,8 @@ export function QuotaEditor({
     >
       <Input
         type="number"
+        inputMode="numeric"
+        enterKeyHint="done"
         size="sm"
         min={1}
         value={value}

@@ -458,6 +458,8 @@ export function ClipEditorDialog({
                   <Input
                     key={key}
                     type="number"
+                    inputMode="decimal"
+                    enterKeyHint="done"
                     label={label}
                     min={0}
                     step={0.01}
@@ -619,6 +621,8 @@ export function ClipEditorDialog({
                     <Input
                       label="Number of programs"
                       type="number"
+                      inputMode="numeric"
+                      enterKeyHint="done"
                       min={2}
                       max={100}
                       value={placement.everyNth ?? 3}

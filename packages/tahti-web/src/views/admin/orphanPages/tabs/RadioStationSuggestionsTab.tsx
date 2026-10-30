@@ -112,7 +112,24 @@ export function RadioStationSuggestionsTab() {
                 </div>
 
                 {row.status === 'PENDING' && (
-                  <div className="flex flex-col gap-2">
+                  <form
+                    className="flex flex-col gap-2"
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      setBusyId(row.id);
+                      void approveRadioStationSuggestion(row.id).then((r) => {
+                        setBusyId(null);
+                        if (!r.ok) {
+                          setMsg(r.error);
+                        } else {
+                          setMsg(
+                            `Approved ${row.name}. It's added to the internet radio presets switched off — turn it on from Admin → Radio. The listener who suggested it is notified.`,
+                          );
+                          reload();
+                        }
+                      });
+                    }}
+                  >
                     <Textarea
                       label="Note to the listener (optional)"
                       tone="secondary"
@@ -124,27 +141,13 @@ export function RadioStationSuggestionsTab() {
                         }))
                       }
                       rows={2}
+                      submitOnModEnter
                     />
                     <div className="flex flex-wrap gap-2">
                       <Button
+                        type="submit"
                         size="sm"
                         disabled={busyId === row.id}
-                        onClick={() => {
-                          setBusyId(row.id);
-                          void approveRadioStationSuggestion(row.id).then(
-                            (r) => {
-                              setBusyId(null);
-                              if (!r.ok) {
-                                setMsg(r.error);
-                              } else {
-                                setMsg(
-                                  `Approved ${row.name}. It's added to the internet radio presets switched off — turn it on from Admin → Radio. The listener who suggested it is notified.`,
-                                );
-                                reload();
-                              }
-                            },
-                          );
-                        }}
                       >
                         {busyId === row.id ? (
                           <Loader
@@ -162,6 +165,7 @@ export function RadioStationSuggestionsTab() {
                         Approve
                       </Button>
                       <Button
+                        type="button"
                         size="sm"
                         variant="text"
                         disabled={busyId === row.id}
@@ -199,7 +203,7 @@ export function RadioStationSuggestionsTab() {
                         Reject
                       </Button>
                     </div>
-                  </div>
+                  </form>
                 )}
               </li>
             ))}

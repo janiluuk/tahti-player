@@ -260,6 +260,8 @@ export function SmartPlaylistDialog({
             />
             <Input
               type="number"
+              inputMode="numeric"
+              enterKeyHint="done"
               label="Limit to first … tracks (optional)"
               value={draft.limit === null ? '' : String(draft.limit)}
               onChange={(event) => {

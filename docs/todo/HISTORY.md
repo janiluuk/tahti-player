@@ -1,3 +1,31 @@
+## 2026-10-30 - UX batch 117 forty keyboard, undo, composer and logo slices
+
+Number filters (library year, length, bitrate, BPM, loudness, smart-playlist
+limit and rule value, analysis BPM, clip start/end/fades and program count,
+storage quota) set a phone keyboard. Change-email, channel links and news
+image URLs turn off auto-capitalise, autocorrect and spellcheck. Local
+playlist create and duplicate can be undone. Page-comment edit, tracklist
+paste, artist full bio, short bio, story, account-deletion request,
+correction answer and radio-station approval submit from the text area with
+Cmd/Ctrl+Enter. Channel announcement delete and cancel-election use danger;
+selects picker Cancel and download-gate Copy link use secondary. Studio
+add-ons place a channel logo block (upload, width, remove, undo on create).
+tahti-web `0.0.286`.
+
+## 2026-10-27 - UX batch 115 thirty empty, confirm and undo slices
+
+Paragraph empties use `PageEmpty`. One-click deletes ask first. Event, post,
+share, destination and comment creates can be undone. tahti-web `0.0.277`.
+
+## 2026-10-27 - UX batch 114 thirty more empty states
+
+Thirty more list empties render through `PageEmpty`. Load errors and access
+gates stay as they were. tahti-web `0.0.274`.
+
+## 2026-10-27 - UX batch 113 thirty empty states
+
+Thirty-two list empties render through `PageEmpty`. tahti-web `0.0.273`.
+
 ## 2026-10-27 - UX batch 111 thirty URL and email keyboard slices
 
 Fields that only set `inputMode="url"` or `inputMode="email"` still got

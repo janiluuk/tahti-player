@@ -26,9 +26,6 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | open    | [navigation-simplification.md](navigation-simplification.md) | Plan: one tab row per section for Studio (6), Library (5), Admin (6); regroup by context; Co-op sidebar item |
 | open    | [channel-store-editor.md](channel-store-editor.md) | Studio editor that puts tracks in the channel page Store section |
-| open    | [ux-batch-115-thirty-slices.md](ux-batch-115-thirty-slices.md) | Paragraph empties, confirm-before-delete, and undo on create |
-| open    | [ux-batch-114-thirty-slices.md](ux-batch-114-thirty-slices.md) | Thirty more list empties now use PageEmpty |
-| open    | [ux-batch-113-thirty-slices.md](ux-batch-113-thirty-slices.md) | Thirty list empties now use PageEmpty |
 | open    | [ux-batch-112-forty-slices.md](ux-batch-112-forty-slices.md) | Forty polish slices: ambient lists, undo toasts, de-green, PageEmpty, search keyboard, usability leftovers |
 | open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |
 | blocked | [discussion-topics.md](discussion-topics.md) | Board-created discussion topics shipped (API, web, CLI); only dropping the allowlisted routes remains, after the next tahti-org release |

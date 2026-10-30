@@ -111,6 +111,9 @@ export function ChangeEmailForm({
         <Input
           label="New email"
           inputMode="email"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           value={newEmail}
           onChange={(event) => setNewEmail(event.target.value)}
           autoComplete="email"

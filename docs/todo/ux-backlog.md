@@ -49,6 +49,9 @@ new surface, one PR per row.
 - [ ] De-green `Button` (primary-heavy everywhere; Cards and the MediaArtwork
   overlay were already neutralised). Partial: Governance attention panel +
   stream PlaylistDialog selected row (batch 81).
+  - 2026-10-30 (batch 117): channel announcement confirm Delete and Cancel
+    the election use danger; the selects picker Cancel and the download
+    gate Copy link use secondary. Primary actions on those screens stay.
   - 2026-10-27: Settings → Add-ons import cards - per-row Import (Bandcamp
     albums, SoundCloud tracks), the hearthis.at Search submit and the
     disabled Soulseek "Desktop only" are `secondary`; Connect / Import all /
@@ -107,4 +110,7 @@ new surface, one PR per row.
   - 2026-10-27 (batch 90): release publish toast has Undo (PATCH
     `state: DRAFT`), via shared `lib/undoToast.ts`. The follower notice and
     social post queued on publish are not recalled.
+  - 2026-10-30 (batch 117): a local playlist create or duplicate toast can
+    undo by deleting that playlist and reloading the list. Cloud collection
+    track adds still have no item id to delete.
 

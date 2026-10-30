@@ -219,7 +219,13 @@ export function ArtistBioSection({
       style={surfaceStyle}
     >
       {editing ? (
-        <div className="flex max-w-2xl flex-col gap-2">
+        <form
+          className="flex max-w-2xl flex-col gap-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void save();
+          }}
+        >
           <Textarea
             aria-label="Full bio"
             autoFocus
@@ -227,19 +233,21 @@ export function ArtistBioSection({
             placeholder="Share your full history — how you got started, your influences, milestones…"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
+            submitOnModEnter
           />
           <div className="flex justify-end gap-2">
             <Button
               size="sm"
+              type="button"
               variant="secondary"
               disabled={saving}
               onClick={() => setEditing(false)}
             >
               Cancel
             </Button>
-            <SaveButton saving={saving} onClick={() => void save()} />
+            <SaveButton saving={saving} type="submit" />
           </div>
-        </div>
+        </form>
       ) : artist.fullBio ? (
         <div className="max-w-2xl">
           <p className="text-foreground text-sm whitespace-pre-wrap">

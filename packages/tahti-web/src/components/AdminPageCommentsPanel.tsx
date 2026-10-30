@@ -36,7 +36,16 @@ function PageCommentRow({ comment }: { comment: MapComment }) {
         </span>
       </div>
       {editing ? (
-        <div className="flex flex-col gap-2">
+        <form
+          className="flex flex-col gap-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (updateComment(comment.id, draft)) {
+              setEditing(false);
+              toast.success('Comment updated');
+            }
+          }}
+        >
           <Textarea
             tone="secondary"
             rows={3}
@@ -44,18 +53,10 @@ function PageCommentRow({ comment }: { comment: MapComment }) {
             onChange={(e) => setDraft(e.target.value)}
             aria-label="Edit page comment"
             className="min-h-[4rem] text-sm"
+            submitOnModEnter
           />
           <div className="flex flex-wrap gap-1">
-            <Button
-              size="sm"
-              disabled={!draft.trim()}
-              onClick={() => {
-                if (updateComment(comment.id, draft)) {
-                  setEditing(false);
-                  toast.success('Comment updated');
-                }
-              }}
-            >
+            <Button size="sm" type="submit" disabled={!draft.trim()}>
               Save
             </Button>
             <Button
@@ -69,7 +70,7 @@ function PageCommentRow({ comment }: { comment: MapComment }) {
               Cancel
             </Button>
           </div>
-        </div>
+        </form>
       ) : (
         <p className="whitespace-pre-wrap">{comment.text}</p>
       )}

@@ -368,13 +368,20 @@ export function ArtistPanel() {
       content: !profile ? (
         profilePending
       ) : (
-        <div className="flex flex-col gap-6">
+        <form
+          className="flex flex-col gap-6"
+          onSubmit={(event) => {
+            event.preventDefault();
+            saveArtistInfo();
+          }}
+        >
           <MentionTextarea
             label="Short bio"
             rows={4}
             value={profile.bio ?? ''}
             onChange={(bio) => setProfile({ ...profile, bio })}
             placeholder="The concise introduction shown on your profile."
+            submitOnModEnter
           />
           <MentionTextarea
             label="Your story"
@@ -382,16 +389,13 @@ export function ArtistPanel() {
             value={profile.fullBio ?? ''}
             onChange={(fullBio) => setProfile({ ...profile, fullBio })}
             placeholder="Share your history, influences, milestones, and what listeners should know."
+            submitOnModEnter
           />
           <div className="flex justify-end">
-            <SaveButton
-              saving={busy}
-              label="Save story"
-              onClick={saveArtistInfo}
-            />
+            <SaveButton saving={busy} label="Save story" type="submit" />
           </div>
           {msg && <SettingsHint>{msg}</SettingsHint>}
-        </div>
+        </form>
       ),
     },
     {

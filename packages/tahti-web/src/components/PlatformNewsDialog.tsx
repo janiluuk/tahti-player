@@ -94,6 +94,10 @@ export function PlatformNewsDialog({
               <Input
                 aria-label="Image URL"
                 type="text"
+                inputMode="url"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 value={imageUrl}
                 onChange={(event) => setImageUrl(event.target.value)}
                 disabled={busy}
