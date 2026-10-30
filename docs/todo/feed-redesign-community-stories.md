@@ -96,6 +96,12 @@ three wide cards per row. Each card, with no box or border around it:
   PR. Left: merge + deploy the tahti-org PR, then check the widget and the
   post Type on the real API.
 
+- 2026-10-30: Fixed player PR #1726's API-route CI guard with a scoped
+  allowlist entry for `/api/v1/community/stories`, pending open tahti-org
+  #1034. Verified against the released OpenAPI export used by CI. Remove
+  the exception once the endpoint appears in a tahti-org release; merge,
+  deploy and real-API verification remain outstanding.
+
 ## Decisions (2026-10-30)
 
 - Build the tahti-org endpoint (Phase 2.1) on a branch with a PR; no merge
