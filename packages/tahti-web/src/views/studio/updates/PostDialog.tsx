@@ -8,8 +8,19 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, FilePicker, Input, Textarea } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  FilePicker,
+  Input,
+  Select,
+  Textarea,
+} from '@tahti-player/ui';
 
+import {
+  POST_CATEGORY_LABELS,
+  type PostCategory,
+} from '../../../api/community-stories';
 import {
   createArtistPost,
   deleteArtistPost,
@@ -48,6 +59,8 @@ export function PostDialog({
   const initialPublishAt =
     post && canSchedule ? toDatetimeLocalValue(post.publishAt) : '';
 
+  const initialCategory: PostCategory = post?.category ?? 'STORY';
+  const [category, setCategory] = useState<PostCategory>(initialCategory);
   const [title, setTitle] = useState(post?.title ?? '');
   const [body, setBody] = useState(post?.body ?? '');
   const [linkUrl, setLinkUrl] = useState(post?.linkUrl ?? '');
@@ -98,6 +111,9 @@ export function PostDialog({
           linkUrl: trimmedUrl || null,
           linkLabel: label || null,
         };
+        if (category !== initialCategory) {
+          patch.category = category;
+        }
         if (canSchedule && publishAt !== initialPublishAt) {
           patch.publishAt = publishIso ?? new Date().toISOString();
         }
@@ -109,6 +125,7 @@ export function PostDialog({
           linkUrl: trimmedUrl || undefined,
           linkLabel: label || undefined,
           publishAt: publishIso ?? undefined,
+          ...(category === 'STORY' ? {} : { category }),
         });
       }
       if (!result.ok) {
@@ -179,6 +196,15 @@ export function PostDialog({
             </span>
           </Dialog.Title>
           <div className="mt-4 flex flex-col gap-3">
+            <Select
+              label="Type"
+              description="Shown on the post card, e.g. in Community stories."
+              value={category}
+              onValueChange={(value) => setCategory(value as PostCategory)}
+              options={(
+                Object.keys(POST_CATEGORY_LABELS) as PostCategory[]
+              ).map((id) => ({ id, label: POST_CATEGORY_LABELS[id] }))}
+            />
             <Input
               label="Title (optional)"
               value={title}

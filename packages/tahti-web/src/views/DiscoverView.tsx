@@ -53,6 +53,7 @@ import type {
   TahtiPlayable,
 } from '../api/types';
 import { DirectoryArtistsBrowser } from '../components/DirectoryArtistsBrowser';
+import { CommunityStoriesWidget } from '../components/discover/CommunityStoriesWidget';
 import { RandomTrackGenres } from '../components/discover/RandomTrackGenres';
 import { WidgetCard } from '../components/discover/WidgetCard';
 import {
@@ -114,6 +115,10 @@ const DISCOVER_TABS: Array<{
 
 export function DiscoverView() {
   const enabledWidgets = useDiscoverStore((s) => s.enabledWidgets);
+  const columnWidgets = useMemo(
+    () => enabledWidgets.filter((id) => id !== 'community-stories'),
+    [enabledWidgets],
+  );
   const genreFilter = useDiscoverStore((s) => s.genreFilter);
   const contentTypeFilter = useDiscoverStore((s) => s.contentTypeFilter);
   const storeAddWidget = useDiscoverStore((s) => s.addWidget);
@@ -189,6 +194,9 @@ export function DiscoverView() {
     let cancelled = false;
 
     for (const id of enabledWidgets) {
+      if (id === 'community-stories') {
+        continue;
+      }
       setData((prev) => ({
         ...prev,
         [id]: { loading: true, items: prev[id]?.items ?? [] },
@@ -528,9 +536,16 @@ export function DiscoverView() {
           </div>
         ) : null}
 
-        {activeTab === 'discover' && enabledWidgets.length > 0 && (
+        {activeTab === 'discover' &&
+        enabledWidgets.includes('community-stories') ? (
+          <CommunityStoriesWidget
+            onRemove={() => removeWidget('community-stories')}
+          />
+        ) : null}
+
+        {activeTab === 'discover' && columnWidgets.length > 0 && (
           <Masonry data-testid="discover-widget-columns">
-            {enabledWidgets.map((id, index) => {
+            {columnWidgets.map((id, index) => {
               const widgetData = data[id];
               return (
                 <motion.div
@@ -567,7 +582,7 @@ export function DiscoverView() {
                                 : 'Nothing here yet.'
                     }
                     canMoveUp={index > 0}
-                    canMoveDown={index < enabledWidgets.length - 1}
+                    canMoveDown={index < columnWidgets.length - 1}
                     onMove={moveWidget}
                     onRemove={removeWidget}
                     isAdmin={isAdmin}

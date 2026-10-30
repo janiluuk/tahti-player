@@ -107,6 +107,26 @@ describe('PostDialog - new post', () => {
     );
   });
 
+  it('sends a News category, and leaves the default Story out', async () => {
+    createArtistPost.mockResolvedValue({ ok: true, data: basePost });
+    await renderDialog();
+
+    await change('Body', 'Big news');
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Type/ }));
+    });
+    await act(async () => {
+      fireEvent.click(await screen.findByRole('option', { name: 'News' }));
+    });
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Publish' })),
+    );
+
+    expect(createArtistPost).toHaveBeenCalledWith(
+      expect.objectContaining({ body: 'Big news', category: 'NEWS' }),
+    );
+  });
+
   it('refuses a past publish time and a non-web link', async () => {
     await renderDialog();
 

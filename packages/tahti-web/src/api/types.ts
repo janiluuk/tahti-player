@@ -2,6 +2,7 @@ import type {
   ChannelNowPlaying,
   ChannelNowPlayingNext,
 } from './channel-now-playing-types';
+import type { PostCategory } from './community-stories';
 import type { PublicProfileArtist } from './public-profile-artist';
 
 export type ChannelDirectoryItem = {
@@ -733,6 +734,11 @@ export type FeedItem =
       artist: FeedArtist;
       title: string | null;
       body: string;
+      images?: string[];
+      linkUrl?: string | null;
+      linkLabel?: string | null;
+      /** Sent once tahti-org ships post categories; older APIs leave it out. */
+      category?: PostCategory;
     }
   | {
       kind: 'track';

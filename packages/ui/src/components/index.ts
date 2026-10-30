@@ -72,6 +72,8 @@ export * from './Slider';
 export * from './SortableBlocks';
 export * from './StatChip';
 export * from './StatTile';
+export * from './StoryCard';
+export * from './StoryRow';
 export * from './Tabs';
 export * from './Textarea';
 export * from './ThemeController';

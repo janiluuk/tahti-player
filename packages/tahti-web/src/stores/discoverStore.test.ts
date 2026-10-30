@@ -7,8 +7,9 @@ describe('discoverStore', () => {
     useDiscoverStore.setState({ enabledWidgets: [...DEFAULT_WIDGETS] });
   });
 
-  it('starts with seven widgets, including Tahti Selects, releases and loved', () => {
-    expect(DEFAULT_WIDGETS).toHaveLength(7);
+  it('starts with eight widgets, Community stories first', () => {
+    expect(DEFAULT_WIDGETS).toHaveLength(8);
+    expect(DEFAULT_WIDGETS[0]).toBe('community-stories');
     expect(DEFAULT_WIDGETS).toEqual(
       expect.arrayContaining(['tahti-selects', 'latest-releases', 'loved']),
     );
@@ -34,11 +35,29 @@ describe('discoverStore', () => {
       0,
     )) as Record<string, unknown>;
     expect(migrated.enabledWidgets).toEqual([
+      'community-stories',
       'latest-tracks',
       'loved',
       'tahti-selects',
       'latest-releases',
     ]);
     expect(migrated.unheardOnly).toBeUndefined();
+  });
+
+  it('adds Community stories first to a version 1 layout, once', async () => {
+    const options = useDiscoverStore.persist.getOptions();
+    const fresh = (await options.migrate!(
+      { enabledWidgets: ['latest-tracks'] },
+      1,
+    )) as { enabledWidgets: string[] };
+    expect(fresh.enabledWidgets).toEqual([
+      'community-stories',
+      'latest-tracks',
+    ]);
+    const removed = (await options.migrate!(
+      { enabledWidgets: ['latest-tracks'] },
+      2,
+    )) as { enabledWidgets: string[] };
+    expect(removed.enabledWidgets).toEqual(['latest-tracks']);
   });
 });

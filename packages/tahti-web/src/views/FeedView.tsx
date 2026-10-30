@@ -4,14 +4,14 @@ import { useEffect, useState, type ReactNode } from 'react';
 import {
   Button,
   ButtonLink,
-  CardsRow,
-  ImageReveal,
   MediaArtwork,
+  StoryCard,
+  StoryRow,
   ViewShell,
-  type CardsRowItem,
 } from '@tahti-player/ui';
 
 import { fetchArtistPlayables, fetchFeed, fetchProfile } from '../api/client';
+import { POST_CATEGORY_LABELS } from '../api/community-stories';
 import type {
   FeedItem,
   PublicProfileRelease,
@@ -25,12 +25,10 @@ import {
 } from '../components/PageStates';
 import { releasePlayables } from '../components/ReleaseTracklistDialog';
 import { TrackInfoDialog, type TrackInfo } from '../components/TrackInfoDialog';
-import { feedBadge } from '../lib/feedBadge';
+import { storyDate } from '../lib/storyDate';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
-
-type FeedCardItem = CardsRowItem & { feedItem: FeedItem };
 
 function formatFeedDate(iso: string): string {
   return new Date(iso).toLocaleDateString(undefined, {
@@ -39,49 +37,22 @@ function formatFeedDate(iso: string): string {
   });
 }
 
-function ArtistAvatar({ name, src }: { name: string; src: string | null }) {
-  return (
-    <div className="bg-surface-secondary flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-xs font-bold">
-      <ImageReveal
-        src={src ?? undefined}
-        alt=""
-        className="size-full"
-        placeholder={<span>{name.slice(0, 2).toUpperCase()}</span>}
-      />
-    </div>
-  );
-}
+const RELEASE_KINDS: Record<string, string> = {
+  SINGLE: 'Single',
+  EP: 'EP',
+  ALBUM: 'Album',
+  COMPILATION: 'Compilation',
+  REMIX: 'Remix',
+};
 
-function FeedItemHeader({ item }: { item: FeedItem }) {
-  return (
-    <div className="flex min-w-0 items-center gap-3">
-      <Link
-        to="/u/$username"
-        params={{ username: item.artist.username }}
-        aria-label={item.artist.displayName}
-      >
-        <ArtistAvatar
-          name={item.artist.displayName}
-          src={item.artist.avatarUrl}
-        />
-      </Link>
-      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-sm">
-        <Link
-          to="/u/$username"
-          params={{ username: item.artist.username }}
-          className="font-medium underline-offset-2 hover:underline"
-        >
-          {item.artist.displayName}
-        </Link>
-        <span className="text-foreground-secondary text-xs">
-          {feedBadge(item)}
-        </span>
-        <span className="text-foreground-secondary text-xs">
-          {formatFeedDate(item.date)}
-        </span>
-      </div>
-    </div>
-  );
+function feedKind(item: FeedItem): string {
+  if (item.kind === 'post') {
+    return item.category ? POST_CATEGORY_LABELS[item.category] : 'Post';
+  }
+  if (item.kind === 'track') {
+    return 'New track';
+  }
+  return RELEASE_KINDS[item.releaseType] ?? 'Release';
 }
 
 export function FeedView({ embedded = false }: { embedded?: boolean }) {
@@ -193,7 +164,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
     embedded ? (
       body
     ) : (
-      <ViewShell title="Feed" classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}>
+      <ViewShell title="Feed" classes={{ root: 'px-0 pt-0' }}>
         {body}
       </ViewShell>
     );
@@ -226,6 +197,96 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
       />,
     );
   }
+
+  const feedTarget = (item: FeedItem) =>
+    item.kind === 'release' && item.smartLinkSlug
+      ? { to: '/r/$slug' as const, params: { slug: item.smartLinkSlug } }
+      : item.kind === 'track'
+        ? {
+            to: '/channel/$slug' as const,
+            params: { slug: item.channelSlug },
+          }
+        : {
+            to: '/u/$username' as const,
+            params: { username: item.artist.username },
+          };
+
+  const feedMedia = (item: FeedItem): ReactNode => {
+    if (item.kind === 'post') {
+      return undefined;
+    }
+    if (item.kind === 'track') {
+      const playable: TahtiPlayable | null = item.audioUrl
+        ? {
+            id: `sound:${item.id}`,
+            kind: 'sound',
+            title: item.title,
+            artist: item.artist.displayName,
+            coverUrl: item.bannerUrl ?? undefined,
+            streamUrl: item.audioUrl,
+            protocol: 'https',
+            channelSlug: item.channelSlug,
+          }
+        : (feedPlayables[item.id] ?? null);
+      return (
+        <MediaArtwork
+          size="fill"
+          src={item.bannerUrl}
+          alt=""
+          placeholder={
+            <span className="text-2xl font-bold">
+              {item.title.slice(0, 2).toUpperCase()}
+            </span>
+          }
+          onArtworkClick={() =>
+            setInfoTrack({
+              title: item.title,
+              artistName: item.artist.displayName,
+              artistUsername: item.artist.username,
+              artworkUrl: item.bannerUrl,
+              meta: formatFeedDate(item.date),
+              playable,
+            })
+          }
+          onPlay={playable ? () => play(playable) : undefined}
+          playDisabled={!playable}
+          playLabel={`Play ${item.title}`}
+          onQueue={playable ? () => enqueue(playable) : undefined}
+          queueDisabled={!playable}
+          queueLabel={`Queue ${item.title}`}
+          queueActive={Boolean(
+            playable && queue.some((queueItem) => queueItem.id === playable.id),
+          )}
+        />
+      );
+    }
+    const [first, ...rest] = releaseFeedPlayables[item.id] ?? [];
+    return (
+      <MediaArtwork
+        size="fill"
+        src={item.artworkUrl}
+        alt=""
+        placeholder={
+          <span className="text-2xl font-bold">
+            {item.title.slice(0, 2).toUpperCase()}
+          </span>
+        }
+        onPlay={first ? () => play(first, { enqueueRest: rest }) : undefined}
+        playDisabled={!first}
+        playLabel={`Play ${item.title}`}
+        onQueue={
+          first
+            ? () => {
+                enqueue(first);
+                rest.forEach((p) => enqueue(p));
+              }
+            : undefined
+        }
+        queueDisabled={!first}
+        queueLabel={`Queue ${item.title}`}
+      />
+    );
+  };
 
   const content = (
     <>
@@ -267,172 +328,36 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
           }
         />
       ) : (
-        <CardsRow<FeedCardItem>
-          title="Your feed"
-          labels={{
-            filterPlaceholder: 'Filter your feed…',
-            nothingFound: 'No matches in your feed.',
-          }}
-          items={items.map((item) => ({
-            id: `${item.kind}-${item.id}`,
-            title: item.title || item.artist.displayName,
-            feedItem: item,
-          }))}
-          renderItem={({ feedItem: item }) => (
-            <div className="group/glow relative w-[calc(100vw-5rem)] max-w-80 sm:w-[calc((100vw-5rem)/3)] sm:min-w-56">
-              <div
-                className="bg-primary pointer-events-none absolute -inset-3 rounded-2xl opacity-20 blur-xl"
-                aria-hidden
-              />
-              <div className="border-border bg-background-secondary relative flex h-full flex-col gap-3 rounded-lg border p-4">
-                {item.kind === 'post' && <FeedItemHeader item={item} />}
-
-                <div className="min-w-0 flex-1">
-                  {item.kind === 'post' && (
-                    <Link
-                      to="/u/$username"
-                      params={{ username: item.artist.username }}
-                      className="hover:bg-background mt-2 block rounded-md text-left"
-                    >
-                      {item.title && (
-                        <div className="text-sm font-medium">{item.title}</div>
-                      )}
-                      <p className="text-foreground-secondary mt-0.5 text-sm">
-                        {item.body}
-                      </p>
-                    </Link>
-                  )}
-
-                  {item.kind === 'track' &&
-                    (() => {
-                      const playable: TahtiPlayable | null = item.audioUrl
-                        ? {
-                            id: `sound:${item.id}`,
-                            kind: 'sound',
-                            title: item.title,
-                            artist: item.artist.displayName,
-                            coverUrl: item.bannerUrl ?? undefined,
-                            streamUrl: item.audioUrl,
-                            protocol: 'https',
-                            channelSlug: item.channelSlug,
-                          }
-                        : (feedPlayables[item.id] ?? null);
-                      return (
-                        <div className="flex flex-col gap-3">
-                          <div className="relative aspect-square w-full overflow-hidden rounded-md">
-                            <MediaArtwork
-                              size="fill"
-                              src={item.bannerUrl}
-                              alt={item.title}
-                              placeholder={
-                                <span className="text-lg font-bold">
-                                  {item.title.slice(0, 2).toUpperCase()}
-                                </span>
-                              }
-                              onArtworkClick={() =>
-                                setInfoTrack({
-                                  title: item.title,
-                                  artistName: item.artist.displayName,
-                                  artistUsername: item.artist.username,
-                                  artworkUrl: item.bannerUrl,
-                                  meta: formatFeedDate(item.date),
-                                  playable,
-                                })
-                              }
-                              onPlay={
-                                playable ? () => play(playable) : undefined
-                              }
-                              playDisabled={!playable}
-                              playLabel={`Play ${item.title}`}
-                              onQueue={
-                                playable ? () => enqueue(playable) : undefined
-                              }
-                              queueDisabled={!playable}
-                              queueLabel={`Queue ${item.title}`}
-                              queueActive={Boolean(
-                                playable &&
-                                queue.some(
-                                  (queueItem) => queueItem.id === playable.id,
-                                ),
-                              )}
-                            />
-                            <div
-                              className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-2 pt-6"
-                              aria-hidden
-                            />
-                            <span className="pointer-events-none absolute right-2 bottom-2 left-2 truncate text-sm font-semibold text-white">
-                              {item.title}
-                            </span>
-                          </div>
-                          <FeedItemHeader item={item} />
-                        </div>
-                      );
-                    })()}
-
-                  {item.kind === 'release' &&
-                    (() => {
-                      const playables = releaseFeedPlayables[item.id] ?? [];
-                      const [first, ...rest] = playables;
-                      const navigateTo = item.smartLinkSlug
-                        ? {
-                            to: '/r/$slug' as const,
-                            params: { slug: item.smartLinkSlug },
-                          }
-                        : {
-                            to: '/u/$username' as const,
-                            params: { username: item.artist.username },
-                          };
-                      return (
-                        <div className="flex flex-col gap-3">
-                          <div className="relative aspect-square w-full overflow-hidden rounded-md">
-                            <MediaArtwork
-                              size="fill"
-                              src={item.artworkUrl}
-                              alt={item.title}
-                              placeholder={
-                                <span className="text-lg font-bold">
-                                  {item.title.slice(0, 2).toUpperCase()}
-                                </span>
-                              }
-                              onPlay={
-                                first
-                                  ? () => play(first, { enqueueRest: rest })
-                                  : undefined
-                              }
-                              playDisabled={!first}
-                              playLabel={`Play ${item.title}`}
-                              onQueue={
-                                first
-                                  ? () => {
-                                      enqueue(first);
-                                      rest.forEach((p) => enqueue(p));
-                                    }
-                                  : undefined
-                              }
-                              queueDisabled={!first}
-                              queueLabel={`Queue ${item.title}`}
-                            />
-                            <div
-                              className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-2 pt-6"
-                              aria-hidden
-                            />
-                            <Link
-                              to={navigateTo.to}
-                              params={navigateTo.params}
-                              className="absolute right-2 bottom-2 left-2 truncate text-sm font-semibold text-white hover:underline"
-                            >
-                              {item.title}
-                            </Link>
-                          </div>
-                          <FeedItemHeader item={item} />
-                        </div>
-                      );
-                    })()}
-                </div>
-              </div>
-            </div>
-          )}
-        />
+        <StoryRow title="Your feed" data-testid="feed-stories">
+          {items.map((item) => (
+            <StoryCard
+              key={`${item.kind}-${item.id}`}
+              data-testid="feed-story"
+              imageSrc={
+                item.kind === 'post' ? (item.images?.[0] ?? null) : null
+              }
+              media={feedMedia(item)}
+              meta={`${feedKind(item)} · ${storyDate(item.date)}`}
+              title={
+                <Link {...feedTarget(item)} className="hover:underline">
+                  {item.title || item.artist.displayName}
+                </Link>
+              }
+              excerpt={item.kind === 'post' ? item.body : undefined}
+              authorName={item.artist.displayName || item.artist.username}
+              authorAvatarSrc={item.artist.avatarUrl}
+              renderAuthor={(row) => (
+                <Link
+                  to="/u/$username"
+                  params={{ username: item.artist.username }}
+                  className="hover:text-foreground w-fit"
+                >
+                  {row}
+                </Link>
+              )}
+            />
+          ))}
+        </StoryRow>
       )}
 
       <TrackInfoDialog

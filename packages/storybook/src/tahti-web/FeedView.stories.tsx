@@ -13,7 +13,7 @@ const meta: Meta<typeof FeedView> = {
     docs: {
       description: {
         component:
-          'Personal feed at `/feed`: posts, tracks, and releases from artists you follow. Phone stories lock the canvas to 390 px.',
+          'Personal feed at `/feed` and Listen → Feed: posts, tracks, and releases from artists you follow as wide `StoryCard`s in a `StoryRow` (most of one card on phones, two from md, three from xl). Phone stories lock the canvas to 390 px.',
       },
     },
   },
@@ -66,5 +66,26 @@ export const SignedOutPhone: Story = {
     await expect(canvas.getByRole('button', { name: 'Log in' })).toBeVisible();
     const box = canvasElement.getBoundingClientRect();
     await expect(box.width).toBeLessThanOrEqual(390);
+  },
+};
+
+/** Desktop width: three wide story cards per view, each with a 16:9 image,
+ * a "kind · age" line, the title and the artist. */
+export const WideDesktop: Story = {
+  parameters: { viewport: { defaultViewport: 'desktop' } },
+  decorators: [
+    withMockAuth(MOCK_USERS.listener),
+    (Story) => (
+      <div className="w-[1280px] max-w-full">
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const cards = await canvas.findAllByTestId('feed-story');
+    await expect(cards.length).toBeGreaterThan(0);
+    await expect(cards[0]!.getBoundingClientRect().width).toBeGreaterThan(300);
+    await expect(within(cards[0]!).getByText(/ · /)).toBeVisible();
   },
 };
