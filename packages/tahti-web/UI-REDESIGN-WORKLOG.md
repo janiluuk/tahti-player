@@ -6306,3 +6306,6 @@ Announcement trim, station-ID clip, episode trim, schedule and show episode numb
 ## 2026-10-30 — Favourites in Library, signed-out menus stay (0.0.288)
 
 Favourites is a Library tab at `/library/favorites`. The sidebar item is gone; `/favorites` and `/listen/favorites` redirect there. A visitor can open Library and Favourites without a sign-in dialog and sees the local list (or the empty state). Studio and Admin stay in the sidebar when signed out, grayed and not links; the phone Studio tab is the same. Other Library tabs stay visible and disabled until there is an account. Rejecting an add-on is danger; Open Storybook and the MusicBrainz "open prefilled editor" actions are secondary.
+## 2026-10-30 — Composer submit and release artwork (0.0.288)
+
+News headlines and “Read more” use the shared button and link. Approving a radio submission, publishing a news post, suspending an account, importing theme JSON, booking a radio slot and saving the next broadcast submit from the text area (Cmd/Ctrl+Enter). Draft news, reject, and the weekly schedule stay separate clicks. Studio release artwork opens the shared cover picker (upload and gallery) and still offers a URL and the generator.

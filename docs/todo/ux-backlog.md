@@ -43,6 +43,11 @@ new surface, one PR per row.
   radio presets, stream destinations, conflict notes, comments, and disco
   widgets confirm before remove. Event, post, share, destination, and comment
   creates can be undone.
+- [x] Composer submit and release artwork (batch 119): news headline and
+  read-more use `Button` / `ButtonAnchor`. Radio approval, news publish,
+  account suspension, theme import, radio booking and the next-broadcast
+  save submit from the text area. Studio release artwork uses
+  `CoverArtPickerDialog` and keeps From URL and Generate.
 
 ## Liveliness
 
