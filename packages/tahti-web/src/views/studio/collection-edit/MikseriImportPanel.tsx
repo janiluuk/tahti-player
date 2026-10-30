@@ -1,19 +1,23 @@
 import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 import { Button, Input, Toggle } from '@tahti-player/ui';
 
 import { addMikseriTrack } from '../../../api/sources';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { mikseriTrackEmbedUrl } from '../../../content/listenerWidgets';
+import { toastWithUndo } from '../../../lib/undoToast';
 
 export function MikseriImportPanel({
   collectionId,
   onAdded,
+  onUndoAdd,
 }: {
   collectionId: string;
   onAdded: () => void;
+  onUndoAdd: (
+    soundId: string,
+  ) => Promise<{ ok: true } | { ok: false; error: string }>;
 }) {
   const [trackUrl, setTrackUrl] = useState('');
   const [title, setTitle] = useState('');
@@ -51,7 +55,11 @@ export function MikseriImportPanel({
       setError(result.error);
       return;
     }
-    toast.success(`${title.trim()} added from Mikseri.net.`);
+    const addedTitle = title.trim();
+    toastWithUndo(`${addedTitle} added from Mikseri.net.`, {
+      undo: () => onUndoAdd(result.data.soundId),
+      undoneMessage: `${addedTitle} removed.`,
+    });
     setTrackUrl('');
     setTitle('');
     setGenre('');

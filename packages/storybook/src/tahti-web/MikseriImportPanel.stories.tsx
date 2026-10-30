@@ -10,6 +10,7 @@ const meta: Meta<typeof MikseriImportPanel> = {
   args: {
     collectionId: 'collection-1',
     onAdded: fn(),
+    onUndoAdd: fn(async () => ({ ok: true as const })),
   },
 };
 

@@ -72,18 +72,21 @@ export function StudioCollectionEditView({
                 <MixcloudImportPanel
                   collectionId={col.id}
                   onAdded={() => void state.refreshItems()}
+                  onUndoAdd={state.removeAddedSound}
                 />
               ) : null}
               {col.id ? (
                 <MikseriImportPanel
                   collectionId={col.id}
                   onAdded={() => void state.refreshItems()}
+                  onUndoAdd={state.removeAddedSound}
                 />
               ) : null}
               {col.id ? (
                 <SpotifyImportPanel
                   collectionId={col.id}
                   onAdded={() => void state.refreshItems()}
+                  onUndoAdd={state.removeAddedSound}
                 />
               ) : null}
             </>

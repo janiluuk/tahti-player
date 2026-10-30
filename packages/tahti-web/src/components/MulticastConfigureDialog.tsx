@@ -166,6 +166,9 @@ export function MulticastConfigureDialog({
                 </p>
               )}
               <Input
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 label={isCustom ? 'Stream key' : 'Stream key / API key'}
                 value={streamKey}
                 onChange={(event) => setStreamKey(event.target.value)}

@@ -291,6 +291,8 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
             onChange={(event) => setBpmText(event.target.value)}
           />
           <Input
+            autoCorrect="off"
+            spellCheck={false}
             label="Your key"
             placeholder={detail?.keyEstimate ?? 'Am, F#, 8A'}
             value={keyText}

@@ -157,6 +157,8 @@ export function LocalLibraryFilters({
             onChange={(event) => set({ bpmMax: toNumber(event.target.value) })}
           />
           <Input
+            autoCorrect="off"
+            spellCheck={false}
             label="Key (e.g. Am, F#, 8A)"
             value={draft.key ?? ''}
             error={keyInputError(draft.key ?? '') ?? undefined}

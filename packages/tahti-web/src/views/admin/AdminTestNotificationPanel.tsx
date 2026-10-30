@@ -75,6 +75,10 @@ export function AdminTestNotificationPanel() {
           onChange={(event) => setBody(event.target.value)}
         />
         <Input
+          inputMode="url"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           label="Link (optional)"
           value={url}
           maxLength={300}

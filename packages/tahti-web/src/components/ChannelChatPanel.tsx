@@ -631,6 +631,9 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
           }}
         >
           <Input
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             label="Handle"
             value={pendingHandle}
             onChange={(e) => setPendingHandle(e.target.value)}
