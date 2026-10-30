@@ -606,31 +606,40 @@ function PrivacyDataPanel({ username }: { username: string }) {
           This starts a manual review. Your uploads and account data are removed
           according to the retention periods in the privacy policy.
         </p>
-        <Textarea
-          value={reason}
-          rows={3}
-          maxLength={2000}
-          placeholder="Tell us briefly why you want to delete the account."
-          aria-label="Reason for deletion request"
-          onChange={(event) => setReason(event.target.value)}
-        />
-        <div className="flex flex-wrap items-center gap-3">
-          <Button
-            size="sm"
-            variant="secondary"
-            className="text-accent-red-strong"
-            disabled={pending || !reason.trim()}
-            onClick={submitDeletionRequest}
-          >
-            <Trash2 size={15} aria-hidden className="mr-1.5" />
-            {pending ? 'Submitting…' : 'Submit request'}
-          </Button>
-          {message ? (
-            <p className="text-foreground-secondary text-xs" role="status">
-              {message}
-            </p>
-          ) : null}
-        </div>
+        <form
+          className="flex flex-col gap-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            submitDeletionRequest();
+          }}
+        >
+          <Textarea
+            value={reason}
+            rows={3}
+            maxLength={2000}
+            placeholder="Tell us briefly why you want to delete the account."
+            aria-label="Reason for deletion request"
+            onChange={(event) => setReason(event.target.value)}
+            submitOnModEnter
+          />
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              size="sm"
+              type="submit"
+              variant="secondary"
+              className="text-accent-red-strong"
+              disabled={pending || !reason.trim()}
+            >
+              <Trash2 size={15} aria-hidden className="mr-1.5" />
+              {pending ? 'Submitting…' : 'Submit request'}
+            </Button>
+            {message ? (
+              <p className="text-foreground-secondary text-xs" role="status">
+                {message}
+              </p>
+            ) : null}
+          </div>
+        </form>
       </div>
       <Link
         to="/privacy"

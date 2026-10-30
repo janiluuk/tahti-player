@@ -122,7 +122,12 @@ export function DownloadGateDialog({
         ) : null}
         {status.repostRequired ? (
           <Step done={status.repostSatisfied} label="Share this track">
-            <Button size="xs" disabled={busy} onClick={() => void share()}>
+            <Button
+              size="xs"
+              variant="secondary"
+              disabled={busy}
+              onClick={() => void share()}
+            >
               Copy link
             </Button>
           </Step>

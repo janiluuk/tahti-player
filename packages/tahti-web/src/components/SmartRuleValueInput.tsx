@@ -118,6 +118,8 @@ export function SmartRuleValueInput({ rule, which, label, onChange }: Props) {
       <Input
         label={label}
         type="number"
+        inputMode={rule.field === 'loudness' ? 'decimal' : 'numeric'}
+        enterKeyHint="done"
         step={rule.field === 'loudness' ? 0.5 : 1}
         min={rule.field === 'loudness' ? undefined : 0}
         value={value}

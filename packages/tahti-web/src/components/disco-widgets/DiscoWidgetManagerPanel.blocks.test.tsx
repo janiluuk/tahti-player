@@ -183,6 +183,37 @@ describe('DiscoWidgetManagerPanel channel layout', () => {
     await mount('LISTENER');
 
     expect(screen.queryByRole('radiogroup')).toBeNull();
+    expect(screen.queryByText('Add a logo block')).toBeNull();
     expect(blocksApi.fetchMyChannelBlocks).not.toHaveBeenCalled();
+  });
+
+  it('places a logo in the channel layout, separate from add-on widths', async () => {
+    blocksApi.fetchMyChannelBlocks.mockResolvedValue({
+      error: null,
+      data: [
+        {
+          id: 'logo-1',
+          type: 'LOGO',
+          width: 'HALF',
+          position: 0,
+          configJson: {
+            assetId: 'asset-1',
+            url: 'https://cdn.example/logo.png',
+          },
+        },
+      ],
+    });
+    await mount();
+
+    expect(
+      screen.getByRole('radiogroup', {
+        name: 'Width of this logo on your channel',
+      }),
+    ).toBeTruthy();
+    expect(screen.getByLabelText('Add a logo block')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Remove logo' }));
+    await waitFor(() =>
+      expect(blocksApi.deleteChannelBlock).toHaveBeenCalledWith('logo-1'),
+    );
   });
 });

@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
+  FilePicker,
   ImageReveal,
   InlineError,
   Input,
@@ -14,7 +15,7 @@ import {
   Tooltip,
 } from '@tahti-player/ui';
 
-import type { ChannelBlockWidth } from '../../api/channel-blocks';
+import { logoUrlOf, type ChannelBlockWidth } from '../../api/channel-blocks';
 import {
   createDiscoWidgetInstall,
   fetchDiscoWidgetInstalls,
@@ -25,6 +26,8 @@ import {
   type DiscoWidgetScope,
   type DiscoWidgetStoreItem,
 } from '../../api/disco-widgets';
+import { uploadUserMediaFile } from '../../api/user-media';
+import { toastWithUndo } from '../../lib/undoToast';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { PageEmpty, PageLoading } from '../PageStates';
 import { useChannelAddonBlocks } from './useChannelAddonBlocks';
@@ -181,6 +184,51 @@ export function DiscoWidgetManagerPanel({
     });
   }
 
+  async function handleAddLogo(files: readonly File[]) {
+    const file = files[0];
+    if (!file) {
+      return;
+    }
+    setError(null);
+    const uploaded = await uploadUserMediaFile(file);
+    if (!uploaded.ok) {
+      setError(uploaded.error);
+      return;
+    }
+    const placed = await layout.addLogo({
+      assetId: uploaded.data.id,
+      url: uploaded.data.url,
+    });
+    if (placed.error || !placed.block) {
+      setError(placed.error ?? 'Could not place the logo');
+      return;
+    }
+    const blockId = placed.block.id;
+    toastWithUndo('Logo added to your channel.', {
+      undo: async () => {
+        const removed = await layout.removeBlock(blockId);
+        return removed ? { ok: false, error: removed } : { ok: true };
+      },
+      undoneMessage: 'Logo removed.',
+    });
+  }
+
+  async function handleLogoWidth(id: string, width: ChannelBlockWidth) {
+    setError(null);
+    const layoutError = await layout.setBlockWidth(id, width);
+    if (layoutError) {
+      setError(layoutError);
+    }
+  }
+
+  async function handleRemoveLogo(id: string) {
+    setError(null);
+    const layoutError = await layout.removeBlock(id);
+    if (layoutError) {
+      setError(layoutError);
+    }
+  }
+
   async function handleRemove(id: string) {
     setError(null);
     setPendingId(id);
@@ -206,6 +254,55 @@ export function DiscoWidgetManagerPanel({
         <PageLoading label="Loading widgets…" />
       ) : (
         <>
+          {scope === 'ARTIST' ? (
+            <div className="flex flex-col gap-3">
+              {layout.blocks
+                .filter((block) => block.type === 'LOGO')
+                .map((block) => {
+                  const url = logoUrlOf(block);
+                  return (
+                    <div
+                      key={block.id}
+                      className="border-border flex flex-col gap-3 rounded-lg border p-3"
+                    >
+                      {url ? (
+                        <ImageReveal
+                          src={url}
+                          alt=""
+                          className="h-16 w-fit max-w-full"
+                          imgClassName="object-contain"
+                        />
+                      ) : null}
+                      <SegmentedControl
+                        aria-label="Width of this logo on your channel"
+                        value={block.width}
+                        onChange={(width) =>
+                          void handleLogoWidth(block.id, width)
+                        }
+                        options={WIDTH_OPTIONS}
+                      />
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => void handleRemoveLogo(block.id)}
+                      >
+                        Remove logo
+                      </Button>
+                    </div>
+                  );
+                })}
+              <FilePicker
+                accept="image/png,image/webp,image/jpeg"
+                labels={{
+                  title: 'Add a logo block',
+                  description:
+                    'A logo in the channel page layout, separate from your profile logo.',
+                  browse: 'Choose image',
+                }}
+                onFiles={(files) => void handleAddLogo(files)}
+              />
+            </div>
+          ) : null}
           {installs.length === 0 ? (
             <PageEmpty
               title="Nothing installed yet"

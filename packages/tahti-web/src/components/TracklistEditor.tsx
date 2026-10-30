@@ -485,7 +485,17 @@ export const TracklistEditor: FC<Props> = ({
                           minutes:seconds or hours:minutes:seconds — is picked
                           up automatically.
                         </p>
-                        <div className="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-end">
+                        <form
+                          className="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-end"
+                          onSubmit={(event) => {
+                            event.preventDefault();
+                            onChange([
+                              ...value,
+                              ...parseTracklist(pastedList, 'tracklist.txt'),
+                            ]);
+                            setPastedList('');
+                          }}
+                        >
                           <Textarea
                             label="Paste one track per line"
                             rows={5}
@@ -494,18 +504,13 @@ export const TracklistEditor: FC<Props> = ({
                             onChange={(event) =>
                               setPastedList(event.target.value)
                             }
+                            submitOnModEnter
                           />
                           <Button
                             size="sm"
+                            type="submit"
                             variant="secondary"
                             disabled={!pastedList.trim()}
-                            onClick={() => {
-                              onChange([
-                                ...value,
-                                ...parseTracklist(pastedList, 'tracklist.txt'),
-                              ]);
-                              setPastedList('');
-                            }}
                           >
                             <ListMusicIcon
                               size={16}
@@ -514,7 +519,7 @@ export const TracklistEditor: FC<Props> = ({
                             />{' '}
                             Add lines
                           </Button>
-                        </div>
+                        </form>
                       </div>
                     ),
                   },

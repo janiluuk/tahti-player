@@ -147,7 +147,7 @@ export function ElectionActions({
             maxLength={1000}
             onChange={(e) => setReason(e.target.value)}
           />
-          <Button type="submit" size="sm" disabled={busy}>
+          <Button type="submit" size="sm" intent="danger" disabled={busy}>
             Cancel the election
           </Button>
           <Button

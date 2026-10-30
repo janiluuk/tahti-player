@@ -66,6 +66,10 @@ export function ChannelLinksEditor({
                 aria-label={`Link ${i + 1} URL`}
                 size="sm"
                 type="text"
+                inputMode="url"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder="https://…"
                 value={link.url}
                 maxLength={2000}

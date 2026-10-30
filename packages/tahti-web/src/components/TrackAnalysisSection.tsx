@@ -280,6 +280,8 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
         <div className="mt-2 grid grid-cols-2 gap-2">
           <Input
             type="number"
+            inputMode="decimal"
+            enterKeyHint="done"
             label="Your BPM"
             placeholder={
               detail?.bpmEstimate ? String(rounded(detail.bpmEstimate)) : ''

@@ -50,7 +50,13 @@ export function AnswerCorrectionForm({
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <form
+      className="flex flex-col gap-2"
+      onSubmit={(event) => {
+        event.preventDefault();
+        answer('ACCEPTED');
+      }}
+    >
       <Textarea
         label="What was decided (the member reads this)"
         description="Answering changes no record by itself. Make the correction where it belongs and say here what you did."
@@ -58,12 +64,14 @@ export function AnswerCorrectionForm({
         value={note}
         maxLength={2000}
         onChange={(e) => setNote(e.target.value)}
+        submitOnModEnter
       />
       <div className="flex flex-wrap gap-2">
-        <Button size="sm" disabled={busy} onClick={() => answer('ACCEPTED')}>
+        <Button size="sm" type="submit" disabled={busy}>
           Accept
         </Button>
         <Button
+          type="button"
           size="sm"
           variant="secondary"
           disabled={busy}
@@ -72,6 +80,7 @@ export function AnswerCorrectionForm({
           Reject
         </Button>
         <Button
+          type="button"
           size="sm"
           variant="secondary"
           disabled={busy}
@@ -81,6 +90,6 @@ export function AnswerCorrectionForm({
         </Button>
       </div>
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}
-    </div>
+    </form>
   );
 }
