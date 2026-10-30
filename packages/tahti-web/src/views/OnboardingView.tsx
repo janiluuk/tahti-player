@@ -352,6 +352,9 @@ export function OnboardingView() {
                     />
                     <div className="flex flex-col gap-1.5">
                       <Input
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck={false}
                         label="Your Tahti domain"
                         value={slug}
                         onChange={(e) =>

@@ -566,6 +566,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                     />
                     <Button
                       size="sm"
+                      variant="secondary"
                       disabled={!addSoundId}
                       onClick={() => {
                         void addItem(
@@ -591,6 +592,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                     />
                     <Button
                       size="sm"
+                      variant="secondary"
                       disabled={!addReleaseId}
                       onClick={() => {
                         void addItem(

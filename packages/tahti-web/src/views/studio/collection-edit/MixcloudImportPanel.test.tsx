@@ -30,7 +30,13 @@ describe('MixcloudImportPanel', () => {
     const onAdded = vi.fn();
     vi.spyOn(toast, 'success');
 
-    render(<MixcloudImportPanel collectionId="col-1" onAdded={onAdded} />);
+    render(
+      <MixcloudImportPanel
+        collectionId="col-1"
+        onAdded={onAdded}
+        onUndoAdd={vi.fn()}
+      />,
+    );
     fireEvent.change(screen.getByLabelText('Search Mixcloud'), {
       target: { value: 'sunday' },
     });
@@ -51,12 +57,59 @@ describe('MixcloudImportPanel', () => {
     ).toBe(true);
   });
 
+  it('undo removes the added cloudcast and frees its Add button', async () => {
+    vi.spyOn(api, 'searchMixcloud').mockResolvedValue({
+      ok: true,
+      data: [cloudcast],
+    });
+    vi.spyOn(api, 'addMixcloudCloudcast').mockResolvedValue({
+      ok: true,
+      data: { soundId: 's1' },
+    });
+    const success = vi.spyOn(toast, 'success');
+    const onUndoAdd = vi.fn().mockResolvedValue({ ok: true });
+
+    render(
+      <MixcloudImportPanel
+        collectionId="col-1"
+        onAdded={vi.fn()}
+        onUndoAdd={onUndoAdd}
+      />,
+    );
+    fireEvent.change(screen.getByLabelText('Search Mixcloud'), {
+      target: { value: 'sunday' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Find' }));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Add' }));
+    });
+    const options = success.mock.calls.find(
+      ([message]) => message === 'Sunday Selector added.',
+    )?.[1] as unknown as { action: { onClick: () => void } };
+    await act(async () => {
+      options.action.onClick();
+    });
+    expect(onUndoAdd).toHaveBeenCalledWith('s1');
+    expect(
+      (screen.getByRole('button', { name: 'Add' }) as HTMLButtonElement)
+        .disabled,
+    ).toBe(false);
+  });
+
   it('loads your own mixes and explains an empty handle', async () => {
     vi.spyOn(api, 'fetchMyMixcloudCloudcasts').mockResolvedValue({
       ok: true,
       data: [],
     });
-    render(<MixcloudImportPanel collectionId="col-1" onAdded={vi.fn()} />);
+    render(
+      <MixcloudImportPanel
+        collectionId="col-1"
+        onAdded={vi.fn()}
+        onUndoAdd={vi.fn()}
+      />,
+    );
     await act(async () => {
       fireEvent.click(screen.getByRole('radio', { name: 'Your mixes' }));
     });

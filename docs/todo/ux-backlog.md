@@ -126,7 +126,8 @@ new surface, one PR per row.
     artwork preset, radio station, SoundCloud embed, stash upload, gallery
     photos, smart-playlist snapshot, and queue adds.
   - 2026-10-30 (batch 118): API token create, release track to rotation,
-    station by URL, and Studio collection editor add sound. Left: Mikseri,
-    Mixcloud and Spotify collection imports and collaborative-playlist adds
-    (no item id returned).
+    station by URL, and Studio collection editor add sound.
+  - 2026-10-30 (batch 121): Mikseri, Mixcloud and Spotify collection imports
+    (item found by the returned sound id after a tracklist refresh). Left:
+    collaborative-playlist adds (no item id and no contributor remove).
 

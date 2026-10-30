@@ -70,6 +70,8 @@ export function TrackAnalysisSection({
               onChange={(event) => set({ bpm: event.target.value })}
             />
             <Input
+              autoCorrect="off"
+              spellCheck={false}
               label="Key"
               placeholder="Am, F#m or 8A"
               maxLength={MUSICAL_KEY_MAX_LENGTH}
