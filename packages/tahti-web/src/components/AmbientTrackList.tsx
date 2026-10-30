@@ -147,14 +147,21 @@ export function AmbientTrackList({
         >
           {items.length} {items.length === 1 ? itemNoun : `${itemNoun}s`}
         </span>
-        {toolbarEnd}
-        {hideViewPicker ? null : (
-          <TrackViewPicker
-            options={options}
-            value={activeView}
-            onChange={setView}
-          />
-        )}
+        {toolbarEnd || !hideViewPicker ? (
+          <div
+            className="flex shrink-0 items-center gap-2"
+            data-testid="ambient-track-list-sort-size"
+          >
+            {toolbarEnd}
+            {hideViewPicker ? null : (
+              <TrackViewPicker
+                options={options}
+                value={activeView}
+                onChange={setView}
+              />
+            )}
+          </div>
+        ) : null}
       </div>
       {items.length === 0 ? (
         <p className="text-foreground-secondary px-1 py-6 text-center text-sm">

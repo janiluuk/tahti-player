@@ -84,7 +84,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Listing of ambient+waveform rows. The toolbar row holds an optional filter box, sort, and a Track size button whose popover picks Large / Medium / Small (plus Grid / List where offered).',
+          'Listing of ambient+waveform rows. The toolbar row holds an optional filter box, sort, and a Track size button whose popover is a vertical strip of view icons: Large / Medium / Small (plus Grid / List where offered), labels in tooltips. Sort and the size button always share a row.',
       },
     },
   },
@@ -159,7 +159,8 @@ export const WithGrid: Story = {
   },
 };
 
-/** The Track size popover open: row sizes, Grid and List, current checked. */
+/** The Track size popover open: a vertical strip of icons (row sizes, Grid,
+ * List) with no visible labels, the current view highlighted. */
 export const TrackSizePopover: Story = {
   args: {
     items: ITEMS,
@@ -186,6 +187,56 @@ export const TrackSizePopover: Story = {
     await expect(
       body.getByRole('menuitemradio', { name: 'Medium' }),
     ).toHaveAttribute('aria-checked', 'true');
+    const boxes = body
+      .getAllByRole('menuitemradio')
+      .map((item: HTMLElement) => item.getBoundingClientRect());
+    for (let index = 1; index < boxes.length; index++) {
+      await expect(Math.abs(boxes[index].left - boxes[0].left)).toBeLessThan(2);
+      await expect(boxes[index].top).toBeGreaterThan(boxes[index - 1].top);
+    }
+    for (const box of boxes) {
+      await expect(box.width).toBeLessThan(56);
+    }
+  },
+};
+
+/** Narrow toolbar without a filter: the count wraps if it must, but the sort
+ * dropdown and the Track size button stay side by side. */
+export const SortAndSizeStayTogether: Story = {
+  args: {
+    items: ITEMS,
+    persistDensity: false,
+    toolbarEnd: (
+      <Select
+        className="w-44"
+        aria-label="Sort tracks"
+        options={[
+          { id: 'default', label: 'Default order' },
+          { id: 'title', label: 'Title A–Z' },
+        ]}
+        value="default"
+        onValueChange={() => undefined}
+      />
+    ),
+  },
+  decorators: [
+    (Story) => (
+      <div className="w-full max-w-[260px]">
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    const toolbar = within(
+      within(canvasElement).getByTestId('ambient-track-list-toolbar'),
+    );
+    const sort = toolbar.getByRole('button', { name: 'Sort tracks' });
+    const size = toolbar.getByRole('button', { name: /^Track size/ });
+    const center = (element: HTMLElement) => {
+      const box = element.getBoundingClientRect();
+      return box.top + box.height / 2;
+    };
+    await expect(Math.abs(center(sort) - center(size))).toBeLessThan(4);
   },
 };
 

@@ -59,6 +59,18 @@ export const FilterRow: Story = {
     await expect(
       inRow.getByRole('button', { name: /^Track size/ }),
     ).toBeVisible();
+    const sortSize = within(canvas.getByTestId('sound-sort-size'));
+    const sortControls = [
+      sortSize.getByRole('button', { name: 'Sort by' }),
+      sortSize.getByRole('button', { name: /^Sort order/ }),
+      sortSize.getByRole('button', { name: /^Track size/ }),
+    ].map((control) => {
+      const box = control.getBoundingClientRect();
+      return box.top + box.height / 2;
+    });
+    for (const center of sortControls) {
+      await expect(Math.abs(center - sortControls[0])).toBeLessThan(4);
+    }
     await expect(
       within(canvas.getByTestId('ambient-track-list-toolbar')).queryByRole(
         'button',

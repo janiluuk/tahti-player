@@ -96,36 +96,41 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
             />
           </Button>
         </Tooltip>
-        <Select
-          aria-label="Sort by"
-          value={sortField}
-          onValueChange={(value) => setSortField(value as SortField)}
-          options={SORT_FIELDS.map((sortOption) => ({
-            id: sortOption.id,
-            label: `By ${sortOption.label.toLowerCase()}`,
-          }))}
-          className="min-w-40"
-        />
-        <Tooltip content={sortLabel} side="top">
-          <Button
-            type="button"
-            size="icon-sm"
-            variant="secondary"
-            aria-label={`Sort order: ${sortLabel}`}
-            onClick={() => setSortDescending((current) => !current)}
-          >
-            {sortDescending ? (
-              <ArrowDownWideNarrowIcon size={15} aria-hidden />
-            ) : (
-              <ArrowUpNarrowWideIcon size={15} aria-hidden />
-            )}
-          </Button>
-        </Tooltip>
-        <TrackViewPicker
-          options={trackViewOptions({ allowList: true })}
-          value={view}
-          onChange={setView}
-        />
+        <div
+          className="flex shrink-0 items-center gap-2"
+          data-testid="sound-sort-size"
+        >
+          <Select
+            aria-label="Sort by"
+            value={sortField}
+            onValueChange={(value) => setSortField(value as SortField)}
+            options={SORT_FIELDS.map((sortOption) => ({
+              id: sortOption.id,
+              label: `By ${sortOption.label.toLowerCase()}`,
+            }))}
+            className="min-w-40"
+          />
+          <Tooltip content={sortLabel} side="top">
+            <Button
+              type="button"
+              size="icon-sm"
+              variant="secondary"
+              aria-label={`Sort order: ${sortLabel}`}
+              onClick={() => setSortDescending((current) => !current)}
+            >
+              {sortDescending ? (
+                <ArrowDownWideNarrowIcon size={15} aria-hidden />
+              ) : (
+                <ArrowUpNarrowWideIcon size={15} aria-hidden />
+              )}
+            </Button>
+          </Tooltip>
+          <TrackViewPicker
+            options={trackViewOptions({ allowList: true })}
+            value={view}
+            onChange={setView}
+          />
+        </div>
         <span className="text-foreground-secondary text-xs">
           Pinned {pinnedCount}
         </span>
