@@ -12,7 +12,6 @@ const SIDEBAR_IDS = [
   'listen',
   'radio',
   'discover',
-  'favorites',
   'library',
   'chat',
   'studio',
@@ -38,9 +37,9 @@ describe('navigation active states', () => {
     ['/search', 'listen'],
     ['/search?q=techno', 'listen'],
     ['/v/helsinki-club', 'listen'],
-    ['/listen/favorites', 'favorites'],
-    ['/favorites', 'favorites'],
-    ['/library/favorites', 'favorites'],
+    ['/listen/favorites', 'library'],
+    ['/favorites', 'library'],
+    ['/library/favorites', 'library'],
     ['/radio', 'radio'],
     ['/radio/show/northern-lights', 'radio'],
     ['/discover', 'discover'],
@@ -86,9 +85,10 @@ describe('navigation active states', () => {
     }
   });
 
-  it('does not light Listen and Favorites together', () => {
+  it('lights Library on Favorites, not Listen', () => {
     expect(activeSidebarItem('/')).toBe('listen');
-    expect(activeSidebarItem('/listen/favorites')).toBe('favorites');
+    expect(activeSidebarItem('/listen/favorites')).toBe('library');
+    expect(activeSidebarItem('/library/favorites')).toBe('library');
     expect(activeSidebarItem('/listen/feed')).toBe('listen');
   });
 
@@ -101,12 +101,13 @@ describe('navigation active states', () => {
     expect(activeListenTab('/radio')).toBeNull();
   });
 
-  it('keeps phone Listen lit on Favorites because that bar has no Favorites item', () => {
+  it('lights Library on the phone for Favorites', () => {
     expect(activeMobileItem('/')).toBe('listen');
     expect(activeMobileItem('/listen/feed')).toBe('listen');
     expect(activeMobileItem('/u/demo-artist')).toBe('listen');
     expect(activeMobileItem('/search')).toBe('listen');
-    expect(activeMobileItem('/listen/favorites')).toBe('listen');
+    expect(activeMobileItem('/listen/favorites')).toBe('library');
+    expect(activeMobileItem('/favorites')).toBe('library');
     expect(activeMobileItem('/library/favorites')).toBe('library');
     expect(activeMobileItem('/library')).toBe('library');
     expect(activeMobileItem('/studio/sounds')).toBe('library');

@@ -1,3 +1,11 @@
+## 2026-10-30 - Favourites is a Library tab; signed-out menus stay grayed
+
+Favourites left the sidebar for `/library/favorites`. Opening Library or
+Favourites does not open sign-in. Studio, Admin and account-only Library
+tabs stay visible and disabled without an account. The no-login-wall
+principle is in `docs/DECISIONS.md` and `TAHTI.md`. The Studio / Library /
+Admin regroup in `navigation-simplification.md` is still open. tahti-web
+`0.0.288`.
 ## 2026-10-30 - UX batch 119 composer submit and release artwork
 
 News headlines and read-more links use the button components. Approving a

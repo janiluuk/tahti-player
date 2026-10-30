@@ -25,6 +25,9 @@ describe('isAnonymousRouteAllowed', () => {
     '/schedule',
     '/more',
     '/admin/map',
+    '/library',
+    '/library/favorites',
+    '/favorites',
   ])('lets a visitor open %s without a sign-in dialog', (path) => {
     expect(isAnonymousRouteAllowed(path)).toBe(true);
   });
@@ -32,7 +35,7 @@ describe('isAnonymousRouteAllowed', () => {
   it.each([
     '/messages',
     '/feed',
-    '/library',
+    '/library/sounds',
     '/admin',
     '/governance/members',
     '/governance/motions/1',

@@ -2,7 +2,6 @@ import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 import {
-  Button,
   ButtonLink,
   Card,
   CardGrid,
@@ -20,7 +19,6 @@ import type { TahtiPlayable } from '../api/types';
 import { PageEmpty, PageError } from '../components/PageStates';
 import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
-import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -47,6 +45,11 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
   const [likesAttempt, setLikesAttempt] = useState(0);
 
   useEffect(() => {
+    if (!hydrated || !user) {
+      setLikedTracks([]);
+      setLikesError(null);
+      return;
+    }
     let cancelled = false;
     void fetchMyLikes().then(({ data, meta }) => {
       if (!cancelled) {
@@ -62,34 +65,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
     return () => {
       cancelled = true;
     };
-  }, [likesAttempt]);
-
-  if (hydrated && !user) {
-    const signedOut = (
-      <PageEmpty
-        icon="inbox"
-        title="Sign in to see favorites"
-        description="Heart channels and tracks while you listen, then find them here."
-        action={
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <Button onClick={() => useAuthModalStore.getState().open('login')}>
-              Sign in
-            </Button>
-            <ButtonLink to="/discover" size="sm" variant="secondary">
-              Discover music
-            </ButtonLink>
-          </div>
-        }
-      />
-    );
-    return embedded ? (
-      signedOut
-    ) : (
-      <ViewShell title="Favorites" classes={{ root: 'px-0 pt-0' }}>
-        {signedOut}
-      </ViewShell>
-    );
-  }
+  }, [hydrated, likesAttempt, user]);
 
   const body = (
     <div className="flex flex-col gap-6">

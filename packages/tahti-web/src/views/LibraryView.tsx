@@ -4,6 +4,7 @@ import {
   FolderIcon,
   HardDriveIcon,
   HeadphonesIcon,
+  HeartIcon,
   LayoutGridIcon,
   LibraryIcon,
   Link2Icon,
@@ -42,6 +43,7 @@ import { getNativeLibrary } from '../lib/nativeLibrary';
 import { formatPlayCount } from '../lib/topListEntries';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
+import { FavoritesView } from './FavoritesView';
 import { LibraryEmbedsView } from './LibraryEmbedsView';
 import { LibraryMediaView } from './LibraryMediaView';
 import { LibrarySmartLinksView } from './LibrarySmartLinksView';
@@ -50,6 +52,7 @@ import { StudioStashView } from './studio/StudioStashView';
 
 export type Tab =
   | 'library'
+  | 'favorites'
   | 'sounds'
   | 'collections'
   | 'recordings'
@@ -66,6 +69,12 @@ export const LIBRARY_SECTION_TABS = [
     label: 'Overview',
     icon: LayoutGridIcon,
     to: '/library',
+  },
+  {
+    id: 'favorites' as const,
+    label: 'Favorites',
+    icon: HeartIcon,
+    to: '/library/favorites',
   },
   {
     id: 'sounds' as const,
@@ -134,7 +143,14 @@ const ARTIST_ONLY_TABS: ReadonlySet<LibrarySectionId> = new Set([
   'smartlinks',
 ]);
 
+/** A visitor can open Overview and Favorites. The rest need an account. */
+const PUBLIC_LIBRARY_TABS: ReadonlySet<LibrarySectionId> = new Set([
+  'library',
+  'favorites',
+]);
+
 function useLibraryTabs() {
+  const signedOut = useAuthStore((state) => !state.user);
   // Until the profile loads the stored user may lack its channel: keep every
   // tab so an artist never sees them disappear and come back.
   const listener = useAuthStore(
@@ -148,7 +164,12 @@ function useLibraryTabs() {
   const tabs = listener
     ? LIBRARY_SECTION_TABS.filter((item) => !ARTIST_ONLY_TABS.has(item.id))
     : LIBRARY_SECTION_TABS;
-  return desktopLocal ? tabs : tabs.filter((item) => item.id !== 'local');
+  return (desktopLocal ? tabs : tabs.filter((item) => item.id !== 'local')).map(
+    (item) => ({
+      ...item,
+      disabled: signedOut && !PUBLIC_LIBRARY_TABS.has(item.id),
+    }),
+  );
 }
 
 /**
@@ -170,7 +191,7 @@ export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
         )}
         onChange={(index) => {
           const next = tabs[index];
-          if (next) {
+          if (next && !next.disabled) {
             void navigate({ to: next.to as never });
           }
         }}
@@ -180,7 +201,13 @@ export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
           className={`${PHONE_SCROLL_TAB_LIST} max-w-full`}
         >
           {tabs.map((item) => (
-            <Tabs.Tab key={item.id}>
+            <Tabs.Tab
+              key={item.id}
+              disabled={item.disabled}
+              aria-label={
+                item.disabled ? `${item.label}, needs an account` : undefined
+              }
+            >
               <TabLabel icon={<item.icon size={14} />}>{item.label}</TabLabel>
             </Tabs.Tab>
           ))}
@@ -194,23 +221,25 @@ export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
   const libraryTitle =
     tab === 'library'
       ? 'Overview'
-      : tab === 'sounds'
-        ? 'Sounds'
-        : tab === 'upload'
-          ? 'Upload'
-          : tab === 'recordings'
-            ? 'Recordings'
-            : tab === 'embeds'
-              ? 'Embeds'
-              : tab === 'media'
-                ? 'Media'
-                : tab === 'stash'
-                  ? 'Stash'
-                  : tab === 'smartlinks'
-                    ? 'Smart links'
-                    : tab === 'local'
-                      ? 'Local files'
-                      : 'Collections';
+      : tab === 'favorites'
+        ? 'Favorites'
+        : tab === 'sounds'
+          ? 'Sounds'
+          : tab === 'upload'
+            ? 'Upload'
+            : tab === 'recordings'
+              ? 'Recordings'
+              : tab === 'embeds'
+                ? 'Embeds'
+                : tab === 'media'
+                  ? 'Media'
+                  : tab === 'stash'
+                    ? 'Stash'
+                    : tab === 'smartlinks'
+                      ? 'Smart links'
+                      : tab === 'local'
+                        ? 'Local files'
+                        : 'Collections';
 
   return (
     <div className="studio-page-layout flex w-full flex-col gap-6">
@@ -219,6 +248,11 @@ export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
         {tab === 'library' ? (
           <div className="mt-2">
             <LibraryStats />
+          </div>
+        ) : null}
+        {tab === 'favorites' ? (
+          <div className="mt-2">
+            <FavoritesView embedded />
           </div>
         ) : null}
         {tab === 'recordings' ? (

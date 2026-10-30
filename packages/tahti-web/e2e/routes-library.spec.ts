@@ -18,7 +18,6 @@ const libraryRoutes: RouteVisit[] = [
   {
     path: '/library/favorites',
     heading: /^Favorites$/,
-    url: /\/favorites$/,
   },
   {
     path: '/library/history',

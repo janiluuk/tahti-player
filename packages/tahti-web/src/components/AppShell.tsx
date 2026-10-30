@@ -1,7 +1,6 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import {
   CompassIcon,
-  HeartIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
   LibraryIcon,
@@ -188,14 +187,6 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               isSelected={sidebarActive === 'discover'}
             />
           </div>
-          <div data-tour-id="nav-favorites">
-            <SidebarNavigationItem
-              to="/favorites"
-              icon={<HeartIcon size={16} />}
-              label="Favorites"
-              isSelected={sidebarActive === 'favorites'}
-            />
-          </div>
           <div data-tour-id="nav-library">
             <SidebarNavigationItem
               to="/library"
@@ -204,30 +195,48 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               isSelected={sidebarActive === 'library'}
             />
           </div>
-          {isLoggedIn ? (
-            <div data-tour-id="nav-studio" className="flex flex-col gap-2">
+          <div data-tour-id="nav-studio" className="flex flex-col gap-2">
+            {isLoggedIn ? (
+              <>
+                <SidebarNavigationItem
+                  to="/studio"
+                  icon={
+                    isListener ? (
+                      <SparklesIcon size={16} />
+                    ) : (
+                      <LayoutDashboardIcon size={16} />
+                    )
+                  }
+                  label={isListener ? 'Become an artist' : 'Studio'}
+                  isSelected={sidebarActive === 'studio'}
+                />
+                {!isListener && <StudioMainNavItems />}
+              </>
+            ) : (
               <SidebarNavigationItem
-                to="/studio"
-                icon={
-                  isListener ? (
-                    <SparklesIcon size={16} />
-                  ) : (
-                    <LayoutDashboardIcon size={16} />
-                  )
-                }
-                label={isListener ? 'Become an artist' : 'Studio'}
-                isSelected={sidebarActive === 'studio'}
+                disabled
+                icon={<LayoutDashboardIcon size={16} />}
+                label="Studio"
               />
-              {!isListener && <StudioMainNavItems />}
-            </div>
-          ) : null}
-          {isLoggedIn && isBoard && (
+            )}
+          </div>
+          {isLoggedIn ? (
+            isBoard ? (
+              <div data-tour-id="nav-admin">
+                <SidebarNavigationItem
+                  to="/admin"
+                  icon={<ShieldIcon size={16} />}
+                  label="Admin"
+                  isSelected={sidebarActive === 'admin'}
+                />
+              </div>
+            ) : null
+          ) : (
             <div data-tour-id="nav-admin">
               <SidebarNavigationItem
-                to="/admin"
+                disabled
                 icon={<ShieldIcon size={16} />}
                 label="Admin"
-                isSelected={sidebarActive === 'admin'}
               />
             </div>
           )}
