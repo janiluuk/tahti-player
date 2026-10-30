@@ -1,4 +1,4 @@
-import { Newspaper } from 'lucide-react';
+import { CalendarDaysIcon, Newspaper } from 'lucide-react';
 import { FC } from 'react';
 
 import { cn } from '../../utils';
@@ -11,6 +11,8 @@ export type ArticleCardItem = {
   teaser?: string;
   imageUrl?: string;
   onClick?: () => void;
+  publishedAt?: string;
+  publishedLabel?: string;
 };
 
 type ArticleCardProps = {
@@ -59,6 +61,17 @@ export const ArticleCard: FC<ArticleCardProps> = ({ item, className }) => {
         >
           {item.title}
         </h3>
+        {item.publishedAt && item.publishedLabel ? (
+          <span className="text-foreground-secondary flex items-center gap-1.5 text-xs">
+            <CalendarDaysIcon size={13} aria-hidden />
+            <time
+              dateTime={item.publishedAt}
+              title={new Date(item.publishedAt).toLocaleString()}
+            >
+              {item.publishedLabel}
+            </time>
+          </span>
+        ) : null}
         {item.teaser && (
           <p
             data-testid="article-card-teaser"

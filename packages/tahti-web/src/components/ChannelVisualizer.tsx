@@ -12,6 +12,7 @@ import {
   vizPackModeAt,
   type ChannelVizPack,
 } from '../lib/channelVizPacks';
+import { radioVisualizerPreset } from '../lib/radioVisualizer';
 import { supportsWebGL } from '../lib/webgl';
 import type { ThreeVisualizerProps } from './visuals/ThreeVisualizer';
 
@@ -25,6 +26,7 @@ export type VisualColorScheme = {
 
 type Props = {
   preset?: string | null;
+  channelKey?: string;
   colorScheme?: VisualColorScheme | null;
   colorSchemeJson?: string | null;
   visualSettingsJson?: string | null;
@@ -176,6 +178,7 @@ function useVizPackMode(pack: ChannelVizPack | null): VisualizerMode | null {
 
 export const ChannelVisualizer = ({
   preset,
+  channelKey,
   colorScheme,
   colorSchemeJson,
   visualSettingsJson,
@@ -196,7 +199,11 @@ export const ChannelVisualizer = ({
     [engineMode, visualSettingsJson],
   );
   const packMode = useVizPackMode(pack);
-  const portedMode = resolveEngineMode(engineMode ?? packMode, preset ?? '');
+  const portedMode =
+    resolveEngineMode(engineMode ?? packMode, preset ?? '') ??
+    (channelKey && (!preset || mode === 'AURORA')
+      ? radioVisualizerPreset(channelKey)
+      : null);
   const scheme = useMemo(
     () => parseScheme(colorScheme, colorSchemeJson),
     [colorScheme, colorSchemeJson],

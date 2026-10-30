@@ -395,7 +395,7 @@ export function DiscoverView() {
   };
 
   return (
-    <div className="relative flex max-w-5xl flex-col gap-4 sm:gap-6">
+    <div className="relative flex w-full max-w-7xl flex-col gap-3 sm:gap-4">
       <DiscoverGatewayBackground />
       <Tabs.Root
         selectedIndex={Math.max(
@@ -550,7 +550,7 @@ export function DiscoverView() {
 
         {activeTab === 'discover' && enabledWidgets.length > 0 && (
           <div
-            className="grid grid-cols-1 gap-2 sm:gap-4 lg:grid-cols-3"
+            className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3"
             data-testid="discover-widget-columns"
           >
             {enabledWidgets.map((id, index) => {

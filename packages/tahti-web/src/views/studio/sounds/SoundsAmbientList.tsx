@@ -14,6 +14,7 @@ import {
   TrackProcessing,
 } from '@tahti-player/ui';
 
+import { fetchEditorSource } from '../../../api/studio';
 import type { StudioSound } from '../../../api/studio-types';
 import { AddToPlaylistButton } from '../../../components/AddToPlaylistButton';
 import {
@@ -251,7 +252,17 @@ function toHostedListItem(
       item.durationSec != null ? formatDuration(item.durationSec) : undefined,
     durationSec: item.durationSec ?? null,
     stats: soundRowStats(item),
+    processing: isProcessingSound(item),
     peaks,
+    loadAudioUrl:
+      isProcessingSound(item) || embedSrc
+        ? undefined
+        : async () => {
+            const result = await fetchEditorSource(item.id);
+            return result.meta.reason && result.meta.source !== 'mock'
+              ? undefined
+              : result.data.url;
+          },
     progress: 0,
     isPlaying,
     onPlay: isProcessingSound(item)

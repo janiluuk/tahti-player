@@ -22,6 +22,7 @@ import {
 export type WaveformProps = {
   peaks?: number[] | null;
   durationSec: number;
+  audioUrl?: string;
   /** Global player `<audio>` when binding progress/seek to one source. */
   media?: HTMLMediaElement | null;
   /** 0..1 progress when not using `media` (or while media is unbound). */
@@ -34,6 +35,8 @@ export type WaveformProps = {
   /** Spoken position for the seek slider, e.g. "1:05 of 3:20". */
   'aria-valuetext'?: string;
 } & Omit<ComponentProps<'div'>, 'children' | 'onSeek'>;
+
+const decodedPeaks = new Map<string, { peaks: number[][]; duration: number }>();
 
 const KEY_STEP_SEC = 5;
 const PAGE_STEP_FRACTION = 0.1;
@@ -50,11 +53,10 @@ function clamp01(value: number): number {
   return Math.min(1, Math.max(0, value));
 }
 
-/** Large preview / editor waveform powered by wavesurfer.js. Lazy-loads the
- * library; ambient list rows should keep the light canvas instead. */
 export const Waveform: FC<WaveformProps> = ({
   peaks,
   durationSec,
+  audioUrl,
   media = null,
   progress,
   onSeek,
@@ -69,6 +71,8 @@ export const Waveform: FC<WaveformProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WaveSurfer | null>(null);
   const [ready, setReady] = useState(false);
+  const [decoded, setDecoded] = useState(false);
+  const [failed, setFailed] = useState(false);
   const onSeekRef = useRef(onSeek);
   onSeekRef.current = onSeek;
   const peaksRef = useRef(peaks);
@@ -81,80 +85,126 @@ export const Waveform: FC<WaveformProps> = ({
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || durationSec <= 0) {
+    if (!container || (durationSec <= 0 && !audioUrl)) {
       return;
     }
 
     let cancelled = false;
     const subscriptions: (() => void)[] = [];
     setReady(false);
+    setFailed(false);
+    setDecoded(false);
 
     const interactive = Boolean(onSeekRef.current || media);
     void Promise.all([
       import('wavesurfer.js'),
       interactive ? import('wavesurfer.js/dist/plugins/hover.esm.js') : null,
-    ]).then(([{ default: WaveSurferCtor }, hoverModule]) => {
-      if (cancelled || !containerRef.current) {
-        return;
-      }
-      const root = containerRef.current;
-      const current = peaksRef.current;
+    ])
+      .then(([{ default: WaveSurferCtor }, hoverModule]) => {
+        if (cancelled || !containerRef.current) {
+          return;
+        }
+        const root = containerRef.current;
+        const current = peaksRef.current;
 
-      // Peaks + duration must always be present: without them wavesurfer
-      // fetches and decodes the media `src`, and a later `load('')` would
-      // strip the global player's source.
-      const options: ConstructorParameters<typeof WaveSurferCtor>[0] = {
-        container: root,
-        height: heightRef.current,
-        ...themeColors(root),
-        cursorWidth: 1,
-        barWidth: 2,
-        barGap: 1,
-        barRadius: 2,
-        normalize: hasPeaks(current),
-        interact: interactive,
-        dragToSeek: interactive,
-        duration: durationSec,
-        peaks: hasPeaks(current)
-          ? peaksToWaveSurfer(current!)
-          : PLACEHOLDER_PEAKS,
-        // CSS variables inherit into wavesurfer's shadow root, so the hover
-        // line and label follow theme switches without re-creating.
-        plugins: hoverModule
-          ? [
-              hoverModule.default.create({
-                lineColor: 'var(--color-foreground)',
-                lineWidth: 1,
-                labelColor: 'var(--color-foreground)',
-                labelBackground: 'var(--color-background-secondary)',
-                labelSize: '11px',
-                formatTimeCallback: (seconds: number) =>
-                  formatTimeSeconds(Math.floor(seconds)),
-              }),
-            ]
-          : [],
-      };
-      if (media) {
-        options.media = media;
-      }
+        // Peaks + duration must always be present: without them wavesurfer
+        // fetches and decodes the media `src`, and a later `load('')` would
+        // strip the global player's source.
+        const options: ConstructorParameters<typeof WaveSurferCtor>[0] = {
+          container: root,
+          height: heightRef.current,
+          ...themeColors(root),
+          cursorWidth: 1,
+          barWidth: 2,
+          barGap: 1,
+          barRadius: 2,
+          normalize: hasPeaks(current),
+          interact: interactive,
+          dragToSeek: interactive,
+          duration: durationSec,
+          peaks: hasPeaks(current)
+            ? peaksToWaveSurfer(current!)
+            : PLACEHOLDER_PEAKS,
+          // CSS variables inherit into wavesurfer's shadow root, so the hover
+          // line and label follow theme switches without re-creating.
+          plugins: hoverModule
+            ? [
+                hoverModule.default.create({
+                  lineColor: 'var(--color-foreground)',
+                  lineWidth: 1,
+                  labelColor: 'var(--color-foreground)',
+                  labelBackground: 'var(--color-background-secondary)',
+                  labelSize: '11px',
+                  formatTimeCallback: (seconds: number) =>
+                    formatTimeSeconds(Math.floor(seconds)),
+                }),
+              ]
+            : [],
+        };
+        if (media) {
+          options.media = media;
+        }
 
-      const ws = WaveSurferCtor.create(options);
-      wsRef.current = ws;
+        const source = !media && !hasPeaks(current) ? audioUrl : undefined;
+        const cached = source ? decodedPeaks.get(source) : undefined;
+        if (cached) {
+          options.peaks = cached.peaks;
+          options.duration = cached.duration;
+          options.normalize = true;
+        } else if (source) {
+          delete options.peaks;
+          delete options.duration;
+          options.url = source;
+          options.normalize = true;
+        }
+        const ws = WaveSurferCtor.create(options);
+        subscriptions.push(
+          ws.on('error', () => {
+            setReady(true);
+            setFailed(true);
+          }),
+        );
+        if (cached) {
+          setDecoded(true);
+        }
+        if (source && !cached) {
+          subscriptions.push(
+            ws.on('decode', (duration) => {
+              setDecoded(true);
+              if (decodedPeaks.size >= 100) {
+                decodedPeaks.delete(decodedPeaks.keys().next().value!);
+              }
+              decodedPeaks.set(source, {
+                peaks: ws.exportPeaks({ maxLength: 4096 }),
+                duration,
+              });
+            }),
+          );
+        }
+        wsRef.current = ws;
 
-      subscriptions.push(ws.on('ready', () => setReady(true)));
-      subscriptions.push(
-        ws.on('interaction', (time: number) => {
-          onSeekRef.current?.(clamp01(time / durationSec));
-        }),
-      );
-      subscriptions.push(
-        observeThemeChange(() => {
-          if (containerRef.current) {
-            ws.setOptions(themeColors(containerRef.current));
-          }
-        }),
-      );
-    });
+        subscriptions.push(ws.on('ready', () => setReady(true)));
+        subscriptions.push(
+          ws.on('interaction', (time: number) => {
+            onSeekRef.current?.(
+              clamp01(time / (ws.getDuration() || durationSec)),
+            );
+          }),
+        );
+        subscriptions.push(
+          observeThemeChange(() => {
+            if (containerRef.current) {
+              ws.setOptions(themeColors(containerRef.current));
+            }
+          }),
+        );
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setReady(true);
+          setFailed(true);
+        }
+      });
 
     return () => {
       cancelled = true;
@@ -164,7 +214,7 @@ export const Waveform: FC<WaveformProps> = ({
       wsRef.current?.destroy();
       wsRef.current = null;
     };
-  }, [durationSec, media, key]);
+  }, [durationSec, media, key, audioUrl, seekable]);
 
   useEffect(() => {
     const ws = wsRef.current;
@@ -251,8 +301,8 @@ export const Waveform: FC<WaveformProps> = ({
           }
         : { role: 'img' })}
       aria-label={ariaLabel}
-      data-waveform={hasPeaks(peaks) ? 'peaks' : 'empty'}
-      data-state={ready ? 'ready' : 'loading'}
+      data-waveform={hasPeaks(peaks) || decoded ? 'peaks' : 'empty'}
+      data-state={failed ? 'error' : ready ? 'ready' : 'loading'}
       onKeyDown={handleKeyDown}
       className={cn(
         'focus-visible:ring-primary min-h-12 w-full overflow-hidden rounded-sm outline-none focus-visible:ring-2',

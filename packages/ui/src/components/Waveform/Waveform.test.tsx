@@ -33,6 +33,8 @@ vi.mock('wavesurfer.js', () => ({
           Object.assign(options, next);
         }),
         getCurrentTime: vi.fn(() => 0),
+        getDuration: vi.fn(() => 12),
+        exportPeaks: vi.fn(() => [[0, 0.8, 0.2]]),
       };
       instances.push(instance);
       return instance;
@@ -165,4 +167,54 @@ describe('Waveform', () => {
     await vi.waitFor(() => expect(instances).toHaveLength(1));
     expect(instances[0]!.options.plugins).toEqual([]);
   });
+});
+
+describe('waveform audio fallback', () => {
+  it('decodes missing peaks and reuses the cached waveform', async () => {
+    const first = render(
+      <Waveform audioUrl="https://audio.test/cache.mp3" durationSec={12} />,
+    );
+    await vi.waitFor(() => expect(instances).toHaveLength(1));
+    expect(instances[0]!.options.url).toBe('https://audio.test/cache.mp3');
+    expect(instances[0]!.options.peaks).toBeUndefined();
+    act(() => instances[0]!.handlers.decode!(12));
+    first.unmount();
+    render(
+      <Waveform audioUrl="https://audio.test/cache.mp3" durationSec={12} />,
+    );
+    await vi.waitFor(() => expect(instances).toHaveLength(2));
+    expect(instances[1]!.options.url).toBeUndefined();
+    expect(instances[1]!.options.peaks).toEqual([[0, 0.8, 0.2]]);
+  });
+  it('does not fetch audio when peaks already exist', async () => {
+    render(
+      <Waveform
+        audioUrl="https://audio.test/known.mp3"
+        peaks={[0, 255, 20]}
+        durationSec={12}
+      />,
+    );
+    await vi.waitFor(() => expect(instances).toHaveLength(1));
+    expect(instances[0]!.options.url).toBeUndefined();
+    expect(instances[0]!.options.peaks).toBeTruthy();
+  });
+  it('reports decode failure without leaving a loading state', async () => {
+    render(
+      <Waveform audioUrl="https://audio.test/fail.mp3" durationSec={12} />,
+    );
+    await vi.waitFor(() => expect(instances).toHaveLength(1));
+    act(() => instances[0]!.handlers.error!(new Error('Unavailable')));
+    expect(screen.getByRole('img')).toHaveAttribute('data-state', 'error');
+  });
+});
+
+it('enables waveform seeking when a listing track starts playing', async () => {
+  const { rerender } = render(
+    <Waveform peaks={[0, 200, 40]} durationSec={12} />,
+  );
+  await vi.waitFor(() => expect(instances).toHaveLength(1));
+  expect(instances[0]!.options.interact).toBe(false);
+  rerender(<Waveform peaks={[0, 200, 40]} durationSec={12} onSeek={vi.fn()} />);
+  await vi.waitFor(() => expect(instances).toHaveLength(2));
+  expect(instances[1]!.options.interact).toBe(true);
 });

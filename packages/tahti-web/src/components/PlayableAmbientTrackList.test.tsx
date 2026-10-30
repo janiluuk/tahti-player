@@ -12,23 +12,23 @@ const { seekbarRenders } = vi.hoisted(() => ({
   seekbarRenders: [] as { title: string; progress: number }[],
 }));
 
-vi.mock('./tahti/WaveformSeekbar', () => ({
-  WaveformSeekbar: ({
-    label,
+vi.mock('@tahti-player/ui', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@tahti-player/ui')>()),
+  Waveform: ({
+    'aria-label': label,
     progress,
     onSeek,
   }: {
-    label?: string;
+    'aria-label'?: string;
     progress: number;
     onSeek?: (fraction: number) => void;
   }) => {
-    seekbarRenders.push({ title: label ?? '', progress });
+    seekbarRenders.push({
+      title: label?.replace(/^Seek /, '') ?? '',
+      progress,
+    });
     return (
-      <button
-        type="button"
-        aria-label={`Seek ${label}`}
-        onClick={() => onSeek?.(0.5)}
-      >
+      <button type="button" aria-label={label} onClick={() => onSeek?.(0.5)}>
         {progress.toFixed(2)}
       </button>
     );

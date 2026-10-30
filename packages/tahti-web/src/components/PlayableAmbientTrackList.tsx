@@ -153,6 +153,10 @@ export function PlayableAmbientTrackList({
           stats: meta?.stats,
           like,
           peaks: item.peaks ?? null,
+          audioUrl:
+            item.kind === 'sound' && !item.embed && item.protocol !== 'hls'
+              ? item.streamUrl
+              : undefined,
           progress: 0,
           isPlaying,
           onPlay: () => {
