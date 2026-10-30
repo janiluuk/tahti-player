@@ -19,6 +19,7 @@ import {
 } from '../../../api/sources/spotify-collection';
 import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { toastWithUndo } from '../../../lib/undoToast';
 
 type Mode = 'search' | 'mine' | 'artist';
 
@@ -36,9 +37,13 @@ function formatDuration(sec: number): string {
 export function SpotifyImportPanel({
   collectionId,
   onAdded,
+  onUndoAdd,
 }: {
   collectionId: string;
   onAdded: () => void;
+  onUndoAdd: (
+    soundId: string,
+  ) => Promise<{ ok: true } | { ok: false; error: string }>;
 }) {
   const [mode, setMode] = useState<Mode>('search');
   const [query, setQuery] = useState('');
@@ -85,8 +90,17 @@ export function SpotifyImportPanel({
       return;
     }
     setAdded((current) => new Set(current).add(track.uri));
-    toast.success(`${track.title} added.`);
     onAdded();
+    toastWithUndo(`${track.title} added.`, {
+      undo: () => onUndoAdd(res.data.soundId),
+      undoneMessage: `${track.title} removed.`,
+      onUndone: () =>
+        setAdded((current) => {
+          const next = new Set(current);
+          next.delete(track.uri);
+          return next;
+        }),
+    });
   };
 
   return (
@@ -111,6 +125,9 @@ export function SpotifyImportPanel({
             }}
           >
             <Input
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               className="flex-1"
               type={mode === 'artist' ? undefined : 'search'}
               enterKeyHint={mode === 'artist' ? undefined : 'search'}

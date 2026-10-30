@@ -7,7 +7,7 @@ import {
   Repeat2Icon,
 } from 'lucide-react';
 
-import { Button, CardGrid, Tooltip } from '@tahti-player/ui';
+import { Button, CardGrid, ImageReveal, Tooltip } from '@tahti-player/ui';
 
 import type {
   PublicProfile,
@@ -125,10 +125,11 @@ export function ArtistMusicTab({
               preset={visualizerPreset}
             />
           ) : nowPlayingHere?.coverUrl ? (
-            <img
+            <ImageReveal
               src={nowPlayingHere.coverUrl}
               alt=""
-              className="absolute inset-0 size-full object-cover opacity-35"
+              className="absolute inset-0 size-full opacity-35"
+              imgClassName="object-cover"
             />
           ) : null}
           <div

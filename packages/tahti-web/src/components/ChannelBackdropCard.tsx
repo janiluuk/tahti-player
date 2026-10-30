@@ -4,6 +4,7 @@ import {
   Button,
   ButtonLink,
   ClampedText,
+  ImageReveal,
   MediaArtwork,
 } from '@tahti-player/ui';
 
@@ -192,8 +193,9 @@ export function ChannelBackdropCard({
     >
       {showVideo ? (
         backdropIsImage ? (
-          <img
-            className="absolute inset-0 h-full w-full object-cover"
+          <ImageReveal
+            className="absolute inset-0 h-full w-full"
+            imgClassName="object-cover"
             src={videoBackgroundUrl ?? undefined}
             alt=""
           />

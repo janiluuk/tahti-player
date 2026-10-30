@@ -6,6 +6,7 @@ import {
   InlineError,
   Input,
   Select,
+  Slider,
   Toggle,
 } from '@tahti-player/ui';
 
@@ -476,22 +477,17 @@ export function ClipEditorDialog({
               {duration > 0 && (
                 <div className="grid grid-cols-2 gap-3">
                   {(['startSec', 'endSec'] as const).map((key) => (
-                    <label key={key} className="text-xs">
-                      {key === 'startSec' ? 'Trim start' : 'Trim end'}
-                      <input
-                        className="w-full"
-                        type="range"
-                        min={0}
-                        max={duration}
-                        step={0.01}
-                        value={
-                          Number.isFinite(settings[key]) ? settings[key] : 0
-                        }
-                        onChange={(e) =>
-                          update({ [key]: Number(e.target.value) })
-                        }
-                      />
-                    </label>
+                    <Slider
+                      key={key}
+                      label={key === 'startSec' ? 'Trim start' : 'Trim end'}
+                      min={0}
+                      max={duration}
+                      step={0.01}
+                      value={Number.isFinite(settings[key]) ? settings[key] : 0}
+                      formatValue={(seconds) => `${seconds.toFixed(2)} s`}
+                      showFooter={false}
+                      onValueChange={(seconds) => update({ [key]: seconds })}
+                    />
                   ))}
                 </div>
               )}

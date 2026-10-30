@@ -29,7 +29,13 @@ describe('SpotifyImportPanel', () => {
     const onAdded = vi.fn();
     vi.spyOn(toast, 'success');
 
-    render(<SpotifyImportPanel collectionId="col-1" onAdded={onAdded} />);
+    render(
+      <SpotifyImportPanel
+        collectionId="col-1"
+        onAdded={onAdded}
+        onUndoAdd={vi.fn()}
+      />,
+    );
     fireEvent.change(screen.getByLabelText('Search Spotify'), {
       target: { value: 'night' },
     });
@@ -55,7 +61,13 @@ describe('SpotifyImportPanel', () => {
       ok: true,
       data: [],
     });
-    render(<SpotifyImportPanel collectionId="col-1" onAdded={vi.fn()} />);
+    render(
+      <SpotifyImportPanel
+        collectionId="col-1"
+        onAdded={vi.fn()}
+        onUndoAdd={vi.fn()}
+      />,
+    );
     await act(async () => {
       fireEvent.click(screen.getByRole('radio', { name: 'Your tracks' }));
     });
@@ -71,7 +83,13 @@ describe('SpotifyImportPanel', () => {
     const byArtist = vi
       .spyOn(api, 'fetchSpotifyArtistTracks')
       .mockResolvedValue({ ok: true, data: [track] });
-    render(<SpotifyImportPanel collectionId="col-1" onAdded={vi.fn()} />);
+    render(
+      <SpotifyImportPanel
+        collectionId="col-1"
+        onAdded={vi.fn()}
+        onUndoAdd={vi.fn()}
+      />,
+    );
     await act(async () => {
       fireEvent.click(screen.getByRole('radio', { name: 'By artist link' }));
     });
@@ -93,7 +111,13 @@ describe('SpotifyImportPanel', () => {
       error: 'Spotify search is not configured',
     });
     const error = vi.spyOn(toast, 'error');
-    render(<SpotifyImportPanel collectionId="col-1" onAdded={vi.fn()} />);
+    render(
+      <SpotifyImportPanel
+        collectionId="col-1"
+        onAdded={vi.fn()}
+        onUndoAdd={vi.fn()}
+      />,
+    );
     fireEvent.change(screen.getByLabelText('Search Spotify'), {
       target: { value: 'x' },
     });

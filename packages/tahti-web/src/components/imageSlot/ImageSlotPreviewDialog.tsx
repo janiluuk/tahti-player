@@ -1,6 +1,12 @@
 import { XIcon } from 'lucide-react';
 
-import { Button, Dialog, MediaArtwork, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  ImageReveal,
+  MediaArtwork,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { ConfirmDialog } from '../ConfirmDialog';
 
@@ -58,10 +64,11 @@ export function ImageSlotPreviewDialog({
         <Dialog.Title>{label}</Dialog.Title>
         <div className="mt-3 flex flex-col gap-3">
           {src ? (
-            <img
+            <ImageReveal
               src={src}
               alt={label}
-              className="border-border bg-background-secondary max-h-[60vh] w-full rounded-md border object-contain"
+              className="border-border bg-background-secondary w-full rounded-md border"
+              imgClassName="h-auto max-h-[60vh] object-contain"
             />
           ) : null}
           {frames && frames.length > 0 ? (
