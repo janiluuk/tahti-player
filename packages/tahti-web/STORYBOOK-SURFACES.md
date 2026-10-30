@@ -253,6 +253,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Updates/PostPreview` | `tahti-web/PostPreview.stories.tsx` |
 | `Tahti/Studio/Branding/PressKitPreview` | `tahti-web/PressKitPreview.stories.tsx` |
 | `Tahti/Studio/ProcessingFailedAlert` | `tahti-web/ProcessingFailedAlert.stories.tsx` |
+| `Tahti/Studio/Branding/ProfilePictureSection` | `tahti-web/ProfilePictureSection.stories.tsx` |
 | `Tahti/Profile/ProfileSection` | `tahti-web/ProfileSection.stories.tsx` |
 | `Tahti/Studio/PromptScoreBridgePanel` | `tahti-web/PromptScoreBridgePanel.stories.tsx` |
 | `Tahti/Misc/ProviderSetImportDialog` | `tahti-web/ProviderSetImportDialog.stories.tsx` |

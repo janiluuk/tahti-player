@@ -104,15 +104,20 @@ export const StudioBrandingPanel: FC<{
               className="font-display tracking-tight"
             />
           )}
-          <ProfilePictureSection kit={kit} />
-          <ProfileBackdropSection
-            backdropUrl={profile?.backdropUrl ?? null}
-            onChange={(backdropUrl) =>
-              kit.setProfile((current) =>
-                current ? { ...current, backdropUrl } : current,
-              )
-            }
-          />
+          <div
+            className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]"
+            data-testid="branding-profile-row"
+          >
+            <ProfilePictureSection kit={kit} />
+            <ProfileBackdropSection
+              backdropUrl={profile?.backdropUrl ?? null}
+              onChange={(backdropUrl) =>
+                kit.setProfile((current) =>
+                  current ? { ...current, backdropUrl } : current,
+                )
+              }
+            />
+          </div>
           <ProfileLogoSection
             logoUrl={profile?.logoUrl ?? null}
             logoPlacement={profile?.logoPlacement ?? null}

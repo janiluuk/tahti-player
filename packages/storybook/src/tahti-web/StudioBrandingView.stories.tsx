@@ -16,7 +16,7 @@ const meta: Meta<typeof StudioBrandingView> = {
     docs: {
       description: {
         component:
-          '`/studio/branding` has no page of its own: it opens Settings → Artist on the Artist branding group, landing on Branding (profile picture, backdrop, logo), Gallery or Press kit from `?tab=`. `?tab=channel-designer` opens Settings → Channel & chat instead.',
+          '`/studio/branding` has no page of its own: it opens Settings → Artist on the Artist branding group, landing on Branding (profile picture and backdrop side by side, then logo), Gallery or Press kit from `?tab=`. `?tab=channel-designer` opens Settings → Channel & chat instead.',
       },
     },
   },
@@ -57,6 +57,11 @@ export const Branding: Story = {
       dialog.getByRole('heading', { name: 'Profile backdrop' }),
     );
     await expectVisible(dialog.getByRole('heading', { name: 'Logo' }));
+
+    const row = within(dialog.getByTestId('branding-profile-row'));
+    await expectVisible(row.getByRole('heading', { name: 'Profile picture' }));
+    await expectVisible(row.getByRole('heading', { name: 'Profile backdrop' }));
+    await expect(dialog.queryByLabelText('Image URL')).toBeNull();
   },
 };
 

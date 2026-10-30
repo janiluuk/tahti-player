@@ -41,7 +41,7 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
   return (
     <StudioPanel
       title="Profile picture"
-      description="Use a clear square portrait or mark. Hover the picture to replace or remove it."
+      description="Use a clear square portrait or mark. Click the picture to upload one, pick from your gallery or paste an image link."
     >
       <div className="flex flex-wrap items-center gap-5">
         <RoundImageUploadButton
@@ -57,6 +57,20 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
             )
           }
           onChange={handleAvatarChange}
+          pickerExtra={(close) => (
+            <div className="border-border border-t pt-4">
+              <ImageUrlForm
+                busy={fetching}
+                onSubmit={async (url) => {
+                  const saved = await saveImageUrl(url);
+                  if (saved) {
+                    close();
+                  }
+                  return saved;
+                }}
+              />
+            </div>
+          )}
         />
         <div className="flex flex-col gap-2">
           <Tooltip
@@ -80,10 +94,14 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
           </Tooltip>
         </div>
       </div>
-      <div className="mt-5 max-w-md">
-        <ImageUrlForm busy={fetching} onSubmit={saveImageUrl} />
-      </div>
-      {profile ? (
+      {profile && avatarUrl ? (
+        <p
+          className="text-foreground-secondary mt-5 text-xs"
+          data-testid="avatar-theme-hint"
+        >
+          The avatar colour shows only when there is no profile picture.
+        </p>
+      ) : profile ? (
         <div className="mt-5">
           <AvatarThemePicker
             value={readAvatarTheme(profile.avatarTheme)}
