@@ -7,12 +7,7 @@ import {
 } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
 
-import {
-  Button,
-  InlineError,
-  Tooltip,
-  TrackProcessing,
-} from '@tahti-player/ui';
+import { Button, InlineError, Tooltip } from '@tahti-player/ui';
 
 import { fetchEditorSource } from '../../../api/studio';
 import type { StudioSound } from '../../../api/studio-types';
@@ -99,13 +94,11 @@ function SoundStatusLine({ item }: { item: StudioSound }) {
   return (
     <>
       <p className="text-foreground-secondary text-xs">
-        {isProcessingSound(item) ? (
-          <TrackProcessing />
-        ) : failed ? (
-          'Processing failed'
-        ) : (
-          item.status
-        )}
+        {isProcessingSound(item)
+          ? 'Processing'
+          : failed
+            ? 'Processing failed'
+            : item.status}
         {formatUploadDate(item.createdAt)
           ? `, uploaded ${formatUploadDate(item.createdAt)}`
           : ''}
