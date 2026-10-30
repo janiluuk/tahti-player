@@ -41,11 +41,10 @@ export const WithResults: Story = {
 export const NoResults: Story = {
   parameters: { mockData: { tagTracks: [] } },
   play: async ({ canvasElement }) => {
-    await expect(
-      await within(canvasElement).findByText(
-        `No tracks tagged “${TAG}” in mock fixtures`,
-      ),
-    ).toBeVisible();
+    const empty = await within(canvasElement).findByText(
+      `No tracks tagged “${TAG}” in mock fixtures`,
+    );
+    await waitFor(() => expect(empty).toBeVisible());
   },
 };
 
