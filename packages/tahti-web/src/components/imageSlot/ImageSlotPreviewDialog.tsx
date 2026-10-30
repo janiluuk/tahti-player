@@ -67,6 +67,7 @@ export function ImageSlotPreviewDialog({
             <ImageReveal
               src={src}
               alt={label}
+              enabled={false}
               className="border-border bg-background-secondary w-full rounded-md border"
               imgClassName="h-auto max-h-[60vh] object-contain"
             />
