@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ADMIN_SECTIONS, PRIMARY } from './AdminNav';
+import { ADMIN_SECTIONS, isAdminNavItemActive, PRIMARY } from './AdminNav';
 
 describe('AdminNav section coverage', () => {
   it('buckets every primary admin page into exactly one section', () => {
@@ -18,5 +18,15 @@ describe('AdminNav section coverage', () => {
         `"${item.to}" should appear in exactly one ADMIN_SECTIONS bucket, found in ${owningSections.length} (${owningSections.map((s) => s.id).join(', ')})`,
       ).toBe(1);
     }
+  });
+
+  it('lights Community on a grant year', () => {
+    expect(
+      isAdminNavItemActive('/admin/grants/2026', '/admin/governance'),
+    ).toBe(true);
+    expect(isAdminNavItemActive('/admin/grants/2026', '/admin')).toBe(false);
+    expect(isAdminNavItemActive('/admin/governance', '/admin/governance')).toBe(
+      true,
+    );
   });
 });

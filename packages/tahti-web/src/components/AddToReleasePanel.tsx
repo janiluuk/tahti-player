@@ -3,8 +3,13 @@ import { toast } from 'sonner';
 
 import { Button, Dialog } from '@tahti-player/ui';
 
-import { addStudioReleaseTrack, fetchStudioReleases } from '../api/studio';
+import {
+  addStudioReleaseTrack,
+  fetchStudioReleases,
+  removeStudioReleaseTrack,
+} from '../api/studio';
 import type { StudioRelease } from '../api/studio-types';
+import { toastWithUndo } from '../lib/undoToast';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 type Track = { id: string; title: string };
@@ -86,10 +91,31 @@ export function AddToReleasePanel({
         );
         return;
       }
-      toast.success(
-        tracks.length === 1
+      const added = results.flatMap((result) =>
+        result.ok ? [result.data] : [],
+      );
+      toastWithUndo(
+        added.length === 1
           ? `Added to ${release.title}.`
-          : `Added ${tracks.length} tracks to ${release.title}.`,
+          : `Added ${added.length} tracks to ${release.title}.`,
+        {
+          undo: async () => {
+            const undone = await Promise.all(
+              added.map((track) =>
+                removeStudioReleaseTrack(release.id, track.id),
+              ),
+            );
+            const failed = undone.find((item) => !item.ok);
+            if (failed && !failed.ok) {
+              return failed;
+            }
+            return { ok: true };
+          },
+          undoneMessage:
+            added.length === 1
+              ? 'Removed from the release.'
+              : 'Removed those tracks from the release.',
+        },
       );
       onClose();
     });

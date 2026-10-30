@@ -26,6 +26,7 @@ import { ArtworkPresetUploadDialog } from '../../components/ArtworkPresetUploadD
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { cn } from '../../lib/cn';
+import { toastWithUndo } from '../../lib/undoToast';
 
 type LoadState =
   | { status: 'loading' }
@@ -80,12 +81,27 @@ export function AdminArtworkPresetsView() {
       toast.error(result.error);
       return;
     }
+    const created = result.data;
     setState((current) =>
       current.status === 'ready'
-        ? { ...current, presets: [...current.presets, result.data] }
+        ? { ...current, presets: [...current.presets, created] }
         : current,
     );
-    toast.success('Artwork added.');
+    toastWithUndo('Artwork added.', {
+      undo: () => deleteAdminArtworkPreset(created.id),
+      undoneMessage: 'Artwork removed.',
+      onUndone: () =>
+        setState((current) =>
+          current.status === 'ready'
+            ? {
+                ...current,
+                presets: current.presets.filter(
+                  (preset) => preset.id !== created.id,
+                ),
+              }
+            : current,
+        ),
+    });
   };
 
   const remove = async (preset: ArtworkPreset) => {

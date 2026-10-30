@@ -14,6 +14,7 @@ import {
 } from '@tahti-player/ui';
 
 import {
+  cancelListeningParty,
   createListeningParty,
   fetchListeningParty,
   LISTENING_PARTY_HOST_NOTE_MAX,
@@ -28,6 +29,7 @@ import {
   fromDatetimeLocalValue,
   toDatetimeLocalValue,
 } from '../../lib/datetimeLocal';
+import { toastWithUndo } from '../../lib/undoToast';
 
 const MIN_LEAD_MS = 5 * 60_000;
 
@@ -126,11 +128,20 @@ export function StudioListeningPartyFormView({
       toast.error(result.error);
       return;
     }
-    toast.success(
-      editing
-        ? `Rescheduled the ${result.data.release.title} listening party.`
-        : `Scheduled a listening party for ${result.data.release.title}.`,
-    );
+    if (editing) {
+      toast.success(
+        `Rescheduled the ${result.data.release.title} listening party.`,
+      );
+    } else {
+      const created = result.data;
+      toastWithUndo(
+        `Scheduled a listening party for ${created.release.title}.`,
+        {
+          undo: () => cancelListeningParty(created.id),
+          undoneMessage: 'Listening party canceled.',
+        },
+      );
+    }
     void navigate({ to: '/studio/listening-parties' });
   };
 

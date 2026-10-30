@@ -22,6 +22,7 @@ import {
 } from '../api/announcements';
 import { fetchProgramme, type ProgrammeItem } from '../api/studio-extras';
 import { usePolling } from '../hooks/usePolling';
+import { toastWithUndo } from '../lib/undoToast';
 import { ClipEditorDialog } from './channel-clips/ClipEditorDialog';
 import { VoiceRecorder } from './channel-clips/VoiceRecorder';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
@@ -100,9 +101,15 @@ export function ChannelAnnouncementsPanel() {
       toast.error(result.error);
       return;
     }
-    setClips((current) => [result.clip, ...current]);
+    const created = result.clip;
+    setClips((current) => [created, ...current]);
     setRecording(false);
-    toast.success('Clip uploaded inactive. Preview it before activating.');
+    toastWithUndo('Clip uploaded inactive. Preview it before activating.', {
+      undo: () => deleteAnnouncementClip(created.id),
+      undoneMessage: 'Clip removed.',
+      onUndone: () =>
+        setClips((current) => current.filter((clip) => clip.id !== created.id)),
+    });
     await openEditor(result.clip);
   };
   const toggle = async (clip: AnnouncementClip) => {

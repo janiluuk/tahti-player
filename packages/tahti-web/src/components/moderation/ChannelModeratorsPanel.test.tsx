@@ -56,6 +56,9 @@ describe('ChannelModeratorsPanel', () => {
     expect(add).toHaveBeenCalledWith('mod-ada');
     expect(toast.success).toHaveBeenCalledWith(
       "Added Ada Mod as moderator. They've been notified.",
+      expect.objectContaining({
+        action: expect.objectContaining({ label: 'Undo' }),
+      }),
     );
     expect((screen.getByLabelText('Username') as HTMLInputElement).value).toBe(
       '',

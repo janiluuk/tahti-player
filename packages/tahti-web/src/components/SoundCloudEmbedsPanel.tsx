@@ -10,6 +10,7 @@ import {
   removeArtistEmbed,
   type ArtistEmbed,
 } from '../api/artist-embeds';
+import { toastWithUndo } from '../lib/undoToast';
 import { PageEmpty, PageError } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
@@ -46,8 +47,17 @@ export function SoundCloudEmbedsPanel() {
       toast.error(result.error);
       return;
     }
-    setEmbeds((current) => [result.data, ...(current ?? [])]);
+    const created = result.data;
+    setEmbeds((current) => [created, ...(current ?? [])]);
     setUrl('');
+    toastWithUndo(`Added ${created.title}.`, {
+      undo: () => removeArtistEmbed(created.id),
+      undoneMessage: `Removed ${created.title}.`,
+      onUndone: () =>
+        setEmbeds((current) =>
+          (current ?? []).filter((embed) => embed.id !== created.id),
+        ),
+    });
   };
 
   const remove = async (id: string) => {

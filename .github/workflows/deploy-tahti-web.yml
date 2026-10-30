@@ -111,7 +111,12 @@ jobs:
             pnpm --filter @tahti-player/tahti-web build
 
       - name: Verify build output
-        run: test -f packages/tahti-web/dist/index.html
+        run: |
+          test -f packages/tahti-web/dist/index.html
+          if grep -R --include='*.js' -E '"https?://[^"]+"\.startsWith\("http"\)' packages/tahti-web/dist; then
+            echo "Prod build inlined an absolute VITE_TAHTI_API_URL. The client must use same-origin /tahti-api."
+            exit 1
+          fi
 
       - name: Export deploy targets
         run: |

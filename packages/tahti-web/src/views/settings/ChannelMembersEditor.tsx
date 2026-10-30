@@ -21,6 +21,7 @@ import {
 import { setChannelMemberPictureFromUrl } from '../../api/image-from-url';
 import { ImageUrlForm } from '../../components/ImageUrlForm';
 import { RoundImageUploadButton } from '../../components/RoundImageUploadButton';
+import { toastWithUndo } from '../../lib/undoToast';
 import { SettingsHint } from './SettingsFields';
 
 function MemberForm({
@@ -114,8 +115,13 @@ export function ChannelMembersEditor({
       toast.error(result.error);
       return false;
     }
-    onChange([...members, result.data]);
-    toast.success(`${result.data.name} added to your lineup.`);
+    const created = result.data;
+    onChange([...members, created]);
+    toastWithUndo(`${created.name} added to your lineup.`, {
+      undo: () => removeChannelMember(created.id),
+      undoneMessage: `Removed ${created.name}.`,
+      onUndone: () => onChange(members),
+    });
     return true;
   };
 

@@ -601,7 +601,7 @@ test('branding and radio own gallery, channel designer, and multicast', async ({
   ).toHaveCount(0);
 
   await page.goto('/studio/channel?tab=design');
-  await expect(page).toHaveURL(/\/studio\/branding\?tab=channel-designer/);
+  await expect(page).toHaveURL(/\/settings\/channel/);
 
   await page.goto('/studio/channel?tab=radio');
   await expect(

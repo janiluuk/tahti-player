@@ -275,8 +275,18 @@ export const ADMIN_NAV_TOUR_STEPS: TourStep[] = PRIMARY.map(
   }),
 );
 
-function isActive(current: string | undefined, to: string) {
-  return to === '/admin' ? current === to : matchesSectionRoute(current, [to]);
+export function isAdminNavItemActive(
+  current: string | undefined,
+  to: string,
+): boolean {
+  if (to === '/admin') {
+    return current === to;
+  }
+  const prefixes =
+    to === '/admin/governance'
+      ? (['/admin/governance', '/admin/grants'] as const)
+      : [to];
+  return matchesSectionRoute(current, prefixes);
 }
 
 function useAdminNavParts(
@@ -285,7 +295,7 @@ function useAdminNavParts(
 ) {
   const navigate = useNavigate();
   const routeSection = ADMIN_SECTIONS.find((section) =>
-    section.items.some((item) => isActive(current, item.to)),
+    section.items.some((item) => isAdminNavItemActive(current, item.to)),
   );
   const section = routeSection;
 
@@ -336,7 +346,7 @@ function useAdminNavParts(
                 ? moderationPendingCount
                 : undefined,
             to: link.to,
-            active: isActive(current, link.to),
+            active: isAdminNavItemActive(current, link.to),
           }))}
         />
       ) : null}

@@ -92,12 +92,12 @@ Favorites leaves (if the open question is a yes); Co-op is new. Mobile bottom ba
 
 ## Bugs to fix during the regroup
 
-- [ ] `/studio/channel` shows an empty body with "Green room" lit for anyone who has a channel (`StudioChannelView.tsx:150-194,248`).
-- [ ] `?tab=rotation|pinned|tahti-radio` lights "Channel" instead of Radio (`isBroadcastSubnavActive`, `StudioNav.tsx:454`).
-- [ ] Library → Sounds is visible to listeners but gated by `StudioGate`.
-- [ ] The editor sidebar doesn't collapse on `/studio/sounds/$id/editor` (`AppShell.tsx:349` regex).
-- [ ] `/admin/grants/$year` lights no section.
-- [ ] Double redirect `/studio/channel?tab=design` → `/studio/branding` → `/settings/channel`.
+- [x] `/studio/channel` shows an empty body with "Green room" lit for anyone who has a channel (`StudioChannelView.tsx:150-194,248`).
+- [x] `?tab=rotation|pinned|tahti-radio` lights "Channel" instead of Radio (`isBroadcastSubnavActive`, `StudioNav.tsx:454`).
+- [x] Library → Sounds is visible to listeners but gated by `StudioGate`.
+- [x] The editor sidebar doesn't collapse on `/studio/sounds/$id/editor` (`AppShell.tsx:349` regex).
+- [x] `/admin/grants/$year` lights no section.
+- [x] Double redirect `/studio/channel?tab=design` → `/studio/branding` → `/settings/channel`.
 - [ ] `NAVIGATION-SITEMAP.md`, `NAVIGATION-GAPS.md`, `docs/VIEW-CATALOG.md`, `ADMIN_TAB_ONLY_ROUTES` (`AdminNav.tsx:41-53`) and `stores/navigationStructureStore.ts` don't match the code; rewrite them from the new structure.
 
 ## Slices (in order)

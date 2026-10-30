@@ -1,3 +1,7 @@
+## 2026-10-30 - Navigation fixes and undo on more creates
+
+A channel you already have opens Green room instead of a blank Setup tab. Radio deep links light Radio. Listeners no longer see Library → Sounds. The sound editor collapses the sidebar. A grant year lights Admin → Community. Old channel design links go straight to Settings. New listening parties, lineup members, moderators, replies, release tracks, pins, clips, artwork, stations, embeds, stash files, gallery photos, smart-playlist copies, and queue adds can be undone. Bumped tahti-web `0.0.286`.
+
 ## 2026-10-28 - DJ catalog and mobile playback
 
 Desktop library keys follow Camelot, Open Key, or musical notation. Track details list tracks that mix (neighbouring key, tempo range, half and double). Tap tempo and half/double correct a bad BPM. P adds the selection to a Prepare playlist. Listening history can copy the last session as a tracklist. Lock-screen seek and stop work, a failed stream reloads when the network returns, and the mobile shell keeps clear of the notch and home indicator. Bumped tahti-web `0.0.279`.

@@ -127,6 +127,7 @@ export type LibrarySectionId = (typeof LIBRARY_SECTION_TABS)[number]['id'];
 
 /** Tabs for publishing artists only; a listener's Library leaves them out. */
 const ARTIST_ONLY_TABS: ReadonlySet<LibrarySectionId> = new Set([
+  'sounds',
   'upload',
   'recordings',
   'embeds',
