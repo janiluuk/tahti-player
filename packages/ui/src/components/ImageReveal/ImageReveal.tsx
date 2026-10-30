@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react';
-import { FC, ReactNode, useEffect, useState } from 'react';
+import { FC, ReactNode, SyntheticEvent, useState } from 'react';
 
 import { useSkipEnterMotion } from '../../hooks/useSkipEnterMotion';
 import { cn } from '../../utils';
@@ -19,7 +19,14 @@ type ImageRevealProps = {
   onError?: () => void;
 };
 
-export const ImageReveal: FC<ImageRevealProps> = ({
+const loadedImages = new Map<string, HTMLImageElement>();
+const MAX_CACHED_IMAGES = 64;
+
+export const ImageReveal: FC<ImageRevealProps> = (props) => (
+  <ImageRevealContent key={props.src} {...props} />
+);
+
+const ImageRevealContent: FC<ImageRevealProps> = ({
   src,
   alt,
   enabled = true,
@@ -28,30 +35,42 @@ export const ImageReveal: FC<ImageRevealProps> = ({
   placeholder,
   loading = 'lazy',
   decoding = 'async',
-  transitionDuration = 0.6,
+  transitionDuration = 0.2,
   ease = [0.22, 1, 0.36, 1],
   onLoad,
   onError,
 }) => {
   const prefersReduced = useSkipEnterMotion();
-  const animationsDisabled = !enabled || !!prefersReduced;
+  const [cached] = useState(() => Boolean(src && loadedImages.has(src)));
+  const animationsDisabled = !enabled || !!prefersReduced || cached;
 
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(cached);
   const [errored, setErrored] = useState(false);
-
-  useEffect(() => {
-    setLoaded(false);
-    setErrored(false);
-  }, [src]);
 
   const showImage = Boolean(src) && !errored;
 
-  const handleLoad = () => {
+  const handleLoad = (event: SyntheticEvent<HTMLImageElement>) => {
+    if (src) {
+      loadedImages.delete(src);
+      loadedImages.set(
+        src,
+        event.currentTarget.cloneNode(false) as HTMLImageElement,
+      );
+      if (loadedImages.size > MAX_CACHED_IMAGES) {
+        const oldest = loadedImages.keys().next().value;
+        if (oldest !== undefined) {
+          loadedImages.delete(oldest);
+        }
+      }
+    }
     setLoaded(true);
     onLoad?.();
   };
 
   const handleError = () => {
+    if (src) {
+      loadedImages.delete(src);
+    }
     setErrored(true);
     onError?.();
   };
@@ -75,11 +94,9 @@ export const ImageReveal: FC<ImageRevealProps> = ({
             src={src}
             alt={alt ?? ''}
             className={cn('h-full w-full object-cover', imgClassName)}
-            initial={{ opacity: 0, scale: 0.98, filter: 'blur(8px)' }}
+            initial={{ opacity: 0 }}
             animate={{
               opacity: loaded ? 1 : 0,
-              scale: loaded ? 1 : 0.98,
-              filter: loaded ? 'blur(0px)' : 'blur(8px)',
             }}
             transition={{ duration: transitionDuration, ease }}
             onLoad={handleLoad}

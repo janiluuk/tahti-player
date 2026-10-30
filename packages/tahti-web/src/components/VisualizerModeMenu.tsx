@@ -8,6 +8,8 @@ import {
   type VisualizerMode,
 } from '@tahti-player/visualizer';
 
+import { VisualizerModePreview } from './VisualizerModePreview';
+
 type Props = {
   mode: VisualizerMode;
   onModeChange: (mode: VisualizerMode) => void;
@@ -51,26 +53,44 @@ export function VisualizerModeMenu({
         role="menu"
         aria-label="Visualizer"
         data-testid="visualizer-mode-menu"
-        className="min-w-56"
+        className="max-h-[min(32rem,70dvh)] w-80 max-w-[calc(100vw-3rem)] gap-3 overflow-y-auto"
       >
         {GROUPS.map((group) => (
-          <Popover.Section key={group.label} label={group.label} role="group">
-            {group.modes.map((id) => {
-              const selected = id === mode;
-              return (
-                <Popover.Item
-                  key={id}
-                  type="button"
-                  role="menuitemradio"
-                  aria-checked={selected}
-                  onClick={() => onModeChange(id)}
-                  icon={selected ? <CheckIcon size={16} aria-hidden /> : null}
-                  className={selected ? 'font-semibold' : undefined}
-                >
-                  {VISUALIZER_MODE_LABELS[id]}
-                </Popover.Item>
-              );
-            })}
+          <Popover.Section
+            key={group.label}
+            label={group.label}
+            role="group"
+            aria-label={group.label}
+          >
+            <div className="grid grid-cols-2 gap-2 p-1">
+              {group.modes.map((id) => {
+                const selected = id === mode;
+                return (
+                  <Button
+                    key={id}
+                    type="button"
+                    variant="plain"
+                    size="flexible"
+                    title={VISUALIZER_MODE_LABELS[id]}
+                    aria-label={VISUALIZER_MODE_LABELS[id]}
+                    role="menuitemradio"
+                    aria-checked={selected}
+                    onClick={() => onModeChange(id)}
+                    className={`relative block rounded-lg border-2 p-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current ${selected ? 'border-current' : 'border-transparent hover:border-current/50'}`}
+                  >
+                    <VisualizerModePreview mode={id} />
+                    <span className="sr-only">
+                      {VISUALIZER_MODE_LABELS[id]}
+                    </span>
+                    {selected && (
+                      <span className="bg-background text-foreground absolute top-2 right-2 rounded-full p-1">
+                        <CheckIcon size={14} aria-hidden />
+                      </span>
+                    )}
+                  </Button>
+                );
+              })}
+            </div>
           </Popover.Section>
         ))}
       </Popover.Menu>

@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-10-30T18:00",
+    "description": "Recently viewed cover art appears without replaying its loading animation when you navigate back. New covers fade in more quickly, keeping card rows feeling smoother. Choose a full-screen visualization from animated preview tiles instead of a text list.",
+    "type": "improvement",
+    "contributors": ["jani"],
+    "tags": [{ "label": "UI", "color": "blue" }]
+  },
+  {
     "date": "2026-10-30T07:30",
     "description": "Track listings fit their controls on one row: the filter box, sort order and a Track size button that opens a menu of Large, Medium, Small, Grid and List. Library → Sounds moves Sort by up beside search, and your size choice is shared across listings.",
     "type": "improvement",
