@@ -136,7 +136,12 @@ export function MusicBrainzSubmissionAssistant({
                   />
                 </span>
               ))}
-              <Button size="sm" type="submit" onClick={() => setIsOpen(false)}>
+              <Button
+                size="sm"
+                type="submit"
+                variant="secondary"
+                onClick={() => setIsOpen(false)}
+              >
                 Open prefilled release editor
               </Button>
             </form>
@@ -146,6 +151,7 @@ export function MusicBrainzSubmissionAssistant({
               target="_blank"
               rel="noreferrer"
               size="sm"
+              variant="secondary"
               onClick={() => setIsOpen(false)}
             >
               Open prefilled track editor

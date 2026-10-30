@@ -71,6 +71,17 @@ describe('FavoritesView', () => {
     );
   });
 
+  it('shows the empty favorites to a signed-out visitor', async () => {
+    useAuthStore.setState({ user: null, hydrated: true, loading: false });
+    renderFavorites();
+
+    expect(await screen.findByText('No favorite tracks')).toBeInTheDocument();
+    expect(
+      screen.queryByText('Sign in to see favorites'),
+    ).not.toBeInTheDocument();
+    expect(likes.fetchMyLikes).not.toHaveBeenCalled();
+  });
+
   it('says where to find tracks when none are favorited', async () => {
     renderFavorites();
 

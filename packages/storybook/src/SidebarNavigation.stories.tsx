@@ -6,6 +6,7 @@ import {
   Folder,
   Heart,
   Home,
+  LayoutDashboard,
   Library,
   Mic2,
   Radio,
@@ -160,4 +161,29 @@ export const FullNavigationExample = {
       </SidebarNavigation>
     </div>
   ),
+};
+
+export const NeedsAccount = {
+  render: () => (
+    <div className="bg-background-secondary border-border w-64 border-(length:--border-width) p-2">
+      <SidebarNavigation>
+        <SidebarNavigationItem icon={<Home size={16} />} label="Listen" />
+        <SidebarNavigationItem
+          disabled
+          icon={<LayoutDashboard size={16} />}
+          label="Studio"
+        />
+      </SidebarNavigation>
+    </div>
+  ),
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    const canvas = within(canvasElement);
+    const studio = canvas.getByRole('button', { name: 'Studio' });
+    await expect(studio).toHaveAttribute('aria-disabled', 'true');
+    await expect(canvas.queryByRole('link', { name: 'Studio' })).toBeNull();
+    await userEvent.click(studio);
+    await waitFor(() =>
+      expect(canvas.getByRole('button', { name: 'Studio' })).toBeVisible(),
+    );
+  },
 };

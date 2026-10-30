@@ -40,11 +40,11 @@ editor. See root `AGENTS.md` → Persistent chrome visibility.
 | Everyone | Listen | Desktop sidebar, mobile bottom | `/` |
 | Everyone | Radio | Desktop sidebar, mobile bottom | `/radio` |
 | Everyone | Discover | Desktop sidebar, mobile bottom | `/discover` |
-| Everyone | Favorites | Desktop sidebar, mobile More drawer | `/favorites` |
-| Everyone | Library | Desktop sidebar, mobile More drawer | `/library` |
+| Everyone | Library | Desktop sidebar, mobile More drawer | `/library` (Favorites is a tab, `/library/favorites`) |
 | Artists / board | Studio | Desktop sidebar; mobile bottom bar | `/studio` |
 | Signed-in listener | Become an artist | Desktop sidebar (More drawer on phones) | `/studio` (create-your-channel prompt) |
-| Signed out | (no Studio entry) | — | `/studio` still answers with the StudioGate sign-in prompt |
+| Signed out | Studio | Desktop sidebar and mobile bottom, grayed | Stays visible, does not navigate, does not open sign-in |
+| Signed out | Admin | Desktop sidebar, grayed | Stays visible, does not navigate, does not open sign-in |
 | Everyone | Help center | Desktop sidebar footer, mobile More drawer | `/help` |
 | Everyone | Settings | Desktop sidebar footer, mobile More drawer (opens modal) | `ConnectedSettingsModal`; bookmarkable `/settings/$section` |
 | Signed in | Notifications, Messages | Top bar popovers | Notification links go through `/dashboard/*` redirects; messages open `/messages/$id` |
@@ -59,7 +59,7 @@ Governance, Posts, Audience, Releases, Editor, Broadcast.
 - Audience tabs (`AUDIENCE_SUBNAV_ITEMS`): Overview, Tiers, Stripe (only when
   Stripe is configured).
 
-Library tabs (`LibraryView`): Overview, Tracks, Collections, Upload,
+Library tabs (`LibraryView`): Overview, Favorites, Tracks, Collections, Upload,
 Recordings, Media, Stash, Embeds, Smart links, Local files. Upload lands on
 `/library/upload`. **Local files** (`/library/local`) is a tab only when the
 desktop app is providing the on-disk library; the browser redirects that
@@ -96,9 +96,10 @@ reports, Grants, AGM) and Moderation (`/admin/moderation/$tab`: Support,
 Beta applications, Radio submissions, Content reports, Feature requests,
 Missed shows).
 
-Mobile bottom nav is Listen / Discover / Radio, plus Studio for artist and
-board accounts, plus a More button that opens the drawer. Library,
-Favorites, Help and Settings are in the drawer.
+Mobile bottom nav is Listen / Discover / Radio, plus Studio (a real tab for
+artist and board accounts, grayed when signed out), plus a More button that
+opens the drawer. Library, Help and Settings are in the drawer. Favorites
+is a Library tab, not a drawer item.
 
 Desktop right rail: Queue only.
 
@@ -109,9 +110,8 @@ Desktop right rail: Queue only.
 | Everyone | Listen | `/`, `/channel/$slug`, `/u/$username`, `/u/$username/c/$slug`, `/r/$slug`, `/t/$id`, `/search?tag=`, `/v/$slug` | Public playback destinations. `/feed`, `/listen/feed` and `/listen/history` are contextual from Listen, not chrome items. Tag search is reached from tag chips on a track page; venue pages from "Recorded at" on a track page and the Discover Venues tab. |
 | Everyone | Radio | `/radio`, `/radio/show/$channelSlug`, `/radio/station/$stationId` | Radio show pages list past episodes with name, artwork and recording. `/schedule` is linked from the channel page programme block and the booking calendar, not from Radio. |
 | Everyone | Discover | `/discover`, `/discover?tab=artists`, `/discover?tab=venues` | `/venues` redirects to the Venues tab. |
-| Everyone | Favorites | `/favorites` | `/listen/favorites` and `/library/favorites` redirect here. |
+| Everyone | Library | `/library`, `/library/favorites`, `/library/sounds`, `/library/collections` (+ `/$slug`), `/library/recordings`, `/library/media`, `/library/stash`, `/library/embeds`, `/library/smartlinks`, `/library/local`, `/library/upload` | Favorites is the Library tab. `/favorites` and `/listen/favorites` redirect to `/library/favorites`. Opening Library or Favorites does not ask for sign-in. Other Library tabs stay visible and grayed until there is an account. |
 | Everyone | Help | `/help`, `/help/$slug` | Signed-in users also see their support requests and replies. Articles reach `/status`, `/news`, `/whats-new`, legal pages and `/transparency`. `/help/governance` redirects to `/studio/governance?tab=guide`. |
-| Everyone | Library | `/library`, `/library/sounds`, `/library/collections` (+ `/$slug`), `/library/recordings`, `/library/media`, `/library/stash`, `/library/embeds`, `/library/smartlinks`, `/library/local`, `/library/upload` | Independent of Studio's highlight. |
 | Artist | Studio | `/studio`, `/studio/stats` (+ `/detail`), `/studio/insights` (+ `/$kind/$id`), `/studio/governance`, `/studio/updates`, `/studio/audience` (+ `?tab=tiers`), `/studio/stripe`, `/studio/releases` (+ `/$id`), `/studio/distribution`, `/studio/editor` (+ `/$id`), `/studio/mastering/$id`, `/studio/sounds` (+ `/$id`, `/$id/editor`), `/studio/collections` (+ `/$slug`), `/studio/playlists/$slug`, `/studio/branding` | Sounds, collections and branding have no submenu item; they are reached from Studio home, Library and in-page links, and Studio stays highlighted. |
 | Artist | Broadcast | `/studio/go-live`, `/studio/schedule`, `/studio/events` (+ `/new`, `/$eventId/edit`), `/studio/shows` (+ `/$id`, `/episodes/$episodeId`), `/studio/channel` | Show detail carries visibility (Public / Fans only) and automatic episode numbering. 24/7 programme is on `/studio/schedule`. |
 | Signed in | Settings | `/settings`, `/settings/$section`, `/account`, `/onboarding` | Modal + bookmarkable sections. `/themes` redirects here. `/sources` and `/sources/$id` redirect to Add-ons → Import. `/settings/audience`, `money`, `fan-subs`, `fan-tiers` redirect to `/studio/audience`. |

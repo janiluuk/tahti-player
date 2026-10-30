@@ -12,6 +12,7 @@ const ANONYMOUS_ALLOWED_ROUTES = [
   /^\/(status|whats-new|news)(?:\/|$)/,
   /^\/newsletter(?:\/|$)/,
   /^\/(radio|discover|search|schedule)(?:\/|$)/,
+  /^\/library$/,
   /^\/(channel|c|u|r|t|v|venues|subscribe)(?:\/|$)/,
   /^\/(listen\/favorites|library\/favorites|favorites)(?:\/|$)/,
   /^\/library\/local(?:\/|$)/,

@@ -57,6 +57,25 @@ describe('SidebarNavigation', () => {
     expect(tooltip).toHaveTextContent('Dashboard');
   });
 
+  it('keeps a disabled item named and off the link', async () => {
+    const user = userEvent.setup();
+    render(
+      <SidebarNavigation>
+        <SidebarNavigationItem
+          disabled
+          icon={<GaugeIcon />}
+          label="Studio"
+          to="/studio"
+        />
+      </SidebarNavigation>,
+    );
+    const item = screen.getByRole('button', { name: 'Studio' });
+    expect(item).toHaveAttribute('aria-disabled', 'true');
+    expect(screen.queryByRole('link', { name: 'Studio' })).toBeNull();
+    await user.click(item);
+    expect(item).toBeInTheDocument();
+  });
+
   it('does not show tooltips in normal mode', async () => {
     renderSidebar();
 

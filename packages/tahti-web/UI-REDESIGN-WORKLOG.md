@@ -6302,3 +6302,7 @@ Track listings put the filter box, sort dropdown and size control on one row. Th
 ## 2026-10-30 — UX batch 118: number keyboards and undo on add (0.0.287)
 
 Announcement trim, station-ID clip, episode trim, schedule and show episode numbers, admin "Every Nth" and the broadcast preflight episode field open a numeric or decimal phone keyboard. Creating an API token, adding a release track to the 24/7 rotation, adding a station by URL and adding a sound in the Studio collection editor can be undone from the toast.
+
+## 2026-10-30 — Favourites in Library, signed-out menus stay (0.0.288)
+
+Favourites is a Library tab at `/library/favorites`. The sidebar item is gone; `/favorites` and `/listen/favorites` redirect there. A visitor can open Library and Favourites without a sign-in dialog and sees the local list (or the empty state). Studio and Admin stay in the sidebar when signed out, grayed and not links; the phone Studio tab is the same. Other Library tabs stay visible and disabled until there is an account. Rejecting an add-on is danger; Open Storybook and the MusicBrainz "open prefilled editor" actions are secondary.

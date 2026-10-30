@@ -23,8 +23,18 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
   { id: 'listen', label: 'Listen', path: '/' },
   { id: 'radio', label: 'Radio', path: '/radio' },
   { id: 'discover', label: 'Discover', path: '/discover' },
-  { id: 'favorites', label: 'Favorites', path: '/favorites' },
-  { id: 'library', label: 'Library', path: '/library' },
+  {
+    id: 'library',
+    label: 'Library',
+    path: '/library',
+    children: [
+      {
+        id: 'library-favorites',
+        label: 'Favorites',
+        path: '/library/favorites',
+      },
+    ],
+  },
   {
     id: 'studio',
     label: 'Studio',

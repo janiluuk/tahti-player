@@ -12,7 +12,7 @@ const listenRoutes: RouteVisit[] = [
   {
     path: '/listen/favorites',
     heading: /^Favorites$/,
-    url: /\/favorites$/,
+    url: /\/library\/favorites$/,
   },
   { path: '/listen/history', heading: /^History$/ },
 ];

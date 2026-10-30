@@ -5,7 +5,6 @@ export type SidebarItemId =
   | 'listen'
   | 'radio'
   | 'discover'
-  | 'favorites'
   | 'library'
   | 'chat'
   | 'studio'
@@ -31,16 +30,13 @@ export function activeSidebarItem(
   if (opts?.settingsModalOpen) {
     return 'settings';
   }
-  if (isFavoritesRoute(path)) {
-    return 'favorites';
-  }
   if (matchesSectionRoute(path, ['/radio'])) {
     return 'radio';
   }
   if (matchesSectionRoute(path, ['/discover'])) {
     return 'discover';
   }
-  if (isLibrarySidebarRoute(path)) {
+  if (isFavoritesRoute(path) || isLibrarySidebarRoute(path)) {
     return 'library';
   }
   if (isChatRoute(path)) {
@@ -64,7 +60,7 @@ export function activeSidebarItem(
   return null;
 }
 
-/** Phone bottom bar has no Favorites entry — those routes stay on Listen. */
+/** Phone bottom bar has no Favorites entry — the Library tab covers it. */
 export function activeMobileItem(
   location: string | undefined,
 ): MobileItemId | null {
@@ -75,13 +71,13 @@ export function activeMobileItem(
   if (matchesSectionRoute(path, ['/discover'])) {
     return 'discover';
   }
-  if (isLibrarySidebarRoute(path)) {
+  if (isFavoritesRoute(path) || isLibrarySidebarRoute(path)) {
     return 'library';
   }
   if (getStudioPrimaryRoute(path) === '/studio') {
     return 'studio';
   }
-  if (isFavoritesRoute(path) || isListenSidebarRoute(path)) {
+  if (isListenSidebarRoute(path)) {
     return 'listen';
   }
   return null;

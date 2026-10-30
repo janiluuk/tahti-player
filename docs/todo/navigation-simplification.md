@@ -12,7 +12,7 @@ Built from a code inventory of `StudioNav.tsx` (`SUBMENUS`, `*_SUBNAV_ITEMS`), `
 
 ## Open question
 
-- Should **Favorites** fold into Library as the **Liked** tab and leave the sidebar? The plan below assumes yes.
+- **Favorites** folds into Library as a tab and leaves the sidebar. Decided 2026-10-30: the tab is Favorites at `/library/favorites` (not a rename to Liked). `/favorites` and `/listen/favorites` redirect there. The Studio / Library / Admin regroup below is still open.
 
 ## Today
 

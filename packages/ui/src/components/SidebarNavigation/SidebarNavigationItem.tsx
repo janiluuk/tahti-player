@@ -11,6 +11,8 @@ type SidebarNavigationItemProps = {
   isSelected?: boolean;
   to?: string;
   onClick?: () => void;
+  /** Shown, named, and not a link. For menus that need an account. */
+  disabled?: boolean;
 };
 
 const MaybeNavLink: FC<{
@@ -45,8 +47,35 @@ export const SidebarNavigationItem: FC<SidebarNavigationItemProps> = ({
   isSelected,
   to,
   onClick,
+  disabled = false,
 }) => {
   const isCompact = useSidebarCompact();
+
+  if (disabled) {
+    return (
+      <Tooltip content={label} side="right" disabled={!isCompact}>
+        <button
+          type="button"
+          aria-disabled="true"
+          aria-label={label}
+          data-testid="sidebar-navigation-item"
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+          }}
+          className="text-foreground-secondary flex min-h-8 w-full cursor-not-allowed items-center overflow-hidden rounded-md border-(length:--border-width) border-transparent text-left"
+        >
+          <div className="flex size-8 shrink-0 items-center justify-center">
+            {icon}
+          </div>
+          {!isCompact && (
+            <span className="text-sm whitespace-nowrap">{label}</span>
+          )}
+          {isCompact && <span className="sr-only">{label}</span>}
+        </button>
+      </Tooltip>
+    );
+  }
 
   return (
     <MaybeNavLink to={to} isSelected={isSelected}>

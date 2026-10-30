@@ -68,6 +68,7 @@ export function MoreView() {
               target="_blank"
               rel="noreferrer"
               size="sm"
+              variant="secondary"
             >
               Open Storybook →
             </ButtonAnchor>

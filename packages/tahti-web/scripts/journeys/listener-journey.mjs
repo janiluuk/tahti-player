@@ -29,7 +29,7 @@ const ARTIST = process.env.JOURNEY_ARTIST_SLUG ?? 'demo';
 const steps = [
   { path: '/library', file: '01-library.png', label: 'Library' },
   { path: '/history', file: '02-history.png', label: 'Listening history' },
-  { path: '/favorites', file: '03-favorites.png', label: 'Favorites' },
+  { path: '/library/favorites', file: '03-favorites.png', label: 'Favorites' },
   { path: '/messages', file: '04-messages.png', label: 'Messages' },
   {
     path: '/settings/account',

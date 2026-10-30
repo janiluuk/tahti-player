@@ -49,6 +49,9 @@ new surface, one PR per row.
 - [ ] De-green `Button` (primary-heavy everywhere; Cards and the MediaArtwork
   overlay were already neutralised). Partial: Governance attention panel +
   stream PlaylistDialog selected row (batch 81).
+  - 2026-10-30 (batch 120): add-on Reject is danger; Open Storybook and the
+    MusicBrainz "open prefilled editor" links are secondary. Primary
+    confirms (Rename, Add to queue, Play, Download) stay green.
   - 2026-10-30 (batch 117): channel announcement confirm Delete and Cancel
     the election use danger; the selects picker Cancel and the download
     gate Copy link use secondary. Primary actions on those screens stay.

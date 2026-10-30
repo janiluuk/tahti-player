@@ -63,9 +63,11 @@ export function MobileBottomNav({
 }: MobileBottomNavProps) {
   const pathname = useRouterState({ select: navigationPathname });
   const user = useAuthStore((state) => state.user);
+  const signedOut = !user;
   const showStudio =
     hasAccountRole(user, 'ARTIST') || hasAccountRole(user, 'BOARD');
-  const items = showStudio ? [...PRIMARY, STUDIO_TAB] : [...PRIMARY];
+  const items =
+    showStudio || signedOut ? [...PRIMARY, STUDIO_TAB] : [...PRIMARY];
   const mobileActive = activeMobileItem(pathname);
   const moreActive = isMobileMoreRoute(pathname, {
     studioIsPrimary: showStudio,
@@ -81,6 +83,23 @@ export function MobileBottomNav({
       {items.map((item) => {
         const Icon = item.icon;
         const active = mobileActive === item.id;
+        if (item.id === 'studio' && signedOut) {
+          return (
+            <button
+              key={item.id}
+              type="button"
+              aria-disabled="true"
+              aria-label="Studio"
+              onClick={(event) => {
+                event.preventDefault();
+              }}
+              className="text-foreground-secondary flex min-w-0 flex-1 cursor-not-allowed flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide"
+            >
+              <Icon size={18} strokeWidth={2} />
+              <span className="truncate">{item.label}</span>
+            </button>
+          );
+        }
         return (
           <Link
             key={item.to}
