@@ -21,7 +21,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [feed-avatars-random-track-widget.md](feed-avatars-random-track-widget.md) | Avatar thumbnails beside users in feeds; Discover random-track widget with remembered multi-genre filter |
+| partial | [feed-avatars-random-track-widget.md](feed-avatars-random-track-widget.md) | Random-track widget shipped; feed avatar thumbnails need avatar URLs from the API |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | open    | [navigation-simplification.md](navigation-simplification.md) | Plan: one tab row per section for Studio (6), Library (5), Admin (6); regroup by context; Co-op sidebar item |

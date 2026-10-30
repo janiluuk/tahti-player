@@ -267,6 +267,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Admin/RadioStationSuggestionsTab` | `tahti-web/RadioStationSuggestionsTab.stories.tsx` |
 | `Tahti/Listen/RadioStationView` | `tahti-web/RadioStationView.stories.tsx` |
 | `Tahti/Radio/RadioView` | `tahti-web/RadioView.stories.tsx` |
+| `Tahti/Discover/RandomTrackGenres` | `tahti-web/RandomTrackGenres.stories.tsx` |
 | `Tahti/Studio/Home/RecentBroadcastRow` | `tahti-web/RecentBroadcastRow.stories.tsx` |
 | `Tahti/Studio/ReleasePinButton` | `tahti-web/ReleasePinButton.stories.tsx` |
 | `Tahti/Studio/ReleaseTrackAudioUpload` | `tahti-web/ReleaseTrackAudioUpload.stories.tsx` |

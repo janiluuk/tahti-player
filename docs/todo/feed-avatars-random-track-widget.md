@@ -1,19 +1,15 @@
 # Feed avatars and Discover random-track widget
 
-**Status:** open
+**Status:** partial
 
-Requested 2026-10-30.
+Requested 2026-10-30. The random-track widget shipped (see the worklog, 0.0.285).
 
 ## User avatars in feeds
 
-- [ ] Wherever a user is named in a feed (news feed, Discover feed, similar
-  lists), show their avatar thumbnail beside the name (`MediaArtwork` /
-  library avatar component; username fallback, never an email).
-
-## Discover widget: Random track
-
-- [ ] New Discover widget that plays a random track.
-- [ ] Genre filter defaults to an "All genres" pill.
-- [ ] A modal lets the user pick several genres; picking "All" clears the others.
-- [ ] The selection is remembered and shown as pills at the top of the widget.
-- [ ] The track can be played from the widget.
+- [ ] Wherever a user is named in a feed (news feed, Discover widgets, similar
+  lists), show their avatar thumbnail beside the name; username fallback,
+  never an email.
+- Blocked on API data: `/api/discover/latest-tracks`, `/api/top-lists`
+  (incl. `/loved`) and the news posts return no artist/author avatar URL.
+  Add one in `../tahti-org` first, then render it in `WidgetTrackRow` and the
+  news cards.

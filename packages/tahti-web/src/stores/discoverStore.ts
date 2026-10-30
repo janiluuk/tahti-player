@@ -12,7 +12,8 @@ export type DiscoverWidgetId =
   | 'random-artist'
   | 'public-playlists'
   | 'tahti-selects'
-  | 'latest-releases';
+  | 'latest-releases'
+  | 'random-track';
 
 export const ALL_WIDGET_IDS: DiscoverWidgetId[] = [
   'this-week-most-played',
@@ -26,6 +27,7 @@ export const ALL_WIDGET_IDS: DiscoverWidgetId[] = [
   'public-playlists',
   'tahti-selects',
   'latest-releases',
+  'random-track',
 ];
 
 /** Widgets added to the defaults in version 1 of the stored state. */
@@ -50,12 +52,15 @@ type DiscoverState = {
   /** How many days the random-artist widget keeps the same pick before
    * rotating to a new one. */
   randomArtistRotationDays: number;
+  /** Genres the random-track widget draws from; empty means all. */
+  randomTrackGenres: string[];
   addWidget: (id: DiscoverWidgetId) => void;
   removeWidget: (id: DiscoverWidgetId) => void;
   moveWidget: (id: DiscoverWidgetId, direction: 'up' | 'down') => void;
   setGenreFilter: (genres: string[]) => void;
   setContentTypeFilter: (types: string[]) => void;
   setRandomArtistRotationDays: (days: number) => void;
+  setRandomTrackGenres: (genres: string[]) => void;
 };
 
 export const useDiscoverStore = create<DiscoverState>()(
@@ -65,6 +70,7 @@ export const useDiscoverStore = create<DiscoverState>()(
       genreFilter: [],
       contentTypeFilter: [],
       randomArtistRotationDays: 1,
+      randomTrackGenres: [],
 
       addWidget: (id) =>
         set((s) =>
@@ -97,6 +103,7 @@ export const useDiscoverStore = create<DiscoverState>()(
       setContentTypeFilter: (types) => set({ contentTypeFilter: types }),
       setRandomArtistRotationDays: (days) =>
         set({ randomArtistRotationDays: days }),
+      setRandomTrackGenres: (genres) => set({ randomTrackGenres: genres }),
     }),
     {
       name: 'tahti-web:discover',
