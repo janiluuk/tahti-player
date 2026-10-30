@@ -13,6 +13,7 @@ import {
 import { usePlayerStore } from '../stores/playerStore';
 import { useHearthisEmbedClaim } from './HearthisEmbedHost';
 import { HearthisEmbedSurface } from './HearthisEmbedSurface';
+import { LibraryItemRow } from './library/LibraryItemRow';
 
 type Props = {
   title: string;
@@ -106,22 +107,25 @@ export function EmbedTrackRow({
           variant="text"
           size="flexible"
           type="button"
-          className="hover:bg-background-secondary flex w-full items-center gap-3 rounded-none px-3 py-2 text-left"
+          className="hover:bg-background-secondary w-full rounded-none px-3 py-2 text-left"
           onClick={() => void start()}
           aria-label={`${isPlaying ? 'Pause' : 'Play'} ${title} on ${label}`}
         >
-          <span className="bg-primary/15 text-primary-strong flex size-10 shrink-0 items-center justify-center rounded-md">
-            <PlayIcon size={16} className="fill-current" aria-hidden />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block truncate text-sm font-medium">{title}</span>
-            <span className="text-foreground-secondary block truncate text-xs">
-              {`Listen on ${label}`}
-            </span>
-          </span>
-          <span className="text-foreground-secondary shrink-0 font-mono text-[10px] tracking-wide uppercase">
-            Embed
-          </span>
+          <LibraryItemRow
+            className="w-full py-0"
+            artwork={
+              <span className="bg-primary/15 text-primary-strong flex size-10 items-center justify-center rounded-md">
+                <PlayIcon size={16} className="fill-current" aria-hidden />
+              </span>
+            }
+            title={<span className="block truncate">{title}</span>}
+            subtitle={`Listen on ${label}`}
+            actions={
+              <span className="text-foreground-secondary font-mono text-[10px] tracking-wide uppercase">
+                Embed
+              </span>
+            }
+          />
         </Button>
       )}
     </Container>

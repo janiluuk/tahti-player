@@ -12,6 +12,7 @@ import {
 import { fetchStudioReleases } from '../api/studio';
 import type { StudioRelease } from '../api/studio-types';
 import { LibraryFilteredEmpty } from '../components/library/LibraryFilteredEmpty';
+import { LibraryItemRow } from '../components/library/LibraryItemRow';
 import { LibrarySectionToolbar } from '../components/library/LibrarySectionToolbar';
 import { LibrarySortSelect } from '../components/library/LibrarySortSelect';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
@@ -125,7 +126,7 @@ export function LibrarySmartLinksView() {
               title="No releases yet"
               description="Create a release to get its public smartlink page."
               action={
-                <ButtonLink to="/studio/releases" size="sm">
+                <ButtonLink to="/studio/releases" size="sm" variant="secondary">
                   Create release
                 </ButtonLink>
               }
@@ -170,24 +171,23 @@ export function LibrarySmartLinksView() {
                   {filtered.map((release) => {
                     const targets = releaseTargets(release);
                     return (
-                      <li
-                        key={release.id}
-                        className="flex flex-wrap items-start justify-between gap-4 py-4 first:pt-0 last:pb-0"
-                      >
-                        <div className="flex min-w-0 items-start gap-3">
-                          <ImageReveal
-                            src={release.artworkUrl ?? undefined}
-                            alt=""
-                            className="border-border bg-background-secondary size-12 shrink-0 rounded-md border"
-                            placeholder={
-                              <Link2Icon
-                                size={18}
-                                className="text-foreground-secondary"
-                                aria-hidden
-                              />
-                            }
-                          />
-                          <div className="min-w-0">
+                      <li key={release.id}>
+                        <LibraryItemRow
+                          artwork={
+                            <ImageReveal
+                              src={release.artworkUrl ?? undefined}
+                              alt=""
+                              className="border-border bg-background-secondary size-12 shrink-0 rounded-md border"
+                              placeholder={
+                                <Link2Icon
+                                  size={18}
+                                  className="text-foreground-secondary"
+                                  aria-hidden
+                                />
+                              }
+                            />
+                          }
+                          title={
                             <Link
                               to="/studio/releases/$id"
                               params={{ id: release.id }}
@@ -195,43 +195,49 @@ export function LibrarySmartLinksView() {
                             >
                               {release.title}
                             </Link>
-                            <p className="text-foreground-secondary text-xs">
+                          }
+                          subtitle={
+                            <>
                               {release.type} · {release.state}
                               {typeof release._count?.tracks === 'number'
                                 ? ` · ${release._count.tracks} track${release._count.tracks === 1 ? '' : 's'}`
                                 : ''}
-                            </p>
-                            <p className="text-foreground-secondary mt-1 text-xs">
+                            </>
+                          }
+                          meta={
+                            <>
                               {targets.length > 0
                                 ? `${targets.length} DSP link${targets.length === 1 ? '' : 's'}: ${targets.map(([provider]) => targetLabel(provider)).join(', ')}`
                                 : 'No DSP links added yet'}
                               {typeof release.smartLinkViewCount === 'number'
                                 ? ` · ${release.smartLinkViewCount.toLocaleString()} views`
                                 : ''}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          <ButtonLink
-                            to="/studio/releases/$id"
-                            params={{ id: release.id }}
-                            size="sm"
-                            variant="secondary"
-                          >
-                            Manage
-                          </ButtonLink>
-                          <Tooltip content="Open smartlink" side="top">
-                            <ButtonLink
-                              to="/r/$slug"
-                              params={{ slug: release.smartLinkSlug }}
-                              size="sm"
-                              variant="text"
-                              aria-label={`Open smartlink for ${release.title}`}
-                            >
-                              <ExternalLinkIcon size={15} aria-hidden />
-                            </ButtonLink>
-                          </Tooltip>
-                        </div>
+                            </>
+                          }
+                          actions={
+                            <>
+                              <ButtonLink
+                                to="/studio/releases/$id"
+                                params={{ id: release.id }}
+                                size="sm"
+                                variant="secondary"
+                              >
+                                Manage
+                              </ButtonLink>
+                              <Tooltip content="Open smartlink" side="top">
+                                <ButtonLink
+                                  to="/r/$slug"
+                                  params={{ slug: release.smartLinkSlug }}
+                                  size="sm"
+                                  variant="text"
+                                  aria-label={`Open smartlink for ${release.title}`}
+                                >
+                                  <ExternalLinkIcon size={15} aria-hidden />
+                                </ButtonLink>
+                              </Tooltip>
+                            </>
+                          }
+                        />
                       </li>
                     );
                   })}

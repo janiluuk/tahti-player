@@ -323,6 +323,7 @@ export function AudioRevisionList({
             </Button>
             <Button
               size="sm"
+              variant="secondary"
               disabled={
                 previewBusy !== null || resolvedCompareA === resolvedCompareB
               }

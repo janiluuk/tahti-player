@@ -6321,3 +6321,7 @@ Shared artwork retains up to 64 loaded images across navigation and skips repeat
 ## 2026-10-30 — Animated visualizer selector
 
 The full-screen player visualizer selector shows eight animated SVG preview tiles with a selected checkmark, accessible mode names and hover titles. Animations run only while the popover is mounted and become static with reduced motion. The existing Storybook selection flow covers the preview grid and keyboard selection.
+
+## 2026-10-30 — Shared library rows and channel releases (0.0.291)
+
+Library media, embeds and smart links share one row: artwork, title, detail and actions. Media keeps a thumbnail or a short video in that row, and an embed still opens its provider widget. A channel page loads the public profile under Tracks and shows the same releases and playlists grids as the artist page, including loading, retry, empty, play, queue, favorite and the tracklist. The collection editor's empty tracklist uses that shared empty list. Jumps that were green beside a real action (container logs, back to a channel, Pro editor, gallery Done, Go Live to record, the A/B switch, the live-chat notice, and the extra Create release) are secondary. Saves, plays and setup buttons stay green.

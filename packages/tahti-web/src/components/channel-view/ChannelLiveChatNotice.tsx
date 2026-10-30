@@ -14,7 +14,12 @@ export function ChannelLiveChatNotice({
           Comments below are for the archive, not the live room.
         </p>
       </div>
-      <Button size="sm" onClick={onOpenChat} aria-label="Open live chat">
+      <Button
+        size="sm"
+        variant="secondary"
+        onClick={onOpenChat}
+        aria-label="Open live chat"
+      >
         Open live chat
       </Button>
     </div>

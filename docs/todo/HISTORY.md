@@ -1,3 +1,10 @@
+## 2026-10-30 - Shared library row, channel releases, editor empty tracklist
+
+Media, embeds and smart links use one library row. Channel pages show the
+artist releases and playlists grids from the public profile. The collection
+editor's empty tracklist uses `CollectionTrackList`. De-green of real
+primary actions and Studio undo leftovers stay open. tahti-web `0.0.291`.
+
 ## 2026-10-30 - Favourites is a Library tab; signed-out menus stay grayed
 
 Favourites left the sidebar for `/library/favorites`. Opening Library or
