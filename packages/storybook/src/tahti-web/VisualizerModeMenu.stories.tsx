@@ -13,7 +13,7 @@ const meta: Meta<typeof VisualizerModeMenu> = {
     docs: {
       description: {
         component:
-          'Popup menu for choosing the visualizer behind the full-screen player. The visualizer there is a backdrop under the player content, so its own mode controls cannot be clicked; this button lives in the top bar instead.',
+          'Animated preview grid for choosing the visualizer behind the full-screen player. The visualizer there is a backdrop under the player content, so its own mode controls cannot be clicked; this button lives in the top bar instead.',
       },
     },
   },
@@ -44,6 +44,9 @@ export const PickAMode: Story = {
     await userEvent.click(canvas.getByTestId('visualizer-mode-trigger'));
     const menu = await body.findByTestId('visualizer-mode-menu');
     await expect(
+      within(menu).getAllByTestId('visualizer-mode-preview'),
+    ).toHaveLength(8);
+    await expect(
       within(menu).getByRole('menuitemradio', { name: 'Spectrum' }),
     ).toHaveAttribute('aria-checked', 'true');
     await userEvent.click(
@@ -51,6 +54,14 @@ export const PickAMode: Story = {
     );
     await expect(
       within(menu).getByRole('menuitemradio', { name: 'Cymatics' }),
+    ).toHaveAttribute('aria-checked', 'true');
+    await userEvent.tab();
+    await expect(
+      within(menu).getByRole('menuitemradio', { name: 'Landscape Chrome' }),
+    ).toHaveFocus();
+    await userEvent.keyboard('{Enter}');
+    await expect(
+      within(menu).getByRole('menuitemradio', { name: 'Landscape Chrome' }),
     ).toHaveAttribute('aria-checked', 'true');
   },
 };

@@ -128,6 +128,9 @@ describe('FullScreenPlayer visualizer menu', () => {
     fireEvent.click(screen.getByTestId('visualizer-mode-trigger'));
 
     const menu = await screen.findByTestId('visualizer-mode-menu');
+    expect(within(menu).getAllByTestId('visualizer-mode-preview')).toHaveLength(
+      8,
+    );
     const items = within(menu).getAllByRole('menuitemradio');
     expect(items.map((item) => item.textContent)).toEqual([
       'Oscilloscope',

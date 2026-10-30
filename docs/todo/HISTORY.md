@@ -5746,3 +5746,11 @@ Settings → Artist → Branding: the profile-picture "Image URL" box moved from
 ## 2026-10-30 - UX batch 121 twenty library, de-green, undo and keyboard slices
 
 Library components: the artist page now-playing cover, the image-slot preview, channel designer backdrop preview and channel backdrop card use `ImageReveal`, and the clip editor trim controls use `Slider`. De-green: playlist editor Add track / Add release and Mixcloud per-row Add are secondary. Undo: Mikseri, Mixcloud and Spotify imports into a collection (`removeAddedSound` in `useCollectionEditState` finds the item by sound id). Keyboards: chat handle, multistream key, onboarding domain, custom domain, test-notification link, library key filter, both track-analysis key fields, and the Mixcloud and Spotify query fields stop auto-capitalising / autocorrecting (URL keyboard on the domain and link fields).
+
+## 2026-10-30 — Card image navigation performance
+
+Shared ImageReveal retains a bounded cache of 64 loaded artwork images, skips repeat reveals on navigation, and uses a 200 ms opacity fade for new artwork. Source changes reset state immediately; failures invalidate cached entries. Regression tests cover return navigation, source changes, retries, and eviction. Shared UI suite: 527 tests passed; focused tests also passed with real motion components.
+
+## 2026-10-30 — Animated visualizer selector
+
+Replaced full-screen visualizer text options with eight animated SVG preview tiles. Preserved accessible names, selection persistence and keyboard activation; reduced-motion previews stay static. Full-screen player tests (10), Storybook browser tests (2), web type check and lint pass.

@@ -1,0 +1,64 @@
+.preview {
+  contain: paint;
+}
+
+.bar {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: equalize 1.4s ease-in-out infinite alternate;
+}
+
+.wave {
+  animation: drift 2s linear infinite;
+}
+
+.rotate {
+  transform-origin: 80px 45px;
+  animation: rotate 16s linear infinite;
+}
+
+.pulse {
+  transform-origin: 80px 45px;
+  animation: breathe 3s ease-in-out infinite alternate;
+}
+
+.terrain {
+  animation: terrain 4s ease-in-out infinite alternate;
+}
+
+@keyframes equalize {
+  to {
+    transform: scaleY(0.25);
+  }
+}
+
+@keyframes drift {
+  to {
+    transform: translateX(-40px);
+  }
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes breathe {
+  to {
+    transform: scale(0.82);
+    opacity: 0.65;
+  }
+}
+
+@keyframes terrain {
+  to {
+    transform: translate(-12px, -6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preview * {
+    animation: none;
+  }
+}

@@ -6313,3 +6313,11 @@ News headlines and “Read more” use the shared button and link. Approving a r
 ## 2026-10-30 — UX batch 121 (0.0.289)
 
 Raw `<img>` / range `<input>` on the artist now-playing stage, image previews, channel backdrop and clip trim move to `ImageReveal` / `Slider`. Inline Add buttons in the playlist editor and Mixcloud results are secondary. Mikseri, Mixcloud and Spotify imports can be undone. Handle, key, domain and link fields no longer autocorrect.
+
+## 2026-10-30 — Card artwork navigation performance
+
+Shared artwork retains up to 64 loaded images across navigation and skips repeat reveals. New artwork uses a short opacity fade instead of blur and scale; changed and failed sources reset independently.
+
+## 2026-10-30 — Animated visualizer selector
+
+The full-screen player visualizer selector shows eight animated SVG preview tiles with a selected checkmark, accessible mode names and hover titles. Animations run only while the popover is mounted and become static with reduced motion. The existing Storybook selection flow covers the preview grid and keyboard selection.
