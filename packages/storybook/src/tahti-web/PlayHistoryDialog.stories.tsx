@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PlayHistoryDialog } from '@tahti-web/components/PlayHistoryDialog';
 import { humanizePastDate } from '@tahti-web/lib/humanizeDate';
 import { playedAtDate } from '@tahti-web/lib/setTracklist';
-import { expect, fn, within } from 'storybook/test';
+import { expect, fn, waitFor, within } from 'storybook/test';
 
 import { DJ_PLAY_HISTORY, djLibrary } from './_fixtures/dj-library';
 
@@ -48,7 +48,7 @@ export const Empty: Story = {
   args: { library: djLibrary({ history: [] }) },
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
-    await expect(await body.findByText(/Nothing yet/)).toBeVisible();
+    await waitFor(() => expect(body.getByText(/Nothing yet/)).toBeVisible());
     await expect(body.getByRole('button', { name: 'Resume' })).toBeDisabled();
     await expect(
       body.getByRole('button', { name: 'Clear history' }),

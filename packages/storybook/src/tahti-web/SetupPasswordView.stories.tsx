@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { clearMockSessionUser } from '@tahti-web/api/mock-session';
 import { useAuthStore } from '@tahti-web/stores/authStore';
 import { SetupPasswordView } from '@tahti-web/views/SetupPasswordView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import {
   withMockAuth,
@@ -43,11 +43,13 @@ export const ValidInvite: Story = {
     await expect(
       canvas.getByRole('heading', { name: 'Set your password' }),
     ).toBeVisible();
-    await expect(
-      await canvas.findByText(
-        'Welcome, New Artist — finish setting up newartist@tahti.live.',
-      ),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByText(
+          'Welcome, New Artist — finish setting up newartist@tahti.live.',
+        ),
+      ).toBeVisible(),
+    );
     const submit = canvas.getByRole('button', { name: 'Set password' });
     await expect(submit).toBeDisabled();
 
@@ -75,9 +77,11 @@ export const PasswordSet: Story = {
       'First-secret1',
     );
     await userEvent.click(canvas.getByRole('button', { name: 'Set password' }));
-    await expect(
-      await canvas.findByRole('heading', { name: 'Password set' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Password set' }),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByText('Signed in — taking you to your dashboard…'),
     ).toBeVisible();
@@ -96,9 +100,9 @@ export const ExpiredInvite: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('This invite link has expired.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('This invite link has expired.')).toBeVisible(),
+    );
     await expect(
       canvas.getByText(/Ask whoever invited you for a fresh link/),
     ).toBeVisible();
@@ -111,8 +115,8 @@ export const MissingToken: Story = {
   beforeEach: withLocationSearch(''),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('Missing setup link token.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Missing setup link token.')).toBeVisible(),
+    );
   },
 };

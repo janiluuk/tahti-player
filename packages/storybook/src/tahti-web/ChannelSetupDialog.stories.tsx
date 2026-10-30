@@ -4,7 +4,7 @@ import type { AuthUser } from '@tahti-web/api/types';
 import { ChannelSetupDialog } from '@tahti-web/components/ChannelSetupDialog';
 import { useAuthStore } from '@tahti-web/stores/authStore';
 import { useChannelSetupModalStore } from '@tahti-web/stores/channelSetupModalStore';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import {
   channelDesignMockData,
@@ -64,9 +64,11 @@ export const CreateThenDesign: Story = {
     );
 
     const design = await findDialog(canvasElement, 'Design your channel');
-    await expect(
-      await design.findByRole('region', { name: 'Channel page preview' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        design.getByRole('region', { name: 'Channel page preview' }),
+      ).toBeVisible(),
+    );
     await expect(
       design.getByRole('button', { name: 'More options' }),
     ).toBeVisible();

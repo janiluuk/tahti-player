@@ -30,6 +30,7 @@
     "build:android:run": "pnpm tahti-ops desktop android",
     "lint": "turbo lint",
     "check:file-size": "pnpm tahti-ops check size",
+    "check:guards": "node scripts/generate-storybook-surfaces.mjs --check && pnpm check:file-size",
     "storybook:surfaces": "node scripts/generate-storybook-surfaces.mjs",
     "lint:fix": "turbo lint:fix",
     "test": "turbo test",
@@ -62,11 +63,6 @@
     "vite-plugin-dts": "^4.5.4",
     "vite-plugin-svgr": "^4.5.0",
     "vitest": "^4.1.11"
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "eslint --fix"
-    ]
   },
   "author": {
     "name": "Tahti <noreply@tahti.live>"

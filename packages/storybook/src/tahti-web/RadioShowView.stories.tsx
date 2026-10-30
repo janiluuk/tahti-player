@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { RadioShowView } from '@tahti-web/views/RadioShowView';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import {
   radioShowMissingData,
@@ -67,7 +67,9 @@ export const OnAir: Story = {
     });
 
     await step('now playing and up next', async () => {
-      await expect(await canvas.findByText('Westend Terminus')).toBeVisible();
+      await waitFor(() =>
+        expect(canvas.getByText('Westend Terminus')).toBeVisible(),
+      );
       await expect(canvas.getByText('On air')).toBeVisible();
       await expect(canvas.getByText('Up next')).toBeVisible();
       await expect(canvas.getByText('Night Bus Dub')).toBeVisible();
@@ -113,8 +115,8 @@ export const NothingScheduled: Story = {
 export const NotFound: Story = {
   parameters: { mockData: radioShowMissingData },
   play: async ({ canvasElement }) => {
-    await expect(
-      await within(canvasElement).findByText('Show not found'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(within(canvasElement).getByText('Show not found')).toBeVisible(),
+    );
   },
 };

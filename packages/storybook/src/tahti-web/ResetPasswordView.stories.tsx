@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { clearMockSessionUser } from '@tahti-web/api/mock-session';
 import { useAuthStore } from '@tahti-web/stores/authStore';
 import { ResetPasswordView } from '@tahti-web/views/ResetPasswordView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import {
   withMockAuth,
@@ -43,11 +43,13 @@ export const ValidLink: Story = {
     await expect(
       canvas.getByRole('heading', { name: 'Choose a new password' }),
     ).toBeVisible();
-    await expect(
-      await canvas.findByText(
-        'Hi New Artist, set a new password for newartist@tahti.live.',
-      ),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByText(
+          'Hi New Artist, set a new password for newartist@tahti.live.',
+        ),
+      ).toBeVisible(),
+    );
     const submit = canvas.getByRole('button', {
       name: 'Reset password & sign in',
     });
@@ -91,9 +93,11 @@ export const PasswordReset: Story = {
     await userEvent.click(
       canvas.getByRole('button', { name: 'Reset password & sign in' }),
     );
-    await expect(
-      await canvas.findByRole('heading', { name: 'Password reset' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Password reset' }),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByText('Signed in — taking you to your dashboard…'),
     ).toBeVisible();
@@ -112,9 +116,9 @@ export const ExpiredLink: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('This reset link has expired.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('This reset link has expired.')).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('link', { name: 'password reset page' }),
     ).toHaveAttribute('href', '/forgot-password');
@@ -127,9 +131,9 @@ export const MissingToken: Story = {
   beforeEach: withLocationSearch(''),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('Missing reset link token.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Missing reset link token.')).toBeVisible(),
+    );
     await expect(canvas.getByRole('link', { name: 'log in' })).toHaveAttribute(
       'href',
       '/login',

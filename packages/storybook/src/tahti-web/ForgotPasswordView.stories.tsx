@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ForgotPasswordView } from '@tahti-web/views/ForgotPasswordView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import {
   withMockAuth,
@@ -56,10 +56,12 @@ export const LinkSent: Story = {
     const send = canvas.getByRole('button', { name: 'Send reset link' });
     await expect(send).toBeEnabled();
     await userEvent.click(send);
-    await expect(
-      await canvas.findByText(
-        'If an account exists for that email, we sent a link to reset your password.',
-      ),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByText(
+          'If an account exists for that email, we sent a link to reset your password.',
+        ),
+      ).toBeVisible(),
+    );
   },
 };

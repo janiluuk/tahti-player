@@ -9,7 +9,7 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { MOCK_USERS, seedMockAuth } from './_lib/decorators';
 
@@ -88,9 +88,9 @@ export const Default: Story = {
     const canvas = within(canvasElement);
     // Real Listen page in the outlet...
     const main = within(canvas.getByRole('main'));
-    await expect(
-      await main.findByRole('heading', { name: 'Listen' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(main.getByRole('heading', { name: 'Listen' })).toBeVisible(),
+    );
     await expect(main.getByRole('heading', { name: 'Radio' })).toBeVisible();
     // ...inside the real chrome: top bar and the board's sidebar entries.
     const banner = within(canvas.getByRole('banner'));
@@ -108,9 +108,9 @@ export const SignedOut: Story = {
   decorators: [withAppShellRouter(null)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('button', { name: 'Log in' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('button', { name: 'Log in' })).toBeVisible(),
+    );
     await expect(
       canvas.queryByRole('button', { name: /^Signed in as/ }),
     ).toBeNull();
@@ -122,11 +122,13 @@ export const ArtistView: Story = {
   decorators: [withAppShellRouter(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('button', {
-        name: 'Signed in as Northern Lights',
-      }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('button', {
+          name: 'Signed in as Northern Lights',
+        }),
+      ).toBeVisible(),
+    );
     await expect(canvas.queryByRole('link', { name: 'Admin' })).toBeNull();
   },
 };

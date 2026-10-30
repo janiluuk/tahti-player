@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminDashboardView } from '@tahti-web/views/admin/AdminDashboardView';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -22,9 +22,11 @@ export const Default: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Needs action' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Needs action' }),
+      ).toBeVisible(),
+    );
     await expect(canvas.getByText(/active members/i)).toBeVisible();
     await expect(canvas.getByRole('link', { name: 'Approve' })).toBeVisible();
     await expect(canvas.getByRole('link', { name: 'Verify' })).toBeVisible();

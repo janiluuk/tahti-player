@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminVenuesView } from '@tahti-web/views/admin/AdminVenuesView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -28,7 +28,9 @@ export const Default: Story = {
     await expect(
       canvas.getByRole('heading', { level: 1, name: 'Venues' }),
     ).toBeVisible();
-    await expect(await canvas.findByText('Northern Lights Hall')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Northern Lights Hall')).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('button', { name: 'Unverify' }),
     ).toBeVisible();
@@ -43,9 +45,13 @@ export const Search: Story = {
     await canvas.findByText('Northern Lights Hall');
     const search = canvas.getByRole('searchbox', { name: 'Search venues' });
     await userEvent.type(search, 'Tampere');
-    await expect(await canvas.findByText('No venues found')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('No venues found')).toBeVisible(),
+    );
     await userEvent.clear(search);
     await userEvent.type(search, 'helsinki');
-    await expect(await canvas.findByText('Northern Lights Hall')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Northern Lights Hall')).toBeVisible(),
+    );
   },
 };

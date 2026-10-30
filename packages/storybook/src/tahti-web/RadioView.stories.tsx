@@ -30,9 +30,9 @@ export const Visitor: Story = {
   decorators: [withMockAuth(null)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText(/Live now on the member relay/),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText(/Live now on the member relay/)).toBeVisible(),
+    );
   },
 };
 
@@ -44,9 +44,9 @@ export const PlayRadio: Story = {
     await userEvent.click(
       await canvas.findByRole('button', { name: 'Play Radio' }),
     );
-    await expect(
-      await canvas.findByRole('button', { name: 'Pause Radio' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('button', { name: 'Pause Radio' })).toBeVisible(),
+    );
     await waitFor(() =>
       expect(usePlayerStore.getState().currentId).toBe(
         `radio:${TAHTI_RADIO_SLUG}`,
@@ -149,7 +149,7 @@ export const Offline: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText('Off air')).toBeVisible();
+    await waitFor(() => expect(canvas.getByText('Off air')).toBeVisible());
     await expect(canvas.queryByText(/member relay/)).toBeNull();
   },
 };

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminGovernanceView } from '@tahti-web/views/admin/AdminGovernanceView';
 import type { AdminGovernanceTabId } from '@tahti-web/views/admin/governance/governanceNav';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -26,9 +26,11 @@ function renderTab(tab?: AdminGovernanceTabId) {
 /** Asserts the page heading and that `label` is the selected section tab. */
 async function expectSection(canvasElement: HTMLElement, label: string) {
   const canvas = within(canvasElement);
-  await expect(
-    await canvas.findByRole('heading', { level: 1, name: 'Governance' }),
-  ).toBeVisible();
+  await waitFor(() =>
+    expect(
+      canvas.getByRole('heading', { level: 1, name: 'Governance' }),
+    ).toBeVisible(),
+  );
   const sections = within(
     canvas.getByRole('tablist', { name: 'Governance sections' }),
   );
@@ -45,9 +47,11 @@ export const Default: Story = {
   render: renderTab(),
   play: async ({ canvasElement }) => {
     const canvas = await expectSection(canvasElement, 'Overview');
-    await expect(
-      await canvas.findByRole('heading', { name: 'Member activity' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Member activity' }),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('heading', { level: 2, name: 'Board resolutions' }),
     ).toBeVisible();
@@ -68,7 +72,9 @@ export const ReportsTab: Story = {
   render: renderTab('reports'),
   play: async ({ canvasElement }) => {
     const canvas = await expectSection(canvasElement, 'Annual reports');
-    await expect(await canvas.findByText('Annual report 2025')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Annual report 2025')).toBeVisible(),
+    );
     await expect(canvas.getByRole('textbox', { name: 'Year' })).toBeVisible();
     await expect(
       canvas.getByRole('button', { name: 'Generate report' }),
@@ -88,9 +94,9 @@ export const ApproveAndPublishAnnualReport: Story = {
     await userEvent.click(
       canvas.getByRole('button', { name: 'Record approval' }),
     );
-    await expect(
-      await canvas.findByText('Approved, not published'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Approved, not published')).toBeVisible(),
+    );
     await userEvent.click(
       canvas.getByRole('button', { name: 'Publish to members' }),
     );
@@ -98,7 +104,7 @@ export const ApproveAndPublishAnnualReport: Story = {
       await within(canvasElement.ownerDocument.body).findByRole('dialog'),
     );
     await userEvent.click(dialog.getByRole('button', { name: 'Publish' }));
-    await expect(await canvas.findByText('Published')).toBeVisible();
+    await waitFor(() => expect(canvas.getByText('Published')).toBeVisible());
   },
 };
 
@@ -106,9 +112,11 @@ export const GrantsTab: Story = {
   render: renderTab('grants'),
   play: async ({ canvasElement }) => {
     const canvas = await expectSection(canvasElement, 'Grants');
-    await expect(
-      await canvas.findByRole('heading', { name: 'Disbursement history' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Disbursement history' }),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('link', { name: 'View 2025 grants' }),
     ).toBeVisible();
@@ -123,9 +131,11 @@ export const AgmTab: Story = {
   render: renderTab('agm'),
   play: async ({ canvasElement }) => {
     const canvas = await expectSection(canvasElement, 'AGM');
-    await expect(
-      await canvas.findByRole('heading', { name: 'Agenda builder' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Agenda builder' }),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('textbox', { name: 'Agenda item 1' }),
     ).toBeVisible();
@@ -145,7 +155,7 @@ export const BoardTab: Story = {
   render: renderTab('board'),
   play: async ({ canvasElement }) => {
     const canvas = await expectSection(canvasElement, 'Board');
-    await expect(await canvas.findByText('Mart Saar')).toBeVisible();
+    await waitFor(() => expect(canvas.getByText('Mart Saar')).toBeVisible());
     await expect(canvas.getByText('Serving')).toBeVisible();
   },
 };
@@ -170,7 +180,7 @@ export const RecordElectionResult: Story = {
     await userEvent.click(
       canvas.getByRole('button', { name: 'Record result' }),
     );
-    await expect(await canvas.findByText('Decided')).toBeVisible();
+    await waitFor(() => expect(canvas.getByText('Decided')).toBeVisible());
   },
 };
 
@@ -178,13 +188,19 @@ export const RecordsTab: Story = {
   render: renderTab('records'),
   play: async ({ canvasElement }) => {
     const canvas = await expectSection(canvasElement, 'Records');
-    await expect(
-      await canvas.findByText('My home municipality is Espoo, not Helsinki.'),
-    ).toBeVisible();
-    await expect(
-      await canvas.findByText('Disputed minutes', { exact: false }),
-    ).toBeVisible();
-    await expect(await canvas.findByText('Anna Virtanen')).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByText('My home municipality is Espoo, not Helsinki.'),
+      ).toBeVisible(),
+    );
+    await waitFor(() =>
+      expect(
+        canvas.getByText('Disputed minutes', { exact: false }),
+      ).toBeVisible(),
+    );
+    await waitFor(() =>
+      expect(canvas.getByText('Anna Virtanen')).toBeVisible(),
+    );
   },
 };
 /** Discussions: the mock app's pinned open topic and closed topic, with
@@ -193,11 +209,13 @@ export const DiscussionsTab: Story = {
   render: renderTab('discussions'),
   play: async ({ canvasElement }) => {
     const canvas = await expectSection(canvasElement, 'Discussions');
-    await expect(
-      await canvas.findByRole('link', {
-        name: 'A Tahti stage at a summer festival in 2027?',
-      }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('link', {
+          name: 'A Tahti stage at a summer festival in 2027?',
+        }),
+      ).toBeVisible(),
+    );
     await expect(canvas.getByRole('button', { name: 'Unpin' })).toBeVisible();
     await expect(canvas.getByRole('button', { name: 'Reopen' })).toBeVisible();
     await userEvent.click(canvas.getByRole('button', { name: 'Open a topic' }));

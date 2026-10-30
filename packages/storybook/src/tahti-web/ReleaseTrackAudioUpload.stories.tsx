@@ -73,9 +73,11 @@ export const CancelUpload: Story = {
     await canvas.findByRole('meter', { name: /Uploading Polar Night/ });
     await userEvent.click(canvas.getByRole('button', { name: 'Cancel' }));
     await findToast(canvasElement, 'Upload cancelled.');
-    await expect(
-      await canvas.findByRole('button', { name: 'Upload audio' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('button', { name: 'Upload audio' }),
+      ).toBeVisible(),
+    );
     await expect(args.onUploaded).not.toHaveBeenCalled();
   },
 };

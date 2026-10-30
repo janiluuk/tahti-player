@@ -47,10 +47,10 @@ type Story = StoryObj<typeof meta>;
 
 async function findJam(canvasElement: HTMLElement) {
   const canvas = within(canvasElement);
-  await expect(
-    await canvas.findByRole('heading', { name: 'Tahti Jam' }),
-  ).toBeVisible();
-  await expect(await canvas.findByText('Live')).toBeVisible();
+  await waitFor(() =>
+    expect(canvas.getByRole('heading', { name: 'Tahti Jam' })).toBeVisible(),
+  );
+  await waitFor(() => expect(canvas.getByText('Live')).toBeVisible());
   return canvas;
 }
 
@@ -87,7 +87,7 @@ export const Host: Story = {
       );
       await userEvent.click(dialog.getByRole('button', { name: 'Remove' }));
       await expectNoDialog(canvasElement);
-      await expect(await canvas.findByText('2 jamming')).toBeVisible();
+      await waitFor(() => expect(canvas.getByText('2 jamming')).toBeVisible());
       await expect(canvas.queryByText(GUEST_LISTENING)).toBeNull();
     });
 
@@ -116,15 +116,17 @@ export const GuestWithControl: Story = {
           'Borrowed Light',
         ),
       );
-      await expect(
-        await canvas.findByText(/The host has given you control of playback/),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(
+          canvas.getByText(/The host has given you control of playback/),
+        ).toBeVisible(),
+      );
       await expect(
         canvas.queryByRole('switch', { name: /control playback/ }),
       ).toBeNull();
-      await expect(
-        await canvas.findByRole('button', { name: /Leave Jam/ }),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(canvas.getByRole('button', { name: /Leave Jam/ })).toBeVisible(),
+      );
     });
 
     await step('pause and resume for everyone', async () => {
@@ -134,20 +136,24 @@ export const GuestWithControl: Story = {
       await userEvent.click(
         await canvas.findByRole('button', { name: /Play for everyone/ }),
       );
-      await expect(
-        await canvas.findByRole('button', { name: /Pause for everyone/ }),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(
+          canvas.getByRole('button', { name: /Pause for everyone/ }),
+        ).toBeVisible(),
+      );
     });
 
     await step('play along starts this device', async () => {
       await userEvent.click(
         await canvas.findByRole('button', { name: /Play along/ }),
       );
-      await expect(
-        await canvas.findByText(
-          /pausing or resuming your player does it for everyone/,
-        ),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(
+          canvas.getByText(
+            /pausing or resuming your player does it for everyone/,
+          ),
+        ).toBeVisible(),
+      );
       await expect(
         canvas.queryByRole('button', { name: /Play along/ }),
       ).toBeNull();
@@ -166,10 +172,10 @@ export const GuestListening: Story = {
     await expect(
       canvas.queryByRole('button', { name: /for everyone/ }),
     ).toBeNull();
-    await expect(
-      await canvas.findByRole('button', { name: /Play along/ }),
-    ).toBeVisible();
-    await expect(await canvas.findByText('Can control')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('button', { name: /Play along/ })).toBeVisible(),
+    );
+    await waitFor(() => expect(canvas.getByText('Can control')).toBeVisible());
   },
 };
 
@@ -178,7 +184,9 @@ export const Ended: Story = {
   beforeEach: () => installFakeJam(jamSession(), { endsAfterJoin: true }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText('This Jam has ended')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('This Jam has ended')).toBeVisible(),
+    );
     await expect(
       canvas.getByText('The host closed the session.'),
     ).toBeVisible();
@@ -190,12 +198,16 @@ export const InvalidLink: Story = {
   beforeEach: () => installFakeJam(jamSession(), { joinFails: true }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Jam not found' }),
-    ).toBeVisible();
-    await expect(
-      await canvas.findByText('This Jam link is invalid or has ended.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Jam not found' }),
+      ).toBeVisible(),
+    );
+    await waitFor(() =>
+      expect(
+        canvas.getByText('This Jam link is invalid or has ended.'),
+      ).toBeVisible(),
+    );
   },
 };
 

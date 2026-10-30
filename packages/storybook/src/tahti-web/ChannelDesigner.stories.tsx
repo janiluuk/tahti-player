@@ -307,9 +307,9 @@ export const FullSavedLooks: Story = {
     const canvas = within(canvasElement);
     const body = withinBody(canvasElement);
     const preview = await findPreview(canvasElement);
-    await expect(
-      await canvas.findByRole('button', { name: 'Ember dusk' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('button', { name: 'Ember dusk' })).toBeVisible(),
+    );
 
     await userEvent.click(canvas.getByRole('button', { name: 'More options' }));
     await userEvent.click(
@@ -324,12 +324,14 @@ export const FullSavedLooks: Story = {
       saveDialog.getByRole('button', { name: 'Save preset' }),
     );
     await expectNoDialog(canvasElement);
-    await expect(
-      await canvas.findByRole('button', { name: 'Neon night' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('button', { name: 'Neon night' })).toBeVisible(),
+    );
 
     await userEvent.click(canvas.getByRole('button', { name: 'Ember dusk' }));
-    await expect(await canvas.findByText(/Keep this look/)).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText(/Keep this look/)).toBeVisible(),
+    );
     await expect(preview.getByText('Artist channel')).toHaveStyle({
       backgroundColor: 'rgb(249, 115, 22)',
     });
@@ -509,11 +511,13 @@ export const LoadError: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', {
-        name: 'Could not load the channel designer',
-      }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', {
+          name: 'Could not load the channel designer',
+        }),
+      ).toBeVisible(),
+    );
     await expect(canvas.getByRole('button', { name: 'Retry' })).toBeVisible();
   },
 };
@@ -547,8 +551,8 @@ export const EmptyLook: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('button', { name: /Save/i }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('button', { name: /Save/i })).toBeVisible(),
+    );
   },
 };

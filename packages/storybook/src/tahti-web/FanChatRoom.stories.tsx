@@ -23,18 +23,18 @@ export const WithHistory: Story = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     const log = canvas.getByRole('log', { name: 'Fan room messages' });
-    await expect(
-      await within(log).findByText('Pre-saved already!'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(within(log).getByText('Pre-saved already!')).toBeVisible(),
+    );
     const textbox = canvas.getByRole('textbox', {
       name: 'Message the fan room',
     });
     await waitFor(() => expect(textbox).toBeEnabled());
     await userEvent.type(textbox, 'Hello from the mock');
     await userEvent.click(canvas.getByRole('button', { name: 'Send' }));
-    await expect(
-      await within(log).findByText('Hello from the mock'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(within(log).getByText('Hello from the mock')).toBeVisible(),
+    );
     await userEvent.click(
       canvas.getByRole('button', { name: 'Back to the public chat' }),
     );
@@ -45,9 +45,11 @@ export const WithHistory: Story = {
 export const Empty: Story = {
   parameters: { mockData: mockData({ fanChatHistory: [] }) },
   play: async ({ canvasElement }) => {
-    await expect(
-      await within(canvasElement).findByText('Just fans in here'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        within(canvasElement).getByText('Just fans in here'),
+      ).toBeVisible(),
+    );
   },
 };
 

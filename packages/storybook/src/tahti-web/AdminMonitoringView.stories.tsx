@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminMonitoringView } from '@tahti-web/views/admin/AdminMonitoringView';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -22,9 +22,9 @@ export const Default: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Monitoring' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('heading', { name: 'Monitoring' })).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('heading', { name: 'Grafana dashboards' }),
     ).toBeVisible();
@@ -35,10 +35,12 @@ export const Default: Story = {
       canvas.getByTitle('Tahti vital services — Grafana'),
     ).toBeVisible();
     await expect(canvas.getByText('API')).toBeVisible();
-    await expect(
-      await canvas.findByRole('heading', {
-        name: 'Container logs (all services)',
-      }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', {
+          name: 'Container logs (all services)',
+        }),
+      ).toBeVisible(),
+    );
   },
 };

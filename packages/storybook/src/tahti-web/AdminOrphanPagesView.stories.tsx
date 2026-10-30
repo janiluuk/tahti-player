@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminOrphanPagesView } from '@tahti-web/views/admin/orphanPages/AdminOrphanPagesView';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -30,9 +30,9 @@ export const Default: Story = {
     await expect(
       tabs.getByRole('tab', { name: /Radio station suggestions/i }),
     ).toHaveAttribute('aria-selected', 'true');
-    await expect(
-      await canvas.findByRole('heading', { name: 'Basso FM' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('heading', { name: 'Basso FM' })).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('heading', { name: 'Lumo Radio' }),
     ).toBeVisible();

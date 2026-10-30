@@ -4,7 +4,7 @@ import type { TahtiNativeLibrary } from '@tahti-web/lib/nativeLibrary';
 import { useDjPrefsStore } from '@tahti-web/stores/djPrefsStore';
 import { useLocalLibraryStore } from '@tahti-web/stores/localLibraryStore';
 import { useEffect, useRef } from 'react';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { djLibrary } from './_fixtures/dj-library';
 
@@ -325,7 +325,7 @@ export const DjCatalog: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText('Aurora Drive')).toBeVisible();
+    await waitFor(() => expect(canvas.getByText('Aurora Drive')).toBeVisible());
     await expect(
       canvas.getByRole('button', { name: 'DJ settings' }),
     ).toBeVisible();

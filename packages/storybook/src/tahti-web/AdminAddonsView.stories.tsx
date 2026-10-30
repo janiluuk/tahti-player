@@ -20,9 +20,11 @@ type Story = StoryObj<typeof meta>;
 export const Catalog: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Channel stats' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Channel stats' }),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('button', { name: 'Register a new add-on' }),
     ).toBeVisible();

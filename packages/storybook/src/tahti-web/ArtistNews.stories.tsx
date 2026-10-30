@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ArtistNews } from '@tahti-web/components/artist-view';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 const meta: Meta<typeof ArtistNews> = {
   title: 'Tahti/Artist/ArtistNews',
@@ -33,9 +33,11 @@ export const PinnedAndFeed: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText(/vinyl is back in stock/)).toBeVisible();
-    await expect(
-      await canvas.findByRole('link', { name: /New EP out on Friday/ }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('link', { name: /New EP out on Friday/ }),
+      ).toBeVisible(),
+    );
   },
 };
 

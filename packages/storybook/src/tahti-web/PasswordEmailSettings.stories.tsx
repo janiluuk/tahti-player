@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChangeEmailForm } from '@tahti-web/components/ChangeEmailForm';
 import { ChangePasswordForm } from '@tahti-web/components/ChangePasswordForm';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 /** Settings → Account → Password & email. Under `VITE_FORCE_MOCK` both
  * requests succeed, and a sent email-change link shows as pending. */
@@ -45,9 +45,11 @@ export const EmailChangePending: Story = {
     await userEvent.click(
       canvas.getByRole('button', { name: 'Send confirmation link' }),
     );
-    await expect(
-      await canvas.findByText(/Waiting for confirmation at new@tahti.live/),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByText(/Waiting for confirmation at new@tahti.live/),
+      ).toBeVisible(),
+    );
     await userEvent.click(
       canvas.getByRole('button', { name: 'Cancel change' }),
     );

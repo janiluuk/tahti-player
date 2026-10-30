@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChatView } from '@tahti-web/views/ChatView';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { CHANNEL_SLUG } from './_fixtures/channel';
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
@@ -49,8 +49,8 @@ export const ChannelChat: Story = {
     await expect(
       canvas.getByRole('link', { name: 'Open channel' }),
     ).toHaveAttribute('href', `/channel/${CHANNEL_SLUG}`);
-    await expect(
-      await canvas.findByRole('log', { name: 'Chat messages' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('log', { name: 'Chat messages' })).toBeVisible(),
+    );
   },
 };

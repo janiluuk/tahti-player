@@ -86,11 +86,13 @@ export const Inbox: Story = {
       await waitFor(() =>
         expect(listener).toHaveAttribute('aria-current', 'page'),
       );
-      await expect(
-        await within(canvas.getByTestId('dm-thread')).findByText(
-          'Loved the set last night!',
-        ),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(
+          within(canvas.getByTestId('dm-thread')).getByText(
+            'Loved the set last night!',
+          ),
+        ).toBeVisible(),
+      );
     });
   },
 };
@@ -131,9 +133,9 @@ export const ArtistThread: Story = {
 
     await step('unblock brings it back', async () => {
       await userEvent.click(thread.getByRole('button', { name: 'Unblock' }));
-      await expect(
-        await thread.findByPlaceholderText('Write a message…'),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(thread.getByPlaceholderText('Write a message…')).toBeVisible(),
+      );
     });
   },
 };
@@ -150,9 +152,9 @@ export const SendMessage: Story = {
       thread.getByPlaceholderText('Write a message…'),
       'Next show is on Friday{Enter}',
     );
-    await expect(
-      await thread.findByText('Next show is on Friday'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(thread.getByText('Next show is on Friday')).toBeVisible(),
+    );
     await expect(
       await inboxButton(canvasElement, /^Listener One/),
     ).toHaveTextContent('Next show is on Friday');

@@ -91,9 +91,11 @@ type Story = StoryObj<typeof meta>;
 export const PublicPage: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { level: 1, name: CHANNEL_NAME }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { level: 1, name: CHANNEL_NAME }),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByTestId('channel-backdrop-subscribe-cta'),
     ).toBeVisible();

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChannelNotFound } from '@tahti-web/components/channel-view';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { withPageSurface, withTahtiRouter } from './_lib/decorators';
 
@@ -26,7 +26,9 @@ type Story = StoryObj<typeof meta>;
 export const NoRedirect: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText('Channel not found')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Channel not found')).toBeVisible(),
+    );
     await expect(
       canvas.getByText(
         'This channel may have been removed or is not available.',

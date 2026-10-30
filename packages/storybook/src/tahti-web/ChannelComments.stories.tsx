@@ -72,9 +72,9 @@ export const PostComment: Story = {
     await expect(post).toBeDisabled();
     await userEvent.type(box, 'Cannot wait for Friday.');
     await userEvent.click(post);
-    await expect(
-      await canvas.findByText('Cannot wait for Friday.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Cannot wait for Friday.')).toBeVisible(),
+    );
     await expect(box).toHaveValue('');
   },
 };
@@ -117,9 +117,11 @@ export const CommentsOff: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('Comments are off for this channel.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByText('Comments are off for this channel.'),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.queryByRole('textbox', { name: 'Write a comment' }),
     ).toBeNull();
@@ -134,9 +136,9 @@ export const NoCommentsYet: Story = {
     }),
   },
   play: async ({ canvasElement }) => {
-    await expect(
-      await within(canvasElement).findByText('No comments yet'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(within(canvasElement).getByText('No comments yet')).toBeVisible(),
+    );
   },
 };
 

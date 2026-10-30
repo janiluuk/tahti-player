@@ -95,9 +95,9 @@ export const TrackOptions: Story = {
     await userEvent.click(
       within(canvasElement).getByRole('button', { name: 'More options' }),
     );
-    await expect(
-      await body.findByRole('dialog', { name: 'Track options' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(body.getByRole('dialog', { name: 'Track options' })).toBeVisible(),
+    );
     await userEvent.keyboard('{Escape}');
     await waitFor(() => expect(body.queryByRole('dialog')).toBeNull());
   },

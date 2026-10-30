@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { TahtiPlayable } from '@tahti-web/api/types';
 import { CollectionTrackList } from '@tahti-web/components/CollectionTrackList';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 
@@ -43,9 +43,9 @@ type Story = StoryObj<typeof meta>;
 export const Playlist: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('link', { name: 'Polar Static' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('link', { name: 'Polar Static' })).toBeVisible(),
+    );
     await expect(canvas.queryByRole('region')).toBeNull();
   },
 };
@@ -70,9 +70,11 @@ export const Empty: Story = {
     },
   },
   play: async ({ canvasElement }) => {
-    await expect(
-      await within(canvasElement).findByText('No tracks in this playlist'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        within(canvasElement).getByText('No tracks in this playlist'),
+      ).toBeVisible(),
+    );
   },
 };
 

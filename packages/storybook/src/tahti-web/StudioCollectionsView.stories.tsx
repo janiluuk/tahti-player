@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { StudioCollection } from '@tahti-web/api/studio-types';
 import { StudioCollectionsView } from '@tahti-web/views/studio/StudioCollectionsView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 import { mockData } from './_lib/mock-data';
@@ -78,9 +78,11 @@ type Story = StoryObj<typeof meta>;
 export const PopulatedGrid: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('link', { name: 'Midnight Archive' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('link', { name: 'Midnight Archive' }),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('link', { name: 'Aurora Sessions' }),
     ).toBeVisible();

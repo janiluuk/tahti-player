@@ -28,9 +28,9 @@ type Story = StoryObj<typeof meta>;
 export const WithResults: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: `#${TAG}` }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('heading', { name: `#${TAG}` })).toBeVisible(),
+    );
     await expect(
       await canvas.findByRole('link', { name: /Aurora Drift/ }),
     ).toHaveAttribute('href', '/t/northern-lights-archive-1');
@@ -41,11 +41,10 @@ export const WithResults: Story = {
 export const NoResults: Story = {
   parameters: { mockData: { tagTracks: [] } },
   play: async ({ canvasElement }) => {
-    await expect(
-      await within(canvasElement).findByText(
-        `No tracks tagged “${TAG}” in mock fixtures`,
-      ),
-    ).toBeVisible();
+    const empty = await within(canvasElement).findByText(
+      `No tracks tagged “${TAG}” in mock fixtures`,
+    );
+    await waitFor(() => expect(empty).toBeVisible());
   },
 };
 

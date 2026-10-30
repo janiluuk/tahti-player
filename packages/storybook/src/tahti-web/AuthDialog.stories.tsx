@@ -112,7 +112,9 @@ export const TwoFactorChallenge: Story = {
     );
     await expect(verify).toBeEnabled();
     await userEvent.click(verify);
-    await expect(await dialog.findByText('Invalid code.')).toBeVisible();
+    await waitFor(() =>
+      expect(dialog.getByText('Invalid code.')).toBeVisible(),
+    );
     await expect(dialog.getByRole('button', { name: 'Back' })).toBeVisible();
   },
 };

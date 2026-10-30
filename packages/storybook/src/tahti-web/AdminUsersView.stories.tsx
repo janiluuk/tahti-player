@@ -22,10 +22,12 @@ export const Default: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText('4 accounts')).toBeVisible();
-    await expect(
-      await canvas.findByRole('heading', { name: 'DJ Moonlight' }),
-    ).toBeVisible();
+    await waitFor(() => expect(canvas.getByText('4 accounts')).toBeVisible());
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'DJ Moonlight' }),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('heading', { name: 'Account details' }),
     ).toBeVisible();

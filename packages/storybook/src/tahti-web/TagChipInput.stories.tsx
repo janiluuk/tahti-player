@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TagChipInput } from '@tahti-web/components/TagChipInput';
 import { useState } from 'react';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { withinBody } from './_lib/play';
 
@@ -100,9 +100,11 @@ export const Full: Story = {
     await userEvent.click(
       canvas.getByRole('button', { name: 'Remove euphoric' }),
     );
-    await expect(
-      await canvas.findByRole('combobox', { name: 'Add a mood' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('combobox', { name: 'Add a mood' }),
+      ).toBeVisible(),
+    );
   },
 };
 

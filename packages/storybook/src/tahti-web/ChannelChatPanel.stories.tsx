@@ -103,9 +103,9 @@ export const SignedOut: Story = {
       const send = canvas.getByRole('button', { name: 'Send' });
       await expect(send).toBeDisabled();
       await userEvent.type(compose, 'Hello from Storybook{Enter}');
-      await expect(
-        await within(log).findByText('Hello from Storybook'),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(within(log).getByText('Hello from Storybook')).toBeVisible(),
+      );
       await expect(compose).toHaveValue('');
     });
   },
@@ -147,9 +147,9 @@ export const ChatOff: Story = {
   parameters: { mockData: mockData({ chatAccess: { chatEnabled: false } }) },
   play: async ({ canvasElement }) => {
     const { canvas } = await findLog(canvasElement);
-    await expect(
-      await canvas.findByText('The artist has turned chat off.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('The artist has turned chat off.')).toBeVisible(),
+    );
     await expect(
       canvas.queryByRole('button', { name: 'Join chat' }),
     ).toBeNull();
@@ -198,9 +198,9 @@ export const JoinChatSwitchedOff: Story = {
     const { canvas } = await findLog(canvasElement);
     await userEvent.type(canvas.getByLabelText('Handle'), 'liina');
     await userEvent.click(canvas.getByRole('button', { name: 'Join chat' }));
-    await expect(
-      await canvas.findByText('The artist has turned chat off.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('The artist has turned chat off.')).toBeVisible(),
+    );
     await waitFor(() => expect(canvas.queryByLabelText('Handle')).toBeNull());
   },
 };
@@ -211,15 +211,17 @@ export const FanRoom: Story = {
   play: async ({ canvasElement }) => {
     const { canvas } = await findLog(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: 'Fan room' }));
-    await expect(
-      await canvas.findByRole('log', { name: 'Fan room messages' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('log', { name: 'Fan room messages' }),
+      ).toBeVisible(),
+    );
     await userEvent.click(
       canvas.getByRole('button', { name: 'Back to the public chat' }),
     );
-    await expect(
-      await canvas.findByRole('log', { name: 'Chat messages' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('log', { name: 'Chat messages' })).toBeVisible(),
+    );
   },
 };
 

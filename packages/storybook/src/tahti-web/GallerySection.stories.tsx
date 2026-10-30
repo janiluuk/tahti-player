@@ -4,7 +4,7 @@ import { uploadPressKitImages } from '@tahti-web/api/artist-settings';
 import { GallerySection } from '@tahti-web/views/studio/branding/GallerySection';
 import type { PressKitState } from '@tahti-web/views/studio/branding/usePressKit';
 import { useMemo, useState } from 'react';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { findDialog } from './_lib/play';
 
@@ -112,9 +112,9 @@ export const OwnerGallery: Story = {
   render: () => <GalleryDemo />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Gallery' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('heading', { name: 'Gallery' })).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('switch', { name: 'Public gallery' }),
     ).toBeVisible();

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChannelPlaylistBlock } from '@tahti-web/components/ChannelPlaylistBlock';
 import { ChannelPlaylistPicker } from '@tahti-web/components/ChannelPlaylistPicker';
 import { useState } from 'react';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -34,7 +34,9 @@ export const BlockTracklist: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByTestId('ambient-track-list')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByTestId('ambient-track-list')).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('radiogroup', { name: 'Track size' }),
     ).toBeVisible();
@@ -50,9 +52,9 @@ export const BlockEmpty: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('No playable tracks yet'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('No playable tracks yet')).toBeVisible(),
+    );
     await expect(
       canvas.getByText('This playlist has no playable tracks yet.'),
     ).toBeVisible();
@@ -68,9 +70,9 @@ export const BlockEmptyCards: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('No playable tracks yet'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('No playable tracks yet')).toBeVisible(),
+    );
   },
 };
 
@@ -136,7 +138,7 @@ export const PickerCustomConfirm: Story = {
     await userEvent.click(
       await canvas.findByRole('button', { name: 'Show on channel' }),
     );
-    await expect(await canvas.findByText(/^Picked: /)).toBeVisible();
+    await waitFor(() => expect(canvas.getByText(/^Picked: /)).toBeVisible());
   },
 };
 

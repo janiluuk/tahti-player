@@ -4,7 +4,7 @@ import { useDesktopJamStore } from '@tahti-web/lib/jam/desktop';
 import { useDesktopMcpStore } from '@tahti-web/lib/mcp/desktop';
 import { useDesktopMpdStore } from '@tahti-web/lib/mpd/desktop';
 import { IntegrationsPanel } from '@tahti-web/views/settings/panels/IntegrationsPanel';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withPageSurface } from './_lib/decorators';
 import { mockData } from './_lib/mock-data';
@@ -40,9 +40,9 @@ export const IntegrationsApiError: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText("Couldn't load integrations"),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText("Couldn't load integrations")).toBeVisible(),
+    );
     await expect(canvas.getByText('Service unavailable')).toBeVisible();
   },
 };
@@ -88,13 +88,15 @@ export const DesktopApp: Story = {
     await userEvent.click(
       await canvas.findByRole('switch', { name: 'MCP server' }),
     );
-    await expect(
-      await canvas.findByText('http://127.0.0.1:8800/mcp'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('http://127.0.0.1:8800/mcp')).toBeVisible(),
+    );
     await userEvent.click(
       await canvas.findByRole('switch', { name: 'MPD server' }),
     );
-    await expect(await canvas.findByText('127.0.0.1:6600')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('127.0.0.1:6600')).toBeVisible(),
+    );
     await userEvent.click(
       await canvas.findByRole('switch', { name: 'Discord Rich Presence' }),
     );
@@ -104,9 +106,9 @@ export const DesktopApp: Story = {
     await userEvent.click(
       await canvas.findByRole('switch', { name: 'Tahti Jam' }),
     );
-    await expect(
-      await canvas.findByLabelText('Tahti Jam pairing QR code'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByLabelText('Tahti Jam pairing QR code')).toBeVisible(),
+    );
     await expect(canvas.queryByText('Desktop app only')).toBeNull();
   },
 };

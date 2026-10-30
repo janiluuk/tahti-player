@@ -74,9 +74,11 @@ export const ListenerWithoutChannel: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('button', { name: 'Set up a channel' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('button', { name: 'Set up a channel' }),
+      ).toBeVisible(),
+    );
     await expect(canvas.queryByRole('tab', { name: /My channel/ })).toBeNull();
   },
 };
@@ -90,9 +92,11 @@ export const ArtistBooksASlot: Story = {
       const aside = within(
         (await canvas.findByText('Your next two weeks')).parentElement!,
       );
-      await expect(
-        await aside.findByRole('button', { name: /Friday Frequency/ }),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(
+          aside.getByRole('button', { name: /Friday Frequency/ }),
+        ).toBeVisible(),
+      );
       await selectTab(canvas, /My channel/);
       await waitFor(() =>
         expect(
@@ -102,18 +106,20 @@ export const ArtistBooksASlot: Story = {
         ).toBeNull(),
       );
       await selectTab(canvas, /Tahti Radio/);
-      await expect(
-        await canvas.findByRole('button', {
-          name: 'Kaiku Cypher Sessions by Kaiku Collective',
-        }),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(
+          canvas.getByRole('button', {
+            name: 'Kaiku Cypher Sessions by Kaiku Collective',
+          }),
+        ).toBeVisible(),
+      );
     });
 
     await step('pick two hours next week and book a talk', async () => {
       await userEvent.click(canvas.getByRole('button', { name: 'Next week' }));
-      await expect(
-        await canvas.findByRole('button', { name: 'This week' }),
-      ).toBeVisible();
+      await waitFor(() =>
+        expect(canvas.getByRole('button', { name: 'This week' })).toBeVisible(),
+      );
       const [cell] = await canvas.findAllByRole('button', {
         name: /at 10:00 — available$/,
       });
@@ -132,7 +138,9 @@ export const ArtistBooksASlot: Story = {
       await userEvent.click(
         canvas.getByRole('button', { name: 'Confirm booking' }),
       );
-      await expect(await canvas.findByText('Slot booked.')).toBeVisible();
+      await waitFor(() =>
+        expect(canvas.getByText('Slot booked.')).toBeVisible(),
+      );
       await expect(
         canvas.getAllByRole('button', {
           name: 'Studio Q&A by Demo Artist — click to view',
@@ -159,7 +167,9 @@ export const ArtistEditsAndCancels: Story = {
       await userEvent.click(
         dialog.getByRole('button', { name: 'Save changes' }),
       );
-      await expect(await canvas.findByText('Booking updated.')).toBeVisible();
+      await waitFor(() =>
+        expect(canvas.getByText('Booking updated.')).toBeVisible(),
+      );
       await findDialog(canvasElement, 'Friday Frequency - b2b special');
     });
 
@@ -177,7 +187,9 @@ export const ArtistEditsAndCancels: Story = {
         confirm.getByRole('button', { name: 'Cancel booking' }),
       );
       await expectNoDialog(canvasElement);
-      await expect(await canvas.findByText('Booking cancelled.')).toBeVisible();
+      await waitFor(() =>
+        expect(canvas.getByText('Booking cancelled.')).toBeVisible(),
+      );
       await expect(
         canvas.queryByRole('button', { name: /b2b special by Demo Artist/ }),
       ).toBeNull();

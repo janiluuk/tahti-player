@@ -68,9 +68,9 @@ export const ExistingTrackHidden: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.type(canvas.getByLabelText('Search the catalog'), 'Frost');
-    await expect(
-      await canvas.findByText('No public tracks match “Frost”.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('No public tracks match “Frost”.')).toBeVisible(),
+    );
   },
 };
 

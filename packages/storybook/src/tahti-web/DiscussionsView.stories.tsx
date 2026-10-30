@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DiscussionsView } from '@tahti-web/views/DiscussionsView';
 import { DiscussionTopicView } from '@tahti-web/views/DiscussionTopicView';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -52,9 +52,11 @@ export const OpenTopic: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('I would love to play a late ambient set.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        canvas.getByText('I would love to play a late ambient set.'),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('button', { name: 'Unfollow' }),
     ).toBeVisible();
@@ -63,7 +65,7 @@ export const OpenTopic: Story = {
       'Count me in',
     );
     await userEvent.click(canvas.getByRole('button', { name: 'Post reply' }));
-    await expect(await canvas.findByText('Count me in')).toBeVisible();
+    await waitFor(() => expect(canvas.getByText('Count me in')).toBeVisible());
   },
 };
 
@@ -76,9 +78,9 @@ export const ClosedTopic: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText(/it takes no more replies/),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText(/it takes no more replies/)).toBeVisible(),
+    );
     await expect(
       canvas.queryByRole('textbox', { name: 'Your reply' }),
     ).not.toBeInTheDocument();

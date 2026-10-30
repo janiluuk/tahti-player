@@ -355,17 +355,25 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: pnpm --filter @tahti-player/storybook exec playwright install-deps chromium
 
-      - name: Story surfaces cheat sheet is current
-        if: matrix.group == 1
-        run: node scripts/generate-storybook-surfaces.mjs --check
-
       - name: Run stories as tests
         run: |
+          set -o pipefail
           failed=0
           first=$(( (${{ matrix.group }} - 1) * 3 + 1 ))
+          # A Chromium renderer crash ("Browser connection was closed") aborts
+          # the shard without any story failing; that shard gets one retry.
+          # Real story failures are never retried.
           for shard in $first $((first + 1)) $((first + 2)); do
             echo "::group::Stories shard $shard/6"
-            pnpm --filter @tahti-player/storybook test --shard=$shard/6 || failed=1
+            log="shard-$shard.log"
+            if ! pnpm --filter @tahti-player/storybook test --shard="$shard/6" 2>&1 | tee "$log"; then
+              if grep -q "Browser connection was closed" "$log" && ! grep -qE "FAIL.*\.stories\.tsx" "$log"; then
+                echo "::warning::Stories shard $shard/6: browser crashed, retrying once"
+                pnpm --filter @tahti-player/storybook test --shard="$shard/6" || failed=1
+              else
+                failed=1
+              fi
+            fi
             echo "::endgroup::"
           done
           exit $failed
@@ -425,6 +433,42 @@ jobs:
         run: |
           echo "E2E suite failed. See the playwright-report / playwright-test-results artifacts."
           exit 1
+
+  # A stale STORYBOOK-SURFACES.md is reported as one PR comment (updated on
+  # every push, deleted once current) instead of failing the PR: the PR runs
+  # on the merge ref, so stories landing on the base branch can make it stale
+  # without the PR touching any. Not part of the CI gate. Fork PRs get a
+  # read-only token, so they are skipped.
+  storybook-surfaces:
+    name: Story surfaces
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Comment on stale surfaces
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          marker='<!-- storybook-surfaces -->'
+          report=$(node scripts/generate-storybook-surfaces.mjs --report)
+          existing=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
+            --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -n 1)
+          if [ -z "$report" ]; then
+            if [ -n "$existing" ]; then
+              gh api -X DELETE "repos/$GITHUB_REPOSITORY/issues/comments/$existing"
+            fi
+            exit 0
+          fi
+          printf '%s\n%s\n' "$marker" "$report" > body.md
+          echo "::warning file=packages/tahti-web/STORYBOOK-SURFACES.md::Stale - run pnpm storybook:surfaces"
+          if [ -n "$existing" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$existing" -F body=@body.md > /dev/null
+          else
+            gh pr comment "$PR" --body-file body.md
+          fi
 
   # Aggregate gate (keeps the historical required `CI` check name working and
   # gives a single pass/fail node). A job skipped because the change is

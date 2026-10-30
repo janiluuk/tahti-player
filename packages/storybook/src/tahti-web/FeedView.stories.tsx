@@ -40,9 +40,9 @@ export const PopulatedPhone: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Feed' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('heading', { name: 'Feed' })).toBeVisible(),
+    );
     const box = canvasElement.getBoundingClientRect();
     await expect(box.width).toBeLessThanOrEqual(390);
   },

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminMissedShowsPanel } from '@tahti-web/views/admin/AdminMissedShowsView';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 import { selectTab } from './_lib/play';
@@ -24,7 +24,9 @@ type Story = StoryObj<typeof meta>;
 export const Queue: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText('Friday Frequency')).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('Friday Frequency')).toBeVisible(),
+    );
     await expect(canvas.getByText('Northern Signals #4')).toBeVisible();
     await expect(canvas.getByText('Queue · 2')).toBeVisible();
     await expect(canvas.getByRole('tab', { name: 'All' })).toHaveAttribute(
@@ -32,9 +34,9 @@ export const Queue: Story = {
       'true',
     );
     await selectTab(canvas, 'Dismissed');
-    await expect(
-      await canvas.findByText('No missed shows in this view'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('No missed shows in this view')).toBeVisible(),
+    );
     await expect(canvas.getByText('Queue · 0')).toBeVisible();
   },
 };

@@ -23,9 +23,9 @@ export const Default: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Logs' }),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByRole('heading', { name: 'Logs' })).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('tab', { name: 'Audit events' }),
     ).toHaveAttribute('aria-selected', 'true');

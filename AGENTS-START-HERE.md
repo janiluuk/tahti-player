@@ -25,7 +25,7 @@ Do not invent sibling API shapes. Inspect `../tahti-org` routes/DTOs first. Do n
 | Player core / plugins / themes | Root [`AGENTS.md`](AGENTS.md) + [`docs/agent/`](docs/agent/) | Matching on-demand file only |
 | How the system fits together (repos, infra, request flow) | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) + [`docs/DATA-FLOW.md`](docs/DATA-FLOW.md) | Have the "why does X talk to Y" answer |
 | Settled forks / “already decided” | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Matching decision |
-| Storybook surface lookup | [`packages/tahti-web/STORYBOOK-SURFACES.md`](packages/tahti-web/STORYBOOK-SURFACES.md) | Matching row |
+| Storybook surface lookup | [`packages/tahti-web/STORYBOOK-SURFACES.md`](packages/tahti-web/STORYBOOK-SURFACES.md) | Matching row (generated - never hand-edit; the pre-commit hook regenerates it) |
 | View catalog / Storybook coverage | [`docs/VIEW-CATALOG.md`](docs/VIEW-CATALOG.md) | Cross-check after adding/removing views, stories, or nav items |
 | Fork / API relationship | [`TAHTI.md`](TAHTI.md) | Path + ownership split |
 | Accessibility / responsive layout rules | [`docs/agent/CODE-STYLE.md`](docs/agent/CODE-STYLE.md) → Accessibility, Layout | The matching bullet |

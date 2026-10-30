@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { VenueDetailView } from '@tahti-web/views/VenueDetailView';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { VENUE_SLUG, venueBareData, venueRichData } from './_fixtures/discover';
 import { withTahtiRouter } from './_lib/decorators';
@@ -68,9 +68,9 @@ export const NoShowsOrRecordings: Story = {
   parameters: { mockData: venueBareData },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('No shows booked here yet.'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(canvas.getByText('No shows booked here yet.')).toBeVisible(),
+    );
     await expect(
       canvas.queryByRole('region', { name: 'Recorded here' }),
     ).toBeNull();
@@ -80,8 +80,8 @@ export const NoShowsOrRecordings: Story = {
 export const NotFound: Story = {
   args: { slug: 'no-such-venue' },
   play: async ({ canvasElement }) => {
-    await expect(
-      await within(canvasElement).findByText('Venue not found'),
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(within(canvasElement).getByText('Venue not found')).toBeVisible(),
+    );
   },
 };
