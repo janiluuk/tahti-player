@@ -17,6 +17,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Button,
   FilterChips,
+  Masonry,
   Popover,
   Select,
   TabLabel,
@@ -528,10 +529,7 @@ export function DiscoverView() {
         ) : null}
 
         {activeTab === 'discover' && enabledWidgets.length > 0 && (
-          <div
-            className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3"
-            data-testid="discover-widget-columns"
-          >
+          <Masonry data-testid="discover-widget-columns">
             {enabledWidgets.map((id, index) => {
               const widgetData = data[id];
               return (
@@ -609,7 +607,7 @@ export function DiscoverView() {
                 </motion.div>
               );
             })}
-          </div>
+          </Masonry>
         )}
 
         {activeTab === 'artists' && artistsError && artists.length === 0 ? (

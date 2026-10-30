@@ -37,6 +37,20 @@ describe('useShiftHeld', () => {
     unmount();
   });
 
+  it('picks up Shift from pointer moves', () => {
+    const { result, unmount } = renderHook(() => useShiftHeld());
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointermove', { shiftKey: true }));
+    });
+    expect(result.current).toBe(true);
+
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointermove', { shiftKey: false }));
+    });
+    expect(result.current).toBe(false);
+    unmount();
+  });
+
   it('clears on window blur', () => {
     const { result, unmount } = renderHook(() => useShiftHeld());
     act(() => {

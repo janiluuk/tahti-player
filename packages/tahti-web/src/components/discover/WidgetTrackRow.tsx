@@ -6,6 +6,7 @@ import { MediaArtwork } from '@tahti-player/ui';
 import type { DiscoverTrackItem } from '../../api/types';
 import { useDiscoverTrackPlayback } from '../../hooks/useDiscoverTrackPlayback';
 import { cn } from '../../lib/cn';
+import { STRIPED_ROW } from './listStripes';
 
 export function WidgetTrackRow({
   item,
@@ -32,8 +33,9 @@ export function WidgetTrackRow({
           : undefined
       }
       className={cn(
-        'hover:bg-background flex items-center gap-3 rounded px-1.5 py-1.5 transition-colors',
-        isCurrent && 'bg-background-secondary/70',
+        'group flex items-center gap-3 px-2 py-1.5',
+        STRIPED_ROW,
+        isCurrent && 'bg-primary/10 even:bg-primary/10',
       )}
     >
       {rank !== undefined && (

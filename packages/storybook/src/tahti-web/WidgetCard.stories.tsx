@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { RandomTrackGenres } from '@tahti-web/components/discover/RandomTrackGenres';
 import { WidgetCard } from '@tahti-web/components/discover/WidgetCard';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { Select } from '@tahti-player/ui';
 
@@ -13,7 +15,7 @@ const meta: Meta<typeof WidgetCard> = {
     docs: {
       description: {
         component:
-          'Discover tab ranking/list panels. Intentionally not CardGrid — dense track rows via WidgetTrackRow, not media Card tiles. If a widget grows cover tiles later, nest CardGrid+Card inside the panel.',
+          'Every Discover widget renders through this panel: track lists (ranked or not), artist picks, latest releases, public playlists and the random track. Listings sit in an inset well with tiger-striped rows; the panel itself is raised with `shadow-float`. Intentionally not CardGrid - dense track rows via WidgetTrackRow, not media Card tiles.',
       },
     },
   },
@@ -59,6 +61,35 @@ export const RankedList: Story = {
     emptyMessage: 'No plays yet this week.',
     canMoveUp: false,
     canMoveDown: true,
+  },
+};
+
+/** Each track row is its own hover group, so hovering one row reveals only
+ * that row's play control (the card's hover only reveals its own header
+ * actions). Holding Shift turns the play control into Add to queue. */
+export const RowHoverAndShiftQueue: Story = {
+  args: RankedList.args,
+  play: async ({ canvasElement }) => {
+    const [play] = within(canvasElement).getAllByTestId('media-artwork-play');
+    const row = play.closest('a');
+    await expect(row).toHaveClass('group');
+    await expect(row?.parentElement?.closest('.group')).toBeNull();
+    await expect(play).toHaveAttribute(
+      'aria-label',
+      'Play Tundra Static · Shift+click to queue',
+    );
+
+    window.dispatchEvent(new PointerEvent('pointermove', { shiftKey: true }));
+    await waitFor(() =>
+      expect(play).toHaveAttribute('aria-label', 'Add Tundra Static to queue'),
+    );
+    window.dispatchEvent(new PointerEvent('pointermove', { shiftKey: false }));
+    await waitFor(() =>
+      expect(play).toHaveAttribute(
+        'aria-label',
+        'Play Tundra Static · Shift+click to queue',
+      ),
+    );
   },
 };
 
@@ -181,5 +212,121 @@ export const PublicPlaylists: Story = {
     emptyMessage: 'No public playlists yet.',
     canMoveUp: false,
     canMoveDown: true,
+  },
+};
+
+const moreTracks = [
+  ...tracks,
+  {
+    id: 'archive:track-3',
+    title: 'Polar Night',
+    artist: 'Revontuli',
+    channelSlug: 'revontuli',
+    coverUrl: null,
+    audioUrl: 'https://example.com/demo.mp3',
+  },
+  {
+    id: 'archive:track-4',
+    title: 'Saltwater',
+    artist: 'Kasari',
+    channelSlug: 'kasari',
+    coverUrl: null,
+    audioUrl: 'https://example.com/demo.mp3',
+  },
+  {
+    id: 'archive:track-5',
+    title: 'Low Sun',
+    artist: 'Northern Lights',
+    channelSlug: 'northern-lights',
+    coverUrl: null,
+    audioUrl: 'https://example.com/demo.mp3',
+  },
+];
+
+/** Unranked track list (Latest tracks, New to you, Loved, Tahti Selects):
+ * every other row is tinted so long lists scan easily. */
+export const LatestTracksStriped: Story = {
+  args: {
+    id: 'latest-tracks',
+    title: 'Latest tracks',
+    loading: false,
+    items: moreTracks,
+    emptyMessage: 'No tracks yet.',
+    canMoveUp: true,
+    canMoveDown: true,
+  },
+  play: async ({ canvasElement }) => {
+    const rows = Array.from(
+      within(canvasElement).getByTestId('widget-track-list').children,
+    );
+    await expect(rows).toHaveLength(5);
+    const background = (index: number) =>
+      getComputedStyle(rows[index] as HTMLElement).backgroundColor;
+    await expect(background(1)).not.toBe(background(0));
+    await expect(background(2)).toBe(background(0));
+  },
+};
+
+export const LatestReleases: Story = {
+  args: {
+    id: 'latest-releases',
+    title: 'Latest releases',
+    loading: false,
+    items: [],
+    releases: [
+      {
+        id: 'rel-1',
+        title: 'Aurora',
+        type: 'EP',
+        releaseDate: '2026-10-20',
+        artworkUrl: null,
+        smartLinkSlug: 'aurora',
+        artistDisplayName: 'Northern Lights',
+        artistUsername: 'northern-lights',
+      },
+      {
+        id: 'rel-2',
+        title: 'Harbour Lights',
+        type: 'ALBUM',
+        releaseDate: '2026-10-12',
+        artworkUrl: null,
+        smartLinkSlug: 'harbour-lights',
+        artistDisplayName: 'Kasari',
+        artistUsername: 'kasari',
+      },
+      {
+        id: 'rel-3',
+        title: 'First Frost',
+        type: 'SINGLE',
+        releaseDate: '2026-10-02',
+        artworkUrl: null,
+        smartLinkSlug: 'first-frost',
+        artistDisplayName: 'Revontuli',
+      },
+    ],
+    emptyMessage: 'No releases published yet.',
+    canMoveUp: true,
+    canMoveDown: true,
+  },
+};
+
+/** Random track: one track from the chosen genres, genre pills and a
+ * re-roll in the toolbar. */
+export const RandomTrack: Story = {
+  args: {
+    id: 'random-track',
+    title: 'Random track',
+    loading: false,
+    items: [moreTracks[2]],
+    emptyMessage: 'No tracks in these genres yet.',
+    canMoveUp: true,
+    canMoveDown: true,
+    toolbar: (
+      <RandomTrackGenres
+        genres={['Ambient', 'Downtempo']}
+        onChange={() => {}}
+        onShuffle={() => {}}
+      />
+    ),
   },
 };
