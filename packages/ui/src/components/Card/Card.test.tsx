@@ -59,4 +59,17 @@ describe('Card', () => {
     expect(screen.getByTestId('card')).not.toHaveAttribute('data-playing');
     expect(screen.getByTestId('card')).not.toHaveClass('ring-inset');
   });
+  it('shows an artwork overlay alongside the playback control', () => {
+    render(
+      <Card
+        title="Night Drive"
+        artworkOverlay={<span>EP</span>}
+        onPlay={() => undefined}
+      />,
+    );
+    expect(screen.getByText('EP')).toBeVisible();
+    expect(
+      screen.getByRole('button', { name: 'Play', exact: true }),
+    ).toBeInTheDocument();
+  });
 });

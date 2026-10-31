@@ -18,7 +18,7 @@ const meta: Meta<typeof ListenView> = {
     docs: {
       description: {
         component:
-          'The home Listen page (`/`) with its Listen / Feed / History section tabs. Listen shows Tahti Radio, recently played, internet radio, On air channels, new tracks, listener widgets and the disco widgets; signed-in listeners also get the widget store. The Order toggle in the header shows a drag handle on every section and widget; a widget added from the store goes to the top.',
+          'The home Listen page (`/`) with its Listen / Feed / History section tabs. Listen shows Tahti Radio, recently played beside Tahti Selects, playable releases with type pills, internet radio, On air channels, new tracks, listener widgets and the disco widgets; signed-in listeners also get the widget store. The Order toggle in the header shows a drag handle on every section and widget; a widget added from the store goes to the top.',
       },
     },
   },
@@ -45,6 +45,15 @@ export const SignedIn: Story = {
         expect(
           dashboard.getByRole('heading', { name: 'New tracks' }),
         ).toBeVisible(),
+      );
+    });
+
+    await step('release cards offer playback and a type pill', async () => {
+      const releases = within(await canvas.findByTestId('listen-new-releases'));
+      await expect(await releases.findByText('EP')).toBeInTheDocument();
+      await expect(releases.getByTestId('media-artwork-play')).toHaveAttribute(
+        'aria-label',
+        'Play Night Drive',
       );
     });
 

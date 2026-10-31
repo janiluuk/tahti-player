@@ -264,6 +264,14 @@ describe('ListenView block order', () => {
     returningListener();
     await renderListen();
     expect(blockIds().slice(0, 2)).toEqual(['tahti-radio', 'recently-played']);
+    const paired = within(screen.getByTestId('listen-history-selects'));
+    expect(
+      paired.getByRole('heading', { name: 'Recently played' }),
+    ).toBeTruthy();
+    expect(
+      await paired.findByRole('heading', { name: 'Tahti Selects' }),
+    ).toBeTruthy();
+    expect(blockIds()).not.toContain('selects');
   });
 
   it('puts a widget added from the store above every section', async () => {
@@ -310,7 +318,9 @@ describe('ListenView block order', () => {
     const ids = blockIds();
     expect(ids[0]).toBe('radio');
     expect(ids[1]).toBe('news');
-    expect(ids.indexOf('tahti-radio')).toBeLessThan(ids.indexOf('selects'));
+    expect(ids.indexOf('tahti-radio')).toBeLessThan(
+      ids.indexOf('recently-played'),
+    );
     expect(ids.indexOf('new-tracks')).toBeGreaterThan(
       ids.indexOf('tahti-radio'),
     );

@@ -1,18 +1,21 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
-import { Card, CardsRow } from '@tahti-player/ui';
+import { Badge, Card, CardsRow } from '@tahti-player/ui';
 
-import type { FetchMeta } from '../../api/client';
+import { fetchSmartLink, type FetchMeta } from '../../api/client';
 import { fetchTahtiSelects, fetchTopTracks } from '../../api/discover';
 import {
   fetchLatestReleases,
   type LatestRelease,
 } from '../../api/latest-releases';
 import { isForceMock } from '../../api/mode';
-import type { DiscoverTrackItem } from '../../api/types';
+import type { DiscoverTrackItem, TahtiPlayable } from '../../api/types';
 import { useDiscoverTrackPlayback } from '../../hooks/useDiscoverTrackPlayback';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
+import { usePlayerStore } from '../../stores/playerStore';
+import { smartLinkPlayables } from '../../views/smart-link/smartLinkTracks';
 import { ListenSection } from './ListenSection';
 import type { ListenSectionStatus } from './useListenSections';
 
@@ -186,10 +189,56 @@ type ReleaseRowItem = { id: string; title: string; release: LatestRelease };
 function ReleaseCard({ release }: { release: LatestRelease }) {
   const navigate = useNavigate();
   const type = releaseTypeLabel(release.type);
+  const [playables, setPlayables] = useState<TahtiPlayable[]>([]);
+  const [loading, setLoading] = useState(false);
+  const currentId = usePlayerStore((state) => state.currentId);
+  const status = usePlayerStore((state) => state.status);
+  const setStatus = usePlayerStore((state) => state.setStatus);
+  const playFromList = usePlayerStore((state) => state.playFromList);
+  const current = playables.some((track) => track.id === currentId);
+  const isPlaying = current && (status === 'playing' || status === 'loading');
+  const togglePlay = async () => {
+    if (loading) {
+      return;
+    }
+    if (current) {
+      setStatus(isPlaying ? 'paused' : 'playing');
+      return;
+    }
+    setLoading(true);
+    try {
+      const tracks =
+        playables.length > 0
+          ? playables
+          : smartLinkPlayables(
+              (await fetchSmartLink(release.smartLinkSlug)).data,
+            );
+      setPlayables(tracks);
+      if (tracks.length === 0) {
+        toast.info('No playable tracks are available for this release.');
+        return;
+      }
+      playFromList(tracks, 0);
+    } catch {
+      toast.error('Could not load this release. Try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <Card
       surface="neutral"
       src={release.artworkUrl ?? placeholderArtworkUrl(release.id)}
+      artworkOverlay={
+        <Badge variant="pill" color="secondary">
+          {type}
+        </Badge>
+      }
+      onPlay={() => void togglePlay()}
+      playLabel={`Play ${release.title}`}
+      pauseLabel={`Pause ${release.title}`}
+      playDisabled={loading}
+      isPlaying={isPlaying}
       title={
         <Link
           to="/r/$slug"
@@ -206,10 +255,10 @@ function ReleaseCard({ release }: { release: LatestRelease }) {
             params={{ username: release.artistUsername }}
             className="hover:underline"
           >
-            {`${type} · ${release.artistDisplayName}`}
+            {release.artistDisplayName}
           </Link>
         ) : (
-          `${type} · ${release.artistDisplayName}`
+          release.artistDisplayName
         )
       }
       onClick={() =>

@@ -8,6 +8,7 @@ import { MediaArtwork } from '../MediaArtwork';
 type CardProps = {
   src?: string;
   image?: ReactNode;
+  artworkOverlay?: ReactNode;
   title?: ReactNode;
   subtitle?: ReactNode;
   className?: string;
@@ -30,6 +31,7 @@ type CardProps = {
 export const Card: FC<CardProps> = ({
   src,
   image,
+  artworkOverlay,
   title,
   subtitle,
   className,
@@ -116,6 +118,11 @@ export const Card: FC<CardProps> = ({
             }
           />
         )}
+        {artworkOverlay ? (
+          <div className="pointer-events-none absolute top-2 left-2 z-10">
+            {artworkOverlay}
+          </div>
+        ) : null}
       </Box>
 
       {(title || subtitle) && (

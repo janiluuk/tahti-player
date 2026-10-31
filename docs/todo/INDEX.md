@@ -19,6 +19,8 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 ## Engineering backlog (no external blocker)
 
+| open | [listen-paired-rows.md](listen-paired-rows.md) | Pair history and Selects; playable release cards |
+
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | partial | [feed-avatars-random-track-widget.md](feed-avatars-random-track-widget.md) | Random-track widget shipped; feed avatar thumbnails need avatar URLs from the API |
