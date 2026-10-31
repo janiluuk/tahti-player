@@ -5,14 +5,16 @@ import {
   BackButtonLink,
   Badge,
   Button,
-  ButtonLink,
+  CardsRow,
   ExternalLink,
   MediaArtwork,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
+import { RadioRowCard } from '../components/listen-view/RadioRowCard';
 import { PageEmpty } from '../components/PageStates';
+import { RadioStationCoverEditButton } from '../components/RadioStationCover';
 import { StationUnavailableNotice } from '../components/StationUnavailableNotice';
 import {
   RADIO_STATIONS,
@@ -29,9 +31,8 @@ import { usePlayerStore } from '../stores/playerStore';
  * broadcaster's site. */
 export function RadioStationView({ stationId }: { stationId: string }) {
   const base = radioStation(stationId);
-  const override = useListenerWidgetsStore(
-    (s) => s.stationOverrides[stationId],
-  );
+  const stationOverrides = useListenerWidgetsStore((s) => s.stationOverrides);
+  const override = stationOverrides[stationId];
   const onListen = useListenerWidgetsStore((s) =>
     s.enabledStationIds.includes(stationId),
   );
@@ -78,7 +79,9 @@ export function RadioStationView({ stationId }: { stationId: string }) {
     }
     play(playable);
   };
-  const others = RADIO_STATIONS.filter((item) => item.id !== station.id);
+  const others = RADIO_STATIONS.filter((item) => item.id !== station.id).map(
+    (item) => ({ ...item, ...stationOverrides[item.id] }),
+  );
 
   return (
     <ViewShell
@@ -127,7 +130,11 @@ export function RadioStationView({ stationId }: { stationId: string }) {
               </p>
             )}
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div
+            role="group"
+            aria-label="Station controls"
+            className="flex flex-wrap gap-2"
+          >
             <Button type="button" onClick={togglePlay} disabled={!playable}>
               {playing ? 'Pause' : 'Play'}
             </Button>
@@ -139,6 +146,12 @@ export function RadioStationView({ stationId }: { stationId: string }) {
             >
               {onListen ? 'Remove from Listen' : 'Add to Listen'}
             </Button>
+            <RadioStationCoverEditButton
+              presentation="button"
+              label={station.name}
+              stationName={base?.name ?? station.name}
+              catalogStationId={station.id}
+            />
           </div>
           {playable ? (
             <StationUnavailableNotice
@@ -166,26 +179,43 @@ export function RadioStationView({ stationId }: { stationId: string }) {
           </div>
         </div>
       </div>
-      <section aria-labelledby="other-stations" className="flex flex-col gap-2">
-        <h2 id="other-stations" className="text-sm font-bold tracking-tight">
-          Other stations
-        </h2>
-        <ul className="flex flex-wrap gap-2">
-          {others.map((item) => (
-            <li key={item.id}>
-              <ButtonLink
-                to="/radio/station/$stationId"
-                params={{ stationId: item.id }}
-                size="sm"
-                variant="secondary"
-                className="rounded-full"
-              >
-                {item.name}
-              </ButtonLink>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <CardsRow
+        title="Other stations"
+        data-testid="other-stations"
+        items={others.map((item) => ({
+          id: `radio-widget:${item.id}`,
+          title: item.name,
+          kind: 'catalog' as const,
+          station: item,
+        }))}
+        labels={{
+          filterPlaceholder: 'Filter stations…',
+          nothingFound: 'No stations match that filter.',
+        }}
+        renderItem={(item) => {
+          const isPlaying =
+            currentId === item.id &&
+            (status === 'playing' || status === 'loading');
+          return (
+            <RadioRowCard
+              item={item}
+              isPlaying={isPlaying}
+              onPlay={() => {
+                if (currentId === item.id) {
+                  setStatus(isPlaying ? 'paused' : 'playing');
+                } else if (item.station.streamUrl) {
+                  play(
+                    radioStationPlayable({
+                      ...item.station,
+                      streamUrl: item.station.streamUrl,
+                    }),
+                  );
+                }
+              }}
+            />
+          );
+        }}
+      />
     </ViewShell>
   );
 }

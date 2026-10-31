@@ -70,7 +70,6 @@ function radioItemPlayable(
 
 export function RadioStationsRow({
   presets,
-  setPresets,
   onRetry,
   ownStations = [],
   signedIn,
@@ -241,13 +240,6 @@ export function RadioStationsRow({
                 isPlaying={isActive(item.id)}
                 nowPlaying={nowPlayingFor(item)}
                 onPlay={() => togglePlay(item.id)}
-                onCoverChange={(presetId, iconUrl) =>
-                  setPresets((current) =>
-                    current.map((entry) =>
-                      entry.id === presetId ? { ...entry, iconUrl } : entry,
-                    ),
-                  )
-                }
                 onRemove={(station) =>
                   setPendingRemoval({ id: station.id, label: station.name })
                 }

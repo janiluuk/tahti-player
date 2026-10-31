@@ -27,6 +27,7 @@ import { ProfileSection } from '../ProfileSection';
 import { ShowEpisodeList } from '../ShowEpisodeList';
 import { SocialLinkIcon } from '../SocialLinkIcon';
 import { Eyebrow } from '../tahti/Eyebrow';
+import { ChannelCatalogSections } from './ChannelCatalogSections';
 import type { ChannelTrackMeta } from './channelTrackMeta';
 import { RadioProgrammingGrid } from './RadioProgrammingGrid';
 import type { ChannelSection, ChannelSectionStatus } from './useChannelData';
@@ -101,27 +102,36 @@ export function renderChannelBlock(
       const hasTracks =
         ctx.pinnedPlayables.length > 0 || ctx.catalogPlayables.length > 0;
       return (
-        <ProfileSection
-          id="channel-block-sound"
-          className="gap-4"
-          title={editing ? undefined : 'Tracks'}
-          status={ctx.sectionStatus.sounds}
-          loadingLabel="Loading tracks…"
-          errorTitle="Tracks couldn't load"
-          errorDescription="The rest of the channel still works."
-          onRetry={() => ctx.onRetrySection('sounds')}
-          empty={
-            hasTracks
-              ? null
-              : {
-                  title: 'No public tracks yet',
-                  description:
-                    'When this channel publishes tracks, they show up here. Offline listening still works from Discover and Radio.',
-                }
-          }
-        >
-          <ChannelTrackRows ctx={ctx} />
-        </ProfileSection>
+        <>
+          <ProfileSection
+            id="channel-block-sound"
+            className="gap-4"
+            title={editing ? undefined : 'Tracks'}
+            status={ctx.sectionStatus.sounds}
+            loadingLabel="Loading tracks…"
+            errorTitle="Tracks couldn't load"
+            errorDescription="The rest of the channel still works."
+            onRetry={() => ctx.onRetrySection('sounds')}
+            empty={
+              hasTracks
+                ? null
+                : {
+                    title: 'No public tracks yet',
+                    description:
+                      'When this channel publishes tracks, they show up here. Offline listening still works from Discover and Radio.',
+                  }
+            }
+          >
+            <ChannelTrackRows ctx={ctx} />
+          </ProfileSection>
+          {channel.channelKind === 'RADIO' ? null : (
+            <ChannelCatalogSections
+              username={channel.user.username}
+              displayName={channel.user.displayName}
+              channelSlug={slug}
+            />
+          )}
+        </>
       );
     }
     case 'chat':

@@ -116,7 +116,11 @@ export function GallerySection({ kit }: { kit: PressKitState }) {
           </div>
         </div>
         <Dialog.Actions>
-          <Button disabled={busy} onClick={() => setGalleryUploadOpen(false)}>
+          <Button
+            disabled={busy}
+            variant="secondary"
+            onClick={() => setGalleryUploadOpen(false)}
+          >
             Done
           </Button>
         </Dialog.Actions>

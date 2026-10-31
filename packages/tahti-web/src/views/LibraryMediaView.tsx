@@ -1,9 +1,8 @@
-import { ImageIcon, PlayIcon, Trash2Icon, VideoIcon } from 'lucide-react';
+import { PlayIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
-  Badge,
   Button,
   ExternalLink,
   FilterChips,
@@ -18,6 +17,7 @@ import {
 } from '../api/user-media';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { LibraryFilteredEmpty } from '../components/library/LibraryFilteredEmpty';
+import { LibraryItemRow } from '../components/library/LibraryItemRow';
 import { LibrarySectionToolbar } from '../components/library/LibrarySectionToolbar';
 import { LibrarySortSelect } from '../components/library/LibrarySortSelect';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
@@ -147,86 +147,64 @@ export function LibraryMediaView() {
               }}
             />
           ) : (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="divide-border divide-y">
               {visibleFiles.map((file) => {
                 const isVideo = file.contentType.startsWith('video/');
                 return (
-                  <article
-                    key={file.id}
-                    className="border-border overflow-hidden rounded-lg border"
-                  >
-                    <div className="bg-background-secondary relative aspect-video">
-                      {isVideo ? (
-                        <video
-                          src={file.url}
-                          controls
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <ImageReveal
-                          src={file.url}
-                          alt=""
-                          className="h-full w-full"
-                        />
-                      )}
-                      <Badge
-                        variant="pill"
-                        color="secondary"
-                        className="bg-background/80 absolute top-2 left-2 text-[10px] uppercase backdrop-blur-sm"
-                      >
-                        {isVideo ? (
-                          <VideoIcon
-                            size={12}
-                            className="mr-1 inline"
-                            aria-hidden
+                  <li key={file.id}>
+                    <LibraryItemRow
+                      artwork={
+                        isVideo ? (
+                          <video
+                            src={file.url}
+                            controls
+                            className="border-border h-16 w-28 rounded-md border object-cover"
                           />
                         ) : (
-                          <ImageIcon
-                            size={12}
-                            className="mr-1 inline"
-                            aria-hidden
+                          <ImageReveal
+                            src={file.url}
+                            alt=""
+                            className="border-border size-16 rounded-md border object-cover"
                           />
-                        )}
-                        {isVideo ? 'Video' : 'Image'}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-2 p-3">
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold">
-                          {file.filename}
-                        </p>
-                        <p className="text-foreground-secondary text-xs">
-                          {formatBytes(file.sizeBytes)}
-                        </p>
-                      </div>
-                      <Tooltip content="Open preview" side="top">
-                        <ExternalLink
-                          href={file.url}
-                          aria-label={`Open ${file.filename}`}
-                          className="text-foreground-secondary no-underline"
-                        >
-                          <PlayIcon size={16} aria-hidden />
-                        </ExternalLink>
-                      </Tooltip>
-                      <Tooltip content={`Remove ${file.filename}`} side="top">
-                        <Button
-                          size="icon-sm"
-                          variant="text"
-                          aria-label={`Remove ${file.filename}`}
-                          onClick={() => setPendingRemove(file)}
-                        >
-                          <Trash2Icon
-                            size={16}
-                            className="text-accent-red-strong"
-                            aria-hidden
-                          />
-                        </Button>
-                      </Tooltip>
-                    </div>
-                  </article>
+                        )
+                      }
+                      title={file.filename}
+                      subtitle={`${isVideo ? 'Video' : 'Image'} · ${formatBytes(file.sizeBytes)}`}
+                      actions={
+                        <>
+                          <Tooltip content="Open preview" side="top">
+                            <ExternalLink
+                              href={file.url}
+                              aria-label={`Open ${file.filename}`}
+                              className="text-foreground-secondary no-underline"
+                            >
+                              <PlayIcon size={16} aria-hidden />
+                            </ExternalLink>
+                          </Tooltip>
+                          <Tooltip
+                            content={`Remove ${file.filename}`}
+                            side="top"
+                          >
+                            <Button
+                              size="icon-sm"
+                              variant="text"
+                              aria-label={`Remove ${file.filename}`}
+                              onClick={() => setPendingRemove(file)}
+                            >
+                              <Trash2Icon
+                                size={16}
+                                className="text-accent-red-strong"
+                                aria-hidden
+                              />
+                            </Button>
+                          </Tooltip>
+                        </>
+                      }
+                    />
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           )}
         </div>
       )}

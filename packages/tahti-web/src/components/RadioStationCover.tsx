@@ -38,6 +38,7 @@ type RadioStationCoverEditButtonProps = Omit<RadioStationCoverProps, 'src'> & {
    * button's file picker imperatively, without reaching into its
    * internal `inputRef`. */
   onRegisterOpenPicker?: (open: () => void) => void;
+  presentation?: 'overlay' | 'button';
 };
 
 const openCoverPicker = (
@@ -93,6 +94,7 @@ export const RadioStationCoverEditButton: FC<
   persist = true,
   onCoverChange,
   onRegisterOpenPicker,
+  presentation = 'overlay',
 }) => {
   const user = useAuthStore((state) => state.user);
   const canEdit = canEditRadioStationCover(user);
@@ -115,17 +117,16 @@ export const RadioStationCoverEditButton: FC<
         wrapperClassName="inline-flex"
       >
         <Button
-          variant="text"
-          size="icon-sm"
+          variant={presentation === 'button' ? 'secondary' : 'text'}
+          size={presentation === 'button' ? 'sm' : 'icon-sm'}
           type="button"
           disabled={busy}
           aria-label={`Edit ${label} cover`}
           data-testid="radio-station-cover-edit"
           className={cn(
-            'p-0',
-            'bg-background/80 hover:bg-background/90 disabled:cursor-wait',
-            'opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100',
-            'size-8 rounded-full',
+            'disabled:cursor-wait',
+            presentation === 'overlay' &&
+              'bg-background/80 hover:bg-background/90 size-8 rounded-full p-0 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100',
             className,
           )}
           onClick={(event) => {
@@ -139,6 +140,7 @@ export const RadioStationCoverEditButton: FC<
           ) : (
             <UploadCloudIcon size={18} aria-hidden />
           )}
+          {presentation === 'button' ? 'Edit cover image' : null}
         </Button>
       </Tooltip>
       <HiddenFileInput

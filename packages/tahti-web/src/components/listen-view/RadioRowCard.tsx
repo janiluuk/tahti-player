@@ -14,7 +14,6 @@ import { useImageWithFallback } from '../../hooks/useImageWithFallback';
 import { prefetchListenCardIntent } from '../../lib/intentRoutePrefetch';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { streamFailureLabel } from '../../lib/streamFailure';
-import { RadioStationCoverEditButton } from '../RadioStationCover';
 import { useStationFailure } from '../StationUnavailableNotice';
 import { StationCardSubtitle } from './StationCardSubtitle';
 
@@ -35,7 +34,6 @@ export function RadioRowCard({
   isPlaying,
   nowPlaying,
   onPlay,
-  onCoverChange,
   onRemove,
   favorited,
   onFavorite,
@@ -44,8 +42,7 @@ export function RadioRowCard({
   isPlaying: boolean;
   nowPlaying?: string;
   onPlay: () => void;
-  onCoverChange: (presetId: string, iconUrl: string | null) => void;
-  onRemove: (station: RadioStation) => void;
+  onRemove?: (station: RadioStation) => void;
   favorited?: boolean;
   onFavorite?: () => void;
 }) {
@@ -108,14 +105,6 @@ export function RadioRowCard({
         onPointerEnter={catalogId ? warmRadioRoute : undefined}
         onFocus={catalogId ? warmRadioRoute : undefined}
       >
-        <RadioStationCoverEditButton
-          label={preset.name}
-          stationName={preset.name}
-          catalogStationId={catalogId}
-          presetId={preset.id}
-          className="absolute top-3 left-3 z-10 rounded-full"
-          onCoverChange={(iconUrl) => onCoverChange(preset.id, iconUrl)}
-        />
         <Card
           surface="neutral"
           title={
@@ -160,23 +149,19 @@ export function RadioRowCard({
       onPointerEnter={warmRadioRoute}
       onFocus={warmRadioRoute}
     >
-      <RadioStationCoverEditButton
-        label={station.name}
-        stationName={station.name}
-        catalogStationId={station.id}
-        className="absolute top-3 left-3 z-10 rounded-full"
-      />
-      <Tooltip content={`Remove ${station.name}`} side="top">
-        <Button
-          size="icon-sm"
-          variant="text"
-          aria-label={`Remove ${station.name}`}
-          onClick={() => onRemove(station)}
-          className="bg-background/80 hover:bg-background absolute top-1 right-1 z-10 rounded-full opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-        >
-          <XIcon size={14} aria-hidden />
-        </Button>
-      </Tooltip>
+      {onRemove ? (
+        <Tooltip content={`Remove ${station.name}`} side="top">
+          <Button
+            size="icon-sm"
+            variant="text"
+            aria-label={`Remove ${station.name}`}
+            onClick={() => onRemove(station)}
+            className="bg-background/80 hover:bg-background absolute top-1 right-1 z-10 rounded-full opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+          >
+            <XIcon size={14} aria-hidden />
+          </Button>
+        </Tooltip>
+      ) : null}
       <Card
         surface="neutral"
         title={

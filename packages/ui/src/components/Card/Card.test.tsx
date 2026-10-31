@@ -48,4 +48,15 @@ describe('Card', () => {
       /bg-background-secondary/,
     );
   });
+  it('marks the playing card and clears its highlight when paused', () => {
+    const { rerender } = render(<Card title="Active track" isPlaying />);
+    expect(screen.getByTestId('card')).toHaveAttribute('data-playing', 'true');
+    expect(screen.getByTestId('card')).toHaveClass(
+      'ring-foreground/25',
+      'ring-inset',
+    );
+    rerender(<Card title="Active track" isPlaying={false} />);
+    expect(screen.getByTestId('card')).not.toHaveAttribute('data-playing');
+    expect(screen.getByTestId('card')).not.toHaveClass('ring-inset');
+  });
 });

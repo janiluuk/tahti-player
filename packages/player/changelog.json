@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-10-31T18:00",
+    "description": "Play other radio stations directly from their thumbnails on a station page. Playing cards have a subtle highlight, and board members can edit station covers using a visible button on the station page.",
+    "type": "improvement",
+    "contributors": ["jani"],
+    "tags": [{ "label": "Web", "color": "blue" }]
+  },
+  {
     "date": "2026-10-30T18:00",
     "description": "Recently viewed cover art appears without replaying its loading animation when you navigate back. New covers fade in more quickly, keeping card rows feeling smoother. Choose a full-screen visualization from animated preview tiles instead of a text list.",
     "type": "improvement",

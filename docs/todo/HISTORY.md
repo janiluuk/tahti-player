@@ -1,3 +1,10 @@
+## 2026-10-30 - Shared library row, channel releases, editor empty tracklist
+
+Media, embeds and smart links use one library row. Channel pages show the
+artist releases and playlists grids from the public profile. The collection
+editor's empty tracklist uses `CollectionTrackList`. De-green of real
+primary actions and Studio undo leftovers stay open. tahti-web `0.0.291`.
+
 ## 2026-10-30 - Favourites is a Library tab; signed-out menus stay grayed
 
 Favourites left the sidebar for `/library/favorites`. Opening Library or
@@ -5754,3 +5761,7 @@ Shared ImageReveal retains a bounded cache of 64 loaded artwork images, skips re
 ## 2026-10-30 — Animated visualizer selector
 
 Replaced full-screen visualizer text options with eight animated SVG preview tiles. Preserved accessible names, selection persistence and keyboard activation; reduced-motion previews stay static. Full-screen player tests (10), Storybook browser tests (2), web type check and lint pass.
+
+## 2026-10-31 — PR #1730 CI and radio cards
+
+Fixed the ambiguous pinned-track Storybook assertion. Other stations now use playable cards, cover editing moved from listener-card overlays to the station page, and shared Card/AmbientCard surfaces subtly highlight active playback. Verified 35 web tests, 8 UI tests, 32 Storybook plays, web lint/type checking, and responsive layouts at 320/390/768/1280px.

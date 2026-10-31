@@ -5,15 +5,11 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-} from '@testing-library/react';
+import { act, cleanup, render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { useAuthStore } from '../stores/authStore';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { RadioStationView } from './RadioStationView';
@@ -41,6 +37,8 @@ async function renderStation(stationId: string) {
 describe('RadioStationView', () => {
   beforeEach(() => {
     icy.title = null;
+    usePlayerStore.setState(usePlayerStore.getInitialState());
+    useAuthStore.setState({ user: null });
     useListenerWidgetsStore.setState({
       enabledStationIds: ['ylex'],
       stationOverrides: {},
@@ -58,7 +56,9 @@ describe('RadioStationView', () => {
 
     expect(screen.getByText('Radio Helsinki')).toBeTruthy();
     expect(screen.getByText('MP3 · 256 kbps')).toBeTruthy();
-    expect(await screen.findByText('Artist - Song')).toBeTruthy();
+    expect(
+      await within(screen.getByRole('status')).findByText('Artist - Song'),
+    ).toBeTruthy();
     expect(
       screen.getByText('Programme guide').closest('a')?.getAttribute('href'),
     ).toBe('https://www.radiohelsinki.fi/ohjelmakartta/');
@@ -71,7 +71,12 @@ describe('RadioStationView', () => {
     usePlayerStore.setState({ play, currentId: null });
     await renderStation('radio-helsinki');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Play' }));
+    await userEvent.click(
+      within(screen.getByRole('group', { name: 'Station controls' })).getByRole(
+        'button',
+        { name: 'Play' },
+      ),
+    );
     expect(play).toHaveBeenCalledWith(
       expect.objectContaining({
         kind: 'radio',
@@ -79,10 +84,60 @@ describe('RadioStationView', () => {
       }),
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add to Listen' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Add to Listen' }),
+    );
     expect(useListenerWidgetsStore.getState().enabledStationIds).toContain(
       'radio-helsinki',
     );
+  });
+
+  it('plays and pauses another station from its thumbnail without leaving the page', async () => {
+    useListenerWidgetsStore.setState({
+      stationOverrides: { ylex: { streamUrl: 'https://example.com/ylex.mp3' } },
+    });
+    await renderStation('radio-helsinki');
+    const row = within(screen.getByTestId('other-stations'));
+    const stationCard = row
+      .getByRole('link', { name: 'YleX' })
+      .closest('[data-testid="card"]') as HTMLElement;
+    await userEvent.click(
+      within(stationCard).getByRole('button', { name: 'Play', exact: true }),
+    );
+    expect(usePlayerStore.getState().currentId).toBe('radio-widget:ylex');
+    expect(stationCard.getAttribute('data-playing')).toBe('true');
+    expect(
+      screen.getByRole('heading', { name: 'Radio Helsinki', level: 1 }),
+    ).toBeTruthy();
+    await userEvent.click(
+      within(stationCard).getByRole('button', { name: 'Pause', exact: true }),
+    );
+    expect(usePlayerStore.getState().status).toBe('paused');
+    expect(stationCard.hasAttribute('data-playing')).toBe(false);
+    expect(screen.queryByRole('button', { name: /Edit .* cover/ })).toBeNull();
+  });
+
+  it('shows cover editing on the station page for board members, not on station cards', async () => {
+    useAuthStore.setState({
+      user: {
+        id: 'board-1',
+        email: 'board@tahti.live',
+        username: 'board',
+        displayName: 'Board',
+        role: 'BOARD',
+        isBoard: true,
+      },
+    });
+    await renderStation('radio-helsinki');
+    expect(
+      screen.getByRole('button', { name: 'Edit Radio Helsinki cover' })
+        .textContent,
+    ).toContain('Edit cover image');
+    expect(
+      within(screen.getByTestId('other-stations')).queryByTestId(
+        'radio-station-cover-edit',
+      ),
+    ).toBeNull();
   });
 
   it('uses a listener override for the stream and says when a station is unknown', async () => {

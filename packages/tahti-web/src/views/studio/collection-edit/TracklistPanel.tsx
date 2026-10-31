@@ -1,6 +1,6 @@
 import { TrackTable } from '@tahti-player/ui';
 
-import { PageEmpty } from '../../../components/PageStates';
+import { CollectionTrackList } from '../../../components/CollectionTrackList';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { trackTableLabels } from '../../../lib/trackTableLabels';
 import { useStudioContributions } from '../useStudioContributions';
@@ -41,7 +41,13 @@ export function TracklistPanel({
       </div>
 
       {items.length === 0 ? (
-        <PageEmpty title="No tracks yet — add sound items below." />
+        <CollectionTrackList
+          items={[]}
+          empty={{
+            title: 'No tracks yet',
+            description: 'Add sound items below.',
+          }}
+        />
       ) : (
         <div className="min-h-[200px]">
           <TrackTable

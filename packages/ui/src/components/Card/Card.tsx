@@ -58,6 +58,7 @@ export const Card: FC<CardProps> = ({
   return (
     <div
       data-testid="card"
+      data-playing={isPlaying || undefined}
       data-surface={surface}
       role={onClick && !hasOverlays ? 'button' : undefined}
       tabIndex={onClick && !hasOverlays ? 0 : undefined}
@@ -69,6 +70,7 @@ export const Card: FC<CardProps> = ({
         onClick &&
           !hasOverlays &&
           'hover:translate-x-shadow-x hover:translate-y-shadow-y cursor-pointer hover:shadow-none',
+        isPlaying && 'ring-foreground/25 ring-2 ring-inset',
         className,
       )}
       onClick={hasOverlays ? undefined : onClick}
