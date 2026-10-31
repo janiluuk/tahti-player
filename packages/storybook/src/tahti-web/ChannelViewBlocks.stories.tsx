@@ -50,7 +50,9 @@ export const Tracks: Story = {
     await expect(
       canvas.getAllByTestId('ambient-track-row').length,
     ).toBeGreaterThan(1);
-    await expect(canvas.getByText('Polar Static')).toBeVisible();
+    await expect(
+      canvas.getByRole('heading', { name: 'Polar Static' }),
+    ).toBeVisible();
     await expect(canvas.getByText('Snowline')).toBeVisible();
   },
 };

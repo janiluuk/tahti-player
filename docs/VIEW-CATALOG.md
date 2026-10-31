@@ -38,7 +38,7 @@ desktop views were removed in 2026-10.
 | [History](#history-web)     | (embedded)                 | `src/views/HistoryView.tsx`       | No Story  | Tabs (Stats / Listening history), CalendarHeatmap, ListeningClock, DayOfWeekChart, TopList                                                                                                                             |
 | [Radio](#radio)             | `/radio`                   | `src/views/RadioView.tsx`         | No Story  | Box, Button, Card, CardsRow, Dialog, ImageReveal, MediaArtwork, Tabs, Tooltip — uses `OnAirBadge` (confirmed `Badge` duplicate), see sweep section below; internet radio rows shared with Listen (`RadioStationsRow`, `FavoriteStationsRow`, `AddStationsPanel`)                                                                                      |
 | [Radio Show](#radio-show)   | `/radio/show/$channelSlug` | `src/views/RadioShowView.tsx`     | Has Story | Button, SectionShell, Tabs, Tooltip                                                                                                                                                                                   |
-| Radio Station | `/radio/station/$stationId` | `src/views/RadioStationView.tsx` | Has Story | — (curated external stations from `content/radioStations.ts`; Listen station cards link here) |
+| Radio Station | `/radio/station/$stationId` | `src/views/RadioStationView.tsx` | Has Story | CardsRow, RadioRowCard; playable other stations and a board-only cover-edit button (curated external stations from `content/radioStations.ts`; Listen station cards link here) |
 | Tag search | `/search?tag=` | `src/views/TagSearchView.tsx` | No Story | ViewShell, MediaArtwork, PageStates - public tracks with one tag, reached from the track page's tag chips |
 | [Schedule](#schedule)       | `/schedule`                | `src/views/RadioScheduleView.tsx` | Has Story | Button, Dialog, FilterChips, Input, SaveButton, TabLabel, Tabs, Tooltip — hand-rolled show-type toggle at ~line 700 duplicates `FilterChips` (already used correctly elsewhere in this file), see sweep section below |
 
@@ -345,3 +345,5 @@ To update this catalog:
 2. Cross-reference with `packages/storybook/src/**/*.stories.tsx`
 3. Update Storybook status and candidate flags
 4. Regenerate route links from router config (`packages/tahti-web/src/router.tsx`)
+
+Shared `Card` and `AmbientCard` have `Playing` stories showing the subtle inset highlight used by playable card rows.

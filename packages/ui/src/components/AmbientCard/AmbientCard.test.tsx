@@ -36,4 +36,24 @@ describe('AmbientCard', () => {
     expect(labelTone([20, 24, 40])).toBe('dark');
     expect(labelTone(null)).toBe('dark');
   });
+  it('marks the playing card and clears its highlight when paused', () => {
+    const { rerender } = render(
+      <AmbientCard title="Active track" isPlaying ambientRgb={null} />,
+    );
+    expect(screen.getByTestId('ambient-card')).toHaveAttribute(
+      'data-playing',
+      'true',
+    );
+    expect(screen.getByTestId('ambient-card')).toHaveClass(
+      'ring-foreground/25',
+      'ring-inset',
+    );
+    rerender(
+      <AmbientCard title="Active track" isPlaying={false} ambientRgb={null} />,
+    );
+    expect(screen.getByTestId('ambient-card')).not.toHaveAttribute(
+      'data-playing',
+    );
+    expect(screen.getByTestId('ambient-card')).not.toHaveClass('ring-inset');
+  });
 });

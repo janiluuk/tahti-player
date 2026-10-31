@@ -61,6 +61,7 @@ export const AmbientCard: FC<AmbientCardProps> = ({
   return (
     <div
       data-testid="ambient-card"
+      data-playing={isPlaying || undefined}
       role={onClick && !hasOverlays ? 'button' : undefined}
       tabIndex={onClick && !hasOverlays ? 0 : undefined}
       className={cn(
@@ -68,6 +69,7 @@ export const AmbientCard: FC<AmbientCardProps> = ({
         onClick &&
           !hasOverlays &&
           'hover:translate-x-shadow-x hover:translate-y-shadow-y cursor-pointer hover:shadow-none',
+        isPlaying && 'ring-foreground/25 ring-2 ring-inset',
         className,
       )}
       style={

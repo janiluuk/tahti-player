@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, fn, within } from 'storybook/test';
 
 import { Card } from '@tahti-player/ui';
 
@@ -119,5 +120,19 @@ export const WithAmbientGlow: Story = {
           'Opaque Card chrome cannot host a per-card blur bleed. Use `AmbientCard` for glass + cover-ambient chrome; DirectoryArtistCardGrid still paints a soft collage behind the whole grid.',
       },
     },
+  },
+};
+
+export const Playing: Story = {
+  args: { ...NeutralSurface.args, isPlaying: true, onPlay: fn() },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByTestId('card')).toHaveAttribute(
+      'data-playing',
+      'true',
+    );
+    await expect(
+      canvas.getByRole('button', { name: 'Pause', exact: true }),
+    ).toBeVisible();
   },
 };

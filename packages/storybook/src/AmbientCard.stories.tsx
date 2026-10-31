@@ -118,3 +118,11 @@ export const WithoutCover: Story = {
     ambientRgb: null,
   },
 };
+
+export const Playing: Story = {
+  args: {
+    ...EXAMPLES[0],
+    isPlaying: true,
+    onPlay: () => undefined,
+  },
+};
