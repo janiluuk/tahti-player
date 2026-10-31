@@ -331,29 +331,44 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
         </ListenSection>
       ),
     },
-    ...(recentItems.length > 0
-      ? [
-          {
-            id: 'recently-played',
-            label: 'Recently played',
-            content: (
-              <CardsRow
-                data-testid="listen-recently-played"
-                title="Recently played"
-                badge="History"
-                badgeColor="yellow"
-                items={recentItems}
-                labels={{ ...ROW_LABELS, filterPlaceholder: 'Filter tracks…' }}
-                renderItem={renderRecentItem}
-              />
-            ),
-          },
-        ]
-      : []),
     {
-      id: 'selects',
-      label: 'Tahti Selects',
-      content: <TahtiSelectsRow />,
+      id: recentItems.length > 0 ? 'recently-played' : 'selects',
+      label:
+        recentItems.length > 0
+          ? 'Recently played and Tahti Selects'
+          : 'Tahti Selects',
+      content: (
+        <div className="@container min-w-0">
+          <div
+            data-testid="listen-history-selects"
+            className={
+              recentItems.length > 0
+                ? 'grid min-w-0 grid-cols-1 gap-6 @3xl:grid-cols-2'
+                : 'min-w-0'
+            }
+          >
+            {recentItems.length > 0 ? (
+              <div className="min-w-0">
+                <CardsRow
+                  data-testid="listen-recently-played"
+                  title="Recently played"
+                  badge="History"
+                  badgeColor="yellow"
+                  items={recentItems}
+                  labels={{
+                    ...ROW_LABELS,
+                    filterPlaceholder: 'Filter tracks…',
+                  }}
+                  renderItem={renderRecentItem}
+                />
+              </div>
+            ) : null}
+            <div className="min-w-0">
+              <TahtiSelectsRow />
+            </div>
+          </div>
+        </div>
+      ),
     },
     {
       id: 'new-releases',
