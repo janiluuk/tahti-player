@@ -121,6 +121,8 @@ new surface, one PR per row.
 
 ## Studio functional
 
+- [ ] Undo for adding tracks to a cloud collection: the add answers without
+  the new item's id, so there is nothing to delete.
   - 2026-10-27 (batch 90): release publish toast has Undo (PATCH
     `state: DRAFT`), via shared `lib/undoToast.ts`. The follower notice and
     social post queued on publish are not recalled.
