@@ -71,11 +71,6 @@ export const SUBMENUS = {
       icon: <TrendingUpIcon size={16} />,
     },
     {
-      to: '/studio/governance',
-      labelKey: 'studio.governance',
-      icon: <LandmarkIcon size={16} />,
-    },
-    {
       to: '/studio/updates',
       labelKey: 'studio.posts',
       icon: <NewspaperIcon size={16} />,

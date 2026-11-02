@@ -55,6 +55,7 @@ import { normalizeCollectionStyle } from '../../../content/collectionStyles';
 import { collectionItemToTrack } from '../../../lib/collectionTrackMapping';
 import { playableFromStudioHearthis } from '../../../lib/embedPlayback';
 import { trackTableLabels } from '../../../lib/trackTableLabels';
+import { toastWithUndo } from '../../../lib/undoToast';
 import { usePlayerStore } from '../../../stores/playerStore';
 import { LibrarySectionTabs } from '../../LibraryView';
 import { useStudioContributions } from '../useStudioContributions';
@@ -172,7 +173,16 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
         toast.error(r.error);
         return false;
       }
-      toast.success(success);
+      const { itemId } = r;
+      if (itemId) {
+        toastWithUndo(success, {
+          undo: () => removeStudioCollectionItem(slug, itemId),
+          undoneMessage: 'Removed again.',
+          onUndone: () => void refreshItems(),
+        });
+      } else {
+        toast.success(success);
+      }
       onDone?.();
       await refreshItems();
       return true;

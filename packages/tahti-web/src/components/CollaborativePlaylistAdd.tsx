@@ -4,7 +4,11 @@ import { toast } from 'sonner';
 
 import { Input } from '@tahti-player/ui';
 
-import { addTrackToCollaborativePlaylist } from '../api/catalog-search';
+import {
+  addTrackToCollaborativePlaylist,
+  removeOwnCollaborativeAdd,
+} from '../api/catalog-search';
+import { toastWithUndo } from '../lib/undoToast';
 import { useAuthStore } from '../stores/authStore';
 import { CatalogTrackSearch } from './CatalogTrackSearch';
 import { Eyebrow } from './tahti/Eyebrow';
@@ -51,7 +55,16 @@ export function CollaborativePlaylistAdd({
                 toast.error(result.error);
                 return false;
               }
-              toast.success(`Added ${track.title}.`);
+              const { itemId } = result;
+              if (itemId) {
+                toastWithUndo(`Added ${track.title}.`, {
+                  undo: () => removeOwnCollaborativeAdd(slug, itemId),
+                  undoneMessage: `Removed ${track.title}.`,
+                  onUndone: () => onAdded(),
+                });
+              } else {
+                toast.success(`Added ${track.title}.`);
+              }
               setNote('');
               onAdded();
               return true;

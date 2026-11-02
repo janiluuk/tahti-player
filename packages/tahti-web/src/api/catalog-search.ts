@@ -1,4 +1,4 @@
-import { getJson, mutate } from './http';
+import { getJson, sendJson } from './http';
 import { isForceMock } from './mode';
 
 export type CatalogTrack = {
@@ -76,14 +76,38 @@ export async function addTrackToCollaborativePlaylist(
   slug: string,
   soundId: string,
   note?: string,
+): Promise<{ ok: true; itemId: string | null } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    return { ok: true, itemId: null };
+  }
+  const trimmed = note?.trim();
+  try {
+    const item = await sendJson<{ id?: string } | null>(
+      `/api/v1/collections/${encodeURIComponent(slug)}/items`,
+      'POST',
+      { soundId, ...(trimmed ? { note: trimmed } : {}) },
+    );
+    return { ok: true, itemId: item?.id ?? null };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : 'Failed' };
+  }
+}
+
+/** Takes back a track you added to someone's collaborative playlist. */
+export async function removeOwnCollaborativeAdd(
+  slug: string,
+  itemId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (isForceMock()) {
     return { ok: true };
   }
-  const trimmed = note?.trim();
-  return mutate(
-    `/api/v1/collections/${encodeURIComponent(slug)}/items`,
-    'POST',
-    { soundId, ...(trimmed ? { note: trimmed } : {}) },
-  );
+  try {
+    await sendJson(
+      `/api/v1/collections/${encodeURIComponent(slug)}/items/${encodeURIComponent(itemId)}`,
+      'DELETE',
+    );
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : 'Failed' };
+  }
 }

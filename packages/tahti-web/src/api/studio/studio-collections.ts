@@ -201,7 +201,7 @@ export async function addStudioCollectionItem(
     | string
     | { soundId: string; releaseId?: never }
     | { releaseId: string; soundId?: never },
-): Promise<{ ok: true } | { ok: false; error: string }> {
+): Promise<{ ok: true; itemId: string | null } | { ok: false; error: string }> {
   const body =
     typeof item === 'string'
       ? { soundId: item }
@@ -209,14 +209,17 @@ export async function addStudioCollectionItem(
         ? { soundId: item.soundId }
         : { releaseId: item.releaseId };
   if (isForceMock()) {
-    return { ok: true };
+    return { ok: true, itemId: null };
   }
   try {
-    await requestJson(`/api/me/collections/${encodeURIComponent(slug)}/items`, {
-      method: 'POST',
-      body: JSON.stringify(body),
-    });
-    return { ok: true };
+    const created = await requestJson<{ id?: string } | null>(
+      `/api/me/collections/${encodeURIComponent(slug)}/items`,
+      {
+        method: 'POST',
+        body: JSON.stringify(body),
+      },
+    );
+    return { ok: true, itemId: created.data?.id ?? null };
   } catch (err) {
     return {
       ok: false,
