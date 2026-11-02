@@ -11,6 +11,7 @@ import {
 } from '../../api/community-stories';
 import { storyDate } from '../../lib/storyDate';
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
+import { CommunityStoryDialog } from './CommunityStoryDialog';
 
 type Load =
   | { state: 'loading' }
@@ -22,6 +23,7 @@ type Load =
 export function CommunityStoriesWidget({ onRemove }: { onRemove: () => void }) {
   const [load, setLoad] = useState<Load>({ state: 'loading' });
   const [attempt, setAttempt] = useState(0);
+  const [openId, setOpenId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -83,45 +85,56 @@ export function CommunityStoriesWidget({ onRemove }: { onRemove: () => void }) {
   }
 
   return (
-    <StoryRow
-      title="Community stories"
-      actions={removeButton}
-      data-testid="community-stories"
-    >
-      {load.stories.map((story, index) => (
-        <StoryCard
-          key={story.id}
-          index={index}
-          imageSrc={story.imageUrl}
-          meta={[
-            POST_CATEGORY_LABELS[story.category] ?? 'Story',
-            storyDate(story.publishAt),
-          ]
-            .filter(Boolean)
-            .join(' · ')}
-          title={
-            <Link
-              to="/u/$username"
-              params={{ username: story.author.username }}
-              className="hover:underline"
-            >
-              {story.title ?? story.excerpt}
-            </Link>
-          }
-          excerpt={story.title ? story.excerpt : undefined}
-          authorName={story.author.displayName || story.author.username}
-          authorAvatarSrc={story.author.avatarUrl}
-          renderAuthor={(row) => (
-            <Link
-              to="/u/$username"
-              params={{ username: story.author.username }}
-              className="hover:text-foreground w-fit"
-            >
-              {row}
-            </Link>
-          )}
-        />
-      ))}
-    </StoryRow>
+    <>
+      <StoryRow
+        title="Community stories"
+        actions={removeButton}
+        data-testid="community-stories"
+      >
+        {load.stories.map((story, index) => (
+          <StoryCard
+            key={story.id}
+            index={index}
+            imageSrc={story.imageUrl}
+            meta={[
+              POST_CATEGORY_LABELS[story.category] ?? 'Story',
+              storyDate(story.publishAt),
+            ]
+              .filter(Boolean)
+              .join(' · ')}
+            title={
+              <Button
+                variant="text"
+                size="flexible"
+                className="h-auto p-0 text-left text-lg leading-snug font-bold whitespace-normal hover:bg-transparent hover:underline active:scale-100"
+                onClick={() => setOpenId(story.id)}
+              >
+                {story.title ?? story.excerpt}
+              </Button>
+            }
+            onOpen={() => setOpenId(story.id)}
+            openLabel={`Read ${story.title ?? 'story'}`}
+            excerpt={story.title ? story.excerpt : undefined}
+            authorName={story.author.displayName || story.author.username}
+            authorAvatarSrc={story.author.avatarUrl}
+            renderAuthor={(row) => (
+              <Link
+                to="/u/$username"
+                params={{ username: story.author.username }}
+                className="hover:text-foreground w-fit"
+              >
+                {row}
+              </Link>
+            )}
+          />
+        ))}
+      </StoryRow>
+      <CommunityStoryDialog
+        stories={load.stories}
+        openId={openId}
+        onOpen={setOpenId}
+        onClose={() => setOpenId(null)}
+      />
+    </>
   );
 }

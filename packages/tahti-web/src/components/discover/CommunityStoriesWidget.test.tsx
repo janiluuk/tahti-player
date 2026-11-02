@@ -1,5 +1,11 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as api from '../../api/community-stories';
@@ -69,5 +75,55 @@ describe('CommunityStoriesWidget', () => {
     });
     render(<CommunityStoriesWidget onRemove={vi.fn()} />);
     expect(await screen.findByText('resonant')).toBeTruthy();
+  });
+
+  it('opens a story in a dialog with the other community updates', async () => {
+    const second: api.CommunityStory = {
+      ...story,
+      id: 's2',
+      title: 'Thank you for 2000 downloads',
+      category: 'ANNOUNCEMENT',
+    };
+    vi.spyOn(api, 'fetchCommunityStories').mockResolvedValue({
+      data: [story, second],
+      meta: { source: 'api' },
+    });
+    const fetchStory = vi
+      .spyOn(api, 'fetchCommunityStory')
+      .mockImplementation(async (id) => ({
+        data: {
+          ...(id === 's1' ? story : second),
+          body:
+            id === 's1'
+              ? 'First **bold** paragraph.\n\nSecond one.'
+              : 'Thanks!',
+          images: [],
+          linkUrl: id === 's1' ? 'https://example.com' : null,
+          linkLabel: id === 's1' ? 'Shop' : null,
+        },
+        meta: { source: 'api' },
+      }));
+    render(<CommunityStoriesWidget onRemove={vi.fn()} />);
+    fireEvent.click(
+      await screen.findByRole('button', {
+        name: 'Hi, I make the flutes you hear here',
+      }),
+    );
+    const dialog = await screen.findByTestId('community-story');
+    expect(
+      await within(dialog).findByText('First bold paragraph.'),
+    ).toBeTruthy();
+    expect(within(dialog).getByText('Second one.')).toBeTruthy();
+    expect(within(dialog).getByRole('link', { name: /Shop/ })).toBeTruthy();
+    const more = within(dialog).getByRole('region', {
+      name: 'More community updates',
+    });
+    fireEvent.click(
+      within(more).getByRole('button', {
+        name: /Thank you for 2000 downloads/,
+      }),
+    );
+    expect(fetchStory).toHaveBeenLastCalledWith('s2');
+    expect(await within(dialog).findByText('Thanks!')).toBeTruthy();
   });
 });

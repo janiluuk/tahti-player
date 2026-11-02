@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { StoryCard } from './StoryCard';
 
@@ -58,5 +58,21 @@ describe('StoryCard', () => {
     render(<StoryCard meta="Story" title="Hello" authorName="aurora" />);
     expect(screen.queryByTestId('story-card-avatar-cover')).toBeNull();
     expect(screen.getAllByText('A').length).toBeGreaterThan(0);
+  });
+
+  it('opens the story from its image when onOpen is given', () => {
+    const onOpen = vi.fn();
+    render(
+      <StoryCard
+        imageSrc="https://example.com/a.jpg"
+        meta="News"
+        title="Hello"
+        authorName="Aurora"
+        onOpen={onOpen}
+        openLabel="Read Hello"
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Read Hello' }));
+    expect(onOpen).toHaveBeenCalledOnce();
   });
 });

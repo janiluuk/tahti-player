@@ -1,6 +1,7 @@
 import { type FC, type ReactNode } from 'react';
 
 import { cn } from '../../utils';
+import { Button } from '../Button';
 import { ImageReveal } from '../ImageReveal';
 
 export type StoryCardProps = {
@@ -18,6 +19,11 @@ export type StoryCardProps = {
   authorAvatarSrc?: string | null;
   /** Wraps the author row, e.g. in a profile link. */
   renderAuthor?: (row: ReactNode) => ReactNode;
+  /** Makes the image open the story (e.g. in a dialog); pass the same
+   * handler to a title button. */
+  onOpen?: () => void;
+  /** Accessible name of the image button, e.g. `Read “Title”`. */
+  openLabel?: string;
   /** Position in a row; staggers the entrance so cards arrive in turn. */
   index?: number;
   className?: string;
@@ -38,6 +44,8 @@ export const StoryCard: FC<StoryCardProps> = ({
   authorName,
   authorAvatarSrc,
   renderAuthor,
+  onOpen,
+  openLabel = 'Read story',
   index = 0,
   className,
   'data-testid': testId = 'story-card',
@@ -111,6 +119,16 @@ export const StoryCard: FC<StoryCardProps> = ({
             />
           )}
         </div>
+        {onOpen && !media ? (
+          <Button
+            variant="text"
+            size="flexible"
+            aria-label={openLabel}
+            data-testid="story-card-open"
+            className="focus-visible:ring-primary absolute inset-0 size-full rounded-xl p-0 hover:bg-transparent focus-visible:ring-2 active:scale-100"
+            onClick={onOpen}
+          />
+        ) : null}
       </div>
       <p className="text-foreground-secondary text-sm">{meta}</p>
       <h3 className="line-clamp-3 text-lg leading-snug font-bold">{title}</h3>
