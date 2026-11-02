@@ -432,6 +432,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Navigation/SidebarNavigation` | `SidebarNavigation.stories.tsx` |
 | `Components/Slider` | `Slider.stories.tsx` |
 | `Components/SortableBlocks` | `SortableBlocks.stories.tsx` |
+| `Media/SoundAudience` | `SoundAudience.stories.tsx` |
 | `Components/StatChip` | `StatChip.stories.tsx` |
 | `Components/StatTile` | `StatTile.stories.tsx` |
 | `Layout/StoryCard` | `StoryCard.stories.tsx` |

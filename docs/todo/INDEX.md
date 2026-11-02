@@ -28,6 +28,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [feed-redesign-community-stories.md](feed-redesign-community-stories.md) | Wide story cards on My feed + Discover Community stories widget built on mocks; waits on the tahti-org stories endpoint PR |
 | open    | [navigation-simplification.md](navigation-simplification.md) | Plan: one tab row per section for Studio (6), Library (5), Admin (6); regroup by context; Co-op sidebar item. Favourites is a Library tab (2026-10-30). The regroup itself is still open |
+| partial | [sound-audience-widget.md](sound-audience-widget.md) | Sound page Collections / Liked / Reposted / Played by widget: Storybook component done; API lists + page wiring left |
 | open    | [channel-store-editor.md](channel-store-editor.md) | Studio editor that puts tracks in the channel page Store section |
 | open    | [navigation-simplification.md](navigation-simplification.md) | Plan: one tab row per section for Studio (6), Library (5), Admin (6); regroup by context; Co-op sidebar item. The six listed bugs shipped in batch 116 |
 | open    | [ux-batch-112-forty-slices.md](ux-batch-112-forty-slices.md) | Forty polish slices: ambient lists, undo toasts, de-green, PageEmpty, search keyboard, usability leftovers |
