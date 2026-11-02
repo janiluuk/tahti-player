@@ -35,7 +35,7 @@ test('homepage article opens with artwork and a humanized publication date', asy
       .getByTestId('news-article')
       .evaluate((el) => el.scrollWidth <= el.clientWidth),
   ).toBe(true);
-  await page.screenshot({ path: '/private/tmp/tahti-news-mobile.png' });
+  await page.screenshot({ path: test.info().outputPath('news-mobile.png') });
   await dialog
     .getByRole('button', { name: 'Close', exact: true })
     .last()
@@ -51,7 +51,11 @@ test('large and medium music rows fit a phone and render real waveforms', async 
   const list = page.getByTestId('ambient-track-list');
   await expect(list).toBeVisible();
   for (const size of ['Large', 'Medium']) {
-    await list.getByRole('radio', { name: size, exact: true }).click();
+    await page
+      .getByRole('button', { name: /^Track size/ })
+      .first()
+      .click();
+    await page.getByRole('menuitemradio', { name: size, exact: true }).click();
     const row = page.getByTestId('ambient-track-row').first();
     await row.scrollIntoViewIfNeeded();
     await expect(row.locator('[data-waveform="peaks"]').first()).toBeVisible();
@@ -63,5 +67,7 @@ test('large and medium music rows fit a phone and render real waveforms', async 
     const bounds = await row.boundingBox();
     expect(waveform!.width).toBeGreaterThan(bounds!.width * 0.85);
   }
-  await page.screenshot({ path: '/private/tmp/tahti-listings-mobile.png' });
+  await page.screenshot({
+    path: test.info().outputPath('listings-mobile.png'),
+  });
 });

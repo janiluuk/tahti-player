@@ -11,12 +11,12 @@ import {
 const movedSettings: RouteVisit[] = [
   {
     path: '/settings/money',
-    heading: /^Audience$/,
+    heading: /^Earnings$/,
     url: /\/studio\/audience\?movedFrom=money$/,
   },
   {
     path: '/settings/fan-subs',
-    heading: /^Audience$/,
+    heading: /^Earnings$/,
     url: /\/studio\/audience\?movedFrom=fan-subs$/,
   },
   {
@@ -26,7 +26,7 @@ const movedSettings: RouteVisit[] = [
   },
   {
     path: '/settings/audience',
-    heading: /^Audience$/,
+    heading: /^Earnings$/,
     url: /\/studio\/audience\?movedFrom=audience$/,
   },
 ];
