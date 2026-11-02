@@ -71,6 +71,9 @@ export async function setAdminVenueVerification(
   slug: string,
   verified: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    return { ok: true };
+  }
   return mutate(
     `/api/admin/venues/${encodeURIComponent(slug)}/${verified ? 'verify' : 'unverify'}`,
     'POST',
