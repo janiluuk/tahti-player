@@ -145,6 +145,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/ClientCapabilityNotice` | `tahti-web/ClientCapabilityNotice.stories.tsx` |
 | `Tahti/Studio/ClipEditorDialog` | `tahti-web/ClipEditorDialog.stories.tsx` |
 | `Tahti/Collection/CollaborativePlaylistAdd` | `tahti-web/CollaborativePlaylistAdd.stories.tsx` |
+| `Tahti/Collections/CollectionPlayerWidget` | `tahti-web/CollectionPlayerWidget.stories.tsx` |
 | `Tahti/Collection/CollectionTrackList` | `tahti-web/CollectionTrackList.stories.tsx` |
 | `Tahti/Collection/CollectionView` | `tahti-web/CollectionView.stories.tsx` |
 | `Tahti/Track/CommentItem` | `tahti-web/CommentItem.stories.tsx` |
@@ -376,6 +377,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/CatalogTable` | `CatalogTable.stories.tsx` |
 | `Components/Checkbox` | `Checkbox.stories.tsx` |
 | `Components/ClampedText` | `ClampedText.stories.tsx` |
+| `Media/CollectionPlayer` | `CollectionPlayer.stories.tsx` |
 | `Components/ColorField` | `ColorField.stories.tsx` |
 | `Components/Combobox` | `Combobox.stories.tsx` |
 | `Components/CopyButton` | `CopyButton.stories.tsx` |

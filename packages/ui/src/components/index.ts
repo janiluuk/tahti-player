@@ -12,6 +12,7 @@ export * from './CardsRow';
 export * from './Checkbox';
 export * from './HorizontalScroll';
 export * from './NewsWidget';
+export * from './CollectionPlayer';
 export * from './ColorField';
 export * from './Combobox';
 export * from './ClampedText';
