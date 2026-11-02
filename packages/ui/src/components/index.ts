@@ -11,6 +11,7 @@ export * from './AmbientCard';
 export * from './CardsRow';
 export * from './Checkbox';
 export * from './HorizontalScroll';
+export * from './NewsCarousel';
 export * from './NewsWidget';
 export * from './ColorField';
 export * from './Combobox';

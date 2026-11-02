@@ -12,6 +12,7 @@ import {
 import {
   BROWSER_STATIONS_BLOCK_ID,
   FAVORITES_BLOCK_ID,
+  LATEST_NEWS_BLOCK_ID,
   NEWS_WIDGET_TYPE_ID,
   newsWidgetsOn,
   useListenerWidgetsStore,
@@ -20,8 +21,8 @@ import {
 import { usePlayerStore } from '../stores/playerStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { FavoritesView } from '../views/FavoritesView';
+import { LatestNewsWidget } from './LatestNewsWidget';
 import { ListenerWidgetEmbed } from './ListenerWidgetEmbed';
-import { NewsFeedWidget } from './NewsFeedWidget';
 import { RemoveWidgetDialog } from './RemoveWidgetDialog';
 
 type PendingRemoval =
@@ -139,11 +140,13 @@ export function useListenerWidgetBlocks(): {
         label: instance.label,
       });
     if (newsIds.has(instance.id)) {
-      blocks.push({
-        id: widgetBlockId(instance.id),
-        label: instance.label,
-        content: <NewsFeedWidget instance={instance} onRemove={onRemove} />,
-      });
+      if (!blocks.some((block) => block.id === LATEST_NEWS_BLOCK_ID)) {
+        blocks.push({
+          id: LATEST_NEWS_BLOCK_ID,
+          label: 'Latest News',
+          content: <LatestNewsWidget surface="listen" />,
+        });
+      }
     } else if (embedInstances.includes(instance)) {
       blocks.push({
         id: widgetBlockId(instance.id),

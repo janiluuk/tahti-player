@@ -63,7 +63,7 @@ import {
   WIDGET_MENU,
 } from '../components/discover/widgetMeta';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
-import { NewsFeedWidget } from '../components/NewsFeedWidget';
+import { LatestNewsWidget } from '../components/LatestNewsWidget';
 import { PageError } from '../components/PageStates';
 import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { VenuesDirectory } from '../components/VenuesDirectory';
@@ -150,7 +150,6 @@ export function DiscoverView() {
   const randomTrackPool = useRef<DiscoverTrackItem[]>([]);
   const newsInstances = useListenerWidgetsStore((s) => s.instances);
   const newsFeeds = newsWidgetsOn(newsInstances, 'discover');
-  const removeNewsFeed = useListenerWidgetsStore((s) => s.removeInstance);
   const play = usePlayerStore((state) => state.play);
   const user = useAuthStore((state) => state.user);
   const isAdmin = hasAccountRole(user, 'BOARD');
@@ -532,14 +531,8 @@ export function DiscoverView() {
         ) : null}
 
         {activeTab === 'discover' && newsFeeds.length > 0 ? (
-          <div className="mb-4 flex flex-col gap-4">
-            {newsFeeds.map((instance) => (
-              <NewsFeedWidget
-                key={instance.id}
-                instance={instance}
-                onRemove={() => removeNewsFeed(instance.id)}
-              />
-            ))}
+          <div className="mb-4">
+            <LatestNewsWidget surface="discover" />
           </div>
         ) : null}
 

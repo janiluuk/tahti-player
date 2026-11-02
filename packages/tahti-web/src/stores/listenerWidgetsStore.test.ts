@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import {
   BROWSER_STATIONS_BLOCK_ID,
+  LATEST_NEWS_BLOCK_ID,
   mergeBlockOrder,
   useListenerWidgetsStore,
   widgetBlockId,
@@ -24,12 +25,22 @@ describe('listener widgets store', () => {
   it('puts a newly added widget first on Listen', () => {
     const store = useListenerWidgetsStore.getState();
     useListenerWidgetsStore.setState({ listenOrder: ['radio', 'news'] });
-    store.addInstance('news', 'https://example.com/feed.xml', 'News');
+    store.addInstance('youtube', 'https://youtu.be/x', 'Clip');
     const { instances, listenOrder } = useListenerWidgetsStore.getState();
     expect(listenOrder).toEqual([
       widgetBlockId(instances[0]!.id),
       'radio',
       'news',
+    ]);
+  });
+
+  it('puts the merged Latest News block first when a feed is added', () => {
+    const store = useListenerWidgetsStore.getState();
+    useListenerWidgetsStore.setState({ listenOrder: ['radio'] });
+    store.addInstance('news', 'https://example.com/feed.xml', 'News');
+    expect(useListenerWidgetsStore.getState().listenOrder).toEqual([
+      LATEST_NEWS_BLOCK_ID,
+      'radio',
     ]);
   });
 

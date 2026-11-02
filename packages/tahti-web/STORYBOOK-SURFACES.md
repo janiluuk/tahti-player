@@ -201,6 +201,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Desktop/JamRemote` | `tahti-web/JamRemote.stories.tsx` |
 | `Tahti/Social/JamView` | `tahti-web/JamView.stories.tsx` |
 | `Tahti/Desktop/KeyCell` | `tahti-web/KeyCell.stories.tsx` |
+| `Tahti/Listen/LatestNewsWidget` | `tahti-web/LatestNewsWidget.stories.tsx` |
 | `Tahti/Reference/Latest view surfaces` | `tahti-web/LatestViewSurfaces.stories.tsx` |
 | `Tahti/Widgets/LegalDocShell` | `tahti-web/LegalDocShell.stories.tsx` |
 | `Tahti/Library/LibraryFavorites` | `tahti-web/LibraryFavorites.stories.tsx` |
@@ -408,6 +409,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/Meter` | `Meter.stories.tsx` |
 | `Components/Mosaic` | `Mosaic.stories.tsx` |
 | `Audio/MultitrackEditor` | `MultitrackEditor.stories.tsx` |
+| `Media/NewsCarousel` | `NewsCarousel.stories.tsx` |
 | `Components/NewsWidget` | `NewsWidget.stories.tsx` |
 | `Components/Pagination` | `Pagination.stories.tsx` |
 | `Audio/PianoRoll` | `PianoRoll.stories.tsx` |
