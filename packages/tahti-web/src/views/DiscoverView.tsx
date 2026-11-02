@@ -442,6 +442,13 @@ export function DiscoverView() {
           </header>
         ) : null}
 
+        {activeTab === 'discover' &&
+        enabledWidgets.includes('community-stories') ? (
+          <CommunityStoriesWidget
+            onRemove={() => removeWidget('community-stories')}
+          />
+        ) : null}
+
         {activeTab === 'discover' ? (
           <div className="flex flex-col gap-3">
             <div
@@ -534,13 +541,6 @@ export function DiscoverView() {
               />
             ))}
           </div>
-        ) : null}
-
-        {activeTab === 'discover' &&
-        enabledWidgets.includes('community-stories') ? (
-          <CommunityStoriesWidget
-            onRemove={() => removeWidget('community-stories')}
-          />
         ) : null}
 
         {activeTab === 'discover' && columnWidgets.length > 0 && (

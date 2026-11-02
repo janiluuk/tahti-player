@@ -86,6 +86,8 @@ export const WideDesktop: Story = {
     const cards = await canvas.findAllByTestId('feed-story');
     await expect(cards.length).toBeGreaterThan(0);
     await expect(cards[0]!.getBoundingClientRect().width).toBeGreaterThan(300);
-    await expect(within(cards[0]!).getByText(/ · /)).toBeVisible();
+    await waitFor(() =>
+      expect(within(cards[0]!).getByText(/ · /)).toBeVisible(),
+    );
   },
 };

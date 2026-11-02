@@ -102,6 +102,13 @@ three wide cards per row. Each card, with no box or border around it:
   the exception once the endpoint appears in a tahti-org release; merge,
   deploy and real-API verification remain outstanding.
 
+- 2026-11-02: Community stories moved to the top of Discover (above the
+  Genres / Types filters). `StoryCard` covers: post image, else the
+  artist's newest public track cover (tahti-org#1035), else the author's
+  avatar blurred behind the round avatar, else the initial on a gradient.
+  Cards fade up in turn and the image zooms slowly on hover (both off with
+  reduced motion). Mock stories have images and avatars.
+
 ## Decisions (2026-10-30)
 
 - Build the tahti-org endpoint (Phase 2.1) on a branch with a PR; no merge

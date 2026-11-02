@@ -88,9 +88,10 @@ export function CommunityStoriesWidget({ onRemove }: { onRemove: () => void }) {
       actions={removeButton}
       data-testid="community-stories"
     >
-      {load.stories.map((story) => (
+      {load.stories.map((story, index) => (
         <StoryCard
           key={story.id}
+          index={index}
           imageSrc={story.imageUrl}
           meta={[
             POST_CATEGORY_LABELS[story.category] ?? 'Story',

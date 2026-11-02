@@ -38,13 +38,13 @@ function mockStories(): CommunityStory[] {
       title: 'My journey: the story behind the mixes',
       excerpt:
         'A name given under a tree, a laptop that overheated, and a love for music that refused to die.',
-      imageUrl: null,
+      imageUrl: '/artwork-presets/artwork-05.webp',
       publishAt: at(26),
       url: '/u/northern-lights',
       author: {
         username: 'northern-lights',
         displayName: 'Northern Lights',
-        avatarUrl: null,
+        avatarUrl: '/mock/northern-lights/cover-first-light.svg',
       },
     },
     {
@@ -53,7 +53,7 @@ function mockStories(): CommunityStory[] {
       title: 'Hi, I make the flutes you hear here',
       excerpt:
         'I make native-style flutes by hand and record music with them. A short hello and what you will find on this page.',
-      imageUrl: null,
+      imageUrl: '/artwork-presets/artwork-11.webp',
       publishAt: at(30),
       url: '/u/resonant-crafts',
       author: {
@@ -70,8 +70,12 @@ function mockStories(): CommunityStory[] {
         'Dear people of online sonic adventures, thanks for your support. I hope you are enjoying every drop of the mixes.',
       imageUrl: null,
       publishAt: at(24 * 3),
-      url: '/u/kasari',
-      author: { username: 'kasari', displayName: 'Kasari', avatarUrl: null },
+      url: '/u/dj-moonlight',
+      author: {
+        username: 'dj-moonlight',
+        displayName: 'DJ Moonlight',
+        avatarUrl: '/mock/dj-moonlight/avatar.svg',
+      },
     },
   ];
 }
