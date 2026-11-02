@@ -13,3 +13,7 @@ Requested 2026-10-30. The random-track widget shipped (see the worklog, 0.0.285)
   (incl. `/loved`) and the news posts return no artist/author avatar URL.
   Add one in `../tahti-org` first, then render it in `WidgetTrackRow` and the
   news cards.
+- 2026-11-02: tahti-org#1036 adds `artistAvatarUrl` to top lists, the loved
+  list and latest tracks; Discover widget rows show it beside the artist
+  name (the Tahti Selects / new-to-you rows follow when their routes send
+  it). Left: news cards.

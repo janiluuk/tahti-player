@@ -890,6 +890,11 @@ function buildMockTrackDetail(id: string): PublicTrackDetail | null {
   };
 }
 
+const MOCK_ARTIST_AVATARS: Record<string, string> = {
+  'northern-lights': '/mock/northern-lights/cover-first-light.svg',
+  'dj-moonlight': '/mock/dj-moonlight/avatar.svg',
+};
+
 function soundItemToDiscoverTrack(
   item: ChannelSoundItem,
   channelSlug: string,
@@ -900,6 +905,7 @@ function soundItemToDiscoverTrack(
     title: item.title,
     artist: item.artistName ?? channelSlug,
     artistUsername: channelSlug,
+    artistAvatarUrl: MOCK_ARTIST_AVATARS[channelSlug] ?? null,
     channelSlug,
     coverUrl: item.bannerUrl,
     durationSec: item.durationSec,

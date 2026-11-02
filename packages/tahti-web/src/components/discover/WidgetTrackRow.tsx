@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { HeartIcon, MusicIcon } from 'lucide-react';
 
-import { MediaArtwork } from '@tahti-player/ui';
+import { ImageReveal, MediaArtwork } from '@tahti-player/ui';
 
 import type { DiscoverTrackItem } from '../../api/types';
 import { useDiscoverTrackPlayback } from '../../hooks/useDiscoverTrackPlayback';
@@ -70,8 +70,16 @@ export function WidgetTrackRow({
       />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-medium">{item.title}</span>
-        <span className="text-foreground-secondary block truncate text-xs">
-          {item.artist}
+        <span className="text-foreground-secondary flex min-w-0 items-center gap-1.5 text-xs">
+          {item.artistAvatarUrl ? (
+            <ImageReveal
+              src={item.artistAvatarUrl}
+              alt=""
+              className="bg-background-secondary size-4 shrink-0 rounded-full"
+              imgClassName="object-cover"
+            />
+          ) : null}
+          <span className="truncate">{item.artist}</span>
         </span>
       </span>
       {item.listens !== undefined && (
