@@ -51,6 +51,16 @@ export async function signInAsBoard(page: Page): Promise<void> {
 
 /** Dismisses the community guidelines toast when it covers the page. */
 export async function acknowledgeGuidelines(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    try {
+      localStorage.setItem(
+        'tahti-web-mock-notifications-dismissed',
+        JSON.stringify(['notification-mock-sticky-policy']),
+      );
+    } catch {
+      return;
+    }
+  });
   const acknowledge = page.getByRole('button', { name: 'Acknowledge' });
   if (await acknowledge.isVisible()) {
     await acknowledge.click();

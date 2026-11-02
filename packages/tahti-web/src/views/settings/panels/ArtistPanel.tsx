@@ -209,13 +209,11 @@ export function ArtistPanel() {
       ...nameplatePatch(profile),
     }).then((result) => {
       setBusy(false);
-      setMsg(result.ok ? 'Artist info saved.' : result.error);
+      setMsg(result.ok ? null : result.error);
       if (result.ok) {
         setProfile(result.data);
         void refreshAuth();
         toast.success('Artist info saved.');
-      } else {
-        toast.error(result.error);
       }
     });
   };
