@@ -4,7 +4,7 @@ description: Where the desktop app keeps its files, and what it changes on Linux
 
 # Platform-specific notes
 
-These notes are about the desktop app. The browser version at [beta.tahti.live](https://beta.tahti.live) does not use these folders.
+These notes are about the desktop app. The browser version at [tahti.live](https://tahti.live) does not use these folders.
 
 ## App data
 

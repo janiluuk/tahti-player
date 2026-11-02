@@ -5774,3 +5774,10 @@ tahti-org release `2026-10-30-2` publishes every route the batch 111–120 slice
 
 tahti-org#1038 gives `/api/v1/search` track results `audioUrl` (through the access gate, for the signed-in viewer), `gate`, `artistUsername` and the embed provider/URI. `/search` and `/search?tag=` render tracks with `PlayableAmbientTrackList` (play, queue, love, add to playlist; embed-only tracks play in their widget); members-only and for-sale tracks stay links with a lock label (`SearchTrackResults`). These were the two skipped slices (3, 5) of `ux-batch-112-forty-slices.md`, now folded.
 
+## 2026-11-02 — user guide audit, atlas updated, beta host references removed
+
+- **User manual** (`packages/docs/user-manual`) brought up to date with what merged since 2026-10-28: the seek bar under the controls and the title opening the full-screen player; Loop stations; keep the screen on; visualizer mode previews and the slow tone drift; embedded hearthis.at / Mixcloud tracks playing in their own player above the bar; Community stories on Discover (dialog, Newer / Older), widget avatars, Shift to queue, Random track; search and tag results playing in place; notifications and messages in the account menu with the unread dots; the track page's Collections / Liked / Reposted / Played by tabs; the simpler Studio dashboard; channel designer Revert changes; preset covers (also for imports and recordings) and the cover gallery; the listing toolbar (Track size); Undo after creating a playlist or adding to a release. The Help center's bell wording now points at the account menu.
+- **Screen atlas** (`/more`): Discover, Studio home, track page and tag search cases describe the new behaviour; panes read **Legacy** (the retired Next.js app) and **tahti.live** (this app) instead of Tahti / beta.tahti.live.
+- **beta.tahti.live** references in the manual, Help center, flow diagrams, atlas and e2e run labels now say tahti.live (beta redirects to production since #1706). The admin **Beta** moderation queue (beta applications) is unchanged.
+- **Channel store editor** (#1668) folded; `channel-store-editor.md` removed.
+

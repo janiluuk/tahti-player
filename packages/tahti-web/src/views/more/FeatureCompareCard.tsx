@@ -40,14 +40,14 @@ export function FeatureCompareCard({ row }: { row: FeatureRow }) {
         >
           <div className="flex items-center justify-between gap-2">
             <span className="text-[10px] font-semibold tracking-wide uppercase">
-              Tahti
+              Legacy
               <span className="text-foreground-secondary ml-1 font-normal normal-case">
-                app.tahti.live
+                retired Next.js app
               </span>
             </span>
             {tahtiAbsent ? (
               <Badge variant="pill" color="cyan">
-                beta.tahti.live only
+                tahti.live only
               </Badge>
             ) : null}
           </div>
@@ -68,14 +68,11 @@ export function FeatureCompareCard({ row }: { row: FeatureRow }) {
         >
           <div className="flex items-center justify-between gap-2">
             <span className="text-[10px] font-semibold tracking-wide uppercase">
-              beta.tahti.live
-              <span className="text-foreground-secondary ml-1 font-normal normal-case">
-                beta.tahti.live
-              </span>
+              tahti.live
             </span>
             {nuclearAbsent ? (
               <Badge variant="pill" color="orange">
-                Tahti only
+                Legacy only
               </Badge>
             ) : null}
           </div>

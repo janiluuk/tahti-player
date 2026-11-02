@@ -46,7 +46,7 @@ function commentsToPlainText(comments: MapComment[]): string {
       if (ref) {
         lines.push(`Route: ${ref.route}`);
         if (ref.image) {
-          lines.push(`Screenshot: https://beta.tahti.live${ref.image}`);
+          lines.push(`Screenshot: https://tahti.live${ref.image}`);
         }
       } else if (c.kind === 'feature' && c.feature) {
         lines.push(`Feature: ${c.feature}`);

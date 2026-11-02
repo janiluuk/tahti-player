@@ -11,7 +11,7 @@ Open **Settings → Channel & chat → Channel Designer**, or **Edit design** on
 - Pick a block (releases, tracks, latest, feed, news, player, backdrop) and hide it with the eye button.
 - **Player** sets the stage, visualizer, gradient and now-playing overlay.
 - **Backdrop** sets the header style, a video, image or slideshow backdrop, and page colors.
-- Presets give you a starting look. **Save layout** when you're done.
+- Presets give you a starting look. **Save layout** when you're done, or **Revert changes** to go back to what you last saved.
 
 Other **Channel & chat** tabs: **Discovery** (show or hide the share button), **Username & domain** (rename your channel, or use your own domain), **Chat** (who can chat) and **Moderators**.
 
