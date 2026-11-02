@@ -121,7 +121,3 @@ new surface, one PR per row.
 
 ## Studio functional
 
-- [ ] Undo for a collaborator's add to someone else's collaborative playlist:
-  collaborators can't remove items, so the add can't be taken back (owners'
-  adds have Undo since #1750).
-
