@@ -32,12 +32,8 @@ import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
 import { EmbedSurface } from './EmbedSurface';
 import { useHearthisEmbedClaimed } from './HearthisEmbedHost';
-import { PlayerLiveBadge } from './PlayerSeekBar';
+import { ConnectedSeekBar, PlayerLiveBadge } from './PlayerSeekBar';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
-import { WaveformSeekbar } from './tahti/WaveformSeekbar';
-
-const WAVEFORM_COMPACT = 'h-8';
-const WAVEFORM_EXPANDED = 'h-14';
 
 export function ConnectedPlayerBar() {
   const navigate = useNavigate();
@@ -55,10 +51,6 @@ export function ConnectedPlayerBar() {
   const shuffle = usePlayerStore((s) => s.shuffle);
   const repeatMode = usePlayerStore((s) => s.repeatMode);
   const playerBarVisible = usePlayerStore((s) => s.playerBarVisible);
-  const currentTime = usePlayerStore((s) => s.currentTime);
-  const duration = usePlayerStore((s) => s.duration);
-  const currentPeaks = usePlayerStore((s) => s.currentPeaks);
-  const seekTo = usePlayerStore((s) => s.seekTo);
   const setStatus = usePlayerStore((s) => s.setStatus);
   const setVolume = usePlayerStore((s) => s.setVolume);
   const next = usePlayerStore((s) => s.next);
@@ -75,7 +67,6 @@ export function ConnectedPlayerBar() {
     (s) => s.setFullScreenPlayerOpen,
   );
 
-  const [waveformExpanded, setWaveformExpanded] = useState(false);
   const [signedOutPopoverOpen, setSignedOutPopoverOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const playerBarEnterPlayedRef = useRef(false);
@@ -167,7 +158,6 @@ export function ConnectedPlayerBar() {
         });
       }
     : undefined;
-  const progress = duration > 0 ? currentTime / duration : 0;
   const coverUrl = playable?.coverUrl ?? current?.track.artwork?.items[0]?.url;
 
   const onQueueClick = () => {
@@ -298,28 +288,9 @@ export function ConnectedPlayerBar() {
     </div>
   );
 
-  // Embed-only tracks have no seekable stream — the provider widget is the
-  // transport. Skip the Tahti waveform so the bottom chrome stays a slim
-  // strip instead of waveform + full widget stacking into the workspace.
-  const waveform =
-    isLive || embed ? null : (
-      <div className="px-4 pt-1">
-        <WaveformSeekbar
-          trackId={playable?.id ?? currentId ?? 'none'}
-          progress={progress}
-          peaks={currentPeaks}
-          label={playable?.title}
-          durationSec={duration}
-          onSeek={
-            duration > 0 ? (fraction) => seekTo(fraction * duration) : undefined
-          }
-          className={cn(
-            'w-full transition-[height] duration-200',
-            waveformExpanded ? WAVEFORM_EXPANDED : WAVEFORM_COMPACT,
-          )}
-        />
-      </div>
-    );
+  // Embed-only tracks have no seekable stream: the provider widget is the
+  // transport.
+  const seekBar = isLive || embed ? null : <ConnectedSeekBar />;
 
   const embedHostedInRow =
     embed?.provider === 'hearthis' && hearthisHostedInRow;
@@ -347,7 +318,7 @@ export function ConnectedPlayerBar() {
   if (isMobile) {
     return (
       <div className={barShellClass}>
-        {waveform}
+        {seekBar ? <div className="px-4 pt-2">{seekBar}</div> : null}
         <div className="flex w-full items-center gap-3 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
           {embedPanel}
           <Button
@@ -387,7 +358,6 @@ export function ConnectedPlayerBar() {
 
   return (
     <div className={barShellClass}>
-      {waveform}
       <PlayerBar
         left={
           <div className="flex min-w-0 items-center gap-2">
@@ -415,10 +385,7 @@ export function ConnectedPlayerBar() {
                 coverUrl={coverUrl}
                 action={isRealLive ? <PlayerLiveBadge /> : undefined}
                 onTitleClick={
-                  openRadioStation ??
-                  (isLive
-                    ? undefined
-                    : () => setWaveformExpanded((expanded) => !expanded))
+                  playable ? () => setFullScreenPlayerOpen(true) : undefined
                 }
                 onArtistClick={
                   openRadioStation ??
@@ -452,8 +419,9 @@ export function ConnectedPlayerBar() {
           </div>
         }
         center={
-          <div className="flex w-full max-w-xl flex-col items-center">
+          <div className="flex w-full max-w-xl flex-col items-center gap-1">
             {controls}
+            {seekBar}
           </div>
         }
         right={

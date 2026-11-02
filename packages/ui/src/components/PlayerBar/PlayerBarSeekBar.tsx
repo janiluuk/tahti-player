@@ -23,15 +23,35 @@ export const PlayerBarSeekBar: FC<PlayerSeekBarProps> = ({
   onSeek,
   className = '',
 }) => {
-  const { clamped, containerRef, handleClick, handleKeyDown, isInteractive } =
-    useSeekBar({
-      progress,
-      isLoading,
-      onSeek,
-    });
+  const {
+    clamped,
+    shown,
+    dragging,
+    containerRef,
+    handleClick,
+    handleKeyDown,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handlePointerCancel,
+    isInteractive,
+  } = useSeekBar({
+    progress,
+    isLoading,
+    onSeek,
+  });
 
   return (
-    <div className={cn('w-full select-none', className)}>
+    <div
+      className={cn(
+        'flex w-full items-center gap-3 select-none',
+        'text-foreground-secondary text-xs leading-none tabular-nums',
+        className,
+      )}
+    >
+      <span className="min-w-10 text-right" data-testid="player-seek-elapsed">
+        {formatTimeSeconds(elapsedSeconds)}
+      </span>
       <div
         ref={containerRef}
         data-testid="player-seek-bar"
@@ -43,7 +63,7 @@ export const PlayerBarSeekBar: FC<PlayerSeekBarProps> = ({
         aria-valuetext={`${formatTimeSeconds(elapsedSeconds)} elapsed, ${formatTimeSeconds(Math.abs(remainingSeconds))} remaining`}
         tabIndex={isInteractive ? 0 : -1}
         className={cn(
-          'relative h-6 w-full',
+          'group relative h-5 min-w-0 flex-1 touch-none rounded-full',
           'focus-visible:ring-primary focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
           {
             'pointer-events-none cursor-not-allowed': isLoading,
@@ -52,35 +72,37 @@ export const PlayerBarSeekBar: FC<PlayerSeekBarProps> = ({
         )}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
         aria-disabled={isLoading}
       >
-        <div className="absolute right-0 left-0 z-10 flex h-full flex-row items-center justify-between px-2 pt-0.5 text-xs leading-none">
-          <span className="text-foreground tabular-nums">
-            {formatTimeSeconds(elapsedSeconds)}
-          </span>
-          <span className="text-foreground tabular-nums">
-            {formatTimeSeconds(-Math.abs(remainingSeconds))}
-          </span>
-        </div>
-        <div
-          className={cn(
-            'border-border bg-background-secondary absolute inset-x-0 top-2.5 h-2.5 overflow-hidden rounded-full border-(length:--border-width)',
-            {
-              'overflow-hidden': isLoading,
-            },
-          )}
-        >
-          {isLoading && (
+        <div className="border-border bg-background-input pointer-events-none absolute inset-x-0 top-1/2 h-2 -translate-y-1/2 overflow-hidden rounded-full border-(length:--border-width)">
+          {isLoading ? (
             <div className="bg-stripes-diagonal absolute inset-0 opacity-80" />
-          )}
-          {!isLoading && (
+          ) : (
             <div
-              className={cn('bg-primary h-full', 'transition-none')}
-              style={{ width: `${clamped}%` }}
+              className="bg-primary h-full rounded-l-full"
+              style={{ width: `${shown}%` }}
             />
           )}
         </div>
+        {isInteractive ? (
+          <div
+            data-testid="player-seek-thumb"
+            className={cn(
+              'border-border pointer-events-none absolute top-1/2 size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white shadow-sm',
+              'scale-0 transition-transform duration-150 group-hover:scale-100 group-focus-visible:scale-100 motion-reduce:transition-none',
+              { 'scale-100': dragging },
+            )}
+            style={{ left: `${shown}%` }}
+          />
+        ) : null}
       </div>
+      <span className="min-w-10" data-testid="player-seek-remaining">
+        {formatTimeSeconds(-Math.abs(remainingSeconds))}
+      </span>
     </div>
   );
 };

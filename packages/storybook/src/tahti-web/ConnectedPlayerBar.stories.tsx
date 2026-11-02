@@ -116,7 +116,7 @@ export const PlayingArchive: Story = {
   },
 };
 
-/** Clicking the waveform seeks to that point; the volume slider and mute
+/** Clicking the seek bar seeks to that point; the volume slider and mute
  * button drive the store. */
 export const SeekAndVolume: Story = {
   decorators: [withSeededPlayerBar({})],
