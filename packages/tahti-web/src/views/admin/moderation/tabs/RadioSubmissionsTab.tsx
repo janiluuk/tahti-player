@@ -1,5 +1,6 @@
 import { CheckCircle2Icon, PlayIcon, XCircleIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { Badge, Button, ImageReveal, Textarea } from '@tahti-player/ui';
 
@@ -67,6 +68,20 @@ export function RadioSubmissionsTab() {
   useEffect(reload, []);
 
   const active = items.find((i) => i.id === activeId) ?? items[0] ?? null;
+
+  const markDecided = (
+    row: AdminRadioSubmission,
+    status: AdminRadioSubmissionStatus,
+  ) => {
+    setItems((prev) =>
+      prev.map((item) => (item.id === row.id ? { ...item, status } : item)),
+    );
+    toast.success(
+      status === 'APPROVED'
+        ? `${row.sound.title} is approved for Tahti Radio.`
+        : `${row.sound.title} was rejected.`,
+    );
+  };
 
   const playActive = async (row: AdminRadioSubmission) => {
     setBusyId(row.id);
@@ -162,12 +177,13 @@ export function RadioSubmissionsTab() {
                 onSubmit={(event) => {
                   event.preventDefault();
                   setBusyId(active.id);
-                  void approveRadioSubmission(active.id).then((r) => {
+                  const row = active;
+                  void approveRadioSubmission(row.id).then((r) => {
                     setBusyId(null);
                     if (!r.ok) {
                       setMsg(r.error);
                     } else {
-                      reload();
+                      markDecided(row, 'APPROVED');
                     }
                   });
                 }}
@@ -207,17 +223,17 @@ export function RadioSubmissionsTab() {
                     }
                     onClick={() => {
                       setBusyId(active.id);
-                      void rejectRadioSubmission(
-                        active.id,
-                        notes[active.id],
-                      ).then((r) => {
-                        setBusyId(null);
-                        if (!r.ok) {
-                          setMsg(r.error);
-                        } else {
-                          reload();
-                        }
-                      });
+                      const row = active;
+                      void rejectRadioSubmission(row.id, notes[row.id]).then(
+                        (r) => {
+                          setBusyId(null);
+                          if (!r.ok) {
+                            setMsg(r.error);
+                          } else {
+                            markDecided(row, 'REJECTED');
+                          }
+                        },
+                      );
                     }}
                   >
                     <XCircleIcon size={14} aria-hidden />
