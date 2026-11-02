@@ -40,4 +40,40 @@ describe('AdminDashboardView', () => {
     expect(await screen.findByText('Loading dashboard…')).toBeTruthy();
     expect(fetch).toHaveBeenCalledTimes(2);
   });
+
+  it('leads with system health and links to status, monitoring and logs', async () => {
+    vi.spyOn(admin, 'fetchAdminDashboard').mockResolvedValue({
+      data: {
+        kpis: { activeMembers: 3, liveNow: 0, betaQueue: 1, openTickets: 2 },
+        actionRows: [],
+        health: {
+          icecast: 'up',
+          minio: 'up',
+          postgresBackupAgeHours: 4,
+          failedFanSubPayouts: 0,
+        },
+        financeYtdCents: { surplus: 0, revenue: 0, costs: 0 },
+        liveStreams: [],
+        queues: [],
+        cronJobs: [],
+        audit: [],
+      },
+      meta: { source: 'api' },
+    } as never);
+    await renderWithRouter(<AdminDashboardView />, {
+      paths: ['/admin/status', '/admin/monitoring', '/admin/logs'],
+    });
+    const headings = (await screen.findAllByRole('heading', { level: 2 })).map(
+      (heading) => heading.textContent,
+    );
+    expect(headings[0]).toBe('System health');
+    expect(screen.getByRole('link', { name: 'Status checks' })).toHaveAttribute(
+      'href',
+      '/admin/status',
+    );
+    expect(screen.getByRole('link', { name: 'View logs' })).toHaveAttribute(
+      'href',
+      '/admin/logs',
+    );
+  });
 });

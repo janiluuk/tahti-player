@@ -216,6 +216,10 @@ export const StudioGovernanceView = lazyRouteComponent(
   () => import('../views/studio/StudioGovernanceView'),
   'StudioGovernanceView',
 );
+export const StudioBroadcastView = lazyRouteComponent(
+  () => import('../views/studio/StudioBroadcastView'),
+  'StudioBroadcastView',
+);
 export const StudioFansView = lazyRouteComponent(
   () => import('../views/studio/StudioFansView'),
   'StudioFansView',

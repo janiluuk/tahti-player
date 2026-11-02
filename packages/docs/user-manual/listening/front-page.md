@@ -45,4 +45,4 @@ Signed-in listeners can add widgets to Listen with the **+** button at the top r
 
 **Order** in the Listen header shows a drag handle on every section and widget; drag them (or move them with the keyboard) into the order you want. Your order is kept and wins over the defaults.
 
-Articles in a news widget open inside Tahti with their text and image, and **Read on** the source site if you want the original. The News add-on also offers DJ and music-production feeds.
+All your News add-on feeds show as one **Latest News** row, newest first, each story with its picture, its source and when it was published. The arrows page through the row, **more News** lists every story, and **Sources** adds or removes feeds: pick from the suggested DJ and music-production feeds or paste any RSS or Atom address. Articles open inside Tahti with their text and image, and **Read on** the source site if you want the original.

@@ -19,14 +19,11 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 ## Engineering backlog (no external blocker)
 
-| open | [listen-paired-rows.md](listen-paired-rows.md) | Pair history and Selects; playable release cards |
-
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
-| open    | [navigation-simplification.md](navigation-simplification.md) | Plan: one tab row per section for Studio (6), Library (5), Admin (6); regroup by context; Co-op sidebar item. Favourites is a Library tab (2026-10-30). The regroup itself is still open |
-| open    | [navigation-simplification.md](navigation-simplification.md) | Plan: one tab row per section for Studio (6), Library (5), Admin (6); regroup by context; Co-op sidebar item. The six listed bugs shipped in batch 116 |
+| partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, Library History/Following shipped; left: catalog move to Studio → Music, Profile forms in Studio, Broadcast agenda, Inbox chips, Overview merge, docs rewrite |
 | open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |
 | open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles (anonymous, listener, artist, admin) e2e matrix; missing use cases per role; 45 specs failing on the mock app |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |

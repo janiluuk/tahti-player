@@ -1767,7 +1767,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Settings (account / artist / money)',
         viewName: 'Settings',
         caption:
-          'Account, Artist, Channel and chat, Broadcast, Playback and Integrations, plus the App group (Themes, Add-ons, Logs, What’s new). Fan tiers moved to Studio → Audience.',
+          'Account, Artist, Channel and chat, Broadcast, Playback and Integrations, plus the App group (Themes, Add-ons, Logs, What’s new). Fan tiers moved to Studio → Fans → Memberships.',
         actions: [
           'Edit account details',
           'Edit artist profile (identity, story, people, connections, branding)',

@@ -19,9 +19,9 @@ The Studio home shows plays today, total plays and downloads, and followers. The
 
 ## Fan tiers
 
-**Studio → Audience → Tiers** creates monthly tiers with a price and perks, and turns them on or off. Once a tier is active, **Subscribe** appears on your channel and profile.
+**Studio → Fans → Memberships** creates monthly tiers with a price and perks, and turns them on or off. Once a tier is active, **Subscribe** appears on your channel and profile. **Studio → Fans → Store** sets up what is for sale on your channel page and lists your track sales.
 
-**Studio → Audience** also lists the latest orders, subscriber and payout statistics, and how a typical order splits. **Stripe** connects your payout account (Stripe Connect) and opens its dashboard.
+**Studio → Fans → Earnings** lists the latest orders, subscriber and payout statistics, and how a typical order splits. **Stripe** connects your payout account (Stripe Connect) and opens its dashboard.
 
 ## Sell tracks
 

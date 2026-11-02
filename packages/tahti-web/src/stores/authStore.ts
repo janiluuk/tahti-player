@@ -111,6 +111,26 @@ async function afterUserChange(user: AuthUser | null) {
   }
 }
 
+/** What survives a reload in `localStorage`: enough to draw the chrome
+ * before `/auth/me` answers, without the email address. */
+export function persistedAuthUser(user: AuthUser): AuthUser {
+  return {
+    id: user.id,
+    email: '',
+    username: user.username,
+    displayName: user.displayName,
+    role: user.role,
+    roles: user.roles,
+    tier: user.tier,
+    avatarUrl: user.avatarUrl,
+    isMember: user.isMember,
+    isBoard: user.isBoard,
+    channel: user.channel
+      ? { slug: user.channel.slug, state: user.channel.state }
+      : user.channel,
+  };
+}
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => {
@@ -303,7 +323,12 @@ export const useAuthStore = create<AuthState>()(
     },
     {
       name: 'tahti-web-auth',
-      partialize: (s) => ({ user: s.user }),
+      partialize: (s) => ({
+        user:
+          s.user && import.meta.env.VITE_FORCE_MOCK !== '1'
+            ? persistedAuthUser(s.user)
+            : s.user,
+      }),
       onRehydrateStorage: () => (state) => {
         state?.refresh();
       },

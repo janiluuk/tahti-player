@@ -67,7 +67,7 @@ export const SUBMENUS = {
       icon: <ListMusicIcon size={16} />,
     },
     {
-      to: '/studio/go-live',
+      to: '/studio/broadcast',
       labelKey: 'studio.goLive',
       icon: <RadioTowerIcon size={16} />,
     },
@@ -284,6 +284,7 @@ const SECTION_PREFIXES: Record<string, readonly string[]> = {
     '/studio/editor',
     '/studio/mastering',
     '/studio/setup-channel',
+    '/studio/broadcast',
     '/studio/go-live',
     '/studio/info',
     '/studio/schedule',
@@ -322,10 +323,9 @@ export function getStudioSubmenuItems(
 
 const isSubmenuActive = (current: string | undefined, to: string) => {
   const pathname = current?.split('?')[0];
-  // Every former Perform/go-live page (now nested under this single
-  // Broadcast tab via BroadcastSubNav) lights Studio's Broadcast tab.
-  if (to === '/studio/go-live') {
+  if (to === '/studio/broadcast') {
     return (
+      pathname === '/studio/broadcast' ||
       pathname === '/studio/go-live' ||
       pathname === '/studio/info' ||
       pathname === '/studio/schedule' ||
@@ -442,6 +442,7 @@ export const isBroadcastSubnavActive = (
 export function isStudioBroadcastGroup(current: string | undefined): boolean {
   const pathname = current?.split('?')[0] ?? '';
   return (
+    pathname === '/studio/broadcast' ||
     pathname === '/studio/go-live' ||
     pathname === '/studio/info' ||
     pathname === '/studio/schedule' ||
@@ -538,26 +539,61 @@ export function BroadcastSubNav({ current }: { current?: string }) {
   );
 }
 
+function HubBackLink({
+  to,
+  label,
+  testId,
+}: {
+  to: string;
+  label: string;
+  testId: string;
+}) {
+  return (
+    <ButtonLink
+      to={to}
+      size="sm"
+      variant="text"
+      className="gap-1.5"
+      data-testid={testId}
+    >
+      <ArrowLeftIcon size={16} aria-hidden />
+      {label}
+    </ButtonLink>
+  );
+}
+
 /** Fans is a hub: its pages open from cards on `/studio/fans` and show a
  * back link to it instead of a second row of tabs. */
 export function FansBackLink() {
   const { t } = useTranslation('web');
   return (
-    <ButtonLink
+    <HubBackLink
       to="/studio/fans"
-      size="sm"
-      variant="text"
-      className="gap-1.5"
-      data-testid="studio-fans-back"
-    >
-      <ArrowLeftIcon size={16} aria-hidden />
-      {t('studio.fans')}
-    </ButtonLink>
+      label={t('studio.fans')}
+      testId="studio-fans-back"
+    />
   );
 }
 
+/** Broadcast is a hub too: Go live, Schedule, Shows, Events, Parties and
+ * Channel open from `/studio/broadcast` and link back to it. */
+export function BroadcastBackLink() {
+  const { t } = useTranslation('web');
+  return (
+    <HubBackLink
+      to="/studio/broadcast"
+      label={t('studio.goLive')}
+      testId="studio-broadcast-back"
+    />
+  );
+}
+
+const onHubItself = (current: string | undefined, hub: string) =>
+  current?.split('?')[0] === hub;
+
 export const hasStudioNestedNav = (current: string | undefined) =>
-  isStudioBroadcastGroup(current) ||
+  (isStudioBroadcastGroup(current) &&
+    !onHubItself(current, '/studio/broadcast')) ||
   isStudioCatalogGroup(current) ||
   (isStudioFansGroup(current) && current?.split('?')[0] !== '/studio/fans') ||
   findTabSubnavGroup(current) !== undefined;
@@ -606,7 +642,9 @@ function StudioNavigation({ current }: { current?: string }) {
     return null;
   }
 
-  const showBroadcast = isStudioBroadcastGroup(current);
+  const showBroadcast =
+    isStudioBroadcastGroup(current) &&
+    !onHubItself(current, '/studio/broadcast');
   const showCatalog = isStudioCatalogGroup(current);
   const showFansBack =
     isStudioFansGroup(current) && current?.split('?')[0] !== '/studio/fans';
@@ -635,7 +673,7 @@ function StudioNavigation({ current }: { current?: string }) {
           data-studio-nested-nav
           data-testid="studio-nested-nav"
         >
-          {showBroadcast ? <BroadcastSubNav current={current} /> : null}
+          {showBroadcast ? <BroadcastBackLink /> : null}
           {showCatalog ? <CatalogSubNav current={current} /> : null}
           {showFansBack ? <FansBackLink /> : null}
           <TabSubNav current={current} />

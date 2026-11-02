@@ -7,6 +7,7 @@ import {
 import { StudioSetupChannelRedirect } from '../views/studio/StudioSetupChannelRedirect';
 import { appLayoutRoute } from './router-core';
 import {
+  StudioBroadcastView,
   StudioChannelView,
   StudioCollectionEditView,
   StudioDistributionView,
@@ -413,6 +414,12 @@ export const studioRevenueRoute = createRoute({
           : {},
     });
   },
+});
+
+export const studioBroadcastRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/broadcast',
+  component: StudioBroadcastView,
 });
 
 export const studioFansRoute = createRoute({

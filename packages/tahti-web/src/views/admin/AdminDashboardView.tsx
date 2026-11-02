@@ -110,6 +110,57 @@ export function AdminDashboardView() {
                 </StudioPanel>
               ) : (
                 <>
+                  <StudioPanel title="System health">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {(
+                        [
+                          [
+                            'Icecast / Liquidsoap',
+                            data.health.icecast === 'up',
+                          ],
+                          ['MinIO storage', data.health.minio === 'up'],
+                          [
+                            'Postgres backup',
+                            data.health.postgresBackupAgeHours != null &&
+                              data.health.postgresBackupAgeHours <= 26,
+                          ],
+                          [
+                            'Fan-sub payouts',
+                            data.health.failedFanSubPayouts === 0,
+                          ],
+                        ] as const
+                      ).map(([label, ok]) => {
+                        const chip = healthChip(ok);
+                        return (
+                          <div
+                            key={label}
+                            className="flex items-center justify-between text-sm"
+                          >
+                            <span>{label}</span>
+                            <Badge variant="pill" color={chip.color}>
+                              {chip.label}
+                            </Badge>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <ButtonLink to="/admin/status" size="sm" variant="text">
+                        Status checks
+                      </ButtonLink>
+                      <ButtonLink
+                        to="/admin/monitoring"
+                        size="sm"
+                        variant="text"
+                      >
+                        Monitoring
+                      </ButtonLink>
+                      <ButtonLink to="/admin/logs" size="sm" variant="text">
+                        View logs
+                      </ButtonLink>
+                    </div>
+                  </StudioPanel>
+
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     {(
                       [
@@ -212,42 +263,6 @@ export function AdminDashboardView() {
                       </>
                     ) : null}
                   </Dialog.Root>
-
-                  <StudioPanel title="System health">
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      {(
-                        [
-                          [
-                            'Icecast / Liquidsoap',
-                            data.health.icecast === 'up',
-                          ],
-                          ['MinIO storage', data.health.minio === 'up'],
-                          [
-                            'Postgres backup',
-                            data.health.postgresBackupAgeHours != null &&
-                              data.health.postgresBackupAgeHours <= 26,
-                          ],
-                          [
-                            'Fan-sub payouts',
-                            data.health.failedFanSubPayouts === 0,
-                          ],
-                        ] as const
-                      ).map(([label, ok]) => {
-                        const chip = healthChip(ok);
-                        return (
-                          <div
-                            key={label}
-                            className="flex items-center justify-between text-sm"
-                          >
-                            <span>{label}</span>
-                            <Badge variant="pill" color={chip.color}>
-                              {chip.label}
-                            </Badge>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </StudioPanel>
 
                   <StudioPanel title="Monitoring">
                     <p className="text-foreground-secondary mb-3 text-sm">

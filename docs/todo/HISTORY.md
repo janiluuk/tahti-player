@@ -5790,3 +5790,19 @@ tahti-org#1038 gives `/api/v1/search` track results `audioUrl` (through the acce
 - **Undo in Studio** (`ux-backlog.md`): every create path the backlog listed now offers Undo through `lib/undoToast.ts` — collections, releases, playlists (view, add-to-playlist, save queue), sound share links, editor projects, events, listening parties, posts, stash and channel announcements. The item is removed from the backlog.
 - **Undo after adding to a playlist** (#1750): adds return the new item id, so the Add to playlist panel, the track context menu and the playlist editor offer Undo; this closes the Studio undo items in `ux-backlog.md`.
 - **Undo for a guest's collaborative add** (tahti-org #1046, #1751): a guest can take back a track they added to someone's collaborative playlist; the Studio undo items in `ux-backlog.md` are all closed.
+
+## 2026-11-02 — Navigation hubs, Latest News and the collection player
+
+- **Studio six tabs** (#1756): Home · Music · Broadcast · Fans · Stats · Profile. Fans (`/studio/fans`) and Profile (`/studio/profile`) are hubs built on the new `@tahti-player/ui` `HubCards`; Fans pages show a back link instead of the old Posts and Audience tab rows; the store and track sales got their own `/studio/audience?tab=store`.
+- **Admin six sections** (#1757): Overview · Inbox · People · Content · Co-op · Platform. Content, Co-op and Platform open hubs at `/admin/hubs/$hub`; Inbox carries the pending count; a guard test fails when an admin route is neither a nav page nor in `ADMIN_TAB_ONLY_ROUTES`.
+- **Library History and Following** (#1758): `/library/history` is a Library tab, `/library/following` lists who you follow, listeners land on Favorites.
+- **Latest News** (#1759, user request): `@tahti-player/ui` `NewsCarousel`; all News add-on feeds merge into one carousel on Listen and Discover, with a Sources dialog (suggested or custom RSS/Atom) and a more News list.
+- **Collection player** (#1760, user request): `@tahti-player/ui` `CollectionPlayer` and the connected `CollectionPlayerWidget`: play all, play a row on hover, the playing row highlighted. Not placed on a page yet.
+- **Listen paired rows** (`listen-paired-rows.md`): Recently played beside Tahti Selects, playable release cards and the release-type pill had already shipped in #1731; folded.
+
+## 2026-11-02 — Broadcast hub, Inbox chips, auth snapshot, e2e by role
+
+- **Studio Broadcast hub** (#1762): `/studio/broadcast` with on/off-air banner and Go live, one Coming up agenda of shows, events and listening parties (chips, live party first), cards for every broadcast tool incl. 24/7 radio, Recordings and Tahti Radio; Broadcast pages link back instead of the seven-tab row.
+- **Admin Inbox and Overview** (#1763): queues are counted filter chips; the dashboard leads with System health and links to status, monitoring and logs.
+- **Auth snapshot** (#1764): `tahti-web-auth` no longer stores the email address (hardening #25).
+- **E2E by role** (#1765, #1766): `docs/todo/e2e-coverage-gap.md` maps features × anonymous / listener / artist / admin; new role helpers; anonymous, listener, artist and admin journeys; admin, governance, registration and library journeys fixed; a spec for eight routes nothing visited.
