@@ -209,6 +209,12 @@ const PAGE_PURPOSE_BY_PREFIX: Array<{
       'Plan upcoming broadcasts, edit the next show, and manage your channel schedule.',
   },
   {
+    prefix: '/studio/broadcast',
+    label: 'Broadcast',
+    description:
+      'On or off air, Go live, everything coming up (shows, events, listening parties) and cards for each broadcast tool.',
+  },
+  {
     prefix: '/studio/go-live',
     label: 'Go live',
     description: 'Start or prepare a live broadcast on your channel.',
