@@ -51,9 +51,12 @@ describe('ArtistHeaderActions RSS feed', () => {
     );
     await act(async () => {
       fireEvent.click(
-        screen.getByRole('button', {
-          name: "Copy the RSS feed of Selector's sounds",
-        }),
+        screen.getByRole('button', { name: 'More actions for Selector' }),
+      );
+    });
+    await act(async () => {
+      fireEvent.click(
+        await screen.findByRole('button', { name: 'Copy RSS feed' }),
       );
     });
     expect(writeText).toHaveBeenCalledWith(
@@ -70,7 +73,9 @@ describe('ArtistHeaderActions RSS feed', () => {
         onEditLook={() => undefined}
       />,
     );
-    expect(screen.queryByRole('button', { name: /RSS feed/ })).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'More actions for Selector' }),
+    ).toBeNull();
   });
 });
 
@@ -94,9 +99,12 @@ describe('ArtistHeaderActions report', () => {
         onEditLook={() => undefined}
       />,
     );
-    expect(
-      screen.getByRole('button', { name: 'Report Selector' }),
-    ).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: 'More actions for Selector' }),
+      );
+    });
+    expect(await screen.findByRole('button', { name: 'Report' })).toBeTruthy();
   });
 
   it('hides the report button from the artist', async () => {

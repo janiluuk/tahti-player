@@ -7,6 +7,7 @@ import { collectPageErrors, expectRouteHealthy } from './helpers/routeHealth';
 // any account with content, not only on the mock ids.
 
 const STUDIO_NAV = '[data-studio-navigation]';
+const DETAIL_BACK = 'main a[aria-label^="Back to"]';
 // Sounds and collections live under Library, so their pages keep the
 // sidebar rather than Studio's section tabs.
 const SIDEBAR = '[data-testid="sidebar-navigation"]';
@@ -64,14 +65,14 @@ test('a release opens from Releases, with its stats tab', async ({ page }) => {
   );
 
   await clickTo(page, errors, release);
-  await expectLanded(page, errors, release, STUDIO_NAV, 'Tracks');
+  await expectLanded(page, errors, release, DETAIL_BACK, 'Tracks');
 
   await visit(page, errors, `${release}?tab=stats`);
   await expectLanded(
     page,
     errors,
     `${release}?tab=stats`,
-    STUDIO_NAV,
+    DETAIL_BACK,
     'Listener map',
   );
 });
@@ -160,7 +161,7 @@ test('a show, its episodes tab and an episode review open from Shows', async ({
   const show = await firstHref(page, 'main a[href^="/studio/shows/"]');
 
   await clickTo(page, errors, show);
-  await expectLanded(page, errors, show, STUDIO_NAV);
+  await expectLanded(page, errors, show, DETAIL_BACK);
   const episode = await firstHref(
     page,
     'main a[href^="/studio/shows/episodes/"]',
@@ -171,11 +172,11 @@ test('a show, its episodes tab and an episode review open from Shows', async ({
     page,
     errors,
     `${show}?tab=episodes`,
-    STUDIO_NAV,
+    DETAIL_BACK,
     'All episodes',
   );
 
   await visit(page, errors, show);
   await clickTo(page, errors, episode);
-  await expectLanded(page, errors, episode, STUDIO_NAV, 'Public show details');
+  await expectLanded(page, errors, episode, DETAIL_BACK, 'Public show details');
 });

@@ -100,7 +100,10 @@ export const Visitor: Story = {
 
     await step('report dialog opens and cancels', async () => {
       await userEvent.click(
-        canvas.getByRole('button', { name: `Report ${ARTIST_NAME}` }),
+        canvas.getByRole('button', { name: `More actions for ${ARTIST_NAME}` }),
+      );
+      await userEvent.click(
+        await within(document.body).findByRole('button', { name: 'Report' }),
       );
       const dialog = await findDialog(canvasElement, `Report ${ARTIST_NAME}`);
       await expect(
@@ -154,7 +157,7 @@ export const SignedOut: Story = {
       canvas.getByRole('button', { name: `Log in to follow ${ARTIST_NAME}` }),
     ).toBeVisible();
     await expect(
-      canvas.getByRole('button', { name: `Report ${ARTIST_NAME}` }),
+      canvas.getByRole('button', { name: `More actions for ${ARTIST_NAME}` }),
     ).toBeVisible();
   },
 };
@@ -181,7 +184,9 @@ export const HeroHidden: Story = {
       within(actions).getByRole('heading', { level: 1, name: ARTIST_NAME }),
     ).toHaveClass('sr-only');
     await expect(
-      within(actions).getByRole('button', { name: `Report ${ARTIST_NAME}` }),
+      within(actions).getByRole('button', {
+        name: `More actions for ${ARTIST_NAME}`,
+      }),
     ).toBeVisible();
   },
 };

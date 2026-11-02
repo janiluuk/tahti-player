@@ -627,6 +627,15 @@ const STUDIO_SECTION_MENU_SLOT = 'border-border min-h-7 min-w-0 border-b pb-2';
 const STUDIO_NESTED_NAV_SLOT =
   'border-border flex min-h-10 w-full min-w-0 flex-nowrap items-end gap-y-1 overflow-x-auto border-b pb-2';
 
+export function isStudioDetailRoute(current: string | undefined): boolean {
+  const pathname = current?.split('?')[0] ?? '';
+  return (
+    /^\/studio\/releases\/[^/]+$/.test(pathname) ||
+    /^\/studio\/shows\/(?!episodes\/)[^/]+$/.test(pathname) ||
+    /^\/studio\/shows\/episodes\/[^/]+$/.test(pathname)
+  );
+}
+
 function StudioNavigation({ current }: { current?: string }) {
   const { t } = useTranslation('web');
   const selectedSection = getStudioPrimaryRoute(current) ?? '/studio';
@@ -638,7 +647,7 @@ function StudioNavigation({ current }: { current?: string }) {
     selectedSection as keyof typeof SUBMENUS,
   );
 
-  if (submenu.length === 0) {
+  if (submenu.length === 0 || isStudioDetailRoute(current)) {
     return null;
   }
 

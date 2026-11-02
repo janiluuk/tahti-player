@@ -1,4 +1,5 @@
-import { MessageCircleIcon } from 'lucide-react';
+import { MessageCircleIcon, SmilePlusIcon } from 'lucide-react';
+import { useState } from 'react';
 
 import { Button } from '@tahti-player/ui';
 
@@ -24,6 +25,10 @@ export function TimelineReactionBar({
   /** Called instead of `onReact` for a visitor with no account. */
   onSignIn: () => void;
 }) {
+  const [open, setOpen] = useState(false);
+  const chip =
+    'rounded-full bg-black/35 px-2 py-1 text-base transition-transform hover:scale-110 disabled:opacity-50';
+
   return (
     <div
       className="mt-3 flex flex-wrap items-center gap-2"
@@ -33,24 +38,51 @@ export function TimelineReactionBar({
       <span className="text-xs font-semibold text-white/70 tabular-nums">
         At {clock}
       </span>
-      {TIMELINE_EMOTICONS.map((emoticon) => (
+      {!signedIn ? (
         <Button
-          key={emoticon}
           type="button"
           variant="text"
           size="flexible"
-          className="rounded-full bg-black/35 px-2 py-1 text-base transition-transform hover:scale-110 disabled:opacity-50"
-          onClick={() => (signedIn ? onReact(emoticon) : onSignIn())}
-          disabled={busy || !commentsEnabled}
-          aria-label={
-            signedIn
-              ? `Add ${emoticon} at ${clock}`
-              : `Log in to add ${emoticon} at ${clock}`
-          }
+          className={`${chip} gap-1.5 text-sm text-white/85`}
+          onClick={onSignIn}
+          disabled={!commentsEnabled}
         >
-          {emoticon}
+          <SmilePlusIcon size={16} aria-hidden />
+          Log in to react
         </Button>
-      ))}
+      ) : (
+        <Button
+          type="button"
+          variant="text"
+          size="flexible"
+          className={`${chip} p-1.5 text-white/85`}
+          onClick={() => setOpen((value) => !value)}
+          disabled={busy || !commentsEnabled}
+          aria-expanded={open}
+          aria-label={`React at ${clock}`}
+        >
+          <SmilePlusIcon size={16} aria-hidden />
+        </Button>
+      )}
+      {signedIn && open
+        ? TIMELINE_EMOTICONS.map((emoticon) => (
+            <Button
+              key={emoticon}
+              type="button"
+              variant="text"
+              size="flexible"
+              className={chip}
+              onClick={() => {
+                onReact(emoticon);
+                setOpen(false);
+              }}
+              disabled={busy || !commentsEnabled}
+              aria-label={`Add ${emoticon} at ${clock}`}
+            >
+              {emoticon}
+            </Button>
+          ))
+        : null}
       {commentsEnabled ? (
         <Button
           type="button"

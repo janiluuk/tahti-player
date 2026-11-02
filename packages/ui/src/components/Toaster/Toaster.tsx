@@ -61,6 +61,8 @@ const ToasterImpl: FC<ToasterProps> = ({
     <SonnerToaster
       style={{ fontFamily: 'inherit', overflowWrap: 'anywhere' }}
       position={position}
+      offset={{ top: 72, right: 24, bottom: 24, left: 24 }}
+      mobileOffset={{ top: 64, right: 16, bottom: 16, left: 16 }}
       richColors={richColors}
       expand={expand}
       closeButton={closeButton}

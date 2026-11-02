@@ -29,37 +29,47 @@ export function EmbedButton({
   target,
   label = 'Embed',
   iconOnly = false,
+  open: openProp,
+  onOpenChange,
+  showTrigger = true,
 }: {
   target: EmbedTarget;
   label?: string;
   iconOnly?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  showTrigger?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const open = openProp ?? uncontrolledOpen;
+  const setOpen = onOpenChange ?? setUncontrolledOpen;
   const url = `${window.location.origin}${embedPath(target)}`;
   const snippet = `<iframe src="${url}" width="100%" height="180" frameborder="0" allow="autoplay"></iframe>`;
 
   return (
     <>
-      <Tooltip
-        content="Embed artist channel"
-        side="bottom"
-        disabled={!iconOnly}
-        wrapperClassName="inline-flex"
-      >
-        <Button
-          size={iconOnly ? 'icon-sm' : 'sm'}
-          variant="secondary"
-          onClick={() => setOpen(true)}
-          aria-label={iconOnly ? 'Embed artist channel' : undefined}
+      {showTrigger ? (
+        <Tooltip
+          content="Embed artist channel"
+          side="bottom"
+          disabled={!iconOnly}
+          wrapperClassName="inline-flex"
         >
-          <CodeIcon
-            size={14}
-            aria-hidden
-            className={iconOnly ? undefined : 'mr-1.5'}
-          />
-          {!iconOnly && label}
-        </Button>
-      </Tooltip>
+          <Button
+            size={iconOnly ? 'icon-sm' : 'sm'}
+            variant="secondary"
+            onClick={() => setOpen(true)}
+            aria-label={iconOnly ? 'Embed artist channel' : undefined}
+          >
+            <CodeIcon
+              size={14}
+              aria-hidden
+              className={iconOnly ? undefined : 'mr-1.5'}
+            />
+            {!iconOnly && label}
+          </Button>
+        </Tooltip>
+      ) : null}
       <Dialog.Root isOpen={open} onClose={() => setOpen(false)}>
         <Dialog.Title>Embed</Dialog.Title>
         <Dialog.Description>
