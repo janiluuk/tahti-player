@@ -2,6 +2,7 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { renderWithRouter } from '../test/renderWithRouter';
 import { hasStudioNestedNav, StudioNav, SUBMENUS } from './StudioNav';
 
 vi.mock('@tanstack/react-router', async (importOriginal) => ({
@@ -28,21 +29,25 @@ describe('StudioNav nested sub-tab row', () => {
     expect(nestedTabRows()).toHaveLength(0);
   });
 
-  it('keeps the same Broadcast tabs on Go live and Channel', () => {
-    const names = (current: string) => {
-      const { unmount } = render(<StudioNav current={current} />);
-      const tabs = screen
-        .getByRole('tablist', { name: 'Broadcast pages' })
-        .querySelectorAll('[role="tab"]');
-      const labels = [...tabs].map((tab) => tab.textContent);
+  it('shows a back link to the Broadcast hub on Go live and Channel, not a tab row', async () => {
+    for (const current of [
+      '/studio/go-live?tab=credentials',
+      '/studio/channel?tab=setup',
+    ]) {
+      const { unmount } = await renderWithRouter(
+        <StudioNav current={current} />,
+      );
+      expect(
+        screen.queryByRole('tablist', { name: 'Broadcast pages' }),
+      ).toBeNull();
+      expect(screen.getByTestId('studio-broadcast-back')).toHaveAttribute(
+        'href',
+        '/studio/broadcast',
+      );
       unmount();
-      return labels;
-    };
-
-    const onGoLive = names('/studio/go-live?tab=credentials');
-    const onChannel = names('/studio/channel?tab=setup');
-    expect(onChannel).toEqual(onGoLive);
-    expect(onGoLive.join(' ')).not.toMatch(/Prep|Credentials|Green room/);
+    }
+    await renderWithRouter(<StudioNav current="/studio/broadcast" />);
+    expect(screen.queryByTestId('studio-broadcast-back')).toBeNull();
   });
 
   it('renders the sub-tab row when the tab has sub-tabs', () => {

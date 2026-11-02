@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { StudioBroadcastView } from '@tahti-web/views/studio/StudioBroadcastView';
 import { StudioFansView } from '@tahti-web/views/studio/StudioFansView';
 import { StudioProfileView } from '@tahti-web/views/studio/StudioProfileView';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import {
   MOCK_USERS,
@@ -17,7 +18,7 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          'Studio sections that are hubs instead of a second row of tabs: **Fans** (posts, newsletter, memberships, store, earnings) and **Profile** (artist profile and channel page settings). Each card opens a focused page.',
+          'Studio sections that are hubs instead of a second row of tabs: **Broadcast** (on/off air, Go live, one agenda of shows, events and parties, and tool cards), **Fans** (posts, newsletter, memberships, store, earnings) and **Profile** (artist profile and channel page settings). Each card opens a focused page.',
       },
     },
   },
@@ -68,5 +69,35 @@ export const Profile: Story = {
       canvas.getByRole('list', { name: 'Channel page settings' }),
     ).getAllByRole('link');
     await expect(channel[0]).toHaveTextContent('Channel design');
+  },
+};
+
+export const Broadcast: Story = {
+  decorators: [withTahtiRouter('/studio/broadcast')],
+  render: () => <StudioBroadcastView />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByRole('heading', { name: 'Broadcast' }),
+    ).toBeVisible();
+    await expect(canvas.getByTestId('broadcast-air-banner')).toHaveTextContent(
+      /Off air|On air/,
+    );
+    const agenda = await canvas.findByRole('list', { name: 'Coming up' });
+    const all = within(agenda).getAllByTestId('broadcast-agenda-row').length;
+    await userEvent.click(canvas.getByRole('radio', { name: 'Events' }));
+    await expect(
+      canvas.queryAllByTestId('broadcast-agenda-row').length,
+    ).toBeLessThanOrEqual(all);
+    const tools = within(
+      canvas.getByRole('list', { name: 'Broadcast tools' }),
+    ).getAllByRole('link');
+    await expect(tools.map((link) => link.textContent)).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('24/7 radio'),
+        expect.stringContaining('Recordings'),
+        expect.stringContaining('Tahti Radio'),
+      ]),
+    );
   },
 };

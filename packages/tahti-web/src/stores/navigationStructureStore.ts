@@ -62,7 +62,7 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
       {
         id: 'studio-go-live',
         label: 'Broadcast',
-        path: '/studio/go-live',
+        path: '/studio/broadcast',
         children: [
           {
             id: 'studio-go-live-broadcast',
@@ -92,8 +92,18 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
           },
           {
             id: 'studio-go-live-radio',
-            label: 'Radio',
+            label: '24/7 radio',
             path: '/studio/channel?tab=radio',
+          },
+          {
+            id: 'studio-go-live-recordings',
+            label: 'Recordings',
+            path: '/library/recordings',
+          },
+          {
+            id: 'studio-go-live-tahti-radio',
+            label: 'Tahti Radio',
+            path: '/studio/channel?tab=tahti-radio',
           },
         ],
       },

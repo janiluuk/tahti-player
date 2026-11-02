@@ -54,7 +54,7 @@ describe('StudioNav section coverage', () => {
       ]),
     );
     expect(destinations).toEqual(
-      expect.arrayContaining(['/studio/releases', '/studio/go-live']),
+      expect.arrayContaining(['/studio/releases', '/studio/broadcast']),
     );
     expect(destinations).not.toEqual(
       expect.arrayContaining(['/studio/distribution', '/studio/editor']),
@@ -74,15 +74,16 @@ describe('StudioNav section coverage', () => {
       ['/studio/mastering/arch-1', '/studio/releases'],
       ['/studio/releases', '/studio/releases'],
       ['/studio/distribution', '/studio/releases'],
-      ['/studio/go-live', '/studio/go-live'],
-      ['/studio/info', '/studio/go-live'],
-      ['/studio/schedule', '/studio/go-live'],
-      ['/studio/events', '/studio/go-live'],
-      ['/studio/events/new', '/studio/go-live'],
-      ['/studio/shows', '/studio/go-live'],
-      ['/studio/shows/abc', '/studio/go-live'],
-      ['/studio/channel', '/studio/go-live'],
-      ['/studio/channel?tab=radio', '/studio/go-live'],
+      ['/studio/broadcast', '/studio/broadcast'],
+      ['/studio/go-live', '/studio/broadcast'],
+      ['/studio/info', '/studio/broadcast'],
+      ['/studio/schedule', '/studio/broadcast'],
+      ['/studio/events', '/studio/broadcast'],
+      ['/studio/events/new', '/studio/broadcast'],
+      ['/studio/shows', '/studio/broadcast'],
+      ['/studio/shows/abc', '/studio/broadcast'],
+      ['/studio/channel', '/studio/broadcast'],
+      ['/studio/channel?tab=radio', '/studio/broadcast'],
       ['/studio/fans', '/studio/fans'],
       ['/studio/updates', '/studio/fans'],
       ['/studio/updates?tab=newsletter', '/studio/fans'],
@@ -133,7 +134,7 @@ describe('StudioNav section coverage', () => {
       ).map((item) => item.to);
       expect(lit, location).toEqual(['/studio/go-live']);
       expect(litStudioSubmenuDestinations(location), location).toEqual([
-        '/studio/go-live',
+        '/studio/broadcast',
       ]);
       expect(isStudioBroadcastGroup(location), location).toBe(true);
       expect(isGoLiveSessionRoute(location), location).toBe(true);
@@ -271,8 +272,8 @@ describe('StudioNav Broadcast labels', () => {
     return item ? i18n.t(`web:${item.labelKey}`) : undefined;
   };
 
-  it('calls the Studio submenu entry for /studio/go-live "Broadcast"', () => {
-    expect(studioLabel('/studio/go-live')).toBe('Broadcast');
+  it('calls the Studio submenu entry for /studio/broadcast "Broadcast"', () => {
+    expect(studioLabel('/studio/broadcast')).toBe('Broadcast');
   });
 
   it('calls the first Broadcast subnav entry for /studio/go-live "Go live"', () => {
@@ -281,7 +282,7 @@ describe('StudioNav Broadcast labels', () => {
   });
 
   it('keeps the two labels distinct so the nested strip does not repeat its parent tab', () => {
-    expect(studioLabel('/studio/go-live')).not.toBe(
+    expect(studioLabel('/studio/broadcast')).not.toBe(
       subnavLabel('/studio/go-live'),
     );
   });
