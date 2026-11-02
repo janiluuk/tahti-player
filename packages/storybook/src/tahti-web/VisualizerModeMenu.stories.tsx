@@ -46,6 +46,13 @@ export const PickAMode: Story = {
     await expect(
       within(menu).getAllByTestId('visualizer-mode-preview'),
     ).toHaveLength(8);
+    const preview = within(menu).getAllByTestId('visualizer-mode-preview')[0]!;
+    const reduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    await expect(getComputedStyle(preview).animationName).toBe(
+      reduced ? 'none' : 'tahti-tone-drift',
+    );
     await expect(
       within(menu).getByRole('menuitemradio', { name: 'Spectrum' }),
     ).toHaveAttribute('aria-checked', 'true');

@@ -167,6 +167,30 @@
   --radius-pill: 9999px;
 }
 
+/* Visualizers drift slowly between nearby tones: a hue swing of about
+   ±14° with a touch of saturation, on the drawing surface only (mode
+   buttons and overlays keep their colours). Off with reduced motion. */
+@keyframes tahti-tone-drift {
+  0%,
+  100% {
+    filter: hue-rotate(-10deg) saturate(1);
+  }
+  35% {
+    filter: hue-rotate(14deg) saturate(1.08);
+  }
+  70% {
+    filter: hue-rotate(-4deg) saturate(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-tone-drift] canvas,
+  .tone-drift-target {
+    animation: tahti-tone-drift 28s ease-in-out infinite;
+    will-change: filter;
+  }
+}
+
 @keyframes waveform-bar {
   0%,
   100% {

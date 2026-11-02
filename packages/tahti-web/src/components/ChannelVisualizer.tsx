@@ -259,7 +259,7 @@ export const ChannelVisualizer = ({
 
   if (portedMode) {
     return (
-      <div ref={hostRef} className={className}>
+      <div ref={hostRef} className={className} data-tone-drift>
         <VisualizerHost
           mode={portedMode}
           showModePicker={false}

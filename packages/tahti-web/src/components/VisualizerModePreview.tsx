@@ -14,7 +14,7 @@ export function VisualizerModePreview({ mode }: { mode: VisualizerMode }) {
       focusable="false"
       data-testid="visualizer-mode-preview"
       data-mode={mode}
-      className={`block aspect-video w-full overflow-hidden rounded-md ${styles.preview}`}
+      className={`tone-drift-target block aspect-video w-full overflow-hidden rounded-md ${styles.preview}`}
     >
       <defs>
         <radialGradient id={gradient} cx="35%" cy="30%">
