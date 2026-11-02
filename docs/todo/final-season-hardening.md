@@ -25,7 +25,7 @@ Shipped: deploy builds fail if the client bundle inlines an absolute
 | 22 | Upload magic / stricter `audio/*` verification | tahti-org | prepare/complete | M |
 | 23 | Screen-reader pass on listen + studio critical paths | tahti-web | Also listed in CUTOVER "Still open" | L |
 | 24 | Ambient WebGL cost (opt-in already; desktop CPU) | tahti-web / player | Known; reduced-motion/pause exist | M |
-| 25 | Auth user PII in `localStorage` (`tahti-web-auth`) | tahti-web | Cookie is httpOnly; snapshot is XSS-readable | S |
+| 25 | Auth user PII in `localStorage` (`tahti-web-auth`) | tahti-web | Done in #1764: the snapshot drops the email and channel extras | S |
 | 26 | Product-flagged nav leftovers | tahti-web | Distribution StudioNav sibling, `/chat` chrome, mobile More - see feature-swipe flags if still open | product |
 
 ## Out of season
