@@ -79,7 +79,7 @@ export const RADIO_STATIONS: RadioStation[] = [
     codec: 'AAC',
     genre: 'Pop / Hits',
     streamUrl:
-      'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein',
+      'https://streaming.radioplay.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein',
     detailUrl: 'https://www.radioplay.fi/nrj',
     programmingUrl: 'https://www.radioplay.fi/nrj',
   },
@@ -92,7 +92,7 @@ export const RADIO_STATIONS: RadioStation[] = [
     codec: 'AAC',
     genre: 'Pop',
     streamUrl:
-      'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein',
+      'https://streaming.radioplay.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein',
     detailUrl: 'https://www.radioplay.fi/radio-nova',
     programmingUrl: 'https://www.radioplay.fi/radio-nova',
   },

@@ -1,6 +1,6 @@
 # Radio Nova and NRJ do not play in production
 
-**Status:** open
+**Status:** partial
 
 Reported by the user on 2026-10-19: on production, the curated stations
 Radio Nova and NRJ do not play. The other curated stations are not reported.
@@ -40,6 +40,17 @@ Radio Nova and NRJ do not play. The other curated stations are not reported.
   fallback plays on a fresh `<audio>` element outside the graph (no
   visualizer for those stations). Verify on production after deploy, then
   close this file.
+
+- 2026-11-02: reproduced on production in headless Chromium (AAC supported):
+  both station pages end with `MediaError` 4 ("no supported source") on the
+  `stream-redirect.bauermedia.fi` URL, with or without its query string,
+  even in a plain `<audio>` outside the app. The URL it redirects to,
+  `https://streaming.radioplay.fi/<station>/<station>_64.aac?…`, plays (6 s
+  of HE-AAC, no error) and sends `Access-Control-Allow-Origin:
+  https://tahti.live`. The stations now use that URL directly: the bundled
+  list and mock here, the seed script plus a data migration for the two
+  `core.InternetRadioPreset` rows in tahti-org. Left: confirm on
+  production after both deploy, then close this file.
 
 ## To check
 
