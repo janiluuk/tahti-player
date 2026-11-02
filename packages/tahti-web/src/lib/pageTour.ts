@@ -83,14 +83,10 @@ const TOPBAR_STEPS: TourStep[] = [
     description: 'Add a new track or release to your library.',
   },
   {
-    id: 'topbar-messages',
-    label: 'Messages',
-    description: 'Open your direct message inbox.',
-  },
-  {
     id: 'topbar-account',
     label: 'Account menu',
-    description: 'Switch to your artist panel, open your channel, or log out.',
+    description:
+      'Notifications, messages, your artist panel and channel, settings and log out. A dot on your avatar means something unread.',
   },
   {
     id: 'topbar-login',

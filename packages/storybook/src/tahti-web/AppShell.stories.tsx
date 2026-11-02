@@ -95,7 +95,7 @@ export const Default: Story = {
     // ...inside the real chrome: top bar and the board's sidebar entries.
     const banner = within(canvas.getByRole('banner'));
     await expect(
-      banner.getByRole('button', { name: 'Signed in as Jani (Board)' }),
+      banner.getByRole('button', { name: /^Signed in as Jani \(Board\)/ }),
     ).toBeVisible();
     const nav = within(canvas.getByRole('navigation', { name: 'Main' }));
     for (const name of ['Listen', 'Discover', 'Library', 'Studio', 'Admin']) {
@@ -133,7 +133,7 @@ export const ArtistView: Story = {
     await waitFor(() =>
       expect(
         canvas.getByRole('button', {
-          name: 'Signed in as Northern Lights',
+          name: /^Signed in as Northern Lights/,
         }),
       ).toBeVisible(),
     );

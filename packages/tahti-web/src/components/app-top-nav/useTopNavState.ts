@@ -151,12 +151,21 @@ export function useTopNavState() {
     };
   }, [broadcastOpen, messagesOpen, notificationsOpen]);
 
+  const userId = user?.id;
   useEffect(() => {
-    if (!messagesOpen) {
+    if (!userId) {
+      setConversations([]);
       return;
     }
     void fetchConversations().then((result) => setConversations(result.data));
-  }, [messagesOpen]);
+  }, [userId, messagesOpen]);
+
+  usePolling(
+    () =>
+      void fetchConversations().then((result) => setConversations(result.data)),
+    60000,
+    Boolean(userId),
+  );
 
   useEffect(() => {
     if (!user || !notificationsOpen) {

@@ -1,22 +1,17 @@
-import { BellIcon } from 'lucide-react';
-
-import { Badge, Button, ButtonLink, Tooltip } from '@tahti-player/ui';
+import { Badge, Button, ButtonLink } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { PageEmpty, PageError } from '../PageStates';
-import { iconBtnClass } from './shared';
 import { type TopNavState } from './useTopNavState';
 
+/** The notifications quick view; the account menu's Notifications item
+ * opens it. */
 export function NotificationsPopover({ nav }: { nav: TopNavState }) {
   const {
-    isMobile,
-    setBroadcastOpen,
-    setMessagesOpen,
     notificationsOpen,
     setNotificationsOpen,
     notifications,
     acknowledgeNotification,
-    unreadNotificationCount,
     hasOlderNotifications,
     loadingOlderNotifications,
     loadOlderNotifications,
@@ -26,39 +21,6 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
 
   return (
     <div className="relative">
-      <Tooltip content="Notifications" side="top">
-        <Button
-          variant="text"
-          size="icon-sm"
-          className={cn(
-            iconBtnClass,
-            'relative',
-            isMobile && 'hidden',
-            notificationsOpen &&
-              'border-accent-cyan bg-accent-cyan/15 text-foreground',
-          )}
-          aria-label="Notifications"
-          aria-haspopup="menu"
-          aria-expanded={notificationsOpen}
-          data-tour-id="topbar-notifications"
-          onClick={() => {
-            setNotificationsOpen((current) => !current);
-            setBroadcastOpen(false);
-            setMessagesOpen(false);
-          }}
-        >
-          <BellIcon size={16} />
-          {unreadNotificationCount > 0 ? (
-            <Badge
-              variant="pill"
-              color="red"
-              className="absolute -top-1 -right-1 min-w-4 px-1 text-center text-[9px] font-bold"
-            >
-              {Math.min(9, unreadNotificationCount)}
-            </Badge>
-          ) : null}
-        </Button>
-      </Tooltip>
       {notificationsOpen ? (
         <div
           className="border-border bg-background absolute top-[calc(100%+6px)] right-0 z-40 w-72 rounded-lg border p-2 shadow-lg"
