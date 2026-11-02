@@ -255,7 +255,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     set((s) => ({
       queue,
       currentId: head.id,
-      status: item.embed ? 'playing' : 'loading',
+      status: item.embed ? 'paused' : 'loading',
       error: null,
       failure: null,
       currentTime: 0,
@@ -287,7 +287,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     set((s) => ({
       queue,
       currentId: item.id,
-      status: item.embed ? 'playing' : 'loading',
+      status: item.embed ? 'paused' : 'loading',
       error: null,
       failure: null,
       currentTime: 0,
@@ -485,7 +485,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       playable?.kind === 'live' || playable?.kind === 'radio';
     set({
       currentId: id,
-      status: playable?.embed ? 'playing' : 'loading',
+      status: playable?.embed ? 'paused' : 'loading',
       error: null,
       failure: null,
       currentTime: 0,
@@ -576,6 +576,21 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     // after an error has to load the source from scratch.
     if (status === 'playing' && get().status === 'error') {
       get().retry();
+      return;
+    }
+    // An embed-only track plays in the provider's own widget, which Tahti
+    // can't drive or observe. Its status stays 'paused' so nothing claims
+    // it is playing; a play request mounts the widget again with autoplay.
+    const { queue, currentId } = get();
+    const currentItem = queue.find((item) => item.id === currentId);
+    if (currentItem && playableFromQueueItem(currentItem)?.embed) {
+      set((s) => ({
+        status: 'paused',
+        error: null,
+        failure: null,
+        restoredPending: status === 'playing' ? null : s.restoredPending,
+        reloadNonce: status === 'playing' ? s.reloadNonce + 1 : s.reloadNonce,
+      }));
       return;
     }
     set((s) => ({

@@ -81,7 +81,7 @@ export function PlayerWaveform({
             <span
               key={`marker-${index}`}
               className={cn(
-                'text-accent-yellow pointer-events-none absolute top-0',
+                'text-accent-yellow-strong pointer-events-none absolute top-0',
                 '-translate-x-1/2 -translate-y-1/4 drop-shadow',
               )}
               style={{ left }}
@@ -102,7 +102,7 @@ export function PlayerWaveform({
                 size="flexible"
                 aria-label={`Jump to comment: ${marker.label}`}
                 data-testid="waveform-comment-marker"
-                className="text-accent-yellow relative size-5 justify-center rounded-full p-0 drop-shadow"
+                className="text-accent-yellow-strong relative size-5 justify-center rounded-full p-0 drop-shadow"
                 onClick={() => handleSeek(marker.fraction)}
               >
                 {icon}
