@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 
-import { signIn } from './helpers/auth';
+import { signInAsBoard } from './helpers/auth';
 import {
   collectPageErrors,
   expectRouteHealthy,
@@ -88,24 +88,14 @@ const tabRoutes: AdminVisit[] = [
     tab: 'Records',
   },
   { path: '/admin/orphan-pages', heading: /^Orphan pages$/ },
-  { path: '/admin/content', heading: /^Content$/ },
+  { path: '/admin/content', heading: /^Catalog$/ },
+  { path: '/admin/hubs/content', heading: /^Content$/ },
+  { path: '/admin/hubs/coop', heading: /^Co-op$/ },
+  { path: '/admin/hubs/platform', heading: /^Platform$/ },
   { path: '/admin/artwork-presets', heading: /^Artwork presets$/ },
   { path: '/admin/map', heading: /^Tahti map$/ },
   { path: '/admin/venues', heading: /^Venues$/ },
 ];
-
-async function signInAsBoard(page: Page): Promise<void> {
-  await signIn(page);
-  await page.evaluate(() => {
-    const raw = localStorage.getItem('tahti-web-auth') as string;
-    const auth = JSON.parse(raw);
-    auth.state.user.role = 'BOARD';
-    auth.state.user.roles = ['BOARD', 'ARTIST'];
-    auth.state.user.isBoard = true;
-    localStorage.setItem('tahti-web-auth', JSON.stringify(auth));
-  });
-  await page.reload();
-}
 
 async function expectAdminPage(page: Page, route: AdminVisit): Promise<void> {
   const shell = page.locator(ADMIN_SHELL).first();
