@@ -12,7 +12,7 @@ description: Albums, EPs and singles, collections and playlists, smart links, ca
 2. Each track can have credits and several audio versions (upload a new version and switch which one is live).
 3. **Publish** makes the release and its smart link visible.
 
-A release's tabs include **Stats**, **Smart links** (the `/r/<slug>` page that lists where to listen, with click counts) and **Export**.
+A release has four tabs: **Overview** (details, tracks, artwork and credits), **Links** (the smart link `/r/<slug>` page that lists where to listen, with click counts, and the MusicBrainz export), **Stats**, and **Advanced** (track versions and fingerprinting).
 
 To remove a release, use **Delete release** on its page. Its tracklist, smart link and stats are removed; the tracks you uploaded stay in your library.
 
