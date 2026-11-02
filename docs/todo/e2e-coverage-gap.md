@@ -137,7 +137,7 @@ is wrong and a suggested fix, then turn the agreed ones into slices.
 | Messages | Three ways in on one screen (Message @username + Start + Search, Your contacts, conversation list); opening a conversation briefly mounts two threads, so typing can land in the one that disappears | messy / bug | One search box over the conversation list; mount one thread |
 | Admin → People | No search box; the user list is a radio group | practicality | Add search; keep the list as links or rows |
 | Studio → Sounds (`/library/sounds`) | Rows have no Play button for the player (the fullscreen spec cannot start playback there) | usage | Check the row play control; add one if missing |
-| Radio visualizer (Cymatics) | Loaded `/piz_compressed.exr`, which no package ships, and logged errors on `/radio` | bug, fixed | Uses three.js `RoomEnvironment` now (no asset) |
+| Radio visualizer (Cymatics) | Loads `/piz_compressed.exr`, which no package ships, logs EXRLoader errors on `/radio`, and the orb, cymatics and landscape shapes never show (they wait for that map) | bug | Build the map with three.js `RoomEnvironment` (tried; it made the RadioView story time out on CI's software GL, so it needs a lighter map or a deferred build) |
 
 ## Specs failing on the mock app (2026-11-02, after fixes)
 
