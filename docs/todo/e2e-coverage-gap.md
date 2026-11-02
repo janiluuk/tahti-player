@@ -63,7 +63,7 @@ renders (route health) · ❌ nothing.
 
 ### Infrastructure
 
-- [ ] `signInAsListener()` (mock `listener@tahti.live`) and `signInAsBoard()` in `e2e/helpers/auth.ts`; a `signedOut` fixture that clears storage.
+- [x] `signInAsListener()` (mock `listener@tahti.live`), `signInAsBoard()` and `acknowledgeGuidelines()` in `e2e/helpers/auth.ts` (2026-11-02). A signed-out fixture is not needed: a fresh page is signed out.
 - [ ] Run the suite against the mock app in CI (a `vite preview` with `VITE_FORCE_MOCK=1`), not only by hand against beta.
 - [ ] Fix or retire the 45 specs that fail on the mock app today (list below); most were written against beta data.
 
@@ -73,14 +73,14 @@ renders (route health) · ❌ nothing.
 - [ ] Opens a channel page and an artist page; Follow / Like / Comment ask to sign in instead of failing.
 - [ ] Searches and opens a result (track plays, artist opens).
 - [ ] Opens a community story and a Tahti news post in their dialogs.
-- [ ] Library shows Favorites and the other tabs disabled "needs an account".
-- [ ] Studio, Admin and `/messages` redirect to sign in.
-- [ ] Forgot password → reset link page renders and validates.
+- [x] Library shows Favorites and the other tabs disabled "needs an account" (`roles-anonymous-listener.spec.ts`).
+- [x] Admin and `/messages` ask to sign in (`roles-anonymous-listener.spec.ts`). Studio for a visitor is left.
+- [ ] Forgot password → reset link page renders and validates. (Renders: covered; validation left.)
 
 ### Listener
 
 - [ ] Signs up as a listener (no channel) and lands on Listen; Studio is not in the sidebar.
-- [ ] Follows an artist → appears in Library → Following and the Feed.
+- [ ] Follows an artist → appears in Library → Following and the Feed. (Library opens on Favorites and Following renders: covered.)
 - [ ] Favorites a track and a release → Library → Favorites; unfavorites.
 - [ ] Builds a playlist, reorders, adds to someone's collaborative playlist and undoes it.
 - [ ] Plays a collection with the collection player; the row highlights.
@@ -90,7 +90,7 @@ renders (route health) · ❌ nothing.
 - [ ] Adds a Latest News source, sees it in the carousel, removes it.
 - [ ] Joins a Jam and a listening party.
 - [ ] Settings: playback, appearance/theme, notifications save and persist.
-- [ ] Opens `/admin` and `/studio`: access denied / gate, no crash.
+- [x] Opens `/admin` and `/studio`: "Board access required" and "Studio is for artists", no Studio in the sidebar (`roles-anonymous-listener.spec.ts`).
 
 ### Artist
 

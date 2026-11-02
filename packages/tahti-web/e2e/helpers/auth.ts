@@ -24,3 +24,35 @@ export async function signIn(
     }
   });
 }
+
+export const E2E_LISTENER_EMAIL =
+  process.env.TAHTI_E2E_LISTENER_EMAIL ?? 'listener@tahti.live';
+export const E2E_LISTENER_PASSWORD =
+  process.env.TAHTI_E2E_LISTENER_PASSWORD ?? 'demo-password';
+
+/** Signs in as a listener: an account without a channel. */
+export async function signInAsListener(page: Page): Promise<void> {
+  await signIn(page, E2E_LISTENER_EMAIL, E2E_LISTENER_PASSWORD);
+}
+
+/** Signs in as the artist, then gives the stored user the board role. */
+export async function signInAsBoard(page: Page): Promise<void> {
+  await signIn(page);
+  await page.evaluate(() => {
+    const raw = localStorage.getItem('tahti-web-auth') as string;
+    const auth = JSON.parse(raw);
+    auth.state.user.role = 'BOARD';
+    auth.state.user.roles = ['BOARD', 'ARTIST'];
+    auth.state.user.isBoard = true;
+    localStorage.setItem('tahti-web-auth', JSON.stringify(auth));
+  });
+  await page.reload();
+}
+
+/** Dismisses the community guidelines toast when it covers the page. */
+export async function acknowledgeGuidelines(page: Page): Promise<void> {
+  const acknowledge = page.getByRole('button', { name: 'Acknowledge' });
+  if (await acknowledge.isVisible()) {
+    await acknowledge.click();
+  }
+}

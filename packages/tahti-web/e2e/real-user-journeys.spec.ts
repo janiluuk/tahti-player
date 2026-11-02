@@ -1,6 +1,11 @@
 import { expect, test } from '@playwright/test';
 
-import { E2E_EMAIL, E2E_PASSWORD, signIn } from './helpers/auth';
+import {
+  acknowledgeGuidelines,
+  E2E_EMAIL,
+  E2E_PASSWORD,
+  signIn,
+} from './helpers/auth';
 
 // Covers the real, UI-complete journeys behind the "signup + governance
 // voting + stats" request: full registration -> login, governance voting
@@ -168,10 +173,7 @@ test('library is its own sidebar section with Library tabs, not a Studio tab', a
   await expect(page.getByRole('tab', { name: 'Sounds' })).toBeVisible();
   await expect(page.getByRole('tab', { name: 'Collections' })).toBeVisible();
 
-  const acknowledge = page.getByRole('button', { name: 'Acknowledge' });
-  if (await acknowledge.isVisible()) {
-    await acknowledge.click();
-  }
+  await acknowledgeGuidelines(page);
   await page.getByRole('tab', { name: 'Sounds' }).click();
   await expect(page).toHaveURL(/\/library\/sounds$/);
   await expect(page.getByRole('tab', { name: 'Sounds' })).toHaveAttribute(
