@@ -18,7 +18,7 @@ const statsRoutes: RouteVisit[] = [
     path: '/studio/stats/detail',
     heading: /^Insights$/,
   },
-  { path: '/studio/updates', heading: /^Updates$/ },
+  { path: '/studio/updates', heading: /^Posts$/ },
   { path: '/studio/updates?tab=newsletter', heading: 'Subscribers' },
   { path: '/studio/fans', heading: /^Fans$/ },
   { path: '/studio/broadcast', heading: /^Broadcast$/ },

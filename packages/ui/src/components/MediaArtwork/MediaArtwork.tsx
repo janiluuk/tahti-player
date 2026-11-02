@@ -91,7 +91,7 @@ const overlayIconSize = {
 
 /** Hover / focus show overlays; always visible on coarse pointers (touch). */
 const overlayReveal =
-  'opacity-100 transition-opacity [@media(hover:hover)_and_(pointer:fine)]:invisible [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:visible [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:visible [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100';
+  'opacity-100 transition-opacity [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100';
 
 export const MediaArtwork: FC<MediaArtworkProps> = ({
   src,

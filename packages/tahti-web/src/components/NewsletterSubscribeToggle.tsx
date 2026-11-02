@@ -19,9 +19,11 @@ type Props = {
 
 function SignedInToggle({
   artistUsername,
+  artistDisplayName,
   iconOnly = false,
 }: {
   artistUsername: string;
+  artistDisplayName: string;
   iconOnly?: boolean;
 }) {
   const [subscribed, setSubscribed] = useState<boolean | null>(null);
@@ -76,9 +78,12 @@ function SignedInToggle({
         variant={subscribed ? 'default' : 'secondary'}
         disabled={subscribed === null || busy}
         aria-pressed={subscribed ?? false}
+        aria-label={
+          iconOnly ? `Subscribe to ${artistDisplayName}'s updates` : undefined
+        }
         onClick={toggle}
       >
-        <MailIcon size={14} aria-hidden className="mr-1.5" />
+        <MailIcon size={14} aria-hidden className={iconOnly ? '' : 'mr-1.5'} />
         {!iconOnly &&
           (subscribed === null
             ? 'Subscribe'
@@ -114,7 +119,11 @@ function AnonymousForm({
           onClick={() => setOpen(true)}
           aria-label={`Subscribe to ${artistDisplayName}`}
         >
-          <MailIcon size={14} aria-hidden className="mr-1.5" />
+          <MailIcon
+            size={14}
+            aria-hidden
+            className={iconOnly ? '' : 'mr-1.5'}
+          />
           {!iconOnly && 'Subscribe'}
         </Button>
       </Tooltip>
@@ -186,7 +195,11 @@ export function NewsletterSubscribeToggle({
 }: Props) {
   const signedIn = Boolean(useAuthStore((s) => s.user));
   return signedIn ? (
-    <SignedInToggle artistUsername={artistUsername} iconOnly={iconOnly} />
+    <SignedInToggle
+      artistUsername={artistUsername}
+      artistDisplayName={artistDisplayName}
+      iconOnly={iconOnly}
+    />
   ) : (
     <AnonymousForm
       artistUsername={artistUsername}

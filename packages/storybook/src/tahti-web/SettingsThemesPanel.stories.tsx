@@ -41,9 +41,7 @@ export const Browse: Story = {
       'true',
     );
     await waitFor(() =>
-      expect(
-        canvas.getAllByText('Built-in Nuclear theme').length,
-      ).toBeGreaterThan(1),
+      expect(canvas.getAllByText('Built-in theme').length).toBeGreaterThan(1),
     );
     await expectVisible(canvas.getByRole('tab', { name: 'Editor' }));
   },
