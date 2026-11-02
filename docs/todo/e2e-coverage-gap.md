@@ -88,7 +88,7 @@ renders (route health) · ❌ nothing.
 - [ ] Comments on a track; chats on a live channel; sends and reads a direct message. (Timed comment and a DM reply: covered; live chat left.)
 - [ ] Notifications and messages dots on the avatar; opening them clears the dot. (Mark all read on /notifications: covered.)
 - [x] Adds a Latest News source and removes one (`use-cases-listener.spec.ts`).
-- [ ] Joins a Jam and a listening party.
+- [ ] Joins a Jam and a listening party. (Joins a live party and the player starts; a scheduled one offers Join at the start: covered in `use-cases-mixed-3.spec.ts`. Jam left.)
 - [ ] Settings: playback, appearance/theme, notifications save and persist. (Light/dark and a playback switch survive a reload: covered; notifications left.)
 - [x] Opens `/admin` and `/studio`: "Board access required" and "Studio is for artists", no Studio in the sidebar (`roles-anonymous-listener.spec.ts`).
 
@@ -99,7 +99,7 @@ renders (route health) · ❌ nothing.
 - [ ] Broadcast hub: agenda chips filter; Go live flow reaches the green room; schedules a show and an event; schedules and cancels a listening party. (Chips filter, Go live opens and links back, an event is added, a listening party is scheduled: covered.)
 - [ ] Fans hub: writes and schedules a post; sends a newsletter; creates a membership tier; adds a store item; Earnings shows orders. (Publishes and schedules a post, creates a membership tier and a store price, toggles the Store, Store and Newsletter open: covered.)
 - [ ] Profile hub cards open each Settings panel and saving shows on the public page. (Six Studio tabs, Profile → Story opens the Settings panel, a Fans page links back: covered in `roles-artist-admin-hubs.spec.ts`; saving left.)
-- [ ] Moderates chat (ban, moderator add) and comments.
+- [ ] Moderates chat (ban, moderator add) and comments. (Adds and removes a moderator: covered; ban and comments left.)
 - [x] Stats range picker (`use-cases-artist.spec.ts`). Per-track insights left.
 - [ ] Release detail tabs Overview · Links · Stats · Advanced; track editor Basics · Sharing · Advanced save. (Release tabs and the track editor's three tabs: covered; saving left.)
 
@@ -107,7 +107,7 @@ renders (route health) · ❌ nothing.
 
 - [x] Section row Overview · Inbox · People · Content · Co-op · Platform; a hub card opens its page and the back link returns (`roles-artist-admin-hubs.spec.ts`; Platform → Languages).
 - [ ] Inbox: chips switch queues; resolves a support ticket; approves a beta application and a radio submission; handles a content report. (Chips, a beta approval, a ticket reply and resolve, a radio approval, a dismissed report: covered.)
-- [ ] People: finds a user, changes role, suspends and restores. (Picks a user, filters by role: covered.)
+- [ ] People: finds a user, changes role, suspends and restores. (Picks a user, filters by role, picks a different role: covered; suspend / restore left.)
 - [ ] Content: publishes news, an announcement, edits Selects rotation and a top list, verifies a venue, replaces an artwork preset. (Publishes news; Announcements from the hub; Selects picker; top-list period; venue unverify / verify: covered.)
 - [ ] Co-op: opens a grant year, AGM, board records; finances page totals. (Grants, AGM and Records tabs: covered.)
 - [ ] Platform: approves an add-on, imports a language CSV, storage per user, logs filter. (Add-on review filter, New language form, storage and files, logs filter and container logs: covered.)
