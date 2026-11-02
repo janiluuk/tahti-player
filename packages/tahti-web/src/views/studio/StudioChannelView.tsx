@@ -36,6 +36,7 @@ import { StreamManagerPanel } from '../../components/StreamManagerPanel';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StudioRadioSubmissionPanel } from '../../components/StudioRadioSubmissionPanel';
+import { hasAccountRole } from '../../lib/accountRoles';
 import { useAuthStore } from '../../stores/authStore';
 import { useChannelSetupModalStore } from '../../stores/channelSetupModalStore';
 import { SelectsTab } from '../admin/moderation/tabs/SelectsTab';
@@ -210,7 +211,9 @@ export function StudioChannelView() {
   }
 
   const channelSectionTabs = CHANNEL_SECTION_TABS.filter(
-    (item) => item.id !== 'setup' || !channel,
+    (item) =>
+      (item.id !== 'setup' || !channel) &&
+      (item.id !== 'selects' || hasAccountRole(user, 'BOARD')),
   );
 
   return (

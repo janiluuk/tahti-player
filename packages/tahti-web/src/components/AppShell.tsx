@@ -2,6 +2,7 @@ import { useNavigate, useRouterState } from '@tanstack/react-router';
 import {
   CompassIcon,
   HelpCircleIcon,
+  LandmarkIcon,
   LayoutDashboardIcon,
   LibraryIcon,
   ListMusicIcon,
@@ -147,6 +148,7 @@ function DeferredFullScreenPlayer({ open }: { open: boolean }) {
 function SidebarNavItems({ compact }: { compact: boolean }) {
   const isLoggedIn = useAuthStore((state) => Boolean(state.user));
   const isBoard = useAuthStore((state) => hasAccountRole(state.user, 'BOARD'));
+  const isMember = useAuthStore((state) => Boolean(state.user?.isMember));
   // Until the profile loads, the stored user may lack its channel: treat the
   // account as an artist so an artist never sees the listener entry flash.
   const isListener = useAuthStore(
@@ -222,6 +224,16 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               />
             )}
           </div>
+          {isMember || isBoard ? (
+            <div data-tour-id="nav-coop">
+              <SidebarNavigationItem
+                to="/governance"
+                icon={<LandmarkIcon size={16} />}
+                label="Co-op"
+                isSelected={sidebarActive === 'coop'}
+              />
+            </div>
+          ) : null}
           {isLoggedIn ? (
             isBoard ? (
               <div data-tour-id="nav-admin">

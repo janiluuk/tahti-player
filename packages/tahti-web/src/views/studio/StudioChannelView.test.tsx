@@ -62,15 +62,15 @@ afterEach(() => {
   useAuthStore.setState({ user: null, hydrated: true, loading: false });
 });
 
-async function renderChannel(url: string, withChannel = true) {
+async function renderChannel(url: string, withChannel = true, board = false) {
   useAuthStore.setState({
     user: {
       id: 'user-1',
       email: 'artist@tahti.live',
       username: 'artist',
       displayName: 'An Artist',
-      role: 'ARTIST',
-      isBoard: false,
+      role: board ? 'BOARD' : 'ARTIST',
+      isBoard: board,
       isMember: true,
       channel: withChannel ? { slug: 'artist', state: 'OFFLINE' } : null,
     },
@@ -103,7 +103,11 @@ const clickTab = (name: string) =>
 
 describe('StudioChannelView section tabs', () => {
   it('writes the clicked tab to the URL', async () => {
-    const { router } = await renderChannel('/studio/channel?tab=green-room');
+    const { router } = await renderChannel(
+      '/studio/channel?tab=green-room',
+      true,
+      true,
+    );
 
     await clickTab('Selects');
     expect(router.state.location.search).toEqual({ tab: 'selects' });
@@ -116,6 +120,7 @@ describe('StudioChannelView section tabs', () => {
     const { router } = await renderChannel(
       '/studio/channel?tab=green-room',
       false,
+      true,
     );
 
     await clickTab('Setup');
@@ -130,6 +135,14 @@ describe('StudioChannelView section tabs', () => {
 
     expect(screen.queryByRole('tab', { name: 'Setup' })).toBeNull();
     expect(screen.getByRole('tab', { name: 'Green room' })).toBeInTheDocument();
+  });
+
+  it('shows Selects only to the board', async () => {
+    await renderChannel('/studio/channel?tab=green-room');
+    expect(screen.queryByRole('tab', { name: 'Selects' })).toBeNull();
+    act(() => root.unmount());
+    root = createRoot(container);
+    await renderChannel('/studio/channel?tab=green-room', true, true);
     expect(screen.getByRole('tab', { name: 'Selects' })).toBeInTheDocument();
   });
 });
