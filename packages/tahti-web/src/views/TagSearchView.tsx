@@ -1,13 +1,12 @@
-import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 
-import { ButtonLink, MediaArtwork, ViewShell } from '@tahti-player/ui';
+import { ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import { fetchTracksByTag } from '../api/listen';
 import { isForceMock } from '../api/mode';
 import type { SearchTrackResult } from '../api/types';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
-import { formatDuration } from '../lib/playableToTrack';
+import { SearchTrackResults } from '../components/SearchTrackResults';
 
 type State =
   | { status: 'loading' }
@@ -83,41 +82,9 @@ export function TagSearchView({ tag }: { tag?: string }) {
           }
         />
       ) : (
-        <ul className="flex w-full flex-col gap-1 pb-8">
-          {state.tracks.map((track) => (
-            <li key={track.id}>
-              <Link
-                to="/t/$id"
-                params={{ id: track.id }}
-                className="hover:bg-background-secondary flex min-w-0 items-center gap-3 rounded-md px-2 py-1.5"
-              >
-                <MediaArtwork
-                  size="thumb"
-                  src={track.coverUrl}
-                  alt=""
-                  placeholder={
-                    <span className="text-xs font-bold">
-                      {track.title.slice(0, 2).toUpperCase()}
-                    </span>
-                  }
-                />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-medium">
-                    {track.title}
-                  </span>
-                  <span className="text-foreground-secondary block truncate text-xs">
-                    {track.artistName}
-                  </span>
-                </span>
-                {track.durationSec != null ? (
-                  <span className="text-foreground-secondary text-xs tabular-nums">
-                    {formatDuration(track.durationSec)}
-                  </span>
-                ) : null}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className="w-full pb-8">
+          <SearchTrackResults tracks={state.tracks} />
+        </div>
       )}
     </ViewShell>
   );

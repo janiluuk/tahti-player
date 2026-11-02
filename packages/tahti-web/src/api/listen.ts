@@ -38,6 +38,7 @@ function mockTracksMatchingTag(tag: string): SearchTrackResult[] {
       channelSlug: track.channelSlug,
       durationSec: track.durationSec ?? null,
       coverUrl: track.coverUrl ?? null,
+      audioUrl: track.audioUrl ?? null,
     });
   }
 
