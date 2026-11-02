@@ -5790,3 +5790,11 @@ tahti-org#1038 gives `/api/v1/search` track results `audioUrl` (through the acce
 - **Undo in Studio** (`ux-backlog.md`): every create path the backlog listed now offers Undo through `lib/undoToast.ts` — collections, releases, playlists (view, add-to-playlist, save queue), sound share links, editor projects, events, listening parties, posts, stash and channel announcements. The item is removed from the backlog.
 - **Undo after adding to a playlist** (#1750): adds return the new item id, so the Add to playlist panel, the track context menu and the playlist editor offer Undo; this closes the Studio undo items in `ux-backlog.md`.
 - **Undo for a guest's collaborative add** (tahti-org #1046, #1751): a guest can take back a track they added to someone's collaborative playlist; the Studio undo items in `ux-backlog.md` are all closed.
+
+## 2026-11-02 — Broadcast hub, Inbox chips, auth snapshot, e2e by role
+
+- **Studio Broadcast hub** (#1762): `/studio/broadcast` with on/off-air banner and Go live, one Coming up agenda of shows, events and listening parties (chips, live party first), cards for every broadcast tool incl. 24/7 radio, Recordings and Tahti Radio; Broadcast pages link back instead of the seven-tab row.
+- **Admin Inbox and Overview** (#1763): queues are counted filter chips; the dashboard leads with System health and links to status, monitoring and logs.
+- **Auth snapshot** (#1764): `tahti-web-auth` no longer stores the email address (hardening #25).
+- **E2E by role** (#1765, #1766): `docs/todo/e2e-coverage-gap.md` maps features × anonymous / listener / artist / admin; new role helpers; anonymous, listener, artist and admin journeys; admin, governance, registration and library journeys fixed; a spec for eight routes nothing visited.
+- Merged the previous batch (#1756–#1761).

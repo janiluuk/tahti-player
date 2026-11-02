@@ -31,7 +31,7 @@ To create your channel, open **Studio** and follow the channel setup: pick your 
 | **Releases** | Albums, EPs and singles. See [Releases and distribution](releases-and-distribution.md). |
 | **Distribution** | Delivery to streaming services and royalties. |
 | **Editor** | The audio editor for trimming, quick fixes and mastering. |
-| **Broadcast** | Going live, schedule, shows, events, your channel's radio. See [Broadcasting](broadcasting.md). |
+| **Broadcast** | A page that shows whether you are on air with a **Go live** button, everything **Coming up** (shows, events and listening parties, with All / Shows / Events / Parties chips), and cards for Schedule, Shows, Events, Listening parties, 24/7 radio, Recordings, Tahti Radio and Channel. Each opens its own page with a **← Broadcast** link back. See [Broadcasting](broadcasting.md). |
 
 Members find motions, discussions, documents and the governance guide under **Co-op** in the sidebar (no longer a Studio tab).
 

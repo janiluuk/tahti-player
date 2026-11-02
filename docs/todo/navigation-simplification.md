@@ -104,11 +104,11 @@ Favorites leaves (if the open question is a yes); Co-op is new. Mobile bottom ba
 
 - [ ] 1. Library 5 tabs + Studio → Music together (the catalog moves in one step); old URLs redirect.
 - [ ] 2. Studio Profile: move the Settings modal's Artist and Channel & chat panels; sectioned form with live preview.
-- [ ] 3. Studio Broadcast: one agenda; Go live as a full-screen flow; 24/7, Recordings, Tahti Radio as hub cards.
+- [ ] 3. Studio Broadcast: one agenda; Go live as a full-screen flow; 24/7, Recordings, Tahti Radio as hub cards. (2026-11-02: `/studio/broadcast` hub with on/off-air banner, one Coming up agenda with chips, cards incl. 24/7, Recordings, Tahti Radio; back links replace the seven-tab row. Go live as a full-screen flow is left.)
 - [ ] 4. Studio Fans and Stats as single pages.
 - [ ] 5. Release detail 7 → 4 tabs; track editor dialog 5 → 3 tabs. (2026-11-02: release detail is Overview · Links · Stats · Advanced, old `?tab=` ids redirect; the track editor dialog is left.)
 - [x] 6. Co-op sidebar item; governance out of Studio; Selects Admin-only (2026-11-02: sidebar **Co-op** for members and the board → `/governance`, lit on `/governance*` and the old `/studio/governance*`; the Studio tab row has no Governance; Studio → Channel → Selects shows to the board only).
-- [ ] 7. Admin Inbox (unified queues).
+- [ ] 7. Admin Inbox (unified queues). (2026-11-02: one page, queues are counted filter chips; the open item in a side panel and counts for the other five queues are left.)
 - [ ] 8. Admin Content, Co-op and Platform hubs.
-- [ ] 9. Admin Overview merge (Dashboard, Status, Monitoring).
+- [ ] 9. Admin Overview merge (Dashboard, Status, Monitoring). (2026-11-02: the dashboard leads with System health and links to Status checks, Monitoring and View logs; folding Status and Monitoring into it is left.)
 - [ ] 10. Docs and screen atlas rewrite; Storybook surfaces and VIEW-CATALOG in sync.
