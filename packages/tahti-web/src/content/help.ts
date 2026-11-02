@@ -130,6 +130,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
           'Channel tracks, an artist’s popular tracks, playlists and Listen’s new tracks show each track as a row: the round play button, the genre and length, and the waveform, which you can click or drag to jump within the playing track.',
           'Under the waveform: the heart with a count loves the track (signed in), then add to queue, add to a playlist, and download when the artist allows it. On the right are the release date and how many likes, plays, downloads and comments the track has.',
           'The same rows show on liked tracks, playlists, release pages and the channel Playlist widget; a track page shows its plays too.',
+          'A track page also lists, in tabs, the public collections the track is in and who liked, reposted and played it (signed-in listeners only; anonymous plays are never shown). Show more loads the rest of a tab.',
         ],
       },
     ],

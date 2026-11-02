@@ -5,7 +5,13 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
-import { act, cleanup, render, screen } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { TrackAudience } from './TrackAudience';
@@ -84,5 +90,39 @@ describe('TrackAudience', () => {
     });
     await renderAudience();
     expect(await screen.findByText('Could not load who listened')).toBeTruthy();
+  });
+
+  it('loads the next page of one tab with Show more', async () => {
+    fetchSoundAudience
+      .mockResolvedValueOnce({
+        data: {
+          collections: { total: 0, items: [] },
+          likes: { total: 2, items: [person] },
+          reposts: { total: 0, items: [] },
+          plays: { total: 0, items: [] },
+        },
+        meta: { source: 'api' },
+      })
+      .mockResolvedValueOnce({
+        data: {
+          collections: { total: 0, items: [] },
+          likes: {
+            total: 0,
+            items: [{ ...person, username: 'mart', displayName: 'Mart' }],
+          },
+          reposts: { total: 0, items: [] },
+          plays: { total: 0, items: [] },
+        },
+        meta: { source: 'api' },
+      });
+    await renderAudience();
+    fireEvent.click(await screen.findByRole('tab', { name: /Liked/ }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Show more' }));
+    expect(fetchSoundAudience).toHaveBeenLastCalledWith('demo', 's1', {
+      tab: 'likes',
+      offset: 1,
+    });
+    expect(await screen.findByText('Mart')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Show more' })).toBeNull();
   });
 });

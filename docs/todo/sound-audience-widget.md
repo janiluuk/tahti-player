@@ -16,5 +16,5 @@ Played by (listeners), every row with a thumbnail.
   suspended accounts; paged with totals. "Played by" = signed-in listeners (user, 2026-11-02).
 - [x] tahti-web: fetcher + mock, render on the track page (and set / other
   sound pages) beside the comments, router links, "Show all" paging.
-- [ ] Help center / manual line.
+- [x] Help center line (Listener guide → Track rows).
 - [ ] Drop the allowlist entry once a tahti-org release has #1037; "Show all" paging.
