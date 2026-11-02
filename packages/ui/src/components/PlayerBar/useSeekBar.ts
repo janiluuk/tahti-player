@@ -1,4 +1,12 @@
-import { KeyboardEvent, MouseEvent, useCallback, useMemo, useRef } from 'react';
+import {
+  KeyboardEvent,
+  MouseEvent,
+  PointerEvent,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 type UseSeekBarParams = {
   progress: number;
@@ -21,23 +29,77 @@ export const useSeekBar = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const isInteractive = Boolean(onSeek) && !isLoading;
 
+  const [dragPercent, setDragPercent] = useState<number | null>(null);
+  const seekedOnPointerUp = useRef(false);
+
+  const percentAt = useCallback((clientX: number) => {
+    const target = containerRef.current;
+    if (!target) {
+      return null;
+    }
+    const rect = target.getBoundingClientRect();
+    if (rect.width <= 0) {
+      return null;
+    }
+    const percent = ((clientX - rect.left) / rect.width) * 100;
+    return Math.max(0, Math.min(100, percent));
+  }, []);
+
   const handleClick = useCallback(
     (e: MouseEvent) => {
+      setDragPercent(null);
+      if (seekedOnPointerUp.current) {
+        seekedOnPointerUp.current = false;
+        return;
+      }
       if (!isInteractive) {
         return;
       }
-      const target = containerRef.current;
-      if (!target) {
+      const percent = percentAt(e.clientX);
+      if (percent !== null) {
+        onSeek?.(percent);
+      }
+    },
+    [isInteractive, onSeek, percentAt],
+  );
+
+  const handlePointerDown = useCallback(
+    (e: PointerEvent) => {
+      if (!isInteractive || e.button > 0) {
         return;
       }
-      const rect = target.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const percent = (x / rect.width) * 100;
-      const clampedPercent = Math.max(0, Math.min(100, percent));
-      onSeek?.(clampedPercent);
+      e.currentTarget.setPointerCapture?.(e.pointerId);
+      setDragPercent(percentAt(e.clientX));
     },
-    [isInteractive, onSeek],
+    [isInteractive, percentAt],
   );
+
+  const handlePointerMove = useCallback(
+    (e: PointerEvent) => {
+      if (dragPercent === null) {
+        return;
+      }
+      setDragPercent(percentAt(e.clientX));
+    },
+    [dragPercent, percentAt],
+  );
+
+  const handlePointerUp = useCallback(
+    (e: PointerEvent) => {
+      if (dragPercent === null) {
+        return;
+      }
+      setDragPercent(null);
+      const percent = percentAt(e.clientX) ?? dragPercent;
+      seekedOnPointerUp.current = true;
+      onSeek?.(percent);
+    },
+    [dragPercent, onSeek, percentAt],
+  );
+
+  const handlePointerCancel = useCallback(() => setDragPercent(null), []);
+
+  const shown = dragPercent ?? clamped;
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -73,8 +135,14 @@ export const useSeekBar = ({
 
   return {
     clamped,
+    shown,
+    dragging: dragPercent !== null,
     containerRef,
     handleClick,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handlePointerCancel,
     handleKeyDown,
     isInteractive,
   } as const;

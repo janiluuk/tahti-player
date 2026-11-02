@@ -33,6 +33,8 @@ import { isAnonymousRouteAllowed } from '../layout/anonymousRoutes';
 import {
   isFullBleedRoute,
   MAIN_CONTENT_PADDING,
+  MAIN_PANE_INSET,
+  MAIN_SCROLL_BOTTOM_INSET,
   MAIN_SCROLLPORT_SHADOW_ROOM,
 } from '../layout/contentPadding';
 import { hasAccountRole, hasStudioAccess } from '../lib/accountRoles';
@@ -662,7 +664,7 @@ export function AppShell() {
             <PlayerWorkspace.Main
               className={cn(
                 'tahti-ambient-surface min-h-0 min-w-0 overflow-hidden',
-                !fullBleedRoute && MAIN_CONTENT_PADDING,
+                !fullBleedRoute && MAIN_PANE_INSET,
               )}
             >
               <div
@@ -672,7 +674,7 @@ export function AppShell() {
                   'focus-visible:ring-primary h-full min-w-0 overflow-x-hidden overflow-y-auto outline-none focus-visible:ring-2 focus-visible:ring-inset',
                   fullBleedRoute
                     ? MAIN_CONTENT_PADDING
-                    : MAIN_SCROLLPORT_SHADOW_ROOM,
+                    : cn(MAIN_SCROLLPORT_SHADOW_ROOM, MAIN_SCROLL_BOTTOM_INSET),
                 )}
                 data-studio-shell
               >

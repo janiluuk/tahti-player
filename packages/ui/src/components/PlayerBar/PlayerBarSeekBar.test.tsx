@@ -5,6 +5,17 @@ import '@tahti-player/tailwind-config';
 
 import { PlayerBarSeekBar } from './PlayerBarSeekBar';
 
+if (typeof window.PointerEvent === 'undefined') {
+  class PointerEventPolyfill extends MouseEvent {
+    pointerId: number;
+    constructor(type: string, init: PointerEventInit = {}) {
+      super(type, init);
+      this.pointerId = init.pointerId ?? 0;
+    }
+  }
+  window.PointerEvent = PointerEventPolyfill as typeof PointerEvent;
+}
+
 describe('PlayerBarSeekBar', () => {
   it('(Snapshot) default render', () => {
     const { asFragment } = render(
@@ -45,6 +56,39 @@ describe('PlayerBarSeekBar', () => {
     expect(onSeek).toHaveBeenCalledWith(25);
     fireEvent.click(container, { clientX: 200 });
     expect(onSeek).toHaveBeenCalledWith(100);
+  });
+
+  it('previews the drag position and seeks once on release', () => {
+    const onSeek = vi.fn();
+    render(
+      <PlayerBarSeekBar
+        progress={10}
+        elapsedSeconds={10}
+        remainingSeconds={90}
+        onSeek={onSeek}
+      />,
+    );
+    const bar = document.querySelector('[role="slider"]') as HTMLElement;
+    vi.spyOn(bar, 'getBoundingClientRect').mockReturnValue({
+      left: 0,
+      width: 200,
+      top: 0,
+      height: 20,
+      right: 200,
+      bottom: 20,
+    } as DOMRect);
+    const thumb = document.querySelector(
+      '[data-testid="player-seek-thumb"]',
+    ) as HTMLElement;
+    fireEvent.pointerDown(bar, { clientX: 40, button: 0, pointerId: 1 });
+    fireEvent.pointerMove(bar, { clientX: 120, pointerId: 1 });
+    expect(thumb.style.left).toBe('60%');
+    expect(onSeek).not.toHaveBeenCalled();
+    fireEvent.pointerUp(bar, { clientX: 120, pointerId: 1 });
+    fireEvent.click(bar, { clientX: 120 });
+    expect(onSeek).toHaveBeenCalledTimes(1);
+    expect(onSeek).toHaveBeenCalledWith(60);
+    expect(thumb.style.left).toBe('10%');
   });
 
   it('does not call onSeek when loading', () => {
