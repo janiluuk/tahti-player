@@ -7,20 +7,13 @@ import { fetchSearch } from '../api/listen';
 import type { SearchResponse } from '../api/search-types';
 import { GlobalSearch } from '../components/GlobalSearch';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import { SearchTrackResults } from '../components/SearchTrackResults';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 
 type State =
   | { status: 'loading' }
   | { status: 'error'; message: string }
   | { status: 'ready'; data: SearchResponse };
-
-function duration(sec: number | null): string | null {
-  if (sec == null) {
-    return null;
-  }
-  const s = Math.max(0, Math.round(sec));
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-}
 
 const rowClass =
   'hover:bg-background-secondary flex min-w-0 items-center gap-3 rounded-md p-2';
@@ -122,34 +115,7 @@ export function SearchResultsView({ q }: { q: string }) {
           {state.data.tracks.length > 0 ? (
             <section className="flex flex-col gap-2">
               <SectionTitle title="Tracks" />
-              <ul className="flex flex-col gap-1">
-                {state.data.tracks.map((track) => (
-                  <li key={track.id}>
-                    <Link
-                      to="/t/$id"
-                      params={{ id: track.id }}
-                      className={rowClass}
-                    >
-                      <MediaArtwork
-                        size="sm"
-                        src={track.coverUrl ?? placeholderArtworkUrl(track.id)}
-                        className="shrink-0"
-                      />
-                      <span className="flex min-w-0 flex-1 flex-col">
-                        <span className="truncate font-medium">
-                          {track.title}
-                        </span>
-                        <span className="text-foreground-secondary truncate text-xs">
-                          {track.artistName}
-                        </span>
-                      </span>
-                      <span className="text-foreground-secondary shrink-0 text-xs tabular-nums">
-                        {duration(track.durationSec)}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              <SearchTrackResults tracks={state.data.tracks} />
             </section>
           ) : null}
           {state.data.collections.length > 0 ? (

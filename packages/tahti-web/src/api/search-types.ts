@@ -7,6 +7,12 @@ export type SearchTrackResult = {
   channelSlug: string;
   durationSec: number | null;
   coverUrl: string | null;
+  artistUsername?: string | null;
+  /** Stream for this viewer (tahti-org#1038); null when gated or embed-only. */
+  audioUrl?: string | null;
+  gate?: { reason: 'SUBSCRIBERS_ONLY' | 'PURCHASE'; tierId?: string } | null;
+  embedProvider?: string | null;
+  embedUri?: string | null;
 };
 
 export type SearchArtistResult = {

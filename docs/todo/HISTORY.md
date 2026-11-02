@@ -5770,3 +5770,7 @@ Fixed the ambiguous pinned-track Storybook assertion. Other stations now use pla
 
 tahti-org release `2026-10-30-2` publishes every route the batch 111–120 slices called, so `api-routes-allowlist.json` keeps only `/api/admin/i18n/languages` (no translation routes exist). `check-api-routes.mjs` now also fails on allowlist entries the API serves, so an exception can't outlive its release. That was the last open item of `discussion-topics.md` (board-created discussion topics: API, web, CLI), now folded.
 
+## 2026-11-02 — search and tag search play in place; ux-batch-112 closed
+
+tahti-org#1038 gives `/api/v1/search` track results `audioUrl` (through the access gate, for the signed-in viewer), `gate`, `artistUsername` and the embed provider/URI. `/search` and `/search?tag=` render tracks with `PlayableAmbientTrackList` (play, queue, love, add to playlist; embed-only tracks play in their widget); members-only and for-sale tracks stay links with a lock label (`SearchTrackResults`). These were the two skipped slices (3, 5) of `ux-batch-112-forty-slices.md`, now folded.
+
