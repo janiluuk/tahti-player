@@ -29,9 +29,13 @@ export const Default: Story = {
     for (const section of ['Anonymous', 'Auth', 'Flows', 'Features']) {
       await expect(canvas.getByRole('link', { name: section })).toBeVisible();
     }
-    await expect(canvas.getByRole('tab', { name: 'Map' })).toHaveAttribute(
+    await expect(canvas.getByRole('tab', { name: 'Platform' })).toHaveAttribute(
       'aria-selected',
       'true',
+    );
+    await expect(canvas.getByTestId('admin-hub-back')).toHaveAttribute(
+      'href',
+      '/admin/hubs/platform',
     );
   },
 };

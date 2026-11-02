@@ -27,6 +27,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Admin/AdminGate` | `tahti-web/AdminGate.stories.tsx` |
 | `Tahti/Admin/AdminGovernanceView` | `tahti-web/AdminGovernanceView.stories.tsx` |
 | `Tahti/Admin/AdminGrantCycleView` | `tahti-web/AdminGrantCycleView.stories.tsx` |
+| `Tahti/Admin/AdminHubView` | `tahti-web/AdminHubView.stories.tsx` |
 | `Tahti/Admin/AdminI18nView` | `tahti-web/AdminI18nView.stories.tsx` |
 | `Tahti/Admin/InternetRadioPresetsPanel` | `tahti-web/AdminInternetRadioPresetsPanel.stories.tsx` |
 | `Tahti/Admin/AdminLogsView` | `tahti-web/AdminLogsView.stories.tsx` |

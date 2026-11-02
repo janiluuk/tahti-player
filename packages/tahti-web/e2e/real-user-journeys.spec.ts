@@ -124,30 +124,28 @@ test('governance navigation keeps member, artist, and board entries reachable an
   });
   await page.reload();
   await page.goto('/admin/governance');
-  await expect(page.getByRole('tab', { name: 'Community' })).toHaveAttribute(
+  await expect(page.getByRole('tab', { name: 'Co-op' })).toHaveAttribute(
     'aria-selected',
     'true',
   );
-  await expect(
-    page
-      .getByRole('tablist', { name: 'Admin Community' })
-      .getByRole('tab', { name: 'Governance' }),
-  ).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByTestId('admin-hub-back')).toHaveAttribute(
+    'href',
+    '/admin/hubs/coop',
+  );
 
   // AGM (and Annual reports / Grants) are now tabs inside the single
-  // consolidated /admin/governance page, not their own Admin Community
+  // consolidated /admin/governance page, not their own Admin Co-op
   // entries — /admin/agm redirects to /admin/governance/agm.
   await page.goto('/admin/agm');
   await expect(page).toHaveURL(/\/admin\/governance\/agm$/);
-  await expect(page.getByRole('tab', { name: 'Community' })).toHaveAttribute(
+  await expect(page.getByRole('tab', { name: 'Co-op' })).toHaveAttribute(
     'aria-selected',
     'true',
   );
-  await expect(
-    page
-      .getByRole('tablist', { name: 'Admin Community' })
-      .getByRole('tab', { name: 'Governance' }),
-  ).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByTestId('admin-hub-back')).toHaveAttribute(
+    'href',
+    '/admin/hubs/coop',
+  );
   await expect(
     page
       .getByRole('tablist', { name: 'Governance sections' })

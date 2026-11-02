@@ -63,10 +63,10 @@ export function AdminContentView() {
           <div className="flex flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
-              <BreadcrumbCurrent>Content</BreadcrumbCurrent>
+              <BreadcrumbCurrent>Catalog</BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title="Content"
+              title="Catalog"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <div>

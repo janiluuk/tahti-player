@@ -1,16 +1,19 @@
 import { useNavigate } from '@tanstack/react-router';
 import {
   ActivityIcon,
+  ArrowLeftIcon,
   BanknoteIcon,
   BlocksIcon,
   Building2Icon,
   Disc3Icon,
   FileTextIcon,
   GaugeIcon,
+  HandshakeIcon,
   HardDriveIcon,
   ImageIcon,
   LandmarkIcon,
   LanguagesIcon,
+  LayoutGridIcon,
   LibraryIcon,
   LineChartIcon,
   MapIcon,
@@ -20,13 +23,14 @@ import {
   PuzzleIcon,
   RadioIcon,
   RadioTowerIcon,
+  ServerIcon,
   ShieldCheckIcon,
   TrophyIcon,
   UsersIcon,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { TabLabel, Tabs } from '@tahti-player/ui';
+import { Badge, ButtonLink, TabLabel, Tabs } from '@tahti-player/ui';
 
 import type { TourStep } from '../lib/pageTour';
 import { matchesSectionRoute } from '../lib/sectionNavigation';
@@ -50,18 +54,28 @@ export const ADMIN_TAB_ONLY_ROUTES = [
   '/admin/content-reports', // moderation content-reports tab
   '/admin/radio-submissions',
   '/admin/radio-station-suggestions',
+  '/admin/agm',
+  '/admin/beta',
+  '/admin/files',
+  '/admin/governance/$tab',
+  '/admin/grants',
+  '/admin/hubs/$hub',
+  '/admin/missed-shows',
+  '/admin/storage/$userId',
 ] as const;
 
 export const PRIMARY = [
   {
     to: '/admin',
     label: 'Dashboard',
+    Icon: GaugeIcon,
     icon: <GaugeIcon size={16} aria-hidden />,
     description: 'Platform-wide overview — activity, health, and shortcuts.',
   },
   {
     to: '/admin/logs',
     label: 'Logs',
+    Icon: FileTextIcon,
     icon: <FileTextIcon size={16} aria-hidden />,
     description:
       'Live container logs from every service in the production stack.',
@@ -69,13 +83,15 @@ export const PRIMARY = [
   {
     to: '/admin/monitoring',
     label: 'Monitoring',
+    Icon: LineChartIcon,
     icon: <LineChartIcon size={16} aria-hidden />,
     description:
       'Grafana vital stats embed, service dashboards, and container logs.',
   },
   {
     to: '/admin/moderation',
-    label: 'Moderation',
+    label: 'Inbox',
+    Icon: ShieldCheckIcon,
     icon: <ShieldCheckIcon size={16} aria-hidden />,
     description:
       'Support, beta applications, radio submissions, Selects, content reports, and feature requests — one tabbed queue.',
@@ -83,12 +99,14 @@ export const PRIMARY = [
   {
     to: '/admin/users',
     label: 'Users',
+    Icon: UsersIcon,
     icon: <UsersIcon size={16} aria-hidden />,
     description: 'Search accounts and edit role, membership, and suspension.',
   },
   {
     to: '/admin/content',
-    label: 'Content',
+    label: 'Catalog',
+    Icon: LibraryIcon,
     icon: <LibraryIcon size={16} aria-hidden />,
     description:
       'System content overview — catalog totals, latest uploads, and recordings.',
@@ -96,6 +114,7 @@ export const PRIMARY = [
   {
     to: '/admin/radio',
     label: 'Radio',
+    Icon: RadioIcon,
     icon: <RadioIcon size={16} aria-hidden />,
     description:
       'Tahti Radio and Tahti Selects rotation, live from the station.',
@@ -103,36 +122,42 @@ export const PRIMARY = [
   {
     to: '/admin/news',
     label: 'News',
+    Icon: NewspaperIcon,
     icon: <NewspaperIcon size={16} aria-hidden />,
     description: 'Publish platform-wide news posts.',
   },
   {
     to: '/admin/streams',
     label: 'Streams',
+    Icon: RadioTowerIcon,
     icon: <RadioTowerIcon size={16} aria-hidden />,
     description: 'Monitor live ingest and stream health across channels.',
   },
   {
     to: '/admin/venues',
     label: 'Venues',
+    Icon: MapPinIcon,
     icon: <MapPinIcon size={16} aria-hidden />,
     description: 'Verify and manage registered venue listings.',
   },
   {
     to: '/admin/top-lists',
     label: 'Top lists',
+    Icon: TrophyIcon,
     icon: <TrophyIcon size={16} aria-hidden />,
     description: 'Editorial top-track and top-artist lists.',
   },
   {
     to: '/admin/announcements',
     label: 'Announcements',
+    Icon: MegaphoneIcon,
     icon: <MegaphoneIcon size={16} aria-hidden />,
     description: 'Site-wide banners and announcement messages.',
   },
   {
     to: '/admin/storage',
     label: 'Storage',
+    Icon: HardDriveIcon,
     icon: <HardDriveIcon size={16} aria-hidden />,
     description:
       'Disk/object storage space, quotas, and every uploaded file across the platform.',
@@ -140,6 +165,7 @@ export const PRIMARY = [
   {
     to: '/admin/artwork-presets',
     label: 'Artwork presets',
+    Icon: ImageIcon,
     icon: <ImageIcon size={16} aria-hidden />,
     description:
       'Choose and replace the abstract artwork defaults for uploads.',
@@ -147,12 +173,14 @@ export const PRIMARY = [
   {
     to: '/admin/financial',
     label: 'Financial',
+    Icon: BanknoteIcon,
     icon: <BanknoteIcon size={16} aria-hidden />,
     description: 'Membership revenue, payouts, and financial records.',
   },
   {
     to: '/admin/governance',
     label: 'Governance',
+    Icon: LandmarkIcon,
     icon: <LandmarkIcon size={16} aria-hidden />,
     description:
       'Member votes, annual reports, grants, and AGM — one tabbed hub.',
@@ -160,6 +188,7 @@ export const PRIMARY = [
   {
     to: '/admin/addons',
     label: 'Add-ons',
+    Icon: BlocksIcon,
     icon: <BlocksIcon size={16} aria-hidden />,
     description:
       'Register and manage available listener, artist, and admin add-ons.',
@@ -167,30 +196,35 @@ export const PRIMARY = [
   {
     to: '/admin/status',
     label: 'Status',
+    Icon: ActivityIcon,
     icon: <ActivityIcon size={16} aria-hidden />,
     description: 'Platform status page content and incident history.',
   },
   {
     to: '/admin/vendors',
     label: 'Vendors',
+    Icon: Building2Icon,
     icon: <Building2Icon size={16} aria-hidden />,
     description: 'Track vendors, integrations, launch checks, and DPAs.',
   },
   {
     to: '/admin/i18n',
     label: 'Languages',
+    Icon: LanguagesIcon,
     icon: <LanguagesIcon size={16} aria-hidden />,
     description: 'Add languages and import translation CSVs.',
   },
   {
     to: '/admin/tahti-selects',
     label: 'Tahti Selects',
+    Icon: Disc3Icon,
     icon: <Disc3Icon size={16} aria-hidden />,
     description: 'Manage the Tahti Selects editorial stream and rotation.',
   },
   {
     to: '/admin/orphan-pages',
     label: 'Orphan pages',
+    Icon: PuzzleIcon,
     icon: <PuzzleIcon size={16} aria-hidden />,
     description:
       'Real pages that shipped without a menu entry or an in-app link, gathered here as tabs.',
@@ -198,72 +232,115 @@ export const PRIMARY = [
   {
     to: '/admin/map',
     label: 'Map',
+    Icon: MapIcon,
     icon: <MapIcon size={16} aria-hidden />,
     description: 'Screen atlas of listener, studio, and admin surfaces.',
   },
+  {
+    to: '/admin/hubs/content',
+    label: 'Content',
+    Icon: LayoutGridIcon,
+    icon: <LayoutGridIcon size={16} aria-hidden />,
+    description:
+      'News, announcements, Selects, top lists, radio, venues, artwork presets and the catalog.',
+  },
+  {
+    to: '/admin/hubs/coop',
+    label: 'Co-op',
+    Icon: HandshakeIcon,
+    icon: <HandshakeIcon size={16} aria-hidden />,
+    description: 'Board, AGM, grants, annual reports, records and finances.',
+  },
+  {
+    to: '/admin/hubs/platform',
+    label: 'Platform',
+    Icon: ServerIcon,
+    icon: <ServerIcon size={16} aria-hidden />,
+    description:
+      'Add-ons, languages, vendors, storage, streams, logs and diagnostics.',
+  },
 ] as const;
 
-export const ADMIN_SECTIONS = [
+const pages = (paths: readonly string[]) =>
+  paths.map((to) => PRIMARY.find((item) => item.to === to)!);
+
+type AdminSection = {
+  id: string;
+  label: string;
+  /** A hub section's first page is a page of cards; its other pages show a
+   * back link to it instead of a row of tabs. */
+  hub?: string;
+  items: ReturnType<typeof pages>;
+};
+
+export const ADMIN_SECTIONS: readonly AdminSection[] = [
   {
     id: 'overview',
     label: 'Overview',
-    items: [
-      '/admin',
-      '/admin/financial',
-      '/admin/storage',
-      '/admin/artwork-presets',
-      '/admin/logs',
-      '/admin/monitoring',
-      '/admin/status',
-      '/admin/vendors',
-    ].map((to) => PRIMARY.find((item) => item.to === to)!),
+    items: pages(['/admin', '/admin/status', '/admin/monitoring']),
   },
   {
-    id: 'community',
-    label: 'Community',
-    items: PRIMARY.filter((item) =>
-      ['/admin/moderation', '/admin/users', '/admin/governance'].includes(
-        item.to,
-      ),
-    ),
+    id: 'inbox',
+    label: 'Inbox',
+    items: pages(['/admin/moderation']),
+  },
+  {
+    id: 'people',
+    label: 'People',
+    items: pages(['/admin/users']),
   },
   {
     id: 'content',
     label: 'Content',
-    items: PRIMARY.filter((item) =>
-      [
-        '/admin/radio',
-        '/admin/tahti-selects',
-        '/admin/content',
-        '/admin/news',
-        '/admin/top-lists',
-        '/admin/announcements',
-      ].includes(item.to),
-    ).sort((left, right) => {
-      if (left.to === '/admin/content') {
-        return -1;
-      }
-      if (right.to === '/admin/content') {
-        return 1;
-      }
-      return 0;
-    }),
+    hub: '/admin/hubs/content',
+    items: pages([
+      '/admin/hubs/content',
+      '/admin/news',
+      '/admin/announcements',
+      '/admin/tahti-selects',
+      '/admin/top-lists',
+      '/admin/radio',
+      '/admin/venues',
+      '/admin/artwork-presets',
+      '/admin/content',
+    ]),
   },
   {
-    id: 'operations',
-    label: 'Manage',
-    items: PRIMARY.filter((item) =>
-      [
-        '/admin/streams',
-        '/admin/venues',
-        '/admin/addons',
-        '/admin/i18n',
-        '/admin/orphan-pages',
-        '/admin/map',
-      ].includes(item.to),
-    ),
+    id: 'coop',
+    label: 'Co-op',
+    hub: '/admin/hubs/coop',
+    items: pages(['/admin/hubs/coop', '/admin/governance', '/admin/financial']),
   },
-] as const;
+  {
+    id: 'platform',
+    label: 'Platform',
+    hub: '/admin/hubs/platform',
+    items: pages([
+      '/admin/hubs/platform',
+      '/admin/addons',
+      '/admin/i18n',
+      '/admin/vendors',
+      '/admin/storage',
+      '/admin/streams',
+      '/admin/logs',
+      '/admin/orphan-pages',
+      '/admin/map',
+    ]),
+  },
+];
+
+export function adminSectionForPath(
+  current: string | undefined,
+): AdminSection | undefined {
+  return ADMIN_SECTIONS.find((section) =>
+    section.items.some((item) => isAdminNavItemActive(current, item.to)),
+  );
+}
+
+export function adminHubItems(hub: string) {
+  const section = ADMIN_SECTIONS.find((item) => item.hub === hub);
+  return section ? section.items.filter((item) => item.to !== hub) : [];
+}
 
 const SUBMENU_SLOT_CLASS = 'min-h-7';
 
@@ -276,9 +353,10 @@ export const ADMIN_NAV_TOUR_STEPS: TourStep[] = PRIMARY.map(
 );
 
 export function isAdminNavItemActive(
-  current: string | undefined,
+  location: string | undefined,
   to: string,
 ): boolean {
+  const current = location?.split('?')[0];
   if (to === '/admin') {
     return current === to;
   }
@@ -294,10 +372,7 @@ function useAdminNavParts(
   moderationPendingCount: number | undefined,
 ) {
   const navigate = useNavigate();
-  const routeSection = ADMIN_SECTIONS.find((section) =>
-    section.items.some((item) => isAdminNavItemActive(current, item.to)),
-  );
-  const section = routeSection;
+  const section = adminSectionForPath(current);
 
   const selectedSectionIndex = ADMIN_SECTIONS.findIndex(
     (item) => item.id === section?.id,
@@ -311,9 +386,10 @@ function useAdminNavParts(
         className="w-fit max-w-full gap-0"
         selectedIndex={Math.max(0, selectedSectionIndex)}
         onChange={(index) => {
-          const firstPage = ADMIN_SECTIONS[index]?.items[0];
+          const target = ADMIN_SECTIONS[index];
+          const firstPage = target?.hub ?? target?.items[0]?.to;
           if (firstPage) {
-            void navigate({ to: firstPage.to });
+            void navigate({ to: firstPage });
           }
         }}
         tabClassName={
@@ -325,26 +401,48 @@ function useAdminNavParts(
         <Tabs.List aria-label="Admin sections" className="w-fit">
           {ADMIN_SECTIONS.map((item) => (
             <Tabs.Tab key={item.id}>
-              <TabLabel icon={item.items[0]?.icon}>{item.label}</TabLabel>
+              <TabLabel icon={item.items[0]?.icon}>
+                <span className="inline-flex items-center gap-1.5">
+                  {item.label}
+                  {item.id === 'inbox' && moderationPendingCount ? (
+                    <Badge
+                      variant="pill"
+                      color="red"
+                      data-testid="admin-inbox-count"
+                    >
+                      {moderationPendingCount}
+                    </Badge>
+                  ) : null}
+                </span>
+              </TabLabel>
             </Tabs.Tab>
           ))}
         </Tabs.List>
       </Tabs.Root>
     </div>
   );
+  const onHubChild =
+    section?.hub !== undefined && !isAdminNavItemActive(current, section.hub);
   const menu = (
     <div className={SUBMENU_SLOT_CLASS} data-admin-section-menu>
-      {section ? (
+      {section?.hub && onHubChild ? (
+        <ButtonLink
+          to={section.hub}
+          size="sm"
+          variant="text"
+          className="gap-1.5"
+          data-testid="admin-hub-back"
+        >
+          <ArrowLeftIcon size={16} aria-hidden />
+          {section.label}
+        </ButtonLink>
+      ) : section && !section.hub && section.items.length > 1 ? (
         <SectionTabs
           aria-label={`Admin ${section.label}`}
           items={section.items.map((link) => ({
             id: link.to,
             label: link.label,
             icon: link.icon,
-            count:
-              link.to === '/admin/moderation'
-                ? moderationPendingCount
-                : undefined,
             to: link.to,
             active: isAdminNavItemActive(current, link.to),
           }))}
