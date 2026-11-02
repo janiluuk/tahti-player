@@ -127,19 +127,19 @@ is wrong and a suggested fix, then turn the agreed ones into slices.
 
 | Screen | Issue | Kind | Suggestion |
 | --- | --- | --- | --- |
-| Artist page header (`/u/:username`) | Nine actions in the header (Subscribe, press kit, RSS, Embed, Report, Block, Open channel, Follow, followers) plus an icon button with no accessible name | messy / a11y | Keep Follow and Subscribe; move the rest into one "More" menu; name the icon button |
+| Artist page header (`/u/:username`) | Nine actions in the header (Subscribe, press kit, RSS, Embed, Report, Block, Open channel, Follow, followers); the icon-only Subscribe had no accessible name (named in #1771) | messy | Keep Follow and Subscribe; move the rest into one "More" menu |
 | Track page (`/t/:id`) | Six emoji buttons plus Comment for every timestamp; signed out they all read "Log in to add …" | messy | One "React" button that opens the emoji set; one sign-in prompt |
 | Every page (mock) | The community guidelines toast stays until acknowledged, sits over the top search bar and blocks clicks on tabs | practicality | Show it once as a banner on Listen, not a toast over navigation |
-| Settings → Themes | Theme cards say "Built-in Nuclear theme" | labels | Say "Built-in theme" (Nuclear is the upstream project) |
-| Studio → Fans → Posts | The page is titled "Updates" while the card and help say Posts | labels | Title it Posts |
+| Settings → Themes | Theme cards said "Built-in Nuclear theme" | labels, fixed (#1771) | "Built-in theme" |
+| Studio → Fans → Posts | The page was titled "Updates" while the card and help say Posts | labels, fixed (#1771) | Titled Posts (Newsletter on its tab) |
 | Studio release detail | Three rows of tabs (Studio, Music sub-row, release tabs) | messy | Per the navigation plan: a back link and title replace the section rows on detail pages |
 | Studio → Stats | A second tab row (Overview, Plays, Top lists, Insights) on a page that is meant to be one page with sections | messy | Section links in the page instead of a tab row |
 | Messages | Three ways in on one screen (Message @username + Start + Search, Your contacts, conversation list); opening a conversation briefly mounts two threads, so typing can land in the one that disappears | messy / bug | One search box over the conversation list; mount one thread |
-| Admin → People | No search box; the user list is a radio group | practicality | Add search; keep the list as links or rows |
-| Studio → Sounds (`/library/sounds`) | Rows have Edit and More actions but no Play button (the fullscreen spec cannot start playback there) | usage | Add a play control to the row |
+| Admin → People | The user list is a radio group (search exists: it is a searchbox) | practicality | Keep the list as links or rows |
+| Artwork Play overlays (Studio → Sounds and every `MediaArtwork`) | On desktop the Play overlay was `visibility: hidden` until hover, so Tab never reached it and screen readers missed it | a11y, fixed (#1771) | Opacity-only fade; `a11y-play-controls.spec.ts` |
 | Admin → Inbox → Radio submissions | Approve / Reject gave no feedback and, on the mock app, nothing changed | practicality, fixed | A toast names the track and the row's badge updates |
 | Admin → Venues | Verify / Unverify returned a 500 on the mock app (no mock branch) | bug, fixed | Mock branch added |
-| Studio → Fans → Store | Two empty states stacked ("No prices yet", "Add a price first") | messy | One empty state with the New tier button |
+| Studio → Fans → Store | Two empty states stacked ("No prices yet", "Add a price first") | messy, fixed (#1771) | One line under the price list |
 | Release page (`/r/night-drive`) on the mock app | The Listen card says Night Drive, the page says First Light EP | mock data | Make the mock smart link follow the slug |
 | Radio visualizer (Cymatics) | Loads `/piz_compressed.exr`, which no package ships, logs EXRLoader errors on `/radio`, and the orb, cymatics and landscape shapes never show (they wait for that map) | bug | Build the map with three.js `RoomEnvironment` (tried; it made the RadioView story time out on CI's software GL, so it needs a lighter map or a deferred build) |
 
