@@ -43,7 +43,7 @@ type Story = StoryObj<typeof meta>;
 async function openSmartLinks(canvasElement: HTMLElement): Promise<Scope> {
   const canvas = within(canvasElement);
   await canvas.findByRole('heading', { name: 'After Hours' });
-  await selectTab(canvas, 'Smart links');
+  await selectTab(canvas, 'Links');
   return canvas;
 }
 
@@ -62,24 +62,25 @@ export const Overview: Story = {
   },
 };
 
-// Every tab of the release renders its panel.
+// The four tabs: Overview (with credits), Links (smart links and export),
+// Stats, Advanced (versions and fingerprinting).
 export const SwitchTabs: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await canvas.findByRole('heading', { name: 'After Hours' });
-    await selectTab(canvas, 'Smart links');
+    await expect(canvas.getAllByRole('tab')).toHaveLength(4);
+    await expect(canvas.getByText('Track credits')).toBeVisible();
+    await selectTab(canvas, 'Links');
     await waitFor(() =>
       expect(canvas.getByText('Smart-link playlist')).toBeVisible(),
     );
-    await selectTab(canvas, 'Credits');
-    await expect(canvas.getByText('Track credits')).toBeVisible();
-    await selectTab(canvas, 'Versions');
-    await selectTab(canvas, 'Fingerprinting');
-    await expect(
-      canvas.getByText('Fingerprinting', { selector: 'h2, h3' }),
-    ).toBeVisible();
-    await selectTab(canvas, 'Export');
     await expect(canvas.getByText('Export release')).toBeVisible();
+    await selectTab(canvas, 'Advanced');
+    await waitFor(() =>
+      expect(
+        canvas.getByText('Fingerprinting', { selector: 'h2, h3' }),
+      ).toBeVisible(),
+    );
     await selectTab(canvas, 'Overview');
     await expect(canvas.getByText('Details')).toBeVisible();
   },
