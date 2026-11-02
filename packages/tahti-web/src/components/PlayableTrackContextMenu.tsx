@@ -18,9 +18,14 @@ import { toast } from 'sonner';
 import type { QueueItem, Track } from '@tahti-player/model';
 import { Input, TrackContextMenu } from '@tahti-player/ui';
 
-import { addStudioCollectionItem, fetchStudioCollections } from '../api/studio';
+import {
+  addStudioCollectionItem,
+  fetchStudioCollections,
+  removeStudioCollectionItem,
+} from '../api/studio';
 import type { StudioCollection } from '../api/studio-types';
 import { soundIdFromPlayableId } from '../lib/soundId';
+import { toastWithUndo } from '../lib/undoToast';
 import { useMasteringFeatureStore } from '../plugins/mastering/store';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
@@ -118,7 +123,15 @@ export function PlayableTrackContextMenu({
     const result = await addStudioCollectionItem(slug, soundId);
     setAddingSlug(null);
     if (result.ok) {
-      toast.success(`Added to ${name}`);
+      const { itemId } = result;
+      if (itemId) {
+        toastWithUndo(`Added to ${name}`, {
+          undo: () => removeStudioCollectionItem(slug, itemId),
+          undoneMessage: `Removed from ${name}.`,
+        });
+      } else {
+        toast.success(`Added to ${name}`);
+      }
       return;
     }
     toast.error(result.error);

@@ -16,6 +16,7 @@ import {
   createStudioCollection,
   deleteStudioCollection,
   fetchStudioCollections,
+  removeStudioCollectionItem,
 } from '../api/studio';
 import type { StudioCollection } from '../api/studio-types';
 import { toastWithUndo } from '../lib/undoToast';
@@ -44,15 +45,29 @@ function playlistGlyph(c: StudioCollection) {
 async function addAll(slug: string, soundIds: string[]) {
   let added = 0;
   let error: string | null = null;
+  const itemIds: string[] = [];
   for (const soundId of soundIds) {
     const r = await addStudioCollectionItem(slug, { soundId });
     if (r.ok) {
       added += 1;
+      if (r.itemId) {
+        itemIds.push(r.itemId);
+      }
     } else {
       error ??= r.error;
     }
   }
-  return { added, error };
+  return { added, error, itemIds };
+}
+
+async function removeAll(slug: string, itemIds: string[]) {
+  for (const itemId of itemIds) {
+    const r = await removeStudioCollectionItem(slug, itemId);
+    if (!r.ok) {
+      return r;
+    }
+  }
+  return { ok: true as const };
 }
 
 function trackCount(count: number) {
@@ -124,19 +139,32 @@ export function AddToPlaylistPanel({
     setAddingSlug(slug);
     setNote(null);
     try {
-      const { added, error } = await addAll(slug, ids);
+      const { added, error, itemIds } = await addAll(slug, ids);
       if (added === 0) {
         setNote(error);
         return;
       }
       setAddedSlugs((prev) => new Set(prev).add(slug));
-      setNote(
-        !bulk
-          ? `Added to ${name}`
-          : error
-            ? `Added ${added} of ${trackCount(ids.length)} to ${name}: ${error}`
-            : `Added ${trackCount(added)} to ${name}`,
-      );
+      const message = !bulk
+        ? `Added to ${name}`
+        : error
+          ? `Added ${added} of ${trackCount(ids.length)} to ${name}: ${error}`
+          : `Added ${trackCount(added)} to ${name}`;
+      setNote(message);
+      if (itemIds.length > 0) {
+        toastWithUndo(`${message}.`, {
+          undo: () => removeAll(slug, itemIds),
+          undoneMessage: `Removed from ${name}.`,
+          onUndone: () => {
+            setAddedSlugs((prev) => {
+              const next = new Set(prev);
+              next.delete(slug);
+              return next;
+            });
+            setNote(null);
+          },
+        });
+      }
     } finally {
       setAddingSlug(null);
     }
