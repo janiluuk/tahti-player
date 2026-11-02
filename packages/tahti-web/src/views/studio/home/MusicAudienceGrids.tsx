@@ -1,22 +1,32 @@
 import {
   BarChart3Icon,
+  CalendarIcon,
   CreditCardIcon,
   DiscAlbumIcon,
   LayoutTemplateIcon,
   LibraryBigIcon,
   MicIcon,
   NewspaperIcon,
+  RadioIcon,
   RocketIcon,
   Share2Icon,
   UploadCloudIcon,
   WalletIcon,
 } from 'lucide-react';
-
-import { CardGrid } from '@tahti-player/ui';
+import type { ReactNode } from 'react';
 
 import { Group, StudioActionTile } from './HomeTiles';
 import type { StudioHomeState } from './useStudioHome';
 
+function ShortcutGrid({ children }: { children: ReactNode }) {
+  return (
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+      {children}
+    </div>
+  );
+}
+
+/** The dashboard's action shortcuts: small one-line tiles, grouped. */
 export function MusicAudienceGrids({
   state,
   stripeConfigured,
@@ -28,8 +38,26 @@ export function MusicAudienceGrids({
 
   return (
     <>
+      <Group title="Broadcast">
+        <ShortcutGrid>
+          <StudioActionTile
+            to="/studio/go-live"
+            icon={RadioIcon}
+            label="Go live"
+            subtitle="Keys, signal, on-air"
+            color="bg-accent-red"
+          />
+          <StudioActionTile
+            to="/studio/schedule"
+            icon={CalendarIcon}
+            label="Schedule"
+            subtitle="Next show & programme"
+            color="bg-accent-blue"
+          />
+        </ShortcutGrid>
+      </Group>
       <Group title="Music">
-        <CardGrid>
+        <ShortcutGrid>
           <StudioActionTile
             to="/studio/shows"
             icon={MicIcon}
@@ -82,10 +110,10 @@ export function MusicAudienceGrids({
               color="bg-accent-cyan"
             />
           ) : null}
-        </CardGrid>
+        </ShortcutGrid>
       </Group>
       <Group title="Audience & channel">
-        <CardGrid>
+        <ShortcutGrid>
           <StudioActionTile
             to="/studio/updates"
             icon={NewspaperIcon}
@@ -123,7 +151,7 @@ export function MusicAudienceGrids({
             subtitle="Design & domain"
             color="bg-accent-purple"
           />
-        </CardGrid>
+        </ShortcutGrid>
       </Group>
     </>
   );
