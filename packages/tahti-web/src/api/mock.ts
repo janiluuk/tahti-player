@@ -425,6 +425,7 @@ function buildMockSearch(
               channelSlug: item.slug,
               durationSec: track.durationSec ?? null,
               coverUrl: track.bannerUrl ?? null,
+              audioUrl: track.audioUrl ?? null,
             })),
         );
   const collections =
