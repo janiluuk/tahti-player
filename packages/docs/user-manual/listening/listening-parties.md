@@ -33,7 +33,7 @@ When the party is over, the page says so and links to the release once it is pub
 
 Your parties are listed under **Studio → Broadcast → Listening parties**. Until a party starts you can **Reschedule** it (new time or note) or **Cancel** it. Two parties on your channel cannot overlap.
 
-During the party, chat as you normally would; the chat posts a "Now playing" line as each track starts. Fans buy through your purchase tiers, which the party page shows while your store is open and Stripe is connected; set them up under **Studio → Audience**.
+During the party, chat as you normally would; the chat posts a "Now playing" line as each track starts. Fans buy through your purchase tiers, which the party page shows while your store is open and Stripe is connected; set them up under **Studio → Fans → Store**.
 
 {% hint style="info" %}
 The release plays in each listener's own player; there is no stream to start or stop. Formats such as vinyl, and pre-orders, are not part of listening parties yet.

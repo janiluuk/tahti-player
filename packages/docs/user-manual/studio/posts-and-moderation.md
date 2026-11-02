@@ -6,11 +6,11 @@ description: Post updates, send a newsletter, and moderate your channel's chat a
 
 ## Posts
 
-**Studio → Posts** writes updates that reach your followers' **Feed**. Posts can be scheduled; followers are notified when one goes out. Delete a post from its menu.
+**Studio → Fans → Posts** writes updates that reach your followers' **Feed**. Posts can be scheduled; followers are notified when one goes out. Delete a post from its menu.
 
 ## Newsletter
 
-**Studio → Posts → Newsletter** composes and sends newsletters, with drafts and subscriber counts. Listeners subscribe from your profile; signed-out visitors confirm by email, and every newsletter has a one-click unsubscribe.
+**Studio → Fans → Newsletter** composes and sends newsletters, with drafts and subscriber counts. Listeners subscribe from your profile; signed-out visitors confirm by email, and every newsletter has a one-click unsubscribe.
 
 ## Moderate chat and comments
 
