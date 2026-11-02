@@ -23,7 +23,7 @@ function renderTab(tab?: AdminModerationTabId) {
   );
 }
 
-/** Asserts the page heading and that `label` is the selected queue tab. */
+/** Asserts the page heading and that `label` is the selected queue chip. */
 async function expectQueue(canvasElement: HTMLElement, label: string) {
   const canvas = within(canvasElement);
   await waitFor(() =>
@@ -32,12 +32,13 @@ async function expectQueue(canvasElement: HTMLElement, label: string) {
     ).toBeVisible(),
   );
   const queues = within(
-    canvas.getByRole('tablist', { name: 'Moderation queues' }),
+    canvas.getByRole('radiogroup', { name: 'Inbox queues' }),
   );
-  await expect(queues.getAllByRole('tab')).toHaveLength(7);
-  await expect(queues.getByRole('tab', { name: label })).toHaveAttribute(
-    'aria-selected',
-    'true',
+  await expect(queues.getAllByRole('radio')).toHaveLength(7);
+  await waitFor(() =>
+    expect(
+      queues.getByRole('radio', { name: new RegExp(`^${label}`) }),
+    ).toHaveAttribute('aria-checked', 'true'),
   );
   return canvas;
 }

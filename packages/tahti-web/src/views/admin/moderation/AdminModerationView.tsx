@@ -14,6 +14,7 @@ import {
   BreadcrumbCurrent,
   BreadcrumbLink,
   Breadcrumbs,
+  FilterChips,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -27,7 +28,6 @@ import {
   isAdminModerationTabId,
   type AdminModerationTabId,
 } from './moderationNav';
-import { ModerationTabs, type ModerationTabItem } from './ModerationTabs';
 import { BetaTab } from './tabs/BetaTab';
 import { ContentReportsTab } from './tabs/ContentReportsTab';
 import { FeatureRequestsTab } from './tabs/FeatureRequestsTab';
@@ -64,13 +64,6 @@ const MODERATION_TAB_ICONS: Record<AdminModerationTabId, typeof UsersIcon> = {
   themes: PaletteIcon,
 };
 
-const MODERATION_TAB_ITEMS: ModerationTabItem[] = ADMIN_MODERATION_TABS.map(
-  (item) => ({
-    ...item,
-    icon: MODERATION_TAB_ICONS[item.id],
-  }),
-);
-
 /** One page, one tab per review queue: Support, Beta applications, Radio
  * submissions, Selects, Content reports, Feature requests — see
  * moderationNav.ts. These used to be six standalone `/admin/*` routes; they
@@ -82,16 +75,22 @@ const MODERATION_TAB_ITEMS: ModerationTabItem[] = ADMIN_MODERATION_TABS.map(
 export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
   const navigate = useNavigate();
   const [pendingCount, setPendingCount] = useState<number>();
+  const [queueCounts, setQueueCounts] = useState<
+    Partial<Record<AdminModerationTabId, number>>
+  >({});
   const active = isAdminModerationTabId(tab)
     ? tab
     : DEFAULT_ADMIN_MODERATION_TAB;
-  const selectedIndex = ADMIN_MODERATION_TABS.findIndex((t) => t.id === active);
 
   useEffect(() => {
     void fetchAdminDashboard().then((result) => {
       setPendingCount(
         result.data.kpis.betaQueue + result.data.kpis.openTickets,
       );
+      setQueueCounts({
+        support: result.data.kpis.openTickets,
+        beta: result.data.kpis.betaQueue,
+      });
     });
   }, []);
 
@@ -107,12 +106,19 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
               <BreadcrumbCurrent>Inbox</BreadcrumbCurrent>
             </Breadcrumbs>
-            <ModerationTabs
-              activeId={
-                ADMIN_MODERATION_TABS[selectedIndex < 0 ? 0 : selectedIndex].id
-              }
-              items={MODERATION_TAB_ITEMS}
-              ariaLabel="Moderation queues"
+            <FilterChips
+              aria-label="Inbox queues"
+              data-testid="inbox-queues"
+              items={ADMIN_MODERATION_TABS.map((item) => {
+                const Icon = MODERATION_TAB_ICONS[item.id];
+                const count = queueCounts[item.id];
+                return {
+                  id: item.id,
+                  label: count ? `${item.label} (${count})` : item.label,
+                  icon: <Icon size={14} aria-hidden />,
+                };
+              })}
+              selected={active}
               onChange={(nextId) => {
                 void navigate({
                   to: '/admin/moderation/$tab',
