@@ -12,18 +12,22 @@ type Props = {
   title: string;
   autoplay: boolean;
   compact?: boolean;
+  /** Bumped to mount the widget again (a fresh play request). */
+  mountKey?: number;
 };
 
 /** The provider's own widget, rendered in the shared player surfaces
- * (bottom bar / full-screen player) for any EMBED_ONLY track. Only
- * hearthis.at's embed URL carries a client-side `autoplay` toggle; the
- * others mount as-is. `compact` trims the height to fit the bottom bar. */
+ * (bottom bar / full-screen player) for any EMBED_ONLY track. It is the
+ * transport for that track: it mounts once per play request (`mountKey`)
+ * and is never remounted by Tahti's play state. Only hearthis.at's embed
+ * URL carries a client-side `autoplay` toggle; the others mount as-is. */
 export function EmbedSurface({
   provider,
   embedUri,
   title,
   autoplay,
   compact = false,
+  mountKey = 0,
 }: Props) {
   const upper = provider.toUpperCase() as EmbedProvider;
   const src = embedSrcFor(upper, embedUri, { compact });
@@ -41,7 +45,7 @@ export function EmbedSurface({
 
   return (
     <iframe
-      key={`${provider}-${embedUri}-${autoplay ? 'playing' : 'paused'}`}
+      key={`${provider}-${embedUri}-${mountKey}`}
       title={`${title} — ${label} player`}
       src={finalSrc}
       width="100%"

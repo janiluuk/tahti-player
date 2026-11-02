@@ -24,6 +24,7 @@ import { radioStationIdForPlayable } from '../content/radioStations';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { usePlaybackErrorToast } from '../hooks/usePlaybackErrorToast';
 import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
+import { EMBED_PROVIDER_LABEL } from '../lib/embedSrc';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { streamFailureLabel } from '../lib/streamFailure';
 import { useAuthStore } from '../stores/authStore';
@@ -63,6 +64,8 @@ export function ConnectedPlayerBar() {
   const toggleQueueRail = useLayoutStore((s) => s.toggleQueueRail);
   const toggleBottomQueue = useLayoutStore((s) => s.toggleBottomQueue);
   const bottomQueueOpen = useLayoutStore((s) => s.bottomQueueOpen);
+  const restoredPending = usePlayerStore((s) => s.restoredPending);
+  const reloadNonce = usePlayerStore((s) => s.reloadNonce);
   const setFullScreenPlayerOpen = useLayoutStore(
     (s) => s.setFullScreenPlayerOpen,
   );
@@ -182,6 +185,7 @@ export function ConnectedPlayerBar() {
   const controls = (
     <div className="flex flex-col items-center gap-1">
       <PlayerBar.Controls
+        hidePlayPause={Boolean(embed)}
         isPlaying={isPlaying}
         isLoading={isLoading}
         isShuffleActive={!isLive && shuffle}
@@ -202,6 +206,18 @@ export function ConnectedPlayerBar() {
         onShuffleToggle={toggleShuffle}
         onRepeatToggle={cycleRepeat}
       />
+      {embed ? (
+        <p
+          className="text-foreground-secondary text-xs"
+          data-testid="player-embed-note"
+        >
+          Plays in the{' '}
+          {EMBED_PROVIDER_LABEL[
+            embed.provider.toUpperCase() as keyof typeof EMBED_PROVIDER_LABEL
+          ] ?? embed.provider}{' '}
+          player above
+        </p>
+      ) : null}
       {status === 'error' ? (
         <div
           className="flex flex-wrap items-center gap-x-2"
@@ -294,19 +310,23 @@ export function ConnectedPlayerBar() {
 
   const embedHostedInRow =
     embed?.provider === 'hearthis' && hearthisHostedInRow;
-  const embedPanel =
+  // The provider's widget at its own size, in a strip above the bar. It is
+  // the transport for the track, so the bar leaves out play/pause.
+  const embedStrip =
     embed && !embedHostedInRow ? (
       <div
-        className="border-border max-h-28 w-[min(100%,20rem)] shrink-0 overflow-hidden rounded-lg border"
+        className="flex w-full justify-center px-4 pt-2"
         data-testid="hearthis-player-embed"
       >
-        <EmbedSurface
-          provider={embed.provider}
-          embedUri={embed.embedUri}
-          title={title}
-          autoplay={isPlaying}
-          compact
-        />
+        <div className="w-full max-w-2xl">
+          <EmbedSurface
+            provider={embed.provider}
+            embedUri={embed.embedUri}
+            title={title}
+            autoplay={restoredPending !== playable?.id}
+            mountKey={reloadNonce}
+          />
+        </div>
       </div>
     ) : null;
 
@@ -318,9 +338,9 @@ export function ConnectedPlayerBar() {
   if (isMobile) {
     return (
       <div className={barShellClass}>
+        {embedStrip}
         {seekBar ? <div className="px-4 pt-2">{seekBar}</div> : null}
         <div className="flex w-full items-center gap-3 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-          {embedPanel}
           <Button
             variant="text"
             size="flexible"
@@ -330,7 +350,7 @@ export function ConnectedPlayerBar() {
             aria-label="Open full-screen player"
             data-testid="expand-full-screen-player"
           >
-            {!embedPanel && coverUrl ? (
+            {coverUrl ? (
               <MediaArtwork src={coverUrl} size="sm" className="shrink-0" />
             ) : null}
             <span className="min-w-0">
@@ -349,7 +369,7 @@ export function ConnectedPlayerBar() {
             </span>
             {isRealLive ? <PlayerLiveBadge /> : null}
           </Button>
-          {mobilePlayPauseButton}
+          {embed ? null : mobilePlayPauseButton}
           {queueButton}
         </div>
       </div>
@@ -358,57 +378,39 @@ export function ConnectedPlayerBar() {
 
   return (
     <div className={barShellClass}>
+      {embedStrip}
       <PlayerBar
         left={
           <div className="flex min-w-0 items-center gap-2">
-            {embedPanel ? (
-              <div className="flex min-w-0 items-center gap-2">
-                {embedPanel}
-                <div className="min-w-0">
-                  <Tooltip content={title} side="top">
-                    <div className="truncate text-sm font-semibold tracking-tight">
-                      {title}
-                    </div>
-                  </Tooltip>
-                  <Tooltip content={artist} side="top">
-                    <div className="text-foreground-secondary truncate text-xs">
-                      {artist}
-                    </div>
-                  </Tooltip>
-                </div>
-                {isRealLive ? <PlayerLiveBadge /> : null}
-              </div>
-            ) : (
-              <PlayerBar.NowPlaying
-                title={title}
-                artist={artist}
-                coverUrl={coverUrl}
-                action={isRealLive ? <PlayerLiveBadge /> : undefined}
-                onTitleClick={
-                  playable ? () => setFullScreenPlayerOpen(true) : undefined
-                }
-                onArtistClick={
-                  openRadioStation ??
-                  (playable?.kind === 'radio'
-                    ? artistSlug === TAHTI_RADIO_SLUG
-                      ? () => {
-                          void navigate({
-                            to: '/channel/$slug',
-                            params: { slug: artistSlug },
-                          });
-                        }
-                      : undefined
-                    : artistSlug
-                      ? () => {
-                          void navigate({
-                            to: '/u/$username',
-                            params: { username: artistSlug },
-                          });
-                        }
-                      : undefined)
-                }
-              />
-            )}
+            <PlayerBar.NowPlaying
+              title={title}
+              artist={artist}
+              coverUrl={coverUrl}
+              action={isRealLive ? <PlayerLiveBadge /> : undefined}
+              onTitleClick={
+                playable ? () => setFullScreenPlayerOpen(true) : undefined
+              }
+              onArtistClick={
+                openRadioStation ??
+                (playable?.kind === 'radio'
+                  ? artistSlug === TAHTI_RADIO_SLUG
+                    ? () => {
+                        void navigate({
+                          to: '/channel/$slug',
+                          params: { slug: artistSlug },
+                        });
+                      }
+                    : undefined
+                  : artistSlug
+                    ? () => {
+                        void navigate({
+                          to: '/u/$username',
+                          params: { username: artistSlug },
+                        });
+                      }
+                    : undefined)
+              }
+            />
             {soundId && playable && (
               <AddToPlaylistButton
                 soundId={soundId}
