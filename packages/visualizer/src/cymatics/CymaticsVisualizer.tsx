@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { EXRLoader } from 'three/addons/loaders/EXRLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
@@ -58,7 +58,6 @@ interface CymaticsVisualizerProps {
 }
 
 // Served from frontend/public at the site root (Vite default base '/').
-const EXR_URL = '/piz_compressed.exr';
 const FOV = 65;
 const TAN_HALF_FOV = Math.tan(THREE.MathUtils.degToRad(FOV) / 2);
 
@@ -339,25 +338,18 @@ const CymaticsVisualizerImpl: React.FC<CymaticsVisualizerProps> = ({
     let envRenderTarget: THREE.WebGLRenderTarget | null = null;
     let disposed = false;
     let pmremDisposed = false;
-    const exrLoader = new EXRLoader();
-    exrLoader.load(EXR_URL, (texture: THREE.Texture) => {
-      // The panel may have unmounted while the EXR was loading; don't touch the
-      // disposed renderer/PMREM generator.
-      if (disposed) {
-        texture.dispose();
-        return;
-      }
-      texture.mapping = THREE.EquirectangularReflectionMapping;
-      const rt = pmremGenerator.fromEquirectangular(texture);
+    if (!disposed) {
+      const room = new RoomEnvironment();
+      const rt = pmremGenerator.fromScene(room, 0.04);
+      room.dispose();
       envRenderTarget = rt;
       sphereMaterial.envMap = rt.texture;
       planeMaterial.envMap = rt.texture;
       landscapeMaterial.envMap = rt.texture;
-      texture.dispose();
       pmremGenerator.dispose();
       pmremDisposed = true;
       isEnvMapLoaded = true;
-    });
+    }
 
     const renderPass = new RenderPass(scene, camera);
     // Moderate, tight bloom so the plasma ball reads as a structured ball rather
