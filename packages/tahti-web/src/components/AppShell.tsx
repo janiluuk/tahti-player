@@ -350,7 +350,7 @@ export function AppShell() {
   // Studio/Admin/Library plus the Listen tabs (Listen/Feed/History),
   // which all re-declare the same persistent chrome per click.
   const fastNavigationRoute =
-    /^\/(studio|admin|library)(\/|$)/.test(pathname) ||
+    /^\/(studio|admin|library|messages|chat)(\/|$)/.test(pathname) ||
     /^\/$|^\/listen(?:\/|$)/.test(pathname) ||
     pathname === '/favorites';
   const fullBleedRoute = isFullBleedRoute(pathname);

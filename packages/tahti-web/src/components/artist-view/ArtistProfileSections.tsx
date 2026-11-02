@@ -1,10 +1,15 @@
 import { Link } from '@tanstack/react-router';
 import {
+  BanIcon,
   CalendarDays,
+  CodeIcon,
   DownloadIcon,
+  FlagIcon,
   MessageCircle,
   Mic,
+  MoreHorizontalIcon,
   RadioTowerIcon,
+  RssIcon,
   UsersRound,
 } from 'lucide-react';
 import { useState, type CSSProperties } from 'react';
@@ -12,8 +17,8 @@ import { toast } from 'sonner';
 
 import {
   Button,
-  ButtonAnchor,
   ButtonLink,
+  Popover,
   SaveButton,
   SectionTitle,
   Textarea,
@@ -35,16 +40,130 @@ import { EmbedButton } from '../EmbedButton';
 import { NewsletterSubscribeToggle } from '../NewsletterSubscribeToggle';
 import { PostLink } from '../PostLink';
 import { ReportButton } from '../ReportButton';
-import { RssFeedButton } from '../RssFeedButton';
 import { ShowEpisodeList } from '../ShowEpisodeList';
 import { Eyebrow } from '../tahti/Eyebrow';
 import { ArtistBackgroundMusicButton } from './ArtistBackgroundMusicButton';
-import { ArtistBlockButton } from './ArtistBlockButton';
+import { useArtistBlock } from './ArtistBlockButton';
 
 const headerButtonClass =
   'bg-background border-border rounded-md border-(length:--border-width)';
 
 type Artist = PublicProfile['artist'];
+
+function ArtistMoreMenu({
+  profile,
+  isSelf,
+}: {
+  profile: PublicProfile;
+  isSelf: boolean;
+}) {
+  const { artist, channel } = profile;
+  const [embedOpen, setEmbedOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const block = useArtistBlock(artist.username, artist.displayName);
+  const rssHref = profile.links.feeds?.sound;
+  const pressKit = !isSelf && profile.links.presskit;
+  const canEmbed = Boolean(channel?.slug) && !isSelf;
+  const canReport = Boolean(channel?.slug) && !isSelf;
+  const canBlock = !isSelf && block.available;
+
+  if (!rssHref && !pressKit && !canEmbed && !canReport && !canBlock) {
+    return null;
+  }
+
+  const copyRss = async () => {
+    if (!rssHref) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(rssHref);
+      toast.success('Feed link copied. Paste it into your podcast app.');
+    } catch {
+      toast.error('Could not copy the feed link.');
+    }
+  };
+
+  return (
+    <>
+      <Popover
+        anchor="bottom end"
+        tooltip={{ content: 'More', side: 'top' }}
+        trigger={
+          <Button
+            variant="secondary"
+            size="icon-sm"
+            aria-label={`More actions for ${artist.displayName}`}
+            className={headerButtonClass}
+          >
+            <MoreHorizontalIcon size={16} aria-hidden />
+          </Button>
+        }
+        panelClassName="min-w-48"
+      >
+        <Popover.Menu>
+          {pressKit ? (
+            <Popover.Item
+              icon={<DownloadIcon size={16} />}
+              onClick={() => {
+                window.location.assign(publicPressKitUrl(artist.username));
+              }}
+            >
+              Download press kit
+            </Popover.Item>
+          ) : null}
+          {rssHref ? (
+            <Popover.Item
+              icon={<RssIcon size={16} />}
+              onClick={() => void copyRss()}
+            >
+              Copy RSS feed
+            </Popover.Item>
+          ) : null}
+          {canEmbed ? (
+            <Popover.Item
+              icon={<CodeIcon size={16} />}
+              onClick={() => setEmbedOpen(true)}
+            >
+              Embed
+            </Popover.Item>
+          ) : null}
+          {canReport ? (
+            <Popover.Item
+              icon={<FlagIcon size={16} />}
+              onClick={() => setReportOpen(true)}
+            >
+              Report
+            </Popover.Item>
+          ) : null}
+          {canBlock ? (
+            <Popover.Item icon={<BanIcon size={16} />} onClick={block.toggle}>
+              {block.blocked ? 'Unblock' : 'Block'}
+            </Popover.Item>
+          ) : null}
+        </Popover.Menu>
+      </Popover>
+      {canEmbed && channel?.slug ? (
+        <EmbedButton
+          target={{ kind: 'channel', slug: channel.slug }}
+          open={embedOpen}
+          onOpenChange={setEmbedOpen}
+          showTrigger={false}
+        />
+      ) : null}
+      {canReport && channel?.slug ? (
+        <ReportButton
+          targetType="CHANNEL"
+          targetId={channel.slug}
+          label={artist.displayName}
+          open={reportOpen}
+          onOpenChange={setReportOpen}
+          showTrigger={false}
+        />
+      ) : null}
+      {canBlock ? block.dialog : null}
+    </>
+  );
+}
 
 export function ArtistHeaderActions({
   profile,
@@ -90,46 +209,7 @@ export function ArtistHeaderActions({
           </ButtonLink>
         </Tooltip>
       ) : null}
-      {!isSelf && profile.links.presskit ? (
-        <Tooltip content="Download press kit" side="top">
-          <ButtonAnchor
-            href={publicPressKitUrl(artist.username)}
-            download
-            size="icon-sm"
-            variant="secondary"
-            aria-label="Download press kit"
-            className={headerButtonClass}
-          >
-            <DownloadIcon size={16} aria-hidden />
-          </ButtonAnchor>
-        </Tooltip>
-      ) : null}
-      {profile.links.feeds?.sound ? (
-        <RssFeedButton
-          href={profile.links.feeds.sound}
-          label={`RSS feed of ${artist.displayName}'s sounds`}
-          className={headerButtonClass}
-        />
-      ) : null}
-      {channel?.slug && !isSelf ? (
-        <EmbedButton
-          target={{ kind: 'channel', slug: channel.slug }}
-          iconOnly
-        />
-      ) : null}
-      {channel?.slug && !isSelf ? (
-        <ReportButton
-          targetType="CHANNEL"
-          targetId={channel.slug}
-          label={artist.displayName}
-        />
-      ) : null}
-      {!isSelf ? (
-        <ArtistBlockButton
-          username={artist.username}
-          displayName={artist.displayName}
-        />
-      ) : null}
+      <ArtistMoreMenu profile={profile} isSelf={isSelf} />
       {channel?.slug ? (
         <Tooltip content="Open channel" side="top">
           <ButtonLink

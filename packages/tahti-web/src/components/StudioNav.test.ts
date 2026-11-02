@@ -17,6 +17,7 @@ import {
   isBroadcastSubnavActive,
   isCatalogSubnavActive,
   isStudioBroadcastGroup,
+  isStudioDetailRoute,
   isStudioFansGroup,
   litStudioSubmenuDestinations,
   SUBMENUS,
@@ -293,5 +294,26 @@ describe('StudioNav Broadcast labels', () => {
     );
     expect(labels).toContain('Broadcast');
     expect(labels).not.toContain('Go live');
+  });
+});
+
+describe('StudioNav on detail pages', () => {
+  it('steps aside on release, show and episode pages that have their own back button', () => {
+    for (const location of [
+      '/studio/releases/rel-1',
+      '/studio/releases/rel-1?tab=links',
+      '/studio/shows/abc',
+      '/studio/shows/episodes/ep-1',
+    ]) {
+      expect(isStudioDetailRoute(location), location).toBe(true);
+    }
+    for (const location of [
+      '/studio/releases',
+      '/studio/shows',
+      '/studio/events/e1/edit',
+      '/studio',
+    ]) {
+      expect(isStudioDetailRoute(location), location).toBe(false);
+    }
   });
 });

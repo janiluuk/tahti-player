@@ -10,13 +10,7 @@ import { ConfirmDialog } from '../ConfirmDialog';
 
 /** Block or unblock an artist from their page. Signed-in visitors only;
  * blocking asks first and the artist is not told. */
-export function ArtistBlockButton({
-  username,
-  displayName,
-}: {
-  username: string;
-  displayName: string;
-}) {
+export function useArtistBlock(username: string, displayName: string) {
   const signedIn = useAuthStore((s) => Boolean(s.user));
   const [blocked, setBlocked] = useState<boolean | null>(null);
   const [confirming, setConfirming] = useState(false);
@@ -37,10 +31,6 @@ export function ArtistBlockButton({
     };
   }, [signedIn, username]);
 
-  if (!signedIn || blocked === null) {
-    return null;
-  }
-
   const change = (next: boolean) => {
     setConfirming(false);
     setBusy(true);
@@ -57,22 +47,13 @@ export function ArtistBlockButton({
     });
   };
 
-  const label = blocked ? `Unblock ${displayName}` : `Block ${displayName}`;
-
-  return (
-    <>
-      <Tooltip content={blocked ? 'Unblock' : 'Block'} side="top">
-        <Button
-          size="icon-sm"
-          variant="secondary"
-          aria-label={label}
-          aria-pressed={blocked}
-          disabled={busy}
-          onClick={() => (blocked ? change(false) : setConfirming(true))}
-        >
-          <BanIcon size={14} aria-hidden />
-        </Button>
-      </Tooltip>
+  return {
+    available: signedIn && blocked !== null,
+    blocked: blocked === true,
+    busy,
+    label: blocked ? `Unblock ${displayName}` : `Block ${displayName}`,
+    toggle: () => (blocked ? change(false) : setConfirming(true)),
+    dialog: (
       <ConfirmDialog
         isOpen={confirming}
         title={`Block ${displayName}?`}
@@ -81,6 +62,36 @@ export function ArtistBlockButton({
         onCancel={() => setConfirming(false)}
         onConfirm={() => change(true)}
       />
+    ),
+  };
+}
+
+export function ArtistBlockButton({
+  username,
+  displayName,
+}: {
+  username: string;
+  displayName: string;
+}) {
+  const block = useArtistBlock(username, displayName);
+  if (!block.available) {
+    return null;
+  }
+  return (
+    <>
+      <Tooltip content={block.blocked ? 'Unblock' : 'Block'} side="top">
+        <Button
+          size="icon-sm"
+          variant="secondary"
+          aria-label={block.label}
+          aria-pressed={block.blocked}
+          disabled={block.busy}
+          onClick={block.toggle}
+        >
+          <BanIcon size={14} aria-hidden />
+        </Button>
+      </Tooltip>
+      {block.dialog}
     </>
   );
 }

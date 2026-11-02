@@ -24,18 +24,19 @@ function renderBar(
 describe('TimelineReactionBar', () => {
   afterEach(cleanup);
 
-  it('adds the reaction for a signed-in listener', () => {
+  it('opens the emoji set from one React button and closes it after a reaction', () => {
     const props = renderBar();
+    expect(screen.queryByRole('button', { name: 'Add 🔥 at 1:05' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'React at 1:05' }));
     fireEvent.click(screen.getByRole('button', { name: 'Add 🔥 at 1:05' }));
     expect(props.onReact).toHaveBeenCalledWith('🔥');
     expect(props.onSignIn).not.toHaveBeenCalled();
+    expect(screen.queryByRole('button', { name: 'Add 🔥 at 1:05' })).toBeNull();
   });
 
   it('offers sign-in to a visitor instead of a dead button', () => {
     const props = renderBar({ signedIn: false });
-    const button = screen.getByRole('button', {
-      name: 'Log in to add 🔥 at 1:05',
-    });
+    const button = screen.getByRole('button', { name: 'Log in to react' });
     expect(button.hasAttribute('disabled')).toBe(false);
     fireEvent.click(button);
     expect(props.onSignIn).toHaveBeenCalledTimes(1);
@@ -46,7 +47,7 @@ describe('TimelineReactionBar', () => {
     renderBar({ commentsEnabled: false });
     expect(
       screen
-        .getByRole('button', { name: 'Add 🔥 at 1:05' })
+        .getByRole('button', { name: 'React at 1:05' })
         .hasAttribute('disabled'),
     ).toBe(true);
     expect(

@@ -31,7 +31,7 @@ test('anonymous: reactions ask to log in; a favorite is kept on this device', as
   await page.goto('/t/demo-archive-1');
   const main = page.getByRole('main');
   await expect(
-    main.getByRole('button', { name: 'Log in to add ❤️ at 0:00' }),
+    main.getByRole('button', { name: 'Log in to react' }),
   ).toBeVisible();
   await main.getByRole('button', { name: 'Favorite', exact: true }).click();
   await page.goto('/library/favorites');
