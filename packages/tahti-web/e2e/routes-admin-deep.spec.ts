@@ -24,37 +24,37 @@ const legacyRoutes: AdminVisit[] = [
   },
   {
     path: '/admin/beta',
-    heading: /^Moderation$/,
+    heading: /^Inbox$/,
     url: /\/admin\/moderation\/beta$/,
     tab: 'Beta applications',
   },
   {
     path: '/admin/radio-submissions',
-    heading: /^Moderation$/,
+    heading: /^Inbox$/,
     url: /\/admin\/moderation\/radio-submissions$/,
     tab: 'Radio submissions',
   },
   {
     path: '/admin/support',
-    heading: /^Moderation$/,
+    heading: /^Inbox$/,
     url: /\/admin\/moderation\/support$/,
     tab: 'Support',
   },
   {
     path: '/admin/content-reports',
-    heading: /^Moderation$/,
+    heading: /^Inbox$/,
     url: /\/admin\/moderation\/content-reports$/,
     tab: 'Content reports',
   },
   {
     path: '/admin/feature-requests',
-    heading: /^Moderation$/,
+    heading: /^Inbox$/,
     url: /\/admin\/moderation\/feature-requests$/,
     tab: 'Feature requests',
   },
   {
     path: '/admin/missed-shows',
-    heading: /^Moderation$/,
+    heading: /^Inbox$/,
     url: /\/admin\/moderation\/missed-shows$/,
     tab: 'Missed shows',
   },
@@ -79,7 +79,7 @@ const legacyRoutes: AdminVisit[] = [
 
 const tabRoutes: AdminVisit[] = [
   { path: '/admin/addons', heading: /^Add-ons$/ },
-  { path: '/admin/moderation/themes', heading: /^Moderation$/, tab: 'Themes' },
+  { path: '/admin/moderation/themes', heading: /^Inbox$/, tab: 'Themes' },
   { path: '/admin/governance/agm', heading: /^Governance$/, tab: 'AGM' },
   { path: '/admin/governance/board', heading: /^Governance$/, tab: 'Board' },
   {

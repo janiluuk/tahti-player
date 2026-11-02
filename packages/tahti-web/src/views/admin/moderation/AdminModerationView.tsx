@@ -105,7 +105,7 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
           <div className="flex max-w-5xl flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
-              <BreadcrumbCurrent>Moderation</BreadcrumbCurrent>
+              <BreadcrumbCurrent>Inbox</BreadcrumbCurrent>
             </Breadcrumbs>
             <ModerationTabs
               activeId={
@@ -122,7 +122,7 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
               }}
             />
             <ViewShell
-              title="Moderation"
+              title="Inbox"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {tabContent(active)}

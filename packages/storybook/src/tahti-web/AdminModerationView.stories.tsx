@@ -28,7 +28,7 @@ async function expectQueue(canvasElement: HTMLElement, label: string) {
   const canvas = within(canvasElement);
   await waitFor(() =>
     expect(
-      canvas.getByRole('heading', { level: 1, name: 'Moderation' }),
+      canvas.getByRole('heading', { level: 1, name: 'Inbox' }),
     ).toBeVisible(),
   );
   const queues = within(

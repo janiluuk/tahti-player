@@ -188,6 +188,10 @@ export const AdminTopListsView = lazyRouteComponent(
   () => import('../views/admin/AdminTopListsView'),
   'AdminTopListsView',
 );
+export const AdminHubView = lazyRouteComponent(
+  () => import('../views/admin/AdminHubView'),
+  'AdminHubView',
+);
 export const AdminContentView = lazyRouteComponent(
   () => import('../views/admin/AdminContentView'),
   'AdminContentView',

@@ -1,5 +1,6 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 
+import { isAdminHubId } from '../views/admin/adminHubs';
 import type { AdminGovernanceTabId } from '../views/admin/governance/governanceNav';
 import type { AdminModerationTabId } from '../views/admin/moderation/moderationNav';
 import type { AdminOrphanPageTabId } from '../views/admin/orphanPages/orphanPagesNav';
@@ -13,6 +14,7 @@ import {
   AdminFinancialView,
   AdminGovernanceView,
   AdminGrantCycleView,
+  AdminHubView,
   AdminI18nView,
   AdminLogsView,
   AdminMapView,
@@ -171,6 +173,20 @@ export const adminTopListsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/top-lists',
   component: AdminTopListsView,
+});
+
+export const adminHubRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/admin/hubs/$hub',
+  beforeLoad: ({ params }) => {
+    if (!isAdminHubId(params.hub)) {
+      throw redirect({ to: '/admin' });
+    }
+  },
+  component: function AdminHubRoute() {
+    const { hub } = adminHubRoute.useParams();
+    return <AdminHubView hub={isAdminHubId(hub) ? hub : 'content'} />;
+  },
 });
 
 export const adminContentRoute = createRoute({

@@ -24,7 +24,7 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      canvas.getByRole('heading', { level: 1, name: 'Content' }),
+      canvas.getByRole('heading', { level: 1, name: 'Catalog' }),
     ).toBeVisible();
     await expect(canvas.getByRole('link', { name: 'Top lists' })).toBeVisible();
     await waitFor(() => expect(canvas.getByText('1,842')).toBeVisible());
