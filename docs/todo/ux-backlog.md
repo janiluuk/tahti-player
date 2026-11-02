@@ -121,21 +121,3 @@ new surface, one PR per row.
 
 ## Studio functional
 
-- [ ] Undo for adding tracks to a cloud collection: the add answers without
-  the new item's id, so there is nothing to delete.
-  - 2026-10-27 (batch 90): release publish toast has Undo (PATCH
-    `state: DRAFT`), via shared `lib/undoToast.ts`. The follower notice and
-    social post queued on publish are not recalled.
-  - 2026-10-30 (batch 117): a local playlist create or duplicate toast can
-    undo by deleting that playlist and reloading the list. Cloud collection
-    track adds still have no item id to delete.
-  - 2026-10-30 (batch 116): listening party, lineup member, moderator,
-    discussion reply, release tracks, pinned announcement, announcement clip,
-    artwork preset, radio station, SoundCloud embed, stash upload, gallery
-    photos, smart-playlist snapshot, and queue adds.
-  - 2026-10-30 (batch 118): API token create, release track to rotation,
-    station by URL, and Studio collection editor add sound.
-  - 2026-10-30 (batch 121): Mikseri, Mixcloud and Spotify collection imports
-    (item found by the returned sound id after a tracklist refresh). Left:
-    collaborative-playlist adds (no item id and no contributor remove).
-
