@@ -179,10 +179,22 @@ const PAGE_PURPOSE_BY_PREFIX: Array<{
   description: string;
 }> = [
   {
-    prefix: '/studio/audience',
-    label: 'Audience overview',
+    prefix: '/studio/fans',
+    label: 'Fans',
     description:
-      'Fan-sub stats, recent orders, and earnings flow for your channel — tiers and Stripe live under the same Studio Audience tab.',
+      'One card per fan tool: posts, the newsletter, memberships, the store and your earnings.',
+  },
+  {
+    prefix: '/studio/audience',
+    label: 'Earnings',
+    description:
+      'Fan-sub stats, recent orders, and earnings flow for your channel. Memberships and the store open from Studio → Fans.',
+  },
+  {
+    prefix: '/studio/profile',
+    label: 'Profile',
+    description:
+      'How you look to listeners: each card opens one part of your artist profile or channel page settings.',
   },
   {
     prefix: '/studio/stripe',

@@ -662,7 +662,10 @@
       "events": "Events",
       "listeningParties": "Listening parties",
       "shows": "Shows",
-      "channel": "Channel"
+      "channel": "Channel",
+      "home": "Home",
+      "fans": "Fans",
+      "profile": "Profile"
     },
     "settings": {
       "signInPrompt": "Sign in for account, artist, and studio settings.",

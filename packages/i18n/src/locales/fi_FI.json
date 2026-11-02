@@ -662,7 +662,10 @@
       "events": "Tapahtumat",
       "listeningParties": "Kuuntelubileet",
       "shows": "Ohjelmat",
-      "channel": "Kanava"
+      "channel": "Kanava",
+      "home": "Koti",
+      "fans": "Fanit",
+      "profile": "Profiili"
     },
     "settings": {
       "signInPrompt": "Kirjaudu sisään tili-, artisti- ja studioasetuksia varten.",

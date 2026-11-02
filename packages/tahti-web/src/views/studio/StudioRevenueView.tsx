@@ -55,6 +55,12 @@ export function StudioRevenueView() {
     movedFrom?: unknown;
   };
   const showTiers = search.tab === 'tiers';
+  const showStore = search.tab === 'store';
+  const pageTitle = showTiers
+    ? 'Memberships'
+    : showStore
+      ? 'Store'
+      : 'Earnings';
   const movedFrom = movedSettingsSection(search.movedFrom);
   const [connect, setConnect] = useState<FanConnectStatus | null>(null);
   const [fanPayouts, setFanPayouts] = useState<FanPayoutStats | null>(null);
@@ -119,7 +125,11 @@ export function StudioRevenueView() {
   const dismissMovedNotice = () => {
     void navigate({
       to: '/studio/audience',
-      search: showTiers ? { tab: 'tiers' } : {},
+      search: showTiers
+        ? { tab: 'tiers' as const }
+        : showStore
+          ? { tab: 'store' as const }
+          : {},
       replace: true,
     });
   };
@@ -128,7 +138,7 @@ export function StudioRevenueView() {
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-4 px-1 py-2">
         <ViewShell
-          title={showTiers ? 'Tiers' : 'Audience'}
+          title={pageTitle}
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
           {movedFrom ? (
@@ -140,8 +150,8 @@ export function StudioRevenueView() {
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span>
                   Settings › {movedSettingsSectionLabel(movedFrom)} is now
-                  Studio › {showTiers ? 'Tiers' : 'Audience'}. Update any
-                  bookmark that pointed to the old address.
+                  Studio › Fans › {pageTitle}. Update any bookmark that pointed
+                  to the old address.
                 </span>
                 <Button
                   size="sm"
@@ -153,7 +163,7 @@ export function StudioRevenueView() {
               </div>
             </Alert>
           ) : null}
-          {!showTiers ? (
+          {!showTiers && !showStore ? (
             <div className="flex items-center gap-2">
               <ButtonLink
                 to="/help/$slug"
@@ -184,6 +194,9 @@ export function StudioRevenueView() {
               >
                 <FanTiersEditor />
               </StudioPanel>
+            </div>
+          ) : showStore ? (
+            <div className="flex flex-col gap-4">
               <StudioPanel
                 title="Channel store"
                 description="Follow the steps. Nothing is for sale on your channel page until you put it in the Store."

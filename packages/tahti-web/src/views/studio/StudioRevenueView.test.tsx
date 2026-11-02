@@ -83,7 +83,7 @@ describe('StudioRevenueView', () => {
     const notice = await screen.findByTestId('settings-moved-notice');
     expect(notice.textContent).toContain('This page has moved');
     expect(notice.textContent).toContain('Settings › Money is now');
-    expect(notice.textContent).toContain('Studio › Audience');
+    expect(notice.textContent).toContain('Studio › Fans › Earnings');
 
     fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
     await vi.waitFor(() =>

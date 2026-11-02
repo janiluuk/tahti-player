@@ -20,11 +20,14 @@ const statsRoutes: RouteVisit[] = [
   },
   { path: '/studio/updates', heading: /^Updates$/ },
   { path: '/studio/updates?tab=newsletter', heading: 'Subscribers' },
-  { path: '/studio/audience', heading: /^Audience$/ },
+  { path: '/studio/fans', heading: /^Fans$/ },
+  { path: '/studio/audience', heading: /^Earnings$/ },
   { path: '/studio/audience?tab=tiers', heading: 'Fan subscription tiers' },
+  { path: '/studio/audience?tab=store', heading: 'Channel store' },
+  { path: '/studio/profile', heading: /^Profile$/ },
   {
     path: '/studio/revenue',
-    heading: /^Audience$/,
+    heading: /^Earnings$/,
     url: /\/studio\/audience$/,
   },
   {
@@ -74,7 +77,7 @@ test('Studio stats, updates and audience pages render with Studio chrome', async
   }
 });
 
-test('Studio section tabs switch stats, updates and audience pages', async ({
+test('Studio section tabs switch stats pages and the Fans hub opens its pages', async ({
   page,
 }) => {
   const errors = collectPageErrors(page);
@@ -97,27 +100,19 @@ test('Studio section tabs switch stats, updates and audience pages', async ({
   );
 
   await expectRouteHealthy(page, errors, {
-    path: '/studio/updates',
-    heading: /^Updates$/,
+    path: '/studio/fans',
+    heading: /^Fans$/,
   });
-  await selectStudioTab(
-    page,
-    'Posts pages',
-    'Newsletter',
-    /\/studio\/updates\?tab=newsletter$/,
-  );
-
-  await expectRouteHealthy(page, errors, {
-    path: '/studio/audience',
-    heading: /^Audience$/,
-  });
-  await selectStudioTab(
-    page,
-    'Audience pages',
-    'Tiers',
-    /\/studio\/audience\?tab=tiers$/,
-  );
-  await selectStudioTab(page, 'Audience pages', 'Stripe', /\/studio\/stripe$/);
+  const fansTools = page.getByRole('list', { name: 'Fans tools' });
+  await fansTools.getByRole('link', { name: /Newsletter/ }).click();
+  await expect(page).toHaveURL(/\/studio\/updates\?tab=newsletter$/);
+  await page.getByTestId('studio-fans-back').click();
+  await expect(page).toHaveURL(/\/studio\/fans$/);
+  await fansTools.getByRole('link', { name: /Memberships/ }).click();
+  await expect(page).toHaveURL(/\/studio\/audience\?tab=tiers$/);
+  await page.getByTestId('studio-fans-back').click();
+  await fansTools.getByRole('link', { name: /Store/ }).click();
+  await expect(page).toHaveURL(/\/studio\/audience\?tab=store$/);
   expect(errors).toEqual([]);
 });
 

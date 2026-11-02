@@ -9,16 +9,15 @@ import {
   isGoLiveSessionTabActive,
 } from '../views/studio/go-live/goLiveTabs';
 import {
-  AUDIENCE_SUBNAV_ITEMS,
   BROADCAST_SUBNAV_ITEMS,
   CATALOG_SUBNAV_ITEMS,
   getStudioPrimaryRoute,
   getStudioSubmenuItems,
-  isAudienceSubnavActive,
+  hasStudioNestedNav,
   isBroadcastSubnavActive,
   isCatalogSubnavActive,
-  isStudioAudienceGroup,
   isStudioBroadcastGroup,
+  isStudioFansGroup,
   litStudioSubmenuDestinations,
   SUBMENUS,
 } from './StudioNav';
@@ -84,10 +83,15 @@ describe('StudioNav section coverage', () => {
       ['/studio/shows/abc', '/studio/go-live'],
       ['/studio/channel', '/studio/go-live'],
       ['/studio/channel?tab=radio', '/studio/go-live'],
-      ['/studio/audience', '/studio/audience'],
-      ['/studio/audience?tab=tiers', '/studio/audience'],
-      ['/studio/stripe', '/studio/audience'],
-      ['/studio/revenue', '/studio/audience'],
+      ['/studio/fans', '/studio/fans'],
+      ['/studio/updates', '/studio/fans'],
+      ['/studio/updates?tab=newsletter', '/studio/fans'],
+      ['/studio/audience', '/studio/fans'],
+      ['/studio/audience?tab=tiers', '/studio/fans'],
+      ['/studio/audience?tab=store', '/studio/fans'],
+      ['/studio/stripe', '/studio/fans'],
+      ['/studio/revenue', '/studio/fans'],
+      ['/studio/profile', '/studio/profile'],
     ];
     for (const [location, expected] of covered) {
       expect(litStudioSubmenuDestinations(location), location).toEqual([
@@ -185,42 +189,39 @@ describe('StudioNav section coverage', () => {
     }
   });
 
-  it('lights the right Audience sub-tab for overview, tiers, and Stripe', () => {
-    const covered: [string, string][] = [
-      ['/studio/audience', '/studio/audience'],
-      ['/studio/revenue', '/studio/audience'],
-      ['/studio/audience?tab=tiers', '/studio/audience?tab=tiers'],
-      ['/studio/stripe', '/studio/stripe'],
-    ];
-    for (const [location, expectedTo] of covered) {
-      const lit = AUDIENCE_SUBNAV_ITEMS.filter((item) =>
-        isAudienceSubnavActive(location, item.to),
-      ).map((item) => item.to);
-      expect(lit, location).toEqual([expectedTo]);
-    }
-  });
-
-  it('classifies Broadcast and Audience route groups for nested chrome', () => {
+  it('classifies Broadcast and Fans route groups for nested chrome', () => {
     expect(isStudioBroadcastGroup('/studio/go-live')).toBe(true);
     expect(isStudioBroadcastGroup('/studio/shows/abc')).toBe(true);
     expect(isStudioBroadcastGroup('/studio')).toBe(false);
-    expect(isStudioAudienceGroup('/studio/audience?tab=tiers')).toBe(true);
-    expect(isStudioAudienceGroup('/studio/stripe')).toBe(true);
-    expect(isStudioAudienceGroup('/studio/branding')).toBe(false);
+    expect(isStudioFansGroup('/studio/audience?tab=tiers')).toBe(true);
+    expect(isStudioFansGroup('/studio/stripe')).toBe(true);
+    expect(isStudioFansGroup('/studio/updates')).toBe(true);
+    expect(isStudioFansGroup('/studio/branding')).toBe(false);
   });
 
-  it('keeps Stripe out of the Studio submenu (nested under Audience instead)', () => {
-    const items = getStudioSubmenuItems('/studio').map((item) => item.to);
+  it('shows the Fans back link on Fans pages but not on the hub itself', () => {
+    expect(hasStudioNestedNav('/studio/fans')).toBe(false);
+    expect(hasStudioNestedNav('/studio/updates')).toBe(true);
+    expect(hasStudioNestedNav('/studio/audience?tab=store')).toBe(true);
+  });
 
-    expect(items).not.toContain('/studio/stripe');
-    expect(SUBMENUS['/studio'].map((item) => item.to)).not.toContain(
-      '/studio/stripe',
+  it('has six one-word tabs in plan order: Home, Music, Broadcast, Fans, Stats, Profile', () => {
+    const labels = SUBMENUS['/studio'].map((item) =>
+      i18n.t(`web:${item.labelKey}`),
     );
-    expect(items).toContain('/studio/audience');
-    expect(getStudioPrimaryRoute('/studio/stripe')).toBe('/studio');
-    expect(litStudioSubmenuDestinations('/studio/stripe')).toEqual([
-      '/studio/audience',
+    expect(labels).toEqual([
+      'Home',
+      'Music',
+      'Broadcast',
+      'Fans',
+      'Stats',
+      'Profile',
     ]);
+    const items = getStudioSubmenuItems('/studio').map((item) => item.to);
+    expect(items).not.toContain('/studio/stripe');
+    expect(items).not.toContain('/studio/audience');
+    expect(items).not.toContain('/studio/updates');
+    expect(getStudioPrimaryRoute('/studio/stripe')).toBe('/studio');
   });
 
   it('lights nothing in Studio for Library-domain routes (they moved to the main-menu Library item)', () => {

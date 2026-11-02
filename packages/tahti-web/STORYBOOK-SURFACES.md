@@ -315,6 +315,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/StudioGate` | `tahti-web/StudioGate.stories.tsx` |
 | `Tahti/Studio/StudioGoLiveView` | `tahti-web/StudioGoLiveView.stories.tsx` |
 | `Tahti/Studio/StudioHomeView` | `tahti-web/StudioHomeView.stories.tsx` |
+| `Tahti/Studio/Hubs` | `tahti-web/StudioHubViews.stories.tsx` |
 | `Tahti/Studio/StudioListeningPartiesView` | `tahti-web/StudioListeningPartiesView.stories.tsx` |
 | `Tahti/Studio/StudioListeningPartyFormView` | `tahti-web/StudioListeningPartyFormView.stories.tsx` |
 | `Tahti/Studio/StudioModerationView` | `tahti-web/StudioModerationView.stories.tsx` |
@@ -391,6 +392,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/HistoryDayGroup` | `HistoryDayGroup.stories.tsx` |
 | `Components/HistoryRow` | `HistoryRow.stories.tsx` |
 | `Components/HorizontalScroll` | `HorizontalScroll.stories.tsx` |
+| `Navigation/HubCards` | `HubCards.stories.tsx` |
 | `Components/ImageReveal` | `ImageReveal.stories.tsx` |
 | `Components/ImageThumbnailPicker` | `ImageThumbnailPicker.stories.tsx` |
 | `Components/InlineError` | `InlineError.stories.tsx` |
