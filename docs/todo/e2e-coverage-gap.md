@@ -98,14 +98,14 @@ renders (route health) · ❌ nothing.
 - [ ] Creates a release, adds tracks and artwork, publishes; smart link page shows it.
 - [ ] Broadcast hub: agenda chips filter; Go live flow reaches the green room; schedules a show and an event; schedules and cancels a listening party.
 - [ ] Fans hub: writes and schedules a post; sends a newsletter; creates a membership tier; adds a store item; Earnings shows orders.
-- [ ] Profile hub cards open each Settings panel and saving shows on the public page.
+- [ ] Profile hub cards open each Settings panel and saving shows on the public page. (Six Studio tabs, Profile → Story opens the Settings panel, a Fans page links back: covered in `roles-artist-admin-hubs.spec.ts`; saving left.)
 - [ ] Moderates chat (ban, moderator add) and comments.
 - [ ] Stats range picker and per-track insights.
 - [ ] Release detail tabs Overview · Links · Stats · Advanced; track editor Basics · Sharing · Advanced save.
 
 ### Admin
 
-- [ ] Section row Overview · Inbox · People · Content · Co-op · Platform; each hub card opens its page and the back link returns.
+- [x] Section row Overview · Inbox · People · Content · Co-op · Platform; a hub card opens its page and the back link returns (`roles-artist-admin-hubs.spec.ts`; Platform → Languages).
 - [ ] Inbox: chips switch queues; resolves a support ticket; approves a beta application and a radio submission; handles a content report.
 - [ ] People: finds a user, changes role, suspends and restores.
 - [ ] Content: publishes news, an announcement, edits Selects rotation and a top list, verifies a venue, replaces an artwork preset.
