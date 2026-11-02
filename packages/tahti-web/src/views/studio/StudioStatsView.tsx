@@ -1,6 +1,6 @@
-import type { FC } from 'react';
+import { useEffect, type FC } from 'react';
 
-import { ViewShell } from '@tahti-player/ui';
+import { SectionTitle, ViewShell } from '@tahti-player/ui';
 
 import { PageError } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
@@ -18,6 +18,16 @@ export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
   tab: activeTab = 'overview',
 }) => {
   const state = useStatsData();
+  const ready = !state.loading && !state.loadError;
+
+  useEffect(() => {
+    if (activeTab === 'overview' || !ready) {
+      return;
+    }
+    document
+      .getElementById(`stats-${activeTab}`)
+      ?.scrollIntoView({ block: 'start' });
+  }, [activeTab, ready]);
 
   return (
     <StudioGate requireChannel={false}>
@@ -35,14 +45,31 @@ export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
             />
           ) : (
             <>
-              <KeyMetrics state={state} active={activeTab === 'overview'} />
-              <PlaysTab state={state} active={activeTab === 'plays'} />
-              <TopListsTab state={state} active={activeTab === 'top-lists'} />
-              <EngagementSection
-                state={state}
-                active={activeTab === 'overview'}
-              />
-              <DownloadGatesPanel active={activeTab === 'overview'} />
+              <section
+                id="stats-overview"
+                aria-label="Overview"
+                className="flex scroll-mt-4 flex-col gap-4"
+              >
+                <KeyMetrics state={state} active />
+                <EngagementSection state={state} active />
+                <DownloadGatesPanel active />
+              </section>
+              <section
+                id="stats-plays"
+                aria-label="Plays and listeners"
+                className="flex scroll-mt-4 flex-col gap-4"
+              >
+                <SectionTitle title="Plays and listeners" />
+                <PlaysTab state={state} active />
+              </section>
+              <section
+                id="stats-top-lists"
+                aria-label="Top lists"
+                className="flex scroll-mt-4 flex-col gap-4"
+              >
+                <SectionTitle title="Top lists" />
+                <TopListsTab state={state} active />
+              </section>
             </>
           )}
         </ViewShell>
