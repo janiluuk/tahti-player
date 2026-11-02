@@ -109,6 +109,11 @@ three wide cards per row. Each card, with no box or border around it:
   Cards fade up in turn and the image zooms slowly on hover (both off with
   reduced motion). Mock stories have images and avatars.
 
+- 2026-11-02: a story opens in a dialog like news articles
+  (`CommunityStoryDialog`): full post via tahti-org#1040
+  `GET /api/v1/community/stories/:id`, images, link, author, Newer / Older,
+  and the other community updates to switch to without closing.
+
 ## Decisions (2026-10-30)
 
 - Build the tahti-org endpoint (Phase 2.1) on a branch with a PR; no merge
