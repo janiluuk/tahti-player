@@ -29,6 +29,7 @@ const PAGE_TITLES: [string, string][] = [
   ['/history', 'History'],
   ['/listen/history', 'History'],
   ['/library/history', 'History'],
+  ['/library/following', 'Following'],
   ['/library/sounds', 'Tracks'],
   ['/library/smartlinks', 'Smart links'],
   ['/library/local', 'Local files'],
