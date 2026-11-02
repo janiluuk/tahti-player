@@ -6,9 +6,9 @@ description: Notifications, processing status, and how to contact support.
 
 ## Notifications
 
-The bell in the top bar collects what matters to your account: likes and comments on your content, new followers, mentions, finished or failed processing, new posts from artists you follow, and messages from the board. Choose what you're told about, in the app and by email, in **Settings → Account → Notifications**.
+**Notifications** in the account menu (your avatar, top right) collects what matters to your account: likes and comments on your content, new followers, mentions, finished or failed processing, new posts from artists you follow, and messages from the board. Choose what you're told about, in the app and by email, in **Settings → Account → Notifications**.
 
-The bell's **See all** (or **Notifications** in the account menu on a phone) opens the **Notifications** page (`/notifications`):
+A red dot on your avatar means you have unread notifications. **Notifications** in the account menu opens a quick view; its **See all** (or the menu item itself on a phone) opens the **Notifications** page (`/notifications`):
 
 - Filter by kind: **All**, **Social**, **Music**, **Money**, **Governance** or **Other**. Each chip shows how many unread notifications it has, and each notification is labelled with its kind.
 - **Mark read** or **Remove** a single notification, **Mark all read**, or **Clear read** to remove everything you've already read.

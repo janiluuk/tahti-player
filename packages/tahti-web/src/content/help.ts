@@ -130,6 +130,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
           'Channel tracks, an artist’s popular tracks, playlists and Listen’s new tracks show each track as a row: the round play button, the genre and length, and the waveform, which you can click or drag to jump within the playing track.',
           'Under the waveform: the heart with a count loves the track (signed in), then add to queue, add to a playlist, and download when the artist allows it. On the right are the release date and how many likes, plays, downloads and comments the track has.',
           'The same rows show on liked tracks, playlists, release pages and the channel Playlist widget; a track page shows its plays too.',
+          'A track page also lists, in tabs, the public collections the track is in and who liked, reposted and played it (signed-in listeners only; anonymous plays are never shown). Show more loads the rest of a tab.',
         ],
       },
     ],
@@ -276,7 +277,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: 'Local files',
         body: [
           'Library → Local files is part of the Tahti Player desktop app. It indexes folders on your machine and plays them in the shared Tahti player.',
-          'On the website (beta.tahti.live) that tab is hidden — use Studio → Upload to put audio into your Tahti archive instead.',
+          'On the website (tahti.live) that tab is hidden — use Studio → Upload to put audio into your Tahti archive instead.',
         ],
       },
       {
@@ -630,8 +631,8 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'What appears here',
         body: [
-          'The notification bell shows activity that matters to your account, including likes on your content, new followers, and completed processing jobs.',
-          'See all in the bell opens /notifications: filter by kind (Social, Music, Money, Governance, Other) with unread counts on each chip, mark single notifications read or remove them, or Clear read.',
+          'Notifications in the account menu (your avatar, top right) show activity that matters to your account, including likes on your content, new followers, and completed processing jobs. A red dot on your avatar means something is unread; a cyan dot means an unread message.',
+          'See all in the notifications quick view opens /notifications: filter by kind (Social, Music, Money, Governance, Other) with unread counts on each chip, mark single notifications read or remove them, or Clear read.',
           'Processing notifications link back to the finished track so you can review its metadata and publishing settings.',
           'The blue light in the top-left navigation is reserved for work still in progress; open it to see the current status.',
         ],
@@ -707,7 +708,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'You can leave the page',
         body: [
-          'Uploads, editor renders, stem splits, broadcast recordings, exports to Mixcloud and hearthis.at, imports and distribution all run in the background. You can close the page; the bell and /notifications tell you how each one ended.',
+          'Uploads, editor renders, stem splits, broadcast recordings, exports to Mixcloud and hearthis.at, imports and distribution all run in the background. You can close the page; Notifications in the account menu and /notifications tell you how each one ended.',
           'Finished work links to the track or release. Failed work is marked Failed and says what to do next.',
         ],
       },

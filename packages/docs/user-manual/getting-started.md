@@ -4,7 +4,7 @@ description: A first look at Tahti, playing your first track, and where to go ne
 
 # Getting started
 
-Tahti is a nonprofit broadcasting platform for independent artists, run by its members. Listening is free, with no ads and no tracking. The same app runs in the browser at [beta.tahti.live](https://beta.tahti.live) and as a [desktop app](desktop/installation.md) for Linux, macOS and Windows; the desktop app adds a library for the music files on your computer.
+Tahti is a nonprofit broadcasting platform for independent artists, run by its members. Listening is free, with no ads and no tracking. The same app runs in the browser at [tahti.live](https://tahti.live) and as a [desktop app](desktop/installation.md) for Linux, macOS and Windows; the desktop app adds a library for the music files on your computer.
 
 ## Listener or artist?
 
@@ -17,7 +17,7 @@ Tahti is a nonprofit broadcasting platform for independent artists, run by its m
 
 <figure><img src="../.gitbook/assets/app-layout-overview.png" alt="Tahti Listen home with sidebar, main content, and player bar"><figcaption><p>Listen home — sidebar, main view, and player bar</p></figcaption></figure>
 
-- **Top bar:** back and forward, search, and once you're signed in: notifications, messages and your account menu.
+- **Top bar:** back and forward, search, and once you're signed in: your account menu. **Notifications** and **Messages** are in the account menu; a dot on your avatar means something is unread (red for notifications, cyan for messages, both when both).
 - **Sidebar:** **Listen** (the front page), **Radio**, **Discover**, **Favorites** and **Library**; **Studio** for artists (listeners see **Become an artist**). **Chat**, **Help center** and **Settings** are at the bottom.
 - **Right panel:** the queue.
 - **Player bar:** appears at the bottom once something is playing.

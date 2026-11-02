@@ -161,6 +161,7 @@ export const ThreeVisualizer: FC<ThreeVisualizerProps> = ({
   return (
     <div
       className={cn('overflow-hidden', className)}
+      data-tone-drift
       data-visualizer-engine="three"
       data-visualizer-preset={preset}
       aria-hidden

@@ -24,6 +24,8 @@ Next `apps/web` removed 2026-10-28). Remaining host/build decisions are in
 
 - [ ] **Beta content** — test releases ("asdada", "test") show in the front
   page's New releases row; unpublish them on the owning account.
+  2026-11-02: still the two newest in `/api/releases/latest`; both are
+  `PUBLISHED` releases of **yaniho** (the owner's call).
 
 ## Artist (Studio)
 
@@ -91,8 +93,7 @@ Next `apps/web` removed 2026-10-28). Remaining host/build decisions are in
 - [x] Mixcloud-embed connect probe skipped (#1417).
 - [x] Signed-out `/api/auth/me` 401 handled without throwing (batch 79; Network
   tab may still show the status until the API returns a soft 200).
-- [ ] Beta auth rate limit: a second login within a minute got 429 on
-  2026-10-19 although tahti-org #875 (separate auth bucket) is merged; verify
-  after the next API deploy.
+- [x] Auth rate limit: two production logins two seconds apart both answer
+  200 (2026-11-02), so auth has its own bucket (tahti-org #875) live.
 - Radio station CORS preflights: tracked in
   [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md).

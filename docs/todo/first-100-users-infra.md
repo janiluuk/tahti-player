@@ -1,8 +1,13 @@
 # First ~100 users — infra + app readiness
 
-**Status:** blocked
+**Status:** partial
 
-**Blocker:** Ops host access: verify backup cron/`pnpm tahti-ops backup status`, MinIO disk/DR alias, set `RATE_LIMIT_REDIS_FAIL_OPEN=false` in the production compose file (see note).
+**Verified on vimage 2026-11-02** (ssh, read-only):
+- Rate limits: the running `tahti-stack-api-1` has `RATE_LIMIT_REDIS_FAIL_OPEN=false`, auth 120 / api 2000 per minute (tahti-org #1032). P0 #1 and final-season #19 are done.
+- Disk: root 68 % (36 GB free), `/share/disk2` 7 %.
+- Backups: `/etc/cron.d/tahti-backup` runs `scripts/backup.sh all` nightly; Postgres dumps land in `/share/disk2/tahti-backups/pg` (latest 2026-11-02 03:00, 30-day retention). Broken and fixed in tahti-org#1042: the weekly restore test failed every week and leaked a postgres container each run (8 still running, operator to remove), and the vimage6 off-host push failed every night (rrsync path). The fixed restore test passed on today's dump (137 tables, 24 users).
+
+**Left (ops):** remove the leaked `tahti-restore-test-*` containers; after #1042 deploys, run `sudo /srv/tahti/scripts/backup.sh vimage6` once and check `status`; the local MinIO mirror folder is empty although the log says 3 buckets synced; no DR alias (`tahti-dr`) is configured, so there is no offsite MinIO copy.
 
 **Note (2026-10-28):** production runs docker compose on vimage
 (tahti-org `deploy-production.yml` → `scripts/deploy_prod.sh`,

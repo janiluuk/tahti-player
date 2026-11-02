@@ -1,5 +1,5 @@
 // Mermaid journeys for /more (Tahti map).
-// Packs: production apps/web vs this Nuclear client (beta.tahti.live) on the same API.
+// Packs: production apps/web vs this client (tahti.live) on the same API.
 import { MAP_CASE_GROUPS } from './mapScreens';
 
 export type FlowDiagramPack = 'current' | 'nuclear';
@@ -114,10 +114,10 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   {
     id: 'nuclear-sitemap-2026',
     pack: 'nuclear',
-    source: 'src/router/routes-*.tsx · current beta routes (2026-10-03)',
+    source: 'src/router/routes-*.tsx · current routes (2026-10-03)',
     title: 'Tahti map - current sitemap',
     blurb:
-      'The deployed beta route tree grouped by anonymous, listener, artist, and board access. Redirect-only aliases are in the "Redirects and deep links" graph.',
+      'The deployed route tree grouped by anonymous, listener, artist, and board access. Redirect-only aliases are in the "Redirects and deep links" graph.',
     mermaid: `flowchart TB
   Home["/ Listen"] --> Public["Public listening"]
   Public --> Radio["/radio"]
@@ -944,7 +944,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     source: 'router.tsx + AppShell',
     title: 'Master spine (Nuclear shell)',
     blurb:
-      'beta.tahti.live - Nuclear chrome on the same Tahti API. Sparse sidebar · main · queue rail · player bar. Chat and notifications are top-bar controls; channel chat opens at /chat/:slug.',
+      'tahti.live - Nuclear chrome on the same Tahti API. Sparse sidebar · main · queue rail · player bar. Chat and notifications are top-bar controls; channel chat opens at /chat/:slug.',
     mermaid: `flowchart TB
   subgraph shell["Nuclear shell"]
     SB[Sparse sidebar]
@@ -1014,9 +1014,9 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     source: 'router.tsx',
     title: 'Site map — Nuclear tahti-web',
     blurb:
-      'Current beta routes, playback surfaces, and artist/admin workspaces. Use the diagram zoom controls for dense route groups.',
+      'Current routes, playback surfaces, and artist/admin workspaces. Use the diagram zoom controls for dense route groups.',
     mermaid: `flowchart TB
-  Entry["beta.tahti.live"]:::pub --> Listen["Listen · / · /listen"]:::pub
+  Entry["tahti.live"]:::pub --> Listen["Listen · / · /listen"]:::pub
   Listen --> Radio["Radio · /radio"]:::pub
   Radio --> Show["Radio show · /radio/show/:slug · episodes"]:::pub
   Listen --> Discover["Discover · /discover · artists · venues"]:::pub
@@ -1064,7 +1064,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     blurb:
       'Listen hub is /. Sidebar surfaces Discover, Favorites, and Studio to anonymous visitors too - Studio shows a sign-in prompt (StudioGate) instead of bouncing to Settings. /venues now redirects to the Discover Venues tab.',
     mermaid: `flowchart TD
-  A([Open beta.tahti.live]) --> L["/ Listen"]
+  A([Open tahti.live]) --> L["/ Listen"]
   L --> R["/radio"]
   L --> D["/discover"]
   L --> Fav["/favorites"]
@@ -1379,13 +1379,13 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     pack: 'nuclear',
     source: 'cases-auth',
     title: 'Cases — auth',
-    blurb: 'Join, verify, login, TOTP — session cookie on beta host.',
+    blurb: 'Join, verify, login, TOTP — session cookie on tahti.live.',
     mermaid: `flowchart LR
   J["/join"] --> V["/verify"]
   V --> LI["/login"]
   LI --> TOTP{TOTP?}
   TOTP -->|Yes| Code[TOTP step]
-  TOTP -->|No| Cookie["session on beta host"]
+  TOTP -->|No| Cookie["session on tahti.live"]
   Code --> Cookie
   Cookie --> L["/ Listen"]
 `,
@@ -1483,6 +1483,6 @@ export const FLOW_PACKS: {
   {
     id: 'nuclear',
     label: 'Nuclear',
-    hint: 'beta.tahti.live · same API · this client',
+    hint: 'tahti.live · same API · this client',
   },
 ];

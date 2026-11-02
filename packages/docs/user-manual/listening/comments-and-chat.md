@@ -23,4 +23,4 @@ Each channel has a live chat, on the channel page and at `/chat/<slug>`. Open **
 
 ## Private messages
 
-**Messages** (the speech bubble in the top bar) are direct messages between accounts. They're separate from channel chat. You can block an account from its profile or the message thread; blocking stops messages, comments, follows and mentions both ways (**Settings → Account → Privacy & data** lists who you've blocked).
+**Messages** (in the account menu; a cyan dot on your avatar means a message is unread) are direct messages between accounts. They're separate from channel chat. You can block an account from its profile or the message thread; blocking stops messages, comments, follows and mentions both ways (**Settings → Account → Privacy & data** lists who you've blocked).

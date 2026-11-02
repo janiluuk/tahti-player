@@ -98,20 +98,25 @@ function mockAudience(): SoundAudience {
 
 /** Public collections a sound is in, and who liked, reposted and (signed
  * in) played it (`GET /api/v1/c/:slug/sounds/:id/audience`). */
+export type SoundAudienceTab = 'collections' | 'likes' | 'reposts' | 'plays';
+
 export async function fetchSoundAudience(
   channelSlug: string,
   soundId: string,
-  limit = 12,
+  page?: { tab: SoundAudienceTab; offset: number; limit?: number },
 ): Promise<{ data: SoundAudience; meta: FetchMeta }> {
   if (isForceMock()) {
     return {
-      data: mockAudience(),
+      data: page ? EMPTY : mockAudience(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
   try {
+    const query = page
+      ? `limit=${page.limit ?? 30}&tab=${page.tab}&offset=${page.offset}`
+      : 'limit=12';
     const data = await getJson<SoundAudience>(
-      `/api/v1/c/${encodeURIComponent(channelSlug)}/sounds/${encodeURIComponent(soundId)}/audience?limit=${limit}`,
+      `/api/v1/c/${encodeURIComponent(channelSlug)}/sounds/${encodeURIComponent(soundId)}/audience?${query}`,
     );
     return { data: { ...EMPTY, ...data }, meta: { source: 'api' } };
   } catch (err) {
