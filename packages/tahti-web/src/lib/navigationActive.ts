@@ -8,6 +8,7 @@ export type SidebarItemId =
   | 'library'
   | 'chat'
   | 'studio'
+  | 'coop'
   | 'admin'
   | 'help'
   | 'settings';
@@ -41,6 +42,9 @@ export function activeSidebarItem(
   }
   if (isChatRoute(path)) {
     return 'chat';
+  }
+  if (matchesSectionRoute(path, ['/governance', '/studio/governance'])) {
+    return 'coop';
   }
   if (getStudioPrimaryRoute(path) === '/studio') {
     return 'studio';
@@ -194,7 +198,6 @@ export const SIDEBAR_UNLIT_INTENTIONAL: readonly string[] = [
   '/news',
   '/whats-new',
   '/transparency',
-  '/governance',
   '/venues',
   '/schedule',
   '/messages',

@@ -26,13 +26,14 @@ To create your channel, open **Studio** and follow the channel setup: pick your 
 | --- | --- |
 | **Overview** | Your Studio home. Small shortcuts come first (Go live, Schedule, Music, Upload, Collections, Releases, Updates, Stats, Revenue, Channel look…), then your channel's **Stream manager** (what plays when you're offline, start and skip), recent activity, recent broadcasts, upcoming shows and governance. |
 | **Stats** | Plays, downloads, followers and listening for a period you choose, plus listeners and top lists. See [Stats and earnings](stats-and-earnings.md). |
-| **Governance** | Your member view of motions and meetings. |
 | **Posts** | Updates for your followers and your newsletter. See [Posts and moderation](posts-and-moderation.md). |
 | **Audience** | Fan tiers, orders and payouts. |
 | **Releases** | Albums, EPs and singles. See [Releases and distribution](releases-and-distribution.md). |
 | **Distribution** | Delivery to streaming services and royalties. |
 | **Editor** | The audio editor for trimming, quick fixes and mastering. |
 | **Broadcast** | Going live, schedule, shows, events, your channel's radio. See [Broadcasting](broadcasting.md). |
+
+Members find motions, discussions, documents and the governance guide under **Co-op** in the sidebar (no longer a Studio tab).
 
 Your music files live under **Library** (sidebar): **Sounds**, **Collections**, **Upload**, **Recordings**, **Media**, **Stash**, **Embeds**, **Smart links** and **Local files**. See [Uploads and tracks](uploads-and-tracks.md).
 

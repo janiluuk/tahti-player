@@ -50,6 +50,12 @@ const SIDEBAR_STEPS: TourStep[] = [
       'Your artist workspace — broadcasting, uploads, releases, and channel tools.',
   },
   {
+    id: 'nav-coop',
+    label: 'Co-op',
+    description:
+      'For members: motions, discussions, documents and how the co-op is run.',
+  },
+  {
     id: 'nav-admin',
     label: 'Admin',
     description: 'Board tools for moderating and running the platform.',
