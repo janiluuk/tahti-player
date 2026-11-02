@@ -35,8 +35,8 @@ test('a new account can complete registration and immediately log in with it', a
   await expect(page.getByLabel('Artist name')).toBeVisible();
   await page.getByLabel('Email').fill(email);
   await page.getByLabel('Artist name').fill('New Test Artist');
-  await page.getByLabel('Password', { exact: true }).fill('secure-password');
-  await page.getByLabel('Confirm password').fill('secure-password');
+  await page.getByLabel('Password', { exact: true }).fill('Secure-Passw0rd');
+  await page.getByLabel('Confirm password').fill('Secure-Passw0rd');
   await page.getByRole('button', { name: 'Create account' }).click();
 
   // Mock registration always succeeds and switches the dialog to login
@@ -44,7 +44,7 @@ test('a new account can complete registration and immediately log in with it', a
   await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
 
   await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password').fill('secure-password');
+  await page.getByLabel('Password').fill('Secure-Passw0rd');
   await page.getByRole('button', { name: 'Sign in' }).click();
 
   await expect(
@@ -86,16 +86,14 @@ test('governance navigation keeps member, artist, and board entries reachable an
 }) => {
   await signIn(page);
 
-  await page.goto('/settings/account');
-  await page.getByRole('tab', { name: 'Governance' }).click();
-  await expect(page.getByRole('heading', { name: 'Governance' })).toBeVisible();
+  const coop = page.locator('[data-tour-id="nav-coop"] a').first();
+  await page.goto('/');
+  await coop.click();
+  await expect(page).toHaveURL(/\/governance$/);
+  await expect(coop).toHaveAttribute('aria-current', 'page');
 
   await page.goto('/studio/governance');
-  await expect(
-    page
-      .getByRole('navigation', { name: 'Studio pages' })
-      .getByRole('link', { name: 'Governance' }),
-  ).toHaveAttribute('aria-current', 'page');
+  await expect(coop).toHaveAttribute('aria-current', 'page');
   await expect(page.getByRole('tab', { name: 'Motions' })).toHaveAttribute(
     'aria-selected',
     'true',
@@ -106,11 +104,7 @@ test('governance navigation keeps member, artist, and board entries reachable an
     'aria-selected',
     'true',
   );
-  await expect(
-    page
-      .getByRole('navigation', { name: 'Studio pages' })
-      .getByRole('link', { name: 'Governance' }),
-  ).toHaveAttribute('aria-current', 'page');
+  await expect(coop).toHaveAttribute('aria-current', 'page');
 
   await page.evaluate(() => {
     const raw = localStorage.getItem('tahti-web-auth');
@@ -174,6 +168,10 @@ test('library is its own sidebar section with Library tabs, not a Studio tab', a
   await expect(page.getByRole('tab', { name: 'Sounds' })).toBeVisible();
   await expect(page.getByRole('tab', { name: 'Collections' })).toBeVisible();
 
+  const acknowledge = page.getByRole('button', { name: 'Acknowledge' });
+  if (await acknowledge.isVisible()) {
+    await acknowledge.click();
+  }
   await page.getByRole('tab', { name: 'Sounds' }).click();
   await expect(page).toHaveURL(/\/library\/sounds$/);
   await expect(page.getByRole('tab', { name: 'Sounds' })).toHaveAttribute(
@@ -302,7 +300,7 @@ test('governance: a member can submit an advisory motion draft', async ({
   await expect(
     page.getByRole('heading', { name: 'Improve member notices' }),
   ).toBeVisible();
-  await expect(page.getByText('DRAFT', { exact: true })).toBeVisible();
+  await expect(page.getByText('DRAFT', { exact: true }).first()).toBeVisible();
 });
 
 test('governance: public history and historical grant reports are reachable', async ({
@@ -329,7 +327,9 @@ test('artist stats show real listen minutes and the listener geography map', asy
   await signIn(page);
   await page.goto('/studio/stats');
 
-  await expect(page.getByRole('heading', { name: 'Stats' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Stats' }),
+  ).toBeVisible();
   await expect(page.getByText('Minutes listened')).toBeVisible();
   await page.getByRole('tab', { name: 'Plays & listeners' }).click();
   await expect(page.getByLabel('Listener world map')).toBeVisible();
