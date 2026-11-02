@@ -6,6 +6,8 @@ export type DiscoverTrackItem = {
   title: string;
   artist: string;
   artistUsername?: string | null;
+  /** The credited artist's avatar, when they own the channel. */
+  artistAvatarUrl?: string | null;
   channelSlug: string;
   coverUrl?: string | null;
   durationSec?: number | null;

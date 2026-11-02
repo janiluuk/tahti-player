@@ -186,6 +186,7 @@ type WireTopListEntry = {
   listens: number;
   title: string;
   artistName: string;
+  artistAvatarUrl?: string | null;
   channelSlug: string;
   bannerUrl: string | null;
   genre: string | null;
@@ -197,6 +198,7 @@ function topListEntryToTrack(entry: WireTopListEntry): DiscoverTrackItem {
     id: `sound:${entry.soundId}`,
     title: entry.title,
     artist: entry.artistName,
+    artistAvatarUrl: entry.artistAvatarUrl,
     channelSlug: entry.channelSlug,
     coverUrl: entry.bannerUrl,
     genre: entry.genre,
@@ -264,6 +266,7 @@ type WireGalleryItem = {
   title: string;
   artistName: string;
   artistUsername: string | null;
+  artistAvatarUrl?: string | null;
   channelSlug: string;
   bannerUrl: string | null;
   durationSec: number | null;
@@ -284,6 +287,7 @@ function galleryItemToTrack(item: WireGalleryItem): DiscoverTrackItem {
     title: item.title,
     artist: item.artistName,
     artistUsername: item.artistUsername,
+    artistAvatarUrl: item.artistAvatarUrl,
     channelSlug: item.channelSlug,
     coverUrl: item.bannerUrl,
     durationSec: item.durationSec,
@@ -401,6 +405,7 @@ function lovedEntryToTrack(entry: WireLovedEntry): DiscoverTrackItem {
     id: `sound:${entry.soundId}`,
     title: entry.title,
     artist: entry.artistName,
+    artistAvatarUrl: entry.artistAvatarUrl,
     channelSlug: entry.channelSlug,
     coverUrl: entry.bannerUrl,
     genre: entry.genre,
