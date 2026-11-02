@@ -102,10 +102,17 @@ export const GovernanceSubtabs: Story = {
   },
 };
 
-export const PostsSubtabs: Story = {
+export const FansPageBackLink: Story = {
   args: { current: '/studio/updates', global: true },
   decorators: [withTahtiRouter('/studio/updates')],
   play: async ({ canvasElement }) => {
-    await expectNestedTabs(canvasElement, 'Posts pages', 'Posts');
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole('tab', { name: 'Fans', selected: true }),
+    ).toBeVisible();
+    await expect(canvas.getByTestId('studio-fans-back')).toHaveAttribute(
+      'href',
+      '/studio/fans',
+    );
   },
 };

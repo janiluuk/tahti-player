@@ -16,7 +16,7 @@ type NavigationStructureState = {
 };
 
 // Mirrors the real app's current nested navigation (see AppShell.tsx's
-// sidebar top level and StudioNav.tsx's SUBMENUS/AUDIENCE_SUBNAV_ITEMS/
+// sidebar top level and StudioNav.tsx's SUBMENUS, the Fans hub cards and
 // BROADCAST_SUBNAV_ITEMS) so the draft widget starts by showing the whole
 // real tree, not just its top level.
 const DEFAULT_ITEMS: NavigationStructureItem[] = [
@@ -40,41 +40,7 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
     label: 'Studio',
     path: '/studio',
     children: [
-      { id: 'studio-overview', label: 'Overview', path: '/studio' },
-      {
-        id: 'studio-branding',
-        label: 'Branding',
-        path: '/settings/artist?tab=branding',
-      },
-      { id: 'studio-stats', label: 'Stats', path: '/studio/stats' },
-      {
-        id: 'studio-governance',
-        label: 'Governance',
-        path: '/studio/governance',
-      },
-      { id: 'studio-posts', label: 'Posts', path: '/studio/updates' },
-      {
-        id: 'studio-audience',
-        label: 'Audience',
-        path: '/studio/audience',
-        children: [
-          {
-            id: 'studio-audience-overview',
-            label: 'Overview',
-            path: '/studio/audience',
-          },
-          {
-            id: 'studio-audience-tiers',
-            label: 'Tiers',
-            path: '/studio/audience?tab=tiers',
-          },
-          {
-            id: 'studio-audience-stripe',
-            label: 'Stripe',
-            path: '/studio/stripe',
-          },
-        ],
-      },
+      { id: 'studio-home', label: 'Home', path: '/studio' },
       {
         id: 'studio-releases',
         label: 'Music',
@@ -131,8 +97,39 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
           },
         ],
       },
+      {
+        id: 'studio-fans',
+        label: 'Fans',
+        path: '/studio/fans',
+        children: [
+          { id: 'studio-fans-posts', label: 'Posts', path: '/studio/updates' },
+          {
+            id: 'studio-fans-newsletter',
+            label: 'Newsletter',
+            path: '/studio/updates?tab=newsletter',
+          },
+          {
+            id: 'studio-fans-memberships',
+            label: 'Memberships',
+            path: '/studio/audience?tab=tiers',
+          },
+          {
+            id: 'studio-fans-store',
+            label: 'Store',
+            path: '/studio/audience?tab=store',
+          },
+          {
+            id: 'studio-fans-earnings',
+            label: 'Earnings',
+            path: '/studio/audience',
+          },
+        ],
+      },
+      { id: 'studio-stats', label: 'Stats', path: '/studio/stats' },
+      { id: 'studio-profile', label: 'Profile', path: '/studio/profile' },
     ],
   },
+  { id: 'coop', label: 'Co-op', path: '/governance' },
   { id: 'settings', label: 'Settings', path: '/settings' },
 ];
 

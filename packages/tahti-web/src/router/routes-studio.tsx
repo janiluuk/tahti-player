@@ -15,6 +15,7 @@ import {
   StudioEpisodeReviewView,
   StudioEventCreateView,
   StudioEventsView,
+  StudioFansView,
   StudioGoLiveView,
   StudioGovernanceView,
   StudioHomeView,
@@ -23,6 +24,7 @@ import {
   StudioMasteringView,
   StudioPlaylistEditorView,
   StudioProEditorView,
+  StudioProfileView,
   StudioReleaseDetailView,
   StudioReleasesView,
   StudioRevenueView,
@@ -388,8 +390,9 @@ export const studioAudienceRoute = createRoute({
   path: '/studio/audience',
   validateSearch: (
     search: Record<string, unknown>,
-  ): { tab?: 'tiers'; movedFrom?: MovedSettingsSection } => ({
-    tab: search.tab === 'tiers' ? 'tiers' : undefined,
+  ): { tab?: 'tiers' | 'store'; movedFrom?: MovedSettingsSection } => ({
+    tab:
+      search.tab === 'tiers' || search.tab === 'store' ? search.tab : undefined,
     movedFrom: movedSettingsSection(search.movedFrom),
   }),
   component: StudioRevenueView,
@@ -410,6 +413,18 @@ export const studioRevenueRoute = createRoute({
           : {},
     });
   },
+});
+
+export const studioFansRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/fans',
+  component: StudioFansView,
+});
+
+export const studioProfileRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/profile',
+  component: StudioProfileView,
 });
 
 export const studioStripeRoute = createRoute({
