@@ -5781,3 +5781,9 @@ tahti-org#1038 gives `/api/v1/search` track results `audioUrl` (through the acce
 - **beta.tahti.live** references in the manual, Help center, flow diagrams, atlas and e2e run labels now say tahti.live (beta redirects to production since #1706). The admin **Beta** moderation queue (beta applications) is unchanged.
 - **Channel store editor** (#1668) folded; `channel-store-editor.md` removed.
 
+## 2026-11-02 — README and view-guide screenshots refreshed; stories and sound audience folded
+
+- **Screenshots**: the root README's three images (`docs/redesign-shots/listen-home-v1`, `listen-channel-v1`, `studio-go-live-v1`, dark and light) and every view-guide capture (`docs/readme-shots`, 84 dark + 83 light, `scripts/capture-readme-guide.mjs`) retaken from master's mock app, so they show the new player bar, Discover with Community stories first, the account-menu dots and the simpler Studio home.
+- **Community stories** (`feed-redesign-community-stories.md`): wide story cards on My feed, the Discover widget at the top of Discover with covers (#1726, #1733), stories open in a dialog with the other updates (#1742); tahti-org #1034, #1035, #1040 are live on production.
+- **Sound audience** (`sound-audience-widget.md`): `SoundAudience` in `@tahti-player/ui` (#1737), on the track page (#1738) with Show more (#1741); tahti-org #1037, #1039 live; the allowlist entry went with #1746.
+
