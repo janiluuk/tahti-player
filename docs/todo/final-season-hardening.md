@@ -20,7 +20,6 @@ Shipped: deploy builds fail if the client bundle inlines an absolute
 
 | # | Item | Repo | Notes | Size |
 | --- | --- | --- | --- | --- |
-| 19 | Rate limit `RATE_LIMIT_REDIS_FAIL_OPEN=false` in prod | tahti-org | Default fail-open when Redis is down. Production now runs compose (`deploy_prod.sh`), not Swarm; set it there. Also `first-100-users-infra.md` #1 | S (config) |
 | 20 | Host-only cookies + shrink credentialed `*.tahti.live` CORS / CSRF plan | tahti-org | Phase-7 double-submit never shipped; XSS on any subdomain = session | M |
 | 21 | Enforce CSP (today report-only on API edge) | tahti-org | `infra/Caddyfile` `(security_headers)` | M |
 | 22 | Upload magic / stricter `audio/*` verification | tahti-org | prepare/complete | M |
