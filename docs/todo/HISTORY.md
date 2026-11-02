@@ -5765,3 +5765,8 @@ Replaced full-screen visualizer text options with eight animated SVG preview til
 ## 2026-10-31 — PR #1730 CI and radio cards
 
 Fixed the ambiguous pinned-track Storybook assertion. Other stations now use playable cards, cover editing moved from listener-card overlays to the station page, and shared Card/AmbientCard surfaces subtly highlight active playback. Verified 35 web tests, 8 UI tests, 32 Storybook plays, web lint/type checking, and responsive layouts at 320/390/768/1280px.
+
+## 2026-11-02 — API route allowlist emptied; discussion topics closed
+
+tahti-org release `2026-10-30-2` publishes every route the batch 111–120 slices called, so `api-routes-allowlist.json` keeps only `/api/admin/i18n/languages` (no translation routes exist). `check-api-routes.mjs` now also fails on allowlist entries the API serves, so an exception can't outlive its release. That was the last open item of `discussion-topics.md` (board-created discussion topics: API, web, CLI), now folded.
+

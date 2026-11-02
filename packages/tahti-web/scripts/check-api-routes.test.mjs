@@ -4,6 +4,7 @@ import {
   extractApiPaths,
   isServed,
   normalizePath,
+  servedAllowances,
 } from './check-api-routes.mjs';
 
 const served = [
@@ -13,6 +14,16 @@ const served = [
 ].map(normalizePath);
 
 describe('check-api-routes', () => {
+  it('flags allowlist entries the API serves now, but not prefixes', () => {
+    const served = ['/api/me/password', '/api/me/sessions/\u0000'];
+    expect(
+      servedAllowances(
+        ['/api/me/password', '/api/me/sessions/:param', '/api/me', '/api/x'],
+        served,
+      ),
+    ).toEqual(['/api/me/password', '/api/me/sessions/:param']);
+  });
+
   it('matches a template path against the served one', () => {
     expect(
       isServed(
