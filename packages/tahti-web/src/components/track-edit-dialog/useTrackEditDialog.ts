@@ -51,17 +51,9 @@ function accessFromSound(sound: StudioSound): SoundAccess {
   };
 }
 
-export type Tab =
-  'basics' | 'tracklist' | 'audio' | 'sharing' | 'export' | 'advanced';
+export type Tab = 'basics' | 'tracklist' | 'sharing' | 'advanced';
 
-export const TAB_ORDER: Tab[] = [
-  'basics',
-  'tracklist',
-  'audio',
-  'sharing',
-  'export',
-  'advanced',
-];
+export const TAB_ORDER: Tab[] = ['basics', 'tracklist', 'sharing', 'advanced'];
 
 /** Loading, editing, playback and quick-render state for the track edit
  * dialog, shared across its per-tab components. */

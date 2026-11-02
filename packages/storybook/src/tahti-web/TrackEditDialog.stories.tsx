@@ -74,7 +74,8 @@ export const Default: Story = {
     await expect(dialog.getByRole('textbox', { name: 'Title' })).toHaveValue(
       'Kaamos Bloom',
     );
-    for (const tab of ['Audio', 'Sharing', 'Export', 'Advanced', 'Basics']) {
+    await expect(dialog.getAllByRole('tab')).toHaveLength(3);
+    for (const tab of ['Sharing', 'Advanced', 'Basics']) {
       await selectTab(dialog, tab);
     }
   },
@@ -237,11 +238,13 @@ export const PurchaseTierAccess: Story = {
   },
 };
 
-// Audio: source properties and the quick fixes for a processed upload.
+// Advanced → Audio: source properties and the quick fixes for a processed
+// upload; Export sits below it.
 export const AudioTab: Story = {
   play: async ({ canvasElement }) => {
     const dialog = await openEditor(canvasElement);
-    await selectTab(dialog, 'Audio');
+    await selectTab(dialog, 'Advanced');
+    await expect(dialog.getByRole('region', { name: 'Export' })).toBeVisible();
     await expect(
       dialog.getByText('This track is stored as Tahti audio.'),
     ).toBeVisible();
