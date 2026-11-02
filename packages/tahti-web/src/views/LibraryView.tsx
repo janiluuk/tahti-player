@@ -5,6 +5,7 @@ import {
   HardDriveIcon,
   HeadphonesIcon,
   HeartIcon,
+  HistoryIcon,
   LayoutGridIcon,
   LibraryIcon,
   Link2Icon,
@@ -12,6 +13,7 @@ import {
   Music2Icon,
   PackageIcon,
   UploadIcon,
+  UsersIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -44,7 +46,9 @@ import { formatPlayCount } from '../lib/topListEntries';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { FavoritesView } from './FavoritesView';
+import { HistoryView } from './HistoryView';
 import { LibraryEmbedsView } from './LibraryEmbedsView';
+import { LibraryFollowingView } from './LibraryFollowingView';
 import { LibraryMediaView } from './LibraryMediaView';
 import { LibrarySmartLinksView } from './LibrarySmartLinksView';
 import { StudioRecordingsView } from './studio/StudioRecordingsView';
@@ -53,6 +57,8 @@ import { StudioStashView } from './studio/StudioStashView';
 export type Tab =
   | 'library'
   | 'favorites'
+  | 'history'
+  | 'following'
   | 'sounds'
   | 'collections'
   | 'recordings'
@@ -75,6 +81,18 @@ export const LIBRARY_SECTION_TABS = [
     label: 'Favorites',
     icon: HeartIcon,
     to: '/library/favorites',
+  },
+  {
+    id: 'history' as const,
+    label: 'History',
+    icon: HistoryIcon,
+    to: '/library/history',
+  },
+  {
+    id: 'following' as const,
+    label: 'Following',
+    icon: UsersIcon,
+    to: '/library/following',
   },
   {
     id: 'sounds' as const,
@@ -218,28 +236,44 @@ export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
 }
 
 export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
+  const navigate = useNavigate();
+  const listener = useAuthStore(
+    (state) =>
+      Boolean(state.user) &&
+      state.profileLoaded &&
+      !hasStudioAccess(state.user),
+  );
+  useEffect(() => {
+    if (tab === 'library' && listener) {
+      void navigate({ to: '/library/favorites', replace: true });
+    }
+  }, [listener, navigate, tab]);
   const libraryTitle =
     tab === 'library'
       ? 'Overview'
       : tab === 'favorites'
         ? 'Favorites'
-        : tab === 'sounds'
-          ? 'Sounds'
-          : tab === 'upload'
-            ? 'Upload'
-            : tab === 'recordings'
-              ? 'Recordings'
-              : tab === 'embeds'
-                ? 'Embeds'
-                : tab === 'media'
-                  ? 'Media'
-                  : tab === 'stash'
-                    ? 'Stash'
-                    : tab === 'smartlinks'
-                      ? 'Smart links'
-                      : tab === 'local'
-                        ? 'Local files'
-                        : 'Collections';
+        : tab === 'history'
+          ? 'History'
+          : tab === 'following'
+            ? 'Following'
+            : tab === 'sounds'
+              ? 'Sounds'
+              : tab === 'upload'
+                ? 'Upload'
+                : tab === 'recordings'
+                  ? 'Recordings'
+                  : tab === 'embeds'
+                    ? 'Embeds'
+                    : tab === 'media'
+                      ? 'Media'
+                      : tab === 'stash'
+                        ? 'Stash'
+                        : tab === 'smartlinks'
+                          ? 'Smart links'
+                          : tab === 'local'
+                            ? 'Local files'
+                            : 'Collections';
 
   return (
     <div className="studio-page-layout flex w-full flex-col gap-6">
@@ -253,6 +287,16 @@ export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
         {tab === 'favorites' ? (
           <div className="mt-2">
             <FavoritesView embedded />
+          </div>
+        ) : null}
+        {tab === 'history' ? (
+          <div className="mt-2">
+            <HistoryView embedded />
+          </div>
+        ) : null}
+        {tab === 'following' ? (
+          <div className="mt-2">
+            <LibraryFollowingView />
           </div>
         ) : null}
         {tab === 'recordings' ? (
