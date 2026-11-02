@@ -133,23 +133,26 @@ export function StudioActionTile({
     <HomeTileStaggerWrap>
       <Link
         to={to}
-        className={`group border-border relative flex aspect-[4/3] flex-col overflow-hidden rounded-xl border shadow-sm transition-transform hover:-translate-y-0.5 ${color}`}
+        data-testid="studio-action-tile"
+        className="group border-border bg-background-secondary/40 hover:bg-background-secondary flex min-w-0 items-center gap-2.5 rounded-lg border px-2.5 py-2 transition-colors"
       >
-        <div className="relative z-10 bg-black/45 px-3 py-2 backdrop-blur-sm">
-          <div className="truncate text-sm font-bold text-white">{label}</div>
-          {subtitle ? (
-            <div className="truncate text-[11px] text-white/75">{subtitle}</div>
-          ) : null}
-        </div>
-        <div className="flex min-h-0 flex-1 items-center justify-center">
+        <span
+          className={`flex size-8 shrink-0 items-center justify-center rounded-md text-white ${color}`}
+        >
           <Icon
-            size={40}
-            absoluteStrokeWidth
-            strokeWidth={1.5}
-            className="text-white/90 transition-transform group-hover:scale-110"
+            size={16}
+            className="transition-transform group-hover:scale-110"
             aria-hidden
           />
-        </div>
+        </span>
+        <span className="min-w-0">
+          <span className="block truncate text-sm font-semibold">{label}</span>
+          {subtitle ? (
+            <span className="text-foreground-secondary block truncate text-[11px]">
+              {subtitle}
+            </span>
+          ) : null}
+        </span>
       </Link>
     </HomeTileStaggerWrap>
   );

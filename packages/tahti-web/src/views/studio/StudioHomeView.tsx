@@ -1,18 +1,18 @@
 import { Link } from '@tanstack/react-router';
-import { CalendarIcon, RadioIcon } from 'lucide-react';
 
 import { Badge, Button, ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import { PageEmpty, PageError } from '../../components/PageStates';
+import { StreamManagerPanel } from '../../components/StreamManagerPanel';
 import { StudioGate } from '../../components/StudioGate';
 import { useStripeConfigured } from '../../hooks/useStripeConfigured';
 import { accountRoleLabel, getAccountRole } from '../../lib/accountRoles';
+import { EmptyDiscographyPrompt } from './home/EmptyDiscographyPrompt';
 import { GovernanceSection } from './home/GovernanceSection';
-import { CompactBroadcastTile, Group, HomeTileStagger } from './home/HomeTiles';
+import { Group, HomeTileStagger } from './home/HomeTiles';
 import { MusicAudienceGrids } from './home/MusicAudienceGrids';
 import { RecentActivitySection } from './home/RecentActivitySection';
 import { RecentBroadcastRow } from './home/RecentBroadcastRow';
-import { SummaryStatsSection } from './home/SummaryStatsSection';
 import { UpcomingShowsSection } from './home/UpcomingShowsSection';
 import { useStudioHome } from './home/useStudioHome';
 
@@ -66,49 +66,18 @@ export function StudioHomeView() {
 
           {!channel ? null : (
             <HomeTileStagger>
-              <div
-                role="group"
-                aria-label="Next steps"
-                className="flex flex-wrap gap-2"
-              >
-                <ButtonLink to="/library/upload" size="sm">
-                  Upload
-                </ButtonLink>
-                <ButtonLink to="/studio/go-live" size="sm" variant="secondary">
-                  Go Live
-                </ButtonLink>
-                <ButtonLink
-                  to="/channel/$slug"
-                  params={{ slug: channel.slug }}
-                  search={{ edit: true }}
-                  size="sm"
-                  variant="secondary"
-                >
-                  Edit channel
-                </ButtonLink>
-              </div>
-
-              <SummaryStatsSection state={state} />
-              <RecentActivitySection />
-
-              <Group title="Broadcast">
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <CompactBroadcastTile
-                    to="/studio/go-live"
-                    icon={RadioIcon}
-                    label="Broadcast"
-                    subtitle="Keys, signal, on-air"
-                    color="bg-accent-red"
-                  />
-                  <CompactBroadcastTile
-                    to="/studio/schedule"
-                    icon={CalendarIcon}
-                    label="Schedule"
-                    subtitle="Next show & programme"
-                    color="bg-accent-blue"
-                  />
-                </div>
+              <MusicAudienceGrids
+                state={state}
+                stripeConfigured={stripeConfigured}
+              />
+              <EmptyDiscographyPrompt state={state} />
+              <Group title="Stream">
+                <StreamManagerPanel
+                  slug={channel.slug}
+                  channelState={channel.state ?? 'OFFLINE'}
+                />
               </Group>
+              <RecentActivitySection />
               <Group title="Recent broadcasts">
                 {broadcastsError && recentBroadcasts.length === 0 ? (
                   <PageError
@@ -148,10 +117,6 @@ export function StudioHomeView() {
               </Group>
               <UpcomingShowsSection state={state} />
               <GovernanceSection state={state} />
-              <MusicAudienceGrids
-                state={state}
-                stripeConfigured={stripeConfigured}
-              />
             </HomeTileStagger>
           )}
         </ViewShell>
