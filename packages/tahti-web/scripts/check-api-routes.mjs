@@ -56,6 +56,23 @@ export function isServed(called, servedPaths) {
   });
 }
 
+/** Allowlist entries the API serves now: the exception has expired. */
+export function servedAllowances(entries, servedPaths) {
+  return entries.filter((entry) => {
+    const want = segments(normalizePath(entry));
+    return servedPaths.some((served) => {
+      const have = segments(served);
+      return (
+        have.length === want.length &&
+        want.every(
+          (part, index) =>
+            part === PARAM || have[index] === PARAM || part === have[index],
+        )
+      );
+    });
+  });
+}
+
 export function extractApiPaths(source) {
   const found = [];
   const pattern = /(['"`])(\/api\/[^'"`\s]*)\1/g;
@@ -123,6 +140,7 @@ function main() {
   }
 
   const stale = [...allowed].filter((entry) => !usedAllowances.has(entry));
+  const nowServed = servedAllowances([...allowed], served);
   if (missing.length > 0) {
     console.error('The app calls API paths the server does not serve:');
     for (const entry of missing) {
@@ -135,13 +153,24 @@ function main() {
       console.error(`  ${entry}`);
     }
   }
+  if (nowServed.length > 0) {
+    console.error('Allowlist entries the API now serves (remove them):');
+    for (const entry of nowServed) {
+      console.error(`  ${entry}`);
+    }
+  }
   if (unexplained.length > 0) {
     console.error('Allowlist entries without a reason:');
     for (const entry of unexplained) {
       console.error(`  ${entry}`);
     }
   }
-  if (missing.length > 0 || stale.length > 0 || unexplained.length > 0) {
+  if (
+    missing.length > 0 ||
+    stale.length > 0 ||
+    nowServed.length > 0 ||
+    unexplained.length > 0
+  ) {
     process.exit(1);
   }
   console.log(

@@ -32,7 +32,6 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | open    | [navigation-simplification.md](navigation-simplification.md) | Plan: one tab row per section for Studio (6), Library (5), Admin (6); regroup by context; Co-op sidebar item. The six listed bugs shipped in batch 116 |
 | open    | [ux-batch-112-forty-slices.md](ux-batch-112-forty-slices.md) | Forty polish slices: ambient lists, undo toasts, de-green, PageEmpty, search keyboard, usability leftovers |
 | open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |
-| blocked | [discussion-topics.md](discussion-topics.md) | Board-created discussion topics shipped (API, web, CLI); only dropping the allowlisted routes remains, after the next tahti-org release |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |

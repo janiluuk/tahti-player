@@ -39,7 +39,7 @@ No Playwright e2e spec: the e2e suite runs against beta's real API, not mocks; t
 
 ## What remains
 
-- [ ] tahti-org#1029 and tahti-player#1704 merged 2026-10-28; `GET /api/channels/:slug/listening-parties` answers on production. Verify against the real API (party page in every state, a real late join through the signed stream redirect, Studio create/reschedule/cancel errors) and drop the five `api-routes-allowlist.json` entries once the OpenAPI release has the routes.
+- [ ] tahti-org#1029 and tahti-player#1704 merged 2026-10-28; `GET /api/channels/:slug/listening-parties` answers on production. Verify against the real API (party page in every state, a real late join through the signed stream redirect, Studio create/reschedule/cancel errors). (The allowlist entries went with the 2026-10-30 tahti-org release.)
 - [ ] Party listening is not reported to listen heartbeats/stats (`ListenHeartbeat` ignores `party:` player ids); decide whether it should count.
 - [ ] Liquidsoap playout into the channel HLS output (same path as Tahti Selects) instead of client-side playback.
 - [ ] Formats, pre-orders and physical goods (`ReleaseOffer` or `PurchaseTier.releaseId` + format; shipping/fulfilment is a product decision).
