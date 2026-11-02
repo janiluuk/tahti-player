@@ -5799,3 +5799,10 @@ tahti-org#1038 gives `/api/v1/search` track results `audioUrl` (through the acce
 - **Latest News** (#1759, user request): `@tahti-player/ui` `NewsCarousel`; all News add-on feeds merge into one carousel on Listen and Discover, with a Sources dialog (suggested or custom RSS/Atom) and a more News list.
 - **Collection player** (#1760, user request): `@tahti-player/ui` `CollectionPlayer` and the connected `CollectionPlayerWidget`: play all, play a row on hover, the playing row highlighted. Not placed on a page yet.
 - **Listen paired rows** (`listen-paired-rows.md`): Recently played beside Tahti Selects, playable release cards and the release-type pill had already shipped in #1731; folded.
+
+## 2026-11-02 — Broadcast hub, Inbox chips, auth snapshot, e2e by role
+
+- **Studio Broadcast hub** (#1762): `/studio/broadcast` with on/off-air banner and Go live, one Coming up agenda of shows, events and listening parties (chips, live party first), cards for every broadcast tool incl. 24/7 radio, Recordings and Tahti Radio; Broadcast pages link back instead of the seven-tab row.
+- **Admin Inbox and Overview** (#1763): queues are counted filter chips; the dashboard leads with System health and links to status, monitoring and logs.
+- **Auth snapshot** (#1764): `tahti-web-auth` no longer stores the email address (hardening #25).
+- **E2E by role** (#1765, #1766): `docs/todo/e2e-coverage-gap.md` maps features × anonymous / listener / artist / admin; new role helpers; anonymous, listener, artist and admin journeys; admin, governance, registration and library journeys fixed; a spec for eight routes nothing visited.
