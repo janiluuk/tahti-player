@@ -16,6 +16,7 @@ export const widgetBlockId = (id: string) => `widget:${id}`;
 export const isWidgetBlockId = (id: string) => id.startsWith('widget:');
 export const BROWSER_STATIONS_BLOCK_ID = widgetBlockId('browser-stations');
 export const FAVORITES_BLOCK_ID = widgetBlockId('favorites');
+export const LATEST_NEWS_BLOCK_ID = widgetBlockId('latest-news');
 
 const toFront = (order: string[], id: string) => [
   id,
@@ -155,7 +156,12 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
               },
               ...s.instances,
             ],
-            listenOrder: toFront(s.listenOrder, widgetBlockId(id)),
+            listenOrder: toFront(
+              s.listenOrder,
+              typeId === NEWS_WIDGET_TYPE_ID
+                ? LATEST_NEWS_BLOCK_ID
+                : widgetBlockId(id),
+            ),
           };
         }),
       removeInstance: (id) =>
