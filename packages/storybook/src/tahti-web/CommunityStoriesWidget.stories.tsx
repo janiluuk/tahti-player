@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CommunityStoriesWidget } from '@tahti-web/components/discover/CommunityStoriesWidget';
-import { expect, fn, within } from 'storybook/test';
+import { expect, fn, waitFor, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 
@@ -26,10 +26,12 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText(/^News · /)).toBeVisible();
-    await expect(
-      canvas.getByText('Hi, I make the flutes you hear here'),
-    ).toBeVisible();
+    await canvas.findByText(/^News · /);
+    await waitFor(() =>
+      expect(
+        canvas.getByText('Hi, I make the flutes you hear here'),
+      ).toBeVisible(),
+    );
     await expect(
       canvas.getByRole('button', { name: 'Remove widget' }),
     ).toBeVisible();

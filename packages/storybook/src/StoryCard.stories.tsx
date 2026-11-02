@@ -37,8 +37,18 @@ type Story = StoryObj<typeof meta>;
 
 export const WithImage: Story = {};
 
-/** No image: a gradient with the author's initial, never an empty box. */
+/** No image and no avatar: a gradient with the author's initial, never an
+ * empty box. */
 export const NoImage: Story = { args: { imageSrc: null } };
+
+/** No image but an avatar: the avatar, blurred, fills the frame with the
+ * round avatar on top. */
+export const NoImageWithAvatar: Story = {
+  args: {
+    imageSrc: null,
+    authorAvatarSrc: 'https://picsum.photos/seed/tahti-avatar/240/240',
+  },
+};
 
 /** Long title and excerpt clamp to three lines each. */
 export const LongText: Story = {

@@ -40,4 +40,23 @@ describe('StoryCard', () => {
     expect(screen.getByTestId('custom-media')).toBeTruthy();
     expect(screen.getByRole('link').getAttribute('href')).toBe('/u/aurora');
   });
+
+  it("uses the author's avatar as the cover when the story has no image", () => {
+    render(
+      <StoryCard
+        imageSrc={null}
+        meta="Story"
+        title="Hello"
+        authorName="Aurora"
+        authorAvatarSrc="https://example.com/avatar.png"
+      />,
+    );
+    expect(screen.getByTestId('story-card-avatar-cover')).toBeTruthy();
+  });
+
+  it('shows the initial when there is neither image nor avatar', () => {
+    render(<StoryCard meta="Story" title="Hello" authorName="aurora" />);
+    expect(screen.queryByTestId('story-card-avatar-cover')).toBeNull();
+    expect(screen.getAllByText('A').length).toBeGreaterThan(0);
+  });
 });
