@@ -12,7 +12,9 @@ Open **Studio → Upload** (or **Library → Upload**), or press **Upload** on *
 2. Press **Upload**. If you don't give a title, the file name becomes the title; you can change it afterwards.
 3. You're taken to the track's page while it processes.
 
-Uploads without artwork get an abstract cover automatically.
+Uploads without artwork get a cover from the board's artwork gallery automatically, and so do tracks imported from SoundCloud, hearthis.at or Google Drive and saved broadcast recordings. To change a cover, open its cover slot: **Upload** an image, or pick one from the gallery of artwork and your own uploaded images.
+
+Lists of tracks have one toolbar: filter, **Sort**, and **Track size** (the icon button beside sort) to show bigger or more compact rows. After you create a playlist or add tracks to a release, the confirmation has **Undo**.
 
 ## Processing
 

@@ -4,7 +4,7 @@ description: Download and install Tahti Player on your platform
 
 # Installation
 
-You don't have to install anything to listen: [beta.tahti.live](https://beta.tahti.live) runs in the browser. The desktop app is the same app in its own window, plus your local music library, Tahti Jam, the MCP and MPD servers and Discord Rich Presence.
+You don't have to install anything to listen: [tahti.live](https://tahti.live) runs in the browser. The desktop app is the same app in its own window, plus your local music library, Tahti Jam, the MCP and MPD servers and Discord Rich Presence.
 
 Download the latest release from [GitHub Releases](https://github.com/janiluuk/tahti-player/releases/latest). Pick the file for your platform; `x.y.z` is the version number.
 
@@ -85,7 +85,7 @@ There are no Flatpak, RPM or AUR packages. Fedora, openSUSE and Arch users can u
 
 ## Updating
 
-The desktop app updates itself. The browser version at [beta.tahti.live](https://beta.tahti.live) is always the latest, so there is nothing to update there.
+The desktop app updates itself. The browser version at [tahti.live](https://tahti.live) is always the latest, so there is nothing to update there.
 
 ### The update notice
 

@@ -25,6 +25,16 @@ The same rows appear on an artist's **Liked tracks**, on Favorites → **Liked o
 
 The buttons above the list switch between large rows, smaller rows, a grid and a plain list, and **Sort** orders the tracks. Both choices are remembered.
 
+## On a track page
+
+Under a track's description, tabs list where the track has gone and who found it, each with a picture:
+
+- **Collections**: public playlists and collections the track is in.
+- **Liked** and **Reposted**: the people who liked or reposted it.
+- **Played by**: signed-in listeners and how many times each played it. Anonymous plays are never shown.
+
+**Show more** loads the rest of a tab.
+
 ## Follow an artist
 
 Signed in, press **Follow** on the channel header (or the heart on the channel's player when they're on air). The button changes to **Following**. You'll see their new posts and releases in your **Feed**, and they appear under **Favorites**.

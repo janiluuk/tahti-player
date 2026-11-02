@@ -33,7 +33,7 @@ const SHOT_THEME_OPTIONS = [
 
 const ShotThemeContext = createContext<ShotTheme>('dark');
 
-/** beta.tahti.live captures (`/map/nuclear/`) exist in both themes; the light
+/** tahti.live captures (`/map/nuclear/`) exist in both themes; the light
  * one carries a `--light` suffix. Other shots only have one variant. */
 function themedShotImage(image: string, theme: ShotTheme): string {
   return theme === 'light' && image.startsWith('/map/nuclear/')
@@ -313,11 +313,11 @@ export function ParityBadges({ parity }: { parity: MapParity }) {
       </Badge>
       {parity === 'tahti-only' ? (
         <Badge variant="pill" color="orange">
-          Tahti only
+          Legacy only
         </Badge>
       ) : (
         <Badge variant="pill" color="cyan">
-          beta.tahti.live only
+          tahti.live only
         </Badge>
       )}
     </span>
@@ -332,7 +332,7 @@ function ShotPane({
   absent,
   storybookUrl,
 }: {
-  label: 'Tahti' | 'beta.tahti.live';
+  label: 'Legacy' | 'tahti.live';
   shot: MapShot;
   viewName: string;
   action: string;
@@ -351,22 +351,18 @@ function ShotPane({
   const screenshotUrl = image
     ? image.startsWith('http')
       ? image
-      : `https://beta.tahti.live${image}`
+      : `https://tahti.live${image}`
     : null;
   return (
     <div className="flex min-w-0 flex-1 flex-col">
       <div className="border-border flex items-center justify-between gap-2 border-b px-4 py-2.5">
         <span className="text-xs font-semibold tracking-wide uppercase">
           {label}
-          {label === 'Tahti' ? (
+          {label === 'Legacy' ? (
             <span className="text-foreground-secondary ml-1.5 font-normal normal-case">
-              app.tahti.live
+              retired Next.js app
             </span>
-          ) : (
-            <span className="text-foreground-secondary ml-1.5 font-normal normal-case">
-              beta.tahti.live
-            </span>
-          )}
+          ) : null}
         </span>
         <span className="text-foreground-secondary truncate font-mono text-xs">
           {shot.route}
@@ -383,8 +379,11 @@ function ShotPane({
       >
         {absent ? (
           <div className="text-foreground-secondary flex h-full min-h-[14rem] w-full flex-col items-center justify-center gap-3 px-6 text-center text-sm sm:min-h-[18rem] lg:min-h-[22rem]">
-            <Badge variant="pill" color={label === 'Tahti' ? 'cyan' : 'orange'}>
-              {label === 'Tahti' ? 'beta.tahti.live only' : 'Tahti only'}
+            <Badge
+              variant="pill"
+              color={label === 'Legacy' ? 'cyan' : 'orange'}
+            >
+              {label === 'Legacy' ? 'tahti.live only' : 'Legacy only'}
             </Badge>
             <span className="text-base font-medium">
               No equivalent on {label}
@@ -394,9 +393,9 @@ function ShotPane({
         ) : pending ? (
           <div className="text-foreground-secondary flex h-full min-h-[14rem] w-full flex-col items-center justify-center gap-2 px-6 text-center text-sm sm:min-h-[18rem] lg:min-h-[22rem]">
             <span className="text-base font-medium">
-              {label === 'beta.tahti.live'
-                ? 'beta.tahti.live shot pending'
-                : 'Tahti shot pending'}
+              {label === 'tahti.live'
+                ? 'tahti.live shot pending'
+                : 'Legacy shot pending'}
             </span>
             <span className="text-xs opacity-80">{viewName}</span>
           </div>
@@ -521,7 +520,7 @@ function ReviewCaseCard({ c }: { c: MapCase }) {
             <div className="border-border flex flex-col border-t sm:flex-row">
               <div className="border-border min-w-0 flex-1 sm:border-r">
                 <ShotPane
-                  label="Tahti"
+                  label="Legacy"
                   shot={c.old}
                   viewName={c.viewName}
                   action={c.action ?? c.caption}
@@ -530,7 +529,7 @@ function ReviewCaseCard({ c }: { c: MapCase }) {
               </div>
               <div className="border-border min-w-0 flex-1 border-t sm:border-t-0">
                 <ShotPane
-                  label="beta.tahti.live"
+                  label="tahti.live"
                   shot={c.new}
                   viewName={c.viewName}
                   action={c.action ?? c.caption}
@@ -546,7 +545,7 @@ function ReviewCaseCard({ c }: { c: MapCase }) {
                 href={openHref}
                 className="text-primary-strong border-border border-t px-5 py-3 text-sm font-medium underline-offset-2 hover:underline"
               >
-                Open beta.tahti.live →
+                Open on tahti.live →
               </a>
             ) : null}
           </>
@@ -599,19 +598,17 @@ export function ScreenAtlas() {
         </div>
         <p className="text-foreground-secondary mt-1 max-w-3xl text-sm">
           Each case is a two-column comparison:{' '}
-          <strong className="text-foreground font-semibold">Tahti</strong>{' '}
-          (production) beside{' '}
-          <strong className="text-foreground font-semibold">
-            beta.tahti.live
-          </strong>{' '}
-          (beta). Missing captures show &ldquo;shot pending&rdquo;; views that
-          exist on only one surface are flagged as a parity gap. Submit notes on
-          each card — they persist in this browser; export submitted comments as
-          CSV (kind, ids, pack, commentary, timestamp).
+          <strong className="text-foreground font-semibold">Legacy</strong> (the
+          retired Next.js app) beside{' '}
+          <strong className="text-foreground font-semibold">tahti.live</strong>{' '}
+          (this app). Missing captures show &ldquo;shot pending&rdquo;; views
+          that exist on only one surface are flagged as a parity gap. Submit
+          notes on each card — they persist in this browser; export submitted
+          comments as CSV (kind, ids, pack, commentary, timestamp).
         </p>
         <p className="text-foreground-secondary mt-1 text-xs tracking-wide uppercase">
           {MAP_CASE_GROUPS.length} flows · {total} cases · {gaps} parity gap
-          {gaps === 1 ? '' : 's'} · Tahti | beta.tahti.live columns · shots
+          {gaps === 1 ? '' : 's'} · Legacy | tahti.live columns · shots
           refreshed individually
           {latestCapture ? ` (latest ${latestCapture})` : ''} — see each
           shot&apos;s own capture date

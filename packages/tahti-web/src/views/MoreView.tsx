@@ -105,7 +105,7 @@ export function MoreView() {
             Feature matrix
           </h2>
           <p className="text-foreground-secondary mt-1 max-w-3xl text-sm">
-            Same inventory as before — each row is Tahti | beta.tahti.live side
+            Same inventory as before — each row is legacy app | tahti.live side
             by side. Rows that exist on only one surface show a parity-gap
             badge.
           </p>

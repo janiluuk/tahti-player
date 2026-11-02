@@ -189,16 +189,16 @@ const MOCK_TRIAGE: Record<string, E2eTriage> = {
 };
 
 const UPLOAD_VALIDATION_NOTE =
-  'Uploading the fixture WAV on beta shows a bare "Validation error" under Upload and never creates the sound, so the flow stops before /studio/sounds/$id.';
+  'Uploading the fixture WAV on the deployed site shows a bare "Validation error" under Upload and never creates the sound, so the flow stops before /studio/sounds/$id.';
 
 const BETA_TRIAGE: Record<string, E2eTriage> = {
   'plugin-store-spec-radio-visualizer-renders-through-the-registry-with-n': {
     kind: 'app-bug',
-    note: '/radio on beta logs a CSP violation (inline script blocked by script-src) and three 401 responses for a signed-out visitor. The CSP half is fixed on master (#1148, /theme-boot.js) but not deployed yet.',
+    note: '/radio on the deployed site logs a CSP violation (inline script blocked by script-src) and three 401 responses for a signed-out visitor. The CSP half is fixed on master (#1148, /theme-boot.js) but not deployed yet.',
   },
   'real-user-journeys-spec-a-new-account-can-complete-registration-and-im': {
     kind: 'app-bug',
-    note: 'Join on beta answers with a bare "Validation error" that names no field; the account is not created. Master (#1148) now shows the failing field, but beta has not picked it up yet.',
+    note: 'Join on the deployed site answered with a bare "Validation error" that names no field; the account is not created. Master (#1148) now shows the failing field, but beta has not picked it up yet.',
   },
   'listener-purchase-flow-spec-listener-buys-a-track-sees-it-in-purchases': {
     kind: 'app-bug',
@@ -230,7 +230,7 @@ const BETA_TRIAGE: Record<string, E2eTriage> = {
   },
   'cutover-vital-spec-listener-can-open-a-fan-subscription-offer': {
     kind: 'ux',
-    note: 'northern-lights on beta has no fan tiers and payments are not set up; the "Subscribe to …" heading never renders.',
+    note: 'northern-lights on the deployed site has no fan tiers and payments are not set up; the "Subscribe to …" heading never renders.',
   },
   'real-user-journeys-spec-governance-public-history-and-historical-grant': {
     kind: 'ux',
@@ -240,7 +240,7 @@ const BETA_TRIAGE: Record<string, E2eTriage> = {
 
 const BETA_FIXTURE_NOTE: E2eTriage = {
   kind: 'fixture',
-  note: 'Looks for seeded mock data (tracks, motions, archive ids, stat values) that the beta account does not have.',
+  note: 'Looks for seeded mock data (tracks, motions, archive ids, stat values) that the real account does not have.',
 };
 
 function betaTriage(tests: E2eTest[]): Record<string, E2eTriage> {
@@ -273,11 +273,11 @@ export const E2E_RUNS: E2eRun[] = [
   },
   {
     id: 'beta',
-    label: 'beta.tahti.live',
+    label: 'tahti.live',
     baseUrl: (betaRun as RunManifest).baseUrl,
     capturedAt: '2026-10-19',
     summary:
-      'Full suite against the deployed beta, signed in with a real account (TAHTI_E2E_EMAIL / TAHTI_E2E_PASSWORD) after the API gave logins their own rate-limit bucket — no sign-in failures and no 429s. Beta still serves the 18 Oct build (its deploy has failed since #1147), so fixes from #1148 are not in these shots; most other failures look for mock fixture data the account does not have.',
+      'Full suite against the deployed site, signed in with a real account (TAHTI_E2E_EMAIL / TAHTI_E2E_PASSWORD) after the API gave logins their own rate-limit bucket — no sign-in failures and no 429s. Beta still serves the 18 Oct build (its deploy has failed since #1147), so fixes from #1148 are not in these shots; most other failures look for mock fixture data the account does not have.',
     tests: (betaRun as RunManifest).tests,
     triage: betaTriage((betaRun as RunManifest).tests),
   },

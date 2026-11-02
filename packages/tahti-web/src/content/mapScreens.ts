@@ -1,9 +1,9 @@
 /** Screenshot atlas + concrete flow cases for the Tahti map (`/more`).
  *
  * Old = production Tahti chrome (`public/map/{listen,studio,auth,settings}/`)
- * New = Nuclear beta (`public/map/nuclear/`, refreshed via
+ * New = this app (`public/map/nuclear/`, refreshed via
  * `scripts/capture-map-screens.mjs`). Missing new shots show
- * "beta.tahti.live shot pending" rather than inventing pixels.
+ * "shot pending" rather than inventing pixels.
  */
 
 export type MapShot = {
@@ -572,9 +572,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Track page',
         viewName: 'Track',
         caption:
-          'Public track page: genre, tempo, key, licence, credits, notes, tags, recorded-at venue and the AI-generated label, with like, repost, timed comments and download.',
+          'Public track page: genre, tempo, key, licence, credits, notes, tags, recorded-at venue and the AI-generated label, with like, repost, timed comments and download. Tabs list the collections it is in and who liked, reposted and played it (signed-in listeners only).',
         actions: [
           'Play the track',
+          'Browse Collections / Liked / Reposted / Played by, with Show more',
           'Like or repost it',
           'Write a timed comment',
           'Download it (unless the artist switched downloads off)',
@@ -587,6 +588,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           { label: 'Open the venue it was recorded at', to: '/v/$slug' },
           { label: 'Open the artist profile', to: '/u/$username' },
           { label: 'Open the collection it is in', to: '/u/$username/c/$slug' },
+          { label: 'Open a liker, reposter or listener', to: '/u/$username' },
           {
             label: 'Subscribe when the track is fan-subscribers only',
             to: '/subscribe/$username',
@@ -608,8 +610,11 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Tracks by tag',
         viewName: 'Tag search',
         caption:
-          'Every public track with one tag, reached from a tag chip on a track page.',
-        actions: ['Browse tracks with this tag'],
+          'Every public track with one tag, reached from a tag chip on a track page. Tracks play in place as full track rows; members-only and for-sale tracks show a lock and open their page.',
+        actions: [
+          'Browse tracks with this tag',
+          'Play, queue, love or add a track to a playlist in place',
+        ],
         goesTo: [{ label: 'Open a track page', to: '/t/$id' }],
         old: {
           route: '—',
@@ -728,13 +733,17 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Discover',
         viewName: 'Discover',
         caption:
-          'Catalog browse with widgets, filters, and venue register CTA.',
+          'Community stories lead the page; then widgets with filters and the venue register CTA. A story opens in a dialog with the full post and the other community updates.',
         actions: [
+          'Read a community story in a dialog, move Newer / Older or to another update',
           'Browse discovery widgets',
           'Filter catalog results',
-          'Play a discovered track',
+          'Play a discovered track, or Shift to queue it',
         ],
-        goesTo: [{ label: 'Register a venue', to: '/venues/register' }],
+        goesTo: [
+          { label: 'Register a venue', to: '/venues/register' },
+          { label: 'Open a story author', to: '/u/$username' },
+        ],
         old: {
           image: '/map/listen/discover.png',
           route: '/discover',
@@ -804,7 +813,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         id: 'auth-login',
         title: 'Login',
         viewName: 'Login',
-        caption: 'Session cookie via /tahti-api (host-only on beta).',
+        caption: 'Session cookie via /tahti-api (host-only on tahti.live).',
         actions: ['Enter email + password', 'Submit to start a session'],
         goesTo: [
           { label: 'Land on Listen home once logged in', to: '/' },
@@ -1113,11 +1122,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Studio home',
         viewName: 'Studio',
         caption:
-          'You can review clickable audience totals, start or schedule a broadcast, and open every catalog and channel tool.',
+          'Small shortcuts first (Broadcast, Music, Audience & channel), then the channel Stream manager, recent activity and broadcasts. Audience totals live on the Stats tab.',
         actions: [
-          'Review clickable audience totals',
-          'Go Live shortcut',
-          'Jump to Music / Broadcast quick links',
+          'Open a shortcut: Go live, Schedule, Music, Upload, Collections, Releases, Updates, Stats, Revenue, Channel look',
+          'Run the channel stream: play, skip, reorder the active rotation',
           'Open any Studio tool from the persistent StudioNav sidebar',
         ],
         goesTo: [
@@ -1129,6 +1137,9 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           { label: 'Open Releases', to: '/studio/releases' },
           { label: 'Open an upcoming show', to: '/studio/shows/$id' },
           { label: 'Open Posts', to: '/studio/updates' },
+          { label: 'Open Stats', to: '/studio/stats' },
+          { label: 'Open Revenue', to: '/studio/audience' },
+          { label: 'Open Channel look', to: '/studio/channel' },
           { label: 'Open recordings', to: '/library/recordings' },
           {
             label: 'If no channel yet, land on setup',
@@ -1144,7 +1155,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/studio.png',
           route: '/studio',
           caption:
-            'Nuclear studio hub — shot from a real beta admin account with no content yet, so plays/broadcasts read zero.',
+            'Nuclear studio hub — shot from a real admin account with no content yet, so plays/broadcasts read zero.',
           capturedAt: '2026-10-04',
         },
       },
@@ -1910,7 +1921,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
   },
   {
     id: 'recent-beta-views',
-    title: 'Recently ported beta views',
+    title: 'Recently ported views',
     description:
       'Screens added or substantially changed in the latest Tahti parity work. Use each card’s explanation and Mermaid graph to review what the view does and where it leads.',
     cases: [
@@ -2391,7 +2402,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/admin.png',
           route: '/admin',
           caption:
-            'Nuclear Admin dashboard — real beta admin session, live platform KPIs.',
+            'Nuclear Admin dashboard — real admin session, live platform KPIs.',
           capturedAt: '2026-10-04',
         },
         storybookUrl: storybookStory(
@@ -2446,7 +2457,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/admin-users.png',
           route: '/admin/users',
           caption:
-            'Nuclear user admin — real beta admin session, real (beta-seeded) accounts.',
+            'Nuclear user admin — real admin session, real seeded accounts.',
           capturedAt: '2026-10-04',
         },
         storybookUrl: storybookStory('Tahti/Admin/AdminUsersView', 'Default'),
