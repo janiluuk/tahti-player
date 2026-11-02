@@ -43,7 +43,11 @@ describe('ChannelStoreEditor', () => {
       screen.getByText(/That is what a fan pays for a track/),
     ).toBeTruthy();
     expect(screen.getByText(/Each track you price shows up/)).toBeTruthy();
-    expect(await screen.findByText('Add a price first')).toBeTruthy();
+    expect(
+      await screen.findByText(
+        'Your tracks are listed here once you have added a price above.',
+      ),
+    ).toBeTruthy();
   });
 
   it('puts a track in the store when you pick a price', async () => {

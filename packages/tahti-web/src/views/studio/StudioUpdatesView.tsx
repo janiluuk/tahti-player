@@ -145,7 +145,7 @@ export function StudioUpdatesView({
           />
         ) : null}
         <ViewShell
-          title="Updates"
+          title={tab === 'newsletter' ? 'Newsletter' : 'Posts'}
           classes={{ root: 'px-0 pt-0' }}
           actions={
             tab === 'posts' ? (

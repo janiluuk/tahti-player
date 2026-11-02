@@ -69,7 +69,7 @@ export function ThemesCategory() {
       id: theme.id,
       name: theme.name,
       author: 'Tahti',
-      description: 'Built-in Nuclear theme',
+      description: 'Built-in theme',
       palette: theme.palette,
       tags: undefined as string[] | undefined,
       removable: false,

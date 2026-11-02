@@ -186,7 +186,7 @@ export function ThemesPanel() {
                         key={theme.id}
                         name={theme.name}
                         headingLevel={2}
-                        description="Built-in Nuclear theme"
+                        description="Built-in theme"
                         author="Tahti"
                         palette={theme.palette}
                         isInstalled

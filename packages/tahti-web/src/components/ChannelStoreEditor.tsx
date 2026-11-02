@@ -136,10 +136,9 @@ function StoreTrackAssigner({ revision }: { revision: number }) {
           onRetry={reload}
         />
       ) : activeTiers.length === 0 ? (
-        <PageEmpty
-          title="Add a price first"
-          description="The list of tracks appears here once you have a price to put them on."
-        />
+        <p className="text-foreground-secondary text-xs">
+          Your tracks are listed here once you have added a price above.
+        </p>
       ) : (
         <>
           {inStore.length === 0 ? (
