@@ -66,9 +66,9 @@ describe('earnings help', () => {
     const where = article?.sections.find(
       (section) => section.heading === 'Where to look',
     );
-    expect(where?.body.some((line) => line.includes('Studio → Audience'))).toBe(
-      true,
-    );
+    expect(
+      where?.body.some((line) => line.includes('Studio → Fans → Earnings')),
+    ).toBe(true);
     expect(where?.body.some((line) => line.includes('Stripe dashboard'))).toBe(
       true,
     );

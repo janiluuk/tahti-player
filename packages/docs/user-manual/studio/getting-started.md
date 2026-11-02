@@ -24,14 +24,12 @@ To create your channel, open **Studio** and follow the channel setup: pick your 
 
 | Tab | What it's for |
 | --- | --- |
-| **Overview** | Your Studio home. Small shortcuts come first (Go live, Schedule, Music, Upload, Collections, Releases, Updates, Stats, Revenue, Channel look…), then your channel's **Stream manager** (what plays when you're offline, start and skip), recent activity, recent broadcasts, upcoming shows and governance. |
-| **Stats** | Plays, downloads, followers and listening for a period you choose, plus listeners and top lists. See [Stats and earnings](stats-and-earnings.md). |
-| **Posts** | Updates for your followers and your newsletter. See [Posts and moderation](posts-and-moderation.md). |
-| **Audience** | Fan tiers, orders and payouts. |
-| **Releases** | Albums, EPs and singles. See [Releases and distribution](releases-and-distribution.md). |
-| **Distribution** | Delivery to streaming services and royalties. |
-| **Editor** | The audio editor for trimming, quick fixes and mastering. |
+| **Home** | Your Studio home. Small shortcuts come first (Go live, Schedule, Music, Upload, Collections, Releases, Updates, Stats, Revenue, Channel look…), then your channel's **Stream manager** (what plays when you're offline, start and skip), recent activity, recent broadcasts, upcoming shows and governance. |
+| **Music** | Releases, distribution to streaming services, and the audio editor. See [Releases and distribution](releases-and-distribution.md). |
 | **Broadcast** | Going live, schedule, shows, events, your channel's radio. See [Broadcasting](broadcasting.md). |
+| **Fans** | A page of cards: **Posts**, **Newsletter**, **Memberships** (fan tiers), **Store** (items for sale and track sales) and **Earnings** (orders, payouts, grants, Stripe). Each opens its own page with a **← Fans** link back. See [Posts and moderation](posts-and-moderation.md) and [Stats and earnings](stats-and-earnings.md). |
+| **Stats** | Plays, downloads, followers and listening for a period you choose, plus listeners and top lists, on one page. |
+| **Profile** | How you look to listeners: cards for each part of your artist profile (identity, story, people, links, branding, gallery, press kit, release visuals) and your channel page (design, how fans find you, address and domain, chat, moderators). |
 
 Members find motions, discussions, documents and the governance guide under **Co-op** in the sidebar (no longer a Studio tab).
 

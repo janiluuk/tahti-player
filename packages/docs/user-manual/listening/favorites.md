@@ -15,3 +15,7 @@ Press the heart on a track or a channel to keep it in **Favorites** (in the side
 Favorited channels and tracks are kept for your account in this browser (or the desktop app). Following an artist is separate: press **Follow** on their channel (see [Channels and artists](channels-and-artists.md)), and their new releases and posts reach your **Feed**.
 
 Signed out, the heart asks you to sign in.
+
+## Who you follow
+
+**Library → Following** lists the artists and channels you follow, each linking to their page. Follow someone from their page; they also appear in your **Feed**. A listener opening **Library** lands on **Favorites**.

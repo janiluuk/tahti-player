@@ -238,7 +238,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Fan support and orders',
         body: [
-          'Studio → Audience lists latest fan-sub orders, payout statistics, and the split of a typical order.',
+          'Studio → Fans → Earnings lists latest fan-sub orders, payout statistics, and the split of a typical order.',
           'Open the earnings guide from that page for Stripe fees, the 2% operational fee, and grants.',
         ],
       },
@@ -474,7 +474,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Where to look',
         body: [
-          'Studio → Audience is the order management screen: latest fan-sub orders, subscriber and payout statistics, and a breakdown of a typical €5 order.',
+          'Studio → Fans → Earnings is the order management screen: latest fan-sub orders, subscriber and payout statistics, and a breakdown of a typical €5 order.',
           'When Stripe is enabled, Studio also adds a Stripe dashboard for your payout account and the Express dashboard. Press H, or the help icon on Audience, for a guided tour.',
         ],
       },
