@@ -95,13 +95,13 @@ test('channel editor keeps appearance drafts across panels and reverts unsaved c
     page.getByRole('button', { name: 'Acknowledge', exact: true }),
   ).toHaveCount(0);
   await page.screenshot({
-    path: '/private/tmp/channel-designer-desktop.png',
+    path: test.info().outputPath('channel-designer-desktop.png'),
     fullPage: true,
   });
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(menu).toBeVisible();
   await page.screenshot({
-    path: '/private/tmp/channel-designer-mobile.png',
+    path: test.info().outputPath('channel-designer-mobile.png'),
     fullPage: true,
   });
 });

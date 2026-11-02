@@ -4,12 +4,7 @@ import { signIn } from './helpers/auth';
 
 test.use({
   launchOptions: {
-    executablePath:
-      process.env.PLAYWRIGHT_CHROMIUM_PATH ??
-      [
-        '/Users/jani/Library/Caches/ms-playwright/chromium_headless_shell-1243/',
-        'chrome-headless-shell-mac-arm64/chrome-headless-shell',
-      ].join(''),
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH ?? '/usr/bin/chromium',
     args: [
       '--use-fake-ui-for-media-stream',
       '--use-fake-device-for-media-stream',
@@ -44,7 +39,7 @@ test('24/7 clip editor previews, activates, and deletes clips with Studio chrome
     dialog.getByText('Preview ready. Listen to Processed, then save.'),
   ).toBeVisible();
   await page.screenshot({
-    path: '/private/tmp/clip-editor-desktop.png',
+    path: test.info().outputPath('clip-editor-desktop.png'),
     fullPage: true,
   });
   await dialog.getByRole('button', { name: 'Save & activate' }).click();
