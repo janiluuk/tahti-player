@@ -147,9 +147,13 @@ export const libraryFavoritesRoute = createRoute({
 export const libraryHistoryRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/history',
-  beforeLoad: () => {
-    throw redirect({ to: '/listen/history' });
-  },
+  component: () => <LibraryView tab="history" />,
+});
+
+export const libraryFollowingRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/library/following',
+  component: () => <LibraryView tab="following" />,
 });
 
 export const librarySmartLinksRoute = createRoute({
