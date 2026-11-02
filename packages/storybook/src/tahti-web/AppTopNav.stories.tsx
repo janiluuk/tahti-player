@@ -88,16 +88,50 @@ export const MobileStableChrome: Story = {
   parameters: { viewport: { defaultViewport: 'mobile1' } },
 };
 
-/** Unread count on the bell, sticky "Needs acknowledgement" row, read row. */
+type Canvas = ReturnType<typeof within>;
+
+async function openFromAccountMenu(
+  canvas: Canvas,
+  account: RegExp,
+  item: string,
+) {
+  await userEvent.click(canvas.getByRole('button', { name: account }));
+  const menu = within(await canvas.findByRole('menu'));
+  await userEvent.click(menu.getByRole('menuitem', { name: item }));
+  return within(await canvas.findByRole('menu'));
+}
+
+/** Notifications and messages live in the account menu; the avatar carries
+ * one coloured dot per kind with something unread, never a count. */
+export const AccountUnreadPill: Story = {
+  decorators: [withMockAuth(MOCK_USERS.artist)],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.queryByRole('button', { name: 'Notifications' }),
+    ).toBeNull();
+    await expect(canvas.queryByRole('button', { name: 'Messages' })).toBeNull();
+    const trigger = await canvas.findByRole('button', {
+      name: 'Signed in as Northern Lights, unread notifications and messages',
+    });
+    const pill = within(trigger).getByTestId('account-unread-pill');
+    await expect(pill).toBeVisible();
+    await expect(pill.children).toHaveLength(2);
+    await expect(trigger.textContent).not.toMatch(/[0-9]/);
+  },
+};
+
+/** Sticky "Needs acknowledgement" row and a read row. */
 export const NotificationsOpen: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const bell = canvas.getByRole('button', { name: 'Notifications' });
-    await waitFor(() => expect(within(bell).getByText('2')).toBeVisible());
-    await userEvent.click(bell);
-    await expect(bell).toHaveAttribute('aria-expanded', 'true');
-    const menu = within(await canvas.findByRole('menu'));
+    await canvas.findByRole('button', { name: /unread notifications/ });
+    const menu = await openFromAccountMenu(
+      canvas,
+      /^Signed in as Northern Lights/,
+      'Notifications',
+    );
     await expect(menu.getByText('Board vote closes tonight')).toBeVisible();
     await expect(menu.getByText('Needs acknowledgement')).toBeVisible();
     await expect(menu.getByText('New fan')).toBeVisible();
@@ -113,15 +147,14 @@ export const MessagesOpen: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const button = canvas.getByRole('button', { name: 'Messages' });
-    await userEvent.click(button);
-    const menu = within(await canvas.findByRole('menu'));
+    const menu = await openFromAccountMenu(
+      canvas,
+      /^Signed in as Northern Lights/,
+      'Messages',
+    );
     const artist = await menu.findByRole('menuitem', {
       name: /Midnight Cartography/,
     });
-    // Conversations load when the popover opens; the unread total then
-    // shows on the trigger too.
-    await expect(within(button).getByText('2')).toBeVisible();
     await expect(within(artist).getByText('Artist')).toBeVisible();
     await expect(within(artist).getByText('2')).toBeVisible();
     const moderator = menu.getByRole('menuitem', { name: /Kaamos Crew/ });
@@ -140,24 +173,27 @@ export const MessagesEmpty: Story = {
   parameters: { mockData: mockData({ conversations: [] }) },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole('button', { name: 'Messages' }));
-    const menu = within(await canvas.findByRole('menu'));
+    const menu = await openFromAccountMenu(
+      canvas,
+      /^Signed in as Liina/,
+      'Messages',
+    );
     await expect(menu.getByText('No messages yet.')).toBeVisible();
   },
 };
 
-/** Opening one popover closes the other. */
+/** Opening one quick view closes the other. */
 export const PopoversAreExclusive: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const bell = canvas.getByRole('button', { name: 'Notifications' });
-    const messages = canvas.getByRole('button', { name: 'Messages' });
-    await userEvent.click(bell);
-    await expect(bell).toHaveAttribute('aria-expanded', 'true');
-    await userEvent.click(messages);
-    await expect(messages).toHaveAttribute('aria-expanded', 'true');
-    await expect(bell).toHaveAttribute('aria-expanded', 'false');
+    const account = /^Signed in as Northern Lights/;
+    await openFromAccountMenu(canvas, account, 'Notifications');
+    await expect(canvas.getByText('Board vote closes tonight')).toBeVisible();
+    await openFromAccountMenu(canvas, account, 'Messages');
+    await waitFor(() =>
+      expect(canvas.queryByText('Board vote closes tonight')).toBeNull(),
+    );
     await expect(canvas.getAllByRole('menu')).toHaveLength(1);
   },
 };
@@ -167,13 +203,15 @@ export const UserMenuArtist: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const trigger = canvas.getByRole('button', {
-      name: 'Signed in as Northern Lights',
+      name: /^Signed in as Northern Lights/,
     });
     await userEvent.click(trigger);
     await expect(trigger).toHaveAttribute('aria-expanded', 'true');
     const menu = within(await canvas.findByRole('menu'));
     await expect(menu.getByText('@northern-lights')).toBeVisible();
     for (const item of [
+      'Notifications',
+      'Messages',
       'Studio',
       'My artist profile',
       'Settings',
@@ -193,7 +231,7 @@ export const UserMenuListener: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(
-      canvas.getByRole('button', { name: 'Signed in as Liina' }),
+      canvas.getByRole('button', { name: /^Signed in as Liina/ }),
     );
     const menu = within(await canvas.findByRole('menu'));
     await expect(

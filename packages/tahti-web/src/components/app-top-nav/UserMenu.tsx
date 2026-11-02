@@ -9,10 +9,32 @@ import {
   UserIcon,
 } from 'lucide-react';
 
-import { Badge, Button, ExternalLink } from '@tahti-player/ui';
+import { Button, ExternalLink } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { type TopNavState } from './useTopNavState';
+
+const NOTIFICATIONS_DOT = 'bg-accent-red';
+const MESSAGES_DOT = 'bg-accent-cyan';
+
+function UnreadDot({ className }: { className: string }) {
+  return (
+    <span
+      className={cn('size-2 shrink-0 rounded-full', className)}
+      aria-hidden
+    />
+  );
+}
+
+function unreadLabel(notifications: boolean, messages: boolean): string {
+  if (notifications && messages) {
+    return ', unread notifications and messages';
+  }
+  if (notifications) {
+    return ', unread notifications';
+  }
+  return messages ? ', unread messages' : '';
+}
 
 export function UserMenu({ nav }: { nav: TopNavState }) {
   const {
@@ -37,9 +59,10 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
     return null;
   }
 
-  const unreadCount = isMobile
-    ? unreadNotificationCount + unreadMessagesCount
-    : 0;
+  const hasUnreadNotifications = unreadNotificationCount > 0;
+  const hasUnreadMessages = unreadMessagesCount > 0;
+  const itemClass =
+    'hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs active:scale-100';
 
   return (
     <div className="relative" ref={menuRef}>
@@ -51,14 +74,17 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
           'hover:bg-background-secondary inline-flex items-center gap-1.5 rounded-lg border px-1.5 py-1 transition-colors active:scale-100',
           open ? 'border-border bg-background-secondary' : 'border-border/60',
         )}
-        aria-label={
-          unreadCount > 0
-            ? `Signed in as ${displayName}, ${unreadCount} unread`
-            : `Signed in as ${displayName}`
-        }
+        aria-label={`Signed in as ${displayName}${unreadLabel(
+          hasUnreadNotifications,
+          hasUnreadMessages,
+        )}`}
         aria-haspopup="menu"
         aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          setNotificationsOpen(false);
+          setMessagesOpen(false);
+          setOpen((v) => !v);
+        }}
       >
         {isLive ? (
           <span
@@ -76,14 +102,18 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
           aria-hidden
         >
           {initial}
-          {unreadCount > 0 ? (
-            <Badge
-              variant="pill"
-              color="red"
-              className="absolute -top-1.5 -right-2 min-w-4 px-1 text-center text-[9px] font-bold"
+          {hasUnreadNotifications || hasUnreadMessages ? (
+            <span
+              data-testid="account-unread-pill"
+              className="bg-background ring-border motion-safe:animate-in motion-safe:zoom-in-50 absolute -top-1 -right-2 flex items-center gap-0.5 rounded-full p-0.5 ring-1 motion-safe:duration-300"
             >
-              {Math.min(9, unreadCount)}
-            </Badge>
+              {hasUnreadNotifications ? (
+                <UnreadDot className={NOTIFICATIONS_DOT} />
+              ) : null}
+              {hasUnreadMessages ? (
+                <UnreadDot className={MESSAGES_DOT} />
+              ) : null}
+            </span>
           ) : null}
         </span>
         <span className="text-foreground-secondary text-[10px]" aria-hidden>
@@ -107,55 +137,59 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
           <div className="bg-border mx-1 my-0.5 h-px" role="separator" />
 
           {isMobile ? (
-            <>
-              <Link
-                to="/notifications"
-                className="hover:bg-background-secondary flex items-center gap-2 rounded-md px-2.5 py-2 text-xs"
-                role="menuitem"
-                onClick={() => {
-                  setOpen(false);
-                  setMessagesOpen(false);
-                  setNotificationsOpen(false);
-                }}
-              >
-                <BellIcon size={14} />
-                Notifications
-                {unreadNotificationCount > 0 ? (
-                  <Badge
-                    variant="pill"
-                    color="red"
-                    className="ml-auto min-w-4 px-1 text-center text-[9px] font-bold"
-                  >
-                    {Math.min(9, unreadNotificationCount)}
-                  </Badge>
-                ) : null}
-              </Link>
-              <Button
-                variant="text"
-                size="flexible"
-                className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs active:scale-100"
-                role="menuitem"
-                onClick={() => {
-                  setOpen(false);
-                  setNotificationsOpen(false);
-                  setMessagesOpen(true);
-                }}
-              >
-                <MessageSquareIcon size={14} />
-                Messages
-                {unreadMessagesCount > 0 ? (
-                  <Badge
-                    variant="pill"
-                    color="red"
-                    className="ml-auto min-w-4 px-1 text-center text-[9px] font-bold"
-                  >
-                    {Math.min(9, unreadMessagesCount)}
-                  </Badge>
-                ) : null}
-              </Button>
-              <div className="bg-border mx-1 my-0.5 h-px" role="separator" />
-            </>
-          ) : null}
+            <Link
+              to="/notifications"
+              className={itemClass}
+              role="menuitem"
+              onClick={() => {
+                setOpen(false);
+                setMessagesOpen(false);
+                setNotificationsOpen(false);
+              }}
+            >
+              <BellIcon size={14} />
+              Notifications
+              {hasUnreadNotifications ? (
+                <UnreadDot className={cn('ml-auto', NOTIFICATIONS_DOT)} />
+              ) : null}
+            </Link>
+          ) : (
+            <Button
+              variant="text"
+              size="flexible"
+              className={itemClass}
+              role="menuitem"
+              onClick={() => {
+                setOpen(false);
+                setMessagesOpen(false);
+                setNotificationsOpen(true);
+              }}
+            >
+              <BellIcon size={14} />
+              Notifications
+              {hasUnreadNotifications ? (
+                <UnreadDot className={cn('ml-auto', NOTIFICATIONS_DOT)} />
+              ) : null}
+            </Button>
+          )}
+          <Button
+            variant="text"
+            size="flexible"
+            className={itemClass}
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+              setNotificationsOpen(false);
+              setMessagesOpen(true);
+            }}
+          >
+            <MessageSquareIcon size={14} />
+            Messages
+            {hasUnreadMessages ? (
+              <UnreadDot className={cn('ml-auto', MESSAGES_DOT)} />
+            ) : null}
+          </Button>
+          <div className="bg-border mx-1 my-0.5 h-px" role="separator" />
 
           {hasChannel ? (
             <>

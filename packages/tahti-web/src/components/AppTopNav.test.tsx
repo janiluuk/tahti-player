@@ -105,12 +105,12 @@ describe('AppTopNav', () => {
     await renderNav();
 
     expect(query('[data-tour-id="topbar-login"]')).toBeNull();
-    expect(query('[data-tour-id="topbar-notifications"]')).toBeTruthy();
-    expect(query('[data-tour-id="topbar-messages"]')).toBeTruthy();
+    expect(query('[aria-label="Notifications"]')).toBeNull();
+    expect(query('[aria-label="Messages"]')).toBeNull();
     expect(query('[data-tour-id="topbar-golive"]')).toBeNull();
 
-    const account = query('[aria-label="Signed in as Liina"]');
-    expect(account).toBeTruthy();
+    const account = query('[data-tour-id="topbar-account"]');
+    expect(account?.getAttribute('aria-label')).toMatch(/^Signed in as Liina/);
     const before = container.textContent;
     await act(async () => {
       account!.click();

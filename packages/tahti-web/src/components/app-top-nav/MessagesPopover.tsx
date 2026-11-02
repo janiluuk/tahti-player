@@ -1,69 +1,18 @@
 import { Link } from '@tanstack/react-router';
-import { MessageSquareIcon } from 'lucide-react';
 
-import { Badge, Button, Tooltip } from '@tahti-player/ui';
+import { Badge } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { DmRoleBadge } from '../DmRoleBadge';
 import { PageEmpty } from '../PageStates';
-import { iconBtnClass } from './shared';
 import { type TopNavState } from './useTopNavState';
 
+/** The messages quick view; the account menu's Messages item opens it. */
 export function MessagesPopover({ nav }: { nav: TopNavState }) {
-  const {
-    pathname,
-    isMobile,
-    setBroadcastOpen,
-    messagesOpen,
-    setMessagesOpen,
-    setNotificationsOpen,
-    conversations,
-  } = nav;
+  const { messagesOpen, setMessagesOpen, conversations } = nav;
 
   return (
     <div className="relative">
-      <Tooltip content="Messages" side="top">
-        <Button
-          variant="text"
-          size="icon-sm"
-          className={cn(
-            iconBtnClass,
-            'relative',
-            isMobile && 'hidden',
-            (messagesOpen || pathname.startsWith('/messages')) &&
-              'border-primary bg-primary/15 text-primary-strong',
-          )}
-          aria-label="Messages"
-          aria-haspopup="menu"
-          aria-expanded={messagesOpen}
-          data-tour-id="topbar-messages"
-          onClick={() => {
-            setMessagesOpen((current) => !current);
-            setBroadcastOpen(false);
-            setNotificationsOpen(false);
-          }}
-        >
-          <MessageSquareIcon size={16} />
-          {conversations.reduce(
-            (total, conversation) => total + conversation.unreadCount,
-            0,
-          ) > 0 ? (
-            <Badge
-              variant="pill"
-              color="red"
-              className="absolute -top-1 -right-1 min-w-4 px-1 text-center text-[9px] font-bold"
-            >
-              {Math.min(
-                9,
-                conversations.reduce(
-                  (total, conversation) => total + conversation.unreadCount,
-                  0,
-                ),
-              )}
-            </Badge>
-          ) : null}
-        </Button>
-      </Tooltip>
       {messagesOpen ? (
         <div
           className="border-border bg-background absolute top-[calc(100%+6px)] right-0 z-40 w-72 rounded-lg border p-2 shadow-lg"

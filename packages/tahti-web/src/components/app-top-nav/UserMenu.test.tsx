@@ -53,12 +53,13 @@ function renderMenu(nav: TopNavState) {
 }
 
 describe('UserMenu on a phone', () => {
-  it('opens the notifications page, with the unread count', async () => {
+  it('opens the notifications page, with a dot instead of a count', async () => {
     const nav = navState();
     const router = renderMenu(nav);
     const item = await screen.findByRole('menuitem', { name: /Notifications/ });
     expect(item.getAttribute('href')).toBe('/notifications');
-    expect(item.textContent).toContain('3');
+    expect(item.textContent).not.toContain('3');
+    expect(item.querySelector('.bg-accent-red')).toBeTruthy();
 
     fireEvent.click(item);
     await waitFor(() =>
@@ -66,5 +67,61 @@ describe('UserMenu on a phone', () => {
     );
     expect(nav.setOpen).toHaveBeenCalledWith(false);
     expect(nav.setNotificationsOpen).toHaveBeenCalledWith(false);
+  });
+});
+
+describe('UserMenu on desktop', () => {
+  it('opens the notifications and messages quick views', async () => {
+    const nav = navState({ isMobile: false });
+    renderMenu(nav);
+    fireEvent.click(
+      await screen.findByRole('menuitem', { name: /Notifications/ }),
+    );
+    expect(nav.setNotificationsOpen).toHaveBeenCalledWith(true);
+    fireEvent.click(screen.getByRole('menuitem', { name: /Messages/ }));
+    expect(nav.setMessagesOpen).toHaveBeenCalledWith(true);
+  });
+
+  it('shows one pill colour per unread kind, never a count', async () => {
+    renderMenu(
+      navState({
+        isMobile: false,
+        open: false,
+        unreadNotificationCount: 4,
+        unreadMessagesCount: 2,
+      }),
+    );
+    const trigger = await screen.findByRole('button', {
+      name: 'Signed in as Demo, unread notifications and messages',
+    });
+    const pill = screen.getByTestId('account-unread-pill');
+    expect(pill.querySelector('.bg-accent-red')).toBeTruthy();
+    expect(pill.querySelector('.bg-accent-cyan')).toBeTruthy();
+    expect(trigger.textContent).not.toMatch(/[0-9]/);
+  });
+
+  it('shows only the messages colour when only messages are unread', async () => {
+    renderMenu(
+      navState({
+        isMobile: false,
+        open: false,
+        unreadNotificationCount: 0,
+        unreadMessagesCount: 1,
+      }),
+    );
+    await screen.findByRole('button', {
+      name: 'Signed in as Demo, unread messages',
+    });
+    const pill = screen.getByTestId('account-unread-pill');
+    expect(pill.querySelector('.bg-accent-red')).toBeNull();
+    expect(pill.querySelector('.bg-accent-cyan')).toBeTruthy();
+  });
+
+  it('shows no pill when nothing is unread', async () => {
+    renderMenu(
+      navState({ isMobile: false, open: false, unreadNotificationCount: 0 }),
+    );
+    await screen.findByRole('button', { name: 'Signed in as Demo' });
+    expect(screen.queryByTestId('account-unread-pill')).toBeNull();
   });
 });
