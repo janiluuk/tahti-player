@@ -69,7 +69,7 @@ renders (route health) · ❌ nothing.
 
 ### Anonymous
 
-- [x] Plays a track page without an account; the player bar shows it and pauses (`use-cases-anonymous.spec.ts`). A release card is left.
+- [x] Plays a track page and a release card from the front page without an account (`use-cases-anonymous.spec.ts`, `use-cases-mixed-4.spec.ts`).
 - [x] Reactions ask to log in; a favorite is kept on the device and shows in Library → Favorites; a channel opens from Live now (`use-cases-anonymous.spec.ts`).
 - [x] Searches and opens a track result (`use-cases-anonymous.spec.ts`).
 - [ ] Opens a community story and a Tahti news post in their dialogs. (Community story: covered in `use-cases-listener-2.spec.ts`; Tahti news is not on the front page any more.)
@@ -84,33 +84,33 @@ renders (route health) · ❌ nothing.
 - [x] Favorites a track → Library → Favorites, and removes it (`use-cases-listener*.spec.ts`). A release is left.
 - [ ] Builds a playlist, reorders, adds to someone's collaborative playlist and undoes it. (Creating one from Add to playlist: covered.)
 - [ ] Plays a collection with the collection player; the row highlights.
-- [x] A played track shows in Library → History (`use-cases-listener.spec.ts`). Stats left.
-- [ ] Comments on a track; chats on a live channel; sends and reads a direct message. (Timed comment and a DM reply: covered; live chat left.)
-- [ ] Notifications and messages dots on the avatar; opening them clears the dot. (Mark all read on /notifications: covered.)
+- [x] A played track shows in Library → History; listening stats and the history list switch tabs (`use-cases-listener*.spec.ts`).
+- [x] Comments on a track and deletes it, comments on a channel page, replies in a DM (`use-cases-listener*.spec.ts`, `use-cases-mixed-4.spec.ts`). Live chat bans are left under Artist.
+- [x] The avatar dot loses a dot after Mark all read (`use-cases-listener-3.spec.ts`).
 - [x] Adds a Latest News source and removes one (`use-cases-listener.spec.ts`).
-- [ ] Joins a Jam and a listening party. (Joins a live party and the player starts; a scheduled one offers Join at the start: covered in `use-cases-mixed-3.spec.ts`. Jam left.)
+- [x] Starts a Jam from a playlist; joins a live listening party; a scheduled one offers Join at the start (`use-cases-listener-3.spec.ts`, `use-cases-mixed-3.spec.ts`).
 - [ ] Settings: playback, appearance/theme, notifications save and persist. (Light/dark and a playback switch survive a reload: covered; notifications left.)
 - [x] Opens `/admin` and `/studio`: "Board access required" and "Studio is for artists", no Studio in the sidebar (`roles-anonymous-listener.spec.ts`).
 
 ### Artist
 
-- [ ] Uploads a track end to end (file → processing → public on profile).
-- [ ] Creates a release, adds tracks and artwork, publishes; smart link page shows it.
+- [x] Uploads a track end to end and lands on its page (`use-cases-artist-3.spec.ts`).
+- [ ] Creates a release, adds tracks and artwork, publishes; smart link page shows it. (Creating one: covered in `use-cases-artist-3.spec.ts`; tracks, artwork and publishing left.)
 - [ ] Broadcast hub: agenda chips filter; Go live flow reaches the green room; schedules a show and an event; schedules and cancels a listening party. (Chips filter, Go live opens and links back, an event is added, a listening party is scheduled: covered.)
-- [ ] Fans hub: writes and schedules a post; sends a newsletter; creates a membership tier; adds a store item; Earnings shows orders. (Publishes and schedules a post, creates a membership tier and a store price, toggles the Store, Store and Newsletter open: covered.)
-- [ ] Profile hub cards open each Settings panel and saving shows on the public page. (Six Studio tabs, Profile → Story opens the Settings panel, a Fans page links back: covered in `roles-artist-admin-hubs.spec.ts`; saving left.)
+- [ ] Fans hub: writes and schedules a post; sends a newsletter; creates a membership tier; adds a store item; Earnings shows orders. (Publishes and schedules a post, saves a newsletter draft, creates a membership tier and a store price, toggles the Store: covered. Sending and Earnings orders left.)
+- [x] Profile hub cards open Settings panels and the Story saves (`roles-artist-admin-hubs.spec.ts`, `use-cases-artist-*.spec.ts`).
 - [ ] Moderates chat (ban, moderator add) and comments. (Adds and removes a moderator: covered; ban and comments left.)
-- [x] Stats range picker (`use-cases-artist.spec.ts`). Per-track insights left.
-- [ ] Release detail tabs Overview · Links · Stats · Advanced; track editor Basics · Sharing · Advanced save. (Release tabs and the track editor's three tabs: covered; saving left.)
+- [x] Stats range picker and per-track insights from a release's stats tab (`use-cases-artist.spec.ts`, `routes-studio-stats.spec.ts`).
+- [x] Release detail tabs; the track editor's three tabs and renaming a track (`use-cases-artist*.spec.ts`).
 
 ### Admin
 
 - [x] Section row Overview · Inbox · People · Content · Co-op · Platform; a hub card opens its page and the back link returns (`roles-artist-admin-hubs.spec.ts`; Platform → Languages).
 - [ ] Inbox: chips switch queues; resolves a support ticket; approves a beta application and a radio submission; handles a content report. (Chips, a beta approval, a ticket reply and resolve, a radio approval, a dismissed report: covered.)
-- [ ] People: finds a user, changes role, suspends and restores. (Picks a user, filters by role, picks a different role: covered; suspend / restore left.)
+- [x] People: picks a user, filters by role, picks a role, suspends and restores (`use-cases-admin*.spec.ts`).
 - [ ] Content: publishes news, an announcement, edits Selects rotation and a top list, verifies a venue, replaces an artwork preset. (Publishes news; Announcements from the hub; Selects picker; top-list period; venue unverify / verify: covered.)
-- [ ] Co-op: opens a grant year, AGM, board records; finances page totals. (Grants, AGM and Records tabs: covered.)
-- [ ] Platform: approves an add-on, imports a language CSV, storage per user, logs filter. (Add-on review filter, New language form, storage and files, logs filter and container logs: covered.)
+- [x] Co-op: Grants / AGM / Records tabs, a grant year, the Financial page (`use-cases-admin-2/3.spec.ts`).
+- [ ] Platform: approves an add-on, imports a language CSV, storage per user, logs filter. (All but the CSV import: covered.)
 - [x] Dashboard: system health first and Status checks link (`use-cases-admin.spec.ts`).
 
 ## Run and review (next)
@@ -142,6 +142,7 @@ is wrong and a suggested fix, then turn the agreed ones into slices.
 | Studio → Fans → Store | Two empty states stacked ("No prices yet", "Add a price first") | messy, fixed (#1771) | One line under the price list |
 | Release page (`/r/night-drive`) on the mock app | The Listen card says Night Drive, the page says First Light EP | mock data | Make the mock smart link follow the slug |
 | Radio visualizer (Cymatics) | Loads `/piz_compressed.exr`, which no package ships, logs EXRLoader errors on `/radio`, and the orb, cymatics and landscape shapes never show (they wait for that map) | bug | Build the map with three.js `RoomEnvironment` (tried; it made the RadioView story time out on CI's software GL, so it needs a lighter map or a deferred build) |
+| Settings → Artist | Saving showed the same "Artist info saved." twice (inline text and a toast) | messy, fixed | Toast on success; inline text only for an error |
 
 ## Specs failing on the mock app (2026-11-02, after fixes)
 
