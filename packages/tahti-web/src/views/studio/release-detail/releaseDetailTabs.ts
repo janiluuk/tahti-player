@@ -1,15 +1,22 @@
 /** Studio release detail content tabs (URL `?tab=`). */
 export const RELEASE_DETAIL_TABS = [
   'overview',
+  'links',
   'stats',
-  'smart-links',
-  'credits',
-  'versions',
-  'fingerprinting',
-  'export',
+  'advanced',
 ] as const;
 
 export type ReleaseDetailTabId = (typeof RELEASE_DETAIL_TABS)[number];
+
+/** Tab ids from before the 7 → 4 regroup, so old links land in the right
+ * place. */
+const LEGACY_TABS: Record<string, ReleaseDetailTabId> = {
+  credits: 'overview',
+  'smart-links': 'links',
+  export: 'links',
+  versions: 'advanced',
+  fingerprinting: 'advanced',
+};
 
 export function isReleaseDetailTabId(
   value: string | undefined,
@@ -22,5 +29,8 @@ export function isReleaseDetailTabId(
 export function releaseDetailTabFromSearch(
   tab: string | undefined,
 ): ReleaseDetailTabId {
-  return isReleaseDetailTabId(tab) ? tab : 'overview';
+  if (isReleaseDetailTabId(tab)) {
+    return tab;
+  }
+  return (tab && LEGACY_TABS[tab]) || 'overview';
 }

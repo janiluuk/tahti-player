@@ -129,6 +129,13 @@ describe('navigation active states', () => {
     expect(isMobileMoreRoute('/', { studioIsPrimary: false })).toBe(false);
   });
 
+  it('lights Co-op for the governance pages, also the old Studio ones', () => {
+    expect(activeSidebarItem('/governance')).toBe('coop');
+    expect(activeSidebarItem('/governance/motions/m1')).toBe('coop');
+    expect(activeSidebarItem('/studio/governance?tab=topics')).toBe('coop');
+    expect(activeSidebarItem('/studio/stats')).toBe('studio');
+  });
+
   it('flags intentional unlit sidebar routes instead of guessing a tab', () => {
     for (const path of SIDEBAR_UNLIT_INTENTIONAL) {
       expect(activeSidebarItem(path), path).toBeNull();

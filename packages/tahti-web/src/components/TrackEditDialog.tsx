@@ -90,14 +90,6 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                   ]
                 : []),
               {
-                id: 'audio',
-                label: 'Audio',
-                icon: <AudioLinesIcon size={15} />,
-                content: (
-                  <AudioTab soundId={soundId!} item={item} state={state} />
-                ),
-              },
-              {
                 id: 'sharing',
                 label: 'Sharing',
                 icon: <Share2Icon size={15} />,
@@ -106,21 +98,32 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                 ),
               },
               {
-                id: 'export',
-                label: 'Export',
-                icon: <ArrowUpFromLineIcon size={15} />,
-                content: (
-                  <div className="flex flex-col gap-4">
-                    <TrackExportPanel soundId={item.id} />
-                    <TrackExportConnections />
-                  </div>
-                ),
-              },
-              {
                 id: 'advanced',
                 label: 'Advanced',
                 icon: <Settings2Icon size={15} />,
-                content: <AdvancedTab item={item} state={state} />,
+                content: (
+                  <div className="flex flex-col gap-8">
+                    <section aria-label="Audio" className="flex flex-col gap-3">
+                      <h3 className="flex items-center gap-2 text-sm font-semibold">
+                        <AudioLinesIcon size={15} aria-hidden />
+                        Audio
+                      </h3>
+                      <AudioTab soundId={soundId!} item={item} state={state} />
+                    </section>
+                    <section
+                      aria-label="Export"
+                      className="flex flex-col gap-3"
+                    >
+                      <h3 className="flex items-center gap-2 text-sm font-semibold">
+                        <ArrowUpFromLineIcon size={15} aria-hidden />
+                        Export
+                      </h3>
+                      <TrackExportPanel soundId={item.id} />
+                      <TrackExportConnections />
+                    </section>
+                    <AdvancedTab item={item} state={state} />
+                  </div>
+                ),
               },
             ]}
           />

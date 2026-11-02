@@ -62,7 +62,7 @@ const INITIAL_PRESETS: MockInternetRadioPreset[] = [
     iconUrl: '/radio-logos/nrj.jpg',
     programmingUrl: 'https://www.radioplay.fi/nrj',
     streamUrl:
-      'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein',
+      'https://streaming.radioplay.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein',
     enabled: true,
   },
   {
@@ -73,7 +73,7 @@ const INITIAL_PRESETS: MockInternetRadioPreset[] = [
     iconUrl: '/radio-logos/radio-nova.jpg',
     programmingUrl: 'https://www.radioplay.fi/radio-nova',
     streamUrl:
-      'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein',
+      'https://streaming.radioplay.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein',
     enabled: true,
   },
 ];

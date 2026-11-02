@@ -36,7 +36,7 @@ The header buttons pin the track to your profile, open the audio editor (quick f
 
 ## Who can listen and download
 
-In the track's edit dialog (**Sharing** and access tabs):
+The track's edit dialog has three tabs: **Basics** (title, artist, tags, genre and the rest of the details; DJ sets also get **Tracklist**), **Sharing**, and **Advanced** (the audio file and its quick fixes, export to other services, and the remaining settings). In **Sharing**:
 
 - **Visibility:** Private (only you and share links), Unlisted (anyone with the link) or Public.
 - **Share links** for private tracks: send a private link to someone without making the track public.
