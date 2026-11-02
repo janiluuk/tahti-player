@@ -49,6 +49,9 @@ type PlayerBarControlsProps = {
   onRepeatToggle: () => void;
   onDiscoveryToggle?: () => void;
   showDiscovery: boolean;
+  /** Leaves out play/pause, e.g. while a provider's embedded widget is the
+   * transport and its play state can't be read. */
+  hidePlayPause?: boolean;
   className?: string;
   /** 'large' bumps button/icon size and swaps flat hover states for a
    * translucent glass chip — for takeover surfaces (full-screen player)
@@ -71,6 +74,7 @@ export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
   onRepeatToggle,
   onDiscoveryToggle,
   showDiscovery,
+  hidePlayPause = false,
   className = '',
   size = 'default',
 }) => {
@@ -120,34 +124,38 @@ export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
           <SkipBack size={iconSize} />
         </Button>
       </Tooltip>
-      <Tooltip content={isPlaying ? 'Pause' : 'Play'} side="top">
-        <Button
-          size="icon"
-          onClick={onPlayPause}
-          className={cn(
-            'active:bg-accent-green rounded-full shadow-md active:text-black',
-            large ? 'size-16' : 'size-10',
-            isPlaying && 'bg-accent-green text-black',
-            large && !isPlaying && 'bg-white/90 text-black hover:bg-white',
-          )}
-          aria-label={isPlaying ? 'Pause' : 'Play'}
-          aria-pressed={isPlaying}
-          aria-busy={isLoading || undefined}
-          data-testid={isPlaying ? 'player-pause-button' : 'player-play-button'}
-        >
-          {isLoading ? (
-            <Loader
-              shape="circle"
-              size={playIconSize}
-              data-testid="player-loading-spinner"
-            />
-          ) : isPlaying ? (
-            <Pause size={playIconSize} />
-          ) : (
-            <Play size={playIconSize} />
-          )}
-        </Button>
-      </Tooltip>
+      {hidePlayPause ? null : (
+        <Tooltip content={isPlaying ? 'Pause' : 'Play'} side="top">
+          <Button
+            size="icon"
+            onClick={onPlayPause}
+            className={cn(
+              'active:bg-accent-green rounded-full shadow-md active:text-black',
+              large ? 'size-16' : 'size-10',
+              isPlaying && 'bg-accent-green text-black',
+              large && !isPlaying && 'bg-white/90 text-black hover:bg-white',
+            )}
+            aria-label={isPlaying ? 'Pause' : 'Play'}
+            aria-pressed={isPlaying}
+            aria-busy={isLoading || undefined}
+            data-testid={
+              isPlaying ? 'player-pause-button' : 'player-play-button'
+            }
+          >
+            {isLoading ? (
+              <Loader
+                shape="circle"
+                size={playIconSize}
+                data-testid="player-loading-spinner"
+              />
+            ) : isPlaying ? (
+              <Pause size={playIconSize} />
+            ) : (
+              <Play size={playIconSize} />
+            )}
+          </Button>
+        </Tooltip>
+      )}
       <Tooltip content="Next" side="top">
         <Button
           size="icon"

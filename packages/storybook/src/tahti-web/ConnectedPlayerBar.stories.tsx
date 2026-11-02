@@ -218,3 +218,51 @@ export const Empty: Story = {
     </div>
   ),
 };
+
+const embedQueueItem: QueueItem = {
+  id: 'sound:embed-1',
+  track: {
+    title: "Don't Turn Away From Love LP - 04",
+    artists: [{ name: 'Yaniho', roles: ['performer'] }],
+    durationMs: 288000,
+    source: { provider: 'hearthis', id: 'yaniho/dont-turn-away-04' },
+    streamCandidates: [],
+    artwork: {
+      items: [
+        { url: 'https://picsum.photos/seed/embed-1/128', purpose: 'cover' },
+      ],
+    },
+  },
+  status: 'idle',
+  addedAtIso: new Date().toISOString(),
+};
+
+/** An embed-only track: the hearthis.at widget shows at its own size above
+ * the bar and is the transport, so the bar has no play/pause of its own
+ * (no second, out-of-step play state). Next / previous stay. */
+export const EmbedTrack: Story = {
+  decorators: [
+    withSeededPlayerBar({
+      queue: [embedQueueItem, ...mockQueue],
+      currentId: 'sound:embed-1',
+      status: 'paused',
+    }),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const strip = canvas.getByTestId('hearthis-player-embed');
+    const frame = strip.querySelector('iframe');
+    await expect(frame).not.toBeNull();
+    await expect(frame!.getAttribute('height')).toBe('150');
+    await expect(canvas.queryByTestId('player-play-button')).toBeNull();
+    await expect(canvas.queryByTestId('player-pause-button')).toBeNull();
+    await expect(canvas.getByTestId('player-next-button')).toBeVisible();
+    await expect(canvas.getByTestId('player-embed-note')).toHaveTextContent(
+      'Plays in the hearthis.at player above',
+    );
+    await expect(canvas.queryByRole('slider', { name: /^Seek/ })).toBeNull();
+    await expect(canvas.getByTestId('now-playing-title')).toHaveTextContent(
+      "Don't Turn Away From Love LP - 04",
+    );
+  },
+};

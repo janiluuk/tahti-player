@@ -159,6 +159,8 @@ export function FullScreenPlayer() {
   useScreenWakeLock(open && keepScreenOn && isPlaying);
   const isLoading = status === 'loading';
   const embed = playable?.embed;
+  const restoredPending = usePlayerStore((s) => s.restoredPending);
+  const reloadNonce = usePlayerStore((s) => s.reloadNonce);
 
   const rgb = useDominantColor(coverUrl);
 
@@ -298,7 +300,8 @@ export function FullScreenPlayer() {
               provider={embed.provider}
               embedUri={embed.embedUri}
               title={title}
-              autoplay={isPlaying}
+              autoplay={restoredPending !== playable?.id}
+              mountKey={reloadNonce}
             />
           ) : null}
           <p
@@ -308,6 +311,7 @@ export function FullScreenPlayer() {
             {isLoading ? 'Buffering…' : ''}
           </p>
           <PlayerBar.Controls
+            hidePlayPause={Boolean(embed)}
             size="large"
             isPlaying={isPlaying}
             isLoading={isLoading}

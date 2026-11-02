@@ -6,9 +6,11 @@ import { Button, MediaArtwork } from '@tahti-player/ui';
 import { CommentItem } from '../../components/CommentItem';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty } from '../../components/PageStates';
+import { TrackAudience } from '../../components/TrackAudience';
 import { cn } from '../../lib/cn';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
+import { soundIdFromPlayableId } from '../../lib/soundId';
 import { parseTimedComment } from '../../lib/timedComment';
 import { type TrackPage } from './buildTrackPage';
 import { cueLabel } from './helpers';
@@ -88,6 +90,15 @@ export function TrackBody({ page }: { page: TrackPage }) {
             detail={detail}
             className={tracklist.length > 0 ? 'mt-10' : undefined}
           />
+
+          {detail?.channelSlug && playable.id ? (
+            <div className="mt-10">
+              <TrackAudience
+                channelSlug={detail.channelSlug}
+                soundId={soundIdFromPlayableId(playable.id) ?? playable.id}
+              />
+            </div>
+          ) : null}
 
           <div className="mt-10">
             <h2 className="mb-4 text-sm font-semibold tracking-wide uppercase">
