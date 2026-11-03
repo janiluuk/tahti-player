@@ -1,7 +1,13 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
-import { Button, InlineError, Input, Textarea } from '@tahti-player/ui';
+import {
+  Button,
+  EditIconButton,
+  InlineError,
+  Input,
+  Textarea,
+} from '@tahti-player/ui';
 
 import {
   editMotionDraft,
@@ -139,9 +145,8 @@ export function MotionProposerActions({
           You proposed this draft.
         </span>
         {description !== undefined && (
-          <Button
-            size="sm"
-            variant="secondary"
+          <EditIconButton
+            label="Edit draft"
             disabled={busy}
             onClick={() => {
               setTitle(motion.title);
@@ -149,9 +154,7 @@ export function MotionProposerActions({
               setNotice(null);
               setEditing(true);
             }}
-          >
-            Edit draft
-          </Button>
+          />
         )}
         <Button
           size="sm"

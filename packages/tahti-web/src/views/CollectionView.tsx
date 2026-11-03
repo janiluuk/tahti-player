@@ -3,7 +3,6 @@ import {
   BookmarkIcon,
   ListPlusIcon,
   MusicIcon,
-  PencilIcon,
   PlayIcon,
   RadioIcon,
   UsersIcon,
@@ -15,7 +14,7 @@ import {
   backButtonCornerClassName,
   BackButtonLink,
   Button,
-  ButtonLink,
+  EditIconLink,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -347,18 +346,13 @@ export function CollectionView({ slug }: { slug: string }) {
         stats={headerStats}
         actions={
           isOwner ? (
-            <Tooltip content="Edit in Studio" side="top">
-              <ButtonLink
-                to="/studio/collections/$slug"
-                params={{ slug }}
-                variant="secondary"
-                size="icon-sm"
-                aria-label="Edit in Studio"
-                className="bg-background border-border rounded-md border-(length:--border-width)"
-              >
-                <PencilIcon size={14} aria-hidden />
-              </ButtonLink>
-            </Tooltip>
+            <EditIconLink
+              to="/studio/collections/$slug"
+              params={{ slug }}
+              label="Edit in Studio"
+              search={{ edit: true }}
+              className="bg-background border-border rounded-md border-(length:--border-width)"
+            />
           ) : (
             <Tooltip
               content={

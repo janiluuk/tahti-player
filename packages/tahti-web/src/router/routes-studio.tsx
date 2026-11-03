@@ -17,6 +17,7 @@ import {
   StudioEpisodeReviewView,
   StudioEventCreateView,
   StudioEventsView,
+  StudioEventView,
   StudioFansView,
   StudioGoLiveView,
   StudioGovernanceView,
@@ -182,6 +183,8 @@ export const studioCollectionsRoute = createRoute({
 export const studioCollectionEditRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/collections/$slug',
+  validateSearch: (search: Record<string, unknown>): { edit?: true } =>
+    editSearch(search),
   component: function StudioCollectionEditRoute() {
     const { slug } = studioCollectionEditRoute.useParams();
     return <StudioCollectionEditView slug={slug} />;
@@ -355,6 +358,8 @@ export const studioShowDetailRoute = createRoute({
 export const studioEpisodeRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/shows/episodes/$episodeId',
+  validateSearch: (search: Record<string, unknown>): { edit?: true } =>
+    editSearch(search),
   component: function StudioEpisodeRoute() {
     const { episodeId } = studioEpisodeRoute.useParams();
     return <StudioEpisodeReviewView episodeId={episodeId} />;
@@ -482,6 +487,15 @@ export const studioEventCreateRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/events/new',
   component: StudioEventCreateView,
+});
+
+export const studioEventRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/events/$eventId',
+  component: function StudioEventRoute() {
+    const { eventId } = studioEventRoute.useParams();
+    return <StudioEventView eventId={eventId} />;
+  },
 });
 
 export const studioEventEditRoute = createRoute({

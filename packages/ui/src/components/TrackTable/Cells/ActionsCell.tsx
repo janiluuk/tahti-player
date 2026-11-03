@@ -1,17 +1,12 @@
 import { CellContext } from '@tanstack/react-table';
-import {
-  ArrowUpRight,
-  Check,
-  EllipsisVertical,
-  ListPlus,
-  Pencil,
-} from 'lucide-react';
+import { ArrowUpRight, Check, EllipsisVertical, ListPlus } from 'lucide-react';
 import { FC, forwardRef, useEffect, useState } from 'react';
 
 import { Track } from '@tahti-player/model';
 
 import { cn } from '../../../utils';
 import { Button } from '../../Button';
+import { EditIconButton } from '../../EditIconButton/EditIconButton';
 import { Tooltip } from '../../Tooltip';
 import { useTrackTableContext } from '../TrackTableContext';
 import { ContextMenuWrapperProps } from '../types';
@@ -35,21 +30,16 @@ type IconButtonProps = {
 };
 
 const EditButton: FC<IconButtonProps> = ({ label, onClick }) => (
-  <Tooltip content={label} side="top">
-    <Button
-      data-testid="edit-track-button"
-      size="icon-sm"
-      variant="text"
-      className="opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
-      onClick={(e) => {
-        e.stopPropagation();
-        onClick();
-      }}
-      aria-label={label}
-    >
-      <Pencil size={14} />
-    </Button>
-  </Tooltip>
+  <EditIconButton
+    data-testid="edit-track-button"
+    label={label}
+    variant="text"
+    className="opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
+    onClick={(e) => {
+      e.stopPropagation();
+      onClick();
+    }}
+  />
 );
 
 const OpenDetailButton: FC<IconButtonProps & { className?: string }> = ({

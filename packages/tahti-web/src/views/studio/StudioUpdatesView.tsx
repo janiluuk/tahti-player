@@ -1,7 +1,6 @@
 import {
   CalendarClockIcon,
   EyeIcon,
-  PencilIcon,
   PlusIcon,
   SendIcon,
   Trash2Icon,
@@ -12,6 +11,7 @@ import { toast } from 'sonner';
 import {
   Button,
   Dialog,
+  EditIconButton,
   ImageReveal,
   Tooltip,
   ViewShell,
@@ -274,16 +274,11 @@ export function StudioUpdatesView({
                             <EyeIcon size={15} aria-hidden className="mr-1.5" />
                             Preview
                           </Button>
-                          <Tooltip content={`Edit ${postTitle}`} side="top">
-                            <Button
-                              size="icon-sm"
-                              variant="text"
-                              aria-label={`Edit ${postTitle}`}
-                              onClick={() => setPostEditor({ post: p })}
-                            >
-                              <PencilIcon size={16} aria-hidden />
-                            </Button>
-                          </Tooltip>
+                          <EditIconButton
+                            variant="text"
+                            label={`Edit ${postTitle}`}
+                            onClick={() => setPostEditor({ post: p })}
+                          />
                           <Tooltip content={`Delete ${postTitle}`} side="top">
                             <Button
                               size="icon-sm"

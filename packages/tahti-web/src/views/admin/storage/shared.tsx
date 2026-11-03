@@ -1,9 +1,10 @@
-import { HardDriveIcon, PencilIcon, XIcon } from 'lucide-react';
+import { HardDriveIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import {
   Button,
   Dialog,
+  EditIconButton,
   Input,
   Meter,
   SaveButton,
@@ -177,19 +178,14 @@ export function QuotaEditor({
 
   if (!editing) {
     return (
-      <Tooltip content="Edit quota" side="top">
-        <Button
-          size="icon-sm"
-          variant="text"
-          aria-label={`Edit quota for ${displayName}`}
-          onClick={() => {
-            setValue(String(bytesToMb(quotaBytes)));
-            setEditing(true);
-          }}
-        >
-          <PencilIcon size={14} aria-hidden />
-        </Button>
-      </Tooltip>
+      <EditIconButton
+        variant="text"
+        label={`Edit quota for ${displayName}`}
+        onClick={() => {
+          setValue(String(bytesToMb(quotaBytes)));
+          setEditing(true);
+        }}
+      />
     );
   }
 

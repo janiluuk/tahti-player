@@ -4,8 +4,8 @@ import { toast } from 'sonner';
 
 import {
   Button,
-  ButtonLink,
   Dialog,
+  EditIconLink,
   FilterChips,
   Input,
   SaveButton,
@@ -451,15 +451,12 @@ export const ChannelRadioPlaylistPanel: FC = () => {
                 Use playlist
               </Button>
               {selectedPlaylist ? (
-                <ButtonLink
+                <EditIconLink
+                  label="Edit tracks"
+                  search={{ edit: true }}
                   to="/studio/collections/$slug"
                   params={{ slug: selectedPlaylist.slug }}
-                  size="sm"
-                  variant="secondary"
-                >
-                  <ListMusicIcon size={14} aria-hidden className="mr-1.5" />
-                  Edit tracks
-                </ButtonLink>
+                />
               ) : null}
               <Tooltip content="Create playlist" side="top">
                 <Button

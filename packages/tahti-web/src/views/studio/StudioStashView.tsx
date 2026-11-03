@@ -1,12 +1,12 @@
-import { ArchiveIcon, FolderInputIcon, Lock, PencilIcon } from 'lucide-react';
+import { ArchiveIcon, FolderInputIcon, Lock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
   Button,
   ButtonLink,
+  EditIconButton,
   TabLabel,
   Tabs,
-  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -168,16 +168,11 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
                     {item.contentType ?? 'Track'} · {item.status}
                   </p>
                 </div>
-                <Tooltip content="Edit track" side="top">
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    aria-label={`Edit ${item.title}`}
-                    onClick={() => setEditingId(item.id)}
-                  >
-                    <PencilIcon size={14} aria-hidden />
-                  </Button>
-                </Tooltip>
+                <EditIconButton
+                  variant="text"
+                  label={`Edit ${item.title}`}
+                  onClick={() => setEditingId(item.id)}
+                />
               </li>
             ))}
           </ul>

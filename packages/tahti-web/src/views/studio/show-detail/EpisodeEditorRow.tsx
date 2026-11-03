@@ -1,7 +1,13 @@
 import { BarChart3Icon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Input, SaveButton, Textarea } from '@tahti-player/ui';
+import {
+  Button,
+  EditIconButton,
+  Input,
+  SaveButton,
+  Textarea,
+} from '@tahti-player/ui';
 
 import { patchEpisode, type StudioEpisode } from '../../../api/shows';
 import { Eyebrow } from '../../../components/tahti/Eyebrow';
@@ -18,6 +24,7 @@ export function EpisodeEditorRow({
   const [description, setDescription] = useState(episode.description);
   const [saving, setSaving] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   const save = async () => {
@@ -36,6 +43,7 @@ export function EpisodeEditorRow({
     setTitle(result.data.title);
     setDescription(result.data.description);
     setMessage('Saved');
+    setEditing(false);
   };
 
   return (
@@ -59,37 +67,65 @@ export function EpisodeEditorRow({
           <BarChart3Icon size={14} aria-hidden />
           Statistics
         </Button>
+        <EditIconButton
+          label={`Edit ${episode.title}`}
+          editing={editing}
+          variant={editing ? undefined : 'text'}
+          onClick={() => {
+            if (!editing) {
+              setTitle(episode.title);
+              setDescription(episode.description);
+              setMessage(null);
+            }
+            setEditing(!editing);
+          }}
+        />
       </div>
 
-      <form
-        className="mt-4 grid gap-3"
-        onSubmit={(event) => {
-          event.preventDefault();
-          void save();
-        }}
-      >
-        <Input
-          label="Episode title"
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-        />
-        <Textarea
-          submitOnModEnter
-          label="Description"
-          tone="secondary"
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-          rows={3}
-        />
-        <div className="flex flex-wrap items-center justify-between gap-2">
+      {editing ? (
+        <form
+          className="mt-4 grid gap-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void save();
+          }}
+        >
+          <Input
+            label="Episode title"
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+          />
+          <Textarea
+            submitOnModEnter
+            label="Description"
+            tone="secondary"
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+            rows={3}
+          />
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            {message ? (
+              <span className="text-foreground-secondary text-xs">
+                {message}
+              </span>
+            ) : (
+              <span />
+            )}
+            <SaveButton saving={saving} label="Save episode" type="submit" />
+          </div>
+        </form>
+      ) : (
+        <>
+          {episode.description ? (
+            <p className="text-foreground-secondary mt-3 text-sm whitespace-pre-wrap">
+              {episode.description}
+            </p>
+          ) : null}
           {message ? (
-            <span className="text-foreground-secondary text-xs">{message}</span>
-          ) : (
-            <span />
-          )}
-          <SaveButton saving={saving} label="Save episode" type="submit" />
-        </div>
-      </form>
+            <p className="text-foreground-secondary mt-2 text-xs">{message}</p>
+          ) : null}
+        </>
+      )}
 
       {statsOpen ? (
         <div className="border-border bg-background-secondary/40 mt-4 grid gap-3 rounded-lg border p-3 sm:grid-cols-2 lg:grid-cols-4">

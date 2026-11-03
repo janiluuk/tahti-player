@@ -1,16 +1,10 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import {
-  PauseIcon,
-  PencilIcon,
-  PlayIcon,
-  RadioIcon,
-  UploadIcon,
-} from 'lucide-react';
+import { PauseIcon, PlayIcon, RadioIcon, UploadIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
   Button,
-  ButtonLink,
+  EditIconLink,
   FilePicker,
   InlineError,
   InlineLoader,
@@ -110,18 +104,13 @@ function RecordedBroadcastCard({
           </div>
         </div>
         {broadcast.soundId ? (
-          <Tooltip content="Edit recording" side="top">
-            <ButtonLink
-              to="/studio/sounds/$id"
-              params={{ id: broadcast.soundId }}
-              search={{ edit: true }}
-              size="icon-sm"
-              variant="text"
-              aria-label={`Edit ${title}`}
-            >
-              <PencilIcon size={14} aria-hidden />
-            </ButtonLink>
-          </Tooltip>
+          <EditIconLink
+            to="/studio/sounds/$id"
+            params={{ id: broadcast.soundId }}
+            search={{ edit: true }}
+            variant="text"
+            label={`Edit ${title}`}
+          />
         ) : null}
       </div>
       <WaveformSeekbar

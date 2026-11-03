@@ -1,12 +1,6 @@
-import {
-  FolderOpenIcon,
-  InfoIcon,
-  PencilIcon,
-  PlayIcon,
-  TrashIcon,
-} from 'lucide-react';
+import { FolderOpenIcon, InfoIcon, PlayIcon, TrashIcon } from 'lucide-react';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, EditIconButton, Tooltip } from '@tahti-player/ui';
 
 import type { NativeLibraryTrack } from '../../lib/nativeLibrary';
 
@@ -80,16 +74,11 @@ export function TrackRowActions({
             </Tooltip>
           </>
         )}
-        <Tooltip content="Edit tags (E)" side="top">
-          <Button
-            size="icon-sm"
-            variant="text"
-            aria-label={`Edit tags for ${track.title}`}
-            onClick={() => onEdit(track)}
-          >
-            <PencilIcon size={14} aria-hidden />
-          </Button>
-        </Tooltip>
+        <EditIconButton
+          variant="text"
+          label={`Edit tags for ${track.title}`}
+          onClick={() => onEdit(track)}
+        />
         <Tooltip content="Details (I)" side="top">
           <Button
             size="icon-sm"

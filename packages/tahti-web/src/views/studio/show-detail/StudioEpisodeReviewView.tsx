@@ -7,6 +7,7 @@ import {
   BackButtonLink,
   Button,
   ButtonLink,
+  EditIconButton,
   Input,
   SaveButton,
   Textarea,
@@ -33,6 +34,7 @@ import {
 import { StudioGate } from '../../../components/StudioGate';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { Eyebrow } from '../../../components/tahti/Eyebrow';
+import { useEditMode } from '../../../lib/useEditMode';
 import { trimToCuts } from '../episodeTrim';
 import { episodeStatusLabel } from '../StudioShowsView';
 
@@ -50,6 +52,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const [editing, setEditing] = useEditMode();
 
   useEffect(() => {
     let cancelled = false;
@@ -183,6 +186,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
     setPublicTitle(result.data.title);
     setPublicDescription(result.data.description);
     setMsg('Public show details saved.');
+    setEditing(false);
   };
 
   return (
@@ -191,7 +195,22 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
         <ViewShell
           title={episode.title}
           classes={{ root: 'px-0 pt-0' }}
-          actions={<Eyebrow>Episode #{episode.episodeNumber}</Eyebrow>}
+          actions={
+            <>
+              <Eyebrow>Episode #{episode.episodeNumber}</Eyebrow>
+              <EditIconButton
+                label="Edit details"
+                editing={editing}
+                onClick={() => {
+                  if (!editing) {
+                    setPublicTitle(episode.title);
+                    setPublicDescription(episode.description);
+                  }
+                  setEditing(!editing);
+                }}
+              />
+            </>
+          }
           corner={
             <Tooltip
               content={`Back to ${show?.title ?? 'Show'}`}
@@ -210,39 +229,41 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
             <p className="text-sm">{episode.description}</p>
           ) : null}
 
-          <StudioPanel
-            title="Public show details"
-            description="What listeners see when they open this show from the Tahti Radio schedule."
-          >
-            <form
-              className="flex flex-col gap-3"
-              onSubmit={(event) => {
-                event.preventDefault();
-                void savePublicDetails();
-              }}
+          {editing ? (
+            <StudioPanel
+              title="Public show details"
+              description="What listeners see when they open this show from the Tahti Radio schedule."
             >
-              <Input
-                label="Episode title"
-                value={publicTitle}
-                onChange={(event) => setPublicTitle(event.target.value)}
-              />
-              <Textarea
-                submitOnModEnter
-                label="Description"
-                tone="secondary"
-                value={publicDescription}
-                onChange={(event) => setPublicDescription(event.target.value)}
-                rows={4}
-              />
-              <div className="flex justify-end">
-                <SaveButton
-                  saving={savingDetails}
-                  label="Save public details"
-                  type="submit"
+              <form
+                className="flex flex-col gap-3"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void savePublicDetails();
+                }}
+              >
+                <Input
+                  label="Episode title"
+                  value={publicTitle}
+                  onChange={(event) => setPublicTitle(event.target.value)}
                 />
-              </div>
-            </form>
-          </StudioPanel>
+                <Textarea
+                  submitOnModEnter
+                  label="Description"
+                  tone="secondary"
+                  value={publicDescription}
+                  onChange={(event) => setPublicDescription(event.target.value)}
+                  rows={4}
+                />
+                <div className="flex justify-end">
+                  <SaveButton
+                    saving={savingDetails}
+                    label="Save public details"
+                    type="submit"
+                  />
+                </div>
+              </form>
+            </StudioPanel>
+          ) : null}
 
           {needsApproval && (
             <StudioPanel

@@ -317,6 +317,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/StudioDistributionView` | `tahti-web/StudioDistributionView.stories.tsx` |
 | `Tahti/Studio/StudioEpisodeReviewView` | `tahti-web/StudioEpisodeReviewView.stories.tsx` |
 | `Tahti/Studio/StudioEventCreateView` | `tahti-web/StudioEventCreateView.stories.tsx` |
+| `Tahti/Studio/StudioEventView` | `tahti-web/StudioEventView.stories.tsx` |
 | `Tahti/Studio/StudioEventsView` | `tahti-web/StudioEventsView.stories.tsx` |
 | `Tahti/Studio/StudioGate` | `tahti-web/StudioGate.stories.tsx` |
 | `Tahti/Studio/StudioGoLiveView` | `tahti-web/StudioGoLiveView.stories.tsx` |

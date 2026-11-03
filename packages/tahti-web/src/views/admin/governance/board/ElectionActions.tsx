@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, InlineError, Input } from '@tahti-player/ui';
+import { Button, EditIconButton, InlineError, Input } from '@tahti-player/ui';
 
 import type { BoardActionResult } from '../../../../api/admin/admin-governance-board';
 import {
@@ -51,14 +51,10 @@ export function ElectionActions({
     <div className="flex flex-col gap-2">
       {mode === 'idle' ? (
         <div className="flex flex-wrap gap-2">
-          <Button
-            size="sm"
-            variant="secondary"
-            aria-label={`Edit election: ${election.title}`}
+          <EditIconButton
+            label={`Edit election: ${election.title}`}
             onClick={() => setMode('edit')}
-          >
-            Edit election
-          </Button>
+          />
           <Button
             size="sm"
             variant="secondary"

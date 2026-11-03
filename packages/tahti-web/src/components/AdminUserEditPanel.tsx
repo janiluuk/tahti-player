@@ -10,6 +10,7 @@ import {
   Badge,
   Button,
   ButtonLink,
+  EditIconButton,
   Input,
   MediaArtwork,
   SaveButton,
@@ -64,6 +65,7 @@ export function AdminUserEditPanel({
   const [editRole, setEditRole] = useState<AccountRole>('LISTENER');
   const [editMember, setEditMember] = useState(false);
   const [editMemberNumber, setEditMemberNumber] = useState('');
+  const [accountEditing, setAccountEditing] = useState(false);
   const [suspendReason, setSuspendReason] = useState('');
   const [status, setStatus] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -88,6 +90,7 @@ export function AdminUserEditPanel({
 
   useEffect(() => {
     setStatus(null);
+    setAccountEditing(false);
     setMessageOpen(false);
     setConversationId(null);
     setMessages([]);
@@ -137,6 +140,7 @@ export function AdminUserEditPanel({
     }
     syncDetail(result.data);
     setStatus('User details saved.');
+    setAccountEditing(false);
   };
 
   const toggleSuspension = async () => {
@@ -394,43 +398,68 @@ export function AdminUserEditPanel({
       <div className="grid gap-4 @3xl:grid-cols-2">
         <StudioPanel
           title="Account details"
-          description="Edit access, membership, and governance roles. Changing the plan, membership or board seat notifies the account."
+          description="Access, membership, and governance roles. Changing the plan, membership or board seat notifies the account."
+          action={
+            <EditIconButton
+              label="Edit account details"
+              editing={accountEditing}
+              onClick={() => {
+                if (accountEditing) {
+                  syncDetail(detail);
+                }
+                setAccountEditing(!accountEditing);
+              }}
+            />
+          }
         >
-          <form
-            className="flex flex-col gap-3"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void saveUser();
-            }}
-          >
-            <Select
-              label="Role"
-              value={editRole}
-              onValueChange={(value) => setEditRole(value as AccountRole)}
-              options={ROLES.map((value) => ({
-                id: value,
-                label: value.charAt(0) + value.slice(1).toLowerCase(),
-              }))}
-            />
-            <Input
-              label="Member number"
-              inputMode="numeric"
-              value={editMemberNumber}
-              onChange={(event) => setEditMemberNumber(event.target.value)}
-              placeholder="Not assigned"
-            />
-            <div className="flex items-center justify-between gap-3 text-sm">
-              <span>Association member</span>
-              <Toggle
-                label="Association member"
-                checked={editMember}
-                onChange={setEditMember}
+          {accountEditing ? (
+            <form
+              className="flex flex-col gap-3"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void saveUser();
+              }}
+            >
+              <Select
+                label="Role"
+                value={editRole}
+                onValueChange={(value) => setEditRole(value as AccountRole)}
+                options={ROLES.map((value) => ({
+                  id: value,
+                  label: value.charAt(0) + value.slice(1).toLowerCase(),
+                }))}
               />
-            </div>
-            <div className="flex justify-end">
-              <SaveButton saving={busy} label="Save account" type="submit" />
-            </div>
-          </form>
+              <Input
+                label="Member number"
+                inputMode="numeric"
+                value={editMemberNumber}
+                onChange={(event) => setEditMemberNumber(event.target.value)}
+                placeholder="Not assigned"
+              />
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <span>Association member</span>
+                <Toggle
+                  label="Association member"
+                  checked={editMember}
+                  onChange={setEditMember}
+                />
+              </div>
+              <div className="flex justify-end">
+                <SaveButton saving={busy} label="Save account" type="submit" />
+              </div>
+            </form>
+          ) : (
+            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+              <dt className="text-foreground-secondary">Role</dt>
+              <dd>
+                {detail.role.charAt(0) + detail.role.slice(1).toLowerCase()}
+              </dd>
+              <dt className="text-foreground-secondary">Member number</dt>
+              <dd>{detail.memberNumber ?? 'Not assigned'}</dd>
+              <dt className="text-foreground-secondary">Association member</dt>
+              <dd>{detail.isMember ? 'Yes' : 'No'}</dd>
+            </dl>
+          )}
         </StudioPanel>
 
         <StudioPanel

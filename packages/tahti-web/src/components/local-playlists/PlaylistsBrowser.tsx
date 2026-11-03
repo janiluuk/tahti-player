@@ -1,7 +1,6 @@
 import {
   CopyIcon,
   DownloadIcon,
-  PencilIcon,
   PlayIcon,
   PlusIcon,
   ShuffleIcon,
@@ -13,6 +12,7 @@ import { toast } from 'sonner';
 
 import {
   Button,
+  EditIconButton,
   EmptyState,
   InlineLoader,
   Loader,
@@ -268,16 +268,11 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                       <DownloadIcon size={14} aria-hidden />
                     </Button>
                   </Tooltip>
-                  <Tooltip content="Rename" side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={`Rename ${playlist.name}`}
-                      onClick={() => setRenaming(playlist)}
-                    >
-                      <PencilIcon size={14} aria-hidden />
-                    </Button>
-                  </Tooltip>
+                  <EditIconButton
+                    variant="text"
+                    label={`Rename ${playlist.name}`}
+                    onClick={() => setRenaming(playlist)}
+                  />
                   <Tooltip content="Delete" side="top">
                     <Button
                       size="icon-sm"

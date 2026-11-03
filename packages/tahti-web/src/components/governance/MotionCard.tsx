@@ -1,7 +1,13 @@
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
-import { Badge, Button, Input, Textarea } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  EditIconButton,
+  Input,
+  Textarea,
+} from '@tahti-player/ui';
 
 import {
   patchGovernanceMotion,
@@ -203,8 +209,8 @@ export function MotionCard({
         isBoard &&
         m.state === 'DRAFT' && (
           <div className="mt-2">
-            <Button
-              size="sm"
+            <EditIconButton
+              label="Edit motion"
               variant="text"
               onClick={() => {
                 setEditTitle(m.title);
@@ -214,9 +220,7 @@ export function MotionCard({
                 );
                 setEditing(true);
               }}
-            >
-              Edit motion
-            </Button>
+            />
           </div>
         )}
       {m.state === 'DRAFT' && (

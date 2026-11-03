@@ -55,7 +55,7 @@ export function buildBroadcastAgenda(
         startAt: event.startAt,
         place:
           [event.place, event.location].filter(Boolean).join(', ') || undefined,
-        to: '/studio/events/$eventId/edit',
+        to: '/studio/events/$eventId',
         params: { eventId: event.id },
       })),
     ...parties
@@ -70,8 +70,8 @@ export function buildBroadcastAgenda(
         title: party.release.title,
         startAt: party.startAt,
         live: party.state === 'LIVE',
-        to: '/studio/listening-parties/$partyId/edit',
-        params: { partyId: party.id },
+        to: '/party/$id',
+        params: { id: party.id },
       })),
   ];
   return items.sort((left, right) => {

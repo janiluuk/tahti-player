@@ -18,6 +18,7 @@ import { toast } from 'sonner';
 import {
   Button,
   ButtonLink,
+  EditIconButton,
   Popover,
   SaveButton,
   SectionTitle,
@@ -351,14 +352,11 @@ export function ArtistBioSection({
             {artist.fullBio}
           </p>
           {isOwner && (
-            <Button
-              size="sm"
-              variant="secondary"
+            <EditIconButton
+              label="Edit full bio"
               className="mt-2"
               onClick={() => startEditing(artist.fullBio ?? '')}
-            >
-              Edit full bio
-            </Button>
+            />
           )}
         </div>
       ) : isOwner ? (
