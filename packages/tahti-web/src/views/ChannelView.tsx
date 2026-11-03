@@ -44,13 +44,17 @@ import {
   ChannelPageSections,
   type ChannelPageTab,
 } from '../components/channel-view/ChannelPageTabs';
+import { CHANNEL_SCHEME_TEXT_CLASS } from '../components/channel-view/channelSchemeText';
 import { ChannelStoreSection } from '../components/channel-view/ChannelStoreSection';
 import { channelTrackMeta } from '../components/channel-view/channelTrackMeta';
+import { ChannelEmbedsSection } from '../components/channel-view/ChannelViewBlocks';
+import { channelVisibleItems } from '../components/channel-view/channelVisibleItems';
 import { StreamManagerDialog } from '../components/channel-view/StreamManagerDialog';
 import { useChannelPlayables } from '../components/channel-view/useChannelPlayables';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
 import { EntitySocialHeader } from '../components/EntitySocialHeader';
 import { PageError, PageLoading } from '../components/PageStates';
+import { RadioStationDial } from '../components/radio/RadioStationDial';
 import { listenerWidgetType } from '../content/listenerWidgets';
 import { useChannelAutoplay } from '../hooks/useChannelAutoplay';
 import { useChannelLayoutEditing } from '../hooks/useChannelLayoutEditing';
@@ -59,16 +63,15 @@ import { useIsMobile } from '../hooks/useIsMobile';
 import { hasAccountRole } from '../lib/accountRoles';
 import { avatarPoster } from '../lib/avatarPoster';
 import {
-  BACKDROP_FOLDED_ITEM_TYPES,
   getLayoutPreset,
   type ChannelLayoutPresetId,
   type ChannelPageItem,
-  type ChannelPageItemType,
 } from '../lib/channelPageLayout';
 import { cn } from '../lib/cn';
 import { colorSchemeCssVars, normalizeColorScheme } from '../lib/colorScheme';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { isSafeChannelLinkUrl } from '../lib/safeHref';
+import { splitEmbedPlayables } from '../lib/splitEmbedPlayables';
 import { useArtistFollow } from '../lib/useArtistFollow';
 import { useAuthStore } from '../stores/authStore';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
@@ -181,6 +184,14 @@ export function ChannelView({ slug }: { slug: string }) {
     useChannelPlayables(sounds, slug);
 
   const getTrackMeta = useMemo(() => channelTrackMeta(sounds), [sounds]);
+  const channelPlayables = useMemo(
+    () => [...pinnedPlayables, ...catalogPlayables],
+    [pinnedPlayables, catalogPlayables],
+  );
+  const embedPlayables = useMemo(
+    () => splitEmbedPlayables(channelPlayables).embeds,
+    [channelPlayables],
+  );
 
   const lookExtras = useMemo(() => {
     if (!channel) {
@@ -211,22 +222,8 @@ export function ChannelView({ slug }: { slug: string }) {
     return () => cancelAnimationFrame(frame);
   }, [activeNavTab?.id]);
 
-  // NOTE: this block (through the 3 hooks below) used to sit after both the
-  // `if (loading)`/`if (!channel)` early returns below AND (until an earlier
-  // fix in this same pass) the `if (!editing)` early return further down --
-  // any hook placed after either kind of early return is conditional on it,
-  // a rules-of-hooks violation, since `loading`/`channel`/`editing` all
-  // change within this same mounted instance (no remount on any of them).
-  // Moved above every early return so every hook is always called on every
-  // render; `layersMenu` stays gated on `editing && channel` (cheap check,
-  // and it's expensive JSX that's only ever read once we're past both early
-  // returns anyway -- see the mobile bottom-sheet render further below).
-  // Bio/CTA/avatar are folded into the backdrop (ChannelBackdropCard),
-  // driven by the same 'about'/'subscribe'/'avatar' ChannelPageItems as
-  // before -- just no longer surfaced as their own draggable blocks (see
-  // BACKDROP_FOLDED_ITEM_TYPES). Fall back true/true/false to match
-  // defaultChannelPageLayout's own defaults in case normalizeLayout ever
-  // runs against a not-yet-normalized array.
+  // Every hook stays above the early returns below. Bio/CTA/avatar live in
+  // the backdrop; the fallbacks match defaultChannelPageLayout's defaults.
   const avatarVisible =
     layout.find((i) => i.type === 'avatar')?.visible ?? true;
   const bioVisible = layout.find((i) => i.type === 'about')?.visible ?? true;
@@ -394,23 +391,37 @@ export function ChannelView({ slug }: { slug: string }) {
     setLookDirty(true);
   };
 
+  const isRadioChannel = channel.channelKind === 'RADIO';
   // The player stays reachable even when the "Live stage" (hero) block is
   // hidden from the layout, so it is also rendered as a fixed Stage section
   // below, independent of hero's own visibility.
+  const stage = (
+    <ChannelStagePlayer
+      channel={channel}
+      slug={slug}
+      live={live}
+      subtle={subtle}
+      chatOn={chatOn}
+      follow={isOwner ? null : follow}
+      signedIn={Boolean(me)}
+      trackIds={channelTrackIds}
+      playables={channelPlayables}
+      onOpenChat={openChat}
+    />
+  );
   const stagePlayer = (
     <>
       <AutoplayUnmuteNotice />
-      <ChannelStagePlayer
-        channel={channel}
-        slug={slug}
-        live={live}
-        subtle={subtle}
-        chatOn={chatOn}
-        follow={isOwner ? null : follow}
-        signedIn={Boolean(me)}
-        trackIds={channelTrackIds}
-        onOpenChat={openChat}
-      />
+      {isRadioChannel && !editing ? (
+        <RadioStationDial
+          current={{ kind: 'channel', slug, name: channel.user.displayName }}
+          label={channel.user.displayName}
+        >
+          {stage}
+        </RadioStationDial>
+      ) : (
+        stage
+      )}
       {live ? <ChannelLiveTracklist slug={slug} /> : null}
     </>
   );
@@ -491,65 +502,14 @@ export function ChannelView({ slug }: { slug: string }) {
     }
   };
 
-  // Chat is the right rail, and navigation is config-only (it drives the
-  // tab bar rendered inside the hero block above) — neither ever shows as
-  // its own in-page block in view mode, even if an older saved layout still
-  // has one marked visible. When a navigation block has 2+ tabs, an item
-  // assigned to any tab only shows while its tab is active; an item never
-  // assigned to any tab always shows, so adding a new block after tabs
-  // exist doesn't silently disappear from every tab.
-  const baseVisibleItems = (
-    editing
-      ? layout
-      : layout.filter((item) => {
-          if (
-            !item.visible ||
-            item.type === 'chat' ||
-            item.type === 'navigation'
-          ) {
-            return false;
-          }
-          if (showNavTabs && navTabbedItemIds.has(item.id)) {
-            return activeNavTab?.itemIds.includes(item.id) ?? true;
-          }
-          return true;
-        })
-  ).filter(
-    // Bio/CTA/avatar are folded into the backdrop itself (rendered inside
-    // ChannelHeroBlock's <ChannelBackdropCard>, see avatarVisible/
-    // bioVisible/subscribeVisible below) -- never their own positioned
-    // block/grid card, in either edit or view mode, unlike chat/navigation
-    // above which are still config-only-in-view-mode but do get a
-    // draggable position card while editing.
-    (item) =>
-      !BACKDROP_FOLDED_ITEM_TYPES.includes(item.type as ChannelPageItemType),
-  );
-
-  // Radio-station pages (tahti-radio today) show programming instead of
-  // artist identity -- no bio/links/subscribe CTA, regardless of what an
-  // older saved layout has marked visible, and always a Programming block
-  // even if the layout was never customized to include one.
-  const isRadioChannel = channel.channelKind === 'RADIO';
-  const visibleItems = isRadioChannel
-    ? (() => {
-        const withoutArtistBlocks = baseVisibleItems.filter(
-          (item) =>
-            item.type !== 'about' &&
-            item.type !== 'links' &&
-            item.type !== 'subscribe',
-        );
-        return withoutArtistBlocks.some((item) => item.type === 'programming')
-          ? withoutArtistBlocks
-          : [
-              ...withoutArtistBlocks,
-              {
-                id: 'programming',
-                type: 'programming' as const,
-                visible: true,
-              },
-            ];
-      })()
-    : baseVisibleItems;
+  const visibleItems = channelVisibleItems({
+    layout,
+    editing,
+    showNavTabs,
+    navTabbedItemIds,
+    activeNavTabItemIds: activeNavTab?.itemIds,
+    isRadioChannel,
+  });
 
   // Exactly one <ChannelVisualizer> (one WebGL context, one RAF loop) per
   // page view, matching prod ("no point running two full WebGL scenes when
@@ -587,6 +547,7 @@ export function ChannelView({ slug }: { slug: string }) {
     <div
       className={cn(
         'relative isolate min-h-full overflow-hidden',
+        CHANNEL_SCHEME_TEXT_CLASS,
         // Cancel AppShell's MAIN_CONTENT_PADDING so the channel's own
         // background reaches the edges of the pane instead of leaving a
         // plain-bg-background border around it (see TrackDetailView's
@@ -701,6 +662,15 @@ export function ChannelView({ slug }: { slug: string }) {
           chatOn={chatOn}
           slug={slug}
           isOwner={isOwner}
+          embeds={
+            sectionStatus.sounds === 'ready' && embedPlayables.length > 0 ? (
+              <ChannelEmbedsSection
+                embeds={embedPlayables}
+                pinnedPlayables={pinnedPlayables}
+                getTrackMeta={getTrackMeta}
+              />
+            ) : null
+          }
           music={
             <>
               <div

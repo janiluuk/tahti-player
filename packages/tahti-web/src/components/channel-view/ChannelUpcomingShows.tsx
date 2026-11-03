@@ -73,7 +73,7 @@ export function ChannelUpcomingShows({ slug }: { slug: string }) {
       className="border-border flex flex-col gap-3 rounded-lg border px-4 py-3"
       aria-label="Upcoming shows"
     >
-      <Eyebrow>
+      <Eyebrow tone="muted">
         <span className="inline-flex items-center gap-1.5">
           <CalendarClockIcon size={13} aria-hidden />
           Upcoming shows

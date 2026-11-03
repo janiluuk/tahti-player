@@ -39,7 +39,7 @@ export function ChannelLiveTracklist({ slug }: { slug: string }) {
       className="border-border flex flex-col gap-2 rounded-lg border px-4 py-3"
       aria-label="Played in this broadcast"
     >
-      <Eyebrow>
+      <Eyebrow tone="muted">
         <span className="inline-flex items-center gap-1.5">
           <ListMusicIcon size={13} aria-hidden />
           Played in this broadcast

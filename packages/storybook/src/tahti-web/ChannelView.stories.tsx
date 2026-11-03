@@ -128,3 +128,43 @@ export const OfflinePhoneLight: Story = {
     await expectReadableTrackTitles(canvasElement);
   },
 };
+
+/** The text on the channel's own background reads at 4.5:1 or better. */
+async function expectReadable(element: Element) {
+  const ratio = contrast(getComputedStyle(element).color, surfaceOf(element));
+  await expect(ratio).toBeGreaterThanOrEqual(4.5);
+}
+
+/** A dark channel scheme under the light theme: headings, tabs and counts
+ * sitting on the scheme background take the scheme's text colour, and track
+ * rows keep the theme's text on their own opaque surface. */
+export const DarkSchemeOnLightTheme: Story = {
+  globals: { themeId: 'nuclear:aurora', themeMode: 'light' },
+  decorators: [withMockAuth(MOCK_USERS.listener)],
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const scheme = canvasElement.querySelector('[data-channel-scheme]')!;
+    await expect(
+      luminance(getComputedStyle(scheme).backgroundColor),
+    ).toBeLessThan(0.05);
+
+    await step('track titles', async () => {
+      await expectReadableTrackTitles(canvasElement);
+    });
+
+    await step('section heading, tabs and track count', async () => {
+      await expectReadable(
+        await canvas.findByRole('heading', { name: 'Tracks' }),
+      );
+      for (const tab of within(
+        canvas.getByTestId('channel-page-tabs'),
+      ).getAllByRole('tab')) {
+        await expectReadable(tab);
+      }
+      const count = within(
+        canvas.getAllByTestId('ambient-track-list-toolbar')[0]!,
+      ).getByText(/\d+ tracks?/);
+      await expectReadable(count);
+    });
+  },
+};

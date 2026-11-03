@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { Button, EmptyState, Loader, Tooltip } from '@tahti-player/ui';
 
 import { fetchChannel } from '../../api/client';
-import type { PublicChannel } from '../../api/types';
+import type { PublicChannel, TahtiPlayable } from '../../api/types';
 import {
   parseNowPlayingOverlaySettings,
   resolveNowPlayingOverlayPreset,
@@ -28,6 +28,7 @@ import { Eyebrow } from '../tahti/Eyebrow';
 import { WaveformSeekbar } from '../tahti/WaveformSeekbar';
 import { ChannelAirBadge, channelAirState } from './ChannelAirBadge';
 import { ChannelStageTrackMeta } from './ChannelStageTrackMeta';
+import { stageNowPlayingTrack } from './stageNowPlayingTrack';
 import { useRotationNowPlaying } from './useRotationNowPlaying';
 
 type Props = {
@@ -45,6 +46,9 @@ type Props = {
   /** Playable ids of this channel's own tracks: when one of them is an
    * embed and is playing, its widget shows in the stage. */
   trackIds?: ReadonlySet<string>;
+  /** This channel's tracks, to find the rotation's now-playing track and
+   * draw its real waveform (or its embed widget). */
+  playables?: readonly TahtiPlayable[];
   /** Opens chat on the page itself; without it the chat button goes to
    * the standalone chat route. */
   onOpenChat?: () => void;
@@ -62,6 +66,7 @@ export function ChannelStagePlayer({
   follow,
   signedIn,
   trackIds,
+  playables,
   onOpenChat,
 }: Props) {
   const play = usePlayerStore((s) => s.play);
@@ -74,13 +79,12 @@ export function ChannelStagePlayer({
   const queue = usePlayerStore((s) => s.queue);
   const restoredPending = usePlayerStore((s) => s.restoredPending);
   const reloadNonce = usePlayerStore((s) => s.reloadNonce);
-  const currentItem =
-    currentId && trackIds?.has(currentId)
-      ? queue.find((item) => item.id === currentId)
-      : undefined;
-  const currentPlayable = currentItem
-    ? playableFromQueueItem(currentItem)
-    : null;
+  const activeItem = currentId
+    ? queue.find((item) => item.id === currentId)
+    : undefined;
+  const activePlayable = activeItem ? playableFromQueueItem(activeItem) : null;
+  const currentPlayable =
+    currentId && trackIds?.has(currentId) ? activePlayable : null;
   const stageEmbed = currentPlayable?.embed ? currentPlayable : null;
   useHearthisEmbedClaim(Boolean(stageEmbed));
   const favorited = follow?.following ?? false;
@@ -131,6 +135,50 @@ export function ChannelStagePlayer({
       })
       .catch(() => toast.error('Could not start the stream. Try again.'));
   };
+
+  const hasControls = live || Boolean(channel.hlsUrl);
+  const playLabel = channelIsLoading
+    ? 'Loading stream'
+    : channelIsPlaying
+      ? 'Pause stream'
+      : onAir
+        ? 'Play live'
+        : 'Play stream';
+
+  // A track without decoded peaks would draw a row of flat placeholder
+  // bars; an embed shows its provider's widget instead, anything else
+  // shows no waveform at all.
+  const stageTrack = stageNowPlayingTrack(nowPlaying, playables);
+  const stagePeaks = stageTrack?.peaks?.length ? stageTrack.peaks : null;
+  const activeEmbedUri = activePlayable?.embed?.embedUri;
+  const stageSeekbar = stagePeaks ? (
+    <WaveformSeekbar
+      trackId={`channel:${slug}`}
+      peaks={stagePeaks}
+      progress={channelIsCurrent && duration > 0 ? currentTime / duration : 0}
+      bars={72}
+      label={channel.user.displayName}
+      durationSec={duration}
+      className="mt-3 h-10 max-w-2xl"
+      playedColor={channel.colorScheme?.accent}
+      unplayedColor={channel.colorScheme?.muted}
+      onSeek={
+        channelIsCurrent && duration > 0
+          ? (fraction) => seekTo(fraction * duration)
+          : undefined
+      }
+    />
+  ) : stageTrack?.embed && stageTrack.embed.embedUri !== activeEmbedUri ? (
+    <div className="mt-3 max-w-2xl" data-testid="channel-stage-embed-widget">
+      <EmbedSurface
+        provider={stageTrack.embed.provider}
+        embedUri={stageTrack.embed.embedUri}
+        title={stageTrack.title}
+        autoplay={false}
+        compact
+      />
+    </div>
+  ) : undefined;
 
   const airBadge = (
     <div className="absolute top-3 left-4 z-[2] sm:left-6">
@@ -196,55 +244,67 @@ export function ChannelStagePlayer({
     </div>
   ) : (
     <div
-      className={`relative p-4 pt-12 pr-24 sm:p-6 sm:pt-12 sm:pr-40 ${
+      className={`relative p-4 pt-12 ${hasControls ? 'pr-28 sm:pr-32' : ''} sm:p-6 sm:pt-12 ${
         subtle
           ? 'bg-gradient-to-t from-black/80 via-black/35 to-black/10'
           : 'bg-gradient-to-t from-black/70 to-black/5'
       }`}
     >
       {airBadge}
-      {nowPlaying ? (
-        <>
-          <NowPlayingOverlay
-            presetId={resolveNowPlayingOverlayPreset(
-              channel.nowPlayingOverlayStyle,
-            )}
-            title={nowPlaying.title}
-            artist={nowPlaying.artistName}
-            artworkUrl={nowPlaying.artworkUrl}
-            settings={parseNowPlayingOverlaySettings(
-              channel.nowPlayingOverlaySettingsJson,
-            )}
-            seekbar={
-              <WaveformSeekbar
-                trackId={`channel:${slug}`}
-                progress={
-                  channelIsCurrent && duration > 0 ? currentTime / duration : 0
-                }
-                bars={72}
-                label={channel.user.displayName}
-                durationSec={duration}
-                className="mt-3 h-10 max-w-2xl"
-                playedColor={channel.colorScheme?.accent}
-                unplayedColor={channel.colorScheme?.muted}
-                onSeek={
-                  channelIsCurrent && duration > 0
-                    ? (fraction) => seekTo(fraction * duration)
-                    : undefined
-                }
+      <div className="flex items-start gap-4">
+        {hasControls ? (
+          <Tooltip content={playLabel} side="top">
+            <Button
+              variant="text"
+              className="size-14 shrink-0 justify-center rounded-full bg-white p-0 text-black shadow-xl hover:bg-white active:bg-white"
+              onClick={handlePlayChannel}
+              onPointerEnter={prefetchHls}
+              onFocus={prefetchHls}
+              aria-label={playLabel}
+              aria-pressed={channelIsPlaying}
+              data-testid="channel-stage-play"
+            >
+              {channelIsLoading ? (
+                <Loader />
+              ) : channelIsPlaying ? (
+                <PauseIcon size={22} className="fill-current" aria-hidden />
+              ) : (
+                <PlayIcon
+                  size={22}
+                  className="ml-0.5 fill-current"
+                  aria-hidden
+                />
+              )}
+            </Button>
+          </Tooltip>
+        ) : null}
+        <div className="min-w-0 flex-1">
+          {nowPlaying ? (
+            <>
+              <NowPlayingOverlay
+                presetId={resolveNowPlayingOverlayPreset(
+                  channel.nowPlayingOverlayStyle,
+                )}
+                title={nowPlaying.title}
+                artist={nowPlaying.artistName}
+                artworkUrl={nowPlaying.artworkUrl}
+                settings={parseNowPlayingOverlaySettings(
+                  channel.nowPlayingOverlaySettingsJson,
+                )}
+                seekbar={stageSeekbar}
               />
-            }
-          />
-          <ChannelStageTrackMeta nowPlaying={nowPlaying} next={next} />
-        </>
-      ) : (
-        <p className="text-sm text-white/80">
-          {onAir
-            ? 'Stream is live — hit Play live to drive the visualizer.'
-            : '24/7 rotation is playing — press Play to listen.'}
-        </p>
-      )}
-      {(live || channel.hlsUrl) && (
+              <ChannelStageTrackMeta nowPlaying={nowPlaying} next={next} />
+            </>
+          ) : (
+            <p className="text-sm text-white/80">
+              {onAir
+                ? 'Stream is live — hit Play live to drive the visualizer.'
+                : '24/7 rotation is playing — press Play to listen.'}
+            </p>
+          )}
+        </div>
+      </div>
+      {hasControls && (chatOn || follow) ? (
         <div className="absolute right-4 bottom-4 z-[2] flex items-center gap-3">
           {chatOn && (
             <Tooltip content="Open chat" side="top">
@@ -282,46 +342,8 @@ export function ChannelStagePlayer({
               </Button>
             </Tooltip>
           ) : null}
-          <Tooltip
-            content={
-              channelIsLoading
-                ? 'Loading stream'
-                : channelIsPlaying
-                  ? 'Pause stream'
-                  : onAir
-                    ? 'Play live'
-                    : 'Play stream'
-            }
-            side="top"
-          >
-            <Button
-              size="icon"
-              className="bg-primary text-primary-foreground h-16 w-16 rounded-full shadow-lg"
-              onClick={handlePlayChannel}
-              onPointerEnter={prefetchHls}
-              onFocus={prefetchHls}
-              aria-label={
-                channelIsLoading
-                  ? 'Loading stream'
-                  : channelIsPlaying
-                    ? 'Pause stream'
-                    : onAir
-                      ? 'Play live'
-                      : 'Play stream'
-              }
-              aria-pressed={channelIsPlaying}
-            >
-              {channelIsLoading ? (
-                <Loader />
-              ) : channelIsPlaying ? (
-                <PauseIcon size={26} className="fill-current" aria-hidden />
-              ) : (
-                <PlayIcon size={26} className="fill-current" aria-hidden />
-              )}
-            </Button>
-          </Tooltip>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

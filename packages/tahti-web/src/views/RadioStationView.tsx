@@ -14,6 +14,7 @@ import {
 
 import { RadioRowCard } from '../components/listen-view/RadioRowCard';
 import { PageEmpty } from '../components/PageStates';
+import { RadioStationDial } from '../components/radio/RadioStationDial';
 import { RadioStationCoverEditButton } from '../components/RadioStationCover';
 import { StationUnavailableNotice } from '../components/StationUnavailableNotice';
 import {
@@ -100,86 +101,92 @@ export function RadioStationView({ stationId }: { stationId: string }) {
         </Tooltip>
       }
     >
-      <div className="flex flex-col gap-6 md:flex-row md:items-start">
-        <MediaArtwork
-          src={station.logoUrl}
-          alt={`${station.name} logo`}
-          size="lg"
-        />
-        <div className="flex min-w-0 flex-1 flex-col gap-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="pill" color="blue">
-              {station.codec} · {station.bitrateKbps} kbps
-            </Badge>
-            {playing ? (
-              <Badge variant="pill" color="red">
-                Playing
+      <RadioStationDial
+        current={{ kind: 'station', id: station.id }}
+        label={station.name}
+        buttonsClassName="top-0 right-0"
+      >
+        <div className="flex flex-col gap-6 md:flex-row md:items-start md:pr-20">
+          <MediaArtwork
+            src={station.logoUrl}
+            alt={`${station.name} logo`}
+            size="lg"
+          />
+          <div className="flex min-w-0 flex-1 flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="pill" color="blue">
+                {station.codec} · {station.bitrateKbps} kbps
               </Badge>
+              {playing ? (
+                <Badge variant="pill" color="red">
+                  Playing
+                </Badge>
+              ) : null}
+            </div>
+            <div role="status" aria-live="polite" className="text-sm">
+              {nowPlaying ? (
+                <p>
+                  <span className="text-foreground-secondary">On air: </span>
+                  <span className="font-semibold">{nowPlaying}</span>
+                </p>
+              ) : (
+                <p className="text-foreground-secondary">
+                  {streamUrl
+                    ? 'This station doesn’t say what’s playing.'
+                    : 'No stream address for this station yet.'}
+                </p>
+              )}
+            </div>
+            <div
+              role="group"
+              aria-label="Station controls"
+              className="flex flex-wrap gap-2"
+            >
+              <Button type="button" onClick={togglePlay} disabled={!playable}>
+                {playing ? 'Pause' : 'Play'}
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                aria-pressed={onListen}
+                onClick={() => toggleStation(station.id)}
+              >
+                {onListen ? 'Remove from Listen' : 'Add to Listen'}
+              </Button>
+              <RadioStationCoverEditButton
+                presentation="button"
+                label={station.name}
+                stationName={base?.name ?? station.name}
+                catalogStationId={station.id}
+              />
+            </div>
+            {playable ? (
+              <StationUnavailableNotice
+                playableId={playable.id}
+                streamUrl={playable.streamUrl}
+                onPlay={() => play(playable)}
+              />
             ) : null}
-          </div>
-          <div role="status" aria-live="polite" className="text-sm">
-            {nowPlaying ? (
-              <p>
-                <span className="text-foreground-secondary">On air: </span>
-                <span className="font-semibold">{nowPlaying}</span>
-              </p>
-            ) : (
-              <p className="text-foreground-secondary">
-                {streamUrl
-                  ? 'This station doesn’t say what’s playing.'
-                  : 'No stream address for this station yet.'}
-              </p>
-            )}
-          </div>
-          <div
-            role="group"
-            aria-label="Station controls"
-            className="flex flex-wrap gap-2"
-          >
-            <Button type="button" onClick={togglePlay} disabled={!playable}>
-              {playing ? 'Pause' : 'Play'}
-            </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              aria-pressed={onListen}
-              onClick={() => toggleStation(station.id)}
-            >
-              {onListen ? 'Remove from Listen' : 'Add to Listen'}
-            </Button>
-            <RadioStationCoverEditButton
-              presentation="button"
-              label={station.name}
-              stationName={base?.name ?? station.name}
-              catalogStationId={station.id}
-            />
-          </div>
-          {playable ? (
-            <StationUnavailableNotice
-              playableId={playable.id}
-              streamUrl={playable.streamUrl}
-              onPlay={() => play(playable)}
-            />
-          ) : null}
-          <div className="flex flex-col gap-1 text-sm">
-            <ExternalLink
-              href={station.detailUrl}
-              className="text-accent-blue-strong"
-            >
-              Station website
-            </ExternalLink>
-            {station.programmingUrl &&
-            station.programmingUrl !== station.detailUrl ? (
+            <div className="flex flex-col gap-1 text-sm">
               <ExternalLink
-                href={station.programmingUrl}
+                href={station.detailUrl}
                 className="text-accent-blue-strong"
               >
-                Programme guide
+                Station website
               </ExternalLink>
-            ) : null}
+              {station.programmingUrl &&
+              station.programmingUrl !== station.detailUrl ? (
+                <ExternalLink
+                  href={station.programmingUrl}
+                  className="text-accent-blue-strong"
+                >
+                  Programme guide
+                </ExternalLink>
+              ) : null}
+            </div>
           </div>
         </div>
-      </div>
+      </RadioStationDial>
       <CardsRow
         title="Other stations"
         data-testid="other-stations"
