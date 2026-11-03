@@ -161,10 +161,3 @@ export function grafanaExploreLogsUrl(serviceFilter?: string): string {
     left: JSON.stringify(left),
   });
 }
-
-export function adminLogsHref(service?: string): string {
-  return withQuery('/admin/logs', {
-    tab: 'containers',
-    ...(service ? { service } : {}),
-  });
-}

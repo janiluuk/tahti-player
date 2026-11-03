@@ -35,7 +35,7 @@ export function atHour(day: Date, hour: number): Date {
   return copy;
 }
 
-export function isSameLocalDay(a: Date, b: Date): boolean {
+function isSameLocalDay(a: Date, b: Date): boolean {
   return a.toDateString() === b.toDateString();
 }
 
@@ -86,7 +86,7 @@ export function filterBookingsForStation(
   );
 }
 
-export function bookingGridKey(day: Date, hour: number): string {
+function bookingGridKey(day: Date, hour: number): string {
   return `${day.toDateString()}-${hour}`;
 }
 

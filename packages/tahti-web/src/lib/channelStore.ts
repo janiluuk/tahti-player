@@ -17,7 +17,7 @@ export type ChannelStorefront = {
   items: StoreListing[];
 };
 
-export function storeListingsFromTracks(
+function storeListingsFromTracks(
   tracks: Array<
     Pick<PublicProfileTrack, 'id' | 'title'> & {
       accessMode?: string;

@@ -142,7 +142,7 @@ function writeStored(value: PersistedQueue) {
  * the rest in batches so a big queue never blocks the UI), fills in its URL,
  * and drops tracks whose file is gone. Nothing here starts playback.
  */
-export async function resolveRestoredLocalSources() {
+async function resolveRestoredLocalSources() {
   const library = getNativeLibrary();
   const state = usePlayerStore.getState();
   const wanted = state.queue.filter(

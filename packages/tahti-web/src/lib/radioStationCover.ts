@@ -36,7 +36,7 @@ export function toPersistableMediaUrl(url: string): string {
   return trimmed;
 }
 
-export function fileToDataUrl(file: File): Promise<string> {
+function fileToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result));

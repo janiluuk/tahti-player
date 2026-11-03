@@ -39,7 +39,7 @@ export function hearthisEmbedSrc(
   return `https://hearthis.at/embed/${encodeURIComponent(trackId)}/transparent_black/?${params.toString()}`;
 }
 
-export function mixcloudEmbedSrc(key: string): string {
+function mixcloudEmbedSrc(key: string): string {
   return `https://player-widget.mixcloud.com/widget/iframe/?feed=${encodeURIComponent(key)}&hide_cover=1&light=0`;
 }
 
@@ -61,7 +61,7 @@ export function bandcampEmbedSrc(uri: string): string {
   return `https://bandcamp.com/EmbeddedPlayer/${spec}/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/`;
 }
 
-export function mikseriEmbedSrc(uri: string): string | null {
+function mikseriEmbedSrc(uri: string): string | null {
   let url: URL;
   try {
     url = new URL(uri);

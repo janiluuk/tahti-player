@@ -65,7 +65,7 @@ export function channelVizPack(
   return id ? (packById.get(id) ?? null) : null;
 }
 
-export function isVizPackKey(key: string): boolean {
+function isVizPackKey(key: string): boolean {
   return key.startsWith(VIZ_PACK_KEY_PREFIX);
 }
 

@@ -78,7 +78,7 @@ export function sameAvatarTheme(
 
 /** Fill for an artist avatar without an image, or null to keep the
  * generated placeholder artwork. */
-export function avatarThemeFallback(raw: unknown): string | null {
+function avatarThemeFallback(raw: unknown): string | null {
   const theme = readAvatarTheme(raw);
   return theme ? avatarThemeCss(theme) : null;
 }
