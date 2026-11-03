@@ -5806,3 +5806,11 @@ tahti-org#1038 gives `/api/v1/search` track results `audioUrl` (through the acce
 - **Admin Inbox and Overview** (#1763): queues are counted filter chips; the dashboard leads with System health and links to status, monitoring and logs.
 - **Auth snapshot** (#1764): `tahti-web-auth` no longer stores the email address (hardening #25).
 - **E2E by role** (#1765, #1766): `docs/todo/e2e-coverage-gap.md` maps features × anonymous / listener / artist / admin; new role helpers; anonymous, listener, artist and admin journeys; admin, governance, registration and library journeys fixed; a spec for eight routes nothing visited.
+
+### 2026-11-03 — desktop, CLI, Stats sources, view-before-edit, batch of 30
+
+- **Desktop app** (#1776, #1780): `scripts/tahti-desktop` / `pnpm desktop:latest` builds origin/master in `.desktop-build` and launches it; Linux keeps WebKitGTK GPU compositing on (only SteamOS or `TAHTI_SAFE_RENDERING=1` turn it off), which fixed sluggish scrolling.
+- **Studio → Stats sources** (#1777): "Where listeners came from" lists referring sites with listen counts on the overview and in a track's Insights.
+- **tahti CLI hearthis** (#1778, #1779): `download-set --layout album|set`, `--own`, `--title`, `--year`, rsync-style `--sync` (re-download on size change, delete what left the Set), `--flac`, and `cover.jpg` per folder.
+- **View before edit** (#1781): collections, playlists, sounds, releases and shows open read-only; the new `@tahti-player/ui` `EditIconButton` / `EditIconLink` reveal the form (`?edit=true`), and text "Edit" buttons across the app became named edit icon buttons.
+- **Batch of 30**: track rows and Listen station cards name Play / Queue / Favorite after the item (`Card itemName`); activated add-ons get an off switch (Radio Browser); press kit photos are one list; Branding lost its duplicate heading; Messages no longer remounts when a conversation opens (`/messages/$id` is a child route); mock fixes (radio rotation artists, release titles from slugs, listening parties survive a reload); e2e for newsletter send, chat bans, language CSV import, listening party cancel, view-before-edit, Stats sources and the fixes above, now in the CI mock job.

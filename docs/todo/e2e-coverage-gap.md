@@ -81,7 +81,7 @@ renders (route health) · ❌ nothing.
 
 - [x] Signs up as a listener (no channel) and lands on Listen; Studio is not in the sidebar (`use-cases-listener-4.spec.ts`; Join now has a Listener account type).
 - [x] Follows an artist → Library → Following; the Feed lists posts and releases and pages on (`use-cases-listener*.spec.ts`).
-- [x] Favorites a track → Library → Favorites, and removes it (`use-cases-listener*.spec.ts`). A release is left.
+- [x] Favorites a track or a radio station → Library → Favorites, and removes it (`use-cases-listener*.spec.ts`, `batch-fixes.spec.ts`). Releases cannot be favorited (Favorites holds channels and tracks).
 - [ ] Builds a playlist, reorders, adds to someone's collaborative playlist and undoes it. (Creating one from Add to playlist: covered.)
 - [ ] Plays a collection with the collection player; the row highlights.
 - [x] A played track shows in Library → History; listening stats and the history list switch tabs (`use-cases-listener*.spec.ts`).
@@ -89,17 +89,17 @@ renders (route health) · ❌ nothing.
 - [x] The avatar dot loses a dot after Mark all read (`use-cases-listener-3.spec.ts`).
 - [x] Adds a Latest News source and removes one (`use-cases-listener.spec.ts`).
 - [x] Starts a Jam from a playlist; joins a live listening party; a scheduled one offers Join at the start (`use-cases-listener-3.spec.ts`, `use-cases-mixed-3.spec.ts`).
-- [ ] Settings: playback, appearance/theme, notifications save and persist. (Light/dark and a playback switch survive a reload: covered; notifications left.)
+- [x] Settings: playback, appearance/theme save and persist (light/dark and a playback switch survive a reload). There are no notification preferences in the app to test.
 - [x] Opens `/admin` and `/studio`: "Board access required" and "Studio is for artists", no Studio in the sidebar (`roles-anonymous-listener.spec.ts`).
 
 ### Artist
 
 - [x] Uploads a track end to end and lands on its page (`use-cases-artist-3.spec.ts`).
 - [ ] Creates a release, adds tracks and artwork, publishes; smart link page shows it. (Creating one: covered in `use-cases-artist-3.spec.ts`; tracks, artwork and publishing left.)
-- [ ] Broadcast hub: agenda chips filter; Go live flow reaches the green room; schedules a show and an event; schedules and cancels a listening party. (Chips filter, Go live opens and links back, an event is added, a listening party is scheduled: covered.)
-- [ ] Fans hub: writes and schedules a post; sends a newsletter; creates a membership tier; adds a store item; Earnings shows orders. (Publishes and schedules a post, saves a newsletter draft, creates a membership tier and a store price, toggles the Store: covered; Earnings lists a track purchase and a fan subscription (`listener-purchase-flow`, `fan-sub-and-track-purchase`). Sending a newsletter left.)
+- [ ] Broadcast hub: agenda chips filter; Go live flow reaches the green room; schedules a show and an event; schedules and cancels a listening party. (Chips filter, Go live opens and links back, an event is added, a listening party is scheduled and cancelled (`use-cases-artist-5.spec.ts`): covered.)
+- [ ] Fans hub: writes and schedules a post; sends a newsletter; creates a membership tier; adds a store item; Earnings shows orders. (Publishes and schedules a post, saves a newsletter draft, creates a membership tier and a store price, toggles the Store: covered; Earnings lists a track purchase and a fan subscription (`listener-purchase-flow`, `fan-sub-and-track-purchase`). Sends a newsletter (`use-cases-artist-5.spec.ts`).)
 - [x] Profile hub cards open Settings panels and the Story saves (`roles-artist-admin-hubs.spec.ts`, `use-cases-artist-*.spec.ts`).
-- [ ] Moderates chat (ban, moderator add) and comments. (Adds and removes a moderator: covered; ban and comments left.)
+- [ ] Moderates chat (ban, moderator add) and comments. (Adds and removes a moderator; bans a sender and lifts a ban (`use-cases-artist-5.spec.ts`): covered; comment moderation left.)
 - [x] Stats range picker and per-track insights from a release's stats tab (`use-cases-artist.spec.ts`, `routes-studio-stats.spec.ts`).
 - [x] Release detail tabs; the track editor's three tabs and renaming a track (`use-cases-artist*.spec.ts`).
 
@@ -110,7 +110,7 @@ renders (route health) · ❌ nothing.
 - [x] People: picks a user, filters by role, picks a role, suspends and restores (`use-cases-admin*.spec.ts`).
 - [ ] Content: publishes news, an announcement, edits Selects rotation and a top list, verifies a venue, replaces an artwork preset. (Publishes news; Announcements from the hub; Selects picker; top-list period; venue unverify / verify: covered.)
 - [x] Co-op: Grants / AGM / Records tabs, a grant year, the Financial page (`use-cases-admin-2/3.spec.ts`).
-- [ ] Platform: approves an add-on, imports a language CSV, storage per user, logs filter. (All but the CSV import: covered.)
+- [x] Platform: approves an add-on, imports a language CSV (`use-cases-artist-5.spec.ts`), storage per user, logs filter.
 - [x] Dashboard: system health first and Status checks link (`use-cases-admin.spec.ts`).
 
 ## Run and review (next)
@@ -134,13 +134,13 @@ is wrong and a suggested fix, then turn the agreed ones into slices.
 | Studio → Fans → Posts | The page was titled "Updates" while the card and help say Posts | labels, fixed (#1771) | Titled Posts (Newsletter on its tab) |
 | Studio release detail | Three rows of tabs (Studio, Music sub-row, release tabs) | messy | Per the navigation plan: a back link and title replace the section rows on detail pages |
 | Studio → Stats | A second tab row (Overview, Plays, Top lists, Insights) on a page that is meant to be one page with sections | messy | Section links in the page instead of a tab row |
-| Messages | Three ways in on one screen (Message @username + Start + Search, Your contacts, conversation list); opening a conversation briefly mounts two threads, so typing can land in the one that disappears | messy / bug | One search box over the conversation list; mount one thread |
-| Admin → People | The user list is a radio group (search exists: it is a searchbox) | practicality | Keep the list as links or rows |
+| Messages | Three ways in on one screen (Message @username + Start + Search, Your contacts, conversation list); opening a conversation briefly mounts two threads, so typing can land in the one that disappears | messy / bug, remount fixed | `/messages/$id` is a child route, so the page stays mounted; one search box is still open |
+| Admin → People | The user list is a radio group (search exists: it is a searchbox) | practicality, kept | `SelectableList` is a master-detail picker; the radio group gives one tab stop and arrow keys |
 | Artwork Play overlays (Studio → Sounds and every `MediaArtwork`) | On desktop the Play overlay was `visibility: hidden` until hover, so Tab never reached it and screen readers missed it | a11y, fixed (#1771) | Opacity-only fade; `a11y-play-controls.spec.ts` |
 | Admin → Inbox → Radio submissions | Approve / Reject gave no feedback and, on the mock app, nothing changed | practicality, fixed | A toast names the track and the row's badge updates |
 | Admin → Venues | Verify / Unverify returned a 500 on the mock app (no mock branch) | bug, fixed | Mock branch added |
 | Studio → Fans → Store | Two empty states stacked ("No prices yet", "Add a price first") | messy, fixed (#1771) | One line under the price list |
-| Release page (`/r/night-drive`) on the mock app | The Listen card says Night Drive, the page says First Light EP | mock data | Make the mock smart link follow the slug |
+| Release page (`/r/night-drive`) on the mock app | The Listen card says Night Drive, the page says First Light EP | mock data, fixed | The mock smart link is titled after its slug |
 | Radio visualizer (Cymatics) | Loaded `/piz_compressed.exr`, which no package ships, logged EXRLoader errors on `/radio`, and the orb, cymatics and landscape shapes never showed | bug, fixed | A 64×32 generated gradient map, built a frame after mount |
 | Settings → Artist | Saving showed the same "Artist info saved." twice (inline text and a toast) | messy, fixed | Toast on success; inline text only for an error |
 
@@ -163,12 +163,14 @@ is wrong and a suggested fix, then turn the agreed ones into slices.
 | Add-ons → Listen widgets | Every widget's Uninstall had the same name; Radio Browser's heading read "byradio-browser.info" | a11y, fixed | "Uninstall YouTube"; a space after "by" |
 | Release → Advanced → Fingerprinting | Each track's Re-fingerprint / Check buttons were identical | a11y, fixed | A named group per track |
 | Listen cards (stations, releases) | Overlay buttons were "Play" and "Favorite" with no item name | a11y, fixed | `Card` names them after its title |
-| Track rows | Row buttons are "Queue" and "Favorite" with no track name | a11y | Name them after the track (many specs assert the short names) |
+| Track rows, Listen station cards | Row buttons are "Queue" and "Favorite" with no track name | a11y, fixed | `playQueueFavoriteActions({ itemName })` and `Card itemName`: "Queue Night Drive", "Play YleX" |
 | `/radio` | Every visit opened each preset's audio stream to read ICY metadata; most fail CORS and log errors | optimization, fixed | Skip HLS playlists; remember unreadable streams for a day |
-| Settings → Artist → Press kit | "Up to 30 photos" in the drop zone, "0 of 10 press kit images" below, and "Add images in the Gallery tab first" next to a drop zone | messy | One photo list with one limit |
-| Settings → Artist → Branding | Tab "Artist branding" › tab "Branding" › heading "Artist branding"; 18 colour swatches | messy | Drop the inner heading; fewer swatches |
-| Add-ons → Radio Browser | Once activated the button is a disabled "Active"; there is no way back | practicality | A toggle, like the other add-ons |
-| Admin → Radio → rotation | The artist column shows "Tahti Radio submissions" (the playlist owner) for every row | bug (mock data?) | Show each track's artist |
+| Settings → Artist → Press kit | "Up to 30 photos" in the drop zone, "0 of 10 press kit images" below, and "Add images in the Gallery tab first" next to a drop zone | messy, fixed | One Photos panel: "up to 30 photos", "n of 10 photos in the press kit" |
+| Settings → Artist → Branding | Tab "Artist branding" › tab "Branding" › heading "Artist branding"; 18 colour swatches | messy, heading fixed | Inner heading dropped; the swatch count is a design call (saved looks reference the ids) |
+| Add-ons → Radio Browser | Once activated the button is a disabled "Active"; there is no way back | practicality, fixed | An on switch beside Active on every activated add-on |
+| Admin → Radio → rotation | The artist column shows "Tahti Radio submissions" (the playlist owner) for every row | mock data, fixed | The API already sends the track artist; the mock now does too |
+| Listening parties on the mock app | A scheduled party was gone after a reload | mock, fixed | Mock parties in sessionStorage |
+| Collections, playlists, sounds, releases, shows | Every page opened straight into its edit form | messy, fixed | Read-only by default; `EditIconButton` (Edit details) shows the form, `?edit=true` links open it |
 | Channel designer on the mock app | The slideshow PATCH had no mock branch ("Backdrop saved, but slideshow settings could not be updated"), and the look was lost on reload | mock, fixed | Mock gallery in localStorage, look in sessionStorage |
 
 ## Specs on the mock app
