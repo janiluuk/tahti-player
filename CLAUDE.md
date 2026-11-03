@@ -34,7 +34,7 @@ leaving it inconsistent.
 A track, release, playlist or channel with no cover (or a cover that fails to
 load) shows the default artwork, never an empty placeholder thumbnail.
 `MediaArtwork` does this itself under `MediaArtworkDefaultProvider` (mounted
-in `TahtiApp.tsx` with `generatedArtworkUrl`, the admin artwork presets):
+in `TahtiApp.tsx` with `defaultArtworkUrl`, the bundled artwork presets):
 pass `seed` (track id, slug, username) when the `alt` text is not a stable
 name. Only pass `placeholder` or `fallbackBackground` when an icon or color
 is the intended empty state (e.g. a radio station logo slot).
