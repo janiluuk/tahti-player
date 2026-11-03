@@ -439,7 +439,9 @@ describe('RadioView internet radio stations', () => {
       .closest('[data-testid="card"]') as HTMLElement;
     await act(async () => {
       fireEvent.click(
-        within(helsinki).getByRole('button', { name: 'Favorite' }),
+        within(helsinki).getByRole('button', {
+          name: 'Favorite Radio Helsinki',
+        }),
       );
     });
     const favorites = screen.getByTestId('radio-favorites');

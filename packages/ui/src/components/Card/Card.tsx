@@ -10,6 +10,8 @@ type CardProps = {
   image?: ReactNode;
   artworkOverlay?: ReactNode;
   title?: ReactNode;
+  /** Names the overlay buttons ("Play YleX") when `title` is not plain text. */
+  itemName?: string;
   subtitle?: ReactNode;
   className?: string;
   onClick?: () => void;
@@ -33,6 +35,7 @@ export const Card: FC<CardProps> = ({
   image,
   artworkOverlay,
   title,
+  itemName,
   subtitle,
   className,
   onClick,
@@ -51,7 +54,7 @@ export const Card: FC<CardProps> = ({
   onTitleClick,
 }) => {
   const hasOverlays = Boolean(onPlay || onQueue || onFavorite);
-  const named = typeof title === 'string' && title ? title : null;
+  const named = itemName || (typeof title === 'string' && title ? title : null);
   const isNeutral = surface === 'neutral';
   const titleClass = isNeutral ? 'text-foreground' : 'text-primary-foreground';
   const subtitleClass = isNeutral

@@ -102,7 +102,10 @@ describe('RadioStationView', () => {
       .getByRole('link', { name: 'YleX' })
       .closest('[data-testid="card"]') as HTMLElement;
     await userEvent.click(
-      within(stationCard).getByRole('button', { name: 'Play', exact: true }),
+      within(stationCard).getByRole('button', {
+        name: 'Play YleX',
+        exact: true,
+      }),
     );
     expect(usePlayerStore.getState().currentId).toBe('radio-widget:ylex');
     expect(stationCard.getAttribute('data-playing')).toBe('true');
@@ -110,7 +113,10 @@ describe('RadioStationView', () => {
       screen.getByRole('heading', { name: 'Radio Helsinki', level: 1 }),
     ).toBeTruthy();
     await userEvent.click(
-      within(stationCard).getByRole('button', { name: 'Pause', exact: true }),
+      within(stationCard).getByRole('button', {
+        name: 'Pause YleX',
+        exact: true,
+      }),
     );
     expect(usePlayerStore.getState().status).toBe('paused');
     expect(stationCard.hasAttribute('data-playing')).toBe(false);
