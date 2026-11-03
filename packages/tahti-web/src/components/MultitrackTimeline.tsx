@@ -81,22 +81,6 @@ export function normalizeTimeline(
   };
 }
 
-export function serializeTimeline(timeline: EditorTimeline): EditorTimeline {
-  return {
-    version: 1,
-    durationSec: Math.max(0.001, timeline.durationSec),
-    tracks: timeline.tracks.map((track) => ({
-      ...track,
-      clips: track.clips.map((clip) => ({
-        ...clip,
-        startSec: Math.max(0, clip.startSec),
-        sourceOffsetSec: Math.max(0, clip.sourceOffsetSec),
-        durationSec: Math.max(0.001, clip.durationSec),
-      })),
-    })),
-  };
-}
-
 export function moveTimelineClip(
   timeline: EditorTimeline,
   trackId: string,

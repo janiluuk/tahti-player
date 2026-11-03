@@ -33,12 +33,3 @@ export function playPlayables(
   player.play(first, { enqueueRest: rest });
   return { queued: playables.length };
 }
-
-export function summarizePlayable(item: TahtiPlayable) {
-  return {
-    id: item.id,
-    kind: item.kind,
-    title: item.title,
-    artist: item.artist,
-  };
-}

@@ -145,11 +145,18 @@ export function SupportTab() {
       setDetail(null);
       return;
     }
+    let cancelled = false;
     setDetailLoading(true);
     void fetchAdminSupportTicketDetail(selectedId).then((result) => {
+      if (cancelled) {
+        return;
+      }
       setDetail(result.data);
       setDetailLoading(false);
     });
+    return () => {
+      cancelled = true;
+    };
   }, [selectedId]);
 
   const setStatus = (status: AdminSupportStatus) => {

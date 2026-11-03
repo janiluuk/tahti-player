@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import {
   Button,
   Dialog,
+  EditIconButton,
   InlineError,
   Input,
   SaveButton,
@@ -131,6 +132,7 @@ function DestinationDialog({
   const [error, setError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [savedTarget, setSavedTarget] = useState(state.target);
+  const [fieldsEditing, setFieldsEditing] = useState(!state.target);
   const mirror = useRotationMirror(state.target, scope);
 
   const save = () => {
@@ -285,43 +287,68 @@ function DestinationDialog({
                 </Button>
               )}
               {error && <InlineError>{error}</InlineError>}
-              <Input
-                label="Label"
-                value={label}
-                onChange={(event) => setLabel(event.target.value)}
-                placeholder={selectedProvider?.label}
-              />
-              <Input
-                label={savedTarget ? 'New stream key' : 'Stream key'}
-                type="password"
-                autoComplete="off"
-                value={streamKey}
-                onChange={(event) => setStreamKey(event.target.value)}
-                placeholder={
-                  savedTarget
-                    ? `Leave blank to keep the current key (···${savedTarget.keyLast4 ?? '····'})`
-                    : undefined
-                }
-              />
-              {isCustom && (
-                <Input
-                  inputMode="url"
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  label="RTMP address"
-                  value={rtmpUrl}
-                  onChange={(event) => setRtmpUrl(event.target.value)}
-                  placeholder="rtmp://example.com/live"
-                  disabled={Boolean(savedTarget)}
-                />
-              )}
-              {mirror.visible && (
-                <RotationMirrorToggle
-                  checked={mirror.checked}
-                  onChange={mirror.setChecked}
-                  disabled={saving}
-                />
+              {savedTarget && !fieldsEditing ? (
+                <div className="flex items-start justify-between gap-3">
+                  <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+                    <dt className="text-foreground-secondary">Label</dt>
+                    <dd>{savedTarget.label || selectedProvider?.label}</dd>
+                    <dt className="text-foreground-secondary">Stream key</dt>
+                    <dd>···{savedTarget.keyLast4 ?? '····'}</dd>
+                    {isCustom ? (
+                      <>
+                        <dt className="text-foreground-secondary">
+                          RTMP address
+                        </dt>
+                        <dd className="break-all">{savedTarget.rtmpUrl}</dd>
+                      </>
+                    ) : null}
+                  </dl>
+                  <EditIconButton
+                    label="Edit destination"
+                    onClick={() => setFieldsEditing(true)}
+                  />
+                </div>
+              ) : (
+                <>
+                  <Input
+                    label="Label"
+                    value={label}
+                    onChange={(event) => setLabel(event.target.value)}
+                    placeholder={selectedProvider?.label}
+                  />
+                  <Input
+                    label={savedTarget ? 'New stream key' : 'Stream key'}
+                    type="password"
+                    autoComplete="off"
+                    value={streamKey}
+                    onChange={(event) => setStreamKey(event.target.value)}
+                    placeholder={
+                      savedTarget
+                        ? `Leave blank to keep the current key (···${savedTarget.keyLast4 ?? '····'})`
+                        : undefined
+                    }
+                  />
+                  {isCustom && (
+                    <Input
+                      inputMode="url"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      spellCheck={false}
+                      label="RTMP address"
+                      value={rtmpUrl}
+                      onChange={(event) => setRtmpUrl(event.target.value)}
+                      placeholder="rtmp://example.com/live"
+                      disabled={Boolean(savedTarget)}
+                    />
+                  )}
+                  {mirror.visible && (
+                    <RotationMirrorToggle
+                      checked={mirror.checked}
+                      onChange={mirror.setChecked}
+                      disabled={saving}
+                    />
+                  )}
+                </>
               )}
               {savedTarget && (
                 <div className="border-border flex flex-wrap items-center gap-2 rounded-md border p-3">
@@ -393,12 +420,14 @@ function DestinationDialog({
           )}
           {providerId &&
             (savedTarget ? (
-              <SaveButton
-                disabled={saving || !label.trim()}
-                saving={saving}
-                label="Save changes"
-                type="submit"
-              />
+              fieldsEditing ? (
+                <SaveButton
+                  disabled={saving || !label.trim()}
+                  saving={saving}
+                  label="Save changes"
+                  type="submit"
+                />
+              ) : null
             ) : (
               <Button
                 disabled={saving || !label.trim() || !streamKey.trim()}

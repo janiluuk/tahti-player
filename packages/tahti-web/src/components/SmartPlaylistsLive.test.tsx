@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import {
   act,
+  cleanup,
   fireEvent,
   render,
   screen,
@@ -43,6 +44,7 @@ function smartLibrary(total: () => number) {
 
 describe('SmartPlaylists live counts', () => {
   afterEach(() => {
+    cleanup();
     vi.useRealTimers();
   });
 

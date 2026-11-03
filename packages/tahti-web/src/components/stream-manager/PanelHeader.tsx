@@ -3,7 +3,6 @@ import {
   ChevronRightIcon,
   ListMusicIcon,
   PauseIcon,
-  PencilIcon,
   PlayIcon,
   RadioIcon,
   SkipBackIcon,
@@ -11,7 +10,13 @@ import {
   SquareIcon,
 } from 'lucide-react';
 
-import { Badge, Button, MediaArtwork, Tooltip } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  EditIconButton,
+  MediaArtwork,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   formatRemaining,
@@ -168,16 +173,7 @@ export function PanelHeader({
       </div>
       <div className="order-4 flex shrink-0 items-center gap-2">
         {canControl && collections.length > 0 && (
-          <Tooltip content="Edit playlist" side="top">
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              onClick={openPlaylistDialog}
-              aria-label="Edit playlist"
-            >
-              <PencilIcon size={14} aria-hidden />
-            </Button>
-          </Tooltip>
+          <EditIconButton onClick={openPlaylistDialog} label="Edit playlist" />
         )}
         {rotationPlaying && (
           <Tooltip

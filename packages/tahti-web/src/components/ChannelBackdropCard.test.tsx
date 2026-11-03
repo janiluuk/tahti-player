@@ -1,9 +1,11 @@
 // @vitest-environment jsdom
 import { act } from 'react';
-import { createRoot } from 'react-dom/client';
+import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ChannelBackdropCard } from './ChannelBackdropCard';
+
+const mountedRoots: Root[] = [];
 
 vi.mock('./ChannelSlideshowBackdrop', () => ({
   ChannelSlideshowBackdrop: ({ preset }: { preset?: string | null }) => (
@@ -31,6 +33,7 @@ function render(props: Partial<Parameters<typeof ChannelBackdropCard>[0]>) {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
+  mountedRoots.push(root);
   act(() => {
     root.render(
       <ChannelBackdropCard {...base} headerStyle="GRADIENT" {...props} />,
@@ -56,6 +59,9 @@ describe('ChannelBackdropCard backdrop', () => {
     );
   });
   afterEach(() => {
+    act(() => {
+      mountedRoots.splice(0).forEach((root) => root.unmount());
+    });
     document.body.replaceChildren();
     vi.unstubAllGlobals();
     vi.restoreAllMocks();

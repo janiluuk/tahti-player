@@ -12,6 +12,8 @@ import { useAuthStore } from '../stores/authStore';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
 import { RadioStationCover } from './RadioStationCover';
 
+const mountedRoots: Root[] = [];
+
 const BOARD_USER: AuthUser = {
   id: 'board-1',
   email: 'board@tahti.live',
@@ -37,6 +39,7 @@ function renderCover(user: AuthUser | null): {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
+  mountedRoots.push(root);
   act(() => {
     root.render(
       <RadioStationCover
@@ -64,6 +67,9 @@ describe('RadioStationCover', () => {
   });
 
   afterEach(() => {
+    act(() => {
+      mountedRoots.splice(0).forEach((root) => root.unmount());
+    });
     document.body.replaceChildren();
     vi.unstubAllEnvs();
   });

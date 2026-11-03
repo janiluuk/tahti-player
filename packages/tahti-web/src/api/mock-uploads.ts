@@ -177,10 +177,6 @@ export async function ensureMockUploadedSound(
   return hydrated;
 }
 
-export function listMockUploadedSounds(): MockUploadedSound[] {
-  return Array.from(uploads.values());
-}
-
 export function patchMockUploadedSound(
   id: string,
   patch: Partial<MockUploadedSound>,

@@ -132,7 +132,10 @@ export const Owner: Story = {
     const canvas = await findCollection(canvasElement);
     await expect(
       canvas.getByRole('link', { name: 'Edit in Studio' }),
-    ).toHaveAttribute('href', `/studio/collections/${COLLECTION_SLUG}`);
+    ).toHaveAttribute(
+      'href',
+      `/studio/collections/${COLLECTION_SLUG}?edit=true`,
+    );
     await expect(
       canvas.queryByRole('button', { name: `Report ${COLLECTION_NAME}` }),
     ).toBeNull();

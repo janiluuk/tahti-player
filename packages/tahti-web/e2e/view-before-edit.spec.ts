@@ -70,3 +70,51 @@ test('the Radio Browser add-on can be turned off after activating it', async ({
   await off.click();
   await expect(off).toHaveCount(0);
 });
+
+test('an event opens read-only and its pencil opens the form', async ({
+  page,
+}) => {
+  await page.goto('/studio/events');
+  await page.getByRole('tab', { name: 'Past' }).click();
+  await page
+    .getByRole('link', { name: 'Album release show', exact: true })
+    .first()
+    .click();
+  await expect(page).toHaveURL(/\/studio\/events\/evt-mock-1$/);
+  await expect(
+    page.getByRole('heading', { name: 'Album release show' }),
+  ).toBeVisible();
+  await expect(page.getByLabel('Title')).toHaveCount(0);
+  await page.getByRole('link', { name: 'Edit Album release show' }).click();
+  await expect(page).toHaveURL(/\/studio\/events\/evt-mock-1\/edit$/);
+  await expect(page.getByLabel('Title')).toHaveValue('Album release show');
+});
+
+test('an episode shows its details until Edit details adds the form', async ({
+  page,
+}) => {
+  await page.goto('/studio/shows/episodes/ep-demo-3');
+  await expect(page.getByText('Episode #3').first()).toBeVisible();
+  await expect(page.getByLabel('Episode title')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Edit details' }).click();
+  await expect(page).toHaveURL(/edit=true/);
+  await expect(page.getByLabel('Episode title')).toBeVisible();
+});
+
+test('a show episode row reads first, its pencil opens the form', async ({
+  page,
+}) => {
+  await page.goto('/studio/shows');
+  await page
+    .getByRole('link', { name: /Friday Frequency/ })
+    .first()
+    .click();
+  await page.getByRole('tab', { name: /Episodes/ }).click();
+  await expect(page.getByLabel('Episode title')).toHaveCount(0);
+  await page
+    .getByRole('main')
+    .getByRole('button', { name: /^Edit (?!details)/ })
+    .first()
+    .click();
+  await expect(page.getByLabel('Episode title')).toBeVisible();
+});

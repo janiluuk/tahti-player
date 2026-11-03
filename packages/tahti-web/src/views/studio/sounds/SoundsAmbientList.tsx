@@ -1,13 +1,8 @@
 import { Link } from '@tanstack/react-router';
-import {
-  BarChart3Icon,
-  DownloadIcon,
-  PencilIcon,
-  RotateCcwIcon,
-} from 'lucide-react';
+import { BarChart3Icon, DownloadIcon, RotateCcwIcon } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
 
-import { Button, InlineError, Tooltip } from '@tahti-player/ui';
+import { Button, EditIconButton, InlineError, Tooltip } from '@tahti-player/ui';
 
 import { fetchEditorSource } from '../../../api/studio';
 import type { StudioSound } from '../../../api/studio-types';
@@ -156,16 +151,10 @@ function SoundRowActions({
           </Button>
         </Tooltip>
       ) : null}
-      <Tooltip content="Edit track" side="top">
-        <Button
-          size="icon-sm"
-          variant="secondary"
-          aria-label={`Edit ${item.title}`}
-          onClick={() => setEditingId(item.id)}
-        >
-          <PencilIcon size={14} aria-hidden />
-        </Button>
-      </Tooltip>
+      <EditIconButton
+        label={`Edit ${item.title}`}
+        onClick={() => setEditingId(item.id)}
+      />
       <Tooltip content="Stats" side="top">
         <Button
           size="icon-sm"

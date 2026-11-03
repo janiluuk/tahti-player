@@ -1,13 +1,8 @@
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  PencilIcon,
-  Trash2Icon,
-} from 'lucide-react';
+import { ArrowDownIcon, ArrowUpIcon, Trash2Icon } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, EditIconButton, Input } from '@tahti-player/ui';
 
 import type { ChannelMember } from '../../api/artist-settings';
 import {
@@ -259,14 +254,11 @@ export function ChannelMembersEditor({
                   >
                     <ArrowDownIcon size={14} aria-hidden />
                   </Button>
-                  <Button
+                  <EditIconButton
                     variant="text"
-                    size="sm"
-                    aria-label={`Edit ${member.name}`}
+                    label={`Edit ${member.name}`}
                     onClick={() => setEditingId(member.id)}
-                  >
-                    <PencilIcon size={14} aria-hidden />
-                  </Button>
+                  />
                   <Button
                     variant="text"
                     size="sm"

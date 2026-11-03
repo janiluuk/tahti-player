@@ -88,14 +88,6 @@ export function automationFromTimeline(
   );
 }
 
-export type HydratedClipSeed = {
-  trackId: string;
-  clip: EditorTimelineClip;
-  audioBlob: Blob;
-  peaks: number[];
-  duration: number;
-};
-
 /** Build store tracks from a server timeline (clips need blobs loaded separately). */
 export function tracksFromTimeline(
   timeline: EditorTimeline,

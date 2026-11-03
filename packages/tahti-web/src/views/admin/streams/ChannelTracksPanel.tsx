@@ -1,10 +1,11 @@
-import { PencilIcon, SearchIcon } from 'lucide-react';
+import { SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import {
   Badge,
   Button,
   Dialog,
+  EditIconButton,
   InlineError,
   Input,
   SaveButton,
@@ -200,14 +201,11 @@ export function ChannelTracksPanel() {
                     </Badge>
                   ) : null}
                 </span>
-                <Button
-                  size="icon-sm"
+                <EditIconButton
                   variant="text"
-                  aria-label={`Edit ${sound.title}`}
+                  label={`Edit ${sound.title}`}
                   onClick={() => setEditing(sound)}
-                >
-                  <PencilIcon size={14} aria-hidden />
-                </Button>
+                />
               </li>
             ))}
           </ul>

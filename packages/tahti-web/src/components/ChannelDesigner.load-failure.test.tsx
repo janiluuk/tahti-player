@@ -7,10 +7,12 @@ import {
 } from '@tanstack/react-router';
 import { screen } from '@testing-library/react';
 import { act } from 'react';
-import { createRoot } from 'react-dom/client';
+import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ChannelDesigner } from './ChannelDesigner';
+
+const mountedRoots: Root[] = [];
 
 const { toast } = vi.hoisted(() => ({
   toast: { error: vi.fn(), success: vi.fn(), warning: vi.fn() },
@@ -41,6 +43,9 @@ describe('ChannelDesigner load failure', () => {
   });
 
   afterEach(() => {
+    act(() => {
+      mountedRoots.splice(0).forEach((root) => root.unmount());
+    });
     document.body.replaceChildren();
     vi.unstubAllEnvs();
     vi.unstubAllGlobals();
@@ -50,6 +55,7 @@ describe('ChannelDesigner load failure', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
     const root = createRoot(container);
+    mountedRoots.push(root);
     const rootRoute = createRootRoute({
       component: () => (
         <ChannelDesigner

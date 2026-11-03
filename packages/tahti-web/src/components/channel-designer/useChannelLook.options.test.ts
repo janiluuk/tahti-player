@@ -23,7 +23,9 @@ const options = { layoutSlug: 'test', reloadToken: 0 };
 
 async function loaded() {
   const hook = renderHook(() => useChannelLook(options));
-  await waitFor(() => expect(hook.result.current.visual).not.toBeNull());
+  await waitFor(() => expect(hook.result.current.visual).not.toBeNull(), {
+    interval: 1,
+  });
   return hook;
 }
 

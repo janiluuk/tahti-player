@@ -2,7 +2,6 @@ import {
   ArrowLeftIcon,
   DownloadIcon,
   LinkIcon,
-  PencilIcon,
   PlayIcon,
   ShuffleIcon,
   TrashIcon,
@@ -18,7 +17,13 @@ import {
 } from 'react';
 import { toast } from 'sonner';
 
-import { Button, CatalogTable, EmptyState, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  CatalogTable,
+  EditIconButton,
+  EmptyState,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { usePersistedCatalogTable } from '../../hooks/usePersistedCatalogTable';
 import type {
@@ -355,16 +360,11 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
             <DownloadIcon size={14} aria-hidden />
           </Button>
         </Tooltip>
-        <Tooltip content="Rename" side="top">
-          <Button
-            size="icon-sm"
-            variant="text"
-            aria-label="Rename playlist"
-            onClick={() => setRenaming(true)}
-          >
-            <PencilIcon size={14} aria-hidden />
-          </Button>
-        </Tooltip>
+        <EditIconButton
+          variant="text"
+          label="Rename playlist"
+          onClick={() => setRenaming(true)}
+        />
         <Tooltip content="Delete playlist" side="top">
           <Button
             size="icon-sm"

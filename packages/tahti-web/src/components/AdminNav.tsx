@@ -32,7 +32,6 @@ import type { ReactNode } from 'react';
 
 import { Badge, ButtonLink, TabLabel, Tabs } from '@tahti-player/ui';
 
-import type { TourStep } from '../lib/pageTour';
 import { matchesSectionRoute } from '../lib/sectionNavigation';
 import { SectionTabs } from './SectionTabs';
 
@@ -343,14 +342,6 @@ export function adminHubItems(hub: string) {
 }
 
 const SUBMENU_SLOT_CLASS = 'min-h-7';
-
-export const ADMIN_NAV_TOUR_STEPS: TourStep[] = PRIMARY.map(
-  (item): TourStep => ({
-    id: `nav-item-${item.to}`,
-    label: item.label,
-    description: item.description,
-  }),
-);
 
 export function isAdminNavItemActive(
   location: string | undefined,

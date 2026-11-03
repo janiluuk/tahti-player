@@ -2,7 +2,6 @@ import { Link } from '@tanstack/react-router';
 import {
   BarChart3Icon,
   DownloadIcon,
-  PencilIcon,
   PlayIcon,
   RotateCcwIcon,
 } from 'lucide-react';
@@ -10,6 +9,7 @@ import {
 import {
   Button,
   Checkbox,
+  EditIconButton,
   InlineError,
   MediaArtwork,
   Tooltip,
@@ -241,16 +241,10 @@ export function SoundRow({
             </Button>
           </Tooltip>
         ) : null}
-        <Tooltip content="Edit track" side="top">
-          <Button
-            size="icon-sm"
-            variant="secondary"
-            aria-label={`Edit ${item.title}`}
-            onClick={() => setEditingId(item.id)}
-          >
-            <PencilIcon size={16} aria-hidden />
-          </Button>
-        </Tooltip>
+        <EditIconButton
+          label={`Edit ${item.title}`}
+          onClick={() => setEditingId(item.id)}
+        />
         <Tooltip content="Stats" side="top">
           <Button
             size="icon-sm"

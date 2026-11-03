@@ -196,24 +196,6 @@ export function removeFromSelectsRotation(id: string) {
   );
 }
 
-export function reorderSelectsItem(id: string, position: number) {
-  if (isForceMock()) {
-    const items = selectsState();
-    const idx = items.findIndex((i) => i.id === id);
-    const target = Math.max(0, Math.min(position, items.length - 1));
-    if (idx < 0 || target < 0 || target >= items.length) {
-      return Promise.resolve({ ok: true } as const);
-    }
-    [items[idx], items[target]] = [items[target]!, items[idx]!];
-    return Promise.resolve({ ok: true } as const);
-  }
-  return mutate(
-    `/api/admin/tahti-selects/items/${encodeURIComponent(id)}/reorder`,
-    'PATCH',
-    { position },
-  );
-}
-
 export function reorderSelectsRotation(itemIds: string[]) {
   if (isForceMock()) {
     const byId = new Map(selectsState().map((item) => [item.id, item]));

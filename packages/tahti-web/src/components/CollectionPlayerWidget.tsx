@@ -93,6 +93,7 @@ export function CollectionPlayerWidget({
               void navigate({
                 to: '/studio/collections/$slug',
                 params: { slug: collection.slug },
+                search: { edit: true },
               })
           : undefined
       }

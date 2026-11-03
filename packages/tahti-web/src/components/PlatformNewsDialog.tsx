@@ -1,7 +1,6 @@
-import { PencilIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Input, Textarea } from '@tahti-player/ui';
+import { Button, EditIconButton, Input, Textarea } from '@tahti-player/ui';
 
 import { updateNewsPost } from '../api/admin';
 import type { Announcement } from '../api/types';
@@ -123,13 +122,12 @@ export function PlatformNewsDialog({
               </div>
             </form>
           ) : (
-            <Button
+            <EditIconButton
+              label="Edit article"
               variant="text"
               className="self-start"
               onClick={() => setEditing(true)}
-            >
-              <PencilIcon size={16} aria-hidden /> Edit article
-            </Button>
+            />
           )
         ) : null
       }

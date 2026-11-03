@@ -382,6 +382,8 @@ describe('ChannelChatPanel', () => {
     }
 
     afterEach(() => {
+      cleanup();
+      vi.clearAllTimers();
       vi.useRealTimers();
     });
 

@@ -4,13 +4,13 @@ import {
   DiscIcon,
   HeartIcon,
   PauseIcon,
-  PencilIcon,
   PlayIcon,
 } from 'lucide-react';
 import { type FC, type ReactNode } from 'react';
 
 import { cn } from '../../utils';
 import { Button } from '../Button';
+import { EditIconButton } from '../EditIconButton/EditIconButton';
 import { ImageReveal } from '../ImageReveal';
 
 export type CollectionPlayerTrack = {
@@ -151,15 +151,11 @@ export const CollectionPlayer: FC<CollectionPlayerProps> = ({
               )}
             </Button>
             {onEdit ? (
-              <Button
-                size="icon"
-                variant="secondary"
+              <EditIconButton
                 className="size-10 rounded-full"
-                aria-label={labels?.edit ?? `Edit ${title}`}
+                label={labels?.edit ?? `Edit ${title}`}
                 onClick={onEdit}
-              >
-                <PencilIcon size={16} aria-hidden />
-              </Button>
+              />
             ) : null}
           </div>
         </div>

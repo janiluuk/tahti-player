@@ -12,10 +12,6 @@ import { McpUserError, type DomainDef } from './types';
 
 const found = new Map<string, RadioStation>();
 
-export function forgetFoundStations() {
-  found.clear();
-}
-
 export const radioDomain: DomainDef = {
   description:
     'Radio: the built-in Finnish stations and the radio-browser.info directory of internet radio.',
