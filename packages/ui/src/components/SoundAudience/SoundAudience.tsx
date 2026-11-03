@@ -46,6 +46,10 @@ export type SoundAudienceProps = {
   renderLink?: (href: string, children: ReactNode) => ReactNode;
   /** Shown under a list that has more than it shows. */
   renderMore?: (tab: SoundAudienceTab) => ReactNode;
+  /** Tabs shown before the audience tabs, e.g. the track's Info. */
+  leadingTabs?: TabsItem[];
+  /** Icon-only tab bar, for a narrow side column. */
+  iconOnlyTabs?: boolean;
   className?: string;
 };
 
@@ -98,9 +102,11 @@ export const SoundAudience: FC<SoundAudienceProps> = ({
   reposters,
   listeners,
   counts,
-  defaultTab = 'collections',
+  defaultTab,
   renderLink = defaultLink,
   renderMore,
+  leadingTabs = [],
+  iconOnlyTabs = false,
   className,
 }) => {
   const wrap = (href: string | undefined, row: ReactNode) =>
@@ -190,6 +196,7 @@ export const SoundAudience: FC<SoundAudienceProps> = ({
     },
   };
 
+  const defaultTabProvided = defaultTab !== undefined;
   const items: TabsItem[] = TAB_ORDER.map((tab) => {
     const { label, icon, rows, length } = tabs[tab];
     const total = counts?.[tab] ?? length;
@@ -225,8 +232,14 @@ export const SoundAudience: FC<SoundAudienceProps> = ({
       className={cn('flex min-w-0 flex-col gap-3', className)}
     >
       <Tabs
-        items={items}
-        defaultIndex={Math.max(0, TAB_ORDER.indexOf(defaultTab))}
+        items={[...leadingTabs, ...items]}
+        iconOnly={iconOnlyTabs}
+        defaultIndex={
+          leadingTabs.length > 0 && !defaultTabProvided
+            ? 0
+            : leadingTabs.length +
+              Math.max(0, TAB_ORDER.indexOf(defaultTab ?? 'collections'))
+        }
         listClassName="flex-nowrap gap-1 overflow-x-auto pb-1 [&>*]:shrink-0"
         panelsClassName="pt-2"
       />

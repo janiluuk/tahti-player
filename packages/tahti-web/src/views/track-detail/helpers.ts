@@ -33,16 +33,6 @@ export function playableFromDetail(
   };
 }
 
-export function formatReleasedOn(iso: string): string {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) {
-    return '';
-  }
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  return `on ${day}.${month}.${date.getFullYear()}`;
-}
-
 export function cueLabel(artist: string | null, title: string): string {
   return artist ? `${artist} - ${title}` : title;
 }

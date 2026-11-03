@@ -28,6 +28,7 @@ import {
 } from '@tahti-player/ui';
 
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
+import { ListingDate } from '../../components/ListingDate';
 import { PlayerWaveform } from '../../components/PlayerWaveform';
 import { ReportButton } from '../../components/ReportButton';
 import { TimelineReactionBar } from '../../components/TimelineReactionBar';
@@ -39,7 +40,6 @@ import { formatDuration } from '../../lib/playableToTrack';
 import { useAuthModalStore } from '../../stores/authModalStore';
 import { AiGeneratedBadge } from './AiGeneratedBadge';
 import { type TrackPage } from './buildTrackPage';
-import { formatReleasedOn } from './helpers';
 import { TrackAccessGate } from './TrackAccessGate';
 import { mixVersionLabel } from './trackDetails';
 
@@ -253,7 +253,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                     loading="lazy"
                   />
                 </div>
-              ) : (
+              ) : canPlay ? (
                 <>
                   <div className="mb-1 flex justify-end text-xs text-white/70 tabular-nums">
                     {clock} / {formatDuration(totalDuration) || '0:00'}
@@ -278,66 +278,79 @@ export function TrackHero({ page }: { page: TrackPage }) {
                     onSignIn={() => useAuthModalStore.getState().open('login')}
                   />
                 </>
-              )}
+              ) : null}
             </div>
           </div>
 
-          <div className="relative hidden aspect-video w-56 shrink-0 overflow-hidden rounded-md shadow-2xl sm:block lg:w-72">
+          <div className="relative hidden aspect-square w-40 shrink-0 overflow-hidden rounded-md shadow-2xl sm:block lg:w-48">
             <MediaArtwork src={cover} alt="" />
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {commentComposerOpen ? (
-            <form
-              className="flex min-w-[16rem] flex-1 items-center gap-3 rounded-md bg-black/55 px-3 py-2 backdrop-blur-md"
-              onSubmit={(event) => {
-                event.preventDefault();
-                void submitComment();
-              }}
-            >
-              <MediaArtwork
-                src={
-                  user?.avatarUrl ??
-                  placeholderArtworkUrl(user?.id ?? 'listener')
-                }
-                alt=""
-                size="sm"
-                className="size-7 min-w-7 shrink-0 rounded-full"
-              />
-              {commentsEnabled && user ? (
-                <Input
-                  value={commentBody}
-                  onChange={(event) => setCommentBody(event.target.value)}
-                  placeholder={
-                    embedSrc ? 'Write a comment' : `Write a comment at ${clock}`
+        {commentComposerOpen ? (
+          <div className="flex flex-wrap items-center gap-3">
+            {commentComposerOpen ? (
+              <form
+                className="flex min-w-[16rem] flex-1 items-center gap-3 rounded-md bg-black/55 px-3 py-2 backdrop-blur-md"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void submitComment();
+                }}
+              >
+                <MediaArtwork
+                  src={
+                    user?.avatarUrl ??
+                    placeholderArtworkUrl(user?.id ?? 'listener')
                   }
-                  maxLength={2000}
-                  disabled={commentBusy}
-                  aria-label={
-                    embedSrc ? 'Write a comment' : 'Write a timed comment'
-                  }
-                  className="h-auto min-w-0 rounded-none border-0 bg-transparent px-0 text-sm text-white outline-none placeholder:text-white/45 focus-visible:ring-0 focus-visible:ring-offset-0"
+                  alt=""
+                  size="sm"
+                  className="size-7 min-w-7 shrink-0 rounded-full"
                 />
-              ) : commentsEnabled ? (
-                <Link
-                  to="/login"
-                  className="min-w-0 flex-1 text-sm text-white/55"
-                >
-                  {embedSrc
-                    ? 'Log in to write a comment'
-                    : `Log in to write a comment at ${clock}`}
-                </Link>
-              ) : (
-                <span className="min-w-0 flex-1 text-sm text-white/55">
-                  Comments are off for this track
-                </span>
-              )}
-            </form>
-          ) : null}
-          <div className="flex items-center gap-3 text-xs text-white/70">
+                {commentsEnabled && user ? (
+                  <Input
+                    value={commentBody}
+                    onChange={(event) => setCommentBody(event.target.value)}
+                    placeholder={
+                      embedSrc
+                        ? 'Write a comment'
+                        : `Write a comment at ${clock}`
+                    }
+                    maxLength={2000}
+                    disabled={commentBusy}
+                    aria-label={
+                      embedSrc ? 'Write a comment' : 'Write a timed comment'
+                    }
+                    className="h-auto min-w-0 rounded-none border-0 bg-transparent px-0 text-sm text-white outline-none placeholder:text-white/45 focus-visible:ring-0 focus-visible:ring-offset-0"
+                  />
+                ) : commentsEnabled ? (
+                  <Link
+                    to="/login"
+                    className="min-w-0 flex-1 text-sm text-white/55"
+                  >
+                    {embedSrc
+                      ? 'Log in to write a comment'
+                      : `Log in to write a comment at ${clock}`}
+                  </Link>
+                ) : (
+                  <span className="min-w-0 flex-1 text-sm text-white/55">
+                    Comments are off for this track
+                  </span>
+                )}
+              </form>
+            ) : null}
+          </div>
+        ) : null}
+        {commentError ? (
+          <InlineError textSize="xs">{commentError}</InlineError>
+        ) : null}
+
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div
+            className="order-last flex items-center gap-3 text-xs text-white/70 sm:order-none"
+            data-testid="track-hero-stats"
+          >
             {detail?.releasedAt ? (
-              <span>{formatReleasedOn(detail.releasedAt)}</span>
+              <ListingDate value={detail.releasedAt} />
             ) : null}
             {detail?.playCount != null ? (
               <span className="inline-flex items-center gap-1">
@@ -366,15 +379,10 @@ export function TrackHero({ page }: { page: TrackPage }) {
             </span>
             <ActivityIcon size={13} aria-hidden className="opacity-70" />
           </div>
-        </div>
-        {commentError ? (
-          <InlineError textSize="xs">{commentError}</InlineError>
-        ) : null}
-
-        <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-1.5">
             {canEdit ? (
               <EditIconButton
+                className="size-9"
                 variant="default"
                 label={`Edit ${playable.title}`}
                 onClick={() => setEditOpen(true)}
@@ -462,6 +470,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
             >
               <Button
                 size="icon-sm"
+                className="size-9"
                 variant="secondary"
                 aria-label={
                   favorited
