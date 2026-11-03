@@ -2,9 +2,9 @@ import type { ChannelBlockWidth } from '../api/channel-blocks';
 
 /** Same 6-unit row as tahti-org's `packChannelBlocks`, so a layout made in the
  * legacy dashboard renders the same here. */
-export const CHANNEL_BLOCK_ROW_UNITS = 6;
+const CHANNEL_BLOCK_ROW_UNITS = 6;
 
-export const CHANNEL_BLOCK_WIDTH_UNITS: Record<ChannelBlockWidth, number> = {
+const CHANNEL_BLOCK_WIDTH_UNITS: Record<ChannelBlockWidth, number> = {
   FULL: 6,
   HALF: 3,
   THIRD: 2,

@@ -4,7 +4,7 @@ import {
   isValidBundleHashHex,
 } from './disco-widget-sri';
 
-export function bundleSrcForHash(bundleHash: string): string {
+function bundleSrcForHash(bundleHash: string): string {
   return `/widget-sandbox/bundle/${bundleHash}`;
 }
 

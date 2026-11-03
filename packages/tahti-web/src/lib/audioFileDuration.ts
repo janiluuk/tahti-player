@@ -1,4 +1,4 @@
-export const MAX_ANNOUNCEMENT_DURATION_SEC = 600;
+const MAX_ANNOUNCEMENT_DURATION_SEC = 600;
 
 export function announcementDurationSec(
   duration: number | undefined,

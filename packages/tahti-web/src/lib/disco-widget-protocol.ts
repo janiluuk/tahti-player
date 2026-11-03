@@ -36,14 +36,6 @@ function hasDiscoWidgetSource(data: unknown): data is { source: unknown } {
   return typeof data === 'object' && data !== null && 'source' in data;
 }
 
-export function isHostToWidgetMessage(
-  data: unknown,
-): data is HostToWidgetMessage {
-  return (
-    hasDiscoWidgetSource(data) && data.source === DISCO_WIDGET_MESSAGE_SOURCE
-  );
-}
-
 export function isWidgetToHostMessage(
   data: unknown,
 ): data is WidgetToHostMessage {

@@ -9,7 +9,7 @@ import {
 
 export const LANGUAGE_STORAGE_KEY = 'tahti-web-language';
 
-export function readStoredLocale(): LocaleCode | null {
+function readStoredLocale(): LocaleCode | null {
   if (typeof localStorage === 'undefined') {
     return null;
   }
@@ -33,12 +33,6 @@ export async function applyLocale(locale: LocaleCode): Promise<void> {
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem(LANGUAGE_STORAGE_KEY, locale);
   }
-}
-
-export async function initWebLocale(): Promise<LocaleCode> {
-  const locale = detectLocale();
-  await applyLocale(locale);
-  return locale;
 }
 
 export function currentLocale(): LocaleCode {

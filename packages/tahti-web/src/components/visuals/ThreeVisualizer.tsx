@@ -126,7 +126,7 @@ export const ThreeVisualizer: FC<ThreeVisualizerProps> = ({
     // parameter each preset's build() would need to implement itself.
     scene.scale.setScalar(settings.scale);
     let frequencyData = new Uint8Array(new ArrayBuffer(128));
-    const clock = new THREE.Clock();
+    const timer = new THREE.Timer();
     const stop = startVisibleRenderLoop(canvas, {
       minFrameMs: FRAME_INTERVAL_MS,
       pauseWhileScrolling: true,
@@ -135,14 +135,15 @@ export const ThreeVisualizer: FC<ThreeVisualizerProps> = ({
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
       },
-      render: () => {
+      render: (now) => {
         const { analyser, playing, audioReactive } = live.current;
         if (analyser && frequencyData.length !== analyser.frequencyBinCount) {
           frequencyData = new Uint8Array(
             new ArrayBuffer(analyser.frequencyBinCount),
           );
         }
-        const elapsed = clock.getElapsedTime() * settings.speed;
+        timer.update(now);
+        const elapsed = timer.getElapsed() * settings.speed;
         const level =
           audioReactive && playing
             ? readLevel(analyser, frequencyData)

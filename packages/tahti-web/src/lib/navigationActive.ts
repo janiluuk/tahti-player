@@ -18,7 +18,7 @@ export type MobileItemId =
 
 export type ListenTabId = 'listen' | 'feed' | 'history';
 
-export function locationPathname(location: string | undefined): string {
+function locationPathname(location: string | undefined): string {
   return location?.split('?')[0] ?? '';
 }
 
@@ -141,7 +141,7 @@ function isChatRoute(path: string): boolean {
 
 /** Library main-menu routes, including catalog pages that still live under
  * `/studio/...` until the full Studio→Library redirect lands. */
-export function isLibrarySidebarRoute(path: string): boolean {
+function isLibrarySidebarRoute(path: string): boolean {
   return (
     matchesSectionRoute(path, ['/library']) ||
     path.startsWith('/studio/sounds') ||

@@ -55,7 +55,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Artist/AlbumPlayPromptDialog` | `tahti-web/AlbumPlayPromptDialog.stories.tsx` |
 | `Tahti/Media/AmbientTrackList` | `tahti-web/AmbientTrackList.stories.tsx` |
 | `Tahti/Media/AmbientTrackRow` | `tahti-web/AmbientTrackRow.stories.tsx` |
-| `Tahti/Chrome/API connection` | `tahti-web/ApiConnectionIndicator.stories.tsx` |
 | `Tahti/Chrome/AppShell` | `tahti-web/AppShell.stories.tsx` |
 | `Tahti/Chrome/AppTopNav` | `tahti-web/AppTopNav.stories.tsx` |
 | `Tahti/Artist/ArtistBackgroundMusicButton` | `tahti-web/ArtistBackgroundMusicButton.stories.tsx` |
@@ -152,7 +151,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Track/CommentItem` | `tahti-web/CommentItem.stories.tsx` |
 | `Tahti/Discover/CommunityStoriesWidget` | `tahti-web/CommunityStoriesWidget.stories.tsx` |
 | `Tahti/Player/ConnectedPlayerBar` | `tahti-web/ConnectedPlayerBar.stories.tsx` |
-| `Tahti/Player/ConnectedQueuePanel` | `tahti-web/ConnectedQueuePanel.stories.tsx` |
 | `Tahti/Player/ConnectedSettingsModal` | `tahti-web/ConnectedSettingsModal.stories.tsx` |
 | `Tahti/Layout/ConnectedStatusBar` | `tahti-web/ConnectedStatusBar.stories.tsx` |
 | `Tahti/Admin/ContentReportsTab` | `tahti-web/ContentReportsTab.stories.tsx` |
@@ -258,6 +256,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Updates/PostDialog` | `tahti-web/PostDialog.stories.tsx` |
 | `Tahti/Studio/Updates/PostPreview` | `tahti-web/PostPreview.stories.tsx` |
 | `Tahti/Studio/Branding/PressKitPreview` | `tahti-web/PressKitPreview.stories.tsx` |
+| `Tahti/Studio/Pro editor/Mastering` | `tahti-web/ProEditorMastering.stories.tsx` |
 | `Tahti/Studio/ProcessingFailedAlert` | `tahti-web/ProcessingFailedAlert.stories.tsx` |
 | `Tahti/Studio/Branding/ProfilePictureSection` | `tahti-web/ProfilePictureSection.stories.tsx` |
 | `Tahti/Profile/ProfileSection` | `tahti-web/ProfileSection.stories.tsx` |
@@ -279,9 +278,9 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Home/RecentBroadcastRow` | `tahti-web/RecentBroadcastRow.stories.tsx` |
 | `Tahti/Studio/ReleasePinButton` | `tahti-web/ReleasePinButton.stories.tsx` |
 | `Tahti/Studio/ReleaseTrackAudioUpload` | `tahti-web/ReleaseTrackAudioUpload.stories.tsx` |
+| `Tahti/Studio/Release detail/ReleaseTrackRow` | `tahti-web/ReleaseTrackRow.stories.tsx` |
 | `Tahti/Track/ReleaseTracklistDialog` | `tahti-web/ReleaseTracklistDialog.stories.tsx` |
 | `Tahti/Settings/ReleaseVisualDefaultsPanel` | `tahti-web/ReleaseVisualDefaultsPanel.stories.tsx` |
-| `Tahti/Studio/ReleasesPanel` | `tahti-web/ReleasesPanel.stories.tsx` |
 | `Tahti/Misc/ReportButton` | `tahti-web/ReportButton.stories.tsx` |
 | `Tahti/Auth/ResetPasswordView` | `tahti-web/ResetPasswordView.stories.tsx` |
 | `Tahti/Misc/RightRailPanel` | `tahti-web/RightRailPanel.stories.tsx` |
@@ -314,7 +313,9 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/StudioBrandingView` | `tahti-web/StudioBrandingView.stories.tsx` |
 | `Tahti/Studio/StudioCollectionEditView` | `tahti-web/StudioCollectionEditView.stories.tsx` |
 | `Tahti/Studio/StudioCollectionsView` | `tahti-web/StudioCollectionsView.stories.tsx` |
+| `Tahti/Studio/Distribution panels` | `tahti-web/StudioDistributionPanels.stories.tsx` |
 | `Tahti/Studio/StudioDistributionView` | `tahti-web/StudioDistributionView.stories.tsx` |
+| `Tahti/Studio/StudioEpisodeReviewView` | `tahti-web/StudioEpisodeReviewView.stories.tsx` |
 | `Tahti/Studio/StudioEventCreateView` | `tahti-web/StudioEventCreateView.stories.tsx` |
 | `Tahti/Studio/StudioEventsView` | `tahti-web/StudioEventsView.stories.tsx` |
 | `Tahti/Studio/StudioGate` | `tahti-web/StudioGate.stories.tsx` |
@@ -323,11 +324,9 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Hubs` | `tahti-web/StudioHubViews.stories.tsx` |
 | `Tahti/Studio/StudioListeningPartiesView` | `tahti-web/StudioListeningPartiesView.stories.tsx` |
 | `Tahti/Studio/StudioListeningPartyFormView` | `tahti-web/StudioListeningPartyFormView.stories.tsx` |
-| `Tahti/Studio/StudioModerationView` | `tahti-web/StudioModerationView.stories.tsx` |
 | `Tahti/Studio/StudioNav` | `tahti-web/StudioNav.stories.tsx` |
 | `Tahti/Page/StudioPanel` | `tahti-web/StudioPanel.stories.tsx` |
 | `Tahti/Studio/StudioPlaylistEditorView` | `tahti-web/StudioPlaylistEditorView.stories.tsx` |
-| `Tahti/Studio/StudioPlaylistsView` | `tahti-web/StudioPlaylistsView.stories.tsx` |
 | `Tahti/Studio/StudioReleaseDetailView` | `tahti-web/StudioReleaseDetailView.stories.tsx` |
 | `Tahti/Studio/StudioScheduleView` | `tahti-web/StudioScheduleView.stories.tsx` |
 | `Tahti/Studio/StudioShowDetailView` | `tahti-web/StudioShowDetailView.stories.tsx` |

@@ -109,3 +109,31 @@ test('artist publishes a draft release and its smart link page opens', async ({
     page.getByRole('heading', { name: /^Studio Sessions Vol/ }).first(),
   ).toBeVisible();
 });
+
+test('artist sets a release cover from the artwork presets', async ({
+  page,
+}) => {
+  await signIn(page);
+  await page.goto('/studio/releases/rel-mock-3?edit=true');
+  const header = page.getByTestId('studio-release-social-header');
+  const cover = async () =>
+    (await header
+      .locator('img')
+      .first()
+      .getAttribute('src', { timeout: 500 })
+      .catch(() => null)) ?? '';
+  const before = await cover();
+  await page
+    .getByRole('button', { name: 'Upload Studio Sessions Vol. 1 artwork' })
+    .click();
+  const dialog = page.getByRole('dialog', { name: 'Release artwork' });
+  await dialog.getByRole('button', { name: 'Use artwork 3' }).click();
+  const apply = page.getByRole('button', { name: 'Use this image' });
+  if (await apply.isEnabled().catch(() => false)) {
+    await apply.click();
+  }
+  await expect(
+    page.getByRole('button', { name: 'Use this image' }),
+  ).toHaveCount(0);
+  await expect.poll(cover).not.toBe(before);
+});

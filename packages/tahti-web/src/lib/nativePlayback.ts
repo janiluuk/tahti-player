@@ -7,7 +7,7 @@ import {
 } from './nativeLibrary';
 
 /** Most tracks one bulk play / queue action will take. */
-export const PLAYBACK_LIMIT = 5000;
+const PLAYBACK_LIMIT = 5000;
 const BATCH = 500;
 
 /**
