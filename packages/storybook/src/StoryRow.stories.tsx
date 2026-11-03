@@ -4,14 +4,30 @@ import { expect, within } from 'storybook/test';
 import { StoryCard, StoryRow } from '@tahti-player/ui';
 
 const STORIES = [
-  ['News · 1 day ago', 'My journey: the story behind the mixes', 'DJ Aurora'],
   [
-    'Story · 1 day ago',
+    'shared news',
+    '1 day ago',
+    'My journey: the story behind the mixes',
+    'DJ Aurora',
+  ],
+  [
+    'shared a story',
+    '1 day ago',
     'Hi, I make the flutes you hear here',
     'Resonant Crafts',
   ],
-  ['Announcement · Oct 27, 2026', 'Thank you - 15000+ listens', 'Kasari'],
-  ['News · Oct 20, 2026', 'New EP out on Friday', 'Northern Lights'],
+  [
+    'posted an announcement',
+    '3 days ago',
+    'Thank you - 15000+ listens',
+    'Kasari',
+  ],
+  [
+    'released a track',
+    '14 hours ago',
+    'New EP out on Friday',
+    'Northern Lights',
+  ],
 ] as const;
 
 const meta = {
@@ -29,11 +45,12 @@ const meta = {
   tags: ['autodocs'],
   args: {
     title: 'Community stories',
-    children: STORIES.map(([metaLine, title, author], index) => (
+    children: STORIES.map(([kind, date, title, author], index) => (
       <StoryCard
         key={title}
         imageSrc={`https://picsum.photos/seed/tahti-story-${index}/960/540`}
-        meta={metaLine}
+        kind={kind}
+        date={date}
         title={title}
         excerpt="A short excerpt of the post that runs to a couple of lines in the card."
         authorName={author}

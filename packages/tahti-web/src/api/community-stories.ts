@@ -10,6 +10,13 @@ export const POST_CATEGORY_LABELS: Record<PostCategory, string> = {
   ANNOUNCEMENT: 'Announcement',
 };
 
+/** Activity verbs for story-card pills (Community stories + My feed posts). */
+export const POST_ACTIVITY_LABELS: Record<PostCategory, string> = {
+  STORY: 'shared a story',
+  NEWS: 'shared news',
+  ANNOUNCEMENT: 'posted an announcement',
+};
+
 export type CommunityStory = {
   id: string;
   category: PostCategory;

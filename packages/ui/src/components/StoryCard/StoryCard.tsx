@@ -1,6 +1,7 @@
 import { type FC, type ReactNode } from 'react';
 
 import { cn } from '../../utils';
+import { Badge } from '../Badge';
 import { Button } from '../Button';
 import { ImageReveal } from '../ImageReveal';
 
@@ -10,8 +11,14 @@ export type StoryCardProps = {
   /** Replaces the image, e.g. artwork with a play control. Rendered in the
    * same 16:9 frame. */
   media?: ReactNode;
-  /** Muted line above the title, e.g. `News · 1 day ago`. */
-  meta: ReactNode;
+  /** Activity type shown as a pill, e.g. `released a track`. Prefer with
+   * `date` over a free-form `meta` string. */
+  kind?: string;
+  /** Humanized date next to the kind pill, e.g. `14 hours ago`. */
+  date?: string;
+  /** Free-form muted line above the title. Used when `kind` / `date` are not
+   * set (legacy callers). */
+  meta?: ReactNode;
   /** The title; pass a link element to make it navigable. */
   title: ReactNode;
   excerpt?: ReactNode;
@@ -33,11 +40,13 @@ export type StoryCardProps = {
 const STAGGER_MS = 70;
 const MAX_STAGGER_STEPS = 6;
 
-/** Editorial card: wide image, meta line, bold title, excerpt and author.
- * No frame, so a row of them reads like a magazine strip. */
+/** Editorial card: wide image, kind pill + date, bold title, excerpt and
+ * author. No frame, so a row of them reads like a magazine strip. */
 export const StoryCard: FC<StoryCardProps> = ({
   imageSrc,
   media,
+  kind,
+  date,
   meta,
   title,
   excerpt,
@@ -95,6 +104,26 @@ export const StoryCard: FC<StoryCardProps> = ({
     </span>
   );
 
+  const metaRow =
+    kind || date ? (
+      <div className="flex flex-wrap items-center gap-2">
+        {kind ? (
+          <Badge
+            variant="pill"
+            color="secondary"
+            className="bg-foreground/10 text-foreground-secondary border-transparent font-medium"
+          >
+            {kind}
+          </Badge>
+        ) : null}
+        {date ? (
+          <span className="text-foreground-secondary text-sm">{date}</span>
+        ) : null}
+      </div>
+    ) : meta ? (
+      <p className="text-foreground-secondary text-sm">{meta}</p>
+    ) : null;
+
   return (
     <article
       data-testid={testId}
@@ -130,7 +159,7 @@ export const StoryCard: FC<StoryCardProps> = ({
           />
         ) : null}
       </div>
-      <p className="text-foreground-secondary text-sm">{meta}</p>
+      {metaRow}
       <h3 className="line-clamp-3 text-lg leading-snug font-bold">{title}</h3>
       {excerpt ? (
         <p className="text-foreground-secondary line-clamp-3 text-sm leading-relaxed">
