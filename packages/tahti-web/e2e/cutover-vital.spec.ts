@@ -397,7 +397,7 @@ test('artist stats combine audience metrics and listener maps in one place', asy
   await expect(
     page.getByRole('heading', { name: 'Engagement units' }),
   ).toBeVisible();
-  await page.getByRole('tab', { name: 'Plays & listeners' }).click();
+  await page.getByRole('radio', { name: 'Plays and listeners' }).click();
   await expect(page.getByLabel('Listener world map')).toBeVisible();
 });
 
@@ -594,6 +594,10 @@ test('admin user profile includes identity details and an expandable avatar', as
   await expect(page.getByRole('option', { name: 'Artist' })).toBeVisible();
   await expect(page.getByRole('option', { name: 'Listener' })).toBeVisible();
   await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', { name: 'Save account' })).toHaveCount(
+    0,
+  );
+  await page.getByRole('button', { name: 'Edit account details' }).click();
   await page.getByRole('button', { name: 'Role', exact: true }).click();
   await page.getByRole('option', { name: 'Board' }).click();
   await page.getByRole('button', { name: 'Save account' }).click();

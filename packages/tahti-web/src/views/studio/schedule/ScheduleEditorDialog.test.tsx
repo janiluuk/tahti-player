@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { ScheduleEditorDialog } from './ScheduleEditorDialog';
@@ -95,5 +95,26 @@ describe('ScheduleEditorDialog create-only fields', () => {
     expect(
       screen.getByText(/change them on its show page/),
     ).toBeInTheDocument();
+  });
+});
+
+describe('ScheduleEditorDialog start episode', () => {
+  it('can be cleared and retyped without snapping back to 1', () => {
+    const setNextEpisodeNumber = vi.fn();
+    render(
+      <ScheduleEditorDialog
+        form={makeForm({
+          selectedShowId: '',
+          nextEpisodeNumber: 3,
+          setNextEpisodeNumber,
+        })}
+      />,
+    );
+    const field = screen.getByLabelText('Start episode');
+    fireEvent.change(field, { target: { value: '' } });
+    expect(field).toHaveValue(null);
+    expect(setNextEpisodeNumber).not.toHaveBeenCalled();
+    fireEvent.change(field, { target: { value: '5' } });
+    expect(setNextEpisodeNumber).toHaveBeenCalledWith(5);
   });
 });

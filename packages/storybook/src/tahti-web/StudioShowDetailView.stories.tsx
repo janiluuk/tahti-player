@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { StudioShowDetailView } from '@tahti-web/views/studio/StudioShowDetailView';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { resetStudioShowStorage, SINGLE_SHOW } from './_fixtures/studio';
 import { withToaster } from './_fixtures/track-release';
@@ -95,11 +95,17 @@ export const EpisodesAndRecordings: Story = {
     await canvas.findByRole('heading', { name: 'Friday Frequency' });
     await userEvent.click(canvas.getByRole('tab', { name: /Episodes/ }));
     await expectVisible(await canvas.findByText('All episodes'));
-    await waitFor(() =>
-      expect(
-        canvas.getAllByRole('textbox', { name: 'Episode title' }),
-      ).toHaveLength(3),
-    );
+    const edits = (
+      await canvas.findAllByRole('button', { name: /^Edit / })
+    ).filter((button) => button.getAttribute('aria-label') !== 'Edit details');
+    await expect(edits.length).toBeGreaterThanOrEqual(3);
+    await expect(
+      canvas.queryByRole('textbox', { name: 'Episode title' }),
+    ).not.toBeInTheDocument();
+    await userEvent.click(edits[0]);
+    await expect(
+      canvas.getByRole('textbox', { name: 'Episode title' }),
+    ).toBeInTheDocument();
 
     await userEvent.click(canvas.getByRole('tab', { name: /Recordings/ }));
     await expectVisible(await canvas.findByText('Recordings from this show'));

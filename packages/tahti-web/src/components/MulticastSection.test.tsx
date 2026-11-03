@@ -88,6 +88,9 @@ describe('MulticastSection', () => {
       render(<MulticastSection scope="radio" />);
     });
     fireEvent.click(screen.getByRole('button', { name: /YouTube/ }));
+    expect(screen.getByText('···9999')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /Save changes/ })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Edit destination' }));
     const toggle = () =>
       screen.getByRole('switch', {
         name: "Keep mirroring the 24/7 rotation when I'm offline",

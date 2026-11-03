@@ -15,12 +15,6 @@ import {
 import { PageEmpty } from './PageStates';
 import { trackViewOptions, TrackViewPicker } from './TrackViewPicker';
 
-export const AMBIENT_TRACK_DENSITIES: AmbientTrackRowDensity[] = [
-  'comfortable',
-  'compact',
-  'dense',
-];
-
 /** A row density, `list` (a plain data table) or `grid` (cover cards). */
 export type AmbientTrackListView = TrackListView;
 

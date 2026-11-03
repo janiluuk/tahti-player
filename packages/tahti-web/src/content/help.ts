@@ -14,9 +14,6 @@ export type HelpArticle = {
   sections: Array<{ heading: string; body: string[]; table?: HelpTable }>;
 };
 
-export const HELP_HUB_INTRO =
-  'Guides for listening, broadcasting, add-ons, account tiers, and getting in touch.';
-
 export const HELP_ARTICLES: HelpArticle[] = [
   {
     slug: 'getting-around',

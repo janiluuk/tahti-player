@@ -258,7 +258,7 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
         </HistoryDayGroup>
       ))}
 
-      {totalPages > 1 && (
+      {filtered.length > PAGE_SIZES[0]! && (
         <footer
           data-testid="history-pagination"
           className="flex w-full flex-col gap-2 pb-6"
@@ -279,19 +279,21 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
               />
             </div>
           </div>
-          <div className="flex justify-center">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setPage}
-              labels={{
-                navigation: 'Pagination',
-                previous: 'Previous page',
-                next: 'Next page',
-                page: (n) => `Page ${n}`,
-              }}
-            />
-          </div>
+          {totalPages > 1 ? (
+            <div className="flex justify-center">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setPage}
+                labels={{
+                  navigation: 'Pagination',
+                  previous: 'Previous page',
+                  next: 'Next page',
+                  page: (n) => `Page ${n}`,
+                }}
+              />
+            </div>
+          ) : null}
         </footer>
       )}
     </div>

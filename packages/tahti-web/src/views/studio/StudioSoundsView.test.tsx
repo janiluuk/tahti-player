@@ -121,13 +121,18 @@ describe('StudioSoundsView', () => {
       data: { ...emptyStats, total: 1, processingCount: 1 },
       meta: { source: 'api' },
     });
-    const { unmount } = await renderWithRouter(<StudioSoundsView />);
-    await screen.findByText(/PROCESSING/);
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5100));
-    });
-    expect(await screen.findByText(/READY/)).toBeVisible();
-    expect(fetch).toHaveBeenCalledTimes(2);
-    unmount();
-  }, 10000);
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      const { unmount } = await renderWithRouter(<StudioSoundsView />);
+      await screen.findByText(/PROCESSING/);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(5100);
+      });
+      expect(await screen.findByText(/READY/)).toBeVisible();
+      expect(fetch).toHaveBeenCalledTimes(2);
+      unmount();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });

@@ -65,6 +65,14 @@ export function rangeDisplayBounds(
   return { from: earliest, to };
 }
 
+// Local calendar day, matching the hour and weekday charts, which also read
+// local time; an ISO slice would file late-night plays under the UTC day.
+function localDay(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
 /** Per-day listening over the last 12 months, padded with zero-value
  * endpoints so the calendar always spans the full year (same window as
  * Nuclear desktop's `useDailyListeningTime`), not just the days played. */
@@ -72,14 +80,14 @@ export function dailyListeningMs(
   entries: HistoryEntry[],
   now: Date = new Date(),
 ): { date: string; value: number }[] {
-  const to = now.toISOString().slice(0, 10);
+  const to = localDay(now);
   const fromDate = new Date(now);
   fromDate.setMonth(fromDate.getMonth() - 12);
-  const from = fromDate.toISOString().slice(0, 10);
+  const from = localDay(fromDate);
 
   const byDate = new Map<string, number>();
   for (const e of entries) {
-    const iso = e.playedAt.slice(0, 10);
+    const iso = localDay(new Date(e.playedAt));
     if (iso < from || iso > to) {
       continue;
     }

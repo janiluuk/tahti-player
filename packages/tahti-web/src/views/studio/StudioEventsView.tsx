@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import {
   CalendarClockIcon,
   CalendarDaysIcon,
@@ -70,7 +71,13 @@ export function StudioEventsView() {
                 <CalendarDaysIcon size={24} aria-hidden />
               </div>
               <div className="min-w-0">
-                <div className="font-medium">{event.title}</div>
+                <Link
+                  to="/studio/events/$eventId"
+                  params={{ eventId: event.id }}
+                  className="font-medium hover:underline"
+                >
+                  {event.title}
+                </Link>
                 <div className="text-foreground-secondary text-xs">
                   {new Date(event.startAt).toLocaleString()} · {event.place},{' '}
                   {event.location}

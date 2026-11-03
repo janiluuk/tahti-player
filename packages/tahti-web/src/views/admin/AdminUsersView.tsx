@@ -36,9 +36,13 @@ export const AdminUsersView = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     setLoading(true);
     const handle = setTimeout(() => {
       void fetchAdminUsers({ q: query, role, isMember }).then((result) => {
+        if (cancelled) {
+          return;
+        }
         setUsers(result.data);
         setTotal(result.total);
         const reason =
@@ -53,7 +57,10 @@ export const AdminUsersView = () => {
         setLoading(false);
       });
     }, 200);
-    return () => clearTimeout(handle);
+    return () => {
+      cancelled = true;
+      clearTimeout(handle);
+    };
   }, [query, role, isMember, attempt]);
 
   return (

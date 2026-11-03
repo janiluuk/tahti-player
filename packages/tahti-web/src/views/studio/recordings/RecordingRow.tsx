@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
-import { CheckIcon, PencilIcon, RadioIcon } from 'lucide-react';
+import { CheckIcon, RadioIcon } from 'lucide-react';
 
-import { Button, Loader, Tooltip } from '@tahti-player/ui';
+import { EditIconButton, Loader } from '@tahti-player/ui';
 
 import type { RecentBroadcast } from '../../../api/broadcast';
 import { formatDate, formatDuration, isPublished } from './helpers';
@@ -75,16 +75,11 @@ export function RecordingRow({
         ) : null}
       </div>
       {show.soundId ? (
-        <Tooltip content="Edit track" side="top">
-          <Button
-            size="icon-sm"
-            variant="text"
-            aria-label={`Edit ${title}`}
-            onClick={() => onEdit(show.soundId!)}
-          >
-            <PencilIcon size={16} aria-hidden />
-          </Button>
-        </Tooltip>
+        <EditIconButton
+          variant="text"
+          label={`Edit ${title}`}
+          onClick={() => onEdit(show.soundId!)}
+        />
       ) : null}
     </li>
   );

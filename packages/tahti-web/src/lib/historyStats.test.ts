@@ -38,4 +38,14 @@ describe('dailyListeningMs', () => {
     ]);
     expect(days[1]!.value).toBeGreaterThan(0);
   });
+
+  it('files a play under the local day it happened, like the weekday chart', () => {
+    const justAfterMidnight = new Date(2026, 8, 22, 0, 30);
+    const days = dailyListeningMs(
+      [entry(justAfterMidnight.toISOString())],
+      new Date(2026, 8, 25, 12),
+    );
+    expect(days.map((d) => d.date)).toContain('2026-09-22');
+    expect(days.map((d) => d.date)).not.toContain('2026-09-21');
+  });
 });

@@ -68,6 +68,11 @@ describe('buildBroadcastAgenda', () => {
     expect(agenda[0].live).toBe(true);
     expect(agenda[1].place).toBe('Ääniwalli, Helsinki');
     expect(agenda[2].params).toEqual({ id: 'series-a' });
+    expect(agenda[0]).toMatchObject({ to: '/party/$id', params: { id: 'p1' } });
+    expect(agenda[1]).toMatchObject({
+      to: '/studio/events/$eventId',
+      params: { eventId: 'e1' },
+    });
   });
 
   it('is empty when nothing is coming up', () => {

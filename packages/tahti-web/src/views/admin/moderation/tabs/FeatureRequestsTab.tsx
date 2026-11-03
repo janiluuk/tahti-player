@@ -8,6 +8,7 @@ import {
   LoaderCircleIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { Badge, Button, InlineError } from '@tahti-player/ui';
 
@@ -164,8 +165,12 @@ function RowActions({
 
   const apply = (status: AdminFeatureRequestStatus) => {
     setPending(true);
-    void updateFeatureRequestStatus(row.id, status).then(() => {
+    void updateFeatureRequestStatus(row.id, status).then((result) => {
       setPending(false);
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
       onDone();
     });
   };

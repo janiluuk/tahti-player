@@ -11,6 +11,8 @@ const IMAGES = [
   'https://example.com/three.jpg',
 ];
 
+const roots: Root[] = [];
+
 function renderBackdrop(props: {
   images: string[];
   preset?: string | null;
@@ -21,6 +23,7 @@ function renderBackdrop(props: {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
+  roots.push(root);
   act(() => {
     root.render(<ChannelSlideshowBackdrop {...props} />);
   });
@@ -37,6 +40,9 @@ describe('ChannelSlideshowBackdrop', () => {
   });
 
   afterEach(() => {
+    act(() => {
+      roots.splice(0).forEach((root) => root.unmount());
+    });
     document.body.replaceChildren();
     vi.useRealTimers();
     vi.restoreAllMocks();

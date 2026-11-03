@@ -80,10 +80,6 @@ function platformFromLabel(label: string, url: string): SocialPlatform {
   return 'website';
 }
 
-export function socialLinkLabel(label: string, url: string): string {
-  return PLATFORM_DETAILS[platformFromLabel(label, url)].label;
-}
-
 export function SocialLinkIcon({
   label,
   url,

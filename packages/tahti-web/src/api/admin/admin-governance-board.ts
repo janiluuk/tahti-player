@@ -47,10 +47,6 @@ export function mockBoardTerms(): AdminBoardTerm[] {
   return mockTerms;
 }
 
-export function setMockBoardTerms(terms: AdminBoardTerm[]): void {
-  mockTerms = terms;
-}
-
 export function errorText(err: unknown, fallback: string): string {
   return err instanceof Error ? err.message : fallback;
 }

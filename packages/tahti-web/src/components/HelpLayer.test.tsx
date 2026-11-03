@@ -5,6 +5,8 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { HelpLayer } from './HelpLayer';
 
+const mountedRoots: Root[] = [];
+
 function renderHelpLayer(defaultOpen?: boolean): {
   container: HTMLDivElement;
   root: Root;
@@ -12,6 +14,7 @@ function renderHelpLayer(defaultOpen?: boolean): {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
+  mountedRoots.push(root);
   act(() => {
     root.render(
       <HelpLayer title="Help for this section" defaultOpen={defaultOpen}>
@@ -24,6 +27,9 @@ function renderHelpLayer(defaultOpen?: boolean): {
 
 describe('HelpLayer', () => {
   afterEach(() => {
+    act(() => {
+      mountedRoots.splice(0).forEach((root) => root.unmount());
+    });
     document.body.replaceChildren();
   });
 

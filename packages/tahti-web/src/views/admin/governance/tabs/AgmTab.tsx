@@ -6,6 +6,7 @@ import {
   Button,
   ButtonAnchor,
   CopyButton,
+  EditIconButton,
   ExternalLink,
   HiddenFileInput,
   InlineError,
@@ -339,6 +340,7 @@ export function AgmTab() {
   const [meetingStateSaving, setMeetingStateSaving] = useState<string | null>(
     null,
   );
+  const [editingMeetingId, setEditingMeetingId] = useState<string | null>(null);
   const [minutesUploading, setMinutesUploading] = useState<string | null>(null);
   const [minutesError, setMinutesError] = useState<{
     meetingId: string;
@@ -426,8 +428,20 @@ export function AgmTab() {
               >
                 <div className="flex flex-wrap justify-between gap-2">
                   <span className="font-medium">{meeting.title}</span>
-                  <span className="text-foreground-secondary text-xs">
+                  <span className="text-foreground-secondary flex items-center gap-1 text-xs">
                     {meeting.state}
+                    <EditIconButton
+                      label={`Edit state of ${meeting.title}`}
+                      editing={editingMeetingId === meeting.id}
+                      variant={
+                        editingMeetingId === meeting.id ? undefined : 'text'
+                      }
+                      onClick={() =>
+                        setEditingMeetingId((current) =>
+                          current === meeting.id ? null : meeting.id,
+                        )
+                      }
+                    />
                   </span>
                 </div>
                 <p className="text-foreground-secondary mt-1 text-xs">
@@ -437,42 +451,45 @@ export function AgmTab() {
                   · {meeting.presentCount}/{meeting.eligibleMemberCount ?? '—'}{' '}
                   present
                 </p>
-                <div className="mt-2 flex max-w-xs items-center gap-2">
-                  <Select
-                    label="State"
-                    value={meeting.state}
-                    disabled={meetingStateSaving === meeting.id}
-                    onValueChange={(value) => {
-                      const state = value as GovernanceMeeting['state'];
-                      setMeetingStateSaving(meeting.id);
-                      void patchAdminGovernanceMeeting(meeting.id, {
-                        state,
-                      }).then((result) => {
-                        setMeetingStateSaving(null);
-                        if (result.data) {
-                          setMeetings((current) =>
-                            current.map((item) =>
-                              item.id === meeting.id ? result.data! : item,
-                            ),
-                          );
-                        }
-                      });
-                    }}
-                    options={[
-                      { id: 'DRAFT', label: 'Draft' },
-                      { id: 'SCHEDULED', label: 'Scheduled' },
-                      { id: 'HELD', label: 'Held' },
-                      { id: 'MINUTES_DRAFT', label: 'Minutes draft' },
-                      { id: 'APPROVED', label: 'Approved' },
-                      { id: 'CANCELLED', label: 'Cancelled' },
-                    ]}
-                  />
-                  {meetingStateSaving === meeting.id && (
-                    <span className="text-foreground-secondary text-xs">
-                      Saving…
-                    </span>
-                  )}
-                </div>
+                {editingMeetingId === meeting.id ? (
+                  <div className="mt-2 flex max-w-xs items-center gap-2">
+                    <Select
+                      label="State"
+                      value={meeting.state}
+                      disabled={meetingStateSaving === meeting.id}
+                      onValueChange={(value) => {
+                        const state = value as GovernanceMeeting['state'];
+                        setMeetingStateSaving(meeting.id);
+                        void patchAdminGovernanceMeeting(meeting.id, {
+                          state,
+                        }).then((result) => {
+                          setMeetingStateSaving(null);
+                          if (result.data) {
+                            setEditingMeetingId(null);
+                            setMeetings((current) =>
+                              current.map((item) =>
+                                item.id === meeting.id ? result.data! : item,
+                              ),
+                            );
+                          }
+                        });
+                      }}
+                      options={[
+                        { id: 'DRAFT', label: 'Draft' },
+                        { id: 'SCHEDULED', label: 'Scheduled' },
+                        { id: 'HELD', label: 'Held' },
+                        { id: 'MINUTES_DRAFT', label: 'Minutes draft' },
+                        { id: 'APPROVED', label: 'Approved' },
+                        { id: 'CANCELLED', label: 'Cancelled' },
+                      ]}
+                    />
+                    {meetingStateSaving === meeting.id && (
+                      <span className="text-foreground-secondary text-xs">
+                        Saving…
+                      </span>
+                    )}
+                  </div>
+                ) : null}
                 <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
                   <span className="text-foreground-secondary">
                     Minutes:{' '}

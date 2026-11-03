@@ -1,6 +1,5 @@
 import {
   CheckIcon,
-  PencilIcon,
   SettingsIcon,
   Trash2Icon,
   UploadIcon,
@@ -10,6 +9,7 @@ import {
 import {
   Badge,
   Button,
+  EditIconButton,
   ImageReveal,
   InlineError,
   Tooltip,
@@ -87,18 +87,13 @@ export function AddonCard({
         </div>
       </div>
       <div className="ml-auto flex shrink-0 items-start gap-1">
-        <Tooltip content={`Edit ${addon.name}`} side="top">
-          <Button
-            type="button"
-            size="icon-sm"
-            variant="text"
-            aria-label={`Edit ${addon.name}`}
-            disabled={pending}
-            onClick={() => onEdit(addon)}
-          >
-            <PencilIcon size={16} aria-hidden />
-          </Button>
-        </Tooltip>
+        <EditIconButton
+          type="button"
+          variant="text"
+          label={`Edit ${addon.name}`}
+          disabled={pending}
+          onClick={() => onEdit(addon)}
+        />
         <Tooltip content={`Publish a version of ${addon.name}`} side="top">
           <Button
             type="button"

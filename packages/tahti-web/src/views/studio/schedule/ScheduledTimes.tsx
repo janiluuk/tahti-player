@@ -3,7 +3,6 @@ import {
   Clock3Icon,
   ListIcon,
   MapPinIcon,
-  PencilIcon,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -11,9 +10,9 @@ import {
   Button,
   ButtonLink,
   Dialog,
+  EditIconButton,
   ImageReveal,
   SegmentedControl,
-  Tooltip,
 } from '@tahti-player/ui';
 
 import { PageEmpty } from '../../../components/PageStates';
@@ -130,16 +129,11 @@ export function ScheduledTimes({
                         </span>
                       ) : null}
                       {index === 0 ? (
-                        <Tooltip content="Edit next broadcast" side="top">
-                          <Button
-                            size="icon-sm"
-                            variant="text"
-                            aria-label="Edit next broadcast"
-                            onClick={onEdit}
-                          >
-                            <PencilIcon size={14} aria-hidden />
-                          </Button>
-                        </Tooltip>
+                        <EditIconButton
+                          variant="text"
+                          label="Edit next broadcast"
+                          onClick={onEdit}
+                        />
                       ) : null}
                     </div>
                   </div>

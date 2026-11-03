@@ -6,7 +6,6 @@ import {
   HeartIcon,
   MessageCircleIcon,
   PauseIcon,
-  PencilIcon,
   PlayIcon,
   PlusIcon,
   Repeat2Icon,
@@ -21,6 +20,7 @@ import {
   BackButtonLink,
   Badge,
   Button,
+  EditIconButton,
   InlineError,
   Input,
   MediaArtwork,
@@ -374,16 +374,11 @@ export function TrackHero({ page }: { page: TrackPage }) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-1.5">
             {canEdit ? (
-              <Tooltip content={`Edit ${playable.title}`} side="top">
-                <Button
-                  size="icon-sm"
-                  variant="default"
-                  aria-label={`Edit ${playable.title}`}
-                  onClick={() => setEditOpen(true)}
-                >
-                  <PencilIcon size={15} aria-hidden />
-                </Button>
-              </Tooltip>
+              <EditIconButton
+                variant="default"
+                label={`Edit ${playable.title}`}
+                onClick={() => setEditOpen(true)}
+              />
             ) : null}
             <Button
               size="sm"

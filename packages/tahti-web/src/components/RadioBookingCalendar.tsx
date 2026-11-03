@@ -13,6 +13,7 @@ import {
   Button,
   ButtonLink,
   Dialog,
+  EditIconLink,
   ImageReveal,
   Input,
   Tooltip,
@@ -543,17 +544,16 @@ export function RadioBookingCalendar({
             </div>
             <Dialog.Actions>
               {selectedBooking.isMine && selectedBooking.showId ? (
-                <ButtonLink
+                <EditIconLink
+                  label="Edit show"
                   to="/studio/shows/$id"
                   params={{ id: selectedBooking.showId }}
                   onClick={() => {
                     setSelectedBooking(null);
                     onClose();
                   }}
-                  variant="secondary"
-                >
-                  Edit show
-                </ButtonLink>
+                  search={{ edit: true }}
+                />
               ) : (
                 <ButtonLink
                   to="/radio/show/$channelSlug"

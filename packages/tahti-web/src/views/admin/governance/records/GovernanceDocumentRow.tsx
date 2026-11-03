@@ -3,6 +3,7 @@ import { useState } from 'react';
 import {
   Badge,
   Button,
+  EditIconButton,
   ExternalLink,
   InlineError,
   Input,
@@ -63,15 +64,11 @@ export function GovernanceDocumentRow({
             Archived
           </Badge>
         ) : null}
-        <Button
-          size="xs"
-          variant="secondary"
+        <EditIconButton
           disabled={busy}
-          aria-label={`Rename: ${label}`}
+          label={`Rename: ${label}`}
           onClick={() => setRenaming(true)}
-        >
-          Rename
-        </Button>
+        />
         <Button
           size="xs"
           variant="secondary"

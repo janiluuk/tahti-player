@@ -25,7 +25,6 @@ import {
   SidebarNavigationItem,
 } from '@tahti-player/ui';
 
-import type { TourStep } from '../lib/pageTour';
 import { matchesSectionRoute } from '../lib/sectionNavigation';
 import { SectionTabs } from './SectionTabs';
 
@@ -86,10 +85,8 @@ export const SUBMENUS = {
   ],
 } as const;
 
-/** Perform used to be its own primary nav item with this submenu; it's now
- * folded into Studio as a single "Broadcast" tab (`studio.goLive` above),
- * and these pages get their own nested tab strip via `BroadcastSubNav`
- * instead of a second top-level Studio submenu section. */
+/** The Broadcast hub's pages, all lit by the single "Broadcast" tab
+ * (`studio.goLive` above); they link back with `BroadcastBackLink`. */
 export const BROADCAST_SUBNAV_ITEMS = [
   {
     to: '/studio/go-live',
@@ -150,14 +147,6 @@ export const CATALOG_SUBNAV_ITEMS = [
 
 const pathMatches = (pathname: string, prefix: string) =>
   pathname === prefix || pathname.startsWith(`${prefix}/`);
-
-export const STUDIO_NAV_TOUR_STEPS: TourStep[] = PRIMARY.map(
-  (item): TourStep => ({
-    id: `nav-item-${item.to}`,
-    label: item.label,
-    description: item.description,
-  }),
-);
 
 const SECTION_PREFIXES: Record<string, readonly string[]> = {
   '/studio': [
@@ -411,28 +400,6 @@ export function isStudioFansGroup(current: string | undefined): boolean {
     pathname === '/studio/audience' ||
     pathname === '/studio/revenue' ||
     pathname === '/studio/stripe'
-  );
-}
-
-/** Second-level tab strip nested inside every Broadcast-group page
- * (go-live, schedule, events, shows, channel) — Studio's own submenu only
- * shows one "Broadcast" tab for all of these (see `isSubmenuActive`
- * above), so this is where Schedule/Events/Shows/Channel/Radio become
- * reachable. Prefer mounting via `StudioNav` (global chrome) rather than
- * duplicating this inside each page. */
-export function BroadcastSubNav({ current }: { current?: string }) {
-  const { t } = useTranslation('web');
-  return (
-    <SectionTabs
-      aria-label="Broadcast pages"
-      items={BROADCAST_SUBNAV_ITEMS.map((item) => ({
-        id: item.to,
-        to: item.to,
-        label: t(item.labelKey),
-        icon: item.icon,
-        active: isBroadcastSubnavActive(current, item.to),
-      }))}
-    />
   );
 }
 

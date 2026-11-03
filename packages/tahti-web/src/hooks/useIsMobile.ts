@@ -30,11 +30,3 @@ export function useIsMobile(query = QUERY): boolean {
 export function useIsCompactDesktop(): boolean {
   return useIsMobile(COMPACT_DESKTOP_QUERY);
 }
-
-/** Sync check for stores / non-React callers (matches `useIsMobile`). */
-export function isNarrowViewport(): boolean {
-  if (typeof window === 'undefined') {
-    return false;
-  }
-  return window.matchMedia(QUERY).matches;
-}

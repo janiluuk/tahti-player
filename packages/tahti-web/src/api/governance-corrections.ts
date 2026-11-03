@@ -42,12 +42,6 @@ export function mockGovernanceCorrections(): GovernanceCorrection[] {
   return mockCorrections;
 }
 
-export function setMockGovernanceCorrections(
-  rows: GovernanceCorrection[],
-): void {
-  mockCorrections = rows;
-}
-
 export async function fetchMyCorrections(): Promise<{
   data: GovernanceCorrection[];
   meta: FetchMeta;

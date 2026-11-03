@@ -71,8 +71,6 @@ type PlayerState = {
   /** Global hidden `<audio>` element (set by AudioEngine) for waveform binding. */
   audioElement: HTMLAudioElement | null;
   setAudioElement: (el: HTMLAudioElement | null) => void;
-  /** Cache waveform peaks for a playable id; updates currentPeaks when that id is playing. */
-  cachePeaks: (id: string, peaks: number[]) => void;
   play: (item: TahtiPlayable, opts?: { enqueueRest?: TahtiPlayable[] }) => void;
   /** Plays `items[index]` with the full ordered list as the queue so
    * previous/next walk neighbors (e.g. Listen Radio row stations). */
@@ -105,7 +103,6 @@ type PlayerState = {
    * persistent next-track-selection mode) — keeps the current track in
    * place, randomizes everything after it. */
   shuffleQueueOrder: () => void;
-  hidePlayerBar: () => void;
   setStatus: (
     status: PlaybackStatus,
     error?: string | null,
@@ -234,16 +231,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setAnalyser: (analyser) => set({ analyser }),
 
   setAudioElement: (audioElement) => set({ audioElement }),
-
-  cachePeaks: (id, peaks) => {
-    if (!peaks.length) {
-      return;
-    }
-    set((s) => ({
-      peaksById: rememberPeaks(s.peaksById, id, peaks),
-      currentPeaks: s.currentId === id ? peaks : s.currentPeaks,
-    }));
-  },
 
   play: (item, opts) => {
     const head = toQueueItem(item);
@@ -507,9 +494,14 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   removeFromQueue: (id) => {
     set((s) => {
+      const removedAt = s.queue.findIndex((q) => q.id === id);
       const queue = s.queue.filter((q) => q.id !== id);
+      // The track after the removed current one takes its place, so playback
+      // carries on from there rather than jumping back to the top.
       const currentId =
-        s.currentId === id ? (queue[0]?.id ?? null) : s.currentId;
+        s.currentId === id
+          ? (queue[removedAt]?.id ?? queue[removedAt - 1]?.id ?? null)
+          : s.currentId;
       return {
         queue,
         currentId,
@@ -568,8 +560,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       return { queue: [...head, ...rest] };
     });
   },
-
-  hidePlayerBar: () => set({ playerBarVisible: false }),
 
   setStatus: (status, error = null, failure = null) => {
     // A failed element can't be played again in place; a play request

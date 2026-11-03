@@ -136,7 +136,7 @@ describe('GovernanceMotionDetailView', () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
     const editButton = Array.from(container.querySelectorAll('button')).find(
-      (b) => b.textContent === 'Edit motion',
+      (b) => b.getAttribute('aria-label') === 'Edit motion',
     );
     expect(editButton).toBeTruthy();
     await act(async () => {
@@ -172,6 +172,8 @@ describe('GovernanceMotionDetailView', () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
     const buttons = Array.from(container.querySelectorAll('button'));
-    expect(buttons.some((b) => b.textContent === 'Edit motion')).toBe(false);
+    expect(
+      buttons.some((b) => b.getAttribute('aria-label') === 'Edit motion'),
+    ).toBe(false);
   });
 });

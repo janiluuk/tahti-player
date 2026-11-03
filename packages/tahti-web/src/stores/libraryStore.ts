@@ -69,7 +69,6 @@ export type LibraryState = {
   pushHistory: (playable: TahtiPlayable) => void;
   clearHistory: () => void;
   mergeServerFollowing: (username: string) => Promise<void>;
-  setScopeKey: (key: string) => void;
 };
 
 const MAX_HISTORY = 80;
@@ -121,8 +120,6 @@ export const useLibraryStore = create<LibraryState>()(
       heardFavoritePlaylists: [],
       heardFavoriteArtists: [],
       history: [],
-
-      setScopeKey: (key) => set({ scopeKey: key }),
 
       toggleFavoriteChannel: async (channel) => {
         const exists = get().favoriteChannels.some(

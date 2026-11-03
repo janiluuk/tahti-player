@@ -29,7 +29,6 @@ type LayoutState = {
   setRightCollapsed: (collapsed: boolean) => void;
   setBottomQueueOpen: (open: boolean) => void;
   toggleBottomQueue: () => void;
-  setRightRailTab: (tab: RightRailTab) => void;
   /** Queue button: opens the rail, or collapses it when open. */
   toggleQueueRail: () => void;
   setFullScreenPlayerOpen: (open: boolean) => void;
@@ -55,7 +54,6 @@ export const useLayoutStore = create<LayoutState>()(
       setBottomQueueOpen: (bottomQueueOpen) => set({ bottomQueueOpen }),
       toggleBottomQueue: () =>
         set((s) => ({ bottomQueueOpen: !s.bottomQueueOpen })),
-      setRightRailTab: (rightRailTab) => set({ rightRailTab }),
       toggleQueueRail: () =>
         set((s) => ({ rightCollapsed: !s.rightCollapsed })),
       setFullScreenPlayerOpen: (fullScreenPlayerOpen) =>

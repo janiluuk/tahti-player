@@ -1,4 +1,5 @@
 import { XIcon } from 'lucide-react';
+import { useState } from 'react';
 
 import {
   Button,
@@ -81,6 +82,9 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
     busy,
     loading,
   } = form;
+  // The typed text, while it is not a valid episode number yet (e.g. empty
+  // mid-edit), so clearing the field doesn't snap it back to 1.
+  const [episodeDraft, setEpisodeDraft] = useState<string | null>(null);
 
   const minimumDate = toLocalParts(new Date().toISOString()).date;
 
@@ -239,10 +243,22 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
               label="Start episode"
               disabled={Boolean(selectedShowId)}
               min={1}
-              value={nextEpisodeNumber}
-              onChange={(event) =>
-                setNextEpisodeNumber(Math.max(1, Number(event.target.value)))
-              }
+              value={episodeDraft ?? String(nextEpisodeNumber)}
+              onChange={(event) => {
+                const raw = event.target.value;
+                const parsed = Number(raw);
+                if (
+                  raw.trim() !== '' &&
+                  Number.isInteger(parsed) &&
+                  parsed >= 1
+                ) {
+                  setNextEpisodeNumber(parsed);
+                  setEpisodeDraft(null);
+                } else {
+                  setEpisodeDraft(raw);
+                }
+              }}
+              onBlur={() => setEpisodeDraft(null)}
               className="w-24"
             />
           ) : null}

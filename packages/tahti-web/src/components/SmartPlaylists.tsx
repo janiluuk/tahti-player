@@ -1,6 +1,5 @@
 import {
   CopyIcon,
-  PencilIcon,
   PlayIcon,
   PlusIcon,
   ShuffleIcon,
@@ -10,7 +9,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Loader, Tooltip } from '@tahti-player/ui';
+import { Button, EditIconButton, Loader, Tooltip } from '@tahti-player/ui';
 
 import type {
   NativeSmartDefinition,
@@ -230,21 +229,16 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                       <CopyIcon size={14} aria-hidden />
                     </Button>
                   </Tooltip>
-                  <Tooltip content="Edit rules" side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={`Edit ${list.name}`}
-                      onClick={() =>
-                        setEditing({
-                          id: list.id,
-                          definition: definitionOf(list),
-                        })
-                      }
-                    >
-                      <PencilIcon size={14} aria-hidden />
-                    </Button>
-                  </Tooltip>
+                  <EditIconButton
+                    variant="text"
+                    label={`Edit ${list.name}`}
+                    onClick={() =>
+                      setEditing({
+                        id: list.id,
+                        definition: definitionOf(list),
+                      })
+                    }
+                  />
                   <Tooltip content="Delete" side="top">
                     <Button
                       size="icon-sm"
