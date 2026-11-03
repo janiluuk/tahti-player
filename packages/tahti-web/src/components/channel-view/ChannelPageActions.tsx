@@ -17,7 +17,6 @@ import { channelRssFeedUrl } from '../../lib/channelRssFeed';
 import { ChannelShareButton } from '../ChannelShareButton';
 import { ReportButton } from '../ReportButton';
 import { RssFeedButton } from '../RssFeedButton';
-import { ChannelAirBadge } from './ChannelAirBadge';
 import { ChannelVizPackLabel } from './ChannelVizPackLabel';
 
 type ChannelPageActionsProps = {
@@ -104,7 +103,9 @@ export function ChannelPageActions({
     </Button>
   ) : null;
 
-  const desktopRss = (
+  // The share dialog carries the feed link; a channel that hides Share
+  // still needs a way to reach its RSS feed.
+  const desktopRss = showShare ? null : (
     <RssFeedButton
       href={channelRssFeedUrl(slug)}
       label={`RSS feed of ${displayName}'s channel`}
@@ -120,7 +121,6 @@ export function ChannelPageActions({
       className="flex flex-wrap items-center gap-2"
       data-testid="channel-page-actions"
     >
-      <ChannelAirBadge channel={channel} />
       <ChannelVizPackLabel channel={channel} />
       {followButton}
       {streamManager}
@@ -162,12 +162,14 @@ export function ChannelPageActions({
                 Share
               </Popover.Item>
             ) : null}
-            <Popover.Item
-              icon={<RssIcon size={16} />}
-              onClick={() => void copyRss()}
-            >
-              Copy RSS feed
-            </Popover.Item>
+            {showShare ? null : (
+              <Popover.Item
+                icon={<RssIcon size={16} />}
+                onClick={() => void copyRss()}
+              >
+                Copy RSS feed
+              </Popover.Item>
+            )}
             {!isOwner ? (
               <Popover.Item
                 icon={<FlagIcon size={16} />}
