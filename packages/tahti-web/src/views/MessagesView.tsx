@@ -78,8 +78,10 @@ export function MessagesView({
     });
   };
 
+  const loadedThreadRef = useRef<string | null>(null);
+
   useEffect(() => {
-    if (!user || !threadId) {
+    if (!user || !threadId || loadedThreadRef.current === threadId) {
       return;
     }
     setActiveId(threadId);
@@ -87,6 +89,7 @@ export function MessagesView({
   }, [user, threadId]);
 
   function loadThread(id: string) {
+    loadedThreadRef.current = id;
     setThreadError(null);
     setOlderError(false);
     void fetchConversation(id).then((r) => {
@@ -108,9 +111,7 @@ export function MessagesView({
 
   const openThread = (id: string) => {
     setActiveId(id);
-    if (id === threadId) {
-      loadThread(id);
-    }
+    loadThread(id);
     requestAnimationFrame(() => {
       threadRef.current?.scrollIntoView?.({ block: 'nearest' });
     });
