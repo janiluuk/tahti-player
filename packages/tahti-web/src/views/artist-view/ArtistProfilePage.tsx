@@ -359,7 +359,9 @@ export function ArtistProfilePage({ username }: { username: string }) {
 
   return (
     <div
-      className="relative isolate flex w-full flex-col gap-4 overflow-hidden rounded-2xl p-4 sm:p-6"
+      // Cancels AppShell's content padding so the artist's colors reach the
+      // pane edges, like the track page.
+      className="relative isolate -mx-6 -mt-6 flex min-h-full flex-col gap-4 overflow-hidden p-6 md:-mx-8 md:-mt-8 md:p-8"
       style={{
         ...colorSchemeCssVars(pageScheme),
         color: pageScheme.text,

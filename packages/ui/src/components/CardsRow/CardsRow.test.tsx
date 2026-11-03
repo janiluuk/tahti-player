@@ -124,3 +124,20 @@ describe('CardsRow', () => {
     expect(Wrapper.controls).not.toHaveClass('hidden');
   });
 });
+
+describe('CardsRow without a filter', () => {
+  it('keeps the scroll buttons and drops the filter box', async () => {
+    const { render } = await import('@testing-library/react');
+    const { CardsRow } = await import('./CardsRow');
+    render(
+      <CardsRow
+        title="Recently played"
+        items={[{ id: 'a', title: 'A' }]}
+        labels={{ filterPlaceholder: 'Filter…', nothingFound: 'None' }}
+        filterable={false}
+      />,
+    );
+    expect(screen.queryByTestId('cards-row-filter')).toBeNull();
+    expect(screen.getByTestId('cards-row-scroll-left')).toBeTruthy();
+  });
+});

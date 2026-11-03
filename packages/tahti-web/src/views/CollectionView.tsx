@@ -312,60 +312,118 @@ export function CollectionView({ slug }: { slug: string }) {
   };
 
   return (
-    <PageFrame maxWidth="full" className="relative">
-      <Tooltip
-        content="Back to Listen"
-        side="right"
-        wrapperClassName={backButtonCornerClassName}
-      >
-        <BackButtonLink to="/" aria-label="Back to Listen" />
-      </Tooltip>
+    // Full-bleed like the track page: cancel AppShell's content padding.
+    <div className="-mx-6 -mt-6 min-h-full p-6 md:-mx-8 md:-mt-8 md:p-8">
+      <PageFrame maxWidth="full" className="relative">
+        <Tooltip
+          content="Back to Listen"
+          side="right"
+          wrapperClassName={backButtonCornerClassName}
+        >
+          <BackButtonLink to="/" aria-label="Back to Listen" />
+        </Tooltip>
 
-      <EntitySocialHeader
-        title={collection.name}
-        imageUrl={coverUrl}
-        imageAlt=""
-        subtitle={
-          <>
-            by{' '}
-            <Link
-              to="/u/$username"
-              params={{ username: collection.user.username }}
-              className="hover:text-foreground underline-offset-2 hover:underline"
+        <EntitySocialHeader
+          title={collection.name}
+          imageUrl={coverUrl}
+          imageAlt=""
+          subtitle={
+            <>
+              by{' '}
+              <Link
+                to="/u/$username"
+                params={{ username: collection.user.username }}
+                className="hover:text-foreground underline-offset-2 hover:underline"
+              >
+                {collection.user.displayName}
+              </Link>
+              {collection.collaborative ? ' (collaborative)' : ''}
+            </>
+          }
+          description={collection.description}
+          backdropUrl={backdropUrl}
+          colorScheme={coverScheme}
+          visualizerPreset={resolveArtworkVisualizerPreset(collection.slug)}
+          artworkUrlForVisualizer={coverUrl}
+          stats={headerStats}
+          actions={
+            isOwner ? (
+              <EditIconLink
+                to="/studio/collections/$slug"
+                params={{ slug }}
+                label="Edit in Studio"
+                search={{ edit: true }}
+                className="bg-background border-border rounded-md border-(length:--border-width)"
+              />
+            ) : (
+              <Tooltip
+                content={
+                  isFavorite
+                    ? `Remove from favorites: ${collection.name}`
+                    : `Favorite ${collection.name}`
+                }
+                side="top"
+              >
+                <Button
+                  variant={isFavorite ? 'default' : 'secondary'}
+                  size="icon-sm"
+                  className="bg-background border-border rounded-md border-(length:--border-width)"
+                  aria-pressed={isFavorite}
+                  aria-label={
+                    isFavorite
+                      ? `Remove from favorites: ${collection.name}`
+                      : `Favorite ${collection.name}`
+                  }
+                  onClick={() =>
+                    toggleFavoritePlaylist({
+                      slug,
+                      name: collection.name,
+                      ownerUsername: collection.user.username,
+                      coverUrl: collection.coverUrl,
+                    })
+                  }
+                >
+                  <BookmarkIcon size={15} aria-hidden />
+                </Button>
+              </Tooltip>
+            )
+          }
+          data-testid="collection-social-header"
+        >
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="secondary"
+              onClick={playAll}
+              disabled={playables.length === 0}
             >
-              {collection.user.displayName}
-            </Link>
-            {collection.collaborative ? ' (collaborative)' : ''}
-          </>
-        }
-        description={collection.description}
-        backdropUrl={backdropUrl}
-        colorScheme={coverScheme}
-        visualizerPreset={resolveArtworkVisualizerPreset(collection.slug)}
-        artworkUrlForVisualizer={coverUrl}
-        stats={headerStats}
-        actions={
-          isOwner ? (
-            <EditIconLink
-              to="/studio/collections/$slug"
-              params={{ slug }}
-              label="Edit in Studio"
-              search={{ edit: true }}
-              className="bg-background border-border rounded-md border-(length:--border-width)"
-            />
-          ) : (
-            <Tooltip
-              content={
-                isFavorite
-                  ? `Remove from favorites: ${collection.name}`
-                  : `Favorite ${collection.name}`
-              }
-              side="top"
-            >
+              <PlayIcon size={16} aria-hidden className="mr-1.5" />
+              Play
+            </Button>
+            <Tooltip content="Add all to queue" side="top">
+              <Button
+                variant="secondary"
+                size="icon"
+                onClick={queueAll}
+                disabled={playables.length === 0}
+                aria-label="Add all to queue"
+              >
+                <ListPlusIcon size={16} aria-hidden />
+              </Button>
+            </Tooltip>
+            <EmbedButton target={{ kind: 'collection', slug }} />
+            {collection.isPublic && collection.links?.rss ? (
+              <RssFeedButton
+                href={collection.links.rss}
+                label={`RSS feed of ${collection.name}`}
+              />
+            ) : null}
+            <Button variant="secondary" onClick={() => void startJam()}>
+              <RadioIcon size={15} aria-hidden className="mr-1.5" />
+              Start a Jam
+            </Button>
+            {!isOwner ? (
               <Button
                 variant={isFavorite ? 'default' : 'secondary'}
-                size="icon-sm"
-                className="bg-background border-border rounded-md border-(length:--border-width)"
                 aria-pressed={isFavorite}
                 aria-label={
                   isFavorite
@@ -381,164 +439,110 @@ export function CollectionView({ slug }: { slug: string }) {
                   })
                 }
               >
-                <BookmarkIcon size={15} aria-hidden />
-              </Button>
-            </Tooltip>
-          )
-        }
-        data-testid="collection-social-header"
-      >
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            variant="secondary"
-            onClick={playAll}
-            disabled={playables.length === 0}
-          >
-            <PlayIcon size={16} aria-hidden className="mr-1.5" />
-            Play
-          </Button>
-          <Tooltip content="Add all to queue" side="top">
-            <Button
-              variant="secondary"
-              size="icon"
-              onClick={queueAll}
-              disabled={playables.length === 0}
-              aria-label="Add all to queue"
-            >
-              <ListPlusIcon size={16} aria-hidden />
-            </Button>
-          </Tooltip>
-          <EmbedButton target={{ kind: 'collection', slug }} />
-          {collection.isPublic && collection.links?.rss ? (
-            <RssFeedButton
-              href={collection.links.rss}
-              label={`RSS feed of ${collection.name}`}
-            />
-          ) : null}
-          <Button variant="secondary" onClick={() => void startJam()}>
-            <RadioIcon size={15} aria-hidden className="mr-1.5" />
-            Start a Jam
-          </Button>
-          {!isOwner ? (
-            <Button
-              variant={isFavorite ? 'default' : 'secondary'}
-              aria-pressed={isFavorite}
-              aria-label={
-                isFavorite
-                  ? `Remove from favorites: ${collection.name}`
-                  : `Favorite ${collection.name}`
-              }
-              onClick={() =>
-                toggleFavoritePlaylist({
-                  slug,
-                  name: collection.name,
-                  ownerUsername: collection.user.username,
-                  coverUrl: collection.coverUrl,
-                })
-              }
-            >
-              <BookmarkIcon size={15} aria-hidden className="mr-1.5" />
-              {isFavorite ? 'Favorited' : 'Favorite'}
-            </Button>
-          ) : null}
-          {!isOwner && collection.isPublic && subscription ? (
-            <Tooltip
-              content="Sign in to subscribe to this playlist"
-              side="bottom"
-              disabled={Boolean(me)}
-              wrapperClassName="inline-flex"
-            >
-              <Button
-                variant={subscription.subscribed ? 'default' : 'secondary'}
-                onClick={() => void toggleSubscription()}
-                disabled={subscriptionBusy}
-                aria-pressed={subscription.subscribed}
-                aria-description={
-                  me ? undefined : 'Sign in to subscribe to this playlist'
-                }
-              >
                 <BookmarkIcon size={15} aria-hidden className="mr-1.5" />
-                {subscription.subscribed ? 'Subscribed' : 'Subscribe'}
-                {subscription.subscriberCount > 0
-                  ? ` (${subscription.subscriberCount})`
-                  : ''}
+                {isFavorite ? 'Favorited' : 'Favorite'}
               </Button>
-            </Tooltip>
-          ) : null}
-          {!isOwner && collection.isPublic ? (
-            <ReportButton
-              targetType="COLLECTION"
-              targetId={slug}
-              label={collection.name}
-            />
-          ) : null}
-        </div>
-      </EntitySocialHeader>
+            ) : null}
+            {!isOwner && collection.isPublic && subscription ? (
+              <Tooltip
+                content="Sign in to subscribe to this playlist"
+                side="bottom"
+                disabled={Boolean(me)}
+                wrapperClassName="inline-flex"
+              >
+                <Button
+                  variant={subscription.subscribed ? 'default' : 'secondary'}
+                  onClick={() => void toggleSubscription()}
+                  disabled={subscriptionBusy}
+                  aria-pressed={subscription.subscribed}
+                  aria-description={
+                    me ? undefined : 'Sign in to subscribe to this playlist'
+                  }
+                >
+                  <BookmarkIcon size={15} aria-hidden className="mr-1.5" />
+                  {subscription.subscribed ? 'Subscribed' : 'Subscribe'}
+                  {subscription.subscriberCount > 0
+                    ? ` (${subscription.subscriberCount})`
+                    : ''}
+                </Button>
+              </Tooltip>
+            ) : null}
+            {!isOwner && collection.isPublic ? (
+              <ReportButton
+                targetType="COLLECTION"
+                targetId={slug}
+                label={collection.name}
+              />
+            ) : null}
+          </div>
+        </EntitySocialHeader>
 
-      <ChannelTextOverlayView
-        mode={collection.textLayerMode}
-        text={collection.textLayerText}
-        align={collection.textLayerAlign}
-      />
-
-      <CollectionTrackList
-        items={playables}
-        getTrackMeta={trackMeta}
-        compactActions
-        getAnnotation={(item) => {
-          const line = contributions.get(item.id);
-          return line ? <CollectionContribution line={line} /> : null;
-        }}
-        empty={{
-          title: 'No tracks in this playlist',
-          description: isOwner
-            ? 'Add tracks from search results or your library.'
-            : "This playlist doesn't have any tracks yet.",
-        }}
-      />
-
-      {collection.items.some((i) => i.release && !i.sound) && (
-        <section className="flex flex-col gap-2">
-          <h2>
-            <Eyebrow>Linked releases</Eyebrow>
-          </h2>
-          <ul className="text-sm">
-            {collection.items
-              .filter((i) => i.release)
-              .map((i) => (
-                <li key={i.release!.id}>
-                  {i.release!.smartLinkSlug ? (
-                    <Link
-                      to="/r/$slug"
-                      params={{ slug: i.release!.smartLinkSlug }}
-                      className="underline-offset-2 hover:underline"
-                    >
-                      {i.release!.title}
-                    </Link>
-                  ) : (
-                    i.release!.title
-                  )}
-                </li>
-              ))}
-          </ul>
-        </section>
-      )}
-
-      {collection.collaborative && collection.isPublic ? (
-        <CollaborativePlaylistAdd
-          slug={collection.slug}
-          existingSoundIds={collection.items.flatMap((item) =>
-            item.sound ? [item.sound.id] : [],
-          )}
-          onAdded={() =>
-            void fetchCollection(slug).then((res) => {
-              if (res.data) {
-                setCollection(res.data);
-              }
-            })
-          }
+        <ChannelTextOverlayView
+          mode={collection.textLayerMode}
+          text={collection.textLayerText}
+          align={collection.textLayerAlign}
         />
-      ) : null}
-    </PageFrame>
+
+        <CollectionTrackList
+          initialView="list"
+          items={playables}
+          getTrackMeta={trackMeta}
+          compactActions
+          getAnnotation={(item) => {
+            const line = contributions.get(item.id);
+            return line ? <CollectionContribution line={line} /> : null;
+          }}
+          empty={{
+            title: 'No tracks in this playlist',
+            description: isOwner
+              ? 'Add tracks from search results or your library.'
+              : "This playlist doesn't have any tracks yet.",
+          }}
+        />
+
+        {collection.items.some((i) => i.release && !i.sound) && (
+          <section className="flex flex-col gap-2">
+            <h2>
+              <Eyebrow>Linked releases</Eyebrow>
+            </h2>
+            <ul className="text-sm">
+              {collection.items
+                .filter((i) => i.release)
+                .map((i) => (
+                  <li key={i.release!.id}>
+                    {i.release!.smartLinkSlug ? (
+                      <Link
+                        to="/r/$slug"
+                        params={{ slug: i.release!.smartLinkSlug }}
+                        className="underline-offset-2 hover:underline"
+                      >
+                        {i.release!.title}
+                      </Link>
+                    ) : (
+                      i.release!.title
+                    )}
+                  </li>
+                ))}
+            </ul>
+          </section>
+        )}
+
+        {collection.collaborative && collection.isPublic ? (
+          <CollaborativePlaylistAdd
+            slug={collection.slug}
+            existingSoundIds={collection.items.flatMap((item) =>
+              item.sound ? [item.sound.id] : [],
+            )}
+            onAdded={() =>
+              void fetchCollection(slug).then((res) => {
+                if (res.data) {
+                  setCollection(res.data);
+                }
+              })
+            }
+          />
+        ) : null}
+      </PageFrame>
+    </div>
   );
 }

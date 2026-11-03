@@ -167,6 +167,7 @@ export function TrendingRow() {
       <CardsRow
         data-testid="listen-trending"
         title="Trending this week"
+        filterable={false}
         badge="Top plays"
         badgeColor="purple"
         items={items}
@@ -291,6 +292,7 @@ export function NewReleasesRow() {
       <CardsRow
         data-testid="listen-new-releases"
         title="New releases"
+        filterable={false}
         badge="Releases"
         badgeColor="blue"
         items={items}

@@ -47,6 +47,8 @@ export type CardsRowProps<T extends CardsRowItem = CardsRowItem> = {
   'data-testid'?: string;
   renderItem?: (item: T) => ReactNode;
   cardSurface?: 'brand' | 'neutral';
+  /** Shows the filter box beside the scroll buttons. */
+  filterable?: boolean;
 };
 
 export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
@@ -58,6 +60,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
   className,
   'data-testid': testId = 'cards-row',
   renderItem,
+  filterable = true,
   cardSurface = 'brand',
 }: CardsRowProps<T>) => {
   const {
@@ -91,32 +94,36 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
         <div
           data-testid="cards-row-controls"
           className={cn(
-            'min-w-64 flex-1 items-center justify-end gap-2',
+            filterable
+              ? 'min-w-64 flex-1 items-center justify-end gap-2'
+              : 'flex-1 items-center justify-end gap-2',
             showControls ? 'flex' : 'hidden',
           )}
         >
-          <Input
-            data-testid="cards-row-filter"
-            size="sm"
-            tone="secondary"
-            placeholder={labels.filterPlaceholder}
-            aria-label={labels.filterPlaceholder.replace(/(…|\.{3})$/, '')}
-            value={filterText}
-            onChange={(event) => setFilterText(event.target.value)}
-            endAddon={
-              <Tooltip content="Clear filter" side="top">
-                <button
-                  data-testid="cards-row-clear-filter"
-                  type="button"
-                  className="text-foreground cursor-pointer"
-                  onClick={clearFilter}
-                  aria-label="Clear filter"
-                >
-                  <Filter size={14} />
-                </button>
-              </Tooltip>
-            }
-          />
+          {filterable ? (
+            <Input
+              data-testid="cards-row-filter"
+              size="sm"
+              tone="secondary"
+              placeholder={labels.filterPlaceholder}
+              aria-label={labels.filterPlaceholder.replace(/(…|\.{3})$/, '')}
+              value={filterText}
+              onChange={(event) => setFilterText(event.target.value)}
+              endAddon={
+                <Tooltip content="Clear filter" side="top">
+                  <button
+                    data-testid="cards-row-clear-filter"
+                    type="button"
+                    className="text-foreground cursor-pointer"
+                    onClick={clearFilter}
+                    aria-label="Clear filter"
+                  >
+                    <Filter size={14} />
+                  </button>
+                </Tooltip>
+              }
+            />
+          ) : null}
           <div className="flex items-center gap-2">
             <Tooltip content="Scroll left" side="top">
               <Button

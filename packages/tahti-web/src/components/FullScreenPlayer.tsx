@@ -259,10 +259,12 @@ export function FullScreenPlayer() {
         </div>
       </div>
 
-      <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-8 overflow-y-auto px-6 pb-10">
+      <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center gap-6 overflow-hidden px-6 pt-16 pb-8">
         <div
           className={cn(
-            'flex aspect-square w-64 shrink-0 items-center justify-center overflow-hidden rounded-xl border shadow-2xl sm:w-80 md:w-96',
+            // Sized to the window height so artwork, title and controls fit
+            // without the column scrolling.
+            'flex aspect-square w-[min(16rem,38vh)] shrink-0 items-center justify-center overflow-hidden rounded-xl border shadow-2xl sm:w-[min(20rem,42vh)] md:w-[min(24rem,46vh)]',
             isLive
               ? 'border-white/20 bg-white/10 p-6 inset-ring inset-ring-white/10 backdrop-blur-xl backdrop-saturate-150 sm:p-8'
               : 'border-border bg-background-secondary',

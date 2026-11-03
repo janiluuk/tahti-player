@@ -324,6 +324,7 @@ export function ConnectedPlayerBar() {
             title={title}
             autoplay={restoredPending !== playable?.id}
             mountKey={reloadNonce}
+            compact
           />
         </div>
       </div>
