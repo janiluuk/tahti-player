@@ -320,11 +320,9 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Hubs` | `tahti-web/StudioHubViews.stories.tsx` |
 | `Tahti/Studio/StudioListeningPartiesView` | `tahti-web/StudioListeningPartiesView.stories.tsx` |
 | `Tahti/Studio/StudioListeningPartyFormView` | `tahti-web/StudioListeningPartyFormView.stories.tsx` |
-| `Tahti/Studio/StudioModerationView` | `tahti-web/StudioModerationView.stories.tsx` |
 | `Tahti/Studio/StudioNav` | `tahti-web/StudioNav.stories.tsx` |
 | `Tahti/Page/StudioPanel` | `tahti-web/StudioPanel.stories.tsx` |
 | `Tahti/Studio/StudioPlaylistEditorView` | `tahti-web/StudioPlaylistEditorView.stories.tsx` |
-| `Tahti/Studio/StudioPlaylistsView` | `tahti-web/StudioPlaylistsView.stories.tsx` |
 | `Tahti/Studio/StudioReleaseDetailView` | `tahti-web/StudioReleaseDetailView.stories.tsx` |
 | `Tahti/Studio/StudioScheduleView` | `tahti-web/StudioScheduleView.stories.tsx` |
 | `Tahti/Studio/StudioShowDetailView` | `tahti-web/StudioShowDetailView.stories.tsx` |

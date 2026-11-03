@@ -8,7 +8,6 @@ import { StudioCollectionsView } from '@tahti-web/views/studio/StudioCollections
 import { StudioDistributionView } from '@tahti-web/views/studio/StudioDistributionView';
 import { StudioEventsView } from '@tahti-web/views/studio/StudioEventsView';
 import { StudioGovernanceView } from '@tahti-web/views/studio/StudioGovernanceView';
-import { StudioModerationView } from '@tahti-web/views/studio/StudioModerationView';
 import { StudioReleasesView } from '@tahti-web/views/studio/StudioReleasesView';
 import { StudioRevenueView } from '@tahti-web/views/studio/StudioRevenueView';
 import { StudioScheduleView } from '@tahti-web/views/studio/StudioScheduleView';
@@ -187,14 +186,6 @@ export const StudioBranding: Story = {
   },
   decorators: [withTahtiRouter('/settings/artist')],
   render: () => <StudioBrandingPanel />,
-};
-
-export const StudioModeration: Story = {
-  parameters: {
-    docs: { description: { story: 'Lives on Studio → Manage → Moderation.' } },
-  },
-  decorators: [withTahtiRouter('/studio/moderation')],
-  render: () => <StudioModerationView />,
 };
 
 export const StudioEvents: Story = {
