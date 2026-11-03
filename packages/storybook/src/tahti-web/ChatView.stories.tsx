@@ -13,7 +13,7 @@ const meta: Meta<typeof ChatView> = {
     docs: {
       description: {
         component:
-          "The standalone chat page. `/chat` picks a channel (slug field plus the directory's channels); `/chat/$slug` shows that channel's chat panel with links back to the picker and the channel.",
+          "The standalone chat page. `/chat` picks a channel from a dropdown and lists each room's activity in the last 24 hours; `/chat/$slug` shows that channel's chat panel with links back to the picker and the channel.",
       },
     },
   },
@@ -27,14 +27,13 @@ export const Picker: Story = {
   decorators: [withTahtiRouter('/chat')],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByLabelText('Channel slug')).toHaveValue(
-      CHANNEL_SLUG,
-    );
     await expect(
-      canvas.getByRole('button', { name: 'Open chat' }),
+      await canvas.findByRole('button', { name: 'Open chat' }),
     ).toBeEnabled();
-    const suggestion = await canvas.findByRole('link', { name: CHANNEL_SLUG });
-    await expect(suggestion).toHaveAttribute('href', `/chat/${CHANNEL_SLUG}`);
+    await expect(canvas.queryByLabelText('Channel slug')).toBeNull();
+    await expect(
+      canvas.getByRole('heading', { name: 'Activity in the last 24 hours' }),
+    ).toBeVisible();
   },
 };
 

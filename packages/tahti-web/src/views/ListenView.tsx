@@ -22,11 +22,7 @@ import {
   type SortableBlock,
 } from '@tahti-player/ui';
 
-import {
-  fetchChannel,
-  fetchRadioStation,
-  TAHTI_RADIO_SLUG,
-} from '../api/client';
+import { fetchChannel } from '../api/client';
 import type { OnAirChannel } from '../api/listen';
 import type { TahtiPlayable } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
@@ -38,7 +34,6 @@ import {
   TahtiSelectsRow,
   TrendingRow,
 } from '../components/listen-view/HomeHighlights';
-import { HomeNews } from '../components/listen-view/HomeNews';
 import { ListenSection } from '../components/listen-view/ListenSection';
 import { RadioStationsRow } from '../components/listen-view/RadioStationsRow';
 import {
@@ -50,7 +45,6 @@ import { useListenerWidgetBlocks } from '../components/ListenerWidgetsSection';
 import { ListenWidgetStoreDialog } from '../components/ListenWidgetStoreDialog';
 import { PageLoading } from '../components/PageStates';
 import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
-import { RadioListItem } from '../components/RadioListItem';
 import { radioStationIdForPlayable } from '../content/radioStations';
 import { scheduleIdleRoutePrefetch } from '../lib/idleRoutePrefetch';
 import { prefetchListenCardIntent } from '../lib/intentRoutePrefetch';
@@ -141,7 +135,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const user = useAuthStore((s) => s.user);
   const signedIn = Boolean(user);
   const sections = useListenSections(signedIn, user?.id ?? '');
-  const radio = sections.radio.data;
   const listenOrder = useListenerWidgetsStore((s) => s.listenOrder);
   const setListenOrder = useListenerWidgetsStore((s) => s.setListenOrder);
   const widgetBlocks = useListenerWidgetBlocks();
@@ -166,20 +159,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     }
     start();
   };
-
-  const radioLogo =
-    radio?.user.avatarUrl ?? radio?.nowPlaying?.artworkUrl ?? null;
-  const radioName = radio?.user.displayName ?? 'Tahti Radio';
-  const radioPlayableId = `radio:${TAHTI_RADIO_SLUG}`;
-
-  const toggleRadioPlayback = () =>
-    togglePlayback(radioPlayableId, () => {
-      void fetchRadioStation().then(({ playable }) => {
-        if (playable) {
-          play(playable);
-        }
-      });
-    });
 
   const replayFromHistory = (playable: TahtiPlayable) =>
     togglePlayback(playable.id, () => {
@@ -295,43 +274,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   };
 
   const dashboardBlocks: SortableBlock[] = [
-    {
-      id: 'tahti-radio',
-      label: 'Tahti Radio',
-      content: (
-        <ListenSection
-          data-testid="listen-tahti-radio"
-          title="Tahti Radio"
-          status={sections.radio.status}
-          empty={radio == null}
-          emptyTitle="Tahti Radio is unavailable"
-          onRetry={() => sections.retry('radio')}
-        >
-          {radio ? (
-            <RadioListItem
-              name={radioName}
-              coverUrl={radioLogo}
-              subtitle={`${
-                radio.hlsUrl
-                  ? (radio.nowPlaying?.title ?? '24/7 community stream')
-                  : 'Off air'
-              }${
-                radio.nowPlaying?.artistName
-                  ? ` · ${radio.nowPlaying.artistName}`
-                  : ''
-              }`}
-              isPlaying={isActive(radioPlayableId)}
-              disabled={!radio.hlsUrl}
-              onTogglePlay={toggleRadioPlayback}
-              visualPreset={radio.visualPreset}
-              colorScheme={radio.colorScheme}
-              colorSchemeJson={radio.colorSchemeJson}
-              visualSettingsJson={radio.visualSettingsJson}
-            />
-          ) : null}
-        </ListenSection>
-      ),
-    },
     {
       id: recentItems.length > 0 ? 'recently-played' : 'selects',
       label:
@@ -484,11 +426,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           signedIn={signedIn}
         />
       ),
-    },
-    {
-      id: 'news',
-      label: 'News',
-      content: <HomeNews />,
     },
     ...widgetBlocks.blocks,
     {

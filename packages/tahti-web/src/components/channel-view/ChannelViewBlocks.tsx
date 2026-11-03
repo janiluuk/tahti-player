@@ -3,8 +3,6 @@ import {
   CalendarClockIcon,
   LayoutTemplateIcon,
   MessageCircle,
-  Mic,
-  RssIcon,
 } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 
@@ -13,12 +11,11 @@ import { Badge, Button, StatChip, Tooltip } from '@tahti-player/ui';
 import type { ChannelLink } from '../../api/channel-design';
 import type { PublicRadioShow } from '../../api/shows';
 import type { PublicChannel, TahtiPlayable } from '../../api/types';
-import {
-  FEED_FILTER_OPTIONS,
-  type ChannelPageItem,
-} from '../../lib/channelPageLayout';
+import type { ChannelPageItem } from '../../lib/channelPageLayout';
 import { isSafeChannelLinkUrl } from '../../lib/safeHref';
+import { splitEmbedPlayables } from '../../lib/splitEmbedPlayables';
 import type { ListenerWidgetInstance } from '../../stores/listenerWidgetsStore';
+import { ChannelStoryFeed } from '../ArtistStoryFeed';
 import { ChannelPlaylistBlock } from '../ChannelPlaylistBlock';
 import { ListenerWidgetEmbed } from '../ListenerWidgetEmbed';
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
@@ -58,14 +55,18 @@ export type ChannelBlockRenderContext = {
   listenerWidgetInstances: ListenerWidgetInstance[];
 };
 
-function ChannelTrackRows({ ctx }: { ctx: ChannelBlockRenderContext }) {
+function ChannelTrackRows({
+  ctx,
+  items,
+  emptyMessage,
+}: {
+  ctx: ChannelBlockRenderContext;
+  items: TahtiPlayable[];
+  emptyMessage: string;
+}) {
   const pinnedIds = useMemo(
     () => new Set(ctx.pinnedPlayables.map((item) => item.id)),
     [ctx.pinnedPlayables],
-  );
-  const items = useMemo(
-    () => [...ctx.pinnedPlayables, ...ctx.catalogPlayables],
-    [ctx.pinnedPlayables, ctx.catalogPlayables],
   );
   const pinnedNote = useCallback(
     (item: TahtiPlayable) =>
@@ -76,11 +77,67 @@ function ChannelTrackRows({ ctx }: { ctx: ChannelBlockRenderContext }) {
     <PlayableAmbientTrackList
       items={items}
       playAll
-      defaultDensity="comfortable"
+      filterable
+      allowGrid={false}
+      className="bg-background-secondary"
       getTrackMeta={ctx.getTrackMeta}
       getAnnotation={pinnedIds.size > 0 ? pinnedNote : undefined}
-      emptyMessage="No public tracks for this channel yet."
+      emptyMessage={emptyMessage}
     />
+  );
+}
+
+function ChannelSoundSections({ ctx }: { ctx: ChannelBlockRenderContext }) {
+  const { tracks, embeds } = useMemo(
+    () =>
+      splitEmbedPlayables([...ctx.pinnedPlayables, ...ctx.catalogPlayables]),
+    [ctx.pinnedPlayables, ctx.catalogPlayables],
+  );
+  const hasAny = tracks.length > 0 || embeds.length > 0;
+  return (
+    <>
+      <ProfileSection
+        id="channel-block-sound"
+        className="gap-3"
+        title={ctx.editing ? undefined : 'Tracks'}
+        status={ctx.sectionStatus.sounds}
+        loadingLabel="Loading tracks…"
+        errorTitle="Tracks couldn't load"
+        errorDescription="The rest of the channel still works."
+        onRetry={() => ctx.onRetrySection('sounds')}
+        empty={
+          hasAny
+            ? null
+            : {
+                title: 'No public tracks yet',
+                description:
+                  'When this channel publishes tracks, they show up here. Offline listening still works from Discover and Radio.',
+              }
+        }
+      >
+        {tracks.length > 0 || embeds.length === 0 ? (
+          <ChannelTrackRows
+            ctx={ctx}
+            items={tracks}
+            emptyMessage="No public tracks for this channel yet."
+          />
+        ) : null}
+      </ProfileSection>
+      {ctx.sectionStatus.sounds === 'ready' && embeds.length > 0 ? (
+        <ProfileSection
+          id="channel-block-embeds"
+          className="gap-3"
+          title="Embeds"
+          data-testid="channel-embeds"
+        >
+          <ChannelTrackRows
+            ctx={ctx}
+            items={embeds}
+            emptyMessage="No embeds on this channel."
+          />
+        </ProfileSection>
+      ) : null}
+    </>
   );
 }
 
@@ -99,31 +156,9 @@ export function renderChannelBlock(
     case 'hero':
       return null;
     case 'sound': {
-      const hasTracks =
-        ctx.pinnedPlayables.length > 0 || ctx.catalogPlayables.length > 0;
       return (
         <>
-          <ProfileSection
-            id="channel-block-sound"
-            className="gap-4"
-            title={editing ? undefined : 'Tracks'}
-            status={ctx.sectionStatus.sounds}
-            loadingLabel="Loading tracks…"
-            errorTitle="Tracks couldn't load"
-            errorDescription="The rest of the channel still works."
-            onRetry={() => ctx.onRetrySection('sounds')}
-            empty={
-              hasTracks
-                ? null
-                : {
-                    title: 'No public tracks yet',
-                    description:
-                      'When this channel publishes tracks, they show up here. Offline listening still works from Discover and Radio.',
-                  }
-            }
-          >
-            <ChannelTrackRows ctx={ctx} />
-          </ProfileSection>
+          <ChannelSoundSections ctx={ctx} />
           {channel.channelKind === 'RADIO' ? null : (
             <ChannelCatalogSections
               username={channel.user.username}
@@ -343,7 +378,6 @@ export function renderChannelBlock(
               <ShowEpisodeList
                 title="Upcoming"
                 episodes={ctx.liveShows.upcomingEpisodes}
-                icon={<Mic size={16} aria-hidden />}
                 channelSlug={slug}
                 username={channel.user.username}
               />
@@ -352,7 +386,6 @@ export function renderChannelBlock(
               <ShowEpisodeList
                 title="Past recordings"
                 episodes={ctx.liveShows.pastEpisodes}
-                icon={<MessageCircle size={16} aria-hidden />}
                 channelSlug={slug}
               />
             ) : null}
@@ -383,34 +416,18 @@ export function renderChannelBlock(
       // Folded into the backdrop (ChannelBackdropCard's avatarVisible) --
       // see the 'about' case above for why this never actually runs.
       return null;
-    case 'feed': {
-      if (!editing) {
-        return null;
-      }
-      const filters = item.feedFilters ?? [];
-      const activeLabels = FEED_FILTER_OPTIONS.filter(
-        (option) => filters.length === 0 || filters.includes(option.id),
-      ).map((option) => option.label);
+    case 'feed':
       return (
-        <section
-          className={`flex flex-col gap-2 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
-        >
-          <div className="flex items-center gap-2">
-            <RssIcon size={16} className="text-foreground-secondary shrink-0" />
-            <h2 className="text-sm font-bold tracking-tight">Feed</h2>
-          </div>
-          <p className="text-foreground-secondary text-xs">
-            {channel.user.displayName}&apos;s updates
-            {activeLabels.length > 0 ? ` — ${activeLabels.join(', ')}` : ''} (
-            {item.feedDisplay ?? 'tracklist'} display).
-          </p>
-          <PageEmpty
-            title="No live update source is wired in yet"
-            description="Nothing to show until one exists."
-          />
-        </section>
+        <ChannelStoryFeed
+          slug={slug}
+          editing={editing}
+          author={{
+            username: channel.user.username,
+            displayName: channel.user.displayName,
+            avatarUrl: channel.user.avatarUrl ?? null,
+          }}
+        />
       );
-    }
     default: {
       // Exhaustiveness guard: adding a type to CHANNEL_PAGE_ITEM_TYPES
       // without a matching case here used to compile fine and silently

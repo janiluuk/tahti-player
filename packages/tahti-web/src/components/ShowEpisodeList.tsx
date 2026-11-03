@@ -1,8 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { Mic } from 'lucide-react';
-import type { ReactNode } from 'react';
 
-import { ButtonLink, Tooltip } from '@tahti-player/ui';
+import { ButtonLink, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import type { PublicRadioShowEpisode } from '../api/shows';
 import { isGreenRoomWindow } from '../lib/radioSchedule';
@@ -23,18 +22,17 @@ export function showDateLabel(episode: PublicRadioShowEpisode): string {
   })}`;
 }
 
-/** A titled list of scheduled/recorded show episodes — shared by the artist
- * profile's "Live shows" section and the channel page's Events block. */
+/** A titled list of scheduled/recorded show episodes, each with its cover
+ * thumbnail — shared by the artist profile's "Live shows" section and the
+ * channel page's Events block. */
 export function ShowEpisodeList({
   title,
   episodes,
-  icon,
   channelSlug,
   username,
 }: {
   title: string;
   episodes: PublicRadioShowEpisode[];
-  icon: ReactNode;
   channelSlug?: string;
   username?: string;
 }) {
@@ -44,9 +42,13 @@ export function ShowEpisodeList({
       <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
         {episodes.map((episode) => (
           <li key={episode.id} className="flex items-start gap-3 p-3">
-            <span className="text-foreground-secondary mt-0.5 shrink-0">
-              {icon}
-            </span>
+            <MediaArtwork
+              size="thumb"
+              src={episode.coverUrl}
+              seed={episode.id}
+              alt=""
+              className="rounded-md"
+            />
             <div className="min-w-0 flex-1">
               <div className="font-medium">
                 {episode.title ?? episode.note ?? 'Tahti Radio show'}

@@ -321,6 +321,7 @@ function AmbientTrackRowView({
       >
         <MediaArtwork
           src={coverUrl ?? undefined}
+          seed={trackId}
           size="fill"
           imageReveal={Boolean(coverUrl)}
           isPlaying={isPlaying}
