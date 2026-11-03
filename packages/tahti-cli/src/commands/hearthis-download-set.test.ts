@@ -314,3 +314,39 @@ describe('downloadHearthisSet --flac with an MP3 original', () => {
     expect((await readdir(album)).sort()).toEqual(['01 - Hysterizer.mp3']);
   });
 });
+
+describe('runHearthisDownloadSet progress', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('logs one line per track as it goes, but not for --json', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => catalogResponse(),
+      }),
+    );
+    const config = { apiUrl: 'https://api.example.test', token: 'tahti_test' };
+    const log = vi.fn();
+    await runHearthisDownloadSet(config, '378936-9675121', {
+      dryRun: true,
+      outDir: '/tmp/progress-out',
+      log,
+    });
+    expect(log.mock.calls.map(([line]) => line)).toEqual([
+      '  01 Hysterizer: would-download',
+      '  02 Stream Only: skipped',
+    ]);
+
+    const quiet = vi.fn();
+    await runHearthisDownloadSet(config, '378936-9675121', {
+      dryRun: true,
+      json: true,
+      outDir: '/tmp/progress-out',
+      log: quiet,
+    });
+    expect(quiet).not.toHaveBeenCalled();
+  });
+});

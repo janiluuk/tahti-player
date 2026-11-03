@@ -57,13 +57,7 @@ export const SignedIn: Story = {
       );
     });
 
-    await step('switch to Feed, History and back', async () => {
-      await selectTab(tabs, /Feed/);
-      await waitFor(() =>
-        expect(
-          canvas.getByRole('heading', { level: 1, name: 'Feed' }),
-        ).toBeVisible(),
-      );
+    await step('switch to History and back', async () => {
       await selectTab(tabs, /History/);
       await waitFor(() =>
         expect(
@@ -80,14 +74,6 @@ export const SignedIn: Story = {
 
 export const SignedOut: Story = {
   decorators: [withMockAuth(null), withTahtiRouter('/')],
-};
-
-export const FeedTab: Story = {
-  args: { tab: 'feed' },
-  decorators: [
-    withMockAuth(MOCK_USERS.listener),
-    withTahtiRouter('/listen/feed'),
-  ],
 };
 
 export const HistoryTab: Story = {

@@ -30,7 +30,7 @@ describe('StoryRow', () => {
       </StoryRow>,
     );
     expect(
-      (screen.getByRole('button', { name: 'Previous' }) as HTMLButtonElement)
+      (screen.getByRole('button', { name: /^Previous/ }) as HTMLButtonElement)
         .disabled,
     ).toBe(true);
   });

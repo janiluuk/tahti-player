@@ -1,5 +1,6 @@
 import {
   CirclePlayIcon,
+  ClockIcon,
   DownloadIcon,
   HeartIcon,
   MessageCircleIcon,
@@ -16,6 +17,7 @@ import {
 
 import { cn } from '../lib/cn';
 import { formatDuration } from '../lib/playableToTrack';
+import { relativeDate } from '../lib/relativeDate';
 import { useDominantColor } from '../lib/useDominantColor';
 
 function ambientStyle(
@@ -85,14 +87,6 @@ export type AmbientTrackStats = {
   comments?: number;
 };
 
-function formatStatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
-}
-
 function TrackStats({
   stats,
   className,
@@ -102,7 +96,17 @@ function TrackStats({
 }) {
   const parts: ReactNode[] = [];
   if (stats.releaseDate) {
-    parts.push(<span key="date">on {formatStatDate(stats.releaseDate)}</span>);
+    parts.push(
+      <span key="date" className="inline-flex items-center gap-1">
+        <ClockIcon size={14} aria-hidden />
+        <time
+          dateTime={stats.releaseDate}
+          title={new Date(stats.releaseDate).toLocaleString()}
+        >
+          {relativeDate(stats.releaseDate)}
+        </time>
+      </span>,
+    );
   }
   const counts: Array<[string, number | undefined, ReactNode, string]> = [
     ['likes', stats.likes, <HeartIcon size={14} aria-hidden />, 'likes'],

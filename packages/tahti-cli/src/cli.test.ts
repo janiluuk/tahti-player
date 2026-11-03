@@ -57,6 +57,28 @@ describe('main', () => {
     );
   });
 
+  it('refuses Set permalinks together with --from-user', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    await expect(
+      main(['hearthis', 'download-set', 'a-1', '--from-user', 'yaniho']),
+    ).rejects.toThrow(/not both/);
+  });
+
+  it('refuses --title with more than one hearthis Set', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    await expect(
+      main([
+        'hearthis',
+        'download-set',
+        'a-1',
+        'b-2',
+        '--title',
+        'X',
+        '--dry-run',
+      ]),
+    ).rejects.toThrow(/--title names one Set/);
+  });
+
   it('treats an incomplete command as unknown', async () => {
     const code = await main(['library']);
     expect(code).toBe(1);

@@ -5,7 +5,7 @@ import {
   movedSettingsTarget,
 } from '../lib/movedSettingsSections';
 import { appLayoutRoute } from './router-core';
-import { FeedView, OnboardingView, SettingsView } from './router-lazy-views';
+import { OnboardingView, SettingsView } from './router-lazy-views';
 
 export const settingsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
@@ -28,7 +28,9 @@ export const settingsSectionRoute = createRoute({
 export const feedRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/feed',
-  component: FeedView,
+  beforeLoad: () => {
+    throw redirect({ to: '/discover', search: { tab: 'feed' } });
+  },
 });
 
 export const onboardingRoute = createRoute({

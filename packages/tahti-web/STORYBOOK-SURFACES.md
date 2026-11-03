@@ -71,6 +71,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/AudioRevisionList` | `tahti-web/AudioRevisionList.stories.tsx` |
 | `Tahti/Auth/AuthDialog` | `tahti-web/AuthDialog.stories.tsx` |
 | `Tahti/Media/BackdropUploadButton` | `tahti-web/BackdropUploadButton.stories.tsx` |
+| `Tahti/Settings/Artist branding sections` | `tahti-web/BrandingSections.stories.tsx` |
 | `Tahti/Studio/BroadcastPreflightPanel` | `tahti-web/BroadcastPreflightPanel.stories.tsx` |
 | `Tahti/Channel/ChannelAirBadge` | `tahti-web/ChannelAirBadge.stories.tsx` |
 | `Tahti/Studio/ChannelAnnouncementsPanel` | `tahti-web/ChannelAnnouncementsPanel.stories.tsx` |
@@ -150,6 +151,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Collection/CollectionView` | `tahti-web/CollectionView.stories.tsx` |
 | `Tahti/Track/CommentItem` | `tahti-web/CommentItem.stories.tsx` |
 | `Tahti/Discover/CommunityStoriesWidget` | `tahti-web/CommunityStoriesWidget.stories.tsx` |
+| `Tahti/Components/Confirm dialogs` | `tahti-web/ConfirmDialogs.stories.tsx` |
 | `Tahti/Player/ConnectedPlayerBar` | `tahti-web/ConnectedPlayerBar.stories.tsx` |
 | `Tahti/Player/ConnectedSettingsModal` | `tahti-web/ConnectedSettingsModal.stories.tsx` |
 | `Tahti/Layout/ConnectedStatusBar` | `tahti-web/ConnectedStatusBar.stories.tsx` |
@@ -157,6 +159,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/CoverArtGenerator` | `tahti-web/CoverArtGenerator.stories.tsx` |
 | `Tahti/Media/CoverArtPickerDialog` | `tahti-web/CoverArtPickerDialog.stories.tsx` |
 | `Tahti/Studio/Distribution/CreditsEditor` | `tahti-web/CreditsEditor.stories.tsx` |
+| `Tahti/Components/Data strips` | `tahti-web/DataStrips.stories.tsx` |
 | `Tahti/Studio/Distribution/DeliveryTab` | `tahti-web/DeliveryTab.stories.tsx` |
 | `Tahti/Misc/DesktopLibraryPanel` | `tahti-web/DesktopLibraryPanel.stories.tsx` |
 | `Tahti/Discover/DirectoryArtistCardGrid` | `tahti-web/DirectoryArtistCardGrid.stories.tsx` |
@@ -257,6 +260,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Updates/PostPreview` | `tahti-web/PostPreview.stories.tsx` |
 | `Tahti/Studio/Branding/PressKitPreview` | `tahti-web/PressKitPreview.stories.tsx` |
 | `Tahti/Studio/Pro editor/Mastering` | `tahti-web/ProEditorMastering.stories.tsx` |
+| `Tahti/Studio/Pro editor/Stems` | `tahti-web/ProEditorStems.stories.tsx` |
 | `Tahti/Studio/ProcessingFailedAlert` | `tahti-web/ProcessingFailedAlert.stories.tsx` |
 | `Tahti/Studio/Branding/ProfilePictureSection` | `tahti-web/ProfilePictureSection.stories.tsx` |
 | `Tahti/Profile/ProfileSection` | `tahti-web/ProfileSection.stories.tsx` |
@@ -303,6 +307,8 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Auth/SetupPasswordView` | `tahti-web/SetupPasswordView.stories.tsx` |
 | `Tahti/Misc/SidebarBuildInfo` | `tahti-web/SidebarBuildInfo.stories.tsx` |
 | `Tahti/Auth/SignupPaymentView` | `tahti-web/SignupPaymentView.stories.tsx` |
+| `Tahti/Components/Small forms and cards` | `tahti-web/SmallForms.stories.tsx` |
+| `Tahti/Components/Small indicators` | `tahti-web/SmallIndicators.stories.tsx` |
 | `Tahti/Release/SmartLinkView` | `tahti-web/SmartLinkView.stories.tsx` |
 | `Tahti/Desktop/SmartRuleValueInput` | `tahti-web/SmartRuleValueInput.stories.tsx` |
 | `Tahti/Misc/SourceServiceIcon` | `tahti-web/SourceServiceIcon.stories.tsx` |

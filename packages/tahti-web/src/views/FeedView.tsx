@@ -341,6 +341,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
               media={feedMedia(item)}
               kind={feedActivity(item)}
               date={storyDate(item.date)}
+              dateTime={item.date}
               title={
                 <Link {...feedTarget(item)} className="hover:underline">
                   {item.title || item.artist.displayName}

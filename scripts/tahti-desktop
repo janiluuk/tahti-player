@@ -5,6 +5,10 @@ set -euo pipefail
 script_path="$(readlink -f -- "${BASH_SOURCE[0]}")"
 repository_root="$(cd -- "$(dirname -- "$script_path")/.." && pwd)"
 
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  exec node "$repository_root/packages/tahti-ops/src/cli.mjs" desktop --help
+fi
+
 mode=latest
 if [[ $# -gt 0 && "$1" != -* ]]; then
   mode="$1"
