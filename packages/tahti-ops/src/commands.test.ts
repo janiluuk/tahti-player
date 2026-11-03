@@ -68,6 +68,11 @@ describe('shortcut commands', () => {
     expect(text).toMatch(/Built .*release\/tahti-player/);
   });
 
+  it('removes the build worktree with --clean', async () => {
+    expect(await main(['desktop', 'latest', '--clean', '--dry-run'])).toBe(0);
+    expect(output()).toMatch(/git worktree remove --force .*\.desktop-build/);
+  });
+
   it('rejects a --ref that is not a branch name', async () => {
     await expect(
       main(['desktop', 'latest', '--ref', 'x;rm', '--dry-run']),
