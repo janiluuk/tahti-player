@@ -1,12 +1,13 @@
 import { Link } from '@tanstack/react-router';
+import { CalendarDaysIcon, GlobeIcon } from 'lucide-react';
 
 import {
   backButtonCornerClassName,
   BackButtonLink,
   Badge,
   Button,
+  ButtonAnchor,
   CardsRow,
-  ExternalLink,
   MediaArtwork,
   Tooltip,
   ViewShell,
@@ -101,11 +102,25 @@ export function RadioStationView({ stationId }: { stationId: string }) {
       }
     >
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
-        <MediaArtwork
-          src={station.logoUrl}
-          alt={`${station.name} logo`}
-          size="lg"
-        />
+        <div className="group relative shrink-0" data-testid="station-cover">
+          <MediaArtwork
+            src={station.logoUrl}
+            alt={`${station.name} logo`}
+            size="lg"
+            onPlay={playable ? togglePlay : undefined}
+            isPlaying={playing}
+            playLabel={`Play ${station.name}`}
+            pauseLabel={`Pause ${station.name}`}
+            playDisabled={!playable}
+          />
+          <div className="absolute top-2 right-2 z-[2]">
+            <RadioStationCoverEditButton
+              label={station.name}
+              stationName={base?.name ?? station.name}
+              catalogStationId={station.id}
+            />
+          </div>
+        </div>
         <div className="flex min-w-0 flex-1 flex-col gap-4">
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="pill" color="blue">
@@ -136,9 +151,6 @@ export function RadioStationView({ stationId }: { stationId: string }) {
             aria-label="Station controls"
             className="flex flex-wrap gap-2"
           >
-            <Button type="button" onClick={togglePlay} disabled={!playable}>
-              {playing ? 'Pause' : 'Play'}
-            </Button>
             <Button
               type="button"
               variant="secondary"
@@ -147,12 +159,6 @@ export function RadioStationView({ stationId }: { stationId: string }) {
             >
               {onListen ? 'Remove from Listen' : 'Add to Listen'}
             </Button>
-            <RadioStationCoverEditButton
-              presentation="button"
-              label={station.name}
-              stationName={base?.name ?? station.name}
-              catalogStationId={station.id}
-            />
           </div>
           {playable ? (
             <StationUnavailableNotice
@@ -161,21 +167,33 @@ export function RadioStationView({ stationId }: { stationId: string }) {
               onPlay={() => play(playable)}
             />
           ) : null}
-          <div className="flex flex-col gap-1 text-sm">
-            <ExternalLink
-              href={station.detailUrl}
-              className="text-accent-blue-strong"
-            >
-              Station website
-            </ExternalLink>
+          <div className="flex items-center gap-2">
+            <Tooltip content="Station website" side="top">
+              <ButtonAnchor
+                href={station.detailUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+                size="icon-sm"
+                variant="secondary"
+                aria-label={`${station.name} website`}
+              >
+                <GlobeIcon size={16} aria-hidden />
+              </ButtonAnchor>
+            </Tooltip>
             {station.programmingUrl &&
             station.programmingUrl !== station.detailUrl ? (
-              <ExternalLink
-                href={station.programmingUrl}
-                className="text-accent-blue-strong"
-              >
-                Programme guide
-              </ExternalLink>
+              <Tooltip content="Programme guide" side="top">
+                <ButtonAnchor
+                  href={station.programmingUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  size="icon-sm"
+                  variant="secondary"
+                  aria-label={`${station.name} programme guide`}
+                >
+                  <CalendarDaysIcon size={16} aria-hidden />
+                </ButtonAnchor>
+              </Tooltip>
             ) : null}
           </div>
         </div>

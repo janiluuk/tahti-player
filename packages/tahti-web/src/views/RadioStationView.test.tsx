@@ -60,8 +60,13 @@ describe('RadioStationView', () => {
       await within(screen.getByRole('status')).findByText('Artist - Song'),
     ).toBeTruthy();
     expect(
-      screen.getByText('Programme guide').closest('a')?.getAttribute('href'),
+      screen
+        .getByRole('link', { name: 'Radio Helsinki programme guide' })
+        .getAttribute('href'),
     ).toBe('https://www.radiohelsinki.fi/ohjelmakartta/');
+    expect(
+      screen.getByRole('link', { name: 'Radio Helsinki website' }),
+    ).toBeTruthy();
     expect(screen.getByRole('link', { name: 'YleX' })).toBeTruthy();
     expect(screen.queryByRole('link', { name: 'Radio Helsinki' })).toBeNull();
   });
@@ -72,10 +77,9 @@ describe('RadioStationView', () => {
     await renderStation('radio-helsinki');
 
     await userEvent.click(
-      within(screen.getByRole('group', { name: 'Station controls' })).getByRole(
-        'button',
-        { name: 'Play' },
-      ),
+      within(screen.getByTestId('station-cover')).getByRole('button', {
+        name: 'Play Radio Helsinki',
+      }),
     );
     expect(play).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -136,9 +140,10 @@ describe('RadioStationView', () => {
     });
     await renderStation('radio-helsinki');
     expect(
-      screen.getByRole('button', { name: 'Edit Radio Helsinki cover' })
-        .textContent,
-    ).toContain('Edit cover image');
+      within(screen.getByTestId('station-cover')).getByRole('button', {
+        name: 'Edit Radio Helsinki cover',
+      }),
+    ).toBeTruthy();
     expect(
       within(screen.getByTestId('other-stations')).queryByTestId(
         'radio-station-cover-edit',
