@@ -7,17 +7,19 @@ import { StoryCard } from './StoryCard';
 describe('StoryCard', () => {
   afterEach(cleanup);
 
-  it('shows meta, title, excerpt and author', () => {
+  it('shows kind pill, date, title, excerpt and author', () => {
     render(
       <StoryCard
         imageSrc="https://example.com/a.jpg"
-        meta="News · 1 day ago"
+        kind="shared news"
+        date="1 day ago"
         title="Hi, I make the flutes you hear here"
         excerpt="A short hello."
         authorName="Resonant Crafts"
       />,
     );
-    expect(screen.getByText('News · 1 day ago')).toBeTruthy();
+    expect(screen.getByText('shared news')).toBeTruthy();
+    expect(screen.getByText('1 day ago')).toBeTruthy();
     expect(
       screen.getByRole('heading', {
         name: 'Hi, I make the flutes you hear here',
@@ -31,13 +33,15 @@ describe('StoryCard', () => {
     render(
       <StoryCard
         media={<div data-testid="custom-media" />}
-        meta="Track"
+        kind="released a track"
+        date="3 hours ago"
         title="Dawn"
         authorName="Aurora"
         renderAuthor={(row) => <a href="/u/aurora">{row}</a>}
       />,
     );
     expect(screen.getByTestId('custom-media')).toBeTruthy();
+    expect(screen.getByText('released a track')).toBeTruthy();
     expect(screen.getByRole('link').getAttribute('href')).toBe('/u/aurora');
   });
 

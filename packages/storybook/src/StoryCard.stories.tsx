@@ -10,7 +10,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Editorial card for posts and feed items: 16:9 image (or a `media` slot such as artwork with play), muted meta line, bold title, 3-line excerpt and author. No frame. Used by Listen → Feed and the Discover Community stories widget.',
+          'Editorial card for posts and feed items: 16:9 image (or a `media` slot such as artwork with play), activity-type pill + humanized date, bold title, 3-line excerpt and author. No frame. Used by Listen → Feed and the Discover Community stories widget.',
       },
     },
   },
@@ -24,7 +24,8 @@ const meta = {
   ],
   args: {
     imageSrc: 'https://picsum.photos/seed/tahti-flute/960/540',
-    meta: 'News · 1 day ago',
+    kind: 'shared news',
+    date: '1 day ago',
     title: 'Hi, I make the flutes you hear here',
     excerpt:
       "I make native-style flutes by hand and record music with them. A short hello and what you'll find on this page.",
@@ -53,11 +54,22 @@ export const NoImageWithAvatar: Story = {
 /** Long title and excerpt clamp to three lines each. */
 export const LongText: Story = {
   args: {
-    meta: 'Announcement · Oct 27, 2026',
+    kind: 'posted an announcement',
+    date: '3 days ago',
     title:
       'Many thanks for your time and attention - 15000+ listens, 2000+ downloads, and a few words about what comes next for the show',
     excerpt:
       'Dear people of online sonic adventures, thanks for your support here. I hope you are enjoying every drop of the mixes on this page, because there is a lot more coming and I want to tell you all about it in this post.',
     authorName: 'Beatinspector',
+  },
+};
+
+export const ReleasedATrack: Story = {
+  args: {
+    kind: 'released a track',
+    date: '14 hours ago',
+    title: 'Polar Static',
+    excerpt: undefined,
+    authorName: 'Northern Lights',
   },
 };
