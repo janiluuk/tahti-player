@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { TahtiPlayable } from '@tahti-web/api/types';
 import { ChannelStagePlayer } from '@tahti-web/components/channel-view';
 import { usePlayerStore } from '@tahti-web/stores/playerStore';
 import { useState, type ComponentProps } from 'react';
@@ -29,6 +30,25 @@ function StagePlayerWithFollow(props: Props) {
   );
 }
 
+/** The channel's own copy of the rotation's now-playing track. */
+function nowPlayingTrack(patch: Partial<TahtiPlayable>): TahtiPlayable {
+  return {
+    id: 'nl-aurora-drift',
+    kind: 'sound',
+    title: 'Aurora Drift',
+    artist: CHANNEL_NAME,
+    streamUrl: 'https://cdn.tahti.live/nl-aurora-drift.mp3',
+    protocol: 'https',
+    channelSlug: CHANNEL_SLUG,
+    ...patch,
+  };
+}
+
+const AURORA_PEAKS = Array.from(
+  { length: 96 },
+  (_, i) => 40 + Math.round(120 * Math.abs(Math.sin(i / 5))),
+);
+
 const noopFollow: Props['follow'] = {
   following: false,
   busy: false,
@@ -55,6 +75,7 @@ const meta: Meta<typeof ChannelStagePlayer> = {
     chatOn: true,
     follow: noopFollow,
     signedIn: true,
+    playables: [nowPlayingTrack({ peaks: AURORA_PEAKS })],
   },
   render: (args) => (
     <div className="max-w-3xl overflow-hidden rounded-xl bg-slate-900">
@@ -91,6 +112,18 @@ export const Live: Story = {
       await expect(
         canvas.getByRole('button', { name: 'Open chat' }),
       ).toBeVisible();
+    });
+
+    await step('play sits top-left, left of the title', async () => {
+      const play = canvas.getByTestId('channel-stage-play');
+      const title = canvas.getByText('Aurora Drift');
+      const playBox = play.getBoundingClientRect();
+      const titleBox = title.getBoundingClientRect();
+      await expect(playBox.right).toBeLessThanOrEqual(titleBox.left);
+      await expect(playBox.top).toBeLessThan(titleBox.bottom);
+      await expect(
+        canvasElement.querySelector('[data-waveform="peaks"]'),
+      ).not.toBeNull();
     });
 
     await step('follow toggles', async () => {
@@ -189,5 +222,41 @@ export const Offline: Story = {
     await expect(
       canvas.queryByRole('button', { name: 'Play stream' }),
     ).toBeNull();
+  },
+};
+
+/** A rotation track hosted on hearthis.at has no peaks: its compact widget
+ * replaces the empty waveform. */
+export const EmbedInRotation: Story = {
+  args: {
+    channel: storyChannel({ signalConnected: false }),
+    playables: [
+      nowPlayingTrack({
+        embed: {
+          provider: 'hearthis',
+          embedUri: 'northern-lights/aurora-drift',
+        },
+      }),
+    ],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const widget = await canvas.findByTestId('channel-stage-embed-widget');
+    await expect(
+      within(widget).getByTitle(/Aurora Drift .* player/),
+    ).toBeInTheDocument();
+    await expect(canvasElement.querySelector('[data-waveform]')).toBeNull();
+  },
+};
+
+/** A track without peaks or an embed shows no waveform rather than a row
+ * of flat placeholder bars. */
+export const NoWaveformData: Story = {
+  args: { playables: [] },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await waitFor(() => expect(canvas.getByText('Aurora Drift')).toBeVisible());
+    await expect(canvasElement.querySelector('[data-waveform]')).toBeNull();
+    await expect(canvas.queryByTestId('channel-stage-embed-widget')).toBeNull();
   },
 };

@@ -7,13 +7,27 @@ import {
 import { act, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import type { PublicChannel } from '../../api/types';
+import type { PublicChannel, TahtiPlayable } from '../../api/types';
 import { usePlayerStore } from '../../stores/playerStore';
 import { ChannelStagePlayer } from './ChannelStagePlayer';
 
 vi.mock('../EmbedSurface', () => ({
-  EmbedSurface: ({ provider }: { provider: string }) => (
-    <div data-testid="embed-surface">{provider}</div>
+  EmbedSurface: ({
+    provider,
+    compact,
+    autoplay,
+  }: {
+    provider: string;
+    compact?: boolean;
+    autoplay: boolean;
+  }) => (
+    <div
+      data-testid="embed-surface"
+      data-compact={compact ? 'true' : undefined}
+      data-autoplay={String(autoplay)}
+    >
+      {provider}
+    </div>
   ),
 }));
 
@@ -101,5 +115,105 @@ describe('ChannelStagePlayer', () => {
     });
     await renderStage({ trackIds: new Set(['sound:mix-1']) });
     expect(screen.queryByTestId('channel-stage-embed')).toBeNull();
+  });
+
+  describe('on air', () => {
+    const rotation = {
+      ...channel,
+      state: 'LIVE',
+      hlsUrl: 'https://cdn.example/live.m3u8',
+      signalConnected: false,
+      nowPlaying: {
+        title: 'Night mix',
+        artistName: 'Night Drive',
+        artistUsername: 'nightdrive',
+        artworkUrl: null,
+      },
+    } as unknown as PublicChannel;
+    const track = (overrides: Partial<TahtiPlayable>) =>
+      ({
+        id: 'sound:mix-1',
+        kind: 'sound',
+        title: 'Night mix',
+        artist: 'Night Drive',
+        streamUrl: '',
+        protocol: 'https',
+        ...overrides,
+      }) as TahtiPlayable;
+
+    it('puts the play button first, left of the now-playing title', async () => {
+      await renderStage({ channel: rotation, live: true });
+      const play = screen.getByRole('button', { name: 'Play stream' });
+      const title = screen.getAllByText('Night mix')[0]!;
+      expect(
+        play.compareDocumentPosition(title) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+    });
+
+    it('draws the real waveform when the track has peaks', async () => {
+      await renderStage({
+        channel: rotation,
+        live: true,
+        playables: [track({ peaks: [10, 200, 80, 40] })],
+      });
+      expect(
+        document.querySelector('[data-waveform="peaks"]'),
+      ).toBeInTheDocument();
+      expect(screen.queryByTestId('embed-surface')).toBeNull();
+    });
+
+    it('shows the compact embed widget instead of an empty waveform', async () => {
+      await renderStage({
+        channel: rotation,
+        live: true,
+        playables: [
+          track({
+            embed: {
+              provider: 'hearthis',
+              embedUri: 'https://hearthis.at/x/1/',
+            },
+          }),
+        ],
+      });
+      expect(document.querySelector('[data-waveform]')).toBeNull();
+      const widget = screen.getByTestId('embed-surface');
+      expect(widget).toHaveAttribute('data-compact', 'true');
+      expect(widget).toHaveAttribute('data-autoplay', 'false');
+    });
+
+    it('leaves out the waveform when there is nothing real to draw', async () => {
+      await renderStage({ channel: rotation, live: true, playables: [] });
+      expect(document.querySelector('[data-waveform]')).toBeNull();
+      expect(screen.queryByTestId('embed-surface')).toBeNull();
+    });
+
+    it('never mounts a second widget for the embed the player is already playing', async () => {
+      usePlayerStore.setState({
+        currentId: 'sound:elsewhere',
+        queue: [
+          {
+            id: 'sound:elsewhere',
+            track: {
+              title: 'Night mix',
+              artists: [{ name: 'Night Drive' }],
+              source: { provider: 'hearthis', id: 'https://hearthis.at/x/1/' },
+            },
+          },
+        ] as never,
+      });
+      await renderStage({
+        channel: rotation,
+        live: true,
+        playables: [
+          track({
+            embed: {
+              provider: 'hearthis',
+              embedUri: 'https://hearthis.at/x/1/',
+            },
+          }),
+        ],
+      });
+      expect(screen.queryByTestId('embed-surface')).toBeNull();
+    });
   });
 });

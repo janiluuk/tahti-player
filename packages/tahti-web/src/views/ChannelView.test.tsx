@@ -85,8 +85,16 @@ function createRouterFor(initialEntry: string) {
     path: '/chat/$slug',
     component: () => <p>Chat page</p>,
   });
+  const stationRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/radio/station/$stationId',
+    component: function StationRoute() {
+      const { stationId } = stationRoute.useParams();
+      return <p>Station {stationId}</p>;
+    },
+  });
   return createRouter({
-    routeTree: rootRoute.addChildren([channelRoute, chatRoute]),
+    routeTree: rootRoute.addChildren([channelRoute, chatRoute, stationRoute]),
     history: createMemoryHistory({ initialEntries: [initialEntry] }),
   });
 }
@@ -345,5 +353,63 @@ describe('ChannelView', () => {
           .map((tab) => tab.textContent),
       ).toEqual(['Music', 'Comments']);
     });
+  });
+
+  it('lists embed tracks on their own Embeds tab, not under Music', async () => {
+    const realFetchSound = client.fetchChannelSound;
+    vi.spyOn(client, 'fetchChannelSound').mockImplementation(async (slug) => {
+      const result = await realFetchSound(slug);
+      const first = result.data[0]!;
+      return {
+        ...result,
+        data: [
+          ...result.data,
+          {
+            ...first,
+            id: 'embed-mix',
+            title: 'Hearthis night mix',
+            audioUrl: null,
+            embedProvider: 'HEARTHIS',
+            embedUri: 'https://hearthis.at/night/mix/',
+          },
+        ],
+      };
+    });
+    await renderChannel('/channel/northern-lights');
+
+    const tabs = await screen.findByTestId('channel-page-tabs');
+    await waitFor(() =>
+      expect(within(tabs).getByRole('tab', { name: 'Embeds' })).toBeTruthy(),
+    );
+    expect(screen.queryByTestId('channel-embeds')).toBeNull();
+    expect(screen.queryByText('Hearthis night mix')).toBeNull();
+
+    await act(async () => {
+      fireEvent.click(within(tabs).getByRole('tab', { name: 'Embeds' }));
+    });
+    const embeds = screen.getByTestId('channel-embeds');
+    expect(within(embeds).getByText('Hearthis night mix')).toBeTruthy();
+    expect(screen.queryByTestId('channel-blocks')).toBeNull();
+  });
+
+  it('changes station from a radio channel with the arrow keys and buttons', async () => {
+    const router = await renderChannel('/channel/tahti-radio');
+    const dial = await screen.findByTestId('radio-station-dial');
+    expect(
+      within(dial).getByRole('button', { name: 'Next station: YleX' }),
+    ).toBeTruthy();
+
+    await act(async () => {
+      fireEvent.keyDown(dial, { key: 'ArrowRight' });
+    });
+    await waitFor(() =>
+      expect(router.state.location.pathname).toBe('/radio/station/ylex'),
+    );
+  });
+
+  it('has no station dial on an artist channel', async () => {
+    await renderChannel('/channel/northern-lights');
+    await screen.findByTestId('channel-page-tabs');
+    expect(screen.queryByTestId('radio-station-dial')).toBeNull();
   });
 });

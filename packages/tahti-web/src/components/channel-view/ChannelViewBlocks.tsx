@@ -56,17 +56,19 @@ export type ChannelBlockRenderContext = {
 };
 
 function ChannelTrackRows({
-  ctx,
   items,
+  pinnedPlayables,
+  getTrackMeta,
   emptyMessage,
 }: {
-  ctx: ChannelBlockRenderContext;
   items: TahtiPlayable[];
+  pinnedPlayables: TahtiPlayable[];
+  getTrackMeta: ChannelTrackMeta;
   emptyMessage: string;
 }) {
   const pinnedIds = useMemo(
-    () => new Set(ctx.pinnedPlayables.map((item) => item.id)),
-    [ctx.pinnedPlayables],
+    () => new Set(pinnedPlayables.map((item) => item.id)),
+    [pinnedPlayables],
   );
   const pinnedNote = useCallback(
     (item: TahtiPlayable) =>
@@ -80,10 +82,38 @@ function ChannelTrackRows({
       filterable
       allowGrid={false}
       className="bg-background-secondary"
-      getTrackMeta={ctx.getTrackMeta}
+      getTrackMeta={getTrackMeta}
       getAnnotation={pinnedIds.size > 0 ? pinnedNote : undefined}
       emptyMessage={emptyMessage}
     />
+  );
+}
+
+/** The channel's tracks hosted on other sites (hearthis.at, SoundCloud,
+ * Mixcloud…), shown on the page's own Embeds tab. */
+export function ChannelEmbedsSection({
+  embeds,
+  pinnedPlayables,
+  getTrackMeta,
+}: {
+  embeds: TahtiPlayable[];
+  pinnedPlayables: TahtiPlayable[];
+  getTrackMeta: ChannelTrackMeta;
+}) {
+  return (
+    <ProfileSection
+      id="channel-block-embeds"
+      className="gap-3"
+      title="Embeds"
+      data-testid="channel-embeds"
+    >
+      <ChannelTrackRows
+        items={embeds}
+        pinnedPlayables={pinnedPlayables}
+        getTrackMeta={getTrackMeta}
+        emptyMessage="No embeds on this channel."
+      />
+    </ProfileSection>
   );
 }
 
@@ -93,51 +123,38 @@ function ChannelSoundSections({ ctx }: { ctx: ChannelBlockRenderContext }) {
       splitEmbedPlayables([...ctx.pinnedPlayables, ...ctx.catalogPlayables]),
     [ctx.pinnedPlayables, ctx.catalogPlayables],
   );
-  const hasAny = tracks.length > 0 || embeds.length > 0;
   return (
-    <>
-      <ProfileSection
-        id="channel-block-sound"
-        className="gap-3"
-        title={ctx.editing ? undefined : 'Tracks'}
-        status={ctx.sectionStatus.sounds}
-        loadingLabel="Loading tracks…"
-        errorTitle="Tracks couldn't load"
-        errorDescription="The rest of the channel still works."
-        onRetry={() => ctx.onRetrySection('sounds')}
-        empty={
-          hasAny
-            ? null
+    <ProfileSection
+      id="channel-block-sound"
+      className="gap-3"
+      title={ctx.editing ? undefined : 'Tracks'}
+      status={ctx.sectionStatus.sounds}
+      loadingLabel="Loading tracks…"
+      errorTitle="Tracks couldn't load"
+      errorDescription="The rest of the channel still works."
+      onRetry={() => ctx.onRetrySection('sounds')}
+      empty={
+        tracks.length > 0
+          ? null
+          : embeds.length > 0
+            ? {
+                title: 'No tracks hosted on Tahti',
+                description: "This channel's music is on the Embeds tab.",
+              }
             : {
                 title: 'No public tracks yet',
                 description:
                   'When this channel publishes tracks, they show up here. Offline listening still works from Discover and Radio.',
               }
-        }
-      >
-        {tracks.length > 0 || embeds.length === 0 ? (
-          <ChannelTrackRows
-            ctx={ctx}
-            items={tracks}
-            emptyMessage="No public tracks for this channel yet."
-          />
-        ) : null}
-      </ProfileSection>
-      {ctx.sectionStatus.sounds === 'ready' && embeds.length > 0 ? (
-        <ProfileSection
-          id="channel-block-embeds"
-          className="gap-3"
-          title="Embeds"
-          data-testid="channel-embeds"
-        >
-          <ChannelTrackRows
-            ctx={ctx}
-            items={embeds}
-            emptyMessage="No embeds on this channel."
-          />
-        </ProfileSection>
-      ) : null}
-    </>
+      }
+    >
+      <ChannelTrackRows
+        items={tracks}
+        pinnedPlayables={ctx.pinnedPlayables}
+        getTrackMeta={ctx.getTrackMeta}
+        emptyMessage="No public tracks for this channel yet."
+      />
+    </ProfileSection>
   );
 }
 

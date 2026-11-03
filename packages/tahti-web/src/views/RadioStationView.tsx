@@ -15,6 +15,7 @@ import {
 
 import { RadioRowCard } from '../components/listen-view/RadioRowCard';
 import { PageEmpty } from '../components/PageStates';
+import { RadioStationDial } from '../components/radio/RadioStationDial';
 import { RadioStationCoverEditButton } from '../components/RadioStationCover';
 import { StationUnavailableNotice } from '../components/StationUnavailableNotice';
 import {
@@ -101,103 +102,109 @@ export function RadioStationView({ stationId }: { stationId: string }) {
         </Tooltip>
       }
     >
-      <div className="flex flex-col gap-6 md:flex-row md:items-start">
-        <div className="group relative shrink-0" data-testid="station-cover">
-          <MediaArtwork
-            src={station.logoUrl}
-            alt={`${station.name} logo`}
-            size="lg"
-            onPlay={playable ? togglePlay : undefined}
-            isPlaying={playing}
-            playLabel={`Play ${station.name}`}
-            pauseLabel={`Pause ${station.name}`}
-            playDisabled={!playable}
-          />
-          <div className="absolute top-2 right-2 z-[2]">
-            <RadioStationCoverEditButton
-              label={station.name}
-              stationName={base?.name ?? station.name}
-              catalogStationId={station.id}
+      <RadioStationDial
+        current={{ kind: 'station', id: station.id }}
+        label={station.name}
+        buttonsClassName="top-0 right-0"
+      >
+        <div className="flex flex-col gap-6 md:flex-row md:items-start md:pr-20">
+          <div className="group relative shrink-0" data-testid="station-cover">
+            <MediaArtwork
+              src={station.logoUrl}
+              alt={`${station.name} logo`}
+              size="lg"
+              onPlay={playable ? togglePlay : undefined}
+              isPlaying={playing}
+              playLabel={`Play ${station.name}`}
+              pauseLabel={`Pause ${station.name}`}
+              playDisabled={!playable}
             />
+            <div className="absolute top-2 right-2 z-[2]">
+              <RadioStationCoverEditButton
+                label={station.name}
+                stationName={base?.name ?? station.name}
+                catalogStationId={station.id}
+              />
+            </div>
           </div>
-        </div>
-        <div className="flex min-w-0 flex-1 flex-col gap-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="pill" color="blue">
-              {station.codec} · {station.bitrateKbps} kbps
-            </Badge>
-            {playing ? (
-              <Badge variant="pill" color="red">
-                Playing
+          <div className="flex min-w-0 flex-1 flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="pill" color="blue">
+                {station.codec} · {station.bitrateKbps} kbps
               </Badge>
-            ) : null}
-          </div>
-          <div role="status" aria-live="polite" className="text-sm">
-            {nowPlaying ? (
-              <p>
-                <span className="text-foreground-secondary">On air: </span>
-                <span className="font-semibold">{nowPlaying}</span>
-              </p>
-            ) : (
-              <p className="text-foreground-secondary">
-                {streamUrl
-                  ? 'This station doesn’t say what’s playing.'
-                  : 'No stream address for this station yet.'}
-              </p>
-            )}
-          </div>
-          <div
-            role="group"
-            aria-label="Station controls"
-            className="flex flex-wrap gap-2"
-          >
-            <Button
-              type="button"
-              variant="secondary"
-              aria-pressed={onListen}
-              onClick={() => toggleStation(station.id)}
+              {playing ? (
+                <Badge variant="pill" color="red">
+                  Playing
+                </Badge>
+              ) : null}
+            </div>
+            <div role="status" aria-live="polite" className="text-sm">
+              {nowPlaying ? (
+                <p>
+                  <span className="text-foreground-secondary">On air: </span>
+                  <span className="font-semibold">{nowPlaying}</span>
+                </p>
+              ) : (
+                <p className="text-foreground-secondary">
+                  {streamUrl
+                    ? 'This station doesn’t say what’s playing.'
+                    : 'No stream address for this station yet.'}
+                </p>
+              )}
+            </div>
+            <div
+              role="group"
+              aria-label="Station controls"
+              className="flex flex-wrap gap-2"
             >
-              {onListen ? 'Remove from Listen' : 'Add to Listen'}
-            </Button>
-          </div>
-          {playable ? (
-            <StationUnavailableNotice
-              playableId={playable.id}
-              streamUrl={playable.streamUrl}
-              onPlay={() => play(playable)}
-            />
-          ) : null}
-          <div className="flex items-center gap-2">
-            <Tooltip content="Station website" side="top">
-              <ButtonAnchor
-                href={station.detailUrl}
-                target="_blank"
-                rel="noreferrer noopener"
-                size="icon-sm"
+              <Button
+                type="button"
                 variant="secondary"
-                aria-label={`${station.name} website`}
+                aria-pressed={onListen}
+                onClick={() => toggleStation(station.id)}
               >
-                <GlobeIcon size={16} aria-hidden />
-              </ButtonAnchor>
-            </Tooltip>
-            {station.programmingUrl &&
-            station.programmingUrl !== station.detailUrl ? (
-              <Tooltip content="Programme guide" side="top">
+                {onListen ? 'Remove from Listen' : 'Add to Listen'}
+              </Button>
+            </div>
+            {playable ? (
+              <StationUnavailableNotice
+                playableId={playable.id}
+                streamUrl={playable.streamUrl}
+                onPlay={() => play(playable)}
+              />
+            ) : null}
+            <div className="flex items-center gap-2">
+              <Tooltip content="Station website" side="top">
                 <ButtonAnchor
-                  href={station.programmingUrl}
+                  href={station.detailUrl}
                   target="_blank"
                   rel="noreferrer noopener"
                   size="icon-sm"
                   variant="secondary"
-                  aria-label={`${station.name} programme guide`}
+                  aria-label={`${station.name} website`}
                 >
-                  <CalendarDaysIcon size={16} aria-hidden />
+                  <GlobeIcon size={16} aria-hidden />
                 </ButtonAnchor>
               </Tooltip>
-            ) : null}
+              {station.programmingUrl &&
+              station.programmingUrl !== station.detailUrl ? (
+                <Tooltip content="Programme guide" side="top">
+                  <ButtonAnchor
+                    href={station.programmingUrl}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    size="icon-sm"
+                    variant="secondary"
+                    aria-label={`${station.name} programme guide`}
+                  >
+                    <CalendarDaysIcon size={16} aria-hidden />
+                  </ButtonAnchor>
+                </Tooltip>
+              ) : null}
+            </div>
           </div>
         </div>
-      </div>
+      </RadioStationDial>
       <CardsRow
         title="Other stations"
         data-testid="other-stations"

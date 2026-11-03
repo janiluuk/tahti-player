@@ -1,8 +1,7 @@
 import { useState, type ReactNode } from 'react';
 
-import { Card, CardGrid } from '@tahti-player/ui';
+import { Card, CardGrid, cn } from '@tahti-player/ui';
 
-import { cn } from '../lib/cn';
 import {
   useTrackListViewStore,
   type TrackListView,

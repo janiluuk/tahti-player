@@ -20,10 +20,10 @@ Requests from the 2026-11-03 session not shipped yet. Shipped items moved to HIS
 - [x] Story / news / feed cards follow the reference layout with the title overlaid on the image; Storybook updated.
 
 ## Channel page
-- [ ] Play button in the standard top-left position with the other controls.
-- [ ] Embeds in their own tab; replace the empty stage waveform with the embed widget.
-- [ ] Content readable on dark backgrounds (`/channel/yaniho`).
-- [ ] Radio channel: swipe left/right to change channel.
+- [x] Play button in the standard top-left position with the other controls.
+- [x] Embeds in their own tab; the stage shows real peaks, the compact embed widget, or nothing instead of an empty waveform.
+- [x] Content readable on dark backgrounds (`/channel/yaniho`): scheme text colors, 4.5:1 checked in Storybook.
+- [x] Radio channel: swipe left/right (plus arrow keys and prev/next buttons) to change station.
 
 ## Track page
 - [ ] Like button placement and icon actions: done in #1800; verify.

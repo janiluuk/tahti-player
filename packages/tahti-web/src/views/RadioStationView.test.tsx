@@ -5,7 +5,14 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
-import { act, cleanup, render, screen, within } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -32,6 +39,30 @@ async function renderStation(stationId: string) {
     render(<RouterProvider router={router} />);
     await new Promise((resolve) => setTimeout(resolve, 0));
   });
+  return router;
+}
+
+function pointer(
+  type: string,
+  target: Element,
+  clientX: number,
+  clientY = 100,
+) {
+  const event = new Event(type, { bubbles: true }) as Event & {
+    clientX: number;
+    clientY: number;
+    pointerId: number;
+    pointerType: string;
+    isPrimary: boolean;
+  };
+  Object.assign(event, {
+    clientX,
+    clientY,
+    pointerId: 1,
+    pointerType: 'touch',
+    isPrimary: true,
+  });
+  fireEvent(target, event);
 }
 
 describe('RadioStationView', () => {
@@ -161,5 +192,39 @@ describe('RadioStationView', () => {
 
     await renderStation('nope');
     expect(screen.getByText('Station not found')).toBeTruthy();
+  });
+
+  it('changes station by swipe, arrow key or the prev/next buttons', async () => {
+    const router = await renderStation('radio-helsinki');
+    const dial = screen.getByTestId('radio-station-dial');
+    expect(dial.getAttribute('aria-keyshortcuts')).toBe('ArrowLeft ArrowRight');
+
+    await act(async () => {
+      pointer('pointerdown', dial, 300);
+      pointer('pointerup', dial, 200);
+    });
+    expect(router.state.location.pathname).toBe('/radio/station/radio-rock');
+
+    await act(async () => {
+      fireEvent.keyDown(dial, { key: 'ArrowLeft' });
+    });
+    expect(router.state.location.pathname).toBe('/radio/station/ylex');
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Previous station: YleX' }),
+    );
+    expect(router.state.location.pathname).toBe('/radio/station/ylex');
+  });
+
+  it('ignores short or mostly vertical swipes', async () => {
+    const router = await renderStation('radio-helsinki');
+    const dial = screen.getByTestId('radio-station-dial');
+    await act(async () => {
+      pointer('pointerdown', dial, 300, 100);
+      pointer('pointerup', dial, 260, 100);
+      pointer('pointerdown', dial, 300, 100);
+      pointer('pointerup', dial, 200, 300);
+    });
+    expect(router.state.location.pathname).toBe('/');
   });
 });

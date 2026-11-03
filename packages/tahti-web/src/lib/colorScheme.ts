@@ -100,6 +100,7 @@ export function colorSchemeCssVars(
     '--channel-accent': n.accent,
     '--channel-highlight': n.highlight,
     '--channel-muted': n.muted,
+    '--channel-text-muted': readableMuted(n),
   };
 }
 
