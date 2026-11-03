@@ -6340,6 +6340,6 @@ Library media, embeds and smart links share one row: artwork, title, detail and 
 
 Other stations on a radio station page use playable thumbnails. Listener cards no longer expose cover-edit overlays; board members edit the cover from a visible station-page button. Shared Card and AmbientCard surfaces subtly outline the playing item and clear the cue when paused. Fixed the channel Tracks Storybook assertion to distinguish pinned artwork from the catalog.
 
-## 2026-11-03 — Channel page tabs, default artwork, Chat activity (0.0.295)
+## 2026-11-03 — Channel page tabs, default artwork, Chat activity (0.0.296)
 
 Listen drops the Tahti Radio bar, and "From Tahti" news moves to Discover. The artist profile loses the Popular tracks rank pills and uses the standard list with a filter box; embeds get their own section, and headings take the page's own text color so they read on dark artist colors. Missing or broken covers show the default artwork (admin presets) everywhere through `MediaArtwork`. The channel page puts Music, Comments and Chat in tabs under the stage, sets small blocks such as Live shows side by side, gives show episodes thumbnails, shows the artist's posts as story cards, moves the Live / 24/7 rotation / Offline pill into the stage, hosts a playing embed in the stage, and folds the RSS feed into Share. `/chat` picks a channel from a dropdown and lists each room's activity in the last 24 hours.
