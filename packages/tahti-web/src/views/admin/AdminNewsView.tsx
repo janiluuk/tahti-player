@@ -232,18 +232,26 @@ export function AdminNewsView() {
                           <div className="min-w-0 flex-1 basis-64">
                             <div className="flex items-center gap-2 font-medium">
                               {post.imageUrl ? (
-                                <ImageIcon
-                                  size={14}
-                                  aria-label="Includes image"
-                                  className="text-primary-strong"
-                                />
+                                <>
+                                  <ImageIcon
+                                    size={14}
+                                    aria-hidden
+                                    className="text-primary-strong"
+                                  />
+                                  <span className="sr-only">
+                                    Includes image
+                                  </span>
+                                </>
                               ) : null}
                               {post.linkUrl ? (
-                                <ExternalLinkIcon
-                                  size={14}
-                                  aria-label="Includes link"
-                                  className="text-primary-strong"
-                                />
+                                <>
+                                  <ExternalLinkIcon
+                                    size={14}
+                                    aria-hidden
+                                    className="text-primary-strong"
+                                  />
+                                  <span className="sr-only">Includes link</span>
+                                </>
                               ) : null}
                               {post.headline}
                             </div>

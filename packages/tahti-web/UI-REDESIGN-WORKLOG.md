@@ -1,3 +1,7 @@
+## 2026-11-03 - Batch of 30, round 3
+
+Artist header folds Open channel and fan-tiers into More; community guidelines show as a Listen banner instead of a sticky toast; Studio Stats uses in-page section chips (no nested Stats/Governance tab strip); Messages has one compose field; Music pages use FilterChips; more controls named after their item; not-found empties are h1; de-greened a few secondary actions. Bumped tahti-web `0.0.294`.
+
 ## 2026-10-30 - Navigation fixes and undo on more creates
 
 A channel you already have opens Green room instead of a blank Setup tab. Radio deep links light Radio. Listeners no longer see Library → Sounds. The sound editor collapses the sidebar. A grant year lights Admin → Community. Old channel design links go straight to Settings. New listening parties, lineup members, moderators, replies, release tracks, pins, clips, artwork, stations, embeds, stash files, gallery photos, smart-playlist copies, and queue adds can be undone. Bumped tahti-web `0.0.286`.

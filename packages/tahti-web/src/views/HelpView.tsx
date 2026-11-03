@@ -402,6 +402,7 @@ export function HelpArticleView({ slug }: { slug: string }) {
     return (
       <PageFrame maxWidth="3xl">
         <PageEmpty
+          headingLevel={1}
           icon="alert"
           title="Article not found"
           description={`No help page for ${slug}.`}

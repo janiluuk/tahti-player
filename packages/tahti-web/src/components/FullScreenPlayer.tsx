@@ -239,12 +239,12 @@ export function FullScreenPlayer() {
             </Tooltip>
           ) : null}
           {playable ? (
-            <Tooltip content="More options" side="left">
+            <Tooltip content={`More options for ${title}`} side="left">
               <Button
                 size="icon"
                 variant="text"
                 onClick={() => setMenuOpen(true)}
-                aria-label="More options"
+                aria-label={`More options for ${title}`}
                 aria-haspopup="dialog"
                 className="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
               >

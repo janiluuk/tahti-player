@@ -146,6 +146,13 @@ describe('ArtistHeaderActions report', () => {
     expect(screen.queryByRole('button', { name: /^Embed/ })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Edit look' })).toBeNull();
     expect(screen.queryByRole('link', { name: 'Edit design' })).toBeNull();
-    expect(screen.getByRole('link', { name: 'Open channel' })).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: 'More actions for Selector' }),
+      );
+    });
+    expect(
+      await screen.findByRole('button', { name: 'Open channel' }),
+    ).toBeTruthy();
   });
 });

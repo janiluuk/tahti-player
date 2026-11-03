@@ -199,6 +199,8 @@ export function ConnectedPlayerBar() {
           repeatOff: isLive ? 'Loop stations off' : 'Repeat off',
           repeatAll: isLive ? 'Loop stations' : 'Repeat all',
           repeatOne: 'Repeat one',
+          play: `Play ${title}`,
+          pause: `Pause ${title}`,
         }}
         onPlayPause={onPlayPause}
         onNext={next}
@@ -236,12 +238,10 @@ export function ConnectedPlayerBar() {
     </div>
   );
 
+  const playPauseLabel = isPlaying ? `Pause ${title}` : `Play ${title}`;
+
   const mobilePlayPauseButton = (
-    <Tooltip
-      content={isPlaying ? 'Pause' : 'Play'}
-      side="top"
-      wrapperClassName="shrink-0"
-    >
+    <Tooltip content={playPauseLabel} side="top" wrapperClassName="shrink-0">
       <Button
         size="icon"
         onClick={onPlayPause}
@@ -250,7 +250,7 @@ export function ConnectedPlayerBar() {
           isPlaying &&
             'bg-accent-green active:bg-accent-green text-black active:text-black',
         )}
-        aria-label={isPlaying ? 'Pause' : 'Play'}
+        aria-label={playPauseLabel}
         aria-pressed={isPlaying}
         aria-busy={isLoading || undefined}
         data-testid={isPlaying ? 'player-pause-button' : 'player-play-button'}

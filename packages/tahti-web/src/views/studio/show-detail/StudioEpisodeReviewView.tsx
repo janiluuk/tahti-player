@@ -102,7 +102,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
               onRetry={() => setAttempt((n) => n + 1)}
             />
           ) : notFound ? (
-            <PageEmpty title="Episode not found" />
+            <PageEmpty headingLevel={1} title="Episode not found" />
           ) : (
             <PageLoading label="Loading…" />
           )}

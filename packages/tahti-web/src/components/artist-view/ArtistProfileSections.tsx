@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import {
   BanIcon,
   CalendarDays,
@@ -22,7 +22,6 @@ import {
   SaveButton,
   SectionTitle,
   Textarea,
-  Tooltip,
 } from '@tahti-player/ui';
 
 import type { DiscoWidgetRenderItem } from '../../api/disco-widgets';
@@ -53,21 +52,37 @@ type Artist = PublicProfile['artist'];
 function ArtistMoreMenu({
   profile,
   isSelf,
+  fanTiers,
+  subscriptionsOn,
 }: {
   profile: PublicProfile;
   isSelf: boolean;
+  fanTiers: PublicProfile['fanTiers'];
+  subscriptionsOn: boolean;
 }) {
+  const navigate = useNavigate();
   const { artist, channel } = profile;
   const [embedOpen, setEmbedOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const block = useArtistBlock(artist.username, artist.displayName);
   const rssHref = profile.links.feeds?.sound;
   const pressKit = !isSelf && profile.links.presskit;
+  const canOpenChannel = Boolean(channel?.slug);
+  const canSubscribeFanTiers =
+    !isSelf && subscriptionsOn && fanTiers.length > 0;
   const canEmbed = Boolean(channel?.slug) && !isSelf;
   const canReport = Boolean(channel?.slug) && !isSelf;
   const canBlock = !isSelf && block.available;
 
-  if (!rssHref && !pressKit && !canEmbed && !canReport && !canBlock) {
+  if (
+    !rssHref &&
+    !pressKit &&
+    !canOpenChannel &&
+    !canSubscribeFanTiers &&
+    !canEmbed &&
+    !canReport &&
+    !canBlock
+  ) {
     return null;
   }
 
@@ -101,6 +116,34 @@ function ArtistMoreMenu({
         panelClassName="min-w-48"
       >
         <Popover.Menu>
+          {canOpenChannel && channel?.slug ? (
+            <Popover.Item
+              icon={<RadioTowerIcon size={16} />}
+              closeOnClick
+              onClick={() => {
+                void navigate({
+                  to: '/channel/$slug',
+                  params: { slug: channel.slug },
+                });
+              }}
+            >
+              Open channel
+            </Popover.Item>
+          ) : null}
+          {canSubscribeFanTiers ? (
+            <Popover.Item
+              icon={<UsersRound size={16} />}
+              closeOnClick
+              onClick={() => {
+                void navigate({
+                  to: '/subscribe/$username',
+                  params: { username: artist.username },
+                });
+              }}
+            >
+              {`Subscribe to ${artist.displayName}'s fan tiers`}
+            </Popover.Item>
+          ) : null}
           {pressKit ? (
             <Popover.Item
               icon={<DownloadIcon size={16} />}
@@ -192,38 +235,12 @@ export function ArtistHeaderActions({
           iconOnly
         />
       ) : null}
-      {!isSelf && subscriptionsOn && fanTiers.length > 0 ? (
-        <Tooltip
-          content={`Subscribe to ${artist.displayName}'s fan tiers`}
-          side="top"
-        >
-          <ButtonLink
-            to="/subscribe/$username"
-            params={{ username: artist.username }}
-            size="icon-sm"
-            variant="secondary"
-            aria-label={`Subscribe to ${artist.displayName}'s fan tiers`}
-            className={headerButtonClass}
-          >
-            <UsersRound size={16} aria-hidden />
-          </ButtonLink>
-        </Tooltip>
-      ) : null}
-      <ArtistMoreMenu profile={profile} isSelf={isSelf} />
-      {channel?.slug ? (
-        <Tooltip content="Open channel" side="top">
-          <ButtonLink
-            to="/channel/$slug"
-            params={{ slug: channel.slug }}
-            size="icon-sm"
-            variant="secondary"
-            aria-label="Open channel"
-            className={headerButtonClass}
-          >
-            <RadioTowerIcon size={16} aria-hidden />
-          </ButtonLink>
-        </Tooltip>
-      ) : null}
+      <ArtistMoreMenu
+        profile={profile}
+        isSelf={isSelf}
+        fanTiers={fanTiers}
+        subscriptionsOn={subscriptionsOn}
+      />
       {isOwner && channel?.slug ? (
         <ButtonLink
           to="/channel/$slug"
