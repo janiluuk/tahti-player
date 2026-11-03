@@ -90,7 +90,12 @@ function runLatest({ dryRun, extraArgs, env, root }) {
               'launch desktop app',
             ),
           ]
-        : []),
+        : [
+            () => ({
+              exitCode: 0,
+              output: `Built ${resolve(targetDir, 'release/tahti-player')}`,
+            }),
+          ]),
     ],
     { dryRun },
   );
