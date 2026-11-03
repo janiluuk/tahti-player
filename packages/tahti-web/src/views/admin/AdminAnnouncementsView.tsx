@@ -8,7 +8,6 @@ import {
   Breadcrumbs,
   Button,
   FilePicker,
-  Input,
   Select,
   Toggle,
   Tooltip,
@@ -31,6 +30,7 @@ import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { usePlayerStore } from '../../stores/playerStore';
 import { AnnouncementTrimDialog } from './announcements/AnnouncementTrimDialog';
+import { EveryNthInput } from './announcements/EveryNthInput';
 
 function fmtDuration(sec: number | null): string {
   if (sec == null) {
@@ -208,21 +208,11 @@ export function AdminAnnouncementsView() {
                             ]}
                           />
                           {clip.scheduleMode === 'EVERY_NTH' && (
-                            <Input
-                              type="number"
-                              inputMode="numeric"
-                              variant="number"
-                              size="sm"
-                              min={2}
-                              max={100}
-                              label="Every Nth"
+                            <EveryNthInput
                               value={clip.everyNth ?? 4}
-                              onChange={(event) =>
-                                patch(clip.id, {
-                                  everyNth: Number(event.target.value),
-                                })
+                              onCommit={(everyNth) =>
+                                patch(clip.id, { everyNth })
                               }
-                              className="w-24"
                             />
                           )}
                           {clip.audioUrl && (

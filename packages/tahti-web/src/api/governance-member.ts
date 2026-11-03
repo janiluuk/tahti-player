@@ -113,13 +113,6 @@ const mockMotionMeetings: Record<string, GovernanceMotionDetail['meeting']> = {
   },
 };
 
-export function setMockMotionMeeting(
-  id: string,
-  meeting: GovernanceMotionDetail['meeting'],
-): void {
-  mockMotionMeetings[id] = meeting;
-}
-
 const mockMotionComments: Record<string, MotionComment[]> = {
   'motion-5': [
     {

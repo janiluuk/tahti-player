@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { TahtiNativeLibrary } from '../lib/nativeLibrary';
@@ -36,6 +36,7 @@ function smartLibrary(total: () => number) {
 
 describe('SmartPlaylists live counts', () => {
   afterEach(() => {
+    cleanup();
     vi.useRealTimers();
   });
 

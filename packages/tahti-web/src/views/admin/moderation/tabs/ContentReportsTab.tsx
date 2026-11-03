@@ -106,9 +106,14 @@ function ReportActions({
 
   const resolve = (status: 'REVIEWING' | 'ACTIONED' | 'DISMISSED') => {
     setPending(true);
+    setError(null);
     void resolveContentReport(report.id, status, note.trim() || undefined).then(
-      () => {
+      (result) => {
         setPending(false);
+        if (!result.ok) {
+          setError(result.error);
+          return;
+        }
         onDone();
       },
     );
@@ -137,8 +142,15 @@ function ReportActions({
         report.id,
         'ACTIONED',
         note.trim() || 'Comment deleted',
-      ).then(() => {
+      ).then((resolved) => {
         setPending(false);
+        setConfirmingDelete(false);
+        if (!resolved.ok) {
+          setError(
+            `The comment is deleted, but the report is still open: ${resolved.error}`,
+          );
+          return;
+        }
         onDone();
       });
     });

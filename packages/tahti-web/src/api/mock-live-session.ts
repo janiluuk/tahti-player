@@ -78,10 +78,6 @@ export function getMockSignalConnected(): boolean {
   return signalConnected;
 }
 
-export function getMockLiveSlug(): string | null {
-  return liveSlug;
-}
-
 export function setMockLiveSlug(slug: string | null) {
   liveSlug = slug;
   writeStored();

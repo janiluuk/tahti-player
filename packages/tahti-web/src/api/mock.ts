@@ -23,7 +23,6 @@ import { mockFixture } from './mock-overrides';
 import { getMockFreeSubscriptionsEnabled } from './mock-profile-preferences';
 import type {
   Announcement,
-  AuthUser,
   BoardResolution,
   ChannelDirectoryResponse,
   ChannelSoundItem,
@@ -1371,26 +1370,6 @@ function buildMockChatHistory(slug: string): ChatMessage[] {
       channelRole: 'owner',
     },
   ];
-}
-
-export function mockAuthUser(overrides?: Partial<AuthUser>): AuthUser {
-  return {
-    id: 'mock-user-1',
-    email: 'demo@tahti.live',
-    username: 'demo',
-    displayName: 'Demo Artist',
-    tier: 'ARTIST',
-    avatarUrl: null,
-    isMember: true,
-    channel: {
-      slug: 'demo',
-      state: 'OFFLINE',
-      goneLiveAt: null,
-      customDomain: null,
-      customDomainVerified: false,
-    },
-    ...overrides,
-  };
 }
 
 function buildMockFanTiers(username: string): FanTiersResponse {

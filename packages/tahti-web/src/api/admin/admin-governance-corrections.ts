@@ -40,12 +40,6 @@ export function mockCorrectionQueue(): AdminGovernanceCorrection[] {
   return mockQueue;
 }
 
-export function setMockCorrectionQueue(
-  rows: AdminGovernanceCorrection[],
-): void {
-  mockQueue = rows;
-}
-
 /** The queue, oldest first; `state` narrows it (OPEN for waiting ones). */
 export async function fetchAdminCorrections(
   state?: CorrectionState,

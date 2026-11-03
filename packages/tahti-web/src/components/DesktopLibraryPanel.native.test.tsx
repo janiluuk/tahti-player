@@ -189,6 +189,7 @@ beforeAll(() => {
 
 afterEach(() => {
   cleanup();
+  vi.useRealTimers();
   resetViewStateForTests();
   window.sessionStorage.clear();
   usePlayerStore.getState().clearQueue();
@@ -833,6 +834,7 @@ describe('DesktopLibraryPanel native import', () => {
   });
 
   it('stops asking for more rows when a later page comes back empty', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
     globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
     const list = vi.fn((_search: string, offset: number) =>
       Promise.resolve({
@@ -844,7 +846,7 @@ describe('DesktopLibraryPanel native import', () => {
 
     render(<DesktopLibraryPanel />);
     expect(await screen.findByText('Available track')).toBeTruthy();
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    await act(() => vi.advanceTimersByTimeAsync(300));
 
     expect(list.mock.calls.filter(([, offset]) => offset > 0).length).toBe(1);
   });
@@ -1067,6 +1069,7 @@ describe('DesktopLibraryPanel native import', () => {
   });
 
   it('discards a slow, outdated response when a newer query has already answered', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
     globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
     const slow = { ...availableTrack, id: 'slow', title: 'Slow answer' };
     const fast = { ...availableTrack, id: 'fast', title: 'Fast answer' };
@@ -1084,7 +1087,7 @@ describe('DesktopLibraryPanel native import', () => {
       target: { value: 'fast' },
     });
     expect(await screen.findByText('Fast answer')).toBeTruthy();
-    await new Promise((resolve) => setTimeout(resolve, 700));
+    await act(() => vi.advanceTimersByTimeAsync(700));
     expect(screen.queryByText('Slow answer')).toBeNull();
     expect(screen.getByText('Fast answer')).toBeTruthy();
   });

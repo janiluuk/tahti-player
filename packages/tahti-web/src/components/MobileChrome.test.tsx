@@ -5,7 +5,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { MobileDrawer } from './MobileChrome';
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.useRealTimers();
+});
 
 function renderDrawer(onClose = vi.fn()) {
   render(
@@ -76,6 +79,5 @@ describe('MobileDrawer', () => {
       screen.getByRole('button', { name: 'Close' }).parentElement!,
     );
     expect(screen.getByRole('tooltip')).toHaveTextContent('Close');
-    vi.useRealTimers();
   });
 });

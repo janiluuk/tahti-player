@@ -56,14 +56,21 @@ export function AdminTopListsView() {
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    let cancelled = false;
     setLoading(true);
     void fetchAdminTopLists(period, dimension, sort).then((result) => {
+      if (cancelled) {
+        return;
+      }
       setBuckets(result.data);
       const reason =
         result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
       setLoadError(reason);
       setLoading(false);
     });
+    return () => {
+      cancelled = true;
+    };
   }, [period, dimension, sort, attempt]);
 
   const normalizedQuery = query.trim().toLowerCase();

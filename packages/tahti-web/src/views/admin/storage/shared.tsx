@@ -1,5 +1,6 @@
 import { HardDriveIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
@@ -200,8 +201,12 @@ export function QuotaEditor({
         }
         setSaving(true);
         void setUserStorageQuota(userId, Math.round(mb * 1024 * 1024)).then(
-          () => {
+          (result) => {
             setSaving(false);
+            if (!result.ok) {
+              toast.error(result.error);
+              return;
+            }
             setEditing(false);
             onSaved();
           },

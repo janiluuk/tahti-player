@@ -6,7 +6,7 @@ import {
   RouterProvider,
 } from '@tanstack/react-router';
 import { act } from 'react';
-import { createRoot } from 'react-dom/client';
+import { createRoot, type Root } from 'react-dom/client';
 import { toast } from 'sonner';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -30,10 +30,13 @@ vi.mock('../components/ChannelDesigner', () => ({
   ChannelDesigner: () => <div data-testid="designer" />,
 }));
 
+const roots: Root[] = [];
+
 async function renderArtist(username: string) {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
+  roots.push(root);
   const router = createRouter({
     routeTree: createRootRoute({
       component: () => <ArtistView username={username} />,
@@ -69,6 +72,9 @@ describe('ArtistView', () => {
     );
   });
   afterEach(() => {
+    act(() => {
+      roots.splice(0).forEach((root) => root.unmount());
+    });
     document.body.replaceChildren();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();

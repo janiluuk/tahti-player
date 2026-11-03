@@ -101,6 +101,17 @@ describe('restored queue', () => {
     ]);
   });
 
+  it('removing the current track from the middle moves on to the next one', () => {
+    reset();
+    usePlayerStore
+      .getState()
+      .hydrateQueue([track('a'), track('b'), track('c')], 'local:b');
+    usePlayerStore.getState().removeFromQueue('local:b');
+    expect(usePlayerStore.getState().currentId).toBe('local:c');
+    usePlayerStore.getState().removeFromQueue('local:c');
+    expect(usePlayerStore.getState().currentId).toBe('local:a');
+  });
+
   it('setQueueSources fills in stream URLs by id', () => {
     reset();
     usePlayerStore

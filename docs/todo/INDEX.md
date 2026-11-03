@@ -27,6 +27,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, Library History/Following shipped; left: catalog move to Studio → Music, Profile forms in Studio, Broadcast agenda, Inbox chips, Overview merge, docs rewrite |
 | open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |
 | open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles (anonymous, listener, artist, admin) e2e matrix; missing use cases per role; all specs pass on the mock app; left: comment moderation, collaborative playlist undo, collection player, release publish flow, a few product calls in the findings |
+| open    | [view-first-and-test-hardening-leftovers.md](view-first-and-test-hardening-leftovers.md) | Release ops form-first, a gallery-wipe bug, stale-fetch guards, dead code needing a call, Storybook Tabs fade under load |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |

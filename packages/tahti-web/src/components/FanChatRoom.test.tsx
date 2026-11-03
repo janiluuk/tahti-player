@@ -185,6 +185,7 @@ describe('FanChatRoom', () => {
       });
       expect(screen.getByText('Subscribers only')).toBeInTheDocument();
     } finally {
+      cleanup();
       vi.useRealTimers();
     }
   });

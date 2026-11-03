@@ -216,7 +216,9 @@ export const studioEditorProjectRoute = createRoute({
   path: '/studio/editor/$id',
   component: function StudioEditorProjectRoute() {
     const { id } = studioEditorProjectRoute.useParams();
-    return <StudioEditorProjectView id={id} />;
+    // Remount per project so a pending autosave of one project's timeline
+    // can never be written to the next project's id.
+    return <StudioEditorProjectView key={id} id={id} />;
   },
 });
 

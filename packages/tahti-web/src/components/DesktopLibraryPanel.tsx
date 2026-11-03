@@ -499,23 +499,3 @@ export function DesktopLibraryPanel() {
     </div>
   );
 }
-
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024 * 1024) {
-    return `${Math.max(1, Math.round(bytes / 1024))} KB`;
-  }
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-export function describeTrackDetails(track: NativeLibraryTrack): string {
-  return [
-    track.album || 'Unknown album',
-    track.year ? String(track.year) : null,
-    track.genre || null,
-    track.format.toUpperCase(),
-    formatFileSize(track.sizeBytes),
-    track.bitrateKbps ? `${track.bitrateKbps} kbps` : null,
-  ]
-    .filter(Boolean)
-    .join(' · ');
-}
