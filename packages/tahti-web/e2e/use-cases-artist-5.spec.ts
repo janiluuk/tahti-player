@@ -48,3 +48,28 @@ test('board imports a translation CSV for a language', async ({ page }) => {
   });
   await expect(page.getByText(/^Imported \d+ rows/)).toBeVisible();
 });
+
+test('artist schedules a listening party and cancels it', async ({ page }) => {
+  await signIn(page);
+  await page.goto('/studio/listening-parties/new');
+  const main = page.getByRole('main');
+  await main.getByRole('button', { name: 'Release' }).click();
+  await page.getByRole('option', { name: /^Neon Tide/ }).click();
+  await main.getByLabel('Starts').fill('2027-03-20T20:00');
+  await main.getByRole('button', { name: 'Schedule party' }).click();
+  await page.goto('/studio/listening-parties');
+  await expect(
+    main.getByRole('heading', { name: 'No listening parties scheduled' }),
+  ).toHaveCount(0);
+  await main
+    .getByRole('button', { name: /^Cancel/ })
+    .first()
+    .click();
+  await page.getByRole('button', { name: 'Cancel party' }).click();
+  await expect(page.getByRole('button', { name: 'Cancel party' })).toHaveCount(
+    0,
+  );
+  await expect(
+    main.getByRole('heading', { name: 'No listening parties scheduled' }),
+  ).toBeVisible();
+});

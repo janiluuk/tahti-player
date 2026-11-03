@@ -221,10 +221,35 @@ function seed(now: number = Date.now()): MockPartyRecord[] {
   ];
 }
 
-let records: MockPartyRecord[] = seed();
+const STORAGE_KEY = 'tahti-mock-listening-parties';
+
+function loadRecords(): MockPartyRecord[] {
+  try {
+    const raw = globalThis.sessionStorage?.getItem(STORAGE_KEY);
+    const parsed: unknown = raw ? JSON.parse(raw) : null;
+    return Array.isArray(parsed) ? (parsed as MockPartyRecord[]) : seed();
+  } catch {
+    return seed();
+  }
+}
+
+function persist() {
+  try {
+    globalThis.sessionStorage?.setItem(STORAGE_KEY, JSON.stringify(records));
+  } catch {
+    return;
+  }
+}
+
+let records: MockPartyRecord[] = loadRecords();
 
 onMockOverridesReset(() => {
   records = seed();
+  try {
+    globalThis.sessionStorage?.removeItem(STORAGE_KEY);
+  } catch {
+    return;
+  }
 });
 
 function timelineOf(record: MockPartyRecord, now: number) {
@@ -456,6 +481,7 @@ export async function createMockListeningParty(
     return { ok: false, error: OVERLAP_ERROR, status: 409 };
   }
   records.push(record);
+  persist();
   return { ok: true, data: toDto(record, now) };
 }
 
@@ -505,6 +531,7 @@ export async function updateMockListeningParty(
   if (body.hostNote !== undefined) {
     record.hostNote = body.hostNote?.trim() || null;
   }
+  persist();
   return { ok: true, data: toDto(record, now) };
 }
 
@@ -525,5 +552,6 @@ export async function cancelMockListeningParty(
     };
   }
   record.canceledAt ??= new Date(now).toISOString();
+  persist();
   return { ok: true, data: toDto(record, now) };
 }
