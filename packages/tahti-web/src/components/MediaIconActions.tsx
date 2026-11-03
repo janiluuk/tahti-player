@@ -15,6 +15,7 @@ import { cn } from '../lib/cn';
 export type MediaIconAction = {
   id: string;
   label: string;
+  ariaLabel?: string;
   icon: ReactNode;
   onClick: () => void;
   disabled?: boolean;
@@ -62,7 +63,7 @@ export function MediaIconActions({ actions, className }: Props) {
               a.active && 'text-primary-strong disabled:opacity-100',
               flashingId === a.id && 'motion-safe:animate-pulse',
             )}
-            aria-label={a.label}
+            aria-label={a.ariaLabel ?? a.label}
             aria-pressed={a.active}
             onClick={() => {
               if (a.id === 'queue') {
@@ -89,6 +90,7 @@ export function playQueueFavoriteActions(opts: {
   queued?: boolean;
   playLabel?: string;
   queueLabel?: string;
+  itemName?: string;
   /** True when this exact item is the one loaded (playing or loading) in
    * the player. Rule: any play button for a playable track must reflect
    * this — swaps the icon to Pause and highlights the control instead of
@@ -107,6 +109,9 @@ export function playQueueFavoriteActions(opts: {
       ) : (
         <PlayIcon size={16} className="fill-current" />
       ),
+      ariaLabel: opts.itemName
+        ? `${opts.isPlaying ? 'Pause' : 'Play'} ${opts.itemName}`
+        : undefined,
       onClick:
         opts.isPlaying && opts.onTogglePause ? opts.onTogglePause : opts.onPlay,
       disabled: opts.playDisabled,
@@ -116,6 +121,9 @@ export function playQueueFavoriteActions(opts: {
     {
       id: 'queue',
       label: opts.queued ? 'In queue' : (opts.queueLabel ?? 'Queue'),
+      ariaLabel: opts.itemName
+        ? `${opts.queued ? 'In queue:' : 'Queue'} ${opts.itemName}`
+        : undefined,
       icon: opts.queued ? <CheckIcon size={16} /> : <ListPlusIcon size={16} />,
       onClick: opts.onQueue,
       disabled: opts.queueDisabled || opts.queued,
@@ -125,6 +133,9 @@ export function playQueueFavoriteActions(opts: {
   ];
   if (opts.onFavorite) {
     actions.push({
+      ariaLabel: opts.itemName
+        ? `${opts.favorited ? 'Remove from favorites:' : 'Favorite'} ${opts.itemName}`
+        : undefined,
       id: 'favorite',
       label: opts.favorited ? 'Favorited' : 'Favorite',
       icon: (

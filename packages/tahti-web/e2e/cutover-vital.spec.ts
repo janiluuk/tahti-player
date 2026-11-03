@@ -267,7 +267,7 @@ test('artist track titles open details while row controls handle playback and qu
   await expect(
     row().getByRole('button', { name: 'Pause Midnight Broadcast' }),
   ).toBeVisible();
-  await expect(row().getByRole('button', { name: 'In queue' })).toBeDisabled();
+  await expect(row().getByRole('button', { name: /^In queue/ })).toBeDisabled();
 });
 
 test('a visitor subscribes to an artist by email', async ({ page }) => {
@@ -293,8 +293,8 @@ test('queue actions show queued state and the queue panel can be cleared', async
     .getByRole('listitem')
     .filter({ has: page.getByRole('heading', { name: 'Aurora Drift' }) })
     .first();
-  await row.getByRole('button', { name: 'Queue', exact: true }).click();
-  await expect(row.getByRole('button', { name: 'In queue' })).toBeDisabled();
+  await row.getByRole('button', { name: /^Queue / }).click();
+  await expect(row.getByRole('button', { name: /^In queue/ })).toBeDisabled();
 
   await page.getByRole('button', { name: 'Expand right panel' }).click();
   const queue = page.getByRole('complementary', { name: 'Queue' });

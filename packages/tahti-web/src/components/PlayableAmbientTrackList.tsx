@@ -172,6 +172,7 @@ export function PlayableAmbientTrackList({
           actions: (
             <MediaIconActions
               actions={playQueueFavoriteActions({
+                itemName: item.title,
                 onPlay: () => play(item, { enqueueRest: rest }),
                 onQueue: () => enqueue(item),
                 queued: queue.some((queued) => queued.id === item.id),

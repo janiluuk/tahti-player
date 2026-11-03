@@ -136,6 +136,7 @@ export function ReleaseTracklistDialog({
                     )}
                     <MediaIconActions
                       actions={playQueueFavoriteActions({
+                        itemName: track.title,
                         onPlay: () => playable && play(playable),
                         onTogglePause: () =>
                           setPlayerStatus(

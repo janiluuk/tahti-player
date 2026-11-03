@@ -13,7 +13,7 @@ test('anonymous: plays a track page and pauses it from the player bar', async ({
   await page.goto('/t/demo-archive-1');
   await page
     .getByRole('main')
-    .getByRole('button', { name: 'Play', exact: true })
+    .getByRole('button', { name: /^Play / })
     .first()
     .click();
   await expect(page.getByTestId('now-playing-title')).toHaveText(
@@ -33,7 +33,7 @@ test('anonymous: reactions ask to log in; a favorite is kept on this device', as
   await expect(
     main.getByRole('button', { name: 'Log in to react' }),
   ).toBeVisible();
-  await main.getByRole('button', { name: 'Favorite', exact: true }).click();
+  await main.getByRole('button', { name: /^Favorite / }).click();
   await page.goto('/library/favorites');
   await expect(
     page.getByRole('main').getByText('Midnight Broadcast').first(),

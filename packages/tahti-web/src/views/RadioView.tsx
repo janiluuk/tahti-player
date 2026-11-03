@@ -645,6 +645,7 @@ export function RadioView() {
                                 </span>
                                 <MediaIconActions
                                   actions={playQueueFavoriteActions({
+                                    itemName: item.title,
                                     onPlay: () => playable && play(playable),
                                     onTogglePause: () =>
                                       setPlayerStatus(
