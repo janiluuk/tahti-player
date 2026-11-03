@@ -26,7 +26,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await canvas.findByText(/^News · /);
+    await canvas.findByText('shared news');
     await waitFor(() =>
       expect(
         canvas.getByText('Hi, I make the flutes you hear here'),

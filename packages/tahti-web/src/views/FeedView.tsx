@@ -11,7 +11,7 @@ import {
 } from '@tahti-player/ui';
 
 import { fetchArtistPlayables, fetchFeed, fetchProfile } from '../api/client';
-import { POST_CATEGORY_LABELS } from '../api/community-stories';
+import { POST_ACTIVITY_LABELS } from '../api/community-stories';
 import type {
   FeedItem,
   PublicProfileRelease,
@@ -37,22 +37,24 @@ function formatFeedDate(iso: string): string {
   });
 }
 
-const RELEASE_KINDS: Record<string, string> = {
-  SINGLE: 'Single',
-  EP: 'EP',
-  ALBUM: 'Album',
-  COMPILATION: 'Compilation',
-  REMIX: 'Remix',
+const RELEASE_ACTIVITY: Record<string, string> = {
+  SINGLE: 'released a single',
+  EP: 'released an EP',
+  ALBUM: 'released an album',
+  COMPILATION: 'released a compilation',
+  REMIX: 'released a remix',
 };
 
-function feedKind(item: FeedItem): string {
+function feedActivity(item: FeedItem): string {
   if (item.kind === 'post') {
-    return item.category ? POST_CATEGORY_LABELS[item.category] : 'Post';
+    return item.category
+      ? POST_ACTIVITY_LABELS[item.category]
+      : 'shared a story';
   }
   if (item.kind === 'track') {
-    return 'New track';
+    return 'released a track';
   }
-  return RELEASE_KINDS[item.releaseType] ?? 'Release';
+  return RELEASE_ACTIVITY[item.releaseType] ?? 'released new music';
 }
 
 export function FeedView({ embedded = false }: { embedded?: boolean }) {
@@ -337,7 +339,8 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
                 item.kind === 'post' ? (item.images?.[0] ?? null) : null
               }
               media={feedMedia(item)}
-              meta={`${feedKind(item)} · ${storyDate(item.date)}`}
+              kind={feedActivity(item)}
+              date={storyDate(item.date)}
               title={
                 <Link {...feedTarget(item)} className="hover:underline">
                   {item.title || item.artist.displayName}
