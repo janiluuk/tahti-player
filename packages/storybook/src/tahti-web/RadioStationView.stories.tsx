@@ -37,7 +37,7 @@ export const Station: Story = {
     await userEvent.click(within(card!).getByTestId('media-artwork-play'));
     await expect(card).toHaveAttribute('data-playing', 'true');
     await userEvent.click(
-      await within(card!).findByRole('button', { name: 'Pause', exact: true }),
+      await within(card!).findByRole('button', { name: 'Pause Radio Rock', exact: true }),
     );
     await expect(card).not.toHaveAttribute('data-playing');
   },
