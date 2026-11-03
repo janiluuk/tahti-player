@@ -12,5 +12,10 @@ if (!el) {
   throw new Error('#root missing');
 }
 
-const { mountTahtiApp } = await import('./TahtiApp');
+const [{ mountTahtiApp }] = await Promise.all([
+  import('./TahtiApp'),
+  import('./stores/languageStore').then((module) =>
+    module.applyStoredLanguage(),
+  ),
+]);
 void mountTahtiApp(el);

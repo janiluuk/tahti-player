@@ -69,9 +69,11 @@ a separate chrome entry. **History** there is the on-device listen log, not
 `/listen/history`.
 
 Settings modal sections (`SETTINGS_NAV`): Account, Artist, Channel & chat,
-Broadcast, Playback, Integrations (group "Settings"); Themes, Add-ons,
-Logs, What's new (group "App"). Signed out, only Playback, Themes, Add-ons,
-Logs and What's new show. An unknown `$section` opens Account.
+Broadcast, Playback, Integrations (group "Settings"); Language, Themes,
+Add-ons, Logs, What's new (group "App"). Signed out, only Playback, Language,
+Themes, Add-ons, Logs and What's new show. An unknown `$section` opens
+Account. Section titles, group headings and the main chrome follow the
+Language setting (English or Suomi).
 
 - Account tabs: Session, Security, Membership, Governance, Storage,
   Notifications & visibility (grant report name toggle, show liked tracks,
