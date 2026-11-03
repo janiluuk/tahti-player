@@ -23,7 +23,6 @@ const DIMENSIONS: { id: StatsAudienceDimension; title: string }[] = [
   { id: 'os', title: 'OS versions' },
   { id: 'deviceType', title: 'Device type' },
   { id: 'deviceVendor', title: 'Device company' },
-  { id: 'source', title: 'Source' },
   { id: 'surface', title: 'Listened on' },
 ];
 

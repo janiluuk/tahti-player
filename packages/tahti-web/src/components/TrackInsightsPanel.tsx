@@ -16,6 +16,7 @@ import {
 import { AudienceBreakdown } from '../views/studio/stats/AudienceBreakdown';
 import { ListenerLocations } from '../views/studio/stats/ListenerLocations';
 import { ListenerLoyalty } from '../views/studio/stats/ListenerLoyalty';
+import { ReferrerSources } from '../views/studio/stats/ReferrerSources';
 import { ListenerWorldMap } from './ListenerWorldMap';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
@@ -152,6 +153,7 @@ export function TrackInsightsPanel({
           {listenWindow ? (
             <>
               <ListenerLoyalty window={listenWindow} />
+              <ReferrerSources window={listenWindow} />
               <AudienceBreakdown window={listenWindow} />
             </>
           ) : null}
