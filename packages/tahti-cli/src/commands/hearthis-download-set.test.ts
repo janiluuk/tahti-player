@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readdir, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -160,5 +160,121 @@ describe('runHearthisDownloadSet', () => {
     expect(result.exitCode).toBe(0);
     expect(result.output).toContain('would download');
     expect(result.output).toContain('download_url');
+  });
+});
+
+describe('downloadHearthisSet --sync', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  const config = { apiUrl: 'https://api.example.test', token: 'tahti_test' };
+
+  function stubFetch(remoteSize: number) {
+    const fetchMock = vi.fn(async (url: string, init?: { method?: string }) => {
+      if (url.includes('/imports/hearthis/')) {
+        const catalog = catalogResponse();
+        catalog.set.coverUrl =
+          'https://img.example/w500_h500_cover.jpg' as unknown as null;
+        return { ok: true, json: async () => catalog };
+      }
+      if (init?.method === 'HEAD') {
+        return {
+          ok: true,
+          headers: new Headers({ 'content-length': String(remoteSize) }),
+        };
+      }
+      const body = url.includes('img.example')
+        ? 'cover'
+        : 'x'.repeat(remoteSize);
+      return new Response(body, {
+        headers: {
+          'content-type': url.includes('img.example')
+            ? 'image/jpeg'
+            : 'audio/wav',
+        },
+      });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    return fetchMock;
+  }
+
+  it('re-downloads a changed file, deletes stale ones and keeps the cover', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'hearthis-sync-'));
+    const album = join(outDir, 'Yaniho', 'Euphorizer LP (2024)');
+    await mkdir(album, { recursive: true });
+    await writeFile(join(album, '01 - Hysterizer.wav'), 'old');
+    await writeFile(join(album, '02 - Stream Only.mp3'), 'kept');
+    await writeFile(join(album, '03 - Removed track.wav'), 'gone');
+    await writeFile(join(album, 'notes.txt'), 'mine');
+    const fetchMock = stubFetch(8);
+
+    const result = await downloadHearthisSet(config, '378936-9675121', {
+      outDir,
+      sync: true,
+    });
+
+    expect(result.rows.map((row) => [row.title, row.status])).toEqual([
+      ['Hysterizer', 'updated'],
+      ['Stream Only', 'skipped'],
+      ['03 - Removed track.wav', 'deleted'],
+    ]);
+    expect(await readFile(join(album, '01 - Hysterizer.wav'), 'utf8')).toBe(
+      'xxxxxxxx',
+    );
+    expect((await readdir(album)).sort()).toEqual([
+      '01 - Hysterizer.wav',
+      '02 - Stream Only.mp3',
+      'cover.jpg',
+      'notes.txt',
+    ]);
+    expect(result.artwork).toEqual([
+      { status: 'downloaded', path: join(album, 'cover.jpg') },
+    ]);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://img.example/w1000_h1000_cover.jpg',
+    );
+  });
+
+  it('leaves a file alone when its size matches', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'hearthis-sync-'));
+    const album = join(outDir, 'Yaniho', 'Euphorizer LP (2024)');
+    await mkdir(album, { recursive: true });
+    await writeFile(join(album, '01 - Hysterizer.wav'), 'same');
+    stubFetch(4);
+
+    const result = await downloadHearthisSet(config, '378936-9675121', {
+      outDir,
+      sync: true,
+      dryRun: true,
+    });
+
+    expect(result.rows[0]).toMatchObject({
+      status: 'skipped',
+      reason: 'already exists',
+    });
+    expect(result.artwork[0].status).toBe('would-download');
+  });
+
+  it('plans a FLAC file for WAV sources and keeps an existing one', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'hearthis-sync-'));
+    const album = join(outDir, 'Yaniho', 'Euphorizer LP (2024)');
+    await mkdir(album, { recursive: true });
+    await writeFile(join(album, '01 - Hysterizer.flac'), 'flac');
+    stubFetch(99);
+
+    const result = await downloadHearthisSet(config, '378936-9675121', {
+      outDir,
+      sync: true,
+      flac: true,
+      dryRun: true,
+      artwork: false,
+    });
+
+    expect(result.rows[0]).toMatchObject({
+      status: 'skipped',
+      path: 'Yaniho/Euphorizer LP (2024)/01 - Hysterizer.flac',
+    });
+    expect(result.rows).toHaveLength(2);
   });
 });

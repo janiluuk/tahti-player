@@ -1,6 +1,7 @@
+import { spawn } from 'node:child_process';
 import { createWriteStream } from 'node:fs';
-import { access, mkdir, rename, unlink } from 'node:fs/promises';
-import { dirname, join, relative, resolve } from 'node:path';
+import { mkdir, readdir, rename, stat, unlink } from 'node:fs/promises';
+import { dirname, extname, join, relative, resolve } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 
@@ -31,6 +32,10 @@ export async function downloadHearthisSet(
     layout = 'discography',
     ownOnly = false,
     title = null,
+    sync = false,
+    artwork = true,
+    flac = false,
+    yearOverride = null,
     onProgress,
   } = {},
 ) {
@@ -43,21 +48,24 @@ export async function downloadHearthisSet(
   const catalog = await fetchHearthisSetTracks(config, permalinkOrUrl);
   const artist = resolveAlbumArtist(catalog.set, catalog.tracks);
   const albumTitle = resolveAlbumTitle(catalog.set, catalog.permalink, title);
-  const year = resolveAlbumYear(catalog.set, catalog.tracks);
+  const year = yearOverride ?? resolveAlbumYear(catalog.set, catalog.tracks);
   const root = resolve(outDir);
   const owner = resolveSetOwner(catalog.set, catalog.tracks);
   const pathFor = (track, extension, position) =>
     layoutRelativePath(layout, {
+      extension: flac && FLAC_SOURCES.has(extension) ? 'flac' : extension,
       artist,
       setTitle: albumTitle,
       albumTitle,
       year,
       position,
       trackTitle: track.title,
-      extension,
     });
 
   const rows = [];
+  const keep = new Set();
+  const keepStems = new Set();
+  const folders = new Set();
   let nextPosition = 0;
   for (const track of catalog.tracks) {
     if (ownOnly && owner && track.userPermalink !== owner) {
@@ -77,7 +85,13 @@ export async function downloadHearthisSet(
     }
     nextPosition += 1;
     const position = ownOnly ? nextPosition : track.position;
+    const stemPath = join(
+      root,
+      pathFor(track, 'x', position).replace(/\.x$/, ''),
+    );
+    folders.add(dirname(stemPath));
     if (!track.downloadable || !track.downloadUrl) {
+      keepStems.add(stemPath);
       rows.push({
         position: track.position,
         title: track.title,
@@ -97,8 +111,17 @@ export async function downloadHearthisSet(
     const extension = pickAudioExtension(track.downloadFilename, null);
     let relativePath = pathFor(track, extension, position);
     let absolute = join(root, relativePath);
+    keep.add(absolute);
 
-    if (!force && (await pathExists(absolute))) {
+    const localSize = await fileSize(absolute);
+    let changed = false;
+    const converted = flac && FLAC_SOURCES.has(extension);
+    if (sync && !force && localSize !== null && !converted) {
+      const remoteSize = await remoteFileSize(track.downloadUrl);
+      changed = remoteSize !== null && remoteSize !== localSize;
+    }
+
+    if (!force && !changed && localSize !== null) {
       rows.push({
         position: track.position,
         title: track.title,
@@ -118,28 +141,32 @@ export async function downloadHearthisSet(
       rows.push({
         position: track.position,
         title: track.title,
-        status: 'would-download',
-        reason: null,
+        status: changed ? 'would-update' : 'would-download',
+        reason: changed ? 'size differs' : null,
         path: relativePath,
       });
       onProgress?.({
         position: track.position,
         title: track.title,
-        status: 'would-download',
+        status: changed ? 'would-update' : 'would-download',
       });
       continue;
     }
 
     try {
-      const saved = await downloadTrackFile(track, root, (ext) =>
-        pathFor(track, ext, position),
+      const saved = await downloadTrackFile(
+        track,
+        root,
+        (ext) => pathFor(track, ext, position),
+        { flac },
       );
       relativePath = saved.relativePath;
       absolute = saved.absolutePath;
+      keep.add(absolute);
       rows.push({
         position: track.position,
         title: track.title,
-        status: 'downloaded',
+        status: changed ? 'updated' : 'downloaded',
         reason: null,
         path: relativePath,
       });
@@ -164,9 +191,50 @@ export async function downloadHearthisSet(
     }
   }
 
+  const coverUrl = largestCover(
+    catalog.set?.coverUrl ??
+      catalog.tracks.find((track) => track.userPermalink === owner)?.coverUrl ??
+      null,
+  );
+  const artworkResults = [];
+  if (artwork && coverUrl) {
+    for (const folder of folders) {
+      artworkResults.push(
+        await saveArtwork(coverUrl, folder, { dryRun, force, sync }),
+      );
+    }
+  }
+
+  if (sync && folders.size > 0) {
+    for (const folder of folders) {
+      for (const name of await listFiles(folder)) {
+        const path = join(folder, name);
+        const ext = extname(name).slice(1).toLowerCase();
+        const stem = path.slice(0, path.length - extname(name).length);
+        const partial = name.endsWith('.partial');
+        const kept =
+          keep.has(path) || keepStems.has(stem) || !SYNCED_EXTS.has(ext);
+        if (!partial && kept) {
+          continue;
+        }
+        if (!dryRun) {
+          await unlink(path).catch(() => {});
+        }
+        rows.push({
+          position: '-',
+          title: name,
+          status: dryRun ? 'would-delete' : 'deleted',
+          reason: 'no longer in the Set',
+          path: relative(root, path),
+        });
+      }
+    }
+  }
+
   return {
     permalink: catalog.permalink,
     url: catalog.url,
+    artwork: artworkResults,
     artist,
     albumTitle,
     year,
@@ -175,7 +243,7 @@ export async function downloadHearthisSet(
   };
 }
 
-async function downloadTrackFile(track, root, relativePathFor) {
+async function downloadTrackFile(track, root, relativePathFor, { flac }) {
   let response;
   try {
     response = await fetch(track.downloadUrl);
@@ -190,14 +258,21 @@ async function downloadTrackFile(track, root, relativePathFor) {
   const extension = pickAudioExtension(track.downloadFilename, contentType);
   const relativePath = relativePathFor(extension);
   const absolutePath = join(root, relativePath);
+  const convert = flac && FLAC_SOURCES.has(extension);
 
   await mkdir(dirname(absolutePath), { recursive: true });
   const partial = `${absolutePath}.partial`;
+  const source = convert ? `${absolutePath}.${extension}.partial` : partial;
   try {
-    await pipeline(Readable.fromWeb(response.body), createWriteStream(partial));
+    await pipeline(Readable.fromWeb(response.body), createWriteStream(source));
+    if (convert) {
+      await encodeFlac(source, partial);
+      await unlink(source);
+    }
     await rename(partial, absolutePath);
   } catch (error) {
     await unlink(partial).catch(() => {});
+    await unlink(source).catch(() => {});
     throw new CliError(`Download failed: ${error?.message ?? error}`);
   }
 
@@ -208,12 +283,144 @@ async function downloadTrackFile(track, root, relativePathFor) {
   };
 }
 
-async function pathExists(path) {
+const FLAC_SOURCES = new Set(['wav', 'aif', 'aiff']);
+
+export function encodeFlac(input, output) {
+  return new Promise((resolvePromise, reject) => {
+    const child = spawn(
+      'ffmpeg',
+      [
+        '-v',
+        'error',
+        '-y',
+        '-f',
+        extname(input.replace(/\.partial$/, '')).slice(1) === 'wav'
+          ? 'wav'
+          : 'aiff',
+        '-i',
+        input,
+        '-map_metadata',
+        '0',
+        '-c:a',
+        'flac',
+        '-compression_level',
+        '8',
+        '-f',
+        'flac',
+        output,
+      ],
+      { stdio: ['ignore', 'ignore', 'pipe'] },
+    );
+    let stderr = '';
+    child.stderr.on('data', (chunk) => {
+      stderr += chunk;
+    });
+    child.on('error', (error) =>
+      reject(
+        new CliError(
+          error.code === 'ENOENT'
+            ? '--flac needs ffmpeg on PATH'
+            : `ffmpeg failed: ${error.message}`,
+        ),
+      ),
+    );
+    child.on('close', (code) =>
+      code === 0
+        ? resolvePromise()
+        : reject(new CliError(`ffmpeg failed: ${stderr.trim().slice(-300)}`)),
+    );
+  });
+}
+
+const SYNCED_EXTS = new Set([
+  'mp3',
+  'flac',
+  'wav',
+  'aif',
+  'aiff',
+  'm4a',
+  'aac',
+  'ogg',
+  'opus',
+  'bin',
+]);
+
+async function fileSize(path) {
   try {
-    await access(path);
-    return true;
+    const info = await stat(path);
+    return info.isFile() ? info.size : null;
   } catch {
-    return false;
+    return null;
+  }
+}
+
+async function listFiles(folder) {
+  try {
+    const entries = await readdir(folder, { withFileTypes: true });
+    return entries.filter((entry) => entry.isFile()).map((entry) => entry.name);
+  } catch {
+    return [];
+  }
+}
+
+export async function remoteFileSize(url) {
+  try {
+    const response = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+    const length = Number(response.headers.get('content-length'));
+    return response.ok && Number.isFinite(length) && length > 0 ? length : null;
+  } catch {
+    return null;
+  }
+}
+
+export function largestCover(url) {
+  return url ? url.replace(/w500_h500/, 'w1000_h1000') : null;
+}
+
+async function saveArtwork(url, folder, { dryRun, force, sync }) {
+  const existing = (await listFiles(folder)).find((name) =>
+    /^cover\.(jpe?g|png|webp)$/i.test(name),
+  );
+  const existingPath = existing ? join(folder, existing) : null;
+  if (existingPath && !force) {
+    if (!sync) {
+      return { status: 'skipped', path: existingPath };
+    }
+    const remoteSize = await remoteFileSize(url);
+    if (remoteSize === null || remoteSize === (await fileSize(existingPath))) {
+      return { status: 'skipped', path: existingPath };
+    }
+  }
+  if (dryRun) {
+    return {
+      status: existingPath ? 'would-update' : 'would-download',
+      path: existingPath ?? join(folder, 'cover.jpg'),
+    };
+  }
+  try {
+    const response = await fetch(url);
+    if (!response.ok || !response.body) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    const type = response.headers.get('content-type') ?? '';
+    const ext = type.includes('png')
+      ? 'png'
+      : type.includes('webp')
+        ? 'webp'
+        : 'jpg';
+    const path = join(folder, `cover.${ext}`);
+    await mkdir(folder, { recursive: true });
+    await pipeline(
+      Readable.fromWeb(response.body),
+      createWriteStream(`${path}.partial`),
+    );
+    await rename(`${path}.partial`, path);
+    if (existingPath && existingPath !== path) {
+      await unlink(existingPath).catch(() => {});
+    }
+    return { status: existingPath ? 'updated' : 'downloaded', path };
+  } catch (error) {
+    return { status: 'failed', path: folder, reason: error?.message ?? error };
   }
 }
 
@@ -240,6 +447,10 @@ export async function runHearthisDownloadSet(
     layout = 'discography',
     ownOnly = false,
     title = null,
+    sync = false,
+    artwork = true,
+    flac = false,
+    yearOverride = null,
   } = {},
 ) {
   if (!permalinkOrUrl) {
@@ -255,6 +466,10 @@ export async function runHearthisDownloadSet(
     layout,
     ownOnly,
     title,
+    sync,
+    artwork,
+    flac,
+    yearOverride,
   });
 
   if (json) {
@@ -272,16 +487,30 @@ export async function runHearthisDownloadSet(
   ).length;
   const skipped = result.rows.filter((row) => row.status === 'skipped').length;
   const failed = result.rows.filter((row) => row.status === 'failed').length;
+  const count = (status) =>
+    result.rows.filter((row) => row.status === status).length;
+  const syncSummary = sync
+    ? dryRun
+      ? ` ${count('would-update')} would update, ${count('would-delete')} would delete.`
+      : ` ${count('updated')} updated, ${count('deleted')} deleted.`
+    : '';
+  const artworkSummary = result.artwork.length
+    ? `\nArtwork: ${result.artwork.map((art) => `${art.status} ${art.path}`).join(', ')}`
+    : '';
   const yearLabel = result.year != null ? ` (${result.year})` : '';
   const header = `${result.artist} / ${result.albumTitle}${yearLabel} → ${result.outDir}`;
   const summary = dryRun
     ? `${would} would download, ${skipped} skipped, ${failed} failed.`
     : `${downloaded} downloaded, ${skipped} skipped, ${failed} failed.`;
+  const fullSummary = `${summary}${syncSummary}${artworkSummary}`;
   const note =
     'Uses hearthis.at download_url (original upload, often WAV/FLAC); stream previews are never used.';
 
   return {
-    output: `${header}\n\n${formatDownloadRows(result.rows)}\n\n${summary}\n${note}`,
-    exitCode: failed > 0 ? 1 : 0,
+    output: `${header}\n\n${formatDownloadRows(result.rows)}\n\n${fullSummary}\n${note}`,
+    exitCode:
+      failed > 0 || result.artwork.some((art) => art.status === 'failed')
+        ? 1
+        : 0,
   };
 }

@@ -134,7 +134,7 @@ describe('album and set layouts', () => {
         setTitle: 'Archive 2001-2009',
         trackTitle: 'Liveset @ Mermaid April 2007',
       }),
-    ).toBe('Archive 2001-2009/Liveset @ Mermaid April 2007.wav');
+    ).toBe('Archive 2001-2009/Yaniho - Liveset @ Mermaid April 2007.wav');
   });
 
   it('takes the Set owner from the set, else the most common uploader', () => {
