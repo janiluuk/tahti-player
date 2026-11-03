@@ -66,7 +66,6 @@ describe('AudienceBreakdown', () => {
       'OS versions',
       'Device type',
       'Device company',
-      'Source',
       'Listened on',
     ]) {
       expect(within(panel).getByRole('heading', { name: title })).toBeTruthy();

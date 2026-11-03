@@ -84,6 +84,8 @@ tahti-desktop run        # this checkout instead
 tahti-desktop launch     # the last build, no compile
 ```
 
+On Linux the desktop app renders with the GPU. If the window stays blank or crashes on resize, start it with `TAHTI_SAFE_RENDERING=1` to use WebKitGTK's software path (slower scrolling).
+
 | Package | What it is |
 | --- | --- |
 | `@tahti-player/tahti-web` | The web app: listening, artist studio and board admin |

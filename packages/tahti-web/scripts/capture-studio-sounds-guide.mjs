@@ -76,14 +76,26 @@ await page.keyboard.press('Escape');
 await page.waitForTimeout(200);
 
 // Switch track size / view to List via the combobox / button in SoundFilters.
-const viewControl = page.getByRole('button', { name: /track size|view|list|comfortable|compact/i });
-if (await viewControl.first().isVisible().catch(() => false)) {
+const viewControl = page.getByRole('button', {
+  name: /track size|view|list|comfortable|compact/i,
+});
+if (
+  await viewControl
+    .first()
+    .isVisible()
+    .catch(() => false)
+) {
   await viewControl.first().click();
   await page.waitForTimeout(200);
-  const listOption = page.getByRole('option', { name: /^list$/i }).or(
-    page.getByRole('menuitem', { name: /^list$/i }),
-  );
-  if (await listOption.first().isVisible().catch(() => false)) {
+  const listOption = page
+    .getByRole('option', { name: /^list$/i })
+    .or(page.getByRole('menuitem', { name: /^list$/i }));
+  if (
+    await listOption
+      .first()
+      .isVisible()
+      .catch(() => false)
+  ) {
     await listOption.first().click();
     await page.waitForTimeout(500);
   } else {
