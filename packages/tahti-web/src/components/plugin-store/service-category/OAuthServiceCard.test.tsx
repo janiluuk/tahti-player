@@ -49,7 +49,7 @@ const albums = [
 ];
 
 const open = async () => {
-  const gears = await screen.findAllByRole('button', { name: 'Configure' });
+  const gears = await screen.findAllByRole('button', { name: /^Configure/ });
   fireEvent.click(gears[gears.length - 1]!);
 };
 

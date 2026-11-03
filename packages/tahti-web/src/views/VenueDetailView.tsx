@@ -111,6 +111,7 @@ export function VenueDetailView({ slug }: { slug: string }) {
       <PageFrame maxWidth="3xl">
         {backLink}
         <PageEmpty
+          headingLevel={1}
           icon="alert"
           title="Venue not found"
           description={`No verified venue matches "${slug}".`}

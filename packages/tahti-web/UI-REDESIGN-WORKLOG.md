@@ -1,3 +1,7 @@
+## 2026-11-03 - Batch of 30, round 3
+
+Artist header folds Open channel and fan-tiers into More; community guidelines show as a Listen banner instead of a sticky toast; Studio Stats uses in-page section chips (no nested Stats/Governance tab strip); Messages has one compose field; Music pages use FilterChips; more controls named after their item; not-found empties are h1; de-greened a few secondary actions. Bumped tahti-web `0.0.294`.
+
 ## 2026-11-03 - Community / feed story cards: activity pills
 
 Story cards show the activity type as a soft pill (`released a track`,

@@ -172,7 +172,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                 onRetry={retryLoad}
               />
             ) : loaded ? (
-              <PageEmpty title="Release not found in list" />
+              <PageEmpty headingLevel={1} title="Release not found in list" />
             ) : (
               <PageLoading label="Loading…" />
             )}

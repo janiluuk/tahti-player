@@ -100,6 +100,7 @@ export function ListeningPartyView({ id }: { id: string }) {
         <PageLoading label="Loading the listening party…" />
       ) : load.status === 'not-found' ? (
         <PageEmpty
+          headingLevel={1}
           icon="alert"
           title="Listening party not found"
           description="The link may be wrong, or the artist removed the party."

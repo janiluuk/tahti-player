@@ -67,7 +67,9 @@ export const UnsavedChanges: Story = {
     );
     await expect(args.onRestorePreviousSave).toHaveBeenCalledOnce();
 
-    await userEvent.click(canvas.getByRole('button', { name: 'More options' }));
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'More channel design options' }),
+    );
     await userEvent.click(
       await withinBody(canvasElement).findByRole('button', {
         name: 'Save preset',
@@ -75,7 +77,9 @@ export const UnsavedChanges: Story = {
     );
     await expect(args.onOpenSavePresetModal).toHaveBeenCalledOnce();
 
-    await userEvent.click(canvas.getByRole('button', { name: 'More options' }));
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'More channel design options' }),
+    );
     await userEvent.click(
       await withinBody(canvasElement).findByRole('button', { name: 'Reset' }),
     );
@@ -94,7 +98,9 @@ export const Saved: Story = {
     await expect(
       canvas.getByRole('button', { name: 'Save layout' }),
     ).toBeDisabled();
-    await userEvent.click(canvas.getByRole('button', { name: 'More options' }));
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'More channel design options' }),
+    );
     const reset = await withinBody(canvasElement).findByRole('button', {
       name: 'Reset',
     });

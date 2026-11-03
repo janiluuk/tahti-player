@@ -45,7 +45,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
                 onRetry={reload}
               />
             ) : (
-              <PageEmpty title="Show not found" />
+              <PageEmpty headingLevel={1} title="Show not found" />
             )}
           </StudioPanel>
         ) : (

@@ -1,6 +1,7 @@
-import { useEffect, type FC } from 'react';
+import { useNavigate } from '@tanstack/react-router';
+import { useEffect, useState, type FC } from 'react';
 
-import { SectionTitle, ViewShell } from '@tahti-player/ui';
+import { FilterChips, SectionTitle, ViewShell } from '@tahti-player/ui';
 
 import { PageError } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
@@ -15,20 +16,33 @@ import { useStatsData } from './stats/useStatsData';
 
 export type StatsTab = 'overview' | 'plays' | 'top-lists';
 
+const STATS_SECTIONS = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'plays', label: 'Plays and listeners' },
+  { id: 'top-lists', label: 'Top lists' },
+  { id: 'insights', label: 'Insights' },
+] as const;
+
 export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
   tab: activeTab = 'overview',
 }) => {
+  const navigate = useNavigate();
   const state = useStatsData();
   const ready = !state.loading && !state.loadError;
+  const [section, setSection] = useState<string>(activeTab);
 
   useEffect(() => {
-    if (activeTab === 'overview' || !ready) {
+    setSection(activeTab);
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (section === 'insights' || !ready) {
       return;
     }
     document
-      .getElementById(`stats-${activeTab}`)
+      .getElementById(`stats-${section}`)
       ?.scrollIntoView({ block: 'start' });
-  }, [activeTab, ready]);
+  }, [section, ready]);
 
   return (
     <StudioGate requireChannel={false}>
@@ -37,6 +51,26 @@ export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
           title="Stats"
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
+          <FilterChips
+            aria-label="Stats sections"
+            items={STATS_SECTIONS.map((item) => ({
+              id: item.id,
+              label: item.label,
+            }))}
+            selected={section}
+            onChange={(id) => {
+              if (id === 'insights') {
+                void navigate({ to: '/studio/insights' });
+                return;
+              }
+              setSection(id);
+              const tab = id === 'plays' || id === 'top-lists' ? id : undefined;
+              void navigate({
+                to: '/studio/stats',
+                search: tab ? { tab } : {},
+              });
+            }}
+          />
           <RangeControls state={state} />
           {state.loadError && !state.loading ? (
             <PageError

@@ -126,75 +126,79 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
         )}
         {images.length === 0 ? null : (
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {images.map((image) => (
-              <li
-                key={image.id}
-                draggable
-                onDragStart={() => setDraggedPressKitImageId(image.id)}
-                onDragOver={(event) => event.preventDefault()}
-                onDrop={(event) => {
-                  event.preventDefault();
-                  if (draggedPressKitImageId) {
-                    void reorderPressKitImages(
-                      draggedPressKitImageId,
-                      image.id,
-                    );
-                  }
-                  setDraggedPressKitImageId(null);
-                }}
-                onDragEnd={() => setDraggedPressKitImageId(null)}
-                className="border-border bg-background-secondary overflow-hidden rounded-lg border"
-              >
-                <ImageReveal
-                  src={image.imageUrl}
-                  alt=""
-                  className="aspect-[4/3] w-full"
-                  imgClassName="object-cover"
-                />
-                <div className="flex flex-col gap-2 p-3">
-                  <Input
-                    aria-label={`Title for image ${image.position + 1}`}
-                    value={image.title ?? ''}
-                    placeholder="Photo title or credit"
-                    onChange={(event) => {
-                      const title = event.target.value;
-                      setImages((current) =>
-                        current.map((candidate) =>
-                          candidate.id === image.id
-                            ? { ...candidate, title }
-                            : candidate,
-                        ),
+            {images.map((image) => {
+              const imageLabel =
+                image.title?.trim() || `image ${image.position + 1}`;
+              return (
+                <li
+                  key={image.id}
+                  draggable
+                  onDragStart={() => setDraggedPressKitImageId(image.id)}
+                  onDragOver={(event) => event.preventDefault()}
+                  onDrop={(event) => {
+                    event.preventDefault();
+                    if (draggedPressKitImageId) {
+                      void reorderPressKitImages(
+                        draggedPressKitImageId,
+                        image.id,
                       );
-                    }}
-                    onBlur={(event) =>
-                      void updatePressKitImage(image.id, {
-                        title: event.target.value.trim() || null,
-                      })
                     }
+                    setDraggedPressKitImageId(null);
+                  }}
+                  onDragEnd={() => setDraggedPressKitImageId(null)}
+                  className="border-border bg-background-secondary overflow-hidden rounded-lg border"
+                >
+                  <ImageReveal
+                    src={image.imageUrl}
+                    alt=""
+                    className="aspect-[4/3] w-full"
+                    imgClassName="object-cover"
                   />
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs">Include in press kit</span>
-                    <div className="flex items-center gap-2">
-                      <Toggle
-                        label={`Include ${image.title || `image ${image.position + 1}`} in press kit`}
-                        checked={image.includeInZip}
-                        onChange={() => void togglePressKitImage(image)}
-                      />
-                      <Tooltip content="Remove image" side="top">
-                        <Button
-                          size="icon-sm"
-                          variant="text"
-                          aria-label="Remove image from gallery"
-                          onClick={() => setPendingImageDeleteId(image.id)}
-                        >
-                          <Trash2Icon size={14} aria-hidden />
-                        </Button>
-                      </Tooltip>
+                  <div className="flex flex-col gap-2 p-3">
+                    <Input
+                      aria-label={`Title for image ${image.position + 1}`}
+                      value={image.title ?? ''}
+                      placeholder="Photo title or credit"
+                      onChange={(event) => {
+                        const title = event.target.value;
+                        setImages((current) =>
+                          current.map((candidate) =>
+                            candidate.id === image.id
+                              ? { ...candidate, title }
+                              : candidate,
+                          ),
+                        );
+                      }}
+                      onBlur={(event) =>
+                        void updatePressKitImage(image.id, {
+                          title: event.target.value.trim() || null,
+                        })
+                      }
+                    />
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs">Include in press kit</span>
+                      <div className="flex items-center gap-2">
+                        <Toggle
+                          label={`Include ${image.title || `image ${image.position + 1}`} in press kit`}
+                          checked={image.includeInZip}
+                          onChange={() => void togglePressKitImage(image)}
+                        />
+                        <Tooltip content={`Remove ${imageLabel}`} side="top">
+                          <Button
+                            size="icon-sm"
+                            variant="text"
+                            aria-label={`Remove ${imageLabel}`}
+                            onClick={() => setPendingImageDeleteId(image.id)}
+                          >
+                            <Trash2Icon size={14} aria-hidden />
+                          </Button>
+                        </Tooltip>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         )}
       </StudioPanel>

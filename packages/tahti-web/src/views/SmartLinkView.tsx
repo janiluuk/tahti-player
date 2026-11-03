@@ -111,6 +111,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
   if (!data) {
     return (
       <PageEmpty
+        headingLevel={1}
         title="Release not found"
         description="This release may have been removed or is not available."
       />

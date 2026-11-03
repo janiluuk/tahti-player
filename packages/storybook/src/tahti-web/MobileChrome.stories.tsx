@@ -95,7 +95,7 @@ export const BottomNavListener: Story = {
     await expect(nav.getByRole('link', { name: 'Discover' })).toBeVisible();
     await expect(nav.getByRole('link', { name: 'Radio' })).toBeVisible();
     await expect(nav.queryByRole('link', { name: 'Studio' })).toBeNull();
-    await userEvent.click(nav.getByRole('button', { name: 'More' }));
+    await userEvent.click(nav.getByRole('button', { name: 'More navigation' }));
     await expect(args.onOpenMore).toHaveBeenCalledOnce();
   },
 };
@@ -113,10 +113,9 @@ export const BottomNavArtist: Story = {
       within(canvasElement).getByRole('navigation', { name: 'Primary' }),
     );
     await expect(nav.getByRole('link', { name: 'Studio' })).toBeVisible();
-    await expect(nav.getByRole('button', { name: 'More' })).toHaveAttribute(
-      'aria-expanded',
-      'true',
-    );
+    await expect(
+      nav.getByRole('button', { name: 'More navigation' }),
+    ).toHaveAttribute('aria-expanded', 'true');
   },
 };
 

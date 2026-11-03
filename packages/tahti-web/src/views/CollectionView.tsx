@@ -229,6 +229,7 @@ export function CollectionView({ slug }: { slug: string }) {
   if (!collection) {
     return (
       <PageEmpty
+        headingLevel={1}
         title="Collection not found"
         description="This collection may have been removed or is not available."
       />
@@ -360,7 +361,11 @@ export function CollectionView({ slug }: { slug: string }) {
             </Tooltip>
           ) : (
             <Tooltip
-              content={isFavorite ? 'Remove from favorites' : 'Favorite'}
+              content={
+                isFavorite
+                  ? `Remove from favorites: ${collection.name}`
+                  : `Favorite ${collection.name}`
+              }
               side="top"
             >
               <Button
@@ -368,7 +373,11 @@ export function CollectionView({ slug }: { slug: string }) {
                 size="icon-sm"
                 className="bg-background border-border rounded-md border-(length:--border-width)"
                 aria-pressed={isFavorite}
-                aria-label={isFavorite ? 'Favorited' : 'Favorite'}
+                aria-label={
+                  isFavorite
+                    ? `Remove from favorites: ${collection.name}`
+                    : `Favorite ${collection.name}`
+                }
                 onClick={() =>
                   toggleFavoritePlaylist({
                     slug,
@@ -420,6 +429,11 @@ export function CollectionView({ slug }: { slug: string }) {
             <Button
               variant={isFavorite ? 'default' : 'secondary'}
               aria-pressed={isFavorite}
+              aria-label={
+                isFavorite
+                  ? `Remove from favorites: ${collection.name}`
+                  : `Favorite ${collection.name}`
+              }
               onClick={() =>
                 toggleFavoritePlaylist({
                   slug,

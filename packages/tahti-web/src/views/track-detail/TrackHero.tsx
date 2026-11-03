@@ -187,7 +187,11 @@ export function TrackHero({ page }: { page: TrackPage }) {
                   variant="text"
                   disabled={!canPlay}
                   onClick={togglePlayback}
-                  aria-label={isPlaying ? 'Pause' : 'Play'}
+                  aria-label={
+                    isPlaying
+                      ? `Pause ${playable.title}`
+                      : `Play ${playable.title}`
+                  }
                   className="size-14 shrink-0 justify-center rounded-full bg-white p-0 text-black shadow-xl hover:bg-white active:bg-white disabled:opacity-40"
                 >
                   {isPlaying ? (
@@ -370,11 +374,11 @@ export function TrackHero({ page }: { page: TrackPage }) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-1.5">
             {canEdit ? (
-              <Tooltip content="Edit this sound" side="top">
+              <Tooltip content={`Edit ${playable.title}`} side="top">
                 <Button
                   size="icon-sm"
                   variant="default"
-                  aria-label="Edit"
+                  aria-label={`Edit ${playable.title}`}
                   onClick={() => setEditOpen(true)}
                 >
                   <PencilIcon size={15} aria-hidden />
@@ -441,7 +445,11 @@ export function TrackHero({ page }: { page: TrackPage }) {
               <Button
                 size="sm"
                 variant="secondary"
-                aria-label={downloadBusy ? 'Preparing download' : 'Download'}
+                aria-label={
+                  downloadBusy
+                    ? `Preparing download of ${playable.title}`
+                    : `Download ${playable.title}`
+                }
                 disabled={downloadBusy || !detail || Boolean(embedSrc)}
                 onClick={() => void downloadTrack()}
               >
@@ -450,13 +458,21 @@ export function TrackHero({ page }: { page: TrackPage }) {
               </Button>
             ) : null}
             <Tooltip
-              content={favorited ? 'Remove from favorites' : 'Favorite'}
+              content={
+                favorited
+                  ? `Remove from favorites: ${playable.title}`
+                  : `Favorite ${playable.title}`
+              }
               side="top"
             >
               <Button
                 size="icon-sm"
                 variant="secondary"
-                aria-label={favorited ? 'Remove from favorites' : 'Favorite'}
+                aria-label={
+                  favorited
+                    ? `Remove from favorites: ${playable.title}`
+                    : `Favorite ${playable.title}`
+                }
                 onClick={() => {
                   toggleFavoriteTrack(playable);
                   if (user) {

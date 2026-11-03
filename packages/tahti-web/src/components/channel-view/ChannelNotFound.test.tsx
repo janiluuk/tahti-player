@@ -56,6 +56,8 @@ describe('ChannelNotFound', () => {
   it('says the channel is gone without a redirect', async () => {
     vi.spyOn(api, 'fetchChannelSlugRedirect').mockResolvedValue(null);
     await renderAt('gone');
-    expect(screen.getByText('Channel not found')).toBeTruthy();
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Channel not found' }),
+    ).toBeTruthy();
   });
 });
