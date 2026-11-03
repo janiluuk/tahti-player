@@ -35,6 +35,21 @@ describe('shortcut commands', () => {
     expect(output()).toBe('dry-run: desktop build + launch');
   });
 
+  it('dry-runs a build of origin/master in its own worktree', async () => {
+    expect(await main(['desktop', 'latest', '--dry-run'])).toBe(0);
+    const lines = output().split('\n');
+    expect(lines[0]).toBe(
+      'dry-run: fetch origin/master — git fetch origin master',
+    );
+    expect(lines.slice(1).map((line) => line.split(' — ')[0])).toEqual([
+      expect.stringMatching(/^dry-run: (create|check out) /),
+      'dry-run: install dependencies',
+      'dry-run: build frontend',
+      'dry-run: compile desktop app (release)',
+      'dry-run: launch desktop app',
+    ]);
+  });
+
   it('rejects an unknown desktop mode', async () => {
     await expect(main(['desktop', 'nope'])).rejects.toThrow(
       /Unknown desktop mode/,

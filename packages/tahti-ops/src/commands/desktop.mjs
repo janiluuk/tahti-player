@@ -7,6 +7,8 @@ import { runProgram, runScript, runSteps } from '../run-script.mjs';
 
 const MODES = {
   run: 'Build the desktop app (release, no installer) and launch it',
+  latest:
+    'Build origin/master in its own worktree (.desktop-build) and launch it; leaves this checkout alone',
   launch: 'Launch the last desktop build without rebuilding (Linux)',
   dev: 'Run the desktop app in dev mode with hot reload',
   bundle: 'Build installers / packages (pnpm tauri build)',
@@ -15,6 +17,52 @@ const MODES = {
 };
 
 const ANDROID_GEN_DIR = 'packages/player/src-tauri/gen/android';
+const LATEST_DIR = '.desktop-build';
+const NO_BUNDLE_CONFIG =
+  '{"build":{"beforeBuildCommand":""},"bundle":{"active":false,"createUpdaterArtifacts":false}}';
+
+function runLatest({ dryRun, extraArgs, env, root, ref = 'master' }) {
+  const worktree = resolve(root, LATEST_DIR);
+  const targetDir =
+    env.CARGO_TARGET_DIR ?? resolve(root, 'packages/player/src-tauri/target');
+  const buildEnv = { ...env, CARGO_TARGET_DIR: targetDir };
+  const player = ['--filter', '@tahti-player/player', '--fail-if-no-match'];
+  const step =
+    (program, args, label, cwd = worktree, stepEnv = buildEnv) =>
+    ({ dryRun: dry }) =>
+      runProgram(program, args, { dryRun: dry, env: stepEnv, cwd, label });
+  return runSteps(
+    [
+      step('git', ['fetch', 'origin', ref], `fetch origin/${ref}`, root, env),
+      existsSync(worktree)
+        ? step(
+            'git',
+            ['checkout', '--force', '--detach', `origin/${ref}`],
+            `check out origin/${ref} in ${LATEST_DIR}`,
+          )
+        : step(
+            'git',
+            ['worktree', 'add', '--detach', worktree, `origin/${ref}`],
+            `create ${LATEST_DIR} at origin/${ref}`,
+            root,
+            env,
+          ),
+      step('pnpm', ['install', '--frozen-lockfile'], 'install dependencies'),
+      step('pnpm', [...player, 'build:frontend'], 'build frontend'),
+      step(
+        'pnpm',
+        [...player, 'tauri', 'build', '--no-bundle', '-c', NO_BUNDLE_CONFIG],
+        'compile desktop app (release)',
+      ),
+      step(
+        resolve(targetDir, 'release/tahti-player'),
+        extraArgs,
+        'launch desktop app',
+      ),
+    ],
+    { dryRun },
+  );
+}
 
 function checkAndroidToolchain(env) {
   const java = spawnSync('java', ['-version'], { env, stdio: 'ignore' });
@@ -77,6 +125,8 @@ export function runDesktop(
         extraArgs,
         { dryRun, label: 'desktop build + launch' },
       );
+    case 'latest':
+      return runLatest({ dryRun, extraArgs, env, root });
     case 'launch':
       return runScript(resolve(root, 'scripts/run-linux.sh'), extraArgs, {
         dryRun,

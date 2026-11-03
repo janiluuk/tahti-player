@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+script_path="$(readlink -f -- "${BASH_SOURCE[0]}")"
+repository_root="$(cd -- "$(dirname -- "$script_path")/.." && pwd)"
+
+mode=latest
+if [[ $# -gt 0 && "$1" != -* ]]; then
+  mode="$1"
+  shift
+fi
+
+exec node "$repository_root/packages/tahti-ops/src/cli.mjs" desktop "$mode" "$@"
