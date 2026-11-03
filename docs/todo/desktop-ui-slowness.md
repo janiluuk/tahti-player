@@ -19,6 +19,7 @@
 - [ ] Release build (`pnpm build`) vs debug: how much is just the debug build?
 - [x] GPU path with compositing on (`WEBKIT_DISABLE_COMPOSITING_MODE=0`, DMABUF still off): starts and renders on NVIDIA 580 / Wayland (2026-11-03). Now the default.
 - [ ] Scrolling smooth with compositing on? If not, try the ambient background off next.
+- [x] Ambient visuals skip frames while the page scrolls (`startVisibleRenderLoop({ pauseWhileScrolling })`, 150 ms quiet window), so scrolling keeps the frame budget even with the background on.
 - [ ] Which theme is active? (The background only exists on visualization themes.)
 - [ ] Any other views that lag with the background off (library table, queue, menus)? Note them here.
 
