@@ -418,7 +418,7 @@ downloadable.`,
   {
     path: ['hearthis', 'download-set'],
     usage:
-      'tahti hearthis download-set <permalink-or-url> [--out <dir>] [--layout <l>] [--own] [--title <t>] [--year <y>] [--sync] [--flac] [--no-artwork] [--dry-run] [--force] [--json]',
+      'tahti hearthis download-set <permalink-or-url>... [--out <dir>] [--layout <l>] [--own] [--title <t>] [--year <y>] [--sync] [--flac] [--no-artwork] [--dry-run] [--force] [--json]',
     summary: 'Download a hearthis.at Set into Artist/Album (year)/01 - Track',
     details: `Fetches the Set tracklist, then downloads every track that is
 downloadable for the authenticated hearthis.at visitor (public download
@@ -457,9 +457,14 @@ paths that already exist (unless --force).
       'dry-run': { type: 'boolean', default: false },
       force: { type: 'boolean', default: false },
     },
-    positionals: 1,
-    run: (config, { values, positionals }) =>
-      runHearthisDownloadSet(config, positionals[0], {
+    positionals: Infinity,
+    run: async (config, { values, positionals }) => {
+      if (positionals.length > 1 && values.title) {
+        throw new CliError(
+          '--title names one Set; pass a single permalink with it.',
+        );
+      }
+      const options = {
         json: values.json,
         outDir: values.out || '.',
         layout: values.layout || 'discography',
@@ -471,7 +476,16 @@ paths that already exist (unless --force).
         yearOverride: values.year ? Number(values.year) : null,
         dryRun: values['dry-run'],
         force: values.force,
-      }),
+      };
+      const results = [];
+      for (const permalink of positionals.length ? positionals : [undefined]) {
+        results.push(await runHearthisDownloadSet(config, permalink, options));
+      }
+      return {
+        output: results.map((result) => result.output).join('\n\n'),
+        exitCode: Math.max(0, ...results.map((result) => result.exitCode)),
+      };
+    },
   },
   {
     path: ['notifications', 'list'],
