@@ -383,18 +383,54 @@ export async function testRadioStream(
  * can't work from a browser — callers should treat a null result as normal,
  * not an error, and fall back to static station info.
  */
-const unreadableIcyStreams = new Set<string>();
+const UNREADABLE_ICY_KEY = 'tahti-web-icy-unreadable';
+const UNREADABLE_ICY_TTL_MS = 24 * 60 * 60 * 1000;
+const PLAYLIST_STREAM = /\.(m3u8|m3u|pls)(\?|$)/i;
+
+function loadUnreadableIcyStreams(): Map<string, number> {
+  try {
+    const raw = localStorage.getItem(UNREADABLE_ICY_KEY);
+    const parsed = raw ? (JSON.parse(raw) as Record<string, number>) : {};
+    const now = Date.now();
+    return new Map(
+      Object.entries(parsed).filter(
+        ([, at]) => typeof at === 'number' && now - at < UNREADABLE_ICY_TTL_MS,
+      ),
+    );
+  } catch {
+    return new Map();
+  }
+}
+
+const unreadableIcyStreams = loadUnreadableIcyStreams();
+
+function markIcyUnreadable(streamUrl: string) {
+  unreadableIcyStreams.set(streamUrl, Date.now());
+  try {
+    localStorage.setItem(
+      UNREADABLE_ICY_KEY,
+      JSON.stringify(Object.fromEntries(unreadableIcyStreams)),
+    );
+  } catch {
+    return;
+  }
+}
 
 /** Forgets which streams turned out to have no readable ICY metadata. */
 export function clearUnreadableIcyStreams() {
   unreadableIcyStreams.clear();
+  try {
+    localStorage.removeItem(UNREADABLE_ICY_KEY);
+  } catch {
+    return;
+  }
 }
 
 export async function readIcyStreamTitle(
   streamUrl: string,
   timeoutMs = 4000,
 ): Promise<string | null> {
-  if (unreadableIcyStreams.has(streamUrl)) {
+  if (unreadableIcyStreams.has(streamUrl) || PLAYLIST_STREAM.test(streamUrl)) {
     return null;
   }
   const controller = new AbortController();
@@ -408,13 +444,13 @@ export async function readIcyStreamTitle(
       });
     } catch (error) {
       if (!controller.signal.aborted) {
-        unreadableIcyStreams.add(streamUrl);
+        markIcyUnreadable(streamUrl);
       }
       throw error;
     }
     const metaint = Number(res.headers.get('icy-metaint'));
     if (!res.body || !Number.isFinite(metaint) || metaint <= 0) {
-      unreadableIcyStreams.add(streamUrl);
+      markIcyUnreadable(streamUrl);
       void res.body?.cancel().catch(() => {});
       return null;
     }

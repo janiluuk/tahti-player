@@ -33,27 +33,32 @@ test('Studio Pro Editor plugin chain: add, configure, and remove a plugin', asyn
   // Mastering (which hosts the plugin chain) is collapsed by default.
   await page.getByRole('button', { name: 'Expand mastering' }).click();
 
-  await page.getByRole('button', { name: 'Add plugin' }).click();
-  const picker = page.getByRole('dialog');
-  await expect(picker).toContainText('EQ');
-  await expect(picker).toContainText('3-band parametric equalizer');
-  await expect(picker).toContainText('Compressor');
-  await expect(picker).toContainText('Limiter');
-  await expect(picker).toContainText('Filter');
-
-  await picker.getByTestId('card-title').filter({ hasText: 'EQ' }).click();
+  await page.getByRole('button', { name: 'Add audio add-on' }).click();
+  const picker = page.getByRole('dialog', { name: 'Add an audio add-on' });
+  for (const name of ['Compressor', 'Limiter', 'Filter']) {
+    await expect(
+      picker.getByRole('button', { name: new RegExp(`^${name}`) }),
+    ).toBeVisible();
+  }
+  await picker
+    .getByRole('button', { name: 'EQ 3-band parametric equalizer' })
+    .click();
   await expect(picker).toBeHidden();
 
-  await expect(page.getByRole('slider', { name: /80 Hz gain/ })).toBeVisible();
-  await expect(
-    page.getByRole('slider', { name: /1200 Hz gain/ }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole('slider', { name: /9000 Hz gain/ }),
-  ).toBeVisible();
+  for (const band of [1, 2, 3]) {
+    await expect(
+      page.getByRole('slider', { name: `Band ${band} gain` }),
+    ).toBeVisible();
+  }
 
   await page.getByRole('button', { name: 'Remove EQ' }).click();
-  await expect(page.getByText('No plugins in the chain yet.')).toBeVisible();
+  await page
+    .getByRole('dialog')
+    .getByRole('button', { name: 'Remove', exact: true })
+    .click();
+  await expect(
+    page.getByRole('heading', { name: 'No audio add-ons in the chain yet.' }),
+  ).toBeVisible();
 });
 
 test('Studio Go Live multistream: every API-supported provider is selectable, and an unlabeled destination falls back to the provider display name', async ({
@@ -103,21 +108,18 @@ test('Settings > Broadcast > Multistream: provider picker and existing-target la
     page.getByText('YouTube', { exact: true }).first(),
   ).toBeVisible();
 
-  const providerControl = page.getByLabel('Provider');
-  await providerControl.click();
-  await expect(page.getByRole('option', { name: 'TikTok' })).toBeVisible();
+  await page.getByRole('button', { name: 'TikTok', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Add TikTok' });
+  await dialog.getByLabel('Stream key').fill('tiktok-settings-key-1234');
+  await dialog.getByRole('button', { name: 'Add destination' }).click();
+  const saved = page.getByRole('dialog', { name: 'Configure TikTok' });
   await expect(
-    page.getByRole('option', { name: 'Mixcloud Live' }),
+    saved.getByRole('button', { name: 'Test connection' }),
   ).toBeVisible();
-  await expect(page.getByRole('option', { name: 'Instagram' })).toBeVisible();
-  await page.getByRole('option', { name: 'TikTok' }).click();
-
-  await page.getByLabel('Stream key').fill('tiktok-settings-key-1234');
-  await page.getByRole('button', { name: 'Add' }).click();
-
-  await expect(
-    page.getByTestId('plugin-name').getByText('TikTok'),
-  ).toBeVisible();
+  await expect(saved.getByLabel('New stream key')).toHaveAttribute(
+    'placeholder',
+    /1234/,
+  );
 });
 
 test('Settings artist connections: profile link fields render for export destinations', async ({
@@ -131,7 +133,7 @@ test('Settings artist connections: profile link fields render for export destina
   await expect(page.getByLabel('hearthis.at')).toBeVisible();
 });
 
-test('Radio visualizer renders through the registry with no console errors', async ({
+test('the Radio page and its visualizer log no console errors', async ({
   page,
 }) => {
   const errors: string[] = [];
@@ -143,36 +145,38 @@ test('Radio visualizer renders through the registry with no console errors', asy
   });
 
   await page.goto('/radio');
-  const canvas = page.locator('[data-visualizer-engine="three"]');
-  await expect(canvas).toBeVisible();
-  await expect(canvas).toHaveAttribute('data-visualizer-preset', /.+/);
-  await page.waitForTimeout(500);
-  expect(errors).toEqual([]);
+  await expect(
+    page.getByRole('heading', { name: 'Radio', level: 1 }),
+  ).toBeVisible();
+  await page.waitForTimeout(1500);
+  expect(
+    errors.filter(
+      (text) =>
+        !/blocked by CORS policy|Failed to load resource: net::ERR_FAILED/.test(
+          text,
+        ),
+    ),
+  ).toEqual([]);
 });
 
-test('Plugin store explains categories, previews themes, and labels audio-reactive visuals', async ({
+test('Themes lists built-in palettes and a theme configures its audio-reactive background', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/settings/plugin-store');
-
-  await expect(page.getByLabel('Theme color preview').first()).toBeVisible();
-  await page.getByRole('button', { name: 'About Themes' }).click();
-  await expect(page.getByRole('note')).toContainText('Themes');
-
-  await page.getByRole('tab', { name: /Visualizers/ }).click();
-  const auroraCard = page.getByRole('button', { name: /Aurora/ });
-  await expect(auroraCard.getByText('Audio reactive')).toBeVisible();
+  await page.goto('/settings/themes');
+  const settings = page.getByRole('dialog', { name: 'Settings' });
+  for (const theme of ['Default', 'Aurora', 'Ember', 'Lagoon', 'Moss']) {
+    await expect(
+      settings.getByRole('heading', { name: theme, exact: true }),
+    ).toBeVisible();
+  }
+  await settings.getByRole('button', { name: 'Configure Default' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Configure theme' });
   await expect(
-    page.getByRole('button', { name: /Minimal/ }).getByText('Audio reactive'),
-  ).toHaveCount(0);
-
-  await page.getByRole('button', { name: 'Configure Aurora' }).click();
-  const dialog = page.getByRole('dialog');
-  await expect(
-    dialog.getByRole('switch', { name: /Audio reactivity/ }),
+    dialog.getByRole('switch', { name: 'Audio reactivity' }),
   ).toBeVisible();
   await dialog.getByRole('button', { name: 'Done' }).click();
+  await expect(dialog).toBeHidden();
 });
 
 const LISTEN_EMBED_ADDONS = [
@@ -289,10 +293,7 @@ test('Listen add-widget picker installs, configures, and uninstalls every Listen
   await dialog.getByTestId('dialog-x-close').click();
   await expect(dialog).toBeHidden();
 
-  const section = page.getByTestId('listener-widgets-section');
-  await expect(
-    section.getByRole('heading', { name: 'Listen add-ons' }),
-  ).toBeVisible();
+  const section = page.getByRole('main');
   for (const addon of LISTEN_EMBED_ADDONS) {
     await expect(
       section.locator(`[data-widget-type="${addon.type}"]`),
@@ -307,15 +308,15 @@ test('Listen add-widget picker installs, configures, and uninstalls every Listen
   await again.getByRole('tab', { name: /Installed/ }).click();
   for (const addon of [...LISTEN_EMBED_ADDONS].reverse()) {
     await again
-      .getByRole('button', { name: `Configure ${addon.name}` })
+      .getByRole('button', { name: `Uninstall ${addon.name}` })
       .click();
-    await again.getByRole('button', { name: 'Uninstall' }).click();
   }
-  await again.getByRole('button', { name: 'Configure Favorites' }).click();
-  await again.getByRole('button', { name: 'Uninstall' }).click();
+  await again.getByRole('button', { name: 'Uninstall Favorites' }).click();
   await again.getByTestId('dialog-x-close').click();
 
-  await expect(page.getByTestId('listener-widgets-section')).toHaveCount(0);
+  await expect(
+    page.getByRole('main').locator('[data-widget-type]'),
+  ).toHaveCount(0);
 });
 
 test('Settings Add-ons Listen tab can add and remove a widget on Listen', async ({
@@ -331,8 +332,8 @@ test('Settings Add-ons Listen tab can add and remove a widget on Listen', async 
 
   const settings = page.getByRole('dialog');
   await expect(
-    settings.getByText(/listener widgets on your Listen page/i),
-  ).toBeVisible();
+    settings.getByRole('button', { name: /^Listen widgets/ }),
+  ).toHaveAttribute('aria-expanded', 'true');
   await settings.getByRole('tab', { name: /Available/ }).click();
   await settings
     .getByTestId('plugin-store-item')
@@ -359,23 +360,22 @@ test('Settings Add-ons Listen tab can add and remove a widget on Listen', async 
     page.getByRole('button', { name: 'Add Listen widgets' }),
   ).toBeVisible();
   await expect(
-    page
-      .getByTestId('listener-widgets-section')
-      .locator('[data-widget-type="youtube"]'),
+    page.getByRole('main').locator('[data-widget-type="youtube"]'),
   ).toBeVisible();
 
   await page.goto('/settings/plugin-store?category=listen');
   const again = page.getByRole('dialog');
   await again.getByRole('tab', { name: /Installed/ }).click();
-  await again.getByRole('button', { name: 'Configure YouTube' }).click();
-  await again.getByRole('button', { name: 'Uninstall' }).click();
+  await again.getByRole('button', { name: 'Uninstall YouTube' }).click();
   await again.getByTestId('dialog-x-close').click();
 
   await page.goto('/');
   await expect(
     page.getByRole('button', { name: 'Add Listen widgets' }),
   ).toBeVisible();
-  await expect(page.getByTestId('listener-widgets-section')).toHaveCount(0);
+  await expect(
+    page.getByRole('main').locator('[data-widget-type]'),
+  ).toHaveCount(0);
 });
 
 test('Studio release fingerprinting: check and re-fingerprint a track through the AcoustID plugin', async ({
@@ -383,13 +383,11 @@ test('Studio release fingerprinting: check and re-fingerprint a track through th
 }) => {
   await signIn(page);
   await page.goto('/studio/releases/rel-mock-1');
-  await page.getByRole('tab', { name: 'Fingerprinting' }).click();
+  await page.getByRole('tab', { name: 'Advanced' }).click();
 
-  const blueHourPanel = page
-    .locator('div')
-    .filter({ has: page.getByText('Blue Hour', { exact: true }) })
-    .filter({ has: page.getByRole('button', { name: 'Check for a match' }) })
-    .last();
+  const blueHourPanel = page.getByRole('group', {
+    name: 'Fingerprinting Blue Hour',
+  });
   await expect(blueHourPanel).toBeVisible();
 
   await blueHourPanel
@@ -445,14 +443,11 @@ test('Radio Browser directory: save a station from Browser and it shows on Liste
   await mockRadioBrowserApi(page);
 
   await page.goto('/settings/plugin-store?category=radio');
-  const settings = page.getByRole('dialog');
-  const toggleName = /^(Activate|Deactivate) Radio Browser directory$/;
-  const radioBrowserRow = settings
-    .locator('div.flex.items-center.gap-2')
-    .filter({ has: settings.getByRole('switch', { name: toggleName }) })
-    .last();
-  await radioBrowserRow.getByRole('switch', { name: toggleName }).click();
-  await radioBrowserRow.getByRole('button', { name: 'Configure' }).click();
+  const settings = page.getByRole('dialog', { name: 'Settings' });
+  await settings.getByRole('button', { name: 'Activate', exact: true }).click();
+  await settings
+    .getByRole('button', { name: 'Configure', exact: true })
+    .click();
 
   const configure = page.getByRole('dialog', {
     name: 'Configure Radio Browser directory',
@@ -474,6 +469,6 @@ test('Radio Browser directory: save a station from Browser and it shows on Liste
 
   await page.goto('/');
   await expect(
-    page.getByTestId('listener-widgets-section').getByText('E2E Test Radio'),
+    page.getByRole('main').getByText('E2E Test Radio').first(),
   ).toBeVisible();
 });

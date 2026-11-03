@@ -63,16 +63,13 @@ export function PluginControls({ id, editList, onChange }: Props) {
       <div className="grid gap-4 sm:grid-cols-3">
         {editList.eq.bands.map((band, i) => (
           <div key={i} className="flex flex-col gap-2">
-            <p className="text-foreground-secondary text-xs uppercase">
-              Band {i + 1}
-            </p>
             <FrequencySlider
-              label="Freq"
+              label={`Band ${i + 1} freq`}
               value={band.freq}
               onChange={(freq) => setBand(i, { freq })}
             />
             <Slider
-              label="Gain"
+              label={`Band ${i + 1} gain`}
               value={band.gainDb}
               min={-24}
               max={24}
@@ -82,7 +79,7 @@ export function PluginControls({ id, editList, onChange }: Props) {
               onValueChange={(gainDb) => setBand(i, { gainDb })}
             />
             <Slider
-              label="Q"
+              label={`Band ${i + 1} Q`}
               value={band.q}
               min={0.1}
               max={10}

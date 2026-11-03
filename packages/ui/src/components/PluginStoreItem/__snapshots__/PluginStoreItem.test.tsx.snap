@@ -96,10 +96,9 @@ exports[`PluginStoreItem > (Snapshot) renders default state 1`] = `
         <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
-          <span
-            class="mr-1"
-          >
+          <span>
             by
+             
           </span>
           <span
             data-testid="plugin-store-item-author"
@@ -190,10 +189,9 @@ exports[`PluginStoreItem > (Snapshot) renders installed state 1`] = `
         <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
-          <span
-            class="mr-1"
-          >
+          <span>
             by
+             
           </span>
           <span
             data-testid="plugin-store-item-author"
@@ -280,10 +278,9 @@ exports[`PluginStoreItem > (Snapshot) renders installing state 1`] = `
         <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
-          <span
-            class="mr-1"
-          >
+          <span>
             by
+             
           </span>
           <span
             data-testid="plugin-store-item-author"
@@ -382,10 +379,9 @@ exports[`PluginStoreItem > (Snapshot) renders with custom labels 1`] = `
         <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
-          <span
-            class="mr-1"
-          >
+          <span>
             from
+             
           </span>
           <span
             data-testid="plugin-store-item-author"
@@ -476,10 +472,9 @@ exports[`PluginStoreItem > (Snapshot) renders with long description 1`] = `
         <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
-          <span
-            class="mr-1"
-          >
+          <span>
             by
+             
           </span>
           <span
             data-testid="plugin-store-item-author"

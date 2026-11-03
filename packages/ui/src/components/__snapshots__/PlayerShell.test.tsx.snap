@@ -22,7 +22,7 @@ exports[`PlayerShell > matches snapshot with complete layout 1`] = `
         >
           <div>
             <button
-              aria-label="Collapse panel"
+              aria-label="Collapse left panel"
               aria-pressed="true"
               class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
               data-headlessui-state=""
@@ -77,7 +77,7 @@ exports[`PlayerShell > matches snapshot with complete layout 1`] = `
         >
           <div>
             <button
-              aria-label="Collapse panel"
+              aria-label="Collapse right panel"
               aria-pressed="true"
               class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
               data-headlessui-state=""

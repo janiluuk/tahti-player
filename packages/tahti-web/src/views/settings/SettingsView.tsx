@@ -2,7 +2,10 @@ import { useRouterState } from '@tanstack/react-router';
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
-import { pluginAudienceForTarget } from '../../content/pluginStoreCategories';
+import {
+  isPluginCategoryTarget,
+  pluginAudienceForTarget,
+} from '../../content/pluginStoreCategories';
 import {
   CHANNEL_SETTINGS_SECTIONS,
   useSettingsModalStore,
@@ -80,7 +83,11 @@ export function SettingsView() {
     const tab = params.get('tab');
     open(
       section,
-      category ? pluginAudienceForTarget(category) : undefined,
+      isPluginCategoryTarget(category)
+        ? category
+        : category
+          ? pluginAudienceForTarget(category)
+          : undefined,
       section === 'artist' && isArtistSettingsSection(tab) ? tab : undefined,
       section === 'account' && isAccountSettingsSection(tab) ? tab : undefined,
       section === 'channel' && isChannelSettingsSection(tab) ? tab : undefined,

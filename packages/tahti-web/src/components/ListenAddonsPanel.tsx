@@ -399,6 +399,7 @@ export function ListenAddonsPanel({
                         size="sm"
                         variant="text"
                         onClick={() => handleUninstall('favorites')}
+                        aria-label="Uninstall Favorites"
                       >
                         Uninstall
                       </Button>
@@ -438,6 +439,7 @@ export function ListenAddonsPanel({
                         size="sm"
                         variant="text"
                         onClick={() => handleUninstall(NEWS_WIDGET_TYPE_ID)}
+                        aria-label="Uninstall News"
                       >
                         Uninstall
                       </Button>
@@ -566,6 +568,7 @@ export function ListenAddonsPanel({
                           size="sm"
                           variant="text"
                           onClick={() => handleUninstall(type.id)}
+                          aria-label={`Uninstall ${type.name}`}
                         >
                           Uninstall
                         </Button>
