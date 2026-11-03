@@ -259,12 +259,12 @@ export function FullScreenPlayer() {
         </div>
       </div>
 
-      <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center gap-6 overflow-hidden px-6 pt-16 pb-8">
+      <div className="tahti-hide-scrollbar relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center gap-4 overflow-y-auto px-6 pt-14 pb-4">
         <div
           className={cn(
             // Sized to the window height so artwork, title and controls fit
             // without the column scrolling.
-            'flex aspect-square w-[min(16rem,38vh)] shrink-0 items-center justify-center overflow-hidden rounded-xl border shadow-2xl sm:w-[min(20rem,42vh)] md:w-[min(24rem,46vh)]',
+            'flex aspect-square w-[min(14rem,30vh)] shrink-0 items-center justify-center overflow-hidden rounded-xl border shadow-2xl sm:w-[min(18rem,34vh)] md:w-[min(22rem,36vh)]',
             isLive
               ? 'border-white/20 bg-white/10 p-6 inset-ring inset-ring-white/10 backdrop-blur-xl backdrop-saturate-150 sm:p-8'
               : 'border-border bg-background-secondary',
@@ -281,15 +281,17 @@ export function FullScreenPlayer() {
           ) : null}
         </div>
 
-        <div className="bg-background/35 max-w-md rounded-xl px-6 py-3 text-center backdrop-blur-md">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+        <div className="bg-background/35 max-w-md shrink-0 rounded-xl px-5 py-2 text-center backdrop-blur-md">
+          <h1 className="line-clamp-2 text-xl font-bold tracking-tight sm:text-2xl">
             {title}
           </h1>
           {artist && (
-            <p className="text-foreground-secondary mt-1 text-lg">{artist}</p>
+            <p className="text-foreground-secondary mt-0.5 truncate text-base">
+              {artist}
+            </p>
           )}
           {soundId && playable ? (
-            <div className="mt-3 flex justify-center">
+            <div className="mt-2 flex justify-center">
               <AddToPlaylistButton
                 soundId={soundId}
                 trackTitle={playable.title}
