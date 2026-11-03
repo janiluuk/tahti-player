@@ -61,7 +61,12 @@ export function ChannelEditToolbar({
           savingLabel="Saving…"
           onClick={onSave}
         />
-        <Button size="sm" disabled={saving} onClick={onDone}>
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={saving}
+          onClick={onDone}
+        >
           Done
         </Button>
       </div>

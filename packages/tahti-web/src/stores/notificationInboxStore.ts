@@ -63,12 +63,9 @@ export const useNotificationInboxStore = create<NotificationInboxState>(
       const unread = result.data.filter((item) => !item.readAt);
 
       if (!initialLoadDone) {
-        for (const notification of unread.filter((item) => item.sticky)) {
-          presentToast(notification, (id) => void get().acknowledge(id));
-        }
         initialLoadDone = true;
       } else if (toastNew) {
-        for (const notification of unread) {
+        for (const notification of unread.filter((item) => !item.sticky)) {
           if (!previousSeen.has(notification.id)) {
             presentToast(notification, (id) => void get().acknowledge(id));
           }

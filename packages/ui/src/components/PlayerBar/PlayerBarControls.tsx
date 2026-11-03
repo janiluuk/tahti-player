@@ -25,6 +25,8 @@ type PlayerBarControlsLabels = {
   repeatOne?: string;
   discoveryOn?: string;
   discoveryOff?: string;
+  play?: string;
+  pause?: string;
 };
 
 const REPEAT_LABEL_KEY: Record<RepeatMode, keyof PlayerBarControlsLabels> = {
@@ -84,6 +86,9 @@ export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
   const glass = large
     ? 'bg-black/30 text-white backdrop-blur-sm hover:bg-black/50 active:bg-black/60'
     : 'rounded-full';
+  const playPauseLabel = isPlaying
+    ? (labels?.pause ?? 'Pause')
+    : (labels?.play ?? 'Play');
 
   return (
     <div
@@ -125,7 +130,7 @@ export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
         </Button>
       </Tooltip>
       {hidePlayPause ? null : (
-        <Tooltip content={isPlaying ? 'Pause' : 'Play'} side="top">
+        <Tooltip content={playPauseLabel} side="top">
           <Button
             size="icon"
             onClick={onPlayPause}
@@ -135,7 +140,7 @@ export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
               isPlaying && 'bg-accent-green text-black',
               large && !isPlaying && 'bg-white/90 text-black hover:bg-white',
             )}
-            aria-label={isPlaying ? 'Pause' : 'Play'}
+            aria-label={playPauseLabel}
             aria-pressed={isPlaying}
             aria-busy={isLoading || undefined}
             data-testid={

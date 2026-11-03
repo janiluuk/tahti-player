@@ -71,12 +71,15 @@ export const Inbox: Story = {
       ).toHaveAttribute('aria-description', 'You follow');
     });
 
-    await step('search fills in the username', async () => {
-      const field = canvas.getByLabelText('Message @');
-      await userEvent.type(field, 'liste');
-      await userEvent.click(canvas.getByRole('button', { name: 'Search' }));
-      await waitFor(() => expect(field).toHaveValue('listener'));
-    });
+    await step(
+      'Message finds the account and opens the conversation',
+      async () => {
+        const field = canvas.getByLabelText('Find or message @');
+        await userEvent.type(field, 'liste');
+        await userEvent.click(canvas.getByRole('button', { name: 'Message' }));
+        await waitFor(() => expect(field).toHaveValue(''));
+      },
+    );
 
     await step('a contact opens their thread', async () => {
       await userEvent.click(
@@ -188,15 +191,16 @@ export const SignedOut: Story = {
   },
 };
 
-/** Multi-hit DM user search fills the first matching username into Compose. */
+/** A partial username with several hits starts a conversation with the
+ * first match and clears Compose. */
 export const SearchMultiHit: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const field = canvas.getByLabelText('Message @');
+    const field = canvas.getByLabelText('Find or message @');
     await userEvent.clear(field);
     await userEvent.type(field, 'listen');
-    await userEvent.click(canvas.getByRole('button', { name: 'Search' }));
-    await waitFor(() => expect(field).toHaveValue('listener'));
+    await userEvent.click(canvas.getByRole('button', { name: 'Message' }));
+    await waitFor(() => expect(field).toHaveValue(''));
   },
 };
 
@@ -204,10 +208,10 @@ export const SearchMultiHit: Story = {
 export const SearchEmpty: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const field = canvas.getByLabelText('Message @');
+    const field = canvas.getByLabelText('Find or message @');
     await userEvent.clear(field);
     await userEvent.type(field, 'zzzz-no-such-user');
-    await userEvent.click(canvas.getByRole('button', { name: 'Search' }));
+    await userEvent.click(canvas.getByRole('button', { name: 'Message' }));
     await expect(await canvas.findByRole('status')).toHaveTextContent(
       'No account found for "zzzz-no-such-user".',
     );

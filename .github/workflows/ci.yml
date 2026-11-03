@@ -415,7 +415,7 @@ jobs:
 
       - name: Role journeys
         working-directory: packages/tahti-web
-        run: pnpm exec playwright test e2e/roles-*.spec.ts e2e/use-cases-*.spec.ts e2e/routes-uncovered.spec.ts e2e/view-before-edit.spec.ts e2e/batch-fixes.spec.ts e2e/batch-fixes-2.spec.ts --workers=2 --retries=1
+        run: pnpm exec playwright test e2e/roles-*.spec.ts e2e/use-cases-*.spec.ts e2e/routes-uncovered.spec.ts e2e/view-before-edit.spec.ts e2e/batch-fixes.spec.ts e2e/batch-fixes-2.spec.ts e2e/batch-fixes-3.spec.ts --workers=2 --retries=1
         env:
           PLAYWRIGHT_BASE_URL: http://localhost:5196
           PLAYWRIGHT_CHROMIUM_PATH: ${{ env.PLAYWRIGHT_CHROMIUM_PATH }}

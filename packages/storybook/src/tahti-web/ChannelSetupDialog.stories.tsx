@@ -70,7 +70,7 @@ export const CreateThenDesign: Story = {
       ).toBeVisible(),
     );
     await expect(
-      design.getByRole('button', { name: 'More options' }),
+      design.getByRole('button', { name: 'More channel design options' }),
     ).toBeVisible();
     await expect(useAuthStore.getState().user?.channel?.slug).toBe(
       'northern-lights',

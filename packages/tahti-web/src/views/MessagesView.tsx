@@ -217,9 +217,23 @@ export function MessagesView({
           className="border-border flex flex-wrap items-end gap-2 rounded-lg border p-3"
           onSubmit={(event) => {
             event.preventDefault();
-            if (composeUser.trim() && !starting) {
-              start(composeUser.trim());
+            const query = composeUser.trim();
+            if (!query || starting) {
+              return;
             }
+            setMsg(null);
+            void searchUsers(query).then((r) => {
+              const match =
+                r.data.find(
+                  (u) => u.username.toLowerCase() === query.toLowerCase(),
+                ) ?? r.data[0];
+              if (!match) {
+                setMsg(`No account found for "${query}".`);
+                return;
+              }
+              setComposeUser(match.username);
+              start(match.username);
+            });
           }}
         >
           <div className="min-w-36 flex-1">
@@ -227,7 +241,7 @@ export function MessagesView({
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              label="Message @"
+              label="Find or message @"
               value={composeUser}
               onChange={(e) => setComposeUser(e.target.value)}
               placeholder="username"
@@ -238,26 +252,7 @@ export function MessagesView({
             size="sm"
             disabled={starting || !composeUser.trim()}
           >
-            Start
-          </Button>
-          <Button
-            type="button"
-            size="sm"
-            variant="text"
-            disabled={!composeUser.trim()}
-            onClick={() => {
-              const query = composeUser.trim();
-              void searchUsers(query).then((r) => {
-                if (r.data[0]) {
-                  setMsg(null);
-                  setComposeUser(r.data[0].username);
-                } else {
-                  setMsg(`No account found for "${query}".`);
-                }
-              });
-            }}
-          >
-            Search
+            Message
           </Button>
         </form>
 

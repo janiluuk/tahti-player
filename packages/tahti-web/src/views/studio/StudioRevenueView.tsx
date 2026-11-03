@@ -235,7 +235,11 @@ export function StudioRevenueView() {
                 data-testid="fan-subs-empty-state"
                 title="No fan subscriptions yet"
                 description="Set up subscription tiers so fans can support you directly."
-                action={<Button onClick={openTiers}>Open tiers editor</Button>}
+                action={
+                  <Button variant="secondary" onClick={openTiers}>
+                    Open tiers editor
+                  </Button>
+                }
               />
             </StudioPanel>
           ) : (

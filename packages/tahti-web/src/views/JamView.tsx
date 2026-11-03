@@ -189,6 +189,7 @@ export function JamView({ code }: { code: string }) {
       <TahtiJam data-testid="jam-view">
         <div className="flex flex-1 flex-col justify-center">
           <PageEmpty
+            headingLevel={1}
             icon="alert"
             title="Jam not found"
             description={
@@ -222,6 +223,7 @@ export function JamView({ code }: { code: string }) {
       <TahtiJam data-testid="jam-view">
         <div className="flex flex-1 flex-col justify-center">
           <PageEmpty
+            headingLevel={1}
             icon="alert"
             title="You are no longer in this Jam"
             description="The host removed you from the session."

@@ -50,13 +50,16 @@ describe('StudioNav nested sub-tab row', () => {
     expect(screen.queryByTestId('studio-broadcast-back')).toBeNull();
   });
 
-  it('renders the sub-tab row when the tab has sub-tabs', () => {
+  it('leaves Stats and Governance without a nested chrome row', () => {
     render(<StudioNav current="/studio/stats?tab=plays" />);
-
+    expect(screen.queryByRole('tablist', { name: 'Stats pages' })).toBeNull();
+    expect(nestedTabRows()).toHaveLength(0);
+    cleanup();
+    render(<StudioNav current="/studio/governance" />);
     expect(
-      screen.getByRole('tablist', { name: 'Stats pages' }),
-    ).toBeInTheDocument();
-    expect(nestedTabRows()).toHaveLength(1);
+      screen.queryByRole('tablist', { name: 'Governance pages' }),
+    ).toBeNull();
+    expect(nestedTabRows()).toHaveLength(0);
   });
 
   it.each([
@@ -64,8 +67,8 @@ describe('StudioNav nested sub-tab row', () => {
     ['/studio/releases', true],
     ['/studio/distribution', true],
     ['/studio/editor', true],
-    ['/studio/stats', true],
-    ['/studio/governance', true],
+    ['/studio/stats', false],
+    ['/studio/governance', false],
     ['/studio/updates', true],
     ['/studio/audience', true],
     ['/studio/go-live', true],
@@ -77,10 +80,16 @@ describe('StudioNav nested sub-tab row', () => {
   it('only renders a nested row for tabs that have sub-tabs', () => {
     for (const item of SUBMENUS['/studio']) {
       const { unmount } = render(<StudioNav current={item.to} />);
-      const tabLists = screen.getAllByRole('tablist');
-      expect(tabLists.length > 1).toBe(hasStudioNestedNav(item.to));
       expect(nestedTabRows()).toHaveLength(hasStudioNestedNav(item.to) ? 1 : 0);
       unmount();
     }
+  });
+
+  it('shows Music pages as chips, not a second tab strip', async () => {
+    await renderWithRouter(<StudioNav current="/studio/releases" />);
+    expect(
+      screen.getByRole('radiogroup', { name: 'Music pages' }),
+    ).toBeTruthy();
+    expect(screen.queryByRole('tablist', { name: 'Music pages' })).toBeNull();
   });
 });

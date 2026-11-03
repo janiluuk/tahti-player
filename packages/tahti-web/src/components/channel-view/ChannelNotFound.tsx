@@ -38,6 +38,7 @@ export function ChannelNotFound({ slug }: { slug: string }) {
 
   return (
     <PageEmpty
+      headingLevel={1}
       title="Channel not found"
       description="This channel may have been removed or is not available."
     />

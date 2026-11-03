@@ -196,6 +196,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
   if (!show) {
     return (
       <PageEmpty
+        headingLevel={1}
         title="Show not found"
         description="This Tahti Radio show is not available."
       />

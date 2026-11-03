@@ -39,7 +39,7 @@ export function DesignerToolbar({
           <Button
             type="button"
             variant="secondary"
-            aria-label="More options"
+            aria-label="More channel design options"
             className="gap-1.5"
           >
             …
