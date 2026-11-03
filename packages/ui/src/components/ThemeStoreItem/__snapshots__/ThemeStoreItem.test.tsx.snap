@@ -3,8 +3,10 @@
 exports[`ThemeStoreItem > (Snapshot) renders installed state 1`] = `
 <DocumentFragment>
   <div
-    class="flex"
+    aria-label="Gruvbox"
+    class="flex rounded-lg p-0.5 bg-transparent"
     data-testid="theme-store-item"
+    role="group"
   >
     <div
       class="border-border flex w-full rounded-md border-(length:--border-width) bg-background-secondary text-foreground shadow-shadow relative h-auto min-w-0 flex-1 overflow-hidden p-1.5"
@@ -73,8 +75,9 @@ exports[`ThemeStoreItem > (Snapshot) renders installed state 1`] = `
         >
           <div>
             <button
-              aria-label="Apply"
-              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+              aria-label="Apply Gruvbox"
+              aria-pressed="false"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none size-8 justify-center"
               data-headlessui-state=""
               data-testid="theme-store-item-apply"
               type="button"
@@ -147,8 +150,10 @@ exports[`ThemeStoreItem > (Snapshot) renders installed state 1`] = `
 exports[`ThemeStoreItem > (Snapshot) renders with all props 1`] = `
 <DocumentFragment>
   <div
-    class="flex"
+    aria-label="Gruvbox"
+    class="flex rounded-lg p-0.5 bg-transparent"
     data-testid="theme-store-item"
+    role="group"
   >
     <div
       class="border-border flex w-full rounded-md border-(length:--border-width) bg-background-secondary text-foreground shadow-shadow relative h-auto min-w-0 flex-1 overflow-hidden p-1.5"
