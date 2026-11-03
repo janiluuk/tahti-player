@@ -528,8 +528,13 @@ paths that already exist (unless --force).
           );
         }
       }
+      const failedSets = results.filter((result) => result.exitCode !== 0);
+      const summary =
+        results.length > 1 && !values.json
+          ? `\n\n${results.length} Sets done${failedSets.length ? `, ${failedSets.length} with failures` : ''}.`
+          : '';
       return {
-        output: results.map((result) => result.output).join('\n\n'),
+        output: results.map((result) => result.output).join('\n\n') + summary,
         exitCode: Math.max(0, ...results.map((result) => result.exitCode)),
       };
     },
