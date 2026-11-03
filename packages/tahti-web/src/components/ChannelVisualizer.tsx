@@ -204,9 +204,13 @@ export const ChannelVisualizer = ({
     (channelKey && (!preset || mode === 'AURORA')
       ? radioVisualizerPreset(channelKey)
       : null);
+  // Keyed by content, not identity: callers that rebuild the scheme object
+  // on every render (the track page re-renders each playback tick) would
+  // otherwise hand the WebGL scene a "new" scheme many times a second.
+  const colorSchemeKey = colorScheme ? JSON.stringify(colorScheme) : '';
   const scheme = useMemo(
     () => parseScheme(colorScheme, colorSchemeJson),
-    [colorScheme, colorSchemeJson],
+    [colorSchemeKey, colorSchemeJson],
   );
   const settings = useMemo(
     () => parseSettings(visualSettingsJson, mode),

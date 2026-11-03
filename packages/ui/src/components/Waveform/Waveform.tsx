@@ -12,6 +12,7 @@ import type WaveSurfer from 'wavesurfer.js';
 import { cn } from '../../utils';
 import { observeThemeChange, readCssVar } from '../../utils/themeChange';
 import { formatTimeSeconds } from '../../utils/time';
+import { getDecodedPeaks, setDecodedPeaks } from './decodedPeaksCache';
 import {
   hasPeaks,
   peaksKey,
@@ -23,6 +24,9 @@ export type WaveformProps = {
   peaks?: number[] | null;
   durationSec: number;
   audioUrl?: string;
+  /** Stable id (e.g. the track id) for peaks decoded from `audioUrl`, so
+   * they are reused after a reload even though signed URLs change. */
+  cacheKey?: string;
   /** Global player `<audio>` when binding progress/seek to one source. */
   media?: HTMLMediaElement | null;
   /** 0..1 progress when not using `media` (or while media is unbound). */
@@ -35,8 +39,6 @@ export type WaveformProps = {
   /** Spoken position for the seek slider, e.g. "1:05 of 3:20". */
   'aria-valuetext'?: string;
 } & Omit<ComponentProps<'div'>, 'children' | 'onSeek'>;
-
-const decodedPeaks = new Map<string, { peaks: number[][]; duration: number }>();
 
 const KEY_STEP_SEC = 5;
 const PAGE_STEP_FRACTION = 0.1;
@@ -57,6 +59,7 @@ export const Waveform: FC<WaveformProps> = ({
   peaks,
   durationSec,
   audioUrl,
+  cacheKey,
   media = null,
   progress,
   onSeek,
@@ -77,6 +80,8 @@ export const Waveform: FC<WaveformProps> = ({
   onSeekRef.current = onSeek;
   const peaksRef = useRef(peaks);
   peaksRef.current = peaks;
+  const cacheKeyRef = useRef(cacheKey);
+  cacheKeyRef.current = cacheKey;
   const heightRef = useRef(height);
   heightRef.current = height;
 
@@ -145,8 +150,12 @@ export const Waveform: FC<WaveformProps> = ({
           options.media = media;
         }
 
-        const source = !media && !hasPeaks(current) ? audioUrl : undefined;
-        const cached = source ? decodedPeaks.get(source) : undefined;
+        const needsPeaks = !media && !hasPeaks(current);
+        const decodeKey = needsPeaks
+          ? (cacheKeyRef.current ?? audioUrl)
+          : undefined;
+        const cached = decodeKey ? getDecodedPeaks(decodeKey) : undefined;
+        const source = needsPeaks && !cached ? audioUrl : undefined;
         if (cached) {
           options.peaks = cached.peaks;
           options.duration = cached.duration;
@@ -171,10 +180,7 @@ export const Waveform: FC<WaveformProps> = ({
           subscriptions.push(
             ws.on('decode', (duration) => {
               setDecoded(true);
-              if (decodedPeaks.size >= 100) {
-                decodedPeaks.delete(decodedPeaks.keys().next().value!);
-              }
-              decodedPeaks.set(source, {
+              setDecodedPeaks(decodeKey!, {
                 peaks: ws.exportPeaks({ maxLength: 4096 }),
                 duration,
               });

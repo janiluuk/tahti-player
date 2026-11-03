@@ -9,8 +9,9 @@ Requests from the 2026-11-03 session not shipped yet. Shipped items moved to HIS
 - [ ] Product call: should board members edit any track? Needs an admin sound-edit route in tahti-org first.
 - [ ] Embed tracks can't play from their track page: tahti-org branch `fix/track-detail-embed-fields` (commit f1262ee4, worktree `../tahti-org-embed`) adds `embedProvider`/`embedUri` to `GET /api/tracks/:id`. Needs push + PR + merge (production deploy).
 - [ ] NRJ radio doesn't play (see `radio-nova-nrj-playback.md`; tahti-org #1044 moved presets to Bauer's host).
-- [ ] Track page visualizer glitches (`/t/cmt4zs2yi0037oyp60s12xfva`).
-- [ ] Waveform peaks aren't cached; tracks without peaks show dotted placeholder bars. Use real waveforms everywhere (compute/cache peaks).
+- [x] Track page visualizer glitched: the page re-rendered the color scheme object every playback tick; ChannelVisualizer now keys it by content.
+- [x] Browser-decoded peaks are cached by track id in memory and localStorage (signed audio URLs changed every load, so the old URL-keyed cache never hit); the track page reuses them.
+- [ ] Real waveforms for every track: tracks ingested without peaks need server-side peaks (tahti-org worker computes on upload + a backfill script). Decoding full mixes in the browser isn't viable (hundreds of MB).
 - [ ] "tahti.live" in the top menu: not found in web code or live DOM; ask where it shows (desktop app menu?).
 
 ## Listen / Discover

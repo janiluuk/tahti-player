@@ -10,6 +10,7 @@ import { memo, useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   Badge,
   Button,
+  getDecodedPeaks,
   MediaArtwork,
   TrackProcessing,
   Waveform,
@@ -283,7 +284,14 @@ function AmbientTrackRowView({
   const [loadedAudioUrl, setLoadedAudioUrl] = useState<string>();
   useEffect(() => {
     setLoadedAudioUrl(undefined);
-    if (processing || !visible || peaks?.length || audioUrl || !canLoadAudio) {
+    if (
+      processing ||
+      !visible ||
+      peaks?.length ||
+      audioUrl ||
+      !canLoadAudio ||
+      getDecodedPeaks(trackId)
+    ) {
       return;
     }
     let cancelled = false;
@@ -398,6 +406,7 @@ function AmbientTrackRowView({
               <Waveform
                 progress={progress}
                 peaks={peaks}
+                cacheKey={trackId}
                 audioUrl={audioUrl ?? loadedAudioUrl}
                 durationSec={durationSec ?? 1}
                 onSeek={onSeek}
