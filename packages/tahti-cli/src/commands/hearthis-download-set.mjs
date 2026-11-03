@@ -9,6 +9,7 @@ import { CliError, requireToken } from '../api-client.mjs';
 import { formatTable } from '../format.mjs';
 import {
   DOWNLOAD_LAYOUTS,
+  extensionFromContentType,
   layoutRelativePath,
   pickAudioExtension,
   resolveAlbumArtist,
@@ -111,6 +112,16 @@ export async function downloadHearthisSet(
     const extension = pickAudioExtension(track.downloadFilename, null);
     let relativePath = pathFor(track, extension, position);
     let absolute = join(root, relativePath);
+    if (!force && (await fileSize(absolute)) === null) {
+      const sibling = await sameStemFile(absolute);
+      if (sibling) {
+        const remoteSize = await remoteFileSize(track.downloadUrl);
+        if (remoteSize !== null && remoteSize === (await fileSize(sibling))) {
+          absolute = sibling;
+          relativePath = relative(root, sibling);
+        }
+      }
+    }
     keep.add(absolute);
 
     const localSize = await fileSize(absolute);
@@ -212,8 +223,15 @@ export async function downloadHearthisSet(
         const ext = extname(name).slice(1).toLowerCase();
         const stem = path.slice(0, path.length - extname(name).length);
         const partial = name.endsWith('.partial');
+        const plannedSibling = [...keep].find((kept) =>
+          kept.startsWith(`${stem}.`),
+        );
         const kept =
-          keep.has(path) || keepStems.has(stem) || !SYNCED_EXTS.has(ext);
+          keep.has(path) ||
+          keepStems.has(stem) ||
+          !SYNCED_EXTS.has(ext) ||
+          (plannedSibling !== undefined &&
+            (await fileSize(plannedSibling)) === null);
         if (!partial && kept) {
           continue;
         }
@@ -255,7 +273,9 @@ async function downloadTrackFile(track, root, relativePathFor, { flac }) {
   }
 
   const contentType = response.headers.get('content-type');
-  const extension = pickAudioExtension(track.downloadFilename, contentType);
+  const extension =
+    extensionFromContentType(contentType) ??
+    pickAudioExtension(track.downloadFilename, contentType);
   const relativePath = relativePathFor(extension);
   const absolutePath = join(root, relativePath);
   const convert = flac && FLAC_SOURCES.has(extension);
@@ -352,6 +372,17 @@ async function fileSize(path) {
   } catch {
     return null;
   }
+}
+
+async function sameStemFile(path) {
+  const stem = path.slice(0, path.length - extname(path).length);
+  const name = stem.slice(dirname(stem).length + 1);
+  const match = (await listFiles(dirname(path))).find(
+    (file) =>
+      file.slice(0, file.length - extname(file).length) === name &&
+      SYNCED_EXTS.has(extname(file).slice(1).toLowerCase()),
+  );
+  return match ? join(dirname(path), match) : null;
 }
 
 async function listFiles(folder) {

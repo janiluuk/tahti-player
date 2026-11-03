@@ -278,3 +278,39 @@ describe('downloadHearthisSet --sync', () => {
     expect(result.rows).toHaveLength(2);
   });
 });
+
+describe('downloadHearthisSet --flac with an MP3 original', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('keeps an MP3 as MP3 and never deletes the old copy first', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'hearthis-mp3-'));
+    const album = join(outDir, 'Yaniho', 'Euphorizer LP (2024)');
+    await mkdir(album, { recursive: true });
+    await writeFile(join(album, '01 - Hysterizer.mp3'), 'mp3data!');
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string, init?: { method?: string }) => {
+        if (url.includes('/imports/hearthis/')) {
+          return { ok: true, json: async () => catalogResponse() };
+        }
+        if (init?.method === 'HEAD') {
+          return { ok: true, headers: new Headers({ 'content-length': '8' }) };
+        }
+        return new Response('mp3data!', {
+          headers: { 'content-type': 'audio/mpeg' },
+        });
+      }),
+    );
+
+    const result = await downloadHearthisSet(
+      { apiUrl: 'https://api.example.test', token: 'tahti_test' },
+      '378936-9675121',
+      { outDir, sync: true, flac: true, artwork: false },
+    );
+
+    expect(result.rows[0]).toMatchObject({ status: 'skipped' });
+    expect((await readdir(album)).sort()).toEqual(['01 - Hysterizer.mp3']);
+  });
+});
