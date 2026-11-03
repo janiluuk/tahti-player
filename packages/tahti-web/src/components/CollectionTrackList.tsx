@@ -1,6 +1,7 @@
 import { useId, type ReactNode } from 'react';
 
 import type { TahtiPlayable } from '../api/types';
+import type { AmbientTrackListView } from './AmbientTrackList';
 import type { AmbientTrackStats } from './AmbientTrackRow';
 import { PageEmpty } from './PageStates';
 import { PlayableAmbientTrackList } from './PlayableAmbientTrackList';
@@ -19,6 +20,8 @@ type CollectionTrackListProps = {
         downloadable?: boolean;
       }
     | undefined;
+  /** Starting view for this list only, e.g. `list` on collection pages. */
+  initialView?: AmbientTrackListView;
 };
 
 /** The track list of a playlist or release page: framed ambient rows, or
@@ -31,6 +34,7 @@ export function CollectionTrackList({
   compactActions,
   getAnnotation,
   getTrackMeta,
+  initialView,
 }: CollectionTrackListProps) {
   const headingId = useId();
   if (items.length === 0) {
@@ -55,6 +59,7 @@ export function CollectionTrackList({
           compactActions={compactActions}
           getAnnotation={getAnnotation}
           getTrackMeta={getTrackMeta}
+          initialView={initialView}
         />
       </div>
     </section>

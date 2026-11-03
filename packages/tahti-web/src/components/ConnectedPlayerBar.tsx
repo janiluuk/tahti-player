@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { formatArtistNames } from '@tahti-player/model';
 import {
   Badge,
@@ -37,6 +38,7 @@ import { ConnectedSeekBar, PlayerLiveBadge } from './PlayerSeekBar';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
 
 export function ConnectedPlayerBar() {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const userId = useAuthStore((s) => s.user?.id);
@@ -129,7 +131,7 @@ export function ConnectedPlayerBar() {
   }
 
   const title =
-    stationNowPlaying?.title ?? playable?.title ?? 'Nothing playing';
+    stationNowPlaying?.title ?? playable?.title ?? t('player.nothingPlaying');
   const provider =
     playable?.sourceProvider && playable.sourceProvider !== 'tahti'
       ? playable.sourceProvider
@@ -142,7 +144,7 @@ export function ConnectedPlayerBar() {
     playable?.artist ??
     (current
       ? formatArtistNames(current.track.artists)
-      : 'Pick a channel to listen');
+      : t('player.pickChannel'));
   // "internet-radio" is an internal provider id, not a source worth naming.
   const artist =
     provider && provider !== 'internet-radio'
@@ -194,13 +196,21 @@ export function ConnectedPlayerBar() {
         }
         showDiscovery={false}
         labels={{
-          shuffleOn: isLive ? 'Shuffle (archive only)' : 'Shuffle on',
-          shuffleOff: isLive ? 'Shuffle (archive only)' : 'Shuffle off',
-          repeatOff: isLive ? 'Loop stations off' : 'Repeat off',
-          repeatAll: isLive ? 'Loop stations' : 'Repeat all',
-          repeatOne: 'Repeat one',
-          play: `Play ${title}`,
-          pause: `Pause ${title}`,
+          shuffleOn: isLive
+            ? t('player.shuffleArchiveOnly')
+            : t('player.shuffleOn'),
+          shuffleOff: isLive
+            ? t('player.shuffleArchiveOnly')
+            : t('player.shuffleOff'),
+          repeatOff: isLive
+            ? t('player.loopStationsOff')
+            : t('player.repeatOff'),
+          repeatAll: isLive ? t('player.loopStations') : t('player.repeatAll'),
+          repeatOne: t('player.repeatOne'),
+          next: t('player.next'),
+          previous: t('player.previous'),
+          play: t('actions.playItem', { title }),
+          pause: t('actions.pauseItem', { title }),
         }}
         onPlayPause={onPlayPause}
         onNext={next}
@@ -227,18 +237,20 @@ export function ConnectedPlayerBar() {
         >
           <InlineError textSize="xs" announce={false}>
             {isLive
-              ? `Station unavailable${failure ? ` · ${streamFailureLabel(failure)}` : ''}`
-              : 'Can’t play this.'}
+              ? `${t('player.stationUnavailable')}${failure ? ` · ${streamFailureLabel(failure)}` : ''}`
+              : t('player.cantPlay')}
           </InlineError>
           <Button size="xs" variant="text" onClick={retry}>
-            Try again
+            {t('actions.tryAgain')}
           </Button>
         </div>
       ) : null}
     </div>
   );
 
-  const playPauseLabel = isPlaying ? `Pause ${title}` : `Play ${title}`;
+  const playPauseLabel = isPlaying
+    ? t('actions.pauseItem', { title })
+    : t('actions.playItem', { title });
 
   const mobilePlayPauseButton = (
     <Tooltip content={playPauseLabel} side="top" wrapperClassName="shrink-0">
@@ -271,10 +283,10 @@ export function ConnectedPlayerBar() {
   );
 
   const queueLabel = queuePressed
-    ? 'Hide queue'
+    ? t('player.hideQueue')
     : queue.length > 1
-      ? `Show queue, ${queue.length} in queue`
-      : 'Show queue';
+      ? t('player.showQueueCount', { count: queue.length })
+      : t('player.showQueue');
 
   const queueButton = (
     <div className="relative">
@@ -324,6 +336,7 @@ export function ConnectedPlayerBar() {
             title={title}
             autoplay={restoredPending !== playable?.id}
             mountKey={reloadNonce}
+            compact
           />
         </div>
       </div>
@@ -346,11 +359,11 @@ export function ConnectedPlayerBar() {
             type="button"
             className="flex min-w-0 flex-1 items-center gap-3 text-left hover:bg-transparent"
             onClick={() => setFullScreenPlayerOpen(true)}
-            aria-label="Open full-screen player"
+            aria-label={t('player.openFullScreen')}
             data-testid="expand-full-screen-player"
           >
             {coverUrl ? (
-              <MediaArtwork src={coverUrl} size="sm" className="shrink-0" />
+              <MediaArtwork src={coverUrl} size="thumb" className="shrink-0" />
             ) : null}
             <span className="min-w-0">
               <span
@@ -427,13 +440,13 @@ export function ConnectedPlayerBar() {
         }
         right={
           <div className="flex items-center gap-2">
-            <Tooltip content="Open full-screen player" side="top">
+            <Tooltip content={t('player.openFullScreen')} side="top">
               <Button
                 size="icon-sm"
                 variant="text"
                 disabled={!playable}
                 onClick={() => setFullScreenPlayerOpen(true)}
-                aria-label="Open full-screen player"
+                aria-label={t('player.openFullScreen')}
                 data-testid="expand-full-screen-player"
               >
                 <Maximize2Icon size={16} />
@@ -445,6 +458,11 @@ export function ConnectedPlayerBar() {
               muted={muted}
               onMuteToggle={toggleMute}
               hideSlider={isMobile}
+              labels={{
+                mute: t('player.mute'),
+                unmute: t('player.unmute'),
+                volume: t('player.volume'),
+              }}
             />
             {!canUseRightRail && !isMobile ? (
               <div className="relative" ref={popoverRef}>

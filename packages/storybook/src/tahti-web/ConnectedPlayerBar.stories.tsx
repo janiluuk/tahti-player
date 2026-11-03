@@ -237,7 +237,7 @@ const embedQueueItem: QueueItem = {
   addedAtIso: new Date().toISOString(),
 };
 
-/** An embed-only track: the hearthis.at widget shows at its own size above
+/** An embed-only track: the compact hearthis.at widget shows above
  * the bar and is the transport, so the bar has no play/pause of its own
  * (no second, out-of-step play state). Next / previous stay. */
 export const EmbedTrack: Story = {
@@ -253,7 +253,7 @@ export const EmbedTrack: Story = {
     const strip = canvas.getByTestId('hearthis-player-embed');
     const frame = strip.querySelector('iframe');
     await expect(frame).not.toBeNull();
-    await expect(frame!.getAttribute('height')).toBe('150');
+    await expect(frame!.getAttribute('height')).toBe('96');
     await expect(canvas.queryByTestId('player-play-button')).toBeNull();
     await expect(canvas.queryByTestId('player-pause-button')).toBeNull();
     await expect(canvas.getByTestId('player-next-button')).toBeVisible();

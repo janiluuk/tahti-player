@@ -9,6 +9,7 @@ import {
   UserIcon,
 } from 'lucide-react';
 
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, ExternalLink } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
@@ -26,17 +27,22 @@ function UnreadDot({ className }: { className: string }) {
   );
 }
 
-function unreadLabel(notifications: boolean, messages: boolean): string {
+function unreadLabel(
+  t: TFunction<'web'>,
+  notifications: boolean,
+  messages: boolean,
+): string {
   if (notifications && messages) {
-    return ', unread notifications and messages';
+    return t('nav.unreadBoth');
   }
   if (notifications) {
-    return ', unread notifications';
+    return t('nav.unreadNotifications');
   }
-  return messages ? ', unread messages' : '';
+  return messages ? t('nav.unreadMessages') : '';
 }
 
 export function UserMenu({ nav }: { nav: TopNavState }) {
+  const { t } = useTranslation('web');
   const {
     isMobile,
     user,
@@ -74,7 +80,8 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
           'hover:bg-background-secondary inline-flex items-center gap-1.5 rounded-lg border px-1.5 py-1 transition-colors active:scale-100',
           open ? 'border-border bg-background-secondary' : 'border-border/60',
         )}
-        aria-label={`Signed in as ${displayName}${unreadLabel(
+        aria-label={`${t('nav.signedInAs', { name: displayName })}${unreadLabel(
+          t,
           hasUnreadNotifications,
           hasUnreadMessages,
         )}`}
@@ -148,7 +155,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
               }}
             >
               <BellIcon size={14} />
-              Notifications
+              {t('nav.notifications')}
               {hasUnreadNotifications ? (
                 <UnreadDot className={cn('ml-auto', NOTIFICATIONS_DOT)} />
               ) : null}
@@ -166,7 +173,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
               }}
             >
               <BellIcon size={14} />
-              Notifications
+              {t('nav.notifications')}
               {hasUnreadNotifications ? (
                 <UnreadDot className={cn('ml-auto', NOTIFICATIONS_DOT)} />
               ) : null}
@@ -184,7 +191,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
             }}
           >
             <MessageSquareIcon size={14} />
-            Messages
+            {t('nav.messages')}
             {hasUnreadMessages ? (
               <UnreadDot className={cn('ml-auto', MESSAGES_DOT)} />
             ) : null}
@@ -200,7 +207,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
                 onClick={() => setOpen(false)}
               >
                 <LayoutDashboardIcon size={14} />
-                Studio
+                {t('nav.studio')}
               </Link>
               <Link
                 to="/u/$username"
@@ -210,7 +217,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
                 onClick={() => setOpen(false)}
               >
                 <UserIcon size={14} />
-                My artist profile
+                {t('nav.myArtistProfile')}
               </Link>
             </>
           ) : null}
@@ -226,7 +233,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
             }}
           >
             <SettingsIcon size={14} />
-            Settings
+            {t('nav.settings')}
           </Button>
           <ExternalLink
             href="https://tahti.live"
@@ -250,7 +257,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
             }}
           >
             <LogOutIcon size={14} />
-            Log out
+            {t('nav.logOut')}
           </Button>
         </div>
       ) : null}

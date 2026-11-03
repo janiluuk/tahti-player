@@ -30,6 +30,9 @@ export type TabsProps = {
   tabClassName?: string;
   panelsClassName?: string;
   panelClassName?: string;
+  /** Icon (and count) only; the label stays as the tab's accessible name
+   * and hover title. Items need an `icon` and a string `label`. */
+  iconOnly?: boolean;
 };
 
 type TabsComponent = FC<TabsProps> & {
@@ -77,6 +80,7 @@ const TabsImpl: FC<TabsProps> = ({
   tabClassName,
   panelsClassName,
   panelClassName,
+  iconOnly = false,
 }) => {
   if (!items || items.length === 0) {
     // Composition mode only. Consumer uses Tabs.Root + subcomponents
@@ -110,13 +114,32 @@ const TabsImpl: FC<TabsProps> = ({
       panelClassName={panelClassName}
     >
       <TabsList>
-        {items.map((item) => (
-          <TabsTab key={item.id} disabled={item.disabled}>
-            <TabLabel icon={item.icon} count={item.count}>
-              {item.label}
-            </TabLabel>
-          </TabsTab>
-        ))}
+        {items.map((item) => {
+          const name =
+            typeof item.label === 'string'
+              ? item.count != null
+                ? `${item.label} (${item.count})`
+                : item.label
+              : undefined;
+          return iconOnly && item.icon ? (
+            <TabsTab
+              key={item.id}
+              disabled={item.disabled}
+              title={name}
+              aria-label={name}
+            >
+              <TabLabel icon={item.icon} count={item.count}>
+                {null}
+              </TabLabel>
+            </TabsTab>
+          ) : (
+            <TabsTab key={item.id} disabled={item.disabled}>
+              <TabLabel icon={item.icon} count={item.count}>
+                {item.label}
+              </TabLabel>
+            </TabsTab>
+          );
+        })}
       </TabsList>
       <TabsPanels>
         {items.map((item) => (

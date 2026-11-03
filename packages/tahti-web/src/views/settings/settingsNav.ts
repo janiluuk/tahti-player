@@ -1,6 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import {
   BlocksIcon,
+  Languages,
   Paintbrush,
   Palette,
   PlayCircle,
@@ -12,6 +13,10 @@ import {
   UserCircle2,
 } from 'lucide-react';
 
+import type { ParseKeys } from '@tahti-player/i18n';
+
+type WebKey = ParseKeys<'web'>;
+
 export type SettingsSectionId =
   | 'account'
   | 'artist'
@@ -19,6 +24,7 @@ export type SettingsSectionId =
   | 'broadcast'
   | 'playback'
   | 'integrations'
+  | 'language'
   | 'themes'
   | 'plugin-store'
   | 'logs'
@@ -26,12 +32,20 @@ export type SettingsSectionId =
 
 export type SettingsNavGroup = 'Settings' | 'App';
 
+export const SETTINGS_GROUP_LABEL_KEYS = {
+  Settings: 'settings.groupSettings',
+  App: 'settings.groupApp',
+} as const satisfies Record<SettingsNavGroup, WebKey>;
+
 export type SettingsNavItem = {
   id: SettingsSectionId;
+  /** English source; screens render `labelKey` through i18n. */
   label: string;
+  labelKey: WebKey;
   /** One line under the title. Left out where the section's own tabs
    * already say what is in it. */
   description?: string;
+  descriptionKey?: WebKey;
   Icon: LucideIcon;
   group: SettingsNavGroup;
 };
@@ -40,67 +54,92 @@ export const SETTINGS_NAV: SettingsNavItem[] = [
   {
     id: 'account',
     label: 'Account',
+    labelKey: 'settings.account',
     Icon: User,
     group: 'Settings',
   },
   {
     id: 'artist',
     label: 'Artist',
+    labelKey: 'settings.artist',
     Icon: UserCircle2,
     group: 'Settings',
   },
   {
     id: 'channel',
     label: 'Channel & chat',
+    labelKey: 'settings.channelChat',
     Icon: Paintbrush,
     group: 'Settings',
   },
   {
     id: 'broadcast',
     label: 'Broadcast',
+    labelKey: 'settings.broadcast',
     Icon: Radio,
     group: 'Settings',
   },
   {
     id: 'playback',
     label: 'Playback',
+    labelKey: 'settings.playback',
     description: 'Volume, shuffle, repeat and skip duration',
+    descriptionKey: 'settings.playbackDescription',
     Icon: PlayCircle,
     group: 'Settings',
   },
   {
     id: 'integrations',
     label: 'Integrations',
+    labelKey: 'settings.integrations',
     description: 'Scrobbling and desktop-app integrations',
+    descriptionKey: 'settings.integrationsDescription',
     Icon: Plug,
     group: 'Settings',
   },
   {
+    id: 'language',
+    label: 'Language',
+    labelKey: 'settings.language',
+    description: 'The language of menus, buttons and dates',
+    descriptionKey: 'settings.languageDescription',
+    Icon: Languages,
+    group: 'App',
+  },
+  {
     id: 'themes',
     label: 'Themes',
+    labelKey: 'settings.themes',
     description: 'App appearance',
+    descriptionKey: 'settings.themesDescription',
     Icon: Palette,
     group: 'App',
   },
   {
     id: 'plugin-store',
     label: 'Add-ons',
+    labelKey: 'settings.pluginStore',
     description: 'Listener, artist and admin tools in role-based lists',
+    descriptionKey: 'settings.addOnsDescription',
     Icon: BlocksIcon,
     group: 'App',
   },
   {
     id: 'logs',
     label: 'Logs',
+    labelKey: 'settings.logs',
     description:
       'Client warnings and errors from this tab, plus links to server container logs',
+    descriptionKey: 'settings.logsDescription',
     Icon: ScrollText,
     group: 'App',
   },
   {
     id: 'whats-new',
     label: "What's new",
+    labelKey: 'settings.whatsNew',
     description: 'What changed in each release',
+    descriptionKey: 'settings.whatsNewDescription',
     Icon: Sparkles,
     group: 'App',
   },
@@ -111,6 +150,7 @@ export const SETTINGS_NAV: SettingsNavItem[] = [
  * Settings flows still prompt for sign-in themselves when clicked. */
 export const PUBLIC_SETTINGS_SECTION_IDS: readonly SettingsSectionId[] = [
   'playback',
+  'language',
   'themes',
   'plugin-store',
   'whats-new',
@@ -134,7 +174,10 @@ export const CHANNEL_SETTINGS_SECTION_IDS: readonly SettingsSectionId[] = [
   'broadcast',
 ];
 
-const PROFILE_NAV_OVERRIDE = { label: 'Profile' };
+const PROFILE_NAV_OVERRIDE = {
+  label: 'Profile',
+  labelKey: 'settings.profile',
+} as const;
 
 export type SettingsNavAudience = {
   signedIn: boolean;

@@ -52,7 +52,7 @@ export const FilterRow: Story = {
     await expect(row).not.toBeNull();
     const inRow = within(row as HTMLElement);
     await expect(inRow.getByRole('button', { name: 'Type' })).toBeVisible();
-    await expect(inRow.getByRole('button', { name: 'Sort by' })).toBeVisible();
+    await expect(inRow.getByRole('button', { name: /^Sort by/ })).toBeVisible();
     await expect(
       inRow.getByRole('button', { name: /^Sort order/ }),
     ).toBeVisible();
@@ -61,7 +61,7 @@ export const FilterRow: Story = {
     ).toBeVisible();
     const sortSize = within(canvas.getByTestId('sound-sort-size'));
     const sortControls = [
-      sortSize.getByRole('button', { name: 'Sort by' }),
+      sortSize.getByRole('button', { name: /^Sort by/ }),
       sortSize.getByRole('button', { name: /^Sort order/ }),
       sortSize.getByRole('button', { name: /^Track size/ }),
     ].map((control) => {

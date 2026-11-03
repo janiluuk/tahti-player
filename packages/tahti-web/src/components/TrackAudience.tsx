@@ -5,6 +5,7 @@ import {
   Button,
   SoundAudience,
   type SoundAudiencePerson,
+  type TabsItem,
 } from '@tahti-player/ui';
 
 import {
@@ -43,9 +44,14 @@ function playsLabel(plays: number): string {
 export function TrackAudience({
   channelSlug,
   soundId,
+  leadingTabs,
+  iconOnlyTabs = false,
 }: {
   channelSlug: string;
   soundId: string;
+  /** Tabs before the audience ones, e.g. the track's Info. */
+  leadingTabs?: TabsItem[];
+  iconOnlyTabs?: boolean;
 }) {
   const [load, setLoad] = useState<Load>({ state: 'loading' });
   const [attempt, setAttempt] = useState(0);
@@ -115,6 +121,8 @@ export function TrackAudience({
   const { collections, likes, reposts, plays } = load.data;
   return (
     <SoundAudience
+      leadingTabs={leadingTabs}
+      iconOnlyTabs={iconOnlyTabs}
       collections={collections.items.map((collection) => ({
         id: collection.slug,
         name: collection.name,

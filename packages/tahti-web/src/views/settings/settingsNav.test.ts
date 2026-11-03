@@ -13,6 +13,7 @@ describe('settingsNavFor', () => {
   it('shows a visitor only the sections that need no account', () => {
     expect(ids({ signedIn: false, hasChannel: false })).toEqual([
       'playback',
+      'language',
       'themes',
       'plugin-store',
       'whats-new',
@@ -51,11 +52,15 @@ describe('settingsNavFor', () => {
       'artist',
       'playback',
       'integrations',
+      'language',
       'themes',
       'plugin-store',
       'whats-new',
     ]);
     expect(nav.find((item) => item.id === 'artist')?.label).toBe('Profile');
+    expect(nav.find((item) => item.id === 'artist')?.labelKey).toBe(
+      'settings.profile',
+    );
   });
 
   it('gives no description to sections whose tabs already list their content', () => {

@@ -14,6 +14,7 @@ import {
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   PlayerShell,
   PlayerWorkspace,
@@ -147,6 +148,7 @@ function DeferredFullScreenPlayer({ open }: { open: boolean }) {
 }
 
 function SidebarNavItems({ compact }: { compact: boolean }) {
+  const { t } = useTranslation('web');
   const isLoggedIn = useAuthStore((state) => Boolean(state.user));
   const isBoard = useAuthStore((state) => hasAccountRole(state.user, 'BOARD'));
   const isMember = useAuthStore((state) => Boolean(state.user?.isMember));
@@ -172,7 +174,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
             <SidebarNavigationItem
               to="/"
               icon={<ListMusicIcon size={16} />}
-              label="Listen"
+              label={t('nav.listen')}
               isSelected={sidebarActive === 'listen'}
             />
           </div>
@@ -180,7 +182,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
             <SidebarNavigationItem
               to="/radio"
               icon={<RadioIcon size={16} />}
-              label="Radio"
+              label={t('nav.radio')}
               isSelected={sidebarActive === 'radio'}
             />
           </div>
@@ -188,7 +190,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
             <SidebarNavigationItem
               to="/discover"
               icon={<CompassIcon size={16} />}
-              label="Discover"
+              label={t('nav.discover')}
               isSelected={sidebarActive === 'discover'}
             />
           </div>
@@ -196,7 +198,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
             <SidebarNavigationItem
               to="/library"
               icon={<LibraryIcon size={16} />}
-              label="Library"
+              label={t('nav.library')}
               isSelected={sidebarActive === 'library'}
             />
           </div>
@@ -212,7 +214,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
                       <LayoutDashboardIcon size={16} />
                     )
                   }
-                  label={isListener ? 'Become an artist' : 'Studio'}
+                  label={isListener ? t('nav.becomeArtist') : t('nav.studio')}
                   isSelected={sidebarActive === 'studio'}
                 />
                 {!isListener && <StudioMainNavItems />}
@@ -221,7 +223,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               <SidebarNavigationItem
                 disabled
                 icon={<LayoutDashboardIcon size={16} />}
-                label="Studio"
+                label={t('nav.studio')}
               />
             )}
           </div>
@@ -230,7 +232,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               <SidebarNavigationItem
                 to="/governance"
                 icon={<LandmarkIcon size={16} />}
-                label="Co-op"
+                label={t('nav.coop')}
                 isSelected={sidebarActive === 'coop'}
               />
             </div>
@@ -241,7 +243,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
                 <SidebarNavigationItem
                   to="/admin"
                   icon={<ShieldIcon size={16} />}
-                  label="Admin"
+                  label={t('nav.admin')}
                   isSelected={sidebarActive === 'admin'}
                 />
               </div>
@@ -251,7 +253,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               <SidebarNavigationItem
                 disabled
                 icon={<ShieldIcon size={16} />}
-                label="Admin"
+                label={t('nav.admin')}
               />
             </div>
           )}
@@ -262,14 +264,14 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
             <SidebarNavigationItem
               to="/help"
               icon={<HelpCircleIcon size={16} />}
-              label="Help center"
+              label={t('nav.help')}
               isSelected={sidebarActive === 'help'}
             />
           </div>
           <div data-tour-id="nav-settings">
             <SidebarNavigationItem
               icon={<SettingsIcon size={16} />}
-              label="Settings"
+              label={t('nav.settings')}
               onClick={() => openSettings()}
               isSelected={sidebarActive === 'settings'}
             />
@@ -314,6 +316,7 @@ function RouteContent({ children }: { children: React.ReactNode }) {
 }
 
 export function AppShell() {
+  const { t } = useTranslation('web');
   const isMobile = useIsMobile();
   const isCompactDesktop = useIsCompactDesktop();
   // Scoped selectors, not the whole store: layoutStore also carries chat
@@ -733,7 +736,7 @@ export function AppShell() {
 
         <MobileDrawer
           open={mobileNavOpen}
-          title="Navigate"
+          title={t('nav.navigate')}
           side="left"
           onClose={() => setMobileNavOpen(false)}
         >
@@ -753,7 +756,7 @@ export function AppShell() {
 
         <MobileDrawer
           open={bottomQueueOpen}
-          title="Queue"
+          title={t('nav.queue')}
           fullScreen
           onClose={() => setBottomQueueOpen(false)}
         >

@@ -10,6 +10,7 @@ import { memo, useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   Badge,
   Button,
+  getDecodedPeaks,
   MediaArtwork,
   TrackProcessing,
   Waveform,
@@ -50,32 +51,32 @@ const DENSITY_LAYOUT: Record<
   comfortable: {
     pad: 'gap-3 p-3 sm:gap-4 sm:p-4',
     gap: 'gap-2',
-    art: 'size-24 sm:size-44',
+    art: 'size-28 sm:size-44 lg:size-56',
     artist: 'text-sm',
     title: 'text-lg sm:text-xl',
     meta: 'text-sm',
-    bars: 96,
-    wave: 'h-14',
+    bars: 120,
+    wave: 'h-24',
   },
   compact: {
     pad: 'gap-3 p-2.5',
     gap: 'gap-1.5',
-    art: 'size-20 sm:size-32',
+    art: 'size-24 sm:size-40',
     artist: 'text-xs',
     title: 'text-sm sm:text-base',
     meta: 'text-sm',
-    bars: 64,
-    wave: 'h-9',
+    bars: 80,
+    wave: 'h-16',
   },
   dense: {
     pad: 'gap-2 px-2 py-1.5',
     gap: 'gap-0.5',
-    art: 'size-12',
+    art: 'size-16',
     artist: 'text-[10px]',
     title: 'text-xs',
     meta: 'text-[10px]',
-    bars: 36,
-    wave: 'h-4',
+    bars: 48,
+    wave: 'h-9',
   },
 };
 
@@ -283,7 +284,14 @@ function AmbientTrackRowView({
   const [loadedAudioUrl, setLoadedAudioUrl] = useState<string>();
   useEffect(() => {
     setLoadedAudioUrl(undefined);
-    if (processing || !visible || peaks?.length || audioUrl || !canLoadAudio) {
+    if (
+      processing ||
+      !visible ||
+      peaks?.length ||
+      audioUrl ||
+      !canLoadAudio ||
+      getDecodedPeaks(trackId)
+    ) {
       return;
     }
     let cancelled = false;
@@ -398,6 +406,7 @@ function AmbientTrackRowView({
               <Waveform
                 progress={progress}
                 peaks={peaks}
+                cacheKey={trackId}
                 audioUrl={audioUrl ?? loadedAudioUrl}
                 durationSec={durationSec ?? 1}
                 onSeek={onSeek}
@@ -409,10 +418,10 @@ function AmbientTrackRowView({
                 }
                 height={
                   density === 'comfortable'
-                    ? 64
+                    ? 96
                     : density === 'compact'
-                      ? 48
-                      : 28
+                      ? 64
+                      : 36
                 }
               />
             ) : (

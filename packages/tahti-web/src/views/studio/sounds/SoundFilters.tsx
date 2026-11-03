@@ -6,7 +6,13 @@ import {
   SearchIcon,
 } from 'lucide-react';
 
-import { Button, Input, Select, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  Input,
+  Select,
+  SortMenuButton,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   trackViewOptions,
@@ -100,15 +106,14 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
           className="flex shrink-0 items-center gap-2"
           data-testid="sound-sort-size"
         >
-          <Select
-            aria-label="Sort by"
+          <SortMenuButton
+            label="Sort by"
             value={sortField}
-            onValueChange={(value) => setSortField(value as SortField)}
+            onChange={(value) => setSortField(value as SortField)}
             options={SORT_FIELDS.map((sortOption) => ({
               id: sortOption.id,
               label: `By ${sortOption.label.toLowerCase()}`,
             }))}
-            className="min-w-40"
           />
           <Tooltip content={sortLabel} side="top">
             <Button

@@ -74,6 +74,7 @@ export * from './SelectableTiles';
 export * from './SidebarNavigation';
 export * from './Slider';
 export * from './SoundAudience';
+export * from './SortMenuButton';
 export * from './SortableBlocks';
 export * from './StatChip';
 export * from './StatTile';

@@ -8,6 +8,7 @@ import {
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Card,
@@ -62,10 +63,15 @@ import { usePlayerStore } from '../stores/playerStore';
 export type ListenTab = 'listen' | 'history';
 
 const LISTEN_SECTION_TABS = [
-  { id: 'listen' as const, label: 'Listen', Icon: ListMusicIcon, to: '/' },
+  {
+    id: 'listen' as const,
+    labelKey: 'nav.listen' as const,
+    Icon: ListMusicIcon,
+    to: '/',
+  },
   {
     id: 'history' as const,
-    label: 'History',
+    labelKey: 'listen.history' as const,
     Icon: HistoryIcon,
     to: '/listen/history',
   },
@@ -73,11 +79,6 @@ const LISTEN_SECTION_TABS = [
 
 const RECENTLY_PLAYED_LIMIT = 20;
 const RADIO_BLOCK_ID = 'radio';
-
-const ROW_LABELS = {
-  filterPlaceholder: 'Filter…',
-  nothingFound: 'Nothing matches that filter.',
-};
 
 type OnAirRowItem = { id: string; title: string; channel: OnAirChannel };
 
@@ -112,6 +113,11 @@ const HistoryView = lazy(() =>
 );
 
 export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
+  const { t } = useTranslation('web');
+  const rowLabels = {
+    filterPlaceholder: t('listen.filterPlaceholder'),
+    nothingFound: t('listen.nothingFound'),
+  };
   const navigate = useNavigate();
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
@@ -213,10 +219,10 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           subtitle={
             <span className="font-semibold">
               {playing
-                ? 'Playing now'
+                ? t('listen.playingNow')
                 : channel.state === 'LIVE'
-                  ? 'Live now'
-                  : 'Replay'}
+                  ? t('listen.liveNow')
+                  : t('listen.replayBadge')}
             </span>
           }
           src={channel.user.avatarUrl ?? placeholderArtworkUrl(channel.slug)}
@@ -268,7 +274,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
       id: recentItems.length > 0 ? 'recently-played' : 'selects',
       label:
         recentItems.length > 0
-          ? 'Recently played and Tahti Selects'
+          ? t('listen.recentlyPlayedAndSelects')
           : 'Tahti Selects',
       content: (
         <div className="@container min-w-0">
@@ -284,13 +290,14 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               <div className="min-w-0">
                 <CardsRow
                   data-testid="listen-recently-played"
-                  title="Recently played"
-                  badge="History"
+                  title={t('listen.recentlyPlayed')}
+                  filterable={false}
+                  badge={t('listen.history')}
                   badgeColor="yellow"
                   items={recentItems}
                   labels={{
-                    ...ROW_LABELS,
-                    filterPlaceholder: 'Filter tracks…',
+                    ...rowLabels,
+                    filterPlaceholder: t('listen.filterTracks'),
                   }}
                   renderItem={renderRecentItem}
                 />
@@ -305,37 +312,37 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     },
     {
       id: 'new-releases',
-      label: 'New releases',
+      label: t('listen.newReleases'),
       content: <NewReleasesRow />,
     },
     {
       id: 'on-air',
-      label: 'Live now',
+      label: t('listen.liveNow'),
       content: (
         <ListenSection
           data-testid="listen-on-air"
-          title="Live now"
-          badge="Live"
+          title={t('listen.liveNow')}
+          badge={t('listen.liveBadge')}
           badgeColor="green"
           status={sections.onAir.status}
           empty={liveItems.length === 0}
-          emptyTitle="Nobody is live right now"
+          emptyTitle={t('listen.nobodyLive')}
           emptyDescription={
             replayItems.length > 0
-              ? 'Recent broadcasts are replaying below.'
-              : 'Live channels show up here when an artist goes on air.'
+              ? t('listen.replayingBelow')
+              : t('listen.liveChannelsAppear')
           }
           onRetry={() => sections.retry('onAir')}
         >
           <CardsRow
             data-testid="listen-on-air"
-            title="Live now"
-            badge="Live"
+            title={t('listen.liveNow')}
+            badge={t('listen.liveBadge')}
             badgeColor="green"
             items={liveItems}
             labels={{
-              ...ROW_LABELS,
-              filterPlaceholder: 'Filter channels…',
+              ...rowLabels,
+              filterPlaceholder: t('listen.filterChannels'),
             }}
             renderItem={renderOnAirItem}
           />
@@ -346,17 +353,17 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
       ? [
           {
             id: 'replays',
-            label: 'Replays',
+            label: t('listen.replays'),
             content: (
               <CardsRow
                 data-testid="listen-replays"
-                title="Replays"
-                badge="Replay"
+                title={t('listen.replays')}
+                badge={t('listen.replayBadge')}
                 badgeColor="secondary"
                 items={replayItems}
                 labels={{
-                  ...ROW_LABELS,
-                  filterPlaceholder: 'Filter channels…',
+                  ...rowLabels,
+                  filterPlaceholder: t('listen.filterChannels'),
                 }}
                 renderItem={renderOnAirItem}
               />
@@ -366,24 +373,24 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
       : []),
     {
       id: 'trending',
-      label: 'Trending',
+      label: t('listen.trending'),
       content: <TrendingRow />,
     },
     {
       id: 'coming-up',
-      label: 'Coming up',
+      label: t('listen.comingUp'),
       content: <HomeComingUp />,
     },
     {
       id: 'new-tracks',
-      label: 'New tracks',
+      label: t('listen.newTracks'),
       content: (
         <ListenSection
           data-testid="listen-new-tracks"
-          title="New tracks"
+          title={t('listen.newTracks')}
           status={sections.latestTracks.status}
           empty={sections.latestTracks.data.length === 0}
-          emptyTitle="No new tracks yet"
+          emptyTitle={t('listen.noNewTracks')}
           onRetry={() => sections.retry('latestTracks')}
         >
           <section
@@ -391,7 +398,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
             data-testid="listen-new-tracks"
           >
             <SectionTitle
-              title="New tracks"
+              title={t('listen.newTracks')}
               className="border-accent-purple/40 border-l-4 pl-3"
             />
             <div className="shadow-float rounded-[var(--radius-card)]">
@@ -407,7 +414,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     },
     {
       id: RADIO_BLOCK_ID,
-      label: 'Radio',
+      label: t('nav.radio'),
       content: (
         <RadioStationsRow
           presets={sections.presets}
@@ -420,7 +427,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     ...widgetBlocks.blocks,
     {
       id: 'disco-widgets',
-      label: 'Community widgets',
+      label: t('listen.communityWidgets'),
       content: (
         <DiscoWidgetsSection
           widgets={sections.discoWidgets.data}
@@ -451,29 +458,38 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           }
         }}
       >
-        <Tabs.List aria-label="Listen sections" className="overflow-x-auto">
+        <Tabs.List
+          aria-label={t('listen.sections')}
+          className="overflow-x-auto"
+        >
           {LISTEN_SECTION_TABS.map((item) => (
             <Tabs.Tab key={item.id}>
-              <TabLabel icon={<item.Icon size={14} />}>{item.label}</TabLabel>
+              <TabLabel icon={<item.Icon size={14} />}>
+                {t(item.labelKey)}
+              </TabLabel>
             </Tabs.Tab>
           ))}
         </Tabs.List>
       </Tabs.Root>
       <ViewShell
-        title={tab === 'history' ? 'History' : 'Listen'}
+        title={tab === 'history' ? t('listen.history') : t('nav.listen')}
         classes={{ root: 'px-0 pt-0' }}
         actions={
           tab === 'listen' ? (
             <>
               <Tooltip
-                content={reordering ? 'Done ordering' : 'Order sections'}
+                content={
+                  reordering
+                    ? t('listen.doneOrdering')
+                    : t('listen.orderSections')
+                }
                 side="top"
               >
                 <Button
                   size="icon"
                   variant={reordering ? 'default' : 'secondary'}
                   aria-pressed={reordering}
-                  aria-label="Order sections"
+                  aria-label={t('listen.orderSections')}
                   onClick={() => setReordering((on) => !on)}
                   data-testid="listen-order-toggle"
                 >

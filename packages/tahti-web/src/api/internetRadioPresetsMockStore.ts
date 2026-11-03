@@ -55,17 +55,6 @@ const INITIAL_PRESETS: MockInternetRadioPreset[] = [
     enabled: true,
   },
   {
-    id: 'preset-nrj',
-    name: 'NRJ',
-    genre: 'Pop / Hits',
-    description: 'Hit music radio for Finland.',
-    iconUrl: '/radio-logos/nrj.jpg',
-    programmingUrl: 'https://www.radioplay.fi/nrj',
-    streamUrl:
-      'https://streaming.radioplay.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein',
-    enabled: true,
-  },
-  {
     id: 'preset-radio-nova',
     name: 'Radio Nova',
     genre: 'Pop',

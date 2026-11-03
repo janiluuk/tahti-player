@@ -3,18 +3,13 @@ import { DownloadIcon, PencilIcon, PlusIcon, TrashIcon } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
-import { Input, Select } from '@tahti-player/ui';
+import { Input } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
 import { formatDuration } from '../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { downloadTrackFromRow } from '../lib/trackDownload';
-import {
-  sortTracks,
-  TRACK_SORT_OPTIONS,
-  useTrackSort,
-  type TrackSort,
-} from '../lib/trackSort';
+import { sortTracks, useTrackSort } from '../lib/trackSort';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -23,6 +18,7 @@ import { AddToPlaylistPanel } from './AddToPlaylistPanel';
 import {
   AmbientTrackList,
   type AmbientTrackListItem,
+  type AmbientTrackListView,
 } from './AmbientTrackList';
 import type {
   AmbientTrackRowDensity,
@@ -30,6 +26,7 @@ import type {
 } from './AmbientTrackRow';
 import { MediaIconActions, playQueueFavoriteActions } from './MediaIconActions';
 import { PlayableTrackTable } from './PlayableTrackTable';
+import { TrackSortButton } from './TrackSortButton';
 
 export function PlayableAmbientTrackList({
   items,
@@ -46,6 +43,7 @@ export function PlayableAmbientTrackList({
   toolbarStart,
   filterable = false,
   allowGrid = true,
+  initialView,
   className,
 }: {
   items: TahtiPlayable[];
@@ -78,6 +76,8 @@ export function PlayableAmbientTrackList({
   filterable?: boolean;
   /** Offers the cover-card grid view beside the list. */
   allowGrid?: boolean;
+  /** Starting view for this list only, e.g. `list` for collections. */
+  initialView?: AmbientTrackListView;
   className?: string;
 }) {
   const play = usePlayerStore((s) => s.play);
@@ -334,25 +334,23 @@ export function PlayableAmbientTrackList({
       <AmbientTrackList
         items={listItems}
         allowGrid={allowGrid}
+        initialView={initialView}
         defaultDensity={defaultDensity}
         emptyMessage={shownEmptyMessage}
         toolbarStart={toolbarStart ?? filterBox}
         className={className}
         toolbarEnd={
           items.length > 1 ? (
-            <Select
-              className="w-44"
-              aria-label="Sort tracks"
-              options={TRACK_SORT_OPTIONS}
-              value={sort}
-              onValueChange={(value) => setSort(value as TrackSort)}
-            />
+            <TrackSortButton value={sort} onChange={setSort} />
           ) : undefined
         }
         renderList={() => (
           <PlayableTrackTable
             items={sorted}
             emptyMessage={shownEmptyMessage}
+            // One filter per list: the toolbar's when it has one, else the
+            // table's own.
+            filterable={!filterBox && !toolbarStart}
             playAll={playAll}
             compactActions={compactActions}
             getAnnotation={getAnnotation}

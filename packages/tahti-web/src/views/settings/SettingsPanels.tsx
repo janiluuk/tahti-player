@@ -1,5 +1,6 @@
 import { lazy, Suspense, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Loader } from '@tahti-player/ui';
 
 import { hasAccountRole } from '../../lib/accountRoles';
@@ -10,6 +11,7 @@ import { ArtistPanel, ReleaseVisualDefaultsPanel } from './panels/ArtistPanel';
 import { BroadcastPanel, type BroadcastSection } from './panels/BroadcastPanel';
 import { ChannelPanel } from './panels/ChannelPanel';
 import { IntegrationsPanel } from './panels/IntegrationsPanel';
+import { LanguagePanel } from './panels/LanguagePanel';
 import { LogsPanel } from './panels/LogsPanel';
 import { PlaybackPanel } from './panels/PlaybackPanel';
 import { ThemesPanel } from './panels/ThemesPanel';
@@ -29,6 +31,7 @@ export function SettingsSectionBody({
   section: SettingsSectionId;
 }) {
   let content: ReactNode;
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const signedIn = Boolean(user);
   const isBoard = hasAccountRole(user, 'BOARD');
@@ -54,6 +57,9 @@ export function SettingsSectionBody({
       break;
     case 'integrations':
       content = <IntegrationsPanel />;
+      break;
+    case 'language':
+      content = <LanguagePanel />;
       break;
     case 'themes':
       content = <ThemesPanel />;
@@ -89,11 +95,11 @@ export function SettingsSectionBody({
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-2">
         <h1 className="font-display text-3xl font-extrabold tracking-tight">
-          {navItem?.label}
+          {navItem ? t(navItem.labelKey) : null}
         </h1>
-        {navItem?.description ? (
+        {navItem?.descriptionKey ? (
           <p className="text-foreground-secondary text-sm">
-            {navItem.description}
+            {t(navItem.descriptionKey)}
           </p>
         ) : null}
       </header>
