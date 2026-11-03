@@ -256,6 +256,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Updates/PostDialog` | `tahti-web/PostDialog.stories.tsx` |
 | `Tahti/Studio/Updates/PostPreview` | `tahti-web/PostPreview.stories.tsx` |
 | `Tahti/Studio/Branding/PressKitPreview` | `tahti-web/PressKitPreview.stories.tsx` |
+| `Tahti/Studio/Pro editor/Mastering` | `tahti-web/ProEditorMastering.stories.tsx` |
 | `Tahti/Studio/ProcessingFailedAlert` | `tahti-web/ProcessingFailedAlert.stories.tsx` |
 | `Tahti/Studio/Branding/ProfilePictureSection` | `tahti-web/ProfilePictureSection.stories.tsx` |
 | `Tahti/Profile/ProfileSection` | `tahti-web/ProfileSection.stories.tsx` |
@@ -277,6 +278,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Home/RecentBroadcastRow` | `tahti-web/RecentBroadcastRow.stories.tsx` |
 | `Tahti/Studio/ReleasePinButton` | `tahti-web/ReleasePinButton.stories.tsx` |
 | `Tahti/Studio/ReleaseTrackAudioUpload` | `tahti-web/ReleaseTrackAudioUpload.stories.tsx` |
+| `Tahti/Studio/Release detail/ReleaseTrackRow` | `tahti-web/ReleaseTrackRow.stories.tsx` |
 | `Tahti/Track/ReleaseTracklistDialog` | `tahti-web/ReleaseTracklistDialog.stories.tsx` |
 | `Tahti/Settings/ReleaseVisualDefaultsPanel` | `tahti-web/ReleaseVisualDefaultsPanel.stories.tsx` |
 | `Tahti/Misc/ReportButton` | `tahti-web/ReportButton.stories.tsx` |

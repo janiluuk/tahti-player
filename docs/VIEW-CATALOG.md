@@ -149,10 +149,10 @@ Pieces split out of the studio views in the god-module refactor. Stories live in
 | Show detail     | `EpisodeEditorRow`                                                       | `views/studio/show-detail/EpisodeEditorRow.tsx`            | `Tahti/Studio/ShowDetail/EpisodeEditorRow`     |
 
 Extracted but **not yet storied** (need real fetch/state wiring, not just props):
-`ReleaseOpsPanel`, `GuidesTab`, `ReleaseSmartLinksPanel`, `ReleaseTrackRow`,
+`ReleaseOpsPanel`, `GuidesTab`, `ReleaseSmartLinksPanel`,
 `StudioEpisodeReviewView`, branding
 `GallerySection`/`PressKitSection`/`ProfilePictureSection` (take `usePressKit()` state),
-pro-editor `MasteringPanel`/`StemsPanel`/`PluginControls`.
+pro-editor `StemsPanel` (`MasteringPanel` and `PluginControls`: `Tahti/Studio/Pro editor/Mastering`; `ReleaseTrackRow`: `Tahti/Studio/Release detail/ReleaseTrackRow`).
 
 ### Governance / Transparency Views
 
