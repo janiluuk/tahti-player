@@ -51,7 +51,7 @@ describe('RadioBrowserDirectoryCard', () => {
     expect(
       screen.queryByRole('button', { name: 'Suggest a station' }),
     ).toBeNull();
-    const gears = await screen.findAllByRole('button', { name: 'Configure' });
+    const gears = await screen.findAllByRole('button', { name: /^Configure/ });
     fireEvent.click(gears[gears.length - 1]!);
     expect(
       await screen.findByRole('button', { name: 'Suggest a station' }),
@@ -67,7 +67,7 @@ describe('RadioBrowserDirectoryCard', () => {
       .mockResolvedValueOnce([station('new', 'Newest')]);
 
     render(<RadioBrowserDirectoryCard />);
-    const gears = await screen.findAllByRole('button', { name: 'Configure' });
+    const gears = await screen.findAllByRole('button', { name: /^Configure/ });
     fireEvent.click(gears[gears.length - 1]!);
     fireEvent.click(await screen.findByRole('tab', { name: 'Browser' }));
     const input = await screen.findByLabelText('Search stations');

@@ -2,6 +2,12 @@
 
 Artist header folds Open channel and fan-tiers into More; community guidelines show as a Listen banner instead of a sticky toast; Studio Stats uses in-page section chips (no nested Stats/Governance tab strip); Messages has one compose field; Music pages use FilterChips; more controls named after their item; not-found empties are h1; de-greened a few secondary actions. Bumped tahti-web `0.0.294`.
 
+## 2026-11-03 - Community / feed story cards: activity pills
+
+Story cards show the activity type as a soft pill (`released a track`,
+`shared news`, `posted an announcement`, …) with a humanized date beside it,
+on My feed and Discover → Community stories. Bumped tahti-web `0.0.294`.
+
 ## 2026-10-30 - Navigation fixes and undo on more creates
 
 A channel you already have opens Green room instead of a blank Setup tab. Radio deep links light Radio. Listeners no longer see Library → Sounds. The sound editor collapses the sidebar. A grant year lights Admin → Community. Old channel design links go straight to Settings. New listening parties, lineup members, moderators, replies, release tracks, pins, clips, artwork, stations, embeds, stash files, gallery photos, smart-playlist copies, and queue adds can be undone. Bumped tahti-web `0.0.286`.
@@ -6333,3 +6339,7 @@ Library media, embeds and smart links share one row: artwork, title, detail and 
 ## 2026-10-31 — Radio station cards and playing cues
 
 Other stations on a radio station page use playable thumbnails. Listener cards no longer expose cover-edit overlays; board members edit the cover from a visible station-page button. Shared Card and AmbientCard surfaces subtly outline the playing item and clear the cue when paused. Fixed the channel Tracks Storybook assertion to distinguish pinned artwork from the catalog.
+
+## 2026-11-03 — Channel page tabs, default artwork, Chat activity (0.0.296)
+
+Listen drops the Tahti Radio bar, and "From Tahti" news moves to Discover. The artist profile loses the Popular tracks rank pills and uses the standard list with a filter box; embeds get their own section, and headings take the page's own text color so they read on dark artist colors. Missing or broken covers show the default artwork (admin presets) everywhere through `MediaArtwork`. The channel page puts Music, Comments and Chat in tabs under the stage, sets small blocks such as Live shows side by side, gives show episodes thumbnails, shows the artist's posts as story cards, moves the Live / 24/7 rotation / Offline pill into the stage, hosts a playing embed in the stage, and folds the RSS feed into Share. `/chat` picks a channel from a dropdown and lists each room's activity in the last 24 hours.

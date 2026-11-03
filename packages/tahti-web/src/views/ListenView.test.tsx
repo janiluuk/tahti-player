@@ -249,7 +249,7 @@ describe('ListenView block order', () => {
 
   it('starts a new listener on the radio channels', async () => {
     await renderListen();
-    expect(blockIds().slice(0, 2)).toEqual(['radio', 'tahti-radio']);
+    expect(blockIds().slice(0, 2)).toEqual(['radio', 'selects']);
   });
 
   it('starts a signed-in listener with no history on the radio channels', async () => {
@@ -260,10 +260,12 @@ describe('ListenView block order', () => {
     expect(blockIds()[0]).toBe('radio');
   });
 
-  it('leads with Tahti Radio and Recently played once they have listened', async () => {
+  it('leads with Recently played once they have listened', async () => {
     returningListener();
     await renderListen();
-    expect(blockIds().slice(0, 2)).toEqual(['tahti-radio', 'recently-played']);
+    expect(blockIds()[0]).toBe('recently-played');
+    expect(blockIds()).not.toContain('tahti-radio');
+    expect(blockIds()).not.toContain('news');
     const paired = within(screen.getByTestId('listen-history-selects'));
     expect(
       paired.getByRole('heading', { name: 'Recently played' }),
@@ -277,7 +279,7 @@ describe('ListenView block order', () => {
   it('puts a widget added from the store above every section', async () => {
     returningListener();
     await renderListen();
-    expect(blockIds()[0]).toBe('tahti-radio');
+    expect(blockIds()[0]).toBe('recently-played');
 
     act(() => {
       useListenerWidgetsStore.getState().addSavedBrowserStation({
@@ -288,41 +290,34 @@ describe('ListenView block order', () => {
     });
 
     expect(blockIds()[0]).toBe(BROWSER_STATIONS_BLOCK_ID);
-    expect(blockIds()[1]).toBe('tahti-radio');
+    expect(blockIds()[1]).toBe('recently-played');
   });
 
   it('shows drag handles only while the Order toggle is on', async () => {
     await renderListen();
-    expect(
-      screen.queryByRole('button', { name: 'Move Tahti Radio' }),
-    ).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Move Radio' })).toBeNull();
 
     const toggle = screen.getByRole('button', { name: 'Order sections' });
     fireEvent.click(toggle);
 
     expect(toggle.getAttribute('aria-pressed')).toBe('true');
-    expect(
-      screen.getByRole('button', { name: 'Move Tahti Radio' }),
-    ).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Move Radio' })).toBeTruthy();
 
     fireEvent.click(toggle);
-    expect(
-      screen.queryByRole('button', { name: 'Move Tahti Radio' }),
-    ).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Move Radio' })).toBeNull();
   });
 
   it('follows the stored order and keeps unknown sections by their neighbours', async () => {
     returningListener();
-    useListenerWidgetsStore.setState({ listenOrder: ['radio', 'tahti-radio'] });
+    useListenerWidgetsStore.setState({
+      listenOrder: ['radio', 'recently-played'],
+    });
     await renderListen();
     const ids = blockIds();
     expect(ids[0]).toBe('radio');
-    expect(ids[1]).toBe('news');
-    expect(ids.indexOf('tahti-radio')).toBeLessThan(
-      ids.indexOf('recently-played'),
-    );
+    expect(ids[1]).toBe('disco-widgets');
     expect(ids.indexOf('new-tracks')).toBeGreaterThan(
-      ids.indexOf('tahti-radio'),
+      ids.indexOf('recently-played'),
     );
   });
 });

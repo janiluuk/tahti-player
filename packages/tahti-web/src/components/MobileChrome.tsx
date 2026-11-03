@@ -85,19 +85,20 @@ export function MobileBottomNav({
         const active = mobileActive === item.id;
         if (item.id === 'studio' && signedOut) {
           return (
-            <button
+            <Button
               key={item.id}
-              type="button"
+              variant="plain"
+              size="flexible"
               aria-disabled="true"
               aria-label="Studio"
               onClick={(event) => {
                 event.preventDefault();
               }}
-              className="text-foreground-secondary flex min-w-0 flex-1 cursor-not-allowed flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide"
+              className="text-foreground-secondary min-w-0 flex-1 cursor-not-allowed flex-col justify-center gap-0.5 px-1 py-1.5 text-[10px] tracking-wide whitespace-normal active:scale-100"
             >
               <Icon size={18} strokeWidth={2} />
               <span className="truncate">{item.label}</span>
-            </button>
+            </Button>
           );
         }
         return (

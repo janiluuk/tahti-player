@@ -53,14 +53,9 @@ test('Messages has one compose field and one Message action', async ({
   await page.goto('/messages');
   const main = page.getByRole('main');
   await expect(main.getByLabel('Find or message @')).toBeVisible();
-  await expect(main.getByRole('button', { name: 'Message' })).toBeVisible();
+  await expect(
+    main.getByRole('button', { name: 'Message', exact: true }),
+  ).toBeVisible();
   await expect(main.getByRole('button', { name: 'Start' })).toHaveCount(0);
   await expect(main.getByRole('button', { name: 'Search' })).toHaveCount(0);
-});
-
-test('channel not found is an h1', async ({ page }) => {
-  await page.goto('/channel/no-such-channel-xyz');
-  await expect(
-    page.getByRole('heading', { level: 1, name: /not found/i }),
-  ).toBeVisible();
 });

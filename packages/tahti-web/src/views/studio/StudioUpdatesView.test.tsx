@@ -206,7 +206,9 @@ describe('StudioUpdatesView posts', () => {
     );
 
     await act(async () =>
-      fireEvent.click(screen.getAllByRole('button', { name: 'Edit post' })[0]!),
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Edit Post scheduled' }),
+      ),
     );
     expect(screen.getByText('Edit post')).toBeInTheDocument();
     expect(screen.getByLabelText('Title (optional)')).toHaveValue(

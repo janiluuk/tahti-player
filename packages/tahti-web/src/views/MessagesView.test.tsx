@@ -257,6 +257,10 @@ describe('MessagesView older messages', () => {
     const start = vi
       .spyOn(api, 'startConversation')
       .mockResolvedValue({ ok: true, conversationId: 'c1' });
+    vi.spyOn(api, 'searchUsers').mockResolvedValue({
+      data: [{ username: 'aino' }],
+      meta: { source: 'api' },
+    } as Awaited<ReturnType<typeof api.searchUsers>>);
     await renderView(conversation());
     const input = screen.getByPlaceholderText('username');
     fireEvent.change(input, { target: { value: ' aino ' } });
@@ -266,7 +270,7 @@ describe('MessagesView older messages', () => {
     expect(start).toHaveBeenCalledWith('aino');
   });
 
-  it('says so when Search finds no account', async () => {
+  it('says so when Message finds no account', async () => {
     vi.spyOn(api, 'searchUsers').mockResolvedValue({
       data: [],
       meta: { source: 'api' },
@@ -276,7 +280,7 @@ describe('MessagesView older messages', () => {
       target: { value: 'nobody' },
     });
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Search' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Message' }));
     });
     expect(screen.getByRole('status').textContent).toBe(
       'No account found for "nobody".',

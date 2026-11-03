@@ -8,7 +8,7 @@ function saveDataEnabled(): boolean {
 let channelChunkPrefetched = false;
 let radioStationChunkPrefetched = false;
 
-export function prefetchChannelViewChunk(): void {
+function prefetchChannelViewChunk(): void {
   if (typeof navigator !== 'undefined' && saveDataEnabled()) {
     return;
   }
@@ -19,7 +19,7 @@ export function prefetchChannelViewChunk(): void {
   void import('../views/ChannelView');
 }
 
-export function prefetchRadioStationViewChunk(): void {
+function prefetchRadioStationViewChunk(): void {
   if (typeof navigator !== 'undefined' && saveDataEnabled()) {
     return;
   }

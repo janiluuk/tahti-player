@@ -7,8 +7,7 @@ export type ReleaseVisualizerPreference = {
   preset: Exclude<VisualPreset, 'MINIMAL'>;
 };
 
-export const RELEASE_VISUALIZER_STORAGE_KEY =
-  'tahti-release-visualizer-default';
+const RELEASE_VISUALIZER_STORAGE_KEY = 'tahti-release-visualizer-default';
 
 const DEFAULT_PREFERENCE: ReleaseVisualizerPreference = {
   mode: 'specific',

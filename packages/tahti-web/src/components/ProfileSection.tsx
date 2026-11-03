@@ -17,7 +17,8 @@ type ProfileSectionProps = Omit<ComponentProps<'section'>, 'title'> & {
   children?: ReactNode;
 };
 
-/** One section of an artist or channel profile: the shared heading plus the
+/** One section of an artist or channel profile: the shared heading (in the
+ * page's own text color, so it reads on the artist's colors) plus the
  * loading, error and empty states, so both pages stack the same way. The
  * empty state shows only when `empty` is set; sections that hide when empty
  * leave it out. */
@@ -40,7 +41,9 @@ export function ProfileSection({
       className={cn('flex min-w-0 flex-col', className)}
       {...props}
     >
-      {title ? <SectionTitle id={headingId} title={title} /> : null}
+      {title ? (
+        <SectionTitle id={headingId} title={title} tone="inherit" />
+      ) : null}
       {status === 'loading' ? (
         <PageLoading label={loadingLabel} />
       ) : status === 'error' ? (

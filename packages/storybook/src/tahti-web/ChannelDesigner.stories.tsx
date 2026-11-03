@@ -311,7 +311,9 @@ export const FullSavedLooks: Story = {
       expect(canvas.getByRole('button', { name: 'Ember dusk' })).toBeVisible(),
     );
 
-    await userEvent.click(canvas.getByRole('button', { name: 'More options' }));
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'More channel design options' }),
+    );
     await userEvent.click(
       await body.findByRole('button', { name: 'Save preset' }),
     );
@@ -357,7 +359,9 @@ export const FullSavedLooks: Story = {
       expect(canvas.queryByRole('button', { name: 'Violet hour' })).toBeNull(),
     );
 
-    await userEvent.click(canvas.getByRole('button', { name: 'More options' }));
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'More channel design options' }),
+    );
     await userEvent.click(await body.findByRole('button', { name: 'Reset' }));
     const resetDialog = await findDialog(
       canvasElement,

@@ -2,7 +2,7 @@ import type { StudioShowBooking } from '../api/shows';
 
 /** Days shown per page of the weekly schedule grid (prod's tahti-radio-slots
  * calendar shows the same span, one week at a time). */
-export const SCHEDULE_DAYS_VISIBLE = 7;
+const SCHEDULE_DAYS_VISIBLE = 7;
 
 /** Full 24-hour row set for the grid — bookings are always hour-aligned. */
 export const SCHEDULE_HOURS: readonly number[] = Array.from(
@@ -35,7 +35,7 @@ export function atHour(day: Date, hour: number): Date {
   return copy;
 }
 
-export function isSameLocalDay(a: Date, b: Date): boolean {
+function isSameLocalDay(a: Date, b: Date): boolean {
   return a.toDateString() === b.toDateString();
 }
 
@@ -86,7 +86,7 @@ export function filterBookingsForStation(
   );
 }
 
-export function bookingGridKey(day: Date, hour: number): string {
+function bookingGridKey(day: Date, hour: number): string {
   return `${day.toDateString()}-${hour}`;
 }
 

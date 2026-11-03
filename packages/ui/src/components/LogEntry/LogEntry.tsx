@@ -147,6 +147,7 @@ const LogEntryImpl: FC<LogEntryProps> = ({
           levelBadgeVariants({ level: entry.level }),
           'cursor-pointer hover:opacity-80',
         )}
+        aria-label={`Filter by ${entry.level.toUpperCase()}`}
         onClick={() => onLevelClick(entry.level)}
       >
         {entry.level.toUpperCase()}
@@ -160,6 +161,7 @@ const LogEntryImpl: FC<LogEntryProps> = ({
               sourceChipVariants({ type: entry.source.type }),
               'cursor-pointer hover:opacity-80',
             )}
+            aria-label={`Filter by ${displayLabel}`}
             onClick={() => onScopeClick(entry.source.scope)}
           >
             {displayLabel}

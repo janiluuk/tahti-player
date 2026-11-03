@@ -5,8 +5,6 @@ import {
   CodeIcon,
   DownloadIcon,
   FlagIcon,
-  MessageCircle,
-  Mic,
   MoreHorizontalIcon,
   RadioTowerIcon,
   RssIcon,
@@ -27,7 +25,7 @@ import {
 import type { DiscoWidgetRenderItem } from '../../api/disco-widgets';
 import type { PublicMention } from '../../api/mentions';
 import type { PublicRadioShow } from '../../api/shows';
-import { patchMeProfile, type ArtistPost } from '../../api/studio-extras';
+import { patchMeProfile } from '../../api/studio-extras';
 import type { PublicProfile } from '../../api/types';
 import {
   publicPressKitUrl,
@@ -37,7 +35,6 @@ import { safeCreditName } from '../../lib/displayName';
 import { DiscoWidgetsSection } from '../disco-widgets/DiscoWidgetsSection';
 import { EmbedButton } from '../EmbedButton';
 import { NewsletterSubscribeToggle } from '../NewsletterSubscribeToggle';
-import { PostLink } from '../PostLink';
 import { ReportButton } from '../ReportButton';
 import { ShowEpisodeList } from '../ShowEpisodeList';
 import { Eyebrow } from '../tahti/Eyebrow';
@@ -416,7 +413,6 @@ export function ArtistLiveShows({
           <ShowEpisodeList
             title="Upcoming"
             episodes={shows.upcomingEpisodes}
-            icon={<Mic size={16} aria-hidden />}
             channelSlug={channelSlug}
             username={username}
           />
@@ -425,7 +421,6 @@ export function ArtistLiveShows({
           <ShowEpisodeList
             title="Past recordings"
             episodes={shows.pastEpisodes}
-            icon={<MessageCircle size={16} aria-hidden />}
             channelSlug={channelSlug}
           />
         ) : null}
@@ -498,29 +493,6 @@ export function ArtistTaggedIn({
             <span className="text-foreground-secondary shrink-0 text-xs">
               {new Date(mention.createdAt).toLocaleDateString()}
             </span>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
-export function ArtistFeed({ posts }: { posts: ArtistPost[] }) {
-  return (
-    <section className="flex flex-col gap-3">
-      <Eyebrow>Feed</Eyebrow>
-      <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
-        {posts.map((post) => (
-          <li key={post.id} className="flex flex-col gap-1 p-3">
-            {post.title ? (
-              <p className="text-sm font-semibold">{post.title}</p>
-            ) : null}
-            <p className="text-foreground-secondary text-sm">{post.body}</p>
-            <PostLink
-              linkUrl={post.linkUrl}
-              linkLabel={post.linkLabel}
-              className="self-start text-sm"
-            />
           </li>
         ))}
       </ul>

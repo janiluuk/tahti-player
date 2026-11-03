@@ -3,7 +3,7 @@
  * tahti-org/ops/monitoring/vimage6/README.md.
  */
 
-export const GRAFANA_BASE_URL =
+const GRAFANA_BASE_URL =
   import.meta.env.VITE_GRAFANA_URL?.replace(/\/$/, '') ||
   'https://grafana.tahti.live';
 
@@ -159,12 +159,5 @@ export function grafanaExploreLogsUrl(serviceFilter?: string): string {
   return withQuery(`${GRAFANA_BASE_URL}/explore`, {
     orgId: '1',
     left: JSON.stringify(left),
-  });
-}
-
-export function adminLogsHref(service?: string): string {
-  return withQuery('/admin/logs', {
-    tab: 'containers',
-    ...(service ? { service } : {}),
   });
 }

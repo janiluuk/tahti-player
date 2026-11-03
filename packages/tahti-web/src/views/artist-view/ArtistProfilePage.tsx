@@ -32,7 +32,6 @@ import {
   AlbumPlayPromptDialog,
   ArtistBioSection,
   ArtistEmbeds,
-  ArtistFeed,
   ArtistFollowButton,
   ArtistHeaderActions,
   ArtistLiveShows,
@@ -56,6 +55,7 @@ import {
   ArtistGalleryAddIcon,
   ArtistGalleryPanel,
 } from '../../components/ArtistGalleryPanel';
+import { ArtistStoryFeed } from '../../components/ArtistStoryFeed';
 import { ChannelDesigner } from '../../components/ChannelDesigner';
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
 import { type EntitySocialStat } from '../../components/EntitySocialHeader';
@@ -547,7 +547,14 @@ export function ArtistProfilePage({ username }: { username: string }) {
       ) : null}
 
       {lookVisibility.feed && channelPosts.length > 0 ? (
-        <ArtistFeed posts={channelPosts} />
+        <ArtistStoryFeed
+          posts={channelPosts}
+          author={{
+            username: artist.username,
+            displayName: artist.displayName,
+            avatarUrl: artist.avatarUrl ?? null,
+          }}
+        />
       ) : null}
 
       {lookVisibility.news ? (

@@ -1,4 +1,5 @@
 import {
+  Check,
   CircleHelpIcon,
   Download,
   LayoutGrid,
@@ -108,6 +109,9 @@ export function ThemesPanel() {
   const ambientIntensity = useAmbientStore((s) => s.intensity);
 
   const customEntries = Object.entries(customThemes);
+  const activeThemeName =
+    themes.find((theme) => theme.id === themeId)?.name ??
+    customThemes[themeId]?.name;
   const dynamicEnabled = colorMode === 'dynamic';
 
   const exportTheme = (id: string, theme: (typeof customThemes)[string]) => {
@@ -177,6 +181,25 @@ export function ThemesPanel() {
             icon: <LayoutGrid size={14} />,
             content: (
               <div className="flex flex-col gap-3">
+                {/* Pinned above the lists so the current choice is visible
+                    without scrolling past the built-in and imported themes. */}
+                {activeThemeName ? (
+                  <p
+                    role="status"
+                    data-testid="themes-current"
+                    className="text-foreground flex items-center gap-2 text-sm"
+                  >
+                    <Check
+                      size={16}
+                      className="text-primary-strong"
+                      aria-hidden
+                    />
+                    <span>
+                      Current theme:{' '}
+                      <span className="font-semibold">{activeThemeName}</span>
+                    </span>
+                  </p>
+                ) : null}
                 <div className="flex flex-col gap-1.5">
                   {themes.map((theme) => {
                     const active = theme.id === themeId;

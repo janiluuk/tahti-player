@@ -17,6 +17,14 @@ const LAYOUT_GRID_SIZE = 16;
 const snapToGrid = (value: number) =>
   Math.round(value / LAYOUT_GRID_SIZE) * LAYOUT_GRID_SIZE;
 
+/** Small blocks that sit side by side on wide screens instead of taking a
+ * full row each (the page lays blocks out in a two-column grid). */
+const COMPACT_BLOCK_TYPES: ReadonlySet<ChannelPageItem['type']> = new Set([
+  'events',
+  'links',
+  'stats',
+]);
+
 type Props = {
   item: ChannelPageItem;
   editing: boolean;
@@ -92,7 +100,9 @@ export function ChannelBlockFrame({
       }}
       onPointerUp={() => setMoveDrag(null)}
       onPointerCancel={() => setMoveDrag(null)}
-      className={`group relative ${
+      className={`group relative min-w-0 ${
+        COMPACT_BLOCK_TYPES.has(item.type) ? '' : 'lg:col-span-2'
+      } ${
         editing
           ? `rounded-xl border border-dashed p-2 ${
               selected

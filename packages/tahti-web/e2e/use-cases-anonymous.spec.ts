@@ -13,7 +13,7 @@ test('anonymous: plays a track page and pauses it from the player bar', async ({
   await page.goto('/t/demo-archive-1');
   await page
     .getByRole('main')
-    .getByRole('button', { name: 'Play', exact: true })
+    .getByRole('button', { name: 'Play Midnight Broadcast', exact: true })
     .first()
     .click();
   await expect(page.getByTestId('now-playing-title')).toHaveText(
@@ -33,7 +33,9 @@ test('anonymous: reactions ask to log in; a favorite is kept on this device', as
   await expect(
     main.getByRole('button', { name: 'Log in to react' }),
   ).toBeVisible();
-  await main.getByRole('button', { name: 'Favorite', exact: true }).click();
+  await main
+    .getByRole('button', { name: 'Favorite Midnight Broadcast', exact: true })
+    .click();
   await page.goto('/library/favorites');
   await expect(
     page.getByRole('main').getByText('Midnight Broadcast').first(),
@@ -88,4 +90,23 @@ test('anonymous: opens a channel page from Live now', async ({ page }) => {
     .click();
   await expect(page).toHaveURL(/\/channel\/northern-lights$/);
   await expect(page.getByText('Something went wrong')).toHaveCount(0);
+});
+
+test('anonymous: opens a Tahti news post in its dialog', async ({ page }) => {
+  await page.goto('/news');
+  await expect(
+    page.getByRole('heading', { name: 'Platform news', level: 1 }),
+  ).toBeVisible();
+  await page
+    .getByRole('main')
+    .getByRole('button', { name: /^Tahti is open/ })
+    .click();
+  const dialog = page.getByRole('dialog');
+  await expect(
+    dialog.getByRole('heading', { name: /^Tahti is open/ }),
+  ).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(
+    page.getByRole('heading', { name: 'Platform news', level: 1 }),
+  ).toBeVisible();
 });

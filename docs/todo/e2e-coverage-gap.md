@@ -72,7 +72,7 @@ renders (route health) · ❌ nothing.
 - [x] Plays a track page and a release card from the front page without an account (`use-cases-anonymous.spec.ts`, `use-cases-mixed-4.spec.ts`).
 - [x] Reactions ask to log in; a favorite is kept on the device and shows in Library → Favorites; a channel opens from Live now (`use-cases-anonymous.spec.ts`).
 - [x] Searches and opens a track result (`use-cases-anonymous.spec.ts`).
-- [ ] Opens a community story and a Tahti news post in their dialogs. (Community story: covered in `use-cases-listener-2.spec.ts`; Tahti news is not on the front page any more.)
+- [x] Opens a community story and a Tahti news post in their dialogs (`use-cases-listener-2.spec.ts`; the news post from `/news` in `use-cases-anonymous.spec.ts`).
 - [x] Library shows Favorites and the other tabs disabled "needs an account" (`roles-anonymous-listener.spec.ts`).
 - [x] Admin, `/messages` and Studio ask to sign in (`roles-anonymous-listener.spec.ts`, `use-cases-anonymous.spec.ts`).
 - [x] Reset password needs an email before it sends (`use-cases-anonymous.spec.ts`).
@@ -95,7 +95,7 @@ renders (route health) · ❌ nothing.
 ### Artist
 
 - [x] Uploads a track end to end and lands on its page (`use-cases-artist-3.spec.ts`).
-- [ ] Creates a release, adds tracks and artwork, publishes; smart link page shows it. (Creating one: `use-cases-artist-3`; publishing a draft and opening its smart link: `use-cases-artist-5`; adding tracks and artwork left.)
+- [ ] Creates a release, adds tracks and artwork, publishes; smart link page shows it. (Creating one: `use-cases-artist-3`; publishing a draft, opening its smart link and setting a preset cover: `use-cases-artist-5`; adding tracks from the release page is not possible: tracks are added from the track editor.)
 - [ ] Broadcast hub: agenda chips filter; Go live flow reaches the green room; schedules a show and an event; schedules and cancels a listening party. (Chips filter, Go live opens and links back, an event is added, a listening party is scheduled and cancelled (`use-cases-artist-5.spec.ts`): covered.)
 - [ ] Fans hub: writes and schedules a post; sends a newsletter; creates a membership tier; adds a store item; Earnings shows orders. (Publishes and schedules a post, saves a newsletter draft, creates a membership tier and a store price, toggles the Store: covered; Earnings lists a track purchase and a fan subscription (`listener-purchase-flow`, `fan-sub-and-track-purchase`). Sends a newsletter (`use-cases-artist-5.spec.ts`).)
 - [x] Profile hub cards open Settings panels and the Story saves (`roles-artist-admin-hubs.spec.ts`, `use-cases-artist-*.spec.ts`).

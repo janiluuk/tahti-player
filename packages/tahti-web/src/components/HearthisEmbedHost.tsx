@@ -37,7 +37,9 @@ export function HearthisEmbedHostProvider({
   );
 }
 
-/** Register before paint so ConnectedPlayerBar never mounts a bottom fallback. */
+/** Register before paint so ConnectedPlayerBar never mounts a bottom fallback.
+ * A claim covers whichever embed is current: track rows only claim for
+ * hearthis.at, the channel stage claims for any provider. */
 export function useHearthisEmbedClaim(active: boolean) {
   const ctx = useContext(HearthisEmbedHostContext);
   const claim = ctx?.claim;

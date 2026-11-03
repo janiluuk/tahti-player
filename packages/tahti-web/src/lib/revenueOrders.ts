@@ -1,7 +1,7 @@
 import type { FanSubPayout } from '../api/revenue';
 import type { RevelatorRoyaltyReportRow } from '../api/studio-types';
 
-export const REVENUE_ORDER_ROW_LIMIT = 12;
+const REVENUE_ORDER_ROW_LIMIT = 12;
 
 export type RevenueOrderRow = {
   id: string;

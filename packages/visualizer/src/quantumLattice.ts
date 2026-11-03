@@ -554,7 +554,7 @@ export class QuantumLatticeEngine {
   private upVector = new THREE.Vector3(0, 1, 0);
   private idealTargetVector = new THREE.Vector3();
 
-  private clock = new THREE.Clock();
+  private timer = new THREE.Timer();
   private prevTime = 0;
   private rafId = 0;
   private disposed = false;
@@ -1232,7 +1232,8 @@ export class QuantumLatticeEngine {
       return;
     }
 
-    const time = this.clock.getElapsedTime();
+    this.timer.update();
+    const time = this.timer.getElapsed();
     const dt = Math.min(0.1, Math.max(0.001, time - this.prevTime));
     this.prevTime = time;
 

@@ -7,7 +7,7 @@ export type StemChannel = {
 
 export type StemMix = Record<string, StemChannel>;
 
-export const DEFAULT_STEM_CHANNEL: StemChannel = {
+const DEFAULT_STEM_CHANNEL: StemChannel = {
   muted: false,
   solo: false,
   level: 1,

@@ -64,6 +64,7 @@ import {
 } from '../components/discover/widgetMeta';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { LatestNewsWidget } from '../components/LatestNewsWidget';
+import { HomeNews } from '../components/listen-view/HomeNews';
 import { PageError } from '../components/PageStates';
 import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { VenuesDirectory } from '../components/VenuesDirectory';
@@ -447,6 +448,8 @@ export function DiscoverView() {
             onRemove={() => removeWidget('community-stories')}
           />
         ) : null}
+
+        {activeTab === 'discover' ? <HomeNews /> : null}
 
         {activeTab === 'discover' ? (
           <div className="flex flex-col gap-3">

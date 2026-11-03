@@ -49,7 +49,7 @@ const renderCard = () =>
   );
 
 const openPanel = async () => {
-  const buttons = await screen.findAllByRole('button', { name: 'Configure' });
+  const buttons = await screen.findAllByRole('button', { name: /^Configure/ });
   fireEvent.click(buttons[buttons.length - 1]!); // the gear beside the card
 };
 
@@ -67,7 +67,7 @@ describe('SpotifyCard', () => {
     renderCard();
     // The card's own primary button (not the gear) is "Configure" here.
     fireEvent.click(
-      (await screen.findAllByRole('button', { name: 'Configure' }))[0]!,
+      (await screen.findAllByRole('button', { name: /^Configure/ }))[0]!,
     );
     expect(await screen.findByText('Configure Spotify')).toBeTruthy();
     expect(screen.queryByText('Choose Spotify content')).toBeNull();

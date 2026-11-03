@@ -12,7 +12,7 @@ import type { ListenSectionStatus } from './useListenSections';
 
 const LABELS = { nothingFound: 'No news yet.' };
 
-/** The latest Tahti news posts on the front page, linking to /news. */
+/** The latest Tahti news posts on Discover, linking to /news. */
 export function HomeNews({ limit = 3 }: { limit?: number }) {
   const [selected, setSelected] = useState<Announcement | null>(null);
   const [posts, setPosts] = useState<Announcement[]>([]);
@@ -51,7 +51,7 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
 
   return (
     <ListenSection
-      data-testid="listen-news"
+      data-testid="home-news"
       title="From Tahti"
       badge="News"
       badgeColor="yellow"
@@ -73,7 +73,7 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
           }}
         />
       ) : null}
-      <div className="flex flex-col gap-2" data-testid="listen-news">
+      <div className="flex flex-col gap-2" data-testid="home-news">
         <NewsWidget
           title="From Tahti"
           badge="News"

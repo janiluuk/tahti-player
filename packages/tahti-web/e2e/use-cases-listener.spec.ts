@@ -33,7 +33,7 @@ test('listener: likes a track and finds it in Favorites', async ({ page }) => {
   await open(page, '/t/demo-archive-2');
   await page
     .getByRole('main')
-    .getByRole('button', { name: 'Favorite', exact: true })
+    .getByRole('button', { name: 'Favorite Archive Session 02', exact: true })
     .click();
   await open(page, '/library/favorites');
   await expect(
@@ -73,7 +73,7 @@ test('listener: a played track shows up in Library → History', async ({
   await open(page, '/t/demo-archive-3');
   await page
     .getByRole('main')
-    .getByRole('button', { name: 'Play', exact: true })
+    .getByRole('button', { name: 'Play Late Session', exact: true })
     .first()
     .click();
   await expect(page.getByTestId('now-playing-title')).toHaveText(

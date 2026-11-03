@@ -1,5 +1,5 @@
 /** MIME types accepted by `/api/me/media` prepare + complete. */
-export const IMAGE_UPLOAD_CONTENT_TYPES = [
+const IMAGE_UPLOAD_CONTENT_TYPES = [
   'image/jpeg',
   'image/png',
   'image/webp',
