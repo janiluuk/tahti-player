@@ -156,6 +156,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Player/ConnectedSettingsModal` | `tahti-web/ConnectedSettingsModal.stories.tsx` |
 | `Tahti/Layout/ConnectedStatusBar` | `tahti-web/ConnectedStatusBar.stories.tsx` |
 | `Tahti/Admin/ContentReportsTab` | `tahti-web/ContentReportsTab.stories.tsx` |
+| `Tahti/Components/Controls and notices` | `tahti-web/ControlsAndNotices.stories.tsx` |
 | `Tahti/Studio/CoverArtGenerator` | `tahti-web/CoverArtGenerator.stories.tsx` |
 | `Tahti/Media/CoverArtPickerDialog` | `tahti-web/CoverArtPickerDialog.stories.tsx` |
 | `Tahti/Studio/Distribution/CreditsEditor` | `tahti-web/CreditsEditor.stories.tsx` |
@@ -225,6 +226,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Community/MentionTextarea` | `tahti-web/MentionTextarea.stories.tsx` |
 | `Tahti/Widgets/MermaidDiagram` | `tahti-web/MermaidDiagram.stories.tsx` |
 | `Tahti/Social/MessagesView` | `tahti-web/MessagesView.stories.tsx` |
+| `Tahti/Components/Messaging pieces` | `tahti-web/MessagingPieces.stories.tsx` |
 | `Tahti/Studio/CollectionEdit/MikseriImportPanel` | `tahti-web/MikseriImportPanel.stories.tsx` |
 | `Tahti/Desktop/MixableTracksSection` | `tahti-web/MixableTracksSection.stories.tsx` |
 | `Tahti/Chrome/MobileChrome` | `tahti-web/MobileChrome.stories.tsx` |
@@ -235,6 +237,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/MultitrackTimeline` | `tahti-web/MultitrackTimeline.stories.tsx` |
 | `Tahti/Misc/MySupportTickets` | `tahti-web/MySupportTickets.stories.tsx` |
 | `Tahti/Discover/MyVenuesView` | `tahti-web/MyVenuesView.stories.tsx` |
+| `Tahti/Components/Navigation pieces` | `tahti-web/NavigationPieces.stories.tsx` |
 | `Tahti/Studio/Updates/NewDraftDialog` | `tahti-web/NewDraftDialog.stories.tsx` |
 | `Tahti/Widgets/NewsFeedSuggestions` | `tahti-web/NewsFeedSuggestions.stories.tsx` |
 | `Tahti/Widgets/NewsFeedWidget` | `tahti-web/NewsFeedWidget.stories.tsx` |
