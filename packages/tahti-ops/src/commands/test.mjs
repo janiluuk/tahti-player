@@ -15,6 +15,18 @@ const GROUPS = {
     summary: 'desktop player tests',
     args: ['--filter', '@tahti-player/player', 'test'],
   },
+  cli: {
+    summary: 'tahti product CLI tests',
+    args: ['--filter', '@tahti-player/tahti-cli', 'test'],
+  },
+  ops: {
+    summary: 'tahti-ops maintainer CLI tests',
+    args: ['--filter', '@tahti-player/tahti-ops', 'test'],
+  },
+  visualizer: {
+    summary: 'visualizer package tests',
+    args: ['--filter', '@tahti-player/visualizer', 'test'],
+  },
   storybook: {
     summary: 'Storybook play tests in headless Chromium',
     args: ['--filter', '@tahti-player/storybook', 'test'],

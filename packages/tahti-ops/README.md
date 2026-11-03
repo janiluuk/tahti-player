@@ -22,7 +22,7 @@ pnpm tahti-ops desktop android    # debug build on a device/emulator (JDK 17+, A
 
 # tests
 pnpm tahti-ops test               # every package                (= pnpm test:all)
-pnpm tahti-ops test web ui        # chosen groups: web ui player storybook types lint all
+pnpm tahti-ops test web ui        # chosen groups: web ui player cli ops visualizer storybook types lint all
 pnpm tahti-ops test web -- src/views/ListenView.test.tsx
 
 # e2e

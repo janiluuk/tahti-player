@@ -73,6 +73,16 @@ describe('shortcut commands', () => {
     ).rejects.toThrow(/Not a branch name/);
   });
 
+  it('runs the cli, ops and visualizer test groups', async () => {
+    expect(await main(['test', 'cli', 'ops', 'visualizer', '--dry-run'])).toBe(
+      0,
+    );
+    const text = output();
+    expect(text).toContain('pnpm --filter @tahti-player/tahti-cli test');
+    expect(text).toContain('pnpm --filter @tahti-player/tahti-ops test');
+    expect(text).toContain('pnpm --filter @tahti-player/visualizer test');
+  });
+
   it('rejects an unknown desktop mode', async () => {
     await expect(main(['desktop', 'nope'])).rejects.toThrow(
       /Unknown desktop mode/,
