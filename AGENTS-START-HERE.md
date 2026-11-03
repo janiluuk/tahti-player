@@ -61,7 +61,7 @@ Status values: `open` | `blocked` | `partial` | (file deleted when done — neve
 | `CUTOVER.md` | Cutover outcome (done) + open host/build items |
 | `GAP-MAPPING.md` | Legacy-URL / flow regression ledger (Next `apps/web` removed 2026-10-28) |
 | `UI-REDESIGN-WORKLOG.md` | Chronological ship diary (append only) |
-| `docs/DECISIONS.md` | Settled design forks |
+| `docs/DECISIONS.md` | Settled design forks (org/API/money: `../tahti-org/docs/DECISIONS.md`) |
 | `docs/VIEW-CATALOG.md` | View index with Storybook coverage and unification candidates |
 | `docs/ARCHITECTURE.md` | System overview: repos, infra, diagram |
 | `docs/DATA-FLOW.md` | Same system, traced through 3 concrete request flows |

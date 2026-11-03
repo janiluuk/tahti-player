@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Button, StoryCard, StoryRow } from '@tahti-player/ui';
+import { StoryCard, StoryRow } from '@tahti-player/ui';
 
 import {
   fetchCommunityStories,
@@ -76,16 +76,7 @@ export function CommunityStoriesWidget() {
             imageSrc={story.imageUrl}
             kind={POST_ACTIVITY_LABELS[story.category] ?? 'shared a story'}
             date={storyDate(story.publishAt)}
-            title={
-              <Button
-                variant="text"
-                size="flexible"
-                className="h-auto p-0 text-left text-lg leading-snug font-bold whitespace-normal hover:bg-transparent hover:underline active:scale-100"
-                onClick={() => setOpenId(story.id)}
-              >
-                {story.title ?? story.excerpt}
-              </Button>
-            }
+            title={story.title ?? story.excerpt}
             onOpen={() => setOpenId(story.id)}
             openLabel={`Read ${story.title ?? 'story'}`}
             excerpt={story.title ? story.excerpt : undefined}

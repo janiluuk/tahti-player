@@ -107,7 +107,7 @@ describe('CommunityStoriesWidget', () => {
     render(<CommunityStoriesWidget />);
     fireEvent.click(
       await screen.findByRole('button', {
-        name: 'Hi, I make the flutes you hear here',
+        name: 'Read Hi, I make the flutes you hear here',
       }),
     );
     const dialog = await screen.findByTestId('community-story');
