@@ -594,7 +594,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         to="/channel/$slug"
         params={{ slug: channelSlug }}
         onClick={() => useSettingsModalStore.getState().close()}
-        className="text-primary-strong text-sm font-semibold underline-offset-2 hover:underline"
+        className="text-primary-strong inline-flex min-h-6 items-center text-sm font-semibold underline-offset-2 hover:underline"
       >
         Open my channel →
       </Link>
@@ -603,7 +603,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         to="/u/$username"
         params={{ username }}
         onClick={() => useSettingsModalStore.getState().close()}
-        className="text-primary-strong text-sm font-semibold underline-offset-2 hover:underline"
+        className="text-primary-strong inline-flex min-h-6 items-center text-sm font-semibold underline-offset-2 hover:underline"
       >
         Open my channel →
       </Link>

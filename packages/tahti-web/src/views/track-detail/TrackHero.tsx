@@ -336,12 +336,10 @@ export function TrackHero({ page }: { page: TrackPage }) {
               <span>{formatReleasedOn(detail.releasedAt)}</span>
             ) : null}
             {detail?.playCount != null ? (
-              <span
-                className="inline-flex items-center gap-1"
-                aria-label={`${detail.playCount} plays`}
-              >
+              <span className="inline-flex items-center gap-1">
                 <CirclePlayIcon size={13} aria-hidden />
                 <span aria-hidden>{detail.playCount.toLocaleString()}</span>
+                <span className="sr-only">{`${detail.playCount} plays`}</span>
               </span>
             ) : null}
             <span className="inline-flex items-center gap-1">
