@@ -65,6 +65,7 @@ describe('shortcut commands', () => {
     expect(text).toContain('git fetch origin feat/x');
     expect(text).toContain('origin/feat/x');
     expect(text).not.toContain('launch desktop app');
+    expect(text).toMatch(/Built .*release\/tahti-player/);
   });
 
   it('rejects a --ref that is not a branch name', async () => {
