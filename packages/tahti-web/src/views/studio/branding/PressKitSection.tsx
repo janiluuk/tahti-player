@@ -12,6 +12,7 @@ import {
 } from '@tahti-player/ui';
 
 import {
+  MAX_PRESS_KIT_IMAGES,
   MAX_PRESS_KIT_SELECTED_IMAGES,
   updatePressKitImage,
 } from '../../../api/artist-settings';
@@ -104,7 +105,7 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
           disabled={busy}
           labels={{
             title: 'Drop press-kit photos here',
-            description: 'JPEG, PNG, or WebP · up to 30 photos',
+            description: `JPEG, PNG, or WebP · up to ${MAX_PRESS_KIT_IMAGES} photos`,
             browse: 'Choose photos',
             selected: 'Ready to upload',
           }}
@@ -118,17 +119,12 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
             Your press kit is empty. Add a bio and at least one photo to enable
             the download.
           </p>
-        ) : null}
-      </StudioPanel>
-      <StudioPanel
-        title="Press kit images"
-        description={`${pressImages.length} of ${MAX_PRESS_KIT_SELECTED_IMAGES} press kit images · selecting another automatically drops the oldest selection`}
-      >
-        {images.length === 0 ? (
-          <p className="text-foreground-secondary text-sm">
-            Add images in the Gallery tab first.
-          </p>
         ) : (
+          <p className="text-foreground-secondary mt-4 mb-3 text-sm">
+            {`${pressImages.length} of ${MAX_PRESS_KIT_SELECTED_IMAGES} photos in the press kit · choosing another drops the oldest choice`}
+          </p>
+        )}
+        {images.length === 0 ? null : (
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {images.map((image) => (
               <li

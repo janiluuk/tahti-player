@@ -491,7 +491,9 @@ test('artist branding keeps the picture, gallery and press kit in Settings → A
       buffer: PRESS_PNG,
     })),
   );
-  await expect(settings.getByText(/2 of 10 press kit images/)).toBeVisible();
+  await expect(
+    settings.getByText(/2 of 10 photos in the press kit/),
+  ).toBeVisible();
   await expect(
     settings.getByRole('button', { name: 'Download ZIP' }),
   ).toBeVisible();

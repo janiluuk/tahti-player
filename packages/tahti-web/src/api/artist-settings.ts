@@ -44,6 +44,7 @@ export type {
   PressKitImageItem,
 } from './artist-settings/press-kit-images';
 export {
+  MAX_PRESS_KIT_IMAGES,
   MAX_PRESS_KIT_SELECTED_IMAGES,
   fetchPublicPressKitImages,
   fetchMyPressKitImages,
