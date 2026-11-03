@@ -67,10 +67,21 @@ pnpm install
 
 pnpm dev:tahti                     # web app at http://localhost:5180
 VITE_FORCE_MOCK=1 pnpm dev:tahti   # offline demo: sign in as demo@tahti.live (artist) or listener@tahti.live, any password
-pnpm dev                           # desktop app
+pnpm dev                           # desktop app (dev mode)
+pnpm desktop                       # compile the desktop app from this checkout and start it
+scripts/tahti-desktop              # compile the latest master and start it, from any directory
 pnpm storybook                     # component library
 
 pnpm lint && pnpm type-check && pnpm test
+```
+
+`scripts/tahti-desktop` fetches `origin/master` into its own worktree (`.desktop-build`), installs, builds a release binary and launches it, so it never touches the branch you have checked out. Link it onto your PATH once and it works from anywhere:
+
+```bash
+ln -s "$PWD/scripts/tahti-desktop" ~/.local/bin/tahti-desktop
+tahti-desktop            # latest master
+tahti-desktop run        # this checkout instead
+tahti-desktop launch     # the last build, no compile
 ```
 
 | Package | What it is |

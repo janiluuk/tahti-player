@@ -30,3 +30,4 @@ packages/tahti-web/docs/listener-shots/
 
 # Agents' per-checkout log of expensive lookups (see CLAUDE.md)
 .agent-token-log.md
+/.desktop-build/

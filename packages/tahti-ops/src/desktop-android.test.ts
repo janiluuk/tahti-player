@@ -27,7 +27,7 @@ describe('desktop android', () => {
   it('is listed in desktop help', async () => {
     expect(await main(['desktop', '--help'])).toBe(0);
     const help = String(logSpy.mock.calls[0][0]);
-    expect(help).toContain('desktop <run|launch|dev|bundle|android>');
+    expect(help).toContain('desktop <run|latest|launch|dev|bundle|android>');
     expect(help).toContain('android  ');
   });
 
