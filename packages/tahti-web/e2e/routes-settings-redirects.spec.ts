@@ -85,7 +85,7 @@ const oldStudioBookmarks: RouteVisit[] = [
 const oldStudioSettingsBookmarks: RouteVisit[] = [
   {
     path: '/studio/branding',
-    heading: 'Artist branding',
+    heading: 'Profile picture',
     url: /\/settings\/artist\?tab=branding$/,
   },
   {
