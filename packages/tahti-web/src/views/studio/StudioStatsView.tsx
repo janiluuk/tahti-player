@@ -9,6 +9,7 @@ import { HourlyDialog } from './stats/HourlyDialog';
 import { EngagementSection, KeyMetrics } from './stats/OverviewTab';
 import { PlaysTab } from './stats/PlaysTab';
 import { RangeControls } from './stats/RangeControls';
+import { ReferrerSources } from './stats/ReferrerSources';
 import { TopListsTab } from './stats/TopListsTab';
 import { useStatsData } from './stats/useStatsData';
 
@@ -52,6 +53,13 @@ export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
               >
                 <KeyMetrics state={state} active />
                 <EngagementSection state={state} active />
+                <ReferrerSources
+                  window={{
+                    range: state.range,
+                    from: state.appliedCustom?.from,
+                    to: state.appliedCustom?.to,
+                  }}
+                />
                 <DownloadGatesPanel active />
               </section>
               <section
