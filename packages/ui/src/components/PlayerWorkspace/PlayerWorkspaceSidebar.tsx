@@ -45,6 +45,7 @@ export const PlayerWorkspaceSidebar: FC<PlayerWorkspaceSidebarProps> = ({
   );
 
   const currentWidth = isCollapsed ? SIDEBAR_CONFIG.COLLAPSED_WIDTH : width;
+  const toggleLabel = `${isCollapsed ? 'Expand' : 'Collapse'} ${side} panel`;
 
   return (
     <motion.div
@@ -78,15 +79,12 @@ export const PlayerWorkspaceSidebar: FC<PlayerWorkspaceSidebarProps> = ({
           'mb-3 justify-start': !isCollapsed && side === 'right',
         })}
       >
-        <Tooltip
-          content={isCollapsed ? 'Expand panel' : 'Collapse panel'}
-          side="top"
-        >
+        <Tooltip content={toggleLabel} side="top">
           <Button
             data-testid={`sidebar-toggle-${side}`}
             variant={isCollapsed ? 'text' : 'secondary'}
             size="icon-sm"
-            aria-label={isCollapsed ? 'Expand panel' : 'Collapse panel'}
+            aria-label={toggleLabel}
             aria-pressed={!isCollapsed}
             className={cn(
               'size-7 transition-all',

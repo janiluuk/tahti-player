@@ -22,6 +22,10 @@ export async function signIn(
     if (typeof userId === 'string') {
       localStorage.setItem(`tahti-web-onboarded:${userId}`, '1');
     }
+    localStorage.setItem(
+      'tahti-web-mock-notifications-dismissed',
+      JSON.stringify(['notification-mock-sticky-policy']),
+    );
   });
 }
 

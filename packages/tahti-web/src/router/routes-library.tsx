@@ -225,31 +225,34 @@ export const historyRoute = createRoute({
   },
 });
 
-// Retired per-source connect/manage page — every source now configures
-// inline in Settings → Add-ons → Import (PluginStorePanel's OAuthServiceCard
-// and HearthisCard). These two routes stay only as redirects, since a real
-// OAuth provider callback (or an old bookmark/email link) can still land on
-// them; preserve `?status=` the same way SettingsView does for the
-// mixcloud callback (see cutoverReturns.ts).
-function redirectToImportAddOns(): never {
-  const status = new URLSearchParams(window.location.search).get('status');
+function importAddOnsRedirect(
+  search: Record<string, unknown>,
+  provider?: string,
+): never {
+  const status = typeof search.status === 'string' ? search.status : null;
   throw redirect({
     to: '/settings/$section',
     params: { section: 'plugin-store' },
-    search: { category: 'import', ...(status ? { status } : {}) },
+    search: {
+      category: 'import',
+      ...(status ? { status } : {}),
+      ...(status && provider ? { provider } : {}),
+    },
   });
 }
 
 export const sourcesRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/sources',
-  beforeLoad: redirectToImportAddOns,
+  beforeLoad: ({ search }) =>
+    importAddOnsRedirect(search as Record<string, unknown>),
 });
 
 export const sourcesTabRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/sources/$id',
-  beforeLoad: redirectToImportAddOns,
+  beforeLoad: ({ search, params }) =>
+    importAddOnsRedirect(search as Record<string, unknown>, params.id),
 });
 
 export const venuesRoute = createRoute({

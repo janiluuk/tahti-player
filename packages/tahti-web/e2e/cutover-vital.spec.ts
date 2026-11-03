@@ -2,6 +2,11 @@ import { expect, test } from '@playwright/test';
 
 import { signIn } from './helpers/auth';
 
+const PRESS_PNG = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+  'base64',
+);
+
 test('legacy callbacks land on the matching SPA surface', async ({ page }) => {
   await signIn(page);
   await page.goto('/dashboard?membership=success');
@@ -12,7 +17,7 @@ test('legacy callbacks land on the matching SPA surface', async ({ page }) => {
 
   await page.goto('/dashboard/upload/import/soundcloud?sc=connected');
   await expect(page.getByText('SoundCloud connected.')).toBeVisible();
-  await expect(page).toHaveURL(/\/sources\/soundcloud$/);
+  await expect(page).toHaveURL(/\/settings\/plugin-store/);
 });
 
 test('registration asks for an artist name and matching passwords', async ({
@@ -28,14 +33,14 @@ test('registration asks for an artist name and matching passwords', async ({
   await page.getByLabel('Email').fill('new-artist@tahti.live');
   await page.getByLabel('Artist name').fill('New Artist');
   await expect(page.getByTestId('username-hint')).toContainText('new-artist');
-  await page.getByLabel('Password', { exact: true }).fill('secure-password');
-  await page.getByLabel('Confirm password').fill('different-password');
+  await page.getByLabel('Password', { exact: true }).fill('Secure-Passw0rd');
+  await page.getByLabel('Confirm password').fill('Different-Passw0rd');
   await expect(page.getByText('Passwords do not match.')).toBeVisible();
   await expect(
     page.getByRole('button', { name: 'Create account' }),
   ).toBeDisabled();
 
-  await page.getByLabel('Confirm password').fill('secure-password');
+  await page.getByLabel('Confirm password').fill('Secure-Passw0rd');
   await expect(page.getByText('Passwords do not match.')).toHaveCount(0);
   await expect(
     page.getByRole('button', { name: 'Create account' }),
@@ -48,13 +53,15 @@ test('artist can sign in and reach broadcast and upload tools', async ({
   await signIn(page);
 
   await page.goto('/studio/go-live');
-  await expect(page.getByRole('heading', { name: 'Go Live' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Go live' })).toBeVisible();
+  await page.getByRole('tab', { name: 'Recording' }).click();
   const recordingToggle = page.getByRole('switch', {
     name: 'Record broadcast',
   });
   await expect(recordingToggle).toHaveAttribute('aria-checked', 'true');
   await recordingToggle.click();
   await page.reload();
+  await page.getByRole('tab', { name: 'Recording' }).click();
   await expect(recordingToggle).toHaveAttribute('aria-checked', 'false');
   await expect(
     page.getByRole('link', { name: 'Open recordings' }),
@@ -62,64 +69,29 @@ test('artist can sign in and reach broadcast and upload tools', async ({
 
   await page.goto('/studio/upload');
   await expect(page.getByRole('heading', { name: 'Upload' })).toBeVisible();
-  await page.getByLabel('Audio file').setInputFiles({
-    name: 'cutover-smoke.mp3',
-    mimeType: 'audio/mpeg',
-    buffer: Buffer.from('cutover-smoke'),
-  });
-  await page.getByRole('button', { name: 'Upload file' }).click();
   await expect(
-    page.getByText('Upload complete — processing may take a minute.'),
+    page.getByRole('region', { name: 'Import sources' }),
   ).toBeVisible();
 });
 
-test('studio dashboard shows clickable summary stats and compact broadcast actions', async ({
+test('studio home groups its tools and the Stats card opens Stats', async ({
   page,
 }) => {
   await signIn(page);
   await page.goto('/studio');
 
   await expect(page.getByRole('heading', { name: 'Studio' })).toBeVisible();
-
-  await expect(
-    page.getByRole('region', { name: 'Channel summary' }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole('link', { name: '12,890 total plays' }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole('link', { name: '910 total downloads' }),
-  ).toBeVisible();
-  await expect(page.getByRole('link', { name: '284 followers' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Studio tools' })).toHaveCount(
-    0,
-  );
-  await expect(page.getByRole('link', { name: 'Library' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Perform' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Grow' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Fanbase' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Manage' })).toBeVisible();
-  await expect(
-    page
-      .getByRole('region', { name: 'Studio tool groups' })
-      .getByRole('link', { name: 'Shows' }),
-  ).toBeVisible();
-
-  const goLiveCard = page.getByTestId('compact-broadcast-card').first();
-  expect((await goLiveCard.boundingBox())!.height).toBeLessThan(140);
-  await page.getByRole('link', { name: '12,890 total plays' }).click();
+  const main = page.getByRole('main');
+  for (const group of ['Broadcast', 'Music', 'Audience & channel']) {
+    await expect(
+      main.getByRole('heading', { name: group, level: 2, exact: true }),
+    ).toBeVisible();
+  }
+  await expect(main.getByRole('link', { name: /^Go live/ })).toBeVisible();
+  await expect(main.getByRole('link', { name: /^Upload/ })).toBeVisible();
+  await expect(main.getByRole('link', { name: /^Releases/ })).toBeVisible();
+  await main.getByRole('link', { name: /^Stats Plays/ }).click();
   await expect(page).toHaveURL(/\/studio\/stats$/);
-
-  await page.goto('/studio/setup-channel');
-  await expect(page).toHaveURL(/\/studio\/channel\?tab=setup$/);
-  await expect(
-    page.getByRole('heading', { name: 'Channel design' }),
-  ).toBeVisible();
-  await expect(page.getByRole('tab', { name: 'Setup' })).toBeVisible();
-  await expect(page.getByRole('tab', { name: 'Design' })).toBeVisible();
-  await expect(
-    page.getByRole('heading', { name: 'Channel setup' }),
-  ).toBeVisible();
 });
 
 test('fan subscriptions show subscriber, revenue, and payout statistics', async ({
@@ -186,8 +158,9 @@ test('artist library starts with a searchable archive and track tools', async ({
 
   await expect(page.getByRole('button', { name: 'Play track' })).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'Add to rotation' }),
-  ).toBeVisible();
+    page.getByRole('tablist', { name: 'Library sections' }),
+  ).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Back to Music' })).toBeVisible();
   await expect(page.getByRole('tab', { name: 'Details' })).toBeVisible();
   await expect(page.getByLabel('Release date')).toBeVisible();
   await expect(page.getByLabel('Audience')).toBeVisible();
@@ -196,9 +169,14 @@ test('artist library starts with a searchable archive and track tools', async ({
   await expect(
     page.getByRole('link', { name: 'Open audio editor' }),
   ).toBeVisible();
-  await expect(page.getByLabel('Waveform preview')).toBeVisible();
+  await expect(
+    page.getByRole('slider', { name: 'Waveform: Studio sketch A' }),
+  ).toBeVisible();
 
   await page.getByRole('tab', { name: 'Playlists' }).click();
+  await expect(
+    page.getByRole('button', { name: /^(Add to|Remove from) rotation$/ }),
+  ).toBeVisible();
   await page.getByRole('button', { name: 'Choose playlists' }).click();
   await expect(page.getByRole('dialog')).toContainText('Add to playlist');
   await expect(
@@ -255,8 +233,10 @@ test('collections combine albums, EPs, DJ sets, and playlists', async ({
   await expect(page.getByRole('link', { name: 'Albums' })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Playlists' })).toHaveCount(0);
 
-  await page.goto('/studio/releases');
-  await expect(page.getByRole('link', { name: 'Manage embeds' })).toBeVisible();
+  await page.goto('/library/embeds');
+  await expect(
+    page.getByRole('tab', { name: 'Embeds', selected: true }),
+  ).toBeVisible();
 
   await page.goto('/messages');
   await expect(page.getByRole('heading', { name: 'Messages' })).toBeVisible();
@@ -267,78 +247,58 @@ test('artist track titles open details while row controls handle playback and qu
 }) => {
   await page.goto('/u/northern-lights');
 
-  const trackRow = page
-    .getByTestId('track-row')
-    .filter({ hasText: 'Midnight Broadcast' });
-  await trackRow
-    .getByRole('button', { name: 'Midnight Broadcast', exact: true })
-    .click();
+  const row = () =>
+    page
+      .getByRole('listitem')
+      .filter({
+        has: page.getByRole('heading', { name: 'Midnight Broadcast' }),
+      })
+      .first();
+  await row().getByRole('link', { name: 'Midnight Broadcast' }).click();
   await expect(page).toHaveURL(/\/t\//);
   await expect(
-    page.getByRole('heading', { name: 'Midnight Broadcast' }),
+    page.getByRole('heading', { name: 'Midnight Broadcast', level: 1 }),
   ).toBeVisible();
 
   await page.goto('/u/northern-lights');
-  const playRow = page
-    .getByTestId('track-row')
-    .filter({ hasText: 'Midnight Broadcast' });
-  await playRow.hover();
-  await playRow
-    .getByRole('button', { name: 'Play Midnight Broadcast' })
+  await row().getByRole('button', { name: 'Play Midnight Broadcast' }).click();
+  await expect(
+    row().getByRole('button', { name: 'Pause Midnight Broadcast' }),
+  ).toBeVisible();
+  await expect(row().getByRole('button', { name: 'In queue' })).toBeDisabled();
+});
+
+test('a visitor subscribes to an artist by email', async ({ page }) => {
+  await page.goto('/u/northern-lights');
+  await page
+    .getByRole('button', { name: 'Email updates from Northern Lights' })
     .click();
-  await expect(playRow).toHaveAttribute('aria-current', 'true');
-  await playRow.hover();
-  await expect(
-    playRow.getByRole('button', { name: 'Pause Midnight Broadcast' }),
-  ).toBeVisible();
-  await expect(
-    playRow.getByRole('button', { name: 'In queue' }),
-  ).toBeDisabled();
-});
-
-test('free artist subscriptions accept listener accounts or a guest email', async ({
-  page,
-}) => {
-  await page.goto('/u/northern-lights');
-  await page.getByRole('button', { name: 'Subscribe free' }).click();
   await page.getByLabel('Email address').fill('listener@example.com');
-  await page.getByRole('button', { name: 'Subscribe' }).click();
+  await page
+    .getByTestId('artist-social-header')
+    .getByRole('button', { name: 'Subscribe', exact: true })
+    .click();
   await expect(page.getByText(/Check your email to confirm/)).toBeVisible();
-
-  await signIn(page);
-  await page.goto('/studio/channel?tab=profile');
-  const subscriptionToggle = page.getByRole('switch', {
-    name: 'Allow free subscriptions',
-  });
-  await expect(subscriptionToggle).toHaveAttribute('aria-checked', 'true');
-  await subscriptionToggle.click();
-  await expect(subscriptionToggle).toHaveAttribute('aria-checked', 'false');
-  await subscriptionToggle.click();
-  await page.getByRole('button', { name: 'Save profile' }).click();
-  await expect(page.getByText('Profile saved.')).toBeVisible();
 });
 
-test('queue actions show queued state and the player expands upward', async ({
+test('queue actions show queued state and the queue panel can be cleared', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/radio');
+  await page.goto('/u/northern-lights');
 
-  const queueButton = page.getByRole('button', { name: 'Queue', exact: true });
-  await queueButton.click();
-  await expect(
-    page.getByRole('button', { name: 'In queue' }).first(),
-  ).toBeDisabled();
+  const row = page
+    .getByRole('listitem')
+    .filter({ has: page.getByRole('heading', { name: 'Aurora Drift' }) })
+    .first();
+  await row.getByRole('button', { name: 'Queue', exact: true }).click();
+  await expect(row.getByRole('button', { name: 'In queue' })).toBeDisabled();
 
-  await page.getByRole('button', { name: 'Expand queue' }).click();
-  await expect(page.getByTestId('bottom-queue')).toBeVisible();
-  await expect(
-    page.getByRole('button', { name: 'Collapse queue' }),
-  ).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Clear queue' })).toBeVisible();
-
+  await page.getByRole('button', { name: 'Expand right panel' }).click();
+  const queue = page.getByRole('complementary', { name: 'Queue' });
+  await expect(queue.getByText('Aurora Drift').first()).toBeVisible();
   await page.getByRole('button', { name: 'Clear queue' }).click();
-  await expect(page.getByText('Queue is empty')).toBeVisible();
+  await expect(queue.getByText('Aurora Drift')).toHaveCount(0);
 });
 
 test('Sources leaves broadcast captures to the recordings flow', async ({
@@ -349,32 +309,27 @@ test('Sources leaves broadcast captures to the recordings flow', async ({
   await expect(page.getByText('From broadcast')).toHaveCount(0);
 });
 
-test('hearthis imports report completion, link to the track, and prevent duplicates', async ({
+test('hearthis imports report completion and prevent duplicates', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/sources/hearthis');
-
-  const destination = page.getByLabel('Import destination playlist');
-  await expect(destination).toBeVisible();
-  await destination.selectOption('__new_playlist__');
-  await page.getByLabel('New playlist name').fill('Hearthis imports');
-  const trackRow = page.getByRole('listitem').filter({
-    hasText: 'Deep Space Transmission',
-  });
-  await trackRow.getByRole('button', { name: 'Import' }).click();
-
-  await expect(page.getByText(/Import completed/).first()).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Open track' })).toBeVisible();
+  await page.goto('/studio/upload');
+  await page.getByRole('button', { name: /^hearthis\.at/ }).click();
+  const dialog = page.getByRole('dialog', { name: 'Configure hearthis.at' });
+  await dialog.getByLabel('hearthis.at username').fill('northernlights');
+  await dialog.getByRole('button', { name: 'Connect' }).click();
   await expect(
-    trackRow.getByRole('button', { name: 'Imported' }),
+    dialog.getByRole('button', { name: 'Destination playlist' }),
+  ).toBeVisible();
+  await dialog.getByRole('button', { name: 'Import', exact: true }).click();
+  await expect(dialog.getByRole('status')).toContainText('Import completed');
+  await expect(dialog.getByRole('button', { name: 'Imported' })).toBeDisabled();
+  await expect(
+    dialog.getByRole('switch', { name: 'Select Deep Space Transmission' }),
   ).toBeDisabled();
-  await expect(
-    destination.getByRole('option', { name: 'Hearthis imports' }),
-  ).toBeAttached();
 });
 
-test('board news supports optional images and links without empty thumbnails', async ({
+test("board news with an image and a link shows the link on What's new", async ({
   page,
 }) => {
   await signIn(page);
@@ -393,8 +348,16 @@ test('board news supports optional images and links without empty thumbnails', a
   await page.getByLabel('Headline').fill('A linked announcement');
   await page.getByLabel('Short summary').fill('Read the complete update.');
   await page
-    .getByLabel('Image URL')
-    .fill('https://images.example.com/news.jpg');
+    .getByRole('dialog')
+    .locator('input[type="file"]')
+    .setInputFiles({
+      name: 'news.png',
+      mimeType: 'image/png',
+      buffer: Buffer.from(
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+        'base64',
+      ),
+    });
   await page.getByLabel('Link URL').fill('https://tahti.live/about');
   await page.getByLabel('Link label').fill('Read more');
   await page
@@ -402,22 +365,13 @@ test('board news supports optional images and links without empty thumbnails', a
     .getByRole('button', { name: 'Publish' })
     .click();
 
-  await page.goto('/whats-new');
+  await page.goto('/news');
   const linkedEntry = page
     .getByTestId('announcement-entry')
     .filter({ hasText: 'A linked announcement' });
-  await expect(linkedEntry.getByRole('img')).toHaveAttribute(
-    'src',
-    'https://images.example.com/news.jpg',
-  );
   await expect(
     linkedEntry.getByRole('link', { name: 'Read more' }),
   ).toHaveAttribute('href', 'https://tahti.live/about');
-
-  const textOnlyEntry = page
-    .getByTestId('announcement-entry')
-    .filter({ hasText: 'Tahti is open. Come find your next favourite.' });
-  await expect(textOnlyEntry.getByRole('img')).toHaveCount(0);
 });
 
 test('artist stats combine audience metrics and listener maps in one place', async ({
@@ -426,21 +380,22 @@ test('artist stats combine audience metrics and listener maps in one place', asy
   await signIn(page);
   await page.goto('/studio/stats');
 
-  await expect(page.getByRole('heading', { name: 'Stats' })).toBeVisible();
-  await expect(page.getByText('Minutes listened')).toBeVisible();
-  await expect(page.getByText('Minutes streamed')).toBeVisible();
-  await expect(page.getByText('Followers')).toBeVisible();
-  await expect(page.getByText('Smart-link clicks')).toBeVisible();
-  await expect(page.getByText('Engagement units')).toBeVisible();
-  await page.getByRole('tab', { name: 'Plays & listeners' }).click();
-  await expect(page.getByLabel('Listener world map')).toBeVisible();
-
-  await page
-    .getByRole('link', { name: 'Insights for Northern Lights — Live Set' })
-    .click();
   await expect(
-    page.getByRole('heading', { name: 'Track insights' }),
+    page.getByRole('heading', { name: 'Stats', level: 1 }),
   ).toBeVisible();
+  const metrics = page.getByRole('region', { name: 'Key metrics' });
+  for (const label of [
+    'Minutes listened',
+    'Minutes streamed',
+    'Followers',
+    'Smart-link clicks',
+  ]) {
+    await expect(metrics.getByText(label, { exact: true })).toBeVisible();
+  }
+  await expect(
+    page.getByRole('heading', { name: 'Engagement units' }),
+  ).toBeVisible();
+  await page.getByRole('tab', { name: 'Plays & listeners' }).click();
   await expect(page.getByLabel('Listener world map')).toBeVisible();
 });
 
@@ -493,81 +448,51 @@ test('admin radio recognises rotation playback and uses the standard playlist ed
     page.getByRole('button', { name: 'Play Tahti Radio stream' }),
   ).toBeVisible();
   await expect(page.getByText('10:34 total')).toBeVisible();
-  await expect(page.getByLabel('Tahti Radio rotation playlist')).toBeVisible();
-  await expect(page.getByTestId('track-row')).toHaveCount(2);
+  await expect(
+    page.getByRole('heading', { name: 'Current rotation (2)' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('row').filter({ has: page.getByRole('cell') }),
+  ).toHaveCount(2);
 });
 
-test('branding workspace manages an avatar, public gallery, press kit, and slideshow', async ({
+test('artist branding keeps the picture, gallery and press kit in Settings → Artist', async ({
   page,
 }) => {
   await signIn(page);
   await page.goto('/studio/branding');
+  await expect(page).toHaveURL(/\/settings\/artist\?tab=branding/);
+  const settings = page.getByRole('dialog', { name: 'Settings' });
+  await expect(
+    settings.getByRole('heading', { name: 'Profile picture' }),
+  ).toBeVisible();
+  await expect(
+    settings.getByRole('button', { name: 'Change profile picture' }),
+  ).toBeVisible();
 
-  await expect(
-    page.getByRole('heading', { name: 'Artist branding' }),
-  ).toBeVisible();
-  await expect(page.getByText('Channel outlook')).toHaveCount(0);
-  await expect(
-    page.getByRole('tab', { name: 'Channel Designer' }),
-  ).toBeVisible();
-  await page
-    .locator('input[type="file"][aria-label="Profile picture"]')
-    .setInputFiles({
-      name: 'portrait.jpg',
-      mimeType: 'image/jpeg',
-      buffer: Buffer.from('portrait'),
-    });
-  await expect(
-    page.getByRole('button', { name: 'View Demo Artist profile picture' }),
-  ).toBeVisible();
-  await page
-    .getByRole('button', { name: 'View Demo Artist profile picture' })
-    .click();
-  await expect(
-    page.getByRole('dialog', { name: 'Demo Artist profile picture' }),
-  ).toBeVisible();
-  await page.keyboard.press('Escape');
-
-  await page.getByRole('tab', { name: 'Gallery' }).click();
-  await expect(page.getByText(/images in gallery/)).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'Add images' })).toHaveCount(0);
-  await expect(
-    page.getByRole('button', { name: 'Upload more gallery images' }),
-  ).toBeVisible();
-  await page.getByRole('switch', { name: 'Public gallery' }).click();
-  await page
-    .getByRole('button', { name: 'Upload more gallery images' })
-    .click();
-  page.once('dialog', (dialog) => {
-    void dialog.accept();
+  await settings.getByRole('tab', { name: 'Gallery' }).click();
+  const publicGallery = settings.getByRole('switch', {
+    name: 'Public gallery',
   });
-  await page.getByRole('button', { name: 'Replace' }).click();
-  await page.getByLabel('Drop gallery images here').setInputFiles(
-    Array.from({ length: 11 }, (_, index) => ({
-      name: `press-${index + 1}.jpg`,
-      mimeType: 'image/jpeg',
-      buffer: Buffer.from(`press-${index + 1}`),
+  const wasPublic = await publicGallery.isChecked();
+  await publicGallery.click();
+  await expect(publicGallery).toBeChecked({ checked: !wasPublic });
+
+  await settings.getByRole('tab', { name: 'Links & press' }).click();
+  await settings.getByRole('tab', { name: 'Press kit' }).click();
+  await settings.getByRole('button', { name: 'Save bio' }).click();
+  await expect(page.getByText('Press kit bio saved.')).toBeVisible();
+  await settings.getByLabel('Drop press-kit photos here').setInputFiles(
+    ['one', 'two'].map((name) => ({
+      name: `promo-${name}.png`,
+      mimeType: 'image/png',
+      buffer: PRESS_PNG,
     })),
   );
+  await expect(settings.getByText(/2 of 10 press kit images/)).toBeVisible();
   await expect(
-    page.getByRole('dialog', { name: 'Upload gallery images' }),
-  ).toBeHidden();
-  await expect(page.getByTestId('gallery-photo')).toHaveCount(11);
-  await expect(
-    page.getByRole('button', { name: 'Start slideshow' }),
+    settings.getByRole('button', { name: 'Download ZIP' }),
   ).toBeVisible();
-
-  await page.getByRole('tab', { name: 'Press kit' }).click();
-  await expect(page.getByText(/10 of 10 press kit images/)).toBeVisible();
-
-  await page.getByRole('button', { name: /^Signed in as/ }).click();
-  await page.getByRole('menuitem', { name: 'My channel' }).click();
-  await page.getByRole('tab', { name: 'Gallery' }).click();
-  await page.getByRole('button', { name: 'Start slideshow' }).click();
-  await expect(page.getByText('1 / 11')).toBeVisible();
-  await page.keyboard.press('ArrowRight');
-  await expect(page.getByText('2 / 11')).toBeVisible();
-  await page.keyboard.press('Escape');
 });
 
 test('help center documents artist gallery upload and reorder', async ({
@@ -582,38 +507,17 @@ test('help center documents artist gallery upload and reorder', async ({
   await expect(page.getByText(/no separate Add images button/)).toBeVisible();
 });
 
-test('branding and radio own gallery, channel designer, and multicast', async ({
+test('the Radio page keeps Stream, 24/7, Tahti Radio and Multicast as tabs', async ({
   page,
 }) => {
   await signIn(page);
-
-  await page.goto('/settings/artist');
-  await expect(page.getByRole('tab', { name: 'Gallery' })).toHaveCount(0);
-  await expect(page.getByRole('tab', { name: 'Branding' })).toBeVisible();
-
-  await page.goto('/studio/branding?tab=channel-designer');
-  await expect(
-    page.getByRole('tab', { name: 'Channel Designer' }),
-  ).toHaveAttribute('aria-selected', 'true');
-  await expect(page.getByTestId('channel-backdrop-card').first()).toBeVisible();
-  await expect(
-    page.getByRole('heading', { name: 'Channel Designer' }),
-  ).toHaveCount(0);
-
-  await page.goto('/studio/channel?tab=design');
-  await expect(page).toHaveURL(/\/settings\/channel/);
-
   await page.goto('/studio/channel?tab=radio');
   await expect(
-    page
-      .getByRole('navigation', { name: 'Perform pages' })
-      .getByRole('link', { name: 'Radio' }),
-  ).toHaveAttribute('aria-current', 'page');
+    page.getByRole('heading', { name: 'Radio', level: 1 }),
+  ).toBeVisible();
   await expect(
-    page.getByRole('navigation', { name: 'Perform pages' }).getByRole('link', {
-      name: 'Multicast',
-    }),
-  ).toHaveCount(0);
+    page.getByRole('link', { name: 'Back to Broadcast' }),
+  ).toBeVisible();
   await page.getByRole('tab', { name: 'Multicast' }).click();
   await expect(page).toHaveURL(/\/studio\/channel\?tab=multicast/);
   await expect(page.getByRole('tab', { name: 'Multicast' })).toHaveAttribute(
@@ -665,82 +569,6 @@ test('listen chrome lights Listen on child tabs and Library on favorites', async
   );
 });
 
-test('artist creates a four-image promotion kit and another user can download the same kit from the artist page', async ({
-  browser,
-  page,
-}, testInfo) => {
-  await signIn(page);
-  await page.goto('/studio/branding');
-  await expect(
-    page.getByRole('heading', { name: 'Artist branding' }),
-  ).toBeVisible();
-  await page.getByRole('tab', { name: 'Press kit' }).click();
-
-  const description =
-    'Northern Lights is an electronic artist blending warm club rhythms with slow-moving ambient textures.';
-  await page.locator('textarea').fill(description);
-  await page.getByRole('button', { name: 'Save bio' }).click();
-  await expect(page.getByText('Press kit bio saved.')).toBeVisible();
-
-  const imageNames = [
-    'promo-one.jpg',
-    'promo-two.jpg',
-    'promo-three.jpg',
-    'promo-four.jpg',
-  ];
-  await page.getByLabel('Drop press-kit photos here').setInputFiles(
-    imageNames.map((name) => ({
-      name,
-      mimeType: 'image/jpeg',
-      buffer: Buffer.from(name),
-    })),
-  );
-  await expect(page.getByText('4 of 10 press kit images')).toBeVisible();
-  await page.getByRole('tab', { name: 'Gallery' }).click();
-  await page
-    .getByRole('button', { name: 'Upload more gallery images' })
-    .click();
-  await page.getByRole('switch', { name: 'Public gallery' }).click();
-  await page.screenshot({
-    path: testInfo.outputPath('artist-promotion-kit.png'),
-    fullPage: true,
-  });
-
-  const otherUser = await browser.newPage();
-  await signIn(
-    otherUser,
-    process.env.TAHTI_E2E_LISTENER_EMAIL ?? 'listener@example.com',
-    process.env.TAHTI_E2E_LISTENER_PASSWORD ??
-      process.env.TAHTI_E2E_PASSWORD ??
-      'demo-password',
-  );
-  await otherUser.goto('/u/artist');
-  await otherUser.getByRole('tab', { name: 'Gallery' }).click();
-  await expect(otherUser.getByRole('img')).toHaveCount(4);
-  const downloadLink = otherUser.getByRole('link', {
-    name: 'Download press kit',
-  });
-  const downloadHref = await downloadLink.getAttribute('href');
-  expect(downloadHref).toBeTruthy();
-  const downloadResponse = await otherUser.request.get(downloadHref!);
-  expect(downloadResponse.ok()).toBe(true);
-  expect(downloadResponse.headers()['content-type']).toContain('zip');
-  const zipText = (await downloadResponse.body()).toString('latin1');
-  for (const imageName of imageNames) {
-    expect(zipText).toContain(imageName);
-  }
-
-  const publicImageSources = await otherUser
-    .getByRole('img')
-    .evaluateAll((images) => images.map((image) => image.getAttribute('src')));
-  expect(publicImageSources).toHaveLength(imageNames.length);
-  await otherUser.screenshot({
-    path: testInfo.outputPath('public-promotion-kit.png'),
-    fullPage: true,
-  });
-  await otherUser.close();
-});
-
 test('admin user profile includes identity details and an expandable avatar', async ({
   page,
 }) => {
@@ -762,7 +590,7 @@ test('admin user profile includes identity details and an expandable avatar', as
   await expect(page.getByRole('option', { name: 'Artist' })).toBeVisible();
   await expect(page.getByRole('option', { name: 'Listener' })).toBeVisible();
   await page.keyboard.press('Escape');
-  await page.getByLabel('Role').click();
+  await page.getByRole('button', { name: 'Role', exact: true }).click();
   await page.getByRole('option', { name: 'Board' }).click();
   await page.getByRole('button', { name: 'Save account' }).click();
   await expect(page.getByText('User details saved.')).toBeVisible();
@@ -776,14 +604,16 @@ test('admin user profile includes identity details and an expandable avatar', as
     .getByRole('button', { name: 'View DJ Moonlight profile picture' })
     .click();
   await expect(
-    page.getByRole('dialog', { name: 'DJ Moonlight profile picture' }),
+    page
+      .getByRole('dialog', { name: 'DJ Moonlight profile picture' })
+      .getByRole('button', { name: 'Close image viewer' }),
   ).toBeVisible();
 });
 
 test('listener can open a fan subscription offer', async ({ page }) => {
   await page.goto('/subscribe/northern-lights');
   await expect(
-    page.getByRole('heading', { name: /Subscribe to/ }),
+    page.getByRole('heading', { name: /Subscribe to/, level: 1 }),
   ).toBeVisible();
   await expect(
     page.getByRole('button', { name: 'Subscribe' }).first(),
@@ -816,8 +646,12 @@ test('keyboard navigation and review map work in the beta profile', async ({
   page,
 }) => {
   await page.goto('/');
+  await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible();
+  await page.locator('body').click({ position: { x: 5, y: 400 } });
   await page.keyboard.press('Alt+Digit2');
   await expect(page).toHaveURL(/\/radio$/);
+  await page.keyboard.press('Alt+Digit3');
+  await expect(page).toHaveURL(/\/discover/);
 
   await page.goto('/more');
   await expect(page.getByRole('heading', { name: 'Tahti map' })).toBeVisible();

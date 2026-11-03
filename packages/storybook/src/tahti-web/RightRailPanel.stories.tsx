@@ -137,7 +137,9 @@ export const NoToggleOverlap: Story = {
   render: () => <QueueBar isCollapsed={false} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const toggle = canvas.getByRole('button', { name: /Collapse panel/i });
+    const toggle = canvas.getByRole('button', {
+      name: /Collapse right panel/i,
+    });
     const firstTitle = await canvas.findByText("I Can't Sleep");
     const row =
       firstTitle.closest('li') ??

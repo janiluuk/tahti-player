@@ -99,7 +99,11 @@ export function SettingsView() {
     }
     toastedCallbackRef.current = callbackKey;
     const providerLabel = (() => {
-      const categoryLabel = category?.toLowerCase() ?? '';
+      const categoryLabel = (
+        params.get('provider') ??
+        category ??
+        ''
+      ).toLowerCase();
       if (categoryLabel.includes('soundcloud')) {
         return 'SoundCloud';
       }
@@ -111,6 +115,9 @@ export function SettingsView() {
       }
       if (categoryLabel.includes('spotify')) {
         return 'Spotify';
+      }
+      if (categoryLabel.includes('google-drive')) {
+        return 'Google Drive';
       }
       if (categoryLabel.includes('hearthis')) {
         return 'hearthis.at';

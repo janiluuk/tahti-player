@@ -510,26 +510,26 @@ export function AppShell() {
       if (event.altKey && !event.ctrlKey && !event.metaKey) {
         const byCode: Record<
           string,
-          '/' | '/radio' | '/feed' | '/library' | '/studio'
+          '/' | '/radio' | '/discover' | '/library' | '/studio'
         > = {
           Digit1: '/',
           Digit2: '/radio',
-          Digit3: '/feed',
+          Digit3: '/discover',
           Digit4: '/library',
           Digit5: '/studio',
           Numpad1: '/',
           Numpad2: '/radio',
-          Numpad3: '/feed',
+          Numpad3: '/discover',
           Numpad4: '/library',
           Numpad5: '/studio',
         };
         const byKey: Record<
           string,
-          '/' | '/radio' | '/feed' | '/library' | '/studio'
+          '/' | '/radio' | '/discover' | '/library' | '/studio'
         > = {
           '1': '/',
           '2': '/radio',
-          '3': '/feed',
+          '3': '/discover',
           '4': '/library',
           '5': '/studio',
         };

@@ -31,7 +31,7 @@ describe('NewsletterSubscribeToggle signed out', () => {
     );
 
     fireEvent.click(
-      screen.getByRole('button', { name: 'Subscribe to Selector' }),
+      screen.getByRole('button', { name: 'Email updates from Selector' }),
     );
     const submit = screen.getByRole('button', { name: 'Subscribe' });
     expect((submit as HTMLButtonElement).disabled).toBe(true);

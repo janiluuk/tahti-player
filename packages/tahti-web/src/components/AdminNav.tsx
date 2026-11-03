@@ -432,6 +432,7 @@ function useAdminNavParts(
           variant="text"
           className="gap-1.5"
           data-testid="admin-hub-back"
+          aria-label={`Back to ${section.label}`}
         >
           <ArrowLeftIcon size={16} aria-hidden />
           {section.label}
