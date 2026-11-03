@@ -52,6 +52,7 @@ export function RadioStationView({ stationId }: { stationId: string }) {
   if (!station) {
     return (
       <PageEmpty
+        headingLevel={1}
         icon="radio"
         title="Station not found"
         description="This radio station isn't in the Tahti station list."

@@ -152,7 +152,7 @@ export function ArtistMusicTab({
 
           {channel && (isOwner || isAdministrator) ? (
             <Tooltip
-              content="Manage stream playlist"
+              content="Manage playlist"
               side="bottom"
               wrapperClassName="inline-flex"
             >
@@ -162,10 +162,10 @@ export function ArtistMusicTab({
                 variant="secondary"
                 className="absolute top-3 right-3 z-[2] gap-1.5"
                 onClick={onOpenManager}
-                aria-label="Manage stream playlist"
+                aria-label="Manage playlist"
               >
                 <ListMusicIcon size={16} aria-hidden />
-                <span>Manage</span>
+                <span>Manage playlist</span>
               </Button>
             </Tooltip>
           ) : null}

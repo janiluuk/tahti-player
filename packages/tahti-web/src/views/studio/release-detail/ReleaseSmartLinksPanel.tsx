@@ -365,13 +365,13 @@ export function ReleaseSmartLinksPanel({
             onClick={() => void saveTargets()}
             label="Save destinations"
           />
-          <Tooltip content="Open smart link" side="top">
+          <Tooltip content={`Open ${release.title}`} side="top">
             <ButtonLink
               to="/r/$slug"
               params={{ slug: release.smartLinkSlug }}
               size="icon-sm"
               variant="text"
-              aria-label="Open smart link"
+              aria-label={`Open ${release.title}`}
             >
               <ExternalLinkIcon size={16} aria-hidden />
             </ButtonLink>

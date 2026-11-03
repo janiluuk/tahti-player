@@ -24,7 +24,7 @@ export function AutoplayUnmuteNotice() {
         <VolumeXIcon size={16} aria-hidden />
         This channel is playing muted.
       </span>
-      <Button size="sm" onClick={unmute}>
+      <Button size="sm" variant="secondary" onClick={unmute}>
         Unmute
       </Button>
     </div>

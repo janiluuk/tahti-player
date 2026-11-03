@@ -31,6 +31,7 @@ import type { OnAirChannel } from '../api/listen';
 import type { TahtiPlayable } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
+import { GuidelinesBanner } from '../components/GuidelinesBanner';
 import { HomeComingUp } from '../components/listen-view/HomeComingUp';
 import {
   NewReleasesRow,
@@ -576,6 +577,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
 
         {tab === 'listen' ? (
           <div className="flex flex-col gap-4" data-testid="listen-dashboard">
+            {signedIn ? <GuidelinesBanner /> : null}
             {signedIn ? null : <WelcomeStrip />}
             <SortableBlocks
               blocks={orderedBlocks}

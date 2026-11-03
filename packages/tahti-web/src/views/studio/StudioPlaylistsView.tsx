@@ -128,7 +128,7 @@ export function StudioPlaylistsView() {
             <ButtonLink to="/studio/collections" size="sm" variant="secondary">
               Collections
             </ButtonLink>
-            <Button size="sm" variant="default" aria-current="page">
+            <Button size="sm" variant="secondary" aria-current="page">
               Playlists
             </Button>
           </nav>

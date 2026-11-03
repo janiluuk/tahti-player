@@ -82,73 +82,84 @@ function AgendaBuilder() {
     >
       <div className="@container">
         <ol className="grid gap-2 @2xl:grid-cols-2">
-          {items.map((item, i) => (
-            <li key={i} className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span className="text-foreground-secondary w-5 shrink-0 text-right text-xs">
-                {i + 1}.
-              </span>
-              <div className="min-w-0 flex-1 basis-60">
-                <Input
-                  value={item}
-                  aria-label={`Agenda item ${i + 1}`}
-                  onChange={(e) =>
-                    setItems((prev) =>
-                      prev.map((it, idx) => (idx === i ? e.target.value : it)),
-                    )
-                  }
-                  className="h-8 text-sm"
-                />
-              </div>
-              <div className="ml-auto flex shrink-0 gap-0.5">
-                <Tooltip content="Move up" side="top">
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    aria-label="Move up"
-                    disabled={i === 0}
-                    onClick={() =>
-                      setItems((prev) => {
-                        const next = [...prev];
-                        [next[i - 1], next[i]] = [next[i]!, next[i - 1]!];
-                        return next;
-                      })
+          {items.map((item, i) => {
+            const itemLabel = item.trim() || `Agenda item ${i + 1}`;
+            return (
+              <li
+                key={i}
+                className="flex flex-wrap items-center gap-x-2 gap-y-1"
+              >
+                <span className="text-foreground-secondary w-5 shrink-0 text-right text-xs">
+                  {i + 1}.
+                </span>
+                <div className="min-w-0 flex-1 basis-60">
+                  <Input
+                    value={item}
+                    aria-label={`Agenda item ${i + 1}`}
+                    onChange={(e) =>
+                      setItems((prev) =>
+                        prev.map((it, idx) =>
+                          idx === i ? e.target.value : it,
+                        ),
+                      )
                     }
+                    className="h-8 text-sm"
+                  />
+                </div>
+                <div className="ml-auto flex shrink-0 gap-0.5">
+                  <Tooltip content={`Move up: ${itemLabel}`} side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      aria-label={`Move up: ${itemLabel}`}
+                      disabled={i === 0}
+                      onClick={() =>
+                        setItems((prev) => {
+                          const next = [...prev];
+                          [next[i - 1], next[i]] = [next[i]!, next[i - 1]!];
+                          return next;
+                        })
+                      }
+                    >
+                      ↑
+                    </Button>
+                  </Tooltip>
+                  <Tooltip content={`Move down: ${itemLabel}`} side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      aria-label={`Move down: ${itemLabel}`}
+                      disabled={i === items.length - 1}
+                      onClick={() =>
+                        setItems((prev) => {
+                          const next = [...prev];
+                          [next[i], next[i + 1]] = [next[i + 1]!, next[i]!];
+                          return next;
+                        })
+                      }
+                    >
+                      ↓
+                    </Button>
+                  </Tooltip>
+                  <Tooltip
+                    content={`Remove item ${i + 1}: ${itemLabel}`}
+                    side="top"
                   >
-                    ↑
-                  </Button>
-                </Tooltip>
-                <Tooltip content="Move down" side="top">
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    aria-label="Move down"
-                    disabled={i === items.length - 1}
-                    onClick={() =>
-                      setItems((prev) => {
-                        const next = [...prev];
-                        [next[i], next[i + 1]] = [next[i + 1]!, next[i]!];
-                        return next;
-                      })
-                    }
-                  >
-                    ↓
-                  </Button>
-                </Tooltip>
-                <Tooltip content="Remove item" side="top">
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    aria-label="Remove item"
-                    onClick={() =>
-                      setItems((prev) => prev.filter((_, idx) => idx !== i))
-                    }
-                  >
-                    ×
-                  </Button>
-                </Tooltip>
-              </div>
-            </li>
-          ))}
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      aria-label={`Remove item ${i + 1}: ${itemLabel}`}
+                      onClick={() =>
+                        setItems((prev) => prev.filter((_, idx) => idx !== i))
+                      }
+                    >
+                      ×
+                    </Button>
+                  </Tooltip>
+                </div>
+              </li>
+            );
+          })}
         </ol>
       </div>
       <Tooltip content="Add agenda item" side="top">

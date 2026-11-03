@@ -1,18 +1,11 @@
-import { useRouterState } from '@tanstack/react-router';
+import { useNavigate, useRouterState } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
-  BarChart3Icon,
-  BookOpenIcon,
   CalendarDaysIcon,
   CalendarIcon,
-  FileTextIcon,
   HeartIcon,
-  LandmarkIcon,
-  LayoutDashboardIcon,
   LayoutGridIcon,
-  LightbulbIcon,
   ListMusicIcon,
-  ListOrderedIcon,
   MicIcon,
   PartyPopperIcon,
   RadioIcon,
@@ -26,7 +19,11 @@ import {
 import type { ReactNode } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { ButtonLink, SidebarNavigationItem } from '@tahti-player/ui';
+import {
+  ButtonLink,
+  FilterChips,
+  SidebarNavigationItem,
+} from '@tahti-player/ui';
 
 import type { TourStep } from '../lib/pageTour';
 import { matchesSectionRoute } from '../lib/sectionNavigation';
@@ -151,113 +148,8 @@ export const CATALOG_SUBNAV_ITEMS = [
   },
 ] as const;
 
-/** Stats, Governance and Posts keep their page tabs in `?tab=`, so they sit
- * in the same nested strip as Broadcast and Audience instead of in-page. */
-export const STATS_SUBNAV_ITEMS = [
-  {
-    to: '/studio/stats',
-    labelKey: 'studio.overview' as const,
-    icon: <LayoutDashboardIcon size={16} />,
-  },
-  {
-    to: '/studio/stats?tab=plays',
-    labelKey: 'studio.playsListeners' as const,
-    icon: <BarChart3Icon size={16} />,
-  },
-  {
-    to: '/studio/stats?tab=top-lists',
-    labelKey: 'studio.topLists' as const,
-    icon: <ListOrderedIcon size={16} />,
-  },
-  {
-    to: '/studio/insights',
-    labelKey: 'studio.insights' as const,
-    icon: <TrendingUpIcon size={16} />,
-  },
-] as const;
-
-export const GOVERNANCE_SUBNAV_ITEMS = [
-  {
-    to: '/studio/governance',
-    labelKey: 'studio.motions' as const,
-    icon: <LandmarkIcon size={16} />,
-  },
-  {
-    to: '/studio/governance?tab=topics',
-    labelKey: 'studio.topics' as const,
-    icon: <LightbulbIcon size={16} />,
-  },
-  {
-    to: '/studio/governance?tab=documents',
-    labelKey: 'studio.documents' as const,
-    icon: <FileTextIcon size={16} />,
-  },
-  {
-    to: '/studio/governance?tab=guide',
-    labelKey: 'studio.guide' as const,
-    icon: <BookOpenIcon size={16} />,
-  },
-] as const;
-
 const pathMatches = (pathname: string, prefix: string) =>
   pathname === prefix || pathname.startsWith(`${prefix}/`);
-
-const TAB_SUBNAV_GROUPS = [
-  {
-    label: 'Stats pages',
-    items: STATS_SUBNAV_ITEMS,
-    match: (pathname: string) =>
-      pathMatches(pathname, '/studio/stats') ||
-      pathMatches(pathname, '/studio/insights'),
-  },
-  {
-    label: 'Governance pages',
-    items: GOVERNANCE_SUBNAV_ITEMS,
-    match: (pathname: string) => pathMatches(pathname, '/studio/governance'),
-  },
-] as const;
-
-const tabParam = (url: string | undefined) => {
-  const tab = new URLSearchParams(url?.split('?')[1] ?? '').get('tab');
-  return tab === 'feature-requests' ? 'topics' : tab;
-};
-
-export const isTabSubnavActive = (current: string | undefined, to: string) => {
-  const pathname = current?.split('?')[0];
-  if (to === '/studio/insights') {
-    return (
-      pathname === '/studio/insights' ||
-      pathname?.startsWith('/studio/insights/') === true ||
-      pathname === '/studio/stats/detail'
-    );
-  }
-  return pathname === to.split('?')[0] && tabParam(current) === tabParam(to);
-};
-
-const findTabSubnavGroup = (current: string | undefined) => {
-  const pathname = current?.split('?')[0] ?? '';
-  return TAB_SUBNAV_GROUPS.find((item) => item.match(pathname));
-};
-
-function TabSubNav({ current }: { current?: string }) {
-  const { t } = useTranslation('web');
-  const group = findTabSubnavGroup(current);
-  if (!group) {
-    return null;
-  }
-  return (
-    <SectionTabs
-      aria-label={group.label}
-      items={group.items.map((item) => ({
-        id: item.to,
-        to: item.to,
-        label: t(item.labelKey),
-        icon: item.icon,
-        active: isTabSubnavActive(current, item.to),
-      }))}
-    />
-  );
-}
 
 export const STUDIO_NAV_TOUR_STEPS: TourStep[] = PRIMARY.map(
   (item): TourStep => ({
@@ -492,16 +384,21 @@ export const isCatalogSubnavActive = (
 
 export function CatalogSubNav({ current }: { current?: string }) {
   const { t } = useTranslation('web');
+  const navigate = useNavigate();
+  const selected =
+    CATALOG_SUBNAV_ITEMS.find((item) => isCatalogSubnavActive(current, item.to))
+      ?.to ?? CATALOG_SUBNAV_ITEMS[0].to;
   return (
-    <SectionTabs
+    <FilterChips
       aria-label="Music pages"
       items={CATALOG_SUBNAV_ITEMS.map((item) => ({
         id: item.to,
-        to: item.to,
         label: t(item.labelKey),
-        icon: item.icon,
-        active: isCatalogSubnavActive(current, item.to),
       }))}
+      selected={selected}
+      onChange={(id) => {
+        void navigate({ to: id });
+      }}
     />
   );
 }
@@ -596,8 +493,7 @@ export const hasStudioNestedNav = (current: string | undefined) =>
   (isStudioBroadcastGroup(current) &&
     !onHubItself(current, '/studio/broadcast')) ||
   isStudioCatalogGroup(current) ||
-  (isStudioFansGroup(current) && current?.split('?')[0] !== '/studio/fans') ||
-  findTabSubnavGroup(current) !== undefined;
+  (isStudioFansGroup(current) && current?.split('?')[0] !== '/studio/fans');
 
 export const StudioNav = ({ current }: { current?: string }) => (
   <StudioNavigation current={current} />
@@ -686,7 +582,6 @@ function StudioNavigation({ current }: { current?: string }) {
           {showBroadcast ? <BroadcastBackLink /> : null}
           {showCatalog ? <CatalogSubNav current={current} /> : null}
           {showFansBack ? <FansBackLink /> : null}
-          <TabSubNav current={current} />
         </div>
       ) : null}
     </div>

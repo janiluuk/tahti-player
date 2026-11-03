@@ -218,84 +218,86 @@ export function StudioUpdatesView({
                 />
               ) : (
                 <ul className="divide-border divide-y">
-                  {posts.map((p) => (
-                    <li
-                      key={p.id}
-                      className="flex flex-wrap items-start justify-between gap-2 py-3 text-sm first:pt-0 last:pb-0"
-                    >
-                      <div className="min-w-56 flex-1">
-                        <div className="font-medium">
-                          {p.title || 'Untitled'}
+                  {posts.map((p) => {
+                    const postTitle = p.title || 'Untitled';
+                    return (
+                      <li
+                        key={p.id}
+                        className="flex flex-wrap items-start justify-between gap-2 py-3 text-sm first:pt-0 last:pb-0"
+                      >
+                        <div className="min-w-56 flex-1">
+                          <div className="font-medium">{postTitle}</div>
+                          <p className="text-foreground-secondary mt-1 line-clamp-3 whitespace-pre-wrap">
+                            {p.body}
+                          </p>
+                          {p.images.length > 0 && (
+                            <div className="mt-2 flex gap-2 overflow-hidden">
+                              {p.images.map((image, index) => (
+                                <Button
+                                  key={`${image}-${index}`}
+                                  type="button"
+                                  variant="text"
+                                  className="bg-background-secondary size-16 shrink-0 overflow-hidden rounded-md p-0"
+                                  onClick={() =>
+                                    setLightbox({ images: p.images, index })
+                                  }
+                                  aria-label={`View image ${index + 1} full size`}
+                                >
+                                  <ImageReveal
+                                    src={image}
+                                    alt=""
+                                    className="size-full"
+                                  />
+                                </Button>
+                              ))}
+                            </div>
+                          )}
+                          {isScheduledPost(p) ? (
+                            <p className="text-foreground-secondary mt-1 flex items-center gap-1 text-xs">
+                              <CalendarClockIcon size={13} aria-hidden />
+                              Scheduled for{' '}
+                              {new Date(p.publishAt).toLocaleString()}
+                            </p>
+                          ) : (
+                            <p className="text-foreground-secondary mt-1 text-xs">
+                              {new Date(p.publishAt).toLocaleString()}
+                            </p>
+                          )}
                         </div>
-                        <p className="text-foreground-secondary mt-1 line-clamp-3 whitespace-pre-wrap">
-                          {p.body}
-                        </p>
-                        {p.images.length > 0 && (
-                          <div className="mt-2 flex gap-2 overflow-hidden">
-                            {p.images.map((image, index) => (
-                              <Button
-                                key={`${image}-${index}`}
-                                type="button"
-                                variant="text"
-                                className="bg-background-secondary size-16 shrink-0 overflow-hidden rounded-md p-0"
-                                onClick={() =>
-                                  setLightbox({ images: p.images, index })
-                                }
-                                aria-label={`View image ${index + 1} full size`}
-                              >
-                                <ImageReveal
-                                  src={image}
-                                  alt=""
-                                  className="size-full"
-                                />
-                              </Button>
-                            ))}
-                          </div>
-                        )}
-                        {isScheduledPost(p) ? (
-                          <p className="text-foreground-secondary mt-1 flex items-center gap-1 text-xs">
-                            <CalendarClockIcon size={13} aria-hidden />
-                            Scheduled for{' '}
-                            {new Date(p.publishAt).toLocaleString()}
-                          </p>
-                        ) : (
-                          <p className="text-foreground-secondary mt-1 text-xs">
-                            {new Date(p.publishAt).toLocaleString()}
-                          </p>
-                        )}
-                      </div>
-                      <div className="flex shrink-0 gap-1">
-                        <Button
-                          size="sm"
-                          variant="text"
-                          onClick={() => setPreviewPost(p)}
-                        >
-                          <EyeIcon size={15} aria-hidden className="mr-1.5" />
-                          Preview
-                        </Button>
-                        <Tooltip content="Edit" side="top">
+                        <div className="flex shrink-0 gap-1">
                           <Button
-                            size="icon-sm"
+                            size="sm"
                             variant="text"
-                            aria-label="Edit post"
-                            onClick={() => setPostEditor({ post: p })}
+                            aria-label={`Preview ${postTitle}`}
+                            onClick={() => setPreviewPost(p)}
                           >
-                            <PencilIcon size={16} aria-hidden />
+                            <EyeIcon size={15} aria-hidden className="mr-1.5" />
+                            Preview
                           </Button>
-                        </Tooltip>
-                        <Tooltip content="Delete" side="top">
-                          <Button
-                            size="icon-sm"
-                            variant="text"
-                            aria-label="Delete post"
-                            onClick={() => setPendingDeletePost(p)}
-                          >
-                            <Trash2Icon size={16} aria-hidden />
-                          </Button>
-                        </Tooltip>
-                      </div>
-                    </li>
-                  ))}
+                          <Tooltip content={`Edit ${postTitle}`} side="top">
+                            <Button
+                              size="icon-sm"
+                              variant="text"
+                              aria-label={`Edit ${postTitle}`}
+                              onClick={() => setPostEditor({ post: p })}
+                            >
+                              <PencilIcon size={16} aria-hidden />
+                            </Button>
+                          </Tooltip>
+                          <Tooltip content={`Delete ${postTitle}`} side="top">
+                            <Button
+                              size="icon-sm"
+                              variant="text"
+                              aria-label={`Delete ${postTitle}`}
+                              onClick={() => setPendingDeletePost(p)}
+                            >
+                              <Trash2Icon size={16} aria-hidden />
+                            </Button>
+                          </Tooltip>
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </StudioPanel>

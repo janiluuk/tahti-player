@@ -226,11 +226,14 @@ export function AdminAnnouncementsView() {
                             />
                           )}
                           {clip.audioUrl && (
-                            <Tooltip content="Preview" side="top">
+                            <Tooltip
+                              content={`Preview ${clip.title}`}
+                              side="top"
+                            >
                               <Button
                                 size="icon-sm"
                                 variant="text"
-                                aria-label="Preview"
+                                aria-label={`Preview ${clip.title}`}
                                 onClick={() => {
                                   play({
                                     id: `announcement:${clip.id}`,

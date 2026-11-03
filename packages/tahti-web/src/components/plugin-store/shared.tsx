@@ -67,12 +67,17 @@ export function ConfigurableCard({
         <div className="min-w-0 flex-1">
           {typeof header === 'function' ? header(() => setOpen(true)) : header}
         </div>
-        <Tooltip content={open ? 'Hide configuration' : 'Configure'} side="top">
+        <Tooltip
+          content={open ? `Hide ${title} configuration` : `Configure ${title}`}
+          side="top"
+        >
           <Button
             size="icon-sm"
             variant="secondary"
             onClick={() => setOpen((v) => !v)}
-            aria-label={open ? 'Hide configuration' : 'Configure'}
+            aria-label={
+              open ? `Hide ${title} configuration` : `Configure ${title}`
+            }
           >
             <SettingsIcon size={15} aria-hidden />
           </Button>

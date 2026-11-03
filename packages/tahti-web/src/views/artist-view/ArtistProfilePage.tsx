@@ -248,6 +248,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
   if (!profile) {
     return (
       <PageEmpty
+        headingLevel={1}
         title="Artist not found"
         description="This artist profile may have been removed or is not available."
       />

@@ -127,14 +127,14 @@ is wrong and a suggested fix, then turn the agreed ones into slices.
 
 | Screen | Issue | Kind | Suggestion |
 | --- | --- | --- | --- |
-| Artist page header (`/u/:username`) | Nine actions in the header (Subscribe, press kit, RSS, Embed, Report, Block, Open channel, Follow, followers); the icon-only Subscribe had no accessible name (named in #1771) | messy | Keep Follow and Subscribe; move the rest into one "More" menu |
+| Artist page header (`/u/:username`) | Nine actions in the header; Open channel and fan-tiers Subscribe still sat beside More | messy, fixed (batch 30 r3) | Follow + email Subscribe stay; Open channel and fan tiers are in More |
 | Track page (`/t/:id`) | Six emoji buttons plus Comment for every timestamp; signed out they all read "Log in to add …" | messy | One "React" button that opens the emoji set; one sign-in prompt |
-| Every page (mock) | The community guidelines toast stays until acknowledged, sits over the top search bar and blocks clicks on tabs | practicality | Show it once as a banner on Listen, not a toast over navigation |
+| Every page (mock) | The community guidelines toast stays until acknowledged, sits over the top search bar and blocks clicks on tabs | practicality, fixed (batch 30 r3) | Listen banner; sticky notices no longer toast over nav |
 | Settings → Themes | Theme cards said "Built-in Nuclear theme" | labels, fixed (#1771) | "Built-in theme" |
 | Studio → Fans → Posts | The page was titled "Updates" while the card and help say Posts | labels, fixed (#1771) | Titled Posts (Newsletter on its tab) |
 | Studio release detail | Three rows of tabs (Studio, Music sub-row, release tabs) | messy | Per the navigation plan: a back link and title replace the section rows on detail pages |
-| Studio → Stats | A second tab row (Overview, Plays, Top lists, Insights) on a page that is meant to be one page with sections | messy | Section links in the page instead of a tab row |
-| Messages | Three ways in on one screen (Message @username + Start + Search, Your contacts, conversation list); opening a conversation briefly mounts two threads, so typing can land in the one that disappears | messy / bug, remount fixed | `/messages/$id` is a child route, so the page stays mounted; one search box is still open |
+| Studio → Stats | A second tab row (Overview, Plays, Top lists, Insights) on a page that is meant to be one page with sections | messy, fixed (batch 30 r3) | In-page section chips; Insights chip opens `/studio/insights` |
+| Messages | Three ways in on one screen (Message @username + Start + Search, Your contacts, conversation list); opening a conversation briefly mounts two threads, so typing can land in the one that disappears | messy / bug, remount fixed; compose fixed (batch 30 r3) | `/messages/$id` child route; one Find or message @ field + Message |
 | Admin → People | The user list is a radio group (search exists: it is a searchbox) | practicality, kept | `SelectableList` is a master-detail picker; the radio group gives one tab stop and arrow keys |
 | Artwork Play overlays (Studio → Sounds and every `MediaArtwork`) | On desktop the Play overlay was `visibility: hidden` until hover, so Tab never reached it and screen readers missed it | a11y, fixed (#1771) | Opacity-only fade; `a11y-play-controls.spec.ts` |
 | Admin → Inbox → Radio submissions | Approve / Reject gave no feedback and, on the mock app, nothing changed | practicality, fixed | A toast names the track and the row's badge updates |
