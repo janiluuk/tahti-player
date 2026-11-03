@@ -23,6 +23,7 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageFrame } from '../components/PageHeader';
 import {
   PageEmpty,
@@ -234,12 +235,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
 
   return (
     <PageFrame maxWidth="3xl">
-      <Link
-        to="/radio"
-        className="text-foreground-secondary text-xs hover:underline"
-      >
-        ← Tahti Radio
-      </Link>
+      <PageBackLink to="/radio" label="Radio" />
 
       <EntitySocialHeader
         title={show.artist.displayName}

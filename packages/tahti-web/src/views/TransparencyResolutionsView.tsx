@@ -1,10 +1,10 @@
-import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 import { Badge, FilterChips, SectionShell, ViewShell } from '@tahti-player/ui';
 
 import { fetchTransparencyResolutions } from '../api/client';
 import type { BoardResolution } from '../api/types';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -56,12 +56,7 @@ export function TransparencyResolutionsView() {
         content: 'gap-6',
       }}
     >
-      <Link
-        to="/transparency"
-        className="text-foreground-secondary w-fit text-xs underline-offset-2 hover:underline"
-      >
-        ← Back to transparency
-      </Link>
+      <PageBackLink to="/transparency" label="Transparency" />
 
       <FilterChips
         aria-label="Year"

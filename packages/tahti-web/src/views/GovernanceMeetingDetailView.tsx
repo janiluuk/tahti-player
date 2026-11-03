@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import { CalendarCheckIcon, ScrollTextIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -10,6 +9,7 @@ import type { GovernanceMeeting } from '../api/types';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
 import { MeetingAgendaItems } from '../components/governance/MeetingAgendaItems';
 import { MeetingConflicts } from '../components/governance/MeetingConflicts';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { isSafeHref } from '../lib/safeHref';
 import { useAuthStore } from '../stores/authStore';
@@ -77,12 +77,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
         content: 'gap-6',
       }}
     >
-      <Link
-        to="/governance"
-        className="text-foreground-secondary w-fit text-xs underline-offset-2 hover:underline"
-      >
-        ← Back to governance
-      </Link>
+      <PageBackLink to="/governance" label="Governance" />
 
       {!user && (
         <p className="text-foreground-secondary text-sm">

@@ -38,7 +38,7 @@ export const Default: Story = {
     await expect(
       canvas.getByRole('heading', { name: 'Reset your password' }),
     ).toBeVisible();
-    await expect(canvas.getByRole('link', { name: '← Login' })).toHaveAttribute(
+    await expect(canvas.getByRole('link', { name: 'Log in' })).toHaveAttribute(
       'href',
       '/login',
     );

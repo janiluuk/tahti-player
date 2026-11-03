@@ -37,6 +37,15 @@ export const Default: Story = {
     await expect(
       canvas.getByRole('button', { name: 'Add artwork' }),
     ).toBeVisible();
+    const card = canvas.getByTestId('artwork-preset-grid').children[1]!;
+    const cardBox = card.getBoundingClientRect();
+    const artBox = card
+      .querySelector('[data-testid="media-artwork"]')!
+      .getBoundingClientRect();
+    await expect(artBox.width).toBeGreaterThan(0);
+    await expect(artBox.left).toBeGreaterThanOrEqual(cardBox.left);
+    await expect(artBox.right).toBeLessThanOrEqual(cardBox.right);
+    await expect(artBox.top).toBeGreaterThanOrEqual(cardBox.top);
   },
 };
 
