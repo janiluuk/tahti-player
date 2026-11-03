@@ -182,6 +182,7 @@ export function ChannelComments({
       ) : null}
       <ConfirmDialog
         isOpen={pendingDeleteId !== null}
+        destructive
         title="Remove this comment?"
         description={pendingComment?.body ?? 'The comment leaves this channel.'}
         confirmLabel="Remove"

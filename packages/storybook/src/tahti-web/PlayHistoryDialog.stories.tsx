@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PlayHistoryDialog } from '@tahti-web/components/PlayHistoryDialog';
 import { humanizePastDate } from '@tahti-web/lib/humanizeDate';
 import { playedAtDate } from '@tahti-web/lib/setTracklist';
-import { expect, fn, waitFor, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { DJ_PLAY_HISTORY, djLibrary } from './_fixtures/dj-library';
 
@@ -41,6 +41,28 @@ export const LastSession: Story = {
       ),
     ).toBeVisible();
     await expect(body.queryByText(`${newest.playedAt} UTC`)).toBeNull();
+  },
+};
+
+/** Clearing the history asks first, with a red confirm. */
+export const ConfirmClear: Story = {
+  play: async ({ canvasElement }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    await userEvent.click(
+      await body.findByRole('button', { name: 'Clear history' }),
+    );
+    const dialog = within(
+      await body.findByRole('dialog', { name: 'Clear the listening history?' }),
+    );
+    await expect(
+      dialog.getByRole('button', { name: 'Clear' }).className,
+    ).toContain('bg-accent-red');
+    await userEvent.click(dialog.getByRole('button', { name: 'Cancel' }));
+    await waitFor(() =>
+      expect(
+        body.queryByRole('dialog', { name: 'Clear the listening history?' }),
+      ).toBeNull(),
+    );
   },
 };
 

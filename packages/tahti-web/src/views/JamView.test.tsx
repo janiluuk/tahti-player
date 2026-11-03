@@ -99,6 +99,9 @@ describe('JamView', () => {
     );
     expect(remove).not.toHaveBeenCalled();
     expect(screen.getByText('Remove g1 from the Jam?')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Remove' }).className).toContain(
+      'bg-accent-red',
+    );
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Remove' }));
     });

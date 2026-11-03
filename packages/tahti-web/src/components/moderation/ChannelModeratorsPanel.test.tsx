@@ -89,6 +89,9 @@ describe('ChannelModeratorsPanel', () => {
       screen.getByRole('button', { name: 'Remove Ada Mod as moderator' }),
     );
     expect(remove).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'Remove' }).className).toContain(
+      'bg-accent-red',
+    );
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Remove' }));
     });

@@ -122,6 +122,7 @@ export function DesktopLibraryDialogs({
       />
       <ConfirmDialog
         isOpen={pendingRemoval !== null}
+        destructive
         title={
           pendingRemoval && pendingRemoval.ids.length > 1
             ? `Remove ${pendingRemoval.ids.length.toLocaleString('en-US')} tracks from the library?`
@@ -140,6 +141,7 @@ export function DesktopLibraryDialogs({
       />
       <ConfirmDialog
         isOpen={rootToRemove !== null}
+        destructive
         title="Stop watching this folder?"
         description={`“${rootToRemove ? basename(rootToRemove.path) : ''}” will no longer be scanned for new files. Its tracks stay in your library and no files on disk are touched.`}
         confirmLabel="Stop watching"

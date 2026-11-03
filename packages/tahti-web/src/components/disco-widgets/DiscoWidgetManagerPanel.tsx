@@ -548,6 +548,7 @@ export function DiscoWidgetManagerPanel({
       </Dialog.Root>
       <ConfirmDialog
         isOpen={pendingRemoveId !== null}
+        destructive
         title={
           pendingRemoveId
             ? `Remove ${

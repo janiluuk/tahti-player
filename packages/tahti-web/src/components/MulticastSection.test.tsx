@@ -5,6 +5,7 @@ import {
   fireEvent,
   render,
   screen,
+  within,
 } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -106,5 +107,39 @@ describe('MulticastSection', () => {
       false,
     ]);
     expect(patch.mock.calls[0]?.[2]).toBe('radio');
+  });
+
+  it('removes a destination only after a red confirm', async () => {
+    vi.spyOn(broadcast, 'fetchRtmpTargets').mockResolvedValue({
+      data: [
+        {
+          id: 'y1',
+          provider: 'YOUTUBE',
+          label: 'My YouTube',
+          rtmpUrl: 'rtmp://a.rtmp.youtube.com/live2',
+          alwaysMirror: false,
+          enabled: true,
+          keyLast4: '1234',
+        },
+      ],
+      meta: { source: 'api' },
+    });
+    const remove = vi
+      .spyOn(broadcast, 'deleteRtmpTarget')
+      .mockResolvedValue({ ok: true });
+    await act(async () => {
+      render(<MulticastSection />);
+    });
+    fireEvent.click(screen.getByRole('button', { name: /YouTube/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Remove' }));
+    const confirm = within(
+      screen.getByRole('dialog', { name: 'Remove My YouTube?' }),
+    ).getByRole('button', { name: 'Remove' });
+    expect(confirm.className).toContain('bg-accent-red');
+    expect(remove).not.toHaveBeenCalled();
+    await act(async () => {
+      fireEvent.click(confirm);
+    });
+    expect(remove).toHaveBeenCalledWith('y1', 'me');
   });
 });

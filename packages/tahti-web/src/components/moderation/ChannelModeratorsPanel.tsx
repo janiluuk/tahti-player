@@ -126,6 +126,7 @@ export function ChannelModeratorsPanel() {
       </div>
       <ConfirmDialog
         isOpen={pendingRemove !== null}
+        destructive
         title={
           pendingRemove
             ? `Remove ${pendingRemove.displayName} as moderator?`

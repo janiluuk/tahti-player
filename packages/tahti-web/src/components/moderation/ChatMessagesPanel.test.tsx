@@ -76,6 +76,9 @@ describe('ChatMessagesPanel', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Ban Promo Bot' }));
     expect(ban).not.toHaveBeenCalled();
     expect(screen.getByText('Ban Promo Bot from this chat?')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Ban' }).className).toContain(
+      'bg-accent-red',
+    );
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Ban' }));
     });
@@ -96,6 +99,9 @@ describe('ChatMessagesPanel', () => {
 
     fireEvent.click(
       screen.getByRole('button', { name: 'Remove message from Promo Bot' }),
+    );
+    expect(screen.getByRole('button', { name: 'Remove' }).className).toContain(
+      'bg-accent-red',
     );
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Remove' }));

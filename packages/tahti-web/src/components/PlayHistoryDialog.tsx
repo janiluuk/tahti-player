@@ -200,6 +200,7 @@ export function PlayHistoryDialog({
       </Dialog.Root>
       <ConfirmDialog
         isOpen={confirmClear}
+        destructive
         title="Clear the listening history?"
         description="The list of past listens is deleted. Each track keeps its play count and last-played date."
         confirmLabel="Clear"

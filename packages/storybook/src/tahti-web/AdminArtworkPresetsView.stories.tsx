@@ -59,5 +59,8 @@ export const ConfirmRemove: Story = {
     );
     const confirm = await findDialog(canvasElement, 'Remove this artwork?');
     await expect(confirm.getByRole('button', { name: 'Remove' })).toBeVisible();
+    await expect(
+      confirm.getByRole('button', { name: 'Remove' }).className,
+    ).toContain('bg-accent-red');
   },
 };
