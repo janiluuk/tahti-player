@@ -72,6 +72,13 @@ describe('ApiTokensPanel', () => {
     ).toBeTruthy();
   });
 
+  it('confirms a revoke with a red button', async () => {
+    await renderPanel([{ ...base, id: 't1', name: 'cli', expiresAt: null }]);
+    fireEvent.click(screen.getByRole('button', { name: 'Revoke' }));
+    const buttons = screen.getAllByRole('button', { name: 'Revoke' });
+    expect(buttons[buttons.length - 1].className).toContain('bg-accent-red');
+  });
+
   it('marks an expired token and says when a live one expires', async () => {
     await renderPanel([
       { ...base, id: 't1', name: 'old', expiresAt: '2020-01-01T00:00:00.000Z' },

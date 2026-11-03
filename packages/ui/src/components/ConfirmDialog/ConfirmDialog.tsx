@@ -7,6 +7,8 @@ export type ConfirmDialogProps = {
   description: string;
   confirmLabel?: string;
   cancelLabel?: string;
+  /** Paint the confirm button red for deletes, removals and other one-way actions. */
+  destructive?: boolean;
   onCancel: () => void;
   onConfirm: () => void;
 };
@@ -18,6 +20,7 @@ export function ConfirmDialog({
   description,
   confirmLabel = 'Confirm',
   cancelLabel = 'Cancel',
+  destructive = false,
   onCancel,
   onConfirm,
 }: ConfirmDialogProps) {
@@ -28,6 +31,7 @@ export function ConfirmDialog({
       <Dialog.Actions>
         <Dialog.Close>{cancelLabel}</Dialog.Close>
         <Button
+          intent={destructive ? 'danger' : undefined}
           onClick={() => {
             onConfirm();
           }}

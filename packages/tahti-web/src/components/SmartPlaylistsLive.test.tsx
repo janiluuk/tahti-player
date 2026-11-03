@@ -1,5 +1,12 @@
 // @vitest-environment jsdom
-import { act, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { TahtiNativeLibrary } from '../lib/nativeLibrary';
@@ -52,6 +59,21 @@ describe('SmartPlaylists live counts', () => {
     total = 4;
     act(() => change(7));
     await waitFor(() => expect(evaluate).toHaveBeenCalledTimes(2));
+  });
+
+  it('confirms deleting a smart playlist with a red button', async () => {
+    const { library } = smartLibrary(() => 3);
+    render(
+      <SmartPlaylists library={library} onPlaylistCreated={() => undefined} />,
+    );
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Delete Fresh' }),
+    );
+    expect(
+      within(
+        screen.getByRole('dialog', { name: 'Delete this smart playlist?' }),
+      ).getByRole('button', { name: 'Delete' }).className,
+    ).toContain('bg-accent-red');
   });
 
   it('re-counts as time passes, when tracks can age out of a last-days rule', async () => {

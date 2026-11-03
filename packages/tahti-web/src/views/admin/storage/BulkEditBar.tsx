@@ -168,6 +168,7 @@ export function BulkEditBar({
       </div>
       {error ? <InlineError>{error}</InlineError> : null}
       <ConfirmDialog
+        destructive
         isOpen={confirmingDelete}
         title={`Delete ${count} ${count === 1 ? 'file' : 'files'} permanently?`}
         description="This removes the selected files from platform storage. It cannot be undone. Each artist is notified that the board removed their track."

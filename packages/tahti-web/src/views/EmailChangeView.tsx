@@ -61,6 +61,7 @@ export function EmailChangeView() {
             {state.message}
           </p>
           <ButtonLink
+            variant={user ? 'secondary' : undefined}
             to={user ? '/settings/$section' : '/login'}
             params={user ? { section: 'account' } : undefined}
           >

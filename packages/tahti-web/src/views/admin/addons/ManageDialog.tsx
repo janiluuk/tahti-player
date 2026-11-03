@@ -114,6 +114,7 @@ export function ManageDialog({
         </form>
       )}
       <ConfirmDialog
+        destructive
         isOpen={confirmDisable}
         title={addon ? `Disable "${addon.name}"?` : 'Disable add-on?'}
         description="Stops it rendering everywhere it's installed immediately, and notifies the author. Only a fresh bundle publish brings it back."

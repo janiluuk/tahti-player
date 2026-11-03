@@ -50,6 +50,7 @@ export function SoundsDialogs({ state }: { state: StudioSoundsState }) {
         </Dialog.Actions>
       </Dialog.Root>
       <ConfirmDialog
+        destructive
         isOpen={pendingDeleteItem !== null}
         title={
           pendingDeleteItem
@@ -62,6 +63,7 @@ export function SoundsDialogs({ state }: { state: StudioSoundsState }) {
         onConfirm={confirmDelete}
       />
       <ConfirmDialog
+        destructive
         isOpen={pendingBulkDelete}
         title={
           selectedIds.size === 1

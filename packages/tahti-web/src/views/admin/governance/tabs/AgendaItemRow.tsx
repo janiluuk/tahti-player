@@ -145,6 +145,7 @@ export function AgendaItemRow({
       </div>
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       <ConfirmDialog
+        destructive
         isOpen={confirmDelete}
         title={`Remove "${item.title}" from the agenda?`}
         description="The items after it move up a place."

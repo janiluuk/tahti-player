@@ -6339,3 +6339,7 @@ Library media, embeds and smart links share one row: artwork, title, detail and 
 ## 2026-10-31 — Radio station cards and playing cues
 
 Other stations on a radio station page use playable thumbnails. Listener cards no longer expose cover-edit overlays; board members edit the cover from a visible station-page button. Shared Card and AmbientCard surfaces subtly outline the playing item and clear the cue when paused. Fixed the channel Tracks Storybook assertion to distinguish pinned artwork from the catalog.
+
+## 2026-11-03 — De-green 20 (0.0.296)
+
+Confirming a delete, removal, revoke, block, sign-out, disconnect, withdrawal or cancellation now shows a red button (`ConfirmDialog destructive`) on about forty dialogs, from Studio sounds and devices to admin storage, news, add-ons and governance. Stopping a stream, overwriting or replacing a rotation and overwriting the live version are red too. Secondary controls that sat green (log Clear / Open folder, plugin Installed, Back to Settings after an email change) are now secondary.

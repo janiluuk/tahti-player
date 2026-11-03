@@ -385,6 +385,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Media/CollectionPlayer` | `CollectionPlayer.stories.tsx` |
 | `Components/ColorField` | `ColorField.stories.tsx` |
 | `Components/Combobox` | `Combobox.stories.tsx` |
+| `Components/ConfirmDialog` | `ConfirmDialog.stories.tsx` |
 | `Components/CopyButton` | `CopyButton.stories.tsx` |
 | `Components/DataTable` | `DataTable.stories.tsx` |
 | `Components/HistoryCharts/DayOfWeekChart` | `DayOfWeekChart.stories.tsx` |

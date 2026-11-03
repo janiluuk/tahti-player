@@ -22,7 +22,7 @@ export const LogToolbar: FC = () => {
 
   return (
     <div className="flex gap-2">
-      <Button size="sm" onClick={onClear}>
+      <Button size="sm" variant="secondary" onClick={onClear}>
         <Trash2 className="mr-1 size-4" />
         {labels.clearButton}
       </Button>
@@ -34,7 +34,7 @@ export const LogToolbar: FC = () => {
         )}
         {labels.exportButton}
       </Button>
-      <Button size="sm" onClick={onOpenLogFolder}>
+      <Button size="sm" variant="secondary" onClick={onOpenLogFolder}>
         <FolderOpen className="mr-1 size-4" />
         {labels.openLogFolderButton}
       </Button>

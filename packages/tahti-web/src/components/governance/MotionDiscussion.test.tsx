@@ -117,6 +117,9 @@ describe('MotionDiscussion comment removal', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Remove the comment by Other' }),
     );
+    expect(
+      (await screen.findByRole('button', { name: 'Remove' })).className,
+    ).toContain('bg-accent-red');
     fireEvent.click(await screen.findByRole('button', { name: 'Remove' }));
 
     await vi.waitFor(() =>

@@ -117,6 +117,7 @@ export function ImageSlotPreviewDialog({
 
       {showDelete ? (
         <ConfirmDialog
+          destructive
           isOpen={confirmOpen}
           title={`Remove ${label.toLowerCase()}?`}
           description="This can't be undone from here — you'll need to upload a new image to replace it."

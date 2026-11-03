@@ -48,6 +48,7 @@ export function ManagerDialogs({ state }: { state: StreamManagerState }) {
         <Dialog.Actions>
           <Dialog.Close>Cancel</Dialog.Close>
           <Button
+            intent="danger"
             disabled={ending}
             onClick={() => {
               setConfirmEndOpen(false);

@@ -129,6 +129,9 @@ describe('BulkEditBar', () => {
       screen.getByText(/Each artist is notified that the board removed/),
     ).toBeTruthy();
 
+    expect(screen.getByRole('button', { name: 'Delete' }).className).toContain(
+      'bg-accent-red',
+    );
     fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
     await waitFor(() => expect(onDeleted).toHaveBeenCalledWith(1, 1));
     const [url, init] = fetchSpy.mock.calls[0]!;
