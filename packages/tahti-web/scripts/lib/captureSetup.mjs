@@ -1,7 +1,7 @@
 /**
  * Shared page setup for the screenshot capture scripts (forced mock mode,
  * VITE_FORCE_MOCK=1):
- * - the Spotify theme in the mode picked by CAPTURE_THEME_MODE
+ * - Gruvbox (the default theme for new visitors) in the mode picked by CAPTURE_THEME_MODE
  *   (`dark`, the default, or `light`); light captures get a `--light` suffix;
  * - no unread notifications or messages and no toasts, so captures never
  *   show inbox badges or pop-ups (the mock fixtures read these keys);
@@ -11,7 +11,7 @@
 export const CAPTURE_THEME_MODE =
   process.env.CAPTURE_THEME_MODE === 'light' ? 'light' : 'dark';
 
-const CAPTURE_THEME_ID = 'custom:spotify-dark-theme';
+const CAPTURE_THEME_ID = 'custom:gruvbox';
 
 /** `tahti-web-theme` persisted store state for the capture theme. */
 export const CAPTURE_THEME_STATE = {

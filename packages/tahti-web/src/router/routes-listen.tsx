@@ -23,7 +23,9 @@ export const listenRoute = createRoute({
 export const listenFeedRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/listen/feed',
-  component: () => <ListenView tab="feed" />,
+  beforeLoad: () => {
+    throw redirect({ to: '/discover', search: { tab: 'feed' } });
+  },
 });
 
 export const listenFavoritesRoute = createRoute({

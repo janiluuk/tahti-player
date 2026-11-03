@@ -397,10 +397,6 @@ export const WhatsNewView = lazyRouteComponent(
   () => import('../views/WhatsNewView'),
   'WhatsNewView',
 );
-export const FeedView = lazyRouteComponent(
-  () => import('../views/FeedView'),
-  'FeedView',
-);
 export const OnboardingView = lazyRouteComponent(
   () => import('../views/OnboardingView'),
   'OnboardingView',

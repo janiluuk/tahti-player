@@ -36,7 +36,7 @@ export const ReadArticle: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const [card] = await canvas.findAllByTestId('article-card');
-    await userEvent.click(card!);
+    await userEvent.click(within(card!).getByTestId('story-card-open'));
     const body = withinBody(canvasElement);
     const article = await body.findByTestId('news-article');
     await expect(article).toBeVisible();

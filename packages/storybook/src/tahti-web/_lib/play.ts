@@ -72,8 +72,9 @@ export async function findToast(canvasElement: HTMLElement, text: Name) {
       ) ?? matches[0]!
     );
   });
-  // sonner mounts toasts at opacity 0 and fades them in.
-  await waitFor(() => expect(toast).toBeVisible());
+  // sonner mounts toasts at opacity 0 and fades them in; on a loaded CI
+  // runner the fade can outlast waitFor's 1s default.
+  await waitFor(() => expect(toast).toBeVisible(), { timeout: 5_000 });
   return toast;
 }
 

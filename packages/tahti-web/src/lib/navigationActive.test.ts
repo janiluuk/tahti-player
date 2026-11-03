@@ -23,9 +23,7 @@ const SIDEBAR_IDS = [
 describe('navigation active states', () => {
   const sidebarCases: [string, ReturnType<typeof activeSidebarItem>][] = [
     ['/', 'listen'],
-    ['/listen/feed', 'listen'],
     ['/listen/history', 'listen'],
-    ['/feed', 'listen'],
     ['/history', 'listen'],
     ['/channel/northern-lights', 'listen'],
     ['/t/arch-1', 'listen'],
@@ -89,12 +87,10 @@ describe('navigation active states', () => {
     expect(activeSidebarItem('/')).toBe('listen');
     expect(activeSidebarItem('/listen/favorites')).toBe('library');
     expect(activeSidebarItem('/library/favorites')).toBe('library');
-    expect(activeSidebarItem('/listen/feed')).toBe('listen');
   });
 
   it('selects the matching Listen section tab', () => {
     expect(activeListenTab('/')).toBe('listen');
-    expect(activeListenTab('/listen/feed')).toBe('feed');
     expect(activeListenTab('/favorites')).toBeNull();
     expect(activeListenTab('/listen/favorites')).toBeNull();
     expect(activeListenTab('/listen/history')).toBe('history');
@@ -103,7 +99,6 @@ describe('navigation active states', () => {
 
   it('lights Library on the phone for Favorites', () => {
     expect(activeMobileItem('/')).toBe('listen');
-    expect(activeMobileItem('/listen/feed')).toBe('listen');
     expect(activeMobileItem('/u/demo-artist')).toBe('listen');
     expect(activeMobileItem('/search')).toBe('listen');
     expect(activeMobileItem('/listen/favorites')).toBe('library');
