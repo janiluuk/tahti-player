@@ -13,11 +13,11 @@ import { isPinned } from '../../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../../lib/soundId';
+import { splitEmbedPlayables } from '../../lib/splitEmbedPlayables';
 import { PageEmpty } from '../PageStates';
 import { PlayableAmbientTrackList } from '../PlayableAmbientTrackList';
 import { ProfileSection } from '../ProfileSection';
 import { releasePlayables } from '../ReleaseTracklistDialog';
-import { TopListRankBadges } from './TopListRankBadges';
 
 export type RelatedArtist = {
   username: string;
@@ -60,22 +60,40 @@ export function ArtistPopularTracks({
   onEditTrack: (soundId: string | null) => void;
 }) {
   const getTrackMeta = useMemo(() => profileTrackMeta(tracks), [tracks]);
+  const split = useMemo(() => splitEmbedPlayables(items), [items]);
+  const onEdit = isOwner
+    ? (item: TahtiPlayable) => onEditTrack(soundIdFromPlayableId(item.id))
+    : undefined;
   return (
-    <ProfileSection title="Popular tracks" data-testid="artist-popular">
-      <TopListRankBadges items={items} />
-      <PlayableAmbientTrackList
-        items={items}
-        playAll
-        defaultDensity="comfortable"
-        getTrackMeta={getTrackMeta}
-        emptyMessage="No playable tracks on this profile."
-        onEdit={
-          isOwner
-            ? (item) => onEditTrack(soundIdFromPlayableId(item.id))
-            : undefined
-        }
-      />
-    </ProfileSection>
+    <>
+      {split.tracks.length > 0 ? (
+        <ProfileSection title="Tracks" data-testid="artist-popular">
+          <PlayableAmbientTrackList
+            items={split.tracks}
+            playAll
+            filterable
+            allowGrid={false}
+            className="bg-background-secondary"
+            getTrackMeta={getTrackMeta}
+            emptyMessage="No playable tracks on this profile."
+            onEdit={onEdit}
+          />
+        </ProfileSection>
+      ) : null}
+      {split.embeds.length > 0 ? (
+        <ProfileSection title="Embeds" data-testid="artist-embeds">
+          <PlayableAmbientTrackList
+            items={split.embeds}
+            playAll
+            filterable
+            allowGrid={false}
+            className="bg-background-secondary"
+            emptyMessage="No embeds on this profile."
+            onEdit={onEdit}
+          />
+        </ProfileSection>
+      ) : null}
+    </>
   );
 }
 

@@ -29,6 +29,16 @@ When touching a component, check whether it already follows this
 convention; if it doesn't, migrate it as part of the change rather than
 leaving it inconsistent.
 
+## Default artwork, never empty thumbnails
+
+A track, release, playlist or channel with no cover (or a cover that fails to
+load) shows the default artwork, never an empty placeholder thumbnail.
+`MediaArtwork` does this itself under `MediaArtworkDefaultProvider` (mounted
+in `TahtiApp.tsx` with `generatedArtworkUrl`, the admin artwork presets):
+pass `seed` (track id, slug, username) when the `alt` text is not a stable
+name. Only pass `placeholder` or `fallbackBackground` when an icon or color
+is the intended empty state (e.g. a radio station logo slot).
+
 ## Never show email addresses as names
 
 Email addresses must never appear as an artist, channel, user or credit name

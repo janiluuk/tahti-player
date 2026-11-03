@@ -3,7 +3,7 @@ import { DownloadIcon, PencilIcon, PlusIcon, TrashIcon } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
-import { Select } from '@tahti-player/ui';
+import { Input, Select } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
 import { formatDuration } from '../lib/playableToTrack';
@@ -44,6 +44,9 @@ export function PlayableAmbientTrackList({
   getTrackMeta,
   defaultDensity = 'compact',
   toolbarStart,
+  filterable = false,
+  allowGrid = true,
+  className,
 }: {
   items: TahtiPlayable[];
   emptyMessage?: string;
@@ -70,6 +73,12 @@ export function PlayableAmbientTrackList({
   defaultDensity?: AmbientTrackRowDensity;
   /** Leads the toolbar row beside sort and size, e.g. a filter box. */
   toolbarStart?: ReactNode;
+  /** Adds a search box that filters rows by title or artist. Ignored when
+   * `toolbarStart` is set. */
+  filterable?: boolean;
+  /** Offers the cover-card grid view beside the list. */
+  allowGrid?: boolean;
+  className?: string;
 }) {
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
@@ -98,7 +107,32 @@ export function PlayableAmbientTrackList({
     }
   }, [userId, getTrackMeta, loadLikes]);
   const [sort, setSort] = useTrackSort();
-  const sorted = useMemo(() => sortTracks(items, sort), [items, sort]);
+  const [query, setQuery] = useState('');
+  const filtered = useMemo(() => {
+    const needle = query.trim().toLocaleLowerCase();
+    if (!filterable || !needle) {
+      return items;
+    }
+    return items.filter((item) =>
+      `${item.title} ${item.artist}`.toLocaleLowerCase().includes(needle),
+    );
+  }, [items, query, filterable]);
+  const sorted = useMemo(() => sortTracks(filtered, sort), [filtered, sort]);
+  const filterBox =
+    filterable && items.length > 1 ? (
+      <Input
+        enterKeyHint="search"
+        type="search"
+        aria-label="Filter tracks"
+        placeholder="Filter tracks"
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+      />
+    ) : undefined;
+  const shownEmptyMessage =
+    filterable && query.trim() && items.length > 0
+      ? `No tracks match “${query.trim()}”.`
+      : emptyMessage;
 
   // Built without the playback position: a progress tick then only replaces
   // the current row, and the memoized rows skip re-rendering.
@@ -299,10 +333,11 @@ export function PlayableAmbientTrackList({
     <>
       <AmbientTrackList
         items={listItems}
-        allowGrid
+        allowGrid={allowGrid}
         defaultDensity={defaultDensity}
-        emptyMessage={emptyMessage}
-        toolbarStart={toolbarStart}
+        emptyMessage={shownEmptyMessage}
+        toolbarStart={toolbarStart ?? filterBox}
+        className={className}
         toolbarEnd={
           items.length > 1 ? (
             <Select
@@ -317,7 +352,7 @@ export function PlayableAmbientTrackList({
         renderList={() => (
           <PlayableTrackTable
             items={sorted}
-            emptyMessage={emptyMessage}
+            emptyMessage={shownEmptyMessage}
             playAll={playAll}
             compactActions={compactActions}
             getAnnotation={getAnnotation}

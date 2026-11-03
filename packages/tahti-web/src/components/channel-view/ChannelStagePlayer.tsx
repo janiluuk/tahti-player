@@ -17,10 +17,16 @@ import {
   resolveNowPlayingOverlayPreset,
 } from '../../content/nowPlayingOverlayPresets';
 import { prefetchHls } from '../../lib/hlsLoader';
-import { usePlayerStore } from '../../stores/playerStore';
+import {
+  playableFromQueueItem,
+  usePlayerStore,
+} from '../../stores/playerStore';
+import { EmbedSurface } from '../EmbedSurface';
+import { useHearthisEmbedClaim } from '../HearthisEmbedHost';
 import { NowPlayingOverlay } from '../NowPlayingOverlay';
+import { Eyebrow } from '../tahti/Eyebrow';
 import { WaveformSeekbar } from '../tahti/WaveformSeekbar';
-import { channelAirState } from './ChannelAirBadge';
+import { ChannelAirBadge, channelAirState } from './ChannelAirBadge';
 import { ChannelStageTrackMeta } from './ChannelStageTrackMeta';
 import { useRotationNowPlaying } from './useRotationNowPlaying';
 
@@ -36,6 +42,12 @@ type Props = {
     toggle: () => Promise<void>;
   } | null;
   signedIn: boolean;
+  /** Playable ids of this channel's own tracks: when one of them is an
+   * embed and is playing, its widget shows in the stage. */
+  trackIds?: ReadonlySet<string>;
+  /** Opens chat on the page itself; without it the chat button goes to
+   * the standalone chat route. */
+  onOpenChat?: () => void;
 };
 
 /** The channel's player: now-playing overlay plus chat / follow / play
@@ -49,6 +61,8 @@ export function ChannelStagePlayer({
   chatOn,
   follow,
   signedIn,
+  trackIds,
+  onOpenChat,
 }: Props) {
   const play = usePlayerStore((s) => s.play);
   const currentId = usePlayerStore((s) => s.currentId);
@@ -57,6 +71,18 @@ export function ChannelStagePlayer({
   const duration = usePlayerStore((s) => s.duration);
   const seekTo = usePlayerStore((s) => s.seekTo);
   const setPlaybackStatus = usePlayerStore((s) => s.setStatus);
+  const queue = usePlayerStore((s) => s.queue);
+  const restoredPending = usePlayerStore((s) => s.restoredPending);
+  const reloadNonce = usePlayerStore((s) => s.reloadNonce);
+  const currentItem =
+    currentId && trackIds?.has(currentId)
+      ? queue.find((item) => item.id === currentId)
+      : undefined;
+  const currentPlayable = currentItem
+    ? playableFromQueueItem(currentItem)
+    : null;
+  const stageEmbed = currentPlayable?.embed ? currentPlayable : null;
+  useHearthisEmbedClaim(Boolean(stageEmbed));
   const favorited = follow?.following ?? false;
   const favoriteLabel = signedIn
     ? `Follow ${channel.user.displayName}`
@@ -85,6 +111,10 @@ export function ChannelStagePlayer({
     if (!chatOn) {
       return;
     }
+    if (onOpenChat) {
+      onOpenChat();
+      return;
+    }
     void navigate({ to: '/chat/$slug', params: { slug } });
   };
 
@@ -102,8 +132,40 @@ export function ChannelStagePlayer({
       .catch(() => toast.error('Could not start the stream. Try again.'));
   };
 
+  const airBadge = (
+    <div className="absolute top-3 left-4 z-[2] sm:left-6">
+      <ChannelAirBadge channel={channel} />
+    </div>
+  );
+
+  if (stageEmbed?.embed) {
+    return (
+      <div
+        className="bg-background-secondary relative flex flex-col gap-3 px-4 pt-10 pb-4 sm:px-6"
+        data-testid="channel-stage-embed"
+      >
+        {airBadge}
+        <div className="min-w-0">
+          <Eyebrow tone="muted">Now playing</Eyebrow>
+          <p className="truncate text-lg font-bold">{stageEmbed.title}</p>
+          <p className="text-foreground-secondary truncate text-sm">
+            {stageEmbed.artist}
+          </p>
+        </div>
+        <EmbedSurface
+          provider={stageEmbed.embed.provider}
+          embedUri={stageEmbed.embed.embedUri}
+          title={stageEmbed.title}
+          autoplay={restoredPending !== stageEmbed.id}
+          mountKey={reloadNonce}
+        />
+      </div>
+    );
+  }
+
   return !live && !nowPlaying ? (
-    <div className="bg-background-secondary px-4 py-6 sm:px-6">
+    <div className="bg-background-secondary relative px-4 pt-10 pb-6 sm:px-6">
+      {airBadge}
       <EmptyState
         size="sm"
         className="gap-3 p-4 sm:p-6"
@@ -134,12 +196,13 @@ export function ChannelStagePlayer({
     </div>
   ) : (
     <div
-      className={`relative p-4 pr-24 sm:p-6 sm:pr-40 ${
+      className={`relative p-4 pt-12 pr-24 sm:p-6 sm:pt-12 sm:pr-40 ${
         subtle
           ? 'bg-gradient-to-t from-black/80 via-black/35 to-black/10'
           : 'bg-gradient-to-t from-black/70 to-black/5'
       }`}
     >
+      {airBadge}
       {nowPlaying ? (
         <>
           <NowPlayingOverlay

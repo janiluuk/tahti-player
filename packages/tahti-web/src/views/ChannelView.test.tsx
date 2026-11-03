@@ -310,37 +310,40 @@ describe('ChannelView', () => {
       hlsUrl: 'https://example.test/live.m3u8',
     };
 
-    it('offers the live chat while the channel is live and opens the chat page', async () => {
+    it('keeps Comments and Chat in their own tabs under the stage', async () => {
       mockChannelState({ ...LIVE, chatEnabled: true });
-      const router = await renderChannel('/channel/northern-lights');
+      await renderChannel('/channel/northern-lights');
 
-      const heading = await screen.findByText('Live chat is open');
-      const card = heading.parentElement!.parentElement!;
-      expect(card.textContent).toContain('Comments below are for the archive');
+      const tabs = await screen.findByTestId('channel-page-tabs');
+      expect(
+        within(tabs)
+          .getAllByRole('tab')
+          .map((tab) => tab.textContent),
+      ).toEqual(['Music', 'Comments', 'Chat']);
+      expect(screen.queryByTestId('channel-chat-tab')).toBeNull();
 
       await act(async () => {
-        fireEvent.click(
-          within(card).getByRole('button', { name: 'Open live chat' }),
-        );
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        fireEvent.click(within(tabs).getByRole('tab', { name: 'Chat' }));
       });
-      expect(router.state.location.pathname).toBe('/chat/northern-lights');
+      expect(screen.getByTestId('channel-chat-tab')).toBeTruthy();
+      expect(screen.queryByTestId('channel-blocks')).toBeNull();
+
+      await act(async () => {
+        fireEvent.click(within(tabs).getByRole('tab', { name: 'Music' }));
+      });
+      expect(screen.getByTestId('channel-blocks')).toBeTruthy();
     });
 
-    it('does not offer the live chat when the artist turned chat off', async () => {
+    it('leaves out the Chat tab when the artist turned chat off', async () => {
       mockChannelState({ ...LIVE, chatEnabled: false });
       await renderChannel('/channel/northern-lights');
 
-      await screen.findByTestId('channel-backdrop-card-name');
-      expect(screen.queryByText('Live chat is open')).toBeNull();
-    });
-
-    it('does not offer the live chat while the channel is offline', async () => {
-      mockChannelState({ state: 'OFFLINE', chatEnabled: true });
-      await renderChannel('/channel/northern-lights');
-
-      await screen.findByTestId('channel-backdrop-card-name');
-      expect(screen.queryByText('Live chat is open')).toBeNull();
+      const tabs = await screen.findByTestId('channel-page-tabs');
+      expect(
+        within(tabs)
+          .getAllByRole('tab')
+          .map((tab) => tab.textContent),
+      ).toEqual(['Music', 'Comments']);
     });
   });
 });
