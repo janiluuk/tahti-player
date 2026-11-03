@@ -62,6 +62,7 @@ export function SelectsGenerateDialog({
         </Button>
         <Button
           type="button"
+          intent={mode === 'replace' ? 'danger' : undefined}
           disabled={pending}
           onClick={() => {
             setPending(true);

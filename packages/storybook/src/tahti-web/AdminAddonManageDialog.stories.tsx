@@ -83,6 +83,9 @@ export const ConfirmDisable: Story = {
       confirm.getByText(/Only a fresh bundle publish brings it back/),
     ).toBeVisible();
     await expect(args.onDisable).not.toHaveBeenCalled();
+    await expect(
+      confirm.getByRole('button', { name: 'Disable' }).className,
+    ).toContain('bg-accent-red');
     await userEvent.click(confirm.getByRole('button', { name: 'Disable' }));
     await expect(args.onDisable).toHaveBeenCalledWith(args.addon);
   },

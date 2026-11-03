@@ -176,6 +176,7 @@ export function SocialOAuthPlatform({
         </div>
       </form>
       <ConfirmDialog
+        destructive
         isOpen={confirmDisconnect}
         title={`Disconnect ${copy.name}?`}
         description="Tahti forgets the saved sign-in and stops posting there."

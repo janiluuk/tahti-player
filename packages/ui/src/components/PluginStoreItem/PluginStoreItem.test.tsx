@@ -83,6 +83,8 @@ describe('PluginStoreItem', () => {
 
     const button = getByRole('button', { name: /installed/i });
     expect(button).toBeDisabled();
+    expect(button.className).toContain('bg-secondary');
+    expect(button.className).not.toContain('bg-primary');
   });
 
   it('does not call onInstall when installing', async () => {

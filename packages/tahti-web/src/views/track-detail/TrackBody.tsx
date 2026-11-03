@@ -224,6 +224,7 @@ export function TrackBody({ page }: { page: TrackPage }) {
         </div>
       </div>
       <ConfirmDialog
+        destructive
         isOpen={pendingDeleteId !== null}
         title="Remove this comment?"
         description={pendingComment?.body ?? 'The comment leaves this track.'}

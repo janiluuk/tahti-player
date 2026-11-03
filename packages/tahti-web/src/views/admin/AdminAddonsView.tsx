@@ -215,6 +215,7 @@ export function AdminAddonsView() {
               />
 
               <ConfirmDialog
+                destructive
                 isOpen={deleteTarget !== null}
                 title={
                   deleteTarget
@@ -258,6 +259,7 @@ export function AdminAddonsView() {
               />
 
               <ConfirmDialog
+                destructive
                 isOpen={removeInstallTarget !== null}
                 title={
                   removeInstallTarget

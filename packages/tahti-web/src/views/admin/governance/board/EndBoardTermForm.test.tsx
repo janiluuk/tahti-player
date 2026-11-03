@@ -26,6 +26,9 @@ describe('EndBoardTermForm', () => {
     fireEvent.change(screen.getByLabelText('Why (optional)'), {
       target: { value: 'Resigned' },
     });
+    expect(
+      screen.getByRole('button', { name: 'End term' }).className,
+    ).toContain('bg-accent-red');
     fireEvent.click(screen.getByRole('button', { name: 'End term' }));
     expect(end).toHaveBeenCalledWith(term.id, '2026-11-30', 'Resigned');
     await waitFor(() => expect(onEnded).toHaveBeenCalled());

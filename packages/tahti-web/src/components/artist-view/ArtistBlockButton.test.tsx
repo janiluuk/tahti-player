@@ -52,6 +52,9 @@ describe('ArtistBlockButton', () => {
     expect(block).not.toHaveBeenCalled();
     expect(screen.getByText('Block Aino?')).toBeTruthy();
     await act(async () => {
+      expect(screen.getByRole('button', { name: 'Block' }).className).toContain(
+        'bg-accent-red',
+      );
       fireEvent.click(screen.getByRole('button', { name: 'Block' }));
     });
     expect(block).toHaveBeenCalledWith('aino');

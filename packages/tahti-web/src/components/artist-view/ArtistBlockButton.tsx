@@ -55,6 +55,7 @@ export function useArtistBlock(username: string, displayName: string) {
     toggle: () => (blocked ? change(false) : setConfirming(true)),
     dialog: (
       <ConfirmDialog
+        destructive
         isOpen={confirming}
         title={`Block ${displayName}?`}
         description="You won't be able to message each other, they can't comment on your tracks or follow you, and you stop following each other. They aren't told you blocked them."

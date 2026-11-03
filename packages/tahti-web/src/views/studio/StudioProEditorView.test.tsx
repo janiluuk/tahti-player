@@ -202,6 +202,17 @@ describe('StudioProEditorView', () => {
     expect(screen.queryByText('Could not load the editor')).toBeNull();
   });
 
+  it('paints Overwrite live version red beside the secondary new revision', async () => {
+    await renderEditor();
+    fireEvent.click(screen.getByRole('button', { name: /render version/i }));
+    expect(
+      screen.getByRole('button', { name: 'Overwrite live version' }).className,
+    ).toContain('bg-accent-red');
+    expect(
+      screen.getByRole('button', { name: 'Save as new revision' }).className,
+    ).toContain('bg-secondary');
+  });
+
   it('retries a failed editor load', async () => {
     const draft = vi
       .spyOn(studioApi, 'fetchEditorDraft')

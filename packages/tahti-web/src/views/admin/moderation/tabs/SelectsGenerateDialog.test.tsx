@@ -55,6 +55,9 @@ describe('SelectsGenerateDialog', () => {
       screen.getByText('This removes all 24 tracks in the current rotation.'),
     ).toBeTruthy();
     await act(async () => {
+      expect(
+        screen.getByRole('button', { name: 'Replace rotation' }).className,
+      ).toContain('bg-accent-red');
       fireEvent.click(screen.getByRole('button', { name: 'Replace rotation' }));
     });
     expect(generate).toHaveBeenCalledWith('replace');

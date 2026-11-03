@@ -204,6 +204,7 @@ function PlatformForm({
         </div>
       </form>
       <ConfirmDialog
+        destructive
         isOpen={confirmDisconnect}
         title={`Disconnect ${copy.name}?`}
         description="Tahti forgets the saved credentials and stops posting there."

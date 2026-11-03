@@ -35,4 +35,29 @@ describe('PlaylistDialog', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(state.previewCollection).toHaveBeenCalledWith('night');
   });
+
+  it('paints the replace confirm red and the add confirm green', () => {
+    const { rerender } = render(
+      <PlaylistDialog
+        state={stateWith({
+          playlistDialogOpen: false,
+          pendingApply: { replace: true },
+        })}
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Replace rotation' }).className,
+    ).toContain('bg-accent-red');
+    rerender(
+      <PlaylistDialog
+        state={stateWith({
+          playlistDialogOpen: false,
+          pendingApply: { replace: false },
+        })}
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Add to rotation' }).className,
+    ).not.toContain('bg-accent-red');
+  });
 });
