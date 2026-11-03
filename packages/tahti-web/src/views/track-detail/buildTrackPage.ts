@@ -7,7 +7,6 @@ import { fetchPublicSoundDownload } from '../../api/public-sound-download';
 import { checkoutPurchaseTier } from '../../api/purchase-tiers';
 import { fetchDownloadGates } from '../../api/sound-download-gates';
 import { type TahtiPlayable, type TrackComment } from '../../api/types';
-import { hasAccountRole } from '../../lib/accountRoles';
 import { normalizeColorScheme } from '../../lib/colorScheme';
 import { buildCommentMarkers } from '../../lib/commentMarkers';
 import { EMBED_PROVIDER_LABEL, embedSrcFor } from '../../lib/embedSrc';
@@ -106,7 +105,9 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     }
     return cue.id;
   }, null);
-  const canEdit = isOwner || hasAccountRole(user, 'BOARD');
+  // The edit dialog reads and saves through /api/me/sound (owner only);
+  // there is no admin sound-edit route, so only the owner gets the button.
+  const canEdit = isOwner;
   const artistLive = channel?.state === 'LIVE';
   const relatedTracks = (profile?.tracks ?? [])
     .filter((track) => track.id !== id)

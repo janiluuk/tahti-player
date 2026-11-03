@@ -9,6 +9,7 @@ import { ANNOTATED_ROW_HEIGHT } from '../api/collection-contribution';
 import type { TahtiPlayable } from '../api/types';
 import { playableToTrack } from '../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../lib/soundId';
+import { titleWithoutArtist } from '../lib/titleWithoutArtist';
 import { trackTableLabels } from '../lib/trackTableLabels';
 import { toastWithUndo } from '../lib/undoToast';
 import { useLibraryStore } from '../stores/libraryStore';
@@ -101,7 +102,13 @@ export function PlayableTrackTable({
     return <PageEmpty title={emptyMessage} />;
   }
 
-  const tracks: Track[] = items.map(playableToTrack);
+  // The artist has its own column, so a title that repeats it drops it.
+  const tracks: Track[] = items.map((item) =>
+    playableToTrack({
+      ...item,
+      title: titleWithoutArtist(item.title, item.artist),
+    }),
+  );
   // Keyed the same way `playableToTrack` sets `source.id` -- an embed
   // item's source.id is its `embedUri`, not `item.id` -- so lookups from
   // both a `Track` (via `resolve`) and a raw id string (bulk actions) hit

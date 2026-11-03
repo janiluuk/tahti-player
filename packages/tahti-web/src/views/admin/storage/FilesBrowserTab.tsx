@@ -1,6 +1,5 @@
 import { Link } from '@tanstack/react-router';
 import {
-  ArrowDownAZIcon,
   CheckSquareIcon,
   ExternalLinkIcon,
   PlayIcon,
@@ -18,6 +17,7 @@ import {
   Dialog,
   Input,
   Select,
+  SortMenuButton,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -356,15 +356,15 @@ export function FilesBrowserTab() {
           Group by user
         </Button>
         <div className="flex items-center gap-1.5 sm:ml-auto">
-          <ArrowDownAZIcon size={14} aria-hidden />
-          <Select
+          <SortMenuButton
             label="Sort files by"
             value={sortBy}
-            onValueChange={(value) => setSortBy(value as FileSortKey)}
+            onChange={(value) => setSortBy(value as FileSortKey)}
             options={SORT_OPTIONS.map((option) => ({
               id: option.id,
               label: option.label,
             }))}
+            defaultValue="name"
           />
         </div>
       </div>

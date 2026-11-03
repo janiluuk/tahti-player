@@ -97,9 +97,9 @@ export const SortByTitle: Story = {
     await waitFor(() =>
       expect(rowTitles(canvasElement)[0]).toBe('Polar Static'),
     );
-    await userEvent.click(canvas.getByRole('button', { name: 'Sort tracks' }));
+    await userEvent.click(canvas.getByRole('button', { name: /^Sort tracks/ }));
     await userEvent.click(
-      await withinBody(canvasElement).findByRole('option', {
+      await withinBody(canvasElement).findByRole('menuitemradio', {
         name: 'Title A–Z',
       }),
     );

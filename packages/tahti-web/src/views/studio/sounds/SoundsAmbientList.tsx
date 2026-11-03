@@ -278,17 +278,8 @@ function EmbedSoundCard({
         provider={provider}
         embedUri={embedUri}
         as="div"
+        actions={<SoundRowActions item={item} state={state} />}
       />
-      <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-        <p className="text-foreground-secondary min-w-0 flex-1 text-xs">
-          <SoundTitle item={item} />
-          <span className="text-foreground-secondary">
-            {' '}
-            · via {EMBED_PROVIDER_LABEL[provider]}
-          </span>
-        </p>
-        <SoundRowActions item={item} state={state} />
-      </div>
     </li>
   );
 }

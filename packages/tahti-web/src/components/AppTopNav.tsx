@@ -10,6 +10,7 @@ import {
 } from '@tahti-player/ui';
 
 import { useOpenedOnce } from '../hooks/useOpenedOnce';
+import { isDesktopApp } from '../lib/desktopApp';
 import { BroadcastControls } from './app-top-nav/BroadcastControls';
 import { MessagesPopover } from './app-top-nav/MessagesPopover';
 import { NotificationsPopover } from './app-top-nav/NotificationsPopover';
@@ -43,6 +44,8 @@ type AppTopNavProps = {
  */
 export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
   const nav = useTopNavState();
+  // A browser has its own back and forward; only the desktop app needs them.
+  const desktopApp = isDesktopApp();
   const {
     router,
     canGoBack,
@@ -84,19 +87,21 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
         {user && processingItems.length > 0 ? (
           <ProcessingIndicator nav={nav} />
         ) : null}
-        <div className="hidden items-center gap-1 sm:flex">
-          <BackButton
-            disabled={!canGoBack}
-            title="Go back"
-            onClick={() => router.history.back()}
-          />
-          <BackButton
-            direction="forward"
-            disabled={!canGoForward}
-            title="Go forward"
-            onClick={() => router.history.forward()}
-          />
-        </div>
+        {desktopApp ? (
+          <div className="hidden items-center gap-1 sm:flex">
+            <BackButton
+              disabled={!canGoBack}
+              title="Go back"
+              onClick={() => router.history.back()}
+            />
+            <BackButton
+              direction="forward"
+              disabled={!canGoForward}
+              title="Go forward"
+              onClick={() => router.history.forward()}
+            />
+          </div>
+        ) : null}
       </div>
 
       <div className="hidden min-w-0 flex-1 justify-center px-4 sm:flex">

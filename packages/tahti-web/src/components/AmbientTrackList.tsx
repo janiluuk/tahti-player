@@ -47,6 +47,8 @@ export type AmbientTrackListProps = {
   renderList?: () => ReactNode;
   /** Offers a Grid option: cover cards with play, no waveform. */
   allowGrid?: boolean;
+  /** Starting view for this list only (not shared with other lists). */
+  initialView?: AmbientTrackListView;
   className?: string;
 };
 
@@ -63,14 +65,18 @@ export function AmbientTrackList({
   hideViewPicker = false,
   renderList,
   allowGrid = false,
+  initialView,
   className,
 }: AmbientTrackListProps) {
   const controlled = densityProp !== undefined;
-  const shouldPersist = persistDensity ?? !controlled;
+  // A list with its own starting view keeps its own choice instead of the
+  // view shared by every other list.
+  const shouldPersist = initialView ? false : (persistDensity ?? !controlled);
   const storedView = useTrackListViewStore((state) => state.view);
   const storeView = useTrackListViewStore((state) => state.setView);
-  const [internal, setInternal] =
-    useState<AmbientTrackListView>(defaultDensity);
+  const [internal, setInternal] = useState<AmbientTrackListView>(
+    initialView ?? defaultDensity,
+  );
   const view: AmbientTrackListView = controlled
     ? densityProp
     : shouldPersist

@@ -285,6 +285,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                 <CardsRow
                   data-testid="listen-recently-played"
                   title="Recently played"
+                  filterable={false}
                   badge="History"
                   badgeColor="yellow"
                   items={recentItems}

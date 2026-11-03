@@ -324,6 +324,7 @@ export function ConnectedPlayerBar() {
             title={title}
             autoplay={restoredPending !== playable?.id}
             mountKey={reloadNonce}
+            compact
           />
         </div>
       </div>
@@ -350,7 +351,7 @@ export function ConnectedPlayerBar() {
             data-testid="expand-full-screen-player"
           >
             {coverUrl ? (
-              <MediaArtwork src={coverUrl} size="sm" className="shrink-0" />
+              <MediaArtwork src={coverUrl} size="thumb" className="shrink-0" />
             ) : null}
             <span className="min-w-0">
               <span

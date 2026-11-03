@@ -1,5 +1,5 @@
 import { PlayIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 
 import { Button } from '@tahti-player/ui';
 
@@ -22,6 +22,9 @@ type Props = {
   className?: string;
   /** Render as a plain block when the caller already owns the list item. */
   as?: 'li' | 'div';
+  /** Row actions (edit, stats, queue, more) shown beside the title, so a
+   * caller doesn't repeat the title on a second line for them. */
+  actions?: ReactNode;
 };
 
 /**
@@ -38,6 +41,7 @@ export function EmbedTrackRow({
   embedUri,
   className,
   as: Container = 'li',
+  actions,
 }: Props) {
   const [embedOpen, setEmbedOpen] = useState(false);
   const src = embedSrcFor(provider, embedUri);
@@ -103,31 +107,43 @@ export function EmbedTrackRow({
           loading="lazy"
         />
       ) : (
-        <Button
-          variant="text"
-          size="flexible"
-          type="button"
-          className="hover:bg-background-secondary w-full rounded-none px-3 py-2 text-left"
-          onClick={() => void start()}
-          aria-label={`${isPlaying ? 'Pause' : 'Play'} ${title} on ${label}`}
-        >
-          <LibraryItemRow
-            className="w-full py-0"
-            artwork={
-              <span className="bg-primary/15 text-primary-strong flex size-10 items-center justify-center rounded-md">
-                <PlayIcon size={16} className="fill-current" aria-hidden />
-              </span>
-            }
-            title={<span className="block truncate">{title}</span>}
-            subtitle={`Listen on ${label}`}
-            actions={
-              <span className="text-foreground-secondary font-mono text-[10px] tracking-wide uppercase">
-                Embed
-              </span>
-            }
-          />
-        </Button>
+        <div className="flex items-center">
+          <Button
+            variant="text"
+            size="flexible"
+            type="button"
+            className="hover:bg-background-secondary min-w-0 flex-1 rounded-none px-3 py-2 text-left"
+            onClick={() => void start()}
+            aria-label={`${isPlaying ? 'Pause' : 'Play'} ${title} on ${label}`}
+          >
+            <LibraryItemRow
+              className="w-full py-0"
+              artwork={
+                <span className="bg-primary/15 text-primary-strong flex size-10 items-center justify-center rounded-md">
+                  <PlayIcon size={16} className="fill-current" aria-hidden />
+                </span>
+              }
+              title={<span className="block truncate">{title}</span>}
+              subtitle={`Listen on ${label}`}
+              actions={
+                <span className="text-foreground-secondary font-mono text-[10px] tracking-wide uppercase">
+                  Embed
+                </span>
+              }
+            />
+          </Button>
+          {actions ? (
+            <div className="flex shrink-0 items-center gap-1 pr-2">
+              {actions}
+            </div>
+          ) : null}
+        </div>
       )}
+      {actions && (embedOpen || (provider === 'HEARTHIS' && isCurrent)) ? (
+        <div className="border-border flex items-center justify-end gap-1 border-t px-2 py-1">
+          {actions}
+        </div>
+      ) : null}
     </Container>
   );
 }

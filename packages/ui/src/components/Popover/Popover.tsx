@@ -68,7 +68,9 @@ const PopoverImpl: FC<PopoverProps> = ({
                   animate={{ opacity: 1, y: 8, scale: 1 }}
                   exit={{ opacity: 0, y: 4, scale: 0.98 }}
                   className={cn(
-                    'text-primary-foreground bg-primary border-border rounded-md border-(length:--border-width) px-4 py-2 leading-5 select-none',
+                    // Portaled panels stack above sticky toolbars and the
+                    // full-screen player (z-60) so every option is clickable.
+                    'text-primary-foreground bg-primary border-border z-[80] rounded-md border-(length:--border-width) px-4 py-2 leading-5 select-none',
                     panelClassName,
                     {
                       ['translate-y-0']: anchor === 'bottom',

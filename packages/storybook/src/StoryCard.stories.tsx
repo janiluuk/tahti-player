@@ -11,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The one card for platform news, artist posts, community stories, feed items and RSS articles: the image fills a 16:9 frame and a dark gradient layer carries the kind pill, date (clock icon), title, a one-line excerpt and the author on top of it. `ArticleCard` (NewsWidget) renders through it, so every news and story row looks the same.',
+          'The one card for platform news, artist posts, community stories, feed items and RSS articles: a 16:9 image with the title overlaid on a gradient, then the kind and date (clock icon), a short excerpt and the author below. `ArticleCard` (NewsWidget) renders through it, so every news and story row looks the same.',
       },
     },
   },

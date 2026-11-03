@@ -94,6 +94,6 @@ describe('ChannelPlaylistBlock', () => {
     expect(list).toHaveTextContent('Ambient');
     expect(screen.getByText('42 plays')).toBeTruthy();
     expect(screen.getByRole('button', { name: /^Track size/ })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Sort tracks' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /^Sort tracks/ })).toBeTruthy();
   });
 });
