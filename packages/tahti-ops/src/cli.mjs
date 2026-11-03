@@ -186,7 +186,8 @@ function takeOption(args, name) {
 COMMANDS.push(
   {
     path: ['desktop'],
-    usage: 'tahti-ops desktop <run|launch|dev|bundle|android> [--dry-run]',
+    usage:
+      'tahti-ops desktop <run|latest|launch|dev|bundle|android> [--dry-run]',
     summary:
       'Build and launch the desktop app, run it in dev mode, bundle it, or run it on Android',
     details: `Modes:
@@ -195,6 +196,7 @@ ${Object.entries(desktopModes())
   .join('\n')}
 
 Needs Rust and the Tauri system packages (see AGENTS.md → Environment).
+latest shares this checkout's Rust target dir, so rebuilds are incremental.
 android runs \`tauri android init\` first when src-tauri/gen/android is missing.`,
     passthrough: true,
     run: (_parsed, argv) => {

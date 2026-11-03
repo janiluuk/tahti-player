@@ -14,6 +14,7 @@
     "tahti-ops": "node packages/tahti-ops/src/cli.mjs",
     "desktop": "pnpm tahti-ops desktop run",
     "desktop:dev": "pnpm tahti-ops desktop dev",
+    "desktop:latest": "pnpm tahti-ops desktop latest",
     "test:all": "pnpm tahti-ops test all",
     "e2e": "pnpm tahti-ops e2e journeys",
     "e2e:beta": "pnpm tahti-ops e2e tasks",
