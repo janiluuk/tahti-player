@@ -145,6 +145,12 @@ function AddonGroup({
 }) {
   const [open, setOpen] = useState(defaultOpen);
 
+  useEffect(() => {
+    if (defaultOpen) {
+      setOpen(true);
+    }
+  }, [defaultOpen]);
+
   return (
     <section className="border-border rounded-md border">
       <Button

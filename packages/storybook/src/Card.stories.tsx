@@ -132,7 +132,7 @@ export const Playing: Story = {
       'true',
     );
     await expect(
-      canvas.getByRole('button', { name: 'Pause', exact: true }),
+      canvas.getByRole('button', { name: 'Pause Random Album', exact: true }),
     ).toBeVisible();
   },
 };

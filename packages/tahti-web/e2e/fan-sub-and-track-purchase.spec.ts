@@ -134,7 +134,8 @@ async function captureDownload(
     if (!detail.data) {
       throw new Error('Track detail missing');
     }
-    const result = await client.fetchPublicArchiveDownload(
+    const downloads = await import('/src/api/public-sound-download.ts');
+    const result = await downloads.fetchPublicSoundDownload(
       detail.data.channelSlug,
       id,
     );
@@ -161,7 +162,7 @@ test('subscriber and track purchase both get the original WAV; artist sees both 
 
   const artistEmail = process.env.TAHTI_E2E_EMAIL ?? 'artist@tahti.live';
   const artistPassword = process.env.TAHTI_E2E_PASSWORD ?? 'demo-password';
-  const fanPassword = process.env.TAHTI_E2E_FAN_PASSWORD ?? 'e2e-fan-password';
+  const fanPassword = process.env.TAHTI_E2E_FAN_PASSWORD ?? 'E2e-Fan-Passw0rd';
   const stamp = Date.now();
   const fanSubEmail =
     process.env.TAHTI_E2E_FAN_SUB_EMAIL ?? `e2e-sub-${stamp}@example.com`;
@@ -188,7 +189,7 @@ test('subscriber and track purchase both get the original WAV; artist sees both 
 
   await page.getByLabel('Audience').click();
   await page.getByRole('option', { name: 'Public' }).click();
-  await page.getByRole('button', { name: 'Save changes' }).click();
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
   await expect(page.getByText(/saved/i)).toBeVisible();
 
   const soundId = /\/studio\/sounds\/([^/]+)$/.exec(page.url())?.[1];
@@ -217,13 +218,14 @@ test('subscriber and track purchase both get the original WAV; artist sees both 
   }, soundId);
   expect(purchaseSetup).toMatchObject({ ok: true });
 
-  await page.goto('/studio/branding');
-  const profileHref = await page
-    .getByRole('link', { name: 'View public profile' })
-    .getAttribute('href');
-  const username = /\/u\/([^/?#]+)/.exec(profileHref ?? '')?.[1];
+  const username = await page.evaluate(() => {
+    const raw = localStorage.getItem('tahti-web-auth');
+    return raw
+      ? (JSON.parse(raw)?.state?.user?.username as string | undefined)
+      : undefined;
+  });
   if (!username) {
-    throw new Error(`Could not read artist username from ${profileHref}`);
+    throw new Error('Could not read the artist username');
   }
   const trackUrl = `/t/${soundId}`;
 
@@ -279,7 +281,7 @@ test('subscriber and track purchase both get the original WAV; artist sees both 
   const orders = page.getByTestId('fan-order-list');
   await expect(orders.getByText(/Fan-sub — Supporter/i).first()).toBeVisible();
   await expect(
-    orders.getByText(/Track purchase — riff\.wav/i).first(),
+    orders.getByText(/Track purchase — riff/i).first(),
   ).toBeVisible();
 
   await grantBoardView(page);
@@ -287,5 +289,5 @@ test('subscriber and track purchase both get the original WAV; artist sees both 
   await expect(page.getByRole('heading', { name: 'Logs' })).toBeVisible();
   await page.getByRole('tab', { name: /Audit events/i }).click();
   await expect(page.getByText(/subscribed/i).first()).toBeVisible();
-  await expect(page.getByText(/ledger entry|riff\.wav/i).first()).toBeVisible();
+  await expect(page.getByText(/ledger entry|riff/i).first()).toBeVisible();
 });

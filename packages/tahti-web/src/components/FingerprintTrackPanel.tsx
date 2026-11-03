@@ -58,7 +58,11 @@ export function FingerprintTrackPanel({
   };
 
   return (
-    <div className="border-border flex flex-col gap-3 rounded-md border-(length:--border-width) p-4">
+    <div
+      role="group"
+      aria-label={`Fingerprinting ${track.title}`}
+      className="border-border flex flex-col gap-3 rounded-md border-(length:--border-width) p-4"
+    >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-sm font-semibold">{track.title}</span>
         {track.fingerprintMatch ? (

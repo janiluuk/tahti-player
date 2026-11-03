@@ -38,7 +38,7 @@ renders (route health) · ❌ nothing.
 | Listening parties (attend / schedule) | ❌ | ❌ | ◐ | — |
 | Support an artist: fan sub, track purchase | ✅ (guest email sub) | ✅ (buy, subscribe, cancel; stale) | ✅ (sees orders) | ✅ (audit log) |
 | Public reader: release, track, embeds, legal | ✅ | — | — | — |
-| Sign up, log in, verify, reset password | ✅ (register, Enter submits) | ❌ (listener sign-up) | ✅ | — |
+| Sign up, log in, verify, reset password | ✅ (register, Enter submits) | ✅ (listener sign-up) | ✅ | — |
 | Notifications, account menu dots | — | ❌ | ❌ | ❌ |
 | Settings (account, playback, appearance) | — | ❌ | ◐ (redirects) | — |
 | Add-ons (Listen widgets, themes, visualizers) | — | ❌ | ✅ (stale) | — |
@@ -65,7 +65,7 @@ renders (route health) · ❌ nothing.
 
 - [x] `signInAsListener()` (mock `listener@tahti.live`), `signInAsBoard()` and `acknowledgeGuidelines()` in `e2e/helpers/auth.ts` (2026-11-02). A signed-out fixture is not needed: a fresh page is signed out.
 - [x] Role journeys run on every code PR against the mock app (`e2e-mock` job in `ci.yml`, Vite with `VITE_FORCE_MOCK=1`, one retry). Not a required check yet; make it one once it has been green for a week.
-- [ ] Fix or retire the specs that fail on the mock app (list below; 45 → 38 on 2026-11-02 after fixing macOS-only paths, renamed headings, the size picker and the clip editor's browser path).
+- [x] Fix or retire the specs that fail on the mock app: 45 → 38 on 2026-11-02, 38 → 0 on 2026-11-03 (all 185 tests pass on the mock app). `signIn()` now dismisses the guidelines toast for every spec.
 
 ### Anonymous
 
@@ -79,7 +79,7 @@ renders (route health) · ❌ nothing.
 
 ### Listener
 
-- [ ] Signs up as a listener (no channel) and lands on Listen; Studio is not in the sidebar.
+- [x] Signs up as a listener (no channel) and lands on Listen; Studio is not in the sidebar (`use-cases-listener-4.spec.ts`; Join now has a Listener account type).
 - [x] Follows an artist → Library → Following; the Feed lists posts and releases and pages on (`use-cases-listener*.spec.ts`).
 - [x] Favorites a track → Library → Favorites, and removes it (`use-cases-listener*.spec.ts`). A release is left.
 - [ ] Builds a playlist, reorders, adds to someone's collaborative playlist and undoes it. (Creating one from Add to playlist: covered.)
@@ -97,7 +97,7 @@ renders (route health) · ❌ nothing.
 - [x] Uploads a track end to end and lands on its page (`use-cases-artist-3.spec.ts`).
 - [ ] Creates a release, adds tracks and artwork, publishes; smart link page shows it. (Creating one: covered in `use-cases-artist-3.spec.ts`; tracks, artwork and publishing left.)
 - [ ] Broadcast hub: agenda chips filter; Go live flow reaches the green room; schedules a show and an event; schedules and cancels a listening party. (Chips filter, Go live opens and links back, an event is added, a listening party is scheduled: covered.)
-- [ ] Fans hub: writes and schedules a post; sends a newsletter; creates a membership tier; adds a store item; Earnings shows orders. (Publishes and schedules a post, saves a newsletter draft, creates a membership tier and a store price, toggles the Store: covered. Sending and Earnings orders left.)
+- [ ] Fans hub: writes and schedules a post; sends a newsletter; creates a membership tier; adds a store item; Earnings shows orders. (Publishes and schedules a post, saves a newsletter draft, creates a membership tier and a store price, toggles the Store: covered; Earnings lists a track purchase and a fan subscription (`listener-purchase-flow`, `fan-sub-and-track-purchase`). Sending a newsletter left.)
 - [x] Profile hub cards open Settings panels and the Story saves (`roles-artist-admin-hubs.spec.ts`, `use-cases-artist-*.spec.ts`).
 - [ ] Moderates chat (ban, moderator add) and comments. (Adds and removes a moderator: covered; ban and comments left.)
 - [x] Stats range picker and per-track insights from a release's stats tab (`use-cases-artist.spec.ts`, `routes-studio-stats.spec.ts`).
@@ -141,15 +141,38 @@ is wrong and a suggested fix, then turn the agreed ones into slices.
 | Admin → Venues | Verify / Unverify returned a 500 on the mock app (no mock branch) | bug, fixed | Mock branch added |
 | Studio → Fans → Store | Two empty states stacked ("No prices yet", "Add a price first") | messy, fixed (#1771) | One line under the price list |
 | Release page (`/r/night-drive`) on the mock app | The Listen card says Night Drive, the page says First Light EP | mock data | Make the mock smart link follow the slug |
-| Radio visualizer (Cymatics) | Loads `/piz_compressed.exr`, which no package ships, logs EXRLoader errors on `/radio`, and the orb, cymatics and landscape shapes never show (they wait for that map) | bug | Build the map with three.js `RoomEnvironment` (tried; it made the RadioView story time out on CI's software GL, so it needs a lighter map or a deferred build) |
+| Radio visualizer (Cymatics) | Loaded `/piz_compressed.exr`, which no package ships, logged EXRLoader errors on `/radio`, and the orb, cymatics and landscape shapes never showed | bug, fixed | A 64×32 generated gradient map, built a frame after mount |
 | Settings → Artist | Saving showed the same "Artist info saved." twice (inline text and a toast) | messy, fixed | Toast on success; inline text only for an error |
 
-## Specs failing on the mock app (2026-11-02, after fixes)
+### Findings from fixing the legacy specs (2026-11-03)
 
-38 of 136 tests: `cutover-vital` 19, `plugin-store` 8,
-`listener-purchase-flow` 2, `radio-cover` 2, `stash-and-subscriber-access` 2,
-`channel-designer-artist-look`, `fan-sub-and-track-purchase`,
-`fullscreen-player-minimize`, `mastering`, `routes-discover-radio` (radio
-show link no longer on `/radio`) (1 each). Typical causes: renamed headings
-and tabs, beta-only seed data and accounts, the guidelines toast, features
-that moved (radio show links, Listen add-ons heading).
+| Screen | Issue | Kind | Suggestion |
+| --- | --- | --- | --- |
+| SoundCloud / Bandcamp / Google Drive connect callback | The "connected" toast never showed: two redirects dropped the status | bug, fixed | Redirect straight to Settings → Add-ons → Import with status and provider |
+| Settings → Add-ons links (`?category=listen`, `import`, …) | Every link opened the role tab with the Radio group open, not the group it named | bug, fixed | The category reaches the panel; its group opens |
+| Studio track, collection and playlist editors | The 12-tab Library strip sat above a page that already has a back link | messy, fixed | Back link and title only |
+| Library (`/library/*`) | Twelve tabs in one row (Overview … Smart links) | messy | Per the navigation plan, move the catalog tabs to Studio → Music |
+| Artist page header | The email subscribe button and the fan-tiers link were both named "Subscribe to …" | labels, fixed | "Email updates from …" |
+| Every page | Alt+3 opened Feed, though the sidebar's third item is Discover; both panel toggles were "Collapse panel" | labels, fixed | Alt+1–5 follow the sidebar; "Collapse left / right panel" |
+| Studio hubs, Admin hubs | Back links were named only "Broadcast", "Fans", "Content" | a11y, fixed | "Back to …" |
+| Studio home | Cards said Updates and Revenue; the pages are Posts and Earnings | labels, fixed | Posts, Earnings |
+| Settings → Artist → Links & press | Placeholders like `https://…/x / twitter` | labels, fixed | Real example URLs |
+| Pro editor → Mastering | Nine EQ sliders named Freq / Gain / Q; the add-on picker had two Close buttons | a11y, fixed | "Band 1 gain" etc.; one close |
+| Settings → Broadcast → Multistream | "Multistream", "multicast source" and "live destinations" for the same thing; Close beside Add | labels, fixed | Destination throughout; Cancel |
+| Settings → Themes | Copy mentioned Three.js, "the stock Nuclear default" and "ported from the Tahti frontend" | labels, fixed | Plain descriptions |
+| Add-ons → Listen widgets | Every widget's Uninstall had the same name; Radio Browser's heading read "byradio-browser.info" | a11y, fixed | "Uninstall YouTube"; a space after "by" |
+| Release → Advanced → Fingerprinting | Each track's Re-fingerprint / Check buttons were identical | a11y, fixed | A named group per track |
+| Listen cards (stations, releases) | Overlay buttons were "Play" and "Favorite" with no item name | a11y, fixed | `Card` names them after its title |
+| Track rows | Row buttons are "Queue" and "Favorite" with no track name | a11y | Name them after the track (many specs assert the short names) |
+| `/radio` | Every visit opened each preset's audio stream to read ICY metadata; most fail CORS and log errors | optimization, fixed | Skip HLS playlists; remember unreadable streams for a day |
+| Settings → Artist → Press kit | "Up to 30 photos" in the drop zone, "0 of 10 press kit images" below, and "Add images in the Gallery tab first" next to a drop zone | messy | One photo list with one limit |
+| Settings → Artist → Branding | Tab "Artist branding" › tab "Branding" › heading "Artist branding"; 18 colour swatches | messy | Drop the inner heading; fewer swatches |
+| Add-ons → Radio Browser | Once activated the button is a disabled "Active"; there is no way back | practicality | A toggle, like the other add-ons |
+| Admin → Radio → rotation | The artist column shows "Tahti Radio submissions" (the playlist owner) for every row | bug (mock data?) | Show each track's artist |
+| Channel designer on the mock app | The slideshow PATCH had no mock branch ("Backdrop saved, but slideshow settings could not be updated"), and the look was lost on reload | mock, fixed | Mock gallery in localStorage, look in sessionStorage |
+
+## Specs on the mock app
+
+All 185 tests pass on the mock app (2026-11-03). Specs that need a fresh browser
+context per role (`stash-and-subscriber-access`) sign out in the same context
+instead, since the mock keeps uploads in the first browser's storage.

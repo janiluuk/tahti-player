@@ -29,7 +29,6 @@ import {
 } from 'lucide-react';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { EXRLoader } from 'three/addons/loaders/EXRLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
@@ -58,7 +57,37 @@ interface CymaticsVisualizerProps {
 }
 
 // Served from frontend/public at the site root (Vite default base '/').
-const EXR_URL = '/piz_compressed.exr';
+const ENV_WIDTH = 64;
+const ENV_HEIGHT = 32;
+
+function buildGradientEnvTexture(): THREE.DataTexture {
+  const data = new Uint8Array(ENV_WIDTH * ENV_HEIGHT * 4);
+  const sky = new THREE.Color(0x3a1d6e);
+  const horizon = new THREE.Color(0x00d2ff);
+  const ground = new THREE.Color(0x05030a);
+  const mixed = new THREE.Color();
+  for (let y = 0; y < ENV_HEIGHT; y += 1) {
+    const t = y / (ENV_HEIGHT - 1);
+    if (t < 0.5) {
+      mixed.copy(sky).lerp(horizon, t * 2);
+    } else {
+      mixed.copy(horizon).lerp(ground, (t - 0.5) * 2);
+    }
+    for (let x = 0; x < ENV_WIDTH; x += 1) {
+      const glow = Math.max(0, Math.cos((x / ENV_WIDTH) * Math.PI * 4)) * 0.25;
+      const offset = (y * ENV_WIDTH + x) * 4;
+      data[offset] = Math.min(255, (mixed.r + glow) * 255);
+      data[offset + 1] = Math.min(255, (mixed.g + glow) * 255);
+      data[offset + 2] = Math.min(255, (mixed.b + glow) * 255);
+      data[offset + 3] = 255;
+    }
+  }
+  const texture = new THREE.DataTexture(data, ENV_WIDTH, ENV_HEIGHT);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  texture.needsUpdate = true;
+  return texture;
+}
 const FOV = 65;
 const TAN_HALF_FOV = Math.tan(THREE.MathUtils.degToRad(FOV) / 2);
 
@@ -339,15 +368,11 @@ const CymaticsVisualizerImpl: React.FC<CymaticsVisualizerProps> = ({
     let envRenderTarget: THREE.WebGLRenderTarget | null = null;
     let disposed = false;
     let pmremDisposed = false;
-    const exrLoader = new EXRLoader();
-    exrLoader.load(EXR_URL, (texture: THREE.Texture) => {
-      // The panel may have unmounted while the EXR was loading; don't touch the
-      // disposed renderer/PMREM generator.
+    const envFrame = requestAnimationFrame(() => {
       if (disposed) {
-        texture.dispose();
         return;
       }
-      texture.mapping = THREE.EquirectangularReflectionMapping;
+      const texture = buildGradientEnvTexture();
       const rt = pmremGenerator.fromEquirectangular(texture);
       envRenderTarget = rt;
       sphereMaterial.envMap = rt.texture;
@@ -610,6 +635,7 @@ const CymaticsVisualizerImpl: React.FC<CymaticsVisualizerProps> = ({
 
     return () => {
       disposed = true;
+      cancelAnimationFrame(envFrame);
       cancelAnimationFrame(rafId);
       gate.dispose();
       ro.disconnect();

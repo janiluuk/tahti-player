@@ -33,8 +33,27 @@ export let mockVisual: ChannelVisual = {
   playerOverlayAlign: 'CENTER',
 };
 
+const MOCK_VISUAL_KEY = 'tahti-mock-channel-visual';
+
+try {
+  const saved =
+    typeof sessionStorage === 'undefined'
+      ? null
+      : sessionStorage.getItem(MOCK_VISUAL_KEY);
+  if (saved) {
+    mockVisual = { ...mockVisual, ...(JSON.parse(saved) as ChannelVisual) };
+  }
+} catch {
+  mockVisual = { ...mockVisual };
+}
+
 export function setMockVisual(next: ChannelVisual): void {
   mockVisual = next;
+  try {
+    sessionStorage.setItem(MOCK_VISUAL_KEY, JSON.stringify(next));
+  } catch {
+    return;
+  }
 }
 
 /** Read-only peek at the mock design state — used by mockChannel() (in

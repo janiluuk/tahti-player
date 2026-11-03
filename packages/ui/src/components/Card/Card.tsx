@@ -51,6 +51,7 @@ export const Card: FC<CardProps> = ({
   onTitleClick,
 }) => {
   const hasOverlays = Boolean(onPlay || onQueue || onFavorite);
+  const named = typeof title === 'string' && title ? title : null;
   const isNeutral = surface === 'neutral';
   const titleClass = isNeutral ? 'text-foreground' : 'text-primary-foreground';
   const subtitleClass = isNeutral
@@ -99,15 +100,19 @@ export const Card: FC<CardProps> = ({
             alt={typeof title === 'string' ? title : ''}
             imageReveal={imageReveal}
             onPlay={onPlay}
-            playLabel={playLabel}
-            pauseLabel={pauseLabel}
+            playLabel={playLabel ?? (named ? `Play ${named}` : undefined)}
+            pauseLabel={pauseLabel ?? (named ? `Pause ${named}` : undefined)}
             isPlaying={isPlaying}
             playDisabled={playDisabled}
             onQueue={onQueue}
-            queueLabel={queueLabel}
+            queueLabel={queueLabel ?? (named ? `Queue ${named}` : undefined)}
             queueDisabled={queueDisabled}
             onFavorite={onFavorite}
             favorited={favorited}
+            favoriteLabel={named ? `Favorite ${named}` : undefined}
+            unfavoriteLabel={
+              named ? `Remove ${named} from favorites` : undefined
+            }
             onArtworkClick={hasOverlays ? onClick : undefined}
             placeholder={
               <CassetteTape

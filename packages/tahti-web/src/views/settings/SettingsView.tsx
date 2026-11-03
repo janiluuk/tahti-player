@@ -2,7 +2,10 @@ import { useRouterState } from '@tanstack/react-router';
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
-import { pluginAudienceForTarget } from '../../content/pluginStoreCategories';
+import {
+  isPluginCategoryTarget,
+  pluginAudienceForTarget,
+} from '../../content/pluginStoreCategories';
 import {
   CHANNEL_SETTINGS_SECTIONS,
   useSettingsModalStore,
@@ -80,7 +83,11 @@ export function SettingsView() {
     const tab = params.get('tab');
     open(
       section,
-      category ? pluginAudienceForTarget(category) : undefined,
+      isPluginCategoryTarget(category)
+        ? category
+        : category
+          ? pluginAudienceForTarget(category)
+          : undefined,
       section === 'artist' && isArtistSettingsSection(tab) ? tab : undefined,
       section === 'account' && isAccountSettingsSection(tab) ? tab : undefined,
       section === 'channel' && isChannelSettingsSection(tab) ? tab : undefined,
@@ -99,7 +106,11 @@ export function SettingsView() {
     }
     toastedCallbackRef.current = callbackKey;
     const providerLabel = (() => {
-      const categoryLabel = category?.toLowerCase() ?? '';
+      const categoryLabel = (
+        params.get('provider') ??
+        category ??
+        ''
+      ).toLowerCase();
       if (categoryLabel.includes('soundcloud')) {
         return 'SoundCloud';
       }
@@ -111,6 +122,9 @@ export function SettingsView() {
       }
       if (categoryLabel.includes('spotify')) {
         return 'Spotify';
+      }
+      if (categoryLabel.includes('google-drive')) {
+        return 'Google Drive';
       }
       if (categoryLabel.includes('hearthis')) {
         return 'hearthis.at';

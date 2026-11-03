@@ -69,7 +69,7 @@ describe('Card', () => {
     );
     expect(screen.getByText('EP')).toBeVisible();
     expect(
-      screen.getByRole('button', { name: 'Play', exact: true }),
+      screen.getByRole('button', { name: 'Play Night Drive', exact: true }),
     ).toBeInTheDocument();
   });
 });

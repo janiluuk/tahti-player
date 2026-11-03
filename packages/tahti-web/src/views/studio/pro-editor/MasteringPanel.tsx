@@ -310,9 +310,6 @@ export function MasteringPanel({ editList, onChange }: Props) {
             />
           ))}
         </CardGrid>
-        <Dialog.Actions>
-          <Dialog.Close>Close</Dialog.Close>
-        </Dialog.Actions>
       </Dialog.Root>
     </>
   );

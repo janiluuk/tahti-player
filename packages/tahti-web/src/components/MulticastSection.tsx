@@ -226,7 +226,7 @@ function DestinationDialog({
           ? `Configure ${provider?.label}`
           : providerId
             ? `Add ${selectedProvider?.label}`
-            : 'Add multicast source'}
+            : 'Add destination'}
       </Dialog.Title>
       <Dialog.Description>
         {!providerId
@@ -281,7 +281,7 @@ function DestinationDialog({
                   className="self-start"
                   onClick={() => setProviderId(null)}
                 >
-                  ← Choose another source
+                  ← Choose another destination
                 </Button>
               )}
               {error && <InlineError>{error}</InlineError>}
@@ -380,7 +380,7 @@ function DestinationDialog({
           )}
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Close</Dialog.Close>
+          <Dialog.Close>Cancel</Dialog.Close>
           {providerId && savedTarget && (
             <Button
               intent="danger"
@@ -465,11 +465,11 @@ function DestinationsGrid({
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
         <p className="text-foreground-secondary text-sm">{description}</p>
-        <Tooltip content="Add multicast source" side="top">
+        <Tooltip content="Add destination" side="top">
           <Button
             size="icon-sm"
             variant="secondary"
-            aria-label="Add multicast source"
+            aria-label="Add destination"
             onClick={() => setEditing({ providerId: null, target: null })}
           >
             <PlusIcon size={17} aria-hidden />

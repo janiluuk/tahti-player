@@ -50,6 +50,7 @@ test('a radio show is reachable from the Radio page', async ({ page }) => {
   const errors = collectPageErrors(page);
   await expectRouteHealthy(page, errors, publicRoutes[1]!);
 
+  await page.getByRole('tab', { name: /^Shows/ }).click();
   await page
     .locator('a[href="/radio/show/midnight-cartography"]')
     .first()

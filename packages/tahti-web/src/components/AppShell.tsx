@@ -49,6 +49,7 @@ import {
   hasSeenOnboarding,
   markOnboardingSeen,
 } from '../lib/onboardingPrompt';
+import { takeListenerSignup } from '../lib/pendingArtistKind';
 import {
   playbackDocumentTitle,
   setPlaybackDocumentTitle,
@@ -440,6 +441,10 @@ export function AppShell() {
   // e2e drivers should call markOnboardingSeen after sign-in (see
   // e2e/real-user-journeys.spec.ts signIn helper) so the toast never covers UI.
   useEffect(() => {
+    if (userId && takeListenerSignup()) {
+      markOnboardingSeen(userId);
+      return;
+    }
     if (
       !userId ||
       pathname === '/onboarding' ||
@@ -510,26 +515,26 @@ export function AppShell() {
       if (event.altKey && !event.ctrlKey && !event.metaKey) {
         const byCode: Record<
           string,
-          '/' | '/radio' | '/feed' | '/library' | '/studio'
+          '/' | '/radio' | '/discover' | '/library' | '/studio'
         > = {
           Digit1: '/',
           Digit2: '/radio',
-          Digit3: '/feed',
+          Digit3: '/discover',
           Digit4: '/library',
           Digit5: '/studio',
           Numpad1: '/',
           Numpad2: '/radio',
-          Numpad3: '/feed',
+          Numpad3: '/discover',
           Numpad4: '/library',
           Numpad5: '/studio',
         };
         const byKey: Record<
           string,
-          '/' | '/radio' | '/feed' | '/library' | '/studio'
+          '/' | '/radio' | '/discover' | '/library' | '/studio'
         > = {
           '1': '/',
           '2': '/radio',
-          '3': '/feed',
+          '3': '/discover',
           '4': '/library',
           '5': '/studio',
         };

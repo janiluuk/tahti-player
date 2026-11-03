@@ -555,6 +555,7 @@ function HubBackLink({
       variant="text"
       className="gap-1.5"
       data-testid={testId}
+      aria-label={`Back to ${label}`}
     >
       <ArrowLeftIcon size={16} aria-hidden />
       {label}

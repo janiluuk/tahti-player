@@ -490,22 +490,22 @@ export function ArtistPanel() {
             <div className="grid gap-4 sm:grid-cols-2">
               {(
                 [
-                  ['website', 'Website'],
-                  ['instagram', 'Instagram'],
-                  ['bandcamp', 'Bandcamp'],
-                  ['soundcloud', 'SoundCloud'],
-                  ['youtube', 'YouTube'],
-                  ['hearthisAt', 'hearthis.at'],
-                  ['mixcloud', 'Mixcloud'],
-                  ['twitch', 'Twitch'],
-                  ['kick', 'Kick'],
-                  ['spotify', 'Spotify'],
-                  ['discord', 'Discord'],
-                  ['tiktok', 'TikTok'],
-                  ['twitter', 'X / Twitter'],
-                  ['facebook', 'Facebook'],
+                  ['website', 'Website', 'https://yoursite.com'],
+                  ['instagram', 'Instagram', 'https://instagram.com/you'],
+                  ['bandcamp', 'Bandcamp', 'https://you.bandcamp.com'],
+                  ['soundcloud', 'SoundCloud', 'https://soundcloud.com/you'],
+                  ['youtube', 'YouTube', 'https://youtube.com/@you'],
+                  ['hearthisAt', 'hearthis.at', 'https://hearthis.at/you'],
+                  ['mixcloud', 'Mixcloud', 'https://mixcloud.com/you'],
+                  ['twitch', 'Twitch', 'https://twitch.tv/you'],
+                  ['kick', 'Kick', 'https://kick.com/you'],
+                  ['spotify', 'Spotify', 'https://open.spotify.com/artist/…'],
+                  ['discord', 'Discord', 'https://discord.gg/…'],
+                  ['tiktok', 'TikTok', 'https://tiktok.com/@you'],
+                  ['twitter', 'X / Twitter', 'https://x.com/you'],
+                  ['facebook', 'Facebook', 'https://facebook.com/you'],
                 ] as const
-              ).map(([key, label]) => (
+              ).map(([key, label, example]) => (
                 <label key={key} className="flex min-w-0 flex-col gap-1.5">
                   <span className="text-foreground flex items-center gap-2 text-sm font-semibold">
                     <SocialLinkIcon label={label} url={social[key]} />
@@ -514,7 +514,7 @@ export function ArtistPanel() {
                   <Input
                     aria-label={label}
                     value={social[key]}
-                    placeholder={`https://…/${label.toLowerCase()}`}
+                    placeholder={example}
                     onChange={(e) =>
                       setSocial({ ...social, [key]: e.target.value })
                     }

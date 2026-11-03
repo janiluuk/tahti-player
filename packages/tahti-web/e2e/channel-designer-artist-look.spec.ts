@@ -42,7 +42,7 @@ test('a saved backdrop design change shows up on the artist page header', async 
   await expect(page.getByText(/saved/i)).toBeVisible();
 
   await page.goto('/u/artist');
-  const artistHeader = page.getByTestId('entity-social-header');
+  const artistHeader = page.getByTestId('artist-social-header');
   await expect(artistHeader).toBeVisible();
   await expect(artistHeader).toHaveAttribute('data-header-style', nextStyle);
 });

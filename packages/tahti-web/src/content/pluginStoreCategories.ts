@@ -79,6 +79,18 @@ const ARTIST_TARGETS = new Set<PluginCategoryTarget>([
   'channel',
 ]);
 
+export function isPluginCategoryTarget(
+  value: string | null | undefined,
+): value is PluginCategoryTarget {
+  return Boolean(
+    value &&
+    (LISTENER_TARGETS.has(value as PluginCategoryTarget) ||
+      ARTIST_TARGETS.has(value as PluginCategoryTarget) ||
+      value === 'admin' ||
+      value === 'tools'),
+  );
+}
+
 export function pluginAudienceForTarget(
   target: string | null | undefined,
 ): PluginCategoryId {

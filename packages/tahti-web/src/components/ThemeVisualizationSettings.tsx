@@ -47,8 +47,7 @@ export function ThemeVisualizationSettings({
           className="font-display tracking-tight"
         />
         <p className="text-foreground-secondary mt-1 text-sm">
-          Tahti themes (and the stock Nuclear default) can show a quiet,
-          audio-reactive Three.js ambience behind the app.
+          Some themes can show a quiet background that moves with the music.
         </p>
       </div>
       {!isThemeVisualizationEnabled(themeId) ? (
@@ -83,8 +82,7 @@ export function ThemeVisualizationSettings({
                   Tahti Aurora
                 </Button>
                 <p className="text-foreground-secondary mt-1 text-xs">
-                  The first preset ported from the Tahti frontend; it blends
-                  soft color fields and playback movement.
+                  Soft colour fields that drift with playback.
                 </p>
               </div>
               <div className="flex flex-col gap-3">

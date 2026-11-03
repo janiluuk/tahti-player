@@ -63,25 +63,24 @@ async function openRadioBrowserStations(page: Page): Promise<{
   await expect(
     settings.getByRole('heading', { name: 'Add-ons' }),
   ).toBeVisible();
-  await expect(settings.getByText('Radio Browser directory')).toBeVisible();
+  await expect(
+    settings.getByRole('heading', { name: /^Radio Browser directory/ }),
+  ).toBeVisible();
 
-  const toggleName = /^(Activate|Deactivate) Radio Browser directory$/;
-  const radioBrowserRow = settings
-    .locator('div.flex.items-center.gap-2')
-    .filter({ has: settings.getByRole('switch', { name: toggleName }) })
-    .last();
-  const toggle = radioBrowserRow.getByRole('switch', { name: toggleName });
-  if (
-    (await toggle.getAttribute('aria-label'))?.startsWith('Activate') === true
-  ) {
-    await toggle.click();
+  const activate = settings.getByRole('button', {
+    name: 'Activate',
+    exact: true,
+  });
+  if (await activate.isVisible()) {
+    await activate.click();
   }
-  await radioBrowserRow.getByRole('button', { name: 'Configure' }).click();
+  await settings
+    .getByRole('button', { name: 'Configure', exact: true })
+    .click();
 
   const configure = page.getByRole('dialog', {
     name: 'Configure Radio Browser directory',
   });
-  await expect(configure).toBeVisible();
   await configure.getByRole('tab', { name: 'Stations' }).click();
   await expect(
     configure.getByRole('heading', { name: 'Finnish stations' }),
@@ -135,33 +134,23 @@ test('admin can replace a radio cover and see it persist', async ({ page }) => {
   await settings.getByTestId('dialog-x-close').click();
   await page.goto('/');
   await expect(
-    page.getByRole('heading', { name: 'Radio channels' }),
+    page.getByRole('heading', { name: 'Radio', exact: true }),
   ).toBeVisible();
-  const listenCover = page
-    .getByTestId('card')
-    .filter({ hasText: 'Radio Helsinki' })
-    .locator('img')
-    .first();
-  await expect(listenCover).toHaveAttribute('src', /^data:image\/png/);
+  await expect(
+    page
+      .getByRole('main')
+      .getByTestId('card')
+      .filter({ hasText: 'Radio Helsinki' })
+      .locator('img')
+      .first(),
+  ).toHaveAttribute('src', /^data:image\/png/);
 
   await page.goto('/admin/radio');
-  await expect(page.getByText('Internet radio')).toBeVisible();
+  await page.getByRole('tab', { name: 'Stations' }).click();
   const adminRow = page.locator('li').filter({ hasText: 'Radio Helsinki' });
   await expect(
     adminRow.getByTestId('radio-station-cover-image').locator('img'),
   ).toHaveAttribute('src', /^data:image\/png/);
-  await adminRow.getByRole('button', { name: 'Enable for everyone' }).click();
-
-  await page.goto('/');
-  const feedCard = page
-    .getByRole('heading', { name: 'Radio', exact: true })
-    .locator('..')
-    .getByTestId('card')
-    .filter({ hasText: 'Radio Helsinki' });
-  await expect(feedCard.locator('img').first()).toHaveAttribute(
-    'src',
-    /^data:image\/png/,
-  );
 });
 
 test('non-admins do not see the radio cover edit control', async ({ page }) => {

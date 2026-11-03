@@ -126,18 +126,18 @@ export const dashboardSplatAliasRoute = createRoute({
       const user = useAuthStore.getState().user;
       throw redirect({ href: user?.channel ? '/studio' : '/feed' });
     }
-    // Prod's OAuth import callback (SoundCloud/Bandcamp/Google Drive) lands
-    // on `/dashboard/upload/import/:provider?sc=|bc=|gd=connected|error|login`
-    // — route straight to the matching Sources tab with the status intact.
     const importMatch = /^upload\/import\/([\w-]+)/.exec(splat);
     if (importMatch?.[1] && OAUTH_IMPORT_STATUS_KEYS[importMatch[1]]) {
       const provider = importMatch[1];
       const statusKey = OAUTH_IMPORT_STATUS_KEYS[provider]!;
       const status = (search as Record<string, unknown>)[statusKey];
       throw redirect({
-        to: '/sources/$id',
-        params: { id: provider },
-        search: typeof status === 'string' ? { status } : undefined,
+        to: '/settings/$section',
+        params: { section: 'plugin-store' },
+        search: {
+          category: 'import',
+          ...(typeof status === 'string' ? { status, provider } : {}),
+        },
       });
     }
     throw redirect({

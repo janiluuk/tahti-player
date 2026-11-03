@@ -12,7 +12,6 @@ import { AddToPlaylistPanel } from '../../components/AddToPlaylistPanel';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { TrackInsightsPanel } from '../../components/TrackInsightsPanel';
-import { LibrarySectionTabs } from '../LibraryView';
 import { DetailsTabContent } from './sound/DetailsTabContent';
 import { PlaylistsTabContent } from './sound/PlaylistsTabContent';
 import { ProcessingFailedAlert } from './sound/ProcessingFailedAlert';
@@ -37,7 +36,6 @@ export function StudioSoundView({ id }: { id: string }) {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout flex w-full flex-col gap-6">
-        <LibrarySectionTabs active="sounds" />
         <div className="relative flex flex-col gap-6">
           <Tooltip
             content="Back to Music"

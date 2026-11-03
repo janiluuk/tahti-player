@@ -12,6 +12,7 @@ import {
 
 import { PASSWORD_RULES_HINT, passwordProblem } from '../lib/passwordRules';
 import {
+  persistListenerSignup,
   persistPendingArtistKind,
   type ArtistKind,
 } from '../lib/pendingArtistKind';
@@ -19,10 +20,19 @@ import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { UsernameAvailabilityHint } from './UsernameAvailabilityHint';
 
-const ARTIST_KIND_OPTIONS = [
-  { id: 'SINGLE' as const, label: 'Artist' },
-  { id: 'COLLECTIVE' as const, label: 'Band / Collective' },
+type AccountKind = ArtistKind | 'LISTENER';
+
+const ACCOUNT_KIND_OPTIONS: { id: AccountKind; label: string }[] = [
+  { id: 'LISTENER', label: 'Listener' },
+  { id: 'SINGLE', label: 'Artist' },
+  { id: 'COLLECTIVE', label: 'Band / Collective' },
 ];
+
+const NAME_LABEL: Record<AccountKind, string> = {
+  LISTENER: 'Display name',
+  SINGLE: 'Artist name',
+  COLLECTIVE: 'Collective name',
+};
 
 const slugifyUsername = (value: string) =>
   value
@@ -56,7 +66,7 @@ export const AuthDialog: FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [username, setUsername] = useState('');
   const [artistName, setArtistName] = useState('');
-  const [artistKind, setArtistKind] = useState<ArtistKind>('SINGLE');
+  const [artistKind, setArtistKind] = useState<AccountKind>('SINGLE');
   const [totpCode, setTotpCode] = useState('');
   const [message, setMessage] = useState<string | null>(null);
 
@@ -221,18 +231,14 @@ export const AuthDialog: FC = () => {
               </span>
               <SegmentedControl
                 aria-label="Account type"
-                options={ARTIST_KIND_OPTIONS}
+                options={ACCOUNT_KIND_OPTIONS}
                 value={artistKind}
                 onChange={setArtistKind}
               />
             </div>
             <div className="flex flex-col gap-1 sm:col-span-2">
               <Input
-                label={
-                  artistKind === 'COLLECTIVE'
-                    ? 'Collective name'
-                    : 'Artist name'
-                }
+                label={NAME_LABEL[artistKind]}
                 value={artistName}
                 onChange={(e) => setArtistName(e.target.value)}
                 autoComplete="name"
@@ -292,7 +298,11 @@ export const AuthDialog: FC = () => {
                   displayName: artistName,
                 })
                   .then((msg) => {
-                    persistPendingArtistKind(artistKind);
+                    if (artistKind === 'LISTENER') {
+                      persistListenerSignup();
+                    } else {
+                      persistPendingArtistKind(artistKind);
+                    }
                     setMessage(msg);
                     if (import.meta.env.VITE_FORCE_MOCK === '1') {
                       setMode('login');
