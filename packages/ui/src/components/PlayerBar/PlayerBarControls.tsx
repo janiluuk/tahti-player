@@ -27,6 +27,8 @@ type PlayerBarControlsLabels = {
   discoveryOff?: string;
   play?: string;
   pause?: string;
+  next?: string;
+  previous?: string;
 };
 
 const REPEAT_LABEL_KEY: Record<RepeatMode, keyof PlayerBarControlsLabels> = {
@@ -118,13 +120,13 @@ export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
           <Shuffle size={iconSize} />
         </Button>
       </Tooltip>
-      <Tooltip content="Previous" side="top">
+      <Tooltip content={labels?.previous ?? 'Previous'} side="top">
         <Button
           size="icon"
           variant="text"
           className={cn(large ? 'size-11 rounded-full' : 'rounded-full', glass)}
           onClick={onPrevious}
-          aria-label="Previous"
+          aria-label={labels?.previous ?? 'Previous'}
         >
           <SkipBack size={iconSize} />
         </Button>
@@ -161,13 +163,13 @@ export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
           </Button>
         </Tooltip>
       )}
-      <Tooltip content="Next" side="top">
+      <Tooltip content={labels?.next ?? 'Next'} side="top">
         <Button
           size="icon"
           variant="text"
           className={cn(large ? 'size-11 rounded-full' : 'rounded-full', glass)}
           onClick={onNext}
-          aria-label="Next"
+          aria-label={labels?.next ?? 'Next'}
           data-testid="player-next-button"
         >
           <SkipForward size={iconSize} />

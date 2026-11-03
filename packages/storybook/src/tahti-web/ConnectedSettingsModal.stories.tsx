@@ -48,6 +48,10 @@ export const ThemesTab: Story = {
   decorators: [withMockAuth(MOCK_USERS.listener), withOpenSettings('themes')],
 };
 
+export const LanguageTab: Story = {
+  decorators: [withMockAuth(null), withOpenSettings('language')],
+};
+
 export const DeploymentFooter: Story = {
   decorators: [withMockAuth(MOCK_USERS.listener), withOpenSettings('account')],
   parameters: {

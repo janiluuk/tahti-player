@@ -15,6 +15,7 @@ import {
 import { motion } from 'motion/react';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 
+import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import {
   Button,
   FilterChips,
@@ -111,16 +112,17 @@ const FeedView = lazy(() =>
 
 const DISCOVER_TABS: Array<{
   id: DiscoverTab;
-  label: string;
+  labelKey: ParseKeys<'web'>;
   icon: typeof CompassIcon;
 }> = [
-  { id: 'discover', label: 'Discover', icon: CompassIcon },
-  { id: 'feed', label: 'Feed', icon: NewspaperIcon },
-  { id: 'artists', label: 'Artists', icon: UsersIcon },
-  { id: 'venues', label: 'Venues', icon: MapPinIcon },
+  { id: 'discover', labelKey: 'discover.tabDiscover', icon: CompassIcon },
+  { id: 'feed', labelKey: 'discover.tabFeed', icon: NewspaperIcon },
+  { id: 'artists', labelKey: 'discover.tabArtists', icon: UsersIcon },
+  { id: 'venues', labelKey: 'discover.tabVenues', icon: MapPinIcon },
 ];
 
 export function DiscoverView() {
+  const { t } = useTranslation('web');
   const enabledWidgets = useDiscoverStore((s) => s.enabledWidgets);
   const columnWidgets = enabledWidgets;
   const genreFilter = useDiscoverStore((s) => s.genreFilter);
@@ -401,18 +403,20 @@ export function DiscoverView() {
           });
         }}
       >
-        <Tabs.List>
+        <Tabs.List aria-label={t('discover.sections')}>
           {DISCOVER_TABS.map((item) => (
             <Tabs.Tab key={item.id}>
               <span data-testid={`discover-tab-${item.id}`}>
-                <TabLabel icon={<item.icon size={14} />}>{item.label}</TabLabel>
+                <TabLabel icon={<item.icon size={14} />}>
+                  {t(item.labelKey)}
+                </TabLabel>
               </span>
             </Tabs.Tab>
           ))}
         </Tabs.List>
       </Tabs.Root>
       <ViewShell
-        title="Discover"
+        title={t('nav.discover')}
         classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         actions={
           activeTab === 'discover' ? (
@@ -429,14 +433,14 @@ export function DiscoverView() {
               to="/venues/register"
               className="text-sm font-medium underline-offset-2 hover:underline"
             >
-              Register a venue
+              {t('discover.registerVenue')}
             </Link>
             {user ? (
               <Link
                 to="/venues/mine"
                 className="text-sm font-medium underline-offset-2 hover:underline"
               >
-                My venues
+                {t('discover.myVenues')}
               </Link>
             ) : null}
           </header>
@@ -445,7 +449,9 @@ export function DiscoverView() {
         {activeTab === 'feed' ? (
           <div className="flex flex-col gap-6" data-testid="discover-feed">
             <CommunityStoriesWidget />
-            <Suspense fallback={<PageLoading label="Loading feed…" />}>
+            <Suspense
+              fallback={<PageLoading label={t('discover.loadingFeed')} />}
+            >
               <FeedView embedded />
             </Suspense>
           </div>
@@ -470,7 +476,8 @@ export function DiscoverView() {
                   className="mr-1.5"
                   aria-hidden
                 />
-                Genres{genreFilter.length > 0 ? ` (${genreFilter.length})` : ''}
+                {t('discover.genres')}
+                {genreFilter.length > 0 ? ` (${genreFilter.length})` : ''}
                 <ChevronDownIcon
                   size={15}
                   className={`ml-1.5 transition-transform ${genresOpen ? 'rotate-180' : ''}`}
@@ -488,7 +495,7 @@ export function DiscoverView() {
                   className="mr-1.5"
                   aria-hidden
                 />
-                Types
+                {t('discover.types')}
                 {contentTypeFilter.length > 0
                   ? ` (${contentTypeFilter.length})`
                   : ''}
@@ -501,10 +508,10 @@ export function DiscoverView() {
             </div>
             {genresOpen ? (
               <FilterChips
-                aria-label="Genres"
+                aria-label={t('discover.genres')}
                 multiple
                 items={[
-                  { id: ALL_FILTER_ID, label: 'All' },
+                  { id: ALL_FILTER_ID, label: t('discover.all') },
                   ...PRESET_GENRES.map((g) => ({ id: g, label: g })),
                 ]}
                 selected={
@@ -517,9 +524,12 @@ export function DiscoverView() {
             ) : null}
             {contentTypesOpen ? (
               <FilterChips
-                aria-label="Content types"
+                aria-label={t('discover.contentTypes')}
                 multiple
-                items={[{ id: ALL_FILTER_ID, label: 'All' }, ...CONTENT_TYPES]}
+                items={[
+                  { id: ALL_FILTER_ID, label: t('discover.all') },
+                  ...CONTENT_TYPES,
+                ]}
                 selected={
                   contentTypeFilter.length > 0
                     ? contentTypeFilter
@@ -568,16 +578,16 @@ export function DiscoverView() {
                     showRank={TOP_LIST_WIDGET_IDS.has(id)}
                     emptyMessage={
                       id === 'loved'
-                        ? 'No community-loved tracks yet.'
+                        ? t('discover.emptyLoved')
                         : id === 'public-playlists'
-                          ? 'No public playlists match these filters yet.'
+                          ? t('discover.emptyPlaylists')
                           : id === 'tahti-selects'
-                            ? 'No tracks in the Tahti Selects rotation right now.'
+                            ? t('discover.emptySelects')
                             : id === 'latest-releases'
-                              ? 'No releases published yet.'
+                              ? t('discover.emptyReleases')
                               : id === 'random-track'
-                                ? 'No tracks in these genres yet.'
-                                : 'Nothing here yet.'
+                                ? t('discover.emptyGenres')
+                                : t('discover.emptyDefault')
                     }
                     canMoveUp={index > 0}
                     canMoveDown={index < columnWidgets.length - 1}
@@ -625,7 +635,7 @@ export function DiscoverView() {
 
         {activeTab === 'artists' && artistsError && artists.length === 0 ? (
           <PageError
-            title="Could not load the artist directory"
+            title={t('discover.artistDirectoryError')}
             description={artistsError}
             onRetry={() => setReloadKey((n) => n + 1)}
           />
@@ -657,6 +667,7 @@ function DiscoverAddWidgetButton({
   availableToAdd: DiscoverWidgetId[];
   onAdd: (id: DiscoverWidgetId) => void;
 }) {
+  const { t } = useTranslation('web');
   if (availableToAdd.length === 0) {
     return null;
   }
@@ -664,12 +675,12 @@ function DiscoverAddWidgetButton({
   return (
     <Popover
       anchor="bottom end"
-      tooltip={{ content: 'Add a widget', side: 'top' }}
+      tooltip={{ content: t('discover.addWidget'), side: 'top' }}
       trigger={
         <Button
           size="icon"
           variant="secondary"
-          aria-label="Add a widget"
+          aria-label={t('discover.addWidget')}
           data-testid="discover-add-widget"
         >
           <Plus size={17} aria-hidden />

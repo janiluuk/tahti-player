@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -72,79 +73,79 @@ export type Tab =
 export const LIBRARY_SECTION_TABS = [
   {
     id: 'library' as const,
-    label: 'Overview',
+    labelKey: 'library.tabOverview' as const,
     icon: LayoutGridIcon,
     to: '/library',
   },
   {
     id: 'favorites' as const,
-    label: 'Favorites',
+    labelKey: 'library.tabFavorites' as const,
     icon: HeartIcon,
     to: '/library/favorites',
   },
   {
     id: 'history' as const,
-    label: 'History',
+    labelKey: 'library.tabHistory' as const,
     icon: HistoryIcon,
     to: '/library/history',
   },
   {
     id: 'following' as const,
-    label: 'Following',
+    labelKey: 'library.tabFollowing' as const,
     icon: UsersIcon,
     to: '/library/following',
   },
   {
     id: 'sounds' as const,
-    label: 'Sounds',
+    labelKey: 'library.tabSounds' as const,
     icon: Music2Icon,
     to: '/library/sounds',
   },
   {
     id: 'collections' as const,
-    label: 'Collections',
+    labelKey: 'library.tabCollections' as const,
     icon: LibraryIcon,
     to: '/library/collections',
   },
   {
     id: 'upload' as const,
-    label: 'Upload',
+    labelKey: 'library.tabUpload' as const,
     icon: UploadIcon,
     to: '/library/upload',
   },
   {
     id: 'recordings' as const,
-    label: 'Recordings',
+    labelKey: 'library.tabRecordings' as const,
     icon: MicIcon,
     to: '/library/recordings',
   },
   {
     id: 'media' as const,
-    label: 'Media',
+    labelKey: 'library.tabMedia' as const,
     icon: HardDriveIcon,
     to: '/library/media',
   },
   {
     id: 'stash' as const,
-    label: 'Stash',
+    labelKey: 'library.tabStash' as const,
     icon: PackageIcon,
     to: '/library/stash',
   },
   {
     id: 'embeds' as const,
-    label: 'Embeds',
+    labelKey: 'library.tabEmbeds' as const,
     icon: Code2Icon,
     to: '/library/embeds',
   },
   {
     id: 'smartlinks' as const,
-    label: 'Smart links',
+    labelKey: 'library.tabSmartLinks' as const,
     icon: Link2Icon,
     to: '/library/smartlinks',
   },
   {
     id: 'local' as const,
-    label: 'Local files',
+    labelKey: 'library.tabLocal' as const,
     icon: FolderIcon,
     to: '/library/local',
   },
@@ -197,6 +198,7 @@ function useLibraryTabs() {
  * so they still show Library's top navigation with the right tab active.
  */
 export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const ref = useSelectedTabInView(active);
   const tabs = useLibraryTabs();
@@ -215,7 +217,7 @@ export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
         }}
       >
         <Tabs.List
-          aria-label="Library sections"
+          aria-label={t('library.sections')}
           className={`${PHONE_SCROLL_TAB_LIST} max-w-full`}
         >
           {tabs.map((item) => (
@@ -223,10 +225,14 @@ export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
               key={item.id}
               disabled={item.disabled}
               aria-label={
-                item.disabled ? `${item.label}, needs an account` : undefined
+                item.disabled
+                  ? t('library.needsAccount', { label: t(item.labelKey) })
+                  : undefined
               }
             >
-              <TabLabel icon={<item.icon size={14} />}>{item.label}</TabLabel>
+              <TabLabel icon={<item.icon size={14} />}>
+                {t(item.labelKey)}
+              </TabLabel>
             </Tabs.Tab>
           ))}
         </Tabs.List>
@@ -236,6 +242,7 @@ export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
 }
 
 export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const listener = useAuthStore(
     (state) =>
@@ -248,32 +255,10 @@ export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
       void navigate({ to: '/library/favorites', replace: true });
     }
   }, [listener, navigate, tab]);
-  const libraryTitle =
-    tab === 'library'
-      ? 'Overview'
-      : tab === 'favorites'
-        ? 'Favorites'
-        : tab === 'history'
-          ? 'History'
-          : tab === 'following'
-            ? 'Following'
-            : tab === 'sounds'
-              ? 'Sounds'
-              : tab === 'upload'
-                ? 'Upload'
-                : tab === 'recordings'
-                  ? 'Recordings'
-                  : tab === 'embeds'
-                    ? 'Embeds'
-                    : tab === 'media'
-                      ? 'Media'
-                      : tab === 'stash'
-                        ? 'Stash'
-                        : tab === 'smartlinks'
-                          ? 'Smart links'
-                          : tab === 'local'
-                            ? 'Local files'
-                            : 'Collections';
+  const libraryTitle = t(
+    LIBRARY_SECTION_TABS.find((item) => item.id === tab)?.labelKey ??
+      'library.tabCollections',
+  );
 
   return (
     <div className="studio-page-layout flex w-full flex-col gap-6">
@@ -338,6 +323,7 @@ function formatBytes(bytes: number): string {
 }
 
 function LibraryStats() {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const canUpload = hasStudioAccess(user);
@@ -370,8 +356,8 @@ function LibraryStats() {
 
   return (
     <StudioPanel
-      title="Library overview"
-      description="Your catalog at a glance."
+      title={t('library.overviewTitle')}
+      description={t('library.overviewDescription')}
     >
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="border-border bg-background-secondary/40 rounded-lg border p-3">
@@ -443,7 +429,7 @@ function LibraryStats() {
       ) : soundsError ? (
         <div className="mt-4">
           <PageError
-            title="Could not load your catalog"
+            title={t('library.loadError')}
             description={soundsError}
             onRetry={() => setSoundsAttempt((n) => n + 1)}
           />
@@ -453,23 +439,23 @@ function LibraryStats() {
           <PageEmpty
             title={
               canUpload
-                ? 'Your catalog is empty'
+                ? t('library.emptyCatalogTitle')
                 : signedIn
-                  ? 'Nothing saved yet'
-                  : 'Your library is empty'
+                  ? t('library.nothingSavedTitle')
+                  : t('library.emptyLibraryTitle')
             }
             description={
               canUpload
-                ? 'Upload a track to start filling Library, or browse Discover for inspiration.'
+                ? t('library.emptyCatalogDescription')
                 : signedIn
-                  ? 'Follow artists and save favorites from Discover — they show up here.'
-                  : 'Sign in to save music you like, or browse Discover.'
+                  ? t('library.nothingSavedDescription')
+                  : t('library.emptyLibraryDescription')
             }
             action={
               <div className="flex flex-wrap gap-2">
                 {canUpload ? (
                   <ButtonLink to="/library/upload" size="sm">
-                    Upload
+                    {t('actions.upload')}
                   </ButtonLink>
                 ) : null}
                 {!signedIn ? (
@@ -477,7 +463,7 @@ function LibraryStats() {
                     size="sm"
                     onClick={() => useAuthModalStore.getState().open('login')}
                   >
-                    Sign in
+                    {t('actions.signIn')}
                   </Button>
                 ) : null}
                 <ButtonLink
@@ -485,7 +471,7 @@ function LibraryStats() {
                   size="sm"
                   variant={canUpload || !signedIn ? 'secondary' : undefined}
                 >
-                  Discover
+                  {t('nav.discover')}
                 </ButtonLink>
               </div>
             }

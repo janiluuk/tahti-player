@@ -1,40 +1,29 @@
 import {
   DEFAULT_LOCALE,
   i18n,
-  isLocaleCode,
-  matchBrowserLocales,
+  SUPPORTED_LOCALES,
   toBcp47,
-  type LocaleCode,
 } from '@tahti-player/i18n';
 
-export const LANGUAGE_STORAGE_KEY = 'tahti-web-language';
+/** The player catalog ships more languages, but only these two cover
+ * tahti-web's own strings; the others would show English chrome. */
+export const WEB_LOCALES = SUPPORTED_LOCALES.filter(
+  (locale) => locale.code === 'en_US' || locale.code === 'fi_FI',
+);
 
-function readStoredLocale(): LocaleCode | null {
-  if (typeof localStorage === 'undefined') {
-    return null;
-  }
-  const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-  return isLocaleCode(stored) ? stored : null;
+export type WebLocale = (typeof WEB_LOCALES)[number]['code'];
+
+export function isWebLocale(value: unknown): value is WebLocale {
+  return WEB_LOCALES.some((locale) => locale.code === value);
 }
 
-export function detectLocale(
-  languages: readonly string[] = typeof navigator === 'undefined'
-    ? []
-    : (navigator.languages ?? [navigator.language]),
-): LocaleCode {
-  return readStoredLocale() ?? matchBrowserLocales(languages);
-}
-
-export async function applyLocale(locale: LocaleCode): Promise<void> {
+export async function applyLocale(locale: WebLocale): Promise<void> {
   await i18n.changeLanguage(locale);
   if (typeof document !== 'undefined') {
     document.documentElement.lang = toBcp47(locale);
   }
-  if (typeof localStorage !== 'undefined') {
-    localStorage.setItem(LANGUAGE_STORAGE_KEY, locale);
-  }
 }
 
-export function currentLocale(): LocaleCode {
-  return isLocaleCode(i18n.language) ? i18n.language : DEFAULT_LOCALE;
+export function currentLocale(): WebLocale {
+  return isWebLocale(i18n.language) ? i18n.language : DEFAULT_LOCALE;
 }
