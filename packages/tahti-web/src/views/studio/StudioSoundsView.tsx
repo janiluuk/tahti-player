@@ -18,6 +18,7 @@ import { SoundFilters } from './sounds/SoundFilters';
 import { SoundsAmbientList } from './sounds/SoundsAmbientList';
 import { SoundsDialogs } from './sounds/SoundsDialogs';
 import { SoundsSelectionBar } from './sounds/SoundsSelectionBar';
+import { SoundsStatsStrip } from './sounds/SoundsStatsStrip';
 import { TrackOrderButton } from './sounds/TrackOrderButton';
 import { useStudioSoundsState } from './sounds/useStudioSoundsState';
 
@@ -27,7 +28,19 @@ export function StudioSoundsView() {
     (auth) =>
       Boolean(auth.user) && auth.profileLoaded && !hasStudioAccess(auth.user),
   );
-  const { reload, loading, loadError, items, filtered, clearFilters } = state;
+  const {
+    reload,
+    loading,
+    loadingMore,
+    hasMore,
+    loadMore,
+    loadError,
+    items,
+    filtered,
+    clearFilters,
+    filtersActive,
+    total,
+  } = state;
 
   if (listener) {
     return <Navigate to="/library" />;
@@ -60,7 +73,7 @@ export function StudioSoundsView() {
                 description={loadError}
                 onRetry={reload}
               />
-            ) : items.length > 0 && filtered.length === 0 ? (
+            ) : filtersActive && total === 0 ? (
               <PageEmpty
                 title="No sounds match these filters"
                 action={
@@ -82,8 +95,21 @@ export function StudioSoundsView() {
               />
             ) : (
               <>
+                <SoundsStatsStrip state={state} />
                 <SoundsSelectionBar state={state} />
                 <SoundsAmbientList items={filtered} state={state} />
+                {hasMore ? (
+                  <div className="mt-4 flex justify-center">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={loadingMore}
+                      onClick={loadMore}
+                    >
+                      {loadingMore ? 'Loading…' : 'Load more'}
+                    </Button>
+                  </div>
+                ) : null}
               </>
             )}
           </StudioPanel>

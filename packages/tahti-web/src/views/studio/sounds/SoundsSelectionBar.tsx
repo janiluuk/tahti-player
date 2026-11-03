@@ -1,4 +1,10 @@
-import { Disc3Icon, ListPlusIcon, XIcon } from 'lucide-react';
+import {
+  Disc3Icon,
+  ListPlusIcon,
+  PencilIcon,
+  Trash2Icon,
+  XIcon,
+} from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@tahti-player/ui';
@@ -9,37 +15,56 @@ import type { StudioSoundsState } from './useStudioSoundsState';
 
 /** Bulk actions over the checked Sounds rows; hidden until one is checked. */
 export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
-  const { items, filtered, selectedIds, setSelectedIds } = state;
+  const {
+    items,
+    filtered,
+    selectedIds,
+    clearSelection,
+    total,
+    selectAllMatching,
+    selectingAll,
+    allMatchingSelected,
+    setPendingBulkDelete,
+    setBulkEditOpen,
+    bulkBusy,
+  } = state;
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const [releaseOpen, setReleaseOpen] = useState(false);
   const selected = items.filter((item) => selectedIds.has(item.id));
 
-  if (selected.length === 0) {
+  if (selectedIds.size === 0) {
     return null;
   }
 
-  const allShownSelected = filtered.every((item) => selectedIds.has(item.id));
+  const allShownSelected =
+    filtered.length > 0 && filtered.every((item) => selectedIds.has(item.id));
+  const matching =
+    allMatchingSelected ||
+    (total > 0 && selectedIds.size >= total && allShownSelected);
 
   return (
     <div
       role="toolbar"
       aria-label="Selected sounds"
+      aria-busy={selectingAll || bulkBusy || undefined}
       className="border-border bg-background-secondary mb-3 flex flex-wrap items-center gap-2 rounded-lg border px-3 py-2 text-sm"
     >
       <span className="font-medium">
-        {selected.length === 1 ? '1 selected' : `${selected.length} selected`}
+        {selectedIds.size === 1 ? '1 selected' : `${selectedIds.size} selected`}
+        {matching ? ` (all ${total})` : ''}
       </span>
-      {!allShownSelected ? (
+      {!matching ? (
         <Button
           size="sm"
           variant="text"
-          onClick={() =>
-            setSelectedIds(
-              new Set([...selectedIds, ...filtered.map((item) => item.id)]),
-            )
-          }
+          disabled={selectingAll || bulkBusy}
+          onClick={() => void selectAllMatching()}
         >
-          Select all {filtered.length}
+          {selectingAll
+            ? 'Selecting…'
+            : allShownSelected && total > filtered.length
+              ? `Select all ${total} matching`
+              : `Select all ${filtered.length} shown`}
         </Button>
       ) : null}
       <div className="ml-auto flex flex-wrap items-center gap-2">
@@ -47,6 +72,17 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
           size="sm"
           variant="secondary"
           className="gap-1.5"
+          disabled={bulkBusy}
+          onClick={() => setBulkEditOpen(true)}
+        >
+          <PencilIcon size={15} aria-hidden />
+          Edit
+        </Button>
+        <Button
+          size="sm"
+          variant="secondary"
+          className="gap-1.5"
+          disabled={bulkBusy || selected.length === 0}
           onClick={() => setReleaseOpen(true)}
         >
           <Disc3Icon size={15} aria-hidden />
@@ -55,6 +91,7 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
         <Button
           size="sm"
           className="gap-1.5"
+          disabled={bulkBusy}
           onClick={() => setPlaylistOpen(true)}
         >
           <ListPlusIcon size={15} aria-hidden />
@@ -62,9 +99,20 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
         </Button>
         <Button
           size="sm"
+          variant="secondary"
+          className="gap-1.5"
+          disabled={bulkBusy}
+          onClick={() => setPendingBulkDelete(true)}
+        >
+          <Trash2Icon size={15} aria-hidden />
+          Delete
+        </Button>
+        <Button
+          size="sm"
           variant="text"
           className="gap-1.5"
-          onClick={() => setSelectedIds(new Set())}
+          disabled={bulkBusy}
+          onClick={clearSelection}
         >
           <XIcon size={15} aria-hidden />
           Clear
@@ -77,7 +125,7 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
       />
       <AddToPlaylistPanel
         isOpen={playlistOpen}
-        soundIds={selected.map((item) => item.id)}
+        soundIds={[...selectedIds]}
         trackTitle={selected[0]?.title ?? ''}
         onClose={() => setPlaylistOpen(false)}
       />

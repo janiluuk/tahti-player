@@ -63,8 +63,31 @@ If the board has blocked your uploads, Upload and the import panels say so inste
 
 ## Library → Sounds
 
-- Switch between the card view and a **list view**: a plain table with a small preview, the status and the details of each track. The size control makes rows more or less compact.
-- Select tracks and press **Add to a release** to put them on an existing release. If you have none yet, it offers to create one first.
+Open **Library → Sounds** to browse everything you've uploaded or imported.
+
+<figure><img src="../../.gitbook/assets/studio-sounds-library.png" alt="Library Sounds with filter summary, list view checkboxes, and a selection toolbar for edit, release, playlist and delete"><figcaption><p>Library → Sounds — filters, stats, and bulk actions</p></figcaption></figure>
+
+### Browse and filter
+
+- A short summary under the header shows how many sounds match the current filters, total duration, and how many are public, private, processing or failed.
+- Search by title, filter by **source** (Tahti audio, hearthis.at, Mixcloud, and so on), **content type**, and upload date range. **Sort** and **Track size** change order and row density. Switch between card layouts and a **list view** (table with checkboxes).
+- The list pages from the server as you scroll or press **Load more** — filters apply to the whole library, not only the rows already on screen.
+
+### Select and bulk actions
+
+In **list view**, tick the checkbox on one or more hosted tracks. A toolbar appears with:
+
+- **Select all N matching** — selects every sound that matches the current filters (not just the loaded page). Use this before a large delete or edit.
+- **Edit** — set the same genre, tags, content type or visibility on every selected sound.
+- **Add to release** / **Add to playlist** — same as for a single track.
+- **Delete** — removes the selected sounds after you confirm. If you used **Select all matching**, the delete covers the whole filtered set; if the library changed since you selected, you'll be asked to refresh and try again.
+- **Clear** — drops the selection.
+
+Embeds (linked SoundCloud, Mixcloud, and similar) stay in the list for browsing and playback, but bulk edit and delete apply to hosted Tahti audio.
+
+### One track
+
+Open a row for the track page, or use the row menu to edit details, pin to your profile, download, or delete a single sound.
 
 ## Other Library tabs
 

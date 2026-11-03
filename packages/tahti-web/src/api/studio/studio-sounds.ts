@@ -1,7 +1,6 @@
 import type { FetchMeta } from '../client';
 import { apiBase } from '../http';
 import { DEMO_MP3 } from '../mock';
-import { mockFixture } from '../mock-overrides';
 import { getMockUploadedSound, patchMockUploadedSound } from '../mock-uploads';
 import {
   allowMockFallback,
@@ -17,33 +16,6 @@ import type {
 } from '../studio-types';
 import { mockSoundStore } from './studio-mock';
 import { requestJson } from './studio-request';
-
-// ── Sounds ─────────────────────────────────────────────────────────────────
-
-export async function fetchStudioSounds(): Promise<{
-  data: StudioSound[];
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    applySavedMockSoundAccess();
-    return {
-      data: mockFixture('studioSounds', [...mockSoundStore]),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const { data } = await requestJson<StudioSound[]>('/api/me/sound');
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    if (allowMockFallback()) {
-      return {
-        data: mockFixture('studioSounds', [...mockSoundStore]),
-        meta: mockFallbackMeta(err),
-      };
-    }
-    return { data: [], meta: apiErrorMeta(err) };
-  }
-}
 
 export type SoundProcessingStatus = {
   processing: Array<{

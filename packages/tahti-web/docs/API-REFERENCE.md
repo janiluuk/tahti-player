@@ -17,7 +17,7 @@ permission boundaries that must be checked before adding a new view. It is
 not a replacement for the generated OpenAPI document. For sibling-repo naming,
 route aliases, and governance context, see [CROSS-REPO-SYNC.md](./CROSS-REPO-SYNC.md).
 
-<!-- API_PATHS_SHA256: bfe681bc5c8b698254642397f0dca33f59e106f9a9eec978442ccd963017cba0 -->
+<!-- API_PATHS_SHA256: 210117a0aaf9f14a28197b9e6941bcfe584e0996f5273c2cd9e0686bb7bacdce -->
 
 ## Authentication
 
@@ -42,7 +42,7 @@ Login is `POST /api/auth/login`, TOTP login is
 | Broadcast controls | `POST /api/channels/{slug}/skip`, `/pause`, `/resume`, `/previous`; `GET /api/channels/{slug}/rtmp-status` | Go Live, Radio, stream manager |
 | Rotation and programming | `GET/PATCH /api/channels/{slug}/fallback-collections`, `GET /api/channels/{slug}/programme`, `PATCH /api/channels/{slug}/fallback-collection` | 24/7 rotation and radio management |
 | Multicast | `GET/POST /api/me/rtmp-targets`, `PATCH/DELETE /api/me/rtmp-targets/{id}`, `GET /api/me/rtmp-targets/{id}/stream-key` | Studio → Manage → Multicast and Go Live |
-| Archive and editing | `/api/me/sound`, `/api/me/sound/{id}`, `/api/me/sound/{id}/editor/draft`, `/api/me/sound/{id}/fingerprint` | Sounds, upload, stash, track editor, audio editor |
+| Archive and editing | `/api/me/sound`, `/api/me/sound/ids`, `/api/me/sound/facets`, `/api/me/sound/stats`, `/api/me/sound/bulk-delete`, `/api/me/sound/bulk-patch`, `/api/me/sound/{id}`, `/api/me/sound/{id}/editor/draft`, `/api/me/sound/{id}/fingerprint` | Sounds list management, upload, stash, track editor, audio editor |
 | Collections and releases | `/api/me/collections`, `/api/me/releases`, `/api/me/releases/{id}`, release export and royalty routes | Collections, releases, distribution, smartlinks |
 | Shows and schedule | `/api/me/channel/show-series`, `/api/me/radio-slot-bookings`, `/api/me/channel/.../live-show-episodes` | Shows, calendar, Studio Broadcast (`/studio/schedule`), recordings |
 | Profile and audience | `/api/me/profile`, `/api/me/notification-preferences`, `/api/me/fan-tiers`, `/api/me/fan-sub-payouts`, `/api/me/fan-sub-payouts/summary`, `/api/me/fan-subs/connect`, `/api/me/revelator/royalties`, `/api/me/fan-subscriptions`, `/api/me/grants` | Settings, Studio → Audience, subscriptions |

@@ -1,13 +1,21 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  bulkDeleteStudioSounds,
+  bulkPatchStudioSounds,
   deleteStudioSound,
   fetchEditorSource,
   fetchStudioSoundDownload,
-  fetchStudioSounds,
+  fetchStudioSoundIds,
+  fetchStudioSoundsPage,
+  fetchStudioSoundStats,
   patchStudioSound,
+  STUDIO_SOUND_BULK_MAX_IDS,
+  type StudioSoundBulkPatch,
+  type StudioSoundListFilter,
+  type StudioSoundStats,
 } from '../../../api/studio';
 import type { StudioSound } from '../../../api/studio-types';
 import {
@@ -55,15 +63,8 @@ export const CONTENT_TYPE_FILTERS: Array<{
   })),
 ];
 
-const DAY_IN_MS = 24 * 60 * 60 * 1000;
-
-function parseDateInput(value: string): Date | null {
-  if (!value) {
-    return null;
-  }
-  const date = new Date(`${value}T00:00:00`);
-  return Number.isNaN(date.getTime()) ? null : date;
-}
+const PAGE_SIZE = 50;
+const SEARCH_DEBOUNCE_MS = 200;
 
 function parseContentTypeFilter(value: string | undefined): ContentTypeFilter {
   const resolved = resolveContentTypeId(value);
@@ -76,6 +77,41 @@ function parseContentTypeFilter(value: string | undefined): ContentTypeFilter {
   return 'ALL';
 }
 
+function apiSort(
+  field: SortField,
+  descending: boolean,
+): 'newest' | 'oldest' | 'title' | 'duration' {
+  if (field === 'title') {
+    return 'title';
+  }
+  if (field === 'duration') {
+    return 'duration';
+  }
+  return descending ? 'newest' : 'oldest';
+}
+
+function toServerFilter(input: {
+  query: string;
+  contentTypeFilter: ContentTypeFilter;
+  embedFilter: EmbedFilter;
+  uploadedFrom: string;
+  uploadedTo: string;
+}): StudioSoundListFilter {
+  return {
+    ...(input.query.trim() ? { q: input.query.trim() } : {}),
+    ...(input.contentTypeFilter !== 'ALL'
+      ? { contentType: input.contentTypeFilter }
+      : {}),
+    ...(input.embedFilter === 'NATIVE'
+      ? { source: 'native' }
+      : input.embedFilter !== 'ALL'
+        ? { source: input.embedFilter }
+        : {}),
+    ...(input.uploadedFrom ? { uploadedFrom: input.uploadedFrom } : {}),
+    ...(input.uploadedTo ? { uploadedTo: input.uploadedTo } : {}),
+  };
+}
+
 /** Loading, filtering, sorting and row actions for the Sounds list. */
 export function useStudioSoundsState() {
   const navigate = useNavigate();
@@ -84,8 +120,12 @@ export function useStudioSoundsState() {
   };
 
   const [items, setItems] = useState<StudioSound[]>([]);
+  const [total, setTotal] = useState(0);
+  const [stats, setStats] = useState<StudioSoundStats | null>(null);
   const [query, setQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [embedFilter, setEmbedFilter] = useState<EmbedFilter>('ALL');
   const [contentTypeFilter, setContentTypeFilter] = useState<ContentTypeFilter>(
@@ -102,13 +142,27 @@ export function useStudioSoundsState() {
   const [statsItem, setStatsItem] = useState<StudioSound | null>(null);
   const [pendingDeleteItem, setPendingDeleteItem] =
     useState<StudioSound | null>(null);
+  const [pendingBulkDelete, setPendingBulkDelete] = useState(false);
+  const [bulkEditOpen, setBulkEditOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  /** True after “Select all matching”; bulk ops use filter + confirmTotal. */
+  const [allMatchingSelected, setAllMatchingSelected] = useState(false);
+  const [selectingAll, setSelectingAll] = useState(false);
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const requestSeq = useRef(0);
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
 
   useEffect(() => {
     setContentTypeFilter(parseContentTypeFilter(search.contentType));
   }, [search.contentType]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedQuery(query);
+    }, SEARCH_DEBOUNCE_MS);
+    return () => window.clearTimeout(timer);
+  }, [query]);
 
   const setContentTypeFilterAndUrl = (next: ContentTypeFilter) => {
     setContentTypeFilter(next);
@@ -119,22 +173,71 @@ export function useStudioSoundsState() {
     });
   };
 
-  const reload = () => {
-    setLoading(true);
-    fetchStudioSounds()
-      .then((res) => {
-        setItems(res.data);
+  const serverFilter = useMemo(
+    () =>
+      toServerFilter({
+        query: debouncedQuery,
+        contentTypeFilter,
+        embedFilter,
+        uploadedFrom,
+        uploadedTo,
+      }),
+    [contentTypeFilter, debouncedQuery, embedFilter, uploadedFrom, uploadedTo],
+  );
+
+  const listSort = apiSort(sortField, sortDescending);
+
+  const reload = (opts?: { offset?: number; append?: boolean }) => {
+    const offset = opts?.offset ?? 0;
+    const append = opts?.append ?? false;
+    const seq = ++requestSeq.current;
+    if (append) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
+    }
+    void Promise.all([
+      fetchStudioSoundsPage({
+        ...serverFilter,
+        sort: listSort,
+        limit: PAGE_SIZE,
+        offset,
+      }),
+      fetchStudioSoundStats(serverFilter),
+    ])
+      .then(([pageRes, statsRes]) => {
+        if (seq !== requestSeq.current) {
+          return;
+        }
+        setItems((current) =>
+          append ? [...current, ...pageRes.data.items] : pageRes.data.items,
+        );
+        setTotal(pageRes.data.total);
+        setStats(statsRes.data);
         setLoadError(
-          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
+          pageRes.meta.source === 'api' ? (pageRes.meta.reason ?? null) : null,
         );
       })
-      .catch(() => toast.error('Could not load your music.'))
-      .finally(() => setLoading(false));
+      .catch(() => {
+        if (seq !== requestSeq.current) {
+          return;
+        }
+        toast.error('Could not load your music.');
+      })
+      .finally(() => {
+        if (seq !== requestSeq.current) {
+          return;
+        }
+        setLoading(false);
+        setLoadingMore(false);
+      });
   };
 
   useEffect(() => {
+    setSelectedIds(new Set());
+    setAllMatchingSelected(false);
     reload();
-  }, []);
+  }, [serverFilter, listSort]);
 
   const hasProcessing = items.some(
     (item) =>
@@ -147,20 +250,24 @@ export function useStudioSoundsState() {
     }
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout>;
+    const pollSeq = requestSeq.current;
     const refresh = async () => {
       try {
-        const result = await fetchStudioSounds();
+        const result = await fetchStudioSoundsPage({
+          ...serverFilter,
+          sort: listSort,
+          limit: Math.max(items.length, PAGE_SIZE),
+          offset: 0,
+        });
         if (
-          !cancelled &&
-          !(result.meta.source === 'api' && result.meta.reason)
+          cancelled ||
+          pollSeq !== requestSeq.current ||
+          (result.meta.source === 'api' && result.meta.reason)
         ) {
-          setItems((current) =>
-            current.map(
-              (item) =>
-                result.data.find((updated) => updated.id === item.id) ?? item,
-            ),
-          );
+          return;
         }
+        setItems(result.data.items);
+        setTotal(result.data.total);
       } catch {
         return;
       } finally {
@@ -178,75 +285,45 @@ export function useStudioSoundsState() {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [hasProcessing]);
+  }, [hasProcessing, items.length, listSort, serverFilter]);
 
   const clearFilters = () => {
     setQuery('');
     setEmbedFilter('ALL');
-    setContentTypeFilterAndUrl('ALL');
+    if (contentTypeFilter !== 'ALL') {
+      setContentTypeFilterAndUrl('ALL');
+    }
     setUploadedFrom('');
     setUploadedTo('');
   };
 
+  const filtersActive =
+    Boolean(debouncedQuery.trim()) ||
+    embedFilter !== 'ALL' ||
+    contentTypeFilter !== 'ALL' ||
+    Boolean(uploadedFrom) ||
+    Boolean(uploadedTo);
+
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const from = parseDateInput(uploadedFrom);
-    const to = parseDateInput(uploadedTo);
-    const toExclusive = to ? new Date(to.getTime() + DAY_IN_MS) : null;
-    const base = !q
-      ? items
-      : items.filter(
-          (i) =>
-            i.title.toLowerCase().includes(q) ||
-            (i.genre?.toLowerCase().includes(q) ?? false) ||
-            i.status.toLowerCase().includes(q) ||
-            (i.contentType?.toLowerCase().includes(q) ?? false),
-        );
-    const filteredItems = base.filter((item) => {
-      if (
-        contentTypeFilter !== 'ALL' &&
-        resolveContentTypeId(item.contentType) !== contentTypeFilter
-      ) {
-        return false;
-      }
-      const provider = item.embedProvider ?? 'NATIVE';
-      if (embedFilter !== 'ALL' && provider !== embedFilter) {
-        return false;
-      }
-      if (!item.createdAt) {
-        return !from && !toExclusive;
-      }
-      const uploadedAt = new Date(item.createdAt);
-      if (Number.isNaN(uploadedAt.getTime())) {
-        return !from && !toExclusive;
-      }
-      return (
-        (!from || uploadedAt >= from) &&
-        (!toExclusive || uploadedAt < toExclusive)
-      );
-    });
-    return sortPinnedFirst(filteredItems).sort((left, right) => {
-      const comparison =
-        sortField === 'title'
-          ? left.title.localeCompare(right.title)
-          : sortField === 'duration'
-            ? (left.durationSec ?? 0) - (right.durationSec ?? 0)
-            : new Date(left.createdAt ?? 0).getTime() -
-              new Date(right.createdAt ?? 0).getTime();
-      return sortDescending ? -comparison : comparison;
-    });
-  }, [
-    contentTypeFilter,
-    embedFilter,
-    items,
-    query,
-    sortDescending,
-    sortField,
-    uploadedFrom,
-    uploadedTo,
-  ]);
+    const ordered = sortPinnedFirst(items);
+    if (sortField === 'title' && sortDescending) {
+      return [...ordered].reverse();
+    }
+    if (sortField === 'duration' && !sortDescending) {
+      return [...ordered].reverse();
+    }
+    return ordered;
+  }, [items, sortDescending, sortField]);
 
   const pinnedCount = countPinnedTracks(items);
+  const hasMore = items.length < total;
+
+  const loadMore = () => {
+    if (loadingMore || !hasMore) {
+      return;
+    }
+    reload({ offset: items.length, append: true });
+  };
 
   const playItem = async (
     id: string,
@@ -321,7 +398,13 @@ export function useStudioSoundsState() {
     );
   };
 
+  const clearSelection = () => {
+    setSelectedIds(new Set());
+    setAllMatchingSelected(false);
+  };
+
   const toggleSelected = (id: string) => {
+    setAllMatchingSelected(false);
     setSelectedIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
@@ -331,6 +414,58 @@ export function useStudioSoundsState() {
       }
       return next;
     });
+  };
+
+  const filterNarrows = Object.keys(serverFilter).length > 0;
+
+  const buildBulkTarget = ():
+    | { ids: string[] }
+    | { filter: StudioSoundListFilter; confirmTotal: number; all?: boolean }
+    | { error: string } => {
+    if (allMatchingSelected) {
+      return {
+        filter: serverFilter,
+        confirmTotal: total,
+        ...(filterNarrows ? {} : { all: true as const }),
+      };
+    }
+    const ids = [...selectedIds];
+    if (ids.length === 0) {
+      return { error: 'No sounds selected.' };
+    }
+    if (ids.length > STUDIO_SOUND_BULK_MAX_IDS) {
+      return {
+        error: `Select at most ${STUDIO_SOUND_BULK_MAX_IDS} sounds, or use “Select all matching” with a filter.`,
+      };
+    }
+    return { ids };
+  };
+
+  const selectAllMatching = async () => {
+    const seq = requestSeq.current;
+    const filterSnapshot = serverFilter;
+    setSelectingAll(true);
+    try {
+      const result = await fetchStudioSoundIds(filterSnapshot);
+      if (seq !== requestSeq.current) {
+        return;
+      }
+      if (result.meta.source === 'api' && result.meta.reason) {
+        toast.error(result.meta.reason);
+        return;
+      }
+      setSelectedIds(new Set(result.data.ids));
+      setAllMatchingSelected(true);
+      toast.success(
+        result.data.total === 1
+          ? '1 sound selected'
+          : `${result.data.total} sounds selected`,
+      );
+    } finally {
+      if (seq === requestSeq.current) {
+        setSelectingAll(false);
+      }
+    }
   };
 
   const confirmDelete = () => {
@@ -347,6 +482,15 @@ export function useStudioSoundsState() {
           return;
         }
         toast.success(`Deleted “${item.title}”.`);
+        setSelectedIds((prev) => {
+          if (!prev.has(item.id)) {
+            return prev;
+          }
+          const next = new Set(prev);
+          next.delete(item.id);
+          return next;
+        });
+        setAllMatchingSelected(false);
         reload();
       } catch {
         toast.error('Could not delete the track.');
@@ -354,14 +498,91 @@ export function useStudioSoundsState() {
     })();
   };
 
+  const confirmBulkDelete = () => {
+    setPendingBulkDelete(false);
+    const target = buildBulkTarget();
+    if ('error' in target) {
+      toast.error(target.error);
+      return;
+    }
+    if (bulkBusy) {
+      return;
+    }
+    setBulkBusy(true);
+    void (async () => {
+      try {
+        const result = await bulkDeleteStudioSounds(target);
+        if (!result.ok) {
+          toast.error(
+            result.totalMatched !== undefined
+              ? `${result.error} Refresh and try again.`
+              : result.error,
+          );
+          return;
+        }
+        toast.success(
+          result.data.deleted === 1
+            ? 'Deleted 1 sound.'
+            : `Deleted ${result.data.deleted} sounds.`,
+        );
+        clearSelection();
+        reload();
+      } finally {
+        setBulkBusy(false);
+      }
+    })();
+  };
+
+  const applyBulkEdit = (patch: StudioSoundBulkPatch) => {
+    const target = buildBulkTarget();
+    if ('error' in target) {
+      toast.error(target.error);
+      return;
+    }
+    if (bulkBusy) {
+      return;
+    }
+    setBulkBusy(true);
+    void (async () => {
+      try {
+        const result = await bulkPatchStudioSounds(
+          'ids' in target ? { ids: target.ids, patch } : { ...target, patch },
+        );
+        if (!result.ok) {
+          toast.error(
+            result.totalMatched !== undefined
+              ? `${result.error} Refresh and try again.`
+              : result.error,
+          );
+          return;
+        }
+        toast.success(
+          result.data.updated === 1
+            ? 'Updated 1 sound.'
+            : `Updated ${result.data.updated} sounds.`,
+        );
+        setBulkEditOpen(false);
+        reload();
+      } finally {
+        setBulkBusy(false);
+      }
+    })();
+  };
+
   return {
     items,
     setItems,
+    total,
+    stats,
     query,
     setQuery,
     loading,
+    loadingMore,
+    hasMore,
+    loadMore,
     loadError,
     clearFilters,
+    filtersActive,
     embedFilter,
     setEmbedFilter,
     contentTypeFilter,
@@ -384,7 +605,11 @@ export function useStudioSoundsState() {
     setStatsItem,
     pendingDeleteItem,
     setPendingDeleteItem,
-    reload,
+    pendingBulkDelete,
+    setPendingBulkDelete,
+    bulkEditOpen,
+    setBulkEditOpen,
+    reload: () => reload(),
     filtered,
     pinnedCount,
     playItem,
@@ -392,6 +617,14 @@ export function useStudioSoundsState() {
     downloadItem,
     togglePin,
     confirmDelete,
+    confirmBulkDelete,
+    applyBulkEdit,
+    selectAllMatching,
+    selectingAll,
+    bulkBusy,
+    allMatchingSelected,
+    clearSelection,
+    serverFilter,
     selectedIds,
     setSelectedIds,
     toggleSelected,
