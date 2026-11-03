@@ -4,6 +4,7 @@ import {
   fetchHearthisUserSets,
   filterSetsByTitle,
   runHearthisUserSets,
+  sortSets,
 } from './hearthis-user-sets.mjs';
 
 const page = (count: number, offset = 0) =>
@@ -62,5 +63,18 @@ describe('hearthis user-sets', () => {
         match: 'nope',
       }),
     ).toBe('No sets on hearthis.at/@yaniho match "nope".');
+  });
+
+  it('sorts by title or track count and rejects other orders', () => {
+    const sets = [
+      { permalink: 'a', title: 'Zebra', trackCount: 2 },
+      { permalink: 'b', title: 'alpha', trackCount: 9 },
+    ];
+    expect(sortSets(sets, 'title').map((s) => s.permalink)).toEqual(['b', 'a']);
+    expect(sortSets(sets, 'tracks').map((s) => s.permalink)).toEqual([
+      'b',
+      'a',
+    ]);
+    expect(() => sortSets(sets, 'date')).toThrow(/--sort takes/);
   });
 });

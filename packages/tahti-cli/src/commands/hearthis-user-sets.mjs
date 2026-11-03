@@ -55,9 +55,22 @@ export function filterSetsByTitle(sets, match) {
   return sets.filter((set) => pattern.test(set.title));
 }
 
+export function sortSets(sets, sort) {
+  if (!sort) {
+    return sets;
+  }
+  if (sort === 'title') {
+    return [...sets].sort((a, b) => a.title.localeCompare(b.title));
+  }
+  if (sort === 'tracks') {
+    return [...sets].sort((a, b) => b.trackCount - a.trackCount);
+  }
+  throw new CliError(`--sort takes title or tracks (got ${sort})`);
+}
+
 export async function runHearthisUserSets(
   user,
-  { json = false, match = null, fetchImpl } = {},
+  { json = false, match = null, sort = null, fetchImpl } = {},
 ) {
   if (!user) {
     throw new CliError(
@@ -65,7 +78,7 @@ export async function runHearthisUserSets(
     );
   }
   const result = await fetchHearthisUserSets(user, { fetchImpl });
-  const sets = filterSetsByTitle(result.sets, match);
+  const sets = sortSets(filterSetsByTitle(result.sets, match), sort);
   if (json) {
     return JSON.stringify({ user: result.user, sets }, null, 2);
   }
