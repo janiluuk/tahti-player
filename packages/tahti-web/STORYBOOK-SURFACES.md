@@ -71,6 +71,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/AudioRevisionList` | `tahti-web/AudioRevisionList.stories.tsx` |
 | `Tahti/Auth/AuthDialog` | `tahti-web/AuthDialog.stories.tsx` |
 | `Tahti/Media/BackdropUploadButton` | `tahti-web/BackdropUploadButton.stories.tsx` |
+| `Tahti/Settings/Artist branding sections` | `tahti-web/BrandingSections.stories.tsx` |
 | `Tahti/Studio/BroadcastPreflightPanel` | `tahti-web/BroadcastPreflightPanel.stories.tsx` |
 | `Tahti/Channel/ChannelAirBadge` | `tahti-web/ChannelAirBadge.stories.tsx` |
 | `Tahti/Studio/ChannelAnnouncementsPanel` | `tahti-web/ChannelAnnouncementsPanel.stories.tsx` |
@@ -257,6 +258,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Updates/PostPreview` | `tahti-web/PostPreview.stories.tsx` |
 | `Tahti/Studio/Branding/PressKitPreview` | `tahti-web/PressKitPreview.stories.tsx` |
 | `Tahti/Studio/Pro editor/Mastering` | `tahti-web/ProEditorMastering.stories.tsx` |
+| `Tahti/Studio/Pro editor/Stems` | `tahti-web/ProEditorStems.stories.tsx` |
 | `Tahti/Studio/ProcessingFailedAlert` | `tahti-web/ProcessingFailedAlert.stories.tsx` |
 | `Tahti/Studio/Branding/ProfilePictureSection` | `tahti-web/ProfilePictureSection.stories.tsx` |
 | `Tahti/Profile/ProfileSection` | `tahti-web/ProfileSection.stories.tsx` |
