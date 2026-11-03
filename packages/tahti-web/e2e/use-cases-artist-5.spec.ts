@@ -73,3 +73,19 @@ test('artist schedules a listening party and cancels it', async ({ page }) => {
     main.getByRole('heading', { name: 'No listening parties scheduled' }),
   ).toBeVisible();
 });
+
+test('an artist removes a listener comment from their channel page', async ({
+  page,
+}) => {
+  await signIn(page);
+  await page.goto('/channel/artist');
+  const comments = page.getByTestId('channel-comments');
+  const remove = comments.getByRole('button', {
+    name: 'Delete comment by Listener One',
+  });
+  await expect(remove.first()).toBeVisible();
+  const before = await remove.count();
+  await remove.first().click();
+  await page.getByRole('button', { name: 'Remove', exact: true }).click();
+  await expect(remove).toHaveCount(before - 1);
+});

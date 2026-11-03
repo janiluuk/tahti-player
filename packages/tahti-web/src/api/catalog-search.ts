@@ -78,7 +78,7 @@ export async function addTrackToCollaborativePlaylist(
   note?: string,
 ): Promise<{ ok: true; itemId: string | null } | { ok: false; error: string }> {
   if (isForceMock()) {
-    return { ok: true, itemId: null };
+    return { ok: true, itemId: `mock-collab-${Date.now()}` };
   }
   const trimmed = note?.trim();
   try {
