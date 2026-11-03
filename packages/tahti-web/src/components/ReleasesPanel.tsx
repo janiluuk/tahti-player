@@ -238,6 +238,7 @@ export function ReleasesPanel({
                     <DataTableCell>
                       <MediaIconActions
                         actions={playQueueFavoriteActions({
+                          itemName: rel.title,
                           onPlay: () => {
                             const [head, ...rest] = playables;
                             if (head) {

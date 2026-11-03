@@ -7,6 +7,7 @@ import {
   PluginStoreItem,
   TabLabel,
   Tabs,
+  Toggle,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -103,6 +104,15 @@ export function AudioPluginToggleRow({
       isInstalled={enabled}
       onInstall={onToggle}
       labels={{ install: 'Activate', installed: 'Active' }}
+      accessory={
+        enabled ? (
+          <Toggle
+            label={`${name} on`}
+            checked={enabled}
+            onChange={() => onToggle()}
+          />
+        ) : null
+      }
     />
   );
 }

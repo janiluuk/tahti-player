@@ -195,12 +195,9 @@ export const messagesAliasRoute = createRoute({
 });
 
 export const messagesThreadRoute = createRoute({
-  getParentRoute: () => appLayoutRoute,
-  path: '/messages/$id',
-  component: function MessagesThreadRoute() {
-    const { id } = messagesThreadRoute.useParams();
-    return <MessagesView threadId={id} />;
-  },
+  getParentRoute: () => messagesAliasRoute,
+  path: '$id',
+  component: () => null,
 });
 
 export const favoritesRoute = createRoute({

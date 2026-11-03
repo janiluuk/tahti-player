@@ -1,4 +1,4 @@
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 
 import { Button, ButtonLink, Input, ViewShell } from '@tahti-player/ui';
@@ -23,7 +23,11 @@ import { PageEmpty, PageError } from '../components/PageStates';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
-export function MessagesView({ threadId }: { threadId?: string } = {}) {
+export function MessagesView({
+  threadId: threadIdProp,
+}: { threadId?: string } = {}) {
+  const routeParams = useParams({ strict: false }) as { id?: string };
+  const threadId = threadIdProp ?? routeParams.id;
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const [inbox, setInbox] = useState<ConversationSummary[]>([]);
@@ -104,7 +108,9 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
 
   const openThread = (id: string) => {
     setActiveId(id);
-    loadThread(id);
+    if (id === threadId) {
+      loadThread(id);
+    }
     requestAnimationFrame(() => {
       threadRef.current?.scrollIntoView?.({ block: 'nearest' });
     });

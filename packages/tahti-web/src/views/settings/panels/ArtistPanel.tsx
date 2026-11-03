@@ -16,7 +16,6 @@ import {
   InlineLoader,
   Input,
   SaveButton,
-  SectionTitle,
   Select,
   SelectableTile,
   SelectableTiles,
@@ -537,16 +536,7 @@ export function ArtistPanel() {
       id: 'branding',
       label: 'Branding',
       icon: <Paintbrush size={14} />,
-      content: (
-        <div className="flex flex-col gap-4">
-          <SectionTitle
-            title="Artist branding"
-            wrap
-            className="font-display tracking-tight"
-          />
-          <StudioBrandingPanel section="branding" />
-        </div>
-      ),
+      content: <StudioBrandingPanel section="branding" />,
     },
     {
       id: 'gallery',

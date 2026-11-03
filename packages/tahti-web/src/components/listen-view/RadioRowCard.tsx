@@ -87,6 +87,7 @@ export function RadioRowCard({
           )
         }
         playLabel={failedPlayLabel}
+        itemName={station.name}
         src={station.iconUrl ?? placeholderArtworkUrl(item.id)}
         isPlaying={isPlaying}
         playDisabled={!station.streamUrl}
@@ -127,6 +128,7 @@ export function RadioRowCard({
               : (nowPlaying ?? preset.genre ?? 'Internet radio'))
           }
           playLabel={failedPlayLabel}
+          itemName={preset.name}
           src={presetLogo ?? placeholderArtworkUrl(item.id)}
           isPlaying={isPlaying}
           playDisabled={!preset.streamUrl}
@@ -185,9 +187,12 @@ export function RadioRowCard({
             />
           )
         }
+        itemName={station.name}
         src={station.logoUrl}
         isPlaying={isPlaying}
-        playLabel={failedPlayLabel ?? (streamUrl ? 'Play' : 'Stream pending')}
+        playLabel={
+          failedPlayLabel ?? (streamUrl ? undefined : 'Stream pending')
+        }
         playDisabled={!streamUrl}
         onPlay={streamUrl ? onPlay : undefined}
         favorited={favorited}

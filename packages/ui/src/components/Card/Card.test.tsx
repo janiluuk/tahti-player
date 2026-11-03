@@ -72,4 +72,17 @@ describe('Card', () => {
       screen.getByRole('button', { name: 'Play Night Drive', exact: true }),
     ).toBeInTheDocument();
   });
+
+  it('names the overlay after itemName when the title is a node', () => {
+    render(
+      <Card
+        title={<span>YleX</span>}
+        itemName="YleX"
+        onPlay={() => undefined}
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Play YleX', exact: true }),
+    ).toBeInTheDocument();
+  });
 });
