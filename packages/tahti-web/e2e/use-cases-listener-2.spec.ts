@@ -12,7 +12,7 @@ async function open(page: Page, path: string) {
 }
 
 test('anonymous: a community story opens in a dialog', async ({ page }) => {
-  await open(page, '/discover');
+  await open(page, '/discover?tab=feed');
   await page
     .getByRole('button', {
       name: 'Read My journey: the story behind the mixes',
@@ -58,14 +58,16 @@ test.describe('listener', () => {
   });
 
   test('the Feed lists posts and releases and pages on', async ({ page }) => {
-    await open(page, '/listen/feed');
+    await open(page, '/discover?tab=feed');
     const main = page.getByRole('main');
     await expect(
       main.getByRole('heading', { name: 'Your feed' }),
     ).toBeVisible();
     await expect(main.getByRole('heading', { level: 3 }).first()).toBeVisible();
-    await main.getByRole('button', { name: 'Next' }).click();
-    await expect(main.getByRole('button', { name: 'Previous' })).toBeEnabled();
+    await main.getByRole('button', { name: 'Next: Your feed' }).click();
+    await expect(
+      main.getByRole('button', { name: 'Previous: Your feed' }),
+    ).toBeEnabled();
   });
 
   test('notifications: marking all read clears the unread ones', async ({

@@ -74,9 +74,9 @@ export const Desktop: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      canvas.getByRole('button', { name: 'Previous' }),
+      canvas.getByRole('button', { name: /^Previous/ }),
     ).toBeDisabled();
-    await expect(canvas.getByRole('button', { name: 'Next' })).toBeEnabled();
+    await expect(canvas.getByRole('button', { name: /^Next/ })).toBeEnabled();
   },
 };
 
