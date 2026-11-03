@@ -2,9 +2,12 @@ import { RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { MediaArtworkDefaultProvider } from '@tahti-player/ui';
+
 import { AppErrorBoundary } from './components/AppErrorBoundary';
 import { startClientLogEvents } from './lib/clientLogEvents';
 import { installClientLogCapture, logClientEvent } from './lib/clientLogs';
+import { defaultArtworkUrl } from './lib/placeholderArt';
 import { startLocalPlayCounting } from './lib/playCounting';
 import { startPlayerPrefsPersistence } from './lib/playerPrefsPersistence';
 import {
@@ -19,7 +22,9 @@ import { usePlayerStore } from './stores/playerStore';
 export function TahtiApp() {
   return (
     <AppErrorBoundary>
-      <RouterProvider router={router} />
+      <MediaArtworkDefaultProvider value={defaultArtworkUrl}>
+        <RouterProvider router={router} />
+      </MediaArtworkDefaultProvider>
     </AppErrorBoundary>
   );
 }

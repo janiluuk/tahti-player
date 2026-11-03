@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { ThemeStoreItem } from '@tahti-player/ui';
 
@@ -70,5 +70,34 @@ export const Installing: Story = {
     tags: ['minimal', 'monochrome'],
     isInstalling: true,
     onInstall: fn(),
+  },
+};
+
+export const Active: Story = {
+  args: {
+    name: 'Rosé Pine',
+    description:
+      'All natural pine, faux fur and a bit of soho vibes for the classy minimalist.',
+    author: 'nukeop',
+    palette: [
+      'oklch(0.97 0.011 72)',
+      'oklch(0.46 0.063 290)',
+      'oklch(0.60 0.107 3)',
+      'oklch(0.46 0.063 290)',
+    ],
+    isInstalled: true,
+    isActive: true,
+    onInstall: fn(),
+    onApply: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const row = canvas.getByRole('group', { name: 'Rosé Pine' });
+    await expect(row).toHaveAttribute('aria-current', 'true');
+    await expect(within(row).getByText('Active')).toBeVisible();
+    const apply = canvas.getByRole('button', { name: 'Apply Rosé Pine' });
+    await expect(apply).toHaveAttribute('aria-pressed', 'true');
+    await userEvent.click(apply);
+    await expect(args.onApply).not.toHaveBeenCalled();
   },
 };

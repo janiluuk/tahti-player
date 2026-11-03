@@ -71,6 +71,9 @@ describe('AgendaItemRow', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Remove item 2: Annual report 2025' }),
     );
+    expect(screen.getByRole('button', { name: 'Remove' }).className).toContain(
+      'bg-accent-red',
+    );
     fireEvent.click(screen.getByRole('button', { name: 'Remove' }));
     expect(remove).toHaveBeenCalledWith(item);
     expect(await screen.findByRole('alert')).toHaveTextContent(

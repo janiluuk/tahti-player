@@ -76,10 +76,11 @@ export const ThemeStoreItem: FC<ThemeStoreItemProps> = ({
           <Tooltip content={isActive ? active : apply}>
             <Button
               size="icon-sm"
-              disabled={isActive}
-              onClick={onApply}
+              variant={isActive ? 'default' : 'secondary'}
+              onClick={isActive ? undefined : onApply}
               data-testid="theme-store-item-apply"
-              aria-label={isActive ? active : apply}
+              aria-label={`${apply} ${name}`}
+              aria-pressed={isActive}
             >
               {isActive ? <Check size={16} /> : <Paintbrush size={16} />}
             </Button>
@@ -103,7 +104,18 @@ export const ThemeStoreItem: FC<ThemeStoreItemProps> = ({
     ) : null;
 
   return (
-    <div data-testid="theme-store-item" className={cn('flex', className)}>
+    <div
+      data-testid="theme-store-item"
+      data-active={isActive || undefined}
+      role="group"
+      aria-label={name}
+      aria-current={isActive ? 'true' : undefined}
+      className={cn(
+        'flex rounded-lg p-0.5',
+        isActive ? 'bg-primary' : 'bg-transparent',
+        className,
+      )}
+    >
       <Box
         variant="tertiary"
         className="relative h-auto min-w-0 flex-1 overflow-hidden p-1.5"
@@ -138,6 +150,17 @@ export const ThemeStoreItem: FC<ThemeStoreItemProps> = ({
               >
                 {by} {author}
               </p>
+              {isActive ? (
+                <Badge
+                  variant="pill"
+                  color="inverted"
+                  className="gap-1"
+                  data-testid="theme-store-item-active"
+                >
+                  <Check size={12} aria-hidden />
+                  {active}
+                </Badge>
+              ) : null}
               {tags?.map((tag) => (
                 <Badge key={tag} variant="pill" color="cyan">
                   {tag}

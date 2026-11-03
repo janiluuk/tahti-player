@@ -385,6 +385,7 @@ export function ArtistGalleryPanel({
       ) : null}
 
       <ConfirmDialog
+        destructive
         isOpen={pendingDeleteId !== null}
         title="Remove this photo?"
         description="The photo is removed from your gallery immediately."

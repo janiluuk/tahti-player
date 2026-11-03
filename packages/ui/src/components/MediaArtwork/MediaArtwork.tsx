@@ -1,5 +1,12 @@
 import { CassetteTape, Heart, ListPlus, Pause, Play } from 'lucide-react';
-import { FC, ReactNode, useState, type MouseEvent } from 'react';
+import {
+  createContext,
+  FC,
+  ReactNode,
+  useContext,
+  useState,
+  type MouseEvent,
+} from 'react';
 
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { useShiftHeld } from '../../hooks/useShiftHeld';
@@ -18,9 +25,23 @@ export type MediaArtworkAction = {
   active?: boolean;
 };
 
+/** Resolves the default cover for artwork with no image (or one that fails
+ * to load) from a stable seed. Without a provider the cassette placeholder
+ * shows instead. */
+export type MediaArtworkDefaultSrc = (seed: string) => string;
+
+const MediaArtworkDefaultContext = createContext<MediaArtworkDefaultSrc | null>(
+  null,
+);
+
+export const MediaArtworkDefaultProvider = MediaArtworkDefaultContext.Provider;
+
 export type MediaArtworkProps = {
   src?: string | null;
   alt?: string;
+  /** Stable id (track id, slug, username) that picks the default cover when
+   * `src` is missing; falls back to `alt`. */
+  seed?: string;
   /** Still first frame of an animated `src` (GIF). Shown at rest, swapped
    * for `src` while the artwork is hovered or focused, and kept when the
    * viewer prefers reduced motion. */
@@ -96,6 +117,7 @@ const overlayReveal =
 export const MediaArtwork: FC<MediaArtworkProps> = ({
   src,
   alt,
+  seed,
   posterSrc,
   animate = false,
   size = 'fill',
@@ -124,8 +146,22 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   const reducedMotion = usePrefersReducedMotion();
   const shiftHeld = useShiftHeld();
   const [animating, setAnimating] = useState(false);
+  const defaultSrcFor = useContext(MediaArtworkDefaultContext);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const still = posterSrc && src && (reducedMotion || !(animate || animating));
-  const resolvedSrc = (still ? posterSrc : src) ?? undefined;
+  const ownSrc = (still ? posterSrc : src) || undefined;
+  // An explicit placeholder or background is the caller's chosen empty
+  // state; otherwise a missing or broken cover shows the default artwork.
+  const defaultSrc =
+    defaultSrcFor && !placeholder && !fallbackBackground
+      ? defaultSrcFor(seed || alt || '')
+      : undefined;
+  const resolvedSrc =
+    ownSrc && ownSrc !== failedSrc ? ownSrc : (defaultSrc ?? undefined);
+  const onImageError =
+    ownSrc && resolvedSrc === ownSrc && defaultSrc
+      ? () => setFailedSrc(ownSrc)
+      : undefined;
   const motionHandlers = posterSrc
     ? {
         onPointerEnter: () => setAnimating(true),
@@ -245,9 +281,13 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
         // ImageReveal would replay its fade-in on every poster/GIF swap.
         imageReveal && size !== 'sm' && !posterSrc ? (
           <ImageReveal
+            // ImageReveal keeps its error state per mount; a new src after a
+            // failed load must start fresh.
+            key={resolvedSrc}
             enabled
             src={resolvedSrc}
             alt={alt ?? ''}
+            onError={onImageError}
             className="absolute inset-0"
             imgClassName={cn(
               'h-full w-full',
@@ -267,6 +307,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
           <img
             src={resolvedSrc}
             alt={alt ?? ''}
+            onError={onImageError}
             className={cn(
               'absolute inset-0 h-full w-full',
               fit === 'contain' ? 'object-contain' : 'object-cover',

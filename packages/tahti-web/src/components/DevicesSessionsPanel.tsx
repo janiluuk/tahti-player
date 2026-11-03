@@ -137,6 +137,7 @@ export function DevicesSessionsPanel() {
       </ul>
 
       <ConfirmDialog
+        destructive
         isOpen={Boolean(pending)}
         onCancel={() => setPending(null)}
         title="Sign out this device?"
@@ -163,6 +164,7 @@ export function DevicesSessionsPanel() {
       />
 
       <ConfirmDialog
+        destructive
         isOpen={signOutAll}
         onCancel={() => setSignOutAll(false)}
         title="Sign out everywhere?"

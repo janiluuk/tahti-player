@@ -599,7 +599,7 @@ function ProEditor({ soundId }: { soundId: string }) {
             <Button variant="secondary" onClick={() => void render(false)}>
               Save as new revision
             </Button>
-            <Button onClick={() => void render(true)}>
+            <Button intent="danger" onClick={() => void render(true)}>
               Overwrite live version
             </Button>
           </Dialog.Actions>

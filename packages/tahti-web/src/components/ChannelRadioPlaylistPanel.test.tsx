@@ -10,7 +10,19 @@ import { ChannelRadioPlaylistPanel } from './ChannelRadioPlaylistPanel';
 
 vi.mock('sonner', () => ({ toast: { error: vi.fn(), success: vi.fn() } }));
 vi.mock('./ChannelRotationEditor', () => ({
-  ChannelRotationEditor: () => null,
+  ChannelRotationEditor: ({
+    onAddGroup,
+  }: {
+    onAddGroup?: (group: { id: string; label: string; items: [] }) => void;
+  }) =>
+    onAddGroup ? (
+      <button
+        type="button"
+        onClick={() => onAddGroup({ id: 'g1', label: 'Night Mix', items: [] })}
+      >
+        Add group
+      </button>
+    ) : null,
 }));
 vi.mock('./ReleaseTracksToRotation', () => ({
   ReleaseTracksToRotation: () => null,
@@ -22,29 +34,23 @@ describe('ChannelRadioPlaylistPanel', () => {
     vi.restoreAllMocks();
   });
 
+  it('paints Overwrite rotation red next to the secondary Append', async () => {
+    mockPanelData();
+    await renderWithRouter(<ChannelRadioPlaylistPanel />);
+    fireEvent.click(
+      await screen.findByRole('tab', { name: /Active rotation/ }),
+    );
+    fireEvent.click(await screen.findByRole('button', { name: 'Add group' }));
+    expect(
+      screen.getByRole('button', { name: 'Overwrite rotation' }).className,
+    ).toContain('bg-accent-red');
+    expect(
+      screen.getByRole('button', { name: 'Append tracks' }).className,
+    ).toContain('bg-secondary');
+  });
+
   it('leaves the rotation alone when the chosen playlist fails to load', async () => {
-    vi.spyOn(extras, 'fetchProgramme').mockResolvedValue({
-      data: {
-        fallbackEnabled: true,
-        fallbackMode: 'SHUFFLE',
-        fallbackAutoEnroll: false,
-        announcementsEnabled: false,
-        items: [],
-      },
-      meta: { source: 'api' },
-    } as never);
-    vi.spyOn(studio, 'fetchStudioCollections').mockResolvedValue({
-      data: [{ slug: 'night', name: 'Night Mix', style: 'PLAYLIST' }],
-      meta: { source: 'api' },
-    } as never);
-    vi.spyOn(studio, 'fetchStudioSounds').mockResolvedValue({
-      data: [],
-      meta: { source: 'api' },
-    });
-    vi.spyOn(studio, 'fetchStudioReleases').mockResolvedValue({
-      data: { releases: [] },
-      meta: { source: 'api' },
-    } as never);
+    mockPanelData();
     vi.spyOn(studio, 'fetchStudioCollection').mockResolvedValue({
       data: { slug: 'night', name: 'night', items: [] },
       meta: { source: 'api', reason: 'HTTP 502' },
@@ -62,3 +68,28 @@ describe('ChannelRadioPlaylistPanel', () => {
     );
   });
 });
+
+function mockPanelData() {
+  vi.spyOn(extras, 'fetchProgramme').mockResolvedValue({
+    data: {
+      fallbackEnabled: true,
+      fallbackMode: 'SHUFFLE',
+      fallbackAutoEnroll: false,
+      announcementsEnabled: false,
+      items: [],
+    },
+    meta: { source: 'api' },
+  } as never);
+  vi.spyOn(studio, 'fetchStudioCollections').mockResolvedValue({
+    data: [{ slug: 'night', name: 'Night Mix', style: 'PLAYLIST' }],
+    meta: { source: 'api' },
+  } as never);
+  vi.spyOn(studio, 'fetchStudioSounds').mockResolvedValue({
+    data: [],
+    meta: { source: 'api' },
+  });
+  vi.spyOn(studio, 'fetchStudioReleases').mockResolvedValue({
+    data: { releases: [] },
+    meta: { source: 'api' },
+  } as never);
+}

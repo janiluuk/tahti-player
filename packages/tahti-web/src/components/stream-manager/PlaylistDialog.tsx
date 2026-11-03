@@ -125,6 +125,7 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
       </Dialog.Root>
       <ConfirmDialog
         isOpen={pendingApply !== null}
+        destructive={pendingApply?.replace ?? false}
         title={
           pendingApply?.replace
             ? 'Replace the current rotation?'

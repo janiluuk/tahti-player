@@ -25,6 +25,7 @@ test('listener: starts a Jam from a playlist and lands in the session', async ({
 test('listener: comments on a channel page', async ({ page }) => {
   const text = `Great set tonight ${Date.now()}`;
   await open(page, '/channel/northern-lights');
+  await page.getByRole('tab', { name: 'Comments' }).click();
   const box = page.getByRole('textbox', { name: 'Write a comment' });
   await box.fill(text);
   await box.press('Enter');

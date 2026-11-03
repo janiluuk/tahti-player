@@ -297,6 +297,7 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
         }}
       />
       <ConfirmDialog
+        destructive
         isOpen={deleting !== null}
         title="Delete this smart playlist?"
         description={`“${deleting?.name ?? ''}” will be deleted. Only the rules go; your tracks and files are not touched.`}

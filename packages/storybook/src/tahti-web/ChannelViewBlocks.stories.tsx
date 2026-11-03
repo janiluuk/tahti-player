@@ -266,7 +266,11 @@ export const Feed: Story = {
     ctx: blockContext(),
   },
   play: async ({ canvasElement }) => {
-    await expect(canvasElement.textContent?.trim()).toBe('');
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByRole('heading', { name: 'Stories' }),
+    ).toBeVisible();
+    await expect(canvas.getByText('New set up')).toBeInTheDocument();
   },
 };
 
@@ -282,12 +286,8 @@ export const FeedEditing: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole('heading', { name: 'Feed' })).toBeVisible();
     await expect(
-      canvas.getByText(/Northern Lights's updates/),
-    ).toHaveTextContent('(cards display)');
-    await expect(
-      canvas.getByText(/No live update source is wired in yet/),
+      await canvas.findByRole('heading', { name: 'Stories' }),
     ).toBeVisible();
   },
 };

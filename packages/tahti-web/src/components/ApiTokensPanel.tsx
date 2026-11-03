@@ -314,6 +314,7 @@ export function ApiTokensPanel() {
         </div>
       )}
       <ConfirmDialog
+        destructive
         isOpen={pendingRevoke !== null}
         title={
           pendingRevoke ? `Revoke “${pendingRevoke.name}”?` : 'Revoke token?'

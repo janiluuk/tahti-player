@@ -94,6 +94,7 @@ function CorrectionItem({
       ) : null}
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       <ConfirmDialog
+        destructive
         isOpen={confirming}
         title="Withdraw this request?"
         description="The board will not answer it. It stays in your list as withdrawn."

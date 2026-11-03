@@ -115,14 +115,14 @@ describe('ConflictsPanel removal', () => {
         }),
       );
     });
+    const confirmRemove = within(
+      screen.getByRole('dialog', {
+        name: 'Remove the declaration for Aino Virtanen?',
+      }),
+    ).getByRole('button', { name: 'Remove' });
+    expect(confirmRemove.className).toContain('bg-accent-red');
     await act(async () => {
-      fireEvent.click(
-        within(
-          screen.getByRole('dialog', {
-            name: 'Remove the declaration for Aino Virtanen?',
-          }),
-        ).getByRole('button', { name: 'Remove' }),
-      );
+      fireEvent.click(confirmRemove);
     });
     expect(remove).toHaveBeenCalledWith('c1');
     expect(screen.queryByText('Grant application from her label')).toBeNull();

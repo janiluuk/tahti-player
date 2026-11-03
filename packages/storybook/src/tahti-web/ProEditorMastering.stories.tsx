@@ -6,6 +6,8 @@ import { PluginControls } from '@tahti-web/views/studio/pro-editor/PluginControl
 import { useState } from 'react';
 import { expect, userEvent, within } from 'storybook/test';
 
+import { expectNoDialog, findDialog } from './_lib/play';
+
 const EDIT_LIST: EditList = {
   version: 1,
   sourceDuration: 240,
@@ -93,8 +95,11 @@ export const Panel: Story = {
     await expect(
       canvas.getByRole('button', { name: 'Normalize' }),
     ).toBeVisible();
-    await expect(
-      canvas.getByRole('button', { name: 'Remove EQ' }),
-    ).toBeInTheDocument();
+    await userEvent.click(canvas.getByRole('button', { name: 'Remove EQ' }));
+    const dialog = await findDialog(canvasElement);
+    const confirm = dialog.getByRole('button', { name: 'Remove' });
+    await expect(confirm.className).toContain('bg-accent-red');
+    await userEvent.click(dialog.getByRole('button', { name: 'Cancel' }));
+    await expectNoDialog(canvasElement);
   },
 };
