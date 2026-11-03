@@ -3,6 +3,7 @@ import { Dialog } from '@tahti-player/ui';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { TrackEditDialog } from '../../../components/TrackEditDialog';
 import { TrackInsightsPanel } from '../../../components/TrackInsightsPanel';
+import { SoundsBulkEditDialog } from './SoundsBulkEditDialog';
 import type { StudioSoundsState } from './useStudioSoundsState';
 
 export function SoundsDialogs({ state }: { state: StudioSoundsState }) {
@@ -15,6 +16,10 @@ export function SoundsDialogs({ state }: { state: StudioSoundsState }) {
     pendingDeleteItem,
     setPendingDeleteItem,
     confirmDelete,
+    pendingBulkDelete,
+    setPendingBulkDelete,
+    confirmBulkDelete,
+    selectedIds,
   } = state;
 
   return (
@@ -56,6 +61,19 @@ export function SoundsDialogs({ state }: { state: StudioSoundsState }) {
         onCancel={() => setPendingDeleteItem(null)}
         onConfirm={confirmDelete}
       />
+      <ConfirmDialog
+        isOpen={pendingBulkDelete}
+        title={
+          selectedIds.size === 1
+            ? 'Delete 1 selected sound?'
+            : `Delete ${selectedIds.size} selected sounds?`
+        }
+        description="This cannot be undone."
+        confirmLabel="Delete"
+        onCancel={() => setPendingBulkDelete(false)}
+        onConfirm={confirmBulkDelete}
+      />
+      <SoundsBulkEditDialog state={state} />
     </>
   );
 }

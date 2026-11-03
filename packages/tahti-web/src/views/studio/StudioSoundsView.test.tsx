@@ -42,23 +42,51 @@ describe('StudioSoundsView', () => {
     vi.useRealTimers();
   });
 
+  const emptyStats = {
+    total: 0,
+    durationSec: 0,
+    publicCount: 0,
+    privateCount: 0,
+    processingCount: 0,
+    errorCount: 0,
+    readyCount: 0,
+  };
+
   it('says the list failed to load instead of "No sounds yet"', async () => {
-    const fetch = vi.spyOn(studio, 'fetchStudioSounds').mockResolvedValue({
-      data: [],
+    const fetch = vi.spyOn(studio, 'fetchStudioSoundsPage').mockResolvedValue({
+      data: { items: [], total: 0 },
       meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    vi.spyOn(studio, 'fetchStudioSoundStats').mockResolvedValue({
+      data: emptyStats,
+      meta: { source: 'api' },
     });
     await renderWithRouter(<StudioSoundsView />);
     expect(await screen.findByText('Could not load your sounds')).toBeTruthy();
     expect(screen.queryByText('No sounds yet')).toBeNull();
 
-    fetch.mockResolvedValue({ data: [sound], meta: { source: 'api' } });
+    fetch.mockResolvedValue({
+      data: { items: [sound], total: 1 },
+      meta: { source: 'api' },
+    });
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByText(/Moonlight Drive/)).toBeTruthy();
   });
 
   it('offers to clear filters that match nothing', async () => {
-    vi.spyOn(studio, 'fetchStudioSounds').mockResolvedValue({
-      data: [sound],
+    vi.spyOn(studio, 'fetchStudioSoundsPage').mockImplementation(
+      async (query) => {
+        const q = query.q?.toLowerCase() ?? '';
+        const items =
+          q && !sound.title.toLowerCase().includes(q) ? [] : [sound];
+        return {
+          data: { items, total: items.length },
+          meta: { source: 'api' },
+        };
+      },
+    );
+    vi.spyOn(studio, 'fetchStudioSoundStats').mockResolvedValue({
+      data: { ...emptyStats, total: 1, readyCount: 1, publicCount: 1 },
       meta: { source: 'api' },
     });
     await renderWithRouter(<StudioSoundsView />);
@@ -67,7 +95,11 @@ describe('StudioSoundsView', () => {
       target: { value: 'zzz' },
     });
     expect(
-      await screen.findByText('No sounds match these filters'),
+      await screen.findByText(
+        'No sounds match these filters',
+        {},
+        { timeout: 3000 },
+      ),
     ).toBeTruthy();
     expect(screen.queryByText('No sounds yet')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
@@ -76,12 +108,19 @@ describe('StudioSoundsView', () => {
 
   it('refreshes a pending upload until processing completes', async () => {
     const fetch = vi
-      .spyOn(studio, 'fetchStudioSounds')
+      .spyOn(studio, 'fetchStudioSoundsPage')
       .mockResolvedValueOnce({
-        data: [{ ...sound, status: 'PROCESSING' }],
+        data: { items: [{ ...sound, status: 'PROCESSING' }], total: 1 },
         meta: { source: 'api' },
       })
-      .mockResolvedValue({ data: [sound], meta: { source: 'api' } });
+      .mockResolvedValue({
+        data: { items: [sound], total: 1 },
+        meta: { source: 'api' },
+      });
+    vi.spyOn(studio, 'fetchStudioSoundStats').mockResolvedValue({
+      data: { ...emptyStats, total: 1, processingCount: 1 },
+      meta: { source: 'api' },
+    });
     const { unmount } = await renderWithRouter(<StudioSoundsView />);
     await screen.findByText(/PROCESSING/);
     await act(async () => {

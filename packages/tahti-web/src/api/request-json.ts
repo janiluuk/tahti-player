@@ -8,6 +8,8 @@ export class RequestJsonError extends Error {
     message: string,
     readonly status: number,
     readonly code?: string,
+    /** Raw JSON body when the server returned one (e.g. 409 `totalMatched`). */
+    readonly body?: unknown,
   ) {
     super(message);
     this.name = 'RequestJsonError';
@@ -33,16 +35,18 @@ export async function requestJson<T>(
   if (!res.ok) {
     let detail = `${path} → ${res.status}`;
     let code: string | undefined;
+    let body: unknown;
     try {
-      const body = (await res.json()) as ApiErrorBody & { code?: unknown };
-      detail = apiErrorDetail(body, detail);
-      if (typeof body.code === 'string') {
-        code = body.code;
+      body = (await res.json()) as ApiErrorBody & { code?: unknown };
+      const parsed = body as ApiErrorBody & { code?: unknown };
+      detail = apiErrorDetail(parsed, detail);
+      if (typeof parsed.code === 'string') {
+        code = parsed.code;
       }
     } catch {
       // ignore
     }
-    throw new RequestJsonError(detail, res.status, code);
+    throw new RequestJsonError(detail, res.status, code, body);
   }
   if (res.status === 204) {
     return { data: undefined as T, status: res.status };
