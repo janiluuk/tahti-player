@@ -117,8 +117,8 @@ export function MusicAudienceGrids({
           <StudioActionTile
             to="/studio/updates"
             icon={NewspaperIcon}
-            label="Updates"
-            subtitle="Posts & newsletter"
+            label="Posts"
+            subtitle="Updates & newsletter"
             color="bg-accent-blue"
           />
           <StudioActionTile
@@ -131,7 +131,7 @@ export function MusicAudienceGrids({
           <StudioActionTile
             to="/studio/audience"
             icon={WalletIcon}
-            label="Revenue"
+            label="Earnings"
             subtitle="Orders & grants"
             color="bg-accent-yellow"
           />

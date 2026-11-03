@@ -44,13 +44,26 @@ const DEFAULT_GALLERY: ChannelGallery = {
   videoBackgroundUrl: null,
 };
 
+const MOCK_GALLERY_KEY = 'tahti-mock-channel-gallery';
+
+function readMockGallery(): ChannelGallery {
+  try {
+    const raw = localStorage.getItem(MOCK_GALLERY_KEY);
+    return raw
+      ? { ...DEFAULT_GALLERY, ...(JSON.parse(raw) as Partial<ChannelGallery>) }
+      : DEFAULT_GALLERY;
+  } catch {
+    return DEFAULT_GALLERY;
+  }
+}
+
 export async function fetchChannelGallery(): Promise<{
   data: ChannelGallery;
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
     return {
-      data: DEFAULT_GALLERY,
+      data: readMockGallery(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -68,6 +81,15 @@ export async function fetchChannelGallery(): Promise<{
 export async function patchChannelGallery(
   patch: Partial<ChannelGallery>,
 ): Promise<{ ok: true; data: ChannelGallery } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    const data = { ...readMockGallery(), ...patch };
+    try {
+      localStorage.setItem(MOCK_GALLERY_KEY, JSON.stringify(data));
+    } catch {
+      return { ok: true, data };
+    }
+    return { ok: true, data };
+  }
   try {
     const data = await requestJson<ChannelGallery>('/api/me/channel/gallery', {
       method: 'PATCH',

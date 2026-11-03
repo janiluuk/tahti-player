@@ -49,6 +49,7 @@ import {
   hasSeenOnboarding,
   markOnboardingSeen,
 } from '../lib/onboardingPrompt';
+import { takeListenerSignup } from '../lib/pendingArtistKind';
 import {
   playbackDocumentTitle,
   setPlaybackDocumentTitle,
@@ -440,6 +441,10 @@ export function AppShell() {
   // e2e drivers should call markOnboardingSeen after sign-in (see
   // e2e/real-user-journeys.spec.ts signIn helper) so the toast never covers UI.
   useEffect(() => {
+    if (userId && takeListenerSignup()) {
+      markOnboardingSeen(userId);
+      return;
+    }
     if (
       !userId ||
       pathname === '/onboarding' ||

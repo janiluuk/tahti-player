@@ -76,13 +76,16 @@ test('Reference mastering is also reachable from the track editor dialog', async
   // The dialog's tab bar sits below the fold at the default test viewport.
   await page.setViewportSize({ width: 1440, height: 900 });
   await signIn(page);
-  await page.goto('/studio/archive');
-
-  await page.getByRole('button', { name: /edit/i }).first().click();
-  await page.getByRole('tab', { name: 'Audio' }).click();
+  await page.goto('/studio/sounds');
 
   await page
-    .getByRole('link', { name: 'Match to a reference track →' })
+    .getByRole('button', { name: /^Edit / })
+    .first()
+    .click();
+  const editor = page.getByRole('dialog', { name: 'Edit track' });
+  await editor.getByRole('tab', { name: 'Advanced' }).click();
+  await editor
+    .getByRole('link', { name: 'Match to a reference track' })
     .click();
   await expect(page).toHaveURL(/\/studio\/mastering\//);
 });

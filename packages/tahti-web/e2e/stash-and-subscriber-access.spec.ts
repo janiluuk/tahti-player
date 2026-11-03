@@ -67,50 +67,51 @@ async function uploadSound(
   return id;
 }
 
+async function signOutKeepingMockData(
+  page: import('@playwright/test').Page,
+): Promise<void> {
+  await page.evaluate(() => localStorage.removeItem('tahti-web-auth'));
+}
+
 async function setSharing(
   page: import('@playwright/test').Page,
   audienceLabel: string,
 ): Promise<void> {
-  await page.getByRole('tab', { name: 'Sharing' }).click();
-  // Audience uses @tahti-player/ui's Select — a Headless UI Listbox, not a
-  // native <select>: open it via its labelled button, then click the option.
+  await page.getByRole('tab', { name: 'Details' }).click();
   await page.getByLabel('Audience').click();
   await page.getByRole('option', { name: audienceLabel }).click();
 }
 
 test('a public sound is playable and downloadable by another visitor, and its Insights panel is real', async ({
   page,
-  browser,
 }) => {
   await signIn(page);
   const id = await uploadSound(page);
 
   await setSharing(page, 'Public');
-  await page.getByRole('button', { name: 'Save changes' }).click();
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
   await expect(page.getByText(/saved/i)).toBeVisible();
 
-  // A different, unauthenticated visitor opens the direct link.
-  const visitorContext = await browser.newContext();
-  const visitorPage = await visitorContext.newPage();
-  await visitorPage.goto(`/t/${id}`);
-
-  await expect(
-    visitorPage.getByRole('button', { name: /^Play$/ }).first(),
-  ).toBeVisible();
-  await visitorPage
-    .getByRole('button', { name: /^Play$/ })
+  await signOutKeepingMockData(page);
+  await page.goto(`/t/${id}`);
+  const hero = page.getByRole('main');
+  await hero
+    .getByRole('button', { name: /^Play\b/ })
     .first()
     .click();
   await expect(
-    visitorPage.getByRole('button', { name: /^Pause$/ }).first(),
+    hero.getByRole('button', { name: /^Pause\b/ }).first(),
   ).toBeVisible();
 
-  const downloadPromise = visitorPage.waitForEvent('download');
-  await visitorPage.getByRole('button', { name: /download/i }).click();
+  const downloadPromise = page.waitForEvent('download');
+  await hero
+    .getByRole('button', { name: /^Download/ })
+    .first()
+    .click();
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBeTruthy();
 
-  await visitorContext.close();
+  await signIn(page);
 
   // Owner side: the per-track Insights panel is the real "statistics"
   // surface for this item (not a synchronous play/download counter here -
@@ -120,9 +121,9 @@ test('a public sound is playable and downloadable by another visitor, and its In
     .getByRole('button', { name: /^Show stats for/ })
     .first()
     .click();
-  await expect(page.getByRole('dialog')).toBeVisible();
-  await expect(page.getByText('Plays')).toBeVisible();
-  await expect(page.getByText('Downloads')).toBeVisible();
+  const stats = page.getByRole('dialog');
+  await expect(stats.getByText('Plays', { exact: true })).toBeVisible();
+  await expect(stats.getByText('Downloads', { exact: true })).toBeVisible();
 });
 
 test('a private sound is hidden from the public profile listing', async ({
@@ -137,19 +138,20 @@ test('a private sound is hidden from the public profile listing', async ({
     .textContent();
 
   await setSharing(page, 'Private - only you and share links');
-  await page.getByRole('button', { name: 'Save changes' }).click();
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
   await expect(page.getByText(/saved/i)).toBeVisible();
 
-  // Public profile, as a different, unauthenticated visitor.
-  await page.goto('/studio/branding');
-  const profileLinkHref = await page
-    .getByRole('link', { name: 'View public profile' })
-    .getAttribute('href');
-  expect(profileLinkHref).toBeTruthy();
+  const username = await page.evaluate(() => {
+    const raw = localStorage.getItem('tahti-web-auth');
+    return raw
+      ? (JSON.parse(raw)?.state?.user?.username as string | undefined)
+      : undefined;
+  });
+  expect(username).toBeTruthy();
 
   const visitorContext = await browser.newContext();
   const visitorPage = await visitorContext.newPage();
-  await visitorPage.goto(profileLinkHref!);
+  await visitorPage.goto(`/u/${username}`);
 
   if (title) {
     await expect(visitorPage.getByText(title, { exact: true })).toHaveCount(0);

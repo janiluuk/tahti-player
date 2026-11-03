@@ -145,7 +145,7 @@ test('listener buys a track, sees it in Purchases, artist sees the order', async
   const artistEmail = process.env.TAHTI_E2E_EMAIL ?? 'artist@tahti.live';
   const artistPassword = process.env.TAHTI_E2E_PASSWORD ?? 'demo-password';
   const fanPassword =
-    process.env.TAHTI_E2E_FAN_BUY_PASSWORD ?? 'e2e-buy-password';
+    process.env.TAHTI_E2E_FAN_BUY_PASSWORD ?? 'E2e-Buy-Passw0rd';
   const stamp = Date.now();
   const fanEmail =
     process.env.TAHTI_E2E_FAN_BUY_EMAIL ?? `e2e-lpf-buy-${stamp}@example.com`;
@@ -184,7 +184,7 @@ test('listener buys a track, sees it in Purchases, artist sees the order', async
   await expect(
     page
       .getByTestId('settings-panel-content-scroll')
-      .getByText('mastering-target-quiet.wav'),
+      .getByText(/^mastering-target-quiet/),
   ).toBeVisible();
   await page.getByRole('button', { name: 'Close' }).click();
 
@@ -210,7 +210,7 @@ test('listener subscribes, sees it in Your subs, cancels it', async ({
   const artistEmail = process.env.TAHTI_E2E_EMAIL ?? 'artist@tahti.live';
   const artistPassword = process.env.TAHTI_E2E_PASSWORD ?? 'demo-password';
   const fanPassword =
-    process.env.TAHTI_E2E_FAN_SUB_PASSWORD ?? 'e2e-sub-password';
+    process.env.TAHTI_E2E_FAN_SUB_PASSWORD ?? 'E2e-Sub-Passw0rd';
   const stamp = Date.now();
   const fanEmail =
     process.env.TAHTI_E2E_FAN_SUB_EMAIL ?? `e2e-lpf-sub-${stamp}@example.com`;

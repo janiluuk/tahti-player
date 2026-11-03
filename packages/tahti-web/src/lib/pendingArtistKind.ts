@@ -22,3 +22,23 @@ export function takePendingArtistKind(): ArtistKind | null {
   }
   return null;
 }
+
+const LISTENER_SIGNUP_KEY = 'tahti.signedUpAsListener';
+
+export function persistListenerSignup(): void {
+  try {
+    localStorage.setItem(LISTENER_SIGNUP_KEY, '1');
+  } catch {
+    return;
+  }
+}
+
+export function takeListenerSignup(): boolean {
+  try {
+    const value = localStorage.getItem(LISTENER_SIGNUP_KEY) === '1';
+    localStorage.removeItem(LISTENER_SIGNUP_KEY);
+    return value;
+  } catch {
+    return false;
+  }
+}
