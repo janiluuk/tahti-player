@@ -76,7 +76,9 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
 
   return (
     <div data-testid={testId} className={cn('flex flex-col gap-3', className)}>
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+      {/* Same header height with or without the filter and arrows, so rows
+       * sharing a line start their cards at the same height. */}
+      <div className="flex min-h-10 flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <div className="flex items-center gap-2">
           <h2 className="text-foreground text-lg font-bold whitespace-nowrap">
             {title}
