@@ -238,7 +238,11 @@ export function layoutRelativePath(
 ) {
   if (layout === 'set') {
     const setDir = sanitizePathSegment(setTitle, 'Unknown Set');
-    const file = sanitizePathSegment(trackTitle, 'Track');
+    const name =
+      /^\S/.test(artist ?? '') && !String(trackTitle).startsWith(`${artist} - `)
+        ? `${artist} - ${trackTitle}`
+        : trackTitle;
+    const file = sanitizePathSegment(name, 'Track');
     return `${setDir}/${file}.${extension}`;
   }
   if (layout === 'album') {

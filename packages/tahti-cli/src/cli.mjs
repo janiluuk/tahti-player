@@ -418,7 +418,7 @@ downloadable.`,
   {
     path: ['hearthis', 'download-set'],
     usage:
-      'tahti hearthis download-set <permalink-or-url> [--out <dir>] [--layout <l>] [--own] [--title <t>] [--dry-run] [--force] [--json]',
+      'tahti hearthis download-set <permalink-or-url> [--out <dir>] [--layout <l>] [--own] [--title <t>] [--year <y>] [--sync] [--flac] [--no-artwork] [--dry-run] [--force] [--json]',
     summary: 'Download a hearthis.at Set into Artist/Album (year)/01 - Track',
     details: `Fetches the Set tracklist, then downloads every track that is
 downloadable for the authenticated hearthis.at visitor (public download
@@ -432,9 +432,16 @@ paths that already exist (unless --force).
                   album: <Artist> - <Album> (year)/<NN> - <Track>, where the
                     Set title "Artist - Album - notes (year)" gives artist,
                     album and year, and "Album - NN - " is dropped from titles
-                  set: <Set title>/<Track>, for DJ sets and mixes
+                  set: <Set title>/<Artist> - <Track>, for DJ sets and mixes
   --own           Only tracks uploaded by the Set's owner; numbering skips the rest
   --title <t>     Use this Set title when the API does not return one
+  --year <y>      Album folder year when the Set title has none
+  --sync          Update the folder like rsync: re-download files whose size
+                  differs from hearthis.at, delete audio files that are no
+                  longer in the Set (and leftover .partial files)
+  --flac          Convert WAV/AIFF downloads to FLAC with ffmpeg (keeps tags);
+                  --sync then treats the .flac as that track's file
+  --no-artwork    Skip the Set cover (saved as cover.jpg in each folder)
   --dry-run       List paths without downloading
   --force         Re-download even when the file already exists`,
     options: {
@@ -443,6 +450,10 @@ paths that already exist (unless --force).
       layout: { type: 'string' },
       own: { type: 'boolean', default: false },
       title: { type: 'string' },
+      sync: { type: 'boolean', default: false },
+      'no-artwork': { type: 'boolean', default: false },
+      flac: { type: 'boolean', default: false },
+      year: { type: 'string' },
       'dry-run': { type: 'boolean', default: false },
       force: { type: 'boolean', default: false },
     },
@@ -454,6 +465,10 @@ paths that already exist (unless --force).
         layout: values.layout || 'discography',
         ownOnly: values.own,
         title: values.title || null,
+        sync: values.sync,
+        artwork: !values['no-artwork'],
+        flac: values.flac,
+        yearOverride: values.year ? Number(values.year) : null,
         dryRun: values['dry-run'],
         force: values.force,
       }),
