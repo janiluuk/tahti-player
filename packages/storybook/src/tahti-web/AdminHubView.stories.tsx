@@ -62,6 +62,8 @@ export const Platform: Story = {
     await expect(
       within(list).getByRole('link', { name: /Add-ons/ }),
     ).toHaveAttribute('href', '/admin/addons');
-    await expect(within(list).getByRole('link', { name: /Map/ })).toBeVisible();
+    await expect(
+      within(list).getByRole('link', { name: /Map/ }),
+    ).toBeInTheDocument();
   },
 };

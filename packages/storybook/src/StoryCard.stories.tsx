@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 
-import { StoryCard } from '@tahti-player/ui';
+import { ArticleCard, StoryCard } from '@tahti-player/ui';
 
 const meta = {
   title: 'Layout/StoryCard',
@@ -10,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Editorial card for posts and feed items: 16:9 image (or a `media` slot such as artwork with play), activity-type pill + humanized date, bold title, 3-line excerpt and author. No frame. Used by Listen → Feed and the Discover Community stories widget.',
+          'The one card for platform news, artist posts, community stories, feed items and RSS articles: the image fills a 16:9 frame and a dark gradient layer carries the kind pill, date (clock icon), title, a one-line excerpt and the author on top of it. `ArticleCard` (NewsWidget) renders through it, so every news and story row looks the same.',
       },
     },
   },
@@ -71,5 +72,69 @@ export const ReleasedATrack: Story = {
     title: 'Polar Static',
     excerpt: undefined,
     authorName: 'Northern Lights',
+  },
+};
+
+/** The same design across every source: Tahti news, an artist post, a
+ * community story and an RSS article. */
+export const UnifiedSources: Story = {
+  decorators: [
+    (Story) => (
+      <div className="max-w-none">
+        <Story />
+      </div>
+    ),
+  ],
+  render: () => (
+    <div className="grid max-w-5xl gap-4 sm:grid-cols-2">
+      <ArticleCard
+        className="w-auto sm:w-auto"
+        item={{
+          id: 'news',
+          kind: 'News',
+          title: 'We are now open!',
+          teaser: 'tahti.live final release candidate is up.',
+          imageUrl: '/news-opening.svg',
+          publishedAt: '2026-11-01T10:00:00.000Z',
+          publishedLabel: '2 days ago',
+          onClick: () => undefined,
+        }}
+      />
+      <StoryCard
+        imageSrc="https://picsum.photos/seed/tahti-set/960/540"
+        kind="Story"
+        date="3 hours ago"
+        title="Nightriders vol. 47 is up"
+        excerpt="A warm-up set of poppy club music."
+        authorName="Yaniho"
+      />
+      <StoryCard
+        imageSrc={null}
+        kind="Announcement"
+        date="5.10.2026"
+        title="Thank you - 15000+ listens"
+        authorName="DJ Moonlight"
+      />
+      <ArticleCard
+        className="w-auto sm:w-auto"
+        item={{
+          id: 'rss',
+          kind: 'Resident Advisor',
+          title: 'The clubs shaping Helsinki nights this winter',
+          imageUrl: 'https://picsum.photos/seed/tahti-rss/960/540',
+          publishedAt: '2026-10-28T08:00:00.000Z',
+          publishedLabel: '6 days ago',
+          onClick: () => undefined,
+        }}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getAllByTestId(/^(story|article)-card$/)).toHaveLength(
+      4,
+    );
+    await expect(canvas.getAllByRole('heading', { level: 3 })).toHaveLength(4);
+    await expect(canvasElement.querySelectorAll('time')).toHaveLength(4);
   },
 };

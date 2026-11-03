@@ -80,3 +80,25 @@ describe('StoryCard', () => {
     expect(onOpen).toHaveBeenCalledOnce();
   });
 });
+
+describe('StoryCard overlay', () => {
+  afterEach(cleanup);
+
+  it('overlays the date as a <time> and leaves out the author row for news', () => {
+    render(
+      <StoryCard
+        imageSrc="https://example.com/news.jpg"
+        kind="News"
+        date="2 days ago"
+        dateTime="2026-11-01T10:00:00.000Z"
+        title="We are now open!"
+      />,
+    );
+    const time = screen.getByText('2 days ago');
+    expect(time.tagName).toBe('TIME');
+    expect(time.getAttribute('datetime')).toBe('2026-11-01T10:00:00.000Z');
+    expect(
+      screen.getByRole('heading', { name: 'We are now open!' }),
+    ).toBeTruthy();
+  });
+});

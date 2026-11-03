@@ -18,25 +18,17 @@ describe('humanizePastDate', () => {
     );
   });
 
-  it('keeps a clock on yesterday and older calendar days', () => {
-    const yesterday = new Date(NOW);
-    yesterday.setDate(yesterday.getDate() - 1);
-    yesterday.setHours(10, 0, 0, 0);
-    expect(humanizePastDate(yesterday.toISOString(), NOW)).toMatch(
-      /^yesterday, /,
-    );
-
+  it('says days ago inside a week and d.m.yyyy after that', () => {
     const threeDaysAgo = new Date(NOW);
     threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-    threeDaysAgo.setHours(8, 0, 0, 0);
-    expect(humanizePastDate(threeDaysAgo.toISOString(), NOW)).toMatch(
-      /^3 days ago, /,
+    expect(humanizePastDate(threeDaysAgo.toISOString(), NOW)).toBe(
+      '3 days ago',
     );
 
     const lastMonth = new Date(NOW);
     lastMonth.setDate(lastMonth.getDate() - 17);
-    expect(humanizePastDate(lastMonth.toISOString(), NOW)).not.toMatch(
-      /ago|yesterday/,
+    expect(humanizePastDate(lastMonth.toISOString(), NOW)).toBe(
+      `${lastMonth.getDate()}.${lastMonth.getMonth() + 1}.${lastMonth.getFullYear()}`,
     );
   });
 });

@@ -4,7 +4,6 @@ import {
   CheckIcon,
   HistoryIcon,
   ListMusicIcon,
-  NewspaperIcon,
 } from 'lucide-react';
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -60,16 +59,10 @@ import {
 } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
 
-export type ListenTab = 'listen' | 'feed' | 'history';
+export type ListenTab = 'listen' | 'history';
 
 const LISTEN_SECTION_TABS = [
   { id: 'listen' as const, label: 'Listen', Icon: ListMusicIcon, to: '/' },
-  {
-    id: 'feed' as const,
-    label: 'Feed',
-    Icon: NewspaperIcon,
-    to: '/listen/feed',
-  },
   {
     id: 'history' as const,
     label: 'History',
@@ -114,9 +107,6 @@ function radioRowFirst(blocks: SortableBlock[]): SortableBlock[] {
   return radio ? [radio, ...blocks.filter((block) => block !== radio)] : blocks;
 }
 
-const FeedView = lazy(() =>
-  import('./FeedView').then((m) => ({ default: m.FeedView })),
-);
 const HistoryView = lazy(() =>
   import('./HistoryView').then((m) => ({ default: m.HistoryView })),
 );
@@ -470,9 +460,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
         </Tabs.List>
       </Tabs.Root>
       <ViewShell
-        title={
-          tab === 'feed' ? 'Feed' : tab === 'history' ? 'History' : 'Listen'
-        }
+        title={tab === 'history' ? 'History' : 'Listen'}
         classes={{ root: 'px-0 pt-0' }}
         actions={
           tab === 'listen' ? (
@@ -501,11 +489,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           ) : undefined
         }
       >
-        {tab === 'feed' ? (
-          <Suspense fallback={<PageLoading label="Loading feed…" />}>
-            <FeedView embedded />
-          </Suspense>
-        ) : null}
         {tab === 'history' ? (
           <Suspense fallback={<PageLoading label="Loading history…" />}>
             <HistoryView embedded />
