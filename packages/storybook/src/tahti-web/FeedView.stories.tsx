@@ -87,7 +87,9 @@ export const WideDesktop: Story = {
     await expect(cards.length).toBeGreaterThan(0);
     await expect(cards[0]!.getBoundingClientRect().width).toBeGreaterThan(300);
     await waitFor(() =>
-      expect(within(cards[0]!).getByText(/ · /)).toBeVisible(),
+      expect(
+        within(cards[0]!).getByText(/ago$|^just now$|^yesterday$|\d{4}/i),
+      ).toBeVisible(),
     );
   },
 };
