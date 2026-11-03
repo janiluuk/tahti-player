@@ -71,19 +71,6 @@ export const RADIO_STATIONS: RadioStation[] = [
     nowPlayingIcyOnly: true,
   },
   {
-    id: 'nrj-fi',
-    name: 'NRJ',
-    logoUrl: '/radio-logos/nrj.jpg',
-    language: 'Finnish',
-    bitrateKbps: 64,
-    codec: 'AAC',
-    genre: 'Pop / Hits',
-    streamUrl:
-      'https://streaming.radioplay.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein',
-    detailUrl: 'https://www.radioplay.fi/nrj',
-    programmingUrl: 'https://www.radioplay.fi/nrj',
-  },
-  {
     id: 'radio-nova',
     name: 'Radio Nova',
     logoUrl: '/radio-logos/radio-nova.jpg',
