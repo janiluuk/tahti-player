@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from 'storybook/test';
+import { expect, fn, within } from 'storybook/test';
 
 import { PluginStoreItem } from '@tahti-player/ui';
 
@@ -38,6 +38,13 @@ export const Installed: Story = {
     version: '3.0.1',
     isInstalled: true,
     onInstall: fn(),
+  },
+  play: async ({ canvasElement }) => {
+    const installed = within(canvasElement).getByRole('button', {
+      name: /installed/i,
+    });
+    await expect(installed).toBeDisabled();
+    await expect(installed.className).toContain('bg-secondary');
   },
 };
 

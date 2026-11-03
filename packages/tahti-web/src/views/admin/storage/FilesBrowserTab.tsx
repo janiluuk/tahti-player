@@ -528,6 +528,7 @@ export function FilesBrowserTab() {
         </Dialog.Root>
       ) : null}
       <ConfirmDialog
+        destructive
         isOpen={pendingDeleteFile !== null}
         title={
           pendingDeleteFile

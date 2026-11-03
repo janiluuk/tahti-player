@@ -179,6 +179,7 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
         </div>
       </form>
       <ConfirmDialog
+        destructive
         isOpen={pendingRemove !== null}
         title={
           pendingRemove

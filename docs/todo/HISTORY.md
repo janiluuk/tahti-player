@@ -5821,3 +5821,15 @@ tahti-org#1038 gives `/api/v1/search` track results `audioUrl` (through the acce
 - **2026-11-03 · Listen, artist profile and channel page cleanup (tahti-web 0.0.296):** Tahti Radio bar off Listen, From Tahti news on Discover; profile Popular tracks pills removed, list-only filterable tracks with embeds in their own section, readable section titles on artist colors; default artwork for missing/broken covers via `MediaArtworkDefaultProvider` (rule in `CLAUDE.md`); channel page Music/Comments/Chat tabs, compact two-column blocks, show thumbnails, story-card feed, air pill in the stage, embed hosted in the stage, RSS inside Share; `/chat` dropdown with 24h activity. Open follow-ups stay in `listen-artist-channel-cleanup.md`.
 - **Docs audit** (2026-11-03): `docs/DECISIONS.md` regrouped into Date / Decision / Why / Link tables by area, with the settled decisions from the AI DJ, add-ons audience and wavesurfer todos added; org/API/money decisions (incl. the director salary record) consolidated in `../tahti-org/docs/DECISIONS.md` instead. README pnpm requirement fixed (12, per `packageManager`), same in `AGENTS.md`.
 - **Themes: selected theme stands out** (2026-11-03): Settings → Themes pins "Current theme: <name>" above the lists; the applied card has a primary frame, an "Active" badge with a check and a filled check button; `ThemeStoreItem` rows are named groups with `aria-current` and the Apply button (`Apply <name>`) exposes `aria-pressed`. Unit tests in `ThemeStoreItem.test.tsx` and `ThemesPanel.test.tsx`, Storybook plays `ThemeStoreItem/Active` and `SettingsThemesPanel/SelectedTheme`.
+## 2026-11-03 - De-green 20: red confirms for one-way actions
+
+`ConfirmDialog` takes `destructive`, which paints the confirm red. About
+forty confirms use it: deletes, removals, revokes, blocks, sign-outs,
+disconnects, withdrawals and cancellations across Studio sounds, devices,
+playlists, comments, social, API tokens and share links, admin storage, news,
+announcements and add-ons, governance, board records, saved map comments,
+gallery and image slots, and Pro editor mastering. Stop stream, Overwrite /
+Replace rotation and Overwrite live version are red. Log toolbar Clear and
+Open log folder, the plugin store Installed state and the email-change Back
+to Settings are secondary. About 25 confirms remain in `ux-backlog.md`.
+tahti-web `0.0.296`.

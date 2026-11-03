@@ -57,6 +57,7 @@ describe('SavedMapComments', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Clear log' }));
     const buttons = screen.getAllByRole('button', { name: 'Clear log' });
+    expect(buttons[buttons.length - 1].className).toContain('bg-accent-red');
     fireEvent.click(buttons[buttons.length - 1]);
 
     expect(useMapNotesStore.getState().comments).toHaveLength(0);

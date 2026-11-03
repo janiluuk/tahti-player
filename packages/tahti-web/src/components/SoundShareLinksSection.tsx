@@ -232,6 +232,7 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
         </Button>
       </form>
       <ConfirmDialog
+        destructive
         isOpen={pendingRevokeId !== null}
         title="Revoke this share link?"
         description="It will stop working immediately."

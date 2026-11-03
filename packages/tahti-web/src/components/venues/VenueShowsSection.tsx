@@ -147,6 +147,7 @@ export function VenueShowsSection({
       )}
       {cancelError ? <InlineError>{cancelError}</InlineError> : null}
       <ConfirmDialog
+        destructive
         isOpen={cancelling !== null}
         title="Cancel this show?"
         description={

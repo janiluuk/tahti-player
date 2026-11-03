@@ -169,6 +169,9 @@ describe('DiscussionTopicView', () => {
     fireEvent.click(
       await screen.findByRole('button', { name: 'Remove the reply by Member' }),
     );
+    expect(screen.getByRole('button', { name: 'Remove' }).className).toContain(
+      'bg-accent-red',
+    );
     fireEvent.click(screen.getByRole('button', { name: 'Remove' }));
     await waitFor(() => expect(remove).toHaveBeenCalledWith('t1', '1'));
     await waitFor(() =>

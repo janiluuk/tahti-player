@@ -98,6 +98,7 @@ export function CandidacyControl({
       )}
       {error && <InlineError textSize="xs">{error}</InlineError>}
       <ConfirmDialog
+        destructive
         isOpen={confirmWithdraw}
         title="Withdraw your candidacy?"
         description={`You will no longer stand in "${election.title}". You can stand again while nominations are open.`}

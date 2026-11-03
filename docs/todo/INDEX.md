@@ -28,7 +28,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [date-format-sweep.md](date-format-sweep.md) | One date style: helpers and cards done; replace the remaining one-off date formats in listings |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; left: embed downloads (product call) and keeping a stage-hosted embed across routes |
 | open    | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Plan: page anatomy rules (one header, one primary action, overflow, one toolbar), Settings account-only in 7 items, duplicate surfaces removed; 9 phases, absorbs navigation-simplification slices 1-3, 7, 9, 10 |
-| open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |
+| open    | [ux-backlog.md](ux-backlog.md) | Open UI/UX polish: de-green `Button` (red `ConfirmDialog destructive` shipped on ~40 confirms; ~25 confirms left) |
 | open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles (anonymous, listener, artist, admin) e2e matrix; missing use cases per role; all specs pass on the mock app; left: comment moderation, collaborative playlist undo, collection player, release publish flow, a few product calls in the findings |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |

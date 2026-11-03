@@ -56,6 +56,9 @@ describe('MotionProposerActions', () => {
     render(<MotionProposerActions motion={draft} onChanged={onChanged} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Withdraw draft' }));
+    expect(
+      (await screen.findByRole('button', { name: 'Withdraw' })).className,
+    ).toContain('bg-accent-red');
     fireEvent.click(await screen.findByRole('button', { name: 'Withdraw' }));
 
     await vi.waitFor(() =>
