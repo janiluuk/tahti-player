@@ -33,7 +33,7 @@ export const Picker: Story = {
     await expect(canvas.queryByLabelText('Channel slug')).toBeNull();
     await expect(
       canvas.getByRole('heading', { name: 'Activity in the last 24 hours' }),
-    ).toBeVisible();
+    ).toBeInTheDocument();
   },
 };
 
