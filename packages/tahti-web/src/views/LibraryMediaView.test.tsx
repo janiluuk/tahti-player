@@ -102,8 +102,10 @@ describe('LibraryMediaView', () => {
         .map((node) => node.textContent);
     expect(names()).toEqual(['c-new.png', 'a-mid.png', 'b-old.png']);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Sort media files' }));
-    fireEvent.click(await screen.findByRole('option', { name: 'Name A–Z' }));
+    fireEvent.click(screen.getByRole('button', { name: /^Sort media files/ }));
+    fireEvent.click(
+      await screen.findByRole('menuitemradio', { name: 'Name A–Z' }),
+    );
     expect(names()).toEqual(['a-mid.png', 'b-old.png', 'c-new.png']);
   });
 

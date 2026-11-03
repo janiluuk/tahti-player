@@ -15,7 +15,7 @@ exports[`PlayerBar > (Snapshot) active states render 1`] = `
           class="flex min-w-0 items-center gap-3.5"
         >
           <div
-            class="border-border bg-background-secondary size-12 shrink-0 overflow-hidden rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
+            class="border-border bg-background-secondary size-16 shrink-0 overflow-hidden rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
           >
             <img
               alt=""
@@ -344,7 +344,7 @@ exports[`PlayerBar > (Snapshot) default render 1`] = `
           class="flex min-w-0 items-center gap-3.5"
         >
           <div
-            class="border-border bg-background-secondary size-12 shrink-0 overflow-hidden rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
+            class="border-border bg-background-secondary size-16 shrink-0 overflow-hidden rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
           >
             <img
               alt=""
@@ -665,7 +665,7 @@ exports[`PlayerBar > (Snapshot) long metadata truncation 1`] = `
             class="flex min-w-0 items-center gap-3.5"
           >
             <div
-              class="border-border bg-background-secondary size-12 shrink-0 overflow-hidden rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
+              class="border-border bg-background-secondary size-16 shrink-0 overflow-hidden rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
             >
               <img
                 alt=""
@@ -984,7 +984,7 @@ exports[`PlayerBar > (Snapshot) no artwork fallback 1`] = `
           class="flex min-w-0 items-center gap-3.5"
         >
           <div
-            class="border-border bg-background-secondary size-12 shrink-0 overflow-hidden rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
+            class="border-border bg-background-secondary size-16 shrink-0 overflow-hidden rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
           >
             <div
               class="text-foreground-secondary flex size-full items-center justify-center"

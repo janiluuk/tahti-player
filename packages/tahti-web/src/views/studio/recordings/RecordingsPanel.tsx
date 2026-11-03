@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { RadioIcon, SearchIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button, ButtonLink, Input, Select } from '@tahti-player/ui';
+import { Button, ButtonLink, Input, SortMenuButton } from '@tahti-player/ui';
 
 import {
   PageEmpty,
@@ -55,16 +55,16 @@ export function RecordingsPanel({
             aria-label="Search recordings"
             endAddon={<SearchIcon size={16} aria-hidden />}
           />
-          <Select
+          <SortMenuButton
             label="Sort recordings"
             value={sort}
-            onValueChange={(value) => setSort(value as SortKey)}
+            onChange={(value) => setSort(value as SortKey)}
             options={[
               { id: 'newest', label: 'Newest first' },
               { id: 'oldest', label: 'Oldest first' },
               { id: 'title', label: 'Title A–Z' },
             ]}
-            className="sm:w-44"
+            defaultValue="newest"
           />
         </div>
         {loading ? (
