@@ -1,9 +1,7 @@
-import { CalendarDaysIcon, Newspaper } from 'lucide-react';
 import { FC } from 'react';
 
 import { cn } from '../../utils';
-import { Box } from '../Box';
-import { ImageReveal } from '../ImageReveal';
+import { StoryCard } from '../StoryCard';
 
 export type ArticleCardItem = {
   id: string;
@@ -13,6 +11,8 @@ export type ArticleCardItem = {
   onClick?: () => void;
   publishedAt?: string;
   publishedLabel?: string;
+  /** Pill above the title, e.g. `News` or the feed's name. */
+  kind?: string;
 };
 
 type ArticleCardProps = {
@@ -20,67 +20,23 @@ type ArticleCardProps = {
   className?: string;
 };
 
-/** Wider variant of the standard row card — articles/news need more room
- * per item than the thumbnail-sized `Card` used for tracks/releases. */
-export const ArticleCard: FC<ArticleCardProps> = ({ item, className }) => {
-  return (
-    <Box
-      data-testid="article-card"
-      variant="tertiary"
-      className={cn(
-        'flex w-72 shrink-0 flex-col overflow-hidden p-0 sm:w-80',
-        item.onClick && 'cursor-pointer',
-        className,
-      )}
-      onClick={item.onClick}
-      onKeyDown={
-        item.onClick
-          ? (event) => {
-              if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                item.onClick?.();
-              }
-            }
-          : undefined
-      }
-      role={item.onClick ? 'button' : undefined}
-      tabIndex={item.onClick ? 0 : undefined}
-    >
-      <ImageReveal
-        src={item.imageUrl}
-        alt=""
-        className="bg-background aspect-video w-full"
-        placeholder={
-          <Newspaper size={32} className="text-foreground opacity-20" />
-        }
-      />
-      <div className="flex flex-col gap-1 p-3">
-        <h3
-          data-testid="article-card-title"
-          className="text-foreground line-clamp-2 text-sm font-bold"
-        >
-          {item.title}
-        </h3>
-        {item.publishedAt && item.publishedLabel ? (
-          <span className="text-foreground-secondary flex items-center gap-1.5 text-xs">
-            <CalendarDaysIcon size={13} aria-hidden />
-            <time
-              dateTime={item.publishedAt}
-              title={new Date(item.publishedAt).toLocaleString()}
-            >
-              {item.publishedLabel}
-            </time>
-          </span>
-        ) : null}
-        {item.teaser && (
-          <p
-            data-testid="article-card-teaser"
-            className="text-foreground-secondary line-clamp-2 text-xs"
-          >
-            {item.teaser}
-          </p>
-        )}
-      </div>
-    </Box>
-  );
-};
+/** A news or RSS item in a row: the shared `StoryCard` overlay design at a
+ * fixed row width. */
+export const ArticleCard: FC<ArticleCardProps> = ({ item, className }) => (
+  <StoryCard
+    data-testid="article-card"
+    className={cn('w-72 shrink-0 sm:w-80', className)}
+    imageSrc={item.imageUrl}
+    kind={item.kind}
+    date={item.publishedLabel}
+    dateTime={item.publishedAt}
+    title={<span data-testid="article-card-title">{item.title}</span>}
+    excerpt={
+      item.teaser ? (
+        <span data-testid="article-card-teaser">{item.teaser}</span>
+      ) : undefined
+    }
+    onOpen={item.onClick}
+    openLabel={`Read ${item.title}`}
+  />
+);

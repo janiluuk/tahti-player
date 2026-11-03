@@ -1,3 +1,4 @@
+import { ClockIcon } from 'lucide-react';
 import { type FC, type ReactNode } from 'react';
 
 import { cn } from '../../utils';
@@ -14,15 +15,19 @@ export type StoryCardProps = {
   /** Activity type shown as a pill, e.g. `released a track`. Prefer with
    * `date` over a free-form `meta` string. */
   kind?: string;
-  /** Humanized date next to the kind pill, e.g. `14 hours ago`. */
+  /** Formatted date next to the kind pill, e.g. `14 hours ago`; shown with
+   * a clock icon. */
   date?: string;
+  /** Machine-readable date for the `<time>` element. */
+  dateTime?: string;
   /** Free-form muted line above the title. Used when `kind` / `date` are not
    * set (legacy callers). */
   meta?: ReactNode;
   /** The title; pass a link element to make it navigable. */
   title: ReactNode;
   excerpt?: ReactNode;
-  authorName: string;
+  /** Who posted it; left out for platform news and RSS items. */
+  authorName?: string;
   authorAvatarSrc?: string | null;
   /** Wraps the author row, e.g. in a profile link. */
   renderAuthor?: (row: ReactNode) => ReactNode;
@@ -40,17 +45,19 @@ export type StoryCardProps = {
 const STAGGER_MS = 70;
 const MAX_STAGGER_STEPS = 6;
 
-/** Editorial card: wide image, kind pill + date, bold title, excerpt and
- * author. No frame, so a row of them reads like a magazine strip. */
+/** The one card for stories, news and feed items: the image fills a 16:9
+ * frame and a dark gradient carries the kind pill, date, title and author
+ * on top of it, so a row stays compact. */
 export const StoryCard: FC<StoryCardProps> = ({
   imageSrc,
   media,
   kind,
   date,
+  dateTime,
   meta,
   title,
   excerpt,
-  authorName,
+  authorName = '',
   authorAvatarSrc,
   renderAuthor,
   onOpen,
@@ -62,15 +69,13 @@ export const StoryCard: FC<StoryCardProps> = ({
   const avatarSrc = authorAvatarSrc ?? undefined;
   const initial = authorName.trim().charAt(0).toUpperCase();
   const authorRow = (
-    <span className="text-foreground-secondary flex min-w-0 items-center gap-2 text-sm">
+    <span className="flex min-w-0 items-center gap-2 text-xs text-white/85">
       <ImageReveal
         src={avatarSrc}
         alt=""
-        className="bg-background-secondary size-6 shrink-0 rounded-full"
+        className="size-5 shrink-0 rounded-full bg-white/20"
         placeholder={
-          <span className="text-foreground-secondary text-[10px] font-bold">
-            {initial}
-          </span>
+          <span className="text-[9px] font-bold text-white">{initial}</span>
         }
       />
       <span className="truncate">{authorName}</span>
@@ -106,29 +111,33 @@ export const StoryCard: FC<StoryCardProps> = ({
 
   const metaRow =
     kind || date ? (
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 text-xs text-white/85">
         {kind ? (
           <Badge
             variant="pill"
             color="secondary"
-            className="bg-foreground/10 text-foreground-secondary border-transparent font-medium"
+            className="border-transparent bg-white/20 font-medium text-white backdrop-blur-sm"
           >
             {kind}
           </Badge>
         ) : null}
         {date ? (
-          <span className="text-foreground-secondary text-sm">{date}</span>
+          <span className="inline-flex items-center gap-1">
+            <ClockIcon size={12} aria-hidden />
+            <time dateTime={dateTime}>{date}</time>
+          </span>
         ) : null}
       </div>
     ) : meta ? (
-      <p className="text-foreground-secondary text-sm">{meta}</p>
+      <p className="text-xs text-white/85">{meta}</p>
     ) : null;
 
   return (
     <article
       data-testid={testId}
       className={cn(
-        'group flex min-w-0 flex-col gap-3',
+        'group relative aspect-video min-w-0 overflow-hidden rounded-xl',
+        'bg-background-secondary',
         'motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-3 motion-safe:fill-mode-both motion-safe:duration-500',
         className,
       )}
@@ -136,37 +145,45 @@ export const StoryCard: FC<StoryCardProps> = ({
         animationDelay: `${Math.min(index, MAX_STAGGER_STEPS) * STAGGER_MS}ms`,
       }}
     >
-      <div className="bg-background-secondary relative aspect-video w-full overflow-hidden rounded-xl">
-        <div className="size-full transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
-          {media ?? (
-            <ImageReveal
-              src={imageSrc ?? undefined}
-              alt=""
-              className="size-full"
-              imgClassName="object-cover"
-              placeholder={imageFallback}
-            />
-          )}
-        </div>
-        {onOpen && !media ? (
-          <Button
-            variant="text"
-            size="flexible"
-            aria-label={openLabel}
-            data-testid="story-card-open"
-            className="focus-visible:ring-primary absolute inset-0 size-full rounded-xl p-0 hover:bg-transparent focus-visible:ring-2 active:scale-100"
-            onClick={onOpen}
+      <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+        {media ?? (
+          <ImageReveal
+            src={imageSrc ?? undefined}
+            alt=""
+            className="size-full"
+            imgClassName="object-cover"
+            placeholder={imageFallback}
           />
-        ) : null}
+        )}
       </div>
-      {metaRow}
-      <h3 className="line-clamp-3 text-lg leading-snug font-bold">{title}</h3>
-      {excerpt ? (
-        <p className="text-foreground-secondary line-clamp-3 text-sm leading-relaxed">
-          {excerpt}
-        </p>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent"
+      />
+      {onOpen && !media ? (
+        <Button
+          variant="text"
+          size="flexible"
+          aria-label={openLabel}
+          data-testid="story-card-open"
+          className="focus-visible:ring-primary absolute inset-0 size-full rounded-xl p-0 hover:bg-transparent focus-visible:ring-2 active:scale-100"
+          onClick={onOpen}
+        />
       ) : null}
-      {renderAuthor ? renderAuthor(authorRow) : authorRow}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-1.5 p-3 text-white sm:p-4 [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
+        {metaRow}
+        <h3 className="line-clamp-2 text-base leading-snug font-bold text-white sm:text-lg">
+          {title}
+        </h3>
+        {excerpt ? (
+          <p className="line-clamp-1 text-xs text-white/80">{excerpt}</p>
+        ) : null}
+        {authorName
+          ? renderAuthor
+            ? renderAuthor(authorRow)
+            : authorRow
+          : null}
+      </div>
     </article>
   );
 };

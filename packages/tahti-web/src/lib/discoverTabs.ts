@@ -1,4 +1,4 @@
-export type DiscoverTab = 'discover' | 'artists' | 'venues';
+export type DiscoverTab = 'discover' | 'feed' | 'artists' | 'venues';
 
 export type DiscoverSearch = {
   tab?: Exclude<DiscoverTab, 'discover'>;
@@ -9,12 +9,16 @@ export function parseDiscoverSearch(
 ): DiscoverSearch {
   return {
     tab:
-      search.tab === 'artists' || search.tab === 'venues'
+      search.tab === 'feed' ||
+      search.tab === 'artists' ||
+      search.tab === 'venues'
         ? search.tab
         : undefined,
   };
 }
 
 export function discoverTabFromSearch(tab: unknown): DiscoverTab {
-  return tab === 'artists' || tab === 'venues' ? tab : 'discover';
+  return tab === 'feed' || tab === 'artists' || tab === 'venues'
+    ? tab
+    : 'discover';
 }

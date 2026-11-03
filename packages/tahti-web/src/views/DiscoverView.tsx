@@ -4,6 +4,7 @@ import {
   ChevronDownIcon,
   CompassIcon,
   MapPinIcon,
+  NewspaperIcon,
   PauseIcon,
   PlayIcon,
   Plus,
@@ -12,7 +13,7 @@ import {
   XIcon,
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   Button,
@@ -65,7 +66,7 @@ import {
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { LatestNewsWidget } from '../components/LatestNewsWidget';
 import { HomeNews } from '../components/listen-view/HomeNews';
-import { PageError } from '../components/PageStates';
+import { PageError, PageLoading } from '../components/PageStates';
 import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { VenuesDirectory } from '../components/VenuesDirectory';
 import { CONTENT_TYPES } from '../content/contentTypes';
@@ -104,22 +105,24 @@ type DiscoverSelection = {
   playable: TahtiPlayable;
 };
 
+const FeedView = lazy(() =>
+  import('./FeedView').then((m) => ({ default: m.FeedView })),
+);
+
 const DISCOVER_TABS: Array<{
   id: DiscoverTab;
   label: string;
   icon: typeof CompassIcon;
 }> = [
   { id: 'discover', label: 'Discover', icon: CompassIcon },
+  { id: 'feed', label: 'Feed', icon: NewspaperIcon },
   { id: 'artists', label: 'Artists', icon: UsersIcon },
   { id: 'venues', label: 'Venues', icon: MapPinIcon },
 ];
 
 export function DiscoverView() {
   const enabledWidgets = useDiscoverStore((s) => s.enabledWidgets);
-  const columnWidgets = useMemo(
-    () => enabledWidgets.filter((id) => id !== 'community-stories'),
-    [enabledWidgets],
-  );
+  const columnWidgets = enabledWidgets;
   const genreFilter = useDiscoverStore((s) => s.genreFilter);
   const contentTypeFilter = useDiscoverStore((s) => s.contentTypeFilter);
   const storeAddWidget = useDiscoverStore((s) => s.addWidget);
@@ -194,9 +197,6 @@ export function DiscoverView() {
     let cancelled = false;
 
     for (const id of enabledWidgets) {
-      if (id === 'community-stories') {
-        continue;
-      }
       setData((prev) => ({
         ...prev,
         [id]: { loading: true, items: prev[id]?.items ?? [] },
@@ -442,11 +442,13 @@ export function DiscoverView() {
           </header>
         ) : null}
 
-        {activeTab === 'discover' &&
-        enabledWidgets.includes('community-stories') ? (
-          <CommunityStoriesWidget
-            onRemove={() => removeWidget('community-stories')}
-          />
+        {activeTab === 'feed' ? (
+          <div className="flex flex-col gap-6" data-testid="discover-feed">
+            <CommunityStoriesWidget />
+            <Suspense fallback={<PageLoading label="Loading feed…" />}>
+              <FeedView embedded />
+            </Suspense>
+          </div>
         ) : null}
 
         {activeTab === 'discover' ? <HomeNews /> : null}

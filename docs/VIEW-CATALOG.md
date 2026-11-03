@@ -148,10 +148,7 @@ Pieces split out of the studio views in the god-module refactor. Stories live in
 | Branding        | `PressKitPreview`                                                        | `views/studio/branding/PressKitPreview.tsx`                | `Tahti/Studio/Branding/PressKitPreview`        |
 | Show detail     | `EpisodeEditorRow`                                                       | `views/studio/show-detail/EpisodeEditorRow.tsx`            | `Tahti/Studio/ShowDetail/EpisodeEditorRow`     |
 
-Extracted but **not yet storied** (need real fetch/state wiring, not just props):
-Branding
-`GallerySection`/`PressKitSection`/`ProfilePictureSection` (take `usePressKit()` state),
-pro-editor `StemsPanel` (`MasteringPanel` and `PluginControls`: `Tahti/Studio/Pro editor/Mastering`; `ReleaseTrackRow`: `Tahti/Studio/Release detail/ReleaseTrackRow`; `GuidesTab`, `ReleaseOpsPanel`, `ReleaseSmartLinksPanel`: `Tahti/Studio/Distribution panels`; `StudioEpisodeReviewView` has its own story).
+Every extracted Studio panel now has a story: the branding sections under `Tahti/Settings/Artist branding sections`, the Pro editor's mastering, plugin controls and stems under `Tahti/Studio/Pro editor/*`, `ReleaseTrackRow`, the distribution panels and `StudioEpisodeReviewView`.
 
 ### Governance / Transparency Views
 

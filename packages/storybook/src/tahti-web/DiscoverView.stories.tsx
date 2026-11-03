@@ -59,3 +59,18 @@ export const Default: Story = {
 export const SignedOut: Story = {
   decorators: [withMockAuth(null)],
 };
+
+/** Feed tab: the community stories row on top of the followed-artists
+ * feed (moved here from Listen). */
+export const FeedTab: Story = {
+  decorators: [withTahtiRouter('/discover?tab=feed')],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByTestId('discover-feed'),
+    ).toBeInTheDocument();
+    await expect(
+      await canvas.findByRole('heading', { name: 'Community stories' }),
+    ).toBeVisible();
+  },
+};

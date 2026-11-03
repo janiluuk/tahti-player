@@ -44,8 +44,10 @@ describe('AmbientTrackRow', () => {
     expect(screen.getByText('3 likes')).toBeTruthy();
     expect(screen.getByText('31 plays')).toBeTruthy();
     expect(screen.getByText('15 downloads')).toBeTruthy();
-    expect(screen.getByTestId('ambient-track-stats').textContent).toContain(
-      'on ',
+    const stats = screen.getByTestId('ambient-track-stats');
+    expect(stats.textContent).not.toContain('on ');
+    expect(stats.querySelector('time')?.getAttribute('datetime')).toBe(
+      '2026-10-17T12:00:00.000Z',
     );
   });
 

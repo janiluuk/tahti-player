@@ -6,6 +6,7 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as rss from '../api/rss-feed';
@@ -70,7 +71,8 @@ describe('NewsFeedWidget', () => {
     const card = await screen.findByRole('button', {
       name: /Warehouse season opens/,
     });
-    fireEvent.keyDown(card, { key: 'Enter' });
+    card.focus();
+    await userEvent.keyboard('{Enter}');
     expect(await screen.findByTestId('news-article')).toBeTruthy();
   });
 

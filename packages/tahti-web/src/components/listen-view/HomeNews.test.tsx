@@ -52,7 +52,9 @@ it('opens the selected article in a modal with artwork and publication date', as
     meta: { source: 'api' },
   });
   await renderWithRouter(<HomeNews />);
-  await userEvent.click(await screen.findByText('Tahti is open'));
+  await userEvent.click(
+    await screen.findByRole('button', { name: 'Read Tahti is open' }),
+  );
   expect(await screen.findByRole('dialog')).toBeVisible();
   expect(screen.getByTestId('news-published-at')).toHaveAttribute(
     'datetime',
